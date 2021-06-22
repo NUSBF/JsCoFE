@@ -23,14 +23,14 @@ def zanudaAfterRevision(driver):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Space Group Validation with Zanuda')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Space Group Validation with Zanuda')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

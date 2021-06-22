@@ -37,7 +37,7 @@ def importREADME(driver, waitShort):
     time.sleep(2)
 
     # Clicking "Cloud Import"
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Cloud Import')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Cloud Import')
     time.sleep(1)
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'ccp4-examples')
@@ -139,14 +139,14 @@ def makingLigand(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Ligands')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Make Ligand with Acedrg')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Make Ligand with Acedrg')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'SMILES string')
@@ -199,8 +199,8 @@ def startCCP4go(driver):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'CCP4go auto-solver')

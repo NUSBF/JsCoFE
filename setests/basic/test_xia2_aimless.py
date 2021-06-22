@@ -24,8 +24,8 @@ def xia2Processing(driver, isLocal):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
@@ -116,8 +116,8 @@ def aimlessAfterXia2(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
@@ -195,8 +195,8 @@ def simbad_05(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
@@ -264,14 +264,14 @@ def dimple_06(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Dimple refinement')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Dimple refinement')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

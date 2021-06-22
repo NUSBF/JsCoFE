@@ -26,10 +26,10 @@ def importREADME_SAD(driver, waitShort):
     time.sleep(2)
 
     # Clicking "Cloud Import"
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Cloud Import')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Cloud Import')
     time.sleep(1)
 
-    textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'tutorial-data')
+    textEl2 = driver.find_elements_by_xpath("//a[starts-with(text(), '%s')]" % 'tutorial-data')
     if len(textEl2) < 1:
         print('Cant locate neither "tutorial-data"; terminating.')
         sys.exit(1)
@@ -74,7 +74,7 @@ def importREADME_MAD(driver, waitShort):
     time.sleep(2)
 
     # Clicking "Cloud Import"
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Cloud Import')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Cloud Import')
     time.sleep(1)
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'tutorial-data')
@@ -224,7 +224,7 @@ def asymmetricUnitContents_SAD(driver, waitShort):
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Asymmetric Unit Contents') # looking by text
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(1)
 
     inputASU = driver.find_element_by_xpath("//input[@title='Specify atom type of dominant anomalous scatterer (e.g., S, SE etc.), or leave blank if uncertain.']")
@@ -266,7 +266,7 @@ def asymmetricUnitContents_MAD(driver, waitShort):
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Asymmetric Unit Contents') # looking by text
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % '[0008-01] gere_scaled_data [gere/gere/native] /hkl/') # looking by text
@@ -505,8 +505,8 @@ def fitWaters(driver, wait):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Ligands')
@@ -559,14 +559,14 @@ def refmac_14(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

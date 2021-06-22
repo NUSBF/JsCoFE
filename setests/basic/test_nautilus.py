@@ -19,14 +19,14 @@ d = sf.driverHandler()
 def importFromPDB(driver, waitShort):
     print ('Importing 4p5j (RNA-only structure) from the PDB')
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Import from PDB')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Import from PDB')
     time.sleep(1)
 
     time.sleep(2)
@@ -76,14 +76,14 @@ def editRevisionStructure(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Edit Structure Revision')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Edit Structure Revision')
     time.sleep(1)
 
     sf.clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
@@ -123,14 +123,14 @@ def refmacAfterRevision(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -180,14 +180,14 @@ def startNautilus(driver):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Automatic Model Building of RNA/DNA with Nautilus')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building of RNA/DNA with Nautilus')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

@@ -23,14 +23,14 @@ def gesamtAfterRevision(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Structure Alignment and Superposition with Gesamt')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Structure Alignment and Superposition with Gesamt')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//span[normalize-space()='%s']" % 'A (protein)')
@@ -95,14 +95,14 @@ def lsqkabAfterGesamt(driver, wait):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Structure Superposition with LsqKab')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Structure Superposition with LsqKab')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//span[normalize-space()='%s']" % 'A (protein)')
@@ -171,14 +171,14 @@ def sequenceAlignment(driver, wait):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Sequence Alignment with ClustalW')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Sequence Alignment with ClustalW')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -225,14 +225,14 @@ def symmatch(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[normalize-space()='%s']" % 'Symmetry Match to Reference Structure with CSymMatch')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Symmetry Match to Reference Structure with CSymMatch')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
