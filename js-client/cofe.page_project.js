@@ -85,6 +85,26 @@ function ProjectPage ( sceneId )  {
   }
   */
 
+  function setDisabled ( disabled_bool )  {
+    if (self.add_btn)  {
+      self.add_btn.setDisabled ( disabled_bool );
+      add_rem_btn .setDisabled ( disabled_bool );
+      thlight_btn .setDisabled ( disabled_bool );
+      //var insert_btn    = null;
+      if (moveup_btn)
+        moveup_btn.setDisabled ( disabled_bool );
+      self.del_btn.setDisabled ( disabled_bool );
+      archive_btn .setDisabled ( disabled_bool );
+      open_btn    .setDisabled ( disabled_bool );
+      stop_btn    .setDisabled ( disabled_bool );
+      clone_btn   .setDisabled ( disabled_bool );
+      // refresh_btn .setDisabled ( disabled_bool );  // active if reload fails
+      help_btn    .setDisabled ( disabled_bool );
+      roadmap_btn .setDisabled ( disabled_bool );
+      selmode_btn .setDisabled ( disabled_bool );
+    }
+  }
+
   function addJob()  {
     self.selectRemark();
     jobTree.addJob ( false,false,self,
@@ -200,7 +220,8 @@ function ProjectPage ( sceneId )  {
     if ((mode==0) || ((mode==1) && jobTree.multiple) ||
                      ((mode==2) && (!jobTree.multiple)))  {
       jobTree.multiple = !jobTree.multiple;
-      reloadTree ( false,null );
+      setDisabled ( true );
+      reloadTree  ( false,null );
     }
   }
 
@@ -416,18 +437,18 @@ function ProjectPage ( sceneId )  {
 
     setButtonState();
 
-    // add button listeners
-    self.add_btn.addOnClickListener ( addJob      );
-    if (moveup_btn)
-      moveup_btn.addOnClickListener ( moveJobUp   );
-    self.del_btn.addOnClickListener ( deleteJob   );
-    archive_btn .addOnClickListener ( archiveJobs );
-    open_btn    .addOnClickListener ( openJob     );
-    stop_btn    .addOnClickListener ( stopJob     );
-    clone_btn   .addOnClickListener ( cloneJob    );
-    add_rem_btn .addOnClickListener ( addRemark   );
-    thlight_btn .addOnClickListener ( toggleBranchHighlight );
-    title_lbl   .setText ( jobTree.projectData.desc.title );
+    // // add button listeners
+    // self.add_btn.addOnClickListener ( addJob      );
+    // if (moveup_btn)
+    //   moveup_btn.addOnClickListener ( moveJobUp   );
+    // self.del_btn.addOnClickListener ( deleteJob   );
+    // archive_btn .addOnClickListener ( archiveJobs );
+    // open_btn    .addOnClickListener ( openJob     );
+    // stop_btn    .addOnClickListener ( stopJob     );
+    // clone_btn   .addOnClickListener ( cloneJob    );
+    // add_rem_btn .addOnClickListener ( addRemark   );
+    // thlight_btn .addOnClickListener ( toggleBranchHighlight );
+    // title_lbl   .setText ( jobTree.projectData.desc.title );
 
     __current_project = jobTree.projectData.desc.name;
 
@@ -679,16 +700,6 @@ function ProjectPage ( sceneId )  {
   //}
   // *******************************
 
-  /*
-  this.add_btn.setDisabled ( true );
-  this.dock   .setDisabled ( true );
-  moveup_btn  .setDisabled ( true );
-  clone_btn   .setDisabled ( true );
-  add_rem_btn .setDisabled ( true );
-  thlight_btn .setDisabled ( true );
-  refresh_btn .setDisabled ( true );
-  */
-
   help_btn.addOnClickListener ( function(){
     new HelpBox ( '',__user_guide_base_url + 'jscofe_project.html',null );
   });
@@ -764,6 +775,7 @@ function ProjectPage ( sceneId )  {
   // *******************************
 
   refresh_btn.addOnClickListener ( function(){
+    setDisabled  ( true );
     wakeZombiJobs();  // must go before reloadTree
     reloadTree ( true,null );  // multiple = false?
   });
@@ -773,8 +785,23 @@ function ProjectPage ( sceneId )  {
   this.onResize ( window.innerWidth,window.innerHeight );
 
   //  Read project data from server
-  jobTree.readProjectData ( 'Project',onTreeLoaded,onTreeContextMenu,
-                                      openJob,onTreeItemSelect );
+  jobTree.readProjectData ( 'Project',
+    function(){
+      if (onTreeLoaded())  {
+        // add button listeners
+        self.add_btn.addOnClickListener ( addJob      );
+        if (moveup_btn)
+          moveup_btn.addOnClickListener ( moveJobUp   );
+        self.del_btn.addOnClickListener ( deleteJob   );
+        archive_btn .addOnClickListener ( archiveJobs );
+        open_btn    .addOnClickListener ( openJob     );
+        stop_btn    .addOnClickListener ( stopJob     );
+        clone_btn   .addOnClickListener ( cloneJob    );
+        add_rem_btn .addOnClickListener ( addRemark   );
+        thlight_btn .addOnClickListener ( toggleBranchHighlight );
+        title_lbl   .setText ( jobTree.projectData.desc.title );
+      }
+    },onTreeContextMenu,openJob,onTreeItemSelect );
 
 }
 
