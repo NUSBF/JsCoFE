@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.04.21   <--  Date of Last Modification.
+ *    23.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -417,18 +417,39 @@ function ProjectPage ( sceneId )  {
 
   }
 
-  function onTreeLoaded() {
+  function onTreeLoaded ( stayInProject ) {
+
+    // these go first in all cases
+    refresh_btn.setDisabled ( false );
+    selmode_btn.setDisabled ( false );
+
+    // if (stayInProject)  {
+    //   new MessageBox ( 'Connection problems',
+    //       '<div style="width:400px;">' +
+    //       '<h2>Intermittent Connection Problems</h2>' +
+    //       'Try to reload the Project by pushing refresh button ' +
+    //       'in the toolbar. If problem persists, check your ' +
+    //       'Internet connection.' );
+    //   return false;
+    // }
 
     if ((!jobTree) || (!jobTree.projectData))  {
-      makeProjectListPage ( sceneId );
+      if (stayInProject)  {
+        new MessageBox ( 'Connection problems',
+            '<div style="width:400px;">' +
+            '<h2>Intermittent Connection Problems</h2>' +
+            'Try to reload the Project by pushing refresh button ' +
+            'in the toolbar. If problem persists, check your ' +
+            'Internet connection.' );
+      } else
+        makeProjectListPage ( sceneId );
       return false;
     }
 
-    refresh_btn.setDisabled ( false );
-    selmode_btn.setDisabled ( false );
     if (jobTree.multiple)
           selmode_btn.setIcon ( image_path('selmode_multi') );
     else  selmode_btn.setIcon ( image_path('selmode_single') );
+    selmode_btn.multiple = jobTree.multiple;
 
     // ***** development code, dormant
     //if (split_btn)
@@ -519,10 +540,11 @@ function ProjectPage ( sceneId )  {
       job_tree.delete();
     } else
       jobTree.hide();
-    job_tree.parent.addWidget ( jobTree );
+    // job_tree.parent.addWidget ( jobTree );
     jobTree.readProjectData ( 'Project',function(){
       jobTree.multiple = job_tree.multiple;
-      if (onTreeLoaded())  {
+      if (onTreeLoaded(true))  {
+        job_tree.parent.addWidget ( jobTree );
         jobTree.parent.setScrollPosition ( scrollPos );
         if (!blink)  {
           jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
@@ -543,6 +565,12 @@ function ProjectPage ( sceneId )  {
                                        jobTree.projectData.desc.metrics );
             }
         }
+      } else  {
+        // revert back to the previous Tree
+        self.job_tree    = job_tree;
+        jobTree          = job_tree;
+        jobTree.multiple = selmode_btn.multiple;
+        job_tree.parent.addWidget ( jobTree );
       }
     },onTreeContextMenu,openJob,onTreeItemSelect );
   }
@@ -654,6 +682,7 @@ function ProjectPage ( sceneId )  {
   add_rem_btn  = toolbar.setButton ( '',image_path('task_remark'     ),cnt++,0,1,1 );
   thlight_btn  = toolbar.setButton ( '',image_path('highlight_branch'),cnt++,0,1,1 );
   selmode_btn  = toolbar.setButton ( '',image_path('selmode_single'  ),cnt++,0,1,1 );
+  selmode_btn.multiple = false;  // custom field
   toolbar.setLabel ( '<hr style="border:1px dotted;"/>'       ,cnt++,0,1,1 );
   open_btn     = toolbar.setButton ( '',image_path('openjob')  ,cnt++,0,1,1 );
   stop_btn     = toolbar.setButton ( '',image_path('stopjob')  ,cnt++,0,1,1 );
@@ -787,7 +816,7 @@ function ProjectPage ( sceneId )  {
   //  Read project data from server
   jobTree.readProjectData ( 'Project',
     function(){
-      if (onTreeLoaded())  {
+      if (onTreeLoaded(false))  {
         // add button listeners
         self.add_btn.addOnClickListener ( addJob      );
         if (moveup_btn)
