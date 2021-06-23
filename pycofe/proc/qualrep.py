@@ -551,7 +551,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
         body.putMessage1 ( reportPanelId,"&nbsp;<p>Statistics for the last shell is given in parentheses</p>",1,col=0 )
 
         csvTable = rvapi_utils.makeCSVTable ( tableDict ) \
-                              .replace("&alpha;","alpha")  \
+                              .replace("&alpha;","alpha") \
                               .replace("&beta;" ,"beta")  \
                               .replace("&gamma;","gamma")
         # csvTable is a string, containing CSV output (lines are separated via proper OS line separator)
@@ -559,7 +559,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
 
         csvOutFPath = os.path.join ( body.outputDir(),
                                 dtype_template.makeFileName ( body.job_id,
-                                    body.dataSerialNo,body.getOFName(".csv")) )
+                                    body.dataSerialNo,body.getOFName("_Table1.csv")) )
         with open(csvOutFPath,"w") as of:
             of.write ( csvTable )
 
