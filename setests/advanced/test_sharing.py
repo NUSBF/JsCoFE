@@ -263,7 +263,7 @@ def startMrbump(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
     time.sleep(1.05)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MrBump: Model Search & Preparation')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Auto-MR with MrBump')
     time.sleep(2.05)
 
     inputNMod = driver.find_element_by_xpath("//input[@title='Maximum number of search models to test']")

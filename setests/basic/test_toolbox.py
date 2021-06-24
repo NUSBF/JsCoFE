@@ -46,7 +46,7 @@ def auspex(driver):
     try:
         wait = WebDriverWait(driver, 150) # normally takes under a minute
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0002]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0004]')]")))
     except:
         print('Apparently task Auspex has not been completed in time; terminating')
         sys.exit(1)
@@ -183,7 +183,7 @@ def crossec(driver):
         wait = WebDriverWait(driver, 150)  # normally takes under a minute
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,
-                     "//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0004]')]")))
+                     "//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0002]')]")))
     except:
         print('Apparently task CROSSEC has not been completed in time; terminating')
         sys.exit(1)
@@ -215,7 +215,7 @@ def crossec(driver):
     return ()
 
 
-def test_1auspex(browser,
+def test_1crosssec(browser,
                 cloud,
                 nologin,
                 login,
@@ -246,7 +246,7 @@ def test_1auspex(browser,
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
         sf.importFromCloud_insulin(d.driver, d.waitShort) # 1
-        auspex(d.driver) # 2
+        crossec(d.driver) # 2
     except:
         d.driver.quit()
         raise
@@ -262,10 +262,11 @@ def test_2srf():
         raise
 
 
-def test_3crosssec():
+def test_3auspex():
     try:
         sf.clickTaskInTaskTree(d.driver, '\[0001\]')
-        crossec(d.driver)
+        auspex(d.driver)  # 4
+
 
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
