@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    14.05.21   <--  Date of Last Modification.
+#    24.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -176,10 +176,12 @@ class MrBump(basic.TaskDriver):
 
         # check solution and register data
 
-        search_dir = "search_" + self.outdir_name()
+        search_dir     = "search_" + self.outdir_name()
+        citations_json = os.path.join ( search_dir,"logs","programs.json" )
 
-        with open(os.path.join(search_dir,"logs","programs.json")) as json_file:
-            self.addCitations ( json.loads(json_file.read()) )
+        if os.path.isfile(citations_json):
+            with open(citations_json) as json_file:
+                self.addCitations ( json.loads(json_file.read()) )
 
         if os.path.isdir(search_dir):
 
