@@ -30,7 +30,7 @@ def mordaAfterASU(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Morda: Model Search & Preparation + MR')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Auto-MR with MoRDa')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

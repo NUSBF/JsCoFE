@@ -29,7 +29,7 @@ def balbesAfterASU(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Balbes: Model Search & Preparation')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Auto-MR with Balbes')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
