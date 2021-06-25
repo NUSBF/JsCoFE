@@ -196,15 +196,9 @@ def makeRTFTable ( tableDict ):
             ncols =len(data)
             if "header" in trow:
                 ncols += 1
-            if ncols == 2:
-                rtfTable += '\\clvertalc \\clshdrawnil \\clbrdrt\\brdrs\\brdrw20\\brdrcf2 \\clbrdrl\\brdrs\\brdrw20\\brdrcf2 \\clbrdrb\\brdrs\\brdrw20\\brdrcf2 \\clbrdrr\\brdrs\\brdrw20\\brdrcf2 \\clpadl100 \\clpadr100 \\gaph\\cellx4048' + os.linesep
-                rtfTable += '\\clvertalc \\clshdrawnil \\clbrdrt\\brdrs\\brdrw20\\brdrcf2 \\clbrdrl\\brdrs\\brdrw20\\brdrcf2 \\clbrdrb\\brdrs\\brdrw20\\brdrcf2 \\clbrdrr\\brdrs\\brdrw20\\brdrcf2 \\clpadl100 \\clpadr100 \\gaph\\cellx8096' + os.linesep
-                # I have no idea why MS-Word needs this two-times difference in \cellx to display columns with EQUAL width
-            else:
-                columnWidth = int(9505 / ncols)
-                for i in range(ncols):
-                    rtfTable += '\\clvertalc \\clshdrawnil \\clbrdrt\\brdrs\\brdrw20\\brdrcf2 \\clbrdrl\\brdrs\\brdrw20\\brdrcf2 \\clbrdrb\\brdrs\\brdrw20\\brdrcf2 \\clbrdrr\\brdrs\\brdrw20\\brdrcf2 \\clpadl100 \\clpadr100 \\gaph\\cellx%d' % columnWidth + os.linesep
-
+            columnWidth = int(9505 / ncols)
+            for k in range(ncols):
+                rtfTable += '\\clvertalc \\clshdrawnil \\clbrdrt\\brdrs\\brdrw20\\brdrcf2 \\clbrdrl\\brdrs\\brdrw20\\brdrcf2 \\clbrdrb\\brdrs\\brdrw20\\brdrcf2 \\clbrdrr\\brdrs\\brdrw20\\brdrcf2 \\clpadl100 \\clpadr100 \\gaph\\cellx%d' % int(columnWidth * (k+1)) + os.linesep
 
             if "header" in trow:
                 rtfTable += os.linesep + r'\pard\intbl\itap1\pardeftab720\sb60\sa60\partightenfactor0' + os.linesep + os.linesep
@@ -215,9 +209,9 @@ def makeRTFTable ( tableDict ):
                 rtfTable += '\\f1\\b0\\fs24 \\cf0 %s\\cell' % cleanhtml(data[j])
             rtfTable += ' \\row' + os.linesep + os.linesep
 
-    if len(rtfTable) > 5:
+    if len(rtfTable) > 7:
         rtfTable = rtfTable[:-6]
-        rtfTable += ' \\lastrow\\row' + os.linesep
+        rtfTable += '\\lastrow\\row' + os.linesep
 
     rtfTable += r"""\pard\pardeftab720\sb60\sa60\partightenfactor0
 \cf0 Statistics for the last shell is given in parentheses (if unmerged data are available).\
