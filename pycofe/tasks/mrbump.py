@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    24.06.21   <--  Date of Last Modification.
+#    25.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -176,6 +176,8 @@ class MrBump(basic.TaskDriver):
 
         # check solution and register data
 
+        have_results   = False
+
         search_dir     = "search_" + self.outdir_name()
         citations_json = os.path.join ( search_dir,"logs","programs.json" )
 
@@ -224,6 +226,7 @@ class MrBump(basic.TaskDriver):
                         "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
                         "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
                     })
+                    have_results = True
                 else:
                     self.putMessage ( "<h3>Structure cannot be formed</h3>" )
 
@@ -237,8 +240,14 @@ class MrBump(basic.TaskDriver):
         # it to be sent back to FE.
         shutil.rmtree ( search_dir )
 
+        # this will go in the project tree job's line
+        if not have_results:
+            self.generic_parser_summary["mrbump"] = {
+              "summary_line" : "solution not found"
+            }
+
         # close execution logs and quit
-        self.success ( (self.outputDataBox.nDTypes()>0) )
+        self.success ( have_results )
         return
 
 

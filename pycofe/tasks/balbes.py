@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.05.20   <--  Date of Last Modification.
+#    25.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -102,6 +102,12 @@ class Balbes(basic.TaskDriver):
             revision.setStructureData ( structure )
             self.registerRevision     ( revision  )
             have_results = True
+
+        # this will go in the project tree job's line
+        if not have_results:
+            self.generic_parser_summary["balbes"] = {
+              "summary_line" : "solution not found"
+            }
 
         # close execution logs and quit
         self.success ( have_results )
