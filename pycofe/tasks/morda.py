@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    25.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -205,6 +205,12 @@ class Morda(basic.TaskDriver):
                 })
             else:
                 self.putMessage ( "<h3>Structure cannot be formed</h3>" )
+
+        # this will go in the project tree job's line
+        if not have_results:
+            self.generic_parser_summary["morda"] = {
+              "summary_line" : "solution not found"
+            }
 
         # close execution logs and quit
         self.success ( have_results )
