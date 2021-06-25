@@ -369,6 +369,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
         hkl = body.makeClass(revision.HKL)
         wavelength = 0.0
         table1 = {}
+        unmergedDataFlag = False
 
         if hasattr(hkl,"dataStats") and hkl.dataStats:
             if type(hkl.dataStats) is dict:
@@ -391,7 +392,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
         pyrvapi.rvapi_add_panel  ( reportPanelId,sec_id,0,0,1,1 )
         table_id = body.getWidgetId ( "tableOne_table" )
 
-        tableDict =  { 'title': "Table 1",        # empty string by default
+        tableDict =  { 'title': "Table 1. Diffraction data collection and refinement statistics.",
             'state': 0,                    # -1,0,1, -100,100
             'class': "table-blue",         # "table-blue" by default
             'css'  : "text-align:left;",  # "text-align:rigt;" by default
@@ -422,6 +423,7 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
 
         if "ResolutionLow" in table1.keys() and "ResolutionHigh" in table1.keys():
             if "ResolutionLowO" in table1.keys() and "ResolutionHighO" in table1.keys():
+                unmergedDataFlag = True
                 tableDict['rows'].append({'header': {'label': 'Resolution range', 'tooltip': ''},
                                       'data': ['%0.2f - %0.2f (%0.2f-%0.2f)' %
                                                (table1['ResolutionLow'], table1['ResolutionHigh'],
@@ -548,7 +550,13 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
                                       'data': ['%0.1f' % meta['bfac_water']]})
 
         rvapi_utils.makeTable(tableDict, table_id, reportPanelId, 0, 0, 1, 1)
-        body.putMessage1 ( reportPanelId,"&nbsp;<p>Statistics for the last shell is given in parentheses</p>",1,col=0 )
+        if unmergedDataFlag:
+            body.putMessage1 ( reportPanelId,"&nbsp;<p>Statistics for the last shell is given in parentheses</p>",1,col=0 )
+        else:
+            body.putMessage1(reportPanelId, "&nbsp;<p>As unmerged data has not been provided for this project, only " + \
+                                            "limited statistcs is available (i.e. no statistics for the high " + \
+                                            "resolution shell)</p>", 1,
+                             col=0)
 
         csvTable = rvapi_utils.makeCSVTable ( tableDict ) \
                               .replace("&alpha;","alpha") \
@@ -565,6 +573,19 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
 
         body.putDownloadButton ( csvOutFPath,"Download in CSV format",
                                  reportPanelId,2,0 )
+
+        rtfTable = rvapi_utils.makeRTFTable ( tableDict ) \
+                              .replace("&alpha;","alpha") \
+                              .replace("&beta;" ,"beta")  \
+                              .replace("&gamma;","gamma")
+        rtfOutFPath = os.path.join ( body.outputDir(),
+                                dtype_template.makeFileName ( body.job_id,
+                                    body.dataSerialNo,body.getOFName("_Table1.rtf")) )
+        with open(rtfOutFPath,"w") as of:
+            of.write ( rtfTable )
+
+        body.putDownloadButton ( rtfOutFPath,"Download in RTF format",
+                                 reportPanelId,3,0 )
 
     return
 
