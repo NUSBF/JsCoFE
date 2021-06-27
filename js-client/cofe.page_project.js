@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.06.21   <--  Date of Last Modification.
+ *    27.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -527,52 +527,54 @@ function ProjectPage ( sceneId )  {
   function reloadTree ( blink,rdata )  {
     // blink==true will force page blinking, for purely aesthatic reasons
     //var selTask   = jobTree.getSelectedTask();
-    var selTasks  = jobTree.getSelectedTasks();
-    var scrollPos = jobTree.parent.getScrollPosition();
-    var job_tree  = jobTree;
-    jobTree.stopTaskLoop();
-    var dlg_task_parameters = jobTree.getJobDialogTaskParameters();
-    jobTree = self.makeJobTree();
-    // jobTree.multiple = job_tree.multisel;
-    jobTree.multiple = job_tree.multiple;
-    if (blink)  {
-      job_tree.closeAllJobDialogs();
-      job_tree.delete();
-    } else
-      jobTree.hide();
-    // job_tree.parent.addWidget ( jobTree );
-    jobTree.readProjectData ( 'Project',function(){
+    if (jobTree && jobTree.parent)  {
+      var selTasks  = jobTree.getSelectedTasks();
+      var scrollPos = jobTree.parent.getScrollPosition();
+      var job_tree  = jobTree;
+      jobTree.stopTaskLoop();
+      var dlg_task_parameters = jobTree.getJobDialogTaskParameters();
+      jobTree = self.makeJobTree();
+      // jobTree.multiple = job_tree.multisel;
       jobTree.multiple = job_tree.multiple;
-      if (onTreeLoaded(true))  {
-        job_tree.parent.addWidget ( jobTree );
-        jobTree.parent.setScrollPosition ( scrollPos );
-        if (!blink)  {
-          jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
-          job_tree.hide  ();
-          jobTree .show  ();
-          job_tree.delete();
+      if (blink)  {
+        job_tree.closeAllJobDialogs();
+        job_tree.delete();
+      } else
+        jobTree.hide();
+      // job_tree.parent.addWidget ( jobTree );
+      jobTree.readProjectData ( 'Project',function(){
+        jobTree.multiple = job_tree.multiple;
+        if (onTreeLoaded(true))  {
+          job_tree.parent.addWidget ( jobTree );
+          jobTree.parent.setScrollPosition ( scrollPos );
+          if (!blink)  {
+            jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
+            job_tree.hide  ();
+            jobTree .show  ();
+            job_tree.delete();
+          } else  {
+            job_tree.closeAllJobDialogs();
+            jobTree .openJobs ( dlg_task_parameters,self );
+          }
+          jobTree.selectTasks ( selTasks );
+          if (rdata)  {
+            self.updateUserRationDisplay ( rdata );
+            if ('completed_map' in rdata)
+              for (var key in rdata.completed_map)  {
+                jobTree.startChainTask ( rdata.completed_map[key],null );
+                update_project_metrics ( rdata.completed_map[key],
+                                         jobTree.projectData.desc.metrics );
+              }
+          }
         } else  {
-          job_tree.closeAllJobDialogs();
-          jobTree .openJobs ( dlg_task_parameters,self );
+          // revert back to the previous Tree
+          self.job_tree    = job_tree;
+          jobTree          = job_tree;
+          jobTree.multiple = selmode_btn.multiple;
+          job_tree.parent.addWidget ( jobTree );
         }
-        jobTree.selectTasks ( selTasks );
-        if (rdata)  {
-          self.updateUserRationDisplay ( rdata );
-          if ('completed_map' in rdata)
-            for (var key in rdata.completed_map)  {
-              jobTree.startChainTask ( rdata.completed_map[key],null );
-              update_project_metrics ( rdata.completed_map[key],
-                                       jobTree.projectData.desc.metrics );
-            }
-        }
-      } else  {
-        // revert back to the previous Tree
-        self.job_tree    = job_tree;
-        jobTree          = job_tree;
-        jobTree.multiple = selmode_btn.multiple;
-        job_tree.parent.addWidget ( jobTree );
-      }
-    },onTreeContextMenu,openJob,onTreeItemSelect );
+      },onTreeContextMenu,openJob,onTreeItemSelect );
+    }
   }
 
   function wakeZombiJobs()  {

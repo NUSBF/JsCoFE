@@ -225,7 +225,7 @@ class PhaserMR(basic.TaskDriver):
                 "\nENSEMBLE " + xstruct.ensembleName() + " &" +\
                 "\n    PDB \"" + xstruct.getXYZFilePath(self.inputDir()) +\
                 "\" IDENT 0.9" +\
-                "\nSOLUTION ORIGIN ENSEMBLE " + xstruct.ensembleName()
+                "\nSOLUTION ORIGIN ENSEMBLE " + str(xstruct.ensembleName())
             )
             ens0.append ( xstruct )
             #inp_sol_file = xstruct.getSolFilePath ( self.inputDir() )

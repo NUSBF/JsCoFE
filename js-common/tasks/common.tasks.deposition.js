@@ -115,6 +115,16 @@ TaskDeposition.prototype.currentVersion = function()  {
 
 if (!__template)  {
 
+  TaskDeposition.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'prepares mmCIF files for PDB deposition and acquires PDB Validation Report';
+  }
+
+  TaskDeposition.prototype.taskDescription = function()  {
+  // this appears under task title in the Task Dialog
+    return 'Prepares mmCIF files for PDB deposition and acquires PDB Validation Report';
+  }
+
   TaskDeposition.prototype.collectInput = function ( inputPanel )  {
 
     var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
