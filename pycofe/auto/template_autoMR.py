@@ -161,10 +161,20 @@ def makeNextTask ( crTask,data ):
         return
 
     elif crTask._type=="TaskASUDef":  # could be elif crTask.autoRunName.startsWith("asu")
-            auto_api.addTask          ( "mrbump","TaskMrBump",crTask.autoRunName )
-            auto_api.addTaskData      ( "mrbump","revision",data["revision"] )
-            auto_api.addTaskParameter ( "mrbump","ALTGROUPS_CBX",True )
-            return
+        strTree = 'Quick MrBump run (click for details)'
+        strText = 'In this MRBUMP run (to make it quick) we will do MR search with only 5 top models (basing on sequence alignment). \n' + \
+                  'If results are suboptimal, please clone and re-run this task with 10-20 or even more search models. \n' + \
+                  'Number of models is specified by "Maximum no. of models to test" parameter.\n' + \
+                  'Please be patient as such run may take many hours and even couple of days, ' + \
+                  'but then it may provide a good solution of your structure.\n'
+        auto_tasks.remark("rem_mrbComment", strTree, 5, strText, crTask.autoRunName)  # 5 - Cyan
+
+        auto_api.addTask          ( "mrbump","TaskMrBump",crTask.autoRunName )
+        auto_api.addTaskData      ( "mrbump","revision",data["revision"] )
+        auto_api.addTaskParameter ( "mrbump","ALTGROUPS_CBX",True )
+        auto_api.addTaskParameter ( "mrbump", "MRNUM", 5)
+
+        return
 
 
     elif crTask._type=="TaskMrBump":

@@ -176,7 +176,7 @@ def makeRTFTable ( tableDict ):
             rtfTable += r"\itap1\trowd \taflags1 \trgaph108\trleft-108 \trbrdrl\brdrnil \trbrdrr\brdrnil" + os.linesep
             columnWidth = int(9505 / len(tableDict['horzHeaders']))
             for i in range(len(tableDict['horzHeaders'])):
-                rtfTable += '\\clvertalc \\clshdrawnil \\clbrdrt\\brdrs\\brdrw20\\brdrcf2 \\clbrdrl\\brdrs\\brdrw20\\brdrcf2 \\clbrdrb\\brdrs\\brdrw20\\brdrcf2 \\clbrdrr\\brdrs\\brdrw20\\brdrcf2 \\clpadl100 \\clpadr100 \\gaph\\cellx%d' % columnWidth + os.linesep
+                rtfTable += '\\clvertalc \\clshdrawnil \\clbrdrt\\brdrs\\brdrw20\\brdrcf2 \\clbrdrl\\brdrs\\brdrw20\\brdrcf2 \\clbrdrb\\brdrs\\brdrw20\\brdrcf2 \\clbrdrr\\brdrs\\brdrw20\\brdrcf2 \\clpadl100 \\clpadr100 \\gaph\\cellx%d' % int(columnWidth * (i+1)) + os.linesep
 
             for i in range(len(tableDict["horzHeaders"])):
                 header = tableDict["horzHeaders"][i]
@@ -185,9 +185,7 @@ def makeRTFTable ( tableDict ):
                 rtfTable += '\\f0\\b\\fs24 \\cf0 %s\\cell' % cleanhtml(header)
             rtfTable += ' \\row' + os.linesep + os.linesep
 
-
     if "rows" in tableDict:
-
         for i in range(len(tableDict["rows"])):
             trow = tableDict["rows"][i]
             data = trow["data"]
