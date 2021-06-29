@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.04.21   <--  Date of Last Modification.
+ *    29.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -57,7 +57,7 @@
  *      function getNodePosition    ( node );
  *      function moveNodeUp         ( node );
  *      function getChildNodes      ( node );
- *      function setNodes           ( nodes );
+ *      function setNodes           ( nodes,allow_selection );
  *      function getNumberOfNodes   ();
  *      function selectNode         ( node,single_bool );
  *      function selectNodeById     ( nodeId,single_bool );
@@ -74,7 +74,8 @@
  *      function confirmCustomIconsVisibility();
  *      function deleteNode         ( node );
  *      function deleteBranch       ( node );
- *      function createTree         ( onReady_func   ,onContextMenu_func,
+ *      function createTree         ( make_initial_selection,
+                                      onReady_func   ,onContextMenu_func,
  *                                    onDblClick_func,onSelect_func );
  *      function refresh            ();
  *      function calcSelectedNodeIds();
@@ -261,9 +262,11 @@ function Tree ( rootName )  {
     }
   }
 
-  this.setNode = function ( parent_node, node_obj )  {
+  this.setNode = function ( parent_node, node_obj, allow_selection )  {
     var node = new TreeNode ( '','',null );
     node.copy ( node_obj );
+    if (!allow_selection)
+      node.state.selected = false;
     node.parentId  = parent_node.id;
     parent_node.children.push ( node );
     this.node_map[node.id] = node;
@@ -275,9 +278,9 @@ function Tree ( rootName )  {
         this.node_map[fnode.id] = fnode;
       }
     }
-    //  this.setNode ( node,node_obj.fchildren[i] );
+    //  this.setNode ( node,node_obj.fchildren[i],allow_selection );
     for (var i=0;i<node_obj.children.length;i++)
-      this.setNode ( node,node_obj.children[i] );
+      this.setNode ( node,node_obj.children[i],allow_selection );
     if (node.state.selected)
       this.selected_node_id = node.id;
   }
@@ -484,7 +487,7 @@ Tree.prototype.moveNodeUp = function ( node )  {
 }
 
 
-Tree.prototype.setNodes = function ( nodes )  {
+Tree.prototype.setNodes = function ( nodes,allow_selection )  {
 // Recreation from stringifying this.root_nodes, should be applied only to new
 // tree. The argument is array of root nodes JSON.parsed from storage string.
 
@@ -497,7 +500,7 @@ Tree.prototype.setNodes = function ( nodes )  {
     this.root_nodes.push ( node );
     this.node_map[node.id] = node;
     for (var j=0;j<nodes[i].children.length;j++)
-      this.setNode ( node,nodes[i].children[j] );
+      this.setNode ( node,nodes[i].children[j],allow_selection );
   }
 
 }
@@ -807,7 +810,8 @@ $.jstree.plugins.addHTML = function ( options,parent ) {
 $.jstree.defaults.addHTML = {};
 
 
-Tree.prototype.createTree = function ( onReady_func,
+Tree.prototype.createTree = function ( make_initial_selection,
+                                       onReady_func,
                                        onContextMenu_func,
                                        onDblClick_func,
                                        onSelect_func )  {
@@ -818,15 +822,17 @@ Tree.prototype.createTree = function ( onReady_func,
 
       tree.created = true;
 
-      var selId = tree.calcSelectedNodeIds();
-      if ((selId.length<=0) && (tree.root_nodes.length>0))  {
-        // situation abnormal, force initial selection
-        tree.selectSingle ( tree.root_nodes[0] );
-        tree.selected_node_id = tree.root_nodes[0].id;
-      } else  {
-        // always note the first selected one!
-        //tree.selected_node_id = selId[0];
-        tree.selectSingleById ( selId[0] );
+      if (make_initial_selection)  {
+        var selId = tree.calcSelectedNodeIds();
+        if ((selId.length<=0) && (tree.root_nodes.length>0))  {
+          // situation abnormal, force initial selection
+          tree.selectSingle ( tree.root_nodes[0] );
+          tree.selected_node_id = tree.root_nodes[0].id;
+        } else  {
+          // always note the first selected one!
+          //tree.selected_node_id = selId[0];
+          tree.selectSingleById ( selId[0] );
+        }
       }
 
       if (onReady_func)

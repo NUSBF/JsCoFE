@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.06.21   <--  Date of Last Modification.
+ *    29.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -137,7 +137,9 @@ function ProjectPage ( sceneId )  {
   }
 
   function deleteJob() {
-    jobTree.deleteJob ( setButtonState );
+    jobTree.stopTaskLoop ();
+    jobTree.deleteJob    ( setButtonState );
+    jobTree.startTaskLoop();
   }
 
   function archiveJobs() {
@@ -542,9 +544,10 @@ function ProjectPage ( sceneId )  {
       } else
         jobTree.hide();
       // job_tree.parent.addWidget ( jobTree );
-      jobTree.readProjectData ( 'Project',function(){
+      jobTree.readProjectData ( 'Project',false,function(){
         jobTree.multiple = job_tree.multiple;
         if (onTreeLoaded(true))  {
+          jobTree.selectTasks ( selTasks );
           job_tree.parent.addWidget ( jobTree );
           jobTree.parent.setScrollPosition ( scrollPos );
           if (!blink)  {
@@ -556,7 +559,6 @@ function ProjectPage ( sceneId )  {
             job_tree.closeAllJobDialogs();
             jobTree .openJobs ( dlg_task_parameters,self );
           }
-          jobTree.selectTasks ( selTasks );
           if (rdata)  {
             self.updateUserRationDisplay ( rdata );
             if ('completed_map' in rdata)
@@ -781,7 +783,7 @@ function ProjectPage ( sceneId )  {
   //      icon = image_path('single_page');
   //      ttip = 'Hide replay project';
   //      replayJobTree = self.makeReplayJobTree();
-  //      replayJobTree.readProjectData ( 'Replay Project',
+  //      replayJobTree.readProjectData ( 'Replay Project',false,
   //                                      function(){  // onTreeLoaded
   //                                        self.replay_job_tree = replayJobTree;
   //                                      },
@@ -816,7 +818,7 @@ function ProjectPage ( sceneId )  {
   this.onResize ( window.innerWidth,window.innerHeight );
 
   //  Read project data from server
-  jobTree.readProjectData ( 'Project',
+  jobTree.readProjectData ( 'Project',true,
     function(){
       if (onTreeLoaded(false))  {
         // add button listeners

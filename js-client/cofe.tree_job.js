@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.06.21   <--  Date of Last Modification.
+ *    29.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -36,6 +36,7 @@
  *      function countTasks      ();
  *      function getChildTasks   ( node   );
  *      function readProjectData ( page_title,
+ *                                 allow_selection,
  *                                 onLoaded_func  ,onRightClick_func,
  *                                 onDblClick_func,onSelect_func );
  *      function makeNodeId      ( task_id );
@@ -218,6 +219,7 @@ var tree1 = job_tree.tree;
 
 
 JobTree.prototype.readProjectData = function ( page_title,
+                                               allow_selection,
                                                onLoaded_func,
                                                onRightClick_func,
                                                onDblClick_func,
@@ -283,7 +285,7 @@ JobTree.prototype.readProjectData = function ( page_title,
           data.meta.tree[0].text = root_title;
 
           //tree.setNodes ( tree.projectData.tree );
-          tree.setNodes ( data.meta.tree );
+          tree.setNodes ( data.meta.tree,allow_selection );
 
           var t_map = {};
           for (var i=0;i<data.tasks_add.length;i++)
@@ -311,7 +313,7 @@ JobTree.prototype.readProjectData = function ( page_title,
           }
         }
 
-        tree.createTree ( function(){
+        tree.createTree ( allow_selection,function(){
           for (var key in tree.task_map)  {
             if (tree.task_map[key].isRemark())
               tree.setStyle ( tree.node_map[key],__remarkStyle,0 );
@@ -611,9 +613,9 @@ JobTree.prototype.selectTasks = function ( task_lst )  {
       nodeId = this.getTaskNodeId ( task_lst[i].id );
       // if (nodeId && this.selectNodeById(nodeId,single))
       //   single = false;
-      if (nodeId && this.selectNodeById(nodeId,(nselected>0)))
+      if (nodeId && this.selectNodeById(nodeId,(nselected<=0)))
         nselected++;
-    } else if (this.selectNodeById(this.root_nodes[0].id,(nselected>0)))
+    } else if (this.selectNodeById(this.root_nodes[0].id,(nselected<=0)))
       nselected++;
     // } else  {
     //   // root selected
@@ -623,7 +625,7 @@ JobTree.prototype.selectTasks = function ( task_lst )  {
 // console.log ( ' >>>>> selTaskId=' + task_lst[i].id + '  single=' + single  );
   }
   if (nselected<=0)  {
-    if (this.selectNodeById(this.root_nodes[0].id,false))
+    if (this.selectNodeById(this.root_nodes[0].id,true))
       nselected++;
   }
   return nselected;
