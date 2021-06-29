@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.05.21   <--  Date of Last Modification.
+ *    29.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -122,7 +122,7 @@ FacilityTree.prototype.readFacilitiesData = function ( page_title,
         }
       }
 
-      tree.createTree ( onLoaded_func,onRightClick_func,onDblClick_func,onSelect_func );
+      tree.createTree ( true,onLoaded_func,onRightClick_func,onDblClick_func,onSelect_func );
 
     },function(){
       //tree.startTaskLoop();
@@ -447,7 +447,7 @@ StorageTree.prototype.readStorageData = function ( page_title,
 
           }
 
-          tree.createTree ( onLoaded_func,onRightClick_func,onDblClick_func,onSelect_func );
+          tree.createTree ( true,onLoaded_func,onRightClick_func,onDblClick_func,onSelect_func );
 
         }
 

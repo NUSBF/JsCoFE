@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    29.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Coot Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2020
+ *  (C) E. Krissinel, A. Lebedev 2018-2021
  *
  *  ==========================================================================
  *
@@ -88,7 +88,7 @@ if (!__template)  {
     div.grid.setWidget ( tree_div, 1,0,1,1 );
 
     //  Read project data from server
-    jobTree.readProjectData ( 'Project',
+    jobTree.readProjectData ( 'Project',true,
           function(){  // on tree loaded
           },
           function(node){},  // onTreeContextMenu
