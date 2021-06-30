@@ -23,6 +23,8 @@ from   pycofe.auto   import template_autoMR
 from   pycofe.auto   import template_autoEP
 from   pycofe.auto   import template_autoREL
 from   pycofe.auto   import template_autoDPL
+from   pycofe.auto   import template_simpleMR
+
 from   pycofe.auto   import auto_api
 import traceback
 from   pycofe.etc    import citations
@@ -60,6 +62,8 @@ def makeNextTask ( body,data,log=None ):
                 template_autoREL.makeNextTask ( body.task,data )
             elif body.task.autoRunId=="auto-DPL":
                 template_autoDPL.makeNextTask ( body.task,data )
+            elif body.task.autoRunId=="simple-MR":
+                template_simpleMR.makeNextTask ( body.task,data )
 
             else:
                 raise ValueError('From auto.py:makeNextTask got unknown crTask.autoRunId: %s .' \

@@ -391,10 +391,11 @@ var r = 0;  // grid row
   // grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
 
   grid.setLabel ( '<h3>Choose project template from options below that matches ' +
-                  'your data best:</h3>',r++,0,1,3 );
+                  'your data best:</h3>',r++,0,1,4 );
 
   var task_list = [
     new TaskWFlowAMR(),
+    new TaskWFlowSMR(),
     new TaskWFlowAEP(),
     new TaskWFlowDPL(),
   ];
@@ -442,6 +443,7 @@ var r = 0;  // grid row
   var task_list = [
     "Workflows for starting a Project",
     new TaskWFlowAMR(),
+    new TaskWFlowSMR(),
     new TaskWFlowAEP(),
     new TaskWFlowDPL(),
     "Workflows for using within a Project",
