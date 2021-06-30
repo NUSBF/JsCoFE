@@ -35,6 +35,8 @@ import os
 from . import basic
 from   pycofe.dtypes   import dtype_template
 from   pycofe.verdicts import verdict_phasermr
+from   pycofe.auto      import auto
+
 
 # ============================================================================
 # Make PhaserMR driver
@@ -452,6 +454,14 @@ class PhaserMR(basic.TaskDriver):
                 "rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] )
             }
             verdict_phasermr.putVerdictWidget ( self,verdict_meta,row0 )
+
+            auto.makeNextTask(self, {
+                "revision": revision,
+                "Rfree": float ( self.generic_parser_summary["refmac"]["R_free"] ),
+                "nfitted0": nfitted0, # number of polymers before run
+                "nfitted": structure.getNofPolymers(), # number of polymers after run
+                "nasu": revision.getNofASUMonomers(), # number of predicted subunits
+            }, log=self.file_stderr)
 
         # close execution logs and quit
         self.success ( have_results )

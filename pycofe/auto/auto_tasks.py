@@ -181,7 +181,6 @@ def refmacSuggested ( name, revision, suggested ):
     for k in suggested:
         auto_api.addTaskParameter(actualName, k, suggested[k])
     auto_api.noteTask    ( actualName,"refmac_noted" )  # for the next run cloning current task
-
     return
 
 
@@ -189,4 +188,37 @@ def lorestr ( name,revision,parentName ):
     auto_api.addTask     ( name,"TaskLorestr",parentName )
     auto_api.addTaskData ( name,"revision",revision )
     auto_api.addTaskParameter(name, "PDB_CBX", "True") # auto search for homologues
+    return
+
+def mrbump ( name,revision,parentName, nModels ):
+    auto_api.addTask(name, "TaskMrBump", parentName)
+    auto_api.addTaskData(name, "revision", revision)
+    auto_api.addTaskParameter(name, "ALTGROUPS_CBX", True)
+    auto_api.addTaskParameter(name, "MRNUM", nModels)
+    return
+
+def modelprepXYZ ( name, revision, parentName ):
+    auto_api.addContext("revisionForPhaser", revision)
+    xyz = auto_api.getContext("xyz")
+    seq = auto_api.getContext("seq")
+    if xyz and seq:
+        auto_api.addTask(name, "TaskModelPrepXYZ", parentName)
+        auto_api.addTaskData(name, "seq", seq)
+        auto_api.addTaskData(name, "xyz", xyz)
+    return
+
+def phaserFirst ( name,model,parentName ):
+    revision = auto_api.getContext("revisionForPhaser")
+    auto_api.addContext("modelForPhaser", model)
+
+    auto_api.addTask(name, "TaskPhaserMR", parentName)
+    auto_api.addTaskData(name, "revision", revision)
+    auto_api.addTaskData(name, "model", model)
+    return
+
+def phaserNext ( name,revision,parentName ):
+    model = auto_api.getContext("modelForPhaser")
+    auto_api.addTask(name, "TaskPhaserMR", parentName)
+    auto_api.addTaskData(name, "revision", revision)
+    auto_api.addTaskData(name, "model", model)
     return
