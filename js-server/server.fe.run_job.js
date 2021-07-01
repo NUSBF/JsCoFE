@@ -335,6 +335,8 @@ var n0         = -1;
 
 function ncSelectAndCheck ( nc_counter,task,callback_func )  {
   var nc_number = selectNumberCruncher ( task );
+console.log ( ' >>>> nc_number=' + nc_number );
+console.log ( ' >>>> last_number_cruncher=' + last_number_cruncher );
   if (nc_number>=0)  {
     var cfg = conf.getNCConfig ( nc_number );
     if (cfg)  {
@@ -370,6 +372,8 @@ function ncSelectAndCheck ( nc_counter,task,callback_func )  {
 function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callback_func )  {
 
   ncSelectAndCheck ( conf.getNumberOfNCs(),task,function(nc_number){
+
+console.log ( '   >>> 2  ' + nc_number );
 
     var jobDir      = prj.getJobDirPath  ( loginData,task.project,task.id );
     var jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
