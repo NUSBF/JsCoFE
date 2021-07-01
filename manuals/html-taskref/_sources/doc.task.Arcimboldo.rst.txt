@@ -8,17 +8,11 @@ There is two main barriers for *ab initio* phasing: structure size and resolutio
 
 ``ARCIMBOLDO_LITE`` performs *ab initio* phasing using polyalanine helices or other single search fragments. (http://chango.ibmb.csic.es/)
 
-``ARCIMBOLDO_BORGES`` performs ab initio phasing with nonspecific libraries of small folds. 
+``ARCIMBOLDO BORGES`` performs ab initio phasing with nonspecific libraries of small folds. (http://chango.ibmb.csic.es/borges)
 
 ``ARCIMBOLDO_SHREDDER`` uses fragments derived from a distant homologue template. (http://chango.ibmb.csic.es/shredder)
 
     *All-helical structures are favourable cases for phasing with ARCIMBOLDO.*
-
-.. Note::
-        This task performs ARCIMBOLDO_LITE only.
-        
-        ARCIMBOLDO_BORGES and ARCIMBOLDO_SHEDDER tasks and tasks documentation is coming soon
-
 
 
 -----
@@ -120,8 +114,6 @@ For online documentation and tutorials visit `www.chango.ibmb.csic.es <http://ch
 `McCoy, A.J., Grosse-Kunstleve, R.W., Adams, P.D., Winn, M.D., Storoni, L.C., Read R.J. (2007) Phaser Crystallographic Software. J. Appl. Cryst. 40: 658-674 <doi:10.1107/S0021889807021206>`_
 
 `Rodríguez DD, Grosse C, Himmel S, González C, Martínez de Ilarduya I, Becker S, Sheldrick GM & Usón I (2009) Crystallographic ab initio protein structure solution below atomic resolution. Nat Methods 6, 651– 653. <https://www.nature.com/articles/nmeth.1365>`_
-
-`Sammito, M. D., Millán, C., Rodríguez, D. D., de Ilarduya, I. M., Meindl, K., De Marino, I., Petrillo, G., Buey, R. M., de Pereda, J. M., Zeth, K., Sheldrick, G. M. & Usón, I. (2013). Nature Methods, 10, 1099–1101 <https://doi.org/10.1038/nmeth.2644>`_
 
 `Sammito, M., Millan, C.,Frieske, D., Rodriguez-Freire, E., Borges, R. J., & Uson, I.(2015) ARCIMBOLDO-LITE: single-workstation implementation and use  Acta Cryst. D71, 1921-1939. <https://doi.org/10.1107/S1399004715010846>`_
 

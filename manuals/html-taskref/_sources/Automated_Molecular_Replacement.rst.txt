@@ -31,6 +31,5 @@ In case you have **NOT** a homologous protein structure you can use: automated m
     doc.task.MrBump
     doc.task.Balbes
     doc.task.Simbad
-    doc.task.Arcimboldo
     doc.task.Ample
     

@@ -68,7 +68,7 @@ Getting started
     :width: 16
     :height: 16  
 
-he page shows the list of projects, which is empty at start. Press |addjob| button in the button line above the list, and create your first project. You will need to specify short project name, and a more descriptive title in the dialog appeared, for example:
+The page shows the list of projects, which is empty at start. Press |addjob| button in the button line above the list, and create your first project. You will need to specify short project name, and a more descriptive title in the dialog appeared, for example:
 
 .. image:: images/add_project.png
          :scale: 50 %
@@ -100,7 +100,7 @@ Project export and import
     :width: 16
     :height: 16
 
-Using the |Export| button, you can download the selected project as a compressed TAR archive. Exported archives can be uploaded later to your CCP4 Cloud account using the |Import| button above the project list.
+Using the |Export| button, you can download the selected project as a compressed RAR archive. Exported archives can be uploaded later to your CCP4 Cloud account using the |Import| button above the project list.
 
 Exporting projects may be needed if there is no disk space left in your account, personal archival or for transferring data to another CCP4 Cloud setup.
 

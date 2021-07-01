@@ -2,10 +2,45 @@
 CCP4 Cloud Version Log
 ======================
 
+**Version XXX**
+   #. All Workflows updated to auto-generate ligand code if not provided or if on excluded list
+
+
+**Version 1.6.023**
+
+    *Released on --.--.2021 with CCP4 7.1.015*
+
+    **Changes and new features**
+
+    #. ``baverage`` and ``edsats`` analysis added to quality report section of various tasks
+
+    #. Added disagnostics on non-existing PDB codes in ``PDB Import`` task
+
+    #. ``Dimple`` task can now work with mean amplitudes
+
+    #. Extended functionality, resource management and ``dimple`` task in ``cloudrun`` utility
+
+    #. Initiation of ``Autostart`` projects simplified to the choice between few templates
+
+    #. ``simbad`` task now searches all compatible space space groups (new option)
+
+    #. ``fitligand`` - numbering of multiple ligands fixed
+
+    #. ``refmac5`` interface and Verdict update  
+
+    #. *Table 1* added to quality report
+
+    #. Fixed bug causing server crash at stopping tasks running on disconnected back-ends
+
+    #. Improved stability in shared projects, which was showing up at high latency of network communication
+
+    #. Fixed a bug in ``mrbump`` task causing the task to crash if no solution is found
+
+
 
 **Version 1.6.022**
 
-    *Released on --.--.2021 with CCP4 7.1.014*
+    *Released on 28.05.2021 with CCP4 7.1.014*
 
     **Changes and new features**
 
