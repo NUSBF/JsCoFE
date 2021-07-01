@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    22.05.21   <--  Date of Last Modification.
+ *    01.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -37,8 +37,9 @@ var _taskIndex = {
   // suggest CCP4go only after Root
   'A'  : { type: 'TaskCCP4go'          , after: ['0'] },
   'A1' : { type: 'TaskMigrate'         , after: ['0'] },
+
   // do not suggest by default:
-  'A2' : { type: 'TaskImportReplace'   , after: [] },
+  'A2' : { type: 'TaskImportReplace'   , after: []    },
 
   'B'  : { type: 'TaskImport'          , after: ['0','B','B1','C','D','E','m'] },
   'B1' : { type: 'TaskImportSeqCP'     , after: ['0','B','B1','C','D','E','m'] },
@@ -54,6 +55,7 @@ var _taskIndex = {
   'E2' : { type: 'TaskWFlowAMR'        , after: ['0','B'] },
   'E3' : { type: 'TaskWFlowAEP'        , after: ['0','B'] },
   'E4' : { type: 'TaskWFlowDPL'        , after: ['0','B'] },
+  'E5' : { type: 'TaskWFlowSMR'        , after: ['0','B'] },
 
   // suggest Aimless, Simbad and ASUDef after Import or Model Preparation in
   // the specified order; do not suggest them after themselves (user should
