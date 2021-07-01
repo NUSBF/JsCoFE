@@ -83,6 +83,7 @@ function isProjectAccessible ( login,projectDesc )  {
   if (!('login' in projectDesc.owner))  return true;
   if (!projectDesc.owner.login)         return true;
   if (projectDesc.owner.login==login)   return true;
+  if (projectDesc.owner.login=='localuser') return true;
   var found = false;
   for (var i=0;(i<projectDesc.owner.share.length) && (!found);i++)
     found = (projectDesc.owner.share[i].login==login);
