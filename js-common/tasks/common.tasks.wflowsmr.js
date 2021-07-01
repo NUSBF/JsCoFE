@@ -148,7 +148,7 @@ TaskWFlowSMR.prototype.constructor = TaskWFlowSMR;
 
 TaskWFlowSMR.prototype.icon = function()  { return 'task_wflowsmr'; }
 TaskWFlowSMR.prototype.desc_title = function()  {
-  return 'data import, ASU definition, automatic MR, refinement, ligand fitting and PDB deposition';
+  return 'data import, ASU definition, phaser MR, refinement, ligand fitting and PDB deposition';
 }
 
 //TaskWFlowSMR.prototype.canRunInAutoMode = function() { return true; }
