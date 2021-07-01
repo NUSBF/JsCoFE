@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>5.5. Fragment Molecular Replacement with Arcimboldo &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>7.1. Fragment Molecular Replacement with Arcimboldo &#8212; CCP4 Cloud 1.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -17,21 +17,21 @@
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="5.6. Ample" href="doc.task.Ample.html" />
-    <link rel="prev" title="5.4. Simbad" href="doc.task.Simbad.html" /> 
+    <link rel="next" title="7.2. Arcimboldo Borges" href="doc.task.ArcimboldoBorges.html" />
+    <link rel="prev" title="7. Fragment-Based Molecular Replacement" href="Fragment-Based_Molecular_Replacement.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
-        <h2 class="heading"><span>5.5. Fragment Molecular Replacement with Arcimboldo</span></h2>
+        <h2 class="heading"><span>7.1. Fragment Molecular Replacement with Arcimboldo</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.Simbad.html"><span class="section-number">5.4. </span>Simbad</a>
+        «&#160;&#160;<a href="Fragment-Based_Molecular_Replacement.html"><span class="section-number">7. </span>Fragment-Based Molecular Replacement</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.Ample.html"><span class="section-number">5.6. </span>Ample</a>&#160;&#160;»
+        <a href="doc.task.ArcimboldoBorges.html"><span class="section-number">7.2. </span>Arcimboldo Borges</a>&#160;&#160;»
         </p>
 
       </div>
@@ -39,29 +39,24 @@
         
         
   <section id="fragment-molecular-replacement-with-arcimboldo">
-<h1><span class="section-number">5.5. </span>Fragment Molecular Replacement with Arcimboldo<a class="headerlink" href="#fragment-molecular-replacement-with-arcimboldo" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">7.1. </span>Fragment Molecular Replacement with Arcimboldo<a class="headerlink" href="#fragment-molecular-replacement-with-arcimboldo" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://journals.iucr.org/m/issues/2015/01/00/lz5004/">ARCIMBOLDO</a>, originally conceived for <em>ab initio</em> phasing of macromolecular structures.</p>
 <p>There is two main barriers for <em>ab initio</em> phasing: structure size and resolution of the data. <strong>ARCIMBOLDO</strong> constitutes a general method for 2Å data, based on combination of small α-helices with <a class="reference internal" href="doc.task.Phaser.html#phaser-go"><span class="std std-ref">PHASER</span></a> ( to locate of small model fragments) and <a class="reference internal" href="doc.task.SHELX.html#shelx"><span class="std std-ref">SHELXE</span></a> (density modification with and autotracing). The method has been named after the Italian painter Giuseppe Arcimboldo, best known for creating compose portraits out of  fruits, vegetables, flowers, fish, and books.</p>
 <p><code class="docutils literal notranslate"><span class="pre">ARCIMBOLDO_LITE</span></code> performs <em>ab initio</em> phasing using polyalanine helices or other single search fragments. (<a class="reference external" href="http://chango.ibmb.csic.es/">http://chango.ibmb.csic.es/</a>)</p>
-<p><code class="docutils literal notranslate"><span class="pre">ARCIMBOLDO_BORGES</span></code> performs ab initio phasing with nonspecific libraries of small folds.</p>
+<p><code class="docutils literal notranslate"><span class="pre">ARCIMBOLDO</span> <span class="pre">BORGES</span></code> performs ab initio phasing with nonspecific libraries of small folds. (<a class="reference external" href="http://chango.ibmb.csic.es/borges">http://chango.ibmb.csic.es/borges</a>)</p>
 <p><code class="docutils literal notranslate"><span class="pre">ARCIMBOLDO_SHREDDER</span></code> uses fragments derived from a distant homologue template. (<a class="reference external" href="http://chango.ibmb.csic.es/shredder">http://chango.ibmb.csic.es/shredder</a>)</p>
 <blockquote>
 <div><p><em>All-helical structures are favourable cases for phasing with ARCIMBOLDO.</em></p>
 </div></blockquote>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This task performs ARCIMBOLDO_LITE only.</p>
-<p>ARCIMBOLDO_BORGES and ARCIMBOLDO_SHEDDER tasks and tasks documentation is coming soon</p>
-</div>
 <section id="input">
-<h2><span class="section-number">5.5.1. </span>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">7.1.1. </span>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>The default value of the rmsd for model helices is 0.2 Å (this value can be increased).</p></li>
 <li><p>It is mandatory to define the number of helices to search and their length (length needs to be specified according to secondary-structure prediction or previous knowledge about the target structure).</p></li>
 <li><p>The molecular weight, number of components and estimated rmsd should be defined for the PHASER search.</p></li>
 </ul>
 <section id="coil-coiled-mode">
-<h3><span class="section-number">5.5.1.1. </span>Coil coiled mode<a class="headerlink" href="#coil-coiled-mode" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">7.1.1.1. </span>Coil coiled mode<a class="headerlink" href="#coil-coiled-mode" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p><em>represent a search algorithm to probe and verify alternative helix directions</em></p>
 </div></blockquote>
@@ -80,7 +75,7 @@
 </section>
 </section>
 <section id="output">
-<h2><span class="section-number">5.5.2. </span>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">7.1.2. </span>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>Arcimboldo report window summarizes your job results. A search and expansion tables updated in real time and can help to judge parameterization.</p>
 <p>A search and expansion tables shows:</p>
 <dl class="simple">
@@ -135,7 +130,6 @@
 <p><strong>References</strong></p>
 <p><a class="reference external" href="doi:10.1107/S0021889807021206">McCoy, A.J., Grosse-Kunstleve, R.W., Adams, P.D., Winn, M.D., Storoni, L.C., Read R.J. (2007) Phaser Crystallographic Software. J. Appl. Cryst. 40: 658-674</a></p>
 <p><a class="reference external" href="https://www.nature.com/articles/nmeth.1365">Rodríguez DD, Grosse C, Himmel S, González C, Martínez de Ilarduya I, Becker S, Sheldrick GM &amp; Usón I (2009) Crystallographic ab initio protein structure solution below atomic resolution. Nat Methods 6, 651– 653.</a></p>
-<p><a class="reference external" href="https://doi.org/10.1038/nmeth.2644">Sammito, M. D., Millán, C., Rodríguez, D. D., de Ilarduya, I. M., Meindl, K., De Marino, I., Petrillo, G., Buey, R. M., de Pereda, J. M., Zeth, K., Sheldrick, G. M. &amp; Usón, I. (2013). Nature Methods, 10, 1099–1101</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S1399004715010846">Sammito, M., Millan, C.,Frieske, D., Rodriguez-Freire, E., Borges, R. J., &amp; Uson, I.(2015) ARCIMBOLDO-LITE: single-workstation implementation and use  Acta Cryst. D71, 1921-1939.</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S2052252514024117">Millán C, Sammito M, Usón I (2015) Macromolecular ab initio phasing enforcing secondary and tertiary structure. IUCrJ 2, 95-105.</a></p>
 <p><a class="reference external" href="doi:10.1107/S2059798318001365">Millán C, Sammito M. D, McCoy A. J, Nascimento A. F. Z, Petrillo G, Oeffner R. D, Domínguez-Gil T, Hermoso J. A, Read R. J, Usón I (2018) Exploiting distant homologues for phasing through the generation of compact fragments, local fold refinement and partial solution combination. Acta Cryst. D74: 290-304</a></p>
@@ -149,11 +143,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.Simbad.html"><span class="section-number">5.4. </span>Simbad</a>
+        «&#160;&#160;<a href="Fragment-Based_Molecular_Replacement.html"><span class="section-number">7. </span>Fragment-Based Molecular Replacement</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.Ample.html"><span class="section-number">5.6. </span>Ample</a>&#160;&#160;»
+        <a href="doc.task.ArcimboldoBorges.html"><span class="section-number">7.2. </span>Arcimboldo Borges</a>&#160;&#160;»
         </p>
 
       </div>

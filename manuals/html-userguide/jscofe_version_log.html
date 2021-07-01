@@ -37,9 +37,34 @@
         
   <section id="ccp4-cloud-version-log">
 <h1><span class="section-number">10. </span>CCP4 Cloud Version Log<a class="headerlink" href="#ccp4-cloud-version-log" title="Permalink to this headline">¶</a></h1>
+<dl class="simple">
+<dt><strong>Version XXX</strong></dt><dd><ol class="arabic simple">
+<li><p>All Workflows updated to auto-generate ligand code if not provided or if on excluded list</p></li>
+</ol>
+</dd>
+</dl>
+<p><strong>Version 1.6.023</strong></p>
+<blockquote>
+<div><p><em>Released on –.–.2021 with CCP4 7.1.015</em></p>
+<p><strong>Changes and new features</strong></p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">baverage</span></code> and <code class="docutils literal notranslate"><span class="pre">edsats</span></code> analysis added to quality report section of various tasks</p></li>
+<li><p>Added disagnostics on non-existing PDB codes in <code class="docutils literal notranslate"><span class="pre">PDB</span> <span class="pre">Import</span></code> task</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Dimple</span></code> task can now work with mean amplitudes</p></li>
+<li><p>Extended functionality, resource management and <code class="docutils literal notranslate"><span class="pre">dimple</span></code> task in <code class="docutils literal notranslate"><span class="pre">cloudrun</span></code> utility</p></li>
+<li><p>Initiation of <code class="docutils literal notranslate"><span class="pre">Autostart</span></code> projects simplified to the choice between few templates</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">simbad</span></code> task now searches all compatible space space groups (new option)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fitligand</span></code> - numbering of multiple ligands fixed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">refmac5</span></code> interface and Verdict update</p></li>
+<li><p><em>Table 1</em> added to quality report</p></li>
+<li><p>Fixed bug causing server crash at stopping tasks running on disconnected back-ends</p></li>
+<li><p>Improved stability in shared projects, which was showing up at high latency of network communication</p></li>
+<li><p>Fixed a bug in <code class="docutils literal notranslate"><span class="pre">mrbump</span></code> task causing the task to crash if no solution is found</p></li>
+</ol>
+</div></blockquote>
 <p><strong>Version 1.6.022</strong></p>
 <blockquote>
-<div><p><em>Released on –.–.2021 with CCP4 7.1.014</em></p>
+<div><p><em>Released on 28.05.2021 with CCP4 7.1.014</em></p>
 <p><strong>Changes and new features</strong></p>
 <ol class="arabic simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">cloudrun</span></code> utility for making projects, uploading data and starting tasks from command prompt</p></li>

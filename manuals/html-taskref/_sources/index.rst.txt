@@ -17,6 +17,7 @@ Task Reference
    Asymmetric_Unit_and_Structure_Revision
    Automated_Molecular_Replacement
    Molecular_Replacement
+   Fragment-Based_Molecular_Replacement
    Experimental_Phasing
    Density_Modification
    Refinement_and_Model_Building
