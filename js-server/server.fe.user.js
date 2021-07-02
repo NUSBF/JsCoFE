@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.06.21   <--  Date of Last Modification.
+ *    02.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -23,7 +23,7 @@
 var crypto  = require('crypto');
 var fs      = require('fs-extra');
 var path    = require('path');
-var checkDiskSpace = require('check-disk-space');
+var checkDiskSpace = require('check-disk-space').default;
 
 //  load application modules
 var emailer = require('./server.emailer');
