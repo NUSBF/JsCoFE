@@ -41,6 +41,7 @@ function Widget ( type )  {
   this.parent  = null;
   this.element = document.createElement ( type );
   this.element.setAttribute ( 'id',this.id );
+  this.element.setAttribute ( 'name','name-'+this.id );
   this.element.style.fontSize = '16px';
 }
 
