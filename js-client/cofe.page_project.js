@@ -626,7 +626,6 @@ function ProjectPage ( sceneId )  {
           }
         } else
           jobTree1.delete();
-        jobTree.startTaskLoop();
         // } else  {
         //   // revert back to the previous Tree
         //   self.job_tree    = job_tree;
