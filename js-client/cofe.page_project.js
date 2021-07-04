@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.06.21   <--  Date of Last Modification.
+ *    04.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -530,7 +530,7 @@ function ProjectPage ( sceneId )  {
     // blink==true will force page blinking, for purely aesthatic reasons
     //var selTask   = jobTree.getSelectedTask();
     if (jobTree && jobTree.parent)  {
-      var selTasks  = jobTree.getSelectedTasks();
+      // var selTasks  = jobTree.getSelectedTasks();
       var scrollPos = jobTree.parent.getScrollPosition();
       var job_tree  = jobTree;
       jobTree.stopTaskLoop();
@@ -547,7 +547,8 @@ function ProjectPage ( sceneId )  {
       jobTree.readProjectData ( 'Project',false,function(){
         jobTree.multiple = job_tree.multiple;
         if (onTreeLoaded(true))  {
-          jobTree.selectTasks ( selTasks );
+          // jobTree.selectTasks ( selTasks );
+          jobTree.selectTasks ( job_tree.getSelectedTasks() );
           job_tree.parent.addWidget ( jobTree );
           jobTree.parent.setScrollPosition ( scrollPos );
           if (!blink)  {
