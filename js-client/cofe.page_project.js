@@ -548,9 +548,9 @@ function ProjectPage ( sceneId )  {
         jobTree.multiple = job_tree.multiple;
         if (onTreeLoaded(true))  {
           // jobTree.selectTasks ( selTasks );
-          jobTree.selectTasks ( job_tree.getSelectedTasks() );
           job_tree.parent.addWidget ( jobTree );
           jobTree.parent.setScrollPosition ( scrollPos );
+          jobTree.selectTasks ( job_tree.getSelectedTasks() );
           if (!blink)  {
             jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
             job_tree.hide  ();
