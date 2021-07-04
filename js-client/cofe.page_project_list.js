@@ -676,8 +676,11 @@ function ProjectListPage ( sceneId )  {
 
   //launchHelpBox ( '','./html/jscofe_myprojects.html',doNotShowAgain,1000 );
 
-  //  Read list of projects from server
-  loadProjectList();
+  //  Read list of projects from server in new thread, so that all widgets
+  // are initialised
+  window.setTimeout ( function(){
+    loadProjectList();
+  },10);
 
 }
 
