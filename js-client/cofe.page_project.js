@@ -526,6 +526,7 @@ function ProjectPage ( sceneId )  {
     setButtonState();
   }
 
+  /*
   function reloadTree ( blink,rdata )  {
     // blink==true will force page blinking, for purely aesthatic reasons
     //var selTask   = jobTree.getSelectedTask();
@@ -576,6 +577,62 @@ function ProjectPage ( sceneId )  {
           jobTree.multiple = selmode_btn.multiple;
           job_tree.parent.addWidget ( jobTree );
         }
+      },onTreeContextMenu,openJob,onTreeItemSelect );
+    }
+  }
+  */
+
+  function reloadTree ( blink,rdata )  {
+    // blink==true will force page blinking, for purely aesthatic reasons
+    //var selTask   = jobTree.getSelectedTask();
+    if (jobTree && jobTree.parent)  {
+      // var selTasks  = jobTree.getSelectedTasks();
+      var scrollPos = jobTree.parent.getScrollPosition();
+      jobTree.stopTaskLoop();
+      var dlg_task_parameters = jobTree.getJobDialogTaskParameters();
+      var jobTree1 = self.makeJobTree();
+      jobTree1.multiple = jobTree.multiple;
+      if (blink)  {
+        jobTree.closeAllJobDialogs();
+        jobTree.delete();
+      } else
+        jobTree1.hide();
+      jobTree1.readProjectData ( 'Project',false,function(){
+        jobTree1.multiple = jobTree.multiple;
+        if (onTreeLoaded(true))  {
+          var selTasks = jobTree.getSelectedTasks();
+          var job_tree = jobTree;
+          job_tree.parent.addWidget ( jobTree1 );
+          jobTree = jobTree1;
+          jobTree.selectTasks ( selTasks );
+          jobTree.parent.setScrollPosition ( scrollPos );
+          if (!blink)  {
+            jobTree.relinkJobDialogs ( job_tree.dlg_map,self );
+            job_tree.hide  ();
+            jobTree .show  ();
+            job_tree.delete();
+          } else  {
+            jobTree.closeAllJobDialogs();
+            jobTree.openJobs ( dlg_task_parameters,self );
+          }
+          if (rdata)  {
+            self.updateUserRationDisplay ( rdata );
+            if ('completed_map' in rdata)
+              for (var key in rdata.completed_map)  {
+                jobTree.startChainTask ( rdata.completed_map[key],null );
+                update_project_metrics ( rdata.completed_map[key],
+                                         jobTree.projectData.desc.metrics );
+              }
+          }
+        } else
+          jobTree1.delete();
+        // } else  {
+        //   // revert back to the previous Tree
+        //   self.job_tree    = job_tree;
+        //   jobTree          = job_tree;
+        //   jobTree.multiple = selmode_btn.multiple;
+        //   job_tree.parent.addWidget ( jobTree );
+        // }
       },onTreeContextMenu,openJob,onTreeItemSelect );
     }
   }
