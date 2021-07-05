@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.07.21   <--  Date of Last Modification.
+ *    05.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -419,7 +419,7 @@ function ProjectPage ( sceneId )  {
 
   }
 
-  function onTreeLoaded ( stayInProject ) {
+  function onTreeLoaded ( stayInProject,job_tree ) {
 
     // these go first in all cases
     refresh_btn.setDisabled ( false );
@@ -435,7 +435,7 @@ function ProjectPage ( sceneId )  {
     //   return false;
     // }
 
-    if ((!jobTree) || (!jobTree.projectData))  {
+    if ((!job_tree) || (!job_tree.projectData))  {
       if (stayInProject)  {
         new MessageBox ( 'Connection problems',
             '<div style="width:400px;">' +
@@ -448,10 +448,10 @@ function ProjectPage ( sceneId )  {
       return false;
     }
 
-    if (jobTree.multiple)
+    if (job_tree.multiple)
           selmode_btn.setIcon ( image_path('selmode_multi') );
     else  selmode_btn.setIcon ( image_path('selmode_single') );
-    selmode_btn.multiple = jobTree.multiple;
+    selmode_btn.multiple = job_tree.multiple;
 
     // ***** development code, dormant
     //if (split_btn)
@@ -471,42 +471,42 @@ function ProjectPage ( sceneId )  {
     // clone_btn   .addOnClickListener ( cloneJob    );
     // add_rem_btn .addOnClickListener ( addRemark   );
     // thlight_btn .addOnClickListener ( toggleBranchHighlight );
-    // title_lbl   .setText ( jobTree.projectData.desc.title );
+    // title_lbl   .setText ( job_tree.projectData.desc.title );
 
-    __current_project = jobTree.projectData.desc.name;
+    __current_project = job_tree.projectData.desc.name;
 
-    jobTree.addSignalHandler ( cofe_signals.jobDialogOpened,function(data){
+    job_tree.addSignalHandler ( cofe_signals.jobDialogOpened,function(data){
       setSelMode ( 1 );
     });
-    jobTree.addSignalHandler ( cofe_signals.jobStarted,function(data){
+    job_tree.addSignalHandler ( cofe_signals.jobStarted,function(data){
       setButtonState();
     });
-    jobTree.addSignalHandler ( cofe_signals.treeUpdated,function(data){
-      self.updateUserRationDisplay ( jobTree.projectData.desc );
+    job_tree.addSignalHandler ( cofe_signals.treeUpdated,function(data){
+      self.updateUserRationDisplay ( job_tree.projectData.desc );
       setButtonState();
     });
-    jobTree.addSignalHandler ( cofe_signals.reloadTree,function(rdata){
+    job_tree.addSignalHandler ( cofe_signals.reloadTree,function(rdata){
       reloadTree ( false,rdata );  // multiple = false?
     });
-    jobTree.addSignalHandler ( cofe_signals.makeProjectList,function(rdata){
+    job_tree.addSignalHandler ( cofe_signals.makeProjectList,function(rdata){
       makeProjectListPage ( sceneId );
     });
 
-    if ((jobTree.root_nodes.length==1) &&
-        (jobTree.root_nodes[0].children.length<=0))  {
+    if ((job_tree.root_nodes.length==1) &&
+        (job_tree.root_nodes[0].children.length<=0))  {
       // enter empty project: first task to run or choose
-      switch (jobTree.projectData.desc.startmode)  {
+      switch (job_tree.projectData.desc.startmode)  {
         case start_mode.auto    :
                 addJob();
                 // var ccp4go = new TaskCCP4go();
                 // ccp4go.inputMode = input_mode.root;  // force "at root" mode
                 // // ccp4go.input_dtypes = [1];  // force "at root" mode
-                // jobTree.addTask ( ccp4go,false,false,self,function(){
+                // job_tree.addTask ( ccp4go,false,false,self,function(){
                 //    self.del_btn.setDisabled ( false );
                 // });
               break;
         case start_mode.migrate :
-                jobTree.addTask ( new TaskMigrate(),false,false,self,function(){
+                job_tree.addTask ( new TaskMigrate(),false,false,self,function(){
                    self.del_btn.setDisabled ( false );
                 });
               break;
@@ -516,7 +516,7 @@ function ProjectPage ( sceneId )  {
       }
     }
 
-    self.updateUserRationDisplay ( jobTree.projectData.desc );
+    self.updateUserRationDisplay ( job_tree.projectData.desc );
 
     return true;
 
@@ -526,69 +526,67 @@ function ProjectPage ( sceneId )  {
     setButtonState();
   }
 
-  /*
-  function reloadTree ( blink,rdata )  {
-    // blink==true will force page blinking, for purely aesthatic reasons
-    //var selTask   = jobTree.getSelectedTask();
-    if (jobTree && jobTree.parent)  {
-      // var selTasks  = jobTree.getSelectedTasks();
-      var scrollPos = jobTree.parent.getScrollPosition();
-      var job_tree  = jobTree;
-      jobTree.stopTaskLoop();
-      var dlg_task_parameters = jobTree.getJobDialogTaskParameters();
-      jobTree = self.makeJobTree();
-      // jobTree.multiple = job_tree.multisel;
-      jobTree.multiple = job_tree.multiple;
-      if (blink)  {
-        job_tree.closeAllJobDialogs();
-        job_tree.delete();
-      } else
-        jobTree.hide();
-      // job_tree.parent.addWidget ( jobTree );
-      jobTree.readProjectData ( 'Project',false,function(){
-        jobTree.multiple = job_tree.multiple;
-        if (onTreeLoaded(true))  {
-          // jobTree.selectTasks ( selTasks );
-          job_tree.parent.addWidget ( jobTree );
-          jobTree.parent.setScrollPosition ( scrollPos );
-          jobTree.selectTasks ( job_tree.getSelectedTasks() );
-          if (!blink)  {
-            jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
-            job_tree.hide  ();
-            jobTree .show  ();
-            job_tree.delete();
-          } else  {
-            job_tree.closeAllJobDialogs();
-            jobTree .openJobs ( dlg_task_parameters,self );
-          }
-          if (rdata)  {
-            self.updateUserRationDisplay ( rdata );
-            if ('completed_map' in rdata)
-              for (var key in rdata.completed_map)  {
-                jobTree.startChainTask ( rdata.completed_map[key],null );
-                update_project_metrics ( rdata.completed_map[key],
-                                         jobTree.projectData.desc.metrics );
-              }
-          }
-        } else  {
-          // revert back to the previous Tree
-          self.job_tree    = job_tree;
-          jobTree          = job_tree;
-          jobTree.multiple = selmode_btn.multiple;
-          job_tree.parent.addWidget ( jobTree );
-        }
-      },onTreeContextMenu,openJob,onTreeItemSelect );
-    }
-  }
-  */
+  // function reloadTree ( blink,rdata )  {
+  //   // blink==true will force page blinking, for purely aesthatic reasons
+  //   //var selTask   = jobTree.getSelectedTask();
+  //   if (jobTree && jobTree.parent)  {
+  //     // var selTasks  = jobTree.getSelectedTasks();
+  //     var scrollPos = jobTree.parent.getScrollPosition();
+  //     var job_tree  = jobTree;
+  //     jobTree.stopTaskLoop();
+  //     var dlg_task_parameters = jobTree.getJobDialogTaskParameters();
+  //     jobTree = self.makeJobTree();
+  //     // jobTree.multiple = job_tree.multisel;
+  //     jobTree.multiple = job_tree.multiple;
+  //     if (blink)  {
+  //       job_tree.closeAllJobDialogs();
+  //       job_tree.delete();
+  //     } else
+  //       jobTree.hide();
+  //     // job_tree.parent.addWidget ( jobTree );
+  //     jobTree.readProjectData ( 'Project',false,function(){
+  //       jobTree.multiple = job_tree.multiple;
+  //       if (onTreeLoaded(true,jobTree))  {
+  //         // jobTree.selectTasks ( selTasks );
+  //         job_tree.parent.addWidget ( jobTree );
+  //         jobTree.parent.setScrollPosition ( scrollPos );
+  //         jobTree.selectTasks ( job_tree.getSelectedTasks() );
+  //         if (!blink)  {
+  //           jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
+  //           job_tree.hide  ();
+  //           jobTree .show  ();
+  //           job_tree.delete();
+  //         } else  {
+  //           job_tree.closeAllJobDialogs();
+  //           jobTree .openJobs ( dlg_task_parameters,self );
+  //         }
+  //         if (rdata)  {
+  //           self.updateUserRationDisplay ( rdata );
+  //           if ('completed_map' in rdata)
+  //             for (var key in rdata.completed_map)  {
+  //               jobTree.startChainTask ( rdata.completed_map[key],null );
+  //               update_project_metrics ( rdata.completed_map[key],
+  //                                        jobTree.projectData.desc.metrics );
+  //             }
+  //         }
+  //       } else  {
+  //         // revert back to the previous Tree
+  //         self.job_tree    = job_tree;
+  //         jobTree          = job_tree;
+  //         jobTree.multiple = selmode_btn.multiple;
+  //         job_tree.parent.addWidget ( jobTree );
+  //       }
+  //     },onTreeContextMenu,openJob,onTreeItemSelect );
+  //   }
+  // }
 
   function reloadTree ( blink,rdata )  {
     // blink==true will force page blinking, for purely aesthatic reasons
     //var selTask   = jobTree.getSelectedTask();
     if (jobTree && jobTree.parent)  {
       // var selTasks  = jobTree.getSelectedTasks();
-      var scrollPos = jobTree.parent.getScrollPosition();
       jobTree.stopTaskLoop();
+      var scrollPos = jobTree.parent.getScrollPosition();
       var dlg_task_parameters = jobTree.getJobDialogTaskParameters();
       var jobTree1 = self.makeJobTree();
       jobTree1.multiple = jobTree.multiple;
@@ -599,15 +597,16 @@ function ProjectPage ( sceneId )  {
         jobTree1.hide();
       jobTree1.readProjectData ( 'Project',false,function(){
         jobTree1.multiple = jobTree.multiple;
-        if (onTreeLoaded(true))  {
-          var selTasks = jobTree.getSelectedTasks();
-          var job_tree = jobTree;
+        if (onTreeLoaded(true,jobTree1))  {
+          var job_tree  = jobTree;
+          var selTasks  = jobTree.getSelectedTasks();
           job_tree.parent.addWidget ( jobTree1 );
-          jobTree = jobTree1;
+          jobTree       = jobTree1;
+          self.job_tree = jobTree1;  // for external references
           jobTree.selectTasks ( selTasks );
           jobTree.parent.setScrollPosition ( scrollPos );
           if (!blink)  {
-            jobTree.relinkJobDialogs ( job_tree.dlg_map,self );
+            jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
             job_tree.hide  ();
             jobTree .show  ();
             job_tree.delete();
@@ -624,8 +623,10 @@ function ProjectPage ( sceneId )  {
                                          jobTree.projectData.desc.metrics );
               }
           }
-        } else
+        } else  {
           jobTree1.delete();
+          jobTree.startTaskLoop();
+        }
         // } else  {
         //   // revert back to the previous Tree
         //   self.job_tree    = job_tree;
@@ -807,7 +808,8 @@ function ProjectPage ( sceneId )  {
 
   this.tree_div = new Widget ( 'div' );
   this.tree_div.element.setAttribute ( 'class','tree-content' );
-  jobTree = this.makeJobTree();
+  jobTree       = this.makeJobTree();
+  this.job_tree = jobTree;  // for external references
   this.tree_div.addWidget ( jobTree );
   panel.setWidget ( this.tree_div, 0,0,1,1 );
 
@@ -878,7 +880,7 @@ function ProjectPage ( sceneId )  {
   //  Read project data from server
   jobTree.readProjectData ( 'Project',true,
     function(){
-      if (onTreeLoaded(false))  {
+      if (onTreeLoaded(false,jobTree))  {
         // add button listeners
         self.add_btn.addOnClickListener ( addJob      );
         if (moveup_btn)
@@ -923,7 +925,7 @@ ProjectPage.prototype.makeJobTree = function()  {
   jobTree.element.style.paddingTop    = '0px';
   jobTree.element.style.paddingBottom = '25px';
   jobTree.element.style.paddingRight  = '40px';
-  this.job_tree = jobTree;  // for external references
+  // this.job_tree = jobTree;  // for external references
   (function(self){
     jobTree.addSignalHandler ( cofe_signals.rationUpdated,function(data){
       //alert ( 'ration updated ' + JSON.stringify(data));
