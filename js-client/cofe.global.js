@@ -180,7 +180,7 @@ document.addEventListener("msfullscreenchange", function () {
 // ===========================================================================
 // various constants
 
-var __check_job_interval   = 2000;  // milliseconds
+var __check_job_interval   = 8000;  // milliseconds
 var __persistence_level    = 100;   // number of retries due to poor internet connection
 
 //  task list parameters
