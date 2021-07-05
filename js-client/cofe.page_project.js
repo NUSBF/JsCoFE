@@ -606,10 +606,14 @@ function ProjectPage ( sceneId )  {
           jobTree.selectTasks ( selTasks );
           jobTree.parent.setScrollPosition ( scrollPos );
           if (!blink)  {
-            jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
+            // jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
             job_tree.hide  ();
             jobTree .show  ();
-            job_tree.delete();
+            // job_tree.delete();
+            window.setTimeout ( function(){
+              jobTree.relinkJobDialogs ( job_tree.dlg_map,self );
+              job_tree.delete();
+            },0);
           } else  {
             jobTree.closeAllJobDialogs();
             jobTree.openJobs ( dlg_task_parameters,self );

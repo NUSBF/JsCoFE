@@ -2,13 +2,10 @@
 CCP4 Cloud Version Log
 ======================
 
-**Version XXX**
-   #. All Workflows updated to auto-generate ligand code if not provided or if on excluded list
-
 
 **Version 1.6.023**
 
-    *Released on --.--.2021 with CCP4 7.1.015*
+    *Released on --.--.2021 with CCP4 7.1.016*
 
     **Changes and new features**
 
@@ -35,6 +32,14 @@ CCP4 Cloud Version Log
     #. Improved stability in shared projects, which was showing up at high latency of network communication
 
     #. Fixed a bug in ``mrbump`` task causing the task to crash if no solution is found
+
+    #. All Workflows updated to auto-generate the 3-letter ligand code if not provided or if on excluded list
+  
+    #. New ``Simple MR`` Workflow added.
+
+    #. Fixed a bug causing malfunction when using Safari 14
+
+    #. Documentation updates (Fragment-Based Molecular Replacement)
 
 
 
