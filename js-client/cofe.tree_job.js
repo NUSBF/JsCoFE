@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.06.21   <--  Date of Last Modification.
+ *    05.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -529,9 +529,11 @@ JobTree.prototype.__checkTaskLoop = function()  {
                (tree.isShared())  // or project is shared
                //(tree.projectData.desc.owner.share.length>0)  // or project is shared
               )
-             )
-                tree.__checkTaskLoop();
-          else  tree.checkTimeout = null;   // otherwise, terminate and mark terminated
+            )  {
+            tree.__checkTaskLoop();
+          } else  {
+            tree.checkTimeout = null;   // otherwise, terminate and mark terminated
+          }
 
         },
         function(){}  // depress ajax failure messages in this particular case!
@@ -547,7 +549,6 @@ JobTree.prototype.__checkTaskLoop = function()  {
 JobTree.prototype.startTaskLoop = function()  {
 // starts timeout loop for checking on running jobs
 
-console.log ( ' >>>>> 1' );
   if ((!this.checkTimeout) &&   // otherwise the loop is running already
       this.projectData     &&   // works in case of shared projects
       ((Object.keys(this.run_map).length>0) ||  // there are jobs to check on
@@ -555,7 +556,6 @@ console.log ( ' >>>>> 1' );
        //(this.projectData.desc.owner.share.length>0)  // or project is shared
       )
     )  {
-     console.log ( ' >>>>> 2' );
     this.__checkTaskLoop();
   }
 }
