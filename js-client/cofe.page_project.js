@@ -586,7 +586,6 @@ function ProjectPage ( sceneId )  {
     if (jobTree && jobTree.parent)  {
       // var selTasks  = jobTree.getSelectedTasks();
       jobTree.stopTaskLoop();
-      var scrollPos = jobTree.parent.getScrollPosition();
       var dlg_task_parameters = jobTree.getJobDialogTaskParameters();
       var jobTree1 = self.makeJobTree();
       jobTree1.multiple = jobTree.multiple;
@@ -601,12 +600,13 @@ function ProjectPage ( sceneId )  {
           var tree_parent = jobTree.parent;
           var selTasks    = jobTree.getSelectedTasks();
           var dlg_map     = jobTree.dlg_map;
+          // var scrollPos   = tree_parent.getScrollPosition();
           tree_parent.removeChild ( jobTree  );
           tree_parent.addWidget   ( jobTree1 );
           jobTree       = jobTree1;
           self.job_tree = jobTree1;  // for external references
           jobTree.selectTasks ( selTasks );
-          jobTree.parent.setScrollPosition ( scrollPos );
+          // tree_parent.setScrollPosition ( scrollPos );
           if (!blink)  {
             jobTree .relinkJobDialogs ( dlg_map,self );
             // job_tree.hide  ();
