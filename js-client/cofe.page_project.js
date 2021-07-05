@@ -598,22 +598,25 @@ function ProjectPage ( sceneId )  {
       jobTree1.readProjectData ( 'Project',false,function(){
         jobTree1.multiple = jobTree.multiple;
         if (onTreeLoaded(true,jobTree1))  {
-          var job_tree  = jobTree;
-          var selTasks  = jobTree.getSelectedTasks();
-          job_tree.parent.addWidget ( jobTree1 );
+          var tree_parent = jobTree.parent;
+          var selTasks    = jobTree.getSelectedTasks();
+          var dlg_map     = jobTree.dlg_map;
+          tree_parent.removeChild ( jobTree  );
+          tree_parent.addWidget   ( jobTree1 );
           jobTree       = jobTree1;
           self.job_tree = jobTree1;  // for external references
           jobTree.selectTasks ( selTasks );
           jobTree.parent.setScrollPosition ( scrollPos );
           if (!blink)  {
-            // jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
-            job_tree.hide  ();
+            jobTree .relinkJobDialogs ( dlg_map,self );
+            // job_tree.hide  ();
             jobTree .show  ();
             // job_tree.delete();
-            window.setTimeout ( function(){
-              jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
-              // job_tree.delete();
-            },0);
+            // jobTree.parent.removeChild ( job_tree );
+            // window.setTimeout ( function(){
+            //   jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
+            //   // job_tree.delete();
+            // },0);
           } else  {
             jobTree.closeAllJobDialogs();
             jobTree.openJobs ( dlg_task_parameters,self );
