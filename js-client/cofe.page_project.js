@@ -611,8 +611,8 @@ function ProjectPage ( sceneId )  {
             jobTree .show  ();
             // job_tree.delete();
             window.setTimeout ( function(){
-              jobTree.relinkJobDialogs ( job_tree.dlg_map,self );
-              job_tree.delete();
+              jobTree .relinkJobDialogs ( job_tree.dlg_map,self );
+              // job_tree.delete();
             },0);
           } else  {
             jobTree.closeAllJobDialogs();
