@@ -303,6 +303,8 @@ class TaskDriver(object):
         # to applications via creation of the rvapi_document file with
         # pyrvapi.rvapi_store_document2(..)
 
+        # pyrvapi.rvapi_set_time_quant ( 8000 )
+
         # Make a tree or tab layout
         winTitle = self.task.project + ":[" + str(self.task.id).zfill(4) + "] " + tstr
         if "nav_tree" in options:

@@ -99,8 +99,8 @@ function ProjectPage ( sceneId )  {
       stop_btn    .setDisabled ( disabled_bool );
       clone_btn   .setDisabled ( disabled_bool );
       // refresh_btn .setDisabled ( disabled_bool );  // active if reload fails
-      help_btn    .setDisabled ( disabled_bool );
-      roadmap_btn .setDisabled ( disabled_bool );
+      // help_btn    .setDisabled ( disabled_bool );
+      // roadmap_btn .setDisabled ( disabled_bool );
       selmode_btn .setDisabled ( disabled_bool );
     }
   }
@@ -601,16 +601,19 @@ function ProjectPage ( sceneId )  {
           var selTasks    = jobTree.getSelectedTasks();
           var dlg_map     = jobTree.dlg_map;
           // var scrollPos   = tree_parent.getScrollPosition();
+          if (blink)
+            jobTree.closeAllJobDialogs();
           tree_parent.removeChild ( jobTree  );
           tree_parent.addWidget   ( jobTree1 );
           jobTree       = jobTree1;
           self.job_tree = jobTree1;  // for external references
           jobTree.selectTasks ( selTasks );
+          jobTree.show  ();
           // tree_parent.setScrollPosition ( scrollPos );
           if (!blink)  {
-            jobTree .relinkJobDialogs ( dlg_map,self );
+            jobTree.relinkJobDialogs ( dlg_map,self );
             // job_tree.hide  ();
-            jobTree .show  ();
+            // jobTree .show  ();
             // job_tree.delete();
             // jobTree.parent.removeChild ( job_tree );
             // window.setTimeout ( function(){
@@ -618,7 +621,7 @@ function ProjectPage ( sceneId )  {
             //   // job_tree.delete();
             // },0);
           } else  {
-            jobTree.closeAllJobDialogs();
+            // jobTree.closeAllJobDialogs();
             jobTree.openJobs ( dlg_task_parameters,self );
           }
           if (rdata)  {
