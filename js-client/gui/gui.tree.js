@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.06.21   <--  Date of Last Modification.
+ *    07.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -294,12 +294,10 @@ Tree.prototype.constructor = Tree;
 // ---------------------------------------------------------------------------
 
 Tree.prototype.delete = function()  {
-  if (this.created)  {
+  if (this.created)
     $(this.root.element).jstree("destroy").empty();
-  }
-  $(this.root.element      ).remove();
-  $(this.root_label.element).empty ();
-  $(this.root_label.element).remove();
+  $(this.root.element).remove();
+  this.root_label.delete();
   Widget.prototype.delete.call ( this );
 }
 

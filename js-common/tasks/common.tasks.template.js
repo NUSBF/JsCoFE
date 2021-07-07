@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.06.21   <--  Date of Last Modification.
+ *    07.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -262,7 +262,8 @@ if (!dbx)  {
     if (base_name && (base_name!='*'))  {
       this.oname = '';
       if (__current_page && (__current_page._type=='ProjectPage'))  {
-        var pData = __current_page.job_tree.projectData;
+        // var pData = __current_page.job_tree.projectData;
+        var pData = __current_page.jobTree.projectData;
 //        checkProjectData ( pData );
         if (pData)  {
           if (__user_settings.hasOwnProperty('project_prefix') &&

@@ -33,7 +33,7 @@ function ProjectPage ( sceneId )  {
     return;
   }
 
-  this.job_tree      = null;  // for external references
+  // this.job_tree      = null;  // for external references
   this.dock          = null;  // dock widget
 
   // ***** development code, dormant
@@ -365,7 +365,7 @@ ProjectPage.prototype.setJobTree = function ( jobTree )  {
   this.tree_div = new Widget ( 'div' );
   this.tree_div.element.setAttribute ( 'class','tree-content' );
   this.jobTree  = jobTree;
-  this.job_tree = jobTree;  // for external references
+  // this.job_tree = jobTree;  // for external references
   this.tree_div.addWidget ( this.jobTree );
   this.panel.setWidget ( this.tree_div, 0,0,1,1 );
   this.onResize ( window.innerWidth,window.innerHeight );
@@ -828,6 +828,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
 
     this.jobTree.stopTaskLoop();
     this.jobTree.checkTimeout = -1;  // prevents task loop from starting again
+    var dlg_task_parameters = this.jobTree.getJobDialogTaskParameters();
     var scrollPos = this.jobTree.parent.getScrollPosition();
     var jobTree1  = this.makeJobTree();
     var timestamp = this.jobTree.projectData.desc.timestamp;
@@ -847,7 +848,6 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
       job_tree_1.readProjectData ( 'Project',false,timestamp,
         function(){
 
-          var dlg_task_parameters = self.jobTree.getJobDialogTaskParameters();
           if (job_tree_1.projectData)  {
             job_tree_1.multiple = self.jobTree.multiple;
             if (self.onTreeLoaded(true,job_tree_1))  {
@@ -874,14 +874,12 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
                   }
               }
             } else  {
-              job_tree_1  .delete();
-              // self.jobTree.parent.setScrollPosition ( scrollPos );
+              job_tree_1.delete();
               self.jobTree.show();
               self.jobTree.openJobs ( dlg_task_parameters,self );
             }
           } else  {
-            job_tree_1  .delete();
-            // self.jobTree.parent.setScrollPosition ( scrollPos );
+            job_tree_1.delete();
             self.jobTree.show();
             self.jobTree.openJobs ( dlg_task_parameters,self );
           }
