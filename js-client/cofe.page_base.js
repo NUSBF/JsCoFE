@@ -245,7 +245,7 @@ BasePage.prototype._setModeIcon = function ( colNo )  {
 }
 
 
-BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
+BasePage.prototype.makeHeader0 = function ( colSpan )  {
 
   this.headerPanel = new Grid('');
   this.grid.setWidget   ( this.headerPanel,0,0,1,colSpan );
@@ -285,6 +285,13 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
   this.logout_btn .setTooltip  ( 'Logout' );
 
   this.headerPanel.setLabel( '&nbsp;',0,23,1,1 ).setWidth('10px');
+
+}
+
+
+BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
+
+  this.makeHeader0 ( colSpan );
 
   (function(page){
     page.logout_btn.addOnClickListener ( function(){

@@ -396,9 +396,11 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
   var data  = {};
   data.meta = this.task;
   data.ancestors = [];
-  if (this.parent_page.job_tree.projectData)  {
+  // if (this.parent_page.job_tree.projectData)  {
+  if (this.tree.projectData)  {
     //data.is_shared = (this.parent_page.job_tree.projectData.desc.owner.share.length>0);
-    data.is_shared = this.parent_page.job_tree.isShared();
+    // data.is_shared = this.parent_page.job_tree.isShared();
+    data.is_shared = this.tree.isShared();
   } else
     data.is_shared = false;
   for (var i=1;i<this.ancestors.length;i++)
@@ -716,7 +718,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
               if (dlg.collectTaskData(false))  {
 
                 if (dlg.task.autoRunId)
-                  dlg.parent_page.job_tree.projectData.desc.autorun = true;
+                  dlg.tree.projectData.desc.autorun = true;
+                  // dlg.parent_page.job_tree.projectData.desc.autorun = true;
 
                 dlg.task.doRun ( dlg.inputPanel,function(){
 

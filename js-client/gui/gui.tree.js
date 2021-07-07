@@ -291,6 +291,18 @@ function Tree ( rootName )  {
 Tree.prototype = Object.create ( Widget.prototype );
 Tree.prototype.constructor = Tree;
 
+// ---------------------------------------------------------------------------
+
+Tree.prototype.delete = function()  {
+  if (this.created)  {
+    $(this.root.element).jstree("destroy").empty();
+  }
+  $(this.root.element      ).remove();
+  $(this.root_label.element).empty ();
+  $(this.root_label.element).remove();
+  Widget.prototype.delete.call ( this );
+}
+
 Tree.prototype.addRootNode = function ( text,icon_uri,treeNodeCustomIcon )  {
 var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
   this.root_nodes.push ( node );

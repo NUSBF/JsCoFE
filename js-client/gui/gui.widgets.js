@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    04.07.21   <--  Date of Last Modification.
+ *    05.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -56,10 +56,12 @@ Widget.prototype.setId = function ( id )  {
 }
 
 Widget.prototype.delete = function()  {
-  if (this.parent)
-    this.parent.removeChild ( this );
-  else if (this.element.parentNode)
-    this.element.parentNode.removeChild ( this.element );
+  $(this.element).empty();
+  $(this.element).remove();
+  // if (this.parent)
+  //   this.parent.removeChild ( this );
+  // else if (this.element.parentNode)
+  //   this.element.parentNode.removeChild ( this.element );
 }
 
 Widget.prototype.setAttribute = function ( attr,value )  {
