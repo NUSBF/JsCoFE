@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.07.21   <--  Date of Last Modification.
+ *    07.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -37,6 +37,7 @@
  *      function getChildTasks   ( node   );
  *      function readProjectData ( page_title,
  *                                 allow_selection,
+ *                                 timestamp,
  *                                 onLoaded_func  ,onRightClick_func,
  *                                 onDblClick_func,onSelect_func );
  *      function makeNodeId      ( task_id );
@@ -220,6 +221,7 @@ var tree1 = job_tree.tree;
 
 JobTree.prototype.readProjectData = function ( page_title,
                                                allow_selection,
+                                               timestamp,
                                                onLoaded_func,
                                                onRightClick_func,
                                                onDblClick_func,
@@ -250,7 +252,7 @@ JobTree.prototype.readProjectData = function ( page_title,
 
         MessageDataReadError ( page_title,data['message'] );
 
-      } else  {
+      } else if (data.meta.desc.timestamp>timestamp)  {
 
 // console.log ( 'loaded' );
 
@@ -329,7 +331,10 @@ JobTree.prototype.readProjectData = function ( page_title,
         rdata.pdesc = tree.projectData.desc;
         tree.emitSignal ( cofe_signals.rationUpdated,rdata );
 
-// printProjectTree ( ' >>>getProjectData-4',tree.projectData );
+      } else  {
+
+        tree.projectData = null;  // signal 'timestamp mismatch'
+        onLoaded_func();
 
       }
 
@@ -524,15 +529,17 @@ JobTree.prototype.__checkTaskLoop = function()  {
           //     tree.saveProjectData ( [],[],true, function(rdata){} );
           // }
 
-          if (tree.checkTimeout &&   // task loop was not terminated, and
-              ((Object.keys(tree.run_map).length>0) ||  // there are jobs to check on
-               (tree.isShared())  // or project is shared
-               //(tree.projectData.desc.owner.share.length>0)  // or project is shared
-              )
-            )  {
-            tree.__checkTaskLoop();
-          } else  {
-            tree.checkTimeout = null;   // otherwise, terminate and mark terminated
+          if (tree.checkTimeout!=-1)  { // task loop was not terminated, and
+            if (tree.checkTimeout &&  // task loop was not terminated, and
+                ((Object.keys(tree.run_map).length>0) ||  // there are jobs to check on
+                 (tree.isShared())  // or project is shared
+                 //(tree.projectData.desc.owner.share.length>0)  // or project is shared
+                )
+              )  {
+              tree.__checkTaskLoop();
+            } else  {
+              tree.checkTimeout = null;   // otherwise, terminate and mark terminated
+            }
           }
 
         },
@@ -549,7 +556,7 @@ JobTree.prototype.__checkTaskLoop = function()  {
 JobTree.prototype.startTaskLoop = function()  {
 // starts timeout loop for checking on running jobs
 
-  if ((!this.checkTimeout) &&   // otherwise the loop is running already
+  if ((!this.checkTimeout) &&   // otherwise the loop is running already or forbidden
       this.projectData     &&   // works in case of shared projects
       ((Object.keys(this.run_map).length>0) ||  // there are jobs to check on
        (this.isShared())  // or project is shared
@@ -558,12 +565,13 @@ JobTree.prototype.startTaskLoop = function()  {
     )  {
     this.__checkTaskLoop();
   }
+
 }
 
 JobTree.prototype.stopTaskLoop = function()  {
 // stops timeout loop for checking on running jobs
 
-  if (this.checkTimeout)  {
+  if (this.checkTimeout && (this.checkTimeout!=-1))  {
     window.clearTimeout ( this.checkTimeout );
     this.checkTimeout = null;  // mark as not running
   }
@@ -1167,23 +1175,35 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
       }
 
       var message = '';
+      var title   = 'Delete Node';
       if (nDel==1)  {
         var jobId = 'Selected node';
         if (tree.selected_node_id in tree.task_map)  {
           jobId = tree.makeNodeId ( tree.task_map[tree.selected_node_id].id );
-          if (tree.task_map[tree.selected_node_id].isRemark())
-                message = 'Selected remark ';
-          else  message = 'Selected job ';
+          if (tree.task_map[tree.selected_node_id].isRemark())  {
+            message = 'Selected remark ';
+            title   = 'Delete Remark';
+          } else  {
+            message = 'Selected job ';
+            title   = 'Delete Job';
+          }
         }
         message += jobId + ' will be deleted.<br>Are you sure?';
       } else  {
-        if (nRem==nDel)   message = 'Selected remarks';
-        else if (nRem>0)  message = 'Selected job(s) and remark(s)';
-                    else  message = 'Selected jobs';
+        if (nRem==nDel)   {
+          message = 'Selected remarks';
+          title   = 'Delete Remarks';
+        } else if (nRem>0)  {
+          message = 'Selected job(s) and remark(s)';
+          title   = 'Delete Jobs and Remarks';
+        } else  {
+          message = 'Selected jobs';
+          title   = 'Delete Jobs';
+        }
         message += ', indicated in the job tree, will be deleted.<br>Are you sure?';
       }
 
-      new QuestionBox ( 'Delete Job',message, 'Yes',function(){
+      new QuestionBox ( title,message, 'Yes',function(){
 
         for (var i=0;i<delNodeId.length;i++)
           if (delBranch[i]==1)
