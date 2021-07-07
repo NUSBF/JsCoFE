@@ -132,7 +132,7 @@ function JobDialog ( params,          // data and task projections up the tree b
         dlg.outputPanel.clear();
         //onClose_func(dlg.task.id);
         window.setTimeout ( function(){
-          $(dlg.element).dialog( "destroy" );
+          // $(dlg.element).dialog( "destroy" );
           dlg.delete();
         },10 );
       //}
@@ -166,6 +166,16 @@ function JobDialog ( params,          // data and task projections up the tree b
 
 JobDialog.prototype = Object.create ( Widget.prototype );
 JobDialog.prototype.constructor = JobDialog;
+
+
+JobDialog.prototype.delete = function()  {
+  if (this.inputPanel)
+    this.inputPanel.delete();
+  if (this.outputPanel)
+    this.outputPanel.delete();
+  $(this.element).dialog( "destroy" );
+  Widget.prototype.delete.call ( this );
+}
 
 
 JobDialog.prototype.changeTitle = function ( new_title )  {
