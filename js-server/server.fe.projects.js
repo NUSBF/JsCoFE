@@ -571,12 +571,35 @@ var response = null;  // must become a cmd.Response object to return
 // ===========================================================================
 
 function deleteProject ( loginData,projectName )  {
-var response = null;  // must become a cmd.Response object to return
-var rdata    = {};    // response data
-var erc      = '';
+var response       = null;  // must become a cmd.Response object to return
+var rdata          = {};    // response data
+var erc            = '';
+var projectDirPath = getProjectDirPath ( loginData,projectName );
+var pData          = readProjectData ( loginData,projectName );
+
+  function _delete_project()  {
+
+    // subtract project disck space from user's ration
+    ration.updateProjectStats ( loginData,projectName,0.0,
+                                -pData.desc.disk_space,0,true );
+
+    utils.removePath ( projectDirPath );
+
+    ration.maskProject ( loginData,projectName );
+
+    if (utils.fileExists(projectDirPath))
+      erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
+                'CCP4 Remove Project Directory Fails',
+                'Detected removePath failure at deleting project directory, ' +
+                'please investigate.' );
+
+    rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
+    // clearJobs() only to decrease the amount of transmitted data
+    //rdata.ration = ration.getUserRation(loginData).clearJobs();
+
+  }
 
   // maintain share lists
-  var pData = readProjectData ( loginData,projectName );
   if (pData && (pData.desc.owner.login==loginData.login))  {
     // project can be deleted only by owner or keeper; shared projects can be only
     // unjoined
@@ -594,37 +617,42 @@ var erc      = '';
       }
     }
 
-    // subtract project disck space from user's ration
-    ration.updateProjectStats ( loginData,projectName,0.0,
-                                -pData.desc.disk_space,0,true );
+    _delete_project();
 
-    // Get users' projects directory name
-    var projectDirPath = getProjectDirPath ( loginData,projectName );
-
-    utils.removePath ( projectDirPath );
-
-    ration.maskProject ( loginData,projectName );
-
-    if (utils.fileExists(projectDirPath))
-      erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
-                'CCP4 Remove Project Directory Fails',
-                'Detected removePath failure at deleting project directory, ' +
-                'please investigate.' );
-
-    rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
-    // clearJobs() only to decrease the amount of transmitted data
-    //rdata.ration = ration.getUserRation(loginData).clearJobs();
+    // // subtract project disck space from user's ration
+    // ration.updateProjectStats ( loginData,projectName,0.0,
+    //                             -pData.desc.disk_space,0,true );
+    //
+    // // Get users' projects directory name
+    // var projectDirPath = getProjectDirPath ( loginData,projectName );
+    //
+    // utils.removePath ( projectDirPath );
+    //
+    // ration.maskProject ( loginData,projectName );
+    //
+    // if (utils.fileExists(projectDirPath))
+    //   erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
+    //             'CCP4 Remove Project Directory Fails',
+    //             'Detected removePath failure at deleting project directory, ' +
+    //             'please investigate.' );
+    //
+    // rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
+    // // clearJobs() only to decrease the amount of transmitted data
+    // //rdata.ration = ration.getUserRation(loginData).clearJobs();
 
   } else if (pData && (pData.desc.owner.login!=loginData.login))  {
 
-    if (utils.isSymbolicLink(projectDirPath))
+    if (utils.isSymbolicLink(projectDirPath))  {
       log.standard ( 7,'unjoin project ' + projectName + ', login ' + loginData.login );
-    else
+      // unjoin project
+      utils.removePath ( projectDirPath );  // will only unlink as this is a link
+      rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();  // just in case
+    } else  {
+      // old shares were copied, this is the case
       log.warning ( 7,'delete project ' + pData.desc.owner.login + ':' +
                       projectName + ', by non-owner ' + loginData.login );
-
-    utils.removePath ( projectDirPath );  // will only unlink as this is a link
-    rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();  // just in case
+      _delete_project();
+    }
 
     // log.standard ( 7,'unjoin project ' + projectName + ', login ' + loginData.login );
     //
