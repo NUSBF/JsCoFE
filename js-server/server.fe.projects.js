@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.06.21   <--  Date of Last Modification.
+ *    09.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -617,21 +617,30 @@ var erc      = '';
 
   } else if (pData && (pData.desc.owner.login!=loginData.login))  {
 
-    log.standard ( 7,'unjoin project ' + projectName + ', login ' + loginData.login );
+    if (utils.isSymbolicLink(projectDirPath))
+      log.standard ( 7,'unjoin project ' + projectName + ', login ' + loginData.login );
+    else
+      log.warning ( 7,'delete project ' + pData.desc.owner.login + ':' +
+                      projectName + ', by non-owner ' + loginData.login );
 
-    var projectDirPath = getProjectDirPath ( loginData,projectName );
+    utils.removePath ( projectDirPath );  // will only unlink as this is a link
+    rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();  // just in case
 
-    if (utils.isSymbolicLink(projectDirPath))  {
-      // unjoin project
-      utils.removePath ( projectDirPath );  // will only unlink as this is a link
-      rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();  // just in case
-    } else  {
-      // error
-      log.error ( 60,'attempt to delete project ' + pData.desc.owner.login +
-                     ':' + projectName + ' by non-owner ' + loginData.login );
-      response = new cmd.Response ( cmd.fe_retcode.projectAccess,
-                          'Attempt to delete project without ownership',rdata );
-    }
+    // log.standard ( 7,'unjoin project ' + projectName + ', login ' + loginData.login );
+    //
+    // var projectDirPath = getProjectDirPath ( loginData,projectName );
+    //
+    // if (utils.isSymbolicLink(projectDirPath))  {
+    //   // unjoin project
+    //   utils.removePath ( projectDirPath );  // will only unlink as this is a link
+    //   rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();  // just in case
+    // } else  {
+    //   // error
+    //   log.error ( 60,'attempt to delete project ' + pData.desc.owner.login +
+    //                  ':' + projectName + ' by non-owner ' + loginData.login );
+    //   response = new cmd.Response ( cmd.fe_retcode.projectAccess,
+    //                       'Attempt to delete project without ownership',rdata );
+    // }
 
   } else  {
     log.error ( 61,'project ' + loginData.login + ':' + projectName +
