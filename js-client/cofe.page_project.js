@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.07.21   <--  Date of Last Modification.
+ *    11.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -512,7 +512,7 @@ ProjectPage.prototype.archiveJobs = function() {
 }
 
 ProjectPage.prototype.openJob = function() {
-  this.jobTree.openJob ( null,self );
+  this.jobTree.openJob ( null,this );
 }
 
 ProjectPage.prototype.stopJob = function() {
@@ -860,9 +860,11 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
               self.jobTree.parent.setScrollPosition ( scrollPos );
               if (!blink)  {
                 self.jobTree.relinkJobDialogs ( dlg_map,self );
+                // self.jobTree.relinkJobDialogs ( dlg_map,__current_page );
               } else  {
                 // self.jobTree.parent.setScrollPosition ( scrollPos );
                 self.jobTree.openJobs ( dlg_task_parameters,self );
+                // self.jobTree.openJobs ( dlg_task_parameters,__current_page );
               }
               if (rdata)  {
                 self.updateUserRationDisplay ( rdata );

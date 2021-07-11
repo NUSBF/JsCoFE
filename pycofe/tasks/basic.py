@@ -500,6 +500,16 @@ class TaskDriver(object):
 
     def putMessage1 ( self,pageId,message_str,row,col=0,rowSpan=1,colSpan=1 ):
         pyrvapi.rvapi_set_text ( message_str,pageId,row,col,rowSpan,colSpan )
+
+        # pyrvapi.rvapi_shape_table_cell ( pageId,row,col,"","\"text-align: right;\"","",
+        #                                  rowSpan,colSpan )
+        #   const char * tooltip,
+        #   const char * cell_style,
+        #   const char * cell_css,
+        #   const int    rowSpan,
+        #   const int    colSpan
+        # );
+
         return
 
     def putMessageLF ( self,message_str ):
