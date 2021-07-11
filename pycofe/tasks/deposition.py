@@ -218,26 +218,51 @@ class Deposition(basic.TaskDriver):
                     dtype_template.makeFileName ( self.job_id,self.dataSerialNo,
                                                   self.getOFName("_sf.cif")) )
 
-        cmd   = [ "HKLIN",hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
-                  "HKLOUT",sfCIF]
-
-        # Start mtz2various
-        self.runApp ( "mtz2various",cmd,logType="Main" )
+        # cmd   = [ "HKLIN",hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
+        #           "HKLOUT",sfCIF]
+        #
+        # # Start mtz2various
+        # self.runApp ( "mtz2various",cmd,logType="Main" )
         self.unsetLogParser()
+
+        hkl_path = hkl.getHKLFilePath ( self.inputDir() )
+        cmd = [ "mtz2cif",hkl_path,sfCIF ]
+                # hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
+        self.runApp ( "gemmi",cmd,logType="Main" )
+
 
         # 3. Prepare the combined coordinate-sequence CIF
 
         aimless_xml = None
+        aimless_unm = None
+        sfCIF_unm   = None
         if hasattr(hkl.aimless_meta,"file_xml") and hkl.aimless_meta.file_xml:
             aimless_xml = os.path.join ( self.inputDir(),hkl.aimless_meta.file_xml )
+            aimless_unm = os.path.join ( self.inputDir(),hkl.aimless_meta.file_unm )
+
+            sfCIF_unm = os.path.join (
+                    self.outputDir(),
+                    self.task.project + "_" +\
+                    dtype_template.makeFileName (
+                            self.job_id,
+                            self.dataSerialNo,
+                            self.getOFName("_unmerged_sf.cif")
+                    )
+                )
+
+            cmd = [ "mtz2cif","--depo",hkl_path,aimless_unm,sfCIF_unm ]
+            rc = self.runApp ( "gemmi",cmd,logType="Main",quitOnError=False )
+            if rc.msg:
+                sfCIF_unm = None
+
         elif hasattr(hkl.aimless_meta,"file") and hkl.aimless_meta.file:
             aimless_xml = os.path.join ( self.inputDir(),hkl.aimless_meta.file )
         else:
-            self.file_stdout.write ( "aimles meta NOT found\n" )
+            self.file_stdout.write ( "aimless meta NOT found\n" )
 
         deposition_cif = os.path.join ( self.outputDir(),self.task.project + "_" +\
                     dtype_template.makeFileName ( self.job_id,self.dataSerialNo,
-                                                  self.getOFName(".cif") ) )
+                                                  self.getOFName("_xyz.cif") ) )
 
         deposition_fasta = self.getOFName ( ".fasta" )
         if len(seq)>0:
@@ -278,13 +303,6 @@ class Deposition(basic.TaskDriver):
             except:
                 worked = False
 
-        # worked = run_process ( input_mmcif  = xyzout_cif,
-        #                        output_mmcif = deposition_cif,
-        #                        fasta_file   = deposition_fasta,
-        #                        #sf_file      = sfCIF,
-        #                        xml_file     = aimless_xml )
-
-
         if not worked:
             if deposition_fasta:
                 self.putMessage (
@@ -314,14 +332,36 @@ class Deposition(basic.TaskDriver):
         self.putMessage ( "<h3><i>" + str(header_cnt) + ". PDB Deposition</i></h3>" )
         header_cnt = header_cnt + 1
 
-        self.putMessage ( "<b>a) Download the following files:<br><hr/>" )
+        self.putMessage ( "<b>a) Download the following 2 files in mmCIF format:<br><hr/>" )
 
         grid_id = self.getWidgetId ( self.dep_grid() )
         self.putGrid ( grid_id )
-        self.putMessage1 ( grid_id,"<i>Final coordinate file in mmCIF format</i>&nbsp;",0,0 )
-        self.putMessage1 ( grid_id,"<i>Structure factors file in mmCIF format</i>" ,1,0 )
+        self.putMessage1 ( grid_id,
+            "&nbsp;&nbsp;&nbsp;&nbsp;<i>1. Final atomic coordinates:</i>&nbsp;",0,0 )
         self.putDownloadButton ( deposition_cif,"download",grid_id,0,1 )
-        self.putDownloadButton ( sfCIF         ,"download",grid_id,1,1 )
+        if sfCIF_unm:
+            self.putMessage1 ( grid_id,
+                "&nbsp;&nbsp;&nbsp;&nbsp;<i>2. Reflection data</i>" ,1,0 )
+            self.putMessage1 ( grid_id,
+                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
+                "<b><u>either</u></b> <i>merged and unmerged:</i>",2,0 )
+            self.putDownloadButton ( sfCIF_unm,"download",grid_id,2,1 )
+            self.putMessage1 ( grid_id,
+                "<i style=\"font-size:85%\">(recommended)</i>",2,2 )
+            self.putMessage1 ( grid_id,
+                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
+                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
+                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
+                "<b><u>or</u></b> <i>merged only:</i>",3,0 )
+            self.putDownloadButton ( sfCIF,"download",grid_id,3,1 )
+            self.putMessage1 ( grid_id,
+                "<i style=\"font-size:85%\">(only if merged+unmerged causes " +\
+                "problems at deposition)</i>",
+                3,2 )
+        else:
+            self.putMessage1 ( grid_id,
+                "&nbsp;&nbsp;&nbsp;&nbsp;<i>2. Reflection data:</i>" ,1,0 )
+            self.putDownloadButton ( sfCIF,"download",grid_id,1,1 )
 
         self.putMessage ( "<hr/><br><b>" +\
             "b) Start new deposition session at " +\

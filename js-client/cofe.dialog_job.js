@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.07.21   <--  Date of Last Modification.
+ *    11.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -678,12 +678,12 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
           serverRequest ( fe_reqtype.getUserRation,{},'User Ration',
             function(ration){
 
-              // var pdesc = dlg.parent_page.ration.pdesc;
-              // dlg.parent_page.ration = ration;
-              // dlg.parent_page.displayUserRation ( pdesc );
-
+              var pdesc = dlg.parent_page.ration.pdesc;
               dlg.parent_page.ration = ration;
-              dlg.parent_page.displayUserRation ( dlg.tree.projectData.desc );
+              dlg.parent_page.displayUserRation ( pdesc );
+
+              // dlg.parent_page.ration = ration;
+              // dlg.parent_page.displayUserRation ( dlg.tree.projectData.desc );
 
               if (ration && (!__local_setup))  {
                 if ((ration.storage>0.0) && (ration.storage_used>=ration.storage))  {
