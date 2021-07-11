@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.05.21   <--  Date of Last Modification.
+#    11.07.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -72,13 +72,26 @@ class ShelxEMR(basic.TaskDriver):
 
         # Prepare shelxe input
         # fetch input data
+        hkl      = self.makeClass ( self.input_data.data.hkl[0]      )
         revision = self.makeClass ( self.input_data.data.revision[0] )
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
         # Prepare set of input files for shelxe
         # copy files according to Shelx notations
-        shutil.copyfile ( istruct.getMTZFilePath(self.inputDir()),
-                          self.shelxe_wrk_mtz() )
+
+        labin = hkl.getMeanF()
+        if labin[2]!="F":
+            self.fail ( "<h3>No amplitude data.</h3>" +\
+                    "This task requires F/sigF columns in reflection data, " +\
+                    "which were not found.",
+                    "No amplitude data." )
+            return
+
+        labin[2] = hkl.getFreeRColumn()
+
+        hklin = istruct.getHKLFilePath ( self.inputDir() )
+        # shutil.copyfile ( istruct.getHKLFilePath(self.inputDir()),
+        #                   self.shelxe_wrk_mtz() )
         if istruct.getXYZFileName():
             shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),
                               self.shelxe_wrk_pda() )
@@ -87,27 +100,40 @@ class ShelxEMR(basic.TaskDriver):
                               self.shelxe_wrk_pda() )
 
         # use mtz2various to prepare the reflection file
-        self.mtz2hkl ( self.shelxe_wrk_mtz(),
-                       [istruct.FP,istruct.SigFP,istruct.FreeR_flag],
-                       self.shelxe_wrk_hkl() )
+        self.mtz2hkl ( hklin,labin,self.shelxe_wrk_hkl() )
 
-        """
-        cmd = [ "HKLIN" ,self.shelxe_wrk_mtz(),
-                "HKLOUT",self.shelxe_wrk_hkl() ]
+        # shutil.copyfile ( istruct.getMTZFilePath(self.inputDir()),
+        #                   self.shelxe_wrk_mtz() )
+        # if istruct.getXYZFileName():
+        #     shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),
+        #                       self.shelxe_wrk_pda() )
+        # else:
+        #     shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),
+        #                       self.shelxe_wrk_pda() )
+        #
+        # # use mtz2various to prepare the reflection file
+        # self.mtz2hkl ( self.shelxe_wrk_mtz(),
+        #                [istruct.FP,istruct.SigFP,istruct.FreeR_flag],
+        #                self.shelxe_wrk_hkl() )
 
-        self.open_stdin  ()
-        self.write_stdin (
-            "LABIN   FP="    + istruct.FP + " SIGFP=" + istruct.SigFP      +\
-                                            " FREE="  + istruct.FreeR_flag +\
-            "\nOUTPUT SHELX" +\
-            #"\nFSQUARED"     +\
-            "\nEND\n"
-        )
-        self.close_stdin()
 
-        # run mtz-to-hkl converter
-        self.runApp ( "mtz2various",cmd,logType="Service" )
-        """
+        # """
+        # cmd = [ "HKLIN" ,self.shelxe_wrk_mtz(),
+        #         "HKLOUT",self.shelxe_wrk_hkl() ]
+        #
+        # self.open_stdin  ()
+        # self.write_stdin (
+        #     "LABIN   FP="    + istruct.FP + " SIGFP=" + istruct.SigFP      +\
+        #                                     " FREE="  + istruct.FreeR_flag +\
+        #     "\nOUTPUT SHELX" +\
+        #     #"\nFSQUARED"     +\
+        #     "\nEND\n"
+        # )
+        # self.close_stdin()
+        #
+        # # run mtz-to-hkl converter
+        # self.runApp ( "mtz2various",cmd,logType="Service" )
+        # """
 
         # Prepare command line for shelxe
 
@@ -264,8 +290,12 @@ class ShelxEMR(basic.TaskDriver):
                 "END"
             ])
             self.close_stdin()
+            # cmd = [ "hklin1",self.shelxe_tmp_mtz(),
+            #         "hklin2",self.shelxe_wrk_mtz(),
+            #         "hklout",self.shelxe_tmp_mtz1()
+            #       ]
             cmd = [ "hklin1",self.shelxe_tmp_mtz(),
-                    "hklin2",self.shelxe_wrk_mtz(),
+                    "hklin2",hklin,
                     "hklout",self.shelxe_tmp_mtz1()
                   ]
             self.runApp ( "cad",cmd,logType="Service" )

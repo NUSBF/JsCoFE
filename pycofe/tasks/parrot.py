@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.05.21   <--  Date of Last Modification.
+#    11.07.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -108,6 +108,7 @@ class Parrot(basic.TaskDriver):
 
         # Prepare parrot input
         # fetch input data
+        hkl      = self.makeClass ( self.input_data.data.hkl[0]      )
         revision = self.makeClass ( self.input_data.data.revision[0] )
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
@@ -133,6 +134,32 @@ class Parrot(basic.TaskDriver):
             "reference_structures",
             "reference-" + sec1.REFMDL_SEL.value )
 
+
+        # prepare input MTZ file by putting original reflection data into
+        # phases MTZ
+
+        labin_fo    = hkl.getMeanF()
+        if labin_fo[2]!="F":
+            self.fail ( "<h3>No amplitude data.</h3>" +\
+                    "This task requires F/sigF columns in reflection data, " +\
+                    "which were not found.",
+                    "No amplitude data." )
+            return
+
+        labin_fo[2] = hkl.getFreeRColumn()
+        input_mtz   = "_input.mtz"
+        labin_ph    = []
+        if istruct.HLA:  #  experimental phases
+            labin_ph = [istruct.HLA,istruct.HLB,istruct.HLC,istruct.HLD,
+                        istruct.FWT,istruct.PHWT]
+        else:  # MR phases
+            labin_ph = [istruct.PHI,istruct.FOM,istruct.FWT,istruct.PHWT]
+
+        self.makePhasesMTZ (
+                hkl.getHKLFilePath(self.inputDir())    ,labin_fo,
+                istruct.getMTZFilePath(self.inputDir()),labin_ph,
+                input_mtz )
+
         self.open_stdin()
         self.write_stdin (
             "title Job "   + self.job_id.zfill(4) + \
@@ -146,15 +173,15 @@ class Parrot(basic.TaskDriver):
             self.write_stdin ( "\nseqin-wrk " + self.parrot_seq() )
 
         self.write_stdin (
-            "\nmtzin-wrk " + istruct.getMTZFilePath(self.inputDir()) + \
-            "\ncolin-wrk-fo /*/*/["     + istruct.FP  + "," + istruct.SigFP + "]"
+            "\nmtzin-wrk " + input_mtz + \
+            "\ncolin-wrk-fo /*/*/["    + labin_fo[0]  + "," + labin_fo[1] + "]"
         )
 
-        if istruct.HLA!="":
+        if istruct.HLA:
             self.write_stdin (
                 "\ncolin-wrk-hl /*/*/[" + istruct.HLA + "," + istruct.HLB + \
                                     "," + istruct.HLC + "," + istruct.HLD + "]" +\
-                "\ncolin-wrk-fc /*/*/["     + istruct.FWT + "," + istruct.PHWT + "]"
+                "\ncolin-wrk-fc /*/*/[" + istruct.FWT + "," + istruct.PHWT + "]"
             )
         else:
             self.write_stdin (
@@ -189,10 +216,10 @@ class Parrot(basic.TaskDriver):
 
         output_file = self.getMTZOFName()
         self.write_stdin (
-            "\nmtzout " + output_file + \
-            "\ncolout parrot"  +\
-            "\nncs-average"  +\
-            "\nsolvent-content " + str( solcont ) + "\n"  +\
+            "\nmtzout "           + output_file + \
+            "\ncolout parrot"     +\
+            "\nncs-average"       +\
+            "\nsolvent-content "  + str( solcont ) + "\n"  +\
             "\ncycles " + ncycles + "\n" +
             self.putKWParameter ( sec1.SOLVENT_CBX   ) + \
             self.putKWParameter ( sec1.HISTOGRAM_CBX ) + \

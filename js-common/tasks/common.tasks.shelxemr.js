@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.11.20   <--  Date of Last Modification.
+ *    11.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ShelxE-MR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -363,7 +363,7 @@ if (!__template)  {
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      //this.input_data.data['hkl']     = [revision.HKL];
+      this.input_data.data['hkl'] = [revision.HKL];
       if (revision.Structure || revision.Substructure)  {
         if (revision.Options.leading_structure=='substructure')
               this.input_data.data['istruct'] = [revision.Substructure];
