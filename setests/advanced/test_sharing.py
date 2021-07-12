@@ -192,7 +192,7 @@ def startSimbad(driver):
             buttonRun.click()
             break
 
-    time.sleep(1)
+    time.sleep(2)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -261,10 +261,10 @@ def startMrbump(driver):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
-    time.sleep(1.05)
+    time.sleep(2.05)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Auto-MR with MrBump')
-    time.sleep(2.05)
+    time.sleep(3.05)
 
     inputNMod = driver.find_element_by_xpath("//input[@title='Maximum number of search models to test']")
     if inputNMod:
