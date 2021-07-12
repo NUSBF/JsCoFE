@@ -181,61 +181,78 @@ def makeNextTask ( crTask,data ):
 
     elif crTask._type=="TaskMrBump":
         auto_api.addContext("mrbump_rfree", data["Rfree"])
-        if not data["revision"] or (float(data["Rfree"])>0.4):
-            # not solved; trying Morda if installed
-            if (os.path.isfile(os.path.join(os.environ["CCP4"],"share","mrd_data","VERSION")) or \
-                os.path.isfile(os.path.join(os.environ["CCP4"],"lib","py2","morda","LINKED"))):
-                auto_api.addTask          ( "morda","TaskMorda",crTask.autoRunName )
-                auto_api.addTaskData      ( "morda","revision",data["revision"] )
-                auto_api.addTaskParameter ( "morda","ALTGROUPS_CBX",True )
-                return
-            else:
-                # Morda not installed
-                if float(data["Rfree"])<0.5:
-                    resHi = float(data["revision"].HKL.dataset.RESO[1])
-                    if resHi < 3.0:
-                        strTree = 'Large parts of the structure are likely missing as Rfree is only %0.3f (click for more comments)' % float(data["Rfree"])
-                        strText = 'Although automated MR seems to perform not very well on your structure, we will try to build into the available density.\n' + \
-                                  'Probability of success is not high though. \n' + \
-                                  'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
-                                  'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
-                        auto_tasks.remark("rem_sorry1", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
-                        auto_api.addContext("build_parent", crTask.autoRunName)
-                        auto_api.addContext("build_revision", data["revision"])
-                        auto_tasks.buccaneer("buccAfterMRBUMP_noMorda", data["revision"], crTask.autoRunName)
-                        return
-                    else:
-                        strTree = 'Large parts of the structure are likely missing as Rfree is only %0.3f (click for more comments)' % float(
-                            data["Rfree"])
-                        strText = 'Automated MR seems to perform not very well on your structure, we will not try to build into ' + \
-                                  'the available density as the resolution of your data seems to be lower than 3.0 A.\n' + \
-                                  'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
-                                  'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
-                        auto_tasks.remark("rem_sorry1", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
-                        return
-                else:
-                    # last attempt to solve - full SIMBAD
-                    # auto_tasks.simbad("simbadFull", "LCS", crTask.autoRunName)
-                    strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
-                    strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
-                              'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
-                              'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
-                    auto_tasks.remark("rem_sorry3", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
-
-                    return
-
-        else:
-            # solved nicely by MRBUMP - goes to refinement
-            auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
-            return
+        auto_tasks.refmac_jelly("jellyAfterMRBUMP", data["revision"], crTask.autoRunName)
+        return
 
 
     elif crTask._type=="TaskMorda":
-        auto_tasks.refmac_jelly ( "jellyAfterMorda",data["revision"],crTask.autoRunName )
+        if not data["revision"]:
+            if (os.path.isfile(os.path.join(os.environ["CCP4"], "share", "mrd_data", "VERSION")) or \
+                    os.path.isfile(os.path.join(os.environ["CCP4"], "lib", "py2", "morda", "LINKED"))):
+                auto_api.addTask("morda", "TaskMorda", crTask.autoRunName)
+                auto_api.addTaskData("morda", "revision", data["revision"])
+                auto_api.addTaskParameter("morda", "ALTGROUPS_CBX", True)
+                return
+            else:
+                strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
+                strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
+                          'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
+                          'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
+                auto_tasks.remark("rem_sorry13", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+        else:
+            auto_tasks.refmac_jelly ( "jellyAfterMorda",data["revision"],crTask.autoRunName )
         return
 
 
     elif crTask._type=="TaskRefmac":
+        if crTask.autoRunName == 'jellyAfterMRBUMP':
+            if float(data["Rfree"])>0.4:
+                # not solved; trying Morda if installed
+                if (os.path.isfile(os.path.join(os.environ["CCP4"],"share","mrd_data","VERSION")) or \
+                    os.path.isfile(os.path.join(os.environ["CCP4"],"lib","py2","morda","LINKED"))):
+                    auto_api.addTask          ( "morda","TaskMorda",crTask.autoRunName )
+                    auto_api.addTaskData      ( "morda","revision",data["revision"] )
+                    auto_api.addTaskParameter ( "morda","ALTGROUPS_CBX",True )
+                    return
+                else:
+                    # Morda not installed
+                    if float(data["Rfree"])<0.5:
+                        resHi = float(data["revision"].HKL.dataset.RESO[1])
+                        if resHi < 3.0:
+                            strTree = 'Large parts of the structure are likely missing as Rfree is only %0.3f (click for more comments)' % float(data["Rfree"])
+                            strText = 'Although automated MR seems to perform not very well on your structure, we will try to build into the available density.\n' + \
+                                      'Probability of success is not high though. \n' + \
+                                      'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
+                                      'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
+                            auto_tasks.remark("rem_sorry1", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+                            auto_api.addContext("build_parent", crTask.autoRunName)
+                            auto_api.addContext("build_revision", data["revision"])
+                            auto_tasks.buccaneer("buccAfterMRBUMP_noMorda", data["revision"], crTask.autoRunName)
+                            return
+                        else:
+                            strTree = 'Large parts of the structure are likely missing as Rfree is only %0.3f (click for more comments)' % float(
+                                data["Rfree"])
+                            strText = 'Automated MR seems to perform not very well on your structure, we will not try to build into ' + \
+                                      'the available density as the resolution of your data seems to be lower than 3.0 A.\n' + \
+                                      'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
+                                      'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
+                            auto_tasks.remark("rem_sorry1", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+                            return
+                    else:
+                        # last attempt to solve - full SIMBAD
+                        # auto_tasks.simbad("simbadFull", "LCS", crTask.autoRunName)
+                        strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
+                        strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
+                                  'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
+                                  'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
+                        auto_tasks.remark("rem_sorry23", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+                        return
+            else:
+                # solved nicely by MRBUMP - goes to refinement
+                auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+                return
+
+
         if crTask.autoRunName == 'jellyAfterMorda':
             if float(data["Rfree"])<0.4:
                 auto_api.addContext("build_parent", crTask.autoRunName)
