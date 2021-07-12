@@ -62,16 +62,21 @@ def makeNextTask ( crTask,data ):
         if len(data["unm"]) > 0:
             auto_tasks.aimless ( "aimless", crTask.autoRunName )
         else:
-            auto_api.addContext("asu_parent", crTask.autoRunName)
-            auto_tasks.simbad ( "simbad","L", crTask.autoRunName)
+            # auto_api.addContext("asu_parent", crTask.autoRunName)
+            # auto_tasks.simbad ( "simbad","L", crTask.autoRunName)
+            auto_tasks.asu("asu", auto_api.getContext("asu_parent"))
+            return
+
         return
 
 
     elif crTask._type=="TaskAimless":
         if len(data["hkl"])>0:
             auto_api.addContext ( "hkl",data["hkl"][0] )
-            auto_api.addContext("asu_parent", crTask.autoRunName)
-            auto_tasks.simbad ( "simbad","L",crTask.autoRunName )
+            auto_tasks.asu("asu", auto_api.getContext("asu_parent"))
+            return
+            # auto_api.addContext("asu_parent", crTask.autoRunName)
+            # auto_tasks.simbad ( "simbad","L",crTask.autoRunName )
 
 
     elif crTask._type=="TaskSimbad":
@@ -167,7 +172,7 @@ def makeNextTask ( crTask,data ):
                   'Number of models is specified by "Maximum no. of models to test" parameter.\n' + \
                   'Please be patient as such run may take many hours and even couple of days, ' + \
                   'but then it may provide a good solution of your structure.\n'
-        auto_tasks.remark("rem_mrbComment", strTree, 5, strText, crTask.autoRunName)  # 5 - Cyan
+        # auto_tasks.remark("rem_mrbComment", strTree, 5, strText, crTask.autoRunName)  # 5 - Cyan
 
         auto_tasks.mrbump('mrbump', data['revision'], crTask.autoRunName, 5)
 
@@ -210,7 +215,13 @@ def makeNextTask ( crTask,data ):
                         return
                 else:
                     # last attempt to solve - full SIMBAD
-                    auto_tasks.simbad("simbadFull", "LCS", crTask.autoRunName)
+                    # auto_tasks.simbad("simbadFull", "LCS", crTask.autoRunName)
+                    strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
+                    strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
+                              'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
+                              'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
+                    auto_tasks.remark("rem_sorry3", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+
                     return
 
         else:
@@ -233,7 +244,13 @@ def makeNextTask ( crTask,data ):
                 return
             elif float(data["Rfree"]) > 0.5:
                 # last attempt to solve - full SIMBAD
-                auto_tasks.simbad("simbadFull", "LCS", crTask.autoRunName)
+                # auto_tasks.simbad("simbadFull", "LCS", crTask.autoRunName)
+                strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
+                strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
+                          'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
+                          'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
+                auto_tasks.remark("rem_sorry3", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+
                 return
             else:
                 # 0.4 < rFree < 0.5

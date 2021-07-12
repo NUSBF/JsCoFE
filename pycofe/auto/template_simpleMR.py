@@ -48,7 +48,7 @@ def makeNextTask ( crTask,data ):
     if crTask._type=="TaskWFlowSMR":
         auto_tasks.store ( data["unm"],data["hkl"],data["seq"],data["lig"],data["ligdesc"] )
         auto_api.addContext("xyz", data["xyz"])
-        # unmerged data present -> aimless, otherwise Simbad lattice
+        # unmerged data present -> aimless, otherwise make asu for MR
         if len(data["unm"]) > 0:
             auto_tasks.aimless ( "aimless", crTask.autoRunName )
         else:
