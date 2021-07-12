@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.07.21   <--  Date of Last Modification.
+ *    12.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -42,6 +42,7 @@ function ProjectPage ( sceneId )  {
 
   var title_lbl       = null;
   this.jobTree        = null;  // == this.job_tree, for internal references
+  this.can_reload     = true;  // tree reload semaphore
   // var replayJobTree  = null;  // == this.replay_job_tree, for internal references
   this.tree_div       = null;
 
@@ -395,8 +396,10 @@ ProjectPage.prototype.setDisabled = function ( disabled_bool )  {
 ProjectPage.prototype.addJob = function()  {
   this.selectRemark();
   (function(self){
+    self.jobTree.stopTaskLoop();
     self.jobTree.addJob ( false,false,self,function(){
       self.del_btn.setDisabled ( false );
+      self.jobTree.startTaskLoop();
     });
   }(this))
 }
@@ -421,8 +424,10 @@ ProjectPage.prototype.insertJob = function()  {
 
 ProjectPage.prototype.addRemark = function()  {
   (function(self){
+    self.jobTree.stopTaskLoop();
     self.jobTree.addTask ( new TaskRemark(),true,false,self,function(){
       self.del_btn.setDisabled ( false );
+      self.jobTree.startTaskLoop();
     });
   }(this))
 }
@@ -441,11 +446,11 @@ ProjectPage.prototype.moveJobUp = function()  {
 
 ProjectPage.prototype.deleteJob = function() {
   (function(self){
-    self.jobTree.stopTaskLoop ();
-    self.jobTree.deleteJob    ( function(){
+    self.jobTree.stopTaskLoop();
+    self.jobTree.deleteJob ( function(){
       self.setButtonState();
+      self.jobTree.startTaskLoop();
     });
-    self.jobTree.startTaskLoop();
   }(this))
 }
 
@@ -521,8 +526,10 @@ ProjectPage.prototype.stopJob = function() {
 
 ProjectPage.prototype.cloneJob = function() {
   (function(self){
+    self.jobTree.stopTaskLoop();
     self.jobTree.cloneJob ( 'clone',self,function(){
       self.del_btn.setDisabled ( false );
+      self.jobTree.startTaskLoop();
     });
   }(this))
 }
@@ -824,8 +831,9 @@ ProjectPage.prototype.onTreeItemSelect = function()  {
 ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
   // blink==true will force page blinking, for purely aesthatic reasons
 
-  if (this.jobTree && this.jobTree.parent)  {
+  if (this.jobTree && this.jobTree.parent && this.can_reload)  {
 
+    this.can_reload = false;  // block concurrent reloads
     this.jobTree.stopTaskLoop();
     this.jobTree.checkTimeout = -1;  // prevents task loop from starting again
     var dlg_task_parameters = this.jobTree.getJobDialogTaskParameters();
@@ -887,6 +895,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
           }
           self.jobTree.checkTimeout = null;  // allows task loop to start
           self.jobTree.startTaskLoop();
+          self.can_reload = true;  // release reloads
 
         },function(node){
           return self.onTreeContextMenu();
