@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.06.21   <--  Date of Last Modification.
+ *    13.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,9 +38,13 @@ function TaskSimbad()  {
   //this.helpURL = './html/jscofe_task_simbad.html';
 
   this.input_dtypes = [{    // input data types
-     data_type   : {'DataHKL':[],'DataStructure':[],'DataXYZ':[]},  // data type(s) and subtype(s)
-     label       : 'Reflection data or<br>symmetry reference',      // label for input dialog
-     inputId     : 'hkl',     // input Id for referencing input fields
+     data_type   : {'DataRevision'  : ['!asu','~xyz'],
+                    'DataHKL'       : [],
+                    'DataStructure' : [],
+                    'DataXYZ'       : []
+                   },  // data type(s) and subtype(s)
+     label       : 'ASU, reflection data or<br>symmetry reference', // label for input dialog
+     inputId     : 'idata',   // input Id for referencing input fields
      customInput : 'simbad',
      // customInput : 'cell-info',
      force       : 1,         // force selection in combobox
@@ -63,7 +67,7 @@ function TaskSimbad()  {
               title    : '',
               open     : true,  // true for the section to be initially open
               position : [1,0,1,5],
-              showon   : { 'hkl' : [0,-1] },
+              showon   : { 'idata' : [0,-1] },
               contains : {
                 SPGROUP : {
                           type      : 'string',   // empty string not allowed
@@ -170,7 +174,10 @@ function TaskSimbad()  {
                       value     : 'LC',
                       emitting  : true,    // allow to emit signals on change
                       position  : [0,0,1,1],
-                      showon    : {'hkl.type:DataHKL':[1]}   // from input data section
+                      showon    : { _:'||',
+                                   'idata.type:DataHKL':[1],
+                                   'idata.type:DataRevision':[1]
+                                  }   // from input data section
                     },
                 WARNING_LBL : {
                       type      : 'label',
@@ -204,7 +211,11 @@ function TaskSimbad()  {
                       value    : '',
                       default  : '5',
                       position : [2,0,1,1],
-                      showon   : {_:'||','SEARCH_SEL':['L','LC'],'hkl':[0,-1],'hkl.type:DataXYZ':[1]}
+                      showon   : { _:'||',
+                                   'SEARCH_SEL':['L','LC'],
+                                   'idata':[0,-1],
+                                   'idata.type:DataXYZ':[1]
+                                 }
                     },
                 MAXPENALTY : {
                       type     : 'integer_',
@@ -217,7 +228,11 @@ function TaskSimbad()  {
                       value    : '',
                       default  : '4',
                       position : [3,0,1,1],
-                      showon   : {_:'||','SEARCH_SEL':['L','LC'],'hkl':[0,-1],'hkl.type:DataXYZ':[1]}
+                      showon   : { _:'||',
+                                   'SEARCH_SEL':['L','LC'],
+                                   'idata':[0,-1],
+                                   'idata.type:DataXYZ':[1]
+                                 }
                     }
               }
     }
@@ -275,10 +290,10 @@ if (!__template)  {
 
   TaskSimbad.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
-    if (emitterId=='hkl')  {
+    if (emitterId=='idata')  {
 
       var inpDataRef = inpParamRef.grid.inpDataRef;
-      var hkl        = this.getInputData ( inpDataRef,'hkl' );
+      var hkl        = this.getInputData ( inpDataRef,'idata' );
       if (hkl && (hkl.length>0))  {
         if (hkl[0]._type=='DataHKL')
           this.searchSelTitle ( inpParamRef.parameters['SEARCH_SEL'].input.getValue(),
@@ -298,14 +313,17 @@ if (!__template)  {
 
   TaskSimbad.prototype.collectInput = function ( inputPanel )  {
 
-    var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-    var hkl = this.input_data.getData ( 'hkl' );
-    if (hkl.length>0)  {
+    var msg   = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    var idata = this.input_data.getData ( 'idata' );
+    if (idata.length>0)  {
       msg = '';  // manual input of cell parameters is not used
-      if (hkl[0]._type!='DataHKL')  {
-        if (hkl[0].getSpaceGroup()=='Unspecified')
+      var hkl = idata[0];
+      if (idata[0]._type=='DataRevision')
+        hkl = idata[0].HKL;
+      if (hkl._type!='DataHKL')  {
+        if (hkl.getSpaceGroup()=='Unspecified')
           msg += '<b>Space group undefined</b>';
-        if (hkl[0].getCellParametersHTML()=='Unspecified')
+        if (hkl.getCellParametersHTML()=='Unspecified')
           msg += '<b>Cell parameters undefined</b>';
       }
     }
@@ -339,6 +357,23 @@ if (!__template)  {
   // It is expected that the task will not utilise more cores than what is
   // given on input to this function.
     return ncores_available;
+  }
+
+
+  TaskSimbad.prototype.makeInputData = function ( loginData,jobDir )  {
+
+    // put hkl data in input databox for copying their files in
+    // job's 'input' directory
+
+    if (('idata' in this.input_data.data) &&
+        (this.input_data.data['idata'][0]._type=='DataRevision'))  {
+      // var revision = this.input_data.data['idata'][0];
+      this.input_data.data['hkl'] = [this.input_data.data['idata'][0].HKL];
+      // this.input_data.data['seq'] = revision.ASU.seq;
+    }
+
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
+
   }
 
 
