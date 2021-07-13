@@ -41,8 +41,8 @@ function ProjectPage ( sceneId )  {
   // *******************************
 
   var title_lbl       = null;
-  this.jobTree        = null;  // == this.job_tree, for internal references
-  this.can_reload     = true;  // tree reload semaphore
+  this.jobTree        = null;    // == this.job_tree, for internal references
+  this.can_reload     = false;   // tree reload semaphore
   // var replayJobTree  = null;  // == this.replay_job_tree, for internal references
   this.tree_div       = null;
 
@@ -237,7 +237,8 @@ function ProjectPage ( sceneId )  {
     });
     self.refresh_btn.addOnClickListener ( function(){
       self.setDisabled  ( true );
-      self.wakeZombiJobs();  // must go before reloadTree
+      self.can_reload = true;  // force in order to avoid locking
+      self.wakeZombiJobs();    // must go before reloadTree
       self.reloadTree   ( true,true,null );  // multiple = false?
     });
   }(this))
@@ -322,6 +323,7 @@ function ProjectPage ( sceneId )  {
           self.add_rem_btn.addOnClickListener ( function(){ self.addRemark  (); } );
           self.thlight_btn.addOnClickListener ( function(){ self.toggleBranchHighlight(); } );
           title_lbl       .setText ( self.jobTree.projectData.desc.title );
+          self.can_reload = true;
         }
       },function(node){
         return self.onTreeContextMenu();

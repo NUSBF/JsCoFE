@@ -250,9 +250,16 @@ class Deposition(basic.TaskDriver):
                     )
                 )
 
-            cmd = [ "mtz2cif","--depo",hkl_path,aimless_unm,sfCIF_unm ]
+            cmd = [ "mtz2cif",  #   "--depo",
+                    hkl_path,aimless_unm,sfCIF_unm ]
             rc = self.runApp ( "gemmi",cmd,logType="Main",quitOnError=False )
             if rc.msg:
+                self.putMessage (
+                    "<hr/><h3>Note:</h3><i>" +\
+                    "Inclusion of unmerged scaled data into deposition package "   +\
+                    "was not done due to technical issues; see log files for "     +\
+                    "details. Depositing unmerged reflection data is recommended " +\
+                    "but not mandatory.</i><hr/>" )
                 sfCIF_unm = None
 
         elif hasattr(hkl.aimless_meta,"file") and hkl.aimless_meta.file:
@@ -365,7 +372,7 @@ class Deposition(basic.TaskDriver):
 
         self.putMessage ( "<hr/><br><b>" +\
             "b) Start new deposition session at " +\
-            "<a href='https://deposit.wwpdb.org' target='_blank'>wwPDB " +\
+            "<a href='https://deposit.wwpdb.org' style='color:blue;' target='_blank'>wwPDB " +\
             "Deposition Site</a></b> <i>(link opens in new tab/window)</i><p><b>" +\
             "c) Follow instructions in the wwPDB deposition site and upload " +\
             "the files downloaded when prompted.</b>"
