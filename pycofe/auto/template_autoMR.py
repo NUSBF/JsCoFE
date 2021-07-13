@@ -248,8 +248,10 @@ def makeNextTask ( crTask,data ):
                         auto_tasks.remark("rem_sorry23", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
                         return
             else:
-                # solved nicely by MRBUMP - goes to refinement
-                auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+                # solved nicely by MRBUMP - goes to rebuilding
+                auto_api.addContext("build_parent", crTask.autoRunName)
+                auto_api.addContext("build_revision", data["revision"])
+                auto_tasks.buccaneer("buccAfterMrbump", data["revision"], crTask.autoRunName)
                 return
 
 
