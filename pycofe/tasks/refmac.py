@@ -397,8 +397,8 @@ class Refmac(basic.TaskDriver):
                                           "could not be formed due to exception " +\
                                           " (possible bug)</i>" )
 
-                self.stdoutln ( " >>>>> 5 " + str(revision.citations) )
-                self.stdoutln ( " >>>>> 6 " + str(self.citation_list) )
+                # self.stdoutln ( " >>>>> 5 " + str(revision.citations) )
+                # self.stdoutln ( " >>>>> 6 " + str(self.citation_list) )
 
                 # update structure revision
                 revision.setStructureData ( substructure )

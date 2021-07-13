@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    03.12.20   <--  Date of Last Modification.
+#    13.07.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  VERDICT FUNCTION FOR SIMBAD TASK
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
 #
 # ============================================================================
 #
@@ -119,6 +119,8 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,secId="" ):
               "data"  : [ str(verdict_meta["nasu"]) ]},
         ]
     }
+    if tdict["rows"][0]["data"][0]=="0.0":
+        tdict["rows"].pop(0)
 
     base.putMessage1 ( base.report_page_id(),"&nbsp;",verdict_row )
 

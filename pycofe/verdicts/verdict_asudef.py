@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    06.09.20   <--  Date of Last Modification.
+#    13.07.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  VERDICT FUNCTION FOR ASU DEFINITION TASK
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
 #
 # ============================================================================
 #
@@ -55,7 +55,7 @@ def makeVerdict ( verdict_meta ):
 
     if verdict_score>66.0:
         verdict_message += "The estimated solvent fraction is within"
-        bottom_line      = "The suggested composition of ASU corresponds to " +\
+        bottom_line      = "The suggested composition of ASU corresponds to "  +\
                            "usual values of solvent fraction and, therefore, " +\
                            "<b><i>represents an acceptable assumption</i></b>."
     else:
@@ -64,15 +64,15 @@ def makeVerdict ( verdict_meta ):
             solest = "below"
         if nc0==1 and verdict_score>50.0:
             verdict_message += "The estimated solvent fraction is "
-            bottom_line      = "Although the suggested composition of ASU " +\
+            bottom_line      = "Although the suggested composition of ASU "  +\
                                "corresponds to an unusual value of solvent " +\
                                "fraction, it " +\
                                "<b><i>may</i></b> be an acceptable assumption."
         elif verdict_score>33.0:
             verdict_message += "The estimated solvent fraction is noticeably "
             bottom_line      = "The suggested composition of ASU corresponds to " +\
-                               "rather unusual value of solvent fraction. Yet, " +\
-                               "it <b><i>could</i></b> be an acceptable " +\
+                               "rather unusual value of solvent fraction. Yet, "  +\
+                               "it <b><i>could</i></b> be an acceptable "         +\
                                "assumption</i></b>."
         else:
             verdict_message += "The estimated solvent fraction is substantially "
@@ -93,20 +93,20 @@ def makeVerdict ( verdict_meta ):
                                   str(ncopies2) + " in total)</i>."
                 else:
                     bottom_line = "The suggested composition of ASU corresponds to " +\
-                                  "a rather unusual solvent fraction. However, in " +\
+                                  "a rather unusual solvent fraction. However, in "  +\
                                   "this particular case, it " +\
                                   "<b><i>could</i></b> be an acceptable assumption."
         verdict_message += solest
 
     bottom_line += "<p>In general, composition of ASU remains a hypothesis until " +\
                    "structure is solved. The solvent content is more a guidance, " +\
-                   "rather than a definite indicator, of the correctness of the " +\
-                   "choice. Inaccurate estimations of solvent content may have " +\
+                   "rather than a definite indicator, of the correctness of the "  +\
+                   "choice. Inaccurate estimations of solvent content may have "   +\
                    "a negative impact on phasing and density modification procedures, " +\
                    "especially in difficult cases."
 
     return  (   verdict_score,
-                verdict_message + " the usual range for<br>macromolecular " +\
+                verdict_message + " the usual range for macromolecular " +\
                                   "crystals, diffracting at similar resolution</b>",
                 bottom_line # + "<p>  " + str(verdict_scor)+ "  " + str(verdict_score) + " " + str(ncopies1)
             )

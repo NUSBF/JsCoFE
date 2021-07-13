@@ -241,64 +241,10 @@ if (!__template)  {
 
   }
 
-/*
-    DataRevision.prototype._layCDI_PhaserEP = function ( dropdown )  {
-    var customGrid = dropdown.customGrid;
-
-      customGrid.setLabel ( '<i>Phase using:</i>',0,0,1,1 );
-      customGrid.setVerticalAlignment ( 0,0,'middle' );
-      customGrid.phasing_sel = new Dropdown();
-      if (this.Substructure)
-        customGrid.phasing_sel.addItem (
-                  'heavy-atom substructure (' + this.ASU.ha_type + ')',
-                  '','substructure' ,this.Options.phasing_sel=='substructure' );
-      if (this.Structure)  {
-        customGrid.phasing_sel.addItem ( 'macromolecular model',
-                  '','model' ,this.Options.phasing_sel=='model' );
-        this.Structure.layCustomDropdownInput ( dropdown );
-      }
-      customGrid.setWidget ( customGrid.phasing_sel, 0,1,1,5 );
-      customGrid.phasing_sel.addOnChangeListener ( function(text,value){
-        customGrid.setRowVisible ( 1,value=='model' );
-      });
-
-      customGrid.phasing_sel.make();
-      customGrid.setRowVisible ( 1,this.Options.phasing_sel=='model' );
-      this.HKL.layCustomDropdownInput ( dropdown );
-
-    }
-*/
 
   DataRevision.prototype._layCDI_Crank2 = function ( dropdown,mode )  {
   var customGrid = dropdown.customGrid;
   var row        = customGrid.getNRows();
-
-    /*
-    if (this.Structure)  {
-      if (mode=='crank2')  {
-        if (this.Structure.subtype.indexOf('xyz')>=0)  {
-          customGrid.setLabel ( 'Current protein model will be used for calculating ' +
-                                'initial phases (MR-SAD)',row++,0,1,7 )
-                                .setFontBold(true).setFontItalic(true).setNoWrap();
-          customGrid.removeNonAnom = customGrid.setCheckbox (
-                                'Remove all non-anomalous atoms before rebuilding',
-                                this.Structure.removeNonAnom,row++,0,1,5 );
-        } else if (this.Structure.isSubstructure())  {
-          customGrid.setLabel ( 'Current substructure will be used for calculating ' +
-                                'initial phases (MR-SAD)',row++,0,1,7 )
-                                .setFontBold(true).setFontItalic(true).setNoWrap();
-        }
-        customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 2 );
-      } else if (mode=='shelx-auto')  {
-        customGrid.setLabel ( 'Current structure:',row,0,1,2 )
-                              .setFontItalic(true).setNoWrap();
-        customGrid.setLabel ( this.Structure.dname,row++,1,1,1 ).setNoWrap();
-        customGrid.setLabel ( 'will not be used as fixed model (as a feature ' +
-                              'of Shelx-Auto pipeline)',row++,0,1,1 )
-                              .setFontItalic(true).setNoWrap();
-      }
-    }
-    */
 
     customGrid.phasing_sel = null;
     if ((mode=='crank2') && (this.Structure || this.Substructure))  {
@@ -613,6 +559,10 @@ if (!__template)  {
       case 'parrot'     :
             this._layCDI_Parrot ( dropdown );
           break;
+      case 'simbad'     :
+            if (this.HKL)
+              this.HKL.layCustomDropdownInput ( dropdown );
+          break;
       case 'shelxe'     :
             this._layCDI_Structure ( dropdown,0 );
           break;
@@ -771,6 +721,11 @@ if (!__template)  {
 
       case 'crank2'     :
           msg = this._collectCDI_Crank2 ( dropdown );
+        break;
+
+      case 'simbad'     :
+          if (this.HKL)
+            msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
 
       case 'shelx-auto'   :

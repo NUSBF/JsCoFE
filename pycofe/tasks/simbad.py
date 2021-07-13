@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.06.21   <--  Date of Last Modification.
+#    13.07.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -48,7 +48,7 @@ import pyrvapi
 
 #  application imports
 from   pycofe.tasks    import asudef
-from   pycofe.dtypes   import dtype_revision, dtype_sequence
+from   pycofe.dtypes   import dtype_revision
 from   pycofe.verdicts import verdict_simbad
 from   pycofe.auto     import auto
 from   pycofe.proc     import xyzmeta
@@ -81,16 +81,21 @@ class Simbad(asudef.ASUDef):
             nSubJobs = "4"
 
         # fetch input data
-        hkl = None
-        if hasattr(self.input_data.data,"hkl"):  # optional data parameter?
-            hkl = self.makeClass ( self.input_data.data.hkl[0] )
-            if hkl._type!="DataHKL":
-                SpGroup = hkl.getSpaceGroup().replace(" ","")
-                cell_p  = hkl.getCellParameters()
+        idata = None
+        hkl   = None
+        if hasattr(self.input_data.data,"idata"):  # optional data parameter?
+            idata = self.makeClass ( self.input_data.data.idata[0] )
+            if idata._type=="DataRevision":
+                hkl   = self.makeClass ( self.input_data.data.hkl[0] )
+            elif idata._type=="DataHKL":
+                hkl   = idata
+                idata = None
+            else:
+                SpGroup = idata.getSpaceGroup().replace(" ","")
+                cell_p  = idata.getCellParameters()
                 cell_geometry = str(cell_p[0]) + "," + str(cell_p[1]) + "," +\
                                 str(cell_p[2]) + "," + str(cell_p[3]) + "," +\
                                 str(cell_p[4]) + "," + str(cell_p[5])
-                hkl     = None
         else:
             sec0    = self.task.parameters.sec0.contains
             SpGroup = self.getParameter(sec0.SPGROUP).replace(" ","")
@@ -101,7 +106,6 @@ class Simbad(asudef.ASUDef):
                             self.getParameter(sec0.CELL_BETA)  + "," +\
                             self.getParameter(sec0.CELL_GAMMA)
 
-
         sec1       = self.task.parameters.sec1.contains
         maxnlatt   = self.getParameter(sec1.MAXNLATTICES)
         maxpenalty = self.getParameter(sec1.MAXPENALTY)
@@ -110,13 +114,7 @@ class Simbad(asudef.ASUDef):
         sgall = ''
 
         if hkl:
-            level = self.getParameter(sec1.SEARCH_SEL)
-
-            # if self.getParameter(sec1.SGALL) == 'A':
-            #     sgall = 'all'
-            # elif self.getParameter(sec1.SGALL) == 'E':
-            #     sgall = 'enant'
-
+            level = self.getParameter ( sec1.SEARCH_SEL )
             if hkl.spg_alt=='ALL':
                 sgall = 'all'
             else:
@@ -179,17 +177,15 @@ class Simbad(asudef.ASUDef):
         if len(sgall) > 0:
             cmd += ["-sga", sgall]
 
-        """
-        else:
-            # check that simbad database is installed
-            if "SIMBAD_DB" not in os.environ:
-                self.fail (
-                    "<p>&nbsp; *** SIMBAD database is not installed, or is not configured",
-                    "simbad database is not found" )
-                return
-            #else:
-            #    cmd += [ "-morda_db",os.environ["SIMBAD_DB"] ]
-        """
+        # else:
+        #     # check that simbad database is installed
+        #     if "SIMBAD_DB" not in os.environ:
+        #         self.fail (
+        #             "<p>&nbsp; *** SIMBAD database is not installed, or is not configured",
+        #             "simbad database is not found" )
+        #         return
+        #     #else:
+        #     #    cmd += [ "-morda_db",os.environ["SIMBAD_DB"] ]
 
         if "TMPDIR" in os.environ:
             cmd += [ "-tmp_dir",os.environ["TMPDIR"] ]
@@ -208,21 +204,19 @@ class Simbad(asudef.ASUDef):
         #f.write ( pyrvapi.rvapi_get_meta() )
         #f.close()
 
-        """
-        { "nResults": 1,
-          "results": [
-            { "mtz": "../latt/mr_lattice/1DTX/mr/molrep/refine/1DTX_refinement_output.mtz",
-              "source": "latt",
-              "dmap": "../latt/mr_lattice/1DTX/mr/molrep/refine/1DTX_refmac_fofcwt.map",
-              "best": true,
-              "map": "../latt/mr_lattice/1DTX/mr/molrep/refine/1DTX_refmac_2fofcwt.map",
-              "pdb": "../latt/mr_lattice/1DTX/mr/molrep/refine/1DTX_refinement_output.pdb",
-              "rank": 1,
-              "name": "1DTX"
-             }
-          ]
-        }
-        """
+        # { "nResults": 1,
+        #   "results": [
+        #     { "mtz": "../latt/mr_lattice/1DTX/mr/molrep/refine/1DTX_refinement_output.mtz",
+        #       "source": "latt",
+        #       "dmap": "../latt/mr_lattice/1DTX/mr/molrep/refine/1DTX_refmac_fofcwt.map",
+        #       "best": true,
+        #       "map": "../latt/mr_lattice/1DTX/mr/molrep/refine/1DTX_refmac_2fofcwt.map",
+        #       "pdb": "../latt/mr_lattice/1DTX/mr/molrep/refine/1DTX_refinement_output.pdb",
+        #       "rank": 1,
+        #       "name": "1DTX"
+        #      }
+        #   ]
+        # }
 
         rvapi_meta  = pyrvapi.rvapi_get_meta()
         simbad_meta = None
@@ -300,8 +294,6 @@ class Simbad(asudef.ASUDef):
             # register structure data
             structure = self.registerStructure (
                             pdbfile,None,mtzfile,
-                            #os.path.join(self.reportDir(),result0["map"]),
-                            #os.path.join(self.reportDir(),result0["dmap"]),
                             None,None,None,leadKey=1,copy_files=True,
                             refiner="refmac" )
 
@@ -316,60 +308,86 @@ class Simbad(asudef.ASUDef):
                         result0["name"] + " structure and electron density",
                         structure )
 
-                # secId="0" activates drawing of the GaugeWidget on the
-                # activation of 0th (the leftmost) tab
-                revision = asudef.revisionFromStructure ( self,sol_hkl,structure,
-                                                          result0["name"],secId="0",
-                                                          make_verdict=False )
-                if revision:
+                verdict_row = self.rvrow
+                self.rvrow += 5
 
-                    have_results = True  # may be continued manually
-                    revision.setReflectionData ( sol_hkl )
-
-                    # Verdict section
-
-                    if LLG and TFZ:
-                        verdict_meta = {
-                            "sol"        : revision.ASU.solvent,
-                            "resolution" : revision.HKL.getHighResolution(raw=True),
-                            "nasu"       : revision.getNofASUMonomers(),
-                            "fllg"       : float ( LLG   ),
-                            "ftfz"       : float ( TFZ   ),
-                            "rfree"      : float ( Rfree )
-                        }
-                        verdict_simbad.putVerdictWidget ( self,verdict_meta,self.rvrow-6,secId="0" )
-
-                        if Rfree:
-                            self.generic_parser_summary["simbad"] = {
-                                "summary_line" : "LLG=" + LLG + " TFZ=" + TFZ +\
-                                                 " R=" + Rfactor +\
-                                                 " R<sub>free</sub>=" + Rfree,
-                                "R_factor"     : Rfactor,
-                                "R_free"       : Rfree
-                            }
-
-                        auto.makeNextTask ( self,{
-                            "revision" : revision,
-                            "Rfactor"  : Rfactor,
-                            "Rfree"    : Rfree,
-                            "LLG"      : LLG,
-                            "TFZ"      : TFZ
-                        })
-
-                    else:  # cannot be continued in a workflow
-                        self.generic_parser_summary["simbad"] = {
-                            "summary_line" : "solution not found"
-                        }
-                        auto.makeNextTask ( self,{
-                            "revision" : None,
-                            "Rfactor"  : "1",
-                            "Rfree"    : "1",
-                            "LLG"      : "0",
-                            "TFZ"      : "0"
-                        })
-
+                if idata:
+                    # update structure revision given on input
+                    revision = idata
                 else:
-                    self.putMessage ( "Structure Revision cannot be formed (probably a bug)" )
+                    # there was no revision on input; create one with structure
+                    # found and empty asymmetric unit
+                    revision = dtype_revision.DType ( -1 )
+
+                # Old version with importing sequences from structure and
+                # creating "full" structure revision. Keep as template.
+
+                #    secId="0" activates drawing of the GaugeWidget on the
+                #    activation of 0th (the leftmost) tab
+                #    revision = asudef.revisionFromStructure ( self,sol_hkl,structure,
+                #                                              result0["name"],secId="0",
+                #                                              make_verdict=False )
+
+                # if revision:
+
+                revision.setStructureData  ( structure )
+                revision.setReflectionData ( sol_hkl )
+                self.registerRevision      ( revision  )
+
+                if not idata:
+                    self.putMessage (
+                        "&nbsp;<br><span style='color:maroon'>" +\
+                        "<b>Note:</b> Structure Revision has empty ASU, not suitable " +\
+                        "for model building. Use SIMBAD after <i>ASU definition</i> " +\
+                        "task, or run <i>Edit Structure Revision</i> to get ASU " +\
+                        "complete.</span>" )
+
+                have_results = True  # may be continued manually
+
+                # Verdict section
+
+                if LLG and TFZ:
+                    verdict_meta = {
+                        "sol"        : revision.ASU.solvent,
+                        "resolution" : revision.HKL.getHighResolution(raw=True),
+                        "nasu"       : revision.getNofASUMonomers(),
+                        "fllg"       : float ( LLG   ),
+                        "ftfz"       : float ( TFZ   ),
+                        "rfree"      : float ( Rfree )
+                    }
+                    verdict_simbad.putVerdictWidget ( self,verdict_meta,verdict_row,secId="0" )
+
+                    if Rfree:
+                        self.generic_parser_summary["simbad"] = {
+                            "summary_line" : "LLG=" + LLG + " TFZ=" + TFZ +\
+                                             " R=" + Rfactor +\
+                                             " R<sub>free</sub>=" + Rfree,
+                            "R_factor"     : Rfactor,
+                            "R_free"       : Rfree
+                        }
+
+                    auto.makeNextTask ( self,{
+                        "revision" : revision,
+                        "Rfactor"  : Rfactor,
+                        "Rfree"    : Rfree,
+                        "LLG"      : LLG,
+                        "TFZ"      : TFZ
+                    })
+
+                else:  # cannot be continued in a workflow
+                    self.generic_parser_summary["simbad"] = {
+                        "summary_line" : "solution not found"
+                    }
+                    auto.makeNextTask ( self,{
+                        "revision" : None,
+                        "Rfactor"  : "1",
+                        "Rfree"    : "1",
+                        "LLG"      : "0",
+                        "TFZ"      : "0"
+                    })
+
+                # else:
+                #     self.putMessage ( "Structure Revision cannot be formed (probably a bug)" )
 
             else:
                 self.putMessage ( "Structure Data cannot be formed (probably a bug)" )
