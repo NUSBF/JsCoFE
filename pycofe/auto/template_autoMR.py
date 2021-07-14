@@ -62,21 +62,25 @@ def makeNextTask ( crTask,data ):
         if len(data["unm"]) > 0:
             auto_tasks.aimless ( "aimless", crTask.autoRunName )
         else:
-            # auto_api.addContext("asu_parent", crTask.autoRunName)
             # auto_tasks.simbad ( "simbad","L", crTask.autoRunName)
-            auto_tasks.asu("asu", auto_api.getContext("asu_parent"))
+            auto_tasks.asu("asu", crTask.autoRunName)
             return
-
         return
 
 
     elif crTask._type=="TaskAimless":
         if len(data["hkl"])>0:
-            auto_api.addContext ( "hkl",data["hkl"][0] )
-            auto_tasks.asu("asu", auto_api.getContext("asu_parent"))
-            return
             # auto_api.addContext("asu_parent", crTask.autoRunName)
             # auto_tasks.simbad ( "simbad","L",crTask.autoRunName )
+            auto_api.addContext ( "hkl",data["hkl"][0] )
+            auto_tasks.asu("asu", crTask.autoRunName)
+            return
+        else:
+            strTree = 'Sorry, automated merging seems to fail (click remark for more comments)'
+            strText = 'Please re-run merging manually with adjusted parameters; you can tick "Keep auto" box to keep automatic Workflow running.\n'
+            auto_tasks.remark("rem_sorry33", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+            return
+
 
 
     elif crTask._type=="TaskSimbad":
@@ -127,7 +131,11 @@ def makeNextTask ( crTask,data ):
         else:
             # first SIMBAD, lattice search only
             if not data["revision"] or (float(data["Rfree"])>0.4):
-                auto_tasks.asu ( "asu", auto_api.getContext("asu_parent"))
+                # auto_tasks.asu ( "asu", auto_api.getContext("asu_parent"))
+                # running MRBUMP from ASU task
+                revision = auto_api.getContext("starting_asu_revision")
+                parent = auto_api.getContext("asu_task_name")
+                auto_tasks.mrbump('mrbump', revision, parent, 5)
                 return
             else:
                 auto_api.addContext("build_parent", crTask.autoRunName)
@@ -141,7 +149,16 @@ def makeNextTask ( crTask,data ):
         auto_api.addContext("buccaneer_rfree", data["Rfree"])
         auto_api.addContext("buccaneer_taskName", crTask.autoRunName)
         auto_api.addContext("buccaneer_revision", data["revision"])
-        auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
+        resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
+
+
+        if float(data["Rfree"]) < 0.3 : # No CCP4Build if Buccaneer performed well
+            if resHi > 3.0:
+                auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
+            else:
+                auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+        else:
+            auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
         return
 
 
@@ -152,7 +169,6 @@ def makeNextTask ( crTask,data ):
         else:
             parentTask = crTask.autoRunName
             revision = data["revision"]
-
         resHi = float(data["revision"].HKL.dataset.RESO[1]) # RESO[0] is low res limit
         if resHi > 3.0:
             auto_tasks.lorestr("lorestr", revision, parentTask)
@@ -165,6 +181,7 @@ def makeNextTask ( crTask,data ):
         auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
         return
 
+
     elif crTask._type=="TaskASUDef":  # could be elif crTask.autoRunName.startsWith("asu")
         strTree = 'Quick MrBump run (click for details)'
         strText = 'In this MRBUMP run (to make it quick) we will do MR search with only 5 top models (basing on sequence alignment). \n' + \
@@ -174,8 +191,10 @@ def makeNextTask ( crTask,data ):
                   'but then it may provide a good solution of your structure.\n'
         # auto_tasks.remark("rem_mrbComment", strTree, 5, strText, crTask.autoRunName)  # 5 - Cyan
 
-        auto_tasks.mrbump('mrbump', data['revision'], crTask.autoRunName, 5)
-
+        # auto_tasks.mrbump('mrbump', data['revision'], crTask.autoRunName, 5)
+        auto_api.addContext("starting_asu_revision", data["revision"])
+        auto_api.addContext("asu_task_name", crTask.autoRunName)
+        auto_tasks.simbad("simbad", "L", data['revision'], crTask.autoRunName)
         return
 
 
@@ -189,8 +208,10 @@ def makeNextTask ( crTask,data ):
         if not data["revision"]:
             if (os.path.isfile(os.path.join(os.environ["CCP4"], "share", "mrd_data", "VERSION")) or \
                     os.path.isfile(os.path.join(os.environ["CCP4"], "lib", "py2", "morda", "LINKED"))):
-                auto_api.addTask("morda", "TaskMorda", crTask.autoRunName)
-                auto_api.addTaskData("morda", "revision", data["revision"])
+                revision = auto_api.getContext("starting_asu_revision")
+                parent = auto_api.getContext("asu_task_name")
+                auto_api.addTask("morda", "TaskMorda", parent)
+                auto_api.addTaskData("morda", "revision", revision)
                 auto_api.addTaskParameter("morda", "ALTGROUPS_CBX", True)
                 return
             else:
@@ -240,12 +261,13 @@ def makeNextTask ( crTask,data ):
                             return
                     else:
                         # last attempt to solve - full SIMBAD
-                        # auto_tasks.simbad("simbadFull", "LCS", crTask.autoRunName)
-                        strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
-                        strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
-                                  'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
-                                  'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
-                        auto_tasks.remark("rem_sorry23", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+                        auto_tasks.simbad("simbadFull", "LCS", data['revision'], crTask.autoRunName)
+
+                        # strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
+                        # strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
+                        #           'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
+                        #           'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
+                        # auto_tasks.remark("rem_sorry23", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
                         return
             else:
                 # solved nicely by MRBUMP - goes to rebuilding
@@ -263,12 +285,12 @@ def makeNextTask ( crTask,data ):
                 return
             elif float(data["Rfree"]) > 0.5:
                 # last attempt to solve - full SIMBAD
-                # auto_tasks.simbad("simbadFull", "LCS", crTask.autoRunName)
-                strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
-                strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
-                          'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
-                          'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
-                auto_tasks.remark("rem_sorry3", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+                auto_tasks.simbad("simbadFull", "LCS", data['revision'], crTask.autoRunName)
+                # strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
+                # strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
+                #           'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
+                #           'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
+                # auto_tasks.remark("rem_sorry3", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
 
                 return
             else:
