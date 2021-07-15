@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.07.21   <--  Date of Last Modification.
+ *    15.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -225,8 +225,12 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
 
   function getProjectNodeBranch ( projectData,dataId )  {
     var node_lst = [];
-    for (var i=0;(i<projectData.tree.length) && (node_lst.length<=0);i++)
-      node_lst = __find_project_node_branch ( projectData.tree[i],dataId );
+    try {
+      for (var i=0;(i<projectData.tree.length) && (node_lst.length<=0);i++)
+        node_lst = __find_project_node_branch ( projectData.tree[i],dataId );
+    } catch(err){
+      console.log ( ' +++++ exception in common.data_project.js:getProjectNodeBranch()' );
+    }
     return node_lst;
   }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.21   <--  Date of Last Modification.
+ *    15.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -307,6 +307,7 @@ var fe_server = conf.getFEConfig();
                '</b>, new password: <b>' + pwds[i] + '</b><br>';
       msg += '&nbsp;<br>';
 
+      userData.name = userName;
       response = new cmd.Response ( cmd.fe_retcode.ok,userName,
         emailer.sendTemplateMessage ( userData,
                   cmd.appName() + ' Login Recovery',
@@ -1075,7 +1076,7 @@ var userFilePath = getUserDataFName ( loginData );
           } else  {
             log.standard ( 143,'Password for user ' + userData.login +
                                ' reset by admin, pwd=' + pwd );
-            response = new cmd.Response ( cmd.fe_retcode.ok,uData.userName,
+            response = new cmd.Response ( cmd.fe_retcode.ok,uData.name,
               emailer.sendTemplateMessage ( uData,
                         cmd.appName() + ' Login Password Reset',
                         'password_reset_admin',{ 'text1' : pwd } )
