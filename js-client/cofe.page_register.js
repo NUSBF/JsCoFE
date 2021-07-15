@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.01.20   <--  Date of Last Modification.
+ *    15.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User registration page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -213,16 +213,18 @@ function RegisterPage ( sceneId )  {
                 new MessageBox ( 'Registration',
                   'Dear ' + ud.name +
                   ',<p>You are now registered for CCP4 on-line services with ' +
-                  'login name<br><b><i>' + ud.login + '</i></b>.' +
-                  '<p>Your temporary password was sent to e-mail address<br><b><i>' +
+                  'login name<p><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>' +
+                  ud.login + '</i></b>.' +
+                  '<p>Your temporary password was sent to e-mail address<p>' +
+                  '<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>' +
                   ud.email + '</i></b>.' +
                   '<p>Please check your e-mail and return to the login page.<p>' +
-                  '<b>If the confirmation e-mail does not arrive:<b><ol>' +
+                  '<b><i>If the confirmation e-mail does not arrive:</i></b><ol>' +
                   '<li>Check your Spam folder</li>' +
                   '<li><b>Do not register again!</i> Instead, use the ' +
                   '<i>"Forgotten password"</i> option</li>' +
                   '<li>Write to CCP4 if recovering your account is not successful ' +
-                  'after a few attempts.</li></ul>' );
+                  'after several attempts.</li></ol>' );
             return true;
 
           case fe_retcode.existingLogin:
