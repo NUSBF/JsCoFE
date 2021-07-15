@@ -216,7 +216,13 @@ function RegisterPage ( sceneId )  {
                   'login name<br><b><i>' + ud.login + '</i></b>.' +
                   '<p>Your temporary password was sent to e-mail address<br><b><i>' +
                   ud.email + '</i></b>.' +
-                  '<p>Please check your e-mail and return to the login page.' );
+                  '<p>Please check your e-mail and return to the login page.<p>' +
+                  '<b>If the confirmation e-mail does not arrive:<b><ol>' +
+                  '<li>Check your Spam folder</li>' +
+                  '<li><b>Do not register again!</i> Instead, use the ' +
+                  '<i>"Forgotten password"</i> option</li>' +
+                  '<li>Write to CCP4 if recovering your account is not successful ' +
+                  'after a few attempts.</li></ul>' );
             return true;
 
           case fe_retcode.existingLogin:
