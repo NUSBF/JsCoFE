@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.05.21   <--  Date of Last Modification.
+ *    15.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -182,19 +182,22 @@ function checkVersionMatch ( response,localServer_bool )  {
 
 function makeJSONString ( data_obj )  {
 var json = null;
-  try {
-    json = JSON.stringify ( data_obj );
-  } catch(e) {
-    new MessageBox ( 'Unsuitable data',
-      '<div style="width:500px"><h2>Unsuitable data</h2>' +
-      '<p>Unsuitable data encountered when sending data to ' + appName() +
-      ' server. Usually this is caused by using symbols from a non-Latin ' +
-      'alphabet or rare special characters.' +
-      '<p>Try repeating your actions making sure that your keyboard is on ' +
-      'English register. If this does not help, close this page or tab in ' +
-      'your browser and log on ' + appName + ' again. Ultimately, contact ' +
-      appName() + ' support.</div>' );
-  }
+
+  json = JSON.stringify ( data_obj );
+
+  // try {
+  //   json = JSON.stringify ( data_obj );
+  // } catch(e) {
+  //   new MessageBox ( 'Unsuitable data',
+  //     '<div style="width:500px"><h2>Unsuitable data</h2>' +
+  //     '<p>Unsuitable data encountered when sending data to ' + appName() +
+  //     ' server. Usually this is caused by using symbols from a non-Latin ' +
+  //     'alphabet or rare special characters.' +
+  //     '<p>Try repeating your actions making sure that your keyboard is on ' +
+  //     'English register. If this does not help, close this page or tab in ' +
+  //     'your browser and log on ' + appName() + ' again. Ultimately, contact ' +
+  //     appName() + ' support.</div>' );
+  // }
   return json;
 }
 

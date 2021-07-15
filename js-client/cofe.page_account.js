@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.12.20   <--  Date of Last Modification.
+ *    15.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User account settings page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -279,6 +279,9 @@ function AccountPage ( sceneId )  {
     authoris_btn.addOnClickListener ( function(){
       new AuthorisationDialog ( function(dlg){
         userData.authorisation = dlg.auth_dic;
+        // eleminate circular dependency in userData
+        for (var key in userData.authorisation)
+          userData.authorisation[key].auth_lbl = null;
       });
     });
   }
@@ -360,17 +363,17 @@ function AccountPage ( sceneId )  {
       serverRequest ( fe_reqtype.updateUserData,userData,'My Account',
                       function(response){
         if (response)
-          new MessageBoxW ( 'My Account',response,0.5 );
-        else  {
+          new MessageBoxW ( 'My Account',response +
+            '<p>You are logged out now, please login again.',0.5 );
+        else
           new MessageBox ( 'My Account',
             'Dear ' + userData.name +
             ',<p>Your account has been successfully updated, and ' +
             'notification<br>sent to your e-mail address:<p><b><i>' +
             userData.email + '</i></b>.' +
             '<p>You are logged out now, please login again.' );
-          stopSessionChecks();
-          makeLoginPage ( sceneId );
-        }
+        stopSessionChecks();
+        makeLoginPage ( sceneId );
       },null,'persist' );
     }
 
