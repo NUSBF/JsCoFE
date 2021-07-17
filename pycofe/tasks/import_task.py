@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    05.10.20   <--  Date of Last Modification.
+#    17.07.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -232,15 +232,18 @@ class Import(basic.TaskDriver):
                 if nimported>0:
                     ilist += key[4:] + " (" + str(nimported) + ") "
             if ilist:
-                if self.task.uname:
-                    self.task.uname += " / "
-                self.task.uname += "imported: <i><b>" + ilist + "</b></i>"
-                #with open('job.meta','w') as file_:
-                #    file_.write ( self.task.to_JSON() )
+                self.generic_parser_summary["import_task"] = {
+                  "summary_line" : "imported: " + ilist
+                }
 
-        self.generic_parser_summary["import_task"] = {
-          "summary_line" : "*none*"
-        }
+                # if self.task.uname:
+                #     self.task.uname += " / "
+                # self.task.uname += "imported: <i><b>" + ilist + "</b></i>"
+
+
+        # self.generic_parser_summary["import_task"] = {
+        #   "summary_line" : "*none*"
+        # }
 
         # close execution logs and quit
         self.success ( (self.outputDataBox.nDTypes()>0) )

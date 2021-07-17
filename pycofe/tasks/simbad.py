@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    13.07.21   <--  Date of Last Modification.
+#    17.07.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -239,6 +239,7 @@ class Simbad(asudef.ASUDef):
             simbad_meta["nResults"] = 0
 
         have_results = False
+        revision     = None
 
         if simbad_meta["nResults"]>0:
 
@@ -276,126 +277,151 @@ class Simbad(asudef.ASUDef):
 
             self.putMessage ( "<h3>Best model found: " + result0["name"] + "</h3>" )
 
-            mtzfile = self.getMTZOFName()
-            shutil.copy2 ( os.path.join(self.reportDir(),result0["mtz"]),mtzfile )
-
             pdbfile = self.getXYZOFName()
             shutil.copy2 ( os.path.join(self.reportDir(),result0["pdb"]),pdbfile )
 
-            sol_hkl = hkl
-            meta    = xyzmeta.getXYZMeta ( pdbfile,self.file_stdout,self.file_stderr )
-            if "cryst" in meta:
-                sol_spg    = meta["cryst"]["spaceGroup"]
-                spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,mtzfile )
-                if spg_change:
-                    mtzfile = spg_change[0]
-                    sol_hkl = spg_change[1]
+            if result0["mtz"]:
+                mtzfile = self.getMTZOFName()
+                shutil.copy2 ( os.path.join(self.reportDir(),result0["mtz"]),mtzfile )
 
-            # register structure data
-            structure = self.registerStructure (
-                            pdbfile,None,mtzfile,
-                            None,None,None,leadKey=1,copy_files=True,
-                            refiner="refmac" )
+                sol_hkl = hkl
+                meta    = xyzmeta.getXYZMeta ( pdbfile,self.file_stdout,self.file_stderr )
+                if "cryst" in meta:
+                    sol_spg    = meta["cryst"]["spaceGroup"]
+                    spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,mtzfile )
+                    if spg_change:
+                        mtzfile = spg_change[0]
+                        sol_hkl = spg_change[1]
 
-            if structure:
+                # register structure data
+                structure = self.registerStructure (
+                                pdbfile,None,mtzfile,
+                                None,None,None,leadKey=1,copy_files=True,
+                                refiner="refmac" )
 
-                structure.addDataAssociation ( sol_hkl.dataId )
-                structure.setRefmacLabels ( sol_hkl )
-                structure.setXYZSubtype   ()
-                structure.addPhasesSubtype()
+                if structure:
 
-                self.putStructureWidget ( "structure_btn_",
-                        result0["name"] + " structure and electron density",
-                        structure )
+                    structure.addDataAssociation ( sol_hkl.dataId )
+                    structure.setRefmacLabels ( sol_hkl )
+                    structure.setXYZSubtype   ()
+                    structure.addPhasesSubtype()
 
-                verdict_row = self.rvrow
-                self.rvrow += 5
+                    self.putStructureWidget ( "structure_btn_",
+                            result0["name"] + " structure and electron density",
+                            structure )
 
-                if idata:
-                    # update structure revision given on input
-                    revision = idata
-                else:
-                    # there was no revision on input; create one with structure
-                    # found and empty asymmetric unit
-                    revision = dtype_revision.DType ( -1 )
+                    verdict_row = self.rvrow
+                    self.rvrow += 5
 
-                # Old version with importing sequences from structure and
-                # creating "full" structure revision. Keep as template.
+                    if idata:
+                        # update structure revision given on input
+                        revision = idata
+                    else:
+                        # there was no revision on input; create one with structure
+                        # found and empty asymmetric unit
+                        revision = dtype_revision.DType ( -1 )
 
-                #    secId="0" activates drawing of the GaugeWidget on the
-                #    activation of 0th (the leftmost) tab
-                #    revision = asudef.revisionFromStructure ( self,sol_hkl,structure,
-                #                                              result0["name"],secId="0",
-                #                                              make_verdict=False )
+                    # Old version with importing sequences from structure and
+                    # creating "full" structure revision. Keep as template.
 
-                # if revision:
+                    #    secId="0" activates drawing of the GaugeWidget on the
+                    #    activation of 0th (the leftmost) tab
+                    #    revision = asudef.revisionFromStructure ( self,sol_hkl,structure,
+                    #                                              result0["name"],secId="0",
+                    #                                              make_verdict=False )
 
-                revision.setStructureData  ( structure )
-                revision.setReflectionData ( sol_hkl )
-                self.registerRevision      ( revision  )
+                    # if revision:
 
-                if not idata:
-                    self.putMessage (
-                        "&nbsp;<br><span style='color:maroon'>" +\
-                        "<b>Note:</b> Structure Revision has empty ASU, not suitable " +\
-                        "for model building. Use SIMBAD after <i>ASU definition</i> " +\
-                        "task, or run <i>Edit Structure Revision</i> to get ASU " +\
-                        "complete.</span>" )
+                    revision.setStructureData  ( structure )
+                    revision.setReflectionData ( sol_hkl )
+                    self.registerRevision      ( revision  )
 
-                have_results = True  # may be continued manually
+                    if not idata:
+                        self.putMessage (
+                            "&nbsp;<br><span style='color:maroon'>" +\
+                            "<b>Note:</b> Structure Revision has empty ASU, not suitable " +\
+                            "for model building. Use SIMBAD after <i>ASU definition</i> " +\
+                            "task, or run <i>Edit Structure Revision</i> to get ASU " +\
+                            "complete.</span>" )
 
-                # Verdict section
+                    have_results = True  # may be continued manually
 
-                if LLG and TFZ:
-                    verdict_meta = {
-                        "sol"        : revision.ASU.solvent,
-                        "resolution" : revision.HKL.getHighResolution(raw=True),
-                        "nasu"       : revision.getNofASUMonomers(),
-                        "fllg"       : float ( LLG   ),
-                        "ftfz"       : float ( TFZ   ),
-                        "rfree"      : float ( Rfree )
-                    }
-                    verdict_simbad.putVerdictWidget ( self,verdict_meta,verdict_row,secId="0" )
+                    # Verdict section
 
-                    if Rfree:
-                        self.generic_parser_summary["simbad"] = {
-                            "summary_line" : "LLG=" + LLG + " TFZ=" + TFZ +\
-                                             " R=" + Rfactor +\
-                                             " R<sub>free</sub>=" + Rfree,
-                            "R_factor"     : Rfactor,
-                            "R_free"       : Rfree
+                    if LLG and TFZ:
+                        verdict_meta = {
+                            "sol"        : revision.ASU.solvent,
+                            "resolution" : revision.HKL.getHighResolution(raw=True),
+                            "nasu"       : revision.getNofASUMonomers(),
+                            "fllg"       : float ( LLG   ),
+                            "ftfz"       : float ( TFZ   ),
+                            "rfree"      : float ( Rfree )
                         }
+                        verdict_simbad.putVerdictWidget ( self,verdict_meta,verdict_row,secId="0" )
 
-                    auto.makeNextTask ( self,{
-                        "revision" : revision,
-                        "Rfactor"  : Rfactor,
-                        "Rfree"    : Rfree,
-                        "LLG"      : LLG,
-                        "TFZ"      : TFZ
-                    })
+                        if Rfree:
+                            self.generic_parser_summary["simbad"] = {
+                                "summary_line" : "best model: " + result0["name"] +\
+                                                 ", LLG=" + LLG + " TFZ=" + TFZ +\
+                                                 " R="  + Rfactor +\
+                                                 " R<sub>free</sub>=" + Rfree,
+                                "R_factor"     : Rfactor,
+                                "R_free"       : Rfree
+                            }
 
-                else:  # cannot be continued in a workflow
+                        auto.makeNextTask ( self,{
+                            "revision" : revision,
+                            "Rfactor"  : Rfactor,
+                            "Rfree"    : Rfree,
+                            "LLG"      : LLG,
+                            "TFZ"      : TFZ
+                        })
+
+                    else:  # cannot be continued in a workflow
+                        self.generic_parser_summary["simbad"] = {
+                            "summary_line" : "solution not found"
+                        }
+                        # auto.makeNextTask ( self,{
+                        #     "revision" : None,
+                        #     "Rfactor"  : "1",
+                        #     "Rfree"    : "1",
+                        #     "LLG"      : "0",
+                        #     "TFZ"      : "0"
+                        # })
+
+                    # else:
+                    #     self.putMessage ( "Structure Revision cannot be formed (probably a bug)" )
+
+                else:
+                    self.putMessage ( "Structure Data cannot be formed (probably a bug)" )
+
+            else:  # only PDB file delivered
+                oxyz = self.registerXYZ ( pdbfile,checkout=True )
+                if oxyz:
+                    oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                    self.putMessage (
+                        "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                        oxyz.dname )
+                    self.putXYZWidget ( self.getWidgetId("xyz_btn"),
+                                        "Atomic coordinates",oxyz,-1 )
+                    have_results = True
                     self.generic_parser_summary["simbad"] = {
-                        "summary_line" : "solution not found"
+                        "summary_line" : "best model: " + result0["name"]
                     }
-                    auto.makeNextTask ( self,{
-                        "revision" : None,
-                        "Rfactor"  : "1",
-                        "Rfree"    : "1",
-                        "LLG"      : "0",
-                        "TFZ"      : "0"
-                    })
+                    # self.putMessage ( "&nbsp;" )
+                else:
+                    # close execution logs and quit
+                    self.generic_parser_summary["simbad"] = {
+                        "summary_line" : "errors"
+                    }
+                    self.fail ( "<h3>XYZ Data was not formed (error)</h3>",
+                                "XYZ Data was not formed" )
 
-                # else:
-                #     self.putMessage ( "Structure Revision cannot be formed (probably a bug)" )
-
-            else:
-                self.putMessage ( "Structure Data cannot be formed (probably a bug)" )
-
-        elif hkl:
+        # elif hkl:
+        else:
             self.putTitle ( "No Suitable Models Found" )
 
-        if not have_results:
+        if not have_results or not revision:
             auto.makeNextTask ( self,{
                 "revision" : None,
                 "Rfactor"  : "1",

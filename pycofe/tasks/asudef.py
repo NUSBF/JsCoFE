@@ -47,26 +47,24 @@ from   pycofe.auto     import auto
 # ============================================================================
 # Revision-making function
 
-"""
-def makeAsuFitMessage ( base,nc0,sol0 ):
-    if nc0==1 and sol0>35.0:
-        base.putMessage ( "<h3 class='header-green'>The suggested " +\
-                          "composition of ASU appears suitable</h3>" )
-    elif nc0 > 1:
-        base.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
-                          "composition of ASU has higher, than usual, " +\
-                          "solvent fraction.<br>" +\
-                          "Try to increase the number of copies by a " +\
-                          "factor of " + str(nc0) + "</h3>"  )
-    elif nc0 > 0:
-        base.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
-                          "composition of ASU has lower, than usual, " +\
-                          "solvent fraction.<br>" +\
-                          "Try to decrease the number of copies by a " +\
-                          "factor of " + str(math.ceil(350.0/sol0)/10.0) +\
-                          "</h3>" )
-    return
-"""
+# def makeAsuFitMessage ( base,nc0,sol0 ):
+#     if nc0==1 and sol0>35.0:
+#         base.putMessage ( "<h3 class='header-green'>The suggested " +\
+#                           "composition of ASU appears suitable</h3>" )
+#     elif nc0 > 1:
+#         base.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
+#                           "composition of ASU has higher, than usual, " +\
+#                           "solvent fraction.<br>" +\
+#                           "Try to increase the number of copies by a " +\
+#                           "factor of " + str(nc0) + "</h3>"  )
+#     elif nc0 > 0:
+#         base.putMessage ( "<h3 class='header-red'>WARNING: the suggested " +\
+#                           "composition of ASU has lower, than usual, " +\
+#                           "solvent fraction.<br>" +\
+#                           "Try to decrease the number of copies by a " +\
+#                           "factor of " + str(math.ceil(350.0/sol0)/10.0) +\
+#                           "</h3>" )
+#     return
 
 
 def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.07.21   <--  Date of Last Modification.
+ *    17.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -532,9 +532,13 @@ Tree.prototype.selectNode = function ( node,single_bool )  {
     this.node_map[this.selected_node_id].state.selected = false;
 
   if (this.created)  {
-    if (single_bool)
-      $(this.root.element).jstree('deselect_all');
-    $(this.root.element).jstree(true).select_node('#'+node.id);
+    try {
+      if (single_bool)
+        $(this.root.element).jstree('deselect_all');
+      $(this.root.element).jstree(true).select_node('#'+node.id);
+    } catch(err)  {
+      console.log ( ' >>>>> exception in gui.tree.js:selectNode' );
+    }
   }
 
   node.state.selected   = true;
