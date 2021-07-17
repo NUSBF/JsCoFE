@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    17.07.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -260,7 +260,7 @@ class Gemmi(basic.TaskDriver):
                     self.putMessage (
                         "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                         oxyz.dname )
-                    self.putXYZWidget ( "xyz_btn","Edited coordinates",oxyz,-1 )
+                    self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Edited coordinates",oxyz,-1 )
                     have_results = True
                 else:
                     # close execution logs and quit

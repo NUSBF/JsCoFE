@@ -182,10 +182,12 @@ class XyzUtils(basic.TaskDriver):
                                 "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                                 oxyz.dname )
                             if len(st)>1:
-                                self.putXYZWidget ( "xyz_btn","Model " + model.name +
-                                                              ", chain " + chain.name,oxyz,-1 )
+                                self.putXYZWidget ( self.getWidgetId("xyz_btn"),
+                                                    "Model "   + model.name +\
+                                                    ", chain " + chain.name,oxyz,-1 )
                             else:
-                                self.putXYZWidget ( "xyz_btn","Chain " + chain.name,oxyz,-1 )
+                                self.putXYZWidget ( self.getWidgetId("xyz_btn"),
+                                                    "Chain " + chain.name,oxyz,-1 )
                             have_results = True
                             self.putMessage ( "&nbsp;" )
                         else:
@@ -281,7 +283,8 @@ class XyzUtils(basic.TaskDriver):
                             self.putMessage (
                                 "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                                 oxyz.dname )
-                            self.putXYZWidget ( "xyz_btn","Edited coordinates",oxyz,-1 )
+                            self.putXYZWidget ( self.getWidgetId("xyz_btn"),
+                                                "Edited coordinates",oxyz,-1 )
                             have_results = True
                         else:
                             # close execution logs and quit
