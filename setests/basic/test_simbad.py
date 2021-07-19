@@ -54,27 +54,15 @@ def simbadAfterImport(driver, waitLong):
     closeButton.click()
     time.sleep(1)
 
-    solv = 0.0
     rWork = 1.0
     rFree = 1.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0002\] simbad --(.*)Solv=(.*)\%', taskText)
+        match = re.search('\[0002\] simbad --.*R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
-            # coudl be different SIMBAD output on different Cloud version, cet us comply to both
-            solv = float(match.group(2))
-            match2 = re.search('.*R=(0\.\d*) Rfree=(0\.\d*)', match.group(1))
-            if match2:
-                rWork = float(match2.group(1))
-                rFree = float(match2.group(2))
+            rWork = float(match.group(1))
+            rFree = float(match.group(2))
             break
-    if (solv == 0.0):
-        print('*** Verification: could not find Solv value after SIMBAD run')
-    else:
-        print('*** Verification: SIMBAD ' \
-              'Solv is %0.1f %%(expecting >45.0 and <60.0), '  % (solv))
-    assert solv < 60.0
-    assert solv > 45.0
 
     if (rWork != 1.0) and (rFree != 1.0):
         print('*** Verification: SIMBAD ' \
