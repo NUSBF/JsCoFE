@@ -213,15 +213,30 @@ and &lt; 1*sigma for the residue ZO metrics."""
                                  "off", 15.0, True)
         pyrvapi.rvapi_set_line_options(self.ZDmM.id, self.livePLT.id, self.liveGraph.id, self.widget.id, "red", "bars",
                                  "off", 15.0, True)
-        pyrvapi.rvapi_set_line_options(self.ZOM.id, self.livePLT2.id, self.liveGraph.id, self.widget.id, "black", "bars",
+        pyrvapi.rvapi_set_line_options(self.ZOM.id, self.livePLT2.id, self.liveGraph.id, self.widget.id, "darkblue", "bars",
                                  "off", 15.0, True)
 
         pyrvapi.rvapi_set_line_options(self.ZDpS.id, self.livePLT3.id, self.liveGraph.id, self.widget.id, "green", "bars",
                                  "off", 15.0, True)
         pyrvapi.rvapi_set_line_options(self.ZDmS.id, self.livePLT3.id, self.liveGraph.id, self.widget.id, "red", "bars",
                                  "off", 15.0, True)
-        pyrvapi.rvapi_set_line_options(self.ZOS.id, self.livePLT4.id, self.liveGraph.id, self.widget.id, "black", "bars",
+        pyrvapi.rvapi_set_line_options(self.ZOS.id, self.livePLT4.id, self.liveGraph.id, self.widget.id, "darkblue", "bars",
                                  "off", 15.0, True)
+
+        pyrvapi.rvapi_set_bar_options(self.ZDpM.id, self.livePLT.id, self.liveGraph.id, self.widget.id,
+                                      0, 1, 1, 2, 0.5, 135, True)
+        pyrvapi.rvapi_set_bar_options(self.ZDmM.id, self.livePLT.id, self.liveGraph.id, self.widget.id,
+                                      0, 1, 1, 2, 0.5, 135, True)
+        pyrvapi.rvapi_set_bar_options(self.ZOM.id, self.livePLT2.id, self.liveGraph.id, self.widget.id,
+                                      0, 1, 1, 2, 0.5, 135, True)
+
+        pyrvapi.rvapi_set_bar_options(self.ZDpS.id, self.livePLT3.id, self.liveGraph.id, self.widget.id,
+                                      0, 1, 1, 2, 0.5, 135, True)
+        pyrvapi.rvapi_set_bar_options(self.ZDmS.id, self.livePLT3.id, self.liveGraph.id, self.widget.id,
+                                      0, 1, 1, 2, 0.5, 135, True)
+        pyrvapi.rvapi_set_bar_options(self.ZOS.id, self.livePLT4.id, self.liveGraph.id, self.widget.id,
+                                      0, 1, 1, 2, 0.5, 135, True)
+
 
       resNum = int(groups[2])
       self.liveResiduetN.add_datum(resNum)
