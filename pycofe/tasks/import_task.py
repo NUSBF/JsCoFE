@@ -246,7 +246,12 @@ class Import(basic.TaskDriver):
         # }
 
         # close execution logs and quit
-        self.success ( (self.outputDataBox.nDTypes()>0) )
+        have_results = (self.outputDataBox.nDTypes()>0)
+        if not have_results:
+            self.generic_parser_summary["import_task"] = {
+              "summary_line" : "no data imported"
+            }
+        self.success ( have_results )
         return
 
 
