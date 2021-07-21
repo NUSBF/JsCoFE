@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.05.21   <--  Date of Last Modification.
+ *    21.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -683,7 +683,10 @@ function copyToSafe ( task,jobEntry )  {
       }
 
       safeDirPath = path.join ( safeDirPath,'job_' + Date.now() );
-      fs.copySync ( jobEntry.jobDir,safeDirPath );
+      utils.removeSymLinks ( jobEntry.jobDir );
+      fs.copySync ( jobEntry.jobDir,safeDirPath,{
+        dereference : true
+      });
 
       if (jobEntry.feedback==ud.feedback_code.agree2)
         utils.writeString ( path.join(safeDirPath,'__user_info.txt'),
@@ -827,7 +830,8 @@ function ncJobFinished ( job_token,code )  {
 // *** for debugging
 //if (__use_fake_fe_url) feURL = 'http://localhost:54321';
 
-    if (code==1001)  {
+    // if (code==1001)  {
+    if (code)  {
       // console.log ( '  >>> was stopped ');
       utils.removeSymLinks ( jobEntry.jobDir );
     }
