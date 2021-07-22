@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.07.21   <--  Date of Last Modification.
+ *    22.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -43,6 +43,7 @@ function ProjectPage ( sceneId )  {
   var title_lbl       = null;
   this.jobTree        = null;    // == this.job_tree, for internal references
   this.can_reload     = false;   // tree reload semaphore
+  this.pending_act    = '';      // action pending because of reload
   // var replayJobTree  = null;  // == this.replay_job_tree, for internal references
   this.tree_div       = null;
 
@@ -237,8 +238,9 @@ function ProjectPage ( sceneId )  {
     });
     self.refresh_btn.addOnClickListener ( function(){
       self.setDisabled  ( true );
-      self.can_reload = true;  // force in order to avoid locking
-      self.wakeZombiJobs();    // must go before reloadTree
+      self.can_reload  = true;  // force in order to avoid locking
+      self.pending_act = '';    // drop pending actions
+      self.wakeZombiJobs();     // must go before reloadTree
       self.reloadTree   ( true,true,null );  // multiple = false?
     });
   }(this))
@@ -323,7 +325,8 @@ function ProjectPage ( sceneId )  {
           self.add_rem_btn.addOnClickListener ( function(){ self.addRemark  (); } );
           self.thlight_btn.addOnClickListener ( function(){ self.toggleBranchHighlight(); } );
           title_lbl       .setText ( self.jobTree.projectData.desc.title );
-          self.can_reload = true;
+          self.can_reload  = true;
+          self.pending_act = '';
         }
       },function(node){
         return self.onTreeContextMenu();
@@ -395,128 +398,303 @@ ProjectPage.prototype.setDisabled = function ( disabled_bool )  {
   }
 }
 
+ProjectPage.prototype.start_action = function ( action_key )  {
+  if (this.can_reload)  {
+    this.can_reload = false;  // block concurrent reloads
+    this.pending_act = '';    // cleare pending actions
+    this.jobTree.stopTaskLoop();
+    return true;
+  } else if (!this.pending_act)
+    self.pending_act = action_key;
+  else
+    new MessageBox ( 'Communication delays',
+                     'Communication delays, please wait a moment.<br>' +
+                     'If this message persists, reload Project using<br>' +
+                     '<i>Refresh</i> button in the vertical toolbar.' );
+  return false;
+}
+
+ProjectPage.prototype.end_action = function ( action_key )  {
+  this.jobTree.startTaskLoop();
+  this.can_reload  = true;  // block concurrent reloads
+  this.pending_act = '';    // cleare pending actions
+}
+
 ProjectPage.prototype.addJob = function()  {
   this.selectRemark();
-  (function(self){
-    self.jobTree.stopTaskLoop();
-    self.jobTree.addJob ( false,false,self,function(){
-      self.del_btn.setDisabled ( false );
-      self.jobTree.startTaskLoop();
-    });
-  }(this))
+  if (this.start_action('add_job'))
+    (function(self){
+      self.jobTree.addJob ( false,false,self,function(){
+        self.del_btn.setDisabled ( false );
+        self.end_action();
+      });
+    }(this))
 }
 
 ProjectPage.prototype.addJobRepeat = function()  {
   this.selectRemark();
-  (function(self){
-    self.jobTree.addJob ( false,true,self,function(){
-      self.del_btn.setDisabled ( false );
-    });
-  }(this))
+  if (this.start_action('add_job_repeat'))
+    (function(self){
+      self.jobTree.addJob ( false,true,self,function(){
+        self.del_btn.setDisabled ( false );
+        self.end_action();
+      });
+    }(this))
 }
 
 ProjectPage.prototype.insertJob = function()  {
   this.selectRemark();
-  (function(self){
-    self.jobTree.addJob ( true,false,self,function(){
-      self.del_btn.setDisabled ( false );
-    });
-  }(this))
+  if (this.start_action('insert_job'))
+    (function(self){
+      self.jobTree.addJob ( true,false,self,function(){
+        self.del_btn.setDisabled ( false );
+        self.end_action();
+      });
+    }(this))
 }
 
 ProjectPage.prototype.addRemark = function()  {
-  (function(self){
-    self.jobTree.stopTaskLoop();
-    self.jobTree.addTask ( new TaskRemark(),true,false,self,function(){
-      self.del_btn.setDisabled ( false );
-      self.jobTree.startTaskLoop();
-    });
-  }(this))
+  if (this.start_action('add_remark'))
+    (function(self){
+      self.jobTree.addTask ( new TaskRemark(),true,false,self,function(){
+        self.del_btn.setDisabled ( false );
+        self.end_action();
+      });
+    }(this))
+}
+
+ProjectPage.prototype.cloneJob = function() {
+  if (this.start_action('clone_job'))
+    (function(self){
+      self.jobTree.cloneJob ( 'clone',self,function(){
+        self.del_btn.setDisabled ( false );
+        self.end_action();
+      });
+    }(this))
+}
+
+ProjectPage.prototype.deleteJob = function() {
+  if (this.start_action('delete_job'))
+    (function(self){
+      self.jobTree.deleteJob ( function(){
+        self.setButtonState();
+        self.end_action();
+      });
+    }(this))
+}
+
+ProjectPage.prototype.moveJobUp = function()  {
+  if (this.start_action('move_job_up'))
+    (function(self){
+      self.jobTree.moveJobUp ( true,function(){
+        self.setButtonState();
+        self.end_action();
+      });
+    }(this))
 }
 
 ProjectPage.prototype.toggleBranchHighlight = function()  {
   this.jobTree.toggleBranchHighlight();
 }
 
-ProjectPage.prototype.moveJobUp = function()  {
-  (function(self){
-    self.jobTree.moveJobUp ( true,function(){
-      self.setButtonState();
-    });
-  }(this))
-}
-
-ProjectPage.prototype.deleteJob = function() {
-  (function(self){
-    self.jobTree.stopTaskLoop();
-    self.jobTree.deleteJob ( function(){
-      self.setButtonState();
-      self.jobTree.startTaskLoop();
-    });
-  }(this))
-}
-
 ProjectPage.prototype.archiveJobs = function() {
-  var adata = this.jobTree.selectArchiveJobs();
-  var save  = false;
-  if (adata[0]==1)  {
-    if (adata[1].length<=0)  {
-      this.jobTree.makeFolder1 ( adata[2],'',image_path('folder_jobtree') );
-      save = true;
-    } else if (adata[2].length<=0)  {
-      this.jobTree.makeFolder1 ( adata[1],'',image_path('folder_jobtree') );
-      save = true;
-    } else  {
-      var qdlg = new Dialog('Archive direction');
-      var grid = new Grid('');
-      qdlg.addWidget ( grid );
-      grid.setLabel ( '<h2>Archive direction</h2>' +
-                      'You can choose to archive suitable jobs which are<br>' +
-                      '(selected job included):<br>&nbsp;',0,0,1,3 );
-      var above_cbx = grid.setCheckbox ( 'above currently selected',false,1,1,1,1 );
-      var below_cbx = grid.setCheckbox ( 'below currently selected',true, 2,1,1,1 );
-      grid.setLabel ( '&nbsp;<br>Make your choice and click <b><i>Archive</i></b> ' +
-                      'button.',3,0,1,3 );
-      (function(self){
-        qdlg._options.buttons = {
-          "Archive" : function() {
-                        var nodelist = [];
-                        if (above_cbx.getValue())
-                          nodelist = adata[1];
-                        if (below_cbx.getValue())  {
-                          nodelist.shift();  // avoid duplicate nodes in the list
-                          nodelist = nodelist.concat ( adata[2] );
+  if (this.start_action('archive_jobs'))  {
+    var adata = this.jobTree.selectArchiveJobs();
+    var save  = false;
+    if (adata[0]==1)  {
+      if (adata[1].length<=0)  {
+        this.jobTree.makeFolder1 ( adata[2],'',image_path('folder_jobtree') );
+        save = true;
+      } else if (adata[2].length<=0)  {
+        this.jobTree.makeFolder1 ( adata[1],'',image_path('folder_jobtree') );
+        save = true;
+      } else  {
+        var qdlg = new Dialog('Archive direction');
+        var grid = new Grid('');
+        qdlg.addWidget ( grid );
+        grid.setLabel ( '<h2>Archive direction</h2>' +
+                        'You can choose to archive suitable jobs which are<br>' +
+                        '(selected job included):<br>&nbsp;',0,0,1,3 );
+        var above_cbx = grid.setCheckbox ( 'above currently selected',false,1,1,1,1 );
+        var below_cbx = grid.setCheckbox ( 'below currently selected',true, 2,1,1,1 );
+        grid.setLabel ( '&nbsp;<br>Make your choice and click <b><i>Archive</i></b> ' +
+                        'button.',3,0,1,3 );
+        (function(self){
+          qdlg._options.buttons = {
+            "Archive" : function() {
+                          var nodelist = [];
+                          if (above_cbx.getValue())
+                            nodelist = adata[1];
+                          if (below_cbx.getValue())  {
+                            nodelist.shift();  // avoid duplicate nodes in the list
+                            nodelist = nodelist.concat ( adata[2] );
+                          }
+                          if (nodelist.length<=0)
+                            new MessageBox (
+                                'Empty selection',
+                                '<h2>Empty selection</h2>' +
+                                'At least one checkbox must be checked<br>' +
+                                'for acrhiving.'
+                            );
+                          else  {
+                            $( this ).dialog( 'close' );
+                            self.jobTree.makeFolder1 ( nodelist,'',
+                                                  image_path('folder_jobtree') );
+                            self.jobTree.saveProjectData ( [],[],true, null );
+                          }
+                          self.end_action();
+                        },
+            "Cancel"  : function() {
+                          $( this ).dialog( "close" );
+                          self.end_action();
                         }
-                        if (nodelist.length<=0)
-                          new MessageBox (
-                              'Empty selection',
-                              '<h2>Empty selection</h2>' +
-                              'At least one checkbox must be checked<br>' +
-                              'for acrhiving.'
-                          );
-                        else  {
-                          $( this ).dialog( 'close' );
-                          self.jobTree.makeFolder1 ( nodelist,'',
-                                                image_path('folder_jobtree') );
-                          self.jobTree.saveProjectData ( [],[],true, null );
-                        }
-                      },
-          "Cancel"  : function() {
-                        $( this ).dialog( "close" );
-                      }
-        };
-      }(this))
-      qdlg.launch();
+          };
+        }(this))
+        qdlg.launch();
+      }
+    } else if (adata[0]==2)  {
+      this.jobTree.unfoldFolder();
+      save = true;
     }
-  } else if (adata[0]==2)  {
-    this.jobTree.unfoldFolder();
-    save = true;
-  }
-  if (save)  {
-    this.jobTree.saveProjectData ( [],[],true, null );
-    this.setSelMode ( 1 );
+    if (save)  {
+      this.jobTree.saveProjectData ( [],[],true, null );
+      this.setSelMode ( 1 );
+      this.end_action();
+    }
   }
 }
+
+// ProjectPage.prototype.addJob = function()  {
+//   this.selectRemark();
+//   (function(self){
+//     if (self.can_reload)  {
+//       self.can_reload = false;  // block concurrent reloads
+//       self.jobTree.stopTaskLoop();
+//       self.jobTree.addJob ( false,false,self,function(){
+//         self.del_btn.setDisabled ( false );
+//         self.jobTree.startTaskLoop();
+//         self.can_reload  = true;  // block concurrent reloads
+//         self.pending_act = '';    // cleare pending actions
+//       });
+//     } else if (!self.pending_act)
+//       self.pending_act = 'add_job';
+//     else
+//       new MessageBox ( 'Communication delays',
+//                        'Communication delays, please wait a moment.<br>' +
+//                        'If this message persists, reload Project using<br>' +
+//                        '<i>Refresh</i> button in the vertical toolbar.' );
+//   }(this))
+// }
+//
+// ProjectPage.prototype.addJobRepeat = function()  {
+//   this.selectRemark();
+//   (function(self){
+//     self.can_reload = false;  // block concurrent reloads
+//     self.jobTree.addJob ( false,true,self,function(){
+//       self.can_reload = true;  // block concurrent reloads
+//       self.del_btn.setDisabled ( false );
+//     });
+//   }(this))
+// }
+//
+// ProjectPage.prototype.insertJob = function()  {
+//   this.selectRemark();
+//   (function(self){
+//     self.jobTree.addJob ( true,false,self,function(){
+//       self.del_btn.setDisabled ( false );
+//     });
+//   }(this))
+// }
+//
+// ProjectPage.prototype.addRemark = function()  {
+//   (function(self){
+//     self.jobTree.stopTaskLoop();
+//     self.jobTree.addTask ( new TaskRemark(),true,false,self,function(){
+//       self.del_btn.setDisabled ( false );
+//       self.jobTree.startTaskLoop();
+//     });
+//   }(this))
+// }
+//
+// ProjectPage.prototype.moveJobUp = function()  {
+//   (function(self){
+//     self.jobTree.moveJobUp ( true,function(){
+//       self.setButtonState();
+//     });
+//   }(this))
+// }
+//
+// ProjectPage.prototype.deleteJob = function() {
+//   (function(self){
+//     self.jobTree.stopTaskLoop();
+//     self.jobTree.deleteJob ( function(){
+//       self.setButtonState();
+//       self.jobTree.startTaskLoop();
+//     });
+//   }(this))
+// }
+//
+// ProjectPage.prototype.archiveJobs = function() {
+//   var adata = this.jobTree.selectArchiveJobs();
+//   var save  = false;
+//   if (adata[0]==1)  {
+//     if (adata[1].length<=0)  {
+//       this.jobTree.makeFolder1 ( adata[2],'',image_path('folder_jobtree') );
+//       save = true;
+//     } else if (adata[2].length<=0)  {
+//       this.jobTree.makeFolder1 ( adata[1],'',image_path('folder_jobtree') );
+//       save = true;
+//     } else  {
+//       var qdlg = new Dialog('Archive direction');
+//       var grid = new Grid('');
+//       qdlg.addWidget ( grid );
+//       grid.setLabel ( '<h2>Archive direction</h2>' +
+//                       'You can choose to archive suitable jobs which are<br>' +
+//                       '(selected job included):<br>&nbsp;',0,0,1,3 );
+//       var above_cbx = grid.setCheckbox ( 'above currently selected',false,1,1,1,1 );
+//       var below_cbx = grid.setCheckbox ( 'below currently selected',true, 2,1,1,1 );
+//       grid.setLabel ( '&nbsp;<br>Make your choice and click <b><i>Archive</i></b> ' +
+//                       'button.',3,0,1,3 );
+//       (function(self){
+//         qdlg._options.buttons = {
+//           "Archive" : function() {
+//                         var nodelist = [];
+//                         if (above_cbx.getValue())
+//                           nodelist = adata[1];
+//                         if (below_cbx.getValue())  {
+//                           nodelist.shift();  // avoid duplicate nodes in the list
+//                           nodelist = nodelist.concat ( adata[2] );
+//                         }
+//                         if (nodelist.length<=0)
+//                           new MessageBox (
+//                               'Empty selection',
+//                               '<h2>Empty selection</h2>' +
+//                               'At least one checkbox must be checked<br>' +
+//                               'for acrhiving.'
+//                           );
+//                         else  {
+//                           $( this ).dialog( 'close' );
+//                           self.jobTree.makeFolder1 ( nodelist,'',
+//                                                 image_path('folder_jobtree') );
+//                           self.jobTree.saveProjectData ( [],[],true, null );
+//                         }
+//                       },
+//           "Cancel"  : function() {
+//                         $( this ).dialog( "close" );
+//                       }
+//         };
+//       }(this))
+//       qdlg.launch();
+//     }
+//   } else if (adata[0]==2)  {
+//     this.jobTree.unfoldFolder();
+//     save = true;
+//   }
+//   if (save)  {
+//     this.jobTree.saveProjectData ( [],[],true, null );
+//     this.setSelMode ( 1 );
+//   }
+// }
 
 ProjectPage.prototype.openJob = function() {
   this.jobTree.openJob ( null,this );
@@ -526,15 +704,17 @@ ProjectPage.prototype.stopJob = function() {
   this.jobTree.stopJob ( '',false,null );  // 'false' means immediate termination
 }
 
-ProjectPage.prototype.cloneJob = function() {
-  (function(self){
-    self.jobTree.stopTaskLoop();
-    self.jobTree.cloneJob ( 'clone',self,function(){
-      self.del_btn.setDisabled ( false );
-      self.jobTree.startTaskLoop();
-    });
-  }(this))
-}
+// ProjectPage.prototype.cloneJob = function() {
+//   (function(self){
+//     self.can_reload = false;  // block concurrent reloads
+//     self.jobTree.stopTaskLoop();
+//     self.jobTree.cloneJob ( 'clone',self,function(){
+//       self.del_btn.setDisabled ( false );
+//       self.jobTree.startTaskLoop();
+//       self.can_reload = true;  // block concurrent reloads
+//     });
+//   }(this))
+// }
 
 ProjectPage.prototype.setSelMode = function ( mode )  {
   // mode = 0:  toggle
@@ -896,9 +1076,18 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
             self.jobTree.openJobs ( dlg_task_parameters,self );
           }
           self.jobTree.checkTimeout = null;  // allows task loop to start
-          self.jobTree.startTaskLoop();
           self.can_reload = true;  // release reloads
-
+          switch (self.pending_act)  {
+            case 'add_job'        : self.addJob      ();  break;
+            case 'add_job_repeat' : self.addJobRepeat();  break;
+            case 'insert_job'     : self.insertJob   ();  break;
+            case 'add_remark'     : self.addRemark   ();  break;
+            case 'clone_job'      : self.cloneJob    ();  break;
+            case 'delete_job'     : self.deleteJob   ();  break;
+            case 'move_job_up'    : self.moveJobUp   ();  break;
+            case 'archive_jobs'   : self.archiveJobs ();  break;
+            default:  self.jobTree.startTaskLoop();
+          }
         },function(node){
           return self.onTreeContextMenu();
         },function(){

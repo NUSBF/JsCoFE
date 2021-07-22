@@ -41,6 +41,10 @@ CCP4 Cloud Version Log
 
     #. Documentation updates (Fragment-Based Molecular Replacement)
 
+    #. Fixed a bug preventing deletion of old projects
+
+    #. Fixed a bug in ``parrot`` and ``shelx-mr`` tasks preventing density modifciation immediately after ``hop-on`` import
+
 
 
 **Version 1.6.022**
