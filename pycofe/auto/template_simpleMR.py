@@ -100,7 +100,16 @@ def makeNextTask ( crTask,data ):
         auto_api.addContext("buccaneer_rfree", data["Rfree"])
         auto_api.addContext("buccaneer_taskName", crTask.autoRunName)
         auto_api.addContext("buccaneer_revision", data["revision"])
-        auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
+        resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
+
+        if float(data["Rfree"]) < 0.3 : # No CCP4Build if Buccaneer performed well
+            if resHi > 3.0:
+                auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
+            else:
+                auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+        else:
+            auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
+
         return
 
 
