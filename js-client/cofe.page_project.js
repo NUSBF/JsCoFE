@@ -1100,6 +1100,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
             case 'set_button_state' :
             default:  self.jobTree.startTaskLoop();
           }
+          self._set_button_state();
         },function(node){
           return self.onTreeContextMenu();
         },function(){
