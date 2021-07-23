@@ -569,6 +569,7 @@ ProjectPage.prototype.archiveJobs = function() {
 ProjectPage.prototype.setButtonState = function() {
   if (this.start_action('set_button_state'))
     (function(self){
+      self._set_button_state();
       self.end_action();
     }(this))
 }
