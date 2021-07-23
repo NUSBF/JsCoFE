@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.07.21   <--  Date of Last Modification.
+ *    23.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -929,7 +929,7 @@ ProjectPage.prototype.onTreeContextMenu = function() {
 }
 
 
-ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree ) {
+ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
 
   // these go first in all cases
   this.refresh_btn.setDisabled ( false );
@@ -982,6 +982,7 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree ) {
 
     if ((job_tree.root_nodes.length==1) &&
         (job_tree.root_nodes[0].children.length<=0))  {
+      self.can_reload = true;   // tree reload semaphore
       // enter empty project: first task to run or choose
       switch (job_tree.projectData.desc.startmode)  {
         case start_mode.auto    :
@@ -1037,7 +1038,6 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
       job_tree_1.multiple = self.jobTree.multiple;  // needed for tree creation
       job_tree_1.readProjectData ( 'Project',false,timestamp,
         function(){
-
           if (job_tree_1.projectData)  {
             job_tree_1.multiple = self.jobTree.multiple;
             if (self.onTreeLoaded(true,job_tree_1))  {
@@ -1095,7 +1095,6 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
         },function(){
           self.onTreeItemSelect();
         });
-
     }(this,jobTree1))
   }
 }
