@@ -83,9 +83,9 @@ function JobTree()  {
   Tree.call ( this,'___' );
 
   this.projectData  = null;
-  this.task_map     = {};  // map[nodeId]==task of all tasks in the tree
-  this.run_map      = {};  // map[taskId]==nodeId of all running tasks
-  this.dlg_map      = {};  // map[taskId]==dialog of open job dialogs
+  this.task_map     = {};    // map[nodeId]==task of all tasks in the tree
+  this.run_map      = {};    // map[taskId]==nodeId of all running tasks
+  this.dlg_map      = {};    // map[taskId]==dialog of open job dialogs
 
   this.checkTimeout = null;  // timeout timer Id
 

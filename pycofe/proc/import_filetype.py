@@ -41,6 +41,7 @@ def ftype_Borges       ():  return "borges"
 def ftype_HTML         ():  return "html"
 def ftype_PDF          ():  return "pdf"
 def ftype_TEXT         ():  return "text"
+# def ftype_PPTX         ():  return "pptx"
 def ftype_JPG          ():  return "jpg"
 def ftype_JPEG         ():  return "jpeg"
 def ftype_PNG          ():  return "png"
@@ -110,6 +111,7 @@ def getFileType ( fname,importDir,file_stdout ):
 
     if fext=='.html':  return ftype_HTML()
     if fext=='.pdf' :  return ftype_PDF ()
+    # if fext=='.pptx':  return ftype_PPTX()
     if fext=='.jpg' :  return ftype_JPG ()
     if fext=='.jpeg':  return ftype_JPEG()
     if fext=='.png' :  return ftype_PNG ()

@@ -34,6 +34,7 @@ def run ( body,sectionTitle="" ):  # body is reference to the main Import class,
     doctypes = [
         import_filetype.ftype_HTML(),
         import_filetype.ftype_PDF (),
+        # import_filetype.ftype_PPTX(),
         import_filetype.ftype_TEXT()
     ]
 
