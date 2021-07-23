@@ -70,7 +70,7 @@ function ProjectPage ( sceneId )  {
 
   // var self           = this;  // for referencing class's properties
 
-  var setButtonState_timer = null;
+  // var setButtonState_timer = null;
 
   // -------------------------------------------------------------------------
 
@@ -564,6 +564,15 @@ ProjectPage.prototype.archiveJobs = function() {
   }
 }
 
+ProjectPage.prototype.setButtonState = function() {
+  if (this.start_action('set_button_state'))
+    (function(self){
+      self._set_button_state();
+      self.end_action();
+    }(this))
+}
+
+
 // ProjectPage.prototype.addJob = function()  {
 //   this.selectRemark();
 //   (function(self){
@@ -791,16 +800,16 @@ ProjectPage.prototype._set_button_state = function() {
 
 }
 
-ProjectPage.prototype.setButtonState = function() {
-  if (this.setButtonState_timer)
-    window.clearTimeout ( this.setButtonState_timer );
-  (function(self){
-    self.setButtonState_timer = window.setTimeout ( function(){
-      self.setButtonState_timer = null;
-      self._set_button_state();
-    },10 );
-  }(this))
-}
+// ProjectPage.prototype.setButtonState = function() {
+//   if (this.setButtonState_timer)
+//     window.clearTimeout ( this.setButtonState_timer );
+//   (function(self){
+//     self.setButtonState_timer = window.setTimeout ( function(){
+//       self.setButtonState_timer = null;
+//       self._set_button_state();
+//     },10 );
+//   }(this))
+// }
 
 ProjectPage.prototype.share_project = function()  {
   if (this.jobTree)  {
@@ -1078,14 +1087,15 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
           self.jobTree.checkTimeout = null;  // allows task loop to start
           self.can_reload = true;  // release reloads
           switch (self.pending_act)  {
-            case 'add_job'        : self.addJob      ();  break;
-            case 'add_job_repeat' : self.addJobRepeat();  break;
-            case 'insert_job'     : self.insertJob   ();  break;
-            case 'add_remark'     : self.addRemark   ();  break;
-            case 'clone_job'      : self.cloneJob    ();  break;
-            case 'delete_job'     : self.deleteJob   ();  break;
-            case 'move_job_up'    : self.moveJobUp   ();  break;
-            case 'archive_jobs'   : self.archiveJobs ();  break;
+            case 'add_job'          : self.addJob      ();  break;
+            case 'add_job_repeat'   : self.addJobRepeat();  break;
+            case 'insert_job'       : self.insertJob   ();  break;
+            case 'add_remark'       : self.addRemark   ();  break;
+            case 'clone_job'        : self.cloneJob    ();  break;
+            case 'delete_job'       : self.deleteJob   ();  break;
+            case 'move_job_up'      : self.moveJobUp   ();  break;
+            case 'archive_jobs'     : self.archiveJobs ();  break;
+            case 'set_button_state' :
             default:  self.jobTree.startTaskLoop();
           }
         },function(node){
