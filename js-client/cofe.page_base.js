@@ -26,8 +26,12 @@
 function BasePage ( sceneId,gridStyle,pageType )  {
 
   // clear the page first
-  $('#'+sceneId).empty();
-//  unsetDefaultButton ( null );
+  $(document.body).empty();
+  $('<div>').attr('id',sceneId).addClass('main-page').appendTo(document.body);
+
+  // clear the page first
+  // $('#'+sceneId).empty();
+  //  unsetDefaultButton ( null );
 
   // set background image
   if (getClientCode()==client_code.ccp4)
