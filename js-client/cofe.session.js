@@ -279,30 +279,38 @@ var __session_check_timer  = null;
 
 function checkSession ( sceneId )  {
 
-  serverCommand ( fe_command.checkSession,{'login_token':__login_token},
-                  'Check session',
-    function(rdata){ // successful reply
-      if (__session_check_timer)  {
-        if ((rdata.status==fe_retcode.wrongSession) ||
-            (rdata.status==fe_retcode.notLoggedIn))  {
-          __login_token = '';
-          logout ( sceneId,1 );
-        } else
-          makeSessionCheck ( sceneId );
+  if (__server_queue.length>0)  {
+
+    makeSessionCheck ( sceneId );
+
+  } else  {
+
+    serverCommand ( fe_command.checkSession,{'login_token':__login_token},
+                    'Check session',
+      function(rdata){ // successful reply
+        if (__session_check_timer)  {
+          if ((rdata.status==fe_retcode.wrongSession) ||
+              (rdata.status==fe_retcode.notLoggedIn))  {
+            __login_token = '';
+            logout ( sceneId,1 );
+          } else
+            makeSessionCheck ( sceneId );
+        }
+        return true;
+      },
+      function(){}, // always do nothing
+      function(){   // fail
+        if (__session_check_timer)  {
+          if (__local_setup)  {
+            __login_token = '';
+            logout ( sceneId,2 );
+          } else
+            makeSessionCheck ( sceneId );
+        }
       }
-      return true;
-    },
-    function(){}, // always do nothing
-    function(){   // fail
-      if (__session_check_timer)  {
-        if (__local_setup)  {
-          __login_token = '';
-          logout ( sceneId,2 );
-        } else
-          makeSessionCheck ( sceneId );
-      }
-    }
-  );
+    );
+
+  }
 
 }
 
