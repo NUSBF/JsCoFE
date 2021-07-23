@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.07.21   <--  Date of Last Modification.
+ *    23.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -202,8 +202,40 @@ var json = null;
 }
 
 
-function serverCommand ( cmd,data_obj,page_title,function_response,
-                         function_always,function_fail )  {
+
+var __server_queue = [];
+var __local_queue  = [];
+
+function processServerQueue()  {
+  if (__server_queue.length>0)  {
+    var q0 = __server_queue[0];
+    if (q0.status=='waiting')  {
+      q0.status = 'running';
+      if (q0.type=='command')
+        server_command ( q0.cmd,q0.data_obj,q0.page_title,
+                         q0.function_response,q0.function_always,
+                         q0.function_fail );
+      else
+        server_request ( q0.request_type,q0.data_obj,q0.page_title,
+                         q0.function_ok,q0.function_always,
+                         q0.function_fail );
+    }
+  }
+}
+
+function processLocalQueue()  {
+  if (__local_queue.length>0)  {
+    var q0 = __local_queue[0];
+    if (q0.status=='waiting')  {
+      q0.status = 'running';
+      local_command ( q0.cmd,q0.data_obj,q0.command_title,q0.function_response );
+    }
+  }
+}
+
+
+function server_command ( cmd,data_obj,page_title,function_response,
+                          function_always,function_fail )  {
 // used when no user is logged in
 
   var json = makeJSONString ( data_obj );
@@ -227,6 +259,10 @@ function serverCommand ( cmd,data_obj,page_title,function_response,
 
     })
     .always ( function(){
+      if (__server_queue.length>0)  {
+        __server_queue.shift();
+        processServerQueue();
+      }
       if (function_always)
         function_always();
     })
@@ -239,7 +275,7 @@ function serverCommand ( cmd,data_obj,page_title,function_response,
 }
 
 
-function serverRequest ( request_type,data_obj,page_title,function_ok,
+function server_request ( request_type,data_obj,page_title,function_ok,
                          function_always,function_fail )  {
 // used when a user is logged in
 
@@ -283,7 +319,12 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
     })
 
-    .always ( function(){})
+    .always ( function(){
+      if (__server_queue.length>0)  {
+        __server_queue.shift();
+        processServerQueue();
+      }
+    })
 
     .fail ( function(xhr,err){
 
@@ -316,7 +357,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 }
 
 
-function localCommand ( cmd,data_obj,command_title,function_response )  {
+function local_command ( cmd,data_obj,command_title,function_response )  {
 // used to communicate with local (client-side) server
 //   cmd:               an NC command
 //   data_obj:          data object to pass with the command
@@ -349,12 +390,59 @@ function localCommand ( cmd,data_obj,command_title,function_response )  {
       }
 
     })
-    .always ( function(){} )
+    .always ( function(){
+      if (__local_queue.length>0)  {
+        __local_queue.shift();
+        processLocalQueue();
+      }
+    })
     .fail   ( function(xhr,err){
       if (function_response && (!function_response(null)))
         MessageAJAXFailure(command_title,xhr,err);
     });
 
+}
+
+
+function serverCommand ( cmd,data_obj,page_title,function_response,
+                         function_always,function_fail )  {
+  __server_queue.push ({
+    status            : 'waiting',
+    type              : 'command',
+    cmd               : cmd,
+    data_obj          : data_obj,
+    page_title        : page_title,
+    function_response : function_response,
+    function_always   : function_always,
+    function_fail     : function_fail
+  });
+  processServerQueue();
+}
+
+function serverRequest ( request_type,data_obj,page_title,function_ok,
+                         function_always,function_fail )  {
+  __server_queue.push ({
+    status          : 'waiting',
+    type            : 'request',
+    request_type    : request_type,
+    data_obj        : data_obj,
+    page_title      : page_title,
+    function_ok     : function_ok,
+    function_always : function_always,
+    function_fail   : function_fail
+  });
+  processServerQueue();
+}
+
+function localCommand ( cmd,data_obj,command_title,function_response )  {
+  __local_queue.push ({
+    status            : 'waiting',
+    cmd               : cmd,
+    data_obj          : data_obj,
+    command_title     : command_title,
+    function_response : function_response
+  });
+  processLocalQueue();
 }
 
 
