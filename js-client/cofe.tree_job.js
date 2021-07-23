@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.07.21   <--  Date of Last Modification.
+ *    23.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -860,7 +860,7 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
           tree.projectData.desc.jobCount = task.id;
           tree.setText ( node,tree.makeNodeName(task) );
           if (onAdd_func)
-            onAdd_func();
+            onAdd_func(0);
           tree.openJob ( dataBox,parent_page );
           if (insert_bool)
             window.setTimeout ( function(){
@@ -877,6 +877,8 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
 
   } else  {
     console.log ( 'no selection in the tree:_add_job' );
+    if (onAdd_func)
+      onAdd_func(-1);
     // alert ( ' no selection in the tree! ' );
   }
 }
@@ -921,7 +923,8 @@ JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_
             } // else "Cancel" was pressed
           });
     }(this));
-  }
+  } else if (onAdd_func)
+    onAdd_func(-2);
 }
 
 
@@ -945,7 +948,8 @@ var dataBox = this.harvestTaskData ( 1,[] );
       this._copy_task_parameters ( task,branch_task_list );
     this._copy_task_cloud_path ( task,branch_task_list );
     this._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
-  }
+  } else if (onAdd_func)
+    onAdd_func(-3);
 
   return [avail_key,dataSummary];
 
@@ -1620,12 +1624,17 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
 
     // create an instance of selected task with default parameters
     var task   = eval ( 'new ' + task0._type + '()' );
+
     if (task0.version<task.currentVersion())  {
+
       new MessageBox ( 'Cannot clone',
         '<b>This job cannot be cloned.</b><p>' +
         'The job was created with a lower version of ' + appName() + ' and cannot ' +
         'be cloned.<br>Please create the job as a new one, using ' +
         '"<i>Add Job</i>" button from the<br>control bar.' );
+      if (onAdd_func)
+        onAdd_func(-4);
+
     } else  {
 
       task.uname       = task0.uname;
@@ -1682,7 +1691,7 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
             tree.projectData.desc.jobCount = task.id;
             tree.setText ( node,tree.makeNodeName(task) );
             if (onAdd_func)
-              onAdd_func();
+              onAdd_func(0);
             tree.openJob ( null,parent_page );
             if (task.isRemark())
               tree.setStyle ( node,__remarkStyle,0 );
@@ -1694,6 +1703,8 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
 
   } else  {
     console.log ( 'no selection in the tree:cloneJob' );
+    if (onAdd_func)
+      onAdd_func(-5);
     // alert ( ' no selection in the tree! ' );
   }
 
