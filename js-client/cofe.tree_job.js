@@ -920,11 +920,13 @@ JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_
                 tree._copy_task_parameters ( task,branch_task_list );
               tree._copy_task_cloud_path ( task,branch_task_list );
               tree._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
-            } // else "Cancel" was pressed
+            } else if (onAdd_func)  { // "Cancel" was pressed
+              onAdd_func(-2);
+            }
           });
     }(this));
   } else if (onAdd_func)
-    onAdd_func(-2);
+    onAdd_func(-3);
 }
 
 
@@ -949,7 +951,7 @@ var dataBox = this.harvestTaskData ( 1,[] );
     this._copy_task_cloud_path ( task,branch_task_list );
     this._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
   } else if (onAdd_func)
-    onAdd_func(-3);
+    onAdd_func(-4);
 
   return [avail_key,dataSummary];
 
@@ -1633,7 +1635,7 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
         'be cloned.<br>Please create the job as a new one, using ' +
         '"<i>Add Job</i>" button from the<br>control bar.' );
       if (onAdd_func)
-        onAdd_func(-4);
+        onAdd_func(-5);
 
     } else  {
 
@@ -1704,7 +1706,7 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
   } else  {
     console.log ( 'no selection in the tree:cloneJob' );
     if (onAdd_func)
-      onAdd_func(-5);
+      onAdd_func(-6);
     // alert ( ' no selection in the tree! ' );
   }
 
