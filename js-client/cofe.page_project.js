@@ -477,8 +477,9 @@ ProjectPage.prototype.deleteJob = function() {
   if (this.start_action('delete_job'))
     (function(self){
       self.jobTree.deleteJob ( function(){
-        self.setButtonState();
         self.end_action();
+        self._set_button_state();
+        // self.setButtonState();
       });
     }(this))
 }
@@ -487,8 +488,9 @@ ProjectPage.prototype.moveJobUp = function()  {
   if (this.start_action('move_job_up'))
     (function(self){
       self.jobTree.moveJobUp ( true,function(){
-        self.setButtonState();
         self.end_action();
+        self._set_button_state();
+        // self.setButtonState();
       });
     }(this))
 }
@@ -567,7 +569,6 @@ ProjectPage.prototype.archiveJobs = function() {
 ProjectPage.prototype.setButtonState = function() {
   if (this.start_action('set_button_state'))
     (function(self){
-      self._set_button_state();
       self.end_action();
     }(this))
 }
@@ -967,7 +968,8 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
   //  split_btn.setEnabled ( true );
   // *******************************
 
-  this.setButtonState();
+  // this.setButtonState();
+  this._set_button_state();
 
   __current_project = job_tree.projectData.desc.name;
 
