@@ -223,6 +223,13 @@ function processServerQueue()  {
   }
 }
 
+function shiftServerQueue()  {
+  if (__server_queue.length>0)  {
+    __server_queue.shift();
+    processServerQueue();
+  }
+}
+
 function processLocalQueue()  {
   if (__local_queue.length>0)  {
     var q0 = __local_queue[0];
@@ -230,6 +237,13 @@ function processLocalQueue()  {
       q0.status = 'running';
       local_command ( q0.cmd,q0.data_obj,q0.command_title,q0.function_response );
     }
+  }
+}
+
+function shiftLocalQueue()  {
+  if (__local_queue.length>0)  {
+    __local_queue.shift();
+    processServerQueue();
   }
 }
 
@@ -249,22 +263,17 @@ function server_command ( cmd,data_obj,page_title,function_response,
       dataType : 'text'
     })
     .done ( function(rdata) {
-
       var rsp = jQuery.parseJSON ( rdata );
       if (checkVersionMatch(rsp,false))  {
         var response = jQuery.extend ( true, new Response(), rsp );
         if (!function_response(response))
           makeCommErrorMessage ( page_title,response );
       }
-
     })
     .always ( function(){
-      if (__server_queue.length>0)  {
-        __server_queue.shift();
-        processServerQueue();
-      }
       if (function_always)
         function_always();
+      shiftServerQueue();
     })
     .fail ( function(xhr,err){
       if (function_fail)
@@ -302,50 +311,58 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
   }
 }
 */
-
-      var rsp = jQuery.parseJSON ( rdata );
-      if (checkVersionMatch(rsp,false))  {
-        var response = jQuery.extend ( true, new Response(), rsp );
-        if (response.status==fe_retcode.ok)  {
-          if (function_ok)
-            function_ok ( response.data );
-        } else
-          makeCommErrorMessage ( page_title,response );
-        // we put this function here and in fail section because we do not want to
-        // have it executed multiple times due to multiple retries
-        if (function_always)
-          function_always(0,response.data);
+      try {
+        var rsp = jQuery.parseJSON ( rdata );
+        if (checkVersionMatch(rsp,false))  {
+          var response = jQuery.extend ( true, new Response(), rsp );
+          if (response.status==fe_retcode.ok)  {
+            if (function_ok)
+              function_ok ( response.data );
+          } else
+            makeCommErrorMessage ( page_title,response );
+          // we put this function here and in fail section because we do not want to
+          // have it executed multiple times due to multiple retries
+          if (function_always)
+            function_always(0,response.data);
+        }
+      } catch(err) {
+        console.log ( ' >>> error catch in server_request.done: ' + err );
       }
+
+      shiftServerQueue();
 
     })
 
-    .always ( function(){
-      if (__server_queue.length>0)  {
-        __server_queue.shift();
-        processServerQueue();
-      }
-    })
+    .always ( function(){} )
 
     .fail ( function(xhr,err){
 
-      if ((typeof function_fail === 'string' || function_fail instanceof String) &&
-          (function_fail=='persist')) {
+      try {
 
-        if (attemptNo>0)  {
-          execute_ajax ( attemptNo-1 );
-          return;
-        } else
+        if ((typeof function_fail === 'string' || function_fail instanceof String) &&
+            (function_fail=='persist')) {
+
+          if (attemptNo>0)  {
+            execute_ajax ( attemptNo-1 );
+            return;  // repeat; server queue is not shifted here
+          } else
+            MessageAJAXFailure ( page_title,xhr,err );
+
+        } else if (function_fail)
+          function_fail();
+        else
           MessageAJAXFailure ( page_title,xhr,err );
 
-      } else if (function_fail)
-        function_fail();
-      else
-        MessageAJAXFailure ( page_title,xhr,err );
+        // we put this function here and in done section because we do not
+        // want to have it executed multiple times due to multiple retries
+        if (function_always)
+          function_always ( 1,{} );
 
-      // we put this function here and in done section because we do not
-      // want to have it executed multiple times due to multiple retries
-      if (function_always)
-        function_always ( 1,{} );
+      } catch(err) {
+        console.log ( ' >>> error catch in server_request.fail: ' + err );
+      }
+
+      shiftServerQueue();
 
     });
 
@@ -391,10 +408,7 @@ function local_command ( cmd,data_obj,command_title,function_response )  {
 
     })
     .always ( function(){
-      if (__local_queue.length>0)  {
-        __local_queue.shift();
-        processLocalQueue();
-      }
+      shiftLocalQueue();
     })
     .fail   ( function(xhr,err){
       if (function_response && (!function_response(null)))
