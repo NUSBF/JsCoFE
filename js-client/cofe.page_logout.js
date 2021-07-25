@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.01.20   <--  Date of Last Modification.
+ *    25.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Logout page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -51,8 +51,8 @@ function LogoutPage ( sceneId,reason_key )  {
   var thank_lbl = new Label ( 'Thank you for using ' + appName() );
   var msg = '';
   switch (reason_key)  {
-    case 1  :  msg = 'Your session in this window was cancelled automatically ' +
-                     'because of identical login somewhere else.';
+    case 1  :  msg = 'Your session in this window was closed ' +
+                     'because you have logged in somewhere else.';
             break;
     case 2  :  msg = 'Your session in this window was terminated because local ' +
                      appName() + ' service has stopped or was restared.';
