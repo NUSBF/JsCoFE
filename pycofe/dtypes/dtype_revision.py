@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.01.21   <--  Date of Last Modification.
+#    25.07.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -268,7 +268,6 @@ class DType(dtype_template.DType):
                 self.leadKey = 0;  # data lead key: 0: undefined, 1: coordinates, 2: phases
                 self.Options.leading_structure = ""
         return
-
 
     def getNofPolymers ( self ):
         if self.Structure:
