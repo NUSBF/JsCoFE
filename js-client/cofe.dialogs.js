@@ -149,12 +149,12 @@ function MessageNotLoggedIn ( title )  {
   if (__current_page && (['LogoutPage','LoginPage'].indexOf(__current_page._type)>=0))
     return;
   new MessageBox ( title,
-    '<div style="width:400px"><b>User Not Logged In.</b>' +
+    '<div style="width:500px"><b>User not logged in.</b>' +
     '<p>This may result from duplicate logging (either explicitly in another ' +
-    'browser<br>or machine, or implicitly by, e.g., copy/pasting URL in another ' +
-    'browser tab<br>or window), or using forward/back/reload buttons in your ' +
+    'browser or machine, or implicitly by, e.g., copy/pasting URL in another ' +
+    'browser tab or window), or using forward/back/reload buttons in your ' +
     'browser.<p>Please log in again.' +
-    '<p>If problem persists, please report to ccp4@stfc.ac.uk.</div>' );
+    '<p>If problem persists, please report to ' + __maintainerEmail + '.</div>' );
   return;
 }
 
@@ -169,7 +169,7 @@ var msg = '<b>General failure: upload errors.</b>';
 
 function MessageNoJobDir ( title )  {
   new MessageBox ( title,
-    '<div style="width:400px"><b>Job directory not found on server.</b>' +
+    '<div style="width:500px"><b>Job directory not found on server.</b>' +
     '<p>This may result from duplicate logging (either explicitly in another ' +
     'browser or machine, or implicitly by, e.g., copy/pasting URL in another' +
     'browser tab or window), or using forward/back/reload buttons in your ' +
