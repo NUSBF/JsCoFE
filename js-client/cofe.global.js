@@ -96,6 +96,11 @@ $(window).resize ( function(){
     __current_page.onResize ( window.innerWidth,window.innerHeight );
 });
 
+function maintainerEmail ( subject,message,label )  {
+  return '<a href = "mailto:' + __maintainerEmail +
+         '?subject=' + subject + '&body=' + message + '">' +
+         label + '</a>';
+}
 
 function isFullScreen() {
   if (typeof document.fullscreen!=='undefined')

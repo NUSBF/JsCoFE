@@ -279,8 +279,6 @@ var __session_check_timer  = null;
 
 function checkSession ( sceneId )  {
 
-console.log ( ' >>>>>> checkSession ' + __server_queue.length );
-
   if (__server_queue.length>0)  {
 
     makeSessionCheck ( sceneId );
