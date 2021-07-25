@@ -154,7 +154,11 @@ function MessageNotLoggedIn ( title )  {
     'browser or machine, or implicitly by, e.g., copy/pasting URL in another ' +
     'browser tab or window), or using forward/back/reload buttons in your ' +
     'browser.<p>Please log in again.' +
-    '<p>If problem persists, please report to ' + __maintainerEmail + '.</div>' );
+    '<p>If problem persists, please report to ' +
+    maintainerEmail(
+      'CCP4 Cloud Report: D0001',
+      'Report code: D0001','' ) +
+    '.</div>' );
   return;
 }
 
@@ -174,7 +178,11 @@ function MessageNoJobDir ( title )  {
     'browser or machine, or implicitly by, e.g., copy/pasting URL in another' +
     'browser tab or window), or using forward/back/reload buttons in your ' +
     'browser.<p>Please log in again and repeat your actions.' +
-    '<p>If problem persists, please report to ccp4@stfc.ac.uk.</div>' );
+    '<p>If problem persists, please report to ' +
+    maintainerEmail(
+      'CCP4 Cloud Report: D0002',
+      'Report code: D0002','' ) +
+    '.</div>' );
 }
 
 function MessageProxyError ( title )  {
@@ -182,7 +190,11 @@ function MessageProxyError ( title )  {
     '<b>Proxy server error.</b>' +
     '<p>Usually, this means that connection with ' + appName() +
     ' is lost.<br>Please check your internet connection. ' +
-    '<p>If problem persists, please report to ccp4@stfc.ac.uk.' );
+    '<p>If problem persists, please report to ' +
+    maintainerEmail(
+      'CCP4 Cloud Report: D0003',
+      'Report code: D0003','' ) +
+    '.' );
 }
 
 function MessageProjectAccess ( title )  {
@@ -191,7 +203,11 @@ function MessageProjectAccess ( title )  {
     '<p>The Project is no longer available to you. Most probably, it was<br>' +
     'unshared with you by the project owner. You may delete this<br>' +
     'project from your <i>Project List</i> now.' +
-    '<p>If problem persists, please report to ccp4@stfc.ac.uk.' );
+    '<p>If problem persists, please report to ' +
+    maintainerEmail(
+      'CCP4 Cloud Report: D0004',
+      'Report code: D0004','' ) +
+    '.' );
 }
 
 function MessageServerInactive()  {

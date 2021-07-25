@@ -97,10 +97,27 @@ $(window).resize ( function(){
 });
 
 function maintainerEmail ( subject,message,label )  {
-  return '<a href = "mailto:' + __maintainerEmail +
-         '?subject=' + subject + '&body=' + message + '">' +
+
+  var body = encodeURIComponent (
+    'CCP4 Cloud Report\n' +
+    'Login ID   : ' + __login_id    + '\n' +
+    'Login Name : ' + __login_user  + '\n' +
+    'Local setup: ' + __local_setup + '\n' +
+    'Page       : ' + __current_page._type + '\n' +
+    '----------------------------------------------------------------\n' +
+    message
+  );
+
+  var text = label;
+  if (!text)
+    text = appName() + ' maintainer';
+
+  return '<a href="mailto:' + __maintainerEmail +
+         '?subject=' + encodeURIComponent(subject) + '&body=' + body + '">' +
          label + '</a>';
+
 }
+
 
 function isFullScreen() {
   if (typeof document.fullscreen!=='undefined')
