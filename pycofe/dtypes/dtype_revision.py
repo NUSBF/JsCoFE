@@ -122,37 +122,35 @@ class DType(dtype_template.DType):
         self.dataId = str(self.jobId).zfill(4) + "." + str(serialNo).zfill(2)
         return
 
-    """
-    def makeRevDName(self,jobId,serialNo,title):
-        self.jobId = jobId
-        self.makeDataId ( serialNo )
-        self.dname = "R" + self.dataId + ": " + title + " "
-        f = False
-        if dtype_template.subtypeHKL() in self.subtype:
-            if self.HKL.new_spg:
-                self.dname += self.HKL.new_spg + " "
-            self.dname += "hkl"
-            f = True
-            if dtype_template.subtypeAnomalous() in self.subtype:
-                self.dname += "(anomalous)"
-        incl = [dtype_template.subtypeProtein(),dtype_template.subtypeDNA(),
-                dtype_template.subtypeRNA()]
-        asutype = ""
-        for st in self.subtype:
-            if st in incl:
-                if asutype:  asutype += ","
-                asutype += st
-        excl = [dtype_template.subtypeHKL(),dtype_template.subtypeAnomalous(),
-                dtype_template.subtypeSequence()] + incl
-        for st in self.subtype:
-            if not st in excl:
-                if f:  self.dname += ","
-                self.dname += st
-                if st==dtype_template.subtypeASU():
-                    self.dname += "(" + asutype + ")"
-                f = True
-        return
-    """
+    # def makeRevDName(self,jobId,serialNo,title):
+    #     self.jobId = jobId
+    #     self.makeDataId ( serialNo )
+    #     self.dname = "R" + self.dataId + ": " + title + " "
+    #     f = False
+    #     if dtype_template.subtypeHKL() in self.subtype:
+    #         if self.HKL.new_spg:
+    #             self.dname += self.HKL.new_spg + " "
+    #         self.dname += "hkl"
+    #         f = True
+    #         if dtype_template.subtypeAnomalous() in self.subtype:
+    #             self.dname += "(anomalous)"
+    #     incl = [dtype_template.subtypeProtein(),dtype_template.subtypeDNA(),
+    #             dtype_template.subtypeRNA()]
+    #     asutype = ""
+    #     for st in self.subtype:
+    #         if st in incl:
+    #             if asutype:  asutype += ","
+    #             asutype += st
+    #     excl = [dtype_template.subtypeHKL(),dtype_template.subtypeAnomalous(),
+    #             dtype_template.subtypeSequence()] + incl
+    #     for st in self.subtype:
+    #         if not st in excl:
+    #             if f:  self.dname += ","
+    #             self.dname += st
+    #             if st==dtype_template.subtypeASU():
+    #                 self.dname += "(" + asutype + ")"
+    #             f = True
+    #     return
 
     def makeRevDName ( self,jobId,serialNo,title ):
 
@@ -255,6 +253,22 @@ class DType(dtype_template.DType):
                 delattr ( self,"phaser_meta" )
             self.leadKey = structure.leadKey
         return
+
+    def removeStructure ( self ):
+        if self.Structure:
+            self.Structure = None
+            self.removeSubtypes ([
+                dtype_template.subtypeXYZ(),
+                dtype_template.subtypePhases()
+            ])
+            if self.Substructure:
+                self.leadKey = self.Substructure.leadKey
+                self.Options.leading_structure = "substructure"
+            else:
+                self.leadKey = 0;  # data lead key: 0: undefined, 1: coordinates, 2: phases
+                self.Options.leading_structure = ""
+        return
+
 
     def getNofPolymers ( self ):
         if self.Structure:

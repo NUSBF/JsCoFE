@@ -213,66 +213,75 @@ class EditRevision(asudef.ASUDef):
             edit_list = change_list + remove_list
             if "xyz" in edit_list or "phases" in edit_list or "lig" in edit_list:
                 # redefine structure
-                self.putTitle  ( "New Structure" )
 
-                lead_key = 1   #  XYZ lead (MR phases)
-                if ("phases" in change_list) or (phases and not struct0.getXYZFileName()):
-                    lead_key = 2  #  Phase lead (EP phases)
+                if not xyz_fpath and not mtz_fpath:
 
-                refiner = ""
-                if struct0:
-                    refiner = struct0.refiner
-                structure = self.registerStructure1 (
-                                xyz_fpath ,
-                                sub_fpath ,
-                                mtz_fpath ,
-                                map_fpath ,
-                                dmap_fpath,
-                                lib_fpath ,
-                                self.outputFName,
-                                leadKey=lead_key,
-                                #leadKey=2 if "phases" in change_list else 1,
-                                copy_files=False,
-                                refiner=refiner )
-                if structure:
-                    if lig_codes:
-                        structure.setLigands  ( lig_codes )
-                    if xyz_fpath or sub_fpath:
-                        structure.addSubtypes ( xyz.getSubtypes() )
-                    else:
-                        if revision0.Structure:
-                            structure.addSubtypes ( revision0.Structure.subtype )
-                        elif revision0.Substructure:
-                            structure.addSubtypes ( revision0.Substructure.subtype )
-                            structure.adjust_dname()
-                        if phases:
-                            structure.copyCrystData ( phases )
-                            #if not revision0.Structure and not revision0.Substructure:
-                            #    structure.addSubtype ( dtype_template.subtypeSubstructure() )
-                            #    structure.adjust_dname()
-                    if phases:
-                        structure.addSubtypes ( phases.getSubtypes() )
-                        structure.copyLabels  ( phases )
-                        if 'phases' in change_list:
-                            structure.setHKLLabels ( hkl )
-                    if not xyz_fpath:
-                        structure.removeSubtype ( dtype_template.subtypeXYZ() )
-                    if not sub_fpath:
-                        structure.removeSubtype ( dtype_template.subtypeSubstructure() )
+                    self.putMessage  ( "<h3>Structure was removed</h3>" )
+                    revision.removeStructure()
 
-                    #if not sub_fpath:
-                    #    # in case there was no substructure coordinates
-                    #    structure.addSubtype ( dtype_template.subtypeSubstructure() )
-                    #    structure.adjust_dname()
-
-                    self.putStructureWidget ( self.getWidgetId("structure_btn_"),
-                                              "Structure and electron density",
-                                              structure )
-                    revision.setStructureData ( structure )
                 else:
-                    self.putMessage  ( "<b><i>Structure was not replaced (error)</i></b>" )
 
-            revision.addSubtypes  ( revision0.getSubtypes() )
+                    self.putTitle  ( "New Structure" )
+
+                    lead_key = 1   #  XYZ lead (MR phases)
+                    if ("phases" in change_list) or (phases and not struct0.getXYZFileName()):
+                        lead_key = 2  #  Phase lead (EP phases)
+
+                    refiner = ""
+                    if struct0:
+                        refiner = struct0.refiner
+                    structure = self.registerStructure1 (
+                                    xyz_fpath ,
+                                    sub_fpath ,
+                                    mtz_fpath ,
+                                    map_fpath ,
+                                    dmap_fpath,
+                                    lib_fpath ,
+                                    self.outputFName,
+                                    leadKey=lead_key,
+                                    #leadKey=2 if "phases" in change_list else 1,
+                                    copy_files=False,
+                                    refiner=refiner )
+                    if structure:
+                        if lig_codes:
+                            structure.setLigands  ( lig_codes )
+                        if xyz_fpath or sub_fpath:
+                            structure.addSubtypes ( xyz.getSubtypes() )
+                        else:
+                            if revision0.Structure:
+                                structure.addSubtypes ( revision0.Structure.subtype )
+                            elif revision0.Substructure:
+                                structure.addSubtypes ( revision0.Substructure.subtype )
+                                structure.adjust_dname()
+                            if phases:
+                                structure.copyCrystData ( phases )
+                                #if not revision0.Structure and not revision0.Substructure:
+                                #    structure.addSubtype ( dtype_template.subtypeSubstructure() )
+                                #    structure.adjust_dname()
+                        if phases:
+                            structure.addSubtypes ( phases.getSubtypes() )
+                            structure.copyLabels  ( phases )
+                            if 'phases' in change_list:
+                                structure.setHKLLabels ( hkl )
+                        if not xyz_fpath:
+                            structure.removeSubtype ( dtype_template.subtypeXYZ() )
+                        if not sub_fpath:
+                            structure.removeSubtype ( dtype_template.subtypeSubstructure() )
+
+                        #if not sub_fpath:
+                        #    # in case there was no substructure coordinates
+                        #    structure.addSubtype ( dtype_template.subtypeSubstructure() )
+                        #    structure.adjust_dname()
+
+                        self.putStructureWidget ( self.getWidgetId("structure_btn_"),
+                                                  "Structure and electron density",
+                                                  structure )
+                        revision.setStructureData ( structure )
+                    else:
+                        self.putMessage  ( "<b><i>Structure was not replaced (error)</i></b>" )
+
+                    revision.addSubtypes  ( revision0.getSubtypes() )
+
             self.registerRevision ( revision  )
             have_results = True
 
