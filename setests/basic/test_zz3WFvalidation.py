@@ -37,7 +37,7 @@ def validate3AEP(driver, waitLong):
             break
         curTime = time.time()
         if curTime > startTime + float(waitLong):
-            print('*** Timeout for validate3AEP results! Waited for 50 minutes plus %d seconds.' % waitLong)
+            print('*** Timeout for validate3AEP results! Waited for long time plus %d seconds.' % waitLong)
             break
         time.sleep(60)
 
@@ -112,7 +112,7 @@ def test_3_AEP_Validation(browser,
             sf.loginToCloud(d.driver, d.login, d.password)
 
         sf.enterProject(d.driver, d.testName)
-        validate3AEP(d.driver, 600)
+        validate3AEP(d.driver, 1800)
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
 

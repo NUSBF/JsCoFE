@@ -36,7 +36,7 @@ def validate4DPL(driver, waitLong):
             break
         curTime = time.time()
         if curTime > startTime + float(waitLong):
-            print('*** Timeout for validate1AMR results! Waited for 50 minutes plus %d seconds.' % waitLong)
+            print('*** Timeout for validate4DPL results! Waited for long time plus %d seconds.' % waitLong)
             break
         time.sleep(60)
 
