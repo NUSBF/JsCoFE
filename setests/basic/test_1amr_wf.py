@@ -41,9 +41,9 @@ def startAMR_mdm2(driver, dirName, waitShort=90):
     time.sleep(3)
 
     sf.clickByXpath(driver, "//*[normalize-space()='None']")
-    time.sleep(2)
+    time.sleep(12)
     sf.clickByXpath(driver, "//*[normalize-space()='SMILES']")
-    time.sleep(2)
+    time.sleep(12)
     inputSMILES = driver.find_elements_by_xpath("//input[contains(@title, '[Optional] Provide description of ligand to fit')]")
     inputSMILES[-1].clear()
     inputSMILES[-1].send_keys('COc1ccc(c(OC(C)C)c1)C2=N[C@H]([C@H](N2C(=O)N3CCNC(=O)C3)c4ccc(Cl)cc4)c5ccc(Cl)cc5')

@@ -218,8 +218,10 @@ def verifySimbad(driver, waitLong):
                 rWork = float(match.group(1))
                 rFree = float(match.group(2))
                 break
+        if rFree != 1.0: # to exit infinite loop before timeout
+            break
 
-        curTime = time.time()
+        curTime = time.time() # exiting infinite loop due to timeout
         if curTime > startTime + float(waitLong):
             print('*** Timeout for SIMBAD results! Waited for %d seconds.' % waitLong)
             break
