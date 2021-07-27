@@ -89,14 +89,6 @@ function TaskWFlowAEP()  {
       inputId     : 'ligand',      // input Id for referencing input fields
       min         : 0,             // minimum acceptable number of data instances
       max         : this.input_ligands.length // maximum acceptable number of data instances
-    },{
-      // require brunching from data import, so no revision must be there
-      data_type   : {'DataRevision':[]}, // data type(s) and subtype(s)
-      label       : 'Structure revision', // label for input dialog
-      inputId     : 'revision', // input Id for referencing input fields
-      version     : 0,          // minimum data version allowed
-      min         : 0,          // minimum acceptable number of data instances
-      max         : 0           // maximum acceptable number of data instances
     }
   ];
 
