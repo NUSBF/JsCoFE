@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.06.21   <--  Date of Last Modification.
+ *    27.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -87,13 +87,13 @@ var fpath = getUserRationFPath ( loginData );
 function checkUserRation ( loginData,include_cloudrun )  {
 var r = getUserRation ( loginData );
 var check_list = [];
-  if (r.storage_used>r.storage)
+  if (r.storage && (r.storage_used>r.storage))
     check_list.push ( 'Disk space' );
-  if (r.cpu_day_used>r.cpu_day)
+  if (r.cpu_day && (r.cpu_day_used>r.cpu_day))
     check_list.push ( 'CPU daily' );
-  if (r.cpu_month_used>r.cpu_month)
+  if (r.cpu_month && (r.cpu_month_used>r.cpu_month))
     check_list.push ( 'CPU monthly' );
-  if (include_cloudrun && (r.cloudrun_day_used>r.cloudrun_day))
+  if (include_cloudrun && r.cloudrun_day && (r.cloudrun_day_used>r.cloudrun_day))
     check_list.push ( 'CloudRun daily' );
   return check_list;
 }

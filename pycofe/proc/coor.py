@@ -197,6 +197,15 @@ def fetchChains ( inFile,modelNo,chainList,removeWaters,removeLigands,outFile ):
     return n
     """
 
+def hasMacromolecule ( path ):
+    st = gemmi.read_structure ( path )
+    st.add_entity_types()
+    for chain in st[0]:
+        polymer = chain.get_polymer()
+        if polymer:
+            return True
+    return False
+
 
 def main():
 
