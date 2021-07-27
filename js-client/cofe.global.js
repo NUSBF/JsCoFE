@@ -96,7 +96,7 @@ $(window).resize ( function(){
     __current_page.onResize ( window.innerWidth,window.innerHeight );
 });
 
-function maintainerEmail ( subject,message,label )  {
+function email_bug ( subject,message,label )  {
 
   var body = encodeURIComponent (
     'CCP4 Cloud Report\n' +

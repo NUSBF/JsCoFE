@@ -1124,6 +1124,7 @@ function addJobAuto ( jobEntry,jobClass )  {
 
               // Run the job
               var job_token = crypto.randomBytes(20).toString('hex');
+
               _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
                          function(jtoken){} );
 
@@ -1168,12 +1169,9 @@ function getJobResults ( job_token,server_request,server_response )  {
           // print usage stats and update the user ration state
 
           var jobClass = writeJobStats ( jobEntry );
-
           if (jobClass)  {
-            if (jobClass.autoRunId && jobClass.isSuccessful())  {
-              // console.log ( ' !!!! autostart from job ' + jobClass.id );
+            if (jobClass.autoRunId && jobClass.isSuccessful())
               addJobAuto ( jobEntry,jobClass );
-            }
             ustats.registerJob ( jobClass );
           }
 
