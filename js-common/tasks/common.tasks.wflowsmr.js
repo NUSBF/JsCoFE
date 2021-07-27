@@ -90,7 +90,7 @@ function TaskWFlowSMR()  {
                                    // available; otherwise, 0 (== do not use) will
                                    // be selected
       min         : 1,             // minimum acceptable number of data instances
-      max         : 10             // maximum acceptable number of data instances
+      max         : 1              // maximum acceptable number of data instances
     },{
       data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
       label       : 'Ligand data', // label for input dialog
@@ -99,13 +99,12 @@ function TaskWFlowSMR()  {
       min         : 0,             // minimum acceptable number of data instances
       max         : this.input_ligands.length // maximum acceptable number of data instances
     },{
-      // request brunching from data import, so no revision must be there
-      data_type   : {'DataRevision':[]}, // data type(s) and subtype(s)
-      label       : 'Structure revision', // label for input dialog
-      inputId     : 'revision', // input Id for referencing input fields
-      version     : 0,          // minimum data version allowed
-      min         : 0,          // minimum acceptable number of data instances
-      max         : 0           // maximum acceptable number of data instances
+      data_type   : {'DataXYZ':['protein','dna','rna'] },  // data type(s) and subtype(s)
+      label       : 'PDB structure',    // label for input dialog
+      inputId     : 'xyz',    // input Id for referencing input fields
+      //customInput : 'chain-sel', // lay custom fields next to the selection
+      min         : 1,            // minimum acceptable number of data instances
+      max         : 1            // maximum acceptable number of data instances
     }
   ];
 
