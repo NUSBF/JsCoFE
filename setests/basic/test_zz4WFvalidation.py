@@ -28,7 +28,7 @@ def validate4DPL(driver, waitLong):
         for taskText in ttts:
             # Job number as string
             match = re.search(
-                r'^auto-DPL:\[0010\] Automated Workflow has finished succesfully \(look inside for comments\)', taskText)
+                r'^auto-DPL:\[\d*\] Automated Workflow has finished succesfully \(look inside for comments\)', taskText)
             if match:
                 finished = True
                 break
