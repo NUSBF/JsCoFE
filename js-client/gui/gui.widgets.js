@@ -382,6 +382,11 @@ Widget.prototype.toggle = function()  {
   return this;
 }
 
+Widget.prototype.setTransparent = function ( yn_bool )  {
+  if (yn_bool)  $(this.element).css('opacity',1);
+          else  $(this.element).css('opacity',0);
+}
+
 Widget.prototype.setDisabled = function ( disabled_bool )  {
   this.element.disabled = disabled_bool;
   return this;

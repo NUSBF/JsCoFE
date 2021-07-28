@@ -33,6 +33,8 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   // $('#'+sceneId).empty();
   //  unsetDefaultButton ( null );
 
+  __communication_ind = null;  // blinking green dot, global reference
+
   // set background image
   if (getClientCode()==client_code.ccp4)
     $('#'+sceneId).css({"background-image"    : "url('" + image_path('ccp4_background') + "')",
@@ -195,6 +197,13 @@ BasePage.prototype.getUserRation = function()  {
 
 }
 
+BasePage.prototype._setConnectionIcons = function ( colNo )  {
+  __communication_ind = this.headerPanel.setImageButton (
+                image_path('network_request'),'22px','22px',0,colNo,1,1 )
+                .setTooltip1    ( 'Communication status','show',false,0 )
+                // .setFontSize    ( '90%' )
+                .setVerticalAlignment ( 'middle' );
+}
 
 BasePage.prototype._setModeIcon = function ( colNo )  {
   var icon_path;
@@ -262,7 +271,8 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
   this.headerPanel.setCellSize ( '40px','',0,1 );
 
   if (__login_user)  {
-    this.headerPanel.setCellSize ( '99%','',0,14 );
+    this.headerPanel.setCellSize ( '99%','',0,13 );
+    this._setConnectionIcons ( 14 );
     this._setModeIcon ( 15 );
     this.rationPanel = new Grid('');
     this.headerPanel.setWidget ( this.rationPanel,0,18,1,1 );
