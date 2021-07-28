@@ -113,8 +113,8 @@ function report_problem ( subject,message,label )  {
     text = appName() + ' maintainer';
 
   return '<a href="mailto:' + __maintainerEmail +
-         '?subject=' + encodeURIComponent(subject) + '&body=' + body + '">' +
-         text + '</a>';
+         '?subject=' + encodeURIComponent(subject) + '&body=' + body + '"><i>' +
+         text + '</i></a>';
 
 }
 
