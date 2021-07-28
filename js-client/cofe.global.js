@@ -114,7 +114,7 @@ function report_problem ( subject,message,label )  {
 
   return '<a href="mailto:' + __maintainerEmail +
          '?subject=' + encodeURIComponent(subject) + '&body=' + body + '">' +
-         label + '</a>';
+         text + '</a>';
 
 }
 
