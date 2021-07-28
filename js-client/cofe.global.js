@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.07.21   <--  Date of Last Modification.
+ *    28.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -96,7 +96,7 @@ $(window).resize ( function(){
     __current_page.onResize ( window.innerWidth,window.innerHeight );
 });
 
-function email_bug ( subject,message,label )  {
+function report_problem ( subject,message,label )  {
 
   var body = encodeURIComponent (
     'CCP4 Cloud Report\n' +
