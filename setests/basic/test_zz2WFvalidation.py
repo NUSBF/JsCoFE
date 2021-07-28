@@ -28,7 +28,7 @@ def validate2SMR(driver, waitLong):
         ttts = sf.tasksTreeTexts(driver)
         for taskText in ttts:
             # Job number as string
-            match = re.search(r'^simple-MR:\[0018\] Automated Workflow has finished succesfully \(look inside for comments\)', taskText)
+            match = re.search(r'^simple-MR:\[\d*\] Automated Workflow has finished succesfully \(look inside for comments\)', taskText)
             if match:
                 finished = True
                 break
@@ -40,72 +40,59 @@ def validate2SMR(driver, waitLong):
             break
         time.sleep(60)
 
-#0 [smrWFTest] smrWFTest
-#1 simple-MR:[0001] Simple MR workflow -- imported HKL (3), Sequences (1), XYZ (1); workflow started
-#2 simple-MR:[0002] asymmetric unit contents -- 2 molecules in ASU, Solv=47.3%
-#3 simple-MR:[0003] prepare MR model(s) from xyz -- 1 model(s) generated (molrep protocol)
-#4 simple-MR:[0004] phaser MR -- Nsol=1 LLG=473 TFZ=24.9 R=0.5173 Rfree=0.5307
-#5 simple-MR:[0005] phaser MR -- Nsol=1 LLG=1515 TFZ=40.0 R=0.4574 Rfree=0.4558
-#6 simple-MR:[0006] refmac5 -- R=0.4034 Rfree=0.4241
-#7 simple-MR:[0007] buccaneer -- Compl=100.0% R=0.2505 Rfree=0.2851
-#8 simple-MR:[0008] Large parts of the structure are likely missing as Rfree is only 0.424 (click for more comments)
-#9 simple-MR:[0009] ccp4build -- Compl=100.0% R=0.2299 Rfree=0.2601
-#10 simple-MR:[0010] refmac5 -- R=0.2243 Rfree=0.2591
-#11 simple-MR:[0011] refmac5 -- R=0.2201 Rfree=0.2591
-#12 simple-MR:[0012] refmac5 -- R=0.2167 Rfree=0.2594
-#13 simple-MR:[0013] refmac5 -- R=0.2207 Rfree=0.2589
-#14 simple-MR:[0014] fit waters -- Nwaters=123
-#15 simple-MR:[0015] refmac5 -- R=0.1766 Rfree=0.2216
-#16 simple-MR:[0016] refmac5 -- R=0.1778 Rfree=0.2229
-#17 simple-MR:[0017] deposition -- package prepared, pdb report obtained
-#18 simple-MR:[0018] Automated Workflow has finished succesfully (look inside for comments)
+    # [smrWFTest] smrWFTest
+    # simple-MR:[0001] Simple MR workflow -- imported HKL (3), Sequences (1), XYZ (1); workflow started
+    # simple-MR:[0002] asymmetric unit contents -- 2 molecules in ASU, Solv=47.3%
+    # simple-MR:[0003] prepare MR model(s) from xyz -- 1 model(s) generated (molrep protocol)
+    # simple-MR:[0004] phaser MR -- Nsol=1 LLG=473 TFZ=24.9 R=0.5173 Rfree=0.5307
+    # simple-MR:[0005] phaser MR -- Nsol=1 LLG=1515 TFZ=40.0 R=0.4574 Rfree=0.4558
+    # simple-MR:[0006] refmac5 -- R=0.4033 Rfree=0.4240
+    # simple-MR:[0007] buccaneer -- Compl=100.0% R=0.2449 Rfree=0.2774
+    # simple-MR:[0009] refmac5 -- R=0.2314 Rfree=0.2697
+    # simple-MR:[0010] refmac5 -- R=0.2267 Rfree=0.2708
+    # simple-MR:[0011] refmac5 -- R=0.2230 Rfree=0.2726
+    # simple-MR:[0012] refmac5 -- R=0.2330 Rfree=0.2705
+    # simple-MR:[0013] fit waters -- Nwaters=118
+    # simple-MR:[0014] refmac5 -- R=0.1869 Rfree=0.2378
+    # simple-MR:[0015] refmac5 -- R=0.1869 Rfree=0.2366
+    # simple-MR:[0016] refmac5 -- R=0.1888 Rfree=0.2357
+    # simple-MR:[0017] deposition -- package prepared, pdb report obtained
+    # simple-MR:[0018] Automated Workflow has finished succesfully (look inside for comments)
+    # simple-MR:[0008] Large parts of the structure are likely missing as Rfree is only 0.424 (click for more comments)
 
     ttts = sf.tasksTreeTexts(driver)
-    #1 simple-MR:[0001] Simple MR workflow -- imported HKL (3), Sequences (1), XYZ (1); workflow started
+
     print('Verifying WF task 0001 text... ')
     assert ttts[1] == 'simple-MR:[0001] Simple MR workflow -- imported HKL (3), Sequences (1), XYZ (1); workflow started'
 
-    #4 simple-MR:[0004] phaser MR -- Nsol=1 LLG=473 TFZ=24.9 R=0.5173 Rfree=0.5307
     print('Verifying PHASER 0004 LLG > 400... ')
     match = re.search('\[0004\] phaser MR --.*LLG=(\d*).*R=(0\.\d*) Rfree=(0\.\d*)', ttts[4])
     assert match
     assert float(match.group(1)) > 400
 
-    #5 simple-MR:[0005] phaser MR -- Nsol=1 LLG=1515 TFZ=40.0 R=0.4574 Rfree=0.4558
     print('Verifying PHASER 0005 LLG > 1300 and Rfree < 0.48... ')
     match = re.search('\[0005\] phaser MR --.*LLG=(\d*).*R=(0\.\d*) Rfree=(0\.\d*)', ttts[5])
     assert match
     assert float(match.group(1)) > 1300
     assert float(match.group(3)) < 0.48
 
-    #7 simple-MR:[0007] buccaneer -- Compl=100.0% R=0.2505 Rfree=0.2851
     print('Verifying buccaneer 0007 Rfree < 0.31... ')
     match = re.search('\[0007\] buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[7])
     assert match
     assert float(match.group(2)) < 0.31
 
-    #9 simple-MR:[0009] ccp4build -- Compl=100.0% R=0.2299 Rfree=0.2601
-    print('Verifying ccp4build 0006 Rfree < 0.28... ')
-    match = re.search('\[0009\] ccp4build --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[9])
-    assert match
-    assert float(match.group(2)) < 0.28
-
-    #14 simple-MR:[0014] fit waters -- Nwaters=123
-    print('Verifying fitwaters 0014 >100 ... ')
-    match = re.search('\[0014\] fit waters -- Nwaters=(\d*)', ttts[14])
+    print('Verifying fitwaters 0013 >100 ... ')
+    match = re.search('\[0013\] fit waters -- Nwaters=(\d*)', ttts[12])
     assert match
     assert float(match.group(1)) > 100
 
-    #16 simple-MR:[0016] refmac5 -- R=0.1778 Rfree=0.2229
     print('Verifying refmac5 0016 Rfree < 0.25... ')
-    match = re.search('\[0016\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', ttts[16])
+    match = re.search('\[0016\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', ttts[15])
     assert match
     assert float(match.group(2)) < 0.25
 
-
-    #17 simple-MR:[0017] deposition -- package prepared, pdb report obtained
     print('Verifying deposition 0017  ... ')
-    assert ttts[17] == 'simple-MR:[0017] deposition -- package prepared, pdb report obtained'
+    assert 'simple-MR:[0017] deposition -- package prepared, pdb report' in ttts[16]
 
     return ()
 

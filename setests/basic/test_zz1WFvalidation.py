@@ -30,7 +30,7 @@ def validate1AMR(driver, waitLong):
         ttts = sf.tasksTreeTexts(driver)
         for taskText in ttts:
             # Job number as string
-            match = re.search(r'^auto-MR:\[0016\] Automated Workflow has finished succesfully \(look inside for comments\)', taskText)
+            match = re.search(r'^auto-MR:\[\d*\] Automated Workflow has finished succesfully \(look inside for comments\)', taskText)
             if match:
                 finished = True
                 break
@@ -42,66 +42,61 @@ def validate1AMR(driver, waitLong):
             break
         time.sleep(60)
 
-#0 [amrWFTest_unm] amrWFTest_unm
-#1 auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started
-#2 auto-MR:[0002] aimless -- Compl=75.8% CC1/2=0.998 Rmeas_all=0.070 Rmeas_ano=0.068 Res=1.25-61.93 SpG=P 61 2 2
-#3 auto-MR:[0003] asymmetric unit contents -- 1 molecule in ASU, Solv=64.7%
-#4 auto-MR:[0004] simbad -- best model: 4hg7, LLG=132.0 TFZ=13.7 R=0.3291 Rfree=0.3295 SpG=P 65 2 2
-#5 auto-MR:[0005] buccaneer -- Compl=100.0% R=0.3222 Rfree=0.3294
-#6 auto-MR:[0007] refmac5 -- R=0.3133 Rfree=0.3293
-#7 auto-MR:[0008] make ligand -- ligand "00E" prepared
-#8 auto-MR:[0009] fit ligand -- Nfitted=1
-#9 auto-MR:[0010] refmac5 -- R=0.2789 Rfree=0.3031
-#10 auto-MR:[0011] fit waters -- Nwaters=65
-#11 auto-MR:[0012] refmac5 -- R=0.2468 Rfree=0.2768
-#12 auto-MR:[0013] refmac5 -- R=0.2479 Rfree=0.2767
-#13 auto-MR:[0014] refmac5 -- R=0.2498 Rfree=0.2778
-#14 auto-MR:[0015] deposition -- package prepared, pdb report obtained
-#15 auto-MR:[0016] Automated Workflow has finished succesfully (look inside for comments)
-#16 auto-MR:[0006] ccp4build -- Compl=100.0% R=0.317 Rfree=0.3401
+# [amrWFTest_unm] amrWFTest_unm
+# auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started
+# auto-MR:[0002] aimless -- Compl=75.8% CC1/2=0.998 Rmeas_all=0.070 Rmeas_ano=0.068 Res=1.25-61.93 SpG=P 61 2 2
+# auto-MR:[0003] asymmetric unit contents -- 1 molecule in ASU, Solv=64.7%
+# auto-MR:[0004] simbad -- best model: 4hg7, LLG=132.0 TFZ=13.7 R=0.3291 Rfree=0.3295 SpG=P 65 2 2
+# auto-MR:[0005] buccaneer -- Compl=100.0% R=0.3219 Rfree=0.3336
+# auto-MR:[0006] ccp4build -- Compl=100.0% R=0.3153 Rfree=0.3288
+# auto-MR:[0007] refmac5 -- R=0.3115 Rfree=0.3286
+# auto-MR:[0008] refmac5 -- R=0.3119 Rfree=0.3280
+# auto-MR:[0009] make ligand -- ligand "00E" prepared
+# auto-MR:[0010] fit ligand -- Nfitted=1
+# auto-MR:[0011] refmac5 -- R=0.2773 Rfree=0.2970
+# auto-MR:[0012] fit waters -- Nwaters=65
+# auto-MR:[0013] refmac5 -- R=0.2443 Rfree=0.2649
+# auto-MR:[0014] refmac5 -- R=0.2116 Rfree=0.2481
+# auto-MR:[0015] refmac5 -- R=0.2136 Rfree=0.2491
+# auto-MR:[0016] refmac5 -- R=0.2148 Rfree=0.2510
+# auto-MR:[0017] deposition -- package prepared, pdb report obtained
+# auto-MR:[0018] Automated Workflow has finished succesfully (look inside for comments)
 
     ttts = sf.tasksTreeTexts(driver)
-    # 1 auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started
+
     print('Verifying WF task 0001 text... ')
     assert ttts[1] == 'auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started'
 
-    # 4 auto-MR:[0004] simbad -- best model: 4hg7, LLG=132.0 TFZ=13.7 R=0.3291 Rfree=0.3295 SpG=P 65 2 2
     print('Verifying SIMBAD 0004 Rfree < 0.35... ')
     match = re.search('\[0004\] simbad --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[4])
     assert match
     assert float(match.group(2)) < 0.35
 
-    # 5 auto-MR:[0005] buccaneer -- Compl=100.0% R=0.3222 Rfree=0.3294
     print('Verifying buccaneer 0005 Rfree < 0.35... ')
     match = re.search('\[0005\] buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[5])
     assert match
     assert float(match.group(2)) < 0.35
 
-    # 8 auto-MR:[0009] fit ligand -- Nfitted=1
     print('Verifying fitligand 0009 = 1 ... ')
-    assert ttts[8] == 'auto-MR:[0009] fit ligand -- Nfitted=1'
+    assert ttts[10] == 'auto-MR:[0010] fit ligand -- Nfitted=1'
 
-    # 10 auto-MR:[0011] fit waters -- Nwaters=65
     print('Verifying fitwaters 0011 >50 ... ')
-    match = re.search('\[0011\] fit waters -- Nwaters=(\d*)', ttts[10])
+    match = re.search('\[0012\] fit waters -- Nwaters=(\d*)', ttts[12])
     assert match
     assert float(match.group(1)) > 50
 
-    # 13 auto-MR:[0014] refmac5 -- R=0.2498 Rfree=0.2778
-    print('Verifying refmac5 0014 Rfree < 0.29... ')
-    match = re.search('\[0014\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', ttts[13])
+    print('Verifying refmac5 0016 Rfree < 0.27... ')
+    match = re.search('\[0016\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', ttts[16])
     assert match
-    assert float(match.group(2)) < 0.29
+    assert float(match.group(2)) < 0.27
 
-    # 16 auto-MR:[0006] ccp4build -- Compl=100.0% R=0.317 Rfree=0.3401
-    print('Verifying ccp4build 0006 Rfree < 0.36... ')
-    match = re.search('\[0006\] ccp4build --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[16])
+    print('Verifying ccp4build 0006 Rfree < 0.34... ')
+    match = re.search('\[0006\] ccp4build --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[6])
     assert match
-    assert float(match.group(2)) < 0.36
+    assert float(match.group(2)) < 0.34
 
-    # 14 auto-MR:[0015] deposition -- package prepared, pdb report obtained
-    print('Verifying deposition 0015  ... ')
-    assert ttts[14] == 'auto-MR:[0015] deposition -- package prepared, pdb report not obtained'
+    print('Verifying deposition 0017  ... ')
+    assert  'auto-MR:[0017] deposition -- package prepared' in ttts[17]
 
     return ()
 
@@ -151,45 +146,38 @@ def validate12AMR(driver, waitLong):
 #16 auto-MR:[0006] ccp4build -- Compl=100.0% R=0.317 Rfree=0.3401
 
     ttts = sf.tasksTreeTexts(driver)
-    # 1 auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started
+
     print('Verifying WF task 0001 text... ')
     assert ttts[1] == 'auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started'
 
-    # 4 auto-MR:[0004] simbad -- best model: 4hg7, LLG=132.0 TFZ=13.7 R=0.3291 Rfree=0.3295 SpG=P 65 2 2
     print('Verifying SIMBAD 0004 Rfree < 0.35... ')
     match = re.search('\[0004\] simbad --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[4])
     assert match
     assert float(match.group(2)) < 0.35
 
-    # 5 auto-MR:[0005] buccaneer -- Compl=100.0% R=0.3222 Rfree=0.3294
     print('Verifying buccaneer 0005 Rfree < 0.35... ')
     match = re.search('\[0005\] buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[5])
     assert match
     assert float(match.group(2)) < 0.35
 
-    # 8 auto-MR:[0009] fit ligand -- Nfitted=1
     print('Verifying fitligand 0009 = 1 ... ')
     assert ttts[8] == 'auto-MR:[0009] fit ligand -- Nfitted=1'
 
-    # 10 auto-MR:[0011] fit waters -- Nwaters=65
     print('Verifying fitwaters 0011 >50 ... ')
     match = re.search('\[0011\] fit waters -- Nwaters=(\d*)', ttts[10])
     assert match
     assert float(match.group(1)) > 50
 
-    # 13 auto-MR:[0014] refmac5 -- R=0.2498 Rfree=0.2778
     print('Verifying refmac5 0014 Rfree < 0.29... ')
     match = re.search('\[0014\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', ttts[13])
     assert match
     assert float(match.group(2)) < 0.29
 
-    # 16 auto-MR:[0006] ccp4build -- Compl=100.0% R=0.317 Rfree=0.3401
     print('Verifying ccp4build 0006 Rfree < 0.36... ')
     match = re.search('\[0006\] ccp4build --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[16])
     assert match
     assert float(match.group(2)) < 0.36
 
-    # 14 auto-MR:[0015] deposition -- package prepared, pdb report obtained
     print('Verifying deposition 0015  ... ')
     assert ttts[14] == 'auto-MR:[0015] deposition -- package prepared, pdb report not obtained'
 

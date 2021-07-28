@@ -29,7 +29,7 @@ def validate3AEP(driver, waitLong):
         for taskText in ttts:
             # Job number as string
             match = re.search(
-                r'^auto-EP:\[0012\] Automated Workflow has finished succesfully \(look inside for comments\)', taskText)
+                r'^auto-EP:\[\d*\] Automated Workflow has finished succesfully \(look inside for comments\)', taskText)
             if match:
                 finished = True
                 break
@@ -41,46 +41,40 @@ def validate3AEP(driver, waitLong):
             break
         time.sleep(60)
 
-#0 [aepWFTest] aepWFTest
-#1 auto-EP:[0001] EP automatic workflow -- imported HKL (1), Sequences (1); workflow started
-#2 auto-EP:[0002] asymmetric unit contents -- 1 molecule in ASU, Solv=64%
-#3 auto-EP:[0003] EP with Crank2 -- R=0.2594 Rfree=0.2936
-#4 auto-EP:[0004] refmac5 -- R=0.2576 Rfree=0.3012
-#5 auto-EP:[0005] refmac5 -- R=0.2609 Rfree=0.2996
-#6 auto-EP:[0006] fit waters -- Nwaters=108
-#7 auto-EP:[0007] refmac5 -- R=0.2205 Rfree=0.2610
-#8 auto-EP:[0008] refmac5 -- R=0.2144 Rfree=0.2574
-#9 auto-EP:[0009] refmac5 -- R=0.2163 Rfree=0.2585
-#10 auto-EP:[0010] refmac5 -- R=0.2191 Rfree=0.2595
-#11 auto-EP:[0011] deposition -- package prepared, pdb report obtained
-#12 auto-EP:[0012] Automated Workflow has finished succesfully (look inside for comments)
-
+    # [aepWFTest] aepWFTest
+    # auto-EP:[0001] EP automatic workflow -- imported HKL (1), Sequences (1); workflow started
+    # auto-EP:[0002] asymmetric unit contents -- 1 molecule in ASU, Solv=64%
+    # auto-EP:[0003] EP with Crank2 -- R=0.2541 Rfree=0.2874
+    # auto-EP:[0004] refmac5 -- R=0.2525 Rfree=0.2912
+    # auto-EP:[0005] refmac5 -- R=0.2530 Rfree=0.2921
+    # auto-EP:[0006] fit waters -- Nwaters=126
+    # auto-EP:[0007] refmac5 -- R=0.2095 Rfree=0.2472
+    # auto-EP:[0008] refmac5 -- R=0.2047 Rfree=0.2438
+    # auto-EP:[0009] refmac5 -- R=0.2066 Rfree=0.2451
+    # auto-EP:[0010] deposition -- package prepared, pdb report obtained
+    # auto-EP:[0011] Automated Workflow has finished succesfully (look inside for comments)
     ttts = sf.tasksTreeTexts(driver)
-    #1 auto-EP:[0001] EP automatic workflow -- imported HKL (1), Sequences (1); workflow started
+
     print('Verifying WF task 0001 text... ')
     assert ttts[1] == 'auto-EP:[0001] EP automatic workflow -- imported HKL (1), Sequences (1); workflow started'
 
-    #3 auto-EP:[0003] EP with Crank2 -- R=0.2594 Rfree=0.2936
     print('Verifying CRANK2 0003 Rfree < 0.31... ')
     match = re.search('\[0003\] EP with Crank2 --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[3])
     assert match
     assert float(match.group(2)) < 0.31
 
-    #6 auto-EP:[0006] fit waters -- Nwaters=108
     print('Verifying fitwaters 0006 >90 ... ')
     match = re.search('\[0006\] fit waters -- Nwaters=(\d*)', ttts[6])
     assert match
     assert float(match.group(1)) > 90
 
-    #10 auto-EP:[0010] refmac5 -- R=0.2191 Rfree=0.2595
-    print('Verifying refmac5 0010 Rfree < 0.28... ')
-    match = re.search('\[0010\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', ttts[10])
+    print('Verifying refmac5 0009 Rfree < 0.28... ')
+    match = re.search('\[0009\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', ttts[9])
     assert match
     assert float(match.group(2)) < 0.28
 
-    #11 auto-EP:[0011] deposition -- package prepared, pdb report obtained
-    print('Verifying deposition 0011  ... ')
-    assert ttts[11] == 'auto-EP:[0011] deposition -- package prepared, pdb report obtained'
+    print('Verifying deposition 0010  ... ')
+    assert 'auto-EP:[0010] deposition -- package prepared, pdb report' in ttts[10]
 
     return ()
 
@@ -112,7 +106,7 @@ def test_3_AEP_Validation(browser,
             sf.loginToCloud(d.driver, d.login, d.password)
 
         sf.enterProject(d.driver, d.testName)
-        validate3AEP(d.driver, 1800)
+        validate3AEP(d.driver, 1200)
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
 
