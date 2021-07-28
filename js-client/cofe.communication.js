@@ -205,8 +205,11 @@ var json = null;
 
 var __server_queue = [];
 var __local_queue  = [];
+var __communication_ind = null;
 
 function processServerQueue()  {
+  if (__communication_ind)
+    __communication_ind.setTransparent ( (__server_queue.length>0) );
   if (__server_queue.length>0)  {
     var q0 = __server_queue[0];
     if (q0.status=='waiting')  {
