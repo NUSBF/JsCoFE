@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.06.21   <--  Date of Last Modification.
+ *    29.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,7 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   // $('#'+sceneId).empty();
   //  unsetDefaultButton ( null );
 
-  __communication_ind = null;  // blinking green dot, global reference
+  clearNetworkIndocators();
 
   // set background image
   if (getClientCode()==client_code.ccp4)
@@ -198,11 +198,22 @@ BasePage.prototype.getUserRation = function()  {
 }
 
 BasePage.prototype._setConnectionIcons = function ( colNo )  {
+  __delays_ind = this.headerPanel.setProgressBar ( 0,0,colNo,1,1 )
+                     .setTooltip1 ( 'Severe network delays indicator','show',false,0 )
+                     .setSize     ( '80px','12px' )
+                     .hide();
+              // .setFontSize    ( '90%' )
+              // .setVerticalAlignment ( 'middle' );
+  $(__delays_ind.element).css({'margin-top' : '4px',
+                               'position'   : 'relative'});
+  // __delays_ind.hide();
   __communication_ind = this.headerPanel.setImageButton (
-                image_path('network_request'),'22px','22px',0,colNo,1,1 )
-                .setTooltip1    ( 'Communication status','show',false,0 )
+                image_path('network_request'),'22px','22px',0,colNo+1,1,1 )
+                .setTooltip1    ( 'Communication queue activity','show',false,0 ).image;
                 // .setFontSize    ( '90%' )
-                .setVerticalAlignment ( 'middle' );
+                // .setVerticalAlignment ( 'middle' ).image;
+  this.headerPanel.setVerticalAlignment ( 0,colNo  ,'top' );
+  this.headerPanel.setVerticalAlignment ( 0,colNo+1,'top' );
 }
 
 BasePage.prototype._setModeIcon = function ( colNo )  {
@@ -271,8 +282,8 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
   this.headerPanel.setCellSize ( '40px','',0,1 );
 
   if (__login_user)  {
-    this.headerPanel.setCellSize ( '99%','',0,13 );
-    this._setConnectionIcons ( 14 );
+    this.headerPanel.setCellSize ( '99%','',0,12 );
+    this._setConnectionIcons ( 13 );
     this._setModeIcon ( 15 );
     this.rationPanel = new Grid('');
     this.headerPanel.setWidget ( this.rationPanel,0,18,1,1 );
