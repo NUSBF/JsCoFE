@@ -254,13 +254,11 @@ function processServerQueue()  {
                          q0.function_ok,q0.function_always,
                          q0.function_fail );
     }
-    if (__delays_ind && (!__delays_ind.isVisible()))  {
-      if (!__delays_timer)
-        __delays_timer = window.setTimeout ( function(){
-          __delays_ind.show();
-          // __delays_ind.setOpacity ( 1 );
-        },1000);
-    }
+    if (__delays_ind && (!__delays_ind.isVisible()) && (!__delays_timer))
+      __delays_timer = window.setTimeout ( function(){
+        __delays_ind.show();
+        // __delays_ind.setOpacity ( 1 );
+      },1000);
   } else if (__delays_ind)  {
     if (__delays_ind.isVisible())
       __delays_ind.hide();
