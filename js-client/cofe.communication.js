@@ -205,11 +205,42 @@ var json = null;
 
 var __server_queue = [];
 var __local_queue  = [];
+
+var __delays_ind   = null;
+var __delays_timer = null;
 var __communication_ind = null;
+
+function clearNetworkIndocators()  {
+  if (__delays_timer)
+    window.clearTimeout ( __delays_timer );
+  __delays_ind   = null;  // communication delays indicator
+  __delays_timer = null;
+  __communication_ind = null;  // blinking green dot, global reference
+}
+
+// function manageDelaysInd()  {
+//   if (__delays_ind)  {
+//     if (__server_queue.length>0)  {
+//       if (!__delays_ind.isVisible())  {
+//         if (!__delays_timer)
+//           __delays_timer = window.setTimeout ( function(){
+//             __delays_ind.show();
+//           },0);
+//       }
+//     } else  {
+//       if (__delays_ind.isVisible())
+//         __delays_ind.hide();
+//       if (__delays_timer)  {
+//         window.clearTimeout ( __delays_timer );
+//         __delays_timer = null;
+//       }
+//     }
+//   }
+// }
 
 function processServerQueue()  {
   if (__communication_ind)
-    __communication_ind.setTransparent ( (__server_queue.length>0) );
+    __communication_ind.fade ( (__server_queue.length>0) );
   if (__server_queue.length>0)  {
     var q0 = __server_queue[0];
     if (q0.status=='waiting')  {
@@ -222,6 +253,19 @@ function processServerQueue()  {
         server_request ( q0.request_type,q0.data_obj,q0.page_title,
                          q0.function_ok,q0.function_always,
                          q0.function_fail );
+    }
+    if (__delays_ind && (!__delays_ind.isVisible()))  {
+      if (!__delays_timer)
+        __delays_timer = window.setTimeout ( function(){
+          __delays_ind.show();
+        },1000);
+    }
+  } else if (__delays_ind)  {
+    if (__delays_ind.isVisible())
+      __delays_ind.hide();
+    if (__delays_timer)  {
+      window.clearTimeout ( __delays_timer );
+      __delays_timer = null;
     }
   }
 }
