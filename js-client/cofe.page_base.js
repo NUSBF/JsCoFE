@@ -215,7 +215,7 @@ BasePage.prototype._setConnectionIcons = function ( colNo )  {
                                'width'      : '80px',
                                'height'     : '12px',
                                'position'   : 'relative'});
-  // __delays_ind.hide();
+  __delays_ind.hide();
   __communication_ind = this.headerPanel.setImageButton (
                 image_path('network_request'),'22px','22px',0,colNo+1,1,1 )
                 .setTooltip1    ( 'Communication queue activity','show',false,0 ).image;

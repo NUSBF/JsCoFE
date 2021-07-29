@@ -218,29 +218,24 @@ function clearNetworkIndocators()  {
   __communication_ind = null;  // blinking green dot, global reference
 }
 
-// function manageDelaysInd()  {
-//   if (__delays_ind)  {
-//     if (__server_queue.length>0)  {
-//       if (!__delays_ind.isVisible())  {
-//         if (!__delays_timer)
-//           __delays_timer = window.setTimeout ( function(){
-//             __delays_ind.show();
-//           },0);
-//       }
-//     } else  {
-//       if (__delays_ind.isVisible())
-//         __delays_ind.hide();
-//       if (__delays_timer)  {
-//         window.clearTimeout ( __delays_timer );
-//         __delays_timer = null;
-//       }
-//     }
-//   }
-// }
+function __process_network_indicators()  {
+  if (__server_queue.length>1)  {
+    if (__communication_ind && (!__communication_ind.isVisible()))
+      __communication_ind.fade ( true );
+  } else if (__delays_ind)  {
+    if (__delays_timer)  {
+      window.clearTimeout ( __delays_timer );
+      __delays_timer = null;
+    }
+    if (__delays_ind.isVisible())
+      __delays_ind.hide();
+    if (__communication_ind.isVisible())
+      __communication_ind.fade ( false );
+  }
+
+}
 
 function processServerQueue()  {
-  if (__communication_ind)
-    __communication_ind.fade ( (__server_queue.length>0) );
   if (__server_queue.length>0)  {
     var q0 = __server_queue[0];
     if (q0.status=='waiting')  {
@@ -257,16 +252,7 @@ function processServerQueue()  {
     if (__delays_ind && (!__delays_ind.isVisible()) && (!__delays_timer))
       __delays_timer = window.setTimeout ( function(){
         __delays_ind.show();
-        // __delays_ind.setOpacity ( 1 );
       },1000);
-  } else if (__delays_ind)  {
-    if (__delays_ind.isVisible())
-      __delays_ind.hide();
-      // __delays_ind.setOpacity ( 0 );
-    if (__delays_timer)  {
-      window.clearTimeout ( __delays_timer );
-      __delays_timer = null;
-    }
   }
 }
 
@@ -310,22 +296,25 @@ function server_command ( cmd,data_obj,page_title,function_response,
       dataType : 'text'
     })
     .done ( function(rdata) {
+      __process_network_indicators();
       var rsp = jQuery.parseJSON ( rdata );
       if (checkVersionMatch(rsp,false))  {
         var response = jQuery.extend ( true, new Response(), rsp );
         if (!function_response(response))
           makeCommErrorMessage ( page_title,response );
       }
+      shiftServerQueue();
     })
     .always ( function(){
       if (function_always)
         function_always();
-      shiftServerQueue();
     })
     .fail ( function(xhr,err){
+      __process_network_indicators();
       if (function_fail)
             function_fail();
       else  MessageAJAXFailure(page_title,xhr,err);
+      shiftServerQueue();
     });
 
 }
@@ -358,6 +347,9 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
   }
 }
 */
+
+      __process_network_indicators();
+
       try {
         var rsp = jQuery.parseJSON ( rdata );
         if (checkVersionMatch(rsp,false))  {
@@ -383,6 +375,8 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
     .always ( function(){} )
 
     .fail ( function(xhr,err){
+
+      __process_network_indicators();
 
       try {
 
