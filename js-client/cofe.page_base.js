@@ -198,13 +198,22 @@ BasePage.prototype.getUserRation = function()  {
 }
 
 BasePage.prototype._setConnectionIcons = function ( colNo )  {
-  __delays_ind = this.headerPanel.setProgressBar ( 0,0,colNo,1,1 )
-                     .setTooltip1 ( 'Severe network delays indicator','show',false,0 )
-                     .setSize     ( '80px','12px' )
-                     .setOpacity  ( 0 );
+  var container = new Widget('div');
+  __delays_ind  = new ProgressBar ( 0 );
+  container.addWidget ( __delays_ind );
+  this.headerPanel.setWidget ( container,0,colNo,1,1 );
+  container.setTooltip1 ( 'Severe network delays indicator','show',false,0 )
+           .setSize     ( '80px','22px' );
+  // __delays_ind = this.headerPanel.setProgressBar ( 0,0,colNo,1,1 )
+  //                    .setTooltip1 ( 'Severe network delays indicator','show',false,0 )
+  //                    .setSize     ( '80px','12px' )
+  //                    .hide();
+                     // .setOpacity  ( 0 );
               // .setFontSize    ( '90%' )
               // .setVerticalAlignment ( 'middle' );
   $(__delays_ind.element).css({'margin-top' : '4px',
+                               'width'      : '80px',
+                               'height'     : '12px',
                                'position'   : 'relative'});
   // __delays_ind.hide();
   __communication_ind = this.headerPanel.setImageButton (
