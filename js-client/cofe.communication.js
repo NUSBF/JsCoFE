@@ -257,12 +257,13 @@ function processServerQueue()  {
     if (__delays_ind && (!__delays_ind.isVisible()))  {
       if (!__delays_timer)
         __delays_timer = window.setTimeout ( function(){
-          __delays_ind.show();
+          __delays_ind.setOpacity ( 1 );
         },1000);
     }
   } else if (__delays_ind)  {
     if (__delays_ind.isVisible())
-      __delays_ind.hide();
+      __delays_ind.setOpacity ( 0 );
+      // __delays_ind.hide();
     if (__delays_timer)  {
       window.clearTimeout ( __delays_timer );
       __delays_timer = null;

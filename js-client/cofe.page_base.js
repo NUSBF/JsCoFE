@@ -201,7 +201,7 @@ BasePage.prototype._setConnectionIcons = function ( colNo )  {
   __delays_ind = this.headerPanel.setProgressBar ( 0,0,colNo,1,1 )
                      .setTooltip1 ( 'Severe network delays indicator','show',false,0 )
                      .setSize     ( '80px','12px' )
-                     .hide();
+                     .setOpacity  ( 0 );
               // .setFontSize    ( '90%' )
               // .setVerticalAlignment ( 'middle' );
   $(__delays_ind.element).css({'margin-top' : '4px',
