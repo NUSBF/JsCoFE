@@ -382,11 +382,13 @@ Widget.prototype.toggle = function()  {
   return this;
 }
 
-Widget.prototype.setTransparent = function ( yn_bool )  {
-  if (yn_bool)  $(this.element).css({'opacity':1});
-          else  $(this.element).css({'opacity':0});
+Widget.prototype.setOpacity = function ( opacity )  {
+  $(this.element).css({'opacity':opacity});
+  // if (yn_bool)  $(this.element).css({'opacity':1});
+  //         else  $(this.element).css({'opacity':0});
   // if (yn_bool)  $(this.element).fadeIn();
   //         else  $(this.element).fadeOut();
+  return this;
 }
 
 Widget.prototype.fade = function ( in_bool )  {
