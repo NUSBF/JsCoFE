@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.07.21   <--  Date of Last Modification.
+ *    30.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -202,7 +202,7 @@ BasePage.prototype._setConnectionIcons = function ( colNo )  {
   __delays_ind  = new ProgressBar ( 0 );
   container.addWidget ( __delays_ind );
   this.headerPanel.setWidget ( container,0,colNo,1,1 );
-  container.setTooltip1 ( 'Severe network delays indicator','show',false,0 )
+  container.setTooltip1 ( 'Network delays','show',false,0 )
            .setSize     ( '80px','22px' );
   // __delays_ind = this.headerPanel.setProgressBar ( 0,0,colNo,1,1 )
   //                    .setTooltip1 ( 'Severe network delays indicator','show',false,0 )
