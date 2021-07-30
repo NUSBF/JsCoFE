@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    30.07.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -78,6 +78,14 @@ class EnsemblePrepSeq(basic.TaskDriver):
         # fetch input data
         seq = self.makeClass ( self.input_data.data.seq[0] )
 
+        sec1 = self.task.parameters.sec1.contains
+
+        rlevel = "RLEVEL "
+        if self.getParameter(sec1.AFDB_CBX)=="True":
+            rlevel += "AF00100"
+        else:
+            rlevel += self.getParameter ( sec1.RLEVEL_SEL,False )
+
         # make a file with input script
         self.open_stdin()
         self.write_stdin (
@@ -91,14 +99,15 @@ class EnsemblePrepSeq(basic.TaskDriver):
             checkLine + \
             "UPDATE False\n" + \
             "PICKLE False\n" + \
-            "MRNUM " + str(self.getParameter(self.task.parameters.sec1.contains.MRNUM,False)) + "\n" + \
+            "MRNUM " + str(self.getParameter(sec1.MRNUM,False)) + "\n" + \
             "USEE True\n" + \
             "SCOP False\n" + \
             "DEBUG False\n" + \
-            "RLEVEL " + self.getParameter(self.task.parameters.sec1.contains.RLEVEL_SEL,False) + "\n" + \
+            rlevel + "\n" + \
             "GESE True\n" + \
             "GEST True\n" + \
             "AMPT False\n" + \
+            "CHECK False\n" + \
             #"IGNORE 5tha\n" + \
             "DOPHMMER True\n" + \
             pdbLocal +\

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.06.21   <--  Date of Last Modification.
+#    30.07.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -97,6 +97,13 @@ class MrBump(basic.TaskDriver):
         sec1 = self.task.parameters.sec1.contains
 
         sgmode  = self.getCheckbox ( sec1.ALTGROUPS_CBX,checkVisible=True )
+
+        rlevel = "RLEVEL "
+        if self.getParameter(sec1.AFDB_CBX)=="True":
+            rlevel += "AF00100"
+        else:
+            rlevel += self.getParameter ( sec1.RLEVEL_SEL,False )
+
         # devmode = self.getCheckbox ( self.task.parameters.DEVMODE_CBX,
         #                              checkVisible=True )
         devmode = False
@@ -143,10 +150,11 @@ class MrBump(basic.TaskDriver):
                 "USEE False",
                 "SCOP False",
                 "DEBUG False",
-                "RLEVEL " + self.getParameter ( sec1.RLEVEL_SEL ),
+                rlevel,
                 "GESE False",
                 "GEST False",
                 "AMPT False",
+                "CHECK False",
                 "PHAQ True",
                 "PJOBS 1",
                 pdbLine + \
