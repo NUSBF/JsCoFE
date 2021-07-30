@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.21   <--  Date of Last Modification.
+ *    30.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -83,6 +83,13 @@ function TaskMrBump()  {
                         value    : false,
                         position : [0,0,1,3]
                       },
+                AFDB_CBX : {
+                        type     : 'checkbox',
+                        label    : 'Include structures from AFDB',
+                        tooltip  : 'Check to include structures from AlphaFold-2 database',
+                        value    : false,
+                        position : [1,0,1,3]
+                      },
                 RLEVEL_SEL : {
                         type     : 'combobox',
                         keyword  : 'RLEVEL',
@@ -92,9 +99,10 @@ function TaskMrBump()  {
                         range    : ['AF00100|AFDB', 'ALL|All', '100|100%','95|95%','90|90%','70|70%','50|50%'],
                         value    : '100',
                         iwidth   : 100,
-                        position : [1,0,1,1]
+                        position : [2,0,1,1],
+                        hideon   : {AFDB_CBX:[true]}
                       },
-                 MRNUM : {
+                MRNUM : {
                         type     : 'integer',
                         keyword  : 'MRNUM',
                         label    : 'Maximum no. of models to test',
@@ -102,7 +110,7 @@ function TaskMrBump()  {
                         range    : [1,'*'],
                         value    : 20,
                         iwidth   : 40,
-                        position : [2,0,1,1]
+                        position : [3,0,1,1]
                       }
                 // SEP2_LBL      : {
                 //         type     : 'label',
@@ -134,7 +142,7 @@ TaskMrBump.prototype.constructor = TaskMrBump;
 TaskMrBump.prototype.icon = function()  { return 'task_mrbump'; }
 
 TaskMrBump.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

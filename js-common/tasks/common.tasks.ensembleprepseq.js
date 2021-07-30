@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    30.07.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,15 +54,23 @@ function TaskEnsemblePrepSeq()  {
              open     : true,  // true for the section to be initially open
              position : [0,0,1,5],
              contains : {
+                AFDB_CBX : {
+                       type     : 'checkbox',
+                       label    : 'Include structures from AFDB',
+                       tooltip  : 'Check to include structures from AlphaFold-2 database',
+                       value    : false,
+                       position : [0,0,1,3]
+                     },
                 RLEVEL_SEL : {
                       type     : 'combobox',
                       keyword  : 'RLEVEL',
                       label    : 'Redundancy level',
                       tooltip  : 'Choose appropriate redundancy level for ' +
                                  'keeping hits in the list of matches. ',
-                      range    : ['AF00100|AFDB', 'ALL|All','100|100%','95|95%','90|90%','70|70%','50|50%'],
+                      range    : ['ALL|All','100|100%','95|95%','90|90%','70|70%','50|50%'],
                       value    : 'ALL',
-                      position : [0,0,1,1]
+                      position : [1,0,1,1],
+                      hideon   : {AFDB_CBX:[true]}
                      },
                 MRNUM : {
                       type     : 'integer',
@@ -72,7 +80,7 @@ function TaskEnsemblePrepSeq()  {
                                  '(from 1 to 20).',
                       range    : [1,20],
                       value    : 5,
-                      position : [1,0,1,1]
+                      position : [2,0,1,1]
                     }
            }
          }
@@ -92,7 +100,7 @@ TaskEnsemblePrepSeq.prototype.constructor = TaskEnsemblePrepSeq;
 TaskEnsemblePrepSeq.prototype.icon = function()  { return 'task_ensembleprepseq'; }
 
 TaskEnsemblePrepSeq.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
