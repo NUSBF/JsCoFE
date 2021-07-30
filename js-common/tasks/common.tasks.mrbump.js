@@ -89,7 +89,7 @@ function TaskMrBump()  {
                         label    : 'Redundancy level',
                         tooltip  : 'Choose appropriate redundancy level for ' +
                                    'keeping hits in the list of matches. ',
-                        range    : ['ALL|All','100|100%','95|95%','90|90%','70|70%','50|50%'],
+                        range    : ['AF00100|AFDB', 'ALL|All', '100|100%','95|95%','90|90%','70|70%','50|50%'],
                         value    : '100',
                         iwidth   : 100,
                         position : [1,0,1,1]
