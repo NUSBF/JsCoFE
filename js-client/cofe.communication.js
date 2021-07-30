@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.07.21   <--  Date of Last Modification.
+ *    30.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -183,21 +183,21 @@ function checkVersionMatch ( response,localServer_bool )  {
 function makeJSONString ( data_obj )  {
 var json = null;
 
-  json = JSON.stringify ( data_obj );
+  // json = JSON.stringify ( data_obj );
 
-  // try {
-  //   json = JSON.stringify ( data_obj );
-  // } catch(e) {
-  //   new MessageBox ( 'Unsuitable data',
-  //     '<div style="width:500px"><h2>Unsuitable data</h2>' +
-  //     '<p>Unsuitable data encountered when sending data to ' + appName() +
-  //     ' server. Usually this is caused by using symbols from a non-Latin ' +
-  //     'alphabet or rare special characters.' +
-  //     '<p>Try repeating your actions making sure that your keyboard is on ' +
-  //     'English register. If this does not help, close this page or tab in ' +
-  //     'your browser and log on ' + appName() + ' again. Ultimately, contact ' +
-  //     appName() + ' support.</div>' );
-  // }
+  try {
+    json = JSON.stringify ( data_obj );
+  } catch(e) {
+    new MessageBox ( 'Unsuitable data',
+      '<div style="width:500px"><h2>Unsuitable data</h2>' +
+      '<p>Unsuitable data encountered when sending data to ' + appName() +
+      ' server. Usually this is caused by using symbols from a non-Latin ' +
+      'alphabet or rare special characters.' +
+      '<p>Try repeating your actions making sure that your keyboard is on ' +
+      'English register. If this does not help, close this page or tab in ' +
+      'your browser and log on ' + appName() + ' again. Ultimately, contact ' +
+      appName() + ' support.</div>' );
+  }
   return json;
 }
 
@@ -219,7 +219,7 @@ function clearNetworkIndocators()  {
 }
 
 function __process_network_indicators()  {
-  if (__server_queue.length>1)  {
+  if (__server_queue.length>0)  {
     if (__communication_ind && (!__communication_ind.isVisible()))
       __communication_ind.fade ( true );
   } else if (__delays_ind)  {
@@ -232,11 +232,12 @@ function __process_network_indicators()  {
     if (__communication_ind.isVisible())
       __communication_ind.fade ( false );
   }
-
 }
 
 function processServerQueue()  {
   if (__server_queue.length>0)  {
+    // if (__communication_ind && (!__communication_ind.isVisible()))
+    //   __communication_ind.fade ( true );
     var q0 = __server_queue[0];
     if (q0.status=='waiting')  {
       q0.status = 'running';
@@ -253,15 +254,24 @@ function processServerQueue()  {
       __delays_timer = window.setTimeout ( function(){
         __delays_ind.show();
       },1000);
+  // } else if (__delays_ind)  {
+  //   if (__delays_timer)  {
+  //     window.clearTimeout ( __delays_timer );
+  //     __delays_timer = null;
+  //   }
+  //   if (__delays_ind.isVisible())
+  //     __delays_ind.hide();
+  //   if (__communication_ind.isVisible())
+  //     __communication_ind.fade ( false );
   }
 }
 
-function shiftServerQueue()  {
-  if (__server_queue.length>0)  {
-    __server_queue.shift();
-    processServerQueue();
-  }
-}
+// function shiftServerQueue()  {
+//   if (__server_queue.length>0)  {
+//     __server_queue.shift();
+//     processServerQueue();
+//   }
+// }
 
 function processLocalQueue()  {
   if (__local_queue.length>0)  {
@@ -273,12 +283,12 @@ function processLocalQueue()  {
   }
 }
 
-function shiftLocalQueue()  {
-  if (__local_queue.length>0)  {
-    __local_queue.shift();
-    processServerQueue();
-  }
-}
+// function shiftLocalQueue()  {
+//   if (__local_queue.length>0)  {
+//     __local_queue.shift();
+//     processServerQueue();
+//   }
+// }
 
 
 function server_command ( cmd,data_obj,page_title,function_response,
@@ -296,6 +306,7 @@ function server_command ( cmd,data_obj,page_title,function_response,
       dataType : 'text'
     })
     .done ( function(rdata) {
+      __server_queue.shift();
       __process_network_indicators();
       var rsp = jQuery.parseJSON ( rdata );
       if (checkVersionMatch(rsp,false))  {
@@ -303,18 +314,19 @@ function server_command ( cmd,data_obj,page_title,function_response,
         if (!function_response(response))
           makeCommErrorMessage ( page_title,response );
       }
-      shiftServerQueue();
+      processServerQueue();
     })
     .always ( function(){
       if (function_always)
         function_always();
     })
     .fail ( function(xhr,err){
+      __server_queue.shift();
       __process_network_indicators();
       if (function_fail)
             function_fail();
       else  MessageAJAXFailure(page_title,xhr,err);
-      shiftServerQueue();
+      processServerQueue();
     });
 
 }
@@ -347,7 +359,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
   }
 }
 */
-
+      __server_queue.shift();  // request completed
       __process_network_indicators();
 
       try {
@@ -368,7 +380,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
         console.log ( ' >>> error catch in server_request.done: ' + err );
       }
 
-      shiftServerQueue();
+      processServerQueue();
 
     })
 
@@ -376,6 +388,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
     .fail ( function(xhr,err){
 
+      __server_queue.shift();  // request completed
       __process_network_indicators();
 
       try {
@@ -403,7 +416,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
         console.log ( ' >>> error catch in server_request.fail: ' + err );
       }
 
-      shiftServerQueue();
+      processServerQueue();
 
     });
 
@@ -449,7 +462,8 @@ function local_command ( cmd,data_obj,command_title,function_response )  {
 
     })
     .always ( function(){
-      shiftLocalQueue();
+      __local_queue.shift();
+      processServerQueue();
     })
     .fail   ( function(xhr,err){
       if (function_response && (!function_response(null)))
@@ -471,6 +485,7 @@ function serverCommand ( cmd,data_obj,page_title,function_response,
     function_always   : function_always,
     function_fail     : function_fail
   });
+  __process_network_indicators();
   processServerQueue();
 }
 
@@ -486,6 +501,7 @@ function serverRequest ( request_type,data_obj,page_title,function_ok,
     function_always : function_always,
     function_fail   : function_fail
   });
+  __process_network_indicators();
   processServerQueue();
 }
 
