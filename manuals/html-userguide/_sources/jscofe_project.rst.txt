@@ -28,15 +28,7 @@ Apart from straightforward cases, structure solution involves repeats of certain
 .. Note::
     the context menu also offers the addition of a job with parameters set in the previous invocation of that type of job up the *Project Tree*. You may find this particularly useful in the model building and refinement stage, when a number of similar-type jobs need to be run in multiple successions
 
-.. |moveup| image:: images/moveup.png
-    :width: 18
-    :height: 18
-    
-|moveup| **Move job up the tree**. The currently selected job will move one position up the *ProjectTree*. This is only possible if all job's input data is generated above the new job position. If this is not the case, the job cannot be moved and the move button is greyed. Moving jobs may be useful for restructuring of the *Project Tree* in order to make job results visible in several branches (for which the job should be moved to above the branching point).
 
-.. Warning::
-    moving jobs up the tree preserves project's consisitency in terms of data flows, however, it is not always reversible and may lead to unobvious configuration of the *Tree*. Allow yourself to making a few mistakes before understanding the effects of job moves.
- 
 .. |clonejob| image:: images/clonejob.png
     :width: 18
     :height: 18

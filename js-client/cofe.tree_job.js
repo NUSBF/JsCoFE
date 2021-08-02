@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.07.21   <--  Date of Last Modification.
+ *    02.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -58,7 +58,7 @@
  *      function addJob          ( insert_bool,parent_page,onAdd_func );
  *      function moveJobUp       ();
  *      function calcMetrics     ();
- *      function deleteJob       ( onDelete_func );
+ *      function deleteJob       ( silent_bool,onDelete_func );
  *      function closeAllJobDialogs();
  *      function stopJob         ( nodeId,gracefully_bool );
  *      function openJob         ( dataBox,parent_page );
@@ -968,7 +968,7 @@ JobTree.prototype.startChainTask = function ( task,nodeId )  {
     return;
   }
 
-  if (task.state!=job_code.finished)
+  if ((task.state!=job_code.finished) && (task.task_chain[0]!='delete_job'))
     return;
 
   var nid = nodeId;
@@ -979,22 +979,35 @@ JobTree.prototype.startChainTask = function ( task,nodeId )  {
   }
 
   this.selectSingleById ( nid );
-  var newtask = eval ( 'new ' + task.task_chain[0] + '()' );
-  if (task.task_chain.length>1)  {
-    newtask.task_chain = [];
-    for (var i=1;i<task.task_chain.length;i++)
-      newtask.task_chain.push ( task.task_chain[i] );
-  }
-  newtask.onJobDialogStart = function ( job_dialog )  {
-    job_dialog.run_btn.click();  // start automatically
-  };
 
-  (function(tree){
-    tree.addTask ( newtask,false,true,__current_page,function(){
-      if (task.id in tree.dlg_map)
-        tree.dlg_map[task.id].close();
-    });
-  }(this))
+  if (task.task_chain[0]=='delete_job')  {
+
+    (function(tree){
+      tree.deleteJob ( true,function(){
+        tree.emitSignal ( cofe_signals.treeUpdated,{} );
+      });
+    }(this))
+
+  } else  {
+
+    var newtask = eval ( 'new ' + task.task_chain[0] + '()' );
+    if (task.task_chain.length>1)  {
+      newtask.task_chain = [];
+      for (var i=1;i<task.task_chain.length;i++)
+        newtask.task_chain.push ( task.task_chain[i] );
+    }
+    newtask.onJobDialogStart = function ( job_dialog )  {
+      job_dialog.run_btn.click();  // start automatically
+    };
+
+    (function(tree){
+      tree.addTask ( newtask,false,true,__current_page,function(){
+        if (task.id in tree.dlg_map)
+          tree.dlg_map[task.id].close();
+      });
+    }(this))
+
+  }
 
 }
 
@@ -1113,7 +1126,7 @@ JobTree.prototype.calcMetrics = function() {
 }
 
 
-JobTree.prototype.deleteJob = function ( onDelete_func ) {
+JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func ) {
 
   if (this.selected_node_id)  {
 
@@ -1209,7 +1222,7 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
         message += ', indicated in the job tree, will be deleted.<br>Are you sure?';
       }
 
-      new QuestionBox ( title,message, 'Yes',function(){
+      function yes_delete()  {
 
         for (var i=0;i<delNodeId.length;i++)
           if (delBranch[i]==1)
@@ -1255,18 +1268,17 @@ JobTree.prototype.deleteJob = function ( onDelete_func ) {
           }
         });
 
-      },'No',function(){
+      }
 
-        for (var i=0;i<delNodeId.length;i++)
-          //if ((tree.task_map[delNodeId[i]].state==job_code.remark) ||
-          //    (tree.task_map[delNodeId[i]].state==job_code.remdet) ||
-          //    (tree.task_map[delNodeId[i]].state==job_code.remdoc))
-          //if ((delNodeId[i].fchildren.length<=0) && tree.task_map[delNodeId[i]].isRemark())
-          if (tree.isRemark(delNodeId[i]))
-                tree.setStyle ( tree.node_map[delNodeId[i]],__remarkStyle,0 );
-          else  tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
-
-      });
+      if (silent_bool)
+        yes_delete();
+      else
+        new QuestionBox ( title,message, 'Yes',yes_delete,'No',function(){
+          for (var i=0;i<delNodeId.length;i++)
+            if (tree.isRemark(delNodeId[i]))
+                  tree.setStyle ( tree.node_map[delNodeId[i]],__remarkStyle,0 );
+            else  tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
+        });
 
     }(this));
 
@@ -1566,6 +1578,7 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                         });
                       break;
               case job_dialog_reason.run_job :
+                        // here, options==task class
                         dlg.tree.selectSingle ( dlg.tree.node_map[dlg.nodeId] );
                         var dataBox          = dlg.tree.harvestTaskData ( 1,[] );
                         var branch_task_list = dlg.tree.getAllAncestors ( dlg.tree.getSelectedTask() );

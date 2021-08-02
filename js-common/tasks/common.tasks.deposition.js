@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.06.21   <--  Date of Last Modification.
+ *    01.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -75,7 +75,20 @@ function TaskDeposition()  {
           value       : '',
           position    : [0,2,1,3],
           showon      : {'revision.subtype:seq':[0,-1]} // from this and input data section
-        }
+        },
+    _label_2 : {
+          type        : 'label',
+          label       : '&nbsp;',
+          position    : [1,0,1,1]
+        },
+    DEL0HYDR_CBX : {
+            type     : 'checkbox',
+            label    : 'Remove hydrogens with zero occupancy',
+            tooltip  : 'Check to remove hydrogens with zero occupancy',
+            value    : false,
+            iwidth   : 340,
+            position : [2,0,1,4]
+          }
 
     // SEQUENCE : {
     //     type        : 'aceditor_',  // can be also 'textarea'
@@ -106,7 +119,7 @@ TaskDeposition.prototype.icon = function()  { return 'task_deposition'; }
 TaskDeposition.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskDeposition.prototype.currentVersion = function()  {
-  var version = 2;
+  var version = 3;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
