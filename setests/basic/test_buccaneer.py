@@ -265,14 +265,14 @@ def test_1RefmacBasic(browser,
 
 def test_2buccaneer():
     try:
-        verifyBuccaneer(d.driver, 300, '0005', 0.27, 0.30) # run takes 3 minutes, giving 5
+        verifyBuccaneer(d.driver, 300, '0005', 0.29, 0.32) # run takes 3 minutes, giving 5
     except:
         d.driver.quit()
         raise
 
 def test_3ccp4build():
     try:
-        verifyCCP4Build(d.driver, 1200, '0006', 0.26, 0.29) # run takes long
+        verifyCCP4Build(d.driver, 1200, '0006', 0.27, 0.30) # run takes long
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
     except:

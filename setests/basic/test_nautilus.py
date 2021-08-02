@@ -17,7 +17,7 @@ import setests_func as sf
 d = sf.driverHandler()
 
 def importFromPDB(driver, waitShort):
-    print ('Importing 4p5j (RNA-only structure) from the PDB')
+    print ('Importing 1msy (RNA-only structure) from the PDB')
 
     if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
@@ -32,7 +32,7 @@ def importFromPDB(driver, waitShort):
     time.sleep(2)
     inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB codes to import data from']")
     inputPDB.clear()
-    inputPDB.send_keys('4p5j')
+    inputPDB.send_keys('1msy')
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'reflection data')
@@ -68,6 +68,63 @@ def importFromPDB(driver, waitShort):
     return ()
 
 
+def asymmetricUnitContents(driver, waitShort, task='0002'):
+    print ('Making Asymmetric Unit Contents after Cloud Import')
+
+    # presing Add button
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
+    time.sleep(2)
+
+    # 2 molecules in the ASU
+#    inputASU = driver.find_element_by_xpath("//*[@title='Specify stoichiometric coefficent for given sequence in the crystal']")
+#    inputASU.click()
+#    inputASU.clear()
+#    inputASU.send_keys('2')
+#    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[contains(text(), '%s')]" % '1msy_expected') # looking by text
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[contains(text(), '%s')]" % '[do not use]') # looking by text
+    time.sleep(1)
+
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0002]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[%s]')]" % task)))
+    except:
+        print('Apparently tha task asymmetricUnitContentsAfterCloudImport has not been completed in time; terminating')
+        sys.exit(1)
+
+    time.sleep(1)
+    # presing Close button
+    sf.clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
+    time.sleep(1)
+
+    return()
+
+
+
 def editRevisionStructure(driver, waitShort):
     print('Making structure revision')
 
@@ -89,7 +146,7 @@ def editRevisionStructure(driver, waitShort):
     sf.clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[contains(text(), '%s') and contains(text(), '%s')]" % ('4p5j', 'xyz'))
+    sf.clickByXpath(driver, "//div[contains(text(), '%s') and contains(text(), '%s')]" % ('1msy', 'xyz'))
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -273,7 +330,7 @@ def test_1Nautilus(browser,
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
         importFromPDB(d.driver, d.waitLong) # 1
-        sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort) # 2
+        asymmetricUnitContents(d.driver, d.waitShort) # 2
         editRevisionStructure(d.driver, d.waitShort) # 3
         refmacAfterRevision(d.driver, d.waitLong) # 4
         startNautilus(d.driver) # 5

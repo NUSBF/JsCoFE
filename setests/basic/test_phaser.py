@@ -50,6 +50,8 @@ def prepareMRmodelCOORD(driver, waitShort):
         print('Apparently tha task prepareMRmodelCOORD has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(5)
+
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -91,6 +93,8 @@ def prepareMRmodelALIGN(driver, waitShort):
     except:
         print('Apparently tha task prepareMRmodelALIGN has not been completed in time; terminating')
         sys.exit(1)
+
+    time.sleep(5)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -134,6 +138,8 @@ def prepareMRensembleMODEL(driver, waitShort):
         print('Apparently tha task prepareMRensembleMODEL has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(5)
+
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -176,6 +182,8 @@ def prepareMRensembleSEQ(driver, waitShort):
         print('Apparently tha task prepareMRensembleSEQ has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(5)
+
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -217,6 +225,8 @@ def prepareMRensembleCOORD(driver, waitShort):
     except:
         print('Apparently tha task prepareMRensembleCOORD has not been completed in time; terminating')
         sys.exit(1)
+
+    time.sleep(5)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -374,7 +384,7 @@ def test_3EnsembleModels():
 def test_4EnsembleSEQ():
     try:
         sf.clickTaskInTaskTree(d.driver, '\[0002\]')
-        prepareMRensembleSEQ(d.driver, d.waitLong) # 09
+        prepareMRensembleSEQ(d.driver, 300) # 09
         startPhaser(d.driver) # 10
     except:
         d.driver.quit()
