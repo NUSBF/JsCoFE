@@ -91,7 +91,7 @@ class Deposition(basic.TaskDriver):
         for i in range(len(seq)):
             seq[i] = self.makeClass ( seq[i] )
 
-        del0hydr = self.getParameter(self.task.parameters.DEL0HYDR_CBX)=="True"
+        # del0hydr = self.getParameter(self.task.parameters.DEL0HYDR_CBX)=="True"
 
         eol_dict  = None
         eol_tasks = []
@@ -206,10 +206,10 @@ class Deposition(basic.TaskDriver):
                                             structure )
             self.putMessage ( "&nbsp;" )
 
-        if del0hydr:
-            xyzout_cif_1 = self.getOFName ( "_0hydr.mmcif" )
-            self.remove_hydr_zero_occ ( xyzout_cif,xyzout_cif_1 )
-            xyzout_cif = xyzout_cif_1
+        # if del0hydr:
+        #     xyzout_cif_1 = self.getOFName ( "_0hydr.mmcif" )
+        #     self.remove_hydr_zero_occ ( xyzout_cif,xyzout_cif_1 )
+        #     xyzout_cif = xyzout_cif_1
 
         # 2. Prepare CIF with structure factors
 
