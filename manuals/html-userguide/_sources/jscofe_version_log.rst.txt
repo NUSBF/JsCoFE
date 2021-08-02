@@ -45,6 +45,10 @@ CCP4 Cloud Version Log
 
     #. Fixed a bug in ``parrot`` and ``shelx-mr`` tasks preventing density modifciation immediately after ``hop-on`` import
 
+    #. Fixed a bug due to which open dialogs could persist when switching between principal pages (Project, Account etc.)
+
+    #. AlphaFold-2 support introduced in ``MrBump`` and ``Ensemble from Sequence`` tasks
+
 
 
 **Version 1.6.022**

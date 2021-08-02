@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    02.08.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -450,6 +450,8 @@ class Coot(coot_ce.CootCE):
         }
 
         if rc.msg == "":
+            if not have_results and hasattr(self.task,"hot_launch") and self.task.hot_launch:
+                self.task.task_chain = ["delete_job"]
             self.success ( have_results )
         else:
             self.file_stdout.close()

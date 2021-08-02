@@ -280,11 +280,8 @@ JobDialog.prototype.setDlgState = function()  {
   this.clone_btn .setVisible ( (!__dormant) && (this.task.state!=job_code.new) &&
                                (!isRunning) );
 
-  //if (msg && this.status_lbl)
-  //  this.status_lbl.setText ( '<b><i>' + msg + '</i></b>' );
   if (this.export_btn)
     this.export_btn.setVisible ( !this.task.isRemark() );
-    //this.export_btn.setVisible ( msg!='' );
 
   if (isNew)  { // enforce!
     this.outputPanel.setVisible ( false );
@@ -292,7 +289,6 @@ JobDialog.prototype.setDlgState = function()  {
     this.task.job_dialog_data.panel = 'input';
   } else if ((!isRunning) && __local_service &&
              startsWith(this.outputPanel.getURL(),__local_service))
-//             (this.outputPanel.getURL().startsWith(__local_service)))
     this.loadReport();
 
 }
@@ -341,7 +337,6 @@ JobDialog.prototype.onDlgResize = function ()  {
   }
 
   this.outputPanel.setSize_px ( panelWidth,panelHeight );
-  //this.outputPanel.setSize ( panelWidth+'px',panelHeight+'px' );
 
 }
 
@@ -406,17 +401,11 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
   var data  = {};
   data.meta = this.task;
   data.ancestors = [];
-  // if (this.parent_page.job_tree.projectData)  {
-  if (this.tree.projectData)  {
-    //data.is_shared = (this.parent_page.job_tree.projectData.desc.owner.share.length>0);
-    // data.is_shared = this.parent_page.job_tree.isShared();
-    data.is_shared = this.tree.isShared();
-  } else
-    data.is_shared = false;
+  if (this.tree.projectData)  data.is_shared = this.tree.isShared();
+                        else  data.is_shared = false;
   for (var i=1;i<this.ancestors.length;i++)
     data.ancestors.push ( this.ancestors[i]._type );
   if (!this.task.job_dialog_data.viewed)  {
-    //this.onDlgSignal_func ( this.task.id,job_dialog_reason.reset_node,null );
     this.onDlgSignal_func ( this,job_dialog_reason.reset_node,null );
     this.task.job_dialog_data.viewed = true;
     this.job_edited = true;
@@ -524,6 +513,7 @@ JobDialog.prototype.makeToolBar = function()  {
         if (!dBox)
           dBox = dlg.tree.harvestTaskData ( 1,[] );
         if (dBox.getDataSummary(task_obj).status>0)  {
+          task_obj.hot_launch = true;  // signal that the task is launched from hpt button
           (function(task){
             var hbtn = dlg.addToolBarButton ( gap,task_obj.icon(),hot_list[i].tooltip )
                           .addOnClickListener ( function(){
