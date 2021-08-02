@@ -469,40 +469,45 @@ JobTree.prototype.__checkTaskLoop = function()  {
 
             var completedJobs  = data.completed_map;
             var completed_list = [];
+
             for (var key in completedJobs)  {
 
               var json   = JSON.stringify ( completedJobs[key] );
               var task   = getObjectInstance ( json );
+
               var nodeId = null;
-              if (task.id in tree.run_map)
+              if (task.id in tree.run_map)  {
+                
                 nodeId = tree.run_map[task.id];  // task.id == key
-              else {
-                alert ( 'error [89761] -- inform developer' );
-              }
 
-              if (nodeId in tree.task_map)  {
-                task.treeItemId       = nodeId;
-                tree.task_map[nodeId] = task;
-                tree.setNodeName ( nodeId,false );
-                if (task.isRemark())
-                      tree.setStyle ( tree.node_map[nodeId],__remarkStyle,0 );
-                else  tree.setStyle ( tree.node_map[nodeId],__notViewedStyle,0 );
-                tree.node_map[nodeId].setCustomIconVisible ( false );
-                tree.setNodeIcon    ( nodeId,false );
-                completed_list.push ( task );
-                update_project_metrics ( task,tree.projectData.desc.metrics );
-              }
+                if (nodeId in tree.task_map)  {
+                  task.treeItemId       = nodeId;
+                  tree.task_map[nodeId] = task;
+                  tree.setNodeName ( nodeId,false );
+                  if (task.isRemark())
+                        tree.setStyle ( tree.node_map[nodeId],__remarkStyle,0 );
+                  else  tree.setStyle ( tree.node_map[nodeId],__notViewedStyle,0 );
+                  tree.node_map[nodeId].setCustomIconVisible ( false );
+                  tree.setNodeIcon    ( nodeId,false );
+                  completed_list.push ( task );
+                  update_project_metrics ( task,tree.projectData.desc.metrics );
+                }
 
-              if (key in tree.dlg_map)  {
-                tree.dlg_map[key].task = task;
-                tree.dlg_map[key].setDlgState();
-                if (task.state==job_code.failed)
-                  tree.dlg_map[key].outputPanel.reload();
-                else if (task.nc_type=='client')
-                  tree.dlg_map[key].loadReport();
-              }
+                if (key in tree.dlg_map)  {
+                  tree.dlg_map[key].task = task;
+                  tree.dlg_map[key].setDlgState();
+                  if (task.state==job_code.failed)
+                    tree.dlg_map[key].outputPanel.reload();
+                  else if (task.nc_type=='client')
+                    tree.dlg_map[key].loadReport();
+                }
 
-              tree.startChainTask ( task,nodeId );
+                tree.startChainTask ( task,nodeId );
+
+              }
+                // else {
+                //   alert ( 'error [89761] -- inform developer' );
+                // }
 
             }
 
