@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.08.21   <--  Date of Last Modification.
+#    03.08.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -63,16 +63,24 @@ class Deposition(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def remove_hydr_zero_occ ( self,mmcif_in,mmcif_out ):
-        cif_block = gemmi.cif.read(mmcif_in)[0]
-        st  = gemmi.make_structure_from_block(cif_block)
-        for model in st:
-            for chain in model:
-                for res in chain:
-                    for i in reversed(range(len(res))):
-                        if res[i].is_hydrogen() and not res[i].occ:
-                            del res[i]
-        st.make_mmcif_document().write_file ( mmcif_out )
+        doc = gemmi.cif.read ( mmcif_in )
+        table = doc[0].find('_atom_site.', ['type_symbol', 'occupancy'])
+        for i in range(len(table)-1, -1, -1):
+            if table[i][0] == 'H' and float(table[i][1]) == 0:
+                table.remove_row(i)
+        doc.write_file ( mmcif_out )
         return
+
+        # cif_block = gemmi.cif.read(mmcif_in)[0]
+        # st  = gemmi.make_structure_from_block(cif_block)
+        # for model in st:
+        #     for chain in model:
+        #         for res in chain:
+        #             for i in reversed(range(len(res))):
+        #                 if res[i].is_hydrogen() and not res[i].occ:
+        #                     del res[i]
+        # st.make_mmcif_document().write_file ( mmcif_out )
+        # return
 
 
     def run(self):
@@ -91,7 +99,7 @@ class Deposition(basic.TaskDriver):
         for i in range(len(seq)):
             seq[i] = self.makeClass ( seq[i] )
 
-        # del0hydr = self.getParameter(self.task.parameters.DEL0HYDR_CBX)=="True"
+        del0hydr = self.getParameter(self.task.parameters.DEL0HYDR_CBX)=="True"
 
         eol_dict  = None
         eol_tasks = []
@@ -206,10 +214,10 @@ class Deposition(basic.TaskDriver):
                                             structure )
             self.putMessage ( "&nbsp;" )
 
-        # if del0hydr:
-        #     xyzout_cif_1 = self.getOFName ( "_0hydr.mmcif" )
-        #     self.remove_hydr_zero_occ ( xyzout_cif,xyzout_cif_1 )
-        #     xyzout_cif = xyzout_cif_1
+        if del0hydr:
+            xyzout_cif_1 = self.getOFName ( "_0hydr.mmcif" )
+            self.remove_hydr_zero_occ ( xyzout_cif,xyzout_cif_1 )
+            xyzout_cif = xyzout_cif_1
 
         # 2. Prepare CIF with structure factors
 
