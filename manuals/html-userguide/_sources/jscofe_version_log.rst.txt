@@ -49,6 +49,10 @@ CCP4 Cloud Version Log
 
     #. AlphaFold-2 support introduced in ``MrBump`` and ``Ensemble from Sequence`` tasks
 
+    #. ``Coot`` task, if started from *Job Dialog* and produced no changes, is now automatically deleted.
+
+    #. Hydrogens with zero occupancy may be now removed in the ``deposition`` task
+
 
 
 **Version 1.6.022**
