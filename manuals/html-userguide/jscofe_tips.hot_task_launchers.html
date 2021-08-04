@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>7.7. Hot Task Launchers &#8212; CCP4 Cloud 1.6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="8. Questions and Answers" href="jscofe_QnA.html" />
+    <link rel="prev" title="7.6. Working modes of CCP4 Cloud" href="jscofe_tips.three_clouds.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>7.7. Hot Task Launchers</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="jscofe_tips.three_clouds.html"><span class="section-number">7.6. </span>Working modes of CCP4 Cloud</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jscofe_QnA.html"><span class="section-number">8. </span>Questions and Answers</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="hot-task-launchers">
+<h1><span class="section-number">7.7. </span>Hot Task Launchers<a class="headerlink" href="#hot-task-launchers" title="Permalink to this headline">¶</a></h1>
+<p>In many <em>Job Dialogs</em>, the Output panel’s toolbar (found on the top of the Dialog) contains buttons for launching selected tasks, frequently used after the task presented in the dialog (the “hot launchers”). The main purpose of hot launchers is to start the follow-up tasks quicker by not spending time on opening and browsing the <em>Task List</em> and running them automatically right after creation.</p>
+<p>A few points to keep in mind when using hot launchers:</p>
+<ul class="simple">
+<li><p>if data ambiguity must be resolved before starting the task (<em>e.g.,</em> to choose betweeen original and inverted hands after <code class="docutils literal notranslate"><span class="pre">phaser-ep</span></code> or between revisions with different wavelengths after <code class="docutils literal notranslate"><span class="pre">crank2-MAD</span></code>), the <em>Job Dialog</em> is opened and the task is started as usual.</p></li>
+<li><p>if task starts automatically, it will use parameters from the last task of same type in the current branch of the <em>Job Tree</em>. This may be used during structure completion stage: once chosen, refinement parameters will be used in every Refmac task.</p></li>
+<li><p>if Coot was started with the hot launcher and produced no data, the corresponding Coot task will be silently deleted from the <em>Job Tree</em>. This way, you may use Coot as a viewer, but switch to editing, if necessary, without restarting.</p></li>
+</ul>
+<p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="jscofe_tips.three_clouds.html"><span class="section-number">7.6. </span>Working modes of CCP4 Cloud</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jscofe_QnA.html"><span class="section-number">8. </span>Questions and Answers</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

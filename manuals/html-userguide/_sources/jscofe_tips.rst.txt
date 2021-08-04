@@ -11,4 +11,5 @@ Tips and Tricks
     jscofe_tips.sharing
     jscofe_tips.login_project
     jscofe_tips.three_clouds
+    jscofe_tips.hot_task_launchers
 
