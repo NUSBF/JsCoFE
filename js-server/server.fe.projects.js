@@ -1513,8 +1513,14 @@ function _import_project ( loginData,tempdir,prjDir,chown_bool )  {
 
   // read project meta to make sure it was a project tarball
   var prj_meta_path = '';
-  if (prjDir)  prj_meta_path = path.join ( prjDir ,projectDataFName );
-         else  prj_meta_path = path.join ( tempdir,projectDataFName );
+  var prj_desc_path = '';
+  if (prjDir)  {
+    prj_meta_path = path.join ( prjDir ,projectDataFName );
+    prj_desc_path = path.join ( prjDir ,projectDescFName );
+  } else  {
+    prj_meta_path = path.join ( tempdir,projectDataFName );
+    prj_desc_path = path.join ( tempdir,projectDescFName );
+  }
   var prj_meta = utils.readObject ( prj_meta_path );
 
   // validate metadata and read project name
@@ -1540,7 +1546,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_bool )  {
       if (!projectDesc.owner.login)
         projectDesc.owner.login = loginData.login;
       prj_meta.desc.owner = projectDesc.owner;
-      utils.writeObject ( prj_meta_path,prj_meta );
+      utils.writeObject ( prj_meta_path,prj_meta    );
+      utils.writeObject ( prj_desc_path,projectDesc );
     } else
       prj_meta = null;
   } catch(err) {
