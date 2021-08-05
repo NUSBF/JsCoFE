@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.08.21   <--  Date of Last Modification.
+ *    05.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1506,7 +1506,7 @@ var pData    = readProjectData ( loginData,data.name );
 
 // ===========================================================================
 
-function _import_project ( loginData,tempdir,prjDir,chown_bool )  {
+function _import_project ( loginData,tempdir,prjDir,chown_key )  {
 // 'tempdir' may contain unpacked project directory, in which case 'prjDir'
 // should be null. Alternatively, 'prjDir' gives project directory to be
 // symlinked, in which case 'tempdir' should be supplied as well
@@ -1537,8 +1537,13 @@ function _import_project ( loginData,tempdir,prjDir,chown_bool )  {
       if ('owner' in prj_meta.desc)  {
         projectDesc.owner        = prj_meta.desc.owner;
         if (!prjDir)  {  // this means that the project is imported, not shared
-          if (chown_bool)  projectDesc.owner.author = loginData.login;
-                     else  projectDesc.owner.author = prj_meta.desc.owner.login;
+          switch (chown_key)  {
+            case 'user' : projectDesc.owner.author = loginData.login;  break;
+            case '*'    : projectDesc.owner.author = '';               break;
+            default     : projectDesc.owner.author = prj_meta.desc.owner.login;
+          }
+          // if (chown_bool)  projectDesc.owner.author = loginData.login;
+          //            else  projectDesc.owner.author = prj_meta.desc.owner.login;
           projectDesc.owner.login = loginData.login;
           projectDesc.owner.share = [];
         }
@@ -1689,7 +1694,7 @@ function importProject ( loginData,upload_meta )  {
         send_dir.unpackDir ( tempdir,null,function(code,jobballSize){
           if (code)
             log.error ( 50,'unpack errors, code=' + code + ', filesize=' + jobballSize );
-          _import_project ( loginData,tempdir,null,false );
+          _import_project ( loginData,tempdir,null,'' );
         });
 
       } else  {
@@ -1738,7 +1743,7 @@ function startDemoImport ( loginData,meta )  {
           function(code,jobballSize){
             if (code)
               log.error ( 55,'unpack errors, code=' + code + ', filesize=' + jobballSize );
-            _import_project ( loginData,tempdir,null,true );
+            _import_project ( loginData,tempdir,null,'*' );
           });
       } else  {
         rc     = cmd.fe_retcode.fileNotFound;
@@ -1777,7 +1782,7 @@ function startSharedImport ( loginData,meta )  {
       var sProjectDirPath = getProjectDirPath ( uLoginData,meta.name );
       if (utils.fileExists(sProjectDirPath))  {
         if (import_as_link)  {
-          _import_project ( loginData,tempdir,sProjectDirPath,false );
+          _import_project ( loginData,tempdir,sProjectDirPath,'' );
         } else  {
           fs.copy ( sProjectDirPath,tempdir,function(err){
             if (err)
@@ -1785,7 +1790,7 @@ function startSharedImport ( loginData,meta )  {
                                   'Errors during data copy\n' +
                                   projectDesc.name );
             else
-              _import_project ( loginData,tempdir,null,false );
+              _import_project ( loginData,tempdir,null,'' );
           });
         }
       } else  {
