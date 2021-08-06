@@ -988,8 +988,9 @@ JobTree.prototype.startChainTask = function ( task,nodeId )  {
   if (task.task_chain[0]=='delete_job')  {
 
     (function(tree){
-      tree.deleteJob ( true,function(){
-        tree.emitSignal ( cofe_signals.treeUpdated,{} );
+      tree.deleteJob ( true,function(was_deleted_bool){
+        if (was_deleted_bool)
+          tree.emitSignal ( cofe_signals.treeUpdated,{} );
       });
     }(this))
 
@@ -1269,7 +1270,7 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func ) {
         tree.saveProjectData ( [],tasks_del,true, function(rdata){
           if (tree.checkReload(tree,rdata,'delete the job(s)<br>'))  {
             if (onDelete_func)
-              onDelete_func();
+              onDelete_func(true);
           }
         });
 
@@ -1283,6 +1284,8 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func ) {
             if (tree.isRemark(delNodeId[i]))
                   tree.setStyle ( tree.node_map[delNodeId[i]],__remarkStyle,0 );
             else  tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
+          if (onDelete_func)
+            onDelete_func(false);
         });
 
     }(this));
