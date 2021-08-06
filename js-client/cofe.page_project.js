@@ -476,7 +476,7 @@ ProjectPage.prototype.cloneJob = function() {
 ProjectPage.prototype.deleteJob = function() {
   if (this.start_action('delete_job'))
     (function(self){
-      self.jobTree.deleteJob ( false,function(){
+      self.jobTree.deleteJob ( false,function(was_deleted_bool){
         self.end_action();
         self._set_button_state();
         // self.setButtonState();
