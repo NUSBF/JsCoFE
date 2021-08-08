@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    06.08.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -44,6 +44,29 @@ from . import basic
 
 # ============================================================================
 # Make Acorn driver
+
+
+def getAcornScore ( logfpath ):
+
+    f = open ( logfpath,"r" )
+    Fcorr = ""
+    key   = -1
+    for line in f:
+        if key==0:
+            words = line.split()
+            if words[0]=="$$":
+                key = -1
+                break
+            if len(words)==3:
+                Fcorr = words[2]
+        elif "Bin Cycle_number   CC" in line:
+            key = 1
+        else:
+            key -= 1
+    f.close()
+
+    return Fcorr
+
 
 class Acorn(basic.TaskDriver):
 
@@ -325,6 +348,17 @@ class Acorn(basic.TaskDriver):
                 revision.setStructureData  ( structure )
                 self.registerRevision      ( revision  )
                 have_results = True
+
+                self.flush()
+                self.file_stdout.close()
+                Fcorr = getAcornScore ( self.file_stdout_path() )
+                # continue writing to stdout
+                self.file_stdout = open ( self.file_stdout_path(),"a" )
+
+                if Fcorr:
+                    self.generic_parser_summary["parrot"] = {
+                        "summary_line" : "F<sub>corr</sub>=" + Fcorr
+                    }
 
         else:
             self.putTitle ( "No Output Generated" )
