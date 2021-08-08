@@ -25,7 +25,7 @@
 function shareProject ( projectDesc,callback_func )  {
 
   var author = projectDesc.owner.login;
-  if ('author' in projectDesc.owner)
+  if (('author' in projectDesc.owner) && projectDesc.owner.author)
     author = projectDesc.owner.author;
   if (author!=__login_id)  {
     new MessageBox ( 'Share Project',
