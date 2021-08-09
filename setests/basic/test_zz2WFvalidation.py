@@ -65,34 +65,45 @@ def validate2SMR(driver, waitLong):
     print('Verifying WF task 0001 text... ')
     assert ttts[1] == 'simple-MR:[0001] Simple MR workflow -- imported HKL (3), Sequences (1), XYZ (1); workflow started'
 
-    print('Verifying PHASER 0004 LLG > 400... ')
-    match = re.search('\[0004\] phaser MR --.*LLG=(\d*).*R=(0\.\d*) Rfree=(0\.\d*)', ttts[4])
+    print('Verifying PHASER LLG > 1300 and Rfree < 0.48... ')
+    match = False
+    for t in reversed(ttts):
+        match = re.search('phaser MR --.*LLG=(\d*).*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
-    assert float(match.group(1)) > 400
-
-    print('Verifying PHASER 0005 LLG > 1300 and Rfree < 0.48... ')
-    match = re.search('\[0005\] phaser MR --.*LLG=(\d*).*R=(0\.\d*) Rfree=(0\.\d*)', ttts[5])
-    assert match
-    assert float(match.group(1)) > 1300
+    assert int(match.group(1)) > 1300
     assert float(match.group(3)) < 0.48
 
-    print('Verifying buccaneer 0007 Rfree < 0.31... ')
-    match = re.search('\[0007\] buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[7])
+    print('Verifying buccaneer  Rfree < 0.31... ')
+    match = False
+    for t in ttts:
+        match = re.search('buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(2)) < 0.31
 
     print('Verifying fitwaters 0013 >100 ... ')
-    match = re.search('\[0013\] fit waters -- Nwaters=(\d*)', ttts[12])
+    match = False
+    for t in ttts:
+        match = re.search('fit waters -- Nwaters=(\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(1)) > 100
 
-    print('Verifying refmac5 0016 Rfree < 0.25... ')
-    match = re.search('\[0016\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', ttts[15])
+    print('Verifying refmac5 Rfree < 0.25... ')
+    match = False
+    for t in reversed(ttts):
+        match = re.search('refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(2)) < 0.25
 
-    print('Verifying deposition 0017  ... ')
-    assert 'simple-MR:[0017] deposition -- package prepared, pdb report' in ttts[16]
+    print('Verifying deposition ... ')
+    assert 'deposition -- package prepared, pdb report' in ttts[-3]
 
     return ()
 

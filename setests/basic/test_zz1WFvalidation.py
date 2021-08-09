@@ -67,36 +67,62 @@ def validate1AMR(driver, waitLong):
     print('Verifying WF task 0001 text... ')
     assert ttts[1] == 'auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started'
 
-    print('Verifying SIMBAD 0004 Rfree < 0.35... ')
-    match = re.search('\[0004\] simbad --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[4])
+    print('Verifying SIMBAD Rfree < 0.35... ')
+    match = False
+    for t in ttts:
+        match = re.search('simbad --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(2)) < 0.35
 
-    print('Verifying buccaneer 0005 Rfree < 0.35... ')
-    match = re.search('\[0005\] buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[5])
+    print('Verifying buccaneer Rfree < 0.35... ')
+    match = False
+    for t in ttts:
+        match = re.search('buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(2)) < 0.35
 
-    print('Verifying fitligand 0009 = 1 ... ')
-    assert ttts[10] == 'auto-MR:[0010] fit ligand -- Nfitted=1'
+    print('Verifying fitligand = 1 ... ')
+    match = False
+    for t in ttts:
+        if 'fit ligand -- Nfitted=1' in t:
+            match = True
+            break
+    assert match
 
-    print('Verifying fitwaters 0011 >50 ... ')
-    match = re.search('\[0012\] fit waters -- Nwaters=(\d*)', ttts[12])
+    print('Verifying fitwaters >50 ... ')
+    match = False
+    for t in ttts:
+        match = re.search('fit waters -- Nwaters=(\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(1)) > 50
 
-    print('Verifying refmac5 0016 Rfree < 0.27... ')
-    match = re.search('\[0016\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', ttts[16])
+    print('Verifying refmac5  Rfree < 0.29... ')
+    match = False
+    for t in reversed(ttts):
+        match = re.search('refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
-    assert float(match.group(2)) < 0.27
+    assert float(match.group(2)) < 0.29
 
-    print('Verifying ccp4build 0006 Rfree < 0.34... ')
-    match = re.search('\[0006\] ccp4build --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[6])
+    print('Verifying ccp4build  Rfree < 0.36... ')
+    match = False
+    for t in ttts:
+        match = re.search('ccp4build --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
-    assert float(match.group(2)) < 0.34
+    assert float(match.group(2)) < 0.36
 
-    print('Verifying deposition 0017  ... ')
-    assert  'auto-MR:[0017] deposition -- package prepared' in ttts[17]
+    print('Verifying deposition ... ')
+    assert 'deposition -- package prepared, pdb report' in ttts[-2]
+
 
     return ()
 
@@ -150,36 +176,61 @@ def validate12AMR(driver, waitLong):
     print('Verifying WF task 0001 text... ')
     assert ttts[1] == 'auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started'
 
-    print('Verifying SIMBAD 0004 Rfree < 0.35... ')
-    match = re.search('\[0004\] simbad --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[4])
+    print('Verifying SIMBAD Rfree < 0.35... ')
+    match = False
+    for t in ttts:
+        match = re.search('simbad --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(2)) < 0.35
 
-    print('Verifying buccaneer 0005 Rfree < 0.35... ')
-    match = re.search('\[0005\] buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[5])
+    print('Verifying buccaneer Rfree < 0.35... ')
+    match = False
+    for t in ttts:
+        match = re.search('buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(2)) < 0.35
 
-    print('Verifying fitligand 0009 = 1 ... ')
-    assert ttts[8] == 'auto-MR:[0009] fit ligand -- Nfitted=1'
+    print('Verifying fitligand = 1 ... ')
+    match = False
+    for t in ttts:
+        if 'fit ligand -- Nfitted=1' in t:
+            match = True
+            break
+    assert match
 
-    print('Verifying fitwaters 0011 >50 ... ')
-    match = re.search('\[0011\] fit waters -- Nwaters=(\d*)', ttts[10])
+    print('Verifying fitwaters >50 ... ')
+    match = False
+    for t in ttts:
+        match = re.search('fit waters -- Nwaters=(\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(1)) > 50
 
-    print('Verifying refmac5 0014 Rfree < 0.29... ')
-    match = re.search('\[0014\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', ttts[13])
+    print('Verifying refmac5  Rfree < 0.29... ')
+    match = False
+    for t in ttts[-5:-1]:
+        match = re.search('refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(2)) < 0.29
 
-    print('Verifying ccp4build 0006 Rfree < 0.36... ')
-    match = re.search('\[0006\] ccp4build --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[16])
+    print('Verifying ccp4build  Rfree < 0.36... ')
+    match = False
+    for t in ttts:
+        match = re.search('ccp4build --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(2)) < 0.36
 
-    print('Verifying deposition 0015  ... ')
-    assert ttts[14] == 'auto-MR:[0015] deposition -- package prepared, pdb report not obtained'
+    print('Verifying deposition ... ')
+    assert 'deposition -- package prepared, pdb report' in ttts[-2]
 
     return ()
 
