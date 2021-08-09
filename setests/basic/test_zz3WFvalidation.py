@@ -53,28 +53,41 @@ def validate3AEP(driver, waitLong):
     # auto-EP:[0009] refmac5 -- R=0.2066 Rfree=0.2451
     # auto-EP:[0010] deposition -- package prepared, pdb report obtained
     # auto-EP:[0011] Automated Workflow has finished succesfully (look inside for comments)
+
     ttts = sf.tasksTreeTexts(driver)
 
     print('Verifying WF task 0001 text... ')
     assert ttts[1] == 'auto-EP:[0001] EP automatic workflow -- imported HKL (1), Sequences (1); workflow started'
 
-    print('Verifying CRANK2 0003 Rfree < 0.31... ')
-    match = re.search('\[0003\] EP with Crank2 --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[3])
+    print('Verifying CRANK2  Rfree < 0.31... ')
+    match = False
+    for t in ttts:
+        match = re.search('EP with Crank2 --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(2)) < 0.31
 
-    print('Verifying fitwaters 0006 >90 ... ')
-    match = re.search('\[0006\] fit waters -- Nwaters=(\d*)', ttts[6])
+    print('Verifying fitwaters  >90 ... ')
+    match = False
+    for t in ttts:
+        match = re.search('fit waters -- Nwaters=(\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(1)) > 90
 
-    print('Verifying refmac5 0009 Rfree < 0.28... ')
-    match = re.search('\[0009\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', ttts[9])
+    print('Verifying refmac5 Rfree < 0.28... ')
+    match = False
+    for t in reversed(ttts):
+        match = re.search('refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(2)) < 0.28
 
-    print('Verifying deposition 0010  ... ')
-    assert 'auto-EP:[0010] deposition -- package prepared, pdb report' in ttts[10]
+    print('Verifying deposition  ... ')
+    assert 'deposition -- package prepared, pdb report' in ttts[-2]
 
     return ()
 

@@ -58,30 +58,47 @@ def validate4DPL(driver, waitLong):
     assert ttts[1] == 'auto-DPL:[0001] Dimple Refinement and Ligand Fitting Workflow -- HKL (1), Sequences (1), XYZ (1), Ligands (1); workflow started'
 
     #2 auto-DPL:[0002] dimple -- R=0.2978 Rfree=0.3307
-    print('Verifying DIMPLE 0002 Rfree < 0.35... ')
-    match = re.search('\[0002\] dimple --.*R=(0\.\d*) Rfree=(0\.\d*)', ttts[2])
+    print('Verifying DIMPLE  Rfree < 0.35... ')
+    match = False
+    for t in ttts:
+        match = re.search('dimple --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(2)) < 0.35
 
     #3 auto-DPL:[0003] fit ligand -- Nfitted=1
-    print('Verifying fitligand 0003 = 1 ... ')
-    assert ttts[3] == 'auto-DPL:[0003] fit ligand -- Nfitted=1'
+    print('Verifying fitligand = 1 ... ')
+    match = False
+    for t in ttts:
+        if 'fit ligand -- Nfitted=1' in t:
+            match = True
+            break
+    assert match
 
     #5 auto-DPL:[0005] fit waters -- Nwaters=61
-    print('Verifying fitwaters 0005 >50 ... ')
-    match = re.search('\[0005\] fit waters -- Nwaters=(\d*)', ttts[5])
+    print('Verifying fitwaters  >50 ... ')
+    match = False
+    for t in ttts:
+        match = re.search('fit waters -- Nwaters=(\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(1)) > 50
 
     #8 auto-DPL:[0008] refmac5 -- R=0.2044 Rfree=0.2523
-    print('Verifying refmac5 0008 Rfree < 0.27... ')
-    match = re.search('\[0008\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', ttts[8])
+    print('Verifying refmac5 Rfree < 0.27... ')
+    match = False
+    for t in reversed(ttts):
+        match = re.search('refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
     assert match
     assert float(match.group(2)) < 0.27
 
     #9 auto-DPL:[0009] deposition -- package prepared, pdb report not obtained
-    print('Verifying deposition 0009  ... ')
-    assert ttts[9] == 'auto-DPL:[0009] deposition -- package prepared, pdb report not obtained'
+    print('Verifying deposition ... ')
+    assert 'deposition -- package prepared, pdb report' in ttts[-2]
 
     return ()
 
