@@ -98,7 +98,12 @@ def validate4DPL(driver, waitLong):
 
     #9 auto-DPL:[0009] deposition -- package prepared, pdb report not obtained
     print('Verifying deposition ... ')
-    assert 'deposition -- package prepared, pdb report' in ttts[-2]
+    match = False
+    for t in ttts:
+        if 'deposition -- package prepared, pdb report' in t:
+            match = True
+            break
+    assert match
 
     return ()
 

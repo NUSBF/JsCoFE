@@ -103,7 +103,12 @@ def validate2SMR(driver, waitLong):
     assert float(match.group(2)) < 0.25
 
     print('Verifying deposition ... ')
-    assert 'deposition -- package prepared, pdb report' in ttts[-3]
+    match = False
+    for t in ttts:
+        if 'deposition -- package prepared, pdb report' in t:
+            match = True
+            break
+    assert match
 
     return ()
 
