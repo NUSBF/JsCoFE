@@ -36,7 +36,7 @@ def refmacTwin_fsigf(driver, waitLong):
 
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Mean Amplitudes only')
-    time.sleep(2)
+    time.sleep(12)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Mean Amplitudes assuming twinning')
     time.sleep(2)
@@ -101,7 +101,7 @@ def refmacTwin_isigi(driver, waitLong):
 
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Mean Amplitudes only')
-    time.sleep(2)
+    time.sleep(12)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Mean Intensities assuming twinning')
     time.sleep(2)

@@ -86,8 +86,13 @@ def validate3AEP(driver, waitLong):
     assert match
     assert float(match.group(2)) < 0.28
 
-    print('Verifying deposition  ... ')
-    assert 'deposition -- package prepared, pdb report' in ttts[-2]
+    print('Verifying deposition ... ')
+    match = False
+    for t in ttts:
+        if 'deposition -- package prepared, pdb report' in t:
+            match = True
+            break
+    assert match
 
     return ()
 

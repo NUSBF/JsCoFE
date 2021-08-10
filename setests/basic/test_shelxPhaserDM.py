@@ -315,18 +315,28 @@ def runAcorn(driver):
     closeButton.click()
     time.sleep(2)
 
-    completed = ''
+    fcorr = None
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0008\] acorn --\s(.*)', taskText)
+        match = re.search('\[0008\] acorn -- Fcorr=(.*)', taskText)
         if match:
-            completed = match.group(1)
+            fcorr = float(match.group(1))
             break
-    if completed == '':
-        print('*** Verification: could not find completed value after Acorn run')
+    if fcorr != None:
+        print('*** Verification: Acorn Fcorr is %0.2f (expecting >0.25)' % (fcorr))
+        assert fcorr > 0.25
     else:
-        print('*** Verification: Acorn completion message in %s (expecting "completed.")' % (completed))
-    assert completed == 'completed.'
+        completed = ''
+        for taskText in ttts:
+            match = re.search('\[0008\] acorn -- (.*)', taskText)
+            if match:
+                completed = match.group(1)
+                break
+        if completed == '':
+            print('*** Verification: could not find completed value after Acorn run')
+        else:
+            print('*** Verification: Acorn completion message in %s (expecting "completed.")' % (completed))
+        assert completed == 'completed.'
 
     return ()
 
