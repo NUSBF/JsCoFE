@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.07.21   <--  Date of Last Modification.
+ *    12.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1227,6 +1227,7 @@ if (!dbx)  {
           grid.setCellSize ( '10%','',r,3 );
           grid.setLabel    ( ' ',r,4, 1,1 );
           grid.setCellSize ( '84%','',r,4 );
+//          ddn.sortItems ( true );
           ddn.make();
 
           r++;
@@ -2563,10 +2564,11 @@ if (!dbx)  {
                         break;
             case 'z02'      : if ('Ncopies' in d)  {
                                 if (S.length>0)
-                                     S += ', ';
+                                  S += ', ';
                                 if (d.Ncopies==1)
-                                     S += '1 molecule in ASU, ';
-                                else S += d.Ncopies + ' molecules in ASU, ';
+                                  S += '1 molecule in ASU, ';
+                                else if (d.Ncopies>1)
+                                  S += d.Ncopies + ' molecules in ASU, ';
                               }
                               S += 'Solv=' + d.SolventPercent + '% ';
                         break;

@@ -193,34 +193,45 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
                                 base.rvrow,0,1,1 )
         base.rvrow += 1
 
-    elif altEstimateKey == "NR":
-        nRes = int(altNRes)
-        base.write_stdin ( "NRES " + str(nRes) + "\n" )
-        dataKey = -1
-        if composition == "P":
-            cnt = " aminoacid residues"
-            molWeight = nRes*110 + 18
-        elif composition == "C":
-            cnt = " aminoacid and nucleic acid residues"
-        else:
-            cnt = " nucleic acid residues"
-        base.putMessage ( "<b>Content unit:</b> one or several molecules " +\
-                          "having " + str(nRes) + cnt + " in total" )
-
     else:
-        molWeight = float(altMolWeight)
-        base.write_stdin ( "MOLWEIGHT " + str(molWeight) + "\n" )
-        datakey = -2
-        if composition == "P":
-            cnt  = " protein"
-            nRes = int((molWeight-18)/110)
-        elif composition == "C":
-            cnt = " protein and polynucletide"
+        if altEstimateKey == "NR":
+            nRes = int(altNRes)
+            base.write_stdin ( "NRES " + str(nRes) + "\n" )
+            dataKey = -1
+            if composition == "P":
+                cnt = " aminoacid residues"
+                molWeight = nRes*110 + 18
+            elif composition == "C":
+                cnt = " aminoacid and nucleic acid residues"
+            else:
+                cnt = " nucleic acid residues"
+            base.putMessage ( "<b>Content unit:</b> one or several molecules " +\
+                              "having " + str(nRes) + cnt + " in total" )
+
         else:
-            cnt = " polynucleotide"
-        base.putMessage ( "<b>Content unit:</b> one or several " + cnt +\
-                          " molecules with the combined molecular weight of " +\
-                          str(molWeight) + " Daltons" )
+            molWeight = float(altMolWeight)
+            base.write_stdin ( "MOLWEIGHT " + str(molWeight) + "\n" )
+            datakey = -2
+            if composition == "P":
+                cnt  = " protein"
+                nRes = int((molWeight-18)/110)
+            elif composition == "C":
+                cnt = " protein and polynucletide"
+            else:
+                cnt = " polynucleotide"
+            base.putMessage ( "<b>Content unit:</b> one or several " + cnt +\
+                              " molecules with the combined molecular weight of " +\
+                              str(molWeight) + " Daltons" )
+        base.putMessage (
+            "&nbsp;<br><span style=\"font-size:100%;color:maroon;\">" +\
+            "<b>NOTE:</b> no sequences are specified in the Asymmetric Unit, " +\
+            "because of which it is unsuitable for some automatic structure " +\
+            "solvers and model builders. Should you have sequence information, " +\
+            "consider importing it and using for the redefoinition of ASU " +\
+            "content <b><u>now</u></b>. Sequence data can " +\
+            "also be added to ASU definition on later stages using the <i>Edit " +\
+            "Structure Revision<i> task."
+        )
 
     base.write_stdin (
         "NMOL 1\n" +\

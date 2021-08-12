@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    11.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,11 +39,12 @@ function TaskSeqAlign()  {
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataSequence' :[],
+      data_type   : {'DataStructure':['xyz'],
                      'DataEnsemble' :[],
                      'DataModel'    :[],
-                     'DataXYZ'      :[],
-                     'DataStructure':['xyz']}, // data type(s) and subtype(s)
+                     'DataSequence' :[],
+                     'DataXYZ'      :[]
+                    }, // data type(s) and subtype(s)
       label       : 'Sequence source',     // label for input dialog
       inputId     : 'seq',       // input Id for referencing input fields
       customInput : 'chain-sel', // lay custom fields next to the selection
