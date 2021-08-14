@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.05.21   <--  Date of Last Modification.
+ *    14.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -351,11 +351,16 @@ function QuestionBox ( title,message,btn1_name,onButton1_func,
   document.body.appendChild ( this.element );
 
   this.options = {
-    resizable : false,
-    height    : 'auto',
-    width     : 'auto',
-    modal     : true,
-    buttons   : {}
+    resizable     : false,
+    height        : 'auto',
+    width         : 'auto',
+    modal         : true,
+    closeOnEscape : false,
+    open          : function(event, ui) {
+                      //hide close button.
+                      $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+                    },
+    buttons       : {}
   };
 
   this.options.buttons[btn1_name] = function() {
@@ -364,11 +369,12 @@ function QuestionBox ( title,message,btn1_name,onButton1_func,
       window.setTimeout ( onButton1_func,0);
   }
 
-  this.options.buttons[btn2_name] = function() {
-    $( this ).dialog( "close" );
-    if (onButton2_func)
-      window.setTimeout ( onButton2_func,0);
-  }
+  if (btn2_name)
+    this.options.buttons[btn2_name] = function() {
+      $( this ).dialog( "close" );
+      if (onButton2_func)
+        window.setTimeout ( onButton2_func,0);
+    }
 
   $(this.element).dialog ( this.options );
 
@@ -376,6 +382,10 @@ function QuestionBox ( title,message,btn1_name,onButton1_func,
 
 QuestionBox.prototype = Object.create ( Widget.prototype );
 QuestionBox.prototype.constructor = QuestionBox;
+
+QuestionBox.prototype.close = function()  {
+  $(this.element).dialog( "close" );
+}
 
 
 // -------------------------------------------------------------------------

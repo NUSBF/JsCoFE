@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.07.21   <--  Date of Last Modification.
+ *    14.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -203,11 +203,16 @@ var json = null;
 
 
 
-var __server_queue = [];
-var __local_queue  = [];
+var __server_queue    = [];
+var __local_queue     = [];
+var __server_queue_id = 1;
 
 var __delays_ind   = null;
 var __delays_timer = null;
+var __delays_wait  = 1000;  //msec
+var __holdup_dlg   = null;
+var __holdup_timer = null;
+var __holdup_wait  = 10000;  //msec
 var __communication_ind = null;
 
 function clearNetworkIndocators()  {
@@ -229,6 +234,14 @@ function __process_network_indicators()  {
     }
     if (__delays_ind.isVisible())
       __delays_ind.hide();
+    if (__holdup_timer)  {
+      window.clearTimeout ( __holdup_timer );
+      __holdup_timer = null;
+    }
+    if (__holdup_dlg)  {
+      __holdup_dlg.close();
+      __holdup_dlg = null;
+    }
     if (__communication_ind.isVisible())
       __communication_ind.fade ( false );
   }
@@ -236,33 +249,43 @@ function __process_network_indicators()  {
 
 function processServerQueue()  {
   if (__server_queue.length>0)  {
-    // if (__communication_ind && (!__communication_ind.isVisible()))
-    //   __communication_ind.fade ( true );
     var q0 = __server_queue[0];
     if (q0.status=='waiting')  {
       q0.status = 'running';
       if (q0.type=='command')
-        server_command ( q0.cmd,q0.data_obj,q0.page_title,
-                         q0.function_response,q0.function_always,
-                         q0.function_fail );
+        __server_command ( q0.cmd,q0.data_obj,q0.page_title,
+                           q0.function_response,q0.function_always,
+                           q0.function_fail,q0.id );
       else
-        server_request ( q0.request_type,q0.data_obj,q0.page_title,
-                         q0.function_ok,q0.function_always,
-                         q0.function_fail );
+        __server_request ( q0.request_type,q0.data_obj,q0.page_title,
+                           q0.function_ok,q0.function_always,
+                           q0.function_fail,q0.id );
     }
-    if (__delays_ind && (!__delays_ind.isVisible()) && (!__delays_timer))
+    if (__delays_ind && (!__delays_ind.isVisible()) && (!__delays_timer))  {
       __delays_timer = window.setTimeout ( function(){
         __delays_ind.show();
-      },1000);
-  // } else if (__delays_ind)  {
-  //   if (__delays_timer)  {
-  //     window.clearTimeout ( __delays_timer );
-  //     __delays_timer = null;
-  //   }
-  //   if (__delays_ind.isVisible())
-  //     __delays_ind.hide();
-  //   if (__communication_ind.isVisible())
-  //     __communication_ind.fade ( false );
+      },__delays_wait);
+      __holdup_timer = window.setTimeout ( function(){
+        __holdup_dlg = new QuestionBox ( 'Communication hold-up',
+            '<div style="width:450px"><h3>Communication hold-up</h3>' +
+            'Communication with ' + appName() + ' is severely delayed. ' +
+            'Please be patient, the problem may resolve in few seconds, ' +
+            'after which this dialog will disappear automatically.<p>' +
+            'If communication does not resume after a long time, you can ' +
+            'either skip current operation or reload the page and ' +
+            're-login.<p>' +
+            'Make sure that your Internet connection is stable.',
+            'Skip current operation',function(){
+              __server_queue.shift();
+              __process_network_indicators();
+              processServerQueue();
+            },
+            'Reload page and re-login',function(){
+              window.location = window.location;
+            }
+        );
+      },__holdup_wait);
+    }
   }
 }
 
@@ -291,8 +314,8 @@ function processLocalQueue()  {
 // }
 
 
-function server_command ( cmd,data_obj,page_title,function_response,
-                          function_always,function_fail )  {
+function __server_command ( cmd,data_obj,page_title,function_response,
+                            function_always,function_fail,sqid )  {
 // used when no user is logged in
 
   var json = makeJSONString ( data_obj );
@@ -307,34 +330,42 @@ function server_command ( cmd,data_obj,page_title,function_response,
       dataType : 'text'
     })
     .done ( function(rdata) {
-      __server_queue.shift();
-      __process_network_indicators();
-      var rsp = jQuery.parseJSON ( rdata );
-      if (checkVersionMatch(rsp,false))  {
-        var response = jQuery.extend ( true, new Response(), rsp );
-        if (!function_response(response))
-          makeCommErrorMessage ( page_title,response );
+      if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
+        __server_queue.shift();
+        __process_network_indicators();
+        var rsp = jQuery.parseJSON ( rdata );
+        if (checkVersionMatch(rsp,false))  {
+          var response = jQuery.extend ( true, new Response(), rsp );
+          if (!function_response(response))
+            makeCommErrorMessage ( page_title,response );
+        }
+        processServerQueue();
+      } else  {
+        console.log ( ' >>> return on skipped operation in __server_command.done' );
       }
-      processServerQueue();
     })
     .always ( function(){
       if (function_always)
         function_always();
     })
     .fail ( function(xhr,err){
-      __server_queue.shift();
-      __process_network_indicators();
-      if (function_fail)
-            function_fail();
-      else  MessageAJAXFailure(page_title,xhr,err);
-      processServerQueue();
+      if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
+        __server_queue.shift();
+        __process_network_indicators();
+        if (function_fail)
+              function_fail();
+        else  MessageAJAXFailure(page_title,xhr,err);
+        processServerQueue();
+      } else  {
+        console.log ( ' >>> return on skipped operation in __server_command.fail' );
+      }
     });
 
 }
 
 
-function server_request ( request_type,data_obj,page_title,function_ok,
-                         function_always,function_fail )  {
+function __server_request ( request_type,data_obj,page_title,function_ok,
+                         function_always,function_fail,sqid )  {
 // used when a user is logged in
 
   var request = new Request ( request_type,__login_token,data_obj );
@@ -361,28 +392,34 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
   }
 }
 */
-      __server_queue.shift();  // request completed
-      __process_network_indicators();
+      if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
 
-      try {
-        var rsp = jQuery.parseJSON ( rdata );
-        if (checkVersionMatch(rsp,false))  {
-          var response = jQuery.extend ( true, new Response(), rsp );
-          if (response.status==fe_retcode.ok)  {
-            if (function_ok)
-              function_ok ( response.data );
-          } else
-            makeCommErrorMessage ( page_title,response );
-          // we put this function here and in fail section because we do not want to
-          // have it executed multiple times due to multiple retries
-          if (function_always)
-            function_always(0,response.data);
+        __server_queue.shift();  // request completed
+        __process_network_indicators();
+
+        try {
+          var rsp = jQuery.parseJSON ( rdata );
+          if (checkVersionMatch(rsp,false))  {
+            var response = jQuery.extend ( true, new Response(), rsp );
+            if (response.status==fe_retcode.ok)  {
+              if (function_ok)
+                function_ok ( response.data );
+            } else
+              makeCommErrorMessage ( page_title,response );
+            // we put this function here and in fail section because we do not want to
+            // have it executed multiple times due to multiple retries
+            if (function_always)
+              function_always(0,response.data);
+          }
+        } catch(err) {
+          console.log ( ' >>> error catch in __server_request.done: ' + err );
         }
-      } catch(err) {
-        console.log ( ' >>> error catch in server_request.done: ' + err );
-      }
 
-      processServerQueue();
+        processServerQueue();
+
+      } else  {
+        console.log ( ' >>> return on skipped operation in __server_request.done' );
+      }
 
     })
 
@@ -390,35 +427,41 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
     .fail ( function(xhr,err){
 
-      __server_queue.shift();  // request completed
-      __process_network_indicators();
+      if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
 
-      try {
+        __server_queue.shift();  // request completed
+        __process_network_indicators();
 
-        if ((typeof function_fail === 'string' || function_fail instanceof String) &&
-            (function_fail=='persist')) {
+        try {
 
-          if (attemptNo>0)  {
-            execute_ajax ( attemptNo-1 );
-            return;  // repeat; server queue is not shifted here
-          } else
+          if ((typeof function_fail === 'string' || function_fail instanceof String) &&
+              (function_fail=='persist')) {
+
+            if (attemptNo>0)  {
+              execute_ajax ( attemptNo-1 );
+              return;  // repeat; server queue is not shifted here
+            } else
+              MessageAJAXFailure ( page_title,xhr,err );
+
+          } else if (function_fail)
+            function_fail();
+          else
             MessageAJAXFailure ( page_title,xhr,err );
 
-        } else if (function_fail)
-          function_fail();
-        else
-          MessageAJAXFailure ( page_title,xhr,err );
+          // we put this function here and in done section because we do not
+          // want to have it executed multiple times due to multiple retries
+          if (function_always)
+            function_always ( 1,{} );
 
-        // we put this function here and in done section because we do not
-        // want to have it executed multiple times due to multiple retries
-        if (function_always)
-          function_always ( 1,{} );
+        } catch(err) {
+          console.log ( ' >>> error catch in __server_request.fail: ' + err );
+        }
 
-      } catch(err) {
-        console.log ( ' >>> error catch in server_request.fail: ' + err );
+        processServerQueue();
+
+      } else  {
+        console.log ( ' >>> return on skipped operation in __server_request.fail' );
       }
-
-      processServerQueue();
 
     });
 
@@ -480,6 +523,7 @@ function serverCommand ( cmd,data_obj,page_title,function_response,
   __server_queue.push ({
     status            : 'waiting',
     type              : 'command',
+    id                : __server_queue_id++,
     cmd               : cmd,
     data_obj          : data_obj,
     page_title        : page_title,
@@ -496,6 +540,7 @@ function serverRequest ( request_type,data_obj,page_title,function_ok,
   __server_queue.push ({
     status          : 'waiting',
     type            : 'request',
+    id              : __server_queue_id++,
     request_type    : request_type,
     data_obj        : data_obj,
     page_title      : page_title,
