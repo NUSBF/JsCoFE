@@ -82,7 +82,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
 
         rlevel = "RLEVEL "
         if self.getParameter(sec1.AFDB_CBX)=="True":
-            rlevel += "AF00100"
+            rlevel += "AF50100"
         else:
             rlevel += self.getParameter ( sec1.RLEVEL_SEL,False )
 
