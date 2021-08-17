@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.08.21   <--  Date of Last Modification.
+ *    17.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1570,7 +1570,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_key )  {
 
     var projectDir = getProjectDirPath ( loginData,projectDesc.name );
 
-    if (utils.fileExists(projectDir) && (!utils.isSymbolicLink(projectDir)))  {
+    // if (utils.fileExists(projectDir) && (!utils.isSymbolicLink(projectDir)))  {
+    if (utils.fileExists(projectDir))  {
 
       utils.writeString ( signal_path,'Project "' + projectDesc.name +
                                       '" already exists.\n' +
