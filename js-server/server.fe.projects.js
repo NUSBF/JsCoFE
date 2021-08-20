@@ -1420,77 +1420,85 @@ var unknown  = [];
       unknown  : unknown
     });
 
-  var userData0  = user.readUserData ( loginData );
-  var msg_params = {
-    'uname'          : userData0.name,
-    'ulogin'         : userData0.login,
-    'project_id'     : pDesc.name,
-    'project_title'  : pDesc.title
-  };
+  var pData = readProjectData ( loginData,pDesc.name );
+  if (pData)  {
 
-  // unshare by comparison of share0 and share
-  for (var i=0;i<share0.length;i++)
-    if (share0[i].login)  {
-      var found = false;
-      for (var j=0;(j<share.length) && (!found);j++)
-        found = (share0[i].login==share[j].login);
-      if (!found)  {
-        var uLoginData = user.getUserLoginData ( share0[i].login );
+    var userData0  = user.readUserData ( loginData );
+    var msg_params = {
+      'uname'          : userData0.name,
+      'ulogin'         : userData0.login,
+      'project_id'     : pDesc.name,
+      'project_title'  : pDesc.title
+    };
+
+    // unshare by comparison of share0 and share
+    for (var i=0;i<share0.length;i++)
+      if (share0[i].login)  {
+        var found = false;
+        for (var j=0;(j<share.length) && (!found);j++)
+          found = (share0[i].login==share[j].login);
+        if (!found)  {
+          var uLoginData = user.getUserLoginData ( share0[i].login );
+          if (uLoginData)  {
+            var pShare = readProjectShare ( uLoginData );
+            pShare.removeShare ( pDesc );
+            writeProjectShare  ( uLoginData,pShare );
+          }
+          unshared.push ( share0[i] );
+          var userData = user.readUserData ( uLoginData );
+          if (userData)
+            emailer.sendTemplateMessage ( userData,
+                       cmd.appName() + ': A project was unshared with you',
+                       'project_unshared',msg_params );
+        }
+      }
+
+    // share with users given by share
+    var share1 = pData.desc.owner.share;
+    for (var i=0;i<share.length;i++)
+      if (share[i].login)  {
+        var uLoginData = user.getUserLoginData ( share[i].login );
         if (uLoginData)  {
           var pShare = readProjectShare ( uLoginData );
-          pShare.removeShare ( pDesc );
-          writeProjectShare  ( uLoginData,pShare );
-        }
-        unshared.push ( share0[i] );
-        var userData = user.readUserData ( uLoginData );
-        if (userData)
-          emailer.sendTemplateMessage ( userData,
-                     cmd.appName() + ': A project was unshared with you',
-                     'project_unshared',msg_params );
+          pShare.addShare ( pDesc );
+          writeProjectShare ( uLoginData,pShare );
+          shared.push  ( share[i] );
+          var found = false;
+          for (var j=0;(j<share1.length) && (!found);j++)
+            found = (share[i].login==share1[j].login);
+          if (!found)  {
+            var userData = user.readUserData ( uLoginData );
+            if (userData)
+              emailer.sendTemplateMessage ( userData,
+                         cmd.appName() + ': A project was shared with you',
+                         'project_shared',msg_params );
+          }
+        } else
+          unknown.push ( share[i] );
+      }
+
+    pDesc.owner.share = shared;
+    pData.desc.owner.share = pDesc.owner.share;
+    writeProjectData ( loginData,pData,true );
+
+    // modify project entry in project list
+    var pList = readProjectList ( loginData );
+    if (pList)  {
+      var pno = -1;
+      for (var i=0;(i<pList.projects.length) && (pno<0);i++)
+        if (pList.projects[i].name==pDesc.name)
+          pno = i;
+      if (pno>=0)  {
+        pList.projects[pno] = pDesc;
+        writeProjectList ( loginData,pList );
       }
     }
 
-  // share with users given by share
-  for (var i=0;i<share.length;i++)
-    if (share[i].login)  {
-      var uLoginData = user.getUserLoginData ( share[i].login );
-      if (uLoginData)  {
-        var pShare = readProjectShare ( uLoginData );
-        pShare.addShare ( pDesc );
-        writeProjectShare ( uLoginData,pShare );
-        shared.push  ( share[i] );
-        var userData = user.readUserData ( uLoginData );
-        if (userData)
-          emailer.sendTemplateMessage ( userData,
-                     cmd.appName() + ': A project was shared with you',
-                     'project_shared',msg_params );
-      } else
-        unknown.push ( share[i] );
-    }
+    // emailer.sendTemplateMessage ( userData,
+    //              cmd.appName() + ': You shared a project',
+    //              'project_you_shared',{} );
 
-  pDesc.owner.share = shared;
-  var pData = readProjectData ( loginData,pDesc.name );
-  if (pData)  {
-    pData.desc.owner.share = pDesc.owner.share;
-    writeProjectData ( loginData,pData,true );
   }
-
-  // modify project entry in project list
-  var pList = readProjectList ( loginData );
-  if (pList)  {
-    var pno = -1;
-    for (var i=0;(i<pList.projects.length) && (pno<0);i++)
-      if (pList.projects[i].name==pDesc.name)
-        pno = i;
-    if (pno>=0)  {
-      pList.projects[pno] = pDesc;
-      writeProjectList ( loginData,pList );
-    }
-  }
-
-  // emailer.sendTemplateMessage ( userData,
-  //              cmd.appName() + ': You shared a project',
-  //              'project_you_shared',{} );
 
   return new cmd.Response ( cmd.fe_retcode.ok,'',{
     desc     : pDesc,
