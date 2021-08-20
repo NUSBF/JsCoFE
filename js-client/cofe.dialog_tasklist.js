@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.06.21   <--  Date of Last Modification.
+ *    20.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -569,6 +569,7 @@ var row      = 0;
 
     this.makeSection ( 'Tasks in Development',[
       new TaskDocDev       (),
+      new TaskMrParse      (),
       // ccp4go2_task,
       new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),

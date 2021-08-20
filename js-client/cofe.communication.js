@@ -212,7 +212,7 @@ var __delays_timer = null;
 var __delays_wait  = 1000;  //msec
 var __holdup_dlg   = null;
 var __holdup_timer = null;
-var __holdup_wait  = 60000;  //msec
+var __holdup_wait  = 20000;  //msec
 var __communication_ind = null;
 
 function clearNetworkIndocators()  {

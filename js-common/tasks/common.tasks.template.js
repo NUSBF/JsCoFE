@@ -147,7 +147,6 @@ TaskTemplate.prototype.icon = function()  { return 'process'; }
 TaskTemplate.prototype.desc_title = function()  {
   return '';  //'this appears under task title in the task list';
 }
-
 TaskTemplate.prototype.taskDescription = function()  {
   return ''; //'this appears under task title in the Task Dialog';
   // return 'Task description in small font which will appear under the task title in Task Dialog';

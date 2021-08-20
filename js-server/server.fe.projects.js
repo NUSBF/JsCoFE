@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.08.21   <--  Date of Last Modification.
+ *    20.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1420,6 +1420,14 @@ var unknown  = [];
       unknown  : unknown
     });
 
+  var userData0  = user.readUserData ( loginData );
+  var msg_params = {
+    'uname'          : userData0.name,
+    'ulogin'         : userData0.login,
+    'project_id'     : pDesc.name,
+    'project_title'  : pDesc.title
+  };
+
   // unshare by comparison of share0 and share
   for (var i=0;i<share0.length;i++)
     if (share0[i].login)  {
@@ -1434,6 +1442,11 @@ var unknown  = [];
           writeProjectShare  ( uLoginData,pShare );
         }
         unshared.push ( share0[i] );
+        var userData = user.readUserData ( uLoginData );
+        if (userData)
+          emailer.sendTemplateMessage ( userData,
+                     cmd.appName() + ': A project was unshared with you',
+                     'project_unshared',msg_params );
       }
     }
 
@@ -1446,6 +1459,11 @@ var unknown  = [];
         pShare.addShare ( pDesc );
         writeProjectShare ( uLoginData,pShare );
         shared.push  ( share[i] );
+        var userData = user.readUserData ( uLoginData );
+        if (userData)
+          emailer.sendTemplateMessage ( userData,
+                     cmd.appName() + ': A project was shared with you',
+                     'project_shared',msg_params );
       } else
         unknown.push ( share[i] );
     }
@@ -1469,6 +1487,10 @@ var unknown  = [];
       writeProjectList ( loginData,pList );
     }
   }
+
+  // emailer.sendTemplateMessage ( userData,
+  //              cmd.appName() + ': You shared a project',
+  //              'project_you_shared',{} );
 
   return new cmd.Response ( cmd.fe_retcode.ok,'',{
     desc     : pDesc,

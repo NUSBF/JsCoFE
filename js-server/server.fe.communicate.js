@@ -44,7 +44,6 @@ var log = require('./server.log').newLog(5);
 
 tmp.setGracefulCleanup();
 
-
 // ==========================================================================
 
 /*
@@ -68,7 +67,9 @@ function __count_malicious_ip ( ip,count )  {
 }
 */
 
-var __malicious_ip_register  = {};
+var __malicious_ip_register = {};
+
+var __ccp4_lib = conf.CCP4DirName() + '/lib/';
 
 function Communicate ( server_request )  {
 
@@ -126,7 +127,7 @@ function Communicate ( server_request )  {
     this.job_token = '';
 
   log.debug2 ( 1,"requested path " + this.filePath );
-//console.log ( "requested path " + this.filePath );
+// console.log ( "requested path " + this.filePath );
   var ix = this.filePath.indexOf('jsrview');
   //if (ix<0)
   //  ix = this.filePath.indexOf('ccp4i2_support');
@@ -162,6 +163,15 @@ function Communicate ( server_request )  {
     }
   }
   if (ix<0) {
+    ix = this.filePath.lastIndexOf(__ccp4_lib);
+    if (ix>=0)  {
+      this.filePath = process.env.CCP4 + '/lib/' +
+                      this.filePath.substr(ix+__ccp4_lib.length);
+      // console.log ( ' fpath=' + this.filePath );
+      log.debug2 ( 3,"calculated path " + this.filePath);
+    }
+  }
+  if (ix<0) {
     ix = server_request.url.lastIndexOf('reqid=authorisation-');
     if (ix>=0)  {
       this.command = cmd.fe_command.authResponse;
@@ -172,10 +182,10 @@ function Communicate ( server_request )  {
     //if (this.filePath.startsWith(cmd.__special_url_tag))  { // special access to files not
     //                                             // supposed to be on http path
 
-    var sindex = this.filePath.lastIndexOf ( cmd.__special_url_tag );
-    if (sindex>=0)  {
+    var ix = this.filePath.lastIndexOf ( cmd.__special_url_tag );
+    if (ix>=0)  {
 
-      var flist     = this.filePath.slice(sindex).split('/');
+      var flist     = this.filePath.slice(ix).split('/');
       var loginData = user.getLoginData ( flist[1] );
 
       if (loginData.login.length>0)  {  // login is valid
@@ -214,22 +224,23 @@ function Communicate ( server_request )  {
 
       log.debug2 ( 3,"File " + this.filePath);
 
-    } else  {
-      ix = this.filePath.indexOf('manual');
-      if (ix>=0)  {  // request for documentation file
-        /*
-        console.log ( ' ---- ' + this.filePath );
-        var flst = this.filePath.substr(ix).split('?');
-        if (!utils.fileExists(flst[0]))
-              this.filePath = flst[0];
-        else  this.filePath = flst[flst.length-1];
-        console.log ( ' === ' + this.filePath );
-        */
-        this.filePath = this.filePath.substr(ix);
-        log.debug2 ( 2,"calculated path " + this.filePath);
-      }
     }
 
+  }
+  if (ix<0) {
+    ix = this.filePath.indexOf('manual');
+    if (ix>=0)  {  // request for documentation file
+      /*
+      console.log ( ' ---- ' + this.filePath );
+      var flst = this.filePath.substr(ix).split('?');
+      if (!utils.fileExists(flst[0]))
+            this.filePath = flst[0];
+      else  this.filePath = flst[flst.length-1];
+      console.log ( ' === ' + this.filePath );
+      */
+      this.filePath = this.filePath.substr(ix);
+      log.debug2 ( 2,"calculated path " + this.filePath);
+    }
   }
 
   this.mimeType = utils.getMIMEType ( this.filePath );
