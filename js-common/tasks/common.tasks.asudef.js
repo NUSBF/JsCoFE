@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.21   <--  Date of Last Modification.
+ *    20.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,8 +42,8 @@ function TaskASUDef()  {
   this.input_dtypes = [{   // input data types
       data_type   : {'DataHKL':[]},  // data type(s) and subtype(s)
       label       : 'Reflections',   // label for input dialog
-      tooltip     : 'Reflection dataset to be used for phasing and refinement ' +
-                    'in further tasks, or a Structure object.',
+      tooltip     : 'Reflection dataset, which will be used for phasing and ' +
+                    'refinement in the follow-up tasks.',
       inputId     : 'hkl',           // input Id for referencing input fields
       min         : 1,               // minimum acceptable number of data instances
       max         : 1                // maximum acceptable number of data instances

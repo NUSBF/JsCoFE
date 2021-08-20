@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.06.21   <--  Date of Last Modification.
+ *    20.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -342,13 +342,19 @@ function getEmailerConfig()  {
 function CCP4Version()  {
 var version = '';
   if (process.env.hasOwnProperty('CCP4'))  {
-    if ('CCP4' in process.env)  {
+    // if ('CCP4' in process.env)  {
       var s = utils.readString ( path.join(process.env.CCP4,'lib','ccp4','MAJOR_MINOR') );
       if (s)
         version = s.split(/,?\s+/)[0];
-    }
+    // }
   }
   return version;
+}
+
+function CCP4DirName()  {
+  if (process.env.hasOwnProperty('CCP4'))
+    return path.basename ( process.env.CCP4 );
+  return '';
 }
 
 
@@ -1174,6 +1180,7 @@ module.exports.cleanFETmpDir      = cleanFETmpDir;
 module.exports.cleanFETmpDir1     = cleanFETmpDir1;
 module.exports.cleanNCTmpDir      = cleanNCTmpDir;
 module.exports.CCP4Version        = CCP4Version;
+module.exports.CCP4DirName        = CCP4DirName;
 module.exports.isWindows          = isWindows;
 module.exports.windows_drives     = windows_drives;
 module.exports.set_python_check   = set_python_check;

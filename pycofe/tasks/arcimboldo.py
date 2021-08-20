@@ -473,15 +473,13 @@ class Arcimboldo(basic.TaskDriver):
         pdb_out      = os.path.join ( self.arcimboldoDir(),"best.pdb" )
         #html_report  = os.path.join ( self.arcimboldoDir(),"arcimboldo.html" )
 
-        """
-        if os.path.isfile(html_report):
-            # Add Arcimboldo's own html report
-            os.rename ( html_report,"arcimboldo.html")
-            self.insertTab   ( "arcimboldo_report","Arcimboldo Report",None,True )
-            self.putMessage1 ( "arcimboldo_report","<iframe src=\"../arcimboldo.html\" " +\
-                "style=\"border:none;position:absolute;top:50px;left:0;width:100%;height:90%;\"></iframe>",
-                0 )
-        """
+        # if os.path.isfile(html_report):
+        #     # Add Arcimboldo's own html report
+        #     os.rename ( html_report,"arcimboldo.html")
+        #     self.insertTab   ( "arcimboldo_report","Arcimboldo Report",None,True )
+        #     self.putMessage1 ( "arcimboldo_report","<iframe src=\"../arcimboldo.html\" " +\
+        #         "style=\"border:none;position:absolute;top:50px;left:0;width:100%;height:90%;\"></iframe>",
+        #         0 )
 
         if os.path.isfile(phs_out) and os.path.isfile(pdb_out):
 
