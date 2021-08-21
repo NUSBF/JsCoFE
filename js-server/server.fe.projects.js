@@ -1412,6 +1412,8 @@ var share0   = data.share0;
 var shared   = [];
 var unshared = [];
 var unknown  = [];
+var n_email  = 0;
+var t_email  = 1000; //msec
 
   if (loginData.login!=pDesc.owner.login)
     return new cmd.Response ( cmd.fe_retcode.ok,'',{
@@ -1450,9 +1452,11 @@ var unknown  = [];
           if (userData)  {
             uData_unshared.push ( '<b>' + userData.login + '</b> (<i>' +
                                           userData.name + '</i>)' );
-            emailer.sendTemplateMessage ( userData,
-                       cmd.appName() + ': A project was unshared with you',
-                       'project_unshared',msg_params );
+            setTimeout ( function(){
+              emailer.sendTemplateMessage ( userData,
+                         cmd.appName() + ': A project was unshared with you',
+                         'project_unshared',msg_params );
+            },(n_email++)*t_email);
           }
         }
       }
@@ -1477,9 +1481,11 @@ var unknown  = [];
             if (!found)  {
               uData_newShared.push ( '<b>' + userData.login + '</b> (<i>' +
                                              userData.name + '</i>)' );
-              emailer.sendTemplateMessage ( userData,
-                         cmd.appName() + ': A project was shared with you',
-                         'project_shared',msg_params );
+              setTimeout ( function(){
+                emailer.sendTemplateMessage ( userData,
+                           cmd.appName() + ': A project was shared with you',
+                           'project_shared',msg_params );
+              },(n_email++)*t_email);
             } else
               uData_oldShared.push ( '<b>' + userData.login + '</b> (<i>' +
                                              userData.name + '</i>)' );
@@ -1507,23 +1513,23 @@ var unknown  = [];
 
     msg_params.msg = '';
     if (uData_newShared.length>0)
-      msg_params.msg = 'You shared the project with<p>' + uData_newShared.join('<br>');
+      msg_params.msg = 'You shared the project with<p>' + uData_newShared.join('<br>') + '<p>';
     if (uData_unshared.length>0)  {
-      msg_params.msg += 'You unshared the project with<p>' + uData_unshared.join('<br>');
+      msg_params.msg += 'You unshared the project with<p>' + uData_unshared.join('<br>') + '<p>';
       if ((uData_oldShared.length<=0) && (uData_newShared.length<=0))
         msg_params.msg += '<p>The project is now shared with nobody.';
     }
     if (uData_oldShared.length>0)
-      msg_params.msg += 'The project remains shared with<p>' + uData_oldShared.join('<br>');
+      msg_params.msg += 'The project remains shared with<p>' + uData_oldShared.join('<br>') + '<p>';
 
     if (!msg_params.msg)
-      msg_params.msg = 'The project is shared with nobody.';
+      msg_params.msg = 'The project is shared with nobody.<p>';
 
-    msg_params.msg += '<p>';
-
-    emailer.sendTemplateMessage ( userData0,
-                  cmd.appName() + ': You changed the shared state of a project',
-                  'project_sharing',msg_params );
+    setTimeout ( function(){
+      emailer.sendTemplateMessage ( userData0,
+                    cmd.appName() + ': You changed the shared state of a project',
+                    'project_sharing',msg_params );
+    },(n_email++)*t_email);
 
   }
 
