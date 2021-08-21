@@ -53,6 +53,8 @@ CCP4 Cloud Version Log
 
     #. Hydrogens with zero occupancy may be now removed in the ``deposition`` task
 
+    #. Project sharing/unsharing is now confirmed and notified by e-mail
+
 
 
 **Version 1.6.022**
