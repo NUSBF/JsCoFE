@@ -246,22 +246,10 @@ function LoginPage ( sceneId )  {
         '<br>admin or maintainer in your organisation.' );
   });
 
-/*
-  var viewFullScreen = document.getElementById("scene");
-  if (viewFullScreen)
-      viewFullScreen.addEventListener("click",setFullScreen );
-*/
-
-  //if (__mobile_device)
-  //  login_btn.addOnClickListener ( setFullScreen );
-
-  if (__mobile_device)
-    setFullScreen();
-
   login_btn.addOnClickListener ( function(){
 
-    // if (__mobile_device)
-    //   setFullScreen();
+    if (__mobile_device)
+      setFullScreen();
 
     // Validate the input
     var msg = '';
