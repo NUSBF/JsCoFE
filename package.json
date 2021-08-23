@@ -4,7 +4,6 @@
     "dependencies": {
         "check-disk-space": "^3.0.1",
         "child_process": "*",
-        "crypto": "^1.0.1",
         "csso": "^4.2.0",
         "formidable": "^1.2.2",
         "fs-extra": "^8.1.0",
