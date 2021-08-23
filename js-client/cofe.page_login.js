@@ -67,7 +67,6 @@ function LoginPage ( sceneId )  {
                                            __tips.tips[tipNo].link  + '\',' +
                                     'null,10)">';
 
-    //this.grid.setImage ( image_path('tip'),'24px','24px', 2,0,1,3 );
     this.grid.setLabel (
       '<img src="' + image_path('tip') + '" style="width:24px;height:24px;vertical-align:bottom;"/>' +
       '<span><i style="font-style:Garamond;color:#666666;">' +
@@ -164,15 +163,13 @@ function LoginPage ( sceneId )  {
   //panel.setLabel                ( '&nbsp;',row++,0,1,3 )
   panel.setCellSize             ( '','6pt',row++,0 );
 
-  if (__any_mobile_device)
-    panel.setLabel              ( '<center><i>Please note that some ' +
-                                  'tasks, such as interactive<br>model building ' +
-                                  'with Coot, interactive image<br>processing and ' +
-                                  'some others, are not available<br>when CCP4 ' +
-                                  'Cloud is accessed from mobile<br>devices ' +
-                                  '(tablets, ipads and smartphones)</i></center>',
+  if (!__any_mobile_device)
+    panel.setLabel              ( '<center><i>Note: Coot and some other tasks ' +
+                                  'cannot be used when<br>working ' +
+                                  'from tablets and phones<br>&nbsp;' +
+                                  '</i></center>',
                                   row++,0,1,3 )
-         .setTooltip            ( 'For best expereince, access this web-site from ' +
+         .setTooltip            ( 'For best experience, access this web-site from ' +
                                   'MS Windows, Linux or Mac OSX device  with ' +
                                   'CCP4 Software Suite version 7.1 or higher ' +
                                   'installed.'
