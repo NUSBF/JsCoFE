@@ -188,13 +188,12 @@ function LoginPage ( sceneId )  {
                                   row++,0,1,3 )
   */
   else if (!__local_service)
-    panel.setLabel              ( '<div style="min-width:440px"><center><i>' +
-                                  '<b>NOTE:</b> In order to use CCP4 graphical ' +
-                                  'applications, such as <span style="color:maroon">' +
-                                  '<b>Coot, DUI, iMosflm</b></span> and similar, with ' +
-                                  appName() + ', install<br><a href="javascript:_ccp4_download()">' +
+    panel.setLabel              ( '<div style="min-width:380px"><center><i>' +
+                                  '<b>NOTE:</b> For using <span style="color:maroon">' +
+                                  '<b>Coot, DUI, iMosflm</b></span> and similar<br>' +
+                                  'tasks, install <a href="javascript:_ccp4_download()">' +
                                   'the CCP4 Software Suite</a> and ' +
-                                  'start with this icon:<br>' +
+                                  'start<br>' + appName() + ' with this icon:<br>' +
                                   '<img src="images_com/ccp4cloud_remote.png" ' +
                                   'style="height:36px;width:36px;padding-top:6px;"/>' +
                                   '</i></center></div>',
@@ -256,10 +255,13 @@ function LoginPage ( sceneId )  {
   //if (__mobile_device)
   //  login_btn.addOnClickListener ( setFullScreen );
 
+  if (__mobile_device)
+    setFullScreen();
+
   login_btn.addOnClickListener ( function(){
 
-    if (__mobile_device)
-      setFullScreen();
+    // if (__mobile_device)
+    //   setFullScreen();
 
     // Validate the input
     var msg = '';
