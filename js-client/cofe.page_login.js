@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.04.21   <--  Date of Last Modification.
+ *    23.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -163,7 +163,7 @@ function LoginPage ( sceneId )  {
   //panel.setLabel                ( '&nbsp;',row++,0,1,3 )
   panel.setCellSize             ( '','6pt',row++,0 );
 
-  if (!__any_mobile_device)
+  if (__any_mobile_device)
     panel.setLabel              ( '<center><i>Note: Coot and some other tasks ' +
                                   'cannot be used when<br>working ' +
                                   'from tablets and phones<br>&nbsp;' +
