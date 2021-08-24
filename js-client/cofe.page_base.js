@@ -172,6 +172,8 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
     'position'         : 'absolute',
     'left'             : '0px',
     'bottom'           : '0px',
+    'padding'          : 0,
+    'margin'           : 0,
     'border'           : '1px solid lightgray',
     'background-color' : 'rgba(240,250,255,0.67)'
   });
