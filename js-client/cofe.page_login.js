@@ -74,13 +74,13 @@ function LoginPage ( sceneId )  {
       __tips.tips[tipNo].summary.replace('<a>',tipLink) +
       '</i></span>',
       2,0,1,3 );
-    this.grid.setLabel ( ' ',3,0,1,3 );
     this.grid.setHorizontalAlignment ( 2,0,'center' );
     this.grid.setVerticalAlignment   ( 2,0,'top' );
     this.grid.setCellSize          ( '','12px',2,0,1,3 );
     this.grid.setCellSize          ( '','3px',3,0,1,3 );
 
     this.makeLogoPanel             ( 4,0,3 );
+    this.grid.addLabel             ( '&nbsp;',4,0,1,3 );
 
   } else  {
     this.grid.setCellSize          ( '45%','',0,0,1,1 );
