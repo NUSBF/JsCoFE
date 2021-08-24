@@ -68,11 +68,13 @@ function LoginPage ( sceneId )  {
                                     'null,10)">';
 
     this.grid.setLabel (
-      '<img src="' + image_path('tip') + '" style="width:24px;height:24px;vertical-align:bottom;"/>' +
+      '<img src="' + image_path('tip') +
+      '" style="width:24px;height:24px;vertical-align:bottom;"/>' +
       '<span><i style="font-style:Garamond;color:#666666;">' +
       __tips.tips[tipNo].summary.replace('<a>',tipLink) +
       '</i></span>',
       2,0,1,3 );
+    this.grid.setLabel ( ' ',3,0,1,3 );
     this.grid.setHorizontalAlignment ( 2,0,'center' );
     this.grid.setVerticalAlignment   ( 2,0,'top' );
     this.grid.setCellSize          ( '','12px',2,0,1,3 );
