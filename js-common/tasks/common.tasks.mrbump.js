@@ -86,7 +86,7 @@ function TaskMrBump()  {
                         type     : 'checkbox',
                         label    : 'Include structures from AFDB',
                         tooltip  : 'Check to include structures from AlphaFold-2 database',
-                        value    : false,
+                        value    : true,
                         position : [1,0,1,3]
                       },
                 RLEVEL_SEL : {
