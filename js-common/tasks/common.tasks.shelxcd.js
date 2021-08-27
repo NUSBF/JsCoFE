@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.05.20   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-CD Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -287,6 +287,11 @@ TaskShelxCD.prototype.constructor = TaskShelxCD;
 // export such that it could be used in both node and a browser
 
 TaskShelxCD.prototype.icon = function()  { return 'task_shelx_substr'; }
+
+TaskShelxCD.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'find heavy-atom substructure for use in Phaser-EP';
+}
 
 TaskShelxCD.prototype.requiredEnvironment = function() {
   return ['CCP4',['$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe']];

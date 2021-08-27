@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.21   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -143,13 +143,13 @@ if (!__template)  {
 
   TaskEditRevision.prototype.desc_title = function()  {
   // this appears under task title in the task list
-    return 'Replaces reflection data, sequences, model, phases or ligand descriptions';
+    return 'replace reflection data, sequences, atomic model, phases or ligand descriptions';
   }
 
-  TaskEditRevision.prototype.taskDescription = function()  {
-  // this appears under task title in the Task Dialog
-    return 'Replaces reflection data, sequences, model, phases or ligand descriptions';
-  }
+  // TaskEditRevision.prototype.taskDescription = function()  {
+  // // this appears under task title in the Task Dialog
+  //   return 'Replaces reflection data, sequences, model, phases or ligand descriptions';
+  // }
 
   TaskEditRevision.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 

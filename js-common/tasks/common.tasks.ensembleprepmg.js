@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Sequence Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2019-2021
  *
  *  =================================================================
  *
@@ -100,6 +100,11 @@ TaskEnsemblePrepMG.prototype.constructor = TaskEnsemblePrepMG;
 // ===========================================================================
 
 TaskEnsemblePrepMG.prototype.icon = function()  { return 'task_ensembleprepmg'; }
+
+TaskEnsemblePrepMG.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'use MrBump and CCP4mg for interactive preparation and trimming MR ensembles';
+}
 
 TaskEnsemblePrepMG.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 

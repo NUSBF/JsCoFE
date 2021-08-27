@@ -97,12 +97,12 @@ if (!__template)  {
       dsp.trow++;
     }
     if (this.meta)  {
-      if (('seqrem' in this) && this.seqrem)  {
-        dsp.makeRow ( 'Model(s) seq.Id(s) \%',this.meta.seqId_ens.join(', '),
-                      'Sequence Ids for models in model' );
-        dsp.trow++;
-      }
       if (this.nModels>1)  {
+        if (('seqrem' in this) && this.seqrem)  {
+          dsp.makeRow ( 'Model(s) seq.Id(s) \%',this.meta.seqId_ens.join(', '),
+                        'Sequence Ids for models in model' );
+          dsp.trow++;
+        }
         dsp.table.setHeaderText ( 'Alignment'        ,dsp.trow,0,2,1 );
         dsp.table.setHorizontalAlignment (            dsp.trow,0,'left' );
         dsp.table.setHeaderText ( 'Q-score'          ,dsp.trow,1, 1,1 );
@@ -116,6 +116,24 @@ if (!__template)  {
         dsp.table.setLabel ( this.meta.rmsd  ,dsp.trow,1, 1,1 );
         dsp.table.setLabel ( this.meta.nalign,dsp.trow,2, 1,1 );
         dsp.trow++;
+      } else if (this.meta.seqId)  {
+        dsp.table.setHeaderText ( 'Scores',dsp.trow,0,2,1 );
+        dsp.table.setHorizontalAlignment ( dsp.trow,0,'left' );
+        var col = 1;
+        if (this.meta.eLLG)  {
+          dsp.table.setHeaderText ( 'eLLG',dsp.trow,col, 1,1 );
+          dsp.table.setLabel ( this.meta.eLLG,dsp.trow+1,col-1, 1,1 );
+          col++;
+        }
+        dsp.table.setHeaderText ( 'Seq. Id',dsp.trow,col, 1,1 );
+        dsp.table.setLabel ( this.meta.seqId,dsp.trow+1,col-1, 1,1 );
+        col++;
+        if (this.meta.rmsd)  {
+          dsp.table.setHeaderText ( 'R.M.S.D.',dsp.trow,col, 1,1 );
+          dsp.table.setLabel ( this.meta.rmsd,dsp.trow+1,col-1, 1,1 );
+          col++;
+        }
+        dsp.trow += 2;
       }
     }
     return dsp.trow;

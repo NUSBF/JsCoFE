@@ -57,6 +57,11 @@ TaskShelxSubstr.prototype.constructor = TaskShelxSubstr;
 
 TaskShelxSubstr.prototype.icon = function()  { return 'task_shelx_substr'; }
 
+TaskShelxSubstr.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'find heavy-atom substructure for use in Phaser-EP';
+}
+
 TaskShelxSubstr.prototype.currentVersion = function()  {
   var version = 1;
   if (__template)

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.19   <--  Date of Last Modification.
+#    25.08.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -12,7 +12,7 @@
 #  Makes structural alignment of an ensemble with Gesamt, reports all
 #  Gesamt's scores etc. and puts export data widget
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -73,7 +73,7 @@ def run ( body, panelId, ensemble ):  # body is reference to the main Import cla
 
         body.file_stdout1.flush()
 
-        meta = {}
+        meta = { "eLLG" : "" }
         with open(gesamt_log()) as f:
             for line in f:
                 body.file_stdout1.write ( line )

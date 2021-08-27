@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.06.20   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-MR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -856,6 +856,12 @@ TaskPhaserMR.prototype.constructor = TaskPhaserMR;
 // export such that it could be used in both node and a browser
 
 TaskPhaserMR.prototype.icon = function()  { return 'task_phasermr'; }
+
+TaskPhaserMR.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'perform MR using defined ASU and prepared MR models and/or ensembles';
+}
+
 
 TaskPhaserMR.prototype.currentVersion = function()  {
   var version = 1;

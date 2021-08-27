@@ -155,7 +155,19 @@ class MrParse(basic.TaskDriver):
         return models
     """
 
-
+    def add_seqid_remark ( self,model ):
+        fpath = model.getXYZFilePath ( self.outputDir() )
+        file = open ( fpath,"r" )
+        fcnt = file.read()
+        file.close  ()
+        file = open ( fpath,"w" )
+        model.meta["seqId_ens"] = [model.meta["seqId"]]
+        file.write  ( "REMARK PHASER ENSEMBLE MODEL 1 ID " + model.meta["seqId"] + "\n" )
+        file.write  ( fcnt )
+        file.close  ()
+        model.seqrem  = True
+        model.simtype = "cardon";
+        return
 
     # ------------------------------------------------------------------------
 
@@ -223,20 +235,123 @@ class MrParse(basic.TaskDriver):
 
             self.insertTab ( "mrparse_log","MrParse Log",
                              os.path.join("..",mrparse_dir,"mrparse.log"),False )
+            self.insertTab ( "phaser_log","Phaser Log",
+                             os.path.join("..",mrparse_dir,"phaser1.log"),False )
 
             self.flush()
 
-            mrparse_pdbdir = os.path.join ( mrparse_dir,"pdb_files" )
-            pdbmodel_xyz  = []
-            if os.path.isdir(mrparse_pdbdir):
-                pdbmodel_xyz = [fn for fn in os.listdir(mrparse_pdbdir)
-                                   if any(fn.endswith(ext) for ext in [".pdb"])]
+            homs  = {}
+            key   = 0
+            eLLg0 = -10000.0
+            ens0  = None
+            with open(os.path.join(mrparse_dir,"phaser1.log"),"r") as f:
+                for line in f:
+                    if key==1:
+                        words = line.split()
+                        if len(words)==4:
+                            if words[-1] in homs:
+                                homs[words[-1]]["eLLG"] = words[0]
+                                homs[words[-1]]["rmsd"] = words[1]
+                                if float(words[0])>eLLg0:
+                                    eLLg0 = float(words[0])
+                                    ens0  = words[-1]
+                        else:
+                            key = 0
+                    elif line.startswith("ENSEMBLE "):
+                        words = line.split()
+                        homs[words[1]] = {
+                            "path" : line.split('\"')[1],
+                            "sid"  : words[-1]
+                        }
+                    elif "eLLG   RMSD frac-scat  Ensemble" in line:
+                        key = 1
+                    else:
+                        key = 0
 
-            if len(pdbmodel_xyz)>0:
-                self.generic_parser_summary["mrparse"] = {
-                  "summary_line" : str(len(pdbmodel_xyz)) + " MR model(s) prepared"
-                }
+            homologs = []
+            if ens0:
+                homologs = [homs[ens0]]
+                exclude  = [ens0]
+                while ens0:
+                    ens0  = None
+                    eLLg0 = -10000.0
+                    eLLG1 = float(homologs[-1]["eLLG"])
+                    for ens in homs:
+                        if ens not in exclude:
+                            eLLG = float(homs[ens]["eLLG"])
+                            if eLLg0<eLLG and eLLG<=eLLG1:
+                                eLLg0 = eLLG
+                                ens0  = ens
+                    if ens0:
+                        homologs.append ( homs[ens0] )
+                        exclude .append ( ens0 )
+
+            if len(homologs)>0:
+
+                nmodels = 0
+                for i in range(len(homologs)):
+                    fpath = os.path.join ( mrparse_dir,homologs[i]["path"] )
+                    model = self.registerModel ( seq,fpath,checkout=True )
+                    if model:
+                        if nmodels<1:
+                            self.putMessage ( "<i><b>Prepared models are associated " +\
+                                              "with sequence:&nbsp;" + seq.dname + "</b></i>" )
+                            self.putTitle ( "Prepared MR models" )
+                        else:
+                            self.putMessage ( "&nbsp;" )
+                        nmodels += 1
+                        self.putMessage ( "<h3>Model #" + str(nmodels) + ": " + model.dname + "</h3>" )
+                        model.addDataAssociation ( seq.dataId )
+                        model.meta  = {
+                            "rmsd"  : homologs[i]["rmsd"],
+                            "seqId" : str(100.0*float(homologs[i]["sid"])),
+                            "eLLG"  : homologs[i]["eLLG"]
+                        }
+                        model.seqId = model.meta["seqId"]
+                        model.rmsd  = model.meta["rmsd" ]
+                        self.add_seqid_remark ( model )
+                        self.putModelWidget ( self.getWidgetId("model_btn"),
+                                              "Coordinates",model )
+                        have_results = True
+                    else:
+                        self.putMessage ( "<h3>*** Failed to form Model object for " +\
+                                          homologs[i]["path"] + "</h3>" )
+
+
+                #     #ensNo += 1
+                #     ensOk  = True
+                #     self.putMessage ( "<h3>Model #" + str(len(models)+1) + ": " + model.dname + "</h3>" )
+                #     model.addDataAssociation ( seq.dataId )
+                #     model.meta  = { "rmsd" : "", "seqId" : sid }
+                #     model.seqId = model.meta["seqId"]
+                #     model.rmsd  = model.meta["rmsd" ]
+                #
+                #     if modSel!="S":
+                #         self.add_seqid_remark ( model,[sid] )
+                #
+                #     self.putModelWidget ( self.getWidgetId("model_btn"),
+                #                           "Coordinates",model )
+                #     models.append ( model )
+                #
+                # else:
+                #     if ensOk:
+                #         self.putMessage ( "&nbsp;" )
+                #     self.putMessage ( "<h3>*** Failed to form Model object for " +\
+                #                       xyz[i].dname + "</h3>" )
+                #     ensOk = False
+
+
+                if nmodels>0:
+                    self.generic_parser_summary["mrparse"] = {
+                      "summary_line" : str(nmodels) + " MR model(s) prepared"
+                    }
+                else:
+                    self.generic_parser_summary["mrparse"] = {
+                      "summary_line" : "MR model preparation failed"
+                    }
+
             else:
+                self.putTitle ( "No MR models were prepared" )
                 self.generic_parser_summary["mrparse"] = {
                   "summary_line" : " no suitable homologues found"
                 }

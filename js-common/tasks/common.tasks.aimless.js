@@ -34,7 +34,7 @@ function TaskAimless()  {
   this._type   = 'TaskAimless';
   this.name    = 'aimless';
   this.setOName ( 'aimless' );  // default output file name template
-  this.title   = 'Data Reduction with Aimless';
+  this.title   = 'Merging and Scaling with Aimless';
   //this.helpURL = './html/jscofe_task_aimless.html';
 
   this.input_dtypes = [{      // input data types

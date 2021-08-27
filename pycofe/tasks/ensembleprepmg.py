@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    24.11.20   <--  Date of Last Modification.
+#    25.08.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -18,10 +18,10 @@
 #    jobManager  is either SHELL or SGE
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
-#                       all successful imports
+#                       all successful import
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2021
 #
 # ============================================================================
 #
@@ -147,7 +147,7 @@ class EnsemblePrepMG(basic.TaskDriver):
                         if not analyse_ensemble.run(self,alignSecId,ensemble):
                             self.putMessage ( "<h3>Structural alignment failed, ensemble is not useable.</h3>" )
                     else:
-                        ensemble.meta = { "rmsd" : "", "seqId" : "" }
+                        ensemble.meta = { "rmsd" : "", "seqId" : "", "eLLG" : "" }
                         self.putMessage (
                             "<b>Generated single-model ensemble</b> (" +\
                             str(ensemble.xyzmeta["xyz"][0]["chains"][0]["size"]) +\

@@ -36,7 +36,7 @@ function TaskMrParse()  {
   this._type = 'TaskMrParse';
   this.name  = 'mrparse';
   this.setOName ( 'mrparse' );  // default output file name template
-  this.title = 'Find structural homologues with MrParse';
+  this.title = 'Find and prepare MR models with MrParse';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataSequence':['protein']}, // data type(s) and subtype(s)
@@ -109,13 +109,13 @@ TaskMrParse.prototype.icon = function()  { return 'task_mrparse'; }
 
 TaskMrParse.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return 'Find PDB and AFDB structures for further use as MR search models';
+  return 'finds relevant PDB/AFDB structures and prepares MR search models from them';
 }
 
-TaskMrParse.prototype.taskDescription = function()  {
-// return 'Task description in small font which will appear under the task title in Task Dialog';
-  return 'Found PDB and AFDB structures may be used for making MR search models';
-}
+// TaskMrParse.prototype.taskDescription = function()  {
+// // return 'Task description in small font which will appear under the task title in Task Dialog';
+//   return 'Found PDB and AFDB structures may be used for making MR search models';
+// }
 
 TaskMrParse.prototype.currentVersion = function()  {
   var version = 0;

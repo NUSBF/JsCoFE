@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.11.20   <--  Date of Last Modification.
+#    25.08.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -110,7 +110,7 @@ class Ensembler(basic.TaskDriver):
                                       seq.dname + "<br>&nbsp;" )
 
                     if not ensemble.meta:
-                        ensemble.meta = { "rmsd" : "", "seqId" : "" }
+                        ensemble.meta = { "rmsd" : "", "seqId" : "", "eLLG" : "" }
 
                     if align_meta["status"]=="ok":
                         ensemble.meta["seqId"] = align_meta["id_avg"]

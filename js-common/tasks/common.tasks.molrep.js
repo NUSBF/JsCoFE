@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.04.20   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Molrep Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -434,6 +434,11 @@ TaskMolrep.prototype.constructor = TaskMolrep;
 // export such that it could be used in both node and a browser
 
 TaskMolrep.prototype.icon = function()  { return 'task_molrep'; }
+
+TaskMolrep.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'perform MR using defined ASU and prepared MR models and/or ensembles';
+}
 
 TaskMolrep.prototype.currentVersion = function()  {
   var version = 0;

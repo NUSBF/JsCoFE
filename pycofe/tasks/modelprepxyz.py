@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    25.08.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -191,7 +191,9 @@ class ModelPrepXYZ(basic.TaskDriver):
         file.write  ( fcnt )
         file.close  ()
         model.seqrem  = True
-        model.simtype = "cardon";
+        model.simtype = "cardon"
+        if len(seqid_lst)==1:
+            model.meta["seqId"] = seqid_lst[0]
         return
 
 
@@ -280,7 +282,7 @@ class ModelPrepXYZ(basic.TaskDriver):
                     ensOk  = True
                     self.putMessage ( "<h3>Model #" + str(len(models)+1) + ": " + model.dname + "</h3>" )
                     model.addDataAssociation ( seq.dataId )
-                    model.meta  = { "rmsd" : "", "seqId" : sid }
+                    model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
                     model.seqId = model.meta["seqId"]
                     model.rmsd  = model.meta["rmsd" ]
 
