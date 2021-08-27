@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  GESAMT Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -183,6 +183,11 @@ TaskGesamt.prototype.constructor = TaskGesamt;
 // export such that it could be used in both node and a browser
 
 TaskGesamt.prototype.icon = function()  { return 'task_gesamt'; }
+
+TaskGesamt.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'automatic, pairwise/multiple, structure alignment/superposition and PDB searches';
+}
 
 TaskGesamt.prototype.currentVersion = function()  {
   var version = 0;

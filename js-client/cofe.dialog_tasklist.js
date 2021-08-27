@@ -62,6 +62,7 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   this.tabs_basic = null;
   this.tabs_full  = null;
   this.combobox   = null;
+  var help_link   = __user_guide_base_url + 'jscofe_tasklist.html';
   if (projectDesc.startmode==start_mode.migrate)  {
     this.makeLayout ( 30 );
     this.combobox = new Combobox();
@@ -79,8 +80,10 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
           .addItem  ( 'Autostart mode','basic',projectDesc.tasklistmode==tasklist_mode.basic )
           .addItem  ( 'Standard mode' ,'full',projectDesc.tasklistmode==tasklist_mode.full  )
           .setWidth ( '180px' );
-    } else
+    } else  {
       this.makeLayout ( 20 );
+      var help_link = __user_guide_base_url + 'jscofe_workflows.html';
+    }
   } else
     this.makeLayout ( 10 );
 
@@ -115,7 +118,7 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
       buttons   : [
         { text  : 'Help',
           click : function() {
-            new HelpBox ( '',__user_guide_base_url + 'jscofe_tasklist.html',null );
+            new HelpBox ( '',help_link,null );
           }
         },
         { text  : 'Cancel',

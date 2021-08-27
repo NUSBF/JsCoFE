@@ -859,7 +859,7 @@ TaskPhaserMR.prototype.icon = function()  { return 'task_phasermr'; }
 
 TaskPhaserMR.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return 'perform MR using defined ASU and prepared MR models and/or ensembles';
+  return 'perform MR using a defined ASU and prepared MR models and/or ensembles';
 }
 
 

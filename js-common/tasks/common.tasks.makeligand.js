@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.20   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MakeLigand Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -126,7 +126,7 @@ function TaskMakeLigand()  {
                       'will be merely copied from CCP4 Monomer Library.',
           value     : false,
           iwidth    : 200,
-          position  : [3,7,1,1],
+          position  : [3,5,1,1],
           showon    : {SOURCE_SEL:['M']}
         },
     INFO2_LBL : {
@@ -152,6 +152,11 @@ TaskMakeLigand.prototype.constructor = TaskMakeLigand;
 // export such that it could be used in both node and a browser
 
 TaskMakeLigand.prototype.icon = function()  { return 'task_makeligand'; }
+
+TaskMakeLigand.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'generate crystallographic restraints for fitting ligand in the density and refinement';
+}
 
 TaskMakeLigand.prototype.currentVersion = function()  {
   var version = 1;

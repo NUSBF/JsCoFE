@@ -78,12 +78,12 @@ TaskMigrate.prototype.icon = function()  { return 'task_migrate'; }
 
 TaskMigrate.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return 'import phased structure (have reflection data, phases and/or coordinates)';
+  return 'import phased structure (HKL, phases and/or XYZ) as Structure Revision';
 }
 
 TaskMigrate.prototype.taskDescription = function()  {
 // this appears under task title in the Task Dialog
-  return 'Import phased structure';
+  return 'Import phased structure as Structure Revision';
 }
 
 // task.platforms() identifies suitable platforms:

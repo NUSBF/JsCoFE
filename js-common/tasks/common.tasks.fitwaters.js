@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.20   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Find Ligand Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -151,6 +151,11 @@ TaskFitWaters.prototype.constructor = TaskFitWaters;
 // export such that it could be used in both node and a browser
 
 TaskFitWaters.prototype.icon = function()  { return 'task_fitwaters'; }
+
+TaskFitWaters.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'auto-fits water molecules in density (does not launch Coot graphics)';
+}
 
 TaskFitWaters.prototype.currentVersion = function()  {
   var version = 0;
