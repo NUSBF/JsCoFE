@@ -288,7 +288,7 @@ TaskPhaserEP.prototype.icon = function()  { return 'task_phaserep'; }
 
 TaskPhaserEP.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return 'perform EP using defined ASU and heavy-atom substructure';
+  return 'perform EP using a defined ASU and heavy-atom substructure';
 }
 
 TaskPhaserEP.prototype.currentVersion = function()  {

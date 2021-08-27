@@ -189,6 +189,11 @@ TaskLsqKab.prototype.constructor = TaskLsqKab;
 
 TaskLsqKab.prototype.icon = function()  { return 'task_lsqkab'; }
 
+TaskLsqKab.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'structure superposition with manual specification of matching atoms';
+}
+
 TaskLsqKab.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)

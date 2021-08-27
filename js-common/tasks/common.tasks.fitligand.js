@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.10.20   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Find Ligand Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -156,6 +156,11 @@ TaskFitLigand.prototype.constructor = TaskFitLigand;
 // export such that it could be used in both node and a browser
 
 TaskFitLigand.prototype.icon = function()  { return 'task_fitligand'; }
+
+TaskFitLigand.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'auto-fits ligand in density (does not launch Coot graphics)';
+}
 
 TaskFitLigand.prototype.currentVersion = function()  {
   var version = 0;
