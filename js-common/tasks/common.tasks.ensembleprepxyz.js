@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.02.21   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -237,6 +237,11 @@ TaskEnsemblePrepXYZ.prototype.constructor = TaskEnsemblePrepXYZ;
 // ===========================================================================
 
 TaskEnsemblePrepXYZ.prototype.icon = function()  { return 'task_ensembleprepxyz'; }
+
+TaskEnsemblePrepXYZ.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'make MR ensembles from atomic coordinates and sequence';
+}
 
 TaskEnsemblePrepXYZ.prototype.currentVersion = function()  {
   var version = 0;

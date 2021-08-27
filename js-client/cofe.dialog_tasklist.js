@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.08.21   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -569,7 +569,7 @@ var row      = 0;
 
     this.makeSection ( 'Tasks in Development',[
       new TaskDocDev       (),
-      new TaskMrParse      (),
+      // new TaskMrParse      (),
       // ccp4go2_task,
       new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
@@ -655,6 +655,7 @@ var row      = 0;
 
   this.makeSection ( 'Molecular Replacement',[
     'MR model preparation',
+    new TaskMrParse        (),
     new TaskModelPrepXYZ   (),
     new TaskModelPrepAlgn  (),
     new TaskEnsembler      (),

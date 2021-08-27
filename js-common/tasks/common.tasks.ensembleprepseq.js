@@ -99,6 +99,11 @@ TaskEnsemblePrepSeq.prototype.constructor = TaskEnsemblePrepSeq;
 
 TaskEnsemblePrepSeq.prototype.icon = function()  { return 'task_ensembleprepseq'; }
 
+TaskEnsemblePrepSeq.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'finds relevant PDB/AFDB structures and makes MR ensembles from them';
+}
+
 TaskEnsemblePrepSeq.prototype.currentVersion = function()  {
   var version = 1;
   if (__template)

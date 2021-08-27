@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.08.21   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -215,13 +215,13 @@ if (!__template)  {
 
   TaskASUDef.prototype.desc_title = function()  {
   // this appears under task title in the task list
-    return 'sets anticipated number of chains in ASU and forms initial Structure Revision';
+    return 'specify the expected ASU composition and form the initial Structure Revision';
   }
 
-  TaskASUDef.prototype.taskDescription = function()  {
-  // this appears under task title in the Task Dialog
-    return 'Sets anticipated number of chains in ASU and forms initial Structure Revision';
-  }
+  // TaskASUDef.prototype.taskDescription = function()  {
+  // // this appears under task title in the Task Dialog
+  //   return 'Sets anticipated number of chains in ASU and forms initial Structure Revision';
+  // }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   function AsuDefHotButton()  {

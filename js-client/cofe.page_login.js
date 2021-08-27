@@ -48,7 +48,7 @@ function LoginPage ( sceneId )  {
   var panel = new Grid('');
   panel.setWidth ( '300pt' );
 
-  if (__tips && __tips.use_tips && (__tips.tips.length>0))  {
+  if (__tips && __tips.use_tips && (__tips.tips.length>0) && (!__mobile_device))  {
 
     this.grid.setCellSize          ( '45%','',0,0,1,1 );
     this.grid.setCellSize          ( '','15px',0,0,1,3 );
@@ -80,7 +80,7 @@ function LoginPage ( sceneId )  {
     this.grid.setCellSize          ( '','3px',3,0,1,3 );
 
     this.makeLogoPanel             ( 4,0,3 );
-    this.grid.addLabel             ( '&nbsp;',4,0,1,3 );
+    // this.grid.addLabel             ( '&nbsp;',4,0,1,3 );
 
   } else  {
     this.grid.setCellSize          ( '45%','',0,0,1,1 );

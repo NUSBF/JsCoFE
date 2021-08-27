@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Models Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2021
  *
  *  =================================================================
  *
@@ -94,6 +94,11 @@ TaskEnsembler.prototype.constructor = TaskEnsembler;
 // ===========================================================================
 
 TaskEnsembler.prototype.icon = function()  { return 'task_ensembler'; }
+
+TaskEnsembler.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'make MR ensembles from MR search models';
+}
 
 TaskEnsembler.prototype.currentVersion = function()  {
   var version = 0;

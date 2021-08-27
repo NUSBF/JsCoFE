@@ -330,7 +330,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                             self.putSection ( self.gesamt_report(),"Structural alignment" )
                             analyse_ensemble.run ( self,self.gesamt_report(),ensemble )
                         else:
-                            ensemble.meta = { "rmsd" : "", "seqId" : "" }
+                            ensemble.meta = { "rmsd" : "", "seqId" : "", "eLLG" : "" }
                             self.putMessage (
                                 "<h3>Generated single-model ensemble (" +\
                                 str(ensemble.xyzmeta["xyz"][0]["chains"][0]["size"]) +\

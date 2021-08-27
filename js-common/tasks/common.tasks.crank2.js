@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.03.21   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -949,6 +949,11 @@ TaskCrank2.prototype.constructor = TaskCrank2;
 // ===========================================================================
 
 TaskCrank2.prototype.icon = function()  { return 'task_crank2'; }
+
+TaskCrank2.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'finds heavy-atom substructure, performs EP and builds atomic model';
+}
 
 TaskCrank2.prototype.currentVersion = function()  {
   var version = 1;

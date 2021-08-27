@@ -1958,9 +1958,15 @@ class TaskDriver(object):
 
     def putModelWidget1 ( self,pageId,widgetId,title_str,model,openState,row,colSpan ):
 
-        msg = "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + model.dname
-        if model.seqId:
-            msg += "<br><b>Estimated seqId :</b>&nbsp;&nbsp;&nbsp;" + str(model.seqId)
+        msg = "<b>Assigned name&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + model.dname
+        if model.meta:
+            msg += "<br><b>Estimated</b> "
+            if "eLLG" in model.meta and model.meta["eLLG"]:
+                msg += "<b>eLLG :</b> " + str(model.meta["eLLG"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
+            if model.meta["seqId"]:
+                msg += "<b>seqId :</b> " + str(model.meta["seqId"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
+            if model.meta["rmsd"]:
+                msg += "<b>RMSD :</b> " + str(model.meta["rmsd"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
 
         self.putMessage1 ( pageId,msg + "&nbsp;",row )
 

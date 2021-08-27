@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    27.08.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -65,6 +65,11 @@ TaskChangeSpGASU.prototype.constructor = TaskChangeSpGASU;
 // export such that it could be used in both node and a browser
 
 TaskChangeSpGASU.prototype.icon = function()  { return 'task_changespgasu'; }
+
+TaskChangeSpGASU.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'reindex reflection dataset in Structure Revision';
+}
 
 TaskChangeSpGASU.prototype.currentVersion = function()  {
   var version = 0;

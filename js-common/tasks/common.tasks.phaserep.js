@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.06.20   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-EP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -34,7 +34,7 @@ function TaskPhaserEP()  {
   this._type   = 'TaskPhaserEP';
   this.name    = 'phaser EP';
   this.setOName ( 'phaser-ep' );  // default output file name template
-  this.title   = 'Experimental Phasing with Phaser';
+  this.title   = 'Experimental Phasing with Phaser-EP';
   this.helpURL = './html/jscofe_task_phaserep.html';
 
   this.input_dtypes = [{  // input data types
@@ -285,6 +285,11 @@ TaskPhaserEP.prototype.constructor = TaskPhaserEP;
 // export such that it could be used in both node and a browser
 
 TaskPhaserEP.prototype.icon = function()  { return 'task_phaserep'; }
+
+TaskPhaserEP.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'perform EP using defined ASU and heavy-atom substructure';
+}
 
 TaskPhaserEP.prototype.currentVersion = function()  {
   var version = 0;

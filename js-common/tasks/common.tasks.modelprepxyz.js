@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.05.20   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -177,6 +177,12 @@ TaskModelPrepXYZ.prototype.constructor = TaskModelPrepXYZ;
 TaskModelPrepXYZ.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskModelPrepXYZ.prototype.icon = function()  { return 'task_modelprepxyz'; }
+
+TaskModelPrepXYZ.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'prepare MR search model(s) from atomic coordinates and sequence';
+}
+
 
 TaskModelPrepXYZ.prototype.currentVersion = function()  {
   var version = 0;

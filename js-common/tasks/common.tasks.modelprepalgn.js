@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    27.08.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Alignment Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2021
  *
  *  =================================================================
  *
@@ -65,6 +65,11 @@ TaskModelPrepAlgn.prototype.constructor = TaskModelPrepAlgn;
 //TaskModelPrepAlgn.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskModelPrepAlgn.prototype.icon = function()  { return 'task_modelprepalgn'; }
+
+TaskModelPrepAlgn.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'prepare MR search models from HHPRED alignments';
+}
 
 TaskModelPrepAlgn.prototype.currentVersion = function()  {
   var version = 0;
