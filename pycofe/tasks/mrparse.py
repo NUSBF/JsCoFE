@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    20.08.21   <--  Date of Last Modification.
+#    27.08.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -29,6 +29,7 @@
 #  python native imports
 import os
 import sys
+import json
 
 #  application imports
 from . import basic
@@ -47,113 +48,6 @@ class MrParse(basic.TaskDriver):
 
     #  redefine name of input script file
     # def file_stdin_path(self):  return "mrparse.script"
-
-    """
-    def make_models ( self,seq,xyz_paths ):
-
-        fpath_seq = seq.getSeqFilePath ( self.inputDir() )
-        # ensNo     = 0
-        ensOk     = False
-        models    = []
-
-        for i in range(len(xyz_paths)):
-
-            chainSel = xyz[i].chainSel
-            if not chainSel:
-                chains = xyz[i].xyzmeta.xyz[0].chains
-                for j in range(len(chains)):
-                    if len(chains[j].seq)>0:
-                        chainSel = chains[j].id
-                        xyz[i].chainSel = chainSel
-                        break
-
-            if chainSel.startswith("/"):
-                chainSel = chainSel[1:].replace("/","_")  # split("/")[-1]
-            fpath_in = self.fetch_chain ( xyz[i].chainSel, # this is correct
-                                          xyz[i].getXYZFilePath(self.inputDir()) )
-
-            if hasattr(xyz[i],"fpath_algn"):
-                fpath_algn = xyz[i].fpath_algn
-                sid        = str(xyz[i].seqid_algn)
-            else:
-                fpath_algn = "__align_" + str(i) + ".fasta"
-                rc         = seqal.run ( self,[seq,xyz[i]],fpath_algn )
-                self.stdoutln ( str(rc) )
-                if rc["code"]==0:
-                    sid = str(round(100.0*rc["stat"]["seq_id"],1))
-                else:
-                    sid = "0"
-
-            fpath_out = xyz[i].getXYZFileName()
-            if xyz[i].chainSel!="(all)":  # this is correct
-                fname, fext = os.path.splitext(fpath_out)
-                if not fname.endswith("_"+chainSel):
-                    fpath_out   = fname + "_" + chainSel + fext
-            #elif modSel=="S":
-            #    fpath_tmp = "__input_sculptor_clipped.pdb"
-            #    self.prepare_clip ( fpath_in,fpath_tmp )
-            #    fpath_in  = fpath_tmp
-
-            if modSel=="U":
-                shutil.copyfile ( fpath_in,fpath_out )
-            else:
-                fname, fext = os.path.splitext(fpath_out)
-                if modSel=="D":
-                    fpath_out = fname + ".clip" + fext
-                    self.prepare_clip ( fpath_in,fpath_out )
-                elif modSel=="M":
-                    fpath_out = fname + ".mrep" + fext
-                    self.prepare_molrep ( fpath_in,fpath_seq,fpath_out )
-                elif modSel=="S":
-                    fpath_out = fname + ".sclp" + fext
-                    self.prepare_sculptor ( sclpSel,fpath_in,fpath_algn,fpath_out )
-                elif modSel=="C":
-                    fpath_out = fname + ".chnw" + fext
-                    self.prepare_chainsaw ( csMode,fpath_in,fpath_algn,fpath_out )
-                elif modSel=="P":
-                    fpath_out = fname + ".pala" + fext
-                    self.prepare_polyalanine ( fpath_in,fpath_out )
-
-            if os.stat(fpath_out).st_size<100:
-                if ensOk:
-                    self.putMessage ( "&nbsp;" )
-                self.putMessage ( "<h3>*** Failed to prepare model for " +\
-                                  xyz[i].dname + " (empty output)</h3>" )
-                ensOk = False
-            else:
-                model = self.registerModel ( seq,fpath_out,checkout=True )
-                if model:
-                    #if ensNo<1:
-                    if len(models)<1:
-                        self.putMessage ( "<i><b>Prepared models are associated " +\
-                                          "with sequence:&nbsp;" + seq.dname + "</b></i>" )
-                        self.putTitle ( "Results" )
-                    else:
-                        self.putMessage ( "&nbsp;" )
-                    #ensNo += 1
-                    ensOk  = True
-                    self.putMessage ( "<h3>Model #" + str(len(models)+1) + ": " + model.dname + "</h3>" )
-                    model.addDataAssociation ( seq.dataId )
-                    model.meta  = { "rmsd" : "", "seqId" : sid }
-                    model.seqId = model.meta["seqId"]
-                    model.rmsd  = model.meta["rmsd" ]
-
-                    if modSel!="S":
-                        self.add_seqid_remark ( model,[sid] )
-
-                    self.putModelWidget ( self.getWidgetId("model_btn"),
-                                          "Coordinates",model )
-                    models.append ( model )
-
-                else:
-                    if ensOk:
-                        self.putMessage ( "&nbsp;" )
-                    self.putMessage ( "<h3>*** Failed to form Model object for " +\
-                                      xyz[i].dname + "</h3>" )
-                    ensOk = False
-
-        return models
-    """
 
     def add_seqid_remark ( self,model ):
         fpath = model.getXYZFilePath ( self.outputDir() )
@@ -240,6 +134,86 @@ class MrParse(basic.TaskDriver):
 
             self.flush()
 
+            try:
+                with open(os.path.join(mrparse_dir,"homologs.json"),"r") as json_file:
+                    homologs = json.load ( json_file )
+            except:
+                homologs = []
+
+            if len(homologs)>0:
+
+                nmodels = 0
+                for i in range(len(homologs)):
+                    fpath = os.path.join ( mrparse_dir,homologs[i]["pdb_file"] )
+                    model = self.registerModel ( seq,fpath,checkout=True )
+                    if model:
+                        if nmodels<1:
+                            self.putMessage ( "<i><b>Prepared models are associated " +\
+                                              "with sequence:&nbsp;" + seq.dname + "</b></i>" )
+                            self.putTitle ( "Prepared MR models" )
+                        else:
+                            self.putMessage ( "&nbsp;" )
+                        nmodels += 1
+                        self.putMessage ( "<h3>Model #" + str(nmodels) + ": " + model.dname + "</h3>" )
+                        model.addDataAssociation ( seq.dataId )
+                        model.meta  = {
+                            "rmsd"  : homologs[i]["rmsd"],
+                            "seqId" : str(100.0*float(homologs[i]["seq_ident"])),
+                            "eLLG"  : homologs[i]["ellg"]
+                        }
+                        model.seqId = model.meta["seqId"]
+                        model.rmsd  = model.meta["rmsd" ]
+                        self.add_seqid_remark ( model )
+                        self.putModelWidget ( self.getWidgetId("model_btn"),
+                                              "Coordinates",model )
+                        have_results = True
+                    else:
+                        self.putMessage ( "<h3>*** Failed to form Model object for " +\
+                                          homologs[i]["path"] + "</h3>" )
+
+
+                #     #ensNo += 1
+                #     ensOk  = True
+                #     self.putMessage ( "<h3>Model #" + str(len(models)+1) + ": " + model.dname + "</h3>" )
+                #     model.addDataAssociation ( seq.dataId )
+                #     model.meta  = { "rmsd" : "", "seqId" : sid }
+                #     model.seqId = model.meta["seqId"]
+                #     model.rmsd  = model.meta["rmsd" ]
+                #
+                #     if modSel!="S":
+                #         self.add_seqid_remark ( model,[sid] )
+                #
+                #     self.putModelWidget ( self.getWidgetId("model_btn"),
+                #                           "Coordinates",model )
+                #     models.append ( model )
+                #
+                # else:
+                #     if ensOk:
+                #         self.putMessage ( "&nbsp;" )
+                #     self.putMessage ( "<h3>*** Failed to form Model object for " +\
+                #                       xyz[i].dname + "</h3>" )
+                #     ensOk = False
+
+
+                if nmodels>0:
+                    self.generic_parser_summary["mrparse"] = {
+                      "summary_line" : str(nmodels) + " MR model(s) prepared"
+                    }
+                else:
+                    self.generic_parser_summary["mrparse"] = {
+                      "summary_line" : "MR model preparation failed"
+                    }
+
+            else:
+                self.putTitle ( "No MR models were prepared" )
+                self.generic_parser_summary["mrparse"] = {
+                  "summary_line" : " no suitable homologues found"
+                }
+
+
+
+
+            """
             homs  = {}
             key   = 0
             eLLg0 = -10000.0
@@ -317,30 +291,6 @@ class MrParse(basic.TaskDriver):
                         self.putMessage ( "<h3>*** Failed to form Model object for " +\
                                           homologs[i]["path"] + "</h3>" )
 
-
-                #     #ensNo += 1
-                #     ensOk  = True
-                #     self.putMessage ( "<h3>Model #" + str(len(models)+1) + ": " + model.dname + "</h3>" )
-                #     model.addDataAssociation ( seq.dataId )
-                #     model.meta  = { "rmsd" : "", "seqId" : sid }
-                #     model.seqId = model.meta["seqId"]
-                #     model.rmsd  = model.meta["rmsd" ]
-                #
-                #     if modSel!="S":
-                #         self.add_seqid_remark ( model,[sid] )
-                #
-                #     self.putModelWidget ( self.getWidgetId("model_btn"),
-                #                           "Coordinates",model )
-                #     models.append ( model )
-                #
-                # else:
-                #     if ensOk:
-                #         self.putMessage ( "&nbsp;" )
-                #     self.putMessage ( "<h3>*** Failed to form Model object for " +\
-                #                       xyz[i].dname + "</h3>" )
-                #     ensOk = False
-
-
                 if nmodels>0:
                     self.generic_parser_summary["mrparse"] = {
                       "summary_line" : str(nmodels) + " MR model(s) prepared"
@@ -355,7 +305,7 @@ class MrParse(basic.TaskDriver):
                 self.generic_parser_summary["mrparse"] = {
                   "summary_line" : " no suitable homologues found"
                 }
-
+            """
 
         # close execution logs and quit
         self.success ( have_results )
