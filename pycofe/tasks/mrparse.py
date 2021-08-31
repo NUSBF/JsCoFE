@@ -147,32 +147,33 @@ class MrParse(basic.TaskDriver):
 
                 nmodels = 0
                 for i in range(len(homologs)):
-                    fpath = os.path.join ( mrparse_dir,homologs[i]["pdb_file"] )
-                    model = self.registerModel ( seq,fpath,checkout=True )
-                    if model:
-                        if nmodels<1:
-                            self.putMessage ( "<i><b>Prepared models are associated " +\
-                                              "with sequence:&nbsp;" + seq.dname + "</b></i>" )
-                            self.putTitle ( "Prepared MR models" )
+                    if homologs[i]["pdb_file"]:
+                        fpath = os.path.join ( mrparse_dir,homologs[i]["pdb_file"] )
+                        model = self.registerModel ( seq,fpath,checkout=True )
+                        if model:
+                            if nmodels<1:
+                                self.putMessage ( "<i><b>Prepared models are associated " +\
+                                                  "with sequence:&nbsp;" + seq.dname + "</b></i>" )
+                                self.putTitle ( "Prepared MR models" )
+                            else:
+                                self.putMessage ( "&nbsp;" )
+                            nmodels += 1
+                            self.putMessage ( "<h3>Model #" + str(nmodels) + ": " + model.dname + "</h3>" )
+                            model.addDataAssociation ( seq.dataId )
+                            model.meta  = {
+                                "rmsd"  : homologs[i]["rmsd"],
+                                "seqId" : str(100.0*float(homologs[i]["seq_ident"])),
+                                "eLLG"  : homologs[i]["ellg"]
+                            }
+                            model.seqId = model.meta["seqId"]
+                            model.rmsd  = model.meta["rmsd" ]
+                            self.add_seqid_remark ( model )
+                            self.putModelWidget ( self.getWidgetId("model_btn"),
+                                                  "Coordinates",model )
+                            have_results = True
                         else:
-                            self.putMessage ( "&nbsp;" )
-                        nmodels += 1
-                        self.putMessage ( "<h3>Model #" + str(nmodels) + ": " + model.dname + "</h3>" )
-                        model.addDataAssociation ( seq.dataId )
-                        model.meta  = {
-                            "rmsd"  : homologs[i]["rmsd"],
-                            "seqId" : str(100.0*float(homologs[i]["seq_ident"])),
-                            "eLLG"  : homologs[i]["ellg"]
-                        }
-                        model.seqId = model.meta["seqId"]
-                        model.rmsd  = model.meta["rmsd" ]
-                        self.add_seqid_remark ( model )
-                        self.putModelWidget ( self.getWidgetId("model_btn"),
-                                              "Coordinates",model )
-                        have_results = True
-                    else:
-                        self.putMessage ( "<h3>*** Failed to form Model object for " +\
-                                          homologs[i]["path"] + "</h3>" )
+                            self.putMessage ( "<h3>*** Failed to form Model object for " +\
+                                              homologs[i]["path"] + "</h3>" )
 
 
                 #     #ensNo += 1
