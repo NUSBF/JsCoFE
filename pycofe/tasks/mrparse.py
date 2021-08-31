@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    27.08.21   <--  Date of Last Modification.
+#    31.08.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,6 +30,7 @@
 import os
 import sys
 import json
+import shutil
 
 #  application imports
 from . import basic
@@ -94,7 +95,9 @@ class MrParse(basic.TaskDriver):
 
         # make command-line parameters for mrparse
 
-        cmd = [ "--seqin",seq.getSeqFilePath(self.inputDir()) ]
+        tmp_seq = "__sequence.fasta"  #  for mrparse likes .fasta
+        shutil.copy2 ( seq.getSeqFilePath(self.inputDir()),tmp_seq )
+        cmd = [ "--seqin",tmp_seq ]
         if hkl:
             cmd += [ "--hklin",reflections_mtz ]
         cmd += [ "--do_classify" ]

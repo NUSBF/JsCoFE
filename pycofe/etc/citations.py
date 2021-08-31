@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.06.21   <--  Date of Last Modification.
+#    31.08.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -71,6 +71,7 @@ citations = {
     'f2mtz'           : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'auto_tracing'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'diff_fourier'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
+    'mrparse'         : { 'name' : '', 'category' : 'primary', 'refs' : [] },
 
     'pointless' : { 'name'     : 'Pointless',
                     'category' : 'primary',
