@@ -1964,9 +1964,9 @@ class TaskDriver(object):
             if "eLLG" in model.meta and model.meta["eLLG"]:
                 msg += "<b>eLLG :</b> " + str(model.meta["eLLG"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
             if model.meta["seqId"]:
-                msg += "<b>seqId :</b> " + str(model.meta["seqId"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
+                msg += "<b>seqId :</b> " + str(model.meta["seqId"]) + "%&nbsp;&nbsp;&nbsp;&nbsp;"
             if model.meta["rmsd"]:
-                msg += "<b>RMSD :</b> " + str(model.meta["rmsd"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
+                msg += "<b>RMSD :</b> " + str(model.meta["rmsd"]) + "&Aring;"
 
         self.putMessage1 ( pageId,msg + "&nbsp;",row )
 
