@@ -276,21 +276,24 @@ function processServerQueue()  {
             '(complete refresh).<p>' +
             'Make sure that your Internet connection is stable.',
             'Reload current page',function(){
-              if (__current_page)  {
-                __server_queue = [];
-                makePage (
-                  eval (
-                    'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
-                  )
-                );
-                makeSessionCheck ( __current_page.sceneId );
-              } else  {  // should never come to here
-                window.location = window.location;  // complete refresh
-                // less safe version:
-                // __server_queue.shift();
-                // __process_network_indicators();
-                // processServerQueue();
-              }
+              window.setTimeout ( function(){
+                if (__current_page)  {
+                  __server_queue = [];
+                  __process_network_indicators();
+                  makePage (
+                    eval (
+                      'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
+                    )
+                  );
+                  makeSessionCheck ( __current_page.sceneId );
+                } else  {  // should never come to here
+                  window.location = window.location;  // complete refresh
+                  // less safe version:
+                  // __server_queue.shift();
+                  // __process_network_indicators();
+                  // processServerQueue();
+                }
+              },100);
             },
             'Start new working session',function(){
               window.location = window.location;  // complete refresh
