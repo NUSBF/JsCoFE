@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.08.21   <--  Date of Last Modification.
+ *    01.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -269,19 +269,31 @@ function processServerQueue()  {
         __holdup_dlg = new QuestionBox ( 'Communication hold-up',
             '<div style="width:450px"><h3>Communication hold-up</h3>' +
             'Communication with ' + appName() + ' is severely delayed. ' +
-            'Please be patient, the problem may resolve in few seconds, ' +
+            'Please be patient, the problem may resolve in few moments, ' +
             'after which this dialog will disappear automatically.<p>' +
             'If communication does not resume after a long time, you can ' +
-            'either skip current operation or reload the page and ' +
-            're-login.<p>' +
+            'either reload current page or start new working session ' +
+            '(complete refresh).<p>' +
             'Make sure that your Internet connection is stable.',
-            'Skip current operation',function(){
-              __server_queue.shift();
-              __process_network_indicators();
-              processServerQueue();
+            'Reload current page',function(){
+              if (__current_page)  {
+                // __server_queue = [];
+                makePage (
+                  eval (
+                    'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
+                  )
+                );
+                // makeSessionCheck ( __current_page.sceneId );
+              } else  {  // should never come to here
+                window.location = window.location;  // complete refresh
+                // less safe version:
+                // __server_queue.shift();
+                // __process_network_indicators();
+                // processServerQueue();
+              }
             },
-            'Reload page and re-login',function(){
-              window.location = window.location;
+            'Start new working session',function(){
+              window.location = window.location;  // complete refresh
             }
         );
       },__holdup_wait);
