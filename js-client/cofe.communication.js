@@ -266,6 +266,7 @@ function processServerQueue()  {
         __delays_ind.show();
       },__delays_wait);
       __holdup_timer = window.setTimeout ( function(){
+        __holdup_timer = null;
         __holdup_dlg = new QuestionBox ( 'Communication hold-up',
             '<div style="width:450px"><h3>Communication hold-up</h3>' +
             'Communication with ' + appName() + ' is severely delayed. ' +
@@ -276,6 +277,7 @@ function processServerQueue()  {
             '(complete refresh).<p>' +
             'Make sure that your Internet connection is stable.',
             'Reload current page',function(){
+              __holdup_dlg   = null;
               window.setTimeout ( function(){
                 if (__current_page)  {
                   __server_queue = [];
@@ -293,7 +295,7 @@ function processServerQueue()  {
                   // __process_network_indicators();
                   // processServerQueue();
                 }
-              },100);
+              },10);
             },
             'Start new working session',function(){
               window.location = window.location;  // complete refresh
