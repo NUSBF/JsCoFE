@@ -101,6 +101,8 @@ class MrParse(basic.TaskDriver):
         if hkl:
             cmd += [ "--hklin",reflections_mtz ]
         cmd += [ "--do_classify" ]
+        if "PDB_DIR" in os.environ:
+            cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
 
         # run mrparse
         if sys.platform.startswith("win"):
