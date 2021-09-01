@@ -277,13 +277,13 @@ function processServerQueue()  {
             'Make sure that your Internet connection is stable.',
             'Reload current page',function(){
               if (__current_page)  {
-                // __server_queue = [];
+                __server_queue = [];
                 makePage (
                   eval (
                     'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
                   )
                 );
-                // makeSessionCheck ( __current_page.sceneId );
+                makeSessionCheck ( __current_page.sceneId );
               } else  {  // should never come to here
                 window.location = window.location;  // complete refresh
                 // less safe version:
