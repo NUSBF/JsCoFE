@@ -72,6 +72,9 @@ MenuItem.prototype.constructor = MenuItem;
 // -------------------------------------------------------------------------
 // Menu closure functions
 
+// Close the dropdown if the user clicks outside of it
+var __onclick_ignore_counter = -1;
+
 function __close_all_menus()  {
   var dropdowns = document.getElementsByClassName("menu-dropdown-content");
   for (var i=0;i<dropdowns.length;i++) {
@@ -80,22 +83,29 @@ function __close_all_menus()  {
       openDropdown.classList.remove('menu-show');
     }
   }
+  __onclick_ignore_counter = -1;  // lock auto-calls
 }
 
-// Close the dropdown if the user clicks outside of it
-var __onclick_ignore_counter = -1;
 // document.onclick = function(event)  {
 //   if (__onclick_ignore_counter>0)  __onclick_ignore_counter--;
 //                              else  __close_all_menus();
 //   return true;
 // }
 
+// document.onclick = function(event)  {
+//   if (__onclick_ignore_counter>0)
+//     __onclick_ignore_counter--;
+//   else if (__onclick_ignore_counter==0)  {
+//     __close_all_menus();
+//     __onclick_ignore_counter = -1;
+//   }
+//   return true;
+// }
+
 document.onclick = function(event)  {
-  if (__onclick_ignore_counter>0)
-    __onclick_ignore_counter--;
-  else if (__onclick_ignore_counter==0)  {
-    __close_all_menus();
-    __onclick_ignore_counter = -1;
+  if (__onclick_ignore_counter>=0)  {
+    if (__onclick_ignore_counter==0)  __close_all_menus();
+                                else  __onclick_ignore_counter--;
   }
   return true;
 }
