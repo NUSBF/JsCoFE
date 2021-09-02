@@ -477,6 +477,10 @@ function ProjectListPage ( sceneId )  {
       openProject();
     });
 
+    // self.tablesort_tbl.addSignalHandler ( 'row_click',function(trow){
+    //   __close_all_menus();
+    // });
+
   }
 
   function loadProjectList()  {

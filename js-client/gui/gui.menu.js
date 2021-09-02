@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.07.19   <--  Date of Last Modification.
+ *    02.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Menu and dropdwon comboboxes
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -89,6 +89,7 @@ document.onclick = function(event)  {
                              else  __close_all_menus();
   return true;
 }
+
 
 // -------------------------------------------------------------------------
 // Menu class
@@ -197,7 +198,7 @@ function ContextMenu ( widget )  {
     widget.addOnRightClickListener ( function(){
       __close_all_menus();
       if (!menu.disabled)  {
-        __onclick_ignore_counter++;
+        // __onclick_ignore_counter++;
         menu.dropdown.element.classList.toggle ( 'menu-show' );
       }
     });
