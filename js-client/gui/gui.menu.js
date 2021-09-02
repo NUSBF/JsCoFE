@@ -83,10 +83,20 @@ function __close_all_menus()  {
 }
 
 // Close the dropdown if the user clicks outside of it
-var __onclick_ignore_counter = 0;
+var __onclick_ignore_counter = -1;
+// document.onclick = function(event)  {
+//   if (__onclick_ignore_counter>0)  __onclick_ignore_counter--;
+//                              else  __close_all_menus();
+//   return true;
+// }
+
 document.onclick = function(event)  {
-  if (__onclick_ignore_counter>0)  __onclick_ignore_counter--;
-                             else  __close_all_menus();
+  if (__onclick_ignore_counter>0)
+    __onclick_ignore_counter--;
+  else if (__onclick_ignore_counter==0)  {
+    __close_all_menus();
+    __onclick_ignore_counter = -1;
+  }
   return true;
 }
 
@@ -116,7 +126,9 @@ function Menu ( text,icon_uri )  {
       //menu.addOnClickListener ( function(){
         __close_all_menus();
         if (!menu.disabled)  {
-          __onclick_ignore_counter++;
+          if (__onclick_ignore_counter<0)
+                __onclick_ignore_counter = 1;
+          else  __onclick_ignore_counter++;
           menu.dropdown.toggleClass ( 'menu-show' );
         }
       });
@@ -199,6 +211,8 @@ function ContextMenu ( widget )  {
       __close_all_menus();
       if (!menu.disabled)  {
         // __onclick_ignore_counter++;
+        if (__onclick_ignore_counter<0)
+          __onclick_ignore_counter = 0;
         menu.dropdown.element.classList.toggle ( 'menu-show' );
       }
     });

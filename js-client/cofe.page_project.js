@@ -703,6 +703,8 @@ ProjectPage.prototype.onTreeContextMenu = function() {
   var items = {};
   var node  = this.jobTree.getSelectedNode();
 
+  __close_all_menus();
+
   (function(self){
 
     if (!$(self.add_btn.element).button('option','disabled'))  {
