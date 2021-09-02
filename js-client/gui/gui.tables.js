@@ -412,6 +412,7 @@ var tr = new TableRow();
   (function(table,trow)  {
     trow.addOnClickListener ( function(){
       table.selectRow ( trow );
+      table.emitSignal ( 'row_click',trow );
     });
     trow.addOnDblClickListener ( function(){
       table.emitSignal ( 'row_dblclick',trow );

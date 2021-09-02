@@ -273,8 +273,8 @@ function processServerQueue()  {
             'Please be patient, the problem may resolve in few moments, ' +
             'after which this dialog will disappear automatically.<p>' +
             'If communication does not resume after a long time, you can ' +
-            'either reload current page or start new working session ' +
-            '(complete refresh).<p>' +
+            'either reload the current page or start new working session ' +
+            '(complete refresh) using buttons below.<p>' +
             'Make sure that your Internet connection is stable.',
             'Reload current page',function(){
               __holdup_dlg   = null;
