@@ -170,9 +170,8 @@ class Simbad(asudef.ASUDef):
                     "which is not installed.",
                     "No SIMBAD database" )
                 return
-
-            sec2 = self.task.parameters.sec2.contains
-            cmd += [ "-rot_program",self.getParameter(sec2.RFPROGRAM_SEL) ]
+            # sec2 = self.task.parameters.sec2.contains
+            # cmd += [ "-rot_program",self.getParameter(sec2.RFPROGRAM_SEL) ]
 
         if len(qtype)>0:
             cmd += qtype

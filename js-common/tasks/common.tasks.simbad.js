@@ -235,31 +235,31 @@ function TaskSimbad()  {
                                  }
                     }
               }
-            },
-
-    sec2 : {  type     : 'section',
-              title    : 'Advanced parameters',
-              open     : false,  // true for the section to be initially open
-              position : [3,0,1,5],
-              showon   : { SEARCH_SEL : ['S','LCS'] },
-              contains : {
-                RFPROGRAM_SEL : {
-                      type      : 'combobox',  // the real keyword for job input stream
-                      keyword   : 'rfprogram',
-                      label     : 'Perform RF calculations with',
-                      tooltip   : 'Program to use for Rotation Function calculations. ' +
-                                  'AMoRE is faster and may be preferential for searching ' +
-                                  'structure database. Phaser may find more hits in ' +
-                                  'border cases.',
-                      //iwidth   : 220,      // width of input field in px
-                      range     : ['amore|AMoRE',
-                                   'phaser|Phaser'
-                                  ],
-                      value     : 'amore',
-                      position  : [0,0,1,1]
-                    }
-              }
             }
+
+    // sec2 : {  type     : 'section',
+    //           title    : 'Advanced parameters',
+    //           open     : false,  // true for the section to be initially open
+    //           position : [3,0,1,5],
+    //           showon   : { SEARCH_SEL : ['S','LCS'] },
+    //           contains : {
+    //             RFPROGRAM_SEL : {
+    //                   type      : 'combobox',  // the real keyword for job input stream
+    //                   keyword   : 'rfprogram',
+    //                   label     : 'Perform RF calculations with',
+    //                   tooltip   : 'Program to use for Rotation Function calculations. ' +
+    //                               'AMoRE is faster and may be preferential for searching ' +
+    //                               'structure database. Phaser may find more hits in ' +
+    //                               'border cases.',
+    //                   //iwidth   : 220,      // width of input field in px
+    //                   range     : ['amore|AMoRE',
+    //                                'phaser|Phaser'
+    //                               ],
+    //                   value     : 'amore',
+    //                   position  : [0,0,1,1]
+    //                 }
+    //           }
+    //         }
 
   };
 
