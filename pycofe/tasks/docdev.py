@@ -111,13 +111,15 @@ class DocDev(basic.TaskDriver):
         if not rc.msg:
 
             gtag = [
+                "",
                 "<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM\"></script>",
                 "<script>",
                 "  window.dataLayer = window.dataLayer || [];",
                 "  function gtag(){dataLayer.push(arguments);}",
                 "  gtag('js', new Date());",
                 "  gtag('config', 'G-FCVD2T7BGM');",
-                "</script>"
+                "</script>",
+                ""
             ]
 
             docdir  = "html-" + doctype
