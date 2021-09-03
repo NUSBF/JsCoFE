@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    17.07.21   <--  Date of Last Modification.
+#    03.09.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -162,6 +162,18 @@ class Simbad(asudef.ASUDef):
                     "-rvapi_document"     ,self.reportDocumentName()
                   ]
 
+        if level in ["S","LCS"]:
+            morda_path = os.path.join ( os.environ["CCP4"],"share","simbad","static","morda" )
+            if not os.path.exists(morda_path):
+                self.fail ( "<h3>No SIMBAD database.</h3>" +\
+                    "Structural searches with SIMBAD require SIMBAD database, " +\
+                    "which is not installed.",
+                    "No SIMBAD database" )
+                return
+
+            sec2 = self.task.parameters.sec2.contains
+            cmd += [ "-rot_program",self.getParameter(sec2.RFPROGRAM_SEL) ]
+
         if len(qtype)>0:
             cmd += qtype
 
@@ -171,8 +183,9 @@ class Simbad(asudef.ASUDef):
         if level in ['L','LC']:
             cmd += [ "-max_penalty_score"  ,maxpenalty,
                      "-max_lattice_results",maxnlatt ]
-            if "PDB_DIR" in os.environ:
-                cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
+
+        if "PDB_DIR" in os.environ:
+            cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
 
         if len(sgall) > 0:
             cmd += ["-sga", sgall]

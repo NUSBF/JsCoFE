@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    31.08.21   <--  Date of Last Modification.
+#    03.09.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -991,6 +991,16 @@ citations = {
                             'pages'   : '126-136',
                             'doi'     : '10.1107/S0021889801017824'
                   }]
+                },
+
+    'molprobity.molprobity'  : { 'name'     : 'MolProbity',
+                  'category' : 'primary',
+                  'copy'     : [['molprobity',-1]]  # -1 means copy all
+                },
+
+    'molprobity.clashscore'  : { 'name'     : 'MolProbity',
+                  'category' : 'primary',
+                  'copy'     : [['molprobity',-1]]  # -1 means copy all
                 },
 
     'lsqkab'  : { 'name'     : 'LSQKAB',
