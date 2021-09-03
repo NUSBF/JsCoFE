@@ -2,4 +2,80 @@
 Automated Model Building with Arp/wArp
 ======================================
 
-to be written...
+A software suite `ARP/wARP <https://www.embl-hamburg.de/ARP/>`_ is building macromolecular models in X-ray crystallography electron density maps. ARP/wARP approach, model building is facilitated by initially interpreting a density map with free atoms of unknown chemical identity; all structural information for such chemically unassigned atoms is discarded. 
+ 
+**ARP/wARP** tackles several tasks: 
+
+ * iterative protein model building including a high-level decision-making control module
+
+ * fast construction of the secondary structure of a protein
+
+ * building flexible loops in alternate conformations
+
+ * fully automated placement of ligands, including a choice of the best fitting ligand from a “cocktail”
+
+ * finding ordered water molecules
+
+**ARP/wARP** modules perform better at the higher crystallographic resolution, yet it allows the successful automated building of a considerable part of the model at a resolution of as low as `2.8 Å <https://pubmed.ncbi.nlm.nih.gov/16537422/>`_. However, the ligand and loop building modules are applicable in many projects where the automated model building does not succeed. Finally, the **secondary structure recognition module** extends the applicability of the procedure to data at only 4.5 Å resolution.
+
+------------------------
+Automated model building
+------------------------
+
+++++++++++++++++++++++++++++
+Free atoms and hybrid models
+++++++++++++++++++++++++++++
+
+The goal of model building is to condense the information of the electron density map to a crystallographic molecular model, made by atoms with known chemical identity. 
+
+As a first step towards building a model, ARP/wARP condenses the map information to a set of ‘free atoms’ that have no chemical identity ( *these atoms are carefully chosen to represent as good as possible the electron density* ) but still resemble in their distribution a protein-like model. 
+
+As model building and refinement proceed, some free atoms gain chemical identity (they are recognized as part of a protein chain) while others remain free. This mixture is an ARP/wARP hybrid model that combines two sources of information: 
+
+* it incorporates chemical knowledge from the partially built protein model, while its free atoms continue to interpret the electron density in areas where no model is yet available 
+
+* use of the atomic positions in the hybrid model as guides for model building in the electron density maps allows implementing computationally more efficient algorithms
+
+
+**Conditional Restraints**
+
+       *the use of conditional restraints does not have adverse effects on model completeness, and this result justifies their use as default in ARP/wARP*
+
+Free atoms serve two reasons in the ARP/wARP formulation: 
+
+* they are used to obtain better electron density maps through refinement
+
+* second, during model building they serve both as possible Cα guides for the protein backbone and as guides for the sequence assignment
+
+In the case of high-resolution data, both these procedures work very well, as atoms will be recognizable in density, and enough observations for refinement are available. As a result, most of the free atoms are approximately in the right place. At lower resolutions, it becomes difficult to distinguish individual atoms. Also, it becomes difficult to refine the free atoms or hybrid model structure with a limited number of experimental observations and without chemical restraints. Thus, the errors in the positions of the free atoms become larger, and the electron density maps of significantly lesser quality. A way to remedy this situation is by adding structural information either in the context of the free atoms model or the hybrid model.
+
+Conditional optimization provides one solution to this problem. In this approach, no final chemical assignments are ever made, but instead, all possible assignments are considered simultaneously `(Scheres and Gros, 2004) <https://pubmed.ncbi.nlm.nih.gov/15572773/>`_. 
+
+Read more about conditional restraints `here <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2670983/>`_
+
+**Model building with resolution extension**
+
+**Fake data** algorithm calculates the data from the limited resolution data set to the high resolution then combines the map from the calculated based on experimental data and calculated high-resolution data set and perform the model building based on that. The resalting model is refined against the experimental data again.
+
+**Building missing loops in a protein model** 
+
+**Loopy** will generate a set of candidate loops for a short stretch (up to 14 residues) of missing residues given the anchors and the sequence of the missing residues. Each candidate will have both main chain and side chain atoms.  The average root-mean-square deviation of the Cα atoms in the loops built during validation was less than 0.4 Å. When implemented in the context of automated model building in ARP/wARP, Loopy can increase the completeness of the built models.
+
+.. Note:
+
+    A protein model and an X-ray data to 3.0 Å resolution or higher are required.
+
+
+
+
+**References**
+
+`Perrakis, A., Morris, R., Lamzin, V.S. (1999) Automated protein model building combined with iterative structure refinement.. Nature Struct. Biol. 6: 458-463; doi:10.1038/8263 <https://pubmed.ncbi.nlm.nih.gov/10331874/>`_
+
+`Perrakis, A., Harkiolaki, M., Wilson, K.S., Lamzin, V.S. (2001) ARP/wARP and molecular replacement.. Acta Cryst. 57: 1445-1450; doi:10.1107/S0907444901014007 <https://pubmed.ncbi.nlm.nih.gov/11567158/>`_
+
+`Langer G., Cohen S.X., Lamzin V.S., Perrakis A. (2008) Automated macromolecular model building for x-ray crystallography using ARP/wARP version 7.. Nat. Protoc. 3: 1171-1179; doi:10.1038/nprot.2008.91 <https://pubmed.ncbi.nlm.nih.gov/18600222/>`_
+
+`Mooij, W. T., Cohen, S. X., Joosten, K., Murshudov, G. N., & Perrakis, A. (2009). "Conditional Restraints": Restraining the Free Atoms in ARP/wARP. Structure (London, England: 1993), 17(2), 183–189. <https://doi.org/10.1016/j.str.2008.12.011>`_
+
+`Joosten, Krista & Cohen, Serge & Emsley, Paul & Mooij, Wijnand & Lamzin, Victor & Perrakis, Anastassis. (2008). A knowledge-driven approach for crystallographic protein model completion. Acta crystallographica. Section D, Biological crystallography. 64. 416-24. 10.1107/S0907444908001558 <https://journals.iucr.org/d/issues/2008/04/00/gx5125/>`_

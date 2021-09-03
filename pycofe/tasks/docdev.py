@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.04.20   <--  Date of Last Modification.
+#    03.09.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021
 #
 # ============================================================================
 #
@@ -110,8 +110,19 @@ class DocDev(basic.TaskDriver):
 
         if not rc.msg:
 
+            gtag = [
+                "<script async src=\"https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM\"></script>",
+                "<script>",
+                "  window.dataLayer = window.dataLayer || [];",
+                "  function gtag(){dataLayer.push(arguments);}",
+                "  gtag('js', new Date());",
+                "  gtag('config', 'G-FCVD2T7BGM');",
+                "</script>"
+            ]
+
             docdir  = "html-" + doctype
             srcdir  = os.path.join ( srcpath,"_build","html" )
+
             deppath = None
             if restype=="compile":
                 self.putMessage ( "Documentation will be compiled only" )
@@ -121,6 +132,17 @@ class DocDev(basic.TaskDriver):
                 if os.path.exists(depdir):
                     shutil.rmtree ( depdir )
                 shutil.copytree ( srcdir,depdir )
+                self.stdoutln ( " \n" )
+                files = [f for f in os.listdir(depdir) if f.lower().endswith(".html")]
+                for f in files:
+                    fpath = os.path.join ( depdir,f )
+                    self.stdoutln ( " ... put GA tag in " + fpath )
+                    file  = open ( fpath,"r" )
+                    content = file.read()
+                    file.close()
+                    file  = open ( fpath,"w" )
+                    file.write ( content.replace("<head>","<head>\n" + "\n    ".join(gtag)) )
+                    file.close()
 
             shutil.move ( srcdir,os.path.join(self.reportDir(),docdir) )
             self.putTitle ( "Generated documents" )
