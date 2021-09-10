@@ -2,4 +2,122 @@
 Automatic Model Building with Buccaneer
 =======================================
 
-to be written.. 
+Buccaneer is used for automated model building or rebuilding a molecular replacement model in electron density map using a likelihood-based density target approach. It's advantageous at resolutions of worse than 2.5Å, nevertheless, it may be used at a higher resolution.
+
+Buccaneer performs model building in 10 stages:
+
+1. Find candidate C-alpha positions
+    *Candidate C-alpha positions are located by searching the electron density*
+
+2. Grow them into chain fragments
+    *The candidate C-alphas or input chains (*fixed model*) are grown by adding residues at either end, according to the density*
+
+3. Join and merge the fragments, resolving branches
+    *Overlapping fragments are joined to make longer chains. If this leads to a junction in a chain, the contested residue is removed*
+
+4. Link nearby N and C terminii (if possible)
+    *Nearby N and C termini are examined to see if they can be linked by a short loop*
+
+5. Sequence the chains (i.e. dock sequence)
+    *Likelihood comarison between the density of each residue in the work structure and the residues of the reference structure (*model to aid sequencing*) allows sequence to be assigned to longer fragments*
+
+6. Correct insertions/deletions
+    *Insertions and deletions in the model building are fixed by rebuilding, where possible*
+
+7. Filter based on poor density
+    *Residues in poor density are removed*
+
+8. NCS Rebuild to complete NCS copies of chains
+    *Any NCS relationships found in the model are used to augment the related chains*
+
+9. Prune any remaining clashing chains
+    *Clashing fragments are examined and the one with the worse density is removed*
+
+10. Rebuild side chains
+     *Rebuilding allows side chain atoms and carbonyl oxygens to be rebuilt*
+    
+The Buccaneer other be used for “Molecular Replacement” or “Experimental phasing” model building. 
+
+
+**Molecular replacement mode**
+
+
+In this mode, you will need to provide a molecular replacement model. There are three options for use model to place and name chains:
+
+* In **nothing else**  option the molecular replacement model will not be used for model building. 
+
+    This minimizes the possibility of bias, at the expense of slower building and often a less complete model. 
+ 
+* The **seed chain growing** option takes isolated residues from the molecular replacement model and uses them as starting points for growing a new model. 
+
+    This usually produces a fairly complete model without significant bias, and should be used for most cases.
+
+* The **provide an initial model** option uses most of the molecular replacement model as initial fragments for building. 
+
+    This may be useful when the initial map is too poor for reliable building, but the resulting model is more biased towards the molecular replacement model.
+
+You may also provide the **Fixed model** containing an initial model to extend.
+
+You may also choose the **Model to aid sequencing** containing a model with known residues to help with sequencing.
+
+
+``The following information are applicable for both “Molecular Replacement” and “Experimental phasing” Buccaneer`s modes``
+
+-------
+Options
+-------
+
+**Anisotropy correction** applies a correction to the data to remove directional dependence in diffraction quality. **This should use by default**
+
+**Build Selenomethionine (MSE istead of MET)** option should be chosen if selenomethionine is present.
+
+**Number of building/refinement cycles** may be set more than 5(default number) if a first attemt end up with an incomplete model. 
+
+.. Note::
+    The chance a benefit in using more than 20 cycles is really small
+
+**Use fastes methods** option shorten the job running time without loss in effectiveness. With low resolution data turning this off may lead to better results.
+
+--------------------------
+Model Building Parameteres
+--------------------------
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+Parameters for first and subsequent Buccaneer cycles
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+**Number of internal building cycles** By default, the Buccaneer performs 3 cycles for a "first Buccaneer cycle" and 2 cycles for a "subsequent Buccaneer cycle" of finding, growing and sequencing protein chains. It can be set up to 50 if after the defalt number of cycles are not enough to complete the final model.
+
+**Use the correlation target function** for growing new chains and for sequencing. In this function the likelihood target is used for identifying protein features.This is less effective for initial building, but better for model completion.
+
+**Assign sequence when found match is** **probable** used by default, sequences are docked if the match is reasonably good. This can be changed to **definite** if sequence very good matches, or to **possible** if sequence any plausible match.
+
+------------------
+General parameters
+------------------
+
+**Truncate data beyond resolution limit [Å]**. Use of high resolution data in Buccaneer makes the calculation slower and more memory-consuming, and does not contribute signficantly to the quality of the final model. Therefore, by default, data beyond 2.0Å is truncated, unless you change this value.
+
+**Residue name for unsequenced residues** you may set the name which will be given to newly built residues. The default is 'UNK', change this to 'ALA' if you need to use the model in a program which doesn't recognise 'UNK'
+
+------------------------
+Reference structure data
+------------------------
+
+It is important that the search target function should represent the features to be identified in the target electron density map as well as possible. As a result, the electron density target function is generated from scratch for every calculation. A known, reference structure, for which an atomic model is used.
+
+**Library reference structure to use** option allows you to change the buccaneer reference structure. 
+
+Futher refinement is performed by Refmac, read more about :doc:`Refmac Parameters <doc.task.Refmac>`
+
+Read more about Buccaneer `here <http://www.ysbl.york.ac.uk/~cowtan/buccaneer/buccaneer.html>`_
+
+**REFERENCES**
+
+`Cowtan, K. (2006) The Buccaneer software for automated model building. Acta Cryst. D62: 1002-1011 <https://journals.iucr.org/d/issues/2006/09/00/av5064/>`_
+
+`Cowtan K. (2010). Recent developments in classical density modification. Acta crystallographica. Section D, Biological crystallography, 66(Pt 4), 470–478 <https://doi.org/10.1107/S090744490903947X>`_
+
+`Cowtan, K. (2012) Completion of autobuilt protein models using a database of protein fragments. Acta Cryst. D68: 328-335 <https://journals.iucr.org/d/issues/2012/04/00/ba5169/index.html>`_
+
+
