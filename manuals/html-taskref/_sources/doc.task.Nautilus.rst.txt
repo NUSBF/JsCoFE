@@ -2,4 +2,50 @@
 Automatic Model Building of RNA/DNA with Nautilus
 =================================================
 
-to be written...
+The **nautilus** is a  tool for automated building of RNA/DNA from electron density. 
+
+The calculation consists of the following steps:
+
+* Locate likely phosphate and sugar features in the electron density
+
+* Grow the features into chains
+
+* Merge overlapping chains
+
+* Join chains whose 3' and 5' ends are in close proximity
+
+* Rebuild the chains using fragments from the Richardson's database of well determined nucleotide structures
+
+* Match the chains against the known sequence
+
+* Build the bases and other peripheral atoms
+
+The option **Current model should be fixed** may be chosen if you want an initial model to be extended (*chains containing at least one non-nucleotide will be left untouched*)
+
+**High resolution limit (Å)** Use of high resolution data in Buccaneer makes the calculation slower and more memory-consuming, and does not contribute signficantly to the quality of the final model. Therefore, by default, data beyond 2.0Å is truncated, unless you change this value.
+
+-------
+Options
+-------
+
+**Number of building/refinement cycles** may be set more than 3 (default number) if a first attemt end up with an incomplete model. 
+
+**Anisotropy correction** applies a correction to the data to remove directional dependence in diffraction quality. **This should use by default**
+
+.. Note::
+    The chance a benefit in using more than 20 cycles is really small
+
+**Use phases in refinement** explicit use of phases with `Hendrickson Lattman coefficients <https://scripts.iucr.org/cgi-bin/paper?a07353>`_
+
+**Refine against twinned data**  maximum likelihood refinement against twinned data performed by refmac
+
+**Automated weighting of restraints** Weights on restraints can be controlled, although  automatic weighting is safest
+
+**REFERENCES**
+
+`Cowtan, K. (2014) Automated nucleic acid chain tracing in real time. IUCrJ 1(Pt 6): 387-392; <https://journals.iucr.org/m/issues/2014/06/00/fc5003/index.html>`_
+
+`Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A. (2011) REFMAC5 for the refinement of macromolecular crystal structures. Acta Cryst. D67: 355-367; <http://scripts.iucr.org/cgi-bin/paper?S0907444911001314>`_
+
+
+`Hendrickson, W. A. & Lattman, E. E. (1970) Representation of phase probability distributions for simplified combination of independent phase information. Acta Cryst. B26, 136–143 <https://scripts.iucr.org/cgi-bin/paper?a07353>`_

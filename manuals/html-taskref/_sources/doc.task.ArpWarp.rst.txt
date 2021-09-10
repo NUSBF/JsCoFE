@@ -2,9 +2,9 @@
 Automated Model Building with Arp/wArp
 ======================================
 
-`ARP/wARP <https://www.embl-hamburg.de/ARP/>`_ is a software suite aimed to build macromolecular models in electron density maps. ARP/wARP approach, model building is facilitated by initially interpreting a density map with free atoms of unknown chemical identity; all structural information for such chemically unassigned atoms is discarded. 
+`ARP/wARP <https://www.embl-hamburg.de/ARP/>`_ is a software suite for building macromolecular models in electron density maps. As a distinguishing feature of ARP/wARP approach, model building starts from interpreting a density map with free atoms of unknown chemical identity; all structural information for such chemically unassigned atoms is discarded. 
  
-On CCP4 Cloud **ARP/wARP** tackles several tasks: 
+**ARP/wARP** implementation in CCP4 Cloud tackles several tasks: 
 
  * iterative protein model building including a high-level decision-making control module
 
@@ -13,12 +13,9 @@ On CCP4 Cloud **ARP/wARP** tackles several tasks:
  * building flexible loops in alternate conformations
 
 
-
-**ARP/wARP** modules perform better at the higher crystallographic resolution, yet it allows the successful automated building of a considerable part of the model at a resolution of as low as `2.8 Å <https://pubmed.ncbi.nlm.nih.gov/16537422/>`_. At a resolution around 2.6 Å are typically built to a completeness of 80%. At 3 Å resolution, the model completeness decreases to ∼75%, and for cases, with a resolution of 3.5 Å one may obtain a structure with only 65% model completeness.
+In general, **ARP/wARP** performs better at higher resolution; yet successful automated building of a considerable part of the model is possible at resolution as low as `2.8 Å <https://pubmed.ncbi.nlm.nih.gov/16537422/>`_. As a rough guideline, models are typically built to a completeness of ~80% at resolution around 2.6 Å and higher. At 3 Å resolution, the average model completeness decreases down to ∼75%, and down to 65% in the 3.5 Å resolution limit.
 
 However, the ligand and loop building modules are applicable in many projects where the automated model building does not succeed. Finally, the **secondary structure recognition module** extends the applicability of the procedure to low resolution data (4.5 Å).
-
-
 
 ------------------------
 Automated model building
@@ -28,33 +25,33 @@ Automated model building
 Free atoms and hybrid models
 ++++++++++++++++++++++++++++
 
-The goal of model building is to condense the information of the electron density map to a crystallographic molecular model, made by atoms with known chemical identity. 
+The ultimate goal of model building is to condense the information of the electron density map to a crystallographic molecular model, made by atoms with known chemical identity. 
 
-As a first step towards building a model, ARP/wARP condenses the map information to a set of ‘free atoms’ that have no chemical identity (*these atoms are carefully chosen to represent as good as possible the electron density*) but still resemble in their distribution a protein-like model. 
+As a first step towards building a model, ARP/wARP condenses the map information to a set of ‘free atoms’ that have no chemical identity (*these atoms are carefully chosen to represent the electron density in a best possible way*) but, in their distribution, keep resemblance to a protein-like shape. 
 
-As model building and refinement proceed, some free atoms gain chemical identity (*they are recognized as part of a protein chain*) while others remain free. This mixture is an ARP/wARP hybrid model that combines two sources of information: 
+As the model building and refinement proceed, some of the free atoms get recognised as part of a protein chain and gain chemical identity, while others remain 'free'. This mixture of assigned and uninterpreted atoms represents the ARP/wARP hybrid model, which benefits from: 
 
-* it incorporates chemical knowledge from the partially built protein model, while its free atoms continue to interpret the electron density in areas where no model is yet available 
+* incorporation of chemical knowledge from the partially built protein model, while 'free' atoms continue to represent electron density in areas where no model is yet available 
 
-* use of the atomic positions in the hybrid model as guides for model building in the electron density maps allows implementing computationally more efficient algorithms
+* use of 'free' atom positions as guides for model building in the electron density maps, which allows for the implementation of computationally efficient algorithms
 
 
 **Number of macrocycles**
 
-The default is 10 building cycles separated with 5 ARP/REFMAC cycles (thus making 50 cycles in total). In cases of good starting phases the autobuilding may converge faster; in cases of poorer phases more cycles may be required. 
+The default is 10 building cycles each including 5 ARP/REFMAC cycles (thus making 50 cycles in total). If initial phases are good, the autobuilding may converge faster; more cycles may be required in case of poor phases. 
 
 
 **Conditional Restraints**
 
-       *the use of conditional restraints does NOT have adverse effects on model completeness, and this result justifies their use as default in ARP/wARP*
+       * the use of conditional restraints does NOT have adverse effects on model completeness, and this result justifies their use as default in ARP/wARP*
 
-Free atoms serve two reasons in the ARP/wARP formulation: 
+'Free' atoms serve two main purposes: 
 
-* they are used to obtain better electron density maps through refinement
+* obtain better electron density maps through refinement
 
-* during model building they serve both as possible Cα guides for the protein backbone and as guides for the sequence assignment
+* during model building, provide Cα guides for the protein backbone tracing and sequence assignment
 
-In the case of high-resolution data, both these procedures work very well, as atoms will be recognizable in density, and enough observations for refinement are available. As a result, most of the free atoms are approximately in the right place. At lower resolutions, it becomes difficult to distinguish individual atoms. Also, it becomes difficult to refine the free atoms or hybrid model structure with a limited number of experimental observations and without chemical restraints. Thus, the errors in the positions of the free atoms become larger, and the electron density maps of significantly poorer quality. A way to remedy this situation is by adding structural information either in the context of the free atoms model or the hybrid model.
+Both above work very well in case of high-resolution data, when individual atoms are recognizable in electron density and a sufficient number of observations for refinement is available. In such a case, most of the 'free' atoms are found approximately in the right place. At lower resolutions, however, it becomes difficult to distinguish between individual atoms. Also, it becomes difficult to refine the partially built structure and remaining 'free' atoms with a limited number of experimental observations and no chemical restraints. As a result, the errors in the positions of the 'free' atoms become larger, and the quality of electron density maps significantly poorer. A way to remedy this situation is by adding structural information either in the context of the 'free' atoms model or the hybrid model.
 
 Conditional optimization provides one solution to this problem. In this approach, no final chemical assignments are ever made, but instead, all possible assignments are considered simultaneously `(Scheres and Gros, 2004) <https://pubmed.ncbi.nlm.nih.gov/15572773/>`_. 
 
@@ -62,50 +59,51 @@ Read more about conditional restraints `here <https://www.ncbi.nlm.nih.gov/pmc/a
 
 **Force conditional restraints for very large structures**
 
-This option will force the use of conditional restraints for very large structures, where ARP/wARP might otherwise choose to suppress them for CPU efficiency reasons. No need to use, unless you see a warning message that they were turned off, and want to give them a try at the expense of increased execution time. **The default is not to use**.
+This option will force using the conditional restraints for very large structures, where ARP/wARP might otherwise choose to suppress them for the CPU efficiency reasons. There is no need to use this option, unless you see a warning message that they were turned off, in which case you may want to give them a try at the expense of the increased execution time. **The default is not to use**.
 
 **Model building with resolution extension**
 
-**Fake data** algorithm calculates the data from the limited resolution data set to the high resolution. Then combines the map from the calculated based on experimental data and calculated high-resolution data set and perform the model building based on that. The resalting model is refined against the experimental data again.
+The **Fake data** algorithm extends experimental data to a higher resolution and uses a combination of electron density maps, calculated for the experimental and extended data sets, for model building. The resulting model is refined against the experimental data again.
 
 **Non-crystallographic symmetry (NCS)**
 
-NCS occurs if there are multiple copies of subunits or their assemblies in the asymmetric unit of a crystal and these copies adopt almost the same fold and tertiary structure. 
-The derived NCS relations are used to improve the model so that the built fragments can be extended and become more accurate. In essence, ARP/wARP exploits the fact that during automated model building NCS-related subunits are not built in exactly the same manner. During the process of model building each NCS-related copy of the structure thus contains information which may be lacking in another copy. Combining the information from several copies helps to increase the overall structural completeness. 
+NCS arises if there are multiple copies of subunits or their assemblies in the asymmetric unit of a crystal and these copies adopt almost the same fold (tertiary structure). In ARP/wARP, the derived NCS relations are used to improve the model so that the built fragments can be extended and become more accurate. In essence, ARP/wARP exploits the fact that during the automated model building, NCS-related subunits are not built in exactly the same manner. Because of that, each NCS-related copy of the structure contains information that may be lacking in another copy. Combining the information from several copies helps to increase the overall structural completeness and quality. 
 
-.. Note:
-    NCS-extended fragments are only used as potential Cα seeds (suggestions) to ARP/wARP for building longer chain fragments. Therefore, the method is not expected to build parts of the structure that lack support for coordinate placement in terms of electron density and plausible stereochemistry. Thus, if some parts of the NCS-related copies of the model are similar then their convergence to similar conformations will be accelerated by the method. If, in contrast, there are genuine differences between the NCS-related copies then the NCS-extended suggestions will not match the density and will likely not be used to build the chain.
+.. Note::
+    NCS-extended fragments are only used as potential Cα seeds (suggestions) to ARP/wARP for building longer chain fragments. Therefore, the method is not expected to build parts of the structure that lack support for coordinate placement in terms of electron density and plausible stereochemistry. Thus, if some parts of the NCS-related copies of the model are similar, then their convergence to similar conformations will be accelerated by the method. If, in contrast, there are genuine differences between the NCS-related copies, then the NCS-extended suggestions will not match the density and will likely not be used to build the chain.
 
-The accuracy of NCS extension depends predominantly on the completeness of the initial model, its degree of fragmentation and the coordinate accuracy (i.e. very good results will still be obtained for many residues missing from a nearly correct model). 
+The accuracy of NCS extension depends predominantly on the completeness of the initial model, its degree of fragmentation and the coordinate accuracy (*i.e.,* very good results may still be obtained for many residues missing from a nearly correct NCS copy). 
 
-The use of NCS extension in model building is always advantageous, but the degree of improvement depends even more strongly on the completeness, fragmentation and correctness of the model, which all depend on the quality of the phases and the data.
+The use of NCS extension in model building is always advantageous, but the degree of improvement depends strongly on the completeness, fragmentation and correctness of the model, which all depend on the phase quality and data properties.
 
 **Building missing loops in a protein model** 
 
-**Loopy** will generate a set of candidate loops for a short stretch (up to 14) of missing residues given the anchors and the sequence of the missing residues. Each candidate will have both main chain and side chain atoms.  The average root-mean-square deviation of the Cα atoms in the loops built during validation was less than 0.4 Å. When implemented in the context of automated model building in ARP/wARP, Loopy can increase the completeness of the built models.
+**Loopy** is a program that generates sets of candidate loops for short stretches (up to 14) of missing residues, given the anchors and the sequence of the missing residues. Each candidate loop includes both main chain and side chain atoms with the average root-mean-square deviation of Cα atoms across the set being less than 0.4 Å. When used in the context of automated model building in ARP/wARP, Loopy can increase the completeness of the built models.
 
-.. Note:
+.. Note::
     A protein model and an X-ray data to 3.0 Å resolution or higher are required.
 
 **Docking chains to sequence**
 
-For the sequence docking, a feature vector is used that represents the possible connectivity between the free atoms in the vicinity of each Cα atom. Each observed feature vector is compared to all twenty possible side chain connectivity vectors. This way each main chain fragment is represented as an array of probability vectors and slid across the given protein sequence. After the fragment with the best confidence score is docked, each of its residue is assigned to a specific side chain. This procedure is typically carried out during the last cycles of auto-building but is also available as a standalone application.
+Automated model building using ARP/wARP proceeds in an iterative manner when main-chain fragments are identified and built in a density map, followed by their docking to the known protein sequence. Docking chains to sequence is performed using machine-learning-based docking of main-chain fragments to the sequence and for their sequence-independent connection using a dedicated library of protein fragments. This step not only helps to increase the completeness of the model but, more importantly, can identify gaps between the chain fragments for subsequent completion using sequence information. These approaches provide excellent results at high and medium resolution when the experimental X-ray data provide a sufficiently high observation-to-parameter ratio. However, their performance is considerably reduced at lower resolution (usually worse than 2.5 Å).
 
-The default is to dock the fragments starting from building cycle 0. This may be changed, although may not be advantageous. 
+The new sequence-docking method implemented in `ARP/wARP 8.0 <http://www.embl-hamburg.de/ARP/>`_, is less sensitive to the accuracy of the model backbone, on comparison with the previously used method. It does not explicitly use the positions of 'free' atoms and thus yields more reliable residue type predictions for low-resolution density maps and in case of higher phase error.
+
+The default is to dock the fragments starting from building cycle 0. This may be changed, although may be not advantageous. 
 
 **Search for helices and strands before each building cycle**
 
-**This is the default for resolution of 2.7 Å or lower**. Enabling this option may also be advantageous for model building at higher resolution. Should the model from helix/strands tracing be more complete than the model from warpNtrace, the appropriate message will be printed at the end of the short Main log file.
+**This is the default for resolution of 2.7 Å or lower**. Enabling this option may also be advantageous for model building at higher resolutions. Should the model obtained from helix/strands tracing be more complete than the one from warpNtrace, the appropriate message will be printed at the end of the short Main log file.
 
 **Density modification prior autobuilding**
 
-This step provides improvement in density map by free-atoms update (no model building) and requires X-ray data to about 2.5 Å resolution or higher.
+This step improves the density map by optmising positions of 'free' atoms (without channging the current model) and requires X-ray data to about 2.5 Å resolution or higher.
 
 
 Refinement is performed by Refmac, read more about :doc:`Refmac Parameters <doc.task.Refmac>`
 
 
-**References**
+**REFERENCES**
 
 `Perrakis, A., Morris, R., Lamzin, V.S. (1999) Automated protein model building combined with iterative structure refinement.. Nature Struct. Biol. 6: 458-463; doi:10.1038/8263 <https://pubmed.ncbi.nlm.nih.gov/10331874/>`_
 
@@ -118,3 +116,5 @@ Refinement is performed by Refmac, read more about :doc:`Refmac Parameters <doc.
 `Joosten, Krista & Cohen, Serge & Emsley, Paul & Mooij, Wijnand & Lamzin, Victor & Perrakis, Anastassis. (2008). A knowledge-driven approach for crystallographic protein model completion. Acta crystallographica. Section D, Biological crystallography. 64. 416-24. 10.1107/S0907444908001558 <https://journals.iucr.org/d/issues/2008/04/00/gx5125/>`_
 
 `Wiegels T. & Lamzin, V.S. (2012) Use of noncrystallographic symmetry for automated model building at medium to low resolution. Acta Cryst. D 68, 446-453 <https://journals.iucr.org/d/issues/2012/04/00/ba5177/>`_
+
+`Chojnowski G, Lamzin VS. (2019) Sequence assignment for low-resolution modelling of protein crystal structures. Acta Crystallogr D Struct Biol. 75, 753-763 <http://scripts.iucr.org/cgi-bin/paper?S2059798319009392>`_

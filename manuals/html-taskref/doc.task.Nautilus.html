@@ -49,7 +49,35 @@
         
   <section id="automatic-model-building-of-rna-dna-with-nautilus">
 <h1><span class="section-number">10.7. </span>Automatic Model Building of RNA/DNA with Nautilus<a class="headerlink" href="#automatic-model-building-of-rna-dna-with-nautilus" title="Permalink to this headline">¶</a></h1>
-<p>to be written…</p>
+<p>The <strong>nautilus</strong> is a  tool for automated building of RNA/DNA from electron density.</p>
+<p>The calculation consists of the following steps:</p>
+<ul class="simple">
+<li><p>Locate likely phosphate and sugar features in the electron density</p></li>
+<li><p>Grow the features into chains</p></li>
+<li><p>Merge overlapping chains</p></li>
+<li><p>Join chains whose 3’ and 5’ ends are in close proximity</p></li>
+<li><p>Rebuild the chains using fragments from the Richardson’s database of well determined nucleotide structures</p></li>
+<li><p>Match the chains against the known sequence</p></li>
+<li><p>Build the bases and other peripheral atoms</p></li>
+</ul>
+<p>The option <strong>Current model should be fixed</strong> may be chosen if you want an initial model to be extended (<em>chains containing at least one non-nucleotide will be left untouched</em>)</p>
+<p><strong>High resolution limit (Å)</strong> Use of high resolution data in Buccaneer makes the calculation slower and more memory-consuming, and does not contribute signficantly to the quality of the final model. Therefore, by default, data beyond 2.0Å is truncated, unless you change this value.</p>
+<section id="options">
+<h2><span class="section-number">10.7.1. </span>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
+<p><strong>Number of building/refinement cycles</strong> may be set more than 3 (default number) if a first attemt end up with an incomplete model.</p>
+<p><strong>Anisotropy correction</strong> applies a correction to the data to remove directional dependence in diffraction quality. <strong>This should use by default</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The chance a benefit in using more than 20 cycles is really small</p>
+</div>
+<p><strong>Use phases in refinement</strong> explicit use of phases with <a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?a07353">Hendrickson Lattman coefficients</a></p>
+<p><strong>Refine against twinned data</strong>  maximum likelihood refinement against twinned data performed by refmac</p>
+<p><strong>Automated weighting of restraints</strong> Weights on restraints can be controlled, although  automatic weighting is safest</p>
+<p><strong>REFERENCES</strong></p>
+<p><a class="reference external" href="https://journals.iucr.org/m/issues/2014/06/00/fc5003/index.html">Cowtan, K. (2014) Automated nucleic acid chain tracing in real time. IUCrJ 1(Pt 6): 387-392;</a></p>
+<p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S0907444911001314">Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A. (2011) REFMAC5 for the refinement of macromolecular crystal structures. Acta Cryst. D67: 355-367;</a></p>
+<p><a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?a07353">Hendrickson, W. A. &amp; Lattman, E. E. (1970) Representation of phase probability distributions for simplified combination of independent phase information. Acta Cryst. B26, 136–143</a></p>
+</section>
 </section>
 
 
