@@ -658,7 +658,7 @@ var row      = 0;
 
   this.makeSection ( 'Molecular Replacement',[
     'MR model preparation',
-    new TaskMrParse        (),
+    // new TaskMrParse        (),
     new TaskModelPrepXYZ   (),
     new TaskModelPrepAlgn  (),
     new TaskEnsembler      (),
