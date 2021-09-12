@@ -1604,7 +1604,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key )  {
       projectDesc.dateCreated  = prj_meta.desc.dateCreated;
       projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
       if ('owner' in prj_meta.desc)  {
-        projectDesc.owner        = prj_meta.desc.owner;
+        projectDesc.owner = prj_meta.desc.owner;
         if (!prjDir)  {  // this means that the project is imported, not shared
           switch (chown_key)  {
             case 'user' : projectDesc.owner.author = loginData.login;  break;
