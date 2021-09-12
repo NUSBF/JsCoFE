@@ -269,10 +269,10 @@ class ArpWarp(basic.TaskDriver):
             arpwarp_params_dict[cmdopt[i]] = cmdopt[i+1]
 
         if self.getCheckbox(sec1.AWA_FREELOOPS_CBX):
-            cmdopt += ["freeloops"]
+            cmdopt += ["freeloops","1"]
 
         if self.getCheckbox(sec1.AWA_HOMOLOGY_CBX):
-            cmdopt += ["homology"]
+            cmdopt += ["homology","1"]
 
         self.setArpWarpLogParser ( self.getWidgetId(self.arpwarp_report()),
                                    arpwarp_params_dict,os.path.join(os.getcwd(),resfile) )
