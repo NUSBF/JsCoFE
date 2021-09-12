@@ -4,7 +4,7 @@
     "====================================================================================",
     "                    jsCoFE Configuration for desktop setup mode                     ",
     "====================================================================================",
-    "   31.10.2020 "
+    "   12.09.2021 "
   ],
 
   "Desktop"  : {
@@ -36,6 +36,7 @@
     "localSetup"       : false,
     "stoppable"        : false,
     "exclude_tasks"    : ["TaskAmple"],
+    "licensed_tasks"   : ["TaskArpWarp"],
     "fsmount"          : "/",
     "update_rcode"     : 212,
     "userDataPath"     : "./cofe-users",

@@ -68,15 +68,16 @@ function listWindowsDrives ( callback_func )  {
 // ServerConfig class template
 
 function ServerConfig ( type )  {
-  this.type          = type;
-  this.protocol      = 'http';
-  this.host          = 'localhost';
-  this.port          = 'port';
-  this.externalURL   = '';
-  this.exclude_tasks = [];   // tasks that should not run on given server
-  this.only_tasks    = [];   // tasks that server can only run
-  this.storage       = null;
-  this.update_rcode  = 0;    // can be be detected by launcher script to do the needful
+  this.type           = type;
+  this.protocol       = 'http';
+  this.host           = 'localhost';
+  this.port           = 'port';
+  this.externalURL    = '';
+  this.exclude_tasks  = [];   // tasks that should not run on given FE or NC server
+  this.licensed_tasks = [];   // tasks for which FE has 3rd party license ("TaskArpWarp")
+  this.only_tasks     = [];   // tasks that NC server can only run
+  this.storage        = null;
+  this.update_rcode   = 0;    // can be be detected by launcher script to do the needful
   if (type=='FEProxy')
         this.state = 'active';  // server state: 'active', 'inactive'
   else  this.state = 'active';  // server state: 'active', 'inactive'
@@ -386,6 +387,7 @@ function CCP4DirName()  {
     "exclusive"        : true,
     "stoppable"        : false,
     "exclude_tasks"    : [],
+    "licensed_tasks"   : [],   // ["TaskArpWarp"] if arpwarp installed on server
     "fsmount"          : "/",
     "localSetup"       : true,  // optional, overrides automatic definition
     "update_rcode"     : 212, // optional
