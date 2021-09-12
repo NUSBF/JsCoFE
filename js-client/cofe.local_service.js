@@ -27,7 +27,9 @@ var __client_version       = null;    // will be a version string if client is r
 var __local_user           = false;   // true if running as a desktop
 var __shared_fs            = false;   // shared file system setup when true
 var __regMode              = 'email'; // 'email' (by user) or 'admin' (by admin)
-var __exclude_tasks        = [];
+var __exclude_tasks        = [];      // task cannot be run if found in this list
+var __licensed_tasks       = [];      // tasks with nc_type 'client-license' can
+                                      // run remotely if found in this list
 var __setup_desc           = null;    // setup description
 var __check_session_period = 2000;    // in ms
 
@@ -94,6 +96,7 @@ function checkLocalService ( callback_func )  {
       if (response.status==fe_retcode.ok)  {
         var rData = response.data;
         __exclude_tasks   = rData.exclude_tasks;
+        __licensed_tasks  = rData.licensed_tasks;
         __cloud_storage   = rData.cloud_storage;
         __jobs_safe       = rData.jobs_safe;
         __demo_projects   = rData.demo_projects;

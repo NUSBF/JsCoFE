@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.12.20   <--  Date of Last Modification.
+ *    12.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ArpWarp Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -35,7 +35,8 @@ function TaskArpWarp()  {
   this.name    = 'arpwarp';
   this.setOName ( 'arpwarp' );  // default output file name template
   this.title   = 'Automated Model Building with Arp/wArp';
-  this.nc_type = 'client';    // job may be run only on client NC
+  if ((!__template) && (__licensed_tasks.indexOf(this._type)<0))
+    this.nc_type = 'client';  // job may be run only on client NC with licensed Afrp/wArp
 
   this.input_dtypes = [{      // input data types
       data_type   : {'DataRevision':['!protein','!seq','!phases']}, // data type(s) and subtype(s)
@@ -212,6 +213,24 @@ function TaskArpWarp()  {
                         translate : ['0','1'],  // for "false", "true"
                         position  : [11,0,1,7]
                       },
+                AWA_FREELOOPS_CBX : {
+                        type      : 'checkbox',
+                        keyword   : 'AWA_FREELOOPS',
+                        label     : 'Perform sequence-less loop building',
+                        tooltip   : 'Check to perform sequence-less loop building',
+                        value     : false,
+                        // translate : ['0','1'],  // for "false", "true"
+                        position  : [12,0,1,7]
+                      },
+                AWA_HOMOLOGY_CBX : {
+                        type      : 'checkbox',
+                        keyword   : 'AWA_HOMOLOGY',
+                        label     : 'Perform homology based loop building',
+                        tooltip   : 'Check to perform homology-based loop building',
+                        value     : false,
+                        // translate : ['0','1'],  // for "false", "true"
+                        position  : [13,0,1,7]
+                      },
                 AWA_MULTITRACE : {
                         type     : 'integer',
                         keyword  : 'AWA_MULTITRACE',
@@ -221,7 +240,7 @@ function TaskArpWarp()  {
                         value    : '5',
                         iwidth   : 60,
                         label2   : 'times',
-                        position : [12,0,1,1]
+                        position : [14,0,1,1]
                       },
                 AWA_ADDATOM_SIGMA : {
                         type     : 'real',
@@ -232,7 +251,7 @@ function TaskArpWarp()  {
                         value    : '3.2',
                         iwidth   : 60,
                         label2   : 'sigma',
-                        position : [13,0,1,1]
+                        position : [15,0,1,1]
                       },
                 AWA_REMATOM_SIGMA : {
                         type     : 'real',
@@ -243,7 +262,7 @@ function TaskArpWarp()  {
                         value    : '1.0',
                         iwidth   : 60,
                         label2   : 'sigma',
-                        position : [14,0,1,1]
+                        position : [16,0,1,1]
                       },
                 AWA_UP_UPDATE : {
                         type     : 'integer',
@@ -253,12 +272,12 @@ function TaskArpWarp()  {
                         range    : [1,10],
                         value    : '1',
                         iwidth   : 60,
-                        position : [15,0,1,1]
+                        position : [17,0,1,1]
                       },
                 AWA_UP_UPDATE_LBL : {
                         type     : 'label',
                         label    : 'times atoms than calculated automatically',
-                        position : [15,4,1,7]
+                        position : [17,4,1,7]
                       }
              }
            },
@@ -396,7 +415,7 @@ TaskArpWarp.prototype.constructor = TaskArpWarp;
 TaskArpWarp.prototype.icon = function()  { return 'task_arpwarp'; }
 
 TaskArpWarp.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -409,8 +428,11 @@ TaskArpWarp.prototype.currentVersion = function()  {
 //   'U'  : Unix ( = Linux + Mac)
 TaskArpWarp.prototype.platforms           = function() { return 'LMU'; }  // UNIX only
 TaskArpWarp.prototype.requiredEnvironment = function() { return ['CCP4','warpbin']; }
-TaskArpWarp.prototype.authorisationID     = function() { return 'arpwarp'; }
 
+TaskArpWarp.prototype.authorisationID = function() {
+  if (this.nc_type=='client')  return 'arpwarp';  // check Arp/wArp authorisation
+  return '';
+}
 
 if (!__template)  {
   //  for client side

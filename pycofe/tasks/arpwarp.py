@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.20   <--  Date of Last Modification.
+#    11.09.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,7 +23,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2021
 #
 # ============================================================================
 #
@@ -252,6 +252,12 @@ class ArpWarp(basic.TaskDriver):
         ]
 
         #self.write_stdin ( arpwarp_params )
+
+        if self.getCheckbox(sec1.AWA_FREELOOPS_CBX):
+            cmdopt += ["freeloops"]
+
+        if self.getCheckbox(sec1.AWA_HOMOLOGY_CBX):
+            cmdopt += ["homology"]
 
         if self.getParameter(sec2.AWA_WEIGHT_MATRIX_SEL)==1:
             #self.write_stdin ( ["weightv " + self.getParameter(sec2.AWA_WMAT)] )

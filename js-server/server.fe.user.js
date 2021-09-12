@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.07.21   <--  Date of Last Modification.
+ *    12.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1303,13 +1303,14 @@ var fe_server = conf.getFEConfig();
   if (fe_server)  {
 
     var rData = {};
-    rData.localuser     = null;
-    rData.logintoken    = null;
-    rData.helpTopics    = [];
-    rData.exclude_tasks = conf.getExcludedTasks();
-    rData.cloud_storage = false;
-    rData.demo_projects = fe_server.getDemoProjectsMount();
-    rData.auth_software = fe_server.auth_software;
+    rData.localuser      = null;
+    rData.logintoken     = null;
+    rData.helpTopics     = [];
+    rData.exclude_tasks  = conf.getExcludedTasks();
+    rData.licensed_tasks = fe_server.licensed_tasks;
+    rData.cloud_storage  = false;
+    rData.demo_projects  = fe_server.getDemoProjectsMount();
+    rData.auth_software  = fe_server.auth_software;
     if ('localuser' in fe_server)  {
       rData.localuser  = fe_server.localuser;
       rData.logintoken = __userLoginHash.getToken ( ud.__local_user_id );
