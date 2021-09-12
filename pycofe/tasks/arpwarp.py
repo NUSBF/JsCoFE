@@ -253,12 +253,6 @@ class ArpWarp(basic.TaskDriver):
 
         #self.write_stdin ( arpwarp_params )
 
-        if self.getCheckbox(sec1.AWA_FREELOOPS_CBX):
-            cmdopt += ["freeloops"]
-
-        if self.getCheckbox(sec1.AWA_HOMOLOGY_CBX):
-            cmdopt += ["homology"]
-
         if self.getParameter(sec2.AWA_WEIGHT_MATRIX_SEL)==1:
             #self.write_stdin ( ["weightv " + self.getParameter(sec2.AWA_WMAT)] )
             cmdopt += [ "weightv", self.getParameter(sec2.AWA_WMAT) ]
@@ -273,6 +267,12 @@ class ArpWarp(basic.TaskDriver):
         #    arpwarp_params_dict[key] = value
         for i in range(0,len(cmdopt),2):
             arpwarp_params_dict[cmdopt[i]] = cmdopt[i+1]
+
+        if self.getCheckbox(sec1.AWA_FREELOOPS_CBX):
+            cmdopt += ["freeloops"]
+
+        if self.getCheckbox(sec1.AWA_HOMOLOGY_CBX):
+            cmdopt += ["homology"]
 
         self.setArpWarpLogParser ( self.getWidgetId(self.arpwarp_report()),
                                    arpwarp_params_dict,os.path.join(os.getcwd(),resfile) )
