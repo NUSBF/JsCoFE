@@ -483,8 +483,8 @@ JobDialog.prototype.makeToolBar = function()  {
 
   this.toolBar.setCellSize ( '35%','',0,1 );
 
-  this.run_image  = this.toolBar.setImage  ( activityIcon(),'36px','36px',
-                                             0,this.col++, 1,1 );
+  this.run_image = this.toolBar.setImage  ( activityIcon(),'36px','36px',
+                                            0,this.col++, 1,1 );
   if (this.task.canEndGracefully())
     this.end_btn = this.toolBar.setButton ( 'End',image_path('endjob'),
                                            0,this.col++, 1,1 )
@@ -540,13 +540,16 @@ JobDialog.prototype.makeToolBar = function()  {
                         });
   }(this))
 
+  if (this.task.getHelpURL())
+    this.ref_btn = this.addToolBarButton  ( true,'reference','Task Documentation'   );
+
   this.toolBar.setLabel  ( '&nbsp;&nbsp;', 0,this.col, 1,1 ).setNoWrap();
   this.toolBar.setCellSize ( '45%','',0,this.col++ );
 
   this.newtab_btn = this.addToolBarButton  ( false,'new_tab' ,'Open in new tab or window' );
   this.export_btn = this.addToolBarButton  ( false,'export'  ,'Download job data' );
-  if (this.task.getHelpURL())
-    this.ref_btn  = this.addToolBarButton  ( true,'reference','Task Documentation'   );
+  // if (this.task.getHelpURL())
+  //   this.ref_btn  = this.addToolBarButton  ( true,'reference','Task Documentation'   );
   this.help_btn   = this.addToolBarButton  ( true,'help'     ,'Dialog Help'          );
   //this.close_btn  = this.addToolBarButton  ( true,'close'    ,'Close Job Dialog'     );
   this.close_btn  = this.toolBar.setButton ( 'Close',image_path('close'), 0,this.col, 1,1 )
