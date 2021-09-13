@@ -20,9 +20,9 @@ The calculation consists of the following steps:
 
 * Build the bases and other peripheral atoms
 
-The option **Current model should be fixed** may be chosen if you want an initial model to be extended (*chains containing at least one non-nucleotide will be left untouched*)
+The option **”Current model should be fixed”** may be chosen if you want an initial model to be extended (*chains containing at least one non-nucleotide will be left untouched*)
 
-**High resolution limit (Å)** Use of high resolution data in Buccaneer makes the calculation slower and more memory-consuming, and does not contribute signficantly to the quality of the final model. Therefore, by default, data beyond 2.0Å is truncated, unless you change this value.
+**High resolution limit (Å)** Use of high resolution data in Buccaneer makes the calculation slower and more memory-consuming, and does not contribute signficantly to the quality of the final model.
 
 -------
 Options
@@ -39,7 +39,7 @@ Options
 
 **Refine against twinned data**  maximum likelihood refinement against twinned data performed by refmac
 
-**Automated weighting of restraints** Weights on restraints can be controlled, although  automatic weighting is safest
+**Automated weighting of restraints** Weights on restraints can be controlled by the user, although  automatic weighting is safest
 
 **REFERENCES**
 

@@ -5,7 +5,7 @@ CCP4 Cloud Version Log
 
 **Version 1.6.023**
 
-    *Released on --.--.2021 with CCP4 7.1.016*
+    *Released on 13.09.2021 with CCP4 7.1.016*
 
     **Changes and new features**
 
@@ -56,6 +56,10 @@ CCP4 Cloud Version Log
     #. Project sharing/unsharing is now confirmed and notified by e-mail
 
     #. ``MrParse`` task added
+
+    #. Sequence-lee and homology-based loop building options added to the ``Arp/wArp`` task
+
+    #. Framework for exposing optional, 3rd-party licensed components to end users is added to CCP4 Cloud
 
 
 
