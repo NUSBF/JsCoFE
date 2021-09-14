@@ -126,7 +126,9 @@ function send ( to,subject,message )  {
     if (emailer_type=='nodemailer')  {
       send_nodemailer ( to,subject,message );
     } else if (emailer_type=='telnet')  {
-      send_telnet ( to,subject,message );
+      setTimeout ( function(){
+        send_telnet ( to,subject,message );
+      },200);
     } else if (emailer_type=='desktop')  {
       //log.standard ( 1,'send e-mail in desktop mode:\n' + message );
       return message;

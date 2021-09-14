@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.08.21   <--  Date of Last Modification.
+ *    14.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -260,9 +260,16 @@ JobTree.prototype.readProjectData = function ( page_title,
         tree.run_map  = {};  // map[taskId]==nodeId of all running tasks
         tree.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
 
+        var startmode = null;
+        if (tree.projectData)
+          startmode = tree.projectData.desc.startmode;
+
         tree.projectData = jQuery.extend ( true, new ProjectData(),data.meta );
         tree.projectData.desc.dateLastUsed = getDateString();
         tree.projectData.desc.autorun = false;
+
+        if (startmode)
+          tree.projectData.desc.startmode = startmode;
 
 //printProjectTree ( ' >>>getProjectData',tree.projectData );
 
