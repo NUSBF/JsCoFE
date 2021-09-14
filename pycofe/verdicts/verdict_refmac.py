@@ -371,12 +371,6 @@ def calculate ( meta ) :
     # Suggested parameters for the next REFMAC run (structure matches actual REFMAC interface parameters tree)
     # actual parameters sit in the 'contains' dictionary in the different sections
     suggestedParameters = {}
-    #     'sec1': {'contains': {} },
-    #     'sec2': {'contains': {} },
-    #     'sec3': {'contains': {} },
-    #     'sec4': {'contains': {} },
-    #     'sec5': {'contains': {} }
-    # }
 
     # Figuring out statistical values for evaluation of the current case
     resBin = assignResolutionBin ( res,statInResolutionBins )
@@ -517,16 +511,20 @@ def calculate ( meta ) :
         else:
             newVdwVal = '2.0'
         bottomline += "MolProbity clash score of %0.1f for the structure seems quite high " % clashScore +\
-                      "(median clash score for your resolution is %0.1f). "  % medianClash +\
-                      "We recommend to switch on option for " +\
-                      "generation of hydrogen atoms during refinement. Also, please increase " +\
+                      "(median clash score for your resolution is %0.1f). "  % medianClash
+        if not hydrogens:
+            bottomline += "We recommend to switch on option for " +\
+                      "generation of hydrogen atoms during refinement. "
+            suggestedParameters['MKHYDR'] = 'ALL'
+
+        bottomline += "Please increase " +\
                       "the weight for the VDW repulsion by setting up 2.0 or higher (we recommend %s) for the " % newVdwVal +\
                       "'VDW repulsion weight' parameter. Value for the " +\
                       "restraints weight is subject to optimisation.<p>"
         if float(newVdwVal) < 5.0:
             suggestVDW = True
             suggestedParameters['VDW_VAL'] = newVdwVal
-            suggestedParameters['MKHYDR' ] = 'ALL'
+
     elif clashScore > (medianClash + (medianClash * 0.25)):
         if vdw_val:
             oldVdwVal = float(vdw_val)
@@ -534,16 +532,18 @@ def calculate ( meta ) :
         else:
             newVdwVal = '2.0'
         bottomline += "MolProbity clash score of %0.1f for the structure seems a bit higher than optimal " % clashScore +\
-                      "(median clash score for your resolution is %0.1f). "  % medianClash +\
-                      "You can try to switch on option for " +\
-                      "generation of hydrogen atoms during refinement. Also, you can try to " +\
-                      "increase the weight for the VDW repulsion by setting up 2.0 or higher (we recommend %s) " % newVdwVal +\
+                      "(median clash score for your resolution is %0.1f). "  % medianClash
+        if not hydrogens:
+            bottomline += "We recommend to switch on option for " + \
+                          "generation of hydrogen atoms during refinement. "
+            suggestedParameters['MKHYDR'] = 'ALL'
+
+        bottomline += "Please increase the weight for the VDW repulsion by setting up 2.0 or higher (we recommend %s) " % newVdwVal +\
                       "for the 'VDW repulsion weight' parameter. Value for the " +\
                       "restraints weight is subject to optimisation.<p>"
         if float(newVdwVal) < 5.0:
             suggestVDW = True
             suggestedParameters['VDW_VAL'] = newVdwVal
-            suggestedParameters['MKHYDR' ] = 'ALL'
 
     # 6. Bond lengths (distances) deviation (regardless of resolution)
     if rmsBondDistance > 0.02:
@@ -761,10 +761,16 @@ def calculate ( meta ) :
                 else:
                     suggestedParameters['NCYC'] = str(suggestedNcyc + 3)
 
+    verdictInfo = {'score': verdict_score,
+                   'message': verdict_message,
+                   'bottomLine': bottomline,
+                   'meanRfree': meanRfree,
+                   'medianClash': medianClash,
+                   'ramaOutliers': ramaOutliers,
+                   'suggestedParameters': suggestedParameters
+    }
 
-#    suggestedJSON = json.dumps(suggestedParameters, indent = 4)
-#    bottomline += suggestedJSON
-    return (verdict_score,verdict_message,bottomline,meanRfree,medianClash,ramaOutliers,suggestedParameters)
+    return verdictInfo
 
 
 def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
@@ -781,12 +787,12 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
     if not verdict_meta["params"]:
         verdict_meta["params"] = verdict_meta["refmac"]["params"]
 
-    verdict_score, verdict_message, bottomline, meanRfree, medianClash, ramaOutliers, suggestedParameters = calculate ( verdict_meta )
+    verdictInfo = calculate ( verdict_meta )
 
     base.putMessage1 ( base.report_page_id(),"&nbsp;",verdict_row )  # just a spacer
 
     rfree_str = str(verdict_meta["refmac"]["rfree"][1])
-    if verdict_meta["refmac"]["rfree"][1] > meanRfree:
+    if verdict_meta["refmac"]["rfree"][1] > verdictInfo['meanRfree']:
         rfree_str = "<b>" + rfree_str + "</b>"
 
     rms_str = str(verdict_meta["refmac"]["bond_length"][1])
@@ -794,7 +800,7 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
         rms_str = "<b>" + rms_str + "</b>"
 
     clash_str = str(verdict_meta["molprobity"]["clashscore"])
-    if verdict_meta["molprobity"]["clashscore"] > medianClash:
+    if verdict_meta["molprobity"]["clashscore"] > verdictInfo['medianClash']:
         clash_str = "<b>" + clash_str + "</b>"
 
     verdict.makeVerdictSection ( base,{
@@ -815,7 +821,7 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
             },
             { "header": { "label"  : "R<sub>free</sub>",
                           "tooltip": "Free R-factor"},
-              "data"  : [ rfree_str,"< %0.3f" % meanRfree ]
+              "data"  : [ rfree_str,"< %0.3f" % verdictInfo['meanRfree'] ]
             },
             { "header": { "label"  : "Bond length rms",
                           "tooltip": "Bond length r.m.s.d."},
@@ -823,16 +829,16 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
             },
             { "header": { "label"  : "Clash score",
                           "tooltip": "Molprobity clash score" },
-              "data"  : [ clash_str,"< %0.1f" % medianClash ]
+              "data"  : [ clash_str,"< %0.1f" % verdictInfo['medianClash'] ]
             },
             { "header": { "label"  : "Ramachandran<br>outliers",
                           "tooltip": "Ramachandran outliers" },
-              "data"  : [ str(int(ramaOutliers)),"" ]
+              "data"  : [ str(int(verdictInfo['ramaOutliers'])),"" ]
             }
         ]
-    },verdict_score,verdict_message,bottomline,row=verdict_row+1 )
+    },verdictInfo['score'], verdictInfo['message'], verdictInfo['bottomLine'],row=verdict_row+1 )
 
-    return suggestedParameters
+    return verdictInfo['suggestedParameters']
 
 
 

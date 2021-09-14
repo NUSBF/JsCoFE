@@ -59,6 +59,8 @@ class refmac_parser(object):
     rmsBondLine = r'^Bond distances: refined atoms\s*\S*\s*(\S*)\s*\S*'
     rmsAnglesLine = r'^Bond angles  : refined atoms\s*\S*\s*(\S*)\s*\S*'
     ncycLine = r'.*Refinement cycles\s*:\s*(\d*)'
+    tlsLine = r'.*REFI TLSC\s*(\d*)'
+    tlsCycLine = r'.*TLS refinement cycle.*'
 
     ignored_1 = RT.LogDataLine(skip_1)                              # logs from i1
     ignored = RT.LogDataLine(skip)
@@ -88,11 +90,13 @@ class refmac_parser(object):
     item_rmsBond = RT.LogDataLine(rmsBondLine)
     item_rmsAngle = RT.LogDataLine(rmsAnglesLine)
     item_ncyc = RT.LogDataLine(ncycLine)
+    item_tlsN = RT.LogDataLine(tlsLine)
+    item_tlsCyc = RT.LogDataLine(tlsCycLine)
 
 
-    ignored_1.add_next(item_rmsBond, item_rmsAngle, item_weight, item_rFact, item_rFree, item_ncyc, ignored_1, ignored, item_started, banner_f1) # logs from i1
+    ignored_1.add_next(item_rmsBond, item_rmsAngle, item_weight, item_rFact, item_rFree, item_ncyc, item_tlsCyc, item_tlsN, ignored_1, ignored, item_started, banner_f1) # logs from i1
 #   ignored.add_next(ignored, item_started, banner_f1)              # refmac bug
-    ignored.add_next(item_rmsBond, item_rmsAngle, item_weight, item_rFact, item_rFree, item_ncyc, ignored, item_started, banner_f1, ignored_dd)  # refmac bug
+    ignored.add_next(item_rmsBond, item_rmsAngle, item_weight, item_rFact, item_rFree, item_ncyc, item_tlsN, item_tlsCyc, ignored, item_started, banner_f1, ignored_dd)  # refmac bug
 
     item_weight.add_next(ignored, ignored_1)
     item_rFact.add_next(item_rFree, ignored, ignored_1)
@@ -100,6 +104,9 @@ class refmac_parser(object):
     item_rmsBond.add_next(item_rmsAngle, ignored, ignored_1)
     item_rmsAngle.add_next(ignored, ignored_1)
     item_ncyc.add_next(ignored, ignored_1)
+    item_tlsN.add_next(ignored, ignored_1)
+    item_tlsCyc.add_next(ignored, ignored_1)
+
 
     ignored_dd.add_next(ignored, item_started)                      # refmac bug
     banner_f1.add_next(banner_s1, ignored)
@@ -144,7 +151,7 @@ class refmac_parser(object):
 
     self.table_weight_panel = None
     self.table_weight = None
-    self.liveN = 0
+    self.liveN = -1
     self.liveYmax = None
     self.liveYmin = None
     self.ncyc = 0
@@ -192,6 +199,8 @@ class refmac_parser(object):
     item_rmsBond.add_action(self.displayLiveGraphRMSbond)
     item_rmsAngle.add_action(self.displayLiveGraphRMSangle)
     item_ncyc.add_action(self.setNcyc)
+    item_tlsN.add_action(self.setTLScyc)
+    item_tlsCyc.add_action(self.tlsNextCyc)
     #item_rmsBond.add_action(self.displayLiveGraph)
 
     self.parser = RT.LogDataParser()
@@ -248,12 +257,20 @@ class refmac_parser(object):
     self.graph_kind, = groups
 
   def setNcyc(self, groups):
+    self.ncyc = self.ncyc + int(groups[0])
+    self.livePLT.set_xrange(1, self.ncyc)
+    self.livePLT2.set_xrange(1, self.ncyc)
+    self.livePLT3.set_xrange(1, self.ncyc)
+
+  def setTLScyc(self, groups):
     if self.ncyc == 0:
       self.ncyc = int(groups[0])
       self.livePLT.set_xrange(1, self.ncyc)
       self.livePLT2.set_xrange(1, self.ncyc)
       self.livePLT3.set_xrange(1, self.ncyc)
 
+  def tlsNextCyc(self, groups):
+    self.liveN += 1
 
   def displayLiveGraphRMSbond(self, groups):
     self.liveN += 1
