@@ -87,7 +87,7 @@ def aimless(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Reduction with Aimless')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Merging and Scaling with Aimless')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
