@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.08.21   <--  Date of Last Modification.
+ *    15.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1285,7 +1285,7 @@ var projectName = projectDesc.name;
     rdata.pdesc = projectData.desc;
 
     // this loop is here in order to minimise time for writing project tree in file
-    if (rdata.reload>0)  // in case reload==1, project tree contains non-deleted nodes
+    if (rdata.reload>0) // in case reload==1, project tree contains non-deleted nodes
       for (var i=0;i<data.tasks_del.length;i++)
         pd.deleteProjectNode ( projectData,data.tasks_del[i][0] );
 

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.09.21   <--  Date of Last Modification.
+ *    15.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -735,6 +735,7 @@ JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
           if (rdata.reload==-11111)  {
             tree.missingProject();
           } else if (rdata.reload>0)  {
+            tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
             if (callback_func)
                   callback_func ( rdata );
             else  tree.emitSignal ( cofe_signals.reloadTree,rdata );

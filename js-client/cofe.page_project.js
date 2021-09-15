@@ -924,8 +924,8 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
           if (job_tree_1.projectData)  {
             job_tree_1.multiple = self.jobTree.multiple;
             if (self.onTreeLoaded(true,job_tree_1))  {
-              var selTasks    = self.jobTree.getSelectedTasks();
-              var dlg_map     = self.jobTree.dlg_map;
+              var selTasks = self.jobTree.getSelectedTasks();
+              var dlg_map  = self.jobTree.dlg_map;
               self.jobTree.delete();
               self.setJobTree ( job_tree_1 );
               self.jobTree.selectTasks ( selTasks );
