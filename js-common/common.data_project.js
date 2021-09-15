@@ -203,7 +203,14 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
       if (nodes[i].dataId!=dataId)  {
         nodes[i].children = __delete_project_node ( nodes[i].children,dataId );
         nodes1.push ( nodes[i] );
-      }
+      } else
+        for (var j=0;j<nodes[i].children.length;j++)
+          nodes1.push ( nodes[i].children[j] );
+    // for (var i=0;i<nodes.length;i++)
+    //   if (nodes[i].dataId!=dataId)  {
+    //     nodes[i].children = __delete_project_node ( nodes[i].children,dataId );
+    //     nodes1.push ( nodes[i] );
+    //   }
     return nodes1;
   }
 
