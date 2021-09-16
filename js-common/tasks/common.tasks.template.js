@@ -393,7 +393,7 @@ if (!dbx)  {
 
     }
 
-    if ((this.nc_type!='client') && (!this.checkEnvironment(__environ_server)))
+    if ((this.nc_type!='client') && (!this.checkEnvironment(__environ_server)))  {
       if (__local_setup)
         return ['environment-server',
                 'task software is not installed',
@@ -408,6 +408,7 @@ if (!dbx)  {
                 'Software, needed to run the task, is not installed on ' +
                 appName() + ' server, which you use.<br>Contact server ' +
                 'maintainer for further details.'];
+    }
 
     return ['ok','',''];
 
