@@ -163,6 +163,14 @@ function Communicate ( server_request )  {
     }
   }
   if (ix<0) {
+    ix = this.filePath.lastIndexOf('__CCP4__');
+    if (ix>=0)  {
+      this.filePath = process.env.CCP4 + this.filePath.substr(ix+8);
+      // console.log ( ' fpath=' + this.filePath );
+      log.debug2 ( 3,"calculated path " + this.filePath);
+    }
+  }
+  if (ix<0) {
     ix = this.filePath.lastIndexOf(__ccp4_lib);
     if (ix>=0)  {
       this.filePath = process.env.CCP4 + '/lib/' +
