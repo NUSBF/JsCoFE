@@ -126,9 +126,14 @@ class MrParse(basic.TaskDriver):
             report = f.read()
             f.close()
             f = open ( html_report,"w" )
-            f.write ( report.replace (
-                "<script type=\"text/javascript\" src=\"pfam/static/javascripts/canvas.text.js?dontUseMoz=true&amp;reimplement=true\"></script>",
-                "" )
+            f.write (
+                report.replace (
+                    "<script type=\"text/javascript\" src=\"pfam/static/javascripts/canvas.text.js?dontUseMoz=true&amp;reimplement=true\"></script>",
+                    ""
+                ).replace(
+                    os.environ["CCP4"],
+                    "__CCP4__"
+                )
             )
             f.close()
             self.insertTab   ( "mrparse_report","MrParse Report",None,True )
