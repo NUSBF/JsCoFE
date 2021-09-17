@@ -112,9 +112,9 @@ class MrParse(basic.TaskDriver):
 
         # run mrparse
         if sys.platform.startswith("win"):
-            self.runApp ( "mrparse.bat",cmd,logType="Main" )
+            self.runApp ( "mrparse.bat",cmd,logType="Main",quitOnError=False )
         else:
-            self.runApp ( "mrparse",cmd,logType="Main" )
+            self.runApp ( "mrparse",cmd,logType="Main",quitOnError=False )
 
         have_results = False
 
