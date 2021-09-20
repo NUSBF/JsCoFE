@@ -601,12 +601,12 @@ def calculate ( meta ) :
                       "something is really wrong with assignment of the free R set.<p>"
     elif rDiff <= (meanRdiff - 0.01):
         bottomline += "The difference between <i>R<sub>free</sub></i> and <i>R<sub>work</sub></i> " +\
-                      "is smaller than expected (%0.3f, while mean value for this resolution is %0.3f). " % (rDiff, meanRdiff) +\
-                      "Try to run more refinement cycles, rebuild the model or it could be something wrong with assignment of free R set.<p>"
+                      "is smaller than expected (%0.3f). It could be something wrong with assignment of free R set" % (rDiff) +\
+                      "or not enough refinement cycles. Try to run more refinement cycles, rebuild the model and double check free R assignment.<p>"
     elif (rDiff > (meanRdiff + 0.01)) and (rDiffBefore < rDiff):
         bottomline += "The difference between <i>R<sub>free</sub></i> and <i>R<sub>work</sub></i> " +\
-                      "is larger than expected (%0.3f, while mean value for this resolution is %0.3f), " % (rDiff, meanRdiff) +\
-                      "indicating overfitting. "
+                      "is larger than expected (%0.3f), " % (rDiff) +\
+                      "indicating potential overfitting. "
         if res >= 3.0:
             if not suggestChangingGeomWeight:
                 bottomline += "Please consider jelly-body refinement (Restraints -> Use jelly-body restraints). " +\
