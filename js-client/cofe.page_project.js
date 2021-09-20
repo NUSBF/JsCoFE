@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.08.21   <--  Date of Last Modification.
+ *    20.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -405,7 +405,7 @@ ProjectPage.prototype.start_action = function ( action_key )  {
     this.jobTree.stopTaskLoop();
     return true;
   } else if (!this.pending_act)
-    self.pending_act = action_key;
+    this.pending_act = action_key;
   else
     new MessageBox ( 'Communication delays',
                      'Communication delays, please wait a moment.<br>' +
