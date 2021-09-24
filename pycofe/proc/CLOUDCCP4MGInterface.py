@@ -402,18 +402,28 @@ def saveEnsembleToI2(workDirectory):
       else:
           newManager.WritePDBASCII(fname)
 
-
-def RunMrBump(row,level=95,phmmer_cutoff=20,mrnum=10,jobid=None,workdir=None,use_hhpred=False,pdb_local=None):
+#def RunMrBump(row,level=95,phmmer_cutoff=20,mrnum=10,jobid=None,workdir=None,use_hhpred=False,pdb_local=None):
+#    from PyQt4 import QtCore
+#    import global_definitions
+#    #I do this just to fall back to old method if mg is out of sync with i2/Cloud. People might use this before MG is ready.
+#    try:
+#        mrbumpwin_tmpdir = global_definitions.MAINWINDOW().sequence_dialog.mrbumpTriggered(row,level,phmmer_cutoff,mrnum,jobid,workdir,use_hhpred,pdb_local)
+#    except:
+#        try:
+#            mrbumpwin_tmpdir = global_definitions.MAINWINDOW().sequence_dialog.mrbumpTriggered(row,level,phmmer_cutoff)
+#        except:
+#            mrbumpwin_tmpdir = global_definitions.MAINWINDOW().sequence_dialog.mrbumpTriggered(row,level)
+def RunMrBump(row,level=95,phmmer_cutoff=20,mrnum=10,jobid=None,workdir=None,hhrfile=None,use_hhpred=False,pdb_local=None,aflevel=None):
     from PyQt4 import QtCore
     import global_definitions
-    #I do this just to fall back to old method if mg is out of sync with i2/Cloud. People might use this before MG is ready.
+    #I do this just to fall back to old method if mg is out of sync with i2. People might use this before MG is ready.
     try:
-        mrbumpwin_tmpdir = global_definitions.MAINWINDOW().sequence_dialog.mrbumpTriggered(row,level,phmmer_cutoff,mrnum,jobid,workdir,use_hhpred,pdb_local)
+        mrbumpwin_tmpdir = global_definitions.MAINWINDOW().sequence_dialog.mrbumpTriggered(row,level,phmmer_cutoff,mrnum,jobid,workdir,hhrfile,use_hhpred,pdb_local,aflevel)
     except:
         try:
-            mrbumpwin_tmpdir = global_definitions.MAINWINDOW().sequence_dialog.mrbumpTriggered(row,level,phmmer_cutoff)
+            mrbumpwin_tmpdir = global_definitions.MAINWINDOW().sequence_dialog.mrbumpTriggered(row,level,phmmer_cutoff,aflevel=aflevel)
         except:
-            mrbumpwin_tmpdir = global_definitions.MAINWINDOW().sequence_dialog.mrbumpTriggered(row,level)
+            mrbumpwin_tmpdir = global_definitions.MAINWINDOW().sequence_dialog.mrbumpTriggered(row,level,aflevel=aflevel)
     if mrbumpwin_tmpdir is not None:
         try:
             mrbumpwin,tmpdir = mrbumpwin_tmpdir
@@ -439,9 +449,11 @@ if __name__ == "__main__" or __name__ == "__builtin__":
   saveDir = os.path.dirname(getsourcefile(lambda:0))
   sys.stdout.flush()
   lvl = 95
+  aflvl=None
   pmr = 20
   mrnum = 10
   jobid=None
+  hhrfile=None
   workdir=None
   use_hhpred=False
   pdb_local=None
@@ -451,12 +463,16 @@ if __name__ == "__main__" or __name__ == "__builtin__":
           saveDir = arg.split("=")[1]
        if "mrBumpSim=" in arg:
           lvl = arg.split("=")[1]
+       if "mrBumpAFLEVEL=" in arg:
+          aflvl = arg.split("=")[1]
        if "mrBumpCutoff=" in arg:
           pmr = arg.split("=")[1]
        if "mrBumpMRNUM=" in arg:
           mrnum = arg.split("=")[1]
        if "mrBumpJOBID=" in arg:
           jobid = arg.split("=")[1]
+       if "mrBumpHHRfile=" in arg:
+          hhrfile = arg.split("=")[1]
        if "mrBumpWorkDir=" in arg:
           workdir = arg.split("=")[1]
        if "mrBumpUseHHPRED=" in arg:
@@ -473,5 +489,6 @@ if __name__ == "__main__" or __name__ == "__builtin__":
   InstallSaveToCloudMenuItem(saveDir)
   InstallSaveEnsembleToCloudMenuItem(saveDir)
   SetupSequenceLoadingFromCommandLine()
-  mrbump_dir = RunMrBump(0,lvl,pmr,mrnum,jobid,workdir,use_hhpred,pdb_local)
+  #mrbump_dir = RunMrBump(0,lvl,pmr,mrnum,jobid,workdir,use_hhpred,pdb_local)
+  mrbump_dir = RunMrBump(0,lvl,pmr,mrnum,jobid,workdir,hhrfile,use_hhpred,pdb_local,aflevel=aflvl)
   print("MRBUMP_DIRECTORY",mrbump_dir)

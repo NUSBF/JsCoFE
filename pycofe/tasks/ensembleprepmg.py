@@ -94,8 +94,9 @@ class EnsemblePrepMG(basic.TaskDriver):
             "-scriptArg","mrBumpMRNUM="   + str(self.getParameter(sec1.MRNUM,False)),
             "-scriptArg","mrBumpJOBID=F_" + ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(40)),
             "-scriptArg","mrBumpWorkDir=" + os.path.abspath(self.mrbump_dir()),
-            "-scriptArg","mrBumpCutoff="  + str(self.getParameter(sec1.CUTOFF,False)),
-            "-scriptArg","mrBumpSim="     + self.getParameter(sec1.RLEVEL_SEL,False)
+            "-scriptArg","mrBumpCutoff=20", #+ str(self.getParameter(sec1.CUTOFF,False)),
+            "-scriptArg","mrBumpSim="     + self.getParameter(sec1.RLEVEL_SEL,False),
+            "-scriptArg","mrBumpAFLEVEL=%d" % int(self.getParameter(sec1.AFLEVEL_SEL,False))
         ]
         if pdbLocal:
             cmd += [ "-scriptArg","mrBumpUsePDBLocal=" + pdbLocal ]
