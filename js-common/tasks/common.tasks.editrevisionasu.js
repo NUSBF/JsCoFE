@@ -124,7 +124,9 @@ if (!__template)  {
           var obj = inpDataRef.input[n].dt[ddnNo];
           var spg = obj.getSpaceGroup();
           if (spg=='Unspecified')  return 'No space group';
-          if (spg!=spg0)    return 'Unmatched space group';
+          s_spg = spg.replace(/\s/g, '');
+          s_spg0 = spg0.replace(/\s/g, '');
+          if (s_spg!=s_spg0)    return 'Unmatched space group';
           var cell = obj.getCellParameters();
           if (cell[0]<2.0)  return 'No cell parameters';
           var ok = true;
