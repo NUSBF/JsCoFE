@@ -85,7 +85,7 @@ function TaskMrBump()  {
                 RLEVEL_SEL : {
                         type     : 'combobox',
                         keyword  : 'RLEVEL',
-                        label    : 'Redundancy level',
+                        label    : 'PDB sequence redundancy level',
                         tooltip  : 'Choose appropriate redundancy level for ' +
                                    'keeping hits in the list of matches. ',
                         range    : ['ALL|All', '100|100%','95|95%','90|90%','70|70%','50|50%'],
