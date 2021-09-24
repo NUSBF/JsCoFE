@@ -72,7 +72,7 @@ function TaskEnsemblePrepMG()  {
                       tooltip  : 'Choose appropriate pLDDT cut-off level for ' +
                                  'keeping residues from EBI-AFDB model predictions. ',
                       range    : ['0|0','10|10','20|20','30|30','40|40','50|50','60|60','70|70','80|80','90|90'],
-                      value    : '70',
+                      value    : '50',
                       position : [1,0,1,1]
                      },
 //	         CUTOFF : {
@@ -87,8 +87,8 @@ function TaskEnsemblePrepMG()  {
                MRNUM : {
                      type     : 'integer',
                      keyword  : 'MRNUM',
-                     label    : 'Number of ensembles',
-                     tooltip  : 'Specify the number of ensemblies to generate ' +
+                     label    : 'Maximum number of models to create',
+                     tooltip  : 'Specify the maximum number of models to generate ' +
                                 '(from 1 to 20).',
                      range    : [1,20],
                      value    : 5,
