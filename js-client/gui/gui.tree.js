@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.09.21   <--  Date of Last Modification.
+ *    23.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -170,6 +170,7 @@ TreeNode.prototype.compare = function ( node )  {
           (this.icon            == node.icon           ) &&
           (this.state           == node.state          ) &&
           (this.dataId          == node.dataId         ) &&
+          this.data && node.data &&
           (this.data.customIcon == node.data.customIcon) &&
           (this.data.ci_state   == node.data.ci_state  )
         );
@@ -177,18 +178,20 @@ TreeNode.prototype.compare = function ( node )  {
 
 
 TreeNode.prototype.setCustomIconVisible = function ( visible_bool )  {
-  if (visible_bool)  this.data.ci_state = 'visible';
-               else  this.data.ci_state = 'hidden';
-  var ci_element = document.getElementById ( this.id + '_pbar' );
-  if (ci_element)  {
-    (function(elem,state){
-      window.setTimeout ( function(){ elem.style.visibility = state; },0 );
-    }(ci_element,this.data.ci_state));
-    //ci_element.style.visibility = this.data.ci_state;
-    /* if used instead of the previous line, this make tree look compact:
-    if (visible_bool)  $(ci_element).show();
-                 else  $(ci_element).hide();
-    */
+  if (this.data)  {
+    if (visible_bool)  this.data.ci_state = 'visible';
+                   else  this.data.ci_state = 'hidden';
+    var ci_element = document.getElementById ( this.id + '_pbar' );
+    if (ci_element)  {
+      (function(elem,state){
+        window.setTimeout ( function(){ elem.style.visibility = state; },0 );
+      }(ci_element,this.data.ci_state));
+      //ci_element.style.visibility = this.data.ci_state;
+      /* if used instead of the previous line, this make tree look compact:
+      if (visible_bool)  $(ci_element).show();
+                   else  $(ci_element).hide();
+      */
+    }
   }
 }
 
@@ -670,7 +673,7 @@ Tree.prototype.setStyle = function ( treeNode,style_str,propagate_int )  {
 Tree.prototype.confirmCustomIconsVisibility = function()  {
   for (var key in this.node_map)  {
     var node = this.node_map[key];
-    if (node)
+    if (node && node.data)
       node.setCustomIconVisible ( node.data.ci_state=='visible' );
   }
 }
@@ -800,7 +803,7 @@ $.jstree.plugins.addHTML = function ( options,parent ) {
     obj = parent.redraw_node.call ( this, obj, deep, callback, force_draw );
     if (obj) {
       var node = this.get_node(jQuery(obj).attr('id'));
-      if (node.data.customIcon.length>0)  {
+      if (node && node.data && node.data.customIcon.length>0)  {
         var ci_element = document.createElement ( 'img' );
         ci_element.setAttribute ( 'src',node.data.customIcon );
         ci_element.setAttribute ( 'id',node.id + '_pbar' );

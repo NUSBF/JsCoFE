@@ -350,15 +350,21 @@ function __server_command ( cmd,data_obj,page_title,function_response,
       if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
         __server_queue.shift();
         __process_network_indicators();
-        var rsp = jQuery.parseJSON ( rdata );
-        if (checkVersionMatch(rsp,false))  {
-          var response = jQuery.extend ( true, new Response(), rsp );
-          if (!function_response(response))
-            makeCommErrorMessage ( page_title,response );
+        try {
+          var rsp = jQuery.parseJSON ( rdata );
+          if (checkVersionMatch(rsp,false))  {
+            var response = jQuery.extend ( true, new Response(), rsp );
+            if (!function_response(response))
+              makeCommErrorMessage ( page_title,response );
+          }
+        } catch(err) {
+          console.log ( ' >>> error catch in __server_command.done: ' + err );
+          console.log ( ' >>> rdata = ' + rdata );
         }
         processServerQueue();
       } else  {
         console.log ( ' >>> return on skipped operation in __server_command.done' );
+        console.log ( ' >>> rdata = ' + rdata );
       }
     })
     .always ( function(){
@@ -382,7 +388,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
 
 
 function __server_request ( request_type,data_obj,page_title,function_ok,
-                         function_always,function_fail,sqid )  {
+                            function_always,function_fail,sqid )  {
 // used when a user is logged in
 
   var request = new Request ( request_type,__login_token,data_obj );
@@ -430,6 +436,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
           }
         } catch(err) {
           console.log ( ' >>> error catch in __server_request.done: ' + err );
+          console.log ( ' >>> rdata = ' + rdata );
         }
 
         processServerQueue();
