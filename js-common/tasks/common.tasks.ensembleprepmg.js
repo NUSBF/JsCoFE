@@ -100,7 +100,7 @@ function TaskEnsemblePrepMG()  {
                                 '(from 1 to 20).',
                      range    : [1,20],
                      value    : 5,
-                     position : [2,0,1,1]
+                     position : [3,0,1,1]
                     }
            }
          }
