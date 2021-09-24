@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.09.21   <--  Date of Last Modification.
+ *    24.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -464,6 +464,9 @@ JobTree.prototype.__checkTaskLoop = function()  {
       serverRequest ( fe_reqtype.checkJobs,request_data,'Check jobs state',
         function(data){
 
+          if ((!tree.checkTimeout) || (tree.checkTimeout==-1))
+            return;
+
           if (data.reload)  {
 
             // console.log ( 'reload at check');
@@ -541,7 +544,7 @@ JobTree.prototype.__checkTaskLoop = function()  {
           //     tree.saveProjectData ( [],[],true, function(rdata){} );
           // }
 
-          if (tree.checkTimeout!=-1)  { // task loop was not terminated, and
+          if (tree.checkTimeout!=-1)  { // task loop was not blocked, and
             if (tree.checkTimeout &&  // task loop was not terminated, and
                 ((Object.keys(tree.run_map).length>0) ||  // there are jobs to check on
                  (tree.isShared())  // or project is shared

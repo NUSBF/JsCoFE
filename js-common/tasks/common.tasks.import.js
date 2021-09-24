@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.08.21   <--  Date of Last Modification.
+ *    24.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -105,7 +105,8 @@ if (!__template)  {
   }
 
   TaskImport.prototype.onJobDialogStart = function ( job_dialog )  {
-    job_dialog.inputPanel.upload.button.click();
+    if (__user_settings.guided_import)
+      job_dialog.inputPanel.upload.button.click();
   }
 
   TaskImport.prototype.onJobDialogClose = function ( job_dialog,callback_func )  {
@@ -134,11 +135,12 @@ if (!__template)  {
     var div = this.makeInputLayout();
     this.setInputDataFields ( div.grid,0,dataBox,this );
 
-    if ((this.state==job_code.new) || (this.state==job_code.running)) {
-      div.header.setLabel ( ' ',2,0,1,1 );
-      div.header.setLabel ( ' ',2,1,1,1 );
-    } else
-      div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
+    // if ((!__user_settings.guided_import) &&
+    //     ((this.state==job_code.new) || (this.state==job_code.running)))    {
+    //   div.header.setLabel ( ' ',2,0,1,1 );
+    //   div.header.setLabel ( ' ',2,1,1,1 );
+    // } else
+    //   div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
 
     var msg = '';
     if (__local_service)

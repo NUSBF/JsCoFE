@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.09.21   <--  Date of Last Modification.
+ *    24.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -401,16 +401,18 @@ ProjectPage.prototype.setDisabled = function ( disabled_bool )  {
 ProjectPage.prototype.start_action = function ( action_key )  {
   if (this.can_reload)  {
     this.can_reload = false;  // block concurrent reloads
-    this.pending_act = '';    // cleare pending actions
+    this.pending_act = '';    // clear pending actions
     this.jobTree.stopTaskLoop();
     return true;
   } else if (!this.pending_act)
     this.pending_act = action_key;
-  else
+  else if (this.pending_act!=action_key)  {
     new MessageBox ( 'Communication delays',
                      'Communication delays, please wait a moment.<br>' +
                      'If this message persists, reload Project using<br>' +
                      '<i>Refresh</i> button in the vertical toolbar.' );
+    console.log ( ' >>>> action requested: ' + action_key + ', pending: ' + this.pending_act );
+  }
   return false;
 }
 
@@ -572,11 +574,12 @@ ProjectPage.prototype.archiveJobs = function() {
 }
 
 ProjectPage.prototype.setButtonState = function() {
-  if (this.start_action('set_button_state'))
-    (function(self){
-      self._set_button_state();
-      self.end_action();
-    }(this))
+  // if (this.start_action('set_button_state'))
+  //   (function(self){
+  //     self._set_button_state();
+  //     self.end_action();
+  //   }(this))
+  this._set_button_state();
 }
 
 ProjectPage.prototype.openJob = function() {
