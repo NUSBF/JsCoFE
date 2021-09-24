@@ -62,18 +62,28 @@ function TaskEnsemblePrepMG()  {
                       tooltip  : 'Choose appropriate redundancy level for ' +
                                  'keeping hits in the list of matches. ',
                       range    : ['ALL|All','100|100%','95|95%','90|90%','70|70%','50|50%'],
-                      value    : 'ALL',
+                      value    : '100',
                       position : [0,0,1,1]
                      },
-                CUTOFF : {
-                      type     : 'integer',
-                      keyword  : 'CUTOFF',
-                      label    : 'Cutoff threshold',
-                      tooltip  : 'Cutoff threshold for phmmer results',
-                      range    : [0,200],
-                      value    : 20,
+                AFLEVEL_SEL : {
+                      type     : 'combobox',
+                      keyword  : 'AFLEVEL',
+                      label    : 'EBI-AFDB pLDDT cut-off',
+                      tooltip  : 'Choose appropriate pLDDT cut-off level for ' +
+                                 'keeping residues from EBI-AFDB model predictions. ',
+                      range    : ['0|0','10|10','20|20','30|30','40|40','50|50','60|60','70|70','80|80','90|90'],
+                      value    : '70',
                       position : [1,0,1,1]
-                    },
+                     },
+//	         CUTOFF : {
+//	 	       type     : 'integer',
+//		       keyword  : 'CUTOFF',
+//		       label    : 'Cutoff threshold',
+//		       tooltip  : 'Cutoff threshold for phmmer results',
+//		       range    : [0,200],
+//		       value    : 20,
+//		       position : [2,0,1,1]
+//		      },
                MRNUM : {
                      type     : 'integer',
                      keyword  : 'MRNUM',
