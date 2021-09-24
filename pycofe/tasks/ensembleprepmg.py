@@ -96,10 +96,12 @@ class EnsemblePrepMG(basic.TaskDriver):
             "-scriptArg","mrBumpWorkDir=" + os.path.abspath(self.mrbump_dir()),
             "-scriptArg","mrBumpCutoff=20", #+ str(self.getParameter(sec1.CUTOFF,False)),
             "-scriptArg","mrBumpSim="     + self.getParameter(sec1.RLEVEL_SEL,False),
-            "-scriptArg","mrBumpAFLEVEL=%d" % int(self.getParameter(sec1.AFLEVEL_SEL,False))
         ]
         if pdbLocal:
             cmd += [ "-scriptArg","mrBumpUsePDBLocal=" + pdbLocal ]
+
+        if self.getParameter(sec1.AFDB_CBX)=="True":
+            cmd += [ "-scriptArg","mrBumpAFLEVEL=%d" % int(self.getParameter(sec1.AFLEVEL_SEL,False)) ]
 
         # Start mrbump
         if sys.platform.startswith("win"):

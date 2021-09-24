@@ -65,6 +65,13 @@ function TaskEnsemblePrepMG()  {
                       value    : '100',
                       position : [0,0,1,1]
                      },
+                AFDB_CBX : {
+                        type     : 'checkbox',
+                        label    : 'Include structures from AFDB',
+                        tooltip  : 'Check to include structures from AlphaFold-2 database',
+                        value    : true,
+                        position : [1,0,1,3]
+                      },
                 AFLEVEL_SEL : {
                       type     : 'combobox',
                       keyword  : 'AFLEVEL',
@@ -73,7 +80,8 @@ function TaskEnsemblePrepMG()  {
                                  'keeping residues from EBI-AFDB model predictions. ',
                       range    : ['0|0','10|10','20|20','30|30','40|40','50|50','60|60','70|70','80|80','90|90'],
                       value    : '50',
-                      position : [1,0,1,1]
+                      position : [2,0,1,1],
+                      hideon   : {AFDB_CBX:[false]}
                      },
 //	         CUTOFF : {
 //	 	       type     : 'integer',
