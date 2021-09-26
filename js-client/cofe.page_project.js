@@ -466,6 +466,8 @@ ProjectPage.prototype.addRemark = function()  {
     (function(self){
       self.jobTree.addTask ( new TaskRemark(),true,false,self,function(key){
         // self.del_btn.setDisabled ( false );
+        // self._set_del_button_state();
+        // self.end_action();
         if (key!=1)  // remark was added or failed
           self._set_del_button_state();
         self.end_action();

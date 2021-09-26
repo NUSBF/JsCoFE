@@ -338,7 +338,44 @@ var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
   return node;
 }
 
+Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomIcon )  {
+  // var children = [];
+  // for (var i=0;i<parent_node.children.length;i++)
+  //   children.push ( parent_node.children[i] );
 
+  var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
+  node.parentId  = parent_node.id;
+  // parent_node.children = [node];
+  this.node_map[node.id] = node;
+  if (this.created)  {
+    var snode = $.extend ( {},node );
+    $(this.root.element).jstree(true).create_node('#'+parent_node.id,node,'first',false,false);
+    // jstree modifies node structure, therefore extend it with custom fields
+    node = $.extend ( node,snode );
+    node.children = [];          // this gets lost, duplicate, jstree bug
+    if (parent_node.children.length>0)  {
+      $(this.root.element).jstree(true).move_node(parent_node.children,node,0,false,false);
+      node.children = parent_node.children;
+      for (var i=0;i<node.children;i++)  {
+        node.children[i].parentId = node.id;
+        this.node_map[node.children[i].id].parentId = node.id;
+      }
+    }
+    parent_node.children = [node];
+    this.selectSingle ( node );  // force selection of new nodes if tree is displayed
+    this.confirmCustomIconsVisibility();
+  } else  {
+    node.children = parent_node.children;
+    for (var i=0;i<node.children;i++)
+      node.children[i].parentId = node.id;
+    parent_node.children = [node];
+  }
+
+  return node;
+
+}
+
+/*
 Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomIcon )  {
 
   var children = parent_node.children;
@@ -380,47 +417,8 @@ Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomI
   parent_node.children = [node];
   return node;
 
-    /*
-    var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
-    node.parentId = parent_node.id;
-    // parent_node.children = [node];
-    // for (var i=0;i<children.length;i++)
-    //   children[i].parentId = node.id;
-    this.node_map[node.id] = node;
-    // node.children = children;
-    if (this.created)  {
-      // **** NODE.DATA MUST RESTORE DATA IN THE WHOLE MOVED BRANCHES
-      // var node_data = node.data;
-      var snode = $.extend ( {},node );
-      // var schildren = [];
-      // for (var j=0;j<children.length;j++)
-      //   schildren.push ( $.extend({},children[j]) );
-      $(this.root.element).jstree(true).create_node('#'+parent_node.id,node,'last',false,false);
-      node = $.extend ( node,snode );
-      // for (var i=0;i<children.length;i++)
-      //   children[i].parentId = node.id;
-      node.children = [];
-      this.refresh();
-      // node = $.extend ( node,snode );
-      // parent_node.children = [node];
-      // node.data = treeNodeCustomIcon;  // this gets lost, duplicate, jstree bug
-      // node.data = node_data;   // this gets lost, duplicate, jstree bug
-      node.children = [];
-      for (var j=0;j<node.children.length;j++)
-        node.children.push ( children[j] );
-      this.refresh();
-      //$(this.root.element).jstree().refresh(function(){});
-      this.selectSingle ( node );  // force selection of new nodes if tree is displayed
-      this.confirmCustomIconsVisibility();
-      // this.refresh();
-
-    } else
-      node.children = children;
-    return node;
-    */
-
 }
-
+*/
 
 Tree.prototype.getChildNodes = function ( node )  {
   if (node && ('children' in node))
