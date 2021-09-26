@@ -1007,7 +1007,7 @@ function getProjectData ( loginData,data )  {
   if (pData)  {
     if (!pd.isProjectAccessible(loginData.login,pData.desc))
       return new cmd.Response ( cmd.fe_retcode.projectAccess,
-                                 '[00033] Project access denied.','' );
+                                 '[00034] Project access denied.','' );
     var d = {};
     d.meta      = pData;
     d.tasks_add = [];
@@ -1153,10 +1153,13 @@ var projectName = projectDesc.name;
                      //  1: reload is needed but current operation may continue
                      //  2: reload is mandatory, current operation must terminate
   rdata.pdesc  = null;
-  rdata.jobIds = [];
-  for (var i=0;i<data.tasks_add.length;i++)
+  rdata.jobIds       = [];
+  // rdata.parentJobIds = [];
+  for (var i=0;i<data.tasks_add.length;i++)  {
     rdata.jobIds.push ( data.tasks_add[i].id );  // this will be returned to
                                                  // client modified or not
+    // rdata.parentJobIds.push ( 0 );
+  }
 
 //  commenting this out is essential for re-using projects in the cloudrun framework
 //  if ((projectDesc.owner.share.length>0) || projectDesc.autorun)  {  // the project is shared
@@ -1311,10 +1314,32 @@ var projectName = projectDesc.name;
         if (utils.mkDir(jobDirPath)) {
 
           var jobDataPath = getJobDataPath(loginData,projectName,data.tasks_add[i].id );
+
+          // var node_lst = pd.getProjectNodeBranch ( projectData,data.tasks_add[i].id );
+          // if (node_lst.length>0)  {
+          //   if (node_lst.length>1)
+          //     data.tasks_add[i].parentId = node_lst[1].dataId;
+          //   rdata.parentJobIds[i] = data.tasks_add[i].parentId;
+          //   if (!utils.writeObject(jobDataPath.replace(task_t.jobDataFName,'tree.node'),node_lst[0])) {
+          //     log.error ( 31,'cannot write tree node meta at ' + jobDataPath );
+          //     response = new cmd.Response ( cmd.fe_retcode.writeError,
+          //                         '[00024] Tree node meta cannot be written.','' );
+          //   }
+          // }
+
+          // var tree_node = pd.getProjectNode ( projectData,data.tasks_add[i].id );
+          // var node_lst = pd.getProjectNodeBranch ( projectData,data.tasks_add[i].id );
+          // if ((node_lst.length<=0) ||
+          //     (!utils.writeObject(jobDataPath.replace(task_t.jobDataFName,'tree.node'),node_lst[0]))) {
+          //   log.error ( 31,'cannot write tree node meta at ' + jobDataPath );
+          //   response = new cmd.Response ( cmd.fe_retcode.writeError,
+          //                         '[00024] Tree node meta cannot be written.','' );
+          // }
+
           if (!utils.writeObject(jobDataPath,data.tasks_add[i])) {
-            log.error ( 31,'cannot write job meta at ' + jobDataPath );
+            log.error ( 32,'cannot write job meta at ' + jobDataPath );
             response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                '[00024] Job metadata cannot be written.','' );
+                                '[00025] Job metadata cannot be written.','' );
           }
 
           if (('cloned_id' in data.tasks_add[i]) && data.tasks_add[i].cloned_id)  {
@@ -1343,9 +1368,9 @@ var projectName = projectDesc.name;
                   } else  {
                     fs.copy ( item_src,item_dest,function(err)  {
                       if (err)  {
-                        log.error ( 32,'error copying item ' + item_src  );
-                        log.error ( 32,'                to ' + item_dest );
-                        log.error ( 32,'error: ' + err );
+                        log.error ( 33,'error copying item ' + item_src  );
+                        log.error ( 33,'                to ' + item_dest );
+                        log.error ( 33,'error: ' + err );
                       }
                     });
                   }
@@ -1368,9 +1393,9 @@ var projectName = projectDesc.name;
           utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
 
         } else  {
-          log.error ( 33,'cannot create job directory at ' + jobDirPath );
+          log.error ( 34,'cannot create job directory at ' + jobDirPath );
           response = new cmd.Response ( cmd.fe_retcode.mkDirError,
-                  '[00025] Cannot create Job Directory',
+                  '[00026] Cannot create Job Directory',
                   emailer.send ( conf.getEmailerConfig().maintainerEmail,
                       'CCP4 Create Job Dir Fails',
                       'Detected mkdir failure at making new job directory, ' +
@@ -1382,20 +1407,20 @@ var projectName = projectDesc.name;
       }
 
     } else  {
-      log.error ( 34,'project metadata cannot be written at ' + projectDataPath );
+      log.error ( 35,'project metadata cannot be written at ' + projectDataPath );
       response = new cmd.Response ( cmd.fe_retcode.writeError,
-                            '[00026] Project metadata cannot be written.','' );
+                            '[00027] Project metadata cannot be written.','' );
     }
 
   } else if ((projectDesc.owner.share.length>0) || projectDesc.autorun)  {
-    log.error ( 35,'shared project metadata does not exist at ' + projectDataPath );
+    log.error ( 36,'shared project metadata does not exist at ' + projectDataPath );
     rdata.reload = -11111;
     response = new cmd.Response ( cmd.fe_retcode.ok,
-                               '[00027] Project metadata does not exist.',rdata );
+                               '[00028] Project metadata does not exist.',rdata );
   } else  {
-    log.error ( 36,'project metadata does not exist at ' + projectDataPath );
+    log.error ( 37,'project metadata does not exist at ' + projectDataPath );
     response = new cmd.Response ( cmd.fe_retcode.noProjectData,
-                               '[00028] Project metadata does not exist.','' );
+                               '[00029] Project metadata does not exist.','' );
   }
 
   return response;
@@ -1557,7 +1582,7 @@ var pData    = readProjectData ( loginData,data.name );
     pData.desc.title = data.title;
     if (!writeProjectData(loginData,pData,true))  {
       response = new cmd.Response ( cmd.fe_retcode.writeError,
-                               '[00030] Project metadata cannot be written.','' );
+                               '[00031] Project metadata cannot be written.','' );
     } else  {
       var rdata  = {};
       rdata.meta = pData;
@@ -1565,7 +1590,7 @@ var pData    = readProjectData ( loginData,data.name );
     }
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.readError,
-                             '[00031] Project metadata cannot be read.','' );
+                             '[00032] Project metadata cannot be read.','' );
   }
 
   return response;
@@ -1930,7 +1955,7 @@ var jobId       = data.meta.id;
                                     { 'project_missing':true } );
     if (!response)
       response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                    '[00029] Job metadata cannot be written.',
+                                    '[00030] Job metadata cannot be written.',
                                     { 'project_missing':null } );
   }
 
@@ -1959,7 +1984,7 @@ function getJobFile ( loginData,data )  {
     response = new cmd.Response ( cmd.fe_retcode.ok,'',data );
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.writeError,
-                               '[00032] Requested file not found.','' );
+                               '[00033] Requested file not found.','' );
   }
 
   return response;

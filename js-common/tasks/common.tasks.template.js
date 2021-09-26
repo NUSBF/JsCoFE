@@ -80,6 +80,7 @@ function TaskTemplate()  {
 
   this.project      = '';   // project name (stable)
   this.id           = 0;    // job Id (stable)
+  this.parentId     = 0;    // parent job Id (stable)
   this.treeItemId   = '';   // id of associated job tree item (unstable)
   this.name         = 'template';
   this.uname        = '';   // name given by user, overrides 'name' if not empty

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.09.21   <--  Date of Last Modification.
+ *    26.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -328,10 +328,10 @@ var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
   if (this.created)  {
     var snode = $.extend ( {},node );
     $(this.root.element).jstree(true).create_node('#'+parent_node.id,node,'last',false,false);
-    // jstree modifies node stricture, therefore extend it with custom fields
+    // jstree modifies node structure, therefore extend it with custom fields
     node = $.extend ( node,snode );
     //node.data     = treeNodeCustomIcon;  // this gets lost, duplicate, jstree bug
-    //node.children = [];                  // this gets lost, duplicate, jstree bug
+    node.children = [];                  // this gets lost, duplicate, jstree bug
     this.selectSingle ( node );  // force selection of new nodes if tree is displayed
     this.confirmCustomIconsVisibility();
   }
@@ -340,38 +340,92 @@ var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
 
 
 Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomIcon )  {
+
   var children = parent_node.children;
   if (children.length<=0)
     return this.addNode ( parent_node,text,icon_uri,treeNodeCustomIcon );
-  else  {
+
+  var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
+  node.parentId  = parent_node.id;
+  // this.node_map[node.id] = node;
+  if (this.created)  {
+    var snode = $.extend ( {},node );
+    $(this.root.element).jstree(true).create_node('#'+parent_node.id,node,'first',false,false);
+    $(this.root.element).jstree(true).move_node(children,node,'last',false,false);
+    this.refresh();
+    // jstree modifies node structure, therefore extend it with custom fields
+    node = $.extend ( node,snode );
+    // snode = new TreeNode ( '','',null );
+    // snode.copy ( node );
+    this.node_map[node.id] = node;
+    //node.data     = treeNodeCustomIcon;  // this gets lost, duplicate, jstree bug
+    node.children = children;              // this gets lost, duplicate, jstree bug
+    for (var i=0;i<node.children.length;i++)
+      node.children[i].parentId = node.id;
+    // for (var i=0;i<node.children.length;i++)  {
+    //   node.children[i].parentId = node.id;
+    //   // snode = $.extend ( {},node.children[i] );
+    //   // snode.children = [];
+    //   // this.node_map[node.children[i].id] = snode; //.parentId = node.id;
+    // }
+    this.selectSingle ( node );  // force selection of new nodes if tree is displayed
+    this.confirmCustomIconsVisibility();
+    this.refresh();
+  } else  {
+    this.node_map[node.id] = node;
+    node.children = children;
+    for (var i=0;i<node.children.length;i++)
+      node.children[i].parentId = node.id;
+  }
+  parent_node.children = [node];
+  return node;
+
+    /*
     var node = new TreeNode ( text,icon_uri,treeNodeCustomIcon );
     node.parentId = parent_node.id;
-    parent_node.children = [node];
-    for (var i=0;i<children.length;i++)
-      children[i].parentId = node.id;
+    // parent_node.children = [node];
+    // for (var i=0;i<children.length;i++)
+    //   children[i].parentId = node.id;
     this.node_map[node.id] = node;
+    // node.children = children;
     if (this.created)  {
-      var node_data = node.data;
+      // **** NODE.DATA MUST RESTORE DATA IN THE WHOLE MOVED BRANCHES
+      // var node_data = node.data;
+      var snode = $.extend ( {},node );
+      // var schildren = [];
+      // for (var j=0;j<children.length;j++)
+      //   schildren.push ( $.extend({},children[j]) );
       $(this.root.element).jstree(true).create_node('#'+parent_node.id,node,'last',false,false);
-      $(this.root.element).jstree(true).move_node(children,node,'last',false,false);
-      //node.data = treeNodeCustomIcon;  // this gets lost, duplicate, jstree bug
-      node.data     = node_data;   // this gets lost, duplicate, jstree bug
-      node.children = children;
-      //this.refresh();
+      node = $.extend ( node,snode );
+      // for (var i=0;i<children.length;i++)
+      //   children[i].parentId = node.id;
+      node.children = [];
+      this.refresh();
+      // node = $.extend ( node,snode );
+      // parent_node.children = [node];
+      // node.data = treeNodeCustomIcon;  // this gets lost, duplicate, jstree bug
+      // node.data = node_data;   // this gets lost, duplicate, jstree bug
+      node.children = [];
+      for (var j=0;j<node.children.length;j++)
+        node.children.push ( children[j] );
+      this.refresh();
       //$(this.root.element).jstree().refresh(function(){});
       this.selectSingle ( node );  // force selection of new nodes if tree is displayed
       this.confirmCustomIconsVisibility();
-      this.refresh();
+      // this.refresh();
+
     } else
       node.children = children;
     return node;
-  }
+    */
+
 }
 
 
 Tree.prototype.getChildNodes = function ( node )  {
-  if (node)  return node.children;
-       else  return [];
+  if (node && ('children' in node))
+        return node.children;
+  else  return [];
 }
 
 
@@ -535,13 +589,13 @@ Tree.prototype.selectNode = function ( node,single_bool )  {
     this.node_map[this.selected_node_id].state.selected = false;
 
   if (this.created)  {
-    try {
+    // try {
       if (single_bool)
         $(this.root.element).jstree('deselect_all');
       $(this.root.element).jstree(true).select_node('#'+node.id);
-    } catch(err)  {
-      console.log ( ' >>>>> exception in gui.tree.js:selectNode' );
-    }
+    // } catch(err)  {
+    //   console.log ( ' >>>>> exception in gui.tree.js:selectNode' );
+    // }
   }
 
   node.state.selected   = true;
@@ -915,7 +969,8 @@ Tree.prototype.createTree = function ( make_initial_selection,
         if (tree.selected_node_id in tree.node_map)
           tree.node_map[tree.selected_node_id].state.selected = false;
         tree.selected_node_id = data.node.id;
-        tree.node_map[tree.selected_node_id].state.selected = true;
+        if (tree.selected_node_id in tree.node_map)
+          tree.node_map[tree.selected_node_id].state.selected = true;
         if (onSelect_func)
           onSelect_func();
       });
@@ -1042,10 +1097,11 @@ var snode = this.getSelectedNode();
 Tree.prototype.addSiblingToSelected = function ( text,icon_uri,treeNodeCustomIcon )  {
 var snode = this.getSelectedNode();
   if (snode)  {
-    if (snode.parentId)  {
+    if (snode.parentId && (snode.parentId in this.node_map))  {
       var pnode = this.node_map[snode.parentId];
       return this.addNode ( pnode,text,icon_uri,treeNodeCustomIcon );
-    }
+    } else
+      console.log ( ' >>>> parentId ' + snode.parentId + ' not found' );
   }
   return null;
 }

@@ -2,7 +2,7 @@
 Automatic Model Building with Buccaneer
 =======================================
 
-Buccaneer is used for automated model building or rebuilding a molecular replacement model in electron density map using a likelihood-based density target approach. It's advantageous at resolutions of worse than 2.5Å, nevertheless, it may be used at a higher resolution.
+Buccaneer is used for automated model building or rebuilding a molecular replacement model in electron density map using a likelihood-based density target approach. The approach is advantageous at resolutions 2.5Å and lower, but may be used at a higher resolutions just as well.
 
 Buccaneer performs model building in 10 stages:
 
@@ -10,7 +10,7 @@ Buccaneer performs model building in 10 stages:
     *Candidate C-alpha positions are located by searching the electron density*
 
 2. Grow them into chain fragments
-    *The candidate C-alphas or input chains (*fixed model*) are grown by adding residues at either end, according to the density*
+    *The candidate C-alphas or input chains (*fixed model*) are grown by adding residues at either end, as suggested by the density*
 
 3. Join and merge the fragments, resolving branches
     *Overlapping fragments are joined to make longer chains. If this leads to a junction in a chain, the contested residue is removed*
@@ -19,7 +19,7 @@ Buccaneer performs model building in 10 stages:
     *Nearby N and C termini are examined to see if they can be linked by a short loop*
 
 5. Sequence the chains (i.e. dock sequence)
-    *Likelihood comarison between the density of each residue in the work structure and the residues of the reference structure (*model to aid sequencing*) allows sequence to be assigned to longer fragments*
+    *Likelihood comparison between the density of each residue in the work structure and the residues of the reference structure (*model to aid sequencing*) allows sequence to be assigned to longer fragments*
 
 6. Correct insertions/deletions
     *Insertions and deletions in the model building are fixed by rebuilding, where possible*
@@ -36,29 +36,30 @@ Buccaneer performs model building in 10 stages:
 10. Rebuild side chains
      *Rebuilding allows side chain atoms and carbonyl oxygens to be rebuilt*
     
-The Buccaneer other be used for “Molecular Replacement” or “Experimental phasing” model building. 
+
+Buccaneer can build structures using phases obtained through both *Molecular Replacement* and *Experimental phasing*, using the corresponding intrinsic modes. In CCP4 Cloud, the phasing type is recognised automatically, and Buccaneer is put into the appropriate mode without additional user's actions.
 
 
 **Molecular replacement mode**
 
 
-In this mode, you will need to provide a molecular replacement model. There are three options for use model to place and name chains:
+In this mode, Buccaneer requires atomic model used for *Molecular Replacement*. The model is used for placing and naming chans, with the following additional options:
 
-* In **nothing else**  option the molecular replacement model will not be used for model building. 
+* **nothing else**:  MR model is not used for anything else. 
 
     This minimizes the possibility of bias, at the expense of slower building and often a less complete model. 
  
-* The **seed chain growing** option takes isolated residues from the molecular replacement model and uses them as starting points for growing a new model. 
+* **seed chain growing**: isolated residues from the model are used as starting points for growing a new model. 
 
-    This usually produces a fairly complete model without significant bias, and should be used for most cases.
+    This usually produces a fairly complete model without significant bias, and should be used in most cases.
 
-* The **provide an initial model** option uses most of the molecular replacement model as initial fragments for building. 
+* **provide an initial model**: most of the model is used as a set of initial fragments for building. 
 
     This may be useful when the initial map is too poor for reliable building, but the resulting model is more biased towards the molecular replacement model.
 
-You may also provide the **Fixed model** containing an initial model to extend.
+You may also provide the **Fixed model** containing an initial model to extend. Note that this model should be correctly positioned in electron density.
 
-You may also choose the **Model to aid sequencing** containing a model with known residues to help with sequencing.
+In addition, you may supply the **Model to aid sequencing**, which is a model with known residues to help the residue type assignment.
 
 
 ``The following information are applicable for both “Molecular Replacement” and “Experimental phasing” Buccaneer`s modes``
@@ -67,16 +68,16 @@ You may also choose the **Model to aid sequencing** containing a model with know
 Options
 -------
 
-**Anisotropy correction** applies a correction to the data to remove directional dependence in diffraction quality. **This should use by default**
+**Anisotropy correction** attempts to remove directional dependence in diffraction data. **This should use by default**
 
 **Build Selenomethionine (MSE istead of MET)** option should be chosen if selenomethionine is present.
 
-**Number of building/refinement cycles** may be set more than 5(default number) if a first attemt end up with an incomplete model. 
+**Number of building/refinement cycles** may be set more than 5(default number) if first attemt ends up with an incomplete model. 
 
 .. Note::
-    The chance a benefit in using more than 20 cycles is really small
+    The chance to benefit from using more than 20 cycles is really small
 
-**Use fastes methods** option shorten the job running time without loss in effectiveness. With low resolution data turning this off may lead to better results.
+**Use fastest methods** option shortens the job running time without a loss in quality of obtained results in most cases. In case of low resolution data, turning this option off may produce better results.
 
 --------------------------
 Model Building Parameteres
@@ -86,27 +87,27 @@ Model Building Parameteres
 Parameters for first and subsequent Buccaneer cycles
 ++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-**Number of internal building cycles** By default, the Buccaneer performs 3 cycles for a "first Buccaneer cycle" and 2 cycles for a "subsequent Buccaneer cycle" of finding, growing and sequencing protein chains. It can be set up to 50 if after the defalt number of cycles are not enough to complete the final model.
+**Number of internal building cycles**. By default, Buccaneer performs 3 cycles for the "first Buccaneer cycle" and 2 cycles for all "subsequent Buccaneer cycles" of finding, growing and sequencing protein chains. It can be increased to 50 if the default number of cycles is not sufficient for completing the final model.
 
-**Use the correlation target function** for growing new chains and for sequencing. In this function the likelihood target is used for identifying protein features.This is less effective for initial building, but better for model completion.
+**Use the correlation target function** for growing new chains and sequencing. This function uses the likelihood target for identifying protein features, which is less efficient at the initial building steps but works better for model completion.
 
-**Assign sequence when found match is** **probable** used by default, sequences are docked if the match is reasonably good. This can be changed to **definite** if sequence very good matches, or to **possible** if sequence any plausible match.
+**Assign sequence when found match is**: **probable** is used by default, which corresponds to the situation when sequences are docked if the match to electron density is estimated as reasonably good. This can be changed to **definite**, causing sequence docking to occur only in case of fairly good matches, or to **possible** for performing sequence docking at virtually any plausible match.
 
 ------------------
 General parameters
 ------------------
 
-**Truncate data beyond resolution limit [Å]**. Use of high resolution data in Buccaneer makes the calculation slower and more memory-consuming, and does not contribute signficantly to the quality of the final model. Therefore, by default, data beyond 2.0Å is truncated, unless you change this value.
+**Truncate data beyond resolution limit [Å]**. Using high resolution data in Buccaneer makes it slower and more memory-consuming, yet it does not contribute signficantly to the quality of the final model. Therefore, by default, reflection data is truncated beyond 2.0Å, unless you change this value.
 
-**Residue name for unsequenced residues** you may set the name which will be given to newly built residues. The default is 'UNK', change this to 'ALA' if you need to use the model in a program which doesn't recognise 'UNK'
+**Residue name for unsequenced residues** you may set the name which will be given to newly built residues of unrecognised type. The default is 'UNK', change this to 'ALA' if you need to use the built model in a program which doesn't recognise 'UNK' (this should not be required in CCP4 Cloud).
 
-------------------------
-Reference structure data
-------------------------
+-------------------
+Reference structure
+-------------------
 
-It is important that the search target function should represent the features to be identified in the target electron density map as well as possible. As a result, the electron density target function is generated from scratch for every calculation. A known, reference structure, for which an atomic model is used.
+Reference structure is used for generating search target functions of various structural features to be identified in electron density map. Any reasonable-quality PDB structure with sufficient structural diversity and available reflection data may be taken as a reference.
 
-**Library reference structure to use** option allows you to change the buccaneer reference structure. 
+**Library reference structure to use** option allows you to change the buccaneer reference structure; ``1tqw`` is used by default and hardly needs changing. 
 
 Futher refinement is performed by Refmac, read more about :doc:`Refmac Parameters <doc.task.Refmac>`
 

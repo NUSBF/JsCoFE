@@ -1,0 +1,11 @@
+===============================
+Prepare MR Ensemble from Models
+===============================
+
+**MR Ensembles** are superposed sets of sufficiently similar MR models the use of which often leads to a higher success rate comparing to the use of MR Search Models. This task form ensemble from the given models.
+
+-----------
+Trim levels
+-----------
+
+By default, the task will generate untrimmed ensemble and ensembles with 100%, 80%, 60%, and 40% best matching residue alignment. You may change the trim level by giving a comma-separated list of the trims. 

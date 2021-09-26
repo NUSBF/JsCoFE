@@ -420,7 +420,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
         __server_queue.shift();  // request completed
         __process_network_indicators();
 
-        try {
+        // try {
           var rsp = jQuery.parseJSON ( rdata );
           if (checkVersionMatch(rsp,false))  {
             var response = jQuery.extend ( true, new Response(), rsp );
@@ -434,10 +434,10 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
             if (function_always)
               function_always(0,response.data);
           }
-        } catch(err) {
-          console.log ( ' >>> error catch in __server_request.done: ' + err );
-          console.log ( ' >>> rdata = ' + rdata );
-        }
+        // } catch(err) {
+        //   console.log ( ' >>> error catch in __server_request.done: ' + err );
+        //   console.log ( ' >>> rdata = ' + rdata );
+        // }
 
         processServerQueue();
 

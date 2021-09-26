@@ -1,0 +1,16 @@
+=======================================
+Find and prepare MR models with MrParse
+=======================================
+
+
+MrParse takes a protein sequence file and searches for homologs using `PHMMER <http://hmmer.org/>`_ for searching sequence databases for sequence homologs, and for making sequence alignments. It implements methods using probabilistic models called profile hidden Markov model, which is often considered to be the most sensitive sequence-comparison method.
+
+
+
+**REFERENCES**
+
+`Durbin, R., Eddy, S. R., Krogh, A., and Mitchison, G. J. (1998) Biological Sequence Analysis: Probabilistic Models of Proteins and Nucleic Acids. Cambridge University Press ; <https://www.cambridge.org/core/books/biological-sequence-analysis/921BB7B78B745198829EF96BC7E0F29D>`_
+
+`Söding J. (2005) Protein homology detection by HMM-HMM comparison. Bioinformatics 21: 951-960. PMID: 15531603 <https://www.ncbi.nlm.nih.gov/pubmed/15531603>`_
+
+`Zimmermann L, Stephens A, Nam SZ, Rau D, Kübler J, Lozajic M, Gabler F, Söding J, Lupas AN. (2018) A Completely Reimplemented MPI Bioinformatics Toolkit with a New HHpred Server at its Core. Alva V. J Mol Biol. S0022-2836(17)30587-9. <http://www.sciencedirect.com/science/article/pii/S0022283617305879>`_
