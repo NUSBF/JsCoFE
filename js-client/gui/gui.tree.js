@@ -354,7 +354,9 @@ Tree.prototype.insertNode = function ( parent_node,text,icon_uri,treeNodeCustomI
     node = $.extend ( node,snode );
     node.children = [];          // this gets lost, duplicate, jstree bug
     if (parent_node.children.length>0)  {
+      $(this.root.element).jstree(true).hide_node(parent_node.children);
       $(this.root.element).jstree(true).move_node(parent_node.children,node,0,false,false);
+      // $(this.root.element).jstree(true).show_node(parent_node.children);
       node.children = parent_node.children;
       for (var i=0;i<node.children;i++)  {
         node.children[i].parentId = node.id;

@@ -873,9 +873,11 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
           task.id     = rdata.jobIds[0];
           node.dataId = task.id;
           tree.projectData.desc.jobCount = task.id;
+          // console.log ( ' >>> ' + node.children.length );
           if (onAdd_func)  {
-            if (insert_bool)  onAdd_func ( 1 );
-                        else  onAdd_func ( 0 );
+            onAdd_func ( Math.min(node.children.length,1) );
+            // if (insert_bool)  onAdd_func ( 1 );
+            //             else  onAdd_func ( 0 );
           }
           tree.openJob ( dataBox,parent_page );
           // if (insert_bool)
