@@ -6,5 +6,6 @@ Validation, Analysis and Deposition
     :maxdepth: 2
     
     doc.task.Zanuda
+    doc.task.Privateer
     doc.task.PISA
     

@@ -49,7 +49,7 @@
         
   <section id="automatic-model-building-with-buccaneer">
 <h1><span class="section-number">10.5. </span>Automatic Model Building with Buccaneer<a class="headerlink" href="#automatic-model-building-with-buccaneer" title="Permalink to this headline">¶</a></h1>
-<p>Buccaneer is used for automated model building or rebuilding a molecular replacement model in electron density map using a likelihood-based density target approach. It’s advantageous at resolutions of worse than 2.5Å, nevertheless, it may be used at a higher resolution.</p>
+<p>Buccaneer is used for automated model building or rebuilding a molecular replacement model in electron density map using a likelihood-based density target approach. The approach is advantageous at resolutions 2.5Å and lower, but may be used at a higher resolutions just as well.</p>
 <p>Buccaneer performs model building in 10 stages:</p>
 <ol class="arabic simple">
 <li><dl class="simple">
@@ -58,7 +58,7 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Grow them into chain fragments</dt><dd><p><em>The candidate C-alphas or input chains (*fixed model</em>) are grown by adding residues at either end, according to the density*</p>
+<dt>Grow them into chain fragments</dt><dd><p><em>The candidate C-alphas or input chains (*fixed model</em>) are grown by adding residues at either end, as suggested by the density*</p>
 </dd>
 </dl>
 </li>
@@ -73,7 +73,7 @@
 </dl>
 </li>
 <li><dl class="simple">
-<dt>Sequence the chains (i.e. dock sequence)</dt><dd><p><em>Likelihood comarison between the density of each residue in the work structure and the residues of the reference structure (*model to aid sequencing</em>) allows sequence to be assigned to longer fragments*</p>
+<dt>Sequence the chains (i.e. dock sequence)</dt><dd><p><em>Likelihood comparison between the density of each residue in the work structure and the residues of the reference structure (*model to aid sequencing</em>) allows sequence to be assigned to longer fragments*</p>
 </dd>
 </dl>
 </li>
@@ -103,58 +103,58 @@
 </dl>
 </li>
 </ol>
-<p>The Buccaneer other be used for “Molecular Replacement” or “Experimental phasing” model building.</p>
+<p>Buccaneer can build structures using phases obtained through both <em>Molecular Replacement</em> and <em>Experimental phasing</em>, using the corresponding intrinsic modes. In CCP4 Cloud, the phasing type is recognised automatically, and Buccaneer is put into the appropriate mode without additional user’s actions.</p>
 <p><strong>Molecular replacement mode</strong></p>
-<p>In this mode, you will need to provide a molecular replacement model. There are three options for use model to place and name chains:</p>
+<p>In this mode, Buccaneer requires atomic model used for <em>Molecular Replacement</em>. The model is used for placing and naming chans, with the following additional options:</p>
 <ul>
-<li><p>In <strong>nothing else</strong>  option the molecular replacement model will not be used for model building.</p>
+<li><p><strong>nothing else</strong>:  MR model is not used for anything else.</p>
 <blockquote>
 <div><p>This minimizes the possibility of bias, at the expense of slower building and often a less complete model.</p>
 </div></blockquote>
 </li>
-<li><p>The <strong>seed chain growing</strong> option takes isolated residues from the molecular replacement model and uses them as starting points for growing a new model.</p>
+<li><p><strong>seed chain growing</strong>: isolated residues from the model are used as starting points for growing a new model.</p>
 <blockquote>
-<div><p>This usually produces a fairly complete model without significant bias, and should be used for most cases.</p>
+<div><p>This usually produces a fairly complete model without significant bias, and should be used in most cases.</p>
 </div></blockquote>
 </li>
-<li><p>The <strong>provide an initial model</strong> option uses most of the molecular replacement model as initial fragments for building.</p>
+<li><p><strong>provide an initial model</strong>: most of the model is used as a set of initial fragments for building.</p>
 <blockquote>
 <div><p>This may be useful when the initial map is too poor for reliable building, but the resulting model is more biased towards the molecular replacement model.</p>
 </div></blockquote>
 </li>
 </ul>
-<p>You may also provide the <strong>Fixed model</strong> containing an initial model to extend.</p>
-<p>You may also choose the <strong>Model to aid sequencing</strong> containing a model with known residues to help with sequencing.</p>
+<p>You may also provide the <strong>Fixed model</strong> containing an initial model to extend. Note that this model should be correctly positioned in electron density.</p>
+<p>In addition, you may supply the <strong>Model to aid sequencing</strong>, which is a model with known residues to help the residue type assignment.</p>
 <p><code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">following</span> <span class="pre">information</span> <span class="pre">are</span> <span class="pre">applicable</span> <span class="pre">for</span> <span class="pre">both</span> <span class="pre">“Molecular</span> <span class="pre">Replacement”</span> <span class="pre">and</span> <span class="pre">“Experimental</span> <span class="pre">phasing”</span> <span class="pre">Buccaneer`s</span> <span class="pre">modes</span></code></p>
 <section id="options">
 <h2><span class="section-number">10.5.1. </span>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
-<p><strong>Anisotropy correction</strong> applies a correction to the data to remove directional dependence in diffraction quality. <strong>This should use by default</strong></p>
+<p><strong>Anisotropy correction</strong> attempts to remove directional dependence in diffraction data. <strong>This should use by default</strong></p>
 <p><strong>Build Selenomethionine (MSE istead of MET)</strong> option should be chosen if selenomethionine is present.</p>
-<p><strong>Number of building/refinement cycles</strong> may be set more than 5(default number) if a first attemt end up with an incomplete model.</p>
+<p><strong>Number of building/refinement cycles</strong> may be set more than 5(default number) if first attemt ends up with an incomplete model.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The chance a benefit in using more than 20 cycles is really small</p>
+<p>The chance to benefit from using more than 20 cycles is really small</p>
 </div>
-<p><strong>Use fastes methods</strong> option shorten the job running time without loss in effectiveness. With low resolution data turning this off may lead to better results.</p>
+<p><strong>Use fastest methods</strong> option shortens the job running time without a loss in quality of obtained results in most cases. In case of low resolution data, turning this option off may produce better results.</p>
 </section>
 <section id="model-building-parameteres">
 <h2><span class="section-number">10.5.2. </span>Model Building Parameteres<a class="headerlink" href="#model-building-parameteres" title="Permalink to this headline">¶</a></h2>
 <section id="parameters-for-first-and-subsequent-buccaneer-cycles">
 <h3><span class="section-number">10.5.2.1. </span>Parameters for first and subsequent Buccaneer cycles<a class="headerlink" href="#parameters-for-first-and-subsequent-buccaneer-cycles" title="Permalink to this headline">¶</a></h3>
-<p><strong>Number of internal building cycles</strong> By default, the Buccaneer performs 3 cycles for a “first Buccaneer cycle” and 2 cycles for a “subsequent Buccaneer cycle” of finding, growing and sequencing protein chains. It can be set up to 50 if after the defalt number of cycles are not enough to complete the final model.</p>
-<p><strong>Use the correlation target function</strong> for growing new chains and for sequencing. In this function the likelihood target is used for identifying protein features.This is less effective for initial building, but better for model completion.</p>
-<p><strong>Assign sequence when found match is</strong> <strong>probable</strong> used by default, sequences are docked if the match is reasonably good. This can be changed to <strong>definite</strong> if sequence very good matches, or to <strong>possible</strong> if sequence any plausible match.</p>
+<p><strong>Number of internal building cycles</strong>. By default, Buccaneer performs 3 cycles for the “first Buccaneer cycle” and 2 cycles for all “subsequent Buccaneer cycles” of finding, growing and sequencing protein chains. It can be increased to 50 if the default number of cycles is not sufficient for completing the final model.</p>
+<p><strong>Use the correlation target function</strong> for growing new chains and sequencing. This function uses the likelihood target for identifying protein features, which is less efficient at the initial building steps but works better for model completion.</p>
+<p><strong>Assign sequence when found match is</strong>: <strong>probable</strong> is used by default, which corresponds to the situation when sequences are docked if the match to electron density is estimated as reasonably good. This can be changed to <strong>definite</strong>, causing sequence docking to occur only in case of fairly good matches, or to <strong>possible</strong> for performing sequence docking at virtually any plausible match.</p>
 </section>
 </section>
 <section id="general-parameters">
 <h2><span class="section-number">10.5.3. </span>General parameters<a class="headerlink" href="#general-parameters" title="Permalink to this headline">¶</a></h2>
-<p><strong>Truncate data beyond resolution limit [Å]</strong>. Use of high resolution data in Buccaneer makes the calculation slower and more memory-consuming, and does not contribute signficantly to the quality of the final model. Therefore, by default, data beyond 2.0Å is truncated, unless you change this value.</p>
-<p><strong>Residue name for unsequenced residues</strong> you may set the name which will be given to newly built residues. The default is ‘UNK’, change this to ‘ALA’ if you need to use the model in a program which doesn’t recognise ‘UNK’</p>
+<p><strong>Truncate data beyond resolution limit [Å]</strong>. Using high resolution data in Buccaneer makes it slower and more memory-consuming, yet it does not contribute signficantly to the quality of the final model. Therefore, by default, reflection data is truncated beyond 2.0Å, unless you change this value.</p>
+<p><strong>Residue name for unsequenced residues</strong> you may set the name which will be given to newly built residues of unrecognised type. The default is ‘UNK’, change this to ‘ALA’ if you need to use the built model in a program which doesn’t recognise ‘UNK’ (this should not be required in CCP4 Cloud).</p>
 </section>
-<section id="reference-structure-data">
-<h2><span class="section-number">10.5.4. </span>Reference structure data<a class="headerlink" href="#reference-structure-data" title="Permalink to this headline">¶</a></h2>
-<p>It is important that the search target function should represent the features to be identified in the target electron density map as well as possible. As a result, the electron density target function is generated from scratch for every calculation. A known, reference structure, for which an atomic model is used.</p>
-<p><strong>Library reference structure to use</strong> option allows you to change the buccaneer reference structure.</p>
+<section id="reference-structure">
+<h2><span class="section-number">10.5.4. </span>Reference structure<a class="headerlink" href="#reference-structure" title="Permalink to this headline">¶</a></h2>
+<p>Reference structure is used for generating search target functions of various structural features to be identified in electron density map. Any reasonable-quality PDB structure with sufficient structural diversity and available reflection data may be taken as a reference.</p>
+<p><strong>Library reference structure to use</strong> option allows you to change the buccaneer reference structure; <code class="docutils literal notranslate"><span class="pre">1tqw</span></code> is used by default and hardly needs changing.</p>
 <p>Futher refinement is performed by Refmac, read more about <a class="reference internal" href="doc.task.Refmac.html"><span class="doc">Refmac Parameters</span></a></p>
 <p>Read more about Buccaneer <a class="reference external" href="http://www.ysbl.york.ac.uk/~cowtan/buccaneer/buccaneer.html">here</a></p>
 <p><strong>REFERENCES</strong></p>

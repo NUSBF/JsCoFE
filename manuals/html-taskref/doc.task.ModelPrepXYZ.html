@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FCVD2T7BGM');
+    </script>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>6.1.2. Prepare MR Model(s) from Coordinate data &#8212; CCP4 Cloud 1.6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="6.1.3. Prepare MR Model(s) from Alignment data" href="doc.task.ModelPrepAlgn.html" />
+    <link rel="prev" title="6.1.1. Find and prepare MR models with MrParse" href="doc.task.MrParse.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>6.1.2. Prepare MR Model(s) from Coordinate data</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="doc.task.MrParse.html"><span class="section-number">6.1.1. </span>Find and prepare MR models with MrParse</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="doc.task.ModelPrepAlgn.html"><span class="section-number">6.1.3. </span>Prepare MR Model(s) from Alignment data</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="prepare-mr-model-s-from-coordinate-data">
+<h1><span class="section-number">6.1.2. </span>Prepare MR Model(s) from Coordinate data<a class="headerlink" href="#prepare-mr-model-s-from-coordinate-data" title="Permalink to this headline">¶</a></h1>
+<p>This task constructs MR Model as a combination of a target sequence and atomic coordinates. The coordinates are usually modified (pruned) in order to remove parts that do not correspond to the target sequence. A few modification protocols are available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><em>Unmodified</em>: atomic coordinates are not altered in any way</p></li>
+<li><p><em>Clip</em>: water molecules and ligands are removed</p></li>
+<li><p><em>Molrep</em>: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
+<a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/">Molrep</a></p></li>
+<li><p><em>Sculptor</em>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+<code class="docutils literal notranslate"><span class="pre">Phaser.Sculptor</span></code> (<em>cf.</em> <a class="reference external" href="https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement">here</a>)</p></li>
+<li><p><em>Chainsaw</em>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+<a class="reference external" href="https://doi.org/10.1107/S0021889808006985">Chainsaw</a></p></li>
+<li><p><em>Polyalanine</em>: all residues are replaced with polyalanines</p></li>
+</ul>
+</div></blockquote>
+<p>The resulting models can be used in both <code class="docutils literal notranslate"><span class="pre">Phaser</span></code> and <code class="docutils literal notranslate"><span class="pre">Molrep</span></code> tasks, but the outcome may be different, especially in difficult cases.</p>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="doc.task.MrParse.html"><span class="section-number">6.1.1. </span>Find and prepare MR models with MrParse</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="doc.task.ModelPrepAlgn.html"><span class="section-number">6.1.3. </span>Prepare MR Model(s) from Alignment data</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

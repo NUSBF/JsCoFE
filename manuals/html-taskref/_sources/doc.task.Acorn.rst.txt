@@ -2,9 +2,10 @@
 Phase Refinement and Dynamic Density Modification with ACORN
 ============================================================
 
+ 
 The ACORN system was originally developed as a means of *ab initio* solution of protein structures when atomic resolution data were available.
 
-At the heart of ACORN lies a density modification method called DDM (Dynamic Density Modification). DDM operates on any density map containing a minimum of information. Its action is to progressively enhance positive features of the map and to reduce, at the same time, undesired noise and bias towards very small values. In essence, this is a Fourier recycling process whose main engine is density modification. An initial set of phases is used to generate a map for DDM using only the strong reflections, i.e. those with **E (normalized structure factors)**  > 1.2, which is then Fourier transformed to produce a new set of phases. The initial set of phases can go through a process which employs a Patterson sum function. The quality of the new set of phases derived by DDM is judged by a correlation coefficient, CC. The cycling process will end when CC stops increasing or the magnitude of the average phase change between two consecutive cycles is less than 0.5 degrees. **CC** **greater than 0.150 usually indicates a successful refinement**. Sometimes the process gets trapped in loops where CC does not increase and the average phase shift is still large. In such cases the whole set of phases is shaken up by going through one cycle of a real-space version of the Sayre equation. 
+At the heart of ACORN lies a density modification method called DDM (Dynamic Density Modification). DDM operates on any density map containing a minimum of information. Its action is to progressively enhance positive features of the map and to reduce, at the same time, undesired noise and bias towards very small values. In essence, this is a Fourier recycling process whose main engine is density modification. An initial set of phases is used to generate a map for DDM using only the strong reflections, i.e. those with **E (normalized structure factors)**  > 1.2, which is then Fourier transformed to produce a new set of phases. The initial set of phases can go through a process which employs a Patterson sum function. The quality of the new set of phases derived by DDM is judged by a correlation coefficient, CC. The cycling process will end when CC stops increasing or the magnitude of the average phase change between two consecutive cycles is less than 0.5 degrees. **CC** **greater than 0.150 usually indicates a successful refinement**. Sometimes the process gets trapped in loops where CC does not increase and the average phase shift is still large. In such cases the whole set of phases is shaken up by going through one cycle of a real-space version of the Sayre equation.
 
 ------------------------------
 The general structure of ACORN
@@ -16,7 +17,7 @@ The refections are divided into three groups (strong, medium and weak) according
 
 **The medium refections (0.1 < E < 1.2)** are used to calculate a correlation coefficient (CC) for each potential solution of DDM. These groups are default settings and can be changed by the user.
 
-**The weak refections (E < 0.1)** are used in Sayre-equation refinement (SER). 
+**The weak refections (E < 0.1)** are used in Sayre-equation refinement (SER).
 
 An important feature of ACORN is that the phase-refinement procedure is automatic and requires no user intervention. It is therefore necessary to have some check that the refinement procedure is actually producing better phases and also to know when the refinement process has terminated. To this end, ACORN uses a simple but amazingly efficient monitor of progress, namely CCs, the calculation of the correlation coefficient for the small-amplitude E values.
 
@@ -24,11 +25,11 @@ An important feature of ACORN is that the phase-refinement procedure is automati
 Dynamic density modification (DDM)
 ----------------------------------
 
-    *eliminates the negative densities, and truncates the highest density* 
+    *eliminates the negative densities, and truncates the highest density*
 
 Each cycle of DDM starts from a set of phases with weights and calculates a weighted E map with the strong E values. The map is modified and back-transformed by FFT to obtain a new set of structure factors. At the end of one cycle a new set of phases with weights is calculated for the next cycle and the CC is calculated for medium reflections to check if a solution has been found.
 
-The DDM process is based on the simple premise that, outside the region occupied by the fragment, the higher the map density the greater the probability that the position is occupied by true electron density from the structure. 
+The DDM process is based on the simple premise that, outside the region occupied by the fragment, the higher the map density the greater the probability that the position is occupied by true electron density from the structure.
 
 -------------------------
 Sayre equation refinement
@@ -47,4 +48,4 @@ When the CC for the medium-strength reflections no longer increases, or the phas
 
 `J. Foadi (2003) General concepts underlying ACORN, a computer program for the solution of protein structures, Crystallography Reviews, 9:1, 43-65, <https://doi.org/10.1080/0889311031000069777>`_
 
-`Yao JX, Dodson EJ, Wilson KS, Woolfson MM. ACORN: a review. Acta Crystallogr D Biol Crystallogr. 2006;62:901–908. <https://doi.org/10.1107/S0907444906008122>`_ 
+`Yao JX, Dodson EJ, Wilson KS, Woolfson MM. ACORN: a review. Acta Crystallogr D Biol Crystallogr. 2006;62:901–908. <https://doi.org/10.1107/S0907444906008122>`_

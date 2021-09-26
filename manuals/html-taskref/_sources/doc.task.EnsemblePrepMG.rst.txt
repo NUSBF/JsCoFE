@@ -1,0 +1,13 @@
+===============================
+Prepare MR Ensemble with CCP4mg
+===============================
+
+This task starts `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ graphical viewer on your computer in a special mode, which allows you to find structural homologs to your target system, trim and ensemble them interactively with full visual control in real time. Ensembles are derived from an alignment-truncation procedure using the homologues found in the sequence-based search. To construct useful ensembles, it may be beneficial to group or cluster homologues based on their structural similarity using the CCP4mg interface, cluster grouping is presented with rainbow colouring of matches based on their `phmmer <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002195>`_ score
+
+
+
+**REFERENCES**
+
+`McNicholas, S., Potterton, E., Wilson, K.S., Noble, M.E.M. (2011) Presenting your structures: the CCP4mg molecular-graphics software. Acta Cryst. D67: 386-394 <https://doi.org/10.1107/S0907444911007281>`_
+
+`Keegan, R.M., McNicholas, S.J., Thomas, J.M.H., Simpkin, A.J., Simkovic, F., Uski, V., Ballard, C.C., Winn, M.D., Wilson, K.S., Rigden, D.J. (2018) Recent developments in MrBUMP: better search-model preparation, graphical interaction with search models, and solution improvement and assessment. Acta Cryst. D74: 167-182 <https://doi.org/10.1107/S2059798318003455>`_

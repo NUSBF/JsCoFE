@@ -13,8 +13,8 @@ The AMPLE workflow is described in the figure below `[Bibby et al. 2012] <https:
 .. image:: images/doc.task.AMPLE.png
         :scale: 50 %
         :align: center
-        
-For successful implementation of AMPLE limitations for target protein  such as >330 residues and >2.8Å resolution are required. All α-proteins are particularly favourable (80% success) and mixed α/β targets were solved in 36% of cases, but all β-proteins are presently unlikely to succeed. 
+
+For successful implementation of AMPLE limitations for target protein  such as >330 residues and >2.8Å resolution are required. All α-proteins are particularly favourable (80% success) and mixed α/β targets were solved in 36% of cases, but all β-proteins are presently unlikely to succeed.
 
 **References**
 

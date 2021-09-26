@@ -426,7 +426,7 @@ ProjectPage.prototype.addJob = function()  {
   this.selectRemark();
   if (this.start_action('add_job'))
     (function(self){
-      self.jobTree.addJob ( false,false,self,function(){
+      self.jobTree.addJob ( false,false,self,function(key){
         // self.del_btn.setDisabled ( false );
         self._set_del_button_state();
         self.end_action();
@@ -438,7 +438,7 @@ ProjectPage.prototype.addJobRepeat = function()  {
   this.selectRemark();
   if (this.start_action('add_job_repeat'))
     (function(self){
-      self.jobTree.addJob ( false,true,self,function(){
+      self.jobTree.addJob ( false,true,self,function(key){
         // self.del_btn.setDisabled ( false );
         self._set_del_button_state();
         self.end_action();
@@ -450,10 +450,13 @@ ProjectPage.prototype.insertJob = function()  {
   this.selectRemark();
   if (this.start_action('insert_job'))
     (function(self){
-      self.jobTree.addJob ( true,false,self,function(){
+      self.jobTree.addJob ( true,false,self,function(key){
         // self.del_btn.setDisabled ( false );
-        self._set_del_button_state();
+        if (key!=1) // job was added or failed
+          self._set_del_button_state();
         self.end_action();
+        if (key==1)  // job was inserted
+          self.reloadTree ( false,true,null );
       });
     }(this))
 }
@@ -461,10 +464,13 @@ ProjectPage.prototype.insertJob = function()  {
 ProjectPage.prototype.addRemark = function()  {
   if (this.start_action('add_remark'))
     (function(self){
-      self.jobTree.addTask ( new TaskRemark(),true,false,self,function(){
+      self.jobTree.addTask ( new TaskRemark(),true,false,self,function(key){
         // self.del_btn.setDisabled ( false );
-        self._set_del_button_state();
+        if (key!=1)  // remark was added or failed
+          self._set_del_button_state();
         self.end_action();
+        if (key==1)  // remark was inserted
+          self.reloadTree ( false,true,null );
       });
     }(this))
 }
@@ -574,12 +580,11 @@ ProjectPage.prototype.archiveJobs = function() {
 }
 
 ProjectPage.prototype.setButtonState = function() {
-  // if (this.start_action('set_button_state'))
-  //   (function(self){
-  //     self._set_button_state();
-  //     self.end_action();
-  //   }(this))
-  this._set_button_state();
+  if (this.start_action('set_button_state'))
+    (function(self){
+      self._set_button_state();
+      self.end_action();
+    }(this))
 }
 
 ProjectPage.prototype.openJob = function() {
@@ -623,7 +628,7 @@ ProjectPage.prototype._set_button_state = function() {
   var child_tasks = this.jobTree.getChildTasks ( node );
   var has_remark  = false;
   if (child_tasks.length==1)
-    has_remark = child_tasks[0].state == job_code.remark;
+    has_remark = (child_tasks[0].state==job_code.remark);
 
   if (node)
     dsel = (node.parentId!=null);
@@ -874,10 +879,11 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
                 self.addJob();
               break;
         case start_mode.migrate :
-                job_tree.addTask ( new TaskMigrate(),false,false,self,function(){
-                  self._set_del_button_state();
-                  //self.del_btn.setDisabled ( false );
-                });
+                job_tree.addTask ( new TaskMigrate(),false,false,self,
+                  function(key){
+                    self._set_del_button_state();
+                    //self.del_btn.setDisabled ( false );
+                  });
               break;
         case start_mode.standard :
         case start_mode.expert   :  // legacy

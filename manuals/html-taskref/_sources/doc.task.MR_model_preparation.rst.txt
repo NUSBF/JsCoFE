@@ -4,52 +4,28 @@ Molecular Replacement Models and Ensembles
 
 **MR Search Models** are structural templates prepared for the use by molecular replacement programs (Phaser and Molrep). MR model may coincide with the homologous structure, however, in many cases it is represented by a selected part of it, which is expected to be most close to target molecule. In CCP4 Cloud, MR search model is associated with sequence it represents.
 
-**MR Ensembles** are superposed sets of sufficiently similar MR models, corresponding to the same target sequence, the use of which often leads to a higher success rate comparing to the use of MR Search Models. In CCP4 Cloud, MR ensemble is associated with tartget sequence it represents.
+A well-chosen and optimised search model has two key advantages:
+
+    1. Facilitates the work MR program of finding the correct position for that search model and hence sensible starting phases
+
+    2. Facilitates quicker and easier model building and refinement post MR
+
+In MR, the coordinates of a search model are converted to a calculated structure-factor set for comparison with the experimental data. It has been known for a while that MR search models clustered and aligned into ensembles can be more effective than the individual models themselves.
+
+**MR Ensembles** are superposed sets of sufficiently similar MR models, corresponding to the same target sequence, the use of which often leads to a higher success rate comparing to the use of MR Search Models. In CCP4 Cloud, MR ensemble is associated with target sequence it represents.
 
 MR Search Model(s) and/or MR Ensemble(s) must be prepared before molecular replacement with either Phaser or Molrep. CCP4 Cloud contains several tasks for this purpose.
 
-.. _model-coordinates:
---------------------------------------------
-MR Model preparation from atomic coordinates
---------------------------------------------
+.. toctree::
+    :maxdepth: 2
 
-This task constructs MR Model as a combination of target sequence and atomic coordinates. The coordinates are usually modified (pruned) in order to remove parts that do not correspond to target sequence. A few modification protocols are available:
-
-    * *Unmodified*: atomic corrdinates are not altered in any way
-    * *Clip*: water molecules and ligands are removed
-    * *Molrep*: modification protocol, based on the comparison of target sequence and atomic coordinates, used by
-      `Molrep <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/>`_
-    * *Sculptor*: modification protocols, based on the comparison of target sequence and atomic coordinates, provided by
-      ``Phaser.Sculptor`` (*cf.* `here <https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement>`_)
-    * *Chainsaw*: modification protocols, based on the comparison of target sequence and atomic coordinates, provided by
-      `Chainsaw <https://scripts.iucr.org/cgi-bin/paper?dd5033>`_
-    * *Polyalanine*: all residues are replaced with polyalanines 
-
-The resulting models can be used in both ``Phaser`` and ``Molrep`` tasks, but the outcome may be different, especially in difficult cases.
-
-.. _model-hhpred:
-------------------------------------------
-MR Model preparation from HHPRED alignment
-------------------------------------------
-
-.. _ensemble-models:
------------------------------------------------
-MR Ensemble preparation from a set of MR Models
------------------------------------------------
-
-.. _ensemble-coordinates:
---------------------------------------------------------
-MR Ensemble preparation from a set of atomic coordinates
---------------------------------------------------------
-
-.. _ensemble-ccp4mg:
-------------------------------------------------
-Interactive MR Ensemble preparation with CCP4 MG
-------------------------------------------------
-
-This task starts CCP4 MG graphical viewer on your computer in a special mode, which allows you to find structural
-homologs to your target system, trim and ensemble them interactively with full visual control in real time. Details
-may be found `here <https://journals.iucr.org/d/issues/2018/03/00/rr5152/>`_
+    doc.task.MrParse
+    doc.task.ModelPrepXYZ
+    doc.task.ModelPrepAlgn
+    doc.task.Ensembler
+    doc.task.EnsemblePrepSeq
+    doc.task.EnsemblePrepXYZ
+    doc.task.EnsemblePrepMG
 
 
 **References**

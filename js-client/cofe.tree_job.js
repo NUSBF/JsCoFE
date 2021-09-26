@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    24.09.21   <--  Date of Last Modification.
+ *    26.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -797,11 +797,11 @@ var sel_lst = this.calcSelectedNodeIds();
       var lst2   = [];
       var nodeId = sel_lst[0];
       var node = this.node_map[nodeId];
-      if ((node.children.length==1) && this.isRemark(node.children[0].id))
+      if (('children' in node) && (node.children.length==1) && this.isRemark(node.children[0].id))
         nodeId = node.parentId;
       while (nodeId)  {
         node = this.node_map[nodeId];
-        if (node.parentId && (node.fchildren.length==0) &&
+        if (node.parentId && (node.fchildren.length==0) && ('children' in node ) &&
                              (node.children.length==1)  &&
                              (node.text.indexOf('cross-branch="1"')<0))  {
           lst1.push ( nodeId );
@@ -815,7 +815,7 @@ var sel_lst = this.calcSelectedNodeIds();
       var nodeId = sel_lst[0];
       while (nodeId)  {
         node = this.node_map[nodeId];
-        if (node.parentId && (node.fchildren.length==0) &&
+        if (node.parentId && (node.fchildren.length==0) && ('children' in node ) &&
                              (node.children.length==1) &&
                              (node.text.indexOf('cross-branch="1"')<0))  {
           lst2.push ( nodeId );
@@ -869,27 +869,31 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
     (function(tree){
 
       tree.saveProjectData ( [task],[],true, function(rdata){
-//        if ((!tree.isShared()) || tree.checkReload(tree,rdata,'add the job'))  {
         if (tree.checkReload(tree,rdata,'add the job'))  {
           task.id     = rdata.jobIds[0];
           node.dataId = task.id;
           tree.projectData.desc.jobCount = task.id;
-          tree.setText ( node,tree.makeNodeName(task) );
-          if (onAdd_func)
-            onAdd_func(0);
+          if (onAdd_func)  {
+            if (insert_bool)  onAdd_func ( 1 );
+                        else  onAdd_func ( 0 );
+          }
           tree.openJob ( dataBox,parent_page );
-          if (insert_bool)
-            window.setTimeout ( function(){
-              for (var key in tree.node_map)  {
-                var tnode = tree.node_map[key];
-                if (tnode)
-                  tree.resetNodeName ( tnode.id );
-              }
-            },100 );
+          // if (insert_bool)
+          //   window.setTimeout ( function(){
+          //     tree.emitSignal ( cofe_signals.reloadTree,rdata );
+          //   },1000 );
+          // if (insert_bool)
+          //   window.setTimeout ( function(){
+          //     for (var key in tree.node_map)  {
+          //       var tnode = tree.node_map[key];
+          //       if (tnode)
+          //         tree.resetNodeName ( tnode.id );
+          //     }
+          //   },100 );
         }
       });
 
-    }(this))
+    }(this,node))
 
   } else  {
     console.log ( 'no selection in the tree:_add_job' );
@@ -1586,7 +1590,7 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                       break;
               case job_dialog_reason.add_job :
                         dlg.tree.selectSingle ( dlg.tree.node_map[dlg.nodeId] );
-                        dlg.tree.addJob ( false,false,dlg.parent_page,function(){
+                        dlg.tree.addJob ( false,false,dlg.parent_page,function(key){
                           dlg.close();
                         });
                       break;
@@ -1612,9 +1616,10 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                             job_dialog.run_btn.click();  // start automatically
                           };
                         }
-                        dlg.tree._add_job ( false,options,dataBox,dlg.parent_page,function(){
-                          dlg.close();
-                        });
+                        dlg.tree._add_job ( false,options,dataBox,dlg.parent_page,
+                          function(key){
+                            dlg.close();
+                          });
                       break;
               default : ;
             }
@@ -1999,12 +2004,14 @@ JobTree.prototype.getNonRemarkParent = function ( task )  {
 
 
 JobTree.prototype.getChildTasks = function ( node )  {
-  var child_nodes = this.getChildNodes ( node );
   var tasks = [];
-  for (var i=0;i<child_nodes.length;i++)  {
-    var task = this.getTaskByNodeId ( child_nodes[i].id );
-    if (task)
-      tasks.push ( task );
+  if (node)  {
+    var child_nodes = this.getChildNodes ( node );
+    for (var i=0;i<child_nodes.length;i++)  {
+      var task = this.getTaskByNodeId ( child_nodes[i].id );
+      if (task)
+        tasks.push ( task );
+    }
   }
   return tasks;
 }

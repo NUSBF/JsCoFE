@@ -1,0 +1,22 @@
+========================================
+Prepare MR Model(s) from Coordinate data
+========================================
+
+This task constructs MR Model as a combination of a target sequence and atomic coordinates. The coordinates are usually modified (pruned) in order to remove parts that do not correspond to the target sequence. A few modification protocols are available:
+
+    * *Unmodified*: atomic coordinates are not altered in any way
+
+    * *Clip*: water molecules and ligands are removed
+
+    * *Molrep*: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
+      `Molrep <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/>`_
+
+    * *Sculptor*: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+      ``Phaser.Sculptor`` (*cf.* `here <https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement>`_)
+
+    * *Chainsaw*: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+      `Chainsaw <https://doi.org/10.1107/S0021889808006985>`_
+
+    * *Polyalanine*: all residues are replaced with polyalanines
+
+The resulting models can be used in both ``Phaser`` and ``Molrep`` tasks, but the outcome may be different, especially in difficult cases.
