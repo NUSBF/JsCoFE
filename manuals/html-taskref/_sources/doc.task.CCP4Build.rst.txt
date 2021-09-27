@@ -2,4 +2,59 @@
 Automatic Model Building with CCP4Build
 =======================================
 
-to be witten...
+CCP4Build is an automated model builder which combines several applications: CParrot, CBuccaneer, Refmac, Coot and EDStats. CCP4build explores several model building scenarios in an iterative approach with rollbacks and adjusts automatically to building in both experimental phases and phases obtained in the course of molecular replacement.
+
+------------
+Main options
+------------
+
+**Minimum number of building cycles** may be set more than 3 (default number) if the first attempt ends up with an incomplete model.
+
+**Maximum number of building cycles** should be more than the number of **minimum number of building cycles**, but can not be more than 50.
+
+**Anisotropy correction** attempts to remove directional dependence in diffraction data. *This should use by default*
+
+**Build Selenomethionine (MSE instead of MET)** option should be chosen if selenomethionine is present.
+
+**Model solvent for phase improvement** option models water molecules in course of the building if Rfree is below the given value.
+
+-------------------------
+Advanced Build Parameters
+-------------------------
+
+Refinement is the adjustment of model parameters so that the calculated structure factors match the observations as nearly as possible. **Refinements levels** differ in numbers of refinement cycles being used.
+
+  For the **"light"** level
+
+    **10** refinement cycles run at the beginning of the model building
+
+    **5** refinement circles at all intermediate stages
+
+    **10** refinement cycles at the end of the model-building procedure.
+
+  For the **"normal"** level
+  
+    **20** refinement cycles run at the beginning of the model building,
+
+    **7** refinement cycles at all intermediate stages,
+
+    **15** refinement cycles at the end of the model-building procedure.
+
+  For the **"laborious"** level
+
+    **50** refinement cycles run at the beginning of the model building,
+
+    **10** refinement cycles at all intermediate stages,
+
+    **20** refinement cycles *at the end* of the model-building procedure.
+
+Density modification is performed by :doc:`Parrot <doc.task.Parrot>`. In automated mode (*as required*) it does 2 attemp with the density modification and without and chooses the one with best R-factors.
+
+**Reconstruct side chains** in automated mode (*as required*) performs 2 runs with the reconstruction of side chains and without and chooses that mode in which R-factors are lower.
+
+**Real Space Refinement** moves the atoms into as high density as possible while minimizing geometrical distortions. In automated mode (*as required*) 2 runs with the real space refinement and without performed and the one with best R-factor is taken for further working on.
+
+**Trim built models** mode uses the ZEDCC (z-score electron density correlation coefficient) to decide whatever it should trim the model or not. If ZEDCC is high the residue would be removed from the model.
+
+.. Note::
+      ZEDCC is not an absolute value it would vary in each particular case

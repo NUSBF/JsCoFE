@@ -1536,7 +1536,8 @@ IFrame.prototype.reload = function()  {
 }
 
 IFrame.prototype.getDocument = function()  {
-  return this.element.contentDocument || this.element.contentWindow;
+  return this.element.contentWindow || this.element.contentDocument;
+  // return this.element.contentDocument || this.element.contentWindow;
   //return this.element.contentWindow || this.element.contentDocument.document ||
   //       this.element.contentDocument;
 }
