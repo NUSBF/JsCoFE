@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FCVD2T7BGM');
+    </script>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Reflection data diagnostics with Auspex plots &#8212; CCP4 Cloud 1.6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>Reflection data diagnostics with Auspex plots</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <section id="reflection-data-diagnostics-with-auspex-plots">
+<h1>Reflection data diagnostics with Auspex plots<a class="headerlink" href="#reflection-data-diagnostics-with-auspex-plots" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="http://www.auspex.de/">AUSPEX</a> is a diagnostic tool for graphical X-Ray data analysis, which enable users to visually and automatically detect ice-ring artefacts and other problems in integrated X-ray diffraction data.</p>
+<section id="ice-ring-detection">
+<h2>Ice-ring detection<a class="headerlink" href="#ice-ring-detection" title="Permalink to this headline">¶</a></h2>
+<p>If the background was poorly estimated during data integration then ice rings are visible as distinct peaks in the distribution of intensity against resolution, occurring at specific resolutions.</p>
+<a class="reference external image-reference" href="http://www.auspex.de/pathol/#1"><img alt="_images/ice_rings.jpeg" class="align-center" src="_images/ice_rings.jpeg" /></a>
+<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
+<p><em>Click on image to read more</em></p>
+</section>
+<section id="beamstop">
+<h2>Beamstop<a class="headerlink" href="#beamstop" title="Permalink to this headline">¶</a></h2>
+<p>Reflections with intensity or amplitude values near 0 at low resolution indicate that the beam stop was not masked or not masked out completely in integration.</p>
+<a class="reference external image-reference" href="http://www.auspex.de/pathol/#2"><img alt="_images/beamstop.jpeg" class="align-center" src="_images/beamstop.jpeg" style="width: 652.4px; height: 378.0px;" /></a>
+<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
+<p><em>Click on image to read more</em></p>
+</section>
+<section id="manhattan-skyline">
+<h2>Manhattan Skyline<a class="headerlink" href="#manhattan-skyline" title="Permalink to this headline">¶</a></h2>
+<a class="reference external image-reference" href="http://www.auspex.de/pathol/#3"><img alt="_images/manhattan.png" class="align-center" src="_images/manhattan.png" style="width: 621.3px; height: 437.7px;" /></a>
+<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
+<p><em>Click on image to read more</em></p>
+</section>
+<section id="missing-rings">
+<h2>Missing Rings<a class="headerlink" href="#missing-rings" title="Permalink to this headline">¶</a></h2>
+<p>If entire resolution ranges, corresponding to spheres in reciprocal space and rings on an image around the beam stop, are missing, this is typically due to masked-out ice rings.</p>
+<a class="reference external image-reference" href="http://www.auspex.de/pathol/#4"><img alt="_images/missing_rings.png" class="align-center" src="_images/missing_rings.png" style="width: 635.4px; height: 436.5px;" /></a>
+<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
+<section id="click-on-image-to-read-more">
+<h3><em>Click on image to read more</em><a class="headerlink" href="#click-on-image-to-read-more" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="missing-line">
+<h3>Missing Line<a class="headerlink" href="#missing-line" title="Permalink to this headline">¶</a></h3>
+<p>A missing line between 5.6 and 6.0 Fobs/σ(Fobs) is due to a bug in a lookup table in CTRUNCATE and TRUNCATE respectively.</p>
+<a class="reference external image-reference" href="http://www.auspex.de/pathol/#5"><img alt="_images/missing_line.png" class="align-center" src="_images/missing_line.png" /></a>
+<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
+<p><em>Click on image to read more</em></p>
+</section>
+</section>
+<section id="multiplicity-ladder">
+<h2>Multiplicity Ladder<a class="headerlink" href="#multiplicity-ladder" title="Permalink to this headline">¶</a></h2>
+<a class="reference external image-reference" href="http://www.auspex.de/pathol/#6"><img alt="_images/multiplicity.png" class="align-center" src="_images/multiplicity.png" style="width: 1080.0px; height: 521.1px;" /></a>
+<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
+<p><em>Click on image to read more</em></p>
+</section>
+<section id="separation-of-distributions">
+<h2>Separation of Distributions<a class="headerlink" href="#separation-of-distributions" title="Permalink to this headline">¶</a></h2>
+<a class="reference external image-reference" href="http://www.auspex.de/pathol/#7"><img alt="_images/separation.png" class="align-center" src="_images/separation.png" /></a>
+<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
+<p><em>Click on image to read more</em></p>
+</section>
+<section id="background-misestimation">
+<h2>Background Misestimation<a class="headerlink" href="#background-misestimation" title="Permalink to this headline">¶</a></h2>
+<p>If all intensity values are systematically too high this is due to an incorrect background estimation, which can be the result of a suboptimal background estimation during integration, or stem from a very high background during measurement, for example when the loop holding the crystal was too large, and there is diffuse scattering from the cooled liquid in which the crystal sits.</p>
+<a class="reference external image-reference" href="http://www.auspex.de/pathol/#8"><img alt="_images/background.png" class="align-center" src="_images/background.png" /></a>
+<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
+<p><em>Click on image to read more</em></p>
+</section>
+<section id="terracing">
+<h2>Terracing<a class="headerlink" href="#terracing" title="Permalink to this headline">¶</a></h2>
+<p>If there are only weak data and, depending on the data processing, discrete values of intensities, amplitudes or sigmas may become visible in plots as ‘terraced’ values. This is normal.</p>
+<a class="reference external image-reference" href="http://www.auspex.de/pathol/#9"><img alt="_images/lines.png" class="align-center" src="_images/lines.png" style="width: 817.2px; height: 605.6px;" /></a>
+<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
+<p><em>Click on image to read more</em></p>
+<p><strong>REFERENCES</strong></p>
+<p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S205979831700969X">Thorn, A., Parkhurst, J., Emsley, P., Nicholls, R. A., Vollmar, M., Evans, G. &amp; Murshudov, G. N. (2017) AUSPEX: a graphical tool for X-ray diffraction data analysis. Acta Cryst. D73: 729-737;</a></p>
+<p><a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
+</section>
+</section>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

@@ -179,6 +179,10 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
   this.addWidget ( this.display );
   $(this.element).css({'overflow':'hidden'});
 
+  this.history_length   = -1;
+  this.history_position = -1;
+  this.history_control  = 0;
+
   document.body.appendChild ( this.element );
 //  document.body.style.fontSize = '16px';
 
@@ -202,7 +206,16 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     height  : h0,
     modal   : false,
     buttons : [
-      { text : 'Back'
+      { text : 'Back',
+        id   : 'back_' + Date.now()
+        //icons: { primary: 'ui-icon-home' },
+      },
+      { text : 'Forward',
+        id   : 'forward_' + Date.now()
+        //icons: { primary: 'ui-icon-home' },
+      },
+      { text : 'Return',
+        id   : 'return_' + Date.now()
         //icons: { primary: 'ui-icon-home' },
       }
     ]
@@ -218,7 +231,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
           onDoNotShowAgain_func ( 1,helpURL );
         }
       },
-      { text : "Ok",
+      { text : "Close",
         click: function() {
           $( this ).dialog( "close" );
           onDoNotShowAgain_func ( 2,helpURL );
@@ -227,7 +240,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     ]);
   } else  {
     this.options.buttons = this.options.buttons.concat ([
-      { text : "Ok",
+      { text : "Close",
         //icon : image_path('add'),
         //icons: { primary: 'ui-icon-closethick' },
         click: function() {
@@ -245,11 +258,59 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     this.options.height = h0 + 116;
   }
 
+  var loading_msg = '<html><body><h2>Loading ...</h2></body></html>';
+
   (function(dlg){
+
+    dlg.options.buttons[0].click = function() {
+      // var history = dlg.display.getDocument().history;
+      // alert ( ' >>> ' + history.length );
+      // if (history.length>0)
+      //   history.back();
+      if (dlg.history_position>0)  {
+        dlg.history_position--;
+        dlg.history_control = -1;
+        try {
+          dlg.display.getDocument().history.back();
+        } catch(e) {
+          dlg.history_position++;
+          $('#' + dlg.options.buttons[0].id).button ( 'disable' );
+          $('#' + dlg.options.buttons[1].id).button ( 'disable' );
+        }
+        // window.setTimeout ( function(){
+        //   dlg.display.loadPage ( dlg.history[dlg.history_position] );
+        // },100 );
+      }
+    };
+
+    dlg.options.buttons[1].click = function() {
+      if (dlg.history_position<dlg.history_length)  {
+        dlg.history_position++;
+        dlg.history_control = 1;
+        try {
+          dlg.display.getDocument().history.forward();
+        } catch(e) {
+          dlg.history_position--;
+          $('#' + dlg.options.buttons[0].id).button ( 'disable' );
+          $('#' + dlg.options.buttons[1].id).button ( 'disable' );
+        }
+        // dlg.display.loadPage ( dlg.history[dlg.history_position-1] );
+      }
+    };
+
+    dlg.options.buttons[2].click = function() {
+      dlg.history_length   = -1;
+      dlg.history_position = -1;
+      dlg.display.loadPage ( helpURL );
+    };
+
     dlg.options.create = function(event,ui) {
-      dlg.display.setHTML ( '<html><body><h2>Loading ...</h2></body></html>' );
+      dlg.display.setHTML ( loading_msg );
       dlg.resizeDisplay ( w0,h0 );
+      dlg.history_length   = -2;
+      dlg.history_position = -2;
     }
+
   }(this))
 
   var dialog = $(this.element).dialog ( this.options );
@@ -257,10 +318,6 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     dialog.siblings('.ui-dialog-titlebar').remove();
 
   (function(dlg){
-
-    dlg.options.buttons[0].click = function() {
-      dlg.display.loadPage ( helpURL );
-    };
 
     $(dlg.element).on ( 'dialogresize', function(event,ui){
       dlg.resizeDisplay ( dlg.width_px(),dlg.height_px() );
@@ -280,6 +337,28 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
       // if (__any_mobile_device)
       //   dialog.siblings('.ui-dialog-titlebar').remove();
 
+      // alert ( ' >>> ' + dlg.display.getDocument().location );
+
+      if (!dlg.history_control)  {
+        dlg.history_position++;
+        dlg.history_length = dlg.history_position;
+        // dlg.history.push ( dlg.display.getDocument().location.href );
+        // dlg.history.push ( 'xx' );
+      }
+      dlg.history_control = 0;
+
+      if (dlg.history_position>0)  {
+        $('#' + dlg.options.buttons[0].id).button ( 'enable'  );
+        $('#' + dlg.options.buttons[2].id).button ( 'enable'  );
+      } else  {
+        $('#' + dlg.options.buttons[0].id).button ( 'disable' );
+        $('#' + dlg.options.buttons[2].id).button ( 'disable' );
+      }
+
+      if (dlg.history_position<dlg.history_length)
+            $('#' + dlg.options.buttons[1].id).button ( 'enable'  );
+      else  $('#' + dlg.options.buttons[1].id).button ( 'disable' );
+
       dlg.resizeDisplay ( w0,h0 );
 
     });
@@ -291,7 +370,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
 
     window.setTimeout ( function(){
       dlg.display.loadPage ( helpURL );
-    },0);
+    },10);
 
   }(this))
 

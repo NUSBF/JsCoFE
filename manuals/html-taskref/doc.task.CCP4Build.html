@@ -49,7 +49,47 @@
         
   <section id="automatic-model-building-with-ccp4build">
 <h1><span class="section-number">10.4. </span>Automatic Model Building with CCP4Build<a class="headerlink" href="#automatic-model-building-with-ccp4build" title="Permalink to this headline">¶</a></h1>
-<p>to be witten…</p>
+<p>CCP4Build is an automated model builder which combines several applications: CParrot, CBuccaneer, Refmac, Coot and EDStats. CCP4build explores several model building scenarios in an iterative approach with rollbacks and adjusts automatically to building in both experimental phases and phases obtained in the course of molecular replacement.</p>
+<section id="main-options">
+<h2><span class="section-number">10.4.1. </span>Main options<a class="headerlink" href="#main-options" title="Permalink to this headline">¶</a></h2>
+<p><strong>Minimum number of building cycles</strong> may be set more than 3 (default number) if the first attempt ends up with an incomplete model.</p>
+<p><strong>Maximum number of building cycles</strong> should be more than the number of <strong>minimum number of building cycles</strong>, but can not be more than 50.</p>
+<p><strong>Anisotropy correction</strong> attempts to remove directional dependence in diffraction data. <em>This should use by default</em></p>
+<p><strong>Build Selenomethionine (MSE instead of MET)</strong> option should be chosen if selenomethionine is present.</p>
+<p><strong>Model solvent for phase improvement</strong> option models water molecules in course of the building if Rfree is below the given value.</p>
+</section>
+<section id="advanced-build-parameters">
+<h2><span class="section-number">10.4.2. </span>Advanced Build Parameters<a class="headerlink" href="#advanced-build-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Refinement is the adjustment of model parameters so that the calculated structure factors match the observations as nearly as possible. <strong>Refinements levels</strong> differ in numbers of refinement cycles being used.</p>
+<blockquote>
+<div><p>For the <strong>“light”</strong> level</p>
+<blockquote>
+<div><p><strong>10</strong> refinement cycles run at the beginning of the model building</p>
+<p><strong>5</strong> refinement circles at all intermediate stages</p>
+<p><strong>10</strong> refinement cycles at the end of the model-building procedure.</p>
+</div></blockquote>
+<p>For the <strong>“normal”</strong> level</p>
+<blockquote>
+<div><p><strong>20</strong> refinement cycles run at the beginning of the model building,</p>
+<p><strong>7</strong> refinement cycles at all intermediate stages,</p>
+<p><strong>15</strong> refinement cycles at the end of the model-building procedure.</p>
+</div></blockquote>
+<p>For the <strong>“laborious”</strong> level</p>
+<blockquote>
+<div><p><strong>50</strong> refinement cycles run at the beginning of the model building,</p>
+<p><strong>10</strong> refinement cycles at all intermediate stages,</p>
+<p><strong>20</strong> refinement cycles <em>at the end</em> of the model-building procedure.</p>
+</div></blockquote>
+</div></blockquote>
+<p>Density modification is performed by <a class="reference internal" href="doc.task.Parrot.html"><span class="doc">Parrot</span></a>. In automated mode (<em>as required</em>) it does 2 attemp with the density modification and without and chooses the one with best R-factors.</p>
+<p><strong>Reconstruct side chains</strong> in automated mode (<em>as required</em>) performs 2 runs with the reconstruction of side chains and without and chooses that mode in which R-factors are lower.</p>
+<p><strong>Real Space Refinement</strong> moves the atoms into as high density as possible while minimizing geometrical distortions. In automated mode (<em>as required</em>) 2 runs with the real space refinement and without performed and the one with best R-factor is taken for further working on.</p>
+<p><strong>Trim built models</strong> mode uses the ZEDCC (z-score electron density correlation coefficient) to decide whatever it should trim the model or not. If ZEDCC is high the residue would be removed from the model.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>ZEDCC is not an absolute value it would vary in each particular case</p>
+</div>
+</section>
 </section>
 
 

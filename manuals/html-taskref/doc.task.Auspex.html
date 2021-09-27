@@ -49,72 +49,7 @@
         
   <section id="reflection-data-diagnostics-with-auspex-plots">
 <h1><span class="section-number">13.1. </span>Reflection data diagnostics with Auspex plots<a class="headerlink" href="#reflection-data-diagnostics-with-auspex-plots" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="http://www.auspex.de/">AUSPEX</a> is a diagnostic tool for graphical X-Ray data analysis, which enable users to visually and automatically detect ice-ring artefacts and other problems in integrated X-ray diffraction data.</p>
-<section id="ice-ring-detection">
-<h2><span class="section-number">13.1.1. </span>Ice-ring detection<a class="headerlink" href="#ice-ring-detection" title="Permalink to this headline">¶</a></h2>
-<p>If the background was poorly estimated during data integration then ice rings are visible as distinct peaks in the distribution of intensity against resolution, occurring at specific resolutions.</p>
-<a class="reference external image-reference" href="http://www.auspex.de/pathol/#1"><img alt="_images/ice_rings.jpeg" class="align-center" src="_images/ice_rings.jpeg" /></a>
-<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
-<p><em>Click on image to read more</em></p>
-</section>
-<section id="beamstop">
-<h2><span class="section-number">13.1.2. </span>Beamstop<a class="headerlink" href="#beamstop" title="Permalink to this headline">¶</a></h2>
-<p>Reflections with intensity or amplitude values near 0 at low resolution indicate that the beam stop was not masked or not masked out completely in integration.</p>
-<a class="reference external image-reference" href="http://www.auspex.de/pathol/#2"><img alt="_images/beamstop.jpeg" class="align-center" src="_images/beamstop.jpeg" style="width: 652.4px; height: 378.0px;" /></a>
-<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
-<p><em>Click on image to read more</em></p>
-</section>
-<section id="manhattan-skyline">
-<h2><span class="section-number">13.1.3. </span>Manhattan Skyline<a class="headerlink" href="#manhattan-skyline" title="Permalink to this headline">¶</a></h2>
-<a class="reference external image-reference" href="http://www.auspex.de/pathol/#3"><img alt="_images/manhattan.png" class="align-center" src="_images/manhattan.png" style="width: 621.3px; height: 437.7px;" /></a>
-<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
-<p><em>Click on image to read more</em></p>
-</section>
-<section id="missing-rings">
-<h2><span class="section-number">13.1.4. </span>Missing Rings<a class="headerlink" href="#missing-rings" title="Permalink to this headline">¶</a></h2>
-<p>If entire resolution ranges, corresponding to spheres in reciprocal space and rings on an image around the beam stop, are missing, this is typically due to masked-out ice rings.</p>
-<a class="reference external image-reference" href="http://www.auspex.de/pathol/#4"><img alt="_images/missing_rings.png" class="align-center" src="_images/missing_rings.png" style="width: 635.4px; height: 436.5px;" /></a>
-<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
-<section id="click-on-image-to-read-more">
-<h3><span class="section-number">13.1.4.1. </span><em>Click on image to read more</em><a class="headerlink" href="#click-on-image-to-read-more" title="Permalink to this headline">¶</a></h3>
-</section>
-<section id="missing-line">
-<h3><span class="section-number">13.1.4.2. </span>Missing Line<a class="headerlink" href="#missing-line" title="Permalink to this headline">¶</a></h3>
-<p>A missing line between 5.6 and 6.0 Fobs/σ(Fobs) is due to a bug in a lookup table in CTRUNCATE and TRUNCATE respectively.</p>
-<a class="reference external image-reference" href="http://www.auspex.de/pathol/#5"><img alt="_images/missing_line.png" class="align-center" src="_images/missing_line.png" /></a>
-<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
-<p><em>Click on image to read more</em></p>
-</section>
-</section>
-<section id="multiplicity-ladder">
-<h2><span class="section-number">13.1.5. </span>Multiplicity Ladder<a class="headerlink" href="#multiplicity-ladder" title="Permalink to this headline">¶</a></h2>
-<a class="reference external image-reference" href="http://www.auspex.de/pathol/#6"><img alt="_images/multiplicity.png" class="align-center" src="_images/multiplicity.png" style="width: 1080.0px; height: 521.1px;" /></a>
-<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
-<p><em>Click on image to read more</em></p>
-</section>
-<section id="separation-of-distributions">
-<h2><span class="section-number">13.1.6. </span>Separation of Distributions<a class="headerlink" href="#separation-of-distributions" title="Permalink to this headline">¶</a></h2>
-<a class="reference external image-reference" href="http://www.auspex.de/pathol/#7"><img alt="_images/separation.png" class="align-center" src="_images/separation.png" /></a>
-<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
-<p><em>Click on image to read more</em></p>
-</section>
-<section id="background-misestimation">
-<h2><span class="section-number">13.1.7. </span>Background Misestimation<a class="headerlink" href="#background-misestimation" title="Permalink to this headline">¶</a></h2>
-<p>If all intensity values are systematically too high this is due to an incorrect background estimation, which can be the result of a suboptimal background estimation during integration, or stem from a very high background during measurement, for example when the loop holding the crystal was too large, and there is diffuse scattering from the cooled liquid in which the crystal sits.</p>
-<a class="reference external image-reference" href="http://www.auspex.de/pathol/#8"><img alt="_images/background.png" class="align-center" src="_images/background.png" /></a>
-<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
-<p><em>Click on image to read more</em></p>
-</section>
-<section id="terracing">
-<h2><span class="section-number">13.1.8. </span>Terracing<a class="headerlink" href="#terracing" title="Permalink to this headline">¶</a></h2>
-<p>If there are only weak data and, depending on the data processing, discrete values of intensities, amplitudes or sigmas may become visible in plots as ‘terraced’ values. This is normal.</p>
-<a class="reference external image-reference" href="http://www.auspex.de/pathol/#9"><img alt="_images/lines.png" class="align-center" src="_images/lines.png" style="width: 817.2px; height: 605.6px;" /></a>
-<p>Image is taken from <a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
-<p><em>Click on image to read more</em></p>
-<p><strong>REFERENCES</strong></p>
-<p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S205979831700969X">Thorn, A., Parkhurst, J., Emsley, P., Nicholls, R. A., Vollmar, M., Evans, G. &amp; Murshudov, G. N. (2017) AUSPEX: a graphical tool for X-ray diffraction data analysis. Acta Cryst. D73: 729-737;</a></p>
-<p><a class="reference external" href="http://www.auspex.de/">http://www.auspex.de/</a></p>
-</section>
+<p>to be written…</p>
 </section>
 
 
