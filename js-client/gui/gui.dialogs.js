@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.08.21   <--  Date of Last Modification.
+ *    27.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -273,9 +273,12 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
         try {
           dlg.display.getDocument().history.back();
         } catch(e) {
-          dlg.history_position++;
-          $('#' + dlg.options.buttons[0].id).button ( 'disable' );
-          $('#' + dlg.options.buttons[1].id).button ( 'disable' );
+          dlg.history_length   = -1;
+          dlg.history_position = -1;
+          dlg.display.loadPage ( helpURL );
+          // dlg.history_position++;
+          // $('#' + dlg.options.buttons[0].id).button ( 'disable' );
+          // $('#' + dlg.options.buttons[1].id).button ( 'disable' );
         }
         // window.setTimeout ( function(){
         //   dlg.display.loadPage ( dlg.history[dlg.history_position] );
@@ -290,9 +293,12 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
         try {
           dlg.display.getDocument().history.forward();
         } catch(e) {
-          dlg.history_position--;
-          $('#' + dlg.options.buttons[0].id).button ( 'disable' );
-          $('#' + dlg.options.buttons[1].id).button ( 'disable' );
+          dlg.history_length   = -1;
+          dlg.history_position = -1;
+          dlg.display.loadPage ( helpURL );
+          // dlg.history_position--;
+          // $('#' + dlg.options.buttons[0].id).button ( 'disable' );
+          // $('#' + dlg.options.buttons[1].id).button ( 'disable' );
         }
         // dlg.display.loadPage ( dlg.history[dlg.history_position-1] );
       }
