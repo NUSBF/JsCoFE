@@ -53,7 +53,7 @@ function TaskEnsemblePrepXYZ()  {
   //this.helpURL = './html/jscofe_task_ensembleprepxyz.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataSequence':['protein']}, // data type(s) and subtype(s)
+      data_type   : {'DataSequence':['!protein']}, // data type(s) and subtype(s)
       label       : 'Sequence',          // label for input dialog
       /*
       tooltip     : 'Specify optional sequence to associate the resulting ' +
