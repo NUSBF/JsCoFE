@@ -335,6 +335,31 @@ def addRemark(driver, title, detail, colour=None):
     time.sleep(1)
 
 
+def removeBothRemarks(driver):
+    print('Removing remark: 0001')
+
+    sf.clickTaskInTaskTree(d.driver, '\[0001\]')
+    time.sleep(2)
+
+    rmButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/remove.png')]")
+    rmButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//button[@class='ui-button ui-corner-all ui-widget' and normalize-space()='Yes']")
+    time.sleep(2)
+
+    sf.clickTaskInTaskTree(d.driver, '\[0004\]')
+    time.sleep(2)
+
+    rmButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/remove.png')]")
+    rmButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//button[@class='ui-button ui-corner-all ui-widget' and normalize-space()='Yes']")
+    time.sleep(2)
+
+
+
 def test_1xia2(browser,
                       cloud,
                       nologin,
@@ -351,7 +376,7 @@ def test_1xia2(browser,
     d.remote = remote
     d.login = login
 
-    d.testName = 'xia2AimlessTest'
+    d.testName = 'xia2AimlessRemarksTest'
 
     isLocal = False
     if 'localhost' in d.cloud:
@@ -390,9 +415,19 @@ def test_2aimless():
         raise
 
 
-def test_3simbadDimple():
+def test_3simbad():
     try:
         simbad_05(d.driver, 600) # 05
+    except:
+        d.driver.quit()
+        raise
+
+
+def test_4remarksDimple():
+    try:
+        removeBothRemarks(d.driver)
+        sf.clickTaskInTaskTree(d.driver, '\[0005\]')
+        time.sleep(2)
         dimple_06(d.driver, 300) # 06
 
         sf.renameProject(d.driver, d.testName)
@@ -401,7 +436,6 @@ def test_3simbadDimple():
     except:
         d.driver.quit()
         raise
-
 
 
 
