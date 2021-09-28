@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.09.21   <--  Date of Last Modification.
+ *    28.09.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -201,21 +201,26 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     this.display.setSize_px ( w-16,h-4 );
   }
 
+  var tstamp = Date.now();
   this.options = {
     width   : w0,
     height  : h0,
     modal   : false,
     buttons : [
       { text : 'Back',
-        id   : 'back_' + Date.now()
+        id   : 'back_' + tstamp
         //icons: { primary: 'ui-icon-home' },
       },
       { text : 'Forward',
-        id   : 'forward_' + Date.now()
+        id   : 'forward_' + tstamp
         //icons: { primary: 'ui-icon-home' },
       },
       { text : 'Return',
-        id   : 'return_' + Date.now()
+        id   : 'return_' + tstamp,
+        // icons: { primary: 'ui-icon-home' },
+      },
+      { text : 'Detach',
+        id   : 'detach_' + tstamp
         //icons: { primary: 'ui-icon-home' },
       }
     ]
@@ -232,6 +237,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
         }
       },
       { text : "Close",
+        // icons: { primary: 'ui-icon-closethick' },
         click: function() {
           $( this ).dialog( "close" );
           onDoNotShowAgain_func ( 2,helpURL );
@@ -240,9 +246,9 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     ]);
   } else  {
     this.options.buttons = this.options.buttons.concat ([
-      { text : "Close",
-        //icon : image_path('add'),
-        //icons: { primary: 'ui-icon-closethick' },
+      { text : 'Close',
+        //icon : image_path('close'),
+        // icons: { primary: 'ui-icon-closethick' },
         click: function() {
           $( this ).dialog( "close" );
         }
@@ -308,6 +314,17 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
       dlg.history_length   = -1;
       dlg.history_position = -1;
       dlg.display.loadPage ( helpURL );
+    };
+
+    dlg.options.buttons[3].click = function() {
+      var url = helpURL;
+      try {
+        url = dlg.display.getDocument().location.href;
+      } catch(e) {}
+      $( this ).dialog( "close" );
+      window.setTimeout ( function(){
+        window.open ( url );
+      },0 );
     };
 
     dlg.options.create = function(event,ui) {

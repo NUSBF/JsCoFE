@@ -1381,18 +1381,20 @@ if (!dbx)  {
               }
               if (dn[k]>=0)
                 associated_data = associated_data.concat ( dt[dn[k]].associated );
-              var layCustom = dropdown[i][n].layCustom;
-              dropdown[i][n].layCustom = '';
-              //dropdown[i][n].selectItem ( dn[k] );
-              _select_item ( dropdown[i][n],dn[n] );
-              dropdown[i][n].inspect_btn.setVisible ( true );
-              if (layCustom)  {
-                dropdown[i][n].layCustom = layCustom;
-                dropdown[i][n].customGrid.clear();
-                dt[dn[k]].layCustomDropdownInput ( dropdown[i][n] );
-                dropdown[i][n].customGrid.setVisible ( true );
+              if (n<dropdown[i].length)  {
+                var layCustom = dropdown[i][n].layCustom;
+                dropdown[i][n].layCustom = '';
+                //dropdown[i][n].selectItem ( dn[k] );
+                _select_item ( dropdown[i][n],dn[n] );
+                dropdown[i][n].inspect_btn.setVisible ( true );
+                if (layCustom)  {
+                  dropdown[i][n].layCustom = layCustom;
+                  dropdown[i][n].customGrid.clear();
+                  dt[dn[k]].layCustomDropdownInput ( dropdown[i][n] );
+                  dropdown[i][n].customGrid.setVisible ( true );
+                }
+                k++;
               }
-              k++;
             }
 
           }
