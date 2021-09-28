@@ -111,7 +111,7 @@ For online documentation and tutorials visit `www.chango.ibmb.csic.es <http://ch
 
 **References**
 
-`McCoy, A.J., Grosse-Kunstleve, R.W., Adams, P.D., Winn, M.D., Storoni, L.C., Read R.J. (2007) Phaser Crystallographic Software. J. Appl. Cryst. 40: 658-674 <doi:10.1107/S0021889807021206>`_
+`McCoy, A.J., Grosse-Kunstleve, R.W., Adams, P.D., Winn, M.D., Storoni, L.C., Read R.J. (2007) Phaser Crystallographic Software. J. Appl. Cryst. 40: 658-674 <https://doi.org/10.1107/S0021889807021206>`_
 
 `Rodríguez DD, Grosse C, Himmel S, González C, Martínez de Ilarduya I, Becker S, Sheldrick GM & Usón I (2009) Crystallographic ab initio protein structure solution below atomic resolution. Nat Methods 6, 651– 653. <https://www.nature.com/articles/nmeth.1365>`_
 
@@ -119,11 +119,11 @@ For online documentation and tutorials visit `www.chango.ibmb.csic.es <http://ch
 
 `Millán C, Sammito M, Usón I (2015) Macromolecular ab initio phasing enforcing secondary and tertiary structure. IUCrJ 2, 95-105. <https://doi.org/10.1107/S2052252514024117>`_
 
-`Millán C, Sammito M. D, McCoy A. J, Nascimento A. F. Z, Petrillo G, Oeffner R. D, Domínguez-Gil T, Hermoso J. A, Read R. J, Usón I (2018) Exploiting distant homologues for phasing through the generation of compact fragments, local fold refinement and partial solution combination. Acta Cryst. D74: 290-304 <doi:10.1107/S2059798318001365>`_
+`Millán C, Sammito M. D, McCoy A. J, Nascimento A. F. Z, Petrillo G, Oeffner R. D, Domínguez-Gil T, Hermoso J. A, Read R. J, Usón I (2018) Exploiting distant homologues for phasing through the generation of compact fragments, local fold refinement and partial solution combination. Acta Cryst. D74: 290-304 <https://doi.org/10.1107/S2059798318001365>`_
 
 `Caballero I, Sammito M, Millán C, Lebedev A, Soler N, Usón I (2018) ARCIMBOLDO on coiled coils. Acta Cryst D74, 194-204, <https://doi.org/10.1107/S2059798317017582>`_
 
-`Uson, I., Sheldrick, G.M. (2018) An introduction to experimental phasing of macromolecules illustrated by SHELX; new autotracing features. Acta Cryst. D74: 106-116 <doi:10.1107/S2059798317015121>`_
+`Uson, I., Sheldrick, G.M. (2018) An introduction to experimental phasing of macromolecules illustrated by SHELX; new autotracing features. Acta Cryst. D74: 106-116 <https://doi.org/10.1107/S2059798317015121>`_
 
 
 

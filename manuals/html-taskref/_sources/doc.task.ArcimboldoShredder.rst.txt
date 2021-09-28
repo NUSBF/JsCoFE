@@ -2,9 +2,9 @@
 Arcimboldo Shredder
 ===================
 
-`Arcimboldo Shredder <http://chango.ibmb.csic.es/shredder>`_ uses fragments derived from distant homologs based on the experimental data, instead of by sequence similarity. In this approach, the initial template is systematically shredded, and fragments are scored against each unique solution of the rotation function. Results are combined into a score per residue and the template is trimmed accordingly. 
+`Arcimboldo Shredder <http://chango.ibmb.csic.es/shredder>`_ uses fragments derived from distant homologs based on the experimental data, instead of by sequence similarity. In this approach, the initial template is systematically shredded, and fragments are scored against each unique solution of the rotation function. Results are combined into a score per residue and the template is trimmed accordingly.
 
-The Arcimboldo Shredder performs parallel and systematic molecular-replacement searches using a library of small structure motifs derived from a homologous structure and analyses the results to extract information from the persistence of solutions for different fragments among the noisy rotation-function results from Phaser. 
+The Arcimboldo Shredder performs parallel and systematic molecular-replacement searches using a library of small structure motifs derived from a homologous structure and analyses the results to extract information from the persistence of solutions for different fragments among the noisy rotation-function results from Phaser.
 
 
 Potential molecular-replacement solutions are passed to SHELXE for density modification and model building, with the prospect that any correctly placed fragments can be expanded into a full structure.
@@ -55,7 +55,7 @@ To find out more please read article `here <https://dx.doi.org/10.1107%2FS205979
 
 **References**
 
-`McCoy, A.J., Grosse-Kunstleve, R.W., Adams, P.D., Winn, M.D., Storoni, L.C., Read R.J. (2007) Phaser Crystallographic Software. J. Appl. Cryst. 40: 658-674 <doi:10.1107/S0021889807021206>`_
+`McCoy, A.J., Grosse-Kunstleve, R.W., Adams, P.D., Winn, M.D., Storoni, L.C., Read R.J. (2007) Phaser Crystallographic Software. J. Appl. Cryst. 40: 658-674 <https://doi.org/10.1107/S0021889807021206>`_
 
 `Sammito, M. D., Millán, C., Rodríguez, D. D., de Ilarduya, I. M., Meindl, K., De Marino, I., Petrillo, G., Buey, R. M., de Pereda, J. M., Zeth, K., Sheldrick, G. M. & Usón, I. (2013) Exploiting tertiary structure through local folds for crystallographic phasing. Nature Methods, 10, 1099–1101 <https://doi.org/10.1038/nmeth.2644>`_
 
@@ -63,11 +63,6 @@ To find out more please read article `here <https://dx.doi.org/10.1107%2FS205979
 
 `McCoy, A. J., Oeffner, R. D., Millán, C., Sammito, M., Usón, I., Read, R. J. (2018) Gyre and gimble: a maximum-likelihood replacement for Patterson correlation refinement. Acta Cryst. D74, 279-289, <https://doi.org/10.1107/S2059798318001353>`_
 
-`Uson, I., Sheldrick, G.M. (2018) An introduction to experimental phasing of macromolecules illustrated by SHELX; new autotracing features. Acta Cryst. D74: 106-116 <doi:10.1107/S2059798317015121>`_
+`Uson, I., Sheldrick, G.M. (2018) An introduction to experimental phasing of macromolecules illustrated by SHELX; new autotracing features. Acta Cryst. D74: 106-116 <https://doi.org/10.1107/S2059798317015121>`_
 
-`Oeffner, R.D, Afonine, P.V, Millán, C, et al. (2018) On the application of the expected log-likelihood gain to decision making in molecular replacement. Acta Crystallogr D Struct Biol.;74(Pt 4): 245-255 <doi:10.1107/S2059798318004357>`_
-
-
-
-
-
+`Oeffner, R.D, Afonine, P.V, Millán, C, et al. (2018) On the application of the expected log-likelihood gain to decision making in molecular replacement. Acta Crystallogr D Struct Biol.;74(Pt 4): 245-255 <https://doi.org/10.1107/S2059798318004357>`_

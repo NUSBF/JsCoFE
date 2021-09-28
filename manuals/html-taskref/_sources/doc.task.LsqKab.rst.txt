@@ -10,7 +10,7 @@ Superposition is the most common method for structure comparison. It is simply t
 
 **References**
 
-`Kabsch, W. (1976) A solution for the best rotation to relate two sets of vectors. Acta Cryst. A32: 922-923; <doi:10.1107/S0567739476001873>`_
+`Kabsch, W. (1976) A solution for the best rotation to relate two sets of vectors. Acta Cryst. A32: 922-923; <https://doi.org/10.1107/S0567739476001873>`_
 
 `Krissinel E, Henrick K. (2004) Secondary-structure matching (SSM), a new tool for fast protein structure alignment in three dimensions. Acta Crystallogr. D60: 2256–2268; <https://journals.iucr.org/d/issues/2004/12/01/ba5056/index.html>`_
 

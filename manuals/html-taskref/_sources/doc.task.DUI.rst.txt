@@ -123,7 +123,7 @@ The program takes as input a set of one or more integrated experiments and refle
 
 **Symmetry determination with POINTLESS** :
 
-1. score individual symmetry operators in the maximum lattice group 
+1. score individual symmetry operators in the maximum lattice group
     comparing pairs of observations related by each possible rotational operator, using correlation coefficients and R-factors on normalized intensities | E | :superscript:`2`
 2. **score possible point groups**
 
@@ -172,9 +172,9 @@ The output formats currently supported are:
 
 **References**
 
-Evans, P. (2006). Acta Cryst. D62, 72-82. https://doi.org/10.1107/S0907444905036693
+`Evans, P. (2006). Acta Cryst. D62, 72-82. <https://doi.org/10.1107/S0907444905036693>`_
 
-Evans, P. R. (2011) Acta Cryst. D67, 282-292. https://doi.org/10.1107/S090744491003982X
+`Evans, P. R. (2011) Acta Cryst. D67, 282-292. <https://doi.org/10.1107/S090744491003982X>`_
 
 
 **ACKNOWLEDGEMENTS**

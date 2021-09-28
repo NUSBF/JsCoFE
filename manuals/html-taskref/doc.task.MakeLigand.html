@@ -13,8 +13,7 @@
     </script>
     
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>11.1. Make Ligand with Acedrg &#8212; CCP4 Cloud 1.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
@@ -47,9 +46,9 @@
       <div class="content" role="main">
         
         
-  <section id="make-ligand-with-acedrg">
+  <div class="section" id="make-ligand-with-acedrg">
 <span id="ligands-built"></span><h1><span class="section-number">11.1. </span>Make Ligand with Acedrg<a class="headerlink" href="#make-ligand-with-acedrg" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S2059798317000067">AceDRG</a> is designed
+<p>The <a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S2059798317000067" rel="noopener noreferrer" target="_blank">AceDRG</a> is designed
 for the derivation of stereo-chemical information about monomers/ligands (or small
 molecules). It uses atom typing based on local chemical and topological environment
 to organise bond lengths and angles from a small molecule database i.e.
@@ -62,46 +61,46 @@ bond types.</p>
 <p>Using the tables containing those bonds and angles, <strong>AceDRG can derive ideal bond
 lengths, angles for an unknown monomer/ligand. It also generates information on
 planar groups and stereo-chemical properties in the monomer/ligand</strong>.</p>
-<section id="what-the-task-is-used-for">
+<div class="section" id="what-the-task-is-used-for">
 <h2><span class="section-number">11.1.1. </span>What the task is used for<a class="headerlink" href="#what-the-task-is-used-for" title="Permalink to this headline">¶</a></h2>
 <p>The <strong>Make Ligand</strong> task creates ligand description with AceDrg, using either a
-<a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system">SMILE</a>
-string or the <a class="reference external" href="https://www.rcsb.org/pdb/staticHelp.do?p=help/advancedsearch/chemicalID.html">standard 3-letter code</a>
+<a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system" rel="noopener noreferrer" target="_blank">SMILE</a>
+string or the <a class="reference external" href="https://www.rcsb.org/pdb/staticHelp.do?p=help/advancedsearch/chemicalID.html" rel="noopener noreferrer" target="_blank">standard 3-letter code</a>
 for the ligand.</p>
 <p>Ligand descriptions are essential for fitting ligands in electron density
 maps, and are required for runnung the ligand-fitting tasks (<strong>Model Building
 with Coot</strong> or <strong>Fit Ligand with Coot</strong>). After successful ligand fit, these
 tasks place the ligand description in the output Structure Revision.</p>
-</section>
-<section id="ligand-descriptions-and-refinement">
+</div>
+<div class="section" id="ligand-descriptions-and-refinement">
 <h2><span class="section-number">11.1.2. </span>Ligand descriptions and refinement<a class="headerlink" href="#ligand-descriptions-and-refinement" title="Permalink to this headline">¶</a></h2>
 <p>Ligand descriptions are also essential for structure refinement with either
 <strong>Refmac</strong> or <strong>Buster</strong>, if macromolecular model contains ligand coordinates. Both
 <strong>Refmac</strong> and <strong>Buster</strong> tasks receive ligand descriptions as part of input
 Structure Revision, usually after ligand fitting.</p>
-</section>
-<section id="what-if-ligands-in-structural-model-were-not-obtained-with-ligand-fitting">
+</div>
+<div class="section" id="what-if-ligands-in-structural-model-were-not-obtained-with-ligand-fitting">
 <h2><span class="section-number">11.1.3. </span>What if ligands in structural model were not obtained with ligand fitting?<a class="headerlink" href="#what-if-ligands-in-structural-model-were-not-obtained-with-ligand-fitting" title="Permalink to this headline">¶</a></h2>
 <p>Indeed, structural model with ligand coordinates may be imported or obtained
 from the PDB, in which case the corresponding ligand descriptions will be absent
 in Structure Revision, causing a failure in the refinement tasks. In this case:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>Import the corresponding ligand descriptions as <code class="docutils literal notranslate"><span class="pre">*.cif</span></code> files, or
-generated them with the <strong>Make Ligand</strong> task</p></li>
-<li><p>Put them in Structure Revision using task <strong>Edit Revision: Structure</strong></p></li>
+<li>Import the corresponding ligand descriptions as <code class="docutils literal notranslate"><span class="pre">*.cif</span></code> files, or
+generated them with the <strong>Make Ligand</strong> task</li>
+<li>Put them in Structure Revision using task <strong>Edit Revision: Structure</strong></li>
 </ol>
 </div></blockquote>
 <p><strong>References</strong></p>
-<p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5297914/">Fei Long, Robert A Nicholls, Paul Emsley, Saulius GraZulis, Andrius Merkys,
+<p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5297914/" rel="noopener noreferrer" target="_blank">Fei Long, Robert A Nicholls, Paul Emsley, Saulius GraZulis, Andrius Merkys,
 Antanas Vaitkus and Garib N Murshudov “ACEDRG: A stereo-chemical description
 generator for ligands” Acta Cryst. (2017), D73, 112-122.</a></p>
-<p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5297913/">Fei Long, Robert A Nicholls, Paul Emsley, Saulius GraZulis, Andrius Merkys,
+<p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5297913/" rel="noopener noreferrer" target="_blank">Fei Long, Robert A Nicholls, Paul Emsley, Saulius GraZulis, Andrius Merkys,
 Antanas Vaitkus and Garib N Murshudov “Validation and extraction of
 stereochemical information fromsmall molecular databases” Acta Cryst. (2017),
 D73, 103-111.</a></p>
-</section>
-</section>
+</div>
+</div>
 
 
       </div>

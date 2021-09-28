@@ -3,6 +3,25 @@ CCP4 Cloud Version Log
 ======================
 
 
+
+**Version 1.6.024**
+
+    *Released on --.--.2021 with CCP4 7.1.017*
+
+    **Changes and new features**
+
+    #. Fixed a bug which could cause project loss at insertion of remarks in the middle of a tree branch
+
+    #. Improved navigation in Help window 
+
+    #. Documentation updates on ``Buccaneer``, ``CCP4Build``, ``Auspex`` and a number of other tasks 
+
+    #. External documentation links are now opened in new browser's tabs
+
+    #. Updates and fixes in ``MrBump``, ``MrParse`` and ``Ensemble preparation with CCP4mg`` related to working with the AlphaFold database
+
+
+
 **Version 1.6.023**
 
     *Released on 13.09.2021 with CCP4 7.1.016*

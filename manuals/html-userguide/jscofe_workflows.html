@@ -13,8 +13,7 @@
     </script>
     
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>6. Automatic workflows &#8212; CCP4 Cloud 1.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
@@ -47,23 +46,23 @@
       <div class="content" role="main">
         
         
-  <section id="automatic-workflows">
+  <div class="section" id="automatic-workflows">
 <span id="workflows-guide"></span><h1><span class="section-number">6. </span>Automatic workflows<a class="headerlink" href="#automatic-workflows" title="Permalink to this headline">¶</a></h1>
 <p>Automatic workflows feature structure solution scenarios, such as Molecular Replacement or Experimental Phasing, which include several elemntary tasks. A workflow can start with data import and then attempt phasing, model building, refinement, ligand fitting, solvent modelling and preparing resuts for PDB deposition.</p>
 <p>A workflow will develop the <em>Project Tree</em> and perform all elementary steps automatically, exploring different ways of structure solution and using varios tasks as appropriate. For data of sufficiently high resolution, completeness and quality (no crystal pathologies), automatic workflow can produce a reasonable approximation to final structure. The result may be further improved with elementary task in manual mode, allowing a finer control over tasks’ parameters.</p>
 <p>Not only the workflows can reduced chore, but they may also be used for better understanding the structure solution strategy.</p>
-<section id="using-automatic-workflows">
+<div class="section" id="using-automatic-workflows">
 <h2><span class="section-number">6.1. </span>Using Automatic Workflows<a class="headerlink" href="#using-automatic-workflows" title="Permalink to this headline">¶</a></h2>
 <p>Automatic Workflows progress automatically, creating and running new tasks and branching as necessary. If a workflow task fails or does not produced useable results, the follow-up task is not formed and the corresponding <em>Project branch</em> terminates. Depending on the workflow logics, the algorithm attempt another approach (by starting another <em>Project branch</em>) or stop.</p>
 <p>A user can:</p>
 <ul class="simple">
-<li><p>inspect any workflow job at any time without waiting for the workflow and job to finish</p></li>
-<li><p>stop any workflow job, which will stop the corresponding workflow branch</p></li>
-<li><p>clone a workflow job, whether running, finished, failed or terminated, modify its parameters and re-run. <em>Such cloned job may be run as part of the workflow (forming a new workflow branch), or in the standard (one-off, manual) mode</em></p></li>
-<li><p>use results of any workflow job for further development of the structure solution <em>Project</em>, irrespectively of whether the workflow has run to the last step or not, and in parallel to workflow running.</p></li>
+<li>inspect any workflow job at any time without waiting for the workflow and job to finish</li>
+<li>stop any workflow job, which will stop the corresponding workflow branch</li>
+<li>clone a workflow job, whether running, finished, failed or terminated, modify its parameters and re-run. <em>Such cloned job may be run as part of the workflow (forming a new workflow branch), or in the standard (one-off, manual) mode</em></li>
+<li>use results of any workflow job for further development of the structure solution <em>Project</em>, irrespectively of whether the workflow has run to the last step or not, and in parallel to workflow running.</li>
 </ul>
-</section>
-</section>
+</div>
+</div>
 
 
       </div>

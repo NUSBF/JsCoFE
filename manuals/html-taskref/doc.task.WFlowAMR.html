@@ -13,8 +13,7 @@
     </script>
     
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>1.2. Automatic Molecular Replacement Workflow &#8212; CCP4 Cloud 1.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
@@ -47,28 +46,28 @@
       <div class="content" role="main">
         
         
-  <section id="automatic-molecular-replacement-workflow">
+  <div class="section" id="automatic-molecular-replacement-workflow">
 <h1><span class="section-number">1.2. </span>Automatic Molecular Replacement Workflow<a class="headerlink" href="#automatic-molecular-replacement-workflow" title="Permalink to this headline">¶</a></h1>
 <p>This task imports and prepares input data for solving structure with an Automatic Molecular Replacement solver (MrBump or MoRDa), and starts the corresponding <em>Workflow</em>. Once started, <em>Workflow</em> develops automatically, adding new tasks and branches in <em>Project Tree</em> as necessary, until arriving at the solution, or being stopped by user, or failing because of being unable to solve the structure. Read more about <em>workflows_guide</em> here.</p>
 <p>The <em>Automatic MR Workflow</em> includes the following stages:</p>
 <ul class="simple">
-<li><p>import of reflection dataset, target sequence and, optionally, ligand description</p></li>
-<li><p>checking PDB for identical lattice parameters with <a class="reference internal" href="doc.task.Simbad.html#simbad-doc"><span class="std std-ref">Simbad</span></a>;</p></li>
-<li><p>preparation of <a class="reference internal" href="doc.task.ASUDef.html#asudef"><span class="std std-ref">Asymmetric Unit</span></a></p></li>
-<li><p>Molecular Replacement with either <span class="xref std std-ref">MrBump</span> or <a class="reference internal" href="doc.task.Morda.html#morda-doc"><span class="std std-ref">MorDA</span></a></p></li>
-<li><dl class="simple">
+<li>import of reflection dataset, target sequence and, optionally, ligand description</li>
+<li>checking PDB for identical lattice parameters with <a class="reference internal" href="doc.task.Simbad.html#simbad-doc"><span class="std std-ref">Simbad</span></a>;</li>
+<li>preparation of <a class="reference internal" href="doc.task.ASUDef.html#asudef"><span class="std std-ref">Asymmetric Unit</span></a></li>
+<li>Molecular Replacement with either <span class="xref std std-ref">MrBump</span> or <a class="reference internal" href="doc.task.Morda.html#morda-doc"><span class="std std-ref">MorDA</span></a></li>
+<li><dl class="first docutils">
 <dt>if a solution is found, either by <em>Simbad</em>, <em>MrBump</em> or <em>MoRDa</em>:</dt><dd><ul>
-<li><p>model building with <em>CCP4Build</em> or <em>Buccaneer</em></p></li>
-<li><p>structure refinement</p></li>
-<li><p><a class="reference internal" href="doc.task.MakeLigand.html#ligands-built"><span class="std std-ref">ligand fitting</span></a> (if ligand is given)</p></li>
-<li><p>solvent modelling</p></li>
-<li><p>deposition package preparation</p></li>
+<li>model building with <em>CCP4Build</em> or <em>Buccaneer</em></li>
+<li>structure refinement</li>
+<li><a class="reference internal" href="doc.task.MakeLigand.html#ligands-built"><span class="std std-ref">ligand fitting</span></a> (if ligand is given)</li>
+<li>solvent modelling</li>
+<li>deposition package preparation</li>
 </ul>
 </dd>
 </dl>
 </li>
 </ul>
-</section>
+</div>
 
 
       </div>
