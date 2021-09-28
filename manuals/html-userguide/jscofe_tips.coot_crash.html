@@ -13,8 +13,7 @@
     </script>
     
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>7.1. Coot Task Recovery &#8212; CCP4 Cloud 1.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
@@ -47,43 +46,43 @@
       <div class="content" role="main">
         
         
-  <section id="coot-task-recovery">
+  <div class="section" id="coot-task-recovery">
 <h1><span class="section-number">7.1. </span>Coot Task Recovery<a class="headerlink" href="#coot-task-recovery" title="Permalink to this headline">¶</a></h1>
 <p>Coot Task failure may be a rather unpleasant surprise. For most other tasks in CCP4 Cloud, recovering from failure is as easy as this:</p>
 <ul class="simple">
-<li><p>clone task</p></li>
-<li><p>start the cloned task</p></li>
+<li>clone task</li>
+<li>start the cloned task</li>
 </ul>
 <p>and CCP4 Cloud won’t even subtract CPU time, consumed by the failed task, from your quota. So, what you loose is only a bit of <em>your</em> time.</p>
 <p>With Coot, the situation is much worse. If Coot Task fails (for example, due to unstable internet connection), you may loose hours of manual work, which may be difficult to repeat in every detail. Fortunately, Coot makes backup copies before every edit operation, and they may be used for recovery! There are three possible scenarios here.</p>
 <ol class="arabic">
-<li><dl class="simple">
+<li><dl class="first docutils">
 <dt><strong>You closed Coot window without saving your data, because you simply forgot doing that.</strong></dt><dd><p>In this case, CCP4 Cloud will automatically use the latest backup copy, and you will see a red warning in task’s report page. What you loose in this case, is the very last edit operation, which cannot be recovered. If no editing was done, the report page will say <em>“No Output Structure Generated”</em>.</p>
 </dd>
 </dl>
 </li>
-<li><dl>
+<li><dl class="first docutils">
 <dt><strong>You closed Coot window (having saved your work or not before that), but something went wrong (like network disconnection), and output data was not saved in CCP4 Cloud.</strong></dt><dd><p>If Cloud Project continues to display your Coot Task as running:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>make sure that your internet connection is stable (e.g., try to open <a class="reference external" href="https://www.bbc.co.uk">https://www.bbc.co.uk</a> in a separate tab)</p></li>
-<li><p>push the <em>Refresh</em> button in the Project’s vertical Toolbar: this will resume sending output data from Coot to CCP4 Cloud again. Give it some time (depending on the connection speed)</p></li>
-<li><p>if this does not work but you suspect connection problems: you may quit CCP4 Cloud till connection is re-established, and start another session later (using the “Remote” launcher). Backup copies are kept on your computer for 30 days, during which the recovery is possible.</p></li>
+<li>make sure that your internet connection is stable (e.g., try to open <a class="reference external" href="https://www.bbc.co.uk" rel="noopener noreferrer" target="_blank">https://www.bbc.co.uk</a> in a separate tab)</li>
+<li>push the <em>Refresh</em> button in the Project’s vertical Toolbar: this will resume sending output data from Coot to CCP4 Cloud again. Give it some time (depending on the connection speed)</li>
+<li>if this does not work but you suspect connection problems: you may quit CCP4 Cloud till connection is re-established, and start another session later (using the “Remote” launcher). Backup copies are kept on your computer for 30 days, during which the recovery is possible.</li>
 </ul>
 </div></blockquote>
 </dd>
 </dl>
 </li>
-<li><dl>
+<li><dl class="first docutils">
 <dt><strong>If nothing from the above helps, or is applicable to your situation, or if Cloud Project shows your Coot Task as “failed”.</strong></dt><dd><p><em>DO NOT DELETE THE TASK</em> and perform manual recovery:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>clone the task</p></li>
-<li><p>start the cloned task; this should open Coot with data from the previous job, just as it was when you started the failed task</p></li>
-<li><p>in Coot’s <em>File</em> menu, find item <em>Load CCP4 Cloud backup copy</em> and click on it; this will open a File Dialog showing backup directories named as “project_jobno” (e.g., “rnase_442”)</p></li>
-<li><p>find backup directory corresponding to the failed job, and open it. This should present you with a list of backup files with extensions “.pdb.gz” and timestamps in file names. Choose the latest backup file and click “Open”</p></li>
-<li><p>now, Coot has both the original and last edited model loaded. Using Coot’s <em>Display Manager</em>, delete the original model</p></li>
-<li><p>save the loaded model from Coot’s <em>File</em> menu and close Coot as usual – and you’re done!</p></li>
+<li>clone the task</li>
+<li>start the cloned task; this should open Coot with data from the previous job, just as it was when you started the failed task</li>
+<li>in Coot’s <em>File</em> menu, find item <em>Load CCP4 Cloud backup copy</em> and click on it; this will open a File Dialog showing backup directories named as “project_jobno” (e.g., “rnase_442”)</li>
+<li>find backup directory corresponding to the failed job, and open it. This should present you with a list of backup files with extensions “.pdb.gz” and timestamps in file names. Choose the latest backup file and click “Open”</li>
+<li>now, Coot has both the original and last edited model loaded. Using Coot’s <em>Display Manager</em>, delete the original model</li>
+<li>save the loaded model from Coot’s <em>File</em> menu and close Coot as usual – and you’re done!</li>
 </ul>
 </div></blockquote>
 </dd>
@@ -93,7 +92,7 @@
 <p>After successful recovery, the failed Coot Task may be deleted in order to regain your disk space in CCP4 Cloud and keep your Project tidy.</p>
 <p>Happy Cooting!</p>
 <p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
-</section>
+</div>
 
 
       </div>

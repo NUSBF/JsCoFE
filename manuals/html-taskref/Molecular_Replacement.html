@@ -13,8 +13,7 @@
     </script>
     
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>6. Molecular Replacement &#8212; CCP4 Cloud 1.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
@@ -47,22 +46,21 @@
       <div class="content" role="main">
         
         
-  <section id="molecular-replacement">
+  <div class="section" id="molecular-replacement">
 <h1><span class="section-number">6. </span>Molecular Replacement<a class="headerlink" href="#molecular-replacement" title="Permalink to this headline">¶</a></h1>
 <blockquote>
-<div><p><strong>are efficient for model preparation and for those cases with an existed homolog of unknown structure</strong></p>
-</div></blockquote>
+<div><strong>are efficient for model preparation and for those cases with an existed homolog of unknown structure</strong></div></blockquote>
 <p>electron density in a crystal can be obtained by calculating the Fourier summation:</p>
 <a class="reference internal image-reference" href="_images/Fourier_transform.PNG"><img alt="_images/Fourier_transform.PNG" class="align-center" src="_images/Fourier_transform.PNG" style="width: 625.5px; height: 69.0px;" /></a>
 <p>in which <strong>|F(h k l)|</strong> is the structure factor amplitude of reflection (h k l), including the temperature factor, and <strong>α(h k l)</strong> is the phase angle. <strong>x</strong>, <strong>y</strong>, and <strong>z</strong> are coordinates in the unit cell.</p>
 <p>From the diffraction pattern, the values of <strong>I (h k l)</strong> are obtained after applying the some correction factors. Because I(h k l) =|F(h k l)| <sup>2</sup>, then amplitudes <strong>|F(h k l)|</strong> can be found.</p>
 <p><strong>We can’t measure the phases X-ray detectors</strong>. We can measure only the intensity of the X-rays (which is the amplitude squared). It’s create a phase problem, and by solving this problem we can solved the crystal structure.</p>
-<p>You can find <a class="reference external" href="http://www.ysbl.york.ac.uk/~cowtan/fourier/magic.html">here</a> how important the phase infomation is.</p>
+<p>You can find <a class="reference external" href="http://www.ysbl.york.ac.uk/~cowtan/fourier/magic.html" rel="noopener noreferrer" target="_blank">here</a> how important the phase infomation is.</p>
 <p><strong>Molecular replacement</strong> is the process of solving the phase problem for an unknown structure by placing the atomic model known structure in the unit cell of the unknown structure by trying all possible orientations and positions and picking the one which gives the best fit to the observed data. Once we do so we can calculate approximate structure factors phases which, in combination with the observed structure factors for the unknown structure, allow the model to be rebuilt and refined.</p>
 <p>Molecular Replacement is based on the assumption that target structure has a <strong>highly similar structural homologue</strong>, which may be found by, e.g. matching target’s sequence to sequences of known PDB structures. You can create a model for Molecular Replacement by using <strong>MR model preparation</strong> tasks within CCP4 Cloud.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Molecular replacement can fail, if the model does not match the unknown structure (insufficiently homologous or changed conformation).</p>
+<p class="first admonition-title">Note</p>
+<p class="last">Molecular replacement can fail, if the model does not match the unknown structure (insufficiently homologous or changed conformation).</p>
 </div>
 <p>In case you have a homologous protein structure you can use:</p>
 <div class="toctree-wrapper compound">
@@ -88,10 +86,10 @@
 </ul>
 </div>
 <div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>If you cannot create a suitable module, you can try programs for <strong>Automated Molecular Replacement</strong>.</p>
+<p class="first admonition-title">Hint</p>
+<p class="last">If you cannot create a suitable module, you can try programs for <strong>Automated Molecular Replacement</strong>.</p>
 </div>
-</section>
+</div>
 
 
       </div>

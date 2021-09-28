@@ -13,8 +13,7 @@
     </script>
     
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>10.4. Automatic Model Building with CCP4Build &#8212; CCP4 Cloud 1.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
@@ -47,18 +46,18 @@
       <div class="content" role="main">
         
         
-  <section id="automatic-model-building-with-ccp4build">
+  <div class="section" id="automatic-model-building-with-ccp4build">
 <h1><span class="section-number">10.4. </span>Automatic Model Building with CCP4Build<a class="headerlink" href="#automatic-model-building-with-ccp4build" title="Permalink to this headline">¶</a></h1>
 <p>CCP4Build is an automated model builder which combines several applications: CParrot, CBuccaneer, Refmac, Coot and EDStats. CCP4build explores several model building scenarios in an iterative approach with rollbacks and adjusts automatically to building in both experimental phases and phases obtained in the course of molecular replacement.</p>
-<section id="main-options">
+<div class="section" id="main-options">
 <h2><span class="section-number">10.4.1. </span>Main options<a class="headerlink" href="#main-options" title="Permalink to this headline">¶</a></h2>
 <p><strong>Minimum number of building cycles</strong> may be set more than 3 (default number) if the first attempt ends up with an incomplete model.</p>
 <p><strong>Maximum number of building cycles</strong> should be more than the number of <strong>minimum number of building cycles</strong>, but can not be more than 50.</p>
 <p><strong>Anisotropy correction</strong> attempts to remove directional dependence in diffraction data. <em>This should use by default</em></p>
 <p><strong>Build Selenomethionine (MSE instead of MET)</strong> option should be chosen if selenomethionine is present.</p>
 <p><strong>Model solvent for phase improvement</strong> option models water molecules in course of the building if Rfree is below the given value.</p>
-</section>
-<section id="advanced-build-parameters">
+</div>
+<div class="section" id="advanced-build-parameters">
 <h2><span class="section-number">10.4.2. </span>Advanced Build Parameters<a class="headerlink" href="#advanced-build-parameters" title="Permalink to this headline">¶</a></h2>
 <p>Refinement is the adjustment of model parameters so that the calculated structure factors match the observations as nearly as possible. <strong>Refinements levels</strong> differ in numbers of refinement cycles being used.</p>
 <blockquote>
@@ -86,11 +85,11 @@
 <p><strong>Real Space Refinement</strong> moves the atoms into as high density as possible while minimizing geometrical distortions. In automated mode (<em>as required</em>) 2 runs with the real space refinement and without performed and the one with best R-factor is taken for further working on.</p>
 <p><strong>Trim built models</strong> mode uses the ZEDCC (z-score electron density correlation coefficient) to decide whatever it should trim the model or not. If ZEDCC is high the residue would be removed from the model.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>ZEDCC is not an absolute value it would vary in each particular case</p>
+<p class="first admonition-title">Note</p>
+<p class="last">ZEDCC is not an absolute value it would vary in each particular case</p>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
       </div>

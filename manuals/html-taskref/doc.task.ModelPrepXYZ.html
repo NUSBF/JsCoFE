@@ -13,8 +13,7 @@
     </script>
     
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>6.1.2. Prepare MR Model(s) from Coordinate data &#8212; CCP4 Cloud 1.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
@@ -47,24 +46,24 @@
       <div class="content" role="main">
         
         
-  <section id="prepare-mr-model-s-from-coordinate-data">
+  <div class="section" id="prepare-mr-model-s-from-coordinate-data">
 <h1><span class="section-number">6.1.2. </span>Prepare MR Model(s) from Coordinate data<a class="headerlink" href="#prepare-mr-model-s-from-coordinate-data" title="Permalink to this headline">¶</a></h1>
 <p>This task constructs MR Model as a combination of a target sequence and atomic coordinates. The coordinates are usually modified (pruned) in order to remove parts that do not correspond to the target sequence. A few modification protocols are available:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><em>Unmodified</em>: atomic coordinates are not altered in any way</p></li>
-<li><p><em>Clip</em>: water molecules and ligands are removed</p></li>
-<li><p><em>Molrep</em>: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
-<a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/">Molrep</a></p></li>
-<li><p><em>Sculptor</em>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
-<code class="docutils literal notranslate"><span class="pre">Phaser.Sculptor</span></code> (<em>cf.</em> <a class="reference external" href="https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement">here</a>)</p></li>
-<li><p><em>Chainsaw</em>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
-<a class="reference external" href="https://doi.org/10.1107/S0021889808006985">Chainsaw</a></p></li>
-<li><p><em>Polyalanine</em>: all residues are replaced with polyalanines</p></li>
+<li><em>Unmodified</em>: atomic coordinates are not altered in any way</li>
+<li><em>Clip</em>: water molecules and ligands are removed</li>
+<li><em>Molrep</em>: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
+<a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/" rel="noopener noreferrer" target="_blank">Molrep</a></li>
+<li><em>Sculptor</em>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+<code class="docutils literal notranslate"><span class="pre">Phaser.Sculptor</span></code> (<em>cf.</em> <a class="reference external" href="https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement" rel="noopener noreferrer" target="_blank">here</a>)</li>
+<li><em>Chainsaw</em>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+<a class="reference external" href="https://doi.org/10.1107/S0021889808006985" rel="noopener noreferrer" target="_blank">Chainsaw</a></li>
+<li><em>Polyalanine</em>: all residues are replaced with polyalanines</li>
 </ul>
 </div></blockquote>
 <p>The resulting models can be used in both <code class="docutils literal notranslate"><span class="pre">Phaser</span></code> and <code class="docutils literal notranslate"><span class="pre">Molrep</span></code> tasks, but the outcome may be different, especially in difficult cases.</p>
-</section>
+</div>
 
 
       </div>
