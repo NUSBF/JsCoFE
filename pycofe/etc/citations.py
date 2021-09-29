@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.09.21   <--  Date of Last Modification.
+#    29.09.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -222,6 +222,19 @@ citations = {
     #                        'pages'   : '119-124',
     #                        'doi'     : '10.1107/S0907444907037195'
     #                    }]
+                  },
+
+    'alphafold' : { 'name'     : 'AlphaFold',
+                    'category' : 'service',
+                    'refs'     : [{
+                            'authors' : 'Jumper, J., Evans, R., Pritzel, A. et al.',
+                            'title'   : 'Highly accurate protein structure prediction with AlphaFold',
+                            'journal' : 'Nature',
+                            'volume'  : '596',
+                            'year'    : '2021',
+                            'pages'   : '583-589',
+                            'doi'     : '10.1038/s41586-021-03819-2'
+                        }]
                   },
 
     'phmmer' :    { 'name'     : 'PHMMER',

@@ -289,7 +289,7 @@ class Refmac(basic.TaskDriver):
                 "xyzin" ,xyzin,
                 "hklout",self.getMTZOFName(),
                 "xyzout",xyzout,
-                "xmlout", xmlOutRefmac,
+                "xmlout",xmlOutRefmac,
                 "scrref",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
 
         libin = istruct.getLibFilePath ( self.inputDir() )
