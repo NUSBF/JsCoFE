@@ -81,10 +81,14 @@ class EnsemblePrepSeq(basic.TaskDriver):
         sec1 = self.task.parameters.sec1.contains
 
         rlevel = "RLEVEL "
+        rlevel += self.getParameter ( sec1.RLEVEL_SEL,False )
+
         if self.getParameter(sec1.AFDB_CBX)=="True":
-            rlevel += "AF50100"
+            aflevel = "AFLEVEL "
+            aflevel += self.getParameter ( sec1.AFLEVEL_SEL,False )
         else:
-            rlevel += self.getParameter ( sec1.RLEVEL_SEL,False )
+            aflevel = ""
+
 
         # make a file with input script
         self.open_stdin()
@@ -104,6 +108,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
             "SCOP False\n" + \
             "DEBUG False\n" + \
             rlevel + "\n" + \
+            aflevel + "\n" + \
             "GESE True\n" + \
             "GEST True\n" + \
             "AMPT False\n" + \

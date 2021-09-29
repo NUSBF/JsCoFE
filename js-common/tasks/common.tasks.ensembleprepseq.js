@@ -54,13 +54,6 @@ function TaskEnsemblePrepSeq()  {
              open     : true,  // true for the section to be initially open
              position : [0,0,1,5],
              contains : {
-                AFDB_CBX : {
-                       type     : 'checkbox',
-                       label    : 'Include structures from AFDB',
-                       tooltip  : 'Check to include structures from AlphaFold-2 database',
-                       value    : true,
-                       position : [0,0,1,3]
-                     },
                 RLEVEL_SEL : {
                       type     : 'combobox',
                       keyword  : 'RLEVEL',
@@ -69,9 +62,26 @@ function TaskEnsemblePrepSeq()  {
                                  'keeping hits in the list of matches. ',
                       range    : ['ALL|All','100|100%','95|95%','90|90%','70|70%','50|50%'],
                       value    : 'ALL',
-                      position : [1,0,1,1],
-                      hideon   : {AFDB_CBX:[true]}
+                      position : [0,0,1,1]
                      },
+                AFDB_CBX : {
+                        type     : 'checkbox',
+                        label    : 'Include structures from AFDB',
+                        tooltip  : 'Check to include structures from AlphaFold-2 database',
+                        value    : true,
+                        position : [1,0,1,3]
+                      },
+                AFLEVEL_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'AFLEVEL',
+                        label    : 'EBI-AFDB pLDDT cut-off',
+                        tooltip  : 'Choose appropriate pLDDT cut-off level for ' +
+                                   'keeping residues from EBI-AFDB model predictions. ',
+                        range    : ['0|0','10|10','20|20','30|30','40|40','50|50','60|60','70|70','80|80','90|90'],
+                        value    : '50',
+                        position : [2,0,1,1],
+                        hideon   : {AFDB_CBX:[false]}
+                      },
                 MRNUM : {
                       type     : 'integer',
                       keyword  : 'MRNUM',
@@ -80,7 +90,7 @@ function TaskEnsemblePrepSeq()  {
                                  '(from 1 to 20).',
                       range    : [1,20],
                       value    : 5,
-                      position : [2,0,1,1]
+                      position : [3,0,1,1]
                     }
            }
          }
