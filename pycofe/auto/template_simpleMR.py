@@ -102,14 +102,33 @@ def makeNextTask ( crTask,data ):
         auto_api.addContext("buccaneer_revision", data["revision"])
         resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
 
-        if float(data["Rfree"]) < 0.3 : # No CCP4Build if Buccaneer performed well
+        if float(data["Rfree"]) < 0.3 : # No other rebuilding if Buccaneer performed well
             if resHi > 3.0:
                 auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
             else:
                 auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
         else:
-            auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
+            # Buccaneer performed not very well, Rfree > 0.3
+            # First choice in now ARP/wARP (if resolution permits and if installed), then CCP4Build
+            if ("warpbin" in os.environ) and (resHi <= 2.5):
+                auto_tasks.arpwarp("arpwarp", auto_api.getContext("build_revision"),auto_api.getContext("build_parent"))
+            else:
+                auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
+        return
 
+
+    elif crTask._type == "TaskArpWarp":
+        if float(data["Rfree"]) > float(auto_api.getContext("buccaneer_rfree")):
+            parentTask = auto_api.getContext("buccaneer_taskName")
+            revision = auto_api.getContext("buccaneer_revision")
+        else:
+            parentTask = crTask.autoRunName
+            revision = data["revision"]
+        resHi = float(data["revision"].HKL.dataset.RESO[1]) # RESO[0] is low res limit
+        if resHi > 3.0:
+            auto_tasks.lorestr("lorestr", revision, parentTask)
+        else:
+            auto_tasks.refligWF("refligWF_", revision, parentTask)
         return
 
 

@@ -41,6 +41,7 @@ import shutil
 from . import basic
 from   pycofe.dtypes  import dtype_template
 from   pycofe.proc    import qualrep
+from   pycofe.auto    import auto
 
 
 # ============================================================================
@@ -182,10 +183,10 @@ class ArpWarp(basic.TaskDriver):
                                     " HLC=" + istruct.HLC + " HLD=" + istruct.HLD,
                         "phaseref","PHAS SCBL " + str(istruct.phaseBlur) ]
 
-        if istruct.initPhaseSel=="phases":
-            cmdopt += [ "phibest" ,istruct.PHI,
-                        "fom"     ,istruct.FOM ]
-
+        if hasattr(istruct, 'initPhaseSel'):
+            if istruct.initPhaseSel=="phases":
+                cmdopt += [ "phibest" ,istruct.PHI,
+                            "fom"     ,istruct.FOM ]
         else:
             if istruct.hasSubSubtype():
                 cmdopt += [ "modelin",istruct.getSubFilePath(self.inputDir()) ]
@@ -352,6 +353,13 @@ class ArpWarp(basic.TaskDriver):
                 except:
                     self.stderr ( " *** molprobity failure" )
                     self.rvrow = rvrow0
+
+                auto.makeNextTask ( self,{
+                    "revision" : revision,
+                    "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                    "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                })
+
 
         else:
             self.putTitle ( "No Output Generated" )
