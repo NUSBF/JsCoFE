@@ -101,6 +101,12 @@ def ccp4build ( name,revision,parentName ):
     return
 
 
+def arpwarp ( name,revision,parentName ):
+    auto_api.addTask ( name,"TaskArpWarp",parentName  )
+    auto_api.addTaskData ( name,"revision",revision )
+    return
+
+
 def make_ligand ( name, ligdesc, revision, parentName ):
     auto_api.addTask          ( name,"TaskMakeLigand",parentName )
     auto_api.addTaskData      ( name, "revision", revision)
