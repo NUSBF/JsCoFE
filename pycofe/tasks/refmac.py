@@ -126,34 +126,53 @@ class Refmac(basic.TaskDriver):
 
         external_restraint_files = []
         if hasattr(self.input_data.data,"hmodel"):
-           homolog_protein_fpaths = []
-           homolog_dnarna_fpaths = []
-           use_protein = False
-           use_dnarna = False
-           for i in range(len(hmodel) ):
-              if hmodel[i].hasSubtype ( dtype_template.subtypeProtein() ):
-                 use_protein = True
-                 homolog_protein_fpaths.append ( hmodel[i].getXYZFilePath(self.inputDir() ) )
-              if hmodel[i].hasSubtype ( dtype_template.subtypeDNA() ) or hmodel[i].hasSubtype ( dtype_template.subtypeRNA() ):
-                 use_dnarna = True
-                 homolog_dnarna_fpaths.append ( hmodel[i].getXYZFilePath(self.inputDir() ) )
+            homolog_protein_fpaths = []
+            homolog_dnarna_fpaths = []
+            use_protein = False
+            use_dnarna = False
+            for i in range(len(hmodel) ):
+                if hmodel[i].hasSubtype ( dtype_template.subtypeProtein() ):
+                    use_protein = True
+                    homolog_protein_fpaths.append ( hmodel[i].getXYZFilePath(self.inputDir() ) )
+                if hmodel[i].hasSubtype ( dtype_template.subtypeDNA() ) or hmodel[i].hasSubtype ( dtype_template.subtypeRNA() ):
+                    use_dnarna = True
+                    homolog_dnarna_fpaths.append ( hmodel[i].getXYZFilePath(self.inputDir() ) )
 
-           if use_protein:
-              prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_protein", "-p1", istruct.getXYZFilePath(self.inputDir() ), "-p2" ] + homolog_protein_fpaths
-              self.putMessage('Running ProSMART to generate external restraints for protein macromolecules')
-              self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
-              external_restraint_files.append(os.path.join('ProSMART_Output_protein',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
+            if use_protein:
+                prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_protein", "-p1", istruct.getXYZFilePath(self.inputDir() ), "-p2" ] + homolog_protein_fpaths
+                if sec3.ALL_BEST.value == 'all':
+                    prosmart_cmd += ['-restrain_all']
+                else:
+                    prosmart_cmd += ['-restrain_best']
 
-           if use_dnarna:
-              prosmart_cmd = [ "-quick", "-dna_rna", "-o", "ProSMART_Output_dnarna", "-p1" ,istruct.getXYZFilePath(self.inputDir() ), "-p2" ] + homolog_dnarna_fpaths
-              self.putMessage('Running ProSMART to generate external restraints for nucleic acid macromolecules')
-              self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
-              external_restraint_files.append(os.path.join('ProSMART_Output_dnarna',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
+                if sec3.SIDE_MAIN.value == 'main':
+                    prosmart_cmd += ['-main']
+                else:
+                    prosmart_cmd += ['-side']
+
+                if sec3.TOGGLE_ALT.value == 'yes':
+                    prosmart_cmd += ['-alt']
+
+                prosmart_cmd += ['-restrain_seqid', str(sec3.SEQID.value)]
+                prosmart_cmd += ['-rmin', str(sec3.RMIN.value)]
+                prosmart_cmd += ['-rmax', str(sec3.RMAX.value)]
+                prosmart_cmd += ['-bfac_alpha', str(sec3.BFAC_RM.value)]
+                prosmart_cmd += ['-occup', str(sec3.OCCUPANCY.value)]
+
+                self.putMessage('Running ProSMART to generate external restraints for protein macromolecules')
+                self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
+                external_restraint_files.append(os.path.join('ProSMART_Output_protein',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
+
+            if use_dnarna:
+                prosmart_cmd = [ "-quick", "-dna_rna", "-o", "ProSMART_Output_dnarna", "-p1" ,istruct.getXYZFilePath(self.inputDir() ), "-p2" ] + homolog_dnarna_fpaths
+                self.putMessage('Running ProSMART to generate external restraints for nucleic acid macromolecules')
+                self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
+                external_restraint_files.append(os.path.join('ProSMART_Output_dnarna',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
 
         if str(sec3.HBOND_RESTR.value) == 'yes':
-           prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_hbond", "-p1", istruct.getXYZFilePath(self.inputDir() )]
-           self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
-           external_restraint_files.append(os.path.join('ProSMART_Output_hbond',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
+            prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_hbond", "-p1", istruct.getXYZFilePath(self.inputDir() )]
+            self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
+            external_restraint_files.append(os.path.join('ProSMART_Output_hbond',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
 
 
         # Input
