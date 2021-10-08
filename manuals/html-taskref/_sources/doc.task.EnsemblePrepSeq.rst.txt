@@ -2,11 +2,9 @@
 Prepare MR Ensemble from Sequence
 =================================
 
-**MR Ensemble from Sequence** are superposed sets of sufficiently similar MR models, corresponding to the same target sequence, the use of which often leads to a higher success rate comparing to the use of MR Search Models. This task used only sequence information to prepare the MR Ensemble.
+**MR Ensembles** are superposed sets of sufficiently similar MR models, corresponding to the same target sequence. Using ensembles instead of singe models often increases chances of successful Molecular Replacement. This task uses :doc:`MrBump <doc.task.MrBump>` software to prepare MR Ensembles for given target sequence. The process is completely automatic and includes finding suitable structure homologs in the PDB and, optionally, AlphaFold 2 database, trimming them and bringing in best superposition. 
 
-Ensembles performed by the PDB homologs search with or without AlphaFold 2 database.
-
-
+The task may prepare several MR Ensembles up to the specified number, depending on the quality of models found.
 
 **REFERENCES**
 

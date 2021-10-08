@@ -2,10 +2,10 @@
 Prepare MR Ensemble from Models
 ===============================
 
-**MR Ensembles** are superposed sets of sufficiently similar MR models the use of which often leads to a higher success rate comparing to the use of MR Search Models. This task form ensemble from the given models.
+**MR Ensembles** are superposed sets of sufficiently similar MR models. Using MR Ensembles instead of individual MR models usually leads to a higher success rate of Molecular Replacement. Both :doc:`Phaser <doc.task.Phaser>` and :doc:`Molrep <doc.task.Molrep>` accept MR Ensembles likewise MR models. This task forms MR Ensemble from given models, by multiple superposing them with the :doc:`GESAMT <doc.task.Gesamt>` software
 
 -----------
 Trim levels
 -----------
 
-By default, the task will generate untrimmed ensemble and ensembles with 100%, 80%, 60%, and 40% best matching residue alignment. You may change the trim level by giving a comma-separated list of the trims. 
+By default, the task will generate untrimmed ensemble, made of unmodified models, and ensembles with models trimmed to 100%, 80%, 60%, and 40% best matching residues, as identified via multiple structure alignment. You may change the set of trim levels by giving a comma-separated list of new trim values.

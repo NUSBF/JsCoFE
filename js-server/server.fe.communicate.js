@@ -118,7 +118,14 @@ function Communicate ( server_request )  {
     }
   }
 
-//console.log ( "filePath " + this.filePath );
+// if (server_request.url.indexOf('demo=')>=0)  {
+//   console.log ( "params " + server_request.url );
+//   // Output:
+//   // params /?demo=a
+//   // params /?demo=a
+//   // params /?demo=/a/b/c/demo.ccp4cloud
+// }
+// console.log ( "filePath " + this.filePath );
 
   if (this.command.startsWith(cmd.fe_command.jobFinished))  {
     this.job_token = this.command.substr(cmd.fe_command.jobFinished.length);

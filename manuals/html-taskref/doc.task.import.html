@@ -50,8 +50,8 @@
 <h1><span class="section-number">2.1. </span>Data Import<a class="headerlink" href="#data-import" title="Permalink to this headline">¶</a></h1>
 <p>Data import is almost always the first task in any Project (only the <strong>Make Ligand</strong> task may be run without any data imported). There may be as many data imports in projects as necessary, however, it is usually a good idea to import all available experimental data, sequences and molecular coordinates in the very beginning.</p>
 <p><em>From user’s perspective, CCP4 Cloud operates with data objects, rather than raw files. There are only 2 points where a user deals with actual files: (1) importing and (2) exporting data to/from CCP4 Cloud Project. Data objects correspond to entities that are passed from task to task as a whole. Therefore, for all tasks, except Data Import, require choice of data objects, rather than raw files. This is done in form of drop-down selectors, pre-filled with data objects, relevant to particular task and input field only</em></p>
-<div class="section" id="ccp4-cloud-data-managment">
-<h2><span class="section-number">2.1.1. </span>CCP4 Cloud Data Managment<a class="headerlink" href="#ccp4-cloud-data-managment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="ccp4-cloud-data-management">
+<h2><span class="section-number">2.1.1. </span>CCP4 Cloud Data Management<a class="headerlink" href="#ccp4-cloud-data-management" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="data-object-naming">
 <h3><span class="section-number">2.1.1.1. </span>Data Object Naming<a class="headerlink" href="#data-object-naming" title="Permalink to this headline">¶</a></h3>
 <blockquote>
@@ -98,8 +98,8 @@ If you may need to use data from different branches in a subsequent job. For exa
 </div>
 <div class="section" id="data-objects-and-project-branching">
 <h3><span class="section-number">2.1.1.3. </span>Data Objects and Project Branching<a class="headerlink" href="#data-objects-and-project-branching" title="Permalink to this headline">¶</a></h3>
-<p>Limitation of data visibility along branches of the job tree helps to keep the content of input data selectors in job dialogs as conscise and relevant as possible. For new jobs, CCP4 Cloud will always offer initially data settings based on most recenty generated data (in given branch of the job tree), as well as associated data. For example, a new refinement job will have, as initial setings, the most recently produced Structure Data and reflection dataset (HKL) used to produce it. However, you can always change these settings, e.g., in order to refine structure against another compatible dataset.</p>
-<p>It is therefore clear that you want to grow your Project (the job tree) in such a way that needed data is always in the scope, and you do not have to resort to breaking the default behaviour by adjusting the data visibility scope with mutiple job selection. Following these principles will help to keep your projects in the most logical way, where the structure solution pathway can be easily identified (as a branch that led to best results).</p>
+<p>Limitation of data visibility along branches of the job tree helps to keep the content of input data selectors in job dialogs as concise and relevant as possible. For new jobs, CCP4 Cloud will always offer initially data settings based on most recently generated data (in given branch of the job tree), as well as associated data. For example, a new refinement job will have, as initial settings, the most recently produced Structure Data and reflection dataset (HKL) used to produce it. However, you can always change these settings, e.g., in order to refine structure against another compatible dataset.</p>
+<p>It is therefore clear that you want to grow your Project (the job tree) in such a way that needed data is always in the scope, and you do not have to resort to breaking the default behaviour by adjusting the data visibility scope with multiple job selection. Following these principles will help to keep your projects in the most logical way, where the structure solution pathway can be easily identified (as a branch that led to best results).</p>
 <p>The disadvantage of non-branching is the gradual lose of clarity of the structure solution process with growing number of trials, as well as growing inconvenience of dealing with long lists of input data to be chosen for new tasks. While these disadvantages do not seem to be dramatic in case of simple short projects, they may become critical in not so unusual case of projects having 100s of jobs.</p>
 <dl class="docutils">
 <dt>CCP4 Cloud does not impose any specific rules for project branching. However, it may be convenient to branch when you:</dt><dd><ul class="simple">
@@ -208,7 +208,7 @@ Wavelength (Real) for dataset.</dd>
 </div>
 <div class="section" id="the-hkl-file">
 <h2><span class="section-number">2.1.4. </span>The HKL file<a class="headerlink" href="#the-hkl-file" title="Permalink to this headline">¶</a></h2>
-<p>A HKL file consists of x-ray reflections related to reflection planes (hkl) of the crystal lattice. Each of these planes obeys Bragg’s equation. The experimental reflections are characterized by the indices h k l, a measured intensity I and its error sigma(I).</p>
+<p>A HKL file consists of x-ray reflections related to reflection planes (hkl) of the crystal lattice. Each of these planes obeys Bragg’s equation. The experimental reflections are characterised by the indices h k l, a measured intensity I and its error sigma(I).</p>
 </div>
 </div>
 

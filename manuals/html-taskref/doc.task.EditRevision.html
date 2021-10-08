@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FCVD2T7BGM');
+    </script>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4.2.3. Edit Structure Revision &#8212; CCP4 Cloud 1.6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="5. Automated Molecular Replacement" href="Automated_Molecular_Replacement.html" />
+    <link rel="prev" title="4.2.2. Change ASU Space Group" href="doc.task.ChangeSpGASU.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>4.2.3. Edit Structure Revision</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="doc.task.ChangeSpGASU.html"><span class="section-number">4.2.2. </span>Change ASU Space Group</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="Automated_Molecular_Replacement.html"><span class="section-number">5. </span>Automated Molecular Replacement</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <div class="section" id="edit-structure-revision">
+<h1><span class="section-number">4.2.3. </span>Edit Structure Revision<a class="headerlink" href="#edit-structure-revision" title="Permalink to this headline">¶</a></h1>
+<p><em>Structure revision</em> is a combined data type, which contains a description of <em>crystal structure</em> achieved at the point where a particular <em>Structure revision</em> was created and can be viewed as a box with all sorts of data passing from task to task.</p>
+<p>The minimal possible <em>Structure revision</em> includes only the basic knowledge about the crystal: reflection dataset (HKL) and the content of the asymmetric unit (ASU). As the structure solution project develops, <em>Structure revisions</em> are passed from one task to another, getting updated with new or improved data (such as atomic coordinates, phases, heavy-atom substructure, ligands etc.), until the structure is considered as solved. Every task takes the needed input data from <em>Structure revision</em> automatically, which helps to maintain data integrity throughout the project and keep task interfaces laconic.</p>
+<p>CCP4 Cloud maintains <em>Structure revisions</em> automatically, and, in most cases, there is no need to tamper with their content. There are, however, special cases where direct manipulation with data items in <em>Structure revision</em> is unavoidable. Usually, this happens in difficult cases, when various tricks are attempted. For example, an expert crystallographer may want to substitute reflection dataset for a higher-resolution one, or bring phases from isomorphous crystals, or adjust the composition of ASU after a number of jobs have been run after the initial ASU definition <em>etc.</em>. Replacing (or removing) data items in <em>Structure revision</em> is done with the <strong>Edit Structure Revision</strong> task.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">not all of such operations would be legitimate, therefore, expert knowledge or advice may be necessary.</p>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="doc.task.ChangeSpGASU.html"><span class="section-number">4.2.2. </span>Change ASU Space Group</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="Automated_Molecular_Replacement.html"><span class="section-number">5. </span>Automated Molecular Replacement</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

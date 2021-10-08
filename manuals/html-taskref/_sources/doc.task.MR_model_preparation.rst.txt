@@ -2,17 +2,15 @@
 Molecular Replacement Models and Ensembles
 ==========================================
 
-**MR Search Models** are structural templates prepared for the use by molecular replacement programs (Phaser and Molrep). MR model may coincide with the homologous structure, however, in many cases it is represented by a selected part of it, which is expected to be most close to target molecule. In CCP4 Cloud, MR search model is associated with sequence it represents.
+**MR Search Models** are structural templates prepared for use in molecular replacement programs (Phaser and Molrep). For the success of Molecular Replacement, MR model should be sufficiently similar to the target structure. As a rough guideline, MR models should be made from structural homologs with r.m.s.d. better than 2.5 angstrom (1.5 Å and better is desirable) from the target structure and sequence identity of more than 30%. If the homolog is highly similar to the target protein, it can be taken for MR model as a whole, unmodified. However, in many cases, the homolog should be trimmed by removing structural features that are distinctly different from the expected structure. Such trimming is done on the basis of sequence comparison. In CCP4 Cloud, MR search model is associated with the sequence it represents, which is used for informing MR programs on subsequent stages.
 
 A well-chosen and optimised search model has two key advantages:
 
-    1. Facilitates the work MR program of finding the correct position for that search model and hence sensible starting phases
+    1. Facilitates finding the correct position by MR program and hence more sensible initial phases
 
     2. Facilitates quicker and easier model building and refinement post MR
 
-In MR, the coordinates of a search model are converted to a calculated structure-factor set for comparison with the experimental data. It has been known for a while that MR search models clustered and aligned into ensembles can be more effective than the individual models themselves.
-
-**MR Ensembles** are superposed sets of sufficiently similar MR models, corresponding to the same target sequence, the use of which often leads to a higher success rate comparing to the use of MR Search Models. In CCP4 Cloud, MR ensemble is associated with target sequence it represents.
+The success of Molecular Replacement may be noticeably increased if MR programs are given more than one model for each target sequence. This assumes that the models are derived from structure homologs with some degree of diversity, which gives MR programs more chances to choose the optimal orientation for their "average". In this approach, MR models, associated with the same target sequence, are superposed on each other and assembled in packs called **MR Ensembles**, which can be used in MR programs in exactly the same way as individual MR models. Like MR models, MR Ensembles are associated with the target sequence they represent, for further informing MR programs in a seamless way.
 
 MR Search Model(s) and/or MR Ensemble(s) must be prepared before molecular replacement with either Phaser or Molrep. CCP4 Cloud contains several tasks for this purpose.
 

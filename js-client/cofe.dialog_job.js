@@ -54,6 +54,8 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.parent_page = parent_page;
   this.job_edited  = false;
 
+  this._created    = false;
+
   Widget.call ( this,'div' );
 
   var title = '[' + padDigits(this.task.id,4) + '] ';
@@ -92,6 +94,7 @@ function JobDialog ( params,          // data and task projections up the tree b
       height    : size[1],
       buttons   : {},
       open      : function(event, ui) {
+        dlg._created = true;
         if (__any_mobile_device)
           $(this).siblings('.ui-dialog-titlebar').remove();
         if (dlg.task.state==job_code.new)  {
@@ -173,7 +176,8 @@ JobDialog.prototype.delete = function()  {
     this.inputPanel.delete();
   if (this.outputPanel)
     this.outputPanel.delete();
-  $(this.element).dialog( "destroy" );
+  if (this._created)
+    $(this.element).dialog( "destroy" );
   Widget.prototype.delete.call ( this );
 }
 
@@ -355,7 +359,8 @@ JobDialog.prototype.setDlgSize = function()  {
 }
 
 JobDialog.prototype.close = function()  {
-  $(this.element).dialog ( 'close' );
+  if (this._created)
+    $(this.element).dialog ( 'close' );
 }
 
 JobDialog.prototype.loadReport = function()  {

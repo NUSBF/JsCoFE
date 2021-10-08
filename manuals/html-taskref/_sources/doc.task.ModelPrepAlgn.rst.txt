@@ -2,26 +2,36 @@
 Prepare MR Model(s) from Alignment data
 =======================================
 
-Amino acid sequence similarity often correlates well with structural similarity. This task uses the `HHpred alignment <https://toolkit.tuebingen.mpg.de/tools/hhpred>`_ for models generation. HHpred is suitable for more difficult cases where no obvious homologue is available. The sequence alignment generated in the search step can be used as a guide for the pruning of the homologue.
+Usually, sufficiently high amino acid sequence similarity correlates well with structural similarity, which fact is used for finding suitable structure homologs from PDB or other data bases. This task uses the `HHpred alignment <https://toolkit.tuebingen.mpg.de/tools/hhpred>`_ for identifying PDB entries, suitable for making MR search models. HHpred is and advanced bioinformatics tool that can detect structural homology even when sequence similarity is at the bottom of the twilight zone and even below that. The sequence alignment generated in the search step can be used as a guide for the pruning of the homologue.
 
-The coordinates are usually modified (pruned) in order to remove parts that do not correspond to the target sequence. A few modification protocols are available:
+The task requires a preliminary import of a ``.hhr`` file with the results of HHpred search done at the `HHpred <https://toolkit.tuebingen.mpg.de/tools/hhpred>`_ web-site using the target sequence.
 
-    * *Unmodified*: atomic coordinates are not altered in any way
+The atomic coordinates of PDB entries listed in HHpred results are automatically trimmed according to the selection ranges given in HHpred output. The results are usually modified (pruned) in order to remove parts that do not correspond to the target sequence. A few modification protocols are available:
 
-    * *Clip*: water molecules and ligands are removed
+    * **Unmodified**: atomic coordinates are not altered in any way
 
-    * *Molrep*: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
+    * **Clip**: water molecules and ligands are removed
+
+    * **Molrep**: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
       `Molrep <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/>`_
 
-    * *Sculptor*: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+    * **Sculptor**: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
       ``Phaser.Sculptor`` (*cf.* `here <https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement>`_)
 
-    * *Chainsaw*: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+    * **Chainsaw**: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
       `Chainsaw <https://doi.org/10.1107/S0021889808006985>`_
 
-    * *Polyalanine*: all residues are replaced with polyalanines
+    * **Polyalanine**: all residues are replaced with polyalanines
 
-The resulting models can be used in both ``Phaser`` and ``Molrep`` tasks, but the outcome may be different, especially in difficult cases.
+The resulting models can be used in both :doc:`Phaser <doc.task.Phaser>` and :doc:`Molrep <doc.task.Molrep>` tasks, but the outcome may be different, especially in difficult cases.
+
+.. Note::
+        the task usually produces several MR models with a range of similarity to target sequence. Although higher sequence similarity implies higher success or Molecular Replacement, this is not guaranteed.
+
+.. Note::
+        combining several models, corresponding to the same target sequence, into MR Ensemble(s) may increase chances for success. MR ensembles may be prepared from individual models using the :doc:`MR Ensembles <doc.task.Ensembler>` task
+
+
 
 
 **REFERENCES**
