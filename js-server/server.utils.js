@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.05.21   <--  Date of Last Modification.
+ *    08.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -358,12 +358,14 @@ function copyDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
 
 
 function mkDir ( dirPath )  {
-  try {
-    fs.mkdirSync ( dirPath );
-    return true;
-  } catch (e)  {
-    log.error ( 6,'cannot create directory ' + dirPath );
-    return false;
+  if (!dirExists(dirPath))  {
+    try {
+      fs.mkdirSync ( dirPath );
+      return true;
+    } catch (e)  {
+      log.error ( 6,'cannot create directory ' + dirPath );
+      return false;
+    }
   }
 }
 
@@ -374,7 +376,8 @@ function mkDir_anchor ( dirPath )  {
   // archivers such as zip, and subsequently loosing it during exchange
   // between FE and NCs
   try {
-    fs.mkdirSync     ( dirPath );
+    if (!dirExists(dirPath))
+      fs.mkdirSync ( dirPath );
     fs.writeFileSync ( path.join(dirPath,'__anchor__'),'anchor' );
     return true;
   } catch (e)  {

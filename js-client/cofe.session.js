@@ -187,29 +187,29 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               switch (page_switch)  {
 
                 //case 0 : if (__admin && (userData.login=='admin'))
-                case 0 : if ((__user_role==role_code.admin) && (userData.login=='admin'))
-                               makeAdminPage       ( sceneId );
-                         else if ((!__local_setup) && (userData.action!=userdata_action.none))
-                         //else if (userData.action!=userdata_action.none)
-                               makeAccountPage     ( sceneId );
-                         else if (__user_settings.onlogin=='last_project')  {
-                           serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
-                             var found = false;
-                             for (var i=0;(i<data.projects.length) && (!found);i++)
-                               found = (data.projects[i].name==data.current);
-                             if (found)  makeProjectPage     ( sceneId );
-                                   else  makeProjectListPage ( sceneId );
-                           },null,'persist');
-                         } else  makeProjectListPage ( sceneId );
-                      break;
+                case 0 :  if ((__user_role==role_code.admin) && (userData.login=='admin'))
+                            makeAdminPage       ( sceneId );
+                          else if ((!__local_setup) && (userData.action!=userdata_action.none))
+                          //else if (userData.action!=userdata_action.none)
+                            makeAccountPage     ( sceneId );
+                          else if (__user_settings.onlogin=='last_project')  {
+                            serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
+                              var found = false;
+                              for (var i=0;(i<data.projects.length) && (!found);i++)
+                                found = (data.projects[i].name==data.current);
+                              if (found)  makeProjectPage     ( sceneId );
+                                    else  makeProjectListPage ( sceneId );
+                            },null,'persist');
+                          } else  makeProjectListPage ( sceneId );
+                        break;
 
-                case 1 : makeProjectListPage ( sceneId );  break;
-                case 2 : makeAccountPage     ( sceneId );  break;
+                case 1 :  makeProjectListPage ( sceneId );  break;
+                case 2 :  makeAccountPage     ( sceneId );  break;
 
                 //default: if (__admin)  makeAdminPage   ( sceneId );
-                default: if (__user_role==role_code.admin)
-                               makeAdminPage   ( sceneId );
-                         else  makeProjectPage ( sceneId );
+                default:  if (__user_role==role_code.admin)
+                                makeAdminPage   ( sceneId );
+                          else  makeProjectPage ( sceneId );
 
               }
 

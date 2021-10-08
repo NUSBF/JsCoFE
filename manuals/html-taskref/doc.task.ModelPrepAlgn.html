@@ -48,22 +48,31 @@
         
   <div class="section" id="prepare-mr-model-s-from-alignment-data">
 <h1><span class="section-number">6.1.3. </span>Prepare MR Model(s) from Alignment data<a class="headerlink" href="#prepare-mr-model-s-from-alignment-data" title="Permalink to this headline">¶</a></h1>
-<p>Amino acid sequence similarity often correlates well with structural similarity. This task uses the <a class="reference external" href="https://toolkit.tuebingen.mpg.de/tools/hhpred" rel="noopener noreferrer" target="_blank">HHpred alignment</a> for models generation. HHpred is suitable for more difficult cases where no obvious homologue is available. The sequence alignment generated in the search step can be used as a guide for the pruning of the homologue.</p>
-<p>The coordinates are usually modified (pruned) in order to remove parts that do not correspond to the target sequence. A few modification protocols are available:</p>
+<p>Usually, sufficiently high amino acid sequence similarity correlates well with structural similarity, which fact is used for finding suitable structure homologs from PDB or other data bases. This task uses the <a class="reference external" href="https://toolkit.tuebingen.mpg.de/tools/hhpred" rel="noopener noreferrer" target="_blank">HHpred alignment</a> for identifying PDB entries, suitable for making MR search models. HHpred is and advanced bioinformatics tool that can detect structural homology even when sequence similarity is at the bottom of the twilight zone and even below that. The sequence alignment generated in the search step can be used as a guide for the pruning of the homologue.</p>
+<p>The task requires a preliminary import of a <code class="docutils literal notranslate"><span class="pre">.hhr</span></code> file with the results of HHpred search done at the <a class="reference external" href="https://toolkit.tuebingen.mpg.de/tools/hhpred" rel="noopener noreferrer" target="_blank">HHpred</a> web-site using the target sequence.</p>
+<p>The atomic coordinates of PDB entries listed in HHpred results are automatically trimmed according to the selection ranges given in HHpred output. The results are usually modified (pruned) in order to remove parts that do not correspond to the target sequence. A few modification protocols are available:</p>
 <blockquote>
 <div><ul class="simple">
-<li><em>Unmodified</em>: atomic coordinates are not altered in any way</li>
-<li><em>Clip</em>: water molecules and ligands are removed</li>
-<li><em>Molrep</em>: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
+<li><strong>Unmodified</strong>: atomic coordinates are not altered in any way</li>
+<li><strong>Clip</strong>: water molecules and ligands are removed</li>
+<li><strong>Molrep</strong>: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
 <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/" rel="noopener noreferrer" target="_blank">Molrep</a></li>
-<li><em>Sculptor</em>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+<li><strong>Sculptor</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
 <code class="docutils literal notranslate"><span class="pre">Phaser.Sculptor</span></code> (<em>cf.</em> <a class="reference external" href="https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement" rel="noopener noreferrer" target="_blank">here</a>)</li>
-<li><em>Chainsaw</em>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+<li><strong>Chainsaw</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
 <a class="reference external" href="https://doi.org/10.1107/S0021889808006985" rel="noopener noreferrer" target="_blank">Chainsaw</a></li>
-<li><em>Polyalanine</em>: all residues are replaced with polyalanines</li>
+<li><strong>Polyalanine</strong>: all residues are replaced with polyalanines</li>
 </ul>
 </div></blockquote>
-<p>The resulting models can be used in both <code class="docutils literal notranslate"><span class="pre">Phaser</span></code> and <code class="docutils literal notranslate"><span class="pre">Molrep</span></code> tasks, but the outcome may be different, especially in difficult cases.</p>
+<p>The resulting models can be used in both <a class="reference internal" href="doc.task.Phaser.html"><span class="doc">Phaser</span></a> and <a class="reference internal" href="doc.task.Molrep.html"><span class="doc">Molrep</span></a> tasks, but the outcome may be different, especially in difficult cases.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">the task usually produces several MR models with a range of similarity to target sequence. Although higher sequence similarity implies higher success or Molecular Replacement, this is not guaranteed.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">combining several models, corresponding to the same target sequence, into MR Ensemble(s) may increase chances for success. MR ensembles may be prepared from individual models using the <a class="reference internal" href="doc.task.Ensembler.html"><span class="doc">MR Ensembles</span></a> task</p>
+</div>
 <p><strong>REFERENCES</strong></p>
 <p><a class="reference external" href="http://www.sciencedirect.com/science/article/pii/S0022283617305879" rel="noopener noreferrer" target="_blank">A Completely Reimplemented MPI Bioinformatics Toolkit with a New HHpred Server at its Core.
 Zimmermann L, Stephens A, Nam SZ, Rau D, Kübler J, Lozajic M, Gabler F, Söding J, Lupas AN, Alva V. J Mol Biol. 2018 Jul 20. S0022-2836(17)30587-9.</a></p>

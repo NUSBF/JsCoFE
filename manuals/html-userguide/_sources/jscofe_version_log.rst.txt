@@ -20,6 +20,8 @@ CCP4 Cloud Version Log
 
     #. Updates and fixes in ``MrBump``, ``MrParse`` and ``Ensemble preparation with CCP4mg`` related to working with the AlphaFold database
 
+    #. Fixed bug causing *Job Dialog* malfunction if protein and rna data types are mixed in the project
+
 
 
 **Version 1.6.023**

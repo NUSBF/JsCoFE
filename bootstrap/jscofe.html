@@ -259,6 +259,10 @@
     //$(window).on ( 'load', function(){
     $(document).ready ( function(){
       //console.log ( '   ready=' + document.readyState );
+      /*
+      alert ( window.location.search );
+      window.history.replaceState({}, document.title, "/" );
+      */
       var dev_switch = 0; //3;
       startSession ( 'scene',dev_switch );
     });

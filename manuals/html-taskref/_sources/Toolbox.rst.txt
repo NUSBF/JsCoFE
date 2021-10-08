@@ -6,6 +6,7 @@ Toolbox
     :maxdepth: 2
 
     doc.task.Auspex
+    doc.task.SRF
     doc.task.Gemmi
     doc.task.Gesamt
     doc.task.LsqKab
