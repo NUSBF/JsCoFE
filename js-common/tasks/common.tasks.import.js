@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    24.09.21   <--  Date of Last Modification.
+ *    12.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -409,7 +409,9 @@ if (!__template)  {
     var ignore    = '';
     for (var i=0;i<files.length;i++)  {
       var lcname = files[i].name.toLowerCase();
-      if (endsWith(lcname,'.ccp4_demo') || endsWith(lcname,'.zip'))
+      if (endsWith(lcname,'.ccp4_demo') ||
+          endsWith(lcname,'.ccp4cloud') ||
+          endsWith(lcname,'.zip'))
             ignore += '<li><b>' + files[i].name + '</b></li>';
       else  sel_files.push ( files[i] );
     }

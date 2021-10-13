@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.06.21   <--  Date of Last Modification.
+ *    12.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -304,6 +304,7 @@ var icon_ext = {
   'sca'       : 'file_mtz',
   'h5'        : 'file_hdf',
   'ccp4_demo' : 'file_ccp4demo',
+  'ccp4cloud' : 'file_ccp4demo',
   'pdb'       : 'file_pdb',
   'ent'       : 'file_pdb',
   'mmcif'     : 'file_pdb',
@@ -420,7 +421,7 @@ StorageTree.prototype.readStorageData = function ( page_title,
               show = (tree.ext_filter.indexOf(ext)>=0);
               //show = (importable_ext.indexOf(ext)>=0);
             else if (tree.file_key==5)
-              show = (ext=='ccp4_demo');
+              show = (ext=='ccp4_demo') || (ext=='ccp4cloud');
 
             var icon  = 'file_dummy';
             if (ext in icon_ext)  {

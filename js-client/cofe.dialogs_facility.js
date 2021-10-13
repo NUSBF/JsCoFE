@@ -468,7 +468,7 @@ function CloudFileBrowser ( inputPanel,task,fileKey,extFilter,onSelect_func,onCl
                                  // 2: show only images
                                  // 3: browse directories, show all files
                                  // 4: show only importable files
-                                 // 5: show only ccp4_demo files
+                                 // 5: show only .ccp4_demo and .ccp4cloud files
   this.ext_filter = extFilter;   // []: take all files, otherwise list of
                                  //     acceptable extensions in lower case
   this.onSelect_func = onSelect_func;

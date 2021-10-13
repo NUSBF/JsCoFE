@@ -27,6 +27,19 @@ function startSession ( sceneId,dev_switch )  {
   // set jsrview path, which is used in jsrview iframes
   _jsrview_uri = 'js-lib/jsrview/';
 
+  // check whether session was started to load a demo project
+  var url_search = window.location.search;
+  if (url_search)  {
+    var url_plist    = decodeURI(url_search).split('?').pop().split('&');
+    __url_parameters = {};
+    for (var i=0;i<url_plist.length;i++)  {
+      var p = url_plist[i].split('=');
+      __url_parameters[p[0]] = p[1];
+    }
+    // alert ( JSON.stringify(__url_parameters) );
+    window.history.replaceState ( {},document.title,'/' );
+  }
+
   checkBrowser();
   checkAnnouncement();
 
@@ -205,6 +218,11 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
                 case 1 :  makeProjectListPage ( sceneId );  break;
                 case 2 :  makeAccountPage     ( sceneId );  break;
+
+                case 101: new HopOnDemoProjectDialog ( function(){
+                            makeProjectPage ( sceneId );
+                          });
+                        break;
 
                 //default: if (__admin)  makeAdminPage   ( sceneId );
                 default:  if (__user_role==role_code.admin)

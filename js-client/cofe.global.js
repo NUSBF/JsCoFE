@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    28.07.21   <--  Date of Last Modification.
+ *    12.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -42,6 +42,7 @@ var __current_project = null;
 var __local_setup     = false;
 var __cloud_storage   = false;  // true if user has cloud storage allocated
 var __demo_projects   = false;  // true if demo projects are configured
+var __url_parameters  = null;   // decoded ?p1=v1&p2=v2 from url at session begining
 var __jobs_safe       = false;  // true if FE supports failed jobs safe
 var __fe_url          = '';     // front-end url as returned by the server (not proxy)
 var __auth_software   = null;   // software authorisation data

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.21   <--  Date of Last Modification.
+ *    13.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -526,6 +526,51 @@ function getDirectorySize ( dir_path )  {
 }
 
 
+function searchTree ( dir_path,filename,matchKey ) {
+// recursively searches directory and returns list full paths to files with given
+// name, if found, or empty list.
+//  matchKey = 0 :   exact match
+//             1 :   match 'filename' as leading part of file name
+  var filepaths = [];
+  try {
+    if (fileExists(dir_path))  {
+      fs.readdirSync(dir_path).forEach(function(file,index){
+        var curPath = path.join ( dir_path,file );
+        var lstat   = fs.lstatSync(curPath);
+        if (lstat.isDirectory()) { // recurse
+          filepaths = filepaths.concat ( searchTree(curPath,filename,matchKey) );
+        } else if (((matchKey==0) && (file==filename)) ||
+                   ((matchKey==1) && (file.startsWith(filename)))) {
+          filepaths.push ( curPath );
+        }
+      });
+    }
+  } catch (e)  {
+    log.error ( 11,'error scanning directory ' + dir_path );
+  }
+  return filepaths;
+}
+
+
+/*
+function walk(dir, callback) {
+	fs.readdir(dir, function(err, files) {
+		if (err) throw err;
+		files.forEach(function(file) {
+			var filepath = path.join(dir, file);
+			fs.stat(filepath, function(err,stats) {
+				if (stats.isDirectory()) {
+					walk(filepath, callback);
+				} else if (stats.isFile()) {
+					callback(filepath, stats);
+				}
+			});
+		});
+	});
+}
+*/
+
+
 function removeFiles ( dir_path,extList ) {
   var rc = true;
 
@@ -542,7 +587,7 @@ function removeFiles ( dir_path,extList ) {
           try {
             fs.unlinkSync ( curPath );
           } catch (e)  {
-            log.error ( 11,'cannot remove file ' + curPath );
+            log.error ( 12,'cannot remove file ' + curPath );
             rc = false;
           }
         }
@@ -721,8 +766,8 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
         else if (deleteOnDone)
           removeFile ( fpath );
         if (rc)  {
-          log.error ( 12,'Read file errors, file = ' + fpath );
-          log.error ( 12,'Error: ' + err );
+          log.error ( 13,'Read file errors, file = ' + fpath );
+          log.error ( 13,'Error: ' + err );
           server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
           server_response.end ( '<p><b>[05-0006] FILE NOT FOUND [' + fpath + ']</b></p>' );
         }
@@ -747,7 +792,7 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
       });
 
       fReadStream.on ( 'error',function(e){
-        log.error ( 13,'Read file errors, file = ' + fpath );
+        log.error ( 14,'Read file errors, file = ' + fpath );
         console.error ( e.stack || e );
         server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
         server_response.end ( '<p><b>[05-0007] FILE READ ERRORS</b></p>' );
@@ -874,6 +919,7 @@ module.exports.removeSymLinks        = removeSymLinks;
 module.exports.removePath            = removePath;
 // module.exports.removeLockedPath      = removeLockedPath;
 module.exports.getDirectorySize      = getDirectorySize;
+module.exports.searchTree            = searchTree;
 module.exports.removeFiles           = removeFiles;
 module.exports.writeJobReportMessage = writeJobReportMessage;
 module.exports.jobSignalExists       = jobSignalExists;

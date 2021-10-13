@@ -218,12 +218,19 @@ function MessageServerInactive()  {
     '<p>Please come back later.</div>' );
 }
 
+function MessageFileNotFound ( message )  {
+  new MessageBox ( 'File not found',
+    '<div style="width:500px"><h2>File not found</h2>' +
+    '<p>' + message + 
+    '<p>Please come back later.</div>' );
+}
+
 function MessageUnknownError ( title,message )  {
-  new MessageBox ( 'Registration',
-    '<b>Unknown error.</b> The server replied with:<p>' +
+  new MessageBox ( 'Unknown error',
+    '<div style="width:500px"><h2>Unknown error.</h2> The server replied with:<p>' +
     '<i>' + message + '</i><p>Please file a report to ' +
     report_problem(
       'CCP4 Cloud Report: D0005',
-      'Report code: D0005','' ) +    
-    '. Sorry and please come back later!' );
+      'Report code: D0005','' ) +
+    '. Sorry and please come back later!</div>' );
 }
