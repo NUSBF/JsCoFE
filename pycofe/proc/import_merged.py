@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    11.10.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -463,7 +463,10 @@ def run ( body,   # body is reference to the main Import class
                         cou0   = 7
                         dset   = last_imported.dataset
                         mtzin  = os.path.join(body.outputDir(),dset.MTZ)
-                        f_sigf = dset.Fmean.value, dset.Fmean.sigma
+                        try:
+                            f_sigf = dset.Fmean.value, dset.Fmean.sigma
+                        except:
+                            f_sigf = None
                         phaseBlocks = []
                         cou = cou0
                         if importPhases.startswith("phases-ds"):

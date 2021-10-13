@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.09.21   <--  Date of Last Modification.
+ *    12.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -116,6 +116,10 @@ function makeCommErrorMessage ( title,response )  {
 
     case fe_retcode.serverInactive:
         MessageServerInactive();
+      break;
+
+    case fe_retcode.fileNotFound:
+        MessageFileNotFound ( response.message );
       break;
 
     default:

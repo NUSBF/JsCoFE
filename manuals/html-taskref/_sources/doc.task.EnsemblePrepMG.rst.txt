@@ -2,7 +2,52 @@
 Prepare MR Ensemble with CCP4mg
 ===============================
 
-This task starts `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ graphical viewer on your computer in a special mode, which allows you to find structural homologs to your target system, trim and ensemble them interactively with full visual control in real time. Ensembles are derived from an alignment-truncation procedure using the homologues found in the sequence-based search. To construct useful ensembles, it may be beneficial to group or cluster homologues based on their structural similarity using the CCP4mg interface, cluster grouping is presented with rainbow colouring of matches based on their `phmmer <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002195>`_ score
+This task starts `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ graphical viewer on your computer in a special mode, which allows you to find structural homologs to your target system, trim and ensemble them interactively with full visual control in real-time. This task uses :doc:`MrBump <doc.task.MrBump>` software to make MR Ensemble from given structural homologs.
+
+In this task, Ensembles are derived from an alignment-truncation procedure using the homologues found in the sequence-based search. To construct useful ensembles, it may be beneficial to group or cluster homologues based on their structural similarity using the CCP4mg interface, cluster grouping is presented with rainbow coloring of matches based on their `phmmer <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002195>`_ score
+
+The ability to view and modify search models can be especially useful in cases where the homologous structures found by `phmmer <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002195>`_ have multiple domains and no structural alignment can adequately superpose all of the domains. For such proteins, can be useful to specify which domain to use as the search model or to use more than one domain with different structural alignments. In other instances, only distant homologues may be found and it may be necessary to use only part of the structures in MR.
+
+----------
+Parameters
+----------
+
+**PDB sequence redundancy level:** redundancy in a collection of sequences occurs when one or more similar/homologous sequences are present in the same set of data. In some cases, the inclusion of similar sequences will introduce undesirable biases. It is possible to set redundancy-level options to 100 (no redundancy removed), 95, 90, 70 and 50%.
+
+    *In the 90% redundant set, where two or more structures with a sequence identity greater than 90% are present in the complete list only one example is retained. When similar sequences were removed, the sequence with the highest resolution and the lowest R value is preferred by the program.*
+
+**Non-redundant sequence list** (redundancy-level are 100%) is one of the advances in the CCP4mg implementation. It is desirable to use the 100% option when creating ensemble search models, where small variations in the alignment between a set of very similar structures can guide the identification of the most conserved core residues.
+
+**Include structures from AFDB:** this option identifies structural homologs, suitable for making MR search models, in `AFDB (AlphaFold DataBase) <https://doi.org/10.1038/s41586-021-03819-2>`_.
+
+      **EBI-AFDB pLDDT cut-off:** AlphaFold produces a per-residue estimate of its confidence called **pLDDT** on a scale from 0 - 100.
+
+      * **pLDDT > 90** are expected to be modelled to high accuracy. These should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).
+
+      * **70 < pLDDT < 90** are expected to be modelled well (a generally good backbone prediction).
+
+      * **50 < pLDDT < 70** are low confidence and should be treated with caution.
+
+      * **pLDDT < 50** often has a ribbon-like appearance and should not be interpreted. It is a reasonably strong predictor of disorder, i.e. it suggests such a region is either unstructured in physiological conditions or only structured as part of a complex.
+
+--------
+Workflow
+--------
+
+ * The sequence information is required to prepare MR Ensemble with CCP4mg
+
+ * :doc:`MrBump <doc.task.MrBump>` task uses phmmer to search the PDB sequence database and download homologous structures.
+
+ * These homologous structures are then prepared for MR using `Sculptor <https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement>`_ and structurally aligned with :doc:`GESAMT <doc.task.Gesamt>`, with the resulting structural and sequence alignments being displayed in the CCP4mg graphical window.
+
+ * The **show ranges view** window allows to show and hide any of the found domains. When a domain is chosen, the *GESAMT variance slider* is provided to allow the selection of atoms based on the structural alignment of that domain. It is alternatively possible to display and select the models before the Sculptor step of MrBUMP.
+
+ .. Note::
+        CCP4mg will also display the sequence alignment. The residues displayed in CCP4mg are tagged with the spatial variance of the Cα atoms of the superposed structures as reported by GESAMT, and a slider can be used to control the display of more or less structurally variable residues. In this way, it's possible to select and save a choice of a well-defined structure to use in MR.
+
+ * Then satisfied ensembles were created, they should be saved to the Cloud. Go to **file => Save all visible to the CCP4 Cloud**
+
+ * Created ensembles PDB file can be used in both :doc:`Phaser <doc.task.Phaser>` and :doc:`Molrep <doc.task.Molrep>` tasks.
 
 
 
@@ -11,3 +56,5 @@ This task starts `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ graphical viewer on your
 `McNicholas, S., Potterton, E., Wilson, K.S., Noble, M.E.M. (2011) Presenting your structures: the CCP4mg molecular-graphics software. Acta Cryst. D67: 386-394 <https://doi.org/10.1107/S0907444911007281>`_
 
 `Keegan, R.M., McNicholas, S.J., Thomas, J.M.H., Simpkin, A.J., Simkovic, F., Uski, V., Ballard, C.C., Winn, M.D., Wilson, K.S., Rigden, D.J. (2018) Recent developments in MrBUMP: better search-model preparation, graphical interaction with search models, and solution improvement and assessment. Acta Cryst. D74: 167-182 <https://doi.org/10.1107/S2059798318003455>`_
+
+`Jumper, J., Evans, R., Pritzel, A. et al. Highly accurate protein structure prediction with AlphaFold. Nature 596, 583–589 (2021). <https://doi.org/10.1038/s41586-021-03819-2>`_

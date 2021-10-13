@@ -273,7 +273,10 @@ function LoginPage ( sceneId )  {
 
     } else  {
 
-      login ( login_inp.getValue(),pwd_inp.getValue(),sceneId,0 );
+      var page_switch = 0;
+      if (__url_parameters)
+        page_switch = 101;
+      login ( login_inp.getValue(),pwd_inp.getValue(),sceneId,page_switch );
 
     }
 
