@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    26.08.20   <--  Date of Last Modification.
+#    14.10.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ (COORDINATES) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -19,6 +19,8 @@
 #  python native imports
 import os
 import sys
+
+import gemmi
 
 #  application imports
 from  pycofe.dtypes  import dtype_template
@@ -33,15 +35,16 @@ class DType(dtype_template.DType):
     def __init__(self,job_id,json_str=""):
         super(DType,self).__init__(job_id,json_str)
         if not json_str:
-            self._type        = dtype()
-            self.dname        = "xyz"
-            self.xyzmeta      = {}
-            self.exclLigs     = ["(agents)"]  # list of excluded ligands for PISA
-            #self.selChain     = "(all)"       # selected chains for comparison
-            self.chainSel     = ""            # selected chains for comparison
-            self.chainSelType = ""
-            self.coot_meta    = None
-            self.version     += 0             # versioning increments from parent to children
+            self._type         = dtype()
+            self.dname         = "xyz"
+            self.xyzmeta       = {}
+            self.exclLigs      = ["(agents)"]  # list of excluded ligands for PISA
+            #self.selChain      = "(all)"       # selected chains for comparison
+            self.chainSel      = ""            # selected chains for comparison
+            self.chainSelType  = ""
+            self.coot_meta     = None
+            self.BF_correction = "none"        # "none", "alphafold", "rosetta"
+            self.version      += 0             # versioning increments from parent to children
         return
 
     def getSpaceGroup ( self ):
@@ -100,6 +103,52 @@ class DType(dtype_template.DType):
                     n += 1
         return n
 
+    def fixBFactors ( self,dirPath ):
+        self.BF_correction = "none"        # "none", "af2", "rosetta"
+        fpath = self.getXYZFilePath ( dirPath )
+        if fpath and fpath.lower().endswith(".pdb"):
+            st = gemmi.read_structure ( fpath )
+            need_to_fix = True
+            max_bfactor = 0.0
+            min_bfactor = 1000000.0
+            for model in st:
+                for chain in model:
+                    for res in chain:
+                        bfactor = -1.0
+                        for atom in res:
+                            if bfactor>=0.0 and atom.b_iso!=bfactor:
+                                need_to_fix = False
+                            else:
+                                bfactor     = atom.b_iso
+                                max_bfactor = max ( max_bfactor,bfactor )
+                                min_bfactor = max ( min_bfactor,bfactor )
+                            if not need_to_fix:
+                                break
+                        if not need_to_fix:
+                            break
+                    if not need_to_fix:
+                        break
+                if not need_to_fix:
+                    break
+            if need_to_fix and max_bfactor!=min_bfactor:
+                for model in st:
+                    for chain in model:
+                        for res in chain:
+                            for atom in res:
+                                rmsd_est = atom.b_iso
+                                if max_bfactor>=5.0:  # alphafold
+                                    lddt = atom.b_iso / 100
+                                    if lddt <= 0.5:
+                                        rmsd_est = 5.0
+                                    else:
+                                        rmsd_est = (0.6 / (lddt ** 3))
+                                atom.b_iso = min ( 999.99, 26.318945069571623*rmsd_est**2 )
+                st.write_pdb ( fpath )
+                if max_bfactor>=5.0:
+                    self.BF_correction = "alphafold"
+                else:
+                    self.BF_correction = "rosetta"
+        return
 
     def setXYZFile ( self,fname ):
         self.setFile ( fname,dtype_template.file_key["xyz"] )

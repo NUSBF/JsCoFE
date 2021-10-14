@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    04.10.20   <--  Date of Last Modification.
+#    14.10.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -103,6 +103,7 @@ def run ( body ):  # body is reference to the main Import class
 
             os.rename ( fpath,os.path.join(body.outputDir(),f) )
             xyz.makeUniqueFNames ( body.outputDir() )
+            xyz.fixBFactors ( body.outputDir() )
 
             body.outputDataBox.add_data ( xyz )
             xyz_imported.append ( xyz )
@@ -145,6 +146,15 @@ def run ( body ):  # body is reference to the main Import class
                                      # always relative to job_dir from job_dir/html
                                      "/".join(["..",body.outputDir(),xyz.getXYZFileName()]),
                                      "xyz",subSecId,1,0,1,1,-1 )
+            if xyz.BF_correction=="alphafold":
+                body.putTableLine ( xyzTableId,"B-factor correction",
+                                               "Model for B-factors re-calculation",
+                                               "Assuming AlphaFold model",jrow+4 )
+            elif xyz.BF_correction=="rosetta":
+                body.putTableLine ( xyzTableId,"B-factor correction",
+                                               "Model for B-factors re-calculation",
+                                               "Assuming Rosetta model",jrow+4 )
+
             body.addCitations ( ['uglymol','ccp4mg'] )
 
             body.putSummaryLine ( body.get_cloud_import_path(f),"XYZ",xyz.dname )

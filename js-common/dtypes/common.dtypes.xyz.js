@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.05.20   <--  Date of Last Modification.
+ *    14.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XYZ Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -35,13 +35,14 @@ function DataXYZ()  {
   if (__template)  __template.DataTemplate.call ( this );
              else  DataTemplate.call ( this );
 
-  this._type        = 'DataXYZ';
-  this.xyzmeta      = {};
-  this.exclLigs     = ['(agents)'];  // list of excluded ligands for PISA
-  //this.selChain     = '(all)';       // selected chains for comparison
-  this.chainSel     = '';
-  this.chainSelType = '';
-  this.coot_meta    = null;
+  this._type         = 'DataXYZ';
+  this.xyzmeta       = {};
+  this.exclLigs      = ['(agents)'];  // list of excluded ligands for PISA
+  //this.selChain      = '(all)';       // selected chains for comparison
+  this.chainSel      = '';
+  this.chainSelType  = '';
+  this.BF_correction = 'none';       // "none", "alphafold", "rosetta"
+  this.coot_meta     = null;
 
 }
 
@@ -70,7 +71,16 @@ DataXYZ.prototype.currentVersion = function()  {
 if (!__template)  {
   // for client side
 
-  DataXYZ.prototype.addToInspectData = function ( dsp )  {}
+  DataXYZ.prototype.addToInspectData = function ( dsp )  {
+    if (('BF_correction' in this) && (this.BF_correction!='none'))  {
+      var corr_model = null;
+      if (this.BF_correction=='alphafold')  corr_model = 'AlphaFold';
+                                      else  corr_model = 'Rosetta';
+      dsp.makeRow ( 'B-factor correction','Assuming ' + corr_model + ' model',
+                    'Model for B-factors re-calculation' );
+      dsp.trow++;
+    }
+  }
 
   DataXYZ.prototype.getSpaceGroup = function() {
     if ('cryst' in this.xyzmeta)
