@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.07.21   <--  Date of Last Modification.
+ *    18.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -212,7 +212,7 @@ function RegisterPage ( sceneId )  {
             else
                 new MessageBox ( 'Registration',
                   'Dear ' + ud.name +
-                  ',<p>You are now registered for CCP4 on-line services with ' +
+                  ',<p>You are now registered for ' + appName() + ' with ' +
                   'login name<p><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i>' +
                   ud.login + '</i></b>.' +
                   '<p>Your temporary password was sent to e-mail address<p>' +

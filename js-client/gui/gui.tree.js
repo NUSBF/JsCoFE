@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.09.21   <--  Date of Last Modification.
+ *    22.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1239,18 +1239,34 @@ Tree.prototype.makeFolder1 = function ( sel_node_list,text,icon_uri )  {
         node.state.selected = false;
         folder_node.fchildren.push ( node );
       }
-      $(this.root.element).jstree(true).delete_node([node]);
+      // $(this.root.element).jstree(true).delete_node([node]);
     }
     this.node_map[folder_node.id] = folder_node;
+    /*
     node = this.node_map[sel_lst[sel_lst.length-1]].children[0];
     folder_node.children = [node];
     node.parentId = folder_node.id;
-    this.confirmCustomIconsVisibility();
-    this.refresh();
+    */
+    folder_node.children = this.node_map[sel_lst[sel_lst.length-1]].children;
+    for (var i=0;i<folder_node.children.length;i++)
+      folder_node.children[i].parentId = folder_node.id;
+    // this.confirmCustomIconsVisibility();
+    // this.refresh();
     for (var key in this.node_map)
       this.node_map[key].state.selected = false;
-    this.selectSingle ( folder_node );
-    this.refresh();
+    // this.selectSingle ( folder_node );
+    folder_node.state.selected = true;
+    // this.node_map[folder_node.id].state.selected = true;
+    this.selected_node_id = folder_node.id;
+
+    // this.node_map[folder_node.parentId].state.selected = true;
+    // this.selected_node_id = folder_node.parentId;
+
+    // pnode.state.selected  = true;
+    // this.node_map[pnode.id].state.selected = true;
+    // this.selected_node_id = pnode.id;
+
+    // this.refresh();
     /*
     (function(tree,fnode){
       window.setTimeout ( function(){
@@ -1262,18 +1278,19 @@ Tree.prototype.makeFolder1 = function ( sel_node_list,text,icon_uri )  {
   }
 }
 
+
 Tree.prototype.unfoldFolder = function()  {
 var snode = this.getSelectedNode();
   var fchildren = snode.fchildren;
   if (fchildren.length>0)  {
     var pnode = this.node_map[snode.parentId];
-    var cnode = snode.children[0];
+//    var cnode = snode.children;
     for (var i=0;i<fchildren.length;i++)  {
       var node = new TreeNode ( '','',null );
       node.copy ( fchildren[i] );
       node.id = fchildren[i].id;
-      node.parentId  = pnode.id;
-      node.folderId  = null;
+      node.parentId = pnode.id;
+      node.folderId = null;
       node.state.selected = false;
       this.node_map[node.id] = node;  // because new node instance was obtained
       if (i>0)
@@ -1287,26 +1304,22 @@ var snode = this.getSelectedNode();
       }
       pnode = node;
     }
-    cnode.parentId = pnode.id;
-    pnode.children = [cnode];
-    $(this.root.element).jstree(true).delete_node([snode]);
-    this.confirmCustomIconsVisibility();
-    this.refresh();
+    pnode.children = snode.children;
+    for (var i=0;i<pnode.children.length;i++)
+      pnode.children[i].parentId = pnode.id;
+    delete this.node_map[snode.id];
+    snode.children = [];
+    // $(this.root.element).jstree(true).delete_node([snode]);
+    // this.confirmCustomIconsVisibility();
+    // this.refresh();
     for (var key in this.node_map)
       this.node_map[key].state.selected = false;
-    for (var i=0;i<fchildren.length;i++)
-      this.selectNode ( this.node_map[fchildren[i].id],(i<=0) );
-    this.refresh();
-    /*
-    (function(tree,fch){
-      window.setTimeout ( function(){
-        for (var key in tree.node_map)
-          tree.node_map[key].state.selected = false;
-        for (var i=0;i<fch.length;i++)
-          tree.selectNode ( tree.node_map[fch[i].id],(i<=0) );
-        tree.refresh();
-      },0);
-    }(this,fchildren));
-    */
+    this.node_map[fchildren[0].id].state.selected = true;
+    this.selected_node_id = fchildren[0].id;
+    // for (var i=0;i<fchildren.length;i++)
+    //   this.node_map[fchildren[i].id].state.selected = true;
+    // for (var i=0;i<fchildren.length;i++)
+    //   this.selectNode ( this.node_map[fchildren[i].id],(i<=0) );
+    // this.refresh();
   }
 }

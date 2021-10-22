@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    24.09.21   <--  Date of Last Modification.
+ *    22.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -78,7 +78,7 @@ function ProjectPage ( sceneId )  {
   (function(self){
     self.logout_btn.addOnClickListener ( function(){
       self.jobTree.stopTaskLoop    ();
-      self.jobTree.saveProjectData ( [],[],false, function(rdata){
+      self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
         logout ( self.element.id,0 );
       });
     });
@@ -98,7 +98,7 @@ function ProjectPage ( sceneId )  {
 
     self.addMenuItem ( 'My Projects','list',function(){
       if (self.jobTree && self.jobTree.projectData)
-        self.jobTree.saveProjectData ( [],[],false, function(rdata){
+        self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
           makeProjectListPage ( sceneId );
         });
       else
@@ -108,7 +108,7 @@ function ProjectPage ( sceneId )  {
     if (!__local_user)  {
       self.addMenuItem ( 'My Account','settings',function(){
         if (self.jobTree && self.jobTree.projectData)
-          self.jobTree.saveProjectData ( [],[],false, function(rdata){
+          self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
             makeAccountPage ( sceneId );
           });
         else
@@ -117,7 +117,7 @@ function ProjectPage ( sceneId )  {
       if (__user_role==role_code.admin)
         self.addMenuItem ( 'Admin Page',role_code.admin,function(){
           if (self.jobTree && self.jobTree.projectData)
-            self.jobTree.saveProjectData ( [],[],false, function(rdata){
+            self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
               makeAdminPage ( sceneId );
             });
           else
@@ -141,7 +141,7 @@ function ProjectPage ( sceneId )  {
 
     self.addLogoutToMenu ( function(){
       if (self.jobTree && self.jobTree.projectData)
-        self.jobTree.saveProjectData ( [],[],false, function(rdata){
+        self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
           logout ( sceneId,0 );
         });
       else
@@ -416,10 +416,10 @@ ProjectPage.prototype.start_action = function ( action_key )  {
   return false;
 }
 
-ProjectPage.prototype.end_action = function ( action_key )  {
+ProjectPage.prototype.end_action = function()  {
   this.jobTree.startTaskLoop();
   this.can_reload  = true;  // block concurrent reloads
-  this.pending_act = '';    // cleare pending actions
+  this.pending_act = '';    // clear pending actions
 }
 
 ProjectPage.prototype.addJob = function()  {
@@ -464,6 +464,7 @@ ProjectPage.prototype.insertJob = function()  {
 ProjectPage.prototype.addRemark = function()  {
   if (this.start_action('add_remark'))
     (function(self){
+      self.can_reload = true;
       self.jobTree.addTask ( new TaskRemark(),true,false,self,function(key){
         // self.del_btn.setDisabled ( false );
         // self._set_del_button_state();
@@ -546,20 +547,34 @@ ProjectPage.prototype.archiveJobs = function() {
                             nodelist.shift();  // avoid duplicate nodes in the list
                             nodelist = nodelist.concat ( adata[2] );
                           }
-                          if (nodelist.length<=0)
+                          if (nodelist.length<=0)  {
                             new MessageBox (
                                 'Empty selection',
                                 '<h2>Empty selection</h2>' +
                                 'At least one checkbox must be checked<br>' +
                                 'for acrhiving.'
                             );
-                          else  {
+                            self.end_action();
+                          } else  {
                             $( this ).dialog( 'close' );
                             self.jobTree.makeFolder1 ( nodelist,'',
                                                   image_path('folder_jobtree') );
-                            self.jobTree.saveProjectData ( [],[],true, null );
+                            self.jobTree.saveProjectData ( [],[],true, function(tree,rdata){
+                              self.setSelMode ( 1 );
+                              self.end_action();
+                              if (rdata.reload>0)  {
+                                new MessageBox (
+                                  'Project updating',
+                                  '<h3>Project updating</h3>Project update in progress, please ' +
+                                  'repeat archiving operation later.'
+                                );
+                              } else  {
+                                // self._set_button_state();
+                                self.reloadTree ( false,true,rdata );
+                              }
+                            });
+                            // self._set_button_state();
                           }
-                          self.end_action();
                         },
             "Cancel"  : function() {
                           $( this ).dialog( "close" );
@@ -574,9 +589,22 @@ ProjectPage.prototype.archiveJobs = function() {
       save = true;
     }
     if (save)  {
-      this.jobTree.saveProjectData ( [],[],true, null );
-      this.setSelMode ( 1 );
-      this.end_action();
+      (function(self){
+        self.jobTree.saveProjectData ( [],[],true, function(tree,rdata){
+          self.setSelMode ( 1 );
+          self.end_action();
+          if (rdata.reload>0)  {
+            new MessageBox (
+              'Project updating',
+              '<h3>Project updating</h3>Project update in progress, please ' +
+              'repeat archiving operation later.'
+            );
+          } else  {
+            // self._set_button_state();
+            self.reloadTree ( false,true,rdata );
+          }
+        });
+      }(this))
     }
   }
 }
@@ -697,9 +725,12 @@ ProjectPage.prototype.share_project = function()  {
       shareProject ( self.jobTree.projectData.desc,function(desc){
         if (desc)  {
           self.jobTree.projectData.desc = desc;
-          self.jobTree.saveProjectData ( [],[],true,function(rdata){} );
-          if (self.jobTree.isShared())
-            self.jobTree.startTaskLoop();
+          self.jobTree.saveProjectData ( [],[],true,function(tree,rdata){
+            if (tree.isShared())
+              tree.startTaskLoop();
+          });
+          // if (self.jobTree.isShared())
+          //   self.jobTree.startTaskLoop();
         }
       });
     }(this))
@@ -866,6 +897,8 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
       self.setButtonState();
     });
     job_tree.addSignalHandler ( cofe_signals.reloadTree,function(rdata){
+      if ('force_reload' in rdata)
+        self.can_reload = true;
       self.reloadTree ( false,false,rdata );  // multiple = false?
     });
     job_tree.addSignalHandler ( cofe_signals.makeProjectList,function(rdata){

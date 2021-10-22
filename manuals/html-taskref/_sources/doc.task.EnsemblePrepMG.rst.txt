@@ -2,23 +2,31 @@
 Prepare MR Ensemble with CCP4mg
 ===============================
 
-This task starts `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ graphical viewer on your computer in a special mode, which allows you to find structural homologs to your target system, trim and ensemble them interactively with full visual control in real-time. This task uses :doc:`MrBump <doc.task.MrBump>` software to make MR Ensemble from given structural homologs.
+This task starts `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ graphical viewer on your computer in a special mode, which allows you to find structural homologs to your target protein, trim and ensemble them interactively with full visual control in real-time. This task uses :doc:`MrBump <doc.task.MrBump>` software to make the :doc:`MR Ensemble <doc.task.Ensembler>` from given structural homologs.
 
-In this task, Ensembles are derived from an alignment-truncation procedure using the homologues found in the sequence-based search. To construct useful ensembles, it may be beneficial to group or cluster homologues based on their structural similarity using the CCP4mg interface, cluster grouping is presented with rainbow coloring of matches based on their `phmmer <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002195>`_ score
+MR Ensembles are obtained with an alignment and truncation procedure using homologues structures found in the PDB and `AFDB (AlphaFold DataBase) <https://doi.org/10.1038/s41586-021-03819-2>`_ with a sequence-based search.
 
-The ability to view and modify search models can be especially useful in cases where the homologous structures found by `phmmer <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002195>`_ have multiple domains and no structural alignment can adequately superpose all of the domains. For such proteins, can be useful to specify which domain to use as the search model or to use more than one domain with different structural alignments. In other instances, only distant homologues may be found and it may be necessary to use only part of the structures in MR.
+
+To construct useful ensembles, it may be beneficial to group or cluster homologues based on their structural similarity using the CCP4mg interface. Cluster grouping is presented with rainbow colouring of matches based on their `phmmer score <https://academic.oup.com/bioinformatics/article/21/7/951/268976>`_. This colour scheme is inspired by the `HHpred <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1160169/>`_ web-application colouring scheme, with red indicating a high-scoring match through to blue at the lower end of the scale.
+
+
+Automatically generated ensembles may be further improved by manual selection of found homologs and removing unsuitable structural features. That can be especially useful in cases where homologous structures found by `phmmer <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002195>`_ have multiple domains and no structural alignment can adequately superpose all domains simultaneously. For such proteins, the user may wish to specify which domain to use as the search model or to use more than one domain with different structural alignments. In other instances, only distant homologues may be found and it may be necessary to use only part of the structures in MR.
+
 
 ----------
 Parameters
 ----------
 
-**PDB sequence redundancy level:** redundancy in a collection of sequences occurs when one or more similar/homologous sequences are present in the same set of data. In some cases, the inclusion of similar sequences will introduce undesirable biases. It is possible to set redundancy-level options to 100 (no redundancy removed), 95, 90, 70 and 50%.
+**PDB sequence redundancy level** specifies the highest acceptable degree of similarity between structural models in the ensemble. The task offers a choice of 100%, 95%, 90%, 70% and 50% redundancy levels.
 
-    *In the 90% redundant set, where two or more structures with a sequence identity greater than 90% are present in the complete list only one example is retained. When similar sequences were removed, the sequence with the highest resolution and the lowest R value is preferred by the program.*
+At 100%, models with identical sequences are included in the ensemble. **Non-redundant sequence list** (*redundancy-level are 100%*) option can be particularly useful for a protein that can adopt a range of different conformations or in cases where minor variations in the alignment between a set of very similar structures can guide the identification of the most conserved core residues.
 
-**Non-redundant sequence list** (redundancy-level are 100%) is one of the advances in the CCP4mg implementation. It is desirable to use the 100% option when creating ensemble search models, where small variations in the alignment between a set of very similar structures can guide the identification of the most conserved core residues.
+The 95% redundancy level provides the most broad sampling of search models, while not allowing for models with identical and nearly identical sequences in the ensemble (thus filtering out models obtained from, *e.g.,* PDB depositions corresponding to the same protein with a series of ligands bound).
 
-**Include structures from AFDB:** this option identifies structural homologs, suitable for making MR search models, in `AFDB (AlphaFold DataBase) <https://doi.org/10.1038/s41586-021-03819-2>`_.
+At 90% redundancy, only one out of two or more models with sequence similarity higher than 90% can be used. In such cases, a model from crystal with higher resolution and lower R-factor is selected as a representative of the redundant subset of models.
+
+
+**Include structures from AFDB:** option allows to identifying structural homologs, suitable for making MR search models, in `AFDB (AlphaFold DataBase) <https://doi.org/10.1038/s41586-021-03819-2>`_.
 
       **EBI-AFDB pLDDT cut-off:** AlphaFold produces a per-residue estimate of its confidence called **pLDDT** on a scale from 0 - 100.
 
@@ -26,9 +34,11 @@ Parameters
 
       * **70 < pLDDT < 90** are expected to be modelled well (a generally good backbone prediction).
 
-      * **50 < pLDDT < 70** are low confidence and should be treated with caution.
+      * **50 < pLDDT < 70** represent a low confidence and should be treated with caution.
 
-      * **pLDDT < 50** often has a ribbon-like appearance and should not be interpreted. It is a reasonably strong predictor of disorder, i.e. it suggests such a region is either unstructured in physiological conditions or only structured as part of a complex.
+      * **pLDDT < 50** should not be interpreted. It is a reasonably strong predictor of disorder, i.e. it suggests such a region is either unstructured in physiological conditions or only structured as part of a complex.
+
+You can search only the PDB or EBI-AFDB by unticking the relevant box in the input menu. 
 
 --------
 Workflow
@@ -36,22 +46,34 @@ Workflow
 
  * The sequence information is required to prepare MR Ensemble with CCP4mg
 
- * :doc:`MrBump <doc.task.MrBump>` task uses phmmer to search the PDB sequence database and download homologous structures.
+ * :doc:`MrBump <doc.task.MrBump>` task uses `phmmer <https://www.ebi.ac.uk/Tools/hmmer/search/phmmer>`_ to search the PDB sequence database and download homologous structures.
 
- * These homologous structures are then prepared for MR using `Sculptor <https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement>`_ and structurally aligned with :doc:`GESAMT <doc.task.Gesamt>`, with the resulting structural and sequence alignments being displayed in the CCP4mg graphical window.
+ * Based on the sequence alignment, `Sculptor <https://doi.org/10.1107/S0907444910051218>`_ modifies the homologue to create a search model in three different ways: main-chain deletion, side-chain pruning and B-factor modification.
 
- * The **show ranges view** window allows to show and hide any of the found domains. When a domain is chosen, the *GESAMT variance slider* is provided to allow the selection of atoms based on the structural alignment of that domain. It is alternatively possible to display and select the models before the Sculptor step of MrBUMP.
+ * Structural alignment performed by :doc:`GESAMT <doc.task.Gesamt>`.
 
- .. Note::
-        CCP4mg will also display the sequence alignment. The residues displayed in CCP4mg are tagged with the spatial variance of the Cα atoms of the superposed structures as reported by GESAMT, and a slider can be used to control the display of more or less structurally variable residues. In this way, it's possible to select and save a choice of a well-defined structure to use in MR.
+ * The resulting structural and sequence alignments are displayed in the CCP4mg graphical window.
+
+ * The **show ranges view** window allows the selection of any of the founded domains. When a domain is chosen, the **GESAMT variance slider** allows the selection of atoms based on the structural alignment of that domain.
 
  * Then satisfied ensembles were created, they should be saved to the Cloud. Go to **file => Save all visible to the CCP4 Cloud**
 
- * Created ensembles PDB file can be used in both :doc:`Phaser <doc.task.Phaser>` and :doc:`Molrep <doc.task.Molrep>` tasks.
+ * Created ensembles PDB file can be further used in both :doc:`Phaser <doc.task.Phaser>` and :doc:`Molrep <doc.task.Molrep>` tasks.
 
 
+**Useful links**
+
+`CCP4mg webpage <https://www.ccp4.ac.uk/MG/>`_
+
+`CCP4mg tutorials <https://www.ccp4.ac.uk/MG/ccp4mg_help/tutorial/index.html>`_
+
+`CCP4mg documentation <https://www.ccp4.ac.uk/MG/ccp4mg_help/index.html>`_
+
+`MrBUMP documentation <https://www.ccp4.ac.uk/html/mrbump.html>`_
 
 **REFERENCES**
+
+`Söding, J., Biegert, A., & Lupas, A. N. (2005). The HHpred interactive server for protein homology detection and structure prediction. Nucleic acids research, 33(Web Server issue), W244–W248. <https://doi.org/10.1093/nar/gki408>`_
 
 `McNicholas, S., Potterton, E., Wilson, K.S., Noble, M.E.M. (2011) Presenting your structures: the CCP4mg molecular-graphics software. Acta Cryst. D67: 386-394 <https://doi.org/10.1107/S0907444911007281>`_
 

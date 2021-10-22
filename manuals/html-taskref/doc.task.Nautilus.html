@@ -22,6 +22,7 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script>function __try_it(){ alert('working'); }</script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -63,14 +64,14 @@
 <p><strong>High resolution limit (Å)</strong> Use of high resolution data in Buccaneer makes the calculation slower and more memory-consuming, and does not contribute signficantly to the quality of the final model.</p>
 <div class="section" id="options">
 <h2><span class="section-number">10.7.1. </span>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
-<p><strong>Number of building/refinement cycles</strong> may be set more than 3 (default number) if a first attemt end up with an incomplete model.</p>
+<p><strong>Number of building/refinement cycles</strong> may be set more than 3 (default number) if a first attempt end up with an incomplete model.</p>
 <p><strong>Anisotropy correction</strong> applies a correction to the data to remove directional dependence in diffraction quality. <strong>This should use by default</strong></p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The chance a benefit in using more than 20 cycles is really small</p>
 </div>
 <p><strong>Use phases in refinement</strong> explicit use of phases with <a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?a07353" rel="noopener noreferrer" target="_blank">Hendrickson Lattman coefficients</a></p>
-<p><strong>Refine against twinned data</strong>  maximum likelihood refinement against twinned data performed by refmac</p>
+<p><strong>Refine against twinned data</strong>  maximum likelihood refinement against twinned data performed by <a class="reference internal" href="doc.task.Refmac.html"><span class="doc">Refmac</span></a></p>
 <p><strong>Automated weighting of restraints</strong> Weights on restraints can be controlled by the user, although  automatic weighting is safest</p>
 <p><strong>REFERENCES</strong></p>
 <p><a class="reference external" href="https://journals.iucr.org/m/issues/2014/06/00/fc5003/index.html" rel="noopener noreferrer" target="_blank">Cowtan, K. (2014) Automated nucleic acid chain tracing in real time. IUCrJ 1(Pt 6): 387-392;</a></p>
