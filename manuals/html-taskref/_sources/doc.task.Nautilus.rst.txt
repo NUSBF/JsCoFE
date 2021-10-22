@@ -2,7 +2,7 @@
 Automatic Model Building of RNA/DNA with Nautilus
 =================================================
 
-The **nautilus** is a  tool for automated building of RNA/DNA from electron density. 
+The **nautilus** is a  tool for automated building of RNA/DNA from electron density.
 
 The calculation consists of the following steps:
 
@@ -28,7 +28,7 @@ The option **”Current model should be fixed”** may be chosen if you want an 
 Options
 -------
 
-**Number of building/refinement cycles** may be set more than 3 (default number) if a first attemt end up with an incomplete model. 
+**Number of building/refinement cycles** may be set more than 3 (default number) if a first attempt end up with an incomplete model.
 
 **Anisotropy correction** applies a correction to the data to remove directional dependence in diffraction quality. **This should use by default**
 
@@ -37,7 +37,7 @@ Options
 
 **Use phases in refinement** explicit use of phases with `Hendrickson Lattman coefficients <https://scripts.iucr.org/cgi-bin/paper?a07353>`_
 
-**Refine against twinned data**  maximum likelihood refinement against twinned data performed by refmac
+**Refine against twinned data**  maximum likelihood refinement against twinned data performed by :doc:`Refmac <doc.task.Refmac>`
 
 **Automated weighting of restraints** Weights on restraints can be controlled by the user, although  automatic weighting is safest
 

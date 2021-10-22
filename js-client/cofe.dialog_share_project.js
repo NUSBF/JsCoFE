@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.02.19   <--  Date of Last Modification.
+ *    21.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2021
  *
  *  =================================================================
  *
@@ -80,7 +80,6 @@ function shareProject ( projectDesc,callback_func )  {
                       share0 : share0
                     },'Share Project',function(data){
                       if (data.desc)  {
-                        //jobTree.saveProjectData ( [],[],false,function(rdata){
                         var msg = '<h2>Project\'s Share Status</h2>' +
                                   '<b>Shared with:</b>&nbsp;<i>';
                         if (data.desc.owner.share.length<=0)
@@ -89,28 +88,27 @@ function shareProject ( projectDesc,callback_func )  {
                           msg += data.desc.owner.share[0].login;
                           for (var i=1;i<data.desc.owner.share.length;i++)
                             msg += ', ' + data.desc.owner.share[i].login;
-                            msg += '<br><font size="-1">(these users can join ' +
-                                   'this project and work on it simultaneously ' +
-                                   'with you)</font>';
-                          }
+                          msg += '<br><font size="-1">(these users can join ' +
+                                 'this project and work on it simultaneously ' +
+                                 'with you)</font>';
+                        }
+                        msg += '</i>';
+                        if (data.unshared.length>0)  {
+                          msg += '<p><b>Unshared with:</b>&nbsp;<i>' +
+                                 data.unshared[0].login;
+                          for (var i=1;i<data.unshared.length;i++)
+                            msg += ', ' + data.unshared[i].login;
                           msg += '</i>';
-                          if (data.unshared.length>0)  {
-                            msg += '<p><b>Unshared with:</b>&nbsp;<i>' +
-                                   data.unshared[0].login;
-                            for (var i=1;i<data.unshared.length;i++)
-                              msg += ', ' + data.unshared[i].login;
-                            msg += '</i>';
-                          }
-                          if (data.unknown.length>0)  {
-                            msg += '<p><b>Unknown users:</b>&nbsp;<i>' +
-                                   data.unknown[0].login;
-                            for (var i=1;i<data.unknown.length;i++)
-                              msg += ', ' + data.unknown[i].login;
-                            msg += '<br><font size="-1">(sharing request was not ' +
-                                   'fulfilled for these users)</font></i>';
-                          }
-                          new MessageBox ( 'Share Project [' + data.desc.name + ']',msg );
-                        //});
+                        }
+                        if (data.unknown.length>0)  {
+                          msg += '<p><b>Unknown users:</b>&nbsp;<i>' +
+                                 data.unknown[0].login;
+                          for (var i=1;i<data.unknown.length;i++)
+                            msg += ', ' + data.unknown[i].login;
+                          msg += '<br><font size="-1">(sharing request was not ' +
+                                 'fulfilled for these users)</font></i>';
+                        }
+                        new MessageBox ( 'Share Project [' + data.desc.name + ']',msg );
                         callback_func ( data.desc );
                       } else  {
                         new MessageBox ( 'Share Project [' + data.desc.name + ']',

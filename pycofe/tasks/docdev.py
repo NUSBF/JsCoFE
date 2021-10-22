@@ -145,6 +145,16 @@ class DocDev(basic.TaskDriver):
                     file  = open ( fpath,"w" )
                     file.write ( content.replace("<head>","<head>\n" + "\n    ".join(gtag)) )
                     file.close()
+                # write demo loader file
+                f = open ( os.path.join(self.jscofe_dir,"manuals","demo_project.html"),"w" )
+                f.write (
+                    "<!DOCTYPE html>\n" +
+                    "<html><body><script>\n" +
+                    "  window.location = '../' + window.location.search;\n" +
+                    "</script></body></html>\n"
+                )
+                f.close()
+
 
             shutil.move ( srcdir,os.path.join(self.reportDir(),docdir) )
             self.putTitle ( "Generated documents" )

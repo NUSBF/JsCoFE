@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.06.19   <--  Date of Last Modification.
+ *    18.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Restore user access page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -47,17 +47,17 @@ function ForgottenLoginPage ( sceneId )  {
   var title_lbl  = new Label     ( 'CCP4 Login Recovery'  );
   var email_lbl  = new Label     ( 'E-mail:' );
   var email_inp  = new InputText ( '' );
-  var prompt_lbl = new Label     ( 'Please specify e-mail address, which was ' +
-                                   'used for registering with CCP4 on-line, ' +
-                                   'and push the "E-mail ..." button below. ' +
-                                   'Your login name(s) and password(s) will ' +
+  var prompt_lbl = new Label     ( 'Please specify e-mail address, which was '  +
+                                   'used for registering with ' + appName()     +
+                                   ', and push the "E-mail ..." button below. ' +
+                                   'Your login name(s) and password(s) will '   +
                                    'be e-mailed to you then.' );
   title_lbl .setFont            ( 'times','200%',true,true );
   email_lbl .setFontSize        ( '125%' );
   prompt_lbl.setFontSize        ( '90%'  );
   email_inp .setStyle           ( 'email','','john.smith@university.ac.uk',
                                   'Should be a valid e-mail address, which was ' +
-                                  'used\n for registering with CCP4 on-line.' );
+                                  'used\n for registering with ' + appName() + '.' );
   email_inp.setFontSize         ( '112%' );
   email_inp.setFontItalic       ( true   );
   email_inp.setWidth            ( '95%'  );

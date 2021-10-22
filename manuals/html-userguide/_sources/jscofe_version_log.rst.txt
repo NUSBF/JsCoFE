@@ -22,6 +22,19 @@ CCP4 Cloud Version Log
 
     #. Fixed bug causing *Job Dialog* malfunction if protein and rna data types are mixed in the project
 
+    #. Fixed bug causeing failure at importing merged ``.mtz`` files with phase information but without mean amplitudes.
+
+    #. B-factors are automatically corrected in files from AFDB and Rosetta-Fold 
+
+    #. Demo projects may be linked directly from HTML documents
+
+
+`test link <../demo_project.html?cmount=Demo%20projects&project=beta-blip>`_
+
+`test link <../html-taskref/index.html>`_
+
+`CNN <http://cnn.com>`_
+
 
 
 **Version 1.6.023**

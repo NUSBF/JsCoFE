@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.10.21   <--  Date of Last Modification.
+ *    22.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -55,6 +55,7 @@ var projectDataFName   = 'project.meta';
 var projectDescFName   = 'project.desc';
 var jobDirPrefix       = 'job_';
 var replayDir          = 'replay';
+var treeNodeFName      = 'tree.node'
 
 // ===========================================================================
 
@@ -1153,7 +1154,7 @@ var projectName = projectDesc.name;
                      //  1: reload is needed but current operation may continue
                      //  2: reload is mandatory, current operation must terminate
   rdata.pdesc  = null;
-  rdata.jobIds       = [];
+  rdata.jobIds = [];
   // rdata.parentJobIds = [];
   for (var i=0;i<data.tasks_add.length;i++)  {
     rdata.jobIds.push ( data.tasks_add[i].id );  // this will be returned to
@@ -1212,11 +1213,24 @@ var projectName = projectDesc.name;
 
         if (pDataId)  {
           var pnode = pd.getProjectNode ( pData,pDataId );
-          if (pnode)  // node found, copy the added node over
-                pnode.children.push ( node_lst[0] );
-          else  rdata.reload = 2;
+          if (pnode)  {  // node found, copy the added node over
+            // before copying, remove branches, coming with the added node,
+            // from the destination (if node was inserted rather than added)
+            var childIds = [];
+            for (var j=0;j<node_lst[0].children.length;j++)
+              childIds.push ( node_lst[0].children[j].dataId );
+            if (childIds.length>0)  {
+              var pchildren  = pnode.children;
+              pnode.children = [];
+              for (var j=0;j<pchildren.length;j++)
+                if (childIds.indexOf(pchildren[j].dataId)<0)
+                  pnode.children.push ( pchildren[j] );
+            }
+            pnode.children.push ( node_lst[0] );
+          } else
+            rdata.reload = 2;
         } else if (node_lst.length>1)  {
-          // task to be added at root, always allow, may ba a problem with remarks
+          // task to be added at root, always allow, may be a problem with remarks
           pData.tree[0].children.push ( node_lst[0] );
         } else // have to update, something's wrong -- should never be here
           rdata.reload = 2;
@@ -1315,12 +1329,13 @@ var projectName = projectDesc.name;
 
           var jobDataPath = getJobDataPath(loginData,projectName,data.tasks_add[i].id );
 
+          // REMARKS CHANGE THE TREE, WHICH MAKES THE CODE BELOW FLAWED
           // var node_lst = pd.getProjectNodeBranch ( projectData,data.tasks_add[i].id );
           // if (node_lst.length>0)  {
           //   if (node_lst.length>1)
           //     data.tasks_add[i].parentId = node_lst[1].dataId;
-          //   rdata.parentJobIds[i] = data.tasks_add[i].parentId;
-          //   if (!utils.writeObject(jobDataPath.replace(task_t.jobDataFName,'tree.node'),node_lst[0])) {
+          //   // rdata.parentJobIds[i] = data.tasks_add[i].parentId;
+          //   if (!utils.writeObject(jobDataPath.replace(task_t.jobDataFName,treeNodeFName),node_lst[0])) {
           //     log.error ( 31,'cannot write tree node meta at ' + jobDataPath );
           //     response = new cmd.Response ( cmd.fe_retcode.writeError,
           //                         '[00024] Tree node meta cannot be written.','' );

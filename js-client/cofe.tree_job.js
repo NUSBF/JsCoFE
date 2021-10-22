@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.09.21   <--  Date of Last Modification.
+ *    22.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -52,7 +52,7 @@
  *      function getSelectedTasks();
  *      function selectTask      ( task );
  *      function selectTasks     ( task_lst );
- *      function saveProjectData ( tasks_add,tasks_del,onDone_func );
+ *      function saveProjectData ( tasks_add,tasks_del,onDone_func(tree,rdata) );
  *      function hasRunningJobs  ( nodeId );
  *      function selectArchiveJobs();
  *      function addJob          ( insert_bool,parent_page,onAdd_func );
@@ -418,7 +418,7 @@ JobTree.prototype.setNodeName = function ( nodeId,save_bool )  {
       if (task.isRemark())
         this.setStyle ( node,__remarkStyle,0 );
       if (save_bool)
-        this.saveProjectData ( [],[],true, function(rdata){} );
+        this.saveProjectData ( [],[],true, function(tree,rdata){} );
     }
   }
 }
@@ -429,7 +429,7 @@ JobTree.prototype.setNodeIcon = function ( nodeId,save_bool )  {
   var node = this.node_map[nodeId];
   this.setIcon ( node,image_path(task.icon()) );
   if (save_bool)
-    this.saveProjectData ( [],[],true, function(rdata){} );
+    this.saveProjectData ( [],[],true, function(tree,rdata){} );
 }
 
 
@@ -526,7 +526,7 @@ JobTree.prototype.__checkTaskLoop = function()  {
             if (completed_list.length>0)  {
               tree.emitSignal ( cofe_signals.treeUpdated,{} );
               tree.updateRation ( data );
-              tree.saveProjectData ( [],[],false, function(rdata){});
+              tree.saveProjectData ( [],[],false, function(tree,rdata){});
             }
 
           }
@@ -541,7 +541,7 @@ JobTree.prototype.__checkTaskLoop = function()  {
           //       break;
           //     }
           //   if (!tree.projectData.desc.autorun)
-          //     tree.saveProjectData ( [],[],true, function(rdata){} );
+          //     tree.saveProjectData ( [],[],true, function(tree,rdata){} );
           // }
 
           if (tree.checkTimeout!=-1)  { // task loop was not blocked, and
@@ -607,6 +607,8 @@ JobTree.prototype.getSelectedTasks = function()  {
 // returns tasks in reversed order
 var sel_lst   = this.calcSelectedNodeIds()
 var sel_tasks = [];
+  // if ((sel_lst.length<=0) && (this.selected_node_id in this.node_map))
+  //   sel_lst = [this.selected_node_id];
   for (var i=0;i<sel_lst.length;i++)
     if (sel_lst[i] in this.task_map)
       sel_tasks.push ( this.task_map[sel_lst[i]] );
@@ -632,22 +634,30 @@ var nodeId = this.getTaskNodeId ( task.id );
 JobTree.prototype.selectTasks = function ( task_lst )  {
   // var single = true;
   var nselected = 0;
-  for (var i=task_lst.length-1;i>=0;i--)  {
-    var node = null;
-    if (task_lst[i].id>=0)  {
-      nodeId = this.getTaskNodeId ( task_lst[i].id );
-      // if (nodeId && this.selectNodeById(nodeId,single))
-      //   single = false;
-      if (nodeId && this.selectNodeById(nodeId,(nselected<=0)))
+  if (task_lst.length>0)  {
+    for (var i=task_lst.length-1;i>=0;i--)  {
+      // var node = null;
+      if (task_lst[i].id>=0)  {
+        nodeId = this.getTaskNodeId ( task_lst[i].id );
+        // if (nodeId && this.selectNodeById(nodeId,single))
+        //   single = false;
+        if (nodeId && this.selectNodeById(nodeId,(nselected<=0)))
+          nselected++;
+      } else if (this.selectNodeById(this.root_nodes[0].id,(nselected<=0)))
         nselected++;
-    } else if (this.selectNodeById(this.root_nodes[0].id,(nselected<=0)))
-      nselected++;
-    // } else  {
-    //   // root selected
-    //   this.selectNodeById ( this.root_nodes[0].id,single );
-    //   single = false;
-    // }
-// console.log ( ' >>>>> selTaskId=' + task_lst[i].id + '  single=' + single  );
+      // } else  {
+      //   // root selected
+      //   this.selectNodeById ( this.root_nodes[0].id,single );
+      //   single = false;
+      // }
+  // console.log ( ' >>>>> selTaskId=' + task_lst[i].id + '  single=' + single  );
+    }
+  } else  {
+    for (var nodeId in this.node_map)  {
+      if (this.node_map[nodeId].state.selected)
+        if (this.selectNodeById(nodeId,(nselected<=0)))
+          nselected++;
+    }
   }
   if (nselected<=0)  {
     if (this.selectNodeById(this.root_nodes[0].id,true))
@@ -679,11 +689,14 @@ JobTree.prototype.checkReload = function ( self,rdata,details )  {
       msg += 'by user, with whom this Project is shared.';
     else
       msg += 'by automatic workflow running.';
-    new MessageBoxF ( 'Project update required',
-        msg + '<p>Click "Update" button and try to ' + details + ' again.</div>',
-        'Update',function(){
-          self.emitSignal ( cofe_signals.reloadTree,rdata );
-        },true );
+    (function(self){
+      new MessageBoxF ( 'Project update required',
+          msg + '<p>Click "Update" button and try to ' + details + ' again.</div>',
+          'Update',function(){
+            rdata.force_reload = true;
+            self.emitSignal ( cofe_signals.reloadTree,rdata );
+          },true );
+    }(this))
     return false;  // do not proceed
   }
   return true;  // proceed
@@ -740,13 +753,13 @@ JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
           } else if (rdata.reload>0)  {
             tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
             if (callback_func)
-                  callback_func ( rdata );
+                  callback_func ( tree,rdata );
             else  tree.emitSignal ( cofe_signals.reloadTree,rdata );
           } else  {
             tree.updateRation ( rdata );
             tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
             if (callback_func)
-              callback_func ( rdata );
+              callback_func ( tree,rdata );
           }
         },null,'persist' );
     }(this))
@@ -866,14 +879,13 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
     if (task.isRemark())
       this.setStyle ( node,__remarkStyle,0 );
 
-    (function(tree){
+    // (function(tree){
 
-      tree.saveProjectData ( [task],[],true, function(rdata){
+      this.saveProjectData ( [task],[],true, function(tree,rdata){
         if (tree.checkReload(tree,rdata,'add the job'))  {
           task.id     = rdata.jobIds[0];
           node.dataId = task.id;
           tree.projectData.desc.jobCount = task.id;
-          // console.log ( ' >>> ' + node.children.length );
           if (onAdd_func)  {
             onAdd_func ( Math.min(node.children.length,1) );
             // if (insert_bool)  onAdd_func ( 1 );
@@ -895,7 +907,7 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
         }
       });
 
-    }(this,node))
+    // }(this,node))
 
   } else  {
     console.log ( 'no selection in the tree:_add_job' );
@@ -1123,18 +1135,19 @@ JobTree.prototype.toggleBranchHighlight = function()  {
 JobTree.prototype.moveJobUp = function()  {
   if (this.selected_node_id)  {
     this.moveSelectedNodeUp();
-    (function(tree,node0){
-      tree.saveProjectData ( [],[],true, function(rdata){
+    // (function(tree,node0){
+      this.saveProjectData ( [],[],true, function(tree,rdata){
         if (tree.checkReload(tree,rdata,'move the job up'))  {
           tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
           tree.projectData.desc.jobCount  = rdata.pdesc.jobCount;
+          var node0 = tree.getLastHighlightedNode();
           if (node0)
             window.setTimeout ( function(){
               tree._highlight_to_root ( node0,true );
             },100);
         }
       });
-    }(this,this.getLastHighlightedNode()))
+    // }(this,this.getLastHighlightedNode()))
   } else  {
     console.log ( 'no selection in the tree:moveJobUp' );
     // alert ( ' no selection in the tree! ' );
@@ -1284,8 +1297,8 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func ) {
 
         tree.calcMetrics();
 
-        tree.saveProjectData ( [],tasks_del,true, function(rdata){
-          if (tree.checkReload(tree,rdata,'delete the job(s)<br>'))  {
+        tree.saveProjectData ( [],tasks_del,true, function(tree1,rdata){
+          if (tree1.checkReload(tree1,rdata,'delete the job(s)<br>'))  {
             if (onDelete_func)
               onDelete_func(true);
           }
@@ -1724,8 +1737,8 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
       // now set the new node name
       this.setText ( node,this.makeNodeName(task) );
 
-      (function(tree){
-        tree.saveProjectData ( [task],[],true, function(rdata){
+      // (function(tree){
+        this.saveProjectData ( [task],[],true, function(tree,rdata){
           if (tree.checkReload(tree,rdata,'add the job'))  {
             task.id     = rdata.jobIds[0];
             node.dataId = task.id;
@@ -1738,7 +1751,7 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
               tree.setStyle ( node,__remarkStyle,0 );
           }
         });
-      }(this));
+      // }(this));
 
     }
 
@@ -2067,7 +2080,7 @@ JobTree.prototype.addReplayTasks = function ( replay_node_list,ref_node_list )  
         //if (onAdd_func)
         //  onAdd_func();
 
-        this.saveProjectData ( [replay_task],[],true, function(rdata){
+        this.saveProjectData ( [replay_task],[],true, function(tree,rdata){
           if (rdata.reload<=0)  {
             replay_task.state = job_code.running;
             var data  = {};
@@ -2110,8 +2123,8 @@ JobTree.prototype.replayTree = function ( ref_tree )  {
   this.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
   this.clear();  // this removes also all root nodes
   this.projectData.desc.jobCount = 0;
-  (function(tree){
-    tree.saveProjectData ( [],task_del_list,true, function(rdata){
+  // (function(tree){
+    tree.saveProjectData ( [],task_del_list,true, function(tree,rdata){
       if (rdata.reload<=0)  {
         var replay_node_list = [];
         for (var i=0;i<ref_tree.root_nodes.length;i++)  {
@@ -2122,6 +2135,6 @@ JobTree.prototype.replayTree = function ( ref_tree )  {
         tree.addReplayTasks ( replay_node_list,ref_tree.root_nodes );
       }
     });
-  }(this))
+  // }(this))
 
 }

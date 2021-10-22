@@ -552,7 +552,7 @@ function CCP4DirName()  {
 
   "Emailer" : {
     "type"               : "nodemailer",
-    "emailFrom"          : "CCP4 on-line <ccp4.cofe@gmail.com>",
+    "emailFrom"          : "CCP4 Cloud <ccp4.cofe@gmail.com>",
     "maintainerEmail"    : "ccp4.cofe@gmail.com",
     "host"               : "smtp.gmail.com",
     "port"               : 465,
