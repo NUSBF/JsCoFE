@@ -28,12 +28,9 @@ CCP4 Cloud Version Log
 
     #. Demo projects may be linked directly from HTML documents
 
+    #. Fixed bug which could cause project loss at inserting remarks while project contains tasks in exiting state
 
-`test link <../demo_project.html?cmount=Demo%20projects&project=beta-blip>`_
-
-`test link <../html-taskref/index.html>`_
-
-`CNN <http://cnn.com>`_
+    #. Fixed bug which could cause project loss at archiving jobs at certain project tree configurations
 
 
 
