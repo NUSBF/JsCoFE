@@ -619,8 +619,8 @@ var sel_tasks = [];
     if (task)
       sel_tasks.push ( task );
   }
-// for (var i=0;i<sel_tasks.length;i++)
-//   console.log ( ' >>>> selected taskId=' + sel_tasks[i].id );
+  // for (var i=0;i<sel_tasks.length;i++)
+  //   console.log ( ' >>>> selected taskId['+i+']=' + sel_tasks[i].id );
   return sel_tasks;
 }
 
@@ -632,38 +632,37 @@ var nodeId = this.getTaskNodeId ( task.id );
 }
 
 JobTree.prototype.selectTasks = function ( task_lst )  {
-  // var single = true;
+
   var nselected = 0;
+
   if (task_lst.length>0)  {
     for (var i=task_lst.length-1;i>=0;i--)  {
-      // var node = null;
       if (task_lst[i].id>=0)  {
         nodeId = this.getTaskNodeId ( task_lst[i].id );
-        // if (nodeId && this.selectNodeById(nodeId,single))
-        //   single = false;
         if (nodeId && this.selectNodeById(nodeId,(nselected<=0)))
           nselected++;
       } else if (this.selectNodeById(this.root_nodes[0].id,(nselected<=0)))
         nselected++;
-      // } else  {
-      //   // root selected
-      //   this.selectNodeById ( this.root_nodes[0].id,single );
-      //   single = false;
-      // }
-  // console.log ( ' >>>>> selTaskId=' + task_lst[i].id + '  single=' + single  );
-    }
-  } else  {
-    for (var nodeId in this.node_map)  {
-      if (this.node_map[nodeId].state.selected)
-        if (this.selectNodeById(nodeId,(nselected<=0)))
-          nselected++;
     }
   }
+
+  if (nselected>0)
+    nselected = $(this.root.element).jstree('get_selected').length;
+
   if (nselected<=0)  {
-    if (this.selectNodeById(this.root_nodes[0].id,true))
+    for (var nodeId in this.node_map)
+      if (this.node_map[nodeId].state.selected)  {
+        if (this.selectNodeById(nodeId,(nselected<=0)))  {
+          nselected++;
+        }
+      }
+    nselected = $(this.root.element).jstree('get_selected').length;
+    if ((nselected<=0) && this.selectNodeById(this.root_nodes[0].id,true))
       nselected++;
   }
+
   return nselected;
+
 }
 
 

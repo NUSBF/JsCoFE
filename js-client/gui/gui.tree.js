@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.10.21   <--  Date of Last Modification.
+ *    23.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1239,7 +1239,7 @@ Tree.prototype.makeFolder1 = function ( sel_node_list,text,icon_uri )  {
         node.state.selected = false;
         folder_node.fchildren.push ( node );
       }
-      // $(this.root.element).jstree(true).delete_node([node]);
+      $(this.root.element).jstree(true).delete_node([node]);
     }
     this.node_map[folder_node.id] = folder_node;
     /*
@@ -1255,16 +1255,16 @@ Tree.prototype.makeFolder1 = function ( sel_node_list,text,icon_uri )  {
     for (var key in this.node_map)
       this.node_map[key].state.selected = false;
     // this.selectSingle ( folder_node );
-    folder_node.state.selected = true;
+    // folder_node.state.selected = true;
     // this.node_map[folder_node.id].state.selected = true;
-    this.selected_node_id = folder_node.id;
+    // this.selected_node_id = folder_node.id;
 
     // this.node_map[folder_node.parentId].state.selected = true;
     // this.selected_node_id = folder_node.parentId;
 
-    // pnode.state.selected  = true;
+    pnode.state.selected  = true;
     // this.node_map[pnode.id].state.selected = true;
-    // this.selected_node_id = pnode.id;
+    this.selected_node_id = pnode.id;
 
     // this.refresh();
     /*
@@ -1288,10 +1288,10 @@ var snode = this.getSelectedNode();
     for (var i=0;i<fchildren.length;i++)  {
       var node = new TreeNode ( '','',null );
       node.copy ( fchildren[i] );
-      node.id = fchildren[i].id;
+      // node.id = fchildren[i].id;
       node.parentId = pnode.id;
       node.folderId = null;
-      node.state.selected = false;
+      node.state.selected = true;
       this.node_map[node.id] = node;  // because new node instance was obtained
       if (i>0)
         pnode.children = [node];
@@ -1308,16 +1308,14 @@ var snode = this.getSelectedNode();
     for (var i=0;i<pnode.children.length;i++)
       pnode.children[i].parentId = pnode.id;
     delete this.node_map[snode.id];
+    this.selectNode ( this.node_map[snode.parentId],true );
     snode.children = [];
-    // $(this.root.element).jstree(true).delete_node([snode]);
+    $(this.root.element).jstree(true).delete_node([snode]);
     // this.confirmCustomIconsVisibility();
     // this.refresh();
-    for (var key in this.node_map)
-      this.node_map[key].state.selected = false;
-    this.node_map[fchildren[0].id].state.selected = true;
-    this.selected_node_id = fchildren[0].id;
-    // for (var i=0;i<fchildren.length;i++)
-    //   this.node_map[fchildren[i].id].state.selected = true;
+    // for (var nid in this.node_map)
+    //   this.node_map[nid].state.selected = false;
+    // this.selected_node_id = fchildren[0].id;
     // for (var i=0;i<fchildren.length;i++)
     //   this.selectNode ( this.node_map[fchildren[i].id],(i<=0) );
     // this.refresh();
