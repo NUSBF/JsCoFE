@@ -3,6 +3,8 @@ CCP4 Cloud Version Log
 ======================
 
 
+`test link <../demo_project.html?cmount=Demo%20projects&project=beta-blip>`_
+
 
 **Version 1.6.024**
 

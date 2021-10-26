@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.09.21   <--  Date of Last Modification.
+#    26.10.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
 #
 # ============================================================================
 #
@@ -60,6 +60,9 @@ class DocDev(basic.TaskDriver):
         elif doctype=="taskref":
             self.putMessage ( "<h3>Generating Task Reference</h3>" )
             copytasks = "\nmv tasks/* .\nrm -rf tasks"
+        elif doctype=="tutorials":
+            self.putMessage ( "<h3>Generating Tutorials</h3>" )
+            copytasks = "\nmv tutorials/* .\nrm -rf tutorials"
         elif doctype=="userguide":
             self.putMessage ( "<h3>Generating User Guide</h3>" )
             copytasks = "\nmv tips/* .\nrm -rf tips"
