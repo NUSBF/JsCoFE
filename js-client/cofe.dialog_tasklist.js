@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.09.21   <--  Date of Last Modification.
+ *    26.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -558,6 +558,10 @@ var row      = 0;
 
   if (__user_role==role_code.developer)  {
 
+    this.makeSection ( 'Documentation tools',[
+      new TaskDocDev()
+    ]);
+
     // var ccp4go2_task = new TaskCCP4go2();
     // if (this.dataBox.isEmpty())
     //   ccp4go2_task.inputMode = input_mode.root; // force 'at root mode' for the task
@@ -571,8 +575,7 @@ var row      = 0;
     // */
 
     this.makeSection ( 'Tasks in Development',[
-      new TaskDocDev       (),
-      // new TaskMrParse      (),
+      // new TaskCootUtils    (),
       // ccp4go2_task,
       new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),

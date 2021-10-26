@@ -80,7 +80,9 @@ class Zanuda(basic.TaskDriver):
                 "xyzin" ,xyz.getXYZFilePath(self.inputDir()),
                 "hklout",self.getMTZOFName(),
                 "xyzout",self.getXYZOFName(),
-                "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
+                "v" ]
+                # "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
+                # "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
 
         if self.task.parameters.sec1.contains.AVER_CBX.value:
             cmd.append ( "aver" )

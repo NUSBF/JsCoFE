@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.20   <--  Date of Last Modification.
+ *    26.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Documentation Development Task
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2021
  *
  *  =================================================================
  *
@@ -50,6 +50,7 @@ function TaskDocDev()  {
            label    : 'Documentation package:',
            tooltip  : 'Choose documentation package to compile',
            range    : ['taskref|Task Reference',
+                       'tutorials|Tutorials',
                        'userguide|User Guide',
                        'dev|Developers Reference'
                       ],
