@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    17.07.21   <--  Date of Last Modification.
+#    26.10.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -251,7 +251,7 @@ class Import(basic.TaskDriver):
             self.generic_parser_summary["import_task"] = {
               "summary_line" : "no data imported"
             }
-        self.success ( have_results )
+        self.success ( have_results or self.task.state=="remdoc" )
         return
 
 
