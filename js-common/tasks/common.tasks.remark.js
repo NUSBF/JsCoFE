@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.21   <--  Date of Last Modification.
+ *    27.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,6 +41,11 @@ function TaskRemark()  {
   //this.helpURL     = './html/jscofe_task_remark.html';
 
   this.theme_no    = 6;
+
+  this.doclink_type = 'none';  // {'none'|url|doi|taskref|userguide|tutorial}
+  this.doclink_url  = '';
+  this.doclink_doi  = '';
+  this.doclink_file = '';  // documentation article file name (.html)
 
   this.input_dtypes = [];
 
@@ -86,7 +91,8 @@ var __remark_icon = [
   ['task_remark'         ,'Lemon'    ],
   ['task_remark_yellow'  ,'Gold'     ],
   ['task_remark_pink'    ,'Pink'     ],
-  ['task_remark_red'     ,'Red'      ]
+  ['task_remark_red'     ,'Red'      ],
+  ['task_remark_doc'     ,'Document link' ]
 ];
 
 if (!__template)  {
@@ -105,6 +111,16 @@ if (!__template)  {
   TaskRemark.prototype.customDataClone = function ( cloneMode,task )  {
     this.theme_no = task.theme_no;
     this.state    = task.state;
+    if ('doclink_type' in task)  {
+      this.doclink_type = task.doclink_type;
+      this.doclink_url  = task.doclink_url;
+      this.doclink_doi  = task.doclink_doi;
+      this.doclink_file = task.doclink_file;  // documentation article file name (.html)
+      if (this.theme_no==__remark_icon.length-1)  {
+        this.theme_no     = 6;
+        this.doclink_type = 'none';  // {'none'|url|doi|taskref|userguide|tutorial}
+      }
+    }
     return;
   }
 
@@ -119,6 +135,71 @@ if (!__template)  {
     // );
     inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
                             job_dialog_reason.set_node_icon );
+    if (this.theme_no==__remark_icon.length-1)  {
+      var doclink_dlg = new InputBox ( 'Link document' );
+      var ibx_grid    = new Grid ( '' );
+      doclink_dlg.addWidget ( ibx_grid );
+      ibx_grid.setLabel ( '<h2>Set Document Link</h2>',0,0,1,2 );
+      ibx_grid.setLabel ( 'Link type:&nbsp;&nbsp;&nbsp;',1,0,1,1 );
+      ibx_grid.setVerticalAlignment ( 1,0,'middle' );
+      var dropdown = new Dropdown();
+      ibx_grid.addWidget ( dropdown,1,1,1,1 );
+      dropdown
+        .addItem  ( 'No link'      ,'','none',this.doclink_type=='none' )
+        .addItem  ( 'Web page'     ,'','url' ,this.doclink_type=='url'  )
+        .addItem  ( 'DOI reference','','doi' ,this.doclink_type=='doi'  )
+        .setWidth ( '220px' );
+      if (__user_role==role_code.developer)
+        dropdown
+          .addItem  ( 'Task documentation'  ,'','taskref'  ,this.doclink_type=='taskref'   )
+          .addItem  ( 'User guide article'  ,'','userguide',this.doclink_type=='userguide' )
+          .addItem  ( 'Tutorial description','','tutorial' ,this.doclink_type=='tutorial'  );
+      dropdown.make();
+      var doc_label  = ibx_grid.setLabel ( 'URL:&nbsp;&nbsp;&nbsp;',2,0,1,1 );
+      ibx_grid.setVerticalAlignment ( 2,0,'middle' );
+      var input_text = ibx_grid.setInputText ( '',2,1,1,1).setWidth('500px');
+      function _set_fields ( type )  {
+        doc_label .setVisible ( type!='none' );
+        input_text.setVisible ( type!='none' );
+        var lbl = '';
+        var val = '';
+        switch (type)  {
+          case 'url'      :  lbl = 'URL';   break;
+          case 'doi'      :  lbl = 'DOI';   break;
+          case 'taskref'  :  case 'userguide' :
+          case 'tutorial' :  lbl = 'File';  break;
+          default : ;
+        }
+        doc_label .setText ( lbl );
+        input_text.setText ( ''  );
+      }
+      _set_fields ( this.doclink_type );
+      dropdown.addOnChangeListener ( function(text,value){
+        _set_fields ( value );
+      });
+      (function(self){
+        doclink_dlg.launch ( 'Set link',function(){
+          self.doclink_type = dropdown.getValue();  // {'none'|url|doi|taskref|userguide|tutorial}
+          var val = input_text.getValue();
+          switch (self.doclink_type)  {
+            case 'url'      :  self.doclink_url  = val;  break;
+            case 'doi'      :  self.doclink_doi  = val;  break;
+            case 'taskref'  :  case 'userguide' :
+            case 'tutorial' :  self.doclink_file = val;  break;
+            default : ;
+          }
+          if (self.doclink_type!='none')
+            window.setTimeout ( function(){
+              new MessageBox ( 'Remark is being converted',
+              '<div style="width:400px"><h2>The Remark is being converted</h2>' +
+              'The Remark will be permanently converted into document link. ' +
+              'Make sure that you have chosen a suitable remark title before ' +
+              'closing the Remark Dialog.' );
+            },0);
+          return true;
+        });
+      }(this))
+    }
   }
 
   TaskRemark.prototype.makeThemeMenu = function ( suffix,inputPanel )  {
@@ -190,6 +271,34 @@ if (!__template)  {
 
     return div;
 
+  }
+
+  TaskRemark.prototype.openWebLink = function()  {
+    if ('doclink_type' in this)  {
+      var url   = null;
+      var title = 'Document';
+      switch (this.doclink_type)  {
+        case 'url'       : url = this.doclink_url;
+                          break;
+        case 'doi'       : url = 'https://doi.org/' + this.doclink_doi;
+                          break;
+        case 'taskref'   : url   = __task_reference_base_url + this.doclink_file;
+                           title = '';
+                          break;
+        case 'userguide' : url   = __user_guide_base_url + this.doclink_file;
+                           title = '';
+                          break;
+        case 'tutorial' : url   = __tutorial_base_url + this.doclink_file;
+                           title = 'Tutorial info'
+                          break;
+        default          : ;
+      }
+      if (url)  {
+        new HelpBox ( title,url,null );
+        return true;
+      }
+    }
+    return false;
   }
 
 }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.07.21   <--  Date of Last Modification.
+ *    27.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -55,6 +55,11 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.job_edited  = false;
 
   this._created    = false;
+
+  if ((this.task.state==job_code.remark) && (this.task.openWebLink()))  {
+    onClose_func ( this );
+    return;
+  }
 
   Widget.call ( this,'div' );
 
