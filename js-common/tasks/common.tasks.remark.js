@@ -124,6 +124,10 @@ if (!__template)  {
     return;
   }
 
+  TaskRemark.prototype.isLink = function()  {
+    return (('doclink_type' in this) && (this.doclink_type!='none'));
+  }
+
   TaskRemark.prototype.setTheme = function ( themeNo,inputPanel )  {
     this.theme_no = themeNo;
     inputPanel.header.icon_menu.button.setBackground (
