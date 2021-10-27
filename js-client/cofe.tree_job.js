@@ -175,6 +175,7 @@ var nodeId = null;
 var __deleteStyle     = 'color:#FF0000;text-decoration:line-through;';
 var __notViewedStyle  = 'color:#00A000;';
 var __remarkStyle     = 'color:#A00000;font-style:italic;';
+var __linkStyle       = 'color:#0000FF;font-style:italic;text-decoration:underline;';
 var __highlightStyle  = 'background-color:yellow;padding:4px 16px 4px 0px;';
 var __highlightStyleL = 'background-color:lime;padding:4px 16px 4px 0px;';
 
@@ -324,9 +325,12 @@ JobTree.prototype.readProjectData = function ( page_title,
 
         tree.createTree ( allow_selection,function(){
           for (var key in tree.task_map)  {
-            if (tree.task_map[key].isRemark())
-              tree.setStyle ( tree.node_map[key],__remarkStyle,0 );
-            else if (!tree.task_map[key].job_dialog_data.viewed)
+            if (tree.task_map[key].isRemark())  {
+              tree.setRemarkStyle ( tree.node_map[key],tree.task_map[key] );
+              //   if (tree.task_map[key].isLink())
+              //        tree.setStyle ( tree.node_map[key],__linkStyle,0 );
+              //   else tree.setStyle ( tree.node_map[key],__remarkStyle,0 );
+            } else if (!tree.task_map[key].job_dialog_data.viewed)
               tree.setStyle ( tree.node_map[key],__notViewedStyle,0 );
           }
           if (!('R_free' in tree.projectData.desc.metrics))
@@ -415,8 +419,12 @@ JobTree.prototype.setNodeName = function ( nodeId,save_bool )  {
     if (newName!=node.text)  {  // to enforce managing custom icon visibility
       this.setText ( node,newName );
       this.confirmCustomIconsVisibility();
-      if (task.isRemark())
-        this.setStyle ( node,__remarkStyle,0 );
+      if (task.isRemark())  {
+        this.setRemarkStyle ( node,task );
+        // if (task.isLink())
+        //       this.setStyle ( node,__linkStyle,0 );
+        // else  this.setStyle ( node,__remarkStyle,0 );
+      }
       if (save_bool)
         this.saveProjectData ( [],[],true, function(tree,rdata){} );
     }
@@ -439,8 +447,12 @@ JobTree.prototype.resetNodeName = function ( nodeId )  {
     if (task)  {
       var node = this.node_map[nodeId];
       this.setText ( node,this.makeNodeName(task) );
-      if (task.isRemark())
-        this.setStyle ( node,__remarkStyle,0 );
+      if (task.isRemark())  {
+        this.setRemarkStyle ( node,task );
+        // if (task.isLink())
+        //       this.setStyle ( node,__linkStyle,0 );
+        // else  this.setStyle ( node,__remarkStyle,0 );
+      }
     }
     this.confirmCustomIconsVisibility();
   }
@@ -494,9 +506,13 @@ JobTree.prototype.__checkTaskLoop = function()  {
                   task.treeItemId       = nodeId;
                   tree.task_map[nodeId] = task;
                   tree.setNodeName ( nodeId,false );
-                  if (task.isRemark())
-                        tree.setStyle ( tree.node_map[nodeId],__remarkStyle,0 );
-                  else  tree.setStyle ( tree.node_map[nodeId],__notViewedStyle,0 );
+                  if (task.isRemark())  {
+                    tree.setRemarkStyle ( tree.node_map[nodeId],task );
+                    // if (task.isLink())
+                    //       tree.setStyle ( tree.node_map[nodeId],__linkStyle,0 );
+                    // else  tree.setStyle ( tree.node_map[nodeId],__remarkStyle,0 );
+                  } else
+                    tree.setStyle ( tree.node_map[nodeId],__notViewedStyle,0 );
                   tree.node_map[nodeId].setCustomIconVisible ( false );
                   tree.setNodeIcon    ( nodeId,false );
                   completed_list.push ( task );
@@ -875,8 +891,12 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
     // now set the new node name
     this.setText ( node,this.makeNodeName(task) );
 
-    if (task.isRemark())
-      this.setStyle ( node,__remarkStyle,0 );
+    if (task.isRemark())  {
+      this.setRemarkStyle ( node,task );
+      // if (task.isLink())
+      //       this.setStyle ( node,__linkStyle,0 );
+      // else  this.setStyle ( node,__remarkStyle,0 );
+    }
 
     // (function(tree){
 
@@ -1310,9 +1330,11 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func ) {
       else
         new QuestionBox ( title,message, 'Yes',yes_delete,'No',function(){
           for (var i=0;i<delNodeId.length;i++)
-            if (tree.isRemark(delNodeId[i]))
-                  tree.setStyle ( tree.node_map[delNodeId[i]],__remarkStyle,0 );
-            else  tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
+            if (tree.isRemark(delNodeId[i]))  {
+              tree.setRemarkStyle ( tree.node_map[delNodeId[i]],tree.task_map[delNodeId[i]] );
+              // tree.setStyle ( tree.node_map[delNodeId[i]],__remarkStyle,0 );
+            } else
+              tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
           if (onDelete_func)
             onDelete_func(false);
         });
@@ -1747,7 +1769,8 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
               onAdd_func(0);
             tree.openJob ( null,parent_page );
             if (task.isRemark())
-              tree.setStyle ( node,__remarkStyle,0 );
+              tree.setRemarkStyle ( node,task );
+              //   tree.setStyle ( node,__remarkStyle,0 );
           }
         });
       // }(this));
@@ -1761,6 +1784,11 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
     // alert ( ' no selection in the tree! ' );
   }
 
+}
+
+JobTree.prototype.setRemarkStyle = function ( node,task )  {
+  if (task.isLink())  this.setStyle ( node,__linkStyle  ,0 );
+                else  this.setStyle ( node,__remarkStyle,0 );
 }
 
 
