@@ -75,9 +75,9 @@ function TaskEnsemblePrepMG()  {
                 AFLEVEL_SEL : {
                       type     : 'combobox',
                       keyword  : 'AFLEVEL',
-                      label    : 'EBI-AFDB pLDDT cut-off',
-                      tooltip  : 'Choose appropriate pLDDT cut-off level for ' +
-                                 'keeping residues from EBI-AFDB model predictions. ',
+                      label    : 'EBI AlphaFold database model residue confidence cut-off (higher values are more confident)',
+                      tooltip  : 'Choose confidence level (pLDDT) cut-off for residues in AlphaFold predictions.' +
+                                 'The higher the value the higher the confidence threshold. Residues with lower values are removed from the search models ',
                       range    : ['0|0','10|10','20|20','30|30','40|40','50|50','60|60','70|70','80|80','90|90'],
                       value    : '50',
                       position : [2,0,1,1],
