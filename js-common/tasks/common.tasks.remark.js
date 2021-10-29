@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.10.21   <--  Date of Last Modification.
+ *    29.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -217,6 +217,10 @@ if (!__template)  {
         'background-size'    :'80px',
         'padding'            :'0px',
         'background-position':'0.0em center'
+    });
+
+    icon_menu.setOnClickCustomFunction ( function(){
+      icon_menu.setMaxHeight ( (inputPanel.height_px()-90) + 'px' );
     });
 
     for (var i=0;i<__remark_icon.length;i++)

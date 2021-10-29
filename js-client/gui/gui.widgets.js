@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    05.07.21   <--  Date of Last Modification.
+ *    29.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -185,6 +185,11 @@ Widget.prototype.setWidth_px = function ( width_int )  {
 
 Widget.prototype.setHeight = function ( height )  {
   this.element.style.height = height;
+  return this;
+}
+
+Widget.prototype.setMaxHeight = function ( height_str )  {
+  this.element.style.maxHeight = height_str;  // e.g., '200px'
   return this;
 }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.09.21   <--  Date of Last Modification.
+ *    29.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -118,6 +118,7 @@ function Menu ( text,icon_uri )  {
   Widget.call ( this,'div' );
   this.addClass ( 'menu-dropdown' );
   this.disabled = false;
+  this.onclick_custom_function = null;
   if ((text!='') || (icon_uri!=''))  {
     this.button = new IconLabel ( '',icon_uri );
     this.button.setNoWrap();
@@ -136,6 +137,8 @@ function Menu ( text,icon_uri )  {
       //menu.addOnClickListener ( function(){
         __close_all_menus();
         if (!menu.disabled)  {
+          if (menu.onclick_custom_function)
+            menu.onclick_custom_function();
           if (__onclick_ignore_counter<0)
                 __onclick_ignore_counter = 1;
           else  __onclick_ignore_counter++;
@@ -158,6 +161,14 @@ Menu.prototype.constructor = Menu;
 Menu.prototype.setMenuIcon = function ( icon_uri )  {
   if (this.button)
     this.button.setBackground ( icon_uri );
+}
+
+Menu.prototype.setOnClickCustomFunction = function ( onclick_func )  {
+  this.onclick_custom_function = onclick_func;
+}
+
+Menu.prototype.setMaxHeight = function ( height_str )  {
+  this.dropdown.element.style.maxHeight = height_str;
 }
 
 Menu.prototype.addItem = function ( text,icon_uri )  {
