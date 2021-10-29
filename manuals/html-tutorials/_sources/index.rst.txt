@@ -1,0 +1,33 @@
+.. jscofe documentation master file, created by
+   sphinx-quickstart on Sat Nov  4 16:09:10 2017.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+=========
+Tutorials
+=========
+
+.. toctree::
+   :numbered:
+   :maxdepth: 2
+
+   doc.demo.CCP4MG-MrBump
+
+======
+Search
+======
+
+* :ref:`search`
+
+========================
+Authors and Contributors
+========================
+
+Tutorials for CCP4 Cloud were prepared by:
+    - *Maria Fando (Institute of Protein Research, Pushchino, Russian Federation)*
+    - *Eugene Krissinel (CCP4, STFC, Harwell, UK)*
+    
+
+Please send questions and suggestions to: `CCP4 Cloud Reception`_ .
+
+.. _CCP4 Cloud Reception: mariya.fando@gmail.com?Subject=CCP4%20Cloud%20question
