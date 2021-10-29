@@ -242,9 +242,9 @@ class Zanuda(basic.TaskDriver):
                             self.outputFName + "_sg" + str(models[i]["subgrp"]).zfill(3)  )
 
                         sequences = revision.ASU.seq
-                        mult = models[i]["mult"][0]/models[i]["mult"][1]
+                        mult = float(models[i]["mult"][0])/float(models[i]["mult"][1])
                         for j in range(len(sequences)):
-                            sequence[j].ncopies *= mult
+                            sequences[j].ncopies = int ( round ( mult*sequences[j].ncopies ) )
 
                         gridId = self.getWidgetId ( "_revision" )
                         pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),
