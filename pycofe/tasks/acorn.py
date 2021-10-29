@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    06.08.21   <--  Date of Last Modification.
+#    28.10.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -270,6 +270,15 @@ class Acorn(basic.TaskDriver):
 
             # calculate maps for UglyMol using final mtz from temporary location
 
+            acorn_xyz = None
+            acorn_sub = None
+            if istruct.getXYZFileName():
+                acorn_xyz = self.getXYZOFName()
+                shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),acorn_xyz )
+            if istruct.getSubFileName():
+                acorn_sub = self.getOFName ( ".ha.pdb" )
+                shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),acorn_sub )
+
             if self.getParameter(sec1.EXTEND_RESOLUTION_CBX)=="True":
 
                 self.putTitle ( "Sharpened Map" )
@@ -294,14 +303,14 @@ class Acorn(basic.TaskDriver):
                 # register output data from temporary location (files will be moved
                 # to output directory by the registration procedure)
 
-                acorn_xyz = None
-                acorn_sub = None
-                if istruct.getXYZFileName():
-                    acorn_xyz = self.getXYZOFName()
-                    shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),acorn_xyz )
-                if istruct.getSubFileName():
-                    acorn_sub = self.getOFName ( ".ha.pdb" )
-                    shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),acorn_sub )
+                # acorn_xyz = None
+                # acorn_sub = None
+                # if istruct.getXYZFileName():
+                #     acorn_xyz = self.getXYZOFName()
+                #     shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),acorn_xyz )
+                # if istruct.getSubFileName():
+                #     acorn_sub = self.getOFName ( ".ha.pdb" )
+                #     shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),acorn_sub )
 
                 structure = self.registerStructure (
                         acorn_xyz,acorn_sub,acorn_map,None,None,None,

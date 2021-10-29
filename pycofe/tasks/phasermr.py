@@ -35,7 +35,7 @@ import os
 from . import basic
 from   pycofe.dtypes   import dtype_template
 from   pycofe.verdicts import verdict_phasermr
-from   pycofe.auto      import auto
+from   pycofe.auto     import auto
 
 
 # ============================================================================
@@ -49,7 +49,7 @@ class PhaserMR(basic.TaskDriver):
     # make task-specific definitions
     def phaser_report    (self):  return "phaser_report"
 
-    # the following will provide for import of generated HKL dataset(s)
+    # the following is for importing the generated HKL dataset(s)
     def importDir        (self):  return "./"   # import from working directory
     def import_summary_id(self):  return None   # don't make import summary table
 
