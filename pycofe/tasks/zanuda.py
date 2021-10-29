@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.05.21   <--  Date of Last Modification.
+#    28.10.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,10 +30,14 @@
 import os
 import sys
 import uuid
+import json
+
+#  ccp4-python imports
+import pyrvapi
 
 #  application imports
 from . import basic
-from   pycofe.proc   import xyzmeta
+from   pycofe.proc   import xyzmeta, import_filetype, import_merged
 
 
 # ============================================================================
@@ -41,11 +45,9 @@ from   pycofe.proc   import xyzmeta
 
 class Zanuda(basic.TaskDriver):
 
-    # ------------------------------------------------------------------------
-
-    # the following will provide for import of generated HKL dataset(s)
+    # the following is for importing the generated HKL dataset(s)
     def importDir        (self):  return "./"   # import from working directory
-    def import_summary_id(self):  return None   # don't make summary table
+    def import_summary_id(self):  return None   # don't make import summary table
 
     # ------------------------------------------------------------------------
 
@@ -74,14 +76,16 @@ class Zanuda(basic.TaskDriver):
                 "HKLOUT",cad_mtz ]
         self.runApp ( "cad",cmd,logType="Service" )
 
+        zanuda_dir = "zanuda_out"
+
         # make command-line parameters for bare morda run on a SHELL-type node
         cmd = [ os.path.join(os.environ["CCP4"],"bin","zanuda"),
-                "hklin" ,cad_mtz,
-                "xyzin" ,xyz.getXYZFilePath(self.inputDir()),
-                "hklout",self.getMTZOFName(),
-                "xyzout",self.getXYZOFName(),
+                "hklin"   ,cad_mtz,
+                "xyzin"   ,xyz.getXYZFilePath(self.inputDir()),
+                "hklout"  ,self.getMTZOFName(),
+                "xyzout"  ,self.getXYZOFName(),
+                "clouddir",zanuda_dir,
                 "v" ]
-                # "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
                 # "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
 
         if self.task.parameters.sec1.contains.AVER_CBX.value:
@@ -98,7 +102,18 @@ class Zanuda(basic.TaskDriver):
             self.runApp ( "ccp4-python",cmd,logType="Main" )
 
         # check solution and register data
+
+        self.putTitle ( "Results" )
+
         have_results = False
+
+        json_file = os.path.join ( zanuda_dir,"zanuda.json" )
+        try:
+            with open(json_file,"r") as f:
+                models = json.loads ( f.read() )
+        except:
+            models = None
+
         if os.path.isfile(self.getXYZOFName()):
 
             self.unsetLogParser()
@@ -130,7 +145,11 @@ class Zanuda(basic.TaskDriver):
                                                  leadKey=1,refiner="refmac" )
             if structure:
 
-                self.putTitle ( "Output Structure" )
+                self.putMessage ( "<h3>Output Structure" +\
+                        self.hotHelpLink ( "Structure","jscofe_qna.structure") +\
+                        "</h3>" )
+
+
                 #structure.addDataAssociations ( [hkl,xyz] )
                 structure.setRefmacLabels ( sol_hkl )
                 structure.copySubtype     ( xyz )
@@ -142,16 +161,64 @@ class Zanuda(basic.TaskDriver):
                 revision = self.makeClass  ( self.input_data.data.revision[0] )
                 revision.setReflectionData ( sol_hkl   )
                 revision.setStructureData  ( structure )
-                self.registerRevision      ( revision  )
+
+                self.putMessage ( "<h3>Structure Revision" +\
+                    self.hotHelpLink ( "Structure Revision",
+                                       "jscofe_qna.structure_revision") + "</h3>" )
+                self.registerRevision ( revision,title="" )
                 have_results = True
 
             else:
-                self.putTitle   ( "Failed to create Structure" )
-                self.putMessage ( "This is likely to be a program bug, please " +\
-                        "report to developer or maintainer" )
+                self.putMessage ( "<h3>Failed to create Structure</h3>" +\
+                                  "This is likely to be a program bug, please " +\
+                                  "report to developer or maintainer" )
 
         else:
-            self.putTitle ( "No Output Generated" )
+            self.putMessage ( "<h3>No Output Structure Generated</h3>" )
+
+        # Make revisions for acceptable space groups
+
+        if models:
+
+            self.putMessage ( "&nbsp;<br>&nbsp;" )
+
+            # self.putTitle ( "Models for Acceptable Space Groups" )
+            modelsSecId = self.getWidgetId ( "_models_sec_" )
+            pyrvapi.rvapi_add_section (
+                        modelsSecId,"Solutions in Possible Space Groups",
+                        self.report_page_id(),self.rvrow,0,1,1,False )
+            self.rvrow += 1
+            self.setReportWidget ( modelsSecId )
+
+            for i in range(len(models)):
+                self.putMessage ( "<h3>" + models[i]["title"] + "</h3>" )
+                self.resetFileImport()
+                self.addFileImport ( models[i]["mtzin"],import_filetype.ftype_MTZMerged() )
+                hkli = import_merged.run ( self,"Reflection dataset details",importPhases="" )
+                if len(hkli)>0:
+                    hkli[0].dataStats    = hkl.dataStats
+                    hkli[0].aimless_meta = hkl.aimless_meta
+                    self.putMessage ( "<b>New reflection dataset created:</b> " +\
+                                      hkli[0].dname )
+                    structure = self.registerStructure (
+                                models[i]["pdbout"],None,models[i]["mtzout"],
+                                None,None,None,leadKey=1,refiner="refmac" )
+                    if structure:
+                        structure.setRefmacLabels ( hkli[0] )
+                        structure.copySubtype     ( xyz )
+                        self.putStructureWidget   (
+                                "structure_btn","Structure and electron density",
+                                structure,legend="Assigned structure name" )
+
+                else:
+                    self.putMessage (
+                        "Data registration error -- report to developers." )
+
+            self.resetReportPage()
+
+        else:
+            self.putTitle ( "No Models for Acceptable Space Groups Generated" )
+
 
         # close execution logs and quit
         self.success ( have_results )

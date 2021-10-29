@@ -62,7 +62,7 @@ class DocDev(basic.TaskDriver):
             copytasks = "\nmv tasks/* .\nrm -rf tasks"
         elif doctype=="tutorials":
             self.putMessage ( "<h3>Generating Tutorials</h3>" )
-            copytasks = "\nmv tutorials/* .\nrm -rf tutorials"
+            # copytasks = "\nmv tutorials/* .\nrm -rf tutorials"
         elif doctype=="userguide":
             self.putMessage ( "<h3>Generating User Guide</h3>" )
             copytasks = "\nmv tips/* .\nrm -rf tips"
