@@ -292,7 +292,7 @@ if (!__template)  {
         case 'userguide' : url   = __user_guide_base_url + this.doclink_file;
                            title = '';
                           break;
-        case 'tutorial' : url   = __tutorial_base_url + this.doclink_file;
+        case 'tutorial' : url   = __tutorials_base_url + this.doclink_file;
                            title = 'Tutorial info'
                           break;
         default          : ;

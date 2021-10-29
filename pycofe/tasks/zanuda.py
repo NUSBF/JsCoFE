@@ -37,6 +37,7 @@ import pyrvapi
 
 #  application imports
 from . import basic
+from   pycofe.dtypes import dtype_revision
 from   pycofe.proc   import xyzmeta, import_filetype, import_merged
 
 
@@ -191,7 +192,14 @@ class Zanuda(basic.TaskDriver):
             self.setReportWidget ( modelsSecId )
 
             for i in range(len(models)):
-                self.putMessage ( "<h3>" + models[i]["title"] + "</h3>" )
+                # self.putMessage ( "<h3>" + models[i]["title"] + "</h3>" )
+                modSecId = self.getWidgetId ( "_mod_sec_" )
+                pyrvapi.rvapi_add_section ( modSecId,models[i]["title"],modelsSecId,
+                                            self.rvrow,0,1,1,False )
+                rvrow0     = self.rvrow
+                self.rvrow = 0
+                self._report_widget_id = modSecId
+
                 self.resetFileImport()
                 self.addFileImport ( models[i]["mtzin"],import_filetype.ftype_MTZMerged() )
                 hkli = import_merged.run ( self,"Reflection dataset details",importPhases="" )
@@ -206,13 +214,54 @@ class Zanuda(basic.TaskDriver):
                     if structure:
                         structure.setRefmacLabels ( hkli[0] )
                         structure.copySubtype     ( xyz )
+                        self.putMessage ( "<h3>Structure" +\
+                            self.hotHelpLink ( "Structure","jscofe_qna.structure" ) +\
+                            "</h3>" )
                         self.putStructureWidget   (
                                 "structure_btn","Structure and electron density",
-                                structure,legend="Assigned structure name" )
+                                structure,legend="Assigned name" )
+                        # update structure revision
+                        # revision = self.makeClass  ( self.input_data.data.revision[0] )
+                        # revision.setReflectionData ( hkli[0]   )
+                        # revision.setStructureData  ( structure )
+                        # self.putMessage ( "<h3>Structure Revision" +\
+                        #     self.hotHelpLink ( "Structure Revision",
+                        #                        "jscofe_qna.structure_revision") + "</h3>" )
+                        # self.registerRevision ( revision,title="" )
+
+                        self.putMessage ( "<h3>Structure Revision" +\
+                            self.hotHelpLink ( "Structure Revision",
+                                               "jscofe_qna.structure_revision") +\
+                            "</h3>" )
+
+                        revision = dtype_revision.DType ( -1 )
+                        revision.copy ( self.input_data.data.revision[0] )
+                        revision.setReflectionData ( hkli[0]     )
+                        revision.setStructureData  ( structure )
+                        revision.makeRevDName  ( self.job_id,i+2,
+                            self.outputFName + "_sg" + str(models[i]["subgrp"]).zfill(3)  )
+
+                        sequences = revision.ASU.seq
+                        mult = models[i]["mult"][0]/models[i]["mult"][1]
+                        for j in range(len(sequences)):
+                            sequence[j].ncopies *= mult
+
+                        gridId = self.getWidgetId ( "_revision" )
+                        pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),
+                                                 self.rvrow,0,1,1 )
+                        self.rvrow += 1
+
+                        self.putRevisionWidget ( gridId,0,"Name:",revision )
+                        revision.register ( self.outputDataBox )
+
+                        have_results = True
 
                 else:
                     self.putMessage (
                         "Data registration error -- report to developers." )
+
+                self.rvrow = rvrow0 + 1
+                self._report_widget_id = modelsSecId
 
             self.resetReportPage()
 
