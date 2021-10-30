@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.21   <--  Date of Last Modification.
+ *    30.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -283,26 +283,30 @@ if (!__template)  {
 
   TaskRemark.prototype.openWebLink = function()  {
     if ('doclink_type' in this)  {
-      var url   = null;
-      var title = 'Document';
+      var url      = null;
+      var title    = 'Document';
+      var external = false;
       switch (this.doclink_type)  {
-        case 'url'       : url = this.doclink_url;
-                          break;
-        case 'doi'       : url = 'https://doi.org/' + this.doclink_doi;
-                          break;
+        case 'url'       : url      = this.doclink_url;
+                           external = !startsWith(url,__fe_url);
+                         break;
+        case 'doi'       : url      = 'https://doi.org/' + this.doclink_doi;
+                           external = true;
+                         break;
         case 'taskref'   : url   = __task_reference_base_url + this.doclink_file;
                            title = '';
-                          break;
+                         break;
         case 'userguide' : url   = __user_guide_base_url + this.doclink_file;
                            title = '';
-                          break;
-        case 'tutorial' : url   = __tutorials_base_url + this.doclink_file;
+                         break;
+        case 'tutorial'  : url   = __tutorials_base_url + this.doclink_file;
                            title = 'Tutorial info'
-                          break;
+                         break;
         default          : ;
       }
       if (url)  {
-        new HelpBox ( title,url,null );
+        if (external)  window.open ( url,'_blank' );
+                 else  new HelpBox ( title,url,null );
         return true;
       }
     }
