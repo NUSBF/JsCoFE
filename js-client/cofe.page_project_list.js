@@ -547,31 +547,31 @@ function ProjectListPage ( sceneId )  {
     left_margin  = '2pt';
     right_margin = '22pt';
 
-    open_btn   = new Button ( '',image_path('go')     );
-    add_btn    = new Button ( '',image_path('add')    );
+    open_btn   = new Button ( '',image_path('go'    ) );
+    add_btn    = new Button ( '',image_path('add'   ) );
     rename_btn = new Button ( '',image_path('rename') );
     del_btn    = new Button ( '',image_path('remove') );
     export_btn = new Button ( '',image_path('export') );
     import_btn = new Button ( '',image_path('import') );
-    join_btn   = new Button ( '',image_path('join')  );
+    join_btn   = new Button ( '',image_path('join'  ) );
     if (__demo_projects)  {
       demoprj_btn = new Button ( '',image_path('demoprj') );
-      demoprj_btn .setWidth ( btn_width ).setHeight ( btn_height );
+      demoprj_btn.setWidth ( btn_width ).setHeight ( btn_height );
     }
     help_btn     = new Button ( '',image_path('help') ); //.setTooltip('Documentation' );
 
   } else  {
 
-    open_btn   = new Button ( 'Open'  ,image_path('go') );
-    add_btn    = new Button ( 'Add'   ,image_path('add') );
+    open_btn   = new Button ( 'Open'  ,image_path('go'    ) );
+    add_btn    = new Button ( 'Add'   ,image_path('add'   ) );
     rename_btn = new Button ( 'Rename',image_path('rename') );
     del_btn    = new Button ( 'Delete',image_path('remove') );
     export_btn = new Button ( 'Export',image_path('export') );
     import_btn = new Button ( 'Import',image_path('import') );
-    join_btn   = new Button ( 'Join'  ,image_path('join') );
+    join_btn   = new Button ( 'Join'  ,image_path('join'  ) );
     if (__demo_projects)  {
-      demoprj_btn = new Button ( 'Demo projects',image_path('demoprj') );
-      demoprj_btn.setWidth ('115pt').setHeight(btn_height).setNoWrap();
+      demoprj_btn = new Button ( 'Tutorials',image_path('demoprj') );
+      demoprj_btn.setWidth ('80pt').setHeight(btn_height).setNoWrap();
     }
     help_btn   = new Button ( 'Help',image_path('help') ); //.setTooltip('Documentation' );
 
@@ -670,7 +670,19 @@ function ProjectListPage ( sceneId )  {
   // add a listener to 'demo project' button
   if (demoprj_btn)
     demoprj_btn.addOnClickListener ( function(){
-      new ImportDemoProjectDialog ( loadProjectList1 );
+      // new ImportDemoProjectDialog ( loadProjectList1 );
+      (function(self){
+        self.currentCloudPath = __demo_projects;
+        new CloudFileBrowser ( null,self,5,[],function(items){
+          serverRequest ( fe_reqtype.startDemoImport,{
+                            'cloudpath' : self.currentCloudPath,
+                            'demoprj'   : items[0]
+                          },'Demo Project Import',function(data){
+                            new ImportDemoProjectDialog ( loadProjectList1 );
+                          });
+          return 1;  // do close browser window
+        });
+      }(this))
     });
 
   help_btn.addOnClickListener ( function(){

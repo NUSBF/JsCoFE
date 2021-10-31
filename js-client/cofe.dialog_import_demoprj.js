@@ -26,6 +26,7 @@
 // -------------------------------------------------------------------------
 // Import project dialog class
 
+/*
 function ImportDemoProjectDialog ( onSuccess_func )  {
 
   Widget.call ( this,'div' );
@@ -135,7 +136,167 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
   }(this))
 
 }
+*/
 
+
+function ImportDemoProjectDialog ( onSuccess_func )  {
+
+  Widget.call ( this,'div' );
+  this.element.setAttribute ( 'title','Import Demo Project' );
+  document.body.appendChild ( this.element );
+
+  var grid = new Grid('');
+  this.addWidget ( grid );
+  grid.setLabel  ( '<h3>Import Demo Project</h3>',0,0,1,1 );
+
+  var msgLabel = grid.setText ( 'The project is being imported, please wait ... ',
+                                1,0,1,1 );
+  var progressBar = grid.setProgressBar ( 0, 2,0,1,1 );
+
+  $(this.element).dialog({
+    resizable : false,
+    height    : 'auto',
+    maxHeight : 500,
+    width     : 'auto',
+    modal     : true,
+    open      : function(event, ui) {
+      $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
+    },
+    buttons   : [
+      {
+        id    : "cancel_btn",
+        text  : "Cancel",
+        click : function() {
+          $(this).dialog("close");
+        }
+      }
+    ]
+  });
+
+  (function(dlg){
+    $(dlg.element).on( "dialogclose",function(event,ui){
+      serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Project Import',
+                      null,function(){
+        window.setTimeout ( function(){
+          $(dlg.element).dialog( "destroy" );
+          dlg.delete();
+        },10 );
+      },function(){} );  // depress error messages
+    });
+  }(this))
+
+  function checkReady() {
+    serverRequest ( fe_reqtype.checkPrjImport,0,'Demo Project Import',function(data){
+      if (!data.signal)
+        window.setTimeout ( checkReady,1000 );
+      else {
+        progressBar.hide();
+        $( "#cancel_btn" ).button ( "option","label","Close" );
+        if (data.signal=='Success')  {
+          msgLabel.setText ( 'Demo Project "' + data.name + '" is imported, ' +
+                             'you may close this dialog now.' );
+          if (onSuccess_func)
+            onSuccess_func();
+        } else
+          msgLabel.setText ( 'Demo Project "' + data.name + '" failed to import, ' +
+                             'the reason being:<p><b><i>' + data.signal +
+                             '</i></b>.' );
+      }
+    },null,function(){
+      window.setTimeout ( checkReady,1000 );  // depress error messages
+    });
+  }
+
+  window.setTimeout ( checkReady,2000 );
+
+/*
+  this.currentCloudPath = __demo_projects;
+  (function(task){
+    select_btn.addOnClickListener ( function(){
+      new CloudFileBrowser ( null,task,5,[],function(items){
+        serverRequest ( fe_reqtype.startDemoImport,{
+                            'cloudpath' : task.currentCloudPath,
+                            'demoprj'   : items[0]
+                        },'Demo Project Import',function(data){
+
+          select_btn.hide();
+          msgLabel.setText ( 'The project is being imported, please wait ... ' );
+          var progressBar = new ProgressBar ( 0 );
+          grid.setWidget ( progressBar, 3,0,1,1 );
+
+          function checkReady() {
+            serverRequest ( fe_reqtype.checkPrjImport,0,'Demo Project Import',function(data){
+              if (!data.signal)
+                window.setTimeout ( checkReady,1000 );
+              else {
+                progressBar.hide();
+                $( "#cancel_btn" ).button ( "option","label","Close" );
+                if (data.signal=='Success')  {
+                  msgLabel.setText ( 'Demo Project "' + data.name + '" is imported, ' +
+                                     'you may close this dialog now.' );
+                  if (onSuccess_func)
+                    onSuccess_func();
+                } else
+                  msgLabel.setText ( 'Demo Project "' + data.name + '" failed to import, ' +
+                                     'the reason being:<p><b><i>' + data.signal +
+                                     '</i></b>.' );
+              }
+            },null,function(){
+              window.setTimeout ( checkReady,1000 );  // depress error messages
+            });
+          }
+
+          window.setTimeout ( checkReady,2000 );
+
+        });
+
+        return 1;  // do close browser window
+
+      },null );
+
+    });
+
+  }(this))
+
+//  w = 3*$(window).width()/5 + 'px';
+
+  $(this.element).dialog({
+    resizable : false,
+    height    : 'auto',
+    maxHeight : 500,
+    width     : 'auto',
+    modal     : true,
+    open      : function(event, ui) {
+      $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
+    },
+    buttons   : [
+      {
+        id    : "cancel_btn",
+        text  : "Cancel",
+        click : function() {
+          $(this).dialog("close");
+        }
+      }
+    ]
+  });
+
+
+  (function(dlg){
+
+    $(dlg.element).on( "dialogclose",function(event,ui){
+      serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Project Import',
+                      null,function(){
+        window.setTimeout ( function(){
+          $(dlg.element).dialog( "destroy" );
+          dlg.delete();
+        },10 );
+      },function(){} );  // depress error messages
+    });
+
+  }(this))
+*/
+
+}
 
 ImportDemoProjectDialog.prototype = Object.create ( Widget.prototype );
 ImportDemoProjectDialog.prototype.constructor = ImportDemoProjectDialog;
