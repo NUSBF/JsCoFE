@@ -91,11 +91,11 @@ class Zanuda(basic.TaskDriver):
                     self.putMessage ( "<font style='font-size:120%;'><b>Space Group changed to " +\
                               solSpg + "</b></font>" )
                     # self.generic_parser_summary["z01"] = {'SpaceGroup':sol_spg}
-                    self.message.append ( "<u>SpG changed to " + solSpg  + "</u>" )
+                    self.message.append ( "<u>SG changed to " + solSpg  + "</u>" )
                 else:
                     self.putMessage ( "<font size='+1'><b>Space Group confirmed as " +\
                                       solSpg + "</b></font>" )
-                    self.message.append ( "<u>SpG confirmed as " + solSpg  + "</u>" )
+                    self.message.append ( "<u>SG confirmed as " + solSpg  + "</u>" )
 
             structure = self.registerStructure (
                                 subgroup["pdbout"],None,subgroup["mtzout"],
@@ -175,8 +175,9 @@ class Zanuda(basic.TaskDriver):
                 "hklin"    ,cad_mtz,
                 "xyzin"    ,self.xyz.getXYZFilePath(self.inputDir()),
                 "clouddir" ,zanuda_dir,
-                "cloudmode",mode,
-                "v" ]
+                "cloudmode",mode
+              ]
+                # "v"
                 # "hklout"  ,self.getMTZOFName(),
                 # "xyzout"  ,self.getXYZOFName(),
                 # "tmpdir",os.path.join(os.environ["CCP4_SCR"],uuid.uuid4().hex) ]
@@ -244,10 +245,10 @@ class Zanuda(basic.TaskDriver):
                     if len(results["subgroups"])>0:
                         if mode=="transform":
                             self.message.append ( "transformed to " +\
-                                str(len(results["subgroups"])) + " possible space groups" )
+                                str(len(results["subgroups"])) + " possible SG" )
                         else:
                             self.message.append ( "transformed to " +\
-                                str(len(results["subgroups"])) + " possible space groups " +\
+                                str(len(results["subgroups"])) + " possible SGs " +\
                                 " and refined" )
                 else:
                     self.putTitle ( "No results in acceptable space groups were produced" )
