@@ -868,6 +868,11 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
                                         parent_page,onAdd_func )  {
   if (this.selected_node_id)  {
 
+    // identify parent task for making parentId below; note that selection changes
+    // after adding new node to the tree, therefore, parent should be identified
+    // now
+    var ptask = this.getSelectedTask();
+
     // prepare task metadata
     task.project          = this.projectData.desc.name;
     task.id               = this.projectData.desc.jobCount + 1;
@@ -897,6 +902,9 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
       //       this.setStyle ( node,__linkStyle,0 );
       // else  this.setStyle ( node,__remarkStyle,0 );
     }
+
+    if (ptask)
+      task.parentId = ptask.id;
 
     // (function(tree){
 
