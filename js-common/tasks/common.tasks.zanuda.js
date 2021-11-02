@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.10.21   <--  Date of Last Modification.
+ *    01.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,9 +51,27 @@ function TaskZanuda()  {
 
   this.parameters = { // input parameters
     sec1 : { type     : 'section',
-             title    : 'Additional parameters',
+             title    : 'Parameters',
              open     : true,  // true for the section to be initially open
              position : [0,0,1,5],
+             contains : {
+                MODE  : { type     : 'combobox',
+                          keyword  : 'cloudmode',
+                          label    : 'Work mode',
+                          tooltip  : 'Work mode and results handling',
+                          range    : ['refine_clear|Refine in all space groups, keep the best one',
+                                      'refine_keep|Refine in all space groups, keep all results',
+                                      'transform|Only transform to all space groups, don\'t refine'
+                                     ],
+                          value    : 'refine_clear',
+                          position : [0,0,1,5]
+                        }
+             }
+           },
+    sec2 : { type     : 'section',
+             title    : 'Advanced parameters',
+             open     : false,  // true for the section to be initially open
+             position : [1,0,1,5],
              contains : {
                 AVER_CBX : {
                         type     : 'checkbox',
@@ -88,7 +106,7 @@ TaskZanuda.prototype.constructor = TaskZanuda;
 TaskZanuda.prototype.icon = function()  { return 'task_zanuda'; }
 
 TaskZanuda.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

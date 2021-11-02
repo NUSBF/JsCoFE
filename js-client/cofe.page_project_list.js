@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.08.21   <--  Date of Last Modification.
+ *    31.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -272,7 +272,7 @@ function ProjectListPage ( sceneId )  {
                        '-- nothing to export.' );
   }
 
-  var sharePrj = function() {
+  var sharePrj = function()  {
     panel.click();  // get rid of context menu
     var pno = getCurrentProjectNo();
     if (pno>=0)  {
@@ -284,6 +284,19 @@ function ProjectListPage ( sceneId )  {
       });
     } else
       new MessageBox ( 'No Project','No Project selected' );
+  }
+
+  var repairProject = function()  {
+    panel.click();  // get rid of context menu
+    new QuestionBox (
+        'Repair Project',
+        '<h2>Repair Project</h2>',
+        'Repair',function(){
+          new MessageBox ( 'Not implemented','<h2>Function not implemented</h2>' );
+        },
+        'Cancel',function(){
+          new MessageBox ( 'Not implemented','<h2>Function not implemented</h2>' );
+        });
   }
 
   // function to create project list table and fill it with data
@@ -360,6 +373,7 @@ function ProjectListPage ( sceneId )  {
         contextMenu.addItem('Delete',image_path('remove')).addOnClickListener(deleteProject);
         contextMenu.addItem('Export',image_path('export')).addOnClickListener(exportProject);
         contextMenu.addItem('Share' ,image_path('share') ).addOnClickListener(sharePrj     );
+        // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
 
         //contextMenu.setWidth ( '10px' );
         //contextMenu.setHeight_px ( 400 );

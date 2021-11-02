@@ -1015,7 +1015,7 @@ function getProjectData ( loginData,data )  {
     d.tasks_del = [];
     var projectDirPath = getProjectDirPath ( loginData,projectName );
     response = new cmd.Response ( cmd.fe_retcode.ok,'',d );
-    fs.readdirSync(projectDirPath).forEach(function(file,index){
+    fs.readdirSync(projectDirPath).sort().forEach(function(file,index){
       if (file.startsWith(jobDirPrefix)) {
         var jobPath = path.join ( projectDirPath,file,task_t.jobDataFName );
         var task    = utils.readObject ( jobPath );
@@ -1189,11 +1189,13 @@ var projectName = projectDesc.name;
           // there is a clash, resolve
           var node = pd.getProjectNode ( projectData,data.tasks_add[i].id );
           if (node)  { // must be always so, but put "if" for server stability
-            rdata.jobIds[i] = ++pData.desc.jobCount;
+            rdata.jobIds[i]      = ++pData.desc.jobCount;
             data.tasks_add[i].id = pData.desc.jobCount;
             node.dataId = data.tasks_add[i].id;
-            node.text   = makeNodeName ( data.tasks_add[i],
-                      node.text.substr(Math.max(0,node.text.indexOf(']'))) );
+            node.text   = makeNodeName (
+                            data.tasks_add[i],
+                            node.text.substr(Math.max(0,node.text.indexOf(']')))
+                          );
             node.text0  = node.text;
           } else
             log.error ( 30,'no tree node found ' + loginData.login + ':' +
