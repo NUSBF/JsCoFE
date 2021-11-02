@@ -242,7 +242,7 @@ class Zanuda(basic.TaskDriver):
                             revisionNo += 1
                         self.resetReportPage()
                     if len(results["subgroups"])>0:
-                        if mode!="transform":
+                        if mode=="transform":
                             self.message.append ( "transformed to " +\
                                 str(len(results["subgroups"])) + " possible space groups" )
                         else:
