@@ -2,4 +2,9 @@
 Sequence Alignment with ClustalW
 ================================
 
-to be written...
+This interface accesses a part of ClustalW2 functionality in order to align two or more protein sequences using default program parameters.
+
+
+**References**
+
+`Larkin, M.A., Blackshields, G., Brown, N.P., Chenna, R., McGettigan, P.A., McWilliam, H., Valentin, F., Wallace, I.M., Wilm, A., Lopez, R., Thompson, J.D., Gibson, T.J., Higgins, D.G. (2007) Clustal W and Clustal X version 2.0. Bioinformatics 23: 2947-2948; <https://academic.oup.com/bioinformatics/article/23/21/2947/371686>`_

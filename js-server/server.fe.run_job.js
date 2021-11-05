@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.06.21   <--  Date of Last Modification.
+ *    05.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -987,10 +987,10 @@ function readJobStats()  {
 
 
 function addJobAuto ( jobEntry,jobClass )  {
-  var loginData   = jobEntry.loginData;
-  var projectName = jobEntry.project;
-  var pJobDir     = prj.getJobDirPath ( loginData,projectName,jobEntry.jobId );
-  var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
+var loginData   = jobEntry.loginData;
+var projectName = jobEntry.project;
+var pJobDir     = prj.getJobDirPath ( loginData,projectName,jobEntry.jobId );
+var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
   if (auto_meta)  {
 
@@ -1110,6 +1110,7 @@ function addJobAuto ( jobEntry,jobClass )  {
               log.error ( 23,'cannot write job metadata at ' + jobDataPath );
             } else if (task_state==task_t.job_code.new)  {
 
+              auto_meta.context.excludedTasks = conf.getFEConfig().exclude_tasks;
               utils.writeObject ( path.join(jobDirPath,"auto.context"),auto_meta.context );
 
               // create report directory

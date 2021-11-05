@@ -48,7 +48,7 @@
         
   <div class="section" id="automatic-model-building-with-buccaneer">
 <h1><span class="section-number">10.5. </span>Automatic Model Building with Buccaneer<a class="headerlink" href="#automatic-model-building-with-buccaneer" title="Permalink to this headline">¶</a></h1>
-<p>Buccaneer is used for automated model building or rebuilding a molecular replacement model in electron density map using a likelihood-based density target approach. The approach is advantageous at resolutions 2.5Å and lower, but may be used at a higher resolutions just as well.</p>
+<p>Buccaneer is used for automated model building or rebuilding a molecular replacement model in electron density map using the likelihood-based density target approach. The approach is advantageous at resolutions 2.5Å and lower, but may be used at a higher resolutions just as well.</p>
 <p>Buccaneer performs model building in 10 stages:</p>
 <ol class="arabic simple">
 <li><dl class="first docutils">
@@ -92,7 +92,7 @@
 </dl>
 </li>
 </ol>
-<p>Buccaneer can build structures using phases obtained through both <em>Molecular Replacement</em> and <em>Experimental phasing</em>, using the corresponding intrinsic modes. In CCP4 Cloud, the phasing type is recognised automatically, and Buccaneer is put into the appropriate mode without additional user’s actions.</p>
+<p>Buccaneer can build structures using phases obtained through both <em>Molecular Replacement</em> and <em>Experimental phasing</em>, using the corresponding intrinsic modes. In CCP4 Cloud, the phasing type is recognised automatically, and Buccaneer is put into appropriate mode without additional actions from user side.</p>
 <p><strong>Molecular replacement mode</strong></p>
 <p>In this mode, Buccaneer requires atomic model used for <em>Molecular Replacement</em>. The model is used for placing and naming chans, with the following additional options:</p>
 <ul>
@@ -114,7 +114,7 @@
 </ul>
 <p>You may also provide the <strong>Fixed model</strong> containing an initial model to extend. Note that this model should be correctly positioned in electron density.</p>
 <p>In addition, you may supply the <strong>Model to aid sequencing</strong>, which is a model with known residues to help the residue type assignment.</p>
-<p><code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">following</span> <span class="pre">information</span> <span class="pre">are</span> <span class="pre">applicable</span> <span class="pre">for</span> <span class="pre">both</span> <span class="pre">“Molecular</span> <span class="pre">Replacement”</span> <span class="pre">and</span> <span class="pre">“Experimental</span> <span class="pre">phasing”</span> <span class="pre">Buccaneer`s</span> <span class="pre">modes</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">The</span> <span class="pre">following</span> <span class="pre">options</span> <span class="pre">and</span> <span class="pre">parameters</span> <span class="pre">are</span> <span class="pre">applicable</span> <span class="pre">for</span> <span class="pre">both</span> <span class="pre">“Molecular</span> <span class="pre">Replacement”</span> <span class="pre">and</span> <span class="pre">“Experimental</span> <span class="pre">phasing”</span> <span class="pre">Buccaneer`s</span> <span class="pre">modes</span></code></p>
 <div class="section" id="options">
 <h2><span class="section-number">10.5.1. </span>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
 <p><strong>Anisotropy correction</strong> attempts to remove directional dependence in diffraction data. <strong>This should use by default</strong></p>

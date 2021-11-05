@@ -2,24 +2,24 @@
 Phase Refinement and Dynamic Density Modification with ACORN
 ============================================================
 
- 
-The ACORN system was originally developed as a means of *ab initio* solution of protein structures when atomic resolution data were available.
 
-At the heart of ACORN lies a density modification method called DDM (Dynamic Density Modification). DDM operates on any density map containing a minimum of information. Its action is to progressively enhance positive features of the map and to reduce, at the same time, undesired noise and bias towards very small values. In essence, this is a Fourier recycling process whose main engine is density modification. An initial set of phases is used to generate a map for DDM using only the strong reflections, i.e. those with **E (normalized structure factors)**  > 1.2, which is then Fourier transformed to produce a new set of phases. The initial set of phases can go through a process which employs a Patterson sum function. The quality of the new set of phases derived by DDM is judged by a correlation coefficient, CC. The cycling process will end when CC stops increasing or the magnitude of the average phase change between two consecutive cycles is less than 0.5 degrees. **CC** **greater than 0.150 usually indicates a successful refinement**. Sometimes the process gets trapped in loops where CC does not increase and the average phase shift is still large. In such cases the whole set of phases is shaken up by going through one cycle of a real-space version of the Sayre equation.
+The `ACORN <http://scripts.iucr.org/cgi-bin/paper?S090744490502576X>`_ improves initial phase estimates to produce a more interpretable electron density map by applying prior information about protein electron density maps to the experimental map. Density modification should be carried out as a follow on to experimental phasing, to resolve phase ambiguities and estimate phases for the many reflections with low figures of merit. It may also be applied after molecular replacement with the aim of removing bias towards the search model.
+
+The ACORN can be used for structures with observed data resolution as low as 1.7Å and reasonably accurate starting phases, but it is more consistently successful when the resolution is 1.5Å or better.
+
 
 ------------------------------
 The general structure of ACORN
 ------------------------------
 
-The refections are divided into three groups (strong, medium and weak) according to their normalized structure-factor (E) values. In the process of phase refinement, the maps are calculated just with terms corresponding to the largest E values, typically with E > 1.2, but with a lower limit if more E values are needed.
+The ACORN divides reflections into three groups (strong, medium, and weak) according to their normalised structure-factor (E) values.
 
-**The strong reflections (E > 1.2)** are used in the phase refinement by the dynamic density modification (DDM) and Patterson superposition procedures and both strong.
+**The strong reflections (E > 1.2)** are used in the phase refinement by the dynamic density modification (DDM) and Patterson superposition procedures
 
-**The medium refections (0.1 < E < 1.2)** are used to calculate a correlation coefficient (CC) for each potential solution of DDM. These groups are default settings and can be changed by the user.
+**The medium refections (0.1 < E < 1.2)** are used to calculate a correlation coefficient (CC) for each potential solution of DDM. These groups are default settings and can be changed by the user
 
-**The weak refections (E < 0.1)** are used in Sayre-equation refinement (SER).
+**The weak refections (E < 0.1)** are used in `Sayre-equation refinement (SER) <https://doi.org/10.1107/S0108767389012158>`_
 
-An important feature of ACORN is that the phase-refinement procedure is automatic and requires no user intervention. It is therefore necessary to have some check that the refinement procedure is actually producing better phases and also to know when the refinement process has terminated. To this end, ACORN uses a simple but amazingly efficient monitor of progress, namely CCs, the calculation of the correlation coefficient for the small-amplitude E values.
 
 ----------------------------------
 Dynamic density modification (DDM)
@@ -27,17 +27,32 @@ Dynamic density modification (DDM)
 
     *eliminates the negative densities, and truncates the highest density*
 
-Each cycle of DDM starts from a set of phases with weights and calculates a weighted E map with the strong E values. The map is modified and back-transformed by FFT to obtain a new set of structure factors. At the end of one cycle a new set of phases with weights is calculated for the next cycle and the CC is calculated for medium reflections to check if a solution has been found.
+At the heart of ACORN lies a density modification method called Dynamic Density Modification. An initial set of phases is used to generate a map for :abbr:`DDM (Dynamic Density Modification)` using only the strong reflections, i.e. those with **E (normalised structure factors)**  > 1.2, which is then Fourier transformed to produce a new set of phases. The initial set of phases can go through a process which employs a Patterson sum function. The quality of the new set of phases is judged by a :abbr:`CC (correlation coefficient)`. The DM process will end when :abbr:`CC (correlation coefficient)` stops increasing or the magnitude of the average phase change between two consecutive cycles is less than 0.5 degrees.
 
-The DDM process is based on the simple premise that, outside the region occupied by the fragment, the higher the map density the greater the probability that the position is occupied by true electron density from the structure.
+**CC** **greater than 0.150 usually indicates a successful refinement**. Please mind the **Correlation Coefficient vs number of cycles** plot it should **go up**. ACORN will stop automatically if the value of :abbr:`CC (correlation coefficient)` for the medium E-values in :abbr:`DDM (Dynamic Density Modification)` becomes greater than the **upper density limit for Dynamic Density Modification (DDM)**. The default value is determined by ACORN, but it needs to be adjusted according to the data quality.
 
--------------------------
-Sayre equation refinement
--------------------------
+-------------
+Density model
+-------------
 
-    *is carried out in real space using Fast Fourier Transforms instead of working directly with the phase relationships*
+**Obtain density from**:
 
-When the CC for the medium-strength reflections no longer increases, or the phases change little on use of DDM, then one or two cycles of SER can be employed. In fact, the application of SER sometimes makes the CC lower, but thereafter DDM can lead to a higher CC than previously. SER is a real-space procedure carried out using the fast Fourier transform (FFT) and inverse FFT. No phase relationships are involved, so there is no practical limit to the number of reflections that can be included.
+* **Model coordinates**: a correctly placed molecular replacement model should provide a sufficiently good starting set of phases. These coordinates can consist of: the whole contents of the asymmetric unit, a domain, or even a small fragment such as an alpha helix. The lower the resolution the more complete the starting model needs to be. ACORN provides an excellent correction to any phase bias resulting from defects in the MR model.
+
+* **Phases**: A set of phases from experimental phasing or from a previous refinement run (for data to a resolution of about 1.2Å or higher). It need only a small fraction of the cell content such as a sub-set of correctly positioned heavier atoms, possibly found from their anomalous contributions, e.g. metals, selenium or sulphur sites, or a correctly positioned motif such as a helix.
+
+
+------------------------------
+Artificially extend resolution
+------------------------------
+
+If the observed data resolution is poorer than 1.0Å the list of reflection indices is first extended to a given value(1.0Å by default). Mean expected E value with estimated amplitudes but reasonable phases improve the resolution of the modified map.
+
+
+
+**Useful links**
+
+`ACORN documentation <https://www.ccp4.ac.uk/html/acorn.html>`_
 
 
 **References**
