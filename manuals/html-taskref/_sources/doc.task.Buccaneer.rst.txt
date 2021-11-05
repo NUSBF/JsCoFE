@@ -2,7 +2,7 @@
 Automatic Model Building with Buccaneer
 =======================================
 
-Buccaneer is used for automated model building or rebuilding a molecular replacement model in electron density map using a likelihood-based density target approach. The approach is advantageous at resolutions 2.5Å and lower, but may be used at a higher resolutions just as well.
+Buccaneer is used for automated model building or rebuilding a molecular replacement model in electron density map using the likelihood-based density target approach. The approach is advantageous at resolutions 2.5Å and lower, but may be used at a higher resolutions just as well.
 
 Buccaneer performs model building in 10 stages:
 
@@ -37,7 +37,7 @@ Buccaneer performs model building in 10 stages:
      *Rebuilding allows side chain atoms and carbonyl oxygens to be rebuilt*
     
 
-Buccaneer can build structures using phases obtained through both *Molecular Replacement* and *Experimental phasing*, using the corresponding intrinsic modes. In CCP4 Cloud, the phasing type is recognised automatically, and Buccaneer is put into the appropriate mode without additional user's actions.
+Buccaneer can build structures using phases obtained through both *Molecular Replacement* and *Experimental phasing*, using the corresponding intrinsic modes. In CCP4 Cloud, the phasing type is recognised automatically, and Buccaneer is put into appropriate mode without additional actions from user side.
 
 
 **Molecular replacement mode**
@@ -62,7 +62,7 @@ You may also provide the **Fixed model** containing an initial model to extend. 
 In addition, you may supply the **Model to aid sequencing**, which is a model with known residues to help the residue type assignment.
 
 
-``The following information are applicable for both “Molecular Replacement” and “Experimental phasing” Buccaneer`s modes``
+``The following options and parameters are applicable for both “Molecular Replacement” and “Experimental phasing” Buccaneer`s modes``
 
 -------
 Options
