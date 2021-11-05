@@ -1110,7 +1110,7 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
               log.error ( 23,'cannot write job metadata at ' + jobDataPath );
             } else if (task_state==task_t.job_code.new)  {
 
-              auto_meta.context.excludedTasks = conf.getFEConfig().exclude_tasks;
+              auto_meta.context.custom.excludedTasks = conf.getFEConfig().exclude_tasks;
               utils.writeObject ( path.join(jobDirPath,"auto.context"),auto_meta.context );
 
               // create report directory
