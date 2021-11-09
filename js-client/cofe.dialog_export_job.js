@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.02.19   <--  Date of Last Modification.
+ *    09.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2021
  *
  *  =================================================================
  *
@@ -44,7 +44,7 @@ function ExportJobDialog ( task )  {
 
       grid.setLabel ( '<h3>Export Job "' + exportName + '"</h3>',0,0,1,3 );
 
-      var msgLabel = new Label ( 'Job "' + exportName + '" is being ' +
+      var msgLabel = new Label ( 'Job <b>"' + exportName + '"</b> is being ' +
                                  'prepared for download ....' );
       grid.setWidget ( msgLabel, 1,0,1,3 );
 
@@ -101,7 +101,7 @@ function ExportJobDialog ( task )  {
           else {
             dlg.jobSize = data.size;
             progressBar.hide();
-            msgLabel.setText ( 'Job "' + exportName + '" is prepared ' +
+            msgLabel.setText ( 'Job <b>"' + exportName + '"</b> is prepared ' +
                                'for download. The total download<br>size is ' +
                                round(data.size/1000000,3) + ' MB. Push the ' +
                                '<i>Download</i> button to begin<br>the job ' +

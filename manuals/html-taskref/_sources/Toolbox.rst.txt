@@ -7,6 +7,8 @@ Toolbox
 
     doc.task.Auspex
     doc.task.SRF
+    doc.task.CrosSec
+    doc.task.XyzUtils
     doc.task.Gemmi
     doc.task.Gesamt
     doc.task.LsqKab

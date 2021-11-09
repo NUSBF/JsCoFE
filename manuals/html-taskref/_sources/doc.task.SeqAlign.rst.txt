@@ -2,7 +2,7 @@
 Sequence Alignment with ClustalW
 ================================
 
-This interface accesses a part of ClustalW2 functionality in order to align two or more protein sequences using default program parameters.
+This task aligns two or more sequences using ``ClustalW`` software. The task can use sequences represented by sequence data objects and extracted from atomic coordinates (``XYZ`` and ``Structure`` data types). ``ClustalW`` is run with default parameters.
 
 
 **References**

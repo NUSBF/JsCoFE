@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FCVD2T7BGM');
+    </script>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>13.3. X-ray cross sections and anomalous scattering factors &#8212; CCP4 Cloud 1.6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="13.4. Coordinate Utilities" href="doc.task.XyzUtils.html" />
+    <link rel="prev" title="13.2. Self-Rotation Function Analysis with Molrep" href="doc.task.SRF.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>13.3. X-ray cross sections and anomalous scattering factors</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="doc.task.SRF.html"><span class="section-number">13.2. </span>Self-Rotation Function Analysis with Molrep</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="doc.task.XyzUtils.html"><span class="section-number">13.4. </span>Coordinate Utilities</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <div class="section" id="x-ray-cross-sections-and-anomalous-scattering-factors">
+<h1><span class="section-number">13.3. </span>X-ray cross sections and anomalous scattering factors<a class="headerlink" href="#x-ray-cross-sections-and-anomalous-scattering-factors" title="Permalink to this headline">¶</a></h1>
+<p>The task interpolates X-ray cross sections and computes anomalous scattering factors. f’ and f’’ values are derived for a given atom type at given wavelengths. These are important for data collection and analysis with heavy atoms.</p>
+<p>The atomic symbol for the element of interest is required as an input (case-insensitive).</p>
+<p>In order to <strong>Make scattering factors plot</strong> user should define the minimum photon energy in KeV in the given range.</p>
+<p>Task output provides the <strong>anomalous scattering factors plot for atom type</strong>.</p>
+<p>In order to <strong>Compute scattering factors for the following selected photon energies</strong> a list of the wavelengths (in Angstroms) should be given.</p>
+<p>In this case, the task output provides the <strong>anomalous scattering factors plot for atom type</strong> and a <strong>Selected anomalous scattering factors for atom type</strong> table.</p>
+<p><strong>References</strong></p>
+<p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S0021889883010791" rel="noopener noreferrer" target="_blank">Cromer, D.T. (1983) Calculation of anomalous scattering factors at arbitrary wavelengths. J. Appl. Cryst. 16: 437;</a></p>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="doc.task.SRF.html"><span class="section-number">13.2. </span>Self-Rotation Function Analysis with Molrep</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="doc.task.XyzUtils.html"><span class="section-number">13.4. </span>Coordinate Utilities</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

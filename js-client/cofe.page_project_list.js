@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.10.21   <--  Date of Last Modification.
+ *    09.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -176,38 +176,75 @@ function ProjectListPage ( sceneId )  {
 
     } else  {
 
+      var pDesc = getCurrentProjectDesc();
+      if (!pDesc)  {
+        new MessageBox ( 'Current project not identified',
+            '<h2>Current project is not identified</h2>' +
+            '<i>This is a bug please report to developers.</i>'
+        );
+        return false;
+      }
+      var prjName   = pDesc.name;
       var inputBox  = new InputBox ( 'Rename Project' );
-      var prjName   = currentProjectName();
-      var ibx_grid  = new Grid      ( '' );
-      var title_inp = new InputText ( self.tablesort_tbl.selectedRow.child[1].text );
-      title_inp.setStyle   ( 'text','','Example project',
-                             'Project title is used to give a short description ' +
-                             'to aid identification' );
-      title_inp.setFontItalic        ( true    );
-      title_inp.setWidth             ( '400pt' );
-      ibx_grid .setLabel             ( 'Project ID:'  ,0,0,1,1 );
-      ibx_grid .setLabel             ( prjName        ,0,1,1,1 ).setFontItalic(true);
-      ibx_grid .setLabel             ( 'Project Name:',1,0,1,1 );
-      ibx_grid .setNoWrap            ( 0,0 );
-      ibx_grid .setNoWrap            ( 1,0 );
-      ibx_grid .setWidget            ( title_inp,1,1,1,1 );
-      inputBox .addWidget            ( ibx_grid     );
-      ibx_grid .setVerticalAlignment ( 0,0,'middle' );
-      ibx_grid .setVerticalAlignment ( 1,0,'middle' );
+      var ibx_grid  = new Grid     ( '' );
+      ibx_grid.setLabel    ( '<h2>Rename Project "' + prjName + '"</h2>',0,0,1,2 );
+      ibx_grid.setLabel    ( 'New ID:',1,0,1,1 );
+      var name_inp  = ibx_grid.setInputText ( prjName,1,1,1,1 )
+            .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
+            .setFontItalic ( true )
+            .setWidth      ( '120px' );
+      ibx_grid.setLabel    ( 'New Name:',2,0,1,1 );
+      var title_inp = ibx_grid.setInputText
+                           ( self.tablesort_tbl.selectedRow.child[1].text,2,1,1,1 )
+            .setStyle      ( 'text','','Put a descriptive title here','' )
+            .setFontItalic ( true )
+            .setWidth      ( '520px' );
+      ibx_grid.setNoWrap   ( 0,0 );
+      ibx_grid.setNoWrap   ( 1,0 );
+      ibx_grid.setVerticalAlignment ( 0,0,'middle' );
+      ibx_grid.setVerticalAlignment ( 1,0,'middle' );
+      inputBox.addWidget   ( ibx_grid );
 
       inputBox.launch ( 'Rename',function(){
+        if (name_inp.getValue().length<=0)  {
+          new MessageBox ( 'No Project ID',
+                   '<b>Project ID is not given</b>.<p>' +
+                   'Project cannot be renamed with empty ID.' );
+          return false;
+        }
         if (title_inp.getValue().length<=0)  {
           new MessageBox ( 'No Project Name',
                    '<b>Project Name is not given</b>.<p>' +
                    'Project cannot be renamed with empty name.' );
           return false;
         }
-        var pDesc = projectList.renameProject ( prjName,title_inp.getValue(),getDateString() );
+        pDesc = projectList.renameProject ( prjName,title_inp.getValue(),getDateString() );
         if (pDesc)  {
+          var new_name = name_inp.getValue();
+          if ((new_name!=pDesc.name) && projectList.getProject(new_name))  {
+            new MessageBox ( 'Duplicate Project ID',
+                     '<div style="width:400px;"><h2>Duplicate Project ID</h2>' +
+                     'A Project with ID <b>"' + new_name +
+                     '"</b> already exists.</div>' );
+            return false;
+          }
+          pDesc.new_name      = new_name;
           projectList.current = prjName;
           serverRequest ( fe_reqtype.renameProject,pDesc,'Rename Project',
             function(data){
-              saveProjectList ( function(data){ makeProjectListTable(); });
+              if (data.code=='ok')  {
+                pDesc.name = new_name;
+                delete pDesc.new_name;
+                saveProjectList ( function(data){
+                  projectList.current = new_name;
+                  makeProjectListTable();
+                });
+              } else  {
+                new MessageBox ( 'Project renaming rejected',
+                  '<h2>Project renaming rejected</h2><i>' + data.code + '</i>.'
+                );
+                makeProjectListTable();
+              }
             },null,'persist' );
           return true;  // close dialog
         } else  {
@@ -230,22 +267,22 @@ function ProjectListPage ( sceneId )  {
     var dlgTitle   = 'Delete Project';
     if (isCurrentProjectOwned(false))  {
       delMessage = '<h2>Delete Project</h2>' +
-                   'Project: <b>' + delName +
-                   '</b><p>will be deleted. All project ' +
-                   'structure and data will be lost.' +
+                   'Project: <b>"' + delName +
+                   '"</b> will be deleted. All project ' +
+                   'structure and data will be lost.'    +
                    '<p>Please confirm your choice.';
     } else  {
       delMessage = '<h2>Unjoin Project</h2>' +
-                   'Project, shared with you: <b>' + delName +
-                   '</b><p>will be unjoined, and you will be no ' +
-                   'longer able to access it<br>until joined again.' +
+                   'Project, shared with you: <b>"' + delName     +
+                   '"</b> will be unjoined, and you will be no '  +
+                   'longer able to access it until joined again.' +
                    '<p>Please confirm your choice.';
       btnName    = 'Unjoin';
       dlgTitle   = 'Unjoin Project';
     }
     var inputBox = new InputBox ( dlgTitle );
-    inputBox.setText ( delMessage );
-    inputBox.launch ( btnName,function(){
+    inputBox.setText ( '<div style="width:400px;">' + delMessage + '</div>' );
+    inputBox.launch  ( btnName,function(){
       serverRequest ( fe_reqtype.deleteProject,delName,'Delete Project',
         function(data){
           loadProjectList1();

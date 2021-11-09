@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.01.20   <--  Date of Last Modification.
+ *    09.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -42,7 +42,7 @@ function ExportProjectDialog ( projectList )  {
 
       grid.setLabel ( '<h3>Export Project "' + projectList.current + '"</h3>',0,0,1,3 );
 
-      var msgLabel = new Label ( 'Project "' + projectList.current + '" is being ' +
+      var msgLabel = new Label ( 'Project <b>"' + projectList.current + '"</b> is being ' +
                                  'prepared for download ....' );
       grid.setWidget ( msgLabel, 1,0,1,3 );
 
@@ -101,7 +101,7 @@ function ExportProjectDialog ( projectList )  {
           else {
             dlg.projectSize = data.size;
             progressBar.hide();
-            msgLabel.setText ( 'Project "' + projectList.current + '" is prepared ' +
+            msgLabel.setText ( 'Project <b>"' + projectList.current + '"</b> is prepared ' +
                                'for download. The total download<br>size is ' +
                                round(data.size/1000000,3) + ' MB. Push the ' +
                                '<i>Download</i> button to begin<br>the project ' +
