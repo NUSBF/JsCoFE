@@ -14,7 +14,7 @@
     
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>13.3. Gemmi &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>13.5. Gemmi &#8212; CCP4 Cloud 1.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -25,21 +25,21 @@
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="13.4. Pairwise Structural Alignment with GESAMT" href="doc.task.Gesamt.html" />
-    <link rel="prev" title="13.2. Self-Rotation Function Analysis with Molrep" href="doc.task.SRF.html" /> 
+    <link rel="next" title="13.6. Pairwise Structural Alignment with GESAMT" href="doc.task.Gesamt.html" />
+    <link rel="prev" title="13.4. Coordinate Utilities" href="doc.task.XyzUtils.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
-        <h2 class="heading"><span>13.3. Gemmi</span></h2>
+        <h2 class="heading"><span>13.5. Gemmi</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.SRF.html"><span class="section-number">13.2. </span>Self-Rotation Function Analysis with Molrep</a>
+        «&#160;&#160;<a href="doc.task.XyzUtils.html"><span class="section-number">13.4. </span>Coordinate Utilities</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.Gesamt.html"><span class="section-number">13.4. </span>Pairwise Structural Alignment with GESAMT</a>&#160;&#160;»
+        <a href="doc.task.Gesamt.html"><span class="section-number">13.6. </span>Pairwise Structural Alignment with GESAMT</a>&#160;&#160;»
         </p>
 
       </div>
@@ -47,7 +47,7 @@
         
         
   <div class="section" id="gemmi">
-<h1><span class="section-number">13.3. </span>Gemmi<a class="headerlink" href="#gemmi" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">13.5. </span>Gemmi<a class="headerlink" href="#gemmi" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://gemmi.readthedocs.io/en/latest/" rel="noopener noreferrer" target="_blank">Gemmi</a> is a C++/Python library for manipulating coordinate files in <em>PDB</em> and <em>mmCIF</em> formats, parsing raw <em>mmCIF</em> and <em>CIF</em> -formatted files and working with reflection data in <em>mmCIF</em>. <em>Gemmi</em> was written by Marcin Wojdyr and is a joint product of Global Phasing Ltd and CCP4.</p>
 <p>Gemmi task in CCP4 Cloud exposes python terminal to user for performing very custom operations on coordinate data, which cannot be done using other tools in the system. In most cases, one should not need this level of operating, and, therefore, Gemmi task represents an advanced option for experts.</p>
 <p>Gemmi task accepts a list of coordinate-related objects: structural revision, MR ensembles and models, XYZ data, and reads them into Gemmi documents referenced by python variables <code class="docutils literal notranslate"><span class="pre">stN</span></code>, where <code class="docutils literal notranslate"><span class="pre">N=1,2,...</span></code> is the position of the referenced object in the list. The python script, provided by user, may perform any Gemmi functions on the objects, and should place the final result in document <code class="docutils literal notranslate"><span class="pre">st1</span></code>.</p>
@@ -66,11 +66,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.SRF.html"><span class="section-number">13.2. </span>Self-Rotation Function Analysis with Molrep</a>
+        «&#160;&#160;<a href="doc.task.XyzUtils.html"><span class="section-number">13.4. </span>Coordinate Utilities</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.Gesamt.html"><span class="section-number">13.4. </span>Pairwise Structural Alignment with GESAMT</a>&#160;&#160;»
+        <a href="doc.task.Gesamt.html"><span class="section-number">13.6. </span>Pairwise Structural Alignment with GESAMT</a>&#160;&#160;»
         </p>
 
       </div>

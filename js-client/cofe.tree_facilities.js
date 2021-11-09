@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.10.21   <--  Date of Last Modification.
+ *    08.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -405,45 +405,51 @@ StorageTree.prototype.readStorageData = function ( page_title,
           }
 
           for (var i=0;i<tree.storageList.files.length;i++)  {
+
             var sfile = tree.storageList.files[i];
             var name  = sfile.name;
-            var base  = sfile.name.split('.');
-            var ext   = base.pop().toLowerCase();
-            if (ext=='gz')  {
-              ext = base.pop().toLowerCase();
-              if (importable_ext.indexOf(ext)<0)
-                ext = 'gz';  // do not consider for import
-            }
 
-            base = base.join('.').toLowerCase();
-            var show = (tree.file_key!=2);
-            if (tree.file_key==4)
-              show = (tree.ext_filter.indexOf(ext)>=0);
-              //show = (importable_ext.indexOf(ext)>=0);
-            else if (tree.file_key==5)
-              show = (ext=='ccp4_demo') || (ext=='ccp4cloud');
+            if ((name!='..') && (!startsWith(name,'.')))  {  // remove hiden files
 
-            var icon  = 'file_dummy';
-            if (ext in icon_ext)  {
-              icon = icon_ext[ext];
-            } else if ('h5' in sfile)   {
-              if (sfile.h5>0)  icon = 'file_hdf';
-                         else  name = '(' + Array(name.length).join('....') + ')';
-              show = false;
-            } else if (ext=='cif')  {  // use wild heuristics
-              if (endsWith(base,'-sf'))  icon = 'file_mtz';
-                                   else  icon = 'file_pdb';
-            } else if ('image' in sfile)  {
-              if (sfile.image>0)  icon = 'file_xray';
-                            else  name = '(' + Array(name.length).join('....') + ')';
-              show = (tree.file_key==1) || (tree.file_key==2);
-            }
-            if (show)  {
-              var fnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
-              tree.item_map[fnode.id] = sfile;
-            } else  {
-              var fnode = tree.addRootNode ( '<span style="color:gray">' + name + '</span>',image_path(icon),tree.customIcon() );
-              //tree.item_map[fnode.id] = sfile;
+              var base  = sfile.name.split('.');
+              var ext   = base.pop().toLowerCase();
+              if (ext=='gz')  {
+                ext = base.pop().toLowerCase();
+                if (importable_ext.indexOf(ext)<0)
+                  ext = 'gz';  // do not consider for import
+              }
+
+              base = base.join('.').toLowerCase();
+              var show = (tree.file_key!=2);
+              if (tree.file_key==4)
+                show = (tree.ext_filter.indexOf(ext)>=0);
+                //show = (importable_ext.indexOf(ext)>=0);
+              else if (tree.file_key==5)
+                show = (ext=='ccp4_demo') || (ext=='ccp4cloud');
+
+              var icon  = 'file_dummy';
+              if (ext in icon_ext)  {
+                icon = icon_ext[ext];
+              } else if ('h5' in sfile)   {
+                if (sfile.h5>0)  icon = 'file_hdf';
+                           else  name = '(' + Array(name.length).join('....') + ')';
+                show = false;
+              } else if (ext=='cif')  {  // use wild heuristics
+                if (endsWith(base,'-sf'))  icon = 'file_mtz';
+                                     else  icon = 'file_pdb';
+              } else if ('image' in sfile)  {
+                if (sfile.image>0)  icon = 'file_xray';
+                              else  name = '(' + Array(name.length).join('....') + ')';
+                show = (tree.file_key==1) || (tree.file_key==2);
+              }
+              if (show)  {
+                var fnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
+                tree.item_map[fnode.id] = sfile;
+              } else  {
+                var fnode = tree.addRootNode ( '<span style="color:gray">' + name + '</span>',image_path(icon),tree.customIcon() );
+                //tree.item_map[fnode.id] = sfile;
+              }
+
             }
 
           }

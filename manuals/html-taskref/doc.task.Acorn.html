@@ -48,19 +48,20 @@
         
   <div class="section" id="phase-refinement-and-dynamic-density-modification-with-acorn">
 <h1><span class="section-number">9.2. </span>Phase Refinement and Dynamic Density Modification with ACORN<a class="headerlink" href="#phase-refinement-and-dynamic-density-modification-with-acorn" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S090744490502576X" rel="noopener noreferrer" target="_blank">ACORN</a> improves initial phase estimates to produce a more interpretable electron density map by applying prior information about protein electron density maps to the experimental map. Density modification should be carried out as a follow on to experimental phasing, to resolve phase ambiguities and estimate phases for the many reflections with low figures of merit. It may also be applied after molecular replacement with the aim of removing bias towards the search model.</p>
-<p>The ACORN can be used for structures with observed data resolution as low as 1.7Å and reasonably accurate starting phases, but it is more consistently successful when the resolution is 1.5Å or better.</p>
+<p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S090744490502576X" rel="noopener noreferrer" target="_blank">ACORN</a> improves initial phase estimates to produce a more interpretable electron density map by applying prior information about protein electron density maps to the experimental map. Density modification should be carried out as a follow on to experimental phasing, to resolve phase ambiguities and estimate phases for the many reflections with low figures of merit. It may also be applied after molecular replacement with the aim of removing bias towards the search model.</p>
+<p>ACORN can be used for structures with observed data resolution as low as 1.7Å and reasonably accurate starting phases, but it is more consistently successful when the resolution is 1.5Å or better.</p>
 <div class="section" id="the-general-structure-of-acorn">
 <h2><span class="section-number">9.2.1. </span>The general structure of ACORN<a class="headerlink" href="#the-general-structure-of-acorn" title="Permalink to this headline">¶</a></h2>
-<p>The ACORN divides reflections into three groups (strong, medium, and weak) according to their normalised structure-factor (E) values.</p>
-<p><strong>The strong reflections (E &gt; 1.2)</strong> are used in the phase refinement by the dynamic density modification (DDM) and Patterson superposition procedures</p>
-<p><strong>The medium refections (0.1 &lt; E &lt; 1.2)</strong> are used to calculate a correlation coefficient (CC) for each potential solution of DDM. These groups are default settings and can be changed by the user</p>
-<p><strong>The weak refections (E &lt; 0.1)</strong> are used in <a class="reference external" href="https://doi.org/10.1107/S0108767389012158" rel="noopener noreferrer" target="_blank">Sayre-equation refinement (SER)</a></p>
+<p>ACORN divides reflections into three groups (strong, medium, and weak) according to their normalised structure-factor (E) values.</p>
+<p><strong>Strong reflections (E &gt; 1.2)</strong> are used in the phase refinement by the dynamic density modification (DDM) and Patterson superposition procedures</p>
+<p><strong>Medium refections (0.1 &lt; E &lt; 1.2)</strong> are used to calculate correlation coefficient (CC) for each potential solution of DDM.</p>
+<p><strong>Weak refections (E &lt; 0.1)</strong> are used in <a class="reference external" href="https://doi.org/10.1107/S0108767389012158" rel="noopener noreferrer" target="_blank">Sayre-equation refinement (SER)</a></p>
+<p>These groups are default settings and can be changed by the user.</p>
 </div>
 <div class="section" id="dynamic-density-modification-ddm">
 <h2><span class="section-number">9.2.2. </span>Dynamic density modification (DDM)<a class="headerlink" href="#dynamic-density-modification-ddm" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><em>eliminates the negative densities, and truncates the highest density</em></div></blockquote>
+<div><em>eliminates negative densities, and truncates the highest density</em></div></blockquote>
 <p>At the heart of ACORN lies a density modification method called Dynamic Density Modification. An initial set of phases is used to generate a map for <abbr title="Dynamic Density Modification">DDM</abbr> using only the strong reflections, i.e. those with <strong>E (normalised structure factors)</strong>  &gt; 1.2, which is then Fourier transformed to produce a new set of phases. The initial set of phases can go through a process which employs a Patterson sum function. The quality of the new set of phases is judged by a <abbr title="correlation coefficient">CC</abbr>. The DM process will end when <abbr title="correlation coefficient">CC</abbr> stops increasing or the magnitude of the average phase change between two consecutive cycles is less than 0.5 degrees.</p>
 <p><strong>CC</strong> <strong>greater than 0.150 usually indicates a successful refinement</strong>. Please mind the <strong>Correlation Coefficient vs number of cycles</strong> plot it should <strong>go up</strong>. ACORN will stop automatically if the value of <abbr title="correlation coefficient">CC</abbr> for the medium E-values in <abbr title="Dynamic Density Modification">DDM</abbr> becomes greater than the <strong>upper density limit for Dynamic Density Modification (DDM)</strong>. The default value is determined by ACORN, but it needs to be adjusted according to the data quality.</p>
 </div>
@@ -74,7 +75,7 @@
 </div>
 <div class="section" id="artificially-extend-resolution">
 <h2><span class="section-number">9.2.4. </span>Artificially extend resolution<a class="headerlink" href="#artificially-extend-resolution" title="Permalink to this headline">¶</a></h2>
-<p>If the observed data resolution is poorer than 1.0Å the list of reflection indices is first extended to a given value(1.0Å by default). Mean expected E value with estimated amplitudes but reasonable phases improve the resolution of the modified map.</p>
+<p>If the observed data resolution is poorer than 1.0Å the list of reflection indices is first extended to a given value (1.0Å by default). Mean expected E value with estimated amplitudes but reasonable phases improve the resolution of the modified map.</p>
 <p><strong>Useful links</strong></p>
 <p><a class="reference external" href="https://www.ccp4.ac.uk/html/acorn.html" rel="noopener noreferrer" target="_blank">ACORN documentation</a></p>
 <p><strong>References</strong></p>

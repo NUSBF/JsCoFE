@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.20   <--  Date of Last Modification.
+ *    09.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Expot from Failed Jobs Safe Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2021
  *
  *  =================================================================
  *
@@ -113,7 +113,7 @@ function ExportFailedJobDialog ( safeDirPath )  {
 
       grid.setLabel ( '<h3>Exporting Failed Job "' + exportName + '"</h3>',0,0,1,3 );
 
-      var msgLabel = new Label ( 'Failed Job "' + exportName + '" is being ' +
+      var msgLabel = new Label ( 'Failed Job <b>"' + exportName + '"</b> is being ' +
                                  'prepared for download ....' );
       grid.setWidget ( msgLabel, 1,0,1,3 );
 
@@ -162,7 +162,7 @@ function ExportFailedJobDialog ( safeDirPath )  {
           else {
             dlg.jobSize = data.size;
             progressBar.hide();
-            msgLabel.setText ( 'Failed Job "' + exportName + '" is prepared ' +
+            msgLabel.setText ( 'Failed Job <b>"' + exportName + '"</b> is prepared ' +
                                'for download. The total download<br>size is ' +
                                round(data.size/1000000,3) + ' MB. Push the ' +
                                '<i>Download</i> button to export the job.' +

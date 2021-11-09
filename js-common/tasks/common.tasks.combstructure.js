@@ -50,7 +50,7 @@ function TaskCombStructure()  {
 
   this.parameters = {
     sec1 : { type     : 'section',
-             title    : 'Basic options',
+             title    : 'Comb selections',
              open     : true,
              position : [0,0,1,5],
              contains : {

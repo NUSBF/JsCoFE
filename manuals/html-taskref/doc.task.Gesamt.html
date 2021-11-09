@@ -14,7 +14,7 @@
     
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>13.4. Pairwise Structural Alignment with GESAMT &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>13.6. Pairwise Structural Alignment with GESAMT &#8212; CCP4 Cloud 1.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -25,21 +25,21 @@
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="13.5. Structure Superposition with LsqKab" href="doc.task.LsqKab.html" />
-    <link rel="prev" title="13.3. Gemmi" href="doc.task.Gemmi.html" /> 
+    <link rel="next" title="13.7. Structure Superposition with LsqKab" href="doc.task.LsqKab.html" />
+    <link rel="prev" title="13.5. Gemmi" href="doc.task.Gemmi.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
-        <h2 class="heading"><span>13.4. Pairwise Structural Alignment with GESAMT</span></h2>
+        <h2 class="heading"><span>13.6. Pairwise Structural Alignment with GESAMT</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.Gemmi.html"><span class="section-number">13.3. </span>Gemmi</a>
+        «&#160;&#160;<a href="doc.task.Gemmi.html"><span class="section-number">13.5. </span>Gemmi</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.LsqKab.html"><span class="section-number">13.5. </span>Structure Superposition with LsqKab</a>&#160;&#160;»
+        <a href="doc.task.LsqKab.html"><span class="section-number">13.7. </span>Structure Superposition with LsqKab</a>&#160;&#160;»
         </p>
 
       </div>
@@ -47,7 +47,7 @@
         
         
   <div class="section" id="pairwise-structural-alignment-with-gesamt">
-<h1><span class="section-number">13.4. </span>Pairwise Structural Alignment with GESAMT<a class="headerlink" href="#pairwise-structural-alignment-with-gesamt" title="Permalink to this headline">¶</a></h1>
+<h1><span class="section-number">13.6. </span>Pairwise Structural Alignment with GESAMT<a class="headerlink" href="#pairwise-structural-alignment-with-gesamt" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3599502/" rel="noopener noreferrer" target="_blank">GESAMT</a> (General Efficient Structural Alignment of Macromolecular Targets) is an algorithm for the structural alignment of polypeptide chains. Structural alignment attempts to establish geometrically equivalents between two polymer structures based on their shape and three-dimensional conformation. Alignment results include the list of matched residues, superposition matrices and a set of scores which indicate the quality of alignment. The higher the alignment score, the higher structural similarity.</p>
 <p>GESAMT employs the idea of deriving the global structure similarity from a promising set of locally similar short fragments. The GESAMT algorithm performs a fully automatic calculation of the correspondence between two ordered sets of 3D coordinates using SSM’s <strong>Q-score</strong> (geometrical measure of structural similarity). <strong>Q-score</strong> is a more objective indicator of the quality of alignment than RMSD and N <sub>align</sub> alone <a class="reference external" href="https://journals.iucr.org/d/issues/2004/12/01/ba5056/index.html" rel="noopener noreferrer" target="_blank">[Krissinel &amp; Henrick 2004]</a>. <strong>The Q-score varies between 0 (for completely dissimilar structures) and 1 (identical structures). A reasonable level of structural similarity is usually indicated by Q-score &gt; 0.1.</strong></p>
 <p>The GESAMT algorithm is applicable to chains with undefined secondary structure, as well as incomplete and fragmented (broken) chains. This makes GESAMT a more convenient algorithm than SSM for the intermediate stages of the structure solution process when, e.g., only an outline of a protein backbone is known and allows GESAMT finds longer alignments at lower rmsd in comparison with SSM`s.</p>
@@ -60,7 +60,7 @@
 <p>The left part of figure represents the fragment similarity matrix for the given chains A and B. Every short section in the matrix represents an short fragment superpositions (SFS). SFSs with similar transformation matrices are collected into clusters, which after further refinement are brought to the common superposition matrix T <sub>0</sub>. <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3599502/" rel="noopener noreferrer" target="_blank">[Krissinel 2012]</a></p>
 <p>GESAMT has two alignment mode: <em>balance between quality and efficiency</em> (<em>normal mode</em>) and <em>prefer higher alignment quality</em> (<em>high mode</em>). In the majority of cases GESAMT is faster than SSM in <em>normal mode</em> and slower in <em>high mode</em>. There is marginal quality decrease (in less than 5% of cases) in the <em>normal mode</em> is accompanied by a 10-fold gain in speed. These figures justify the choice of internal parameters configured to the <em>normal mode</em> and leave the use of the <em>high mode</em> to special (doubtful and difficult) cases.</p>
 <div class="section" id="alignment-results">
-<h2><span class="section-number">13.4.1. </span>Alignment results<a class="headerlink" href="#alignment-results" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">13.6.1. </span>Alignment results<a class="headerlink" href="#alignment-results" title="Permalink to this headline">¶</a></h2>
 <p><strong>Structure Summary</strong> table gives a short summary of aligned structures: source (name of file), chain selection, size (in number of residues) and title (where it can be read from the source).</p>
 <p><strong>Alignment Summary</strong> table gives information about Q-score, RMSD (Å), the number of residues was aligned (Aligned residues) and sequence identity calculated from structure alignment (Sequence Id)</p>
 <p>In <strong>Residue alignment</strong> window you can find <strong>Rigid-body residue alignment</strong> and <strong>Per-domain residue alignment</strong> tables which present pairs of aligned residues. This table contains the index of peptide chain, the name of residue and its sequence number. <code class="docutils literal notranslate"><span class="pre">Helix-forming</span> <span class="pre">residues</span></code> are indicated by <code class="docutils literal notranslate"><span class="pre">&quot;H&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">beta-sheet</span> <span class="pre">forming</span> <span class="pre">residues</span></code> are indicated by <code class="docutils literal notranslate"><span class="pre">&quot;S&quot;</span></code>. <code class="docutils literal notranslate"><span class="pre">Hydrophilic</span> <span class="pre">residues</span></code> indicated by <code class="docutils literal notranslate"><span class="pre">&quot;+&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">hydrophobic</span> <span class="pre">residues</span></code> indicated by <code class="docutils literal notranslate"><span class="pre">&quot;-&quot;</span></code>, and <code class="docutils literal notranslate"><span class="pre">residues</span> <span class="pre">with</span> <span class="pre">weak</span> <span class="pre">hydropathy</span></code> are indicated by <code class="docutils literal notranslate"><span class="pre">&quot;.&quot;</span></code> in second position. Rows with <em>aligned residues</em> contain the <em>distance between their C-alpha atoms</em> at best structure superposition, in angstroms.</p>
@@ -76,11 +76,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
-        «&#160;&#160;<a href="doc.task.Gemmi.html"><span class="section-number">13.3. </span>Gemmi</a>
+        «&#160;&#160;<a href="doc.task.Gemmi.html"><span class="section-number">13.5. </span>Gemmi</a>
         &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
         &#160;&#160;::&#160;&#160;
-        <a href="doc.task.LsqKab.html"><span class="section-number">13.5. </span>Structure Superposition with LsqKab</a>&#160;&#160;»
+        <a href="doc.task.LsqKab.html"><span class="section-number">13.7. </span>Structure Superposition with LsqKab</a>&#160;&#160;»
         </p>
 
       </div>
