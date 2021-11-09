@@ -56,9 +56,10 @@ function shareProject ( projectDesc,callback_func )  {
   share_inp.setWidth      ( '300pt' );
   ibx_grid .setLabel      ( '&nbsp;<br>can join this project and work on ' +
                             'it simultaneously.', 3,0,1,1  );
-  ibx_grid .setLabel      ( '&nbsp;<br>* Full list of users with access to the project ' +
-                            'must be given. In order to<br>unshare project with ' +
-                            'a user, remove their login name from the list.',
+  ibx_grid .setLabel      ( '&nbsp;<br>* Full (comma-separated) list of users ' +
+                            'with access to the project<br>must be given. In ' +
+                            'order to unshare project with a user, remove<br>' +
+                            'their login name from the list.',
                             4,0,1,1  )
            .setFontItalic ( true  )
            .setFontSize   ( '85%' );
