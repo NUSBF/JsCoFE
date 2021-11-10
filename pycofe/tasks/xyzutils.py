@@ -38,6 +38,8 @@ from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble
 from  pycofe.dtypes import dtype_structure,dtype_revision
 from  pycofe.dtypes import dtype_sequence
 from  pycofe.proc   import import_sequence,import_filetype
+from  pycofe.auto   import auto
+
 
 # ============================================================================
 # Make XUZ Utilities driver
@@ -335,6 +337,10 @@ class XyzUtils(basic.TaskDriver):
                             revision.setStructureData ( oxyz     )
                             self.registerRevision     ( revision )
                             have_results = True
+
+                            auto.makeNextTask(self, {
+                                "revision": revision }, log=self.file_stderr)
+
                         else:
                             # close execution logs and quit
                             self.fail ( "<h3>Structure was not formed (error)</h3>",
