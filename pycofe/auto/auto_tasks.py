@@ -107,6 +107,14 @@ def arpwarp ( name,revision,parentName ):
     return
 
 
+def xyzWaters ( name,revision,parentName ):
+    auto_api.addTask ( name,"TaskXyzUtils",parentName  )
+    auto_api.addTaskData ( name,"istruct",revision)
+    # remove waters
+    auto_api.addTaskParameter(name, "SOLLIG_SEL", 'W')
+    return
+
+
 def make_ligand ( name, ligdesc, revision, parentName ):
     auto_api.addTask          ( name,"TaskMakeLigand",parentName )
     auto_api.addTaskData      ( name, "revision", revision)
