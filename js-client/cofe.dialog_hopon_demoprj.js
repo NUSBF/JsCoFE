@@ -43,7 +43,7 @@ function HopOnDemoProjectDialog ( onSuccess_func )  {
   serverRequest ( fe_reqtype.startDemoImport,{
                       'cloudmount' : __url_parameters.cmount,
                       'demoprj'    : { 'name' : __url_parameters.project },
-                      'duplicate'  : true 
+                      'duplicate'  : true
                   },'Demo Project Loading',function(data){
 
     var progressBar = new ProgressBar ( 0 );

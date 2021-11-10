@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    10.11.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -177,32 +177,8 @@ class CombStructure(basic.TaskDriver):
                 self.putTableString ( table_id,
                             "{:.3f}".format(results["max_rmsd"]),"",1,passNo )
 
-            """
-            out_msg = []
-            if combId=="FR" or results["nmodified"]>0:
-                out_msg.append ( str(results["nmodified"]) + " residues were modified" )
-            if combId!="FR":
-                out_msg.append (
-                    "Overall r.m.s.d. of changes: {:.3f} &Aring;".format(results["rmsd"])
-                )
-                out_msg.append (
-                    "Maximum residue r.m.s.d.:&nbsp;&nbsp;&nbsp;&nbsp;" +\
-                    "{:.3f} &Aring;".format(results["max_rmsd"])
-                )
-            for msg in out_msg:
-                self.putMessage1 ( secId,msg,report_row,col=0,colSpan=2 )
-                report_row += 1
-            """
 
             #  refine phases
-
-            """
-            hkl_labels = hkl.getMeanColumns()
-            if hkl_labels[2]=="F":
-                hkl_labin = "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
-            else:
-                hkl_labin = "LABIN IP=" + hkl_labels[0] + " SIGIP=" + hkl_labels[1]
-            """
 
             if params["ncycles"]>0:
 
@@ -277,18 +253,6 @@ class CombStructure(basic.TaskDriver):
 
             report_row += 1
 
-            #plot1_png = "_rama_general_1.png"
-            #plot2_png = "_rama_general_2.png"
-            #pyrama.make_ramaplot1 ( "General","Original Ramachandran Plot",
-            #            params["xyzin"],os.path.join(self.reportDir(),plot1_png) )
-            #pyrama.make_ramaplot1 ( "General","Refined Ramachandran Plot",
-            #            coot_xyzout,os.path.join(self.reportDir(),plot2_png) )
-            #self.putMessage1 ( secId,"<img src=\"" + plot1_png +
-            #            "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
-            #            report_row,0 )
-            #self.putMessage1 ( secId,"<img src=\"" + plot2_png +
-            #            "\" height=\"420pt\" style=\"vertical-align: middle;\"/>",
-            #            report_row,1 )
             plot1_png = combId + "_rama_general_1"
             plot2_png = combId + "_rama_general_2"
 
@@ -369,6 +333,8 @@ class CombStructure(basic.TaskDriver):
                 })
                 if ncycles>0:
                     labin_fc = ["FWT","PHWT"]
+            else:
+                break
 
         # check solution and register data
         have_results = False
@@ -425,3 +391,34 @@ if __name__ == "__main__":
 
     drv = CombStructure ( "",os.path.basename(__file__) )
     drv.start()
+
+
+"""
+# Input molecules are given internal identifiers "MolHandle_1" etc"
+# Input maps are given internal identifiers "MapHandle_1" etc"
+# Input difference maps are given internal identifiers "DifmapHandle_1" etc"
+#
+# The appropriate place to put output pdb files to be picked up by the system
+# is stored in the variable dropDir (see below for how to use this)
+#
+# Beware spaces...this is python after all
+def is_polymer_chain(imol, ch_id):
+    return is_protein_chain_qm(imol, ch_id) or is_nucleotide_chain_qm(imol, ch_id)
+
+
+def reso_morph(imol, imol_map, n_rounds):
+    for round in range(n_rounds):
+        f = float(round)/float(n_rounds)
+        for ch_id in chain_ids(imol):
+            if is_polymer_chain(imol, ch_id):
+
+                # play with these numbers
+                radius =   6 * (2 - f)
+                sf     = 100 * (1 - f)
+                sharpen(0, sf)
+                morph_fit_chain(imol, ch_id, radius)
+
+# run the script
+reso_morph(MolHandle_1, MapHandle_1, 20)
+write_pdb_file(MolHandle_1,os.path.join(dropDir,"output.pdb"))
+"""

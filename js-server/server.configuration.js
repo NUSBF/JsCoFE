@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.08.21   <--  Date of Last Modification.
+ *    10.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -227,11 +227,19 @@ ServerConfig.prototype.getDemoProjectsMount = function()  {
   if (this.hasOwnProperty('cloud_mounts'))  {
     for (name in this.cloud_mounts)  {
       var lname = name.toLowerCase();
-      if ((lname.indexOf('demo')>=0) && (lname.indexOf('projects')>=0))  {
+      if (lname.indexOf('tutorial')>=0)  {
         mount = name;
         break;
       }
     }
+    if (!mount)
+      for (name in this.cloud_mounts)  {
+        var lname = name.toLowerCase();
+        if ((lname.indexOf('demo')>=0) && (lname.indexOf('projects')>=0))  {
+          mount = name;
+          break;
+        }
+      }
   }
   return mount;
 }
@@ -452,6 +460,7 @@ function CCP4DirName()  {
       "Home"           : ["$HOME","$USERPROFILE"],
       "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
       "Demo projects"  : "./demo-projects",
+      "Tutorials"      : "./demo-projects",
       "My files"       : "./$LOGIN/files"
     },
     "logflow" : {   // optional item

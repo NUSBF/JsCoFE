@@ -54,6 +54,9 @@ function TaskCombStructure()  {
              open     : true,
              position : [0,0,1,5],
              contains : {
+
+                // === 1st comb
+
                 COMB1_SEL : {
                     type     : 'combobox',
                     keyword  : 'none',
@@ -102,6 +105,9 @@ function TaskCombStructure()  {
                     label2   : 'cycles of refinement',
                     position : [0,8,1,1]
                 },
+
+                // === 2nd comb
+
                 COMB2_SEL : {
                     type     : 'combobox',
                     keyword  : 'none',
@@ -152,6 +158,9 @@ function TaskCombStructure()  {
                     position : [1,8,1,1],
                     hideon   : {COMB2_SEL:['N']}
                 },
+
+                // === 3rd comb
+
                 COMB3_SEL : {
                     type     : 'combobox',
                     keyword  : 'none',
@@ -165,7 +174,8 @@ function TaskCombStructure()  {
                                ],
                     value    : 'SR',
                     iwidth   : 270,
-                    position : [2,0,1,1]
+                    position : [2,0,1,1],
+                    hideon   : {COMB2_SEL:['N']}
                 },
                 COMB3_NPASS : {
                     type     : 'integer',
@@ -176,7 +186,7 @@ function TaskCombStructure()  {
                     value    : '3',
                     iwidth   : 50,
                     position : [2,4,1,1],
-                    hideon   : {COMB3_SEL:['N','FR']}
+                    hideon   : {_:'||',COMB2_SEL:['N'],COMB3_SEL:['N','FR']}
                   },
                 COMB3FR_NPASS : {
                     type     : 'integer',
@@ -188,7 +198,8 @@ function TaskCombStructure()  {
                     readonly : true,
                     iwidth   : 50,
                     position : [2,4,1,1],
-                    showon   : {COMB3_SEL:['FR']}
+                    showon   : {COMB3_SEL:['FR']},
+                    hideon   : {_:'||',COMB2_SEL:['N']}
                 },
                 COMB3_NCYC : {
                     type     : 'integer',
@@ -200,8 +211,11 @@ function TaskCombStructure()  {
                     iwidth   : 50,
                     label2   : 'cycles of refinement',
                     position : [2,8,1,1],
-                    hideon   : {COMB3_SEL:['N']}
+                    hideon   : {_:'||',COMB2_SEL:['N'],COMB3_SEL:['N']}
                   },
+
+                // === 4th comb
+
                 COMB4_SEL : {
                     type     : 'combobox',
                     keyword  : 'none',
@@ -215,7 +229,8 @@ function TaskCombStructure()  {
                                ],
                     value    : 'RR',
                     iwidth   : 270,
-                    position : [3,0,1,1]
+                    position : [3,0,1,1],
+                    hideon   : {_:'||',COMB2_SEL:['N'],COMB3_SEL:['N']}
                 },
                 COMB4_NPASS : {
                     type     : 'integer',
@@ -226,7 +241,7 @@ function TaskCombStructure()  {
                     value    : '3',
                     iwidth   : 50,
                     position : [3,4,1,1],
-                    hideon   : {COMB4_SEL:['N','FR']}
+                    hideon   : {_:'||',COMB2_SEL:['N'],COMB3_SEL:['N'],COMB4_SEL:['N','FR']}
                   },
                 COMB4FR_NPASS : {
                     type     : 'integer',
@@ -238,7 +253,8 @@ function TaskCombStructure()  {
                     readonly : true,
                     iwidth   : 50,
                     position : [3,4,1,1],
-                    showon   : {COMB4_SEL:['FR']}
+                    showon   : {COMB4_SEL:['FR']},
+                    hideon   : {_:'||',COMB2_SEL:['N'],COMB3_SEL:['N']}
                   },
                 COMB4_NCYC : {
                     type     : 'integer',
@@ -250,7 +266,7 @@ function TaskCombStructure()  {
                     iwidth   : 50,
                     label2   : 'cycles of refinement',
                     position : [3,8,1,1],
-                    hideon   : {COMB4_SEL:['N']}
+                    hideon   : {_:'||',COMB2_SEL:['N'],COMB3_SEL:['N'],COMB4_SEL:['N']}
                 }
              }
     }
