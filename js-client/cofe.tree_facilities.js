@@ -392,10 +392,12 @@ StorageTree.prototype.readStorageData = function ( page_title,
             }
             var icon   = 'folder';
             var nlower = name.toLowerCase();
-            if (nlower.indexOf('my computer')>=0) icon = 'folder_mycomputer';
-            else if (nlower.indexOf('home'  )>=0) icon = 'folder_home';
-            else if (nlower.indexOf('ccp4'  )>=0) icon = 'folder_ccp4';
-            else if (nlower.indexOf('demo'  )>=0) icon = 'folder_ccp4';
+            if (nlower.indexOf('my computer'  )>=0) icon = 'folder_mycomputer';
+            else if (nlower.indexOf('home'    )>=0) icon = 'folder_home';
+            else if (nlower.indexOf('ccp4'    )>=0) icon = 'folder_ccp4';
+            else if (nlower.indexOf('demo'    )>=0) icon = 'folder_ccp4';
+            else if (nlower.indexOf('tutorial')>=0) icon = 'folder_tutorials';
+            else if (nlower.indexOf('workshop')>=0) icon = 'folder_workshops';
             if ((nlower.indexOf('howto')>=0) || (nlower.indexOf('how ')>=0) ||
                 (nlower.indexOf('?')>=0))  icon = 'folder_howto';
             var dnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );

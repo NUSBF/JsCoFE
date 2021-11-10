@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.10.21   <--  Date of Last Modification.
+ *    10.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -278,7 +278,7 @@ JobTree.prototype.readProjectData = function ( page_title,
         if ('author' in tree.projectData.desc.owner)
           author = tree.projectData.desc.owner.author;
         if (author==__login_id)  author  = '';
-                           else  author += ':';
+        if (author)  author += ':';
         var root_title =
                 '<b style="color:blue;">' + author +
                 '[' + tree.projectData.desc.name  + ']</b> ' +

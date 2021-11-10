@@ -88,7 +88,9 @@
       "My Computer"    : "/",
       "Home"           : ["$HOME","$USERPROFILE"],
       "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
-      "Demo projects"  : "./demo-projects"
+      "Demo projects"  : "./demo-projects",
+      "Workshops"      : "./cofe-data/workshops",
+      "Tutorials"      : "./cofe-data/tutorials"
     }
   },
 
