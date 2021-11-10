@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FCVD2T7BGM');
+    </script>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Refinement using REFMAC5 via CCP4 Cloud &#8212; CCP4 Cloud 1.6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>Refinement using REFMAC5 via CCP4 Cloud</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <div class="section" id="refinement-using-refmac5-via-ccp4-cloud">
+<h1>Refinement using REFMAC5 via CCP4 Cloud<a class="headerlink" href="#refinement-using-refmac5-via-ccp4-cloud" title="Permalink to this headline">¶</a></h1>
+<p>Rob Nicholls, Eugene Krissinel, Garib Murshudov</p>
+<p>In this tutorial, which consists of three parts, we consider model refinement using different parameters, twin refinement, and ligand fitting and refinement.</p>
+<p>You can use either the local (ccp4cloud-desktop) or the remote (ccp4cloud- remote) version of CCP4 Cloud, depending on whether you want jobs to be processed on your local machine or on the CCP4 server. Note that some programs (e.g. Coot) will run on your local machine irrespective. If you use the remote version then you will need to create an account and sign in.</p>
+<p>Part 1: Refinement – Ribonuclease</p>
+<ol class="arabic simple">
+<li>Create a new project and import the data, ready for refinement:</li>
+</ol>
+<p>Open CCP4 Cloud, and create a new project for this part of the tutorial.</p>
+<p>Select the Data Import task, Navigate to “tutorial-data / 3_refinement / 1_Ribonuclease” and select the provided files rnase.pdb and rnase.mtz.</p>
+<p>Close the file browser.</p>
+<p>Click the import button at the top of the window in order to run the job – this will analyse the content of these files, and make them available to jobs downstream in the CCP4 Cloud project. When you’ve finished inspecting the job output, close the job dialog window.</p>
+<p>Click the green “+” button in order to add a follow-on job. Choose “Link Coordinates and Reflections” from the task list, then click the green arrow at the top of the window to run the job. This will check compatibility of the model and data, and “link” them into a “structure revision”. The structure revision will be updated as the project evolves and the model changes. When you’ve finished inspecting the job output, close the job dialog window.</p>
+<p>2. Perform model refinement using default settings, as well as with a few parameter adjustments:
+Click the green “+” button in order to add a follow-on job. Choose “Refinement with Refmac” from the task list (if not yet in the “Suggested” task list, you can find it in the “Refinement and Model Building” section of the “Full list” of tasks). Change the “job description” field to something meaningful, like: “Refine with default settings”. Then click the green arrow at the top of the window to run the job. While a job is running, you can safely click the red cross at the top-right of the window in order to close the job dialog, and the job will continue running in the background. To view the current status of a running job, or to view the results of a completed job, double click on the job in the tree.</p>
+<p>We now want to try refinement with different parameters, in parallel with the first job that is already running. To do this, ensure that the existing refinement job is selected in the project tree, and click the “Clone job” button on the left side of the screen. A refinement job window will open – in the “Basic options” section, change “Generate H-atoms for refinement” to “Yes”. Provide a meaningful job description, such as: “Refine with riding hydrogens”. Then click the green arrow at the top of the window to run the job. Again, close the job dialog window while it runs.</p>
+<p>Clone the job again. Ensure that “Generate H-atoms for refinement” is set to “Yes”, and also change “Overall data-geometry weight” to “Fixed” with a value of 2.0. Provide a meaningful job description, such as: “Refine with riding hydrogens, weight 2.0”, run the job, and close the dialog window.</p>
+<p>In the main project tree, you can now see three refinement jobs that have been run in parallel, all starting from the same structure revision (i.e. the job labelled “link xyz and hkl”). When the jobs finish, the final R-factors are appended to the job title. Which of the three jobs produced the best R- factors, thus presumably the best model?</p>
+<p>More detailed output can be found by double-clicking on a job. Once the jobs have finished, double-click on the last refinement job in the tree. Scroll down to find the graph of “&lt;Rfactor&gt; vs cycle”, which is found in the “Rfactor analysis, stats vs cycle” section. Does refinement seem to have converged after the default 10 cycles? Consider the difference between the R-factors before and after refinement… why do you think they have improved so much?</p>
+<ol class="arabic simple" start="3">
+<li>Inspect the refined model in Coot:</li>
+</ol>
+<p>Select the last refinement job in the tree. Click the green “+” button in order to add a follow-on job, and select the “Model Building with Coot” task in order to open the Coot job window. By default, the structure revision corresponding to the output of your refinement job will be already selected for opening in Coot. But we also want to load the original model, so that we can compare the model before/after refinement. To do this: in “Additional Structures” select the job ID that corresponds to your “link xyz and hkl” job (which may be called something like “[0002-01] rnase /structure/”) – this will tell Coot to also open your original model and associated maps. Now run the job in order to open Coot.</p>
+<p>Within Coot, open the Display Manager and repeatedly toggle the two models on and off, to visually compare differences between them. Does it seem that the coordinates corresponding to the model have changed much during refinement?</p>
+<p>Now colour both models according to their B-factors – this is also done in the Display Manager. The models will be coloured on a blue-green-yellow- red scale to indicate low-to-high B-factors. Again, toggle the two models on and off. Does it seem that the B-factors have changed much during refinement? Does this shed any light on why the R-factors improved so much during refinement?
+Now toggle off the model and map corresponding to the original structure revision, so that only the post-refinement model and map are displayed. Select “Unmodelled blobs” from Coot’s “Validate” menu. One large blob should be identified. Zoom into this region. What seems to be missing from the model?</p>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

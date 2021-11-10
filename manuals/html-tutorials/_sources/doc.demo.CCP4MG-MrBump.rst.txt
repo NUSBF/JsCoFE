@@ -5,14 +5,14 @@ Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP
 This tutorial explains how to create the ensembles for Molecular Replacement with `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ graphical interface. We will use the Gamma tutorial example for the demonstration.
 
   .. important::
-             Launch CCP4 Cloud through the local installation of CCP4 on your computer |ccp4cloud_remote| for this tutorial.
+             Launch CCP4 Cloud through the local installation of CCP4 on your computer |ccp4cloud_remote|.
 
 
             .. |ccp4cloud_remote| image:: images/ccp4cloud_remote.png
                 :width: 20
                 :height: 20
 
-``1.``	 The sequence data and reflection data were already imported to the “Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP” project.
+``1.``	 The sequence data and reflection data were already imported to the “Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP” project (*import from the Cloud storage task*).
 
 ``2.``	The next step is to define **Asymmetric Unit content**: click **add task => go to All task => Asymmetric Unit and Structure revision => Asymmetric Unit Contents.** Run the task.
 
@@ -20,11 +20,24 @@ This tutorial explains how to create the ensembles for Molecular Replacement wit
    :align: center
    :scale: 40 %
 
-Every task in CCP4 Cloud produced a report. Some task's reports come with the verdict (an assessment of the quality task performance).
+<<<<<<< HEAD
+Every task in CCP4 Cloud produced a report. Some reports come with the verdict.
+=======
+Every task in CCP4 Cloud produced a report. Some reports come with the verdict. 
+>>>>>>> 12fa190739f910864f9773a98679052980a28cbf
+
 
 .. image:: images/Demo.CCP4MG_ASU2.jpg
    :align: center
    :scale: 30 %
+
+.. tip::
+<<<<<<< HEAD
+        Please read verdict carefully, it would help you appreciate the quality of the task performance.
+=======
+        Please read verdict carefully, it would help you appreciate the quality of the task performance. 
+>>>>>>> 12fa190739f910864f9773a98679052980a28cbf
+
 
 ``3.``	Once **Asymmetric Unit Contents** is defined and we are satisfied with result. It is possible to start the **MR Ensemble with CCP4mg** task: **add next job => All task => Molecular Replacement => Prepare MR Ensemble with CCP4mg**
 
@@ -32,12 +45,13 @@ Every task in CCP4 Cloud produced a report. Some task's reports come with the ve
    :align: center
    :scale: 40 %
 
-``4.``	Prepare MR Ensemble with CCP4mg task will identify homologues from the `PDB <https://www.rcsb.org/>`_ and the `EBI-AFDB <https://alphafold.ebi.ac.uk>`_ and display them in CCP4mg (``takes a couple of minutes``).
+``4.``	`Prepare MR Ensemble with CCP4mg <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.EnsemblePrepMG.html>`_ task will identify homologues from the `PDB <https://www.rcsb.org/>`_ and the `EBI-AFDB <https://alphafold.ebi.ac.uk>`_ and display them in CCP4mg (``takes a couple of minutes``).
 
-For :abbr:`AFDB (AlphaFold DataBase)` models, you can adjust the pLDDT cut-off. Higher values mean only the most confidently predicted residues are retained in the search models.
+For :abbr:`AFDB (AlphaFold DataBase)` models, you can adjust the pLDDT cut-off
 
 .. toggle-header::
        :header:  **pLDDT cut-off**
+                
                 AlphaFold produces a per-residue estimate of its confidence score, called **pLDDT** on a scale from 0 - 100. This option sets the minimum level of **pLDDT** of selected residues.
                 
                 * **pLDDT > 90**: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).
@@ -48,12 +62,26 @@ For :abbr:`AFDB (AlphaFold DataBase)` models, you can adjust the pLDDT cut-off. 
                 
                 * **pLDDT < 50** indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.
 
+<<<<<<< HEAD
+                * **pLDDT > 90**: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).
+
+                * **70 < pLDDT < 90** residues are expected to be positioned reasonably well (generally, a good backbone prediction).
+
+                * **50 < pLDDT < 70** corresponds to residues modelled with low confidence, which should be treated with caution.
+
+                * **pLDDT < 50** indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.
+
+=======
+>>>>>>> 12fa190739f910864f9773a98679052980a28cbf
+
+Higher values mean only the most confidently predicted residues are retained in the search models.
 
 
-It is possible to search only the PDB or EBI-AFDB by unticking the relevant box in the input menu.
+.. Note::
+        It is possible to search only the PDB or EBI-AFDB by unticking the relevant box in the input menu.
 
 .. tip::
-      In order to read more abound the task by clicking on task documentation button |reference|
+      In order to read more abound the task click on task documentation button |reference|
 
 
 .. |reference| image:: images/reference.png
@@ -61,7 +89,7 @@ It is possible to search only the PDB or EBI-AFDB by unticking the relevant box 
     :height: 20
 
 
-For this tutorial, please make sure that:
+For this tutorial, make sure that:
 
     •	**PDB sequence redundancy level** set to **100%**
 
@@ -80,7 +108,7 @@ For this tutorial, please make sure that:
 ``5.``	Once the task is run, the **CCP4mg window** will opened on your computer. After a couple of minutes, the results of the MrBUMP sequence-based search should appear in the graphical interface.
 
   .. Note::
-       the models will have been truncated to better match the target structure by referencing the sequence alignment between the model and the target. The Sculptor application is used to perform the truncation. The resulting search models are structurally aligned.
+       the models will have been truncated to better match the target structure by referencing the sequence alignment between the model and the target. The `Sculptor <https://doi.org/10.1107/S0907444910051218>`_ application is used to perform the truncation. The resulting search models are structurally aligned.
 
 
  .. image:: images/Demo.CCP4MG_MG3.png
@@ -101,9 +129,9 @@ For this tutorial, please make sure that:
     :align: center
     :scale: 40 %
 
-``8.``	Created ensembles can be further used in both Phaser and Molrep tasks.
+``8.``	Created ensembles can be further used in both `Phaser <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Phaser.html>`_ and `Molrep <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Molrep.html>`_ tasks.
 
-     We will use the Phaser for Molecular replacement in this tutorial: **add next job => All task => Molecular Replacement => Molecular Replacement with Phaser**
+    We will use the Phaser for Molecular replacement in this tutorial: **add next job => All task => Molecular Replacement => Molecular Replacement with Phaser**
 
 
     For predicted models we recommend setting **Similarity to target by rms differences (Å) to 1.2**
@@ -112,7 +140,7 @@ For this tutorial, please make sure that:
         :align: center
         :scale: 30 %
 
-``9.``  After Phaser, model should be rebuilt to match the target sequence more closely using one of the model building tools present(:doc:`Buccaneer <doc.task.Buccaneer>`, :doc:`Arp/wArp <doc.task.ArpWarp>`, :doc:`CCP4Build <doc.task.CCP4Build>`). Let's run the :doc:`CCP4Build <doc.task.CCP4Build>` task for this project. The model can be inspected in **UglyMol** window in the task output.
+``9.``  After Phaser, model should be rebuilt to match the target sequence more closely using one of the model building tools presen (`Buccaneer <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html>`_, `Arp/wArp <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ArpWarp.html>`_ , `CCP4Build <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html>`_). Let's run the `CCP4Build <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html>`_ task for this project. The builded model can be inspected in **UglyMol** window in the task output.
 
 ``10.``	 Further refinement can be done by **Automated refinement and ligand fitting workflow**
 

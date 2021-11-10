@@ -1,0 +1,115 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FCVD2T7BGM');
+    </script>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auto-EP with Crank-2 using hyaluronan-binding domain of human cd44 &#8212; CCP4 Cloud 1.6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>Auto-EP with Crank-2 using hyaluronan-binding domain of human cd44</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <div class="section" id="auto-ep-with-crank-2-using-hyaluronan-binding-domain-of-human-cd44">
+<h1>Auto-EP with Crank-2 using hyaluronan-binding domain of human cd44<a class="headerlink" href="#auto-ep-with-crank-2-using-hyaluronan-binding-domain-of-human-cd44" title="Permalink to this headline">¶</a></h1>
+<p>For this practical you are presented with a set of images collected from a crystal of selenomethionine containing CD44. The diffraction images were deposited with Zenodo 10.5281/zenodo.55993 and we will be using their copies located on CCP4 server. In this way we will emulate a setup in which an X-ray laboratory has a centralised diffraction data storage and centralised ccp4cloud installation.</p>
+<p>The paths to sequence file and  directory with diffraction images are as follows:
+tutorial-data/1_from_images/cd44/cd44.seq
+tutorial-data/1_from_images/cd44/images</p>
+<p>The above paths are  relative to the cloud storage root.</p>
+<p>Before the Se-Met derivative of CD44 became available, the native CD44 had been observed to crystallize in space group P212121 with cell constants a=48.88, b=77.27, c=87.67, α=β=γ=90°.</p>
+<p>Objectives</p>
+<ol class="arabic simple">
+<li>To learn principles of working with CCP4 Cloud web-interface.</li>
+<li>To learn how to integrate, scale and merge images with Xia2 and Aimless pipelines.</li>
+<li>To get familiar with individual steps of experimental phasing.</li>
+</ol>
+<p>Workflow is fully defined by numbered sentences. Open cycles mark additional information.</p>
+<p>Workflow</p>
+<ol class="arabic simple">
+<li>Import sequence using “Cloud Import”</li>
+</ol>
+<p>We will need the sequence on all branches of the project tree, so we import it first.</p>
+<p>It is not critical not to do so, it is possible to modify project tree later (a sub-branch can be moved up using the button with blue arrow pointing up).</p>
+<p>2. Integrate images using xia2. Keep defaults except for defining “Se” in “Heavy atom type” textbox.
+Xia2 outputs two or more unmerged datasets, and one merged dataset. The latter contains anomalous data if “Heavy atom type” is defined and only mean intensities otherwise.</p>
+<ol class="arabic simple" start="3">
+<li>Compose the initial structure revision  Combine CD44 sequence and the merged dataset generated automatically by xia2 into an initial - we’ll start from this one. Define “Se” as “Main anomalous scatterer”.</li>
+</ol>
+<p>4a. Use “Substructure Search with SHELX via Crank-2 (SAD)” to find anomalous substructure.
+How many Se sites has been found?
+There is similar task “Substructure Search with SHELX-C/D (SAD)”, which does not generate graphical report page, but instead shows the original SHELXD output in the tab “Main Log”.</p>
+<p>4b. Use “Experimental Phasing with Phaser (SAD)” for substructure completion and initial phasing.
+“Se” under the “Structure revision” means that the input substructure contains Se (as should have been defined in the input of “Asymmetric Unit Contents” task). To extend the substructure with Se, you will have to define “Se” once again,  in the LLG map completion menu.</p>
+<p>How many Se sites are there after substructure completion?</p>
+<p>The “Se” with low occupancies in our substructure are actually S-atoms. We keep them as “Se” to help Parrot at the next step to not get lost during NCS determination.</p>
+<p>The graph in the Report tab show FOM for specific subsets of reflections. For a correct substructure, FOM for acentric reflections is considerably higher than for centric reflections.</p>
+<p>5. The Phaser-SAD job generates two structure revisions, for original and inverse hands. Perform density modification for each of them using “Density Modification with Parrot”. Use corresponding substructure as “Model for NCS detection”.
+Parrot uses substructure to define initial values of NCS operations. However, each monomer contains only two Se atoms. This is insufficient for determination of NCS operations relating monomers. How Parrot managed to figure out the NCS operations?
+Pay attention to “Reflection statistics” and “NCS statistics” plots, specifically to changes of FOM and NCS mask volume with cycle. Which hand is correct? Could more cycles of density modification be useful? You may run another Parrot job if you think they could.
+The revision consists of several data objects. (Use “Inspect” button to see them). The current job can only see the revision(s) from the parent job. However, the model for NCS detection is not a revision but a data object of type “structure” or “substructure” (a constituent  part of a certain revision or a stand-alone data object). The current job can see relevant data objects from all the jobs on its branch. Therefore, the “Model for NCS detection” can be taken from earlier jobs, and, in particular, it can be a structure from an MR job.</p>
+<p>6. Inspect electron density generated by the two Parrot runs (UglyMol viewer can be opened from Report tab of finished Parrot job window).
+Does comparison of the two maps confirms the correct hand identified from stats?</p>
+<p>7. Continue each of the Parrot jobs with “Automatic Model Building with Buccaneer”.
+The correct hand should now be identified with certainty.</p>
+<ol class="arabic simple" start="8">
+<li>Do “Refinement with Refmac”. Follow with “Prepare data for deposition” to see that the structure is not good enough for deposition with the PDB. While Deposition job is running, start “Model Building with Coot” (as a child node of Refmac job) and correct several side chains. Continue the Coot job with Refmac, “Find and Fit Waters with Coot” and another Refmac.</li>
+<li>Start a new branch growing from xia2 job: this time continue with “Data Reduction with Aimless” and use unmerged unscaled data from xia2, sweep1. For example, you can try a very conservative approach - to keep only the best images in the range from 1 to about 110.</li>
+</ol>
+<p>10. Perform steps 3-7 on the new branch, following Aimless job.
+Was there any differences in phasing and refinement stats in the two branches starting from xia2 job? Probably differences are minor, but these may still show a general trend.</p>
+<ol class="arabic simple" start="11">
+<li>Compare models from two branches</li>
+</ol>
+<p>11.1. Select the job, that produced a structure that you want use as reference.</p>
+<p>11.2. Press and keep Apple key (Mac), XXX (Linux) and select the revision you want to modify.</p>
+<p>11.3 Open task “Symmetry Match to Reference Structure with CSymMatch”, select revision and reference structure from drop down menus and Run.</p>
+<p>Note that the CSymMatch job node shows its own job number and the number of the job where additional data came from.</p>
+<p>11.4 Continue CSymMatch job with Coot, and, in Coot interface, define the reference structure as “Additional structure”</p>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

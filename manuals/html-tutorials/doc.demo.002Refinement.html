@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FCVD2T7BGM');
+    </script>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Twin Refinement using REFMAC5 via CCP4 Cloud &#8212; CCP4 Cloud 1.6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>Twin Refinement using REFMAC5 via CCP4 Cloud</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <div class="section" id="twin-refinement-using-refmac5-via-ccp4-cloud">
+<h1>Twin Refinement using REFMAC5 via CCP4 Cloud<a class="headerlink" href="#twin-refinement-using-refmac5-via-ccp4-cloud" title="Permalink to this headline">¶</a></h1>
+<p>Rob Nicholls, Eugene Krissinel, Garib Murshudov</p>
+<p>In this tutorial, which consists of three parts, we consider model refinement using different parameters, twin refinement, and ligand fitting and refinement.</p>
+<p>You can use either the local (ccp4cloud-desktop) or the remote (ccp4cloud- remote) version of CCP4 Cloud, depending on whether you want jobs to be processed on your local machine or on the CCP4 server. Note that some programs (e.g. Coot) will run on your local machine irrespective. If you use the remote version then you will need to create an account and sign in.</p>
+<p>Part 2: Twin Refinement – Heme Oxygenase</p>
+<ol class="arabic simple">
+<li>Create a new project and import the data:</li>
+</ol>
+<p>Create a new CCP4 Cloud project for this part of the tutorial.</p>
+<p>Select the Cloud Import task, navigate to “tutorial-data / 3_refinement / 2_Heme_Oxygenase” and select the provided files 1irm.pdb and 1irm.mtz.</p>
+<p>Close file browser.</p>
+<p>Click the import button at the top of the window in order to run the import job</p>
+<p>Click the green “+” button in order to add a follow-on job. Choose “Link Coordinates and Reflections” to create a structure revision.</p>
+<ol class="arabic simple" start="2">
+<li>Perform model refinement twice – first using default settings, and then assuming that the data are twinned:</li>
+</ol>
+<p>Add a follow-on job, and choose “Refinement with Refmac” from the task list. Provide a meaningful job description, such as: “Refine with default settings”, run the job, and close the dialog window.</p>
+<p>Clone the refinement job. Change the “Refine using” field to “Mean Amplitudes assuming twinning”. Provide a meaningful job description, such as: “Refine assuming twinning”, and run the job. Leave this dialog window open.</p>
+<ol class="arabic simple" start="3">
+<li>Inspect the results of assuming that the data correspond to a twinned crystal:</li>
+</ol>
+<p>While the job is running, the results page will be updated. Summary information will be displayed in the “Report” tab. Twinning information can be found in the REFMAC5 logfile, which is displayed in the “Main Log” tab. Select the “Main Log” tab. Use your web browser’s search facility (e.g. ctrl+F, cmd+F, Edit-&gt;Find, etc.) in order to search for the word “twin” in the log file. Cycle through the results in order to find information about potential twinning in this dataset. How many potential twin domains could there be, given the space group? How many of the potential twin operators have a sufficiently low Rmerge to imply that twinning is likely? How many of the twin fractions are large enough to justify treating them as twinned for purposes of refinement? How many twin domains are assumed during refinement?</p>
+<p>Close the job dialog window, so that you are looking at the main job tree. Both refinement jobs should have finished, and you should see the final R- factors appended to the job titles. Compare the R-factors from the two jobs. Which refinement protocol is more appropriate?</p>
+<p>Open the results pages from the two jobs, and compare the initial R- factors. Why are they different? Is there any evidence to suggest whether or not the model was previously refined assuming twinning?</p>
+<p>Go back to the main job tree. For each of the two jobs, add a follow-on “Model Building with Coot” job in order to display the post-refinement models and maps in Coot. You should now have two Coot windows open – one corresponding to each of the two refinement runs. Zoom in so that you can see the model and density with more clarity. Is it evident that one of the refinement runs produced a dramatically better model/map? Given the improvement in R-factors when assuming twinning, would you have expected the corresponding map to appear to be of higher quality? How much better is the model, after assuming twinning during refinement? In what way is it better?</p>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

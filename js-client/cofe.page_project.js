@@ -741,12 +741,14 @@ ProjectPage.prototype.share_project = function()  {
 
 ProjectPage.prototype.onTreeContextMenu = function() {
   // The default set of all items
-  var items = {};
-  var node  = this.jobTree.getSelectedNode();
+  var items  = {};
+  var node   = this.jobTree.getSelectedNode();
 
   __close_all_menus();
 
   (function(self){
+
+    var crTask = self.jobTree.task_map[node.id];
 
     if (!$(self.add_btn.element).button('option','disabled'))  {
       items.addJobItem = { // The "Add job" menu item
@@ -784,17 +786,34 @@ ProjectPage.prototype.onTreeContextMenu = function() {
         icon  : image_path('remove'),
         action: function(){ self.deleteJob(); }
       };
-      var crTask = self.jobTree.task_map[node.id];
       if (crTask && (crTask.state==job_code.remark))
         items.delJobItem.label = 'Delete remark';
     }
 
     if (!$(self.open_btn.element).button('option','disabled'))  {
-      items.openJobItem = { // The "Open job" menu item
-        label : "Open job dialog",
-        icon  : image_path('openjob'),
-        action: function(){ self.openJob(); }
-      };
+      if (crTask && (crTask.state==job_code.remark) && (crTask.isWebLink()))  {
+        items.openJobItem = { // The "Open job" menu item
+          label : "Open link",
+          icon  : image_path('openjob'),
+          action: function(){ self.openJob(); }
+        };
+        if ((__user_role==role_code.developer) || (__user_role==role_code.admin))  {
+          items.editLinkItem = { // The "Edit job" menu item
+            label : "Edit link",
+            icon  : image_path('editlink'),
+            action: function(){
+              crTask.doclink_type = '*' + crTask.doclink_type;
+              self.openJob();
+            }
+          };
+        }
+      } else  {
+        items.openJobItem = { // The "Open job" menu item
+          label : "Open job dialog",
+          icon  : image_path('openjob'),
+          action: function(){ self.openJob(); }
+        };
+      }
     }
 
     if (!$(self.stop_btn.element).button('option','disabled'))  {
