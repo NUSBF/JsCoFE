@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FCVD2T7BGM');
+    </script>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Using PISA in CCP4 Cloud &#8212; CCP4 Cloud 1.6 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+        <h2 class="heading"><span>Using PISA in CCP4 Cloud</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <div class="section" id="using-pisa-in-ccp4-cloud">
+<h1>Using PISA in CCP4 Cloud<a class="headerlink" href="#using-pisa-in-ccp4-cloud" title="Permalink to this headline">¶</a></h1>
+<p>PISA requires only atomic coordinates of sufficiently well refined structures. If they are obtained in course of crystallographic project,
+use structure revision just before the <code class="docutils literal notranslate"><span class="pre">Deposition</span></code> task. Alternatively, PISA may be used on any data in just two steps:</p>
+<p><code class="docutils literal notranslate"><span class="pre">1.</span></code> Import coordinate data; any valid PDB or mmCIF-formatted file may be used. In order to import the file, click <strong>add task</strong> =&gt; <strong>All task</strong> =&gt; <strong>Data import</strong> =&gt; the job chosen from the list of tasks will open automatically</p>
+<a class="reference internal image-reference" href="_images/Demo.Import.png"><img alt="_images/Demo.Import.png" class="align-center" src="_images/Demo.Import.png" style="width: 562.4px; height: 401.6px;" /></a>
+<p>From the above list, suitable import tasks include <code class="docutils literal notranslate"><span class="pre">File(s)</span> <span class="pre">Upload</span> <span class="pre">and</span> <span class="pre">Import</span></code>, <code class="docutils literal notranslate"><span class="pre">Import</span> <span class="pre">from</span> <span class="pre">PDB</span></code> and <code class="docutils literal notranslate"><span class="pre">Import</span> <span class="pre">from</span> <span class="pre">Cloud</span> <span class="pre">Stirage</span></code>. In order to read more about an import task, click on task documentation button <a class="reference external" href="../html-taskref/Data_Import.html" rel="noopener noreferrer" target="_blank"><img alt="reference" src="_images/reference.png" style="width: 20px; height: 20px;" /></a>, found on top of the corresponding Job Dialog.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Do not use PISA if your structure is not yet complete and ready for PDB deposition, because even a small imperfectness in crystal contacts may make the difference between identifying an interface as binding or not.</p>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">2.</span></code> Start PISA, as the next (child) job, by clicking <strong>add task</strong> =&gt; <strong>All task</strong> =&gt; <strong>Validation, Analysis and Deposition</strong> =&gt; <strong>Surface, Interfaces and Assembly Analysis with PISA</strong></p>
+<a class="reference internal image-reference" href="_images/Demo_PISA.png"><img alt="_images/Demo_PISA.png" class="align-center" src="_images/Demo_PISA.png" style="width: 561.6px; height: 392.8px;" /></a>
+<p>PISA is fairly automatic, and does not have any input parameters to be set. The <strong>ligand processing mode</strong> in <strong>Advanced paeameters</strong> should be always set to <em>Auto</em> (default). In rare cases, when crystal contains too many ligand molecules, them may be declared <em>Fixed</em> to macromolecules in order to keep the problem computationally tractable. <em>Free</em> ligand processing mode forces ligands to be always treated as independent entities and is for expert use only.</p>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

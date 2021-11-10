@@ -1,0 +1,30 @@
+========================
+Using PISA in CCP4 Cloud
+========================
+
+PISA requires only atomic coordinates of sufficiently well refined structures. If they are obtained in course of crystallographic project,
+use structure revision just before the ``Deposition`` task. Alternatively, PISA may be used on any data in just two steps: 
+
+``1.`` Import coordinate data; any valid PDB or mmCIF-formatted file may be used. In order to import the file, click **add task** => **All task** => **Data import** => the job chosen from the list of tasks will open automatically
+
+.. image:: images/Demo.Import.png
+         :scale: 40 %
+         :align: center 
+
+From the above list, suitable import tasks include ``File(s) Upload and Import``, ``Import from PDB`` and ``Import from Cloud Stirage``. In order to read more about an import task, click on task documentation button |reference|, found on top of the corresponding Job Dialog.
+
+.. |reference| image:: images/reference.png
+    :width: 20
+    :height: 20
+    :target: ../html-taskref/Data_Import.html
+
+.. Warning::
+            Do not use PISA if your structure is not yet complete and ready for PDB deposition, because even a small imperfectness in crystal contacts may make the difference between identifying an interface as binding or not.
+
+``2.`` Start PISA, as the next (child) job, by clicking **add task** => **All task** => **Validation, Analysis and Deposition** => **Surface, Interfaces and Assembly Analysis with PISA**
+
+.. image:: images/Demo_PISA.png 
+         :scale: 40 %
+         :align: center 
+
+PISA is fairly automatic, and does not have any input parameters to be set. The **ligand processing mode** in **Advanced paeameters** should be always set to *Auto* (default). In rare cases, when crystal contains too many ligand molecules, them may be declared *Fixed* to macromolecules in order to keep the problem computationally tractable. *Free* ligand processing mode forces ligands to be always treated as independent entities and is for expert use only.

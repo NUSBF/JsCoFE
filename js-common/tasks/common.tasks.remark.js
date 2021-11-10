@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.10.21   <--  Date of Last Modification.
+ *    10.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -131,7 +131,7 @@ if (!__template)  {
   TaskRemark.prototype.setTheme = function ( themeNo,inputPanel )  {
     this.theme_no = themeNo;
     inputPanel.header.icon_menu.button.setBackground (
-        image_path(__remark_icon[this.theme_no][0])
+      image_path(__remark_icon[this.theme_no][0])
     );
     // *** sticky feature
     // inputPanel.header.icon_menu_s.button.setBackground (
@@ -153,7 +153,7 @@ if (!__template)  {
         .addItem  ( 'Web page'     ,'','url' ,this.doclink_type=='url'  )
         .addItem  ( 'DOI reference','','doi' ,this.doclink_type=='doi'  )
         .setWidth ( '220px' );
-      if (__user_role==role_code.developer)
+      if ((__user_role==role_code.developer) || (__user_role==role_code.admin))
         dropdown
           .addItem  ( 'Task documentation'  ,'','taskref'  ,this.doclink_type=='taskref'   )
           .addItem  ( 'User guide article'  ,'','userguide',this.doclink_type=='userguide' )
@@ -162,26 +162,26 @@ if (!__template)  {
       var doc_label  = ibx_grid.setLabel ( 'URL:&nbsp;&nbsp;&nbsp;',2,0,1,1 );
       ibx_grid.setVerticalAlignment ( 2,0,'middle' );
       var input_text = ibx_grid.setInputText ( '',2,1,1,1).setWidth('500px');
-      function _set_fields ( type )  {
-        doc_label .setVisible ( type!='none' );
-        input_text.setVisible ( type!='none' );
-        var lbl = '';
-        var val = '';
-        switch (type)  {
-          case 'url'      :  lbl = 'URL';   break;
-          case 'doi'      :  lbl = 'DOI';   break;
-          case 'taskref'  :  case 'userguide' :
-          case 'tutorial' :  lbl = 'File';  break;
-          default : ;
-        }
-        doc_label .setText ( lbl );
-        input_text.setText ( ''  );
-      }
-      _set_fields ( this.doclink_type );
-      dropdown.addOnChangeListener ( function(text,value){
-        _set_fields ( value );
-      });
       (function(self){
+        function _set_fields ( type )  {
+          doc_label .setVisible ( type!='none' );
+          input_text.setVisible ( type!='none' );
+          var lbl = '';
+          var val = '';
+          switch (type)  {
+            case 'url'      :  lbl = 'URL';  val = self.doclink_url;  break;
+            case 'doi'      :  lbl = 'DOI';  val = self.doclink_doi;  break;
+            case 'taskref'  :  case 'userguide' :
+            case 'tutorial' :  lbl = 'File'; val = self.doclink_file; break;
+            default : ;
+          }
+          doc_label .setText  ( lbl );
+          input_text.setValue ( val );
+        }
+        _set_fields ( self.doclink_type );
+        dropdown.addOnChangeListener ( function(text,value){
+          _set_fields ( value );
+        });
         doclink_dlg.launch ( 'Set link',function(){
           self.doclink_type = dropdown.getValue();  // {'none'|url|doi|taskref|userguide|tutorial}
           var val = input_text.getValue();
@@ -240,6 +240,9 @@ if (!__template)  {
   TaskRemark.prototype.makeInputPanel = function ( dataBox )  {
 
     var div = TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
+
+    if (startsWith(this.doclink_type,'*'))
+      this.doclink_type = this.doclink_type.substring(1);
 
     // *** sticky feature
     // div.fix_cbx = new Checkbox ( 'Sticky',(this.state==job_code.remark) );
@@ -311,6 +314,10 @@ if (!__template)  {
       }
     }
     return false;
+  }
+
+  TaskRemark.prototype.isWebLink = function()  {
+    return  ('doclink_type' in this) && (this.doclink_type!='none');
   }
 
 }
