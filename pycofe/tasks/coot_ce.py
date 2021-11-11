@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    17.07.21   <--  Date of Last Modification.
+#    11.11.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -152,6 +152,11 @@ class CootCE(basic.TaskDriver):
                 self.stderrln ( " *** backup copy failed " + coot_backup_dir )
         else:
             rc = self.runApp ( "coot",args,logType="Main",quitOnError=False )
+
+        self.putMessage (
+            "<i>Just in case: learn about recovering results from crashed Coot jobs " +\
+                self.hotDocLink ( "here","jscofe_tips.coot_crash",
+                                  "Recover Coot results" ) + "</i>" )
 
         # Check for PDB files left by Coot and convert them to type structure
 
