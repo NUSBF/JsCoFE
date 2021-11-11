@@ -1630,6 +1630,17 @@ class TaskDriver(object):
                   "</sup>"
         return hothelp
 
+    def hotDocLink ( self,text,helpFName,hboxTitle,chapter="html-userguide" ):
+        hflist  = helpFName.split("#")
+        if len(hflist)==2:
+            hflist[1] = "#" + hflist[1]
+        else:
+            hflist.append ( "" )
+        doclink = "<a href=\"javascript:window.parent.launchHelpBox('"  +\
+                  hboxTitle + "','manuals/" + chapter + "/" + hflist[0] +\
+                  ".html" + hflist[1] + "',null,10)\">" + text + "</a>"
+        return doclink
+
     def registerRevision ( self,revision,serialNo=1,title="Structure Revision",
                            message="<b><i>Name:</i></b>",
                            gridId = "", revisionName=None ):

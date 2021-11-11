@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.10.21   <--  Date of Last Modification.
+ *    11.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -797,7 +797,8 @@ ProjectPage.prototype.onTreeContextMenu = function() {
           icon  : image_path('openjob'),
           action: function(){ self.openJob(); }
         };
-        if ((__user_role==role_code.developer) || (__user_role==role_code.admin))  {
+        if ((__user_role==role_code.developer) || (__user_role==role_code.admin) ||
+            (!crTask.isDocLink()))  {
           items.editLinkItem = { // The "Edit job" menu item
             label : "Edit link",
             icon  : image_path('editlink'),

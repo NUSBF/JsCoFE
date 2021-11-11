@@ -320,6 +320,11 @@ if (!__template)  {
     return  ('doclink_type' in this) && (this.doclink_type!='none');
   }
 
+  TaskRemark.prototype.isDocLink = function()  {
+    return  ('doclink_type' in this) &&
+            (['taskref','userguide','tutorial'].indexOf(this.doclink_type)>=0);
+  }
+
 }
 
 TaskRemark.prototype.cleanJobDir   = function ( jobDir )  {}
