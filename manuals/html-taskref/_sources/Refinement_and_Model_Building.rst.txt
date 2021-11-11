@@ -13,4 +13,4 @@ Refinement and Model Building
     doc.task.ArpWarp
     doc.task.Nautilus
     doc.task.Dimple
-    doc.task.CootMB
+    doc.task.CombStructure

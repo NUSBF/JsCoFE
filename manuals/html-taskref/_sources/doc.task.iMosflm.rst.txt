@@ -3,26 +3,26 @@ Interactive Image Processing with iMosflm
 ==========================================
 
 `iMOSFLM <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3069742/>`_ is a graphical user interface to the diffraction data-integration program `MOSFLM <http://journals.iucr.org/d/issues/2006/01/00/ba5082/index.html>`_.
-MOSFLM  is a program to process diffraction data collected using the oscillation method (Arndt & Wonacott, 1977). MOSFLM process the resulting diffraction images into three stages. The first is the determination of the crystal parameters, in particular the crystal lattice (unit cell) and its orientation relative to a laboratory axial system (usually based on the X-ray beam direction and the rotation axis). This is usually referred to as autoindexing. Knowledge of these parameters then allows an initial estimate of the crystal mosaicity. The second step is the determination of accurate unit-cell parameters, using a procedure known as post-refinement. This requires the integration of one or more segments of data with a few images in each segment. The final step is the integration of the entire set of diffraction images, while simultaneously refining parameters associated with both the crystal and the detector. 
+MOSFLM  is a program to process diffraction data collected using the oscillation method (Arndt & Wonacott, 1977). MOSFLM process the resulting diffraction images into three stages. The first is the determination of the crystal parameters, in particular the crystal lattice (unit cell) and its orientation relative to a laboratory axial system (usually based on the X-ray beam direction and the rotation axis). This is usually referred to as autoindexing. Knowledge of these parameters then allows an initial estimate of the crystal mosaicity. The second step is the determination of accurate unit-cell parameters, using a procedure known as post-refinement. This requires the integration of one or more segments of data with a few images in each segment. The final step is the integration of the entire set of diffraction images, while simultaneously refining parameters associated with both the crystal and the detector.
 
 There are the six basic “tasks” that iMosflm can perform:
 
-**Images**, **Indexing**, **Strategy**, **Cell Refinement**, **Integration**, **History** 
+**Images**, **Indexing**, **Strategy**, **Cell Refinement**, **Integration**, **History**
 
 
 
-.. tip::  
+.. tip::
         ``By clicking on "User Guide" you will guide to iMOSFILM user guide sections.``
-        
+
 ------
 Images
 ------
 
 `User Guide <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId486119>`_
 
-.. tip::  
+.. tip::
         ``There is no need to select all the images in the dataset - iMosflm assumes that (normally) you will want to load a complete dataset, so it finds all images that fit the "image template" if you pick any file in the dataset and the displayed image will the one you chose.``
-        
+
 
 Images collected using the Dectris Eiger detector are not written as a single file per image, but multiple images are written to a single file in **HDF5** format. iMosflm will read **HDF5 "master" files** (Not NeXus files). The program has been tested on HDF5 files produced at Diamond Light Source and ESRF. However, at present, there is no well defined standard for the way in which the experimental information is stored in the HDF5 files (wavelength, detector distance, beam coordinates, rotation angles etc), and so this information may be incomplete or incorrect.  It may therefore be necessary to enter or correct this data in iMosflm before attempting to process the images (see the `iMosflm tutorial <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId215473>`_ ).
 
@@ -55,17 +55,17 @@ Indexing – overview
     ``indexing only gives an approximate solution; we hope it will be good enough to proceed.``
 
 The 2D image co-ordinates of the spots can be converted to scattering vectors (that
-correspond to lattice points): 
+correspond to lattice points):
 
  .. image:: images/doc.task.iMOSFILM1.png
         :scale: 25 %
-        
+
 Here, **D** is the crystal to detector distance, **X** :subscript:`d` and **Y** :subscript:`d` are the spot co-ordinates relative to the beam centre on the image, and **r** is derived above (usually these are all in mm). In this calculation, **s** is in dimensionless reciprocal lattice units and the radius of the Ewald sphere is unity.
 
 **wavelength, crystal to detector distance and beam centre must all be known**
-    
+
     ``All the spots that are visible on the image correspond to reciprocal lattice points that are on the Ewald sphere at some point during this individual exposure``
-    
+
 The default autoindexing in Mosflm operates with spots found on a single image; although each can include spots from multiple images. Mosflm works best with spots from a series of non-contiguous images, which are well separated in φ; by default, iMosflm will use spots from two images that are as close as possible to 90° apart in φ. It assigns the midpoint of the rotation range of each image as the value for the reflection in the autoindexing procedure, so if contiguous images are used, different parts of a single reflection may be found on consecutive images, and each part of the same reflection will be assigned a different φ; autoindexing is likely to fail.
 
 Indexing itself within Mosflm uses a “real-space” method (i.e. the real space unit cell dimensions are obtained directly, rather than via the reciprocal space unit cell) using an `FFT-based method <http://journals.iucr.org/d/issues/1999/10/00/ba0024/ba0024.pdf>`_. For reciprocal lattice planes that have a simple relationship to each other, the projected vectors will also have a simple relationship. For example, the vectors corresponding to the 1kl, 2kl, 3kl planes will have lengths in the ratio 1:2:3. The projections which have more contributing planes will have more regularly spaced peaks, and so give rise to Fourier Transforms with peaks which are more distinct from the background. The indexing in Mosflm calculates several hundred projections, regularly spaced around a hemisphere of reciprocal space and applies a Fast Fourier Transform (FFT) to each. Although in principle, we only need to find the 3 FFTs corresponding to the three principal cell axes, they may not all be present (e.g. if the crystal orientation does not allow it), or we may find vectors corresponding to edges in a non-reduced cell. In practice, 30 FFTs produced which have the largest peaks are selected to determine which can be combined to give a real space unit cell which accounts for the majority of the reflections.
@@ -75,10 +75,10 @@ Data collection strategy
 ------------------------
 
     **Suggestion for optimization of data collection**
-    
+
 `User Guide <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver711/documentation/tutorial.html#mozTocId339960>`_
 
-The total φ rotation to be used is normally calculated by MOSFLM based on the Laue group and the crystal orientation (the Auto setting). 
+The total φ rotation to be used is normally calculated by MOSFLM based on the Laue group and the crystal orientation (the Auto setting).
 
 ---------------
 Cell Refinement
@@ -107,7 +107,7 @@ Mosflm combines “positional refinement” based on the spot positions on the d
 ------------
 Integration
 ------------
-    
+
     **recording how many counts in each spot, subtract background, usually fit reflection profiles.**
 
 `User guide <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId907047>`_
@@ -155,7 +155,9 @@ Check graphs - they should vary smoothly without obvious discontinuities. If the
 **more tips** you can find `here <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId727216>`_
 
 
-**for more, please, visit** https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/introduction.html 
+**Useful links**
+
+https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/introduction.html 
 
 
 **References**
@@ -166,4 +168,4 @@ Arndt, U. W. & Wonacott, A. J. (1977). Editors. The Rotation Method in Crystallo
 **ACKNOWLEDGEMENTS**
 
 
-This article uses materials from Dr. Harry Powell lecture  "Integration and Scaling".   We wish to thank  Dr. Harry Powell, Dr. Andrew Leslie, Dr. Owen Johnson for an amazing `iMosflm Tutorial <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html>`_. 
+This article uses materials from Dr. Harry Powell lecture  "Integration and Scaling".   We wish to thank  Dr. Harry Powell, Dr. Andrew Leslie, Dr. Owen Johnson for an amazing `iMosflm Tutorial <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html>`_.

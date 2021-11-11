@@ -48,12 +48,19 @@
         
   <div class="section" id="x-ray-cross-sections-and-anomalous-scattering-factors">
 <h1><span class="section-number">13.3. </span>X-ray cross sections and anomalous scattering factors<a class="headerlink" href="#x-ray-cross-sections-and-anomalous-scattering-factors" title="Permalink to this headline">¶</a></h1>
-<p>The task interpolates X-ray cross sections and computes anomalous scattering factors. f’ and f’’ values are derived for a given atom type at given wavelengths. These are important for data collection and analysis with heavy atoms.</p>
-<p>The atomic symbol for the element of interest is required as an input (case-insensitive).</p>
-<p>In order to <strong>Make scattering factors plot</strong> user should define the minimum photon energy in KeV in the given range.</p>
-<p>Task output provides the <strong>anomalous scattering factors plot for atom type</strong>.</p>
-<p>In order to <strong>Compute scattering factors for the following selected photon energies</strong> a list of the wavelengths (in Angstroms) should be given.</p>
-<p>In this case, the task output provides the <strong>anomalous scattering factors plot for atom type</strong> and a <strong>Selected anomalous scattering factors for atom type</strong> table.</p>
+<p>The task interpolates X-ray cross sections and computes <a class="reference external" href="https://www.xtal.iqfr.csic.es/Cristalografia/parte_07_4-en.html" rel="noopener noreferrer" target="_blank">anomalous scattering factors</a>. The anomalous contribution consists of two parts: a real part f’ and an imaginary part f’’. f’ and f’’ values are derived for a specified atom type at given wavelengths.</p>
+<p>The task requires the atomic symbol as an input (case-insensitive).</p>
+<ul>
+<li><p class="first">In order to <strong>Make scattering factors plot</strong> user should define the photon energy range in KeV. The majority of heavy atoms which bind to proteins have absorption edges which lie in the energy range typically used for protein diffraction work (5-20 KeV).</p>
+<p>In this mode, the task output provides the <strong>Anomalous scattering factors plot for atom type</strong>.</p>
+</li>
+<li><p class="first">In order to <strong>Compute scattering factors for the following selected photon energies</strong> a list of the wavelengths (in Angstroms) should be provided.</p>
+<p>In this mode, the task output provides the <strong>Anomalous scattering factors plot for atom type</strong> and a <strong>Selected anomalous scattering factors for atom type</strong> table.</p>
+</li>
+</ul>
+<p><strong>Useful links</strong></p>
+<p><a class="reference external" href="https://www.xtal.iqfr.csic.es/Cristalografia/parte_07_4-en.html" rel="noopener noreferrer" target="_blank">The anomalous dispersion</a></p>
+<p><a class="reference external" href="http://www.bmsc.washington.edu/scatter/" rel="noopener noreferrer" target="_blank">X-ray Anomalous Scattering</a></p>
 <p><strong>References</strong></p>
 <p><a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S0021889883010791" rel="noopener noreferrer" target="_blank">Cromer, D.T. (1983) Calculation of anomalous scattering factors at arbitrary wavelengths. J. Appl. Cryst. 16: 437;</a></p>
 </div>
