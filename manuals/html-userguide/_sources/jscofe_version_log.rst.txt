@@ -3,9 +3,6 @@ CCP4 Cloud Version Log
 ======================
 
 
-`test link <../demo_project.html?cmount=Demo%20projects&project=beta-blip>`_
-
-
 **Version 1.6.024**
 
     *Released on --.--.2021 with CCP4 7.1.017*
@@ -34,6 +31,11 @@ CCP4 Cloud Version Log
 
     #. Fixed bug which could cause project loss at archiving jobs at certain project tree configurations
 
+    #. Remarks can be converted into web links (new option in the remark's icon menu)
+
+    #. Remarks' icon menu is now scrollable and adjusting to the job dialog height
+
+    #. Project ID can now be changed at renaming
 
 
 **Version 1.6.023**

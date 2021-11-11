@@ -2,18 +2,24 @@
 X-ray cross sections and anomalous scattering factors
 =====================================================
 
-The task interpolates X-ray cross sections and computes anomalous scattering factors. f’ and f’’ values are derived for a given atom type at given wavelengths. These are important for data collection and analysis with heavy atoms.
+The task interpolates X-ray cross sections and computes `anomalous scattering factors <https://www.xtal.iqfr.csic.es/Cristalografia/parte_07_4-en.html>`_. The anomalous contribution consists of two parts: a real part f’ and an imaginary part f’’. f’ and f’’ values are derived for a specified atom type at given wavelengths.
 
-The atomic symbol for the element of interest is required as an input (case-insensitive).
+The task requires the atomic symbol as an input (case-insensitive).
 
-In order to **Make scattering factors plot** user should define the minimum photon energy in KeV in the given range.
+* In order to **Make scattering factors plot** user should define the photon energy range in KeV. The majority of heavy atoms which bind to proteins have absorption edges which lie in the energy range typically used for protein diffraction work (5-20 KeV).
 
-Task output provides the **anomalous scattering factors plot for atom type**.
+  In this mode, the task output provides the **Anomalous scattering factors plot for atom type**.
+
+* In order to **Compute scattering factors for the following selected photon energies** a list of the wavelengths (in Angstroms) should be provided.
+
+  In this mode, the task output provides the **Anomalous scattering factors plot for atom type** and a **Selected anomalous scattering factors for atom type** table.
 
 
-In order to **Compute scattering factors for the following selected photon energies** a list of the wavelengths (in Angstroms) should be given.
+**Useful links**
 
-In this case, the task output provides the **anomalous scattering factors plot for atom type** and a **Selected anomalous scattering factors for atom type** table.
+`The anomalous dispersion <https://www.xtal.iqfr.csic.es/Cristalografia/parte_07_4-en.html>`_
+
+`X-ray Anomalous Scattering <http://www.bmsc.washington.edu/scatter/>`_
 
 **References**
 
