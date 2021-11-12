@@ -16,11 +16,12 @@ running tests on Chrome and Firefox correspondingly
 
 
 1. **Running the tests on a local computer**
-   - Typical local run via Firefox and developer's CCP4Cloud is easy and will run all available tests:
+   - Typical local run via Firefox and developer's CCP4Cloud (DEV server) is easy and will run all available tests:
 ```
-python -m pytest .
+python -m pytest ./setests/.
 ```
-   - For verbose output during run (so you know what test script is doing):
+   - Please note that if change current directory deeply into tests directory like ./setests/basic/, tests may fail as Python will not find some imports; always run tests from at least ./setests/
+   - For verbose output during run (highly recommended, so you know what test script is doing):
 ```
 python -m pytest -v -s .
 ```
@@ -34,7 +35,7 @@ python -m pytest .  --junit-xml report.xml
 ```
    - You can specify particular test to run:
 ```
-python -m pytest ./test_molrep.py
+python -m pytest ./basic/test_molrep.py
 ```
    - You can specify a browser:
 ```
@@ -52,14 +53,18 @@ python -m pytest . --cloud https://cloud.ccp4.ac.uk --login abcd --password efgh
 ```
 python -m pytest . --cloud http://localhost:8085 --login devel --password devel
 ```
+   - To test CCP4Cloud Destop (for instance, to test Cloud from standard CCP4 installation on Windows or Mac), you may use following. Just run CCP4Cloud Desktop first and look for correct port number instead of 12345. Only basic tests will be run from the ./basic/directory
+```
+python -m pytest ./basic/ -v -s --cloud http://localhost:12345 --nologin True 
+```
    - You can use any combination of all abovementioned parameters.
 These tests will start browser (controlled by Selenium) at your computer; 
-browser shall be on screen all the time or otherwise tests may fail.
+**browser shall be on screen all the time or otherwise tests may fail! Do not change to other Desktop or full-screen program on Mac or tests will fail.**
 
 2. **Running the tests in remote mode.**
    - It is possible to run browser on remote machine (Linux VM provided by STFC Cloud) running Selenium Server Hub.
 All the tests will be run remotely, locally you will get the report (browser will not start on your local machine,
-it will start on STFC Cloud VM).
+it will start on STFC Cloud VM). This Cloud machine is accessible only from STFC intranet (use VPN from home).
 ```
 python -m pytest . --remote http://130.246.213.187:4444/wd/hub
 ```
