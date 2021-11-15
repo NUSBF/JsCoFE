@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.11.21   <--  Date of Last Modification.
+ *    15.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1145,15 +1145,31 @@ var excluded = [];
 }
 
 function checkOnUpdate ( callback_func )  {
-  if ('CCP4' in process.env)  {
-    var ccp4um = path.join ( process.env.CCP4,'libexec','ccp4um-bin' );
-    var job    = utils.spawn ( ccp4um,['-check-silent'],{} );
-    job.on ( 'close',function(code){
-      callback_func ( code );  // <254:  number of updates available
+  try {
+    if ('CCP4' in process.env)  {
+      var ccp4um = path.join ( process.env.CCP4,'libexec','ccp4um-bin' );
+      if (utils.fileExists(ccp4um))  {
+        var job = utils.spawn ( ccp4um,['-check-silent'],{} );
+        job.on ( 'close',function(code){
+          callback_func ( code );  // <254:  number of updates available
+                                   //  254:  CCP4 release
+                                   //  255:  no connection
+          // console.log ( ' >>>> code=' + code );
+        });
+      } else  {
+        setTimeout ( function(){
+          callback_func ( 255 );  // <254:  number of updates available
+                                   //  254:  CCP4 release
+                                   //  255:  no connection
+        },10);
+      }
+    }
+  } catch(e)  {
+    setTimeout ( function(){
+      callback_func ( 255 );  // <254:  number of updates available
                                //  254:  CCP4 release
                                //  255:  no connection
-      // console.log ( ' >>>> code=' + code );
-    });
+    },10);
   }
 }
 
