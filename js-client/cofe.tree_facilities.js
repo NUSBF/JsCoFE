@@ -426,8 +426,11 @@ StorageTree.prototype.readStorageData = function ( page_title,
               if (tree.file_key==4)
                 show = (tree.ext_filter.indexOf(ext)>=0);
                 //show = (importable_ext.indexOf(ext)>=0);
-              else if (tree.file_key==5)
+              else if (tree.file_key==5)  {
                 show = (ext=='ccp4_demo') || (ext=='ccp4cloud');
+                if (show)
+                  name = name.substring ( 0, name.lastIndexOf('.') );
+              }
 
               var icon  = 'file_dummy';
               if (ext in icon_ext)  {
