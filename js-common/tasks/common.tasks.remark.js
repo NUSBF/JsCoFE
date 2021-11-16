@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.11.21   <--  Date of Last Modification.
+ *    16.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -184,7 +184,7 @@ if (!__template)  {
         });
         doclink_dlg.launch ( 'Set link',function(){
           self.doclink_type = dropdown.getValue();  // {'none'|url|doi|taskref|userguide|tutorial}
-          var val = input_text.getValue();
+          var val = input_text.getValue().trim();
           switch (self.doclink_type)  {
             case 'url'      :  self.doclink_url  = val;  break;
             case 'doi'      :  self.doclink_doi  = val;  break;
