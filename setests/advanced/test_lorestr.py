@@ -111,13 +111,13 @@ def verifyLORESTR(driver):
             if len(t.text.strip()) > 0:
                 results.append(t.text)
 
-    print('*** Verification: LORESTR Rfree before  %s (<0.31), ' \
+    print('*** Verification: LORESTR Rfree before  %s (<0.33), ' \
           'Rfree after %s (expecting <0.21), ' \
           'Rama favoured before %s (>84.0), ' \
           'Rama favoured after %s (>95.0)' % (results[5], results[12], results[7], results[14]) )
 
-    assert float(results[4]) < 0.31
-    assert float(results[5]) < 0.31
+    assert float(results[4]) < 0.33
+    assert float(results[5]) < 0.33
     assert float(results[6]) < 4.0
     assert float(results[7]) > 84.0
 
