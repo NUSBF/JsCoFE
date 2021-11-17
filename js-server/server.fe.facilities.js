@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.03.20   <--  Date of Last Modification.
+ *    17.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -273,29 +273,46 @@ function readDirMeta ( dirpath,facilityDir )  {
   return facilityDir;
 }
 
-
-function getCloudDirListing ( cloudMounts,spath )  {
+function _storage_mounts_listing ( cloudMounts )  {
 var slist = new fcl.StorageList()
-
-  slist.path = spath;
-
-  if (!cloudMounts)
-    return slist;
-
-  if (spath.length==0)  {
-    // empty storage path: return the list of storage mounts
-
-    slist.name  = 'Cloud File Storage';
-
+  slist.path = '';
+  slist.name  = 'Cloud File Storage';
+  if (cloudMounts)  {
     for (var i=0;i<cloudMounts.length;i++)  {
       var sdir  = new fcl.FacilityDir();
       sdir.name = cloudMounts[i][0];
       sdir      = readDirMeta ( cloudMounts[i][1],sdir );
       slist.dirs.push ( sdir );
     }
+  }
+  return slist;
+}
+
+function getCloudDirListing ( cloudMounts,spath )  {
+var slist = null;
+
+  if (spath.length==0)  {
+    // empty storage path: return the list of storage mounts
+    slist = _storage_mounts_listing ( cloudMounts );
+
+    // slist.name  = 'Cloud File Storage';
+    //
+    // for (var i=0;i<cloudMounts.length;i++)  {
+    //   var sdir  = new fcl.FacilityDir();
+    //   sdir.name = cloudMounts[i][0];
+    //   sdir      = readDirMeta ( cloudMounts[i][1],sdir );
+    //   slist.dirs.push ( sdir );
+    // }
 
   } else  {
     // storage path is given; return actual directory listing for spath
+
+    slist = new fcl.StorageList()
+    slist.path = spath;
+
+    if (!cloudMounts)  {
+      return slist;
+    }
 
     slist.name  = spath;
 
@@ -368,13 +385,12 @@ var slist = new fcl.StorageList()
         }
       } else {
         slist.message = 'directory ' + spath + ' does not exist';
-        log.error    ( 20,'could not find cloud storage directory ' + dirpath );
-        log.standard ( 20,'could not find cloud storage directory ' + dirpath );
+        log.error ( 20,'could not find cloud storage directory ' + dirpath );
       }
     } else {
-      slist.message = 'mount ' + lst[0] + ' not found';
-      log.error    ( 21,'cloud storage mount ' + lst[0] + ' not found' );
-      log.standard ( 21,'cloud storage mount ' + lst[0] + ' not found' );
+      slist = _storage_mounts_listing ( cloudMounts );
+      // slist.message = 'mount ' + lst[0] + ' not found';
+      log.error ( 21,'cloud storage mount "' + lst[0] + '" not found' );
     }
   }
 

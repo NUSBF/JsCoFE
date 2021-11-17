@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    03.03.21   <--  Date of Last Modification.
+ *    17.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -553,7 +553,10 @@ CloudFileBrowser.prototype.loadStorageTree = function ( cloudPath )  {
       function(){
         if (storageTree.storageList)  {
           if (storageTree.storageList.size>=0)  {
-            browser.task.currentCloudPath = cloudPath;
+            // if (storageTree.storageList.path)
+            //       browser.task.currentCloudPath = cloudPath;
+            // else  browser.task.currentCloudPath = storageTree.storageList.path;
+            browser.task.currentCloudPath = storageTree.storageList.path;
             $(browser.element).dialog ( 'option','buttons',[
               { text  : 'Open',
                 id    : browser.btn_ids[0],

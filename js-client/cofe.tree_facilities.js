@@ -375,7 +375,8 @@ StorageTree.prototype.readStorageData = function ( page_title,
 
         } else  {
 
-          var rootLabel = 'Cloud File Storage';
+          var rootLabel  = 'Cloud File Storage';
+          tree.tree_root = tree.storageList.path;
           if (tree.tree_root)
             rootLabel = tree.tree_root;
           tree.root_label.setText ( '<u><i><b>' + rootLabel + '</b></i></u>' );
