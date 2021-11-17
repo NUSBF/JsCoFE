@@ -23,8 +23,7 @@ def startBuccaneer(driver):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
@@ -101,8 +100,7 @@ def asymmetricUnitContents(driver, waitShort, task='0002'):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -158,8 +156,7 @@ def startSHELXss(driver):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Experimental Phasing')
@@ -238,8 +235,7 @@ def phaserEP(driver):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Experimental Phasing')
@@ -304,8 +300,7 @@ def runParrot(driver, job, inverted=False):
     addButton.click()
     time.sleep(2)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification')
@@ -404,8 +399,7 @@ def importReplace_p9(driver, dirName, waitShort=90):
     addButton.click()
     time.sleep(2)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')

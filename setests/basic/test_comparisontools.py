@@ -23,8 +23,7 @@ def gesamtAfterRevision(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
@@ -95,8 +94,7 @@ def lsqkabAfterGesamt(driver, wait):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
@@ -171,8 +169,7 @@ def sequenceAlignment(driver, wait):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
@@ -225,8 +222,7 @@ def symmatch(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')

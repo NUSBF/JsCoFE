@@ -23,8 +23,7 @@ def zanudaAfterRevision(driver):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')

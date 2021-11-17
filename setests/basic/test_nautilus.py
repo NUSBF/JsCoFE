@@ -19,8 +19,7 @@ d = sf.driverHandler()
 def importFromPDB(driver, waitShort):
     print ('Importing 1msy (RNA-only structure) from the PDB')
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -76,8 +75,7 @@ def asymmetricUnitContents(driver, waitShort, task='0002'):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -133,8 +131,7 @@ def editRevisionStructure(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -180,8 +177,7 @@ def refmacAfterRevision(driver, waitLong):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
@@ -237,8 +233,7 @@ def startNautilus(driver):
     addButton.click()
     time.sleep(1)
 
-    if not sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
