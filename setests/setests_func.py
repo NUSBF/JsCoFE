@@ -201,8 +201,7 @@ def importLocal_P9(driver, dirName, waitShort=90):
     print ('Importing P9 from local disk. Dir name: %s' % (dirName))
 
 
-    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -263,8 +262,7 @@ def importFromCloud_rnase(driver, waitShort):
     print ('Importing "rnase" project from the Cloud Import')
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
 
@@ -325,8 +323,7 @@ def importFromCloud_insulin(driver, waitShort):
     print ('Importing insulin from the Cloud Import')
 
     # Clicking "Cloud Import"
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -380,8 +377,7 @@ def importFromCloud_mdm2(driver, waitShort):
     print ('Importing mdm2 from the Cloud Import')
 
     # Clicking "Cloud Import"
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -437,8 +433,7 @@ def importFromCloud_mdm2NoLigand(driver, waitShort):
     print ('Importing mdm2 from the Cloud Import')
 
     # Clicking "Cloud Import"
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -494,8 +489,7 @@ def importFromCloud_rnaseHHPRED(driver, waitShort):
     print ('Importing "rnase" project from the Cloud Import')
 
     # Clicking "Cloud Import"
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -560,8 +554,7 @@ def importFromCloud_rnaseNochains(driver, waitShort):
     print ('Importing "rnase" project from the Cloud Import')
 
     # Clicking "Cloud Import"
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -621,8 +614,7 @@ def importFromCloud_twin(driver, waitShort):
     print ('Importing "twin" project from the Cloud Import')
 
     # Clicking "Cloud Import"
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -687,8 +679,7 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort, task='0002'):
     addButton.click()
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[normalize-space()='%s']" % 'Full list'):
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -736,8 +727,7 @@ def editRevisionStructure_rnase(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -784,8 +774,7 @@ def editRevisionStructure_any(driver, waitShort, name=''):
     addButton.click()
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -832,8 +821,7 @@ def editRevisionStructure_2fx0(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -875,8 +863,7 @@ def editRevisionStructure_2fx0(driver, waitShort):
 def importFromPDB_2fx0(driver, waitShort):
     print ('Importing 2fx0 from the PDB')
 
-    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
@@ -933,8 +920,7 @@ def asymmetricUnitContents_2fx0(driver, waitShort):
     addButton.click()
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
@@ -990,10 +976,10 @@ def renameProject(driver, testName):
     time.sleep(1)
 
     # Shall return list of two elements for project creation
-    projectInput = driver.find_element_by_xpath("//input[contains(@value,'%s')]" % testName)
-    projectInput.click()
-    projectInput.clear()
-    projectInput.send_keys('Successfull - %s' % testName)
+    projectInput = driver.find_elements_by_xpath("//input[contains(@value,'%s')]" % testName)
+    projectInput[-1].click()
+    projectInput[-1].clear()
+    projectInput[-1].send_keys('Successfull - %s' % testName)
 
 
     textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Rename')
@@ -1111,8 +1097,7 @@ def startRefmac(driver, waitLong):
     addButton.click()
     time.sleep(1.05)
 
-    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
@@ -1178,8 +1163,7 @@ def startBuccaneer(driver):
     addButton.click()
     time.sleep(1)
 
-    if not clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Full list'):
-        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
