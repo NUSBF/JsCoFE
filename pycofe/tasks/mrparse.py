@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.09.21   <--  Date of Last Modification.
+#    18.11.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -106,7 +106,7 @@ class MrParse(basic.TaskDriver):
         cmd = [ "--seqin",tmp_seq ]
         if hkl:
             cmd += [ "--hklin",reflections_mtz ]
-        cmd += [ "--do_classify" ]
+        cmd += [ "--do_classify","--ccp4cloud" ]
         if "PDB_DIR" in os.environ:
             cmd += [ "--pdb_dir",os.environ["PDB_DIR"] ]
 
@@ -156,22 +156,32 @@ class MrParse(basic.TaskDriver):
             except:
                 homologs = []
 
+            nhomologs = 0
+
+
+            try:
+                with open(os.path.join(mrparse_dir,"models.json"),"r") as json_file:
+                    afmodels = json.load ( json_file )
+            except:
+                afmodels = []
+
+            nafmodels = 0
+
             if len(homologs)>0:
 
-                nmodels = 0
                 for i in range(len(homologs)):
                     if homologs[i]["pdb_file"]:
                         fpath = os.path.join ( mrparse_dir,homologs[i]["pdb_file"] )
                         model = self.registerModel ( seq,fpath,checkout=True )
                         if model:
-                            if nmodels<1:
+                            if nhomologs<1:
                                 self.putMessage ( "<i><b>Prepared models are associated " +\
                                                   "with sequence:&nbsp;" + seq.dname + "</b></i>" )
-                                self.putTitle ( "Prepared MR models" )
+                                self.putTitle ( "MR models prepared from PDB structures" )
                             else:
                                 self.putMessage ( "&nbsp;" )
-                            nmodels += 1
-                            self.putMessage ( "<h3>Model #" + str(nmodels) + ": " + model.dname + "</h3>" )
+                            nhomologs += 1
+                            self.putMessage ( "<h3>Model #" + str(nhomologs) + ": " + model.dname + "</h3>" )
                             model.addDataAssociation ( seq.dataId )
                             model.meta  = {
                                 "rmsd"  : homologs[i]["rmsd"],
@@ -189,140 +199,56 @@ class MrParse(basic.TaskDriver):
                                               homologs[i]["path"] + "</h3>" )
 
 
-                #     #ensNo += 1
-                #     ensOk  = True
-                #     self.putMessage ( "<h3>Model #" + str(len(models)+1) + ": " + model.dname + "</h3>" )
-                #     model.addDataAssociation ( seq.dataId )
-                #     model.meta  = { "rmsd" : "", "seqId" : sid }
-                #     model.seqId = model.meta["seqId"]
-                #     model.rmsd  = model.meta["rmsd" ]
-                #
-                #     if modSel!="S":
-                #         self.add_seqid_remark ( model,[sid] )
-                #
-                #     self.putModelWidget ( self.getWidgetId("model_btn"),
-                #                           "Coordinates",model )
-                #     models.append ( model )
-                #
-                # else:
-                #     if ensOk:
-                #         self.putMessage ( "&nbsp;" )
-                #     self.putMessage ( "<h3>*** Failed to form Model object for " +\
-                #                       xyz[i].dname + "</h3>" )
-                #     ensOk = False
+            if len(afmodels)>0:
 
+                for i in range(len(afmodels)):
+                    if afmodels[i]["pdb_file"]:
+                        fpath = os.path.join ( mrparse_dir,afmodels[i]["pdb_file"] )
+                        model = self.registerModel ( seq,fpath,checkout=True )
+                        if model:
+                            if nafmodels<1:
+                                if nhomologs<1:
+                                    self.putMessage ( "<i><b>Prepared models are associated " +\
+                                                      "with sequence:&nbsp;" + seq.dname + "</b></i>" )
+                                self.putTitle ( "MR models prepared from AFDB structures" )
+                            else:
+                                self.putMessage ( "&nbsp;" )
+                            nafmodels += 1
+                            self.putMessage ( "<h3>Model #" + str(nhomologs+nafmodels) + ": " +\
+                                              model.dname + "</h3>" )
+                            model.addDataAssociation ( seq.dataId )
+                            model.meta  = {
+                                "rmsd"    : afmodels[i]["rmsd"],
+                                "seqId"   : str(100.0*float(afmodels[i]["seq_ident"])),
+                                "h_score" : afmodels[i]["h_score"]
+                            }
+                            model.seqId = model.meta["seqId"]
+                            model.rmsd  = model.meta["rmsd" ]
+                            self.add_seqid_remark ( model )
+                            self.putModelWidget ( self.getWidgetId("model_btn"),
+                                                  "Coordinates",model )
+                            have_results = True
+                        else:
+                            self.putMessage ( "<h3>*** Failed to form Model object for " +\
+                                              afmodels[i]["path"] + "</h3>" )
 
-                if nmodels>0:
-                    self.generic_parser_summary["mrparse"] = {
-                      "summary_line" : str(nmodels) + " MR model(s) prepared"
-                    }
-                else:
-                    self.generic_parser_summary["mrparse"] = {
-                      "summary_line" : "MR model preparation failed"
-                    }
-
-            else:
+            if len(homologs)<1 and len(afmodels)<1:
                 self.putTitle ( "No MR models were prepared" )
                 self.generic_parser_summary["mrparse"] = {
-                  "summary_line" : " no suitable homologues found"
+                  "summary_line" : " no suitable PDB or AFDB homologs found"
                 }
 
-
-
-
-            """
-            homs  = {}
-            key   = 0
-            eLLg0 = -10000.0
-            ens0  = None
-            with open(os.path.join(mrparse_dir,"phaser1.log"),"r") as f:
-                for line in f:
-                    if key==1:
-                        words = line.split()
-                        if len(words)==4:
-                            if words[-1] in homs:
-                                homs[words[-1]]["eLLG"] = words[0]
-                                homs[words[-1]]["rmsd"] = words[1]
-                                if float(words[0])>eLLg0:
-                                    eLLg0 = float(words[0])
-                                    ens0  = words[-1]
-                        else:
-                            key = 0
-                    elif line.startswith("ENSEMBLE "):
-                        words = line.split()
-                        homs[words[1]] = {
-                            "path" : line.split('\"')[1],
-                            "sid"  : words[-1]
-                        }
-                    elif "eLLG   RMSD frac-scat  Ensemble" in line:
-                        key = 1
-                    else:
-                        key = 0
-
-            homologs = []
-            if ens0:
-                homologs = [homs[ens0]]
-                exclude  = [ens0]
-                while ens0:
-                    ens0  = None
-                    eLLg0 = -10000.0
-                    eLLG1 = float(homologs[-1]["eLLG"])
-                    for ens in homs:
-                        if ens not in exclude:
-                            eLLG = float(homs[ens]["eLLG"])
-                            if eLLg0<eLLG and eLLG<=eLLG1:
-                                eLLg0 = eLLG
-                                ens0  = ens
-                    if ens0:
-                        homologs.append ( homs[ens0] )
-                        exclude .append ( ens0 )
-
-            if len(homologs)>0:
-
-                nmodels = 0
-                for i in range(len(homologs)):
-                    fpath = os.path.join ( mrparse_dir,homologs[i]["path"] )
-                    model = self.registerModel ( seq,fpath,checkout=True )
-                    if model:
-                        if nmodels<1:
-                            self.putMessage ( "<i><b>Prepared models are associated " +\
-                                              "with sequence:&nbsp;" + seq.dname + "</b></i>" )
-                            self.putTitle ( "Prepared MR models" )
-                        else:
-                            self.putMessage ( "&nbsp;" )
-                        nmodels += 1
-                        self.putMessage ( "<h3>Model #" + str(nmodels) + ": " + model.dname + "</h3>" )
-                        model.addDataAssociation ( seq.dataId )
-                        model.meta  = {
-                            "rmsd"  : homologs[i]["rmsd"],
-                            "seqId" : str(100.0*float(homologs[i]["sid"])),
-                            "eLLG"  : homologs[i]["eLLG"]
-                        }
-                        model.seqId = model.meta["seqId"]
-                        model.rmsd  = model.meta["rmsd" ]
-                        self.add_seqid_remark ( model )
-                        self.putModelWidget ( self.getWidgetId("model_btn"),
-                                              "Coordinates",model )
-                        have_results = True
-                    else:
-                        self.putMessage ( "<h3>*** Failed to form Model object for " +\
-                                          homologs[i]["path"] + "</h3>" )
-
-                if nmodels>0:
-                    self.generic_parser_summary["mrparse"] = {
-                      "summary_line" : str(nmodels) + " MR model(s) prepared"
-                    }
-                else:
-                    self.generic_parser_summary["mrparse"] = {
-                      "summary_line" : "MR model preparation failed"
-                    }
-
-            else:
-                self.putTitle ( "No MR models were prepared" )
+            if nhomologs+nafmodels>0:
                 self.generic_parser_summary["mrparse"] = {
-                  "summary_line" : " no suitable homologues found"
+                  "summary_line" : str(nhomologs+nafmodels) +\
+                                   " MR model(s) prepared (PDB:" + str(nhomologs) +\
+                                   ", AFDB:" + str(nafmodels) + ")"
                 }
-            """
+            else:
+                self.generic_parser_summary["mrparse"] = {
+                  "summary_line" : "MR model preparation failed"
+                }
+
 
         # close execution logs and quit
         self.success ( have_results )
