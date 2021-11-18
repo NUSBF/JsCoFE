@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    27.05.21   <--  Date of Last Modification.
+#    18.11.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1978,6 +1978,8 @@ class TaskDriver(object):
                 msg += "<b>seqId :</b> " + str(model.meta["seqId"]) + "%&nbsp;&nbsp;&nbsp;&nbsp;"
             if model.meta["rmsd"]:
                 msg += "<b>RMSD :</b> " + str(model.meta["rmsd"]) + "&Aring;"
+            if "h_score" in model.meta and model.meta["h_score"]:
+                msg += "<b>H-score :</b> " + str(model.meta["h_score"]) + "&nbsp;&nbsp;&nbsp;&nbsp;"
 
         self.putMessage1 ( pageId,msg + "&nbsp;",row )
 
