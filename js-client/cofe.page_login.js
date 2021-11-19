@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.08.21   <--  Date of Last Modification.
+ *    19.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,10 +39,10 @@ function LoginPage ( sceneId )  {
   __login_token = '';
   __login_user  = '';
 
+  __announcement_made = false;  // force checking at login
+
   // prepare the scene and make top-level grid
   BasePage.call ( this,sceneId,'-full','LoginPage' );
-
-  checkAnnouncement();
 
   // adjust scene grid attributes such that login panel is centered
 
