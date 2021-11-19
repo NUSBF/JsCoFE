@@ -40,9 +40,6 @@ function startSession ( sceneId,dev_switch )  {
     window.history.replaceState ( {},document.title,'/' );
   }
 
-  checkBrowser();
-  checkAnnouncement();
-
   checkLocalService ( function(rc){
 
     if (!rc)  {
@@ -121,23 +118,27 @@ function startSession ( sceneId,dev_switch )  {
 }
 
 
+// var __announcement_made = false;
+
 function checkAnnouncement()  {
 
-  serverCommand ( fe_command.checkAnnouncement,{},'Announcement',
-    function(rdata){ // successful reply
-      if (rdata.data.message)  {
-        if (startsWith(rdata.data.message,'!#'))
-          rdata.data.message = rdata.data.message.split('\n').slice(1).join('\n');
-        if (rdata.data.message)
-          new MessageBox ( 'Announcement','<div style="width:500px;">' +
-                                          rdata.data.message + '</div>' );
-      }
-      __tips = rdata.data.tips;  // may be null
-      return true;
-    },
-    function(){}, // always do nothing
-    function(){}  // do nothing on fail
-  );
+  // if (!__announcement_made)
+    serverCommand ( fe_command.checkAnnouncement,{},'Announcement',
+      function(rdata){ // successful reply
+        if (rdata.data.message)  {
+          if (startsWith(rdata.data.message,'!#'))
+            rdata.data.message = rdata.data.message.split('\n').slice(1).join('\n');
+          if (rdata.data.message)
+            new MessageBox ( 'Announcement','<div style="width:500px;">' +
+                                            rdata.data.message + '</div>' );
+        }
+        __tips = rdata.data.tips;  // may be null
+        // __announcement_made = true;
+        return true;
+      },
+      function(){}, // always do nothing
+      function(){}  // do nothing on fail
+    );
 
 }
 

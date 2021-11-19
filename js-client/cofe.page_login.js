@@ -42,6 +42,8 @@ function LoginPage ( sceneId )  {
   // prepare the scene and make top-level grid
   BasePage.call ( this,sceneId,'-full','LoginPage' );
 
+  checkAnnouncement();
+
   // adjust scene grid attributes such that login panel is centered
 
   // make login panel

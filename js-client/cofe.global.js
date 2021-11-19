@@ -79,6 +79,8 @@ if ((navigator.userAgent.indexOf('Version/14')>=0) &&
   },500);
 */
 
+var __browser_checked = false;
+
 function checkBrowser()  {
   // if ((navigator.userAgent.indexOf('Version/14')>=0) &&
   //     (navigator.userAgent.indexOf('Safari')>=0) && (!__iOS_device))
@@ -87,6 +89,7 @@ function checkBrowser()  {
   //       'which is known not to work well with ' + appName() +
   //       '. Please use another browser, such as Opera, Chrome, Firefox.</div>'
   //   );
+  __browser_checked = true;
   return;
 }
 
