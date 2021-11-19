@@ -29,6 +29,8 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   $(document.body).empty();
   $('<div>').attr('id',sceneId).addClass('main-page').appendTo(document.body);
 
+  checkBrowser();
+
   // clear the page first
   // $('#'+sceneId).empty();
   //  unsetDefaultButton ( null );
