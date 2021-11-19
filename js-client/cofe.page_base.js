@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.07.21   <--  Date of Last Modification.
+ *    19.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -30,6 +30,7 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   $('<div>').attr('id',sceneId).addClass('main-page').appendTo(document.body);
 
   checkBrowser();
+  checkAnnouncement();
 
   // clear the page first
   // $('#'+sceneId).empty();

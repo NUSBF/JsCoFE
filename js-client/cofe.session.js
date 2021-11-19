@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.06.21   <--  Date of Last Modification.
+ *    19.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -118,11 +118,11 @@ function startSession ( sceneId,dev_switch )  {
 }
 
 
-// var __announcement_made = false;
+var __announcement_made = false;
 
 function checkAnnouncement()  {
 
-  // if (!__announcement_made)
+  if (!__announcement_made)
     serverCommand ( fe_command.checkAnnouncement,{},'Announcement',
       function(rdata){ // successful reply
         if (rdata.data.message)  {
@@ -133,7 +133,7 @@ function checkAnnouncement()  {
                                             rdata.data.message + '</div>' );
         }
         __tips = rdata.data.tips;  // may be null
-        // __announcement_made = true;
+        __announcement_made = true;
         return true;
       },
       function(){}, // always do nothing

@@ -1129,7 +1129,7 @@ function Image ( source,width,height )  {
   Widget.call ( this,'img' );
   if (source.length>0)  this.element.setAttribute ( 'src'   ,source );
   if (width .length>0)  this.element.setAttribute ( 'width' ,width  );
-  if (height.length>0)  this.element.setAttribute ( 'height',height  );
+  if (height.length>0)  this.element.setAttribute ( 'height',height );
 }
 
 Image.prototype = Object.create ( Widget.prototype );
