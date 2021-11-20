@@ -181,8 +181,8 @@ class input_spcgrp(object):
     axes = re.match('P (21?) (21?) (21?)', self._sg3)
     if axes:
       perm_op = op.replace('-', '').split(',')
-      perm_rec = zip(*sorted(zip(perm_op, tuple('hkl'))))[1]
-      self._sg2 = 'P %s %s %s' %zip(*sorted(zip(perm_rec, axes.groups())))[1]
+      perm_rec = list(zip(*sorted(list(zip(perm_op, tuple('hkl'))))))[1]
+      self._sg2 = 'P %s %s %s' % list(zip(*sorted(list(zip(perm_rec, axes.groups()))))) [1]
 
 class spacegroup(object):
   # A lazy solution, avoiding transformations where possible
