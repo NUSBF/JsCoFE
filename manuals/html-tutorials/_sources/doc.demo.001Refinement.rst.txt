@@ -2,7 +2,7 @@
 Refinement using REFMAC5 via CCP4 Cloud
 =======================================
 
-Rob Nicholls, Eugene Krissinel, Garib Murshudov
+Rob Nicholls, Garib Murshudov
 
 In this tutorial, which consists of three parts, we consider model refinement using different parameters, twin refinement, and ligand fitting and refinement.
 

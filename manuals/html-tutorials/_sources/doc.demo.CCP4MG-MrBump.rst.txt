@@ -20,11 +20,9 @@ This tutorial explains how to create the ensembles for Molecular Replacement wit
    :align: center
    :scale: 40 %
 
-<<<<<<< HEAD
-Every task in CCP4 Cloud produced a report. Some reports come with the verdict.
-=======
+
 Every task in CCP4 Cloud produced a report. Some reports come with the verdict. 
->>>>>>> 12fa190739f910864f9773a98679052980a28cbf
+
 
 
 .. image:: images/Demo.CCP4MG_ASU2.jpg
@@ -32,11 +30,8 @@ Every task in CCP4 Cloud produced a report. Some reports come with the verdict.
    :scale: 30 %
 
 .. tip::
-<<<<<<< HEAD
-        Please read verdict carefully, it would help you appreciate the quality of the task performance.
-=======
         Please read verdict carefully, it would help you appreciate the quality of the task performance. 
->>>>>>> 12fa190739f910864f9773a98679052980a28cbf
+
 
 
 ``3.``	Once **Asymmetric Unit Contents** is defined and we are satisfied with result. It is possible to start the **MR Ensemble with CCP4mg** task: **add next job => All task => Molecular Replacement => Prepare MR Ensemble with CCP4mg**
@@ -62,17 +57,6 @@ For :abbr:`AFDB (AlphaFold DataBase)` models, you can adjust the pLDDT cut-off
                 
                 * **pLDDT < 50** indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.
 
-<<<<<<< HEAD
-                * **pLDDT > 90**: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).
-
-                * **70 < pLDDT < 90** residues are expected to be positioned reasonably well (generally, a good backbone prediction).
-
-                * **50 < pLDDT < 70** corresponds to residues modelled with low confidence, which should be treated with caution.
-
-                * **pLDDT < 50** indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.
-
-=======
->>>>>>> 12fa190739f910864f9773a98679052980a28cbf
 
 Higher values mean only the most confidently predicted residues are retained in the search models.
 

@@ -14,7 +14,7 @@
     
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Auto-EP with Crank-2 using hyaluronan-binding domain of human cd44 &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>1. Experimental Phasing with ShelxCD and Phaser-EP on the example of hyaluronan-binding domain of human cd44 protein &#8212; CCP4 Cloud 1.6 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -24,78 +24,111 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2. Refinement using REFMAC5 via CCP4 Cloud" href="doc.demo.001Refinement.html" />
+    <link rel="prev" title="Tutorials" href="index.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.6 documentation</span></a></h1>
-        <h2 class="heading"><span>Auto-EP with Crank-2 using hyaluronan-binding domain of human cd44</span></h2>
+        <h2 class="heading"><span>1. Experimental Phasing with ShelxCD and Phaser-EP on the example of hyaluronan-binding domain of human cd44 protein</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
+        «&#160;&#160;<a href="index.html">Tutorials</a>
+        &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="doc.demo.001Refinement.html"><span class="section-number">2. </span>Refinement using REFMAC5 via CCP4 Cloud</a>&#160;&#160;»
         </p>
 
       </div>
       <div class="content" role="main">
         
         
-  <div class="section" id="auto-ep-with-crank-2-using-hyaluronan-binding-domain-of-human-cd44">
-<h1>Auto-EP with Crank-2 using hyaluronan-binding domain of human cd44<a class="headerlink" href="#auto-ep-with-crank-2-using-hyaluronan-binding-domain-of-human-cd44" title="Permalink to this headline">¶</a></h1>
-<p>For this practical you are presented with a set of images collected from a crystal of selenomethionine containing CD44. The diffraction images were deposited with Zenodo 10.5281/zenodo.55993 and we will be using their copies located on CCP4 server. In this way we will emulate a setup in which an X-ray laboratory has a centralised diffraction data storage and centralised ccp4cloud installation.</p>
-<p>The paths to sequence file and  directory with diffraction images are as follows:
-tutorial-data/1_from_images/cd44/cd44.seq
-tutorial-data/1_from_images/cd44/images</p>
-<p>The above paths are  relative to the cloud storage root.</p>
-<p>Before the Se-Met derivative of CD44 became available, the native CD44 had been observed to crystallize in space group P212121 with cell constants a=48.88, b=77.27, c=87.67, α=β=γ=90°.</p>
-<p>Objectives</p>
-<ol class="arabic simple">
-<li>To learn principles of working with CCP4 Cloud web-interface.</li>
-<li>To learn how to integrate, scale and merge images with Xia2 and Aimless pipelines.</li>
-<li>To get familiar with individual steps of experimental phasing.</li>
-</ol>
-<p>Workflow is fully defined by numbered sentences. Open cycles mark additional information.</p>
-<p>Workflow</p>
-<ol class="arabic simple">
-<li>Import sequence using “Cloud Import”</li>
-</ol>
-<p>We will need the sequence on all branches of the project tree, so we import it first.</p>
-<p>It is not critical not to do so, it is possible to modify project tree later (a sub-branch can be moved up using the button with blue arrow pointing up).</p>
-<p>2. Integrate images using xia2. Keep defaults except for defining “Se” in “Heavy atom type” textbox.
-Xia2 outputs two or more unmerged datasets, and one merged dataset. The latter contains anomalous data if “Heavy atom type” is defined and only mean intensities otherwise.</p>
-<ol class="arabic simple" start="3">
-<li>Compose the initial structure revision  Combine CD44 sequence and the merged dataset generated automatically by xia2 into an initial - we’ll start from this one. Define “Se” as “Main anomalous scatterer”.</li>
-</ol>
-<p>4a. Use “Substructure Search with SHELX via Crank-2 (SAD)” to find anomalous substructure.
-How many Se sites has been found?
-There is similar task “Substructure Search with SHELX-C/D (SAD)”, which does not generate graphical report page, but instead shows the original SHELXD output in the tab “Main Log”.</p>
-<p>4b. Use “Experimental Phasing with Phaser (SAD)” for substructure completion and initial phasing.
-“Se” under the “Structure revision” means that the input substructure contains Se (as should have been defined in the input of “Asymmetric Unit Contents” task). To extend the substructure with Se, you will have to define “Se” once again,  in the LLG map completion menu.</p>
-<p>How many Se sites are there after substructure completion?</p>
-<p>The “Se” with low occupancies in our substructure are actually S-atoms. We keep them as “Se” to help Parrot at the next step to not get lost during NCS determination.</p>
-<p>The graph in the Report tab show FOM for specific subsets of reflections. For a correct substructure, FOM for acentric reflections is considerably higher than for centric reflections.</p>
-<p>5. The Phaser-SAD job generates two structure revisions, for original and inverse hands. Perform density modification for each of them using “Density Modification with Parrot”. Use corresponding substructure as “Model for NCS detection”.
-Parrot uses substructure to define initial values of NCS operations. However, each monomer contains only two Se atoms. This is insufficient for determination of NCS operations relating monomers. How Parrot managed to figure out the NCS operations?
-Pay attention to “Reflection statistics” and “NCS statistics” plots, specifically to changes of FOM and NCS mask volume with cycle. Which hand is correct? Could more cycles of density modification be useful? You may run another Parrot job if you think they could.
-The revision consists of several data objects. (Use “Inspect” button to see them). The current job can only see the revision(s) from the parent job. However, the model for NCS detection is not a revision but a data object of type “structure” or “substructure” (a constituent  part of a certain revision or a stand-alone data object). The current job can see relevant data objects from all the jobs on its branch. Therefore, the “Model for NCS detection” can be taken from earlier jobs, and, in particular, it can be a structure from an MR job.</p>
-<p>6. Inspect electron density generated by the two Parrot runs (UglyMol viewer can be opened from Report tab of finished Parrot job window).
-Does comparison of the two maps confirms the correct hand identified from stats?</p>
-<p>7. Continue each of the Parrot jobs with “Automatic Model Building with Buccaneer”.
-The correct hand should now be identified with certainty.</p>
-<ol class="arabic simple" start="8">
-<li>Do “Refinement with Refmac”. Follow with “Prepare data for deposition” to see that the structure is not good enough for deposition with the PDB. While Deposition job is running, start “Model Building with Coot” (as a child node of Refmac job) and correct several side chains. Continue the Coot job with Refmac, “Find and Fit Waters with Coot” and another Refmac.</li>
-<li>Start a new branch growing from xia2 job: this time continue with “Data Reduction with Aimless” and use unmerged unscaled data from xia2, sweep1. For example, you can try a very conservative approach - to keep only the best images in the range from 1 to about 110.</li>
-</ol>
-<p>10. Perform steps 3-7 on the new branch, following Aimless job.
-Was there any differences in phasing and refinement stats in the two branches starting from xia2 job? Probably differences are minor, but these may still show a general trend.</p>
-<ol class="arabic simple" start="11">
-<li>Compare models from two branches</li>
-</ol>
-<p>11.1. Select the job, that produced a structure that you want use as reference.</p>
-<p>11.2. Press and keep Apple key (Mac), XXX (Linux) and select the revision you want to modify.</p>
-<p>11.3 Open task “Symmetry Match to Reference Structure with CSymMatch”, select revision and reference structure from drop down menus and Run.</p>
-<p>Note that the CSymMatch job node shows its own job number and the number of the job where additional data came from.</p>
-<p>11.4 Continue CSymMatch job with Coot, and, in Coot interface, define the reference structure as “Additional structure”</p>
+  <div class="section" id="experimental-phasing-with-shelxcd-and-phaser-ep-on-the-example-of-hyaluronan-binding-domain-of-human-cd44-protein">
+<h1><span class="section-number">1. </span>Experimental Phasing with ShelxCD and Phaser-EP on the example of hyaluronan-binding domain of human cd44 protein<a class="headerlink" href="#experimental-phasing-with-shelxcd-and-phaser-ep-on-the-example-of-hyaluronan-binding-domain-of-human-cd44-protein" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial is based on a set of images collected from a crystal of selenomethionine-containing CD44 protein.</p>
+<p><code class="docutils literal notranslate"><span class="pre">1.</span></code> The protein sequence has been already imported and can be found in the output of the <strong>Cloud Import</strong> task.</p>
+<p><code class="docutils literal notranslate"><span class="pre">2.</span></code> The next step is to start the <a class="reference external" href="../html-taskref/doc.task.Xia2.html" rel="noopener noreferrer" target="_blank">Automatic Image Processing with Xia2</a> task: <strong>add next job =&gt; All task =&gt; Data Processing =&gt; Automatic Image Processing with Xia-2</strong>.</p>
+<p><strong>Image directory</strong></p>
+<blockquote>
+<div><em>diffraction images can be found at Cloud storage root:</em> <strong>Tutorials/Tutorial data/1_from_images/cd44/images</strong></div></blockquote>
+<p>Specify <strong>Se</strong> as <strong>Heavy atom type</strong> in the task input.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Resolution limits and Spacegroup are normally determined by examining the data, but it is possible to enter them here if you have prior knowledge.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Xia2 outputs two or more unmerged datasets, and one merged dataset. The latter contains anomalous data only if heavy atom type is specified in task input parameters. Otherwise, only mean intensities will be computed.</p>
+</div>
+<div class="toggle-header docutils container">
+<strong>Xia-2 report</strong></div>
+<div class="toggle-content docutils container">
+<blockquote>
+<div><p><strong>Look for the plot of CC(1/2) vs resolution</strong> (<strong>Dataset SAD</strong> =&gt; <strong>Analysis by resolution</strong> section). It plots the correlation coefficient for randomly selected half sets of the intensities in dataset with each other. When this has fallen substantially below 1.0 it indicates that the data have become weak and internally inconsistent (<em>it is a good idea not to include such data in calculations</em>). By default, this Xia2 job has cut off our data at a resolution where CC(1/2) drops to 0.5 (some people are less conservative and select a cutoff closer to 0.35).</p>
+<p><strong>Completeness</strong> describes the percentage of the theoretically observable reflections (within given resolution limits) have been measured in the experiment. Completeness should be used to determine if there is sufficient data for refinement and/or model-building. A value greater than 90% is generally desired, while a value less than 75% is considered poor. Values in between will provide less than optimal results.</p>
+<p><strong>Look for the plot of Rmerge v Batch for all images</strong> (you will find it in the <strong>Dataset SAD</strong> =&gt; <strong>Analysis by batch</strong> section). <strong>Rmerge</strong> offers an indication of how well multiple observations of equivalent reflections agree with each other, with a low value indicating better agreement. Notice that this value is stable throughout much of the dataset, but starts to drift upwards towards the end of data collection, indicating there is likely to be radiation damage to the crystal. It is better to remove these compromised data from processing as long as we can leave ourselves with acceptable completeness. The plot of cumulative completeness vs batch can help guide you in selecting this cut-off. <strong>For this dataset cutting off after batch 120 is a reasonable compromise</strong>.</p>
+</div></blockquote>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">3.</span></code> The next step is the data reduction with <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Aimless.html" rel="noopener noreferrer" target="_blank">Aimless</a>: <strong>add next job =&gt; All task =&gt; Data Processing =&gt; Merging and Scaling with Aimless</strong></p>
+<p>In Aimless input omit the most radiation damaged images from processing. Choose <strong>xia2_unmerged_scaled</strong> data in <strong>Unmerged reflections</strong> section. Limit number branches to 120 (type 1-120 in the <strong>Branches</strong>). Select a <strong>high resolution cut-off</strong> of <strong>1.8 Å</strong>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">4.</span></code> The next step is to make a hypothesis on crystal composition (that is, to guess the correct number of protein chains in the Asymmetric Unit). This is important for getting correct estimation of the solvent content; grossly incorrect estimate may have a significant impact on the success of Experimental Phasing. In order to specify the expected crystal composition, run the <strong>Asymmetric Unit definition</strong> task, which will also calculate the corresponding solvent content. When preparing the task for run, specify <strong>Se</strong> as <strong>Main anomalous scatterer</strong>.</p>
+<p>After task finishes, inspect the <strong>verdict</strong> section in the report page. The verdict will help you to assess the likelihood of having the correct ASU composition.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">ASU composition remains a hypothesis until the structure is solved. It is not unusual to have it reconsidered in case of difficulties with phasing or refinement.</p>
+</div>
+<p>On output, the task creates the initial <strong>structure revision</strong>, containing only <strong>ASU definition</strong>  and <strong>merged HKL dataset</strong>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">5.</span></code> Once the Asymmetric Unit is defined and initial structure revision is created, initial phases may be estimated. Finding initial phases in Experimental Phasing is a two-step procedure. On first step, anomalous signal in the reflection dataset is used to find location of anomalous scatterers (the heavy-atom substructure). On second step, the reflection dataset and substructure found are used to estimate <em>protein</em> phases.</p>
+<p>The substructure is found with ShelxCD software, which may be used as part of Crank-2 automatic pipeline (see task <strong>Substructure Search with SHELX via Crank-2</strong> in the Experimental Phasing section of the Task List), or with the dedicated ShelxCD task (<strong>Substructure Search with SHELX-C/D</strong>). Let’s choose the first one: <strong>add next job =&gt; All task =&gt; Experimental phasing =&gt; Substructure Search with SHELX via Crank-2</strong>.</p>
+<div class="toggle-header docutils container">
+<strong>Output</strong></div>
+<div class="toggle-content docutils container">
+<blockquote>
+<div><p><em>the task provides heavy atom substructure for calculating initial protein phases</em></p>
+<p><strong>FA estimation and/or other substructure detection preparations</strong></p>
+<p>The graph <strong>Dano/Sigdano</strong> shows the anomalous signal strength as a function of resolution. The larger the <strong>Dano/Sigdano</strong> ratio, the stronger the signal, and values under 0.7 indicate a very weak signal not suitable for phasing (grey area). In our case, the anomalous signal for appears to be relatively weak but sufficient for SAD phasing.</p>
+</div></blockquote>
+</div>
+<div class="toggle-header docutils container">
+<strong>Substructure determination output</strong></div>
+<div class="toggle-content docutils container">
+<blockquote>
+<div>Please find the report summary for the substructure determination under <strong>graph data</strong>.</div></blockquote>
+</div>
+<div class="toggle-header docutils container">
+<strong>Result</strong>:</div>
+<div class="toggle-content docutils container">
+<blockquote>
+<div><p><strong>Judging from the obtained scores, there is a reasonable chance that the substructure has been correctly determined</strong></p>
+<p>A good indication that the substructure has been correctly determined is if the threshold (i.e. CFOM) has been reached before the maximum number of cycles has been performed.</p>
+<p>A division of trials in the <strong>distribution of CFOM from trials</strong> graph is also an encouraging indicator: the graph shows the separation of incorrect (lower CFOM) trials from correct (higher CFOM) solutions.</p>
+<p>This division can also be observed as clustering in a graph of <strong>CC against CCweak</strong> where the trials on the top right indicate correct solutions with higher values of CC and CCweak. CC should be above 25</p>
+<p><strong>Estimated atom occupancies</strong> histogram chart provides vivid information according to anomalous atom occupancies from the best trial. <strong>Estimated occupancy should be higher than 0.25</strong>.</p>
+</div></blockquote>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">6.</span></code> The following step is to start <strong>Phaser-EP</strong> task in order to calculate protein phases in the original and inverted hands:  <strong>add next job =&gt; All task =&gt; Experimental phasing =&gt; Experimental Phasing with Phaser-EP</strong></p>
+<p>The task will improve the substructure, calculate inverted substructure and estimate macromolecular phases</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">do not mistake substructure phases, calculated in ShelxCD task, with macromolecular phases</p>
+</div>
+<p>Please, find a <strong>verdict</strong> in Phaser output. It is an assessment of task performance quality.</p>
+<p>The average <strong>FOM</strong> (figures of merit) from phasing provides a very rough initial indication of the quality of the phases: values <strong>above 0.3</strong> indicate a <strong>good quality</strong> and values <strong>below 0.15</strong> a <strong>poor quality</strong> of the phases.</p>
+<p><code class="docutils literal notranslate"><span class="pre">7.</span></code> The Phaser job generates two structure revisions, for original and inverse hands. Perform density modification for each of them using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html" rel="noopener noreferrer" target="_blank">Density Modification with Parrot</a> task:  <strong>add next job =&gt; All task =&gt; Density Modification =&gt; Density Modification with Parrot</strong>.</p>
+<p>State <strong>heavy-athom(Se) substructure</strong> as <strong>model for NCS detection</strong>. Parrot uses substructure to define initial values of NCS operations.</p>
+<p>Select <code class="docutils literal notranslate"><span class="pre">phaser-ep-original_hand</span></code> in <strong>Structure revision</strong> then run the task. Clone the Parrot task choose <code class="docutils literal notranslate"><span class="pre">phaser-ep-inverted_hand</span></code> in <strong>Structure revision</strong>, run second Parrot task.</p>
+<p>Inspect electron density generated by the two Parrot runs in <strong>UglyMol</strong> viewer (<em>task output</em>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">8.</span></code> Continue each of the Parrot jobs with <strong>Automatic Model Building with CCP4Build</strong> task: <strong>add next job =&gt; All task =&gt; Refinement and Model Building =&gt;</strong> <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">Automatic Model Building with CCP4Build</a></p>
+<p>The correct hand should now be identified with certainty.</p>
+<p>Could more cycles of model building be useful?</p>
+<p><em>You may run another CCP4Build job if you think they could</em></p>
+<p><code class="docutils literal notranslate"><span class="pre">9.</span></code>  Further refinement can be done by <strong>Automated refinement and ligand fitting workflow</strong></p>
+<a class="reference internal image-reference" href="_images/Demo.CCP4MG_workflow.png"><img alt="_images/Demo.CCP4MG_workflow.png" class="align-center" src="_images/Demo.CCP4MG_workflow.png" style="width: 558.4px; height: 394.40000000000003px;" /></a>
+<p>Follow with <strong>Prepare data for deposition</strong> to see that the structure is not good enough for deposition with the PDB.</p>
+<p>Start <strong>Model Building with Coot</strong> as a child node of Refmac job and correct several side chains if you would like to tide it up (launch CCP4 Cloud through the local installation of CCP4 on your computer <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;" /></a> to do so).</p>
 </div>
 
 
@@ -103,7 +136,11 @@ Was there any differences in phasing and refinement stats in the two branches st
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
+        «&#160;&#160;<a href="index.html">Tutorials</a>
+        &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="doc.demo.001Refinement.html"><span class="section-number">2. </span>Refinement using REFMAC5 via CCP4 Cloud</a>&#160;&#160;»
         </p>
 
       </div>

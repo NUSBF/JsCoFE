@@ -11,7 +11,15 @@ Tutorials
    :numbered:
    :maxdepth: 2
 
+
+   doc.demo.from_images_Crank2
+   doc.demo.001Refinement
+   doc.demo.002Refinement
+   doc.demo.003EP
+   doc.demo.004EP
+   doc.demo.T3_004
    doc.demo.CCP4MG-MrBump
+   doc.demo.PISA_start
 
 ======
 Search

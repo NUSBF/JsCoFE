@@ -271,17 +271,17 @@ function processServerQueue()  {
       },__delays_wait);
       __holdup_timer = window.setTimeout ( function(){
         __holdup_timer = null;
-        __holdup_dlg = new QuestionBox ( 'Communication hold-up',
+        __holdup_dlg   = new QuestionBox ( 'Communication hold-up',
             '<div style="width:450px"><h3>Communication hold-up</h3>' +
             'Communication with ' + appName() + ' is severely delayed. ' +
             'Please be patient, the problem may resolve in few moments, ' +
             'after which this dialog will disappear automatically.<p>' +
             'If communication does not resume after a long time, you can ' +
-            'either reload the current page or start new working session ' +
-            '(complete refresh) using buttons below.<p>' +
-            'Make sure that your Internet connection is stable.',
+            'either reload the current page (quick option) or start new ' +
+            'working session (complete refresh, hard option) using buttons ' +
+            'below.<p>Make sure that your Internet connection is stable.',
             'Reload current page',function(){
-              __holdup_dlg   = null;
+              __holdup_dlg = null;
               window.setTimeout ( function(){
                 if (__current_page)  {
                   __server_queue = [];
@@ -433,8 +433,9 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
                 function_ok ( response.data );
             } else
               makeCommErrorMessage ( page_title,response );
-            // we put this function here and in fail section because we do not want to
-            // have it executed multiple times due to multiple retries
+            // we put this function here and in the fail section because we
+            // do not want to have it executed multiple times due to multiple
+            // retries
             if (function_always)
               function_always(0,response.data);
           }
