@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    26.10.21   <--  Date of Last Modification.
+#    22.11.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -80,7 +80,6 @@ class DocDev(basic.TaskDriver):
                  "\ncd "    + reppath +\
                  "\ngit pull origin master" +\
                  "\ncd "    + cwd +\
-                 "\ncp -r " + reppath + " " + repname +\
                  "\ncp -r " + reppath + " " + repname +\
                  "\ncd "    + srcpath +\
                  copytasks  +\
@@ -194,6 +193,8 @@ class DocDev(basic.TaskDriver):
         else:
             self.putTitle   ( "Documentation build failed" )
             self.putMessage ( "<b>Error:</b> " + rc.msg )
+
+        shutil.rmtree ( repname )
 
         self.clearCitations()
         self.success ( True )

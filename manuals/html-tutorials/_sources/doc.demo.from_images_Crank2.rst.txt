@@ -1,82 +1,117 @@
-==================================================================
-Auto-EP with Crank-2 using hyaluronan-binding domain of human cd44
-==================================================================
+=================================================================================================================
+Experimental Phasing with ShelxCD and Phaser-EP on the example of hyaluronan-binding domain of human cd44 protein
+=================================================================================================================
 
 
-For this practical you are presented with a set of images collected from a crystal of selenomethionine containing CD44. The diffraction images were deposited with Zenodo 10.5281/zenodo.55993 and we will be using their copies located on CCP4 server. In this way we will emulate a setup in which an X-ray laboratory has a centralised diffraction data storage and centralised ccp4cloud installation.
+This tutorial is based on a set of images collected from a crystal of selenomethionine-containing CD44 protein.
 
-The paths to sequence file and  directory with diffraction images are as follows:
-tutorial-data/1_from_images/cd44/cd44.seq
-tutorial-data/1_from_images/cd44/images
+``1.`` The protein sequence has been already imported and can be found in the output of the **Cloud Import** task.
 
-The above paths are  relative to the cloud storage root.
+``2.`` The next step is to start the `Automatic Image Processing with Xia2 <../html-taskref/doc.task.Xia2.html>`_ task: **add next job => All task => Data Processing => Automatic Image Processing with Xia-2**.
 
-Before the Se-Met derivative of CD44 became available, the native CD44 had been observed to crystallize in space group P212121 with cell constants a=48.88, b=77.27, c=87.67, α=β=γ=90°.
+**Image directory**
 
-Objectives
+      *diffraction images can be found at Cloud storage root:* **Tutorials/Tutorial data/1_from_images/cd44/images**
 
-1. To learn principles of working with CCP4 Cloud web-interface.
+Specify **Se** as **Heavy atom type** in the task input.
 
-2. To learn how to integrate, scale and merge images with Xia2 and Aimless pipelines.
+.. note:: Resolution limits and Spacegroup are normally determined by examining the data, but it is possible to enter them here if you have prior knowledge.
 
-3. To get familiar with individual steps of experimental phasing.
+.. note:: Xia2 outputs two or more unmerged datasets, and one merged dataset. The latter contains anomalous data only if heavy atom type is specified in task input parameters. Otherwise, only mean intensities will be computed.
 
-Workflow is fully defined by numbered sentences. Open cycles mark additional information.
 
-Workflow
+.. toggle-header::
+          :header:  **Xia-2 report**
 
-1. Import sequence using "Cloud Import"
+                  **Look for the plot of CC(1/2) vs resolution** (**Dataset SAD** => **Analysis by resolution** section). It plots the correlation coefficient for randomly selected half sets of the intensities in dataset with each other. When this has fallen substantially below 1.0 it indicates that the data have become weak and internally inconsistent (*it is a good idea not to include such data in calculations*). By default, this Xia2 job has cut off our data at a resolution where CC(1/2) drops to 0.5 (some people are less conservative and select a cutoff closer to 0.35).
 
-We will need the sequence on all branches of the project tree, so we import it first.
+                  **Completeness** describes the percentage of the theoretically observable reflections (within given resolution limits) have been measured in the experiment. Completeness should be used to determine if there is sufficient data for refinement and/or model-building. A value greater than 90% is generally desired, while a value less than 75% is considered poor. Values in between will provide less than optimal results.
 
-It is not critical not to do so, it is possible to modify project tree later (a sub-branch can be moved up using the button with blue arrow pointing up).
+                  **Look for the plot of Rmerge v Batch for all images** (you will find it in the **Dataset SAD** => **Analysis by batch** section). **Rmerge** offers an indication of how well multiple observations of equivalent reflections agree with each other, with a low value indicating better agreement. Notice that this value is stable throughout much of the dataset, but starts to drift upwards towards the end of data collection, indicating there is likely to be radiation damage to the crystal. It is better to remove these compromised data from processing as long as we can leave ourselves with acceptable completeness. The plot of cumulative completeness vs batch can help guide you in selecting this cut-off. **For this dataset cutting off after batch 120 is a reasonable compromise**.
 
-2. Integrate images using xia2. Keep defaults except for defining "Se" in "Heavy atom type" textbox.
-Xia2 outputs two or more unmerged datasets, and one merged dataset. The latter contains anomalous data if "Heavy atom type" is defined and only mean intensities otherwise.
 
-3. Compose the initial structure revision  Combine CD44 sequence and the merged dataset generated automatically by xia2 into an initial - we'll start from this one. Define "Se" as "Main anomalous scatterer".
- 
-4a. Use "Substructure Search with SHELX via Crank-2 (SAD)" to find anomalous substructure.
-How many Se sites has been found?
-There is similar task "Substructure Search with SHELX-C/D (SAD)", which does not generate graphical report page, but instead shows the original SHELXD output in the tab "Main Log".
+``3.`` The next step is the data reduction with `Aimless <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Aimless.html>`_: **add next job => All task => Data Processing => Merging and Scaling with Aimless**
 
-4b. Use "Experimental Phasing with Phaser (SAD)" for substructure completion and initial phasing.
-"Se" under the "Structure revision" means that the input substructure contains Se (as should have been defined in the input of "Asymmetric Unit Contents" task). To extend the substructure with Se, you will have to define "Se" once again,  in the LLG map completion menu.
+In Aimless input omit the most radiation damaged images from processing. Choose **xia2_unmerged_scaled** data in **Unmerged reflections** section. Limit number branches to 120 (type 1-120 in the **Branches**). Select a **high resolution cut-off** of **1.8 Å**.
 
-How many Se sites are there after substructure completion?
+``4.`` The next step is to make a hypothesis on crystal composition (that is, to guess the correct number of protein chains in the Asymmetric Unit). This is important for getting correct estimation of the solvent content; grossly incorrect estimate may have a significant impact on the success of Experimental Phasing. In order to specify the expected crystal composition, run the **Asymmetric Unit definition** task, which will also calculate the corresponding solvent content. When preparing the task for run, specify **Se** as **Main anomalous scatterer**.
 
-The "Se" with low occupancies in our substructure are actually S-atoms. We keep them as "Se" to help Parrot at the next step to not get lost during NCS determination.
+After task finishes, inspect the **verdict** section in the report page. The verdict will help you to assess the likelihood of having the correct ASU composition.
 
-The graph in the Report tab show FOM for specific subsets of reflections. For a correct substructure, FOM for acentric reflections is considerably higher than for centric reflections.
+.. note:: ASU composition remains a hypothesis until the structure is solved. It is not unusual to have it reconsidered in case of difficulties with phasing or refinement.
 
-5. The Phaser-SAD job generates two structure revisions, for original and inverse hands. Perform density modification for each of them using "Density Modification with Parrot". Use corresponding substructure as "Model for NCS detection".
-Parrot uses substructure to define initial values of NCS operations. However, each monomer contains only two Se atoms. This is insufficient for determination of NCS operations relating monomers. How Parrot managed to figure out the NCS operations?
-Pay attention to "Reflection statistics" and "NCS statistics" plots, specifically to changes of FOM and NCS mask volume with cycle. Which hand is correct? Could more cycles of density modification be useful? You may run another Parrot job if you think they could.
-The revision consists of several data objects. (Use "Inspect" button to see them). The current job can only see the revision(s) from the parent job. However, the model for NCS detection is not a revision but a data object of type "structure" or "substructure" (a constituent  part of a certain revision or a stand-alone data object). The current job can see relevant data objects from all the jobs on its branch. Therefore, the "Model for NCS detection" can be taken from earlier jobs, and, in particular, it can be a structure from an MR job.
+On output, the task creates the initial **structure revision**, containing only **ASU definition**  and **merged HKL dataset**.
 
-6. Inspect electron density generated by the two Parrot runs (UglyMol viewer can be opened from Report tab of finished Parrot job window).
-Does comparison of the two maps confirms the correct hand identified from stats?
+``5.`` Once the Asymmetric Unit is defined and initial structure revision is created, initial phases may be estimated. Finding initial phases in Experimental Phasing is a two-step procedure. On first step, anomalous signal in the reflection dataset is used to find location of anomalous scatterers (the heavy-atom substructure). On second step, the reflection dataset and substructure found are used to estimate *protein* phases.
 
-7. Continue each of the Parrot jobs with "Automatic Model Building with Buccaneer".
+The substructure is found with ShelxCD software, which may be used as part of Crank-2 automatic pipeline (see task **Substructure Search with SHELX via Crank-2** in the Experimental Phasing section of the Task List), or with the dedicated ShelxCD task (**Substructure Search with SHELX-C/D**). Let’s choose the first one: **add next job => All task => Experimental phasing => Substructure Search with SHELX via Crank-2**.
+
+.. toggle-header::
+          :header:  **Output**
+
+            *the task provides heavy atom substructure for calculating initial protein phases*
+
+            **FA estimation and/or other substructure detection preparations**
+
+            The graph **Dano/Sigdano** shows the anomalous signal strength as a function of resolution. The larger the **Dano/Sigdano** ratio, the stronger the signal, and values under 0.7 indicate a very weak signal not suitable for phasing (grey area). In our case, the anomalous signal for appears to be relatively weak but sufficient for SAD phasing.
+
+.. toggle-header::
+          :header: **Substructure determination output**
+
+            Please find the report summary for the substructure determination under **graph data**.
+
+.. toggle-header::
+          :header: **Result**:
+
+            **Judging from the obtained scores, there is a reasonable chance that the substructure has been correctly determined**
+
+            A good indication that the substructure has been correctly determined is if the threshold (i.e. CFOM) has been reached before the maximum number of cycles has been performed.
+
+            A division of trials in the **distribution of CFOM from trials** graph is also an encouraging indicator: the graph shows the separation of incorrect (lower CFOM) trials from correct (higher CFOM) solutions.
+
+            This division can also be observed as clustering in a graph of **CC against CCweak** where the trials on the top right indicate correct solutions with higher values of CC and CCweak. CC should be above 25
+
+            **Estimated atom occupancies** histogram chart provides vivid information according to anomalous atom occupancies from the best trial. **Estimated occupancy should be higher than 0.25**.
+
+
+``6.`` The following step is to start **Phaser-EP** task in order to calculate protein phases in the original and inverted hands:  **add next job => All task => Experimental phasing => Experimental Phasing with Phaser-EP**
+
+The task will improve the substructure, calculate inverted substructure and estimate macromolecular phases
+
+.. Note::
+        do not mistake substructure phases, calculated in ShelxCD task, with macromolecular phases
+
+Please, find a **verdict** in Phaser output. It is an assessment of task performance quality.
+
+The average **FOM** (figures of merit) from phasing provides a very rough initial indication of the quality of the phases: values **above 0.3** indicate a **good quality** and values **below 0.15** a **poor quality** of the phases.
+
+``7.`` The Phaser job generates two structure revisions, for original and inverse hands. Perform density modification for each of them using `Density Modification with Parrot <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html>`_ task:  **add next job => All task => Density Modification => Density Modification with Parrot**.
+
+State **heavy-athom(Se) substructure** as **model for NCS detection**. Parrot uses substructure to define initial values of NCS operations.
+
+Select ``phaser-ep-original_hand`` in **Structure revision** then run the task. Clone the Parrot task choose ``phaser-ep-inverted_hand`` in **Structure revision**, run second Parrot task.
+
+Inspect electron density generated by the two Parrot runs in **UglyMol** viewer (*task output*).
+
+``8.`` Continue each of the Parrot jobs with **Automatic Model Building with CCP4Build** task: **add next job => All task => Refinement and Model Building =>** `Automatic Model Building with CCP4Build <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html>`_
+
 The correct hand should now be identified with certainty.
 
-8. Do "Refinement with Refmac". Follow with "Prepare data for deposition" to see that the structure is not good enough for deposition with the PDB. While Deposition job is running, start "Model Building with Coot" (as a child node of Refmac job) and correct several side chains. Continue the Coot job with Refmac, "Find and Fit Waters with Coot" and another Refmac.
+Could more cycles of model building be useful?
 
-9. Start a new branch growing from xia2 job: this time continue with "Data Reduction with Aimless" and use unmerged unscaled data from xia2, sweep1. For example, you can try a very conservative approach - to keep only the best images in the range from 1 to about 110.
+*You may run another CCP4Build job if you think they could*
 
-10. Perform steps 3-7 on the new branch, following Aimless job.
-Was there any differences in phasing and refinement stats in the two branches starting from xia2 job? Probably differences are minor, but these may still show a general trend.
+``9.``  Further refinement can be done by **Automated refinement and ligand fitting workflow**
 
-11. Compare models from two branches
-
-11.1. Select the job, that produced a structure that you want use as reference.
-
-11.2. Press and keep Apple key (Mac), XXX (Linux) and select the revision you want to modify.
-
-11.3 Open task "Symmetry Match to Reference Structure with CSymMatch", select revision and reference structure from drop down menus and Run.
-
-Note that the CSymMatch job node shows its own job number and the number of the job where additional data came from.
-
-11.4 Continue CSymMatch job with Coot, and, in Coot interface, define the reference structure as "Additional structure"
+.. image:: images/Demo.CCP4MG_workflow.png
+        :align: center
+        :scale: 40 %
 
 
+Follow with **Prepare data for deposition** to see that the structure is not good enough for deposition with the PDB.
+
+Start **Model Building with Coot** as a child node of Refmac job and correct several side chains if you would like to tide it up (launch CCP4 Cloud through the local installation of CCP4 on your computer |ccp4cloud_remote| to do so).
+
+.. |ccp4cloud_remote| image:: images/ccp4cloud_remote.png
+   :width: 20
+   :height: 20

@@ -2,6 +2,8 @@
 Using PISA in CCP4 Cloud
 ========================
 
+Maria Fando
+
 PISA requires only atomic coordinates of sufficiently well refined structures. If they are obtained in course of crystallographic project,
 use structure revision just before the ``Deposition`` task. Alternatively, PISA may be used on any data in just two steps: 
 

@@ -1,0 +1,83 @@
+===================================
+Beta-Lactamase Experimental Phasing
+===================================
+
+In this tutorial we shall learn the basics of Experimental Phasing in CCP4 Cloud, using both automatic and staged (manual) approaches. The tutorial is based on the example of Beta-lactamase structure.
+
+``1.`` The sequence data and reflection data were already imported to the project.
+
+``2.``	The easiest (but not necessarily the fastest) way to solve a structure in CCP4 Cloud is to use a suitable automatic workflow: **Add job => Workflows => Automated Experimental Phasing with Crank-2**
+
+.. image:: images/demo.EPworkflow.png
+        :align: center
+        :scale: 40 %
+
+Specify **Zn** atom type as **main anomalous scatterer**. Run the workflow.
+
+**a.**	Firstly, the workflow uses `Asymmetric Unit definition <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ASUDef.html>`_ task to make a hypothesis on crystal composition, such as expected number of chains and solvent percent.
+
+.. Note::
+        all structure solution projects in CCP4 Cloud start from making ASU hypothesis
+
+**b.**	After ASU is defined, the workflow starts `Crank-2 <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Crank2.html>`_ automatic structure solver for `Experimental Phasing <https://cloud.ccp4.ac.uk/manuals/html-taskref/Experimental_Phasing.html>`_.
+
+Crank-2 will take about 30-40 minutes to solve the structure. During this time, let’s try to solve Beta-lactamase structure manually, using a set of individual programs.
+
+``3.``	 The automatic EP workflow has already created reflection dataset and Asymmetric Unit, which we can use in the manual EP procedure. However, check that automatically created dataset and ASU performed well (*take a look at what verdict says*).
+
+Firstly, we need to find the heavy-atom substructure. We can use either Crank-2 to drive ShelxCD (**Substructure Search with SHELX via Crank-2**), or the “bare” ShelxCD (**Substructure Search with SHELX-C/D**) task. Let’s choose the latter. Start new Project branch from the ASU definition task:**add next job => All task => Experimental phasing => Substructure Search with SHELX-C/D (SAD)**.
+
+For speed, limit number of trials to 100 (*not recommended unless you are working with data that you are familiar with*).
+
+``4.``	Make sure that the substructure is likely to be found: **CC** :subscript:`All` in ShelxCD log file should be **above 25%**
+
+``5.``	Start Phaser-EP task in order to calculate protein phases in the original and inverted hands: **add next job => All task => Experimental phasing => Experimental Phasing with Phaser-EP**
+
+The task will improve the substructure, calculate inverted substructure and estimate macromolecular phases
+
+.. Note::
+        do not mistake substructure phases, calculated in ShelxCD task, with macromolecular phases
+
+Please, find a **verdict** in Phaser output.
+
+The average **FOM** (figures of merit) from phasing provides a very rough initial indication of the quality of the phases: values **above 0.3** indicate a **good quality** and values **below 0.15** a **poor quality** of the phases.
+
+Try to identify correct hand from Phaser-EP results by visual inspection of the density by in **UglyMol** viewer.
+
+Density improvement obviously required in both hands.
+
+``6.``	Annotate your project for easier interpretation in future: place remark “Original hand”, then clone it and rename as “Inverted hand”
+
+``7.``	Append Parrot task to the “Original hand” remark and make sure that the “original hand” revision from Phaser-EP (**phaser-ep-original_hand**) is selected in **Structure revision**. State **heavy-athom(Zn) substructure** as **model for NCS detection**. Parrot uses substructure to define initial values of NCS operations. Start the task
+
+``8.``	Append Parrot task to the “Inverted hand” remark and make sure that the “inverted hand” revision from Phaser-EP **phaser-ep-inverted_hand** is selected in **Structure revision**. State **heavy-athom(Zn) substructure** as **model for NCS detection**. Start the task
+
+``9.``	After density modification (Parrot) tasks finished, analyse FOMs and perform visual inspection of the modified density. Start model building with `Buccaneer <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html>`_ in both hands.
+
+``10.``	Could more cycles of model building be useful?
+
+*You may run another Buccaneer job if you think they could*
+
+
+``11.`` The builds difference is not significant in this particular case. This suggests that the hands may be very close to each other. Perform structure comparison with `Gesamt <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Gesamt.html>`_ (use multiple selection from the “Original” and “Inverted” branches):
+
+.. image:: images/demo.multiple_selection.jpg
+        :align: center
+        :scale: 30 %
+
+**Select both models => add next job => All task =>  Toolbox => Pairwise Structural Alignment with GESAMT**
+
+``12.`` Further refinement can be done by **Automated refinement and ligand fitting workflow**
+
+.. image:: images/Demo.CCP4MG_workflow.png
+        :align: center
+        :scale: 40 %
+
+
+**Additional work:**
+
+a.	Use Acorn instead of Parrot for density improvement: does it make any difference?
+
+b.	Try using different model builders instead of Buccaneer: CCP4Build and Arp/wArp (*should be installed as 3rd-party software on your device, which can be done with CCP4 Package Manager*)
+
+c.	Inspect built structure in Coot and spot problematic places. Are there disagreements between electron density and suggested sequence? Correct them, refine and check the effect on R-factors.
