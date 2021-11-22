@@ -413,8 +413,8 @@ function ProjectListPage ( sceneId )  {
         // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
 
         //contextMenu.setWidth ( '10px' );
-        //contextMenu.setHeight_px ( 400 );
-        //contextMenu.setZIndex ( 101 );
+        // contextMenu.setHeight_px ( 400 );
+        // contextMenu.setZIndex ( 101 );
 
         var pDesc = projectList.projects[i];
         var pName = pDesc.name;

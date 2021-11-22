@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.05.21   <--  Date of Last Modification.
+ *    22.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -540,7 +540,7 @@ TableSort.prototype.fixHeader = function()  {
 }
 
 TableSort.prototype.setTableHeight = function ( height_int )  {
-  if (this.body.child.length>1)
+  if (this.body.child.length>0)
     this.table_div.element.style.height = height_int - this.head_top + 'px';
 }
 
