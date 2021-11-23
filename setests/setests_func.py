@@ -280,7 +280,10 @@ def importFromCloud_rnase(driver, waitShort):
         textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'CCP4 examples')
         namesTestData = False
     if len(textEl2) < 1:
-        print('Cant locate neither "test-data", nor "CCP4 examples" nor "ccp4-examples"; terminating.')
+        textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'CCP4 Examples')
+        namesTestData = False
+    if len(textEl2) < 1:
+        print('Cant locate neither "test-data", nor "CCP4 (E/e)xamples" nor "ccp4-examples"; terminating.')
         sys.exit(1)
     ActionChains(driver).move_to_element(textEl2[-1]).double_click(textEl2[-1]).perform()
     time.sleep(1)
