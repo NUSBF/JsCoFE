@@ -1,13 +1,13 @@
-=================================================================================================================
-Experimental Phasing with ShelxCD and Phaser-EP on the example of hyaluronan-binding domain of human cd44 protein
-=================================================================================================================
+===============================
+Data processing and SAD phasing
+===============================
 
 
 This tutorial is based on a set of images collected from a crystal of selenomethionine-containing CD44 protein.
 
 ``1.`` The protein sequence has been already imported and can be found in the output of the **Cloud Import** task.
 
-``2.`` The next step is to start the `Automatic Image Processing with Xia2 <../html-taskref/doc.task.Xia2.html>`_ task: **add next job => All task => Data Processing => Automatic Image Processing with Xia-2**.
+``2.`` The next step is to start the `Automatic Image Processing with Xia2 <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Xia2.html>`_ task: **add next job => All task => Data Processing => Automatic Image Processing with Xia-2**.
 
 **Image directory**
 
@@ -23,18 +23,20 @@ Specify **Se** as **Heavy atom type** in the task input.
 .. toggle-header::
           :header:  **Xia-2 report**
 
-                  **Look for the plot of CC(1/2) vs resolution** (**Dataset SAD** => **Analysis by resolution** section). It plots the correlation coefficient for randomly selected half sets of the intensities in dataset with each other. When this has fallen substantially below 1.0 it indicates that the data have become weak and internally inconsistent (*it is a good idea not to include such data in calculations*). By default, this Xia2 job has cut off our data at a resolution where CC(1/2) drops to 0.5 (some people are less conservative and select a cutoff closer to 0.35).
+                  **Look for the plot of CC(1/2) vs resolution** (**Dataset SAD** => **Analysis by resolution** section). It plots the correlation coefficient for randomly selected half sets of the intensities in dataset with each other. When CC(1/2) value has fallen substantially below 1.0 it indicates that the data have become weak and internally inconsistent (*it is a good idea not to include such data in calculations*). By default, this Xia2 job has cut off our data at a resolution where CC(1/2) drops to 0.5 (some people are less conservative and select a cutoff closer to 0.35).
 
                   **Completeness** describes the percentage of the theoretically observable reflections (within given resolution limits) have been measured in the experiment. Completeness should be used to determine if there is sufficient data for refinement and/or model-building. A value greater than 90% is generally desired, while a value less than 75% is considered poor. Values in between will provide less than optimal results.
 
-                  **Look for the plot of Rmerge v Batch for all images** (you will find it in the **Dataset SAD** => **Analysis by batch** section). **Rmerge** offers an indication of how well multiple observations of equivalent reflections agree with each other, with a low value indicating better agreement. Notice that this value is stable throughout much of the dataset, but starts to drift upwards towards the end of data collection, indicating there is likely to be radiation damage to the crystal. It is better to remove these compromised data from processing as long as we can leave ourselves with acceptable completeness. The plot of cumulative completeness vs batch can help guide you in selecting this cut-off. **For this dataset cutting off after batch 120 is a reasonable compromise**.
+                  **Look for the plot of Rmerge vs Batch for all images** (you will find it in the **Dataset SAD** => **Analysis by batch** section). **Rmerge** offers an indication of how well multiple observations of equivalent reflections agree with each other, with a low value indicating better agreement. Notice that this value is stable throughout much of the dataset, but starts to drift upwards towards the end of data collection, indicating there is likely to be radiation damage to the crystal. It is better to remove these compromised data from processing as long as we can leave ourselves with acceptable completeness. **For this dataset cutting off after batch 120 is a reasonable compromise**.
 
 
 ``3.`` The next step is the data reduction with `Aimless <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Aimless.html>`_: **add next job => All task => Data Processing => Merging and Scaling with Aimless**
 
-In Aimless input omit the most radiation damaged images from processing. Choose **xia2_unmerged_scaled** data in **Unmerged reflections** section. Limit number branches to 120 (type 1-120 in the **Branches**). Select a **high resolution cut-off** of **1.8 Å**.
+In Aimless input omit the most radiation damaged images from processing. Choose **xia2_unmerged_scaled** data in **Unmerged reflections** section. **Limit number branches to 120** (type 1-120 in the **Branches**). Select a **high resolution cut-off** of **1.8 Å**.
 
-``4.`` The next step is to make a hypothesis on crystal composition (that is, to guess the correct number of protein chains in the Asymmetric Unit). This is important for getting correct estimation of the solvent content; grossly incorrect estimate may have a significant impact on the success of Experimental Phasing. In order to specify the expected crystal composition, run the **Asymmetric Unit definition** task, which will also calculate the corresponding solvent content. When preparing the task for run, specify **Se** as **Main anomalous scatterer**.
+``4.`` The next step is to make a hypothesis on crystal composition (that is, to guess the correct number of protein chains in the Asymmetric Unit). This is important for getting correct estimation of the solvent content; grossly incorrect estimate may have a significant impact on the success of Experimental Phasing. In order to specify the expected crystal composition, run the `Asymmetric Unit definition <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ASUDef.html>`_ task, which will also calculate the corresponding solvent content. **add next job => All task => Asymmetric Unit and Structure Revision => Asymmetric Unit Contents**
+
+When preparing the task for run, specify **Se** as **Main anomalous scatterer**.
 
 After task finishes, inspect the **verdict** section in the report page. The verdict will help you to assess the likelihood of having the correct ASU composition.
 
@@ -42,7 +44,7 @@ After task finishes, inspect the **verdict** section in the report page. The ver
 
 On output, the task creates the initial **structure revision**, containing only **ASU definition**  and **merged HKL dataset**.
 
-``5.`` Once the Asymmetric Unit is defined and initial structure revision is created, initial phases may be estimated. Finding initial phases in Experimental Phasing is a two-step procedure. On first step, anomalous signal in the reflection dataset is used to find location of anomalous scatterers (the heavy-atom substructure). On second step, the reflection dataset and substructure found are used to estimate *protein* phases.
+``5.`` Once the Asymmetric Unit is defined and initial structure revision is created, initial phases may be estimated. Finding initial phases in Experimental Phasing is a two-step procedure. On first step, anomalous signal in the reflection dataset is used to find location of anomalous scatterers (the heavy-atom substructure). On second step, the reflection dataset and substructure found are used to estimate protein phases.
 
 The substructure is found with ShelxCD software, which may be used as part of Crank-2 automatic pipeline (see task **Substructure Search with SHELX via Crank-2** in the Experimental Phasing section of the Task List), or with the dedicated ShelxCD task (**Substructure Search with SHELX-C/D**). Let’s choose the first one: **add next job => All task => Experimental phasing => Substructure Search with SHELX via Crank-2**.
 
@@ -85,15 +87,15 @@ Please, find a **verdict** in Phaser output. It is an assessment of task perform
 
 The average **FOM** (figures of merit) from phasing provides a very rough initial indication of the quality of the phases: values **above 0.3** indicate a **good quality** and values **below 0.15** a **poor quality** of the phases.
 
-``7.`` The Phaser job generates two structure revisions, for original and inverse hands. Perform density modification for each of them using `Density Modification with Parrot <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html>`_ task:  **add next job => All task => Density Modification => Density Modification with Parrot**.
+``7.`` The Phaser job generates two structure revisions, for original and inverse hands. Perform density modification for each of them using `Density Modification with Parrot <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html>`_ task. Annotate your project for easier interpretation in future: place remark “Original hand”, then clone it and rename as “Inverted hand”
 
-State **heavy-athom(Se) substructure** as **model for NCS detection**. Parrot uses substructure to define initial values of NCS operations.
+``8.``	Append Parrot task to the “Original hand” remark (**add next job => All task => Density Modification => Density Modification with Parrot**) and make sure that the “original hand” revision from Phaser-EP (**phaser-ep-original_hand**) is selected in **Structure revision**. State **heavy-athom(Zn) substructure** as **model for NCS detection**. Parrot uses substructure to define initial values of NCS operations. Start the task
 
-Select ``phaser-ep-original_hand`` in **Structure revision** then run the task. Clone the Parrot task choose ``phaser-ep-inverted_hand`` in **Structure revision**, run second Parrot task.
+``9.``	Append Parrot task to the “Inverted hand” remark (**add next job => All task => Density Modification => Density Modification with Parrot**) and make sure that the “inverted hand” revision from Phaser-EP **phaser-ep-inverted_hand** is selected in **Structure revision**. State **heavy-athom(Zn) substructure** as **model for NCS detection**. Start the task
 
 Inspect electron density generated by the two Parrot runs in **UglyMol** viewer (*task output*).
 
-``8.`` Continue each of the Parrot jobs with **Automatic Model Building with CCP4Build** task: **add next job => All task => Refinement and Model Building =>** `Automatic Model Building with CCP4Build <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html>`_
+``10.`` Continue each of the Parrot jobs with `Automatic Model Building with CCP4Build <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html>`_ task: **add next job => All task => Refinement and Model Building => Automatic Model Building with CCP4Build**
 
 The correct hand should now be identified with certainty.
 
@@ -101,7 +103,7 @@ Could more cycles of model building be useful?
 
 *You may run another CCP4Build job if you think they could*
 
-``9.``  Further refinement can be done by **Automated refinement and ligand fitting workflow**
+``11.``  Further refinement can be done by **Automated refinement and ligand fitting workflow**
 
 .. image:: images/Demo.CCP4MG_workflow.png
         :align: center
