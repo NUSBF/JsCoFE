@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.05.21   <--  Date of Last Modification.
+ *    25.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -125,7 +125,8 @@ var sender_cfg = conf.getServerConfig();
 
     var post_options = {
       url      : serverURL + '/' + command,
-      formData : formData
+      formData : formData,
+      rejectUnauthorized : false
     };
     /*
     //if (serverURL.startsWith('https:'))  {

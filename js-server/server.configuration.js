@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.11.21   <--  Date of Last Modification.
+ *    25.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -271,7 +271,8 @@ ServerConfig.prototype.checkNCStatus = function ( callback_func )  {
     baseUrl : this.externalURL,
     method  : 'POST',
     body    : '',
-    json    : true
+    json    : true,
+    rejectUnauthorized : false
   },function(error,response,body){
     callback_func ( error,response,body,this );
   });

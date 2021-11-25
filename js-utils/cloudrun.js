@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    06.06.21   <--  Date of Last Modification.
+ *    25.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -289,7 +289,8 @@ function sendData ( filePath,metaData )  {
 
   var post_options = {
     url      : meta.url + '/' + cmd.fe_command.cloudRun,
-    formData : formData
+    formData : formData,
+    rejectUnauthorized : false
   };
 
   // console.log ( post_options );
@@ -319,6 +320,54 @@ function sendData ( filePath,metaData )  {
   });
 
 }
+
+
+/* ===  alternative data transmission code
+
+var axios    = require('axios')
+var FormData = require('form-data')
+
+function sendData ( filePath,metaData )  {
+
+  var formData = new FormData();
+  for (key in metaData)
+    formData.append ( key,metaData[key] );
+
+  formData.append ( 'file',fs.createReadStream(filePath) );
+
+  var formHeaders = formData.getHeaders();
+
+  axios.post ( meta.url + '/' + cmd.fe_command.cloudRun, formData, {
+    headers: {
+        ...formHeaders,
+    },
+    rejectUnauthorized : false
+  }).then ( response => {
+    try {
+      var resp = JSON.parse ( response.data );
+      if (resp.status==cmd.fe_retcode.ok)  {
+        console.log ( ' ... server replied: ' + resp.message + '\n' );
+        console.log ( 'Note: list of projects and/or project will not update automatically\n' +
+                      '      in your browser, reload/refresh them manually if required.' );
+      } else if (resp.message.indexOf('quota')>=0)  {
+        console.log ( ' *** ' + resp.message );
+      } else  {
+        console.log ( ' *** cloud run initiation failed, rc=' + resp.status +
+                      '\n *** ' + resp.message );
+      }
+    } catch(err)  {
+      console.log ( ' *** unparseable server reply: ' + response.data );
+    }
+    utils.removeFile ( filePath );
+  }).catch(err => {
+    console.log ( err );
+    console.log ( ' *** send failed: ' + err );
+    utils.removeFile ( filePath );
+  })
+
+}
+*/
+
 
 // --------------------------------------------------------------------------
 // Parse command file

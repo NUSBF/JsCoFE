@@ -5,14 +5,14 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    23.11.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  BUCCANEER EXECUTABLE MODULE
+#  MODELCRAFT EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python buccaneer.py jobManager jobDir jobId
+#     ccp4-python modelcraft.py jobManager jobDir jobId
 #
 #  where:
 #    jobManager  is either SHELL or SGE
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021
 #
 # ============================================================================
 #
@@ -39,18 +39,18 @@ from   pycofe.proc    import qualrep
 from   pycofe.auto    import auto
 
 # ============================================================================
-# Make Buccaneer driver
+# Make ModelCraft driver
 
-class Buccaneer(basic.TaskDriver):
+class ModelCraft(basic.TaskDriver):
 
     # redefine name of input script file
-    def file_stdin_path (self):  return "buccaneer.script"
+    def file_stdin_path (self):  return "modelcraft.script"
 
     # make task-specific definitions
-    def buccaneer_seq   (self):  return "buccaneer.seq"
-    def buccaneer_xyz   (self):  return "buccaneer.pdb"
-    def buccaneer_mtz   (self):  return "buccaneer.mtz"
-    def buccaneer_tmp   (self):  return "buccaneer_pipeline"
+    def modelcraft_seq  (self):  return "modelcraft.seq"
+    def modelcraft_xyz  (self):  return "modelcraft.pdb"
+    def modelcraft_mtz  (self):  return "modelcraft.mtz"
+    def modelcraft_tmp  (self):  return "modelcraft_pipeline"
 
     # ------------------------------------------------------------------------
 
@@ -62,21 +62,21 @@ class Buccaneer(basic.TaskDriver):
 
     def run(self):
 
-        # Just in case (of repeated run) remove the output xyz file. When buccaneer
+        # Just in case (of repeated run) remove the output xyz file. When modelcraft
         # succeeds, this file is created.
-        if os.path.isfile(self.buccaneer_xyz()):
-            os.remove(self.buccaneer_xyz())
+        if os.path.isfile(self.modelcraft_xyz()):
+            os.remove(self.modelcraft_xyz())
 
-        if not os.path.exists(self.buccaneer_tmp()):
-            os.makedirs(self.buccaneer_tmp())
+        if not os.path.exists(self.modelcraft_tmp()):
+            os.makedirs(self.modelcraft_tmp())
 
-        # Prepare buccaneer input
+        # Prepare modelcraft input
         # fetch input data
 
         idata   = self.input_data.data
-        sec1    = self.task.parameters.sec1.contains
-        sec2    = self.task.parameters.sec2.contains
-        sec3    = self.task.parameters.sec3.contains
+        # sec1    = self.task.parameters.sec1.contains
+        # sec2    = self.task.parameters.sec2.contains
+        # sec3    = self.task.parameters.sec3.contains
 
         hkl     = self.makeClass ( idata.hkl[0]     )
         istruct = self.makeClass ( idata.istruct[0] )
@@ -86,7 +86,7 @@ class Buccaneer(basic.TaskDriver):
         else:
             ixyz = istruct
 
-        # self.stderrln ( istruct.to_JSON() )
+        self.stderrln ( istruct.to_JSON() )
 
         # prepare input MTZ file by putting original reflection data into
         # phases MTZ
@@ -112,9 +112,9 @@ class Buccaneer(basic.TaskDriver):
                 istruct.getMTZFilePath(self.inputDir()),labin_ph,
                 input_mtz )
 
-        #self.makeFullASUSequenceFile ( seq,self.buccaneer_seq() )
+        #self.makeFullASUSequenceFile ( seq,self.modelcraft_seq() )
 
-        with open(self.buccaneer_seq(),'w') as newf:
+        with open(self.modelcraft_seq(),'w') as newf:
             if len(seq)>0:
                 for s in seq:
                     s1 = self.makeClass ( s )
@@ -135,7 +135,7 @@ class Buccaneer(basic.TaskDriver):
         self.addCmdLine ( "mtzin-ref",reffile + ".mtz" )
         self.addCmdLine ( "colin-ref-fo","[/*/*/FP.F_sigF.F,/*/*/FP.F_sigF.sigF]" )
         self.addCmdLine ( "colin-ref-hl","[/*/*/FC.ABCD.A,/*/*/FC.ABCD.B,/*/*/FC.ABCD.C,/*/*/FC.ABCD.D]" )
-        self.addCmdLine ( "seqin"     ,self.buccaneer_seq() )
+        self.addCmdLine ( "seqin"     ,self.modelcraft_seq() )
         self.addCmdLine ( "mtzin"     ,input_mtz )
         #self.addCmdLine ( "colin-fo"  ,"[/*/*/" + istruct.FP + ",/*/*/" + istruct.SigFP + "]" )
         #self.addCmdLine ( "colin-free","[/*/*/" + istruct.FreeR_flag + "]" )
@@ -156,7 +156,7 @@ class Buccaneer(basic.TaskDriver):
                                          ",/*/*/" + istruct.HLC + ",/*/*/" + istruct.HLD + "]" )
         """
 
-        # Fixed model to be preserved by Buccaneer
+        # Fixed model to be preserved by ModelCraft
 
         xmodel = None
         smodel = None
@@ -169,7 +169,7 @@ class Buccaneer(basic.TaskDriver):
             self.addCmdLine ( "pdbin-sequence-prior",
                               smodel.getXYZFilePath(self.inputDir()) )
 
-        self.addCmdLine ( "pdbout",self.buccaneer_xyz()  )
+        self.addCmdLine ( "pdbout",self.modelcraft_xyz()  )
 
         self.write_stdin (
             self.putKWParameter ( sec1.NCYCLES          ) + \
@@ -190,13 +190,13 @@ class Buccaneer(basic.TaskDriver):
         )
 
         if xmodel:
-            self.addCmdLine ( "buccaneer-keyword model-filter-sigma",str(xmodel.BFthresh) )
+            self.addCmdLine ( "modelcraft-keyword model-filter-sigma",str(xmodel.BFthresh) )
 
         if isCoor:
-            self.addCmdLine ( "buccaneer-keyword mr-model-filter-sigma",str(ixyz.BFthresh) )
+            self.addCmdLine ( "modelcraft-keyword mr-model-filter-sigma",str(ixyz.BFthresh) )
 
         #if sec2.KEEPATMCID.visible:
-        #    self.write_stdin ( "buccaneer-keyword known-structure " + \
+        #    self.write_stdin ( "modelcraft-keyword known-structure " + \
         #                       sec2.KEEPATMCID.value + ":" + \
         #                       str(sec2.KEEPATMRAD.value) + "\n" )
 
@@ -210,7 +210,7 @@ class Buccaneer(basic.TaskDriver):
         if isCoor:
             self.addCmdLine ( "pdbin-mr",ixyz.getXYZFilePath(self.inputDir()) )
             if istruct.useModelSel!="N":
-                self.addCmdLine ( "buccaneer-keyword",ixyz.useModelSel )
+                self.addCmdLine ( "modelcraft-keyword",ixyz.useModelSel )
             #self.write_stdin ( self.putKWParameter ( sec1.USEMR_SEL ) )
 
         self.write_stdin ( self.putKWParameter ( sec3.REFTWIN_CBX ) )
@@ -218,26 +218,26 @@ class Buccaneer(basic.TaskDriver):
         if self.getParameter(sec3.AUTOWEIGH_CBX)=="False":
             self.addCmdLine ( "refmac-weight",self.getParameter(sec3.WEIGHTVAL) )
 
-        self.addCmdLine ( "prefix","./" + self.buccaneer_tmp() + "/" )
+        self.addCmdLine ( "prefix","./" + self.modelcraft_tmp() + "/" )
 
         self.close_stdin()
 
         # make command-line parameters
         cmd = [ "-u",
-                os.path.join(os.environ["CCP4"],"bin","buccaneer_pipeline"),
+                os.path.join(os.environ["CCP4"],"bin","modelcraft_pipeline"),
                 "-stdin"
               ]
 
         # prepare report parser
-        self.setGenericLogParser ( "buccaneer_report",True )
+        self.setGenericLogParser ( "modelcraft_report",True )
 
-        # start buccaneer
+        # start modelcraft
         if sys.platform.startswith("win"):
             rc = self.runApp ( "ccp4-python.bat",cmd,logType="Main",quitOnError=False )
         else:
             rc = self.runApp ( "ccp4-python",cmd,logType="Main",quitOnError=False )
 
-        self.addCitations ( ['buccaneer','refmac5'] )
+        self.addCitations ( ['modelcraft','refmac5'] )
 
         have_results = False
 
@@ -255,27 +255,27 @@ class Buccaneer(basic.TaskDriver):
             if nobuild:
                 self.putMessage ( "<h3>Failed to build structure</h3>" )
             else:
-                self.putMessage ( "<h3>Buccaneer failure</h3>" )
+                self.putMessage ( "<h3>ModelCraft failure</h3>" )
                 raise signal.JobFailure ( rc.msg )
 
         # check solution and register data
-        elif os.path.isfile(self.buccaneer_xyz()):
+        elif os.path.isfile(self.modelcraft_xyz()):
 
-            shutil.copyfile ( os.path.join(self.buccaneer_tmp(),"refine.mtz"),
-                                           self.buccaneer_mtz() )
+            shutil.copyfile ( os.path.join(self.modelcraft_tmp(),"refine.mtz"),
+                                           self.modelcraft_mtz() )
 
             self.putTitle ( "Built Structure" +\
                         self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
             self.unsetLogParser()
 
             # calculate maps for UglyMol using final mtz from temporary location
-            #fnames = self.calcCCP4Maps ( self.buccaneer_mtz(),self.outputFName )
+            #fnames = self.calcCCP4Maps ( self.modelcraft_mtz(),self.outputFName )
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
             structure = self.registerStructure (
-                                    self.buccaneer_xyz(),None,self.buccaneer_mtz(),
+                                    self.modelcraft_xyz(),None,self.modelcraft_mtz(),
                                     None,None,None,
                                     #fnames[0],fnames[1],None,  -- not needed for new UglyMol
                                     leadKey=1,refiner="refmac" )
@@ -305,7 +305,7 @@ class Buccaneer(basic.TaskDriver):
 
                 #self.copyTaskMetrics ( "refmac","R_factor","rfactor" )
                 #self.copyTaskMetrics ( "refmac","R_free"  ,"rfree"   )
-                #self.copyTaskMetrics ( "cbuccaneer","percentage","model_completeness" )
+                #self.copyTaskMetrics ( "cmodelcraft","percentage","model_completeness" )
 
                 rvrow0 = self.rvrow
                 try:
@@ -332,5 +332,5 @@ class Buccaneer(basic.TaskDriver):
 
 if __name__ == "__main__":
 
-    drv = Buccaneer ( "",os.path.basename(__file__) )
+    drv = ModelCraft ( "",os.path.basename(__file__) )
     drv.start()

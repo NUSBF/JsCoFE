@@ -27,6 +27,7 @@
  */
 
 var http      = require('http');
+var https     = require('https');
 var httpProxy = require('http-proxy');
 var url       = require('url');
 var path      = require('path');
@@ -61,9 +62,10 @@ function start ( callback_func )  {
     target       : fe_url,
     changeOrigin : true
   };
-  //var options_web = {
-  //  target : fe_url
-  //};
+  var options_web = {
+    // target : fe_url
+    // rejectUnauthorized : false
+  };
   if (fe_config.protocol=='https')  {
     options_proxy.secure = true;
     //options_proxy.changeOrigin = true;
@@ -73,17 +75,22 @@ function start ( callback_func )  {
     //  host     : fe_config.host
     //};
     //options_web.secure = true;
-    var https = require('https');
     //options_proxy.agent = new https.Agent ({ keepAlive: true, maxSockets: 10000 });
     //options_web  .agent = new https.Agent ({ keepAlive: true, maxSockets: 10000 });
-    options_proxy.agent = new https.Agent ({ keepAlive: true });
+    options_proxy.agent = new https.Agent ({
+      keepAlive: true,
+      rejectUnauthorized: false
+    });
     //options_web  .agent = new https.Agent ({ keepAlive: true });
   } else  {
     //options_proxy.agent = new http.Agent ({ keepAlive: true, maxSockets: 10000 });
     //options_web  .agent = new http.Agent ({ keepAlive: true, maxSockets: 10000 });
     options_proxy.secure = false;
     //options_proxy.changeOrigin = true;
-    options_proxy.agent = new http.Agent ({ keepAlive: true });
+    options_proxy.agent = new http.Agent ({
+      keepAlive: true,
+      rejectUnauthorized: false
+    });
     //options_web  .agent = new http.Agent ({ keepAlive: true });
   }
 
@@ -139,7 +146,7 @@ function start ( callback_func )  {
     //log.warning ( 3,'failed proxy fetch ' + url.parse(server_request.url).pathname.substr(1) );
     //log.warning ( 3,'             error ' + err );
     log.warning ( 3,err + ' fetching ' + url.parse(server_request.url).pathname.substr(1) );
-    proxy.web ( server_request,server_response ); //, options_web );
+    proxy.web ( server_request,server_response,options_web );
   });
 
   // Listen to the `upgrade` event in order to proxy the WebSocket requests as well.
@@ -169,7 +176,7 @@ function start ( callback_func )  {
 
     proxy_client.on ( 'error', function(err,server_request,server_response){
       log.warning ( 4,err + ' fetching ' + url.parse(server_request.url).pathname.substr(1) );
-      proxy_client.web ( server_request,server_response ); //, options_web );
+      proxy_client.web ( server_request,server_response,options_web );
     });
 
     // Listen to the `upgrade` event in order to proxy the WebSocket requests as well.
@@ -190,7 +197,7 @@ function start ( callback_func )  {
             conf.getClientInfo ( null,function(response){
               response.version  += ' client';
               response.data.via_proxy = true;
-              response.send(server_response);
+              response.send ( server_response );
             });
           break;
 
@@ -198,7 +205,7 @@ function start ( callback_func )  {
             conf.getFEProxyInfo ( {},function(response){
               response.version  += ' client';
               response.data.via_proxy = true;
-              response.send(server_response);
+              response.send ( server_response );
             });
           break;
 
@@ -214,14 +221,14 @@ function start ( callback_func )  {
               utils.send_file ( fpath,server_response,utils.getMIMEType(fpath),
                                 false,0,0,
                                 function(filepath,mimeType,deleteOnDone,capSize){
-                proxy.web ( server_request,server_response ); //, options_web );
+                proxy.web ( server_request,server_response, options_web );
                 return false;  // no standard processing
               });
             } else if (proxy_client && command.startsWith(cmd.__special_client_tag)) {
               //console.log ( ' >>>>1 ' + command );
-              proxy_client.web ( server_request,server_response ); //, options_web );
+              proxy_client.web ( server_request,server_response, options_web );
             } else
-              proxy.web ( server_request,server_response ); //, options_web );
+              proxy.web ( server_request,server_response, options_web );
 
     }
 

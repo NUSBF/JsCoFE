@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.10.20   <--  Date of Last Modification.
+ *    25.11.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -66,6 +66,7 @@ function getNCData ( ncInfo,callback_func )  {
         method  : 'POST',
         body    : '',
         json    : true,
+        rejectUnauthorized : false,
         timeout : 1000
       },function(error,response,body){
 

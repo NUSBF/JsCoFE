@@ -1393,8 +1393,13 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
           // compute full local path to accept the download
           var fpath = path.join ( 'input',url.substring(url.lastIndexOf('/')+1) );
 
+          var get_options = {
+            url: url,
+            rejectUnauthorized : false
+          };
+
           request  // issue the download request
-            .get ( url )
+            .get ( get_options )
             .on('error', function(err) {
               log.error ( 17,'Download errors from ' + url );
               log.error ( 17,'Error: ' + err );
@@ -1495,7 +1500,10 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
 
   var dnlURL = post_data_obj.feURL + post_data_obj.dnlURL;
 
-  var get_options = { url: dnlURL };
+  var get_options = {
+    url : dnlURL,
+    rejectUnauthorized : false
+  };
   //if (conf.getServerConfig().useRootCA)
   //  get_options.ca = fs.readFileSync ( path.join('certificates','rootCA.pem') );
 
