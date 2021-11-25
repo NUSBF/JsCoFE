@@ -126,7 +126,7 @@ var sender_cfg = conf.getServerConfig();
     var post_options = {
       url      : serverURL + '/' + command,
       formData : formData,
-      rejectUnauthorized : false
+      rejectUnauthorized : sender_cfg.rejectUnauthorized
     };
     /*
     //if (serverURL.startsWith('https:'))  {

@@ -765,7 +765,7 @@ var response = null;
                     return_data : true
                   },
         json    : true,
-        rejectUnauthorized : false
+        rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
       },function(error,response,body){
           if (!error && (response.statusCode==200)) {
             log.standard ( 10,body.message );
@@ -833,7 +833,7 @@ function killJob ( loginData,projectName,taskId )  {
                     return_data : false
                   },
         json    : true,
-        rejectUnauthorized : false
+        rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
       },function(error,response,body){
           if (!error && (response.statusCode==200)) {
             log.standard ( 101,body.message );
@@ -1311,7 +1311,7 @@ var nc_servers = conf.getNCConfigs();
           method  : 'POST',
           body    : {job_tokens:tokens},
           json    : true,
-          rejectUnauthorized : false
+          rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
         },function(error,response,body){
             if (error)
               log.error ( 10,'errors communicating with NC' + i + ': ' + error );

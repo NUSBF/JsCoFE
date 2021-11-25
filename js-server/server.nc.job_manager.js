@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.21   <--  Date of Last Modification.
+ *    25.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1395,7 +1395,7 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
 
           var get_options = {
             url: url,
-            rejectUnauthorized : false
+            rejectUnauthorized : conf.getServerConfig().rejectUnauthorized
           };
 
           request  // issue the download request
@@ -1502,7 +1502,7 @@ function ncRunClientJob1 ( post_data_obj,callback_func,attemptNo )  {
 
   var get_options = {
     url : dnlURL,
-    rejectUnauthorized : false
+    rejectUnauthorized : conf.getServerConfig().rejectUnauthorized
   };
   //if (conf.getServerConfig().useRootCA)
   //  get_options.ca = fs.readFileSync ( path.join('certificates','rootCA.pem') );

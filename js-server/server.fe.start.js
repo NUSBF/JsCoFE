@@ -96,7 +96,7 @@ function start ( callback_func )  {
           url  : ncConfigs[nc_number].url() + '/' + command,
           body : {},
           json : true,
-          rejectUnauthorized : false
+          rejectUnauthorized : feConfig.rejectUnauthorized
         }, function(err,httpResponse,response) {
           if (final_callback_function)
             commandServer ( nc_number+1,final_callback_function,command );
