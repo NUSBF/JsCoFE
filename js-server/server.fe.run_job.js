@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.11.21   <--  Date of Last Modification.
+ *    25.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -764,7 +764,8 @@ var response = null;
                     gracefully  : data.gracefully,
                     return_data : true
                   },
-        json    : true
+        json    : true,
+        rejectUnauthorized : false
       },function(error,response,body){
           if (!error && (response.statusCode==200)) {
             log.standard ( 10,body.message );
@@ -831,7 +832,8 @@ function killJob ( loginData,projectName,taskId )  {
                     gracefully  : false,
                     return_data : false
                   },
-        json    : true
+        json    : true,
+        rejectUnauthorized : false
       },function(error,response,body){
           if (!error && (response.statusCode==200)) {
             log.standard ( 101,body.message );
@@ -1308,7 +1310,8 @@ var nc_servers = conf.getNCConfigs();
           baseUrl : nc_servers[i].externalURL,
           method  : 'POST',
           body    : {job_tokens:tokens},
-          json    : true
+          json    : true,
+          rejectUnauthorized : false
         },function(error,response,body){
             if (error)
               log.error ( 10,'errors communicating with NC' + i + ': ' + error );

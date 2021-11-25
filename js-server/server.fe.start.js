@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.04.21   <--  Date of Last Modification.
+ *    25.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -95,7 +95,8 @@ function start ( callback_func )  {
         request.post({
           url  : ncConfigs[nc_number].url() + '/' + command,
           body : {},
-          json : true
+          json : true,
+          rejectUnauthorized : false
         }, function(err,httpResponse,response) {
           if (final_callback_function)
             commandServer ( nc_number+1,final_callback_function,command );

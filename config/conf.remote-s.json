@@ -8,7 +8,10 @@
 
   "Desktop"  : {
     "clientApp"  : "/bin/bash",
-    "args"       : ["-c","open -a Firefox $feURL$clientURL"]
+    "args"       : ["-c","open -a Opera $feURL$clientURL"],
+    "_args"       : ["-c","open $feURL$clientURL"],
+    "__args"       : ["-c","open -a 'Google Chrome' $feURL$clientURL"],
+    "___args"       : ["-c","open -a Firefox $feURL$clientURL"]
   },
 
   "FrontEnd" : {
@@ -32,7 +35,7 @@
     }
   },
 
-  "FEProxy" : {
+  "__FEProxy" : {
     "protocol"         : "http",
     "host"             : "localhost",
     "port"             : 0,
@@ -40,6 +43,16 @@
     "exclusive"        : true,
     "stoppable"        : false,
     "localisation"     : 3
+  },
+
+  "FEProxy" : {
+    "protocol"         : "http",
+    "host"             : "localhost",
+    "port"             : 8086,
+    "externalURL"      : "",
+    "exclusive"        : true,
+    "stoppable"        : false,
+    "localisation"     : 0
   },
 
   "NumberCrunchers" : [
