@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.08.20   <--  Date of Last Modification.
+ *    25.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Proxy Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2019-2021
  *
  *  =================================================================
  *
@@ -64,7 +64,7 @@ function start ( callback_func )  {
   };
   var options_web = {
     // target : fe_url
-    // rejectUnauthorized : false
+    // rejectUnauthorized : proxy_config.rejectUnauthorized
   };
   if (fe_config.protocol=='https')  {
     options_proxy.secure = true;
@@ -79,7 +79,7 @@ function start ( callback_func )  {
     //options_web  .agent = new https.Agent ({ keepAlive: true, maxSockets: 10000 });
     options_proxy.agent = new https.Agent ({
       keepAlive: true,
-      rejectUnauthorized: false
+      rejectUnauthorized: proxy_config.rejectUnauthorized
     });
     //options_web  .agent = new https.Agent ({ keepAlive: true });
   } else  {
@@ -89,7 +89,7 @@ function start ( callback_func )  {
     //options_proxy.changeOrigin = true;
     options_proxy.agent = new http.Agent ({
       keepAlive: true,
-      rejectUnauthorized: false
+      rejectUnauthorized: proxy_config.rejectUnauthorized
     });
     //options_web  .agent = new http.Agent ({ keepAlive: true });
   }

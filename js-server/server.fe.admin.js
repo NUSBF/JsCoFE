@@ -66,7 +66,7 @@ function getNCData ( ncInfo,callback_func )  {
         method  : 'POST',
         body    : '',
         json    : true,
-        rejectUnauthorized : false,
+        rejectUnauthorized : conf.getFEConfig().rejectUnauthorized,
         timeout : 1000
       },function(error,response,body){
 

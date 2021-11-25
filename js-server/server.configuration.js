@@ -78,6 +78,7 @@ function ServerConfig ( type )  {
   this.only_tasks     = [];   // tasks that NC server can only run
   this.storage        = null;
   this.update_rcode   = 0;    // can be be detected by launcher script to do the needful
+  this.rejectUnauthorized = false; // should be true by default
   if (type=='FEProxy')
         this.state = 'active';  // server state: 'active', 'inactive'
   else  this.state = 'active';  // server state: 'active', 'inactive'
@@ -272,7 +273,7 @@ ServerConfig.prototype.checkNCStatus = function ( callback_func )  {
     method  : 'POST',
     body    : '',
     json    : true,
-    rejectUnauthorized : false
+    rejectUnauthorized : this.rejectUnauthorized
   },function(error,response,body){
     callback_func ( error,response,body,this );
   });
