@@ -65,10 +65,10 @@ def balbesAfterASU(driver, waitLong):
         print('*** Verification: could not find Rwork or Rfree value after BALBES run')
     else:
         print('*** Verification: BALBES ' \
-              'Rwork is %0.4f (expecting <0.25), ' \
-              'Rfree is %0.4f (expecing <0.25)' % (rWork, rFree))
-    assert rWork < 0.25
-    assert rFree < 0.25
+              'Rwork is %0.4f (expecting <0.275), ' \
+              'Rfree is %0.4f (expecing <0.275)' % (rWork, rFree))
+    assert rWork < 0.275
+    assert rFree < 0.275
 
     return ()
 

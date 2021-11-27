@@ -409,8 +409,8 @@ def verifyShelxDM(driver):
     if (cc == 0.0) or (fom == 0.0):
         print('*** Verification: could not find CC or FOM after shelxe run')
     else:
-        print('*** Verification: SHELXE CC= %0.2f %%, FOM= %0.2f (expecting >35%%, >0.7)' % (cc, fom))
-    assert cc > 35.0
+        print('*** Verification: SHELXE CC= %0.2f %%, FOM= %0.2f (expecting >30%%, >0.7)' % (cc, fom))
+    assert cc > 30.0
     assert fom > 0.7
 
     return ()
@@ -548,7 +548,7 @@ def test_4acorn():
         runAcorn(d.driver) # 8
         startBuccaneer(d.driver)  # 9
 
-        verifyBuccaneer(d.driver, 420, '0007', 0.29, 0.31)
+        verifyBuccaneer(d.driver, 420, '0007', 0.36, 0.37)
         verifyBuccaneer(d.driver, 420, '0009', 0.34, 0.36)
         verifyShelxDM(d.driver)
 
