@@ -306,12 +306,12 @@ def verifyPhaser(driver, waitLong, jobNumber):
         print('*** Verification: PHASER ' \
               'LLG is %d (expecting >3600), ' \
               'TFZ is %0.1f (expecting >50.0), ' \
-              'Rwork is %0.4f (expecting <0.36), ' \
-              'Rfree is %0.4f (expecing <0.37)' % (llg, tfz, rWork, rFree))
+              'Rwork is %0.4f (expecting <0.375), ' \
+              'Rfree is %0.4f (expecing <0.385)' % (llg, tfz, rWork, rFree))
     assert llg > 3600
     assert tfz > 50.0
-    assert rWork < 0.36
-    assert rFree < 0.37
+    assert rWork < 0.375
+    assert rFree < 0.385
 
     return ()
 

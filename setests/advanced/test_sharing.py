@@ -305,8 +305,8 @@ def verifyMrBump(driver):
     if (rWork == 1.0) or (rFree == 1.0):
         print('*** Verification: could not find compl or Rwork or Rfree value after MrBUMP run')
     else:
-        print('*** Verification: MrBUMP Rwork is %0.4f (expecting <0.28), Rfree is %0.4f (expecing <0.31)' % (rWork, rFree))
-    assert rWork < 0.28
+        print('*** Verification: MrBUMP Rwork is %0.4f (expecting <0.29), Rfree is %0.4f (expecing <0.31)' % (rWork, rFree))
+    assert rWork < 0.29
     assert rFree < 0.31
     # assert compl > 90.0
 
