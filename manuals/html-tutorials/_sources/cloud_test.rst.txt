@@ -1,0 +1,37 @@
+==========
+Cloud test
+==========
+
+``1.`` Please Create `CCP4 Cloud <https://cloud.ccp4.ac.uk/>`_ account.
+
+
+``2.`` Click `here <https://cloud.ccp4.ac.uk/manuals/demo_project.html?cmount=Tutorials&project=D01.%20Simple%20Auto-MR%20with%20MORDA>`_ to launch demo project (already elaborated a project branch). 
+
+or go to **Tutorials => Demo projects => D01 Simple Auto-MR with MoRDa**
+
+.. image:: images/Tutorials.png
+        :align: center
+        :scale: 30 %
+
+
+.. image:: images/demoproject_D01.png
+        :align: center
+        :scale: 40 %
+
+
+``3.`` Launch CCP4 Cloud through the local installation of CCP4 on your computer |ccp4cloud_remote| 
+
+.. |ccp4cloud_remote| image:: images/ccp4cloud_remote.png
+   :width: 20
+   :height: 20
+
+
+``4.`` Clone Coot task
+
+.. image:: images/Clone_COOT.png
+        :align: center
+        :scale: 40 %
+
+Run COOT task
+
+.. warning:: If COOT task failed to run, please, report the issue

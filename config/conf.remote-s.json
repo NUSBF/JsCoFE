@@ -56,6 +56,7 @@
     "externalURL"      : "",
     "exclusive"        : true,
     "stoppable"        : false,
+    "rejectUnauthorized" : false,
     "localisation"     : 0
   },
 

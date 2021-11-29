@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.11.21   <--  Date of Last Modification.
+#    27.11.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -81,17 +81,23 @@ class ModelCraft(basic.TaskDriver):
         hkl     = self.makeClass ( idata.hkl[0]     )
         istruct = self.makeClass ( idata.istruct[0] )
         seq     = idata.seq
-        if hasattr(idata,"ixyz"):
-            ixyz = self.makeClass ( idata.ixyz[0] )
-        else:
-            ixyz = istruct
 
-        self.stderrln ( istruct.to_JSON() )
+        # If starting from experimental phases:
+        #
+        # modelcraft --contents sequences.fasta --data data.mtz --unbiased
+        #
+        # The sequences.fasta should contain the protein/RNA/DNA sequences that
+        # you want to build and data.mtz should contain observations, free-R flag
+        # and un-modified experimental phases (Parrot will be used internally).
+        #
+        # If starting after MR:
+        #
+        # modelcraft --contents sequences.fasta --data data.mtz --model model.cif
 
         # prepare input MTZ file by putting original reflection data into
         # phases MTZ
 
-        labin_fo    = hkl.getMeanF()
+        labin_fo = hkl.getMeanF()
         if labin_fo[2]!="F":
             self.fail ( "<h3>No amplitude data.</h3>" +\
                     "This task requires F/sigF columns in reflection data, " +\
@@ -104,13 +110,15 @@ class ModelCraft(basic.TaskDriver):
         labin_ph    = []
         if istruct.HLA:  #  experimental phases
             labin_ph = [istruct.HLA,istruct.HLB,istruct.HLC,istruct.HLD]
-        else:  # MR phases
-            labin_ph = [istruct.PHI,istruct.FOM]
-
-        self.makePhasesMTZ (
-                hkl.getHKLFilePath(self.inputDir())    ,labin_fo,
-                istruct.getMTZFilePath(self.inputDir()),labin_ph,
-                input_mtz )
+            self.makePhasesMTZ (
+                    hkl.getHKLFilePath(self.inputDir())    ,labin_fo,
+                    istruct.getMTZFilePath(self.inputDir()),labin_ph,
+                    input_mtz )
+            # else:  # MR phases
+            #     labin_ph = [istruct.PHI,istruct.FOM]
+        else:
+            self.sliceMTZ ( hkl.getHKLFilePath(self.inputDir()),labin_fo,
+                            input_mtz )
 
         #self.makeFullASUSequenceFile ( seq,self.modelcraft_seq() )
 
@@ -124,204 +132,107 @@ class ModelCraft(basic.TaskDriver):
             else:
                 newf.write ( ">polyUNK\nU\n" );
 
-        refname = "reference-" + sec2.REFMDL_SEL.value
-        #isCoor  = istruct.hasXYZSubtype()
-        isCoor  = ixyz.hasXYZSubtype();
-
-        self.open_stdin()
-        reffile = os.path.join(os.environ["CCP4"],"lib","data","reference_structures",refname)
-        self.addCmdLine ( "title Job",self.job_id.zfill(4) )
-        self.addCmdLine ( "pdbin-ref",reffile + ".pdb" )
-        self.addCmdLine ( "mtzin-ref",reffile + ".mtz" )
-        self.addCmdLine ( "colin-ref-fo","[/*/*/FP.F_sigF.F,/*/*/FP.F_sigF.sigF]" )
-        self.addCmdLine ( "colin-ref-hl","[/*/*/FC.ABCD.A,/*/*/FC.ABCD.B,/*/*/FC.ABCD.C,/*/*/FC.ABCD.D]" )
-        self.addCmdLine ( "seqin"     ,self.modelcraft_seq() )
-        self.addCmdLine ( "mtzin"     ,input_mtz )
-        #self.addCmdLine ( "colin-fo"  ,"[/*/*/" + istruct.FP + ",/*/*/" + istruct.SigFP + "]" )
-        #self.addCmdLine ( "colin-free","[/*/*/" + istruct.FreeR_flag + "]" )
-        self.addCmdLine ( "colin-fo"  ,"[/*/*/" + labin_fo[0] + ",/*/*/" + labin_fo[1] + "]" )
-        self.addCmdLine ( "colin-free","[/*/*/" + labin_fo[2] + "]" )
-
-        if istruct.HLA:
-            self.addCmdLine ( "colin-hl","[/*/*/" + istruct.HLA + ",/*/*/" + istruct.HLB +\
-                                         ",/*/*/" + istruct.HLC + ",/*/*/" + istruct.HLD + "]" )
-        else:
-            self.addCmdLine ( "colin-phifom","[/*/*/" + istruct.PHI + ",/*/*/" + istruct.FOM + "]" )
-
-        """
-        if isCoor:
-            self.addCmdLine ( "colin-phifom","[/*/*/" + istruct.PHI + ",/*/*/" + istruct.FOM + "]" )
-        else:
-            self.addCmdLine ( "colin-hl","[/*/*/" + istruct.HLA + ",/*/*/" + istruct.HLB +\
-                                         ",/*/*/" + istruct.HLC + ",/*/*/" + istruct.HLD + "]" )
-        """
-
-        # Fixed model to be preserved by ModelCraft
-
-        xmodel = None
-        smodel = None
-        if hasattr(idata,"xmodel"):
-            xmodel = self.makeClass(idata.xmodel[0])
-            self.addCmdLine ( "pdbin",xmodel.getXYZFilePath(self.inputDir()) )
-
-        if hasattr(idata,"smodel"):
-            smodel = self.makeClass(idata.smodel[0])
-            self.addCmdLine ( "pdbin-sequence-prior",
-                              smodel.getXYZFilePath(self.inputDir()) )
-
-        self.addCmdLine ( "pdbout",self.modelcraft_xyz()  )
-
-        self.write_stdin (
-            self.putKWParameter ( sec1.NCYCLES          ) + \
-            self.putKWParameter ( sec2.FIX_POSITION_CBX ) + \
-            self.putKWParameter ( sec1.ANISO_CBX        ) + \
-            self.putKWParameter ( sec1.SELEN_CBX        ) + \
-            self.putKWParameter ( sec1.FASTEST_CBX      ) + \
-            self.putKWParameter ( sec2.NICYCLES1        ) + \
-            self.putKWParameter ( sec2.SEQASGN1_SEL     ) + \
-            self.putKWParameter ( sec2.CORRTF1_CBX      ) + \
-            self.putKWParameter ( sec2.NICYCLES2        ) + \
-            self.putKWParameter ( sec2.SEQASGN2_SEL     ) + \
-            self.putKWParameter ( sec2.CORRTF2_CBX      ) + \
-            self.putKWParameter ( sec2.RESMIN           ) + \
-            self.putKWParameter ( sec2.UNKRESN          )
-            #self.putKWParameter ( sec2.FILTERBF     ) + \
-            #self.putKWParameter ( sec2.FILTERBFMR   )
-        )
-
-        if xmodel:
-            self.addCmdLine ( "modelcraft-keyword model-filter-sigma",str(xmodel.BFthresh) )
-
-        if isCoor:
-            self.addCmdLine ( "modelcraft-keyword mr-model-filter-sigma",str(ixyz.BFthresh) )
-
-        #if sec2.KEEPATMCID.visible:
-        #    self.write_stdin ( "modelcraft-keyword known-structure " + \
-        #                       sec2.KEEPATMCID.value + ":" + \
-        #                       str(sec2.KEEPATMRAD.value) + "\n" )
-
-        if hasattr(sec1,"NCPUS"):
-            self.write_stdin ( self.putKWParameter ( sec1.NCPUS ) )
-        else:
-            self.write_stdin ( "jobs 2\n" )
-
-        self.write_stdin ( self.putKWParameter ( sec3.USEPHI_CBX ) )
-
-        if isCoor:
-            self.addCmdLine ( "pdbin-mr",ixyz.getXYZFilePath(self.inputDir()) )
-            if istruct.useModelSel!="N":
-                self.addCmdLine ( "modelcraft-keyword",ixyz.useModelSel )
-            #self.write_stdin ( self.putKWParameter ( sec1.USEMR_SEL ) )
-
-        self.write_stdin ( self.putKWParameter ( sec3.REFTWIN_CBX ) )
-
-        if self.getParameter(sec3.AUTOWEIGH_CBX)=="False":
-            self.addCmdLine ( "refmac-weight",self.getParameter(sec3.WEIGHTVAL) )
-
-        self.addCmdLine ( "prefix","./" + self.modelcraft_tmp() + "/" )
-
-        self.close_stdin()
-
         # make command-line parameters
-        cmd = [ "-u",
-                os.path.join(os.environ["CCP4"],"bin","modelcraft_pipeline"),
-                "-stdin"
-              ]
+        cmd = [ "--contents",self.modelcraft_seq(),"--data",input_mtz ]
+        if istruct.HLA:  #  experimental phases
+            cmd += [ "--unbiased" ]
+        else:  #  molecular replacement
+            cmd += [ "--model", istruct.getXYZFilePath(self.inputDir()) ]
 
         # prepare report parser
         self.setGenericLogParser ( "modelcraft_report",True )
 
         # start modelcraft
         if sys.platform.startswith("win"):
-            rc = self.runApp ( "ccp4-python.bat",cmd,logType="Main",quitOnError=False )
+            rc = self.runApp ( "modelcraft.bat",cmd,logType="Main",quitOnError=False )
         else:
-            rc = self.runApp ( "ccp4-python",cmd,logType="Main",quitOnError=False )
+            rc = self.runApp ( "modelcraft",cmd,logType="Main",quitOnError=False )
 
-        self.addCitations ( ['modelcraft','refmac5'] )
+        # self.addCitations ( ['modelcraft','refmac5'] )
 
         have_results = False
 
-        if rc.msg:
-            self.flush()
-            self.file_stdout.close()
-            nobuild = False
-            with (open(self.file_stdout_path(),'r')) as fstd:
-                for line in fstd:
-                    if "0 residues were built in   0 fragments, the longest having    0 residues." in line:
-                        nobuild = True
-                        break
-            self.file_stdout  = open ( self.file_stdout_path(),'a' )
-            self.putTitle ( "Results" )
-            if nobuild:
-                self.putMessage ( "<h3>Failed to build structure</h3>" )
-            else:
-                self.putMessage ( "<h3>ModelCraft failure</h3>" )
-                raise signal.JobFailure ( rc.msg )
-
-        # check solution and register data
-        elif os.path.isfile(self.modelcraft_xyz()):
-
-            shutil.copyfile ( os.path.join(self.modelcraft_tmp(),"refine.mtz"),
-                                           self.modelcraft_mtz() )
-
-            self.putTitle ( "Built Structure" +\
-                        self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
-            self.unsetLogParser()
-
-            # calculate maps for UglyMol using final mtz from temporary location
-            #fnames = self.calcCCP4Maps ( self.modelcraft_mtz(),self.outputFName )
-
-            # register output data from temporary location (files will be moved
-            # to output directory by the registration procedure)
-
-            structure = self.registerStructure (
-                                    self.modelcraft_xyz(),None,self.modelcraft_mtz(),
-                                    None,None,None,
-                                    #fnames[0],fnames[1],None,  -- not needed for new UglyMol
-                                    leadKey=1,refiner="refmac" )
-            if structure:
-                structure.copyAssociations ( istruct )
-                structure.addSubtypes      ( istruct.subtype )
-                structure.removeSubtype    ( dtype_template.subtypeSubstructure() )
-                structure.setXYZSubtype    ()
-                structure.copyLabels       ( istruct )
-                structure.setRefmacLabels  ( None    )
-                structure.copyLigands      ( istruct )
-                #structure.FP         = istruct.FP
-                #structure.SigFP      = istruct.SigFP
-                #structure.FreeR_flag = istruct.FreeR_flag
-                structure.FP         = labin_fo[0]
-                structure.SigFP      = labin_fo[1]
-                structure.FreeR_flag = labin_fo[2]
-                self.putStructureWidget    ( "structure_btn",
-                                             "Structure and electron density",
-                                             structure )
-                # update structure revision
-                revision = self.makeClass  ( self.input_data.data.revision[0] )
-                revision.setStructureData  ( structure )
-                #revision.removeSubtype     ( dtype_template.subtypeSubstructure() )
-                self.registerRevision      ( revision  )
-                have_results = True
-
-                #self.copyTaskMetrics ( "refmac","R_factor","rfactor" )
-                #self.copyTaskMetrics ( "refmac","R_free"  ,"rfree"   )
-                #self.copyTaskMetrics ( "cmodelcraft","percentage","model_completeness" )
-
-                rvrow0 = self.rvrow
-                try:
-                    qualrep.quality_report ( self,revision )
-                except:
-                    self.stderr ( " *** molprobity failure" )
-                    self.rvrow = rvrow0
-
-                auto.makeNextTask ( self,{
-                    "revision" : revision,
-                    "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                    "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
-                })
-
-        else:
-            self.putTitle ( "No Output Generated" )
+        # if rc.msg:
+        #     self.flush()
+        #     self.file_stdout.close()
+        #     nobuild = False
+        #     with (open(self.file_stdout_path(),'r')) as fstd:
+        #         for line in fstd:
+        #             if "0 residues were built in   0 fragments, the longest having    0 residues." in line:
+        #                 nobuild = True
+        #                 break
+        #     self.file_stdout  = open ( self.file_stdout_path(),'a' )
+        #     self.putTitle ( "Results" )
+        #     if nobuild:
+        #         self.putMessage ( "<h3>Failed to build structure</h3>" )
+        #     else:
+        #         self.putMessage ( "<h3>ModelCraft failure</h3>" )
+        #         raise signal.JobFailure ( rc.msg )
+        #
+        # # check solution and register data
+        # elif os.path.isfile(self.modelcraft_xyz()):
+        #
+        #     shutil.copyfile ( os.path.join(self.modelcraft_tmp(),"refine.mtz"),
+        #                                    self.modelcraft_mtz() )
+        #
+        #     self.putTitle ( "Built Structure" +\
+        #                 self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
+        #     self.unsetLogParser()
+        #
+        #     # calculate maps for UglyMol using final mtz from temporary location
+        #     #fnames = self.calcCCP4Maps ( self.modelcraft_mtz(),self.outputFName )
+        #
+        #     # register output data from temporary location (files will be moved
+        #     # to output directory by the registration procedure)
+        #
+        #     structure = self.registerStructure (
+        #                             self.modelcraft_xyz(),None,self.modelcraft_mtz(),
+        #                             None,None,None,
+        #                             #fnames[0],fnames[1],None,  -- not needed for new UglyMol
+        #                             leadKey=1,refiner="refmac" )
+        #     if structure:
+        #         structure.copyAssociations ( istruct )
+        #         structure.addSubtypes      ( istruct.subtype )
+        #         structure.removeSubtype    ( dtype_template.subtypeSubstructure() )
+        #         structure.setXYZSubtype    ()
+        #         structure.copyLabels       ( istruct )
+        #         structure.setRefmacLabels  ( None    )
+        #         structure.copyLigands      ( istruct )
+        #         #structure.FP         = istruct.FP
+        #         #structure.SigFP      = istruct.SigFP
+        #         #structure.FreeR_flag = istruct.FreeR_flag
+        #         structure.FP         = labin_fo[0]
+        #         structure.SigFP      = labin_fo[1]
+        #         structure.FreeR_flag = labin_fo[2]
+        #         self.putStructureWidget    ( "structure_btn",
+        #                                      "Structure and electron density",
+        #                                      structure )
+        #         # update structure revision
+        #         revision = self.makeClass  ( self.input_data.data.revision[0] )
+        #         revision.setStructureData  ( structure )
+        #         #revision.removeSubtype     ( dtype_template.subtypeSubstructure() )
+        #         self.registerRevision      ( revision  )
+        #         have_results = True
+        #
+        #         #self.copyTaskMetrics ( "refmac","R_factor","rfactor" )
+        #         #self.copyTaskMetrics ( "refmac","R_free"  ,"rfree"   )
+        #         #self.copyTaskMetrics ( "cmodelcraft","percentage","model_completeness" )
+        #
+        #         rvrow0 = self.rvrow
+        #         try:
+        #             qualrep.quality_report ( self,revision )
+        #         except:
+        #             self.stderr ( " *** molprobity failure" )
+        #             self.rvrow = rvrow0
+        #
+        #         auto.makeNextTask ( self,{
+        #             "revision" : revision,
+        #             "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+        #             "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+        #         })
+        #
+        # else:
+        #     self.putTitle ( "No Output Generated" )
 
         # close execution logs and quit
         self.success ( have_results )

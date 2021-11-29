@@ -67,6 +67,11 @@ function start ( callback_func )  {
     // rejectUnauthorized : proxy_config.rejectUnauthorized
   };
   if (fe_config.protocol=='https')  {
+
+    // https://git.coolaj86.com/coolaj86/ssl-root-cas.js
+    // var rootCas = require('ssl-root-cas').create();
+    // https.globalAgent.options.ca = rootCas;
+
     options_proxy.secure = true;
     //options_proxy.changeOrigin = true;
     //options_web  .changeOrigin = true;
