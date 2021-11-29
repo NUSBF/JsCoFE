@@ -49,7 +49,7 @@ def makeNextTask ( body,data,log=None ):
                 if hasattr(data[key],"citations"):
                     data[key].citations = body.citation_list
 
-            auto_api.setLog ( log )
+            auto_api.setLog ( body.file_stdout ) # auto_api.setLog ( log )
             auto_api.initAutoMeta()
 
             # auto_api.log ( " --- " + str(data) )
@@ -72,9 +72,8 @@ def makeNextTask ( body,data,log=None ):
             auto_api.writeAutoMeta()
             return True
 
-    # except:
-    #     body.putMessage("<i>automatic workflow excepted</i>")
-
+        else:
+            raise
 
     except Exception as inst:
         body.putMessage(str(type(inst)))  # the exception instance
