@@ -44,6 +44,7 @@
     "externalURL"      : "http://localhost:8082",
     "exclusive"        : true,
     "stoppable"        : false,
+    "rejectUnauthorized" : false,
     "localisation"     : 0
   },
 

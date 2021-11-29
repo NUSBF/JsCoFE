@@ -78,7 +78,7 @@ function ServerConfig ( type )  {
   this.only_tasks     = [];   // tasks that NC server can only run
   this.storage        = null;
   this.update_rcode   = 0;    // can be be detected by launcher script to do the needful
-  this.rejectUnauthorized = false; // should be true by default
+  this.rejectUnauthorized = true; // should be true by default
   if (type=='FEProxy')
         this.state = 'active';  // server state: 'active', 'inactive'
   else  this.state = 'active';  // server state: 'active', 'inactive'
@@ -396,6 +396,7 @@ function CCP4DirName()  {
     "reportURL"        : "https://cloud.ccp4.ac.uk",  // used only for reporting
     "exclusive"        : true,
     "stoppable"        : false,
+    "rejectUnauthorized" : true, // optional; use only for debugging, see docs
     "exclude_tasks"    : [],
     "licensed_tasks"   : [],   // ["TaskArpWarp"] if arpwarp installed on server
     "fsmount"          : "/",
@@ -478,6 +479,7 @@ function CCP4DirName()  {
     "externalURL"      : "http://localhost:8082",
     "exclusive"        : true,
     "stoppable"        : false,
+    "rejectUnauthorized" : true, // optional; use only for debugging, see docs
     "localisation"     : 1  // 0: all files are taken from remote server
                             // 1: images are taken from local setup
                             // 2: images and js libraries are taken from local setup
@@ -495,6 +497,7 @@ function CCP4DirName()  {
       "externalURL"      : "http://localhost:8082",
       "exclusive"        : true,
       "stoppable"        : false,
+      "rejectUnauthorized" : true, // optional; use only for debugging, see docs
       "fsmount"          : "/",
       "localSetup"       : true,  // optional, overrides automatic definition
       "capacity"         : 4,
@@ -536,6 +539,7 @@ function CCP4DirName()  {
       "useRootCA"        : 1,
       "exclusive"        : true,
       "stoppable"        : false,
+      "rejectUnauthorized" : true, // optional; use only for debugging, see docs
       "fsmount"          : "/",
       "capacity"         : 4,
       "exclude_tasks"    : [],
