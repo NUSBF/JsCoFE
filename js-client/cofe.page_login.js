@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.11.21   <--  Date of Last Modification.
+ *    03.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -50,6 +50,46 @@ function LoginPage ( sceneId )  {
   var panel = new Grid('');
   panel.setWidth ( '300pt' );
 
+  this.grid.setCellSize          ( '45%','',0,0,1,1 );
+  this.grid.setCellSize          ( '','15px',0,0,1,3 );
+  this.grid.setWidget            ( panel,1,1,1,1 );
+  this.grid.setVerticalAlignment ( 1,1,'middle' );
+  this.grid.setCellSize          ( '10%','',1,1,1,1 );
+  this.grid.setCellSize          ( '45%','',1,2,1,1 );
+
+  var tip_lbl = this.grid.setLabel ( '&nbsp;',2,0,1,3 );
+  this.grid.setHorizontalAlignment ( 2,0,'center' );
+  this.grid.setVerticalAlignment   ( 2,0,'top' );
+  this.grid.setCellSize          ( '','12px',2,0,1,3 );
+  this.grid.setCellSize          ( '','3px',3,0,1,3 );
+
+  this.makeLogoPanel             ( 4,0,3 );
+
+  if (!__mobile_device)
+    window.setTimeout ( function(){
+      if (__tips && __tips.use_tips && (__tips.tips.length>0))  {
+        var tipNo = 0;
+        if ('tipNo' in __tips)  tipNo = __tips.tipNo;
+                          else  tipNo = round(Date.now()/5000,0);
+        tipNo = tipNo % __tips.tips.length;
+        var tipLink = '<a href="javascript:' +
+                          'launchHelpBox(\'' + __tips.tips[tipNo].title + '\',' +
+                                        '\'' + __tips.tips[tipNo].doc   + '/'   +
+                                               __tips.tips[tipNo].link  + '\',' +
+                                        'null,10)">';
+        tip_lbl.setText (
+          '<img src="' + image_path('tip') +
+          '" style="width:24px;height:24px;vertical-align:bottom;"/>' +
+          '<span><i style="font-style:Garamond;color:#666666;">' +
+          __tips.tips[tipNo].summary.replace('<a>',tipLink) +
+          '</i></span>'
+        );
+      }
+    },1000);
+
+
+
+  /*
   if (__tips && __tips.use_tips && (__tips.tips.length>0) && (!__mobile_device))  {
 
     this.grid.setCellSize          ( '45%','',0,0,1,1 );
@@ -92,6 +132,7 @@ function LoginPage ( sceneId )  {
     this.grid.setCellSize          ( '45%','',0,2,1,1 );
     this.makeLogoPanel             ( 1,0,3 );
   }
+  */
 
   /*
   var connected_lbl = null;
