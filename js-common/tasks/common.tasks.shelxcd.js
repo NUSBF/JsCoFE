@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.08.21   <--  Date of Last Modification.
+ *    03.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -128,8 +128,8 @@ function TaskShelxCD()  {
               NTRY : {
                     type      : 'integer_', // blank value is allowed
                     keyword   : 'NTRY',  // the real keyword for job input stream
-                    label     : 'Number of tries',
-                    tooltip   : 'Number of global tries.',
+                    label     : 'Number of trials',
+                    tooltip   : 'Number of global trials.',
                     range     : [1,'*'],    // may be absent (no limits) or must
                                             // be one of the following:
                                             //   ['*',max]  : limited from top
