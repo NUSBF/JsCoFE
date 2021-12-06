@@ -72,8 +72,6 @@ def makeNextTask ( body,data,log=None ):
             auto_api.writeAutoMeta()
             return True
 
-        else:
-            raise
 
     except Exception as inst:
         body.putMessage(str(type(inst)))  # the exception instance
