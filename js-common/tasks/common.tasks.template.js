@@ -203,6 +203,8 @@ TaskTemplate.prototype.isRemark = function()  {
           (this.state==job_code.remdoc);
 }
 
+TaskTemplate.prototype.isLink = function()  { return false; }
+
 TaskTemplate.prototype.isRunning = function()  {
   return ((this.state==job_code.running) || (this.state==job_code.exiting));
 }

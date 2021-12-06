@@ -1,0 +1,116 @@
+======================================================================
+Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms
+======================================================================
+
+In this tutorial we shall learn the basics of Experimental Phasing in CCP4 Cloud, using both automatic and staged (manual) approaches. The tutorial uses data collected from crystallised Beta-Lactamase structure.
+
+``1.`` The sequence data and reflection data are already imported in the project.
+
+``2.``	The easiest (but not necessarily the fastest and most reliable) way to solve a structure in CCP4 Cloud is a suitable automatic workflow: **Click on the last file import task => add job => Workflows => Automated Experimental Phasing with Crank-2**
+
+.. image:: images/demo.EPworkflow.png
+        :align: center
+        :scale: 40 %
+
+Specify **Zn** atom type as **main anomalous scatterer**. Run the workflow.
+
+**a.**	Firstly, the workflow uses `Asymmetric Unit definition <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ASUDef.html>`_ task to guess on the expected number of chains in ASU. Correct guess is important for the evaluation of crystal's solvent content, which is also done by this task.
+
+.. note:: Good hypothesis is important for making correct estimation of solvent fraction; grossly incorrect estimate may have a negative impact on the success of Experimental Phasing.
+
+**b.**	After ASU is defined, the workflow starts `Crank-2 <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Crank2.html>`_ automatic structure solver for `Experimental Phasing <https://cloud.ccp4.ac.uk/manuals/html-taskref/Experimental_Phasing.html>`_.
+
+Crank-2 will take about 30-40 minutes to complete and should result solved structure. During this time, try solving Beta-lactamase structure manually, using fundamental programs as described below.
+
+``3.`` Just like in the workflow, start phasing procedure with the definition of the Asymmetric Unit composition (number of chains) by running the `Asymmetric Unit definition <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ASUDef.html>`_ task. It is convenient to start a separate project branch for manual structure solution, starting from the last import task: **Click on the last file import task => add next job => All tasks => Asymmetric Unit and Structure Revision => Asymmetric Unit Contents**
+
+When preparing the task for run, specify **Zn** as **Main anomalous scatterer**.
+
+After the task finishes, inspect the **Verdict** section found in the report page. The verdict will help you to assess the likelihood of having the correct ASU composition.
+
+.. note:: ASU composition remains a hypothesis until the structure is solved. It is not unusual to have it reconsidered in case of difficulties with phasing or refinement.
+
+``4.`` Experimental Phasing works in two main steps. In first step, anomalous signal, found in the reflection dataset, is used for locating anomalous scatterers in the ASU (the heavy-atom substructure). The substructure is found with ShelxCD software, which may be used as part of Crank-2 automatic pipeline (see task **Substructure Search with SHELX via Crank-2** in the Experimental Phasing section of the Task List), or with the dedicated ShelxCD task (**Substructure Search with SHELX-C/D**). Let’s choose the latter. Focus on the ASU definition task, then: **add next job => All tasks => Experimental phasing => Substructure Search with SHELX-C/D (SAD)**.
+
+For speed, limit number of trials to 100 (*not recommended unless you are working with data that you are familiar with*).
+
+Make sure that the substructure is likely to be found: **CC** :subscript:`All` in ShelxCD's Main Log tab should be **above 25%** (*scroll till the end of the main log*)
+
+``5.`` In second step, macromolecular phases are calculated using substructure phases and reflection data using **Phaser-EP** software. The Phaser-EP task calculates protein phases for the "original" and "inverted" hands, corresponding to mutually-inversed heavy-atom substructures. If crystallised, both substructures would give the same diffraction pattern, therefore, it is not possible to choose between them using only the anomalous signal, and both of them should be attempted for calculating protein phases. Run Phaser-EP task: **add next job => All task => Experimental phasing => Experimental Phasing with Phaser-EP**
+
+Phaser-EP will improve the substructure, calculate inverted substructure and estimate macromolecular phases for both substructures.
+
+.. Note::
+        do not mistake substructure phases, calculated in ShelxCD task, with macromolecular phases
+
+Examine the **Verdict** section in Phaser output, which presents the principal scores achieved (LLG and FOM) and analysis of task performance based on them.
+
+The **LLG** (Log-Likelihood Gain) measures how much better the (anomalous) data can be predicted with the substructure found than with a random
+distribution of the same atoms. Values **above 120** indicate a reliable result, values **between 90 and 120** correspond to gray area, and
+values **below 90** indicate a doubtful result or a failure.
+
+The average **FOM** (Figure Of Merit) is the phase quality indicator: FOM values **above 0.3** correspond to **good phases** (which may lead to an interpretable electron density map) and values **below 0.15** indicate **poor phases** (which make model building difficult or impossible).
+
+Unlike other tasks, Phaser-EP produces two structure revisions: one for the original and one for the inverse hand. Unless the heavy-atom substructure has an inversion centre, only one hand’s phases are suitable for model building. Try to identify the correct hand from Phaser-EP results by visual inspection of the density in **UglyMol** viewer. If phase quality is sufficiently high, the electron density shows some features peculiar to protein structures, such as trace of a helix or shapes of amino acid residues, in the correct hand. If you can’t see these features, the model building program will also struggle unless electron density is improved with special methods (density modification programs). Generally, in most cases, the phases need to be improved (modified) in order to make a confident choice of the hand. Even more, automatic model building in both hands may need to be attempted in order to make the ultimate decision.
+
+In our case, density improvement is obviously required in both hands.
+
+``6.`` Perform density modification in each hand using the `Density Modification with Parrot <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html>`_ task.
+
+.. note:: the density modification jobs should both descend from Phaser-EP job, because they need structure revisions created by it. This means that project tree will branch at this point. To make your project easily interpretable, annotate the branches by starting them with appropriate remarks: first, place remark “Original hand”, then clone it and rename as “Inverted hand”.
+
+Append Parrot task to the “Original hand” remark and make sure that the “original hand” revision from Phaser-EP (**phaser-ep-original_hand**)
+is selected in **Structure revision**. State **heavy-athom(Zn) substructure** as **model for NCS detection**. Parrot uses substructure
+to define initial values of NCS operations. Start the task.
+
+Then, append Parrot task to the “Inverted hand” remark and make sure that the “Inverted hand” revision from Phaser-EP **phaser-ep-inverted_hand** is selected in **Structure revision**. State **heavy-athom(Zn) substructure** as **model for NCS detection**. Start the task.
+
+.. note:: jobs in different branches can be run simultaneously, therefore, there is no need to wait for Parrot job in the "Original hand" branch to finish before starting Parrot job in the "Inverted hand" branch!
+
+``7.`` After density modification (Parrot) tasks finish, analyse the resulting FOMs and perform visual inspection of the modified density in
+**UglyMol** viewer (the corresponding launch button is found in the *Report* tab of the *task output* page).
+
+Are resulting maps from Parrot jobs good enough for deciding on the hand?
+
+``8.`` Continue each project branch with the model building using `Buccaneer <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html>`_ in both hands.
+
+Could more cycles of model building be useful?
+
+*You may clone and run another Buccaneer job(s) if you think it could*
+
+``9.`` The difference btween the builds is not so significant in this particular case. This suggests that the hands may be very close to each
+other, which implies the presence of inversion centre in the substructures. Can you find it (use **UglyMol** viewer)?
+
+``10.`` Perform structure comparison with `Gesamt <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Gesamt.html>`_ (use multiple
+selection from the “Original” and “Inverted” branches):
+
+.. image:: images/demo.multiple_selection.jpg
+        :align: center
+        :scale: 30 %
+
+**Select both models => add next job => All task =>  Toolbox => Pairwise Structural Alignment with GESAMT**
+
+``11.`` Further refinement can be conveniently done with the **Automated refinement and ligand fitting workflow**
+
+.. image:: images/Demo.CCP4MG_workflow.png
+        :align: center
+        :scale: 40 %
+
+
+**Additional work:**
+
+a.	Use `Acorn <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Acorn.html>`_ instead of Parrot for density improvement: does it make any difference?
+
+b.	Try using different model builders instead of Buccaneer: CCP4Build and `Arp/wArp <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ArpWarp.html>`_ (*should be installed as 3rd-party software on your device, which can be done with CCP4 Package Manager*)
+
+c.	Inspect built structure in **Coot** and spot problematic places. Start **Model Building with Coot** as a child node of the Refmac job and correct several side chains.
+
+.. note:: Coot task is available only if CCP4 Cloud is started through the local installation of CCP4 using launcher with |ccp4cloud_remote| icon.
+
+.. |ccp4cloud_remote| image:: images/ccp4cloud_remote.png
+   :width: 20
+   :height: 20
+
+Are there disagreements between the electron density and suggested sequence?
+
+Correct any disagreements found, refine and check the resulting effect on R-factors.

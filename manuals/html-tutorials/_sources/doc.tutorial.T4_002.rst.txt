@@ -1,0 +1,52 @@
+==================================================
+Refinement using REFMAC5 - Part 2: Twin Refinement
+==================================================
+
+Written by: Rob Nicholls
+
+-----------------
+Preliminary notes
+-----------------
+
+* It is essential for this tutorial that CCP4 Cloud is used in remote |ccp4cloud_remote| or desktop |ccp4cloud_desktop| mode.
+
+.. |ccp4cloud_remote| image:: images/ccp4cloud_remote.png
+   :width: 20
+   :height: 20
+
+.. |ccp4cloud_desktop| image:: images/ccp4cloud_desktop.png
+   :width: 20
+   :height: 20
+
+* The tutorial project is initialised in *Hop-on* mode. This means that:
+   a. The structure is already phased and built
+   b. Protein sequence is not imported (and not neeeded)
+   c. The *Task List* is limited to a subset of tasks relevant to structure completion and refinement; if necessary, it can be switched to the full mode.
+
+--------
+Tutorial
+--------
+
+``1. Reflection data (1irm.mtz), Phases (1irm.mtz) and Atomic coordinates (1irm.pdb) are already imported in the project``
+
+``2. Perform model refinement twice – first using default settings, and then assuming that the data are twinned``
+
+* Add a follow-on job, and choose **Refinement with Refmac** from the task list. Provide a meaningful job description, such as: "Refine with default settings", run the job, and close the dialog window.
+* Clone the refinement job. Change the **Refine using** field to **Mean Amplitudes assuming twinning**. Provide a meaningful job description, such as: "Refine assuming twinning", and run the job. Leave this dialog window open.
+
+``3. Inspect the results of assuming that the data correspond to a twinned crystal``
+
+While the job is running, the results page will be updated. Summary information will be displayed in the **Report** tab.
+
+Twinning information can be found in the REFMAC5 logfile, which is displayed in the **Main Log** tab. 
+
+* Once the job is finished, select the **Main Log** tab and use your web browser’s search facility (e.g. ctrl+F, cmd+F, Edit->Find, etc.) in order to search for the word **twin** in the log file. Cycle through the results in order to find information about potential twinning in this dataset.
+
+  * How many potential twin domains could there be, given the space group?
+  * How many of the potential twin operators have a sufficiently low Rmerge to imply that twinning is likely?
+  * How many of the twin fractions are large enough to justify treating them as twinned for purposes of refinement?
+  * How many twin domains are assumed during refinement?
+* Close the job dialog window, so that you are looking at the main job tree. With both refinement jobs finished, you will see that the final R-factors have been appended to the job titles. Compare the R-factors from the two jobs. Which refinement protocol is more appropriate?
+* Open the results pages from the two jobs, and compare the initial R-factors. Why are they different? Is there any evidence to suggest whether or not the model was previously refined assuming twinning?
+* Go back to the main job tree. For each of the two jobs, add a follow-on **Model Building with Coot** job in order to display the post-refinement models and maps in Coot. You should now have two Coot windows open – one corresponding to each of the two refinement runs. Zoom in so that you can see the model and density with more clarity. Is it evident that one of the refinement runs produced a dramatically better model/map?
+* Given the improvement in R-factors when assuming twinning, would you have expected the corresponding map to appear to be of higher quality? In what way is the model better after assuming twinning during refinement?

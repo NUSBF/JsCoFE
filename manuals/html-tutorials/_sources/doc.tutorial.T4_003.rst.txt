@@ -1,0 +1,109 @@
+=====================================================================================
+Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement
+=====================================================================================
+
+Written by: Rob Nicholls
+
+-----------------
+Preliminary notes
+-----------------
+
+* It is essential for this tutorial that CCP4 Cloud is used in remote |ccp4cloud_remote| or desktop |ccp4cloud_desktop| mode.
+
+.. |ccp4cloud_remote| image:: images/ccp4cloud_remote.png
+   :width: 20
+   :height: 20
+
+.. |ccp4cloud_desktop| image:: images/ccp4cloud_desktop.png
+   :width: 20
+   :height: 20
+
+* The tutorial project is initialised in *Hop-on* mode. This means that:
+   a. The structure is already phased and built
+   b. Protein sequence is not imported (and not neeeded)
+   c. The *Task List* is limited to a subset of tasks relevant to structure completion and refinement; if necessary, it can be switched to the full mode.
+
+
+In this example, there is a ligand present in the density, but it has not yet been built into the model. Since this ligand is present in the CCP4 monomer library (with code: C8M), we don't actually need to create a new dictionary for this ligand. However, for the purposes of this tutorial, we will create a new ligand dictionary using the latest version of AceDRG, fit the ligand into the map using Coot, then refine the model using REFMAC5. A chemical description of the ligand is available as a SMILES string, which is found in the file *c8m.txt* provided.
+
+--------
+Tutorial
+--------
+
+``1. Reflection data (lyase.mtz), Phases (lyase.mtz), Atomic coordinates (lyase.pdb) are already imported in the project``
+
+You wil also need the SMILES string corresponding to the ligand C8M, which is:
+
+*CN(CCC([N@H])=O)C[C@H]1O[C@H]([C@H](O)[C@@H]1O)n1c(C)nc2c(N)ncnc12*
+
+
+``2. Make a ligand dictionary using AceDRG``
+
+* Click the green **+** button in order to add a follow-on job. 
+* Select the **Make Ligand with Acedrg** task, which is found in the **Ligands** section in the **All tasks** tab.
+* Copy the SMILES string from above, and paste it into the **SMILES string** field in the interface.
+* Change the **Ligand Code** to **C8M**, and run the job. 
+
+ AceDRG will infer chemistry from the SMILES string - information about atomic connectivity and bond orders. It will then consult the AceDRG tables in order to generate a full ligand description, including the restraints for the bonds, angles, etc. It then performs conformer generation using RDKit, followed by final optimisation using REFMAC5.
+
+When the job is finished, you can click on the **UglyMol** button if you want to view the coordinates corresponding to the low-energy conformer that was generated.
+
+
+``3. Load the protein model and ligand conformer into Coot``
+
+* Click the green **+** button in order to add a follow-on job. Choose **Model Building with Coot**, which is found in the **Coot** section of the **All tasks** tab.
+* In the **Ligand data** field, select the **make ligand** job that you ran earlier, and run the job. 
+
+Both the protein coordinates and the ligand coordinates will now be loaded into Coot, but the ligand will not be located in the correct position. We must now fit the ligand.
+
+``4. Find the ligand position``
+
+We can find the position of the ligand by using Coot's **Unmodelled blobs** feature in the **Validate** menu.
+
+* Make sure that the protein model is selected - not the ligand coordinates - and then click **Find Blobs**.
+* Coot should find one blob - click the button to centre on the blob.
+
+ If it finds many blobs then something has gone wrong... perhaps the map was masked using the ligand coordinates instead of the protein coordinates?
+* Zoom in (keyword: **m**) and you should see green difference density corresponding to the ligand. 
+
+Now we must fit our ligand coordinates into the blob, whilst ensuring chemical sense using the AceDRG restraint dictionary.
+
+``5. Fit the ligand``
+
+* Go to the **Ligand** menu, and select **Find Ligands** *(this tool used to be found in "Other Modelling Tools" in the "Calculate" menu)*.
+* Select the coordinates for the ligand (**C8M_from_dict**), and tick the box to do flexible fitting. 
+
+ This will result in Coot trialling multiple conformers by sampling different rotatable bond angles – since this ligand has rotatable bonds, we try generating many conformers in the hope that one of them matches our blob sufficiently well.
+* Ensure that the protein model is selected in the **Select Protein** section.
+* Under **Where to Search?** select **Right here**.
+* Leave everything else at the default values, and click **Find ligands**.
+
+ Hopefully it will find one ligand - select this ligand. If the ligand is not found, then repeat the process again, perhaps increasing the number of conformers to trial.
+The ligand should have been placed in roughly the correct place, but it is unlikely to be in exactly the correct conformation. Manual intervention is required in order to correctly position the ligand. 
+
+* Try real space refinement (keyword: **r**), and manually drag atoms until the ligand is in a reasonable position.
+* When you are happy, merge this ligand into the protein model: 
+
+  * In the **Edit** menu, select **Merge Molecules**. 
+  * Select to insert the **Fitted Ligand** into the protein model (e.g. **input/000#-01_lyase.pdb**). 
+  * Click **Merge**, and the ligand will change colour to match the surrounding protein model.
+* Finally, save the model back to CCP4 Cloud by selecting: **File** => **Save Coordinates** => **Select Filename** => **Save**. Then close Coot, and your model will be saved as the output of the **Model Building with Coot** job.
+
+``6. Re-refine the protein-ligand complex``
+
+Go back to the main job tree in CCP4 Cloud. Ensure that your **Model Building with Coot** job is selected, and click the green **+** button in order to add a follow-on job. Choose **Refinement with Refmac**.
+Run the job. Note that you do not need to explicitly provide the AceDRG ligand dictionary, as it is part of the structure revision – any particular job can **see** and thus use the output from all previous jobs up the tree. Close the job dialog, and wait for the job to finish.
+
+``7. Inspect the results in Coot, and perform ligand validation``
+
+Follow the refinement job with a **Model Building with Coot** job. Note that the atomic model, the map coefficients, and the ligand geometry dictionary will be automatically transferred to Coot, as they are all part of the structure revision.
+
+Within Coot, click the **Go to (next) ligand** button in order to bring focus to the ligand. Cycle through the ligands until you find the correct one. Green and red difference density should help inform whether the current conformation of the ligand is reasonable, or if further (manual) changes are required in order to model the ligand correctly.
+In addition to looking at the fit-to-density, it is recommended to utilise Coot’s ligand validation tools in order to gain further insight regarding the quality of the ligand in the structural context of macromolecular complex:
+
+* Select **Environment Distances** from the **Measures** menu, and enable **Show Residue Environment** in order to analyse interactions between the protein and ligand. This helps to analyse the hydrogen-bonding network.
+* Select **Contact Dots for Ligand** from the **Ligand** menu. This helps to identify any atoms that clash.
+* Select **Display Ligand Distortions** from the **Ligand** menu. This assesses the geometry (bonds, angles, etc.) of the ligand, in order to compare the current conformation against the "ideal" values listed in the dictionary.
+To further analyse the ligand's environment, you can use Coot's Flatland Ligand Environment View. Select **FLEV this residue** from the Ligands menu. The Lidia ligand builder will open - click the **Env. Residues** button to analyse the ligand’s structural environment in 2D. Clicking the **Key** button will display a legend below the image.
+
+If the ligand requires further intervention in order to produce an optimal model then: fix the model in Coot, re-refine the model using REFMAC5, and inspect/validate the model in Coot. In practice, further rounds of manual and full-model refinement would be performed by iterating the above procedure.
