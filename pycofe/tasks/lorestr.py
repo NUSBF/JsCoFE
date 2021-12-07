@@ -175,7 +175,7 @@ class Lorestr(basic.TaskDriver):
                 if meta:
                     verdict_meta = {
                         "data"   : { "resolution" : hkl.getHighResolution(raw=True) },
-                        "params" : { "homologs"   : self.getParameter(self.task.parameters.sec1.contains.PDB_CBX),
+                        "params" : { "homologs"   : self.getParameter(self.task.parameters.sec1.contains.AUTO),
                                      "mr"         : self.getParameter(self.task.parameters.sec1.contains.MR_CBX) },
                         "xyzmeta" : structure.xyzmeta
                     }
