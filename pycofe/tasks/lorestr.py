@@ -88,8 +88,13 @@ class Lorestr(basic.TaskDriver):
         if libin:
             cmd += ["-libin",libin]
 
-        if self.getParameter(self.task.parameters.sec1.contains.PDB_CBX)=="True":
-            cmd += [ "-auto" ]
+        autoParam = self.getParameter(self.task.parameters.sec1.contains.AUTO)
+        if autoParam == "all":
+            cmd += [ "-auto", "all" ]
+        elif autoParam == "pdb":
+            cmd += ["-auto", "pdb"]
+        elif autoParam == "af":
+            cmd += ["-auto", "af"]
 
         minres = self.getParameter(self.task.parameters.sec1.contains.MINRES)
         if minres:
