@@ -90,7 +90,7 @@ class Lorestr(basic.TaskDriver):
 
         autoParam = self.getParameter(self.task.parameters.sec1.contains.AUTO)
         if autoParam == "all":
-            cmd += [ "-auto", "all" ]
+            cmd += [ "-auto"]
         elif autoParam == "pdb":
             cmd += ["-auto", "pdb"]
         elif autoParam == "af":
