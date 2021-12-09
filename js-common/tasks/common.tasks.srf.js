@@ -99,7 +99,7 @@ function TaskSRF()  {
               }
             },
     sec2  : { type     : 'section',
-              title    : 'Experimenta Data',
+              title    : 'Experimental Data',
               open     : false,  // true for the section to be initially open
               position : [2,0,1,5],
               contains : {
