@@ -103,6 +103,9 @@ class Lorestr(basic.TaskDriver):
         if self.getParameter(self.task.parameters.sec1.contains.DNA_CBX)=="True":
             cmd += [ "-dna" ]
 
+        if self.getParameter(self.task.parameters.sec1.contains.OVB_CBX)=="True":
+            cmd += [ "-overalb" ]
+
         if self.getParameter(self.task.parameters.sec1.contains.MR_CBX)=="True":
             cmd += [ "-mr" ]
 

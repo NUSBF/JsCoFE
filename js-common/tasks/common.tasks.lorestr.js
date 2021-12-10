@@ -77,19 +77,26 @@ function TaskLorestr()  {
                         showon   : {'AUTO':['all', 'pdb']},
                         position : [1,0,1,1]
                       },
+                OVB_CBX : { type : 'checkbox',
+                        label    : 'Refine overall B-factors (for very low resolution)',
+                        tooltip  : 'Force overall B-factors refinement (for very low resolution)',
+//                         iwidth   : 280,
+                        value    : false,
+                        position : [2,0,1,4],
+                      },
                 DNA_CBX : { type : 'checkbox',
                         label    : 'Generate restraints for DNA/RNA chains',
                         tooltip  : 'Generate restraints for DNA/RNA chains',
 //                         iwidth   : 280,
                         value    : false,
-                        position : [2,0,1,4],
+                        position : [3,0,1,4],
                       },
                 MR_CBX : { type  : 'checkbox',
                         label    : 'Run pre-refinement (after MR only)',
                         tooltip  : 'Run pre-refinement (after MR only)',
 //                          iwidth   : 280,
                         value    : false,
-                        position : [3,0,1,4],
+                        position : [4,0,1,4],
                        }
               }
            }
