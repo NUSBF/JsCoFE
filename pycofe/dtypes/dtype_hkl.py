@@ -328,26 +328,15 @@ class DType(dtype_template.DType):
                 self.dataStats = {}
             xmlRoot = ET.parse(ctruncate_xml).getroot()
 
-            if 'WilsonB' not in self.dataStats:
-                try:
-                    for item in xmlRoot.findall('DataStatistics'):
-                        if item.find('WilsonB') is not None:
-                            self.dataStats['WilsonB'] = float(item.find('WilsonB').text.strip())
-                            break
-                except:
-                    pass
+            self.dataStats['ResolutionLow'] = float(xmlRoot.find('ReflectionData').find('ResolutionLow').text.strip())
+            self.dataStats['ResolutionHigh'] = float(xmlRoot.find('ReflectionData').find('ResolutionHigh').text.strip())
+            self.dataStats['TotalReflections'] = int(xmlRoot.find('ReflectionData').find('NumberObservations').text.strip())
+            self.dataStats['UniqueReflections'] = int(xmlRoot.find('ReflectionData').find('NumberReflections').text.strip())
 
-            if 'ResolutionLow' not in self.dataStats:
-                self.dataStats['ResolutionLow'] = float(xmlRoot.find('ReflectionData').find('ResolutionLow').text.strip())
-            if 'ResolutionHigh' not in self.dataStats:
-                self.dataStats['ResolutionHigh'] = float(xmlRoot.find('ReflectionData').find('ResolutionHigh').text.strip())
-
-            if 'TotalReflections' not in self.dataStats:
-                self.dataStats['TotalReflections'] = int(xmlRoot.find('ReflectionData').find('NumberObservations').text.strip())
-
-            if 'UniqueReflections' not in self.dataStats:
-                self.dataStats['UniqueReflections'] = int(xmlRoot.find('ReflectionData').find('NumberReflections').text.strip())
-
+            for item in xmlRoot.findall('DataStatistics'):
+                if item.find('WilsonB') is not None:
+                    self.dataStats['WilsonB'] = float(item.find('WilsonB').text.strip())
+                    break
 
         except Exception as inst:
             if not type(self.dataStats) is dict:
