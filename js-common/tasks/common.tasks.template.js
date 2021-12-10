@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.08.21   <--  Date of Last Modification.
+ *    09.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2335,6 +2335,8 @@ if (!dbx)  {
         if ('reportas' in item)     id = item.reportas;
         else if ('label' in item)   id = item.label;
         else if ('keyword' in item) id = item.keyword;
+        if (startsWith(id,'<b>'))
+          id = id.replace('<b>','').replace('</b>','');
         msg += '<b>' + id + ':</b> ' + message;
       }
     }

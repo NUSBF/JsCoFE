@@ -1,16 +1,18 @@
 =====================
 Questions and Answers
 =====================
-Do not hesitate to ask your question
+
+.. toctree::
+    :maxdepth: 2
+    
+    jscofe_qna.xyz_model_ensemble
+    jscofe_qna.structure
+    jscofe_qna.structure_revision
+
+
+**Do not hesitate to ask your question!**
 
  .. image:: images/Reception_.png
          :scale: 50 %
          :align: center
          
-
-.. toctree::
-    :maxdepth: 2
-    
-    jscofe_qna.structure
-    jscofe_qna.structure_revision
-

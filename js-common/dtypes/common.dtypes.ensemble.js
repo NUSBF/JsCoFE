@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.03.20   <--  Date of Last Modification.
+ *    10.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Ensemble Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -82,14 +82,14 @@ if (!__template)  {
                 'Have you imported a PDB or mmCIF file with coordinates and ' +
                 'wonder why, instead, an <i>"Ensemble"</i> data type is ' +
                 'required for a Molecular Replacement task? <a href="javascript:' +
-                    'launchHelpBox(\'Ensemble and XYZ\',' +
-                                  '\'./html/jscofe_faq_ensemble_xyz.html\',' +
+                    'launchHelpBox(\'XYZ, Models and Ensembles\',' +
+                                  '\'' + __user_guide_base_url +
+                                    '/jscofe_qna.xyz_model_ensemble.html\',' +
                                   'null,10)"><i>' +
                 String('Check here').fontcolor('blue') + '</i></a>.'
               ];
     return hints;  // No help hints by default
   }
-
 
 } else  {
   //  for server side
