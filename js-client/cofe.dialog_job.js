@@ -211,6 +211,7 @@ JobDialog.prototype.displayInputErrors = function ( input_msg )  {
   if (input_msg[0]=='#')  {
     new MessageBox ( 'Input errors',input_msg.substring(1) );
   } else  {
+    // alert ( input_msg );
     new MessageBox ( 'Input errors',
       'The following errors have been encountered at processing input parameters:' +
       '<p><ul>' + input_msg.split('<b>').join('<li><b>') +

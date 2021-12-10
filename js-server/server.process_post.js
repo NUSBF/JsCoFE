@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.02.21   <--  Date of Last Modification.
+ *    10.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
  var cmd       = require('../js-common/common.commands');
 
 //  prepare log
-//var log = require('./server.log').newLog(12);
+var log = require('./server.log').newLog(12);
 
 
 // ==========================================================================
@@ -44,41 +44,45 @@ function processPOSTData ( server_request,server_response,process_data_function,
       data += d;
       // 1MB is too much POST data, kill the connection!
       if (data.length>1e6)  {
+        log.warning ( 1,'long data in post (' + data.length + '), connection killed' );
         server_request.connection.destroy();
         cmd.sendResponse ( server_response, cmd.fe_retcode.largeData,
                            'Server request data too large','' );
       }
-
     });
 
     server_request.on ( 'end', function(){
 
-      var data_obj = class_map.getClassInstance ( data );
+      if (data.length<=1e6)  {
 
-      if (data_obj)  {
-        if (data_obj.hasOwnProperty('_type'))  {
-          if (data_obj._type=='Request')  {
-            var loginData = user.getLoginData ( data_obj.token );
-            if (loginData.login.length<=0)
-              cmd.sendResponse ( server_response, cmd.fe_retcode.notLoggedIn,
-                                 'user not logged in','' );
-            else
-              process_data_function ( loginData,data_obj.request,data_obj.data,
-                function(response){
-                  response.send ( server_response );
-                });
+        var data_obj = class_map.getClassInstance ( data );
+
+        if (data_obj)  {
+          if (data_obj.hasOwnProperty('_type'))  {
+            if (data_obj._type=='Request')  {
+              var loginData = user.getLoginData ( data_obj.token );
+              if (loginData.login.length<=0)
+                cmd.sendResponse ( server_response, cmd.fe_retcode.notLoggedIn,
+                                   'user not logged in','' );
+              else
+                process_data_function ( loginData,data_obj.request,data_obj.data,
+                  function(response){
+                    response.send ( server_response );
+                  });
+            } else
+              process_data_function ( data_obj,function(response){
+                response.send ( server_response );
+              });
           } else
             process_data_function ( data_obj,function(response){
               response.send ( server_response );
             });
-        } else
-          process_data_function ( data_obj,function(response){
-            response.send ( server_response );
-          });
-      } else  {
-        cmd.sendResponse ( server_response, cmd.fe_retcode.corruptDO,
-                           'corrupt data object found','' );
-        // console.log ( ' >>>> ' + data );
+        } else  {
+          cmd.sendResponse ( server_response, cmd.fe_retcode.corruptDO,
+                             'corrupt data object found','' );
+          // console.log ( ' >>>> ' + data );
+        }
+
       }
 
     });

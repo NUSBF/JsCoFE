@@ -1,0 +1,36 @@
+=======================================
+What are *XYZ*, *Model* and *Ensemble*?
+=======================================
+
+*XYZ*, *Model* and *Ensemble* are related, but not identical, types of data in
+CCP4 Cloud. *XYZ* is a simple type, representing bare atomic coordinates, commonly
+obtained from a PDB or mmCIF-formatted files. *Model* is a complex type used to
+represent search models for Molecular Replacement (MR). It includes XYZ coordinates
+of one or more macromolecular chains linked to target sequence(s) that these chains 
+relate to, alomng with the corresponding similarity scores, such as sequence 
+identity and estimated r.m.s.d.. *Ensemble* is another complex data type used 
+in MR tasks, which represents sets of closely related *Models*, superposed on each 
+other.
+
+    *Models* and *Ensembles* can be used in *Phaser-MR* and *Molrep* tasks,
+    while *XYZs* cannot be.
+
+*Models* and *Ensembles* are prepared from *XYZ* and/or *Sequence* data with the help
+of the following tasks, found in the "Molecualr Replacement" section of the *Task List*:
+
+    * Find and Prepare MR Models with MrParse
+    * Prepare MR Model(s) from Coordinate data
+    * Prepare MR MOdel(s) from Alighnment data
+    * Prepare MR Ensemble from Model(s)
+    * Prepare MR Ensemble from Sequence 
+    * Prepare MR Ensemble from Coordinate data 
+    * Prepare MR Ensemble with CCP4mg
+
+**Why XYZ data cannot be used in Molecular Replacement tasks directly?**
+
+The main reason for disallowing the direct use of *XYZ* (*i.e.,* bare PDB or mmCIF files)
+in CCP4 Cloud's MR tasks is to make the model preparation step mandatory and unavoidable.
+This procedure includes trimming XYZ data for achieving best similarity with the target
+sequence and should be always done before using coordinate data in MR tasks. This may seem
+to be redundant and even annoying in some cases, but in general, prparatory step
+significantly improves chances for successful Molecular Replacement.
