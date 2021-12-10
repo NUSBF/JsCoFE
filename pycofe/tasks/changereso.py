@@ -118,7 +118,8 @@ class ChangeReso(basic.TaskDriver):
 
                 for i in range(len(new_hkl)):
                     new_hkl[i].new_spg      = hkl.new_spg.replace(" ","")
-                    new_hkl[i].dataStats    = hkl.dataStats
+                    # Do not overwrite dataStats; they should be correct!
+                    # new_hkl[i].dataStats    = hkl.dataStats
                     new_hkl[i].aimless_meta = hkl.aimless_meta
 
                 # update structure revision
