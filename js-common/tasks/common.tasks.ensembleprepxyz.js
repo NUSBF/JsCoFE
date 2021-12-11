@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.08.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -311,7 +311,7 @@ if (!__template)  {
            'Please leave only one nucleic acid polymer in the list.' ) );
 
       if (msg_list.length>0)
-        msg = msg_list.join('<br>');
+        msg = msg_list.join('|');
 
     }
 

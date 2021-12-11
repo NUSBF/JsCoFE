@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Aimless Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -1213,9 +1213,7 @@ if (!__template)  {
     var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
     function addMessage ( label,message )  {
-      if (input_msg.length>0)
-        input_msg += '<br>';
-      input_msg += '<b>' + label + ':</b> ' + message;
+      input_msg += '|<b><i>' + label + '</i>:</b> ' + message;
     }
 
     var unmerged = this.input_data.getData ( 'unmerged' );

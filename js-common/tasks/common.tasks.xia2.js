@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.05.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -690,13 +690,13 @@ if (!__template)  {
                         sectors[j].ranges_sel.push ( [Math.min(n1,n2),Math.max(n1,n2)] );
                         empty = false;
                       } else if (rc<=0)
-                        msg += '<b><i>Range "' +lst[k]+ '" of "' +sectors[j].ranges_inp +
+                        msg += '|<b><i>Range "' +lst[k]+ '" of "' +sectors[j].ranges_inp +
                                ' is not within available options"</i></b>';
                     } else
-                      msg += '<b><i>Numeric format error in "' + lst[k] + '" of "' +
+                      msg += '|<b><i>Numeric format error in "' + lst[k] + '" of "' +
                              sectors[j].ranges_inp + '"</i></b>';
                   } else
-                    msg += '<b><i>Range specification error in "' + lst[k] + '" of "' +
+                    msg += '|<b><i>Range specification error in "' + lst[k] + '" of "' +
                            sectors[j].ranges_inp + '"</i></b>';
                 }
               }
@@ -712,14 +712,14 @@ if (!__template)  {
           var lst = this.hdf5_range.split(':');
           if ((lst.length!=3) ||
               (!isInteger(lst[0])) || (!isInteger(lst[1])) || (!isInteger(lst[2])))
-            msg += '<b><i>Image range and block size specification misformatted</i></b>';
+            msg += '|<b><i>Image range and block size specification misformatted</i></b>';
         }
       }
 
       if (this.imageDirMeta.length<=0)
-        msg += '<b><i>No directory with X-ray images is specified</i></b>';
+        msg += '|<b><i>No directory with X-ray images is specified</i></b>';
       else if (empty)
-        msg += '<b><i>No images selected</i></b>';
+        msg += '|<b><i>No images selected</i></b>';
 
     }
 
@@ -729,7 +729,7 @@ if (!__template)  {
     if (pname && (!(/^[A-Za-z]([A-Za-z0-9\\-\\._-]{0,})$/.test(pname))))
 //        (!(/^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/.test(this.parameters.sec1.contains.PROJECT.value))))
 //        (!(/^[A-Za-z][A-Za-z0-9\\-\\._-]+$/.test(this.parameters.sec1.contains.PROJECT.value))))
-      msg += '<b><i>Parameters/Project name should contain only latin letters, numbers, ' +
+      msg += '|<b><i>Parameters/Project name should contain only latin letters, numbers, ' +
              'undescores,<br>dashes and dots, and must start with a letter</i></b>';
 
 
@@ -740,7 +740,7 @@ if (!__template)  {
         env = __environ_client;
 //      if (!this.compareEnvironment(['CCP4','XDS_home','XDSGUI_home'],env))
       if (!this.compareEnvironment(['CCP4','XDS_home'],env))
-        msg += '<b><i>Chosen pipeline protocol requires XDS Software,<br>' +
+        msg += '|<b><i>Chosen pipeline protocol requires XDS Software,<br>' +
                'however, it was not found installed</i></b>';
     }
 

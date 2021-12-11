@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.03.20   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Alignment Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2021
  *
  *  =================================================================
  *
@@ -130,9 +130,9 @@ if (!__template)  {
     }
 
     if (!ok)  {
-      msg  = '<b><i>Incorrect hit selection:</i>&nbsp;' + this.hitlist + '</b><br>';
-      msg += '<br>An example of a correct selection:<br>';
-      msg += '1-101, 110, 111, 112, 121-222<br>';
+      msg  = '|<b><i>Incorrect hit selection:</i>&nbsp;' + this.hitlist +
+             '</b><br><br>An example of a correct selection:<br>' +
+             '1-101, 110, 111, 112, 121-222<br>';
     }
 
     return msg;

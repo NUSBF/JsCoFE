@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.06.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -624,7 +624,7 @@ if (!__template)  {
     if (this.ASU)  {
       this.ASU.ha_type = customGrid.ha_type.getValue().trim();
       if (!this.ASU.ha_type)
-        msg += '<b><i>Main anomalous scatterer must be given</i></b>';
+        msg += '|<b><i>Main anomalous scatterer must be given</i></b>';
       if (customGrid.hasOwnProperty('ndisulph') &&
           (this.ASU.ha_type.toLowerCase()=='s'))  {
         var ndisulph = customGrid.ndisulph.getValue();
@@ -634,9 +634,9 @@ if (!__template)  {
             if (ndisulph>=0)
               this.ASU.ndisulph = ndisulph;
             else
-              msg += '<b><i>Number of disulphides should be positive</i></b>';
+              msg += '|<b><i>Number of disulphides should be positive</i></b>';
           } else
-            msg += '<b><i>Wrong format for number of disulphides</i></b>';
+            msg += '|<b><i>Wrong format for number of disulphides</i></b>';
         } else
           this.ASU.ndisulph = '';
       }

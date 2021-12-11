@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.20   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XYZ Utilities Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2021
  *
  *  =================================================================
  *
@@ -220,7 +220,7 @@ if (!__template)  {
     if ((this.parameters.sec1.contains.SOLLIG_SEL.value=='U') &&
         (this.parameters.sec1.contains.CHAINS_SEL.value=='U') &&
         (this.parameters.sec1.contains.ACTION_SEL.value=='T'))
-      msg += '<b>at least one transformation must be specified</b>';
+      msg += '|<b><i>at least one transformation must be specified</i></b>';
 
     return msg;
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.05.21   <--  Date of Last Modification.
+ *   11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -73,63 +73,6 @@ if (!__template)  {
     return dsp;
 
   }
-
-/*
-  DataBorges.prototype.layCustomDropdownInput = function ( dropdown )  {
-  var customGrid = dropdown.customGrid;
-  var row        = 0;
-
-    customGrid.setLabel ( 'Hits:',row,0,1,1 ).setFontItalic(true).setWidth ( '50px' );
-    customGrid.setVerticalAlignment ( row,0,'middle' );
-    tooltip = 'Available hits: 1-' + this.align_meta.hits.length;
-    customGrid.hitlist = customGrid.setInputText ( this.hitlist,row,1,1,1 )
-                                   .setTooltip1 ( tooltip,'slideDown',true,5000 )
-                                   .setWidth ( '440px' );
-    customGrid.setCellSize ( '50px' ,'',row,0 );
-
-    customGrid.setLabel ( ' ',row+1,0,1,2 ).setHeight_px ( 8 );
-
-  }
-
-
-  DataBorges.prototype.collectCustomDropdownInput = function ( dropdown ) {
-
-    var msg         = '';   // Ok by default
-    var customGrid  = dropdown.customGrid;
-    var regex_hlist = /^\s*(\d+\s*(-\s*\d+\s*)?(,\s*\d+\s*(-\s*\d+\s*)?)*)?$/;
-
-    this.hitlist = customGrid.hitlist.getValue().trim();
-    var ok = (this.hitlist.length == 0);
-
-    if (!ok)  {
-      ok = regex_hlist.test ( this.hitlist );
-      if (ok)  {
-        var orig_list   = this.hitlist.replace(/[, \-]+/g, ',').split(',');
-        var sorted_list = orig_list.slice(0);
-        sorted_list.sort ( function(a,b){ return a - b });
-        ok = (orig_list.toString() == sorted_list.toString());
-        if (ok)  {
-          var x0 = '';
-          var x1 = orig_list[0];
-          for (var i=1;i<orig_list.length;i++)  {
-            x0 = x1;
-            x1 = orig_list[i];
-            ok = ok && (x0!=x1);
-          }
-        }
-      }
-    }
-
-    if (!ok)  {
-      msg  = '<b><i>Incorrect hit selection:</i>&nbsp;' + this.hitlist + '</b><br>';
-      msg += '<br>An example of a correct selection:<br>';
-      msg += '1-101, 110, 111, 112, 121-222<br>';
-    }
-
-    return msg;
-
-  }
-*/
 
 } else  {
   //  for server side

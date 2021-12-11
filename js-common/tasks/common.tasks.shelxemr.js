@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.07.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -288,67 +288,6 @@ if (!__template)  {
       inputPanel.element.dispatchEvent(event);
     }
   }
-
-
-/*
-  TaskShelxEMR.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
-
-    if ((emitterId=='substructure') || (emitterId=='xmodel')) {
-      var inpDataRef = inpParamRef.grid.inpDataRef;
-      var substr     = this.getInputItem ( inpDataRef,'substructure' );
-      var xmodel     = this.getInputItem ( inpDataRef,'xmodel'       );
-
-      if (!xmodel)  {
-        substr = substr.dropdown[0];
-        if (substr.getItemByPosition(0).value==-1)  {
-          substr.deleteItemByPosition(0);  // remove '[do not use]' option
-          substr.click();
-        }
-      } else if (!substr)  {
-        xmodel = xmodel.dropdown[0];
-        if (xmodel.getItemByPosition(0).value==-1)  {
-          xmodel.deleteItemByPosition(0);  // remove '[do not use]' option
-          xmodel.click();
-        }
-      } else  {
-        xmodel = xmodel.dropdown[0];
-        substr = substr.dropdown[0];
-        xmodel_value = xmodel.getValue();
-        substr_value = substr.getValue();
-        if ((xmodel_value==substr_value) && (xmodel_value==-1))  {
-          // select some valid option
-          substr.selectItemByPosition ( 1 );
-          substr.click();
-          substr_value = substr.getItemByPosition(1).value;
-        }
-        // disable '[do not use]' options as necessary
-        substr.disableItemByPosition ( 0,(xmodel_value<0) );
-        xmodel.disableItemByPosition ( 0,(substr_value<0) );
-      }
-
-    }
-
-    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
-
-  }
-*/
-
-/*
-  TaskShelxEMR.prototype.collectInput = function ( inputPanel )  {
-
-    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-
-    function addMessage ( label,message )  {
-      if (input_msg.length>0)
-        input_msg += '<br>';
-      input_msg += '<b>' + label + ':</b> ' + message;
-    }
-
-
-    return input_msg;
-
-  }
-*/
 
 
 } else  {

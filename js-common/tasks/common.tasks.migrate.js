@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.06.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -333,9 +333,9 @@ if (!__template)  {
     }
 
     if (this.file_hkl.length<=0)
-      msg += '<b><i>Reflection data must be given</i></b>';
+      msg += '|<b><i>Reflection data must be given</i></b>';
     if ((this.file_mtz.length<=0) && (this.file_xyz.length<=0))
-      msg += '<b><i>Either phases or atomic coordinates, or both, must be given</i></b>';
+      msg += '|<b><i>Either phases or atomic coordinates, or both, must be given</i></b>';
 
     this.file_system = inputPanel.file_system;
     this.file_mod    = inputPanel.file_mod;

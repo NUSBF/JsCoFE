@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.05.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -121,9 +121,7 @@ if (!__template)  {
       msg.push ( 'Sequence data format is not valid' );
 
     if (msg.length>0)  {
-      if (input_msg)
-        input_msg += '<br>';
-      input_msg += '<b>' + msg.join('</b><br><b>') + '</b>';
+      input_msg += '|<b>' + msg.join('</b><br><b>') + '</b>';
     }
 
     return input_msg;

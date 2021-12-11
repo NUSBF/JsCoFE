@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.06.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -593,9 +593,7 @@ if (!__template)  {
       } else if (isFloat(text))  {
         return text;
       } else  {
-        if (msg)
-          msg += '<br>';
-        msg += errMsg;
+        msg += '|' + errMsg;
         return def;
       }
     }
@@ -608,9 +606,9 @@ if (!__template)  {
       this.f11   = readF ( customGrid.f11,this.f11,true,'<b>hkl dataset #' +
                    (dropdown.serialNo+1) + '</b> wrong format of f"' );
       if (isFloat(this.f11) && (parseFloat(this.f11)<0.0))
-        msg += '<b><i>f" must be positive</i></b>';
+        msg += '|<b><i>f" must be positive</i></b>';
       if (this.wtype=='choose-one')
-        msg += '<b><i>Wavelength type must be chosen</i></b>';
+        msg += '|<b><i>Wavelength type must be chosen</i></b>';
     }
 
     this.collectAnomShelx = function()  {
@@ -618,7 +616,7 @@ if (!__template)  {
       if (customGrid.wtype.isVisible())  {
         this.wtype = customGrid.wtype.getValue();
         if (this.wtype=='choose-one')
-          msg += '<b><i>Wavelength type must be chosen</i></b>';
+          msg += '|<b><i>Wavelength type must be chosen</i></b>';
       }
     }
 
@@ -664,7 +662,7 @@ if (!__template)  {
         this.f11 = readF ( customGrid.f11,this.f11,false,
                            '<b>wrong format (empty field?) of f"</b>' );
         if (isFloat(this.f11) && (parseFloat(this.f11)<0.0))
-          msg += '<b><i>f" must be positive</i></b>';
+          msg += '|<b><i>f" must be positive</i></b>';
       }
     }
 
@@ -699,23 +697,23 @@ if (!__template)  {
     this.collectChangeReso = function()  {
       this.collectResoLimits();
       if ((this.res_high=='') && (this.res_low==''))
-        msg += '<b><i>At least one resolution limit must be specified</i></b>';
+        msg += '|<b><i>At least one resolution limit must be specified</i></b>';
       else  {
         var res_low0  = round ( this.getLowResolution (),2 );
         var res_high0 = round ( this.getHighResolution(),2 );
         if (this.res_high!='')  {
           if ((this.res_high<res_high0) || (this.res_high>res_low0))
-            msg += '<b><i>High resolution limit must be within ' + res_high0 + ' - ' +
+            msg += '|<b><i>High resolution limit must be within ' + res_high0 + ' - ' +
                    res_low0 + '</i></b>';
         }
         if (this.res_low!='')  {
           if ((this.res_low<res_high0)  || (this.res_low>res_low0))
-            msg += '<b><i>Resolution limits must be within ' + res_high0 + ' - ' +
+            msg += '|<b><i>Resolution limits must be within ' + res_high0 + ' - ' +
                    res_low0 + '</i></b>';
         }
         if ((this.res_high!='') && (this.res_low!=''))  {
           if (this.res_low<this.res_high)
-            msg += '<b><i>High resolution limit must be lower than low resolution limit</i></b>';
+            msg += '|<b><i>High resolution limit must be lower than low resolution limit</i></b>';
         }
       }
     }

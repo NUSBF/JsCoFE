@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.05.19   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Sequence Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -99,6 +99,9 @@ if (!__template)  {
 
     else  {
 
+      dsp.makeRow ( 'Length',this.size  ,'Number of residues or base pairs' );
+      dsp.makeRow ( 'Weight',round(this.weight,2),'Molecular weight' );
+
       dsp.makeRow ( 'Contents','','Macromolecular sequence' );
 
       var req_data  = {};
@@ -122,6 +125,7 @@ if (!__template)  {
   DataSequence.prototype.layCustomDropdownInput = function ( dropdown )  {
   var customGrid = dropdown.customGrid;
   var row        = 0;
+  var grid       = null;
 
     this.makeASUContentInput = function ( g )  {
       g.setLabel ( 'Number of copies in ASU:',0,0,1,1 ).setFontItalic ( true );
@@ -135,12 +139,12 @@ if (!__template)  {
 
     if (startsWith(dropdown.layCustom,'asu-content'))  {
 
-      var grid = customGrid.setGrid ( '-compact',row++,0,1,2 );
+      grid = customGrid.setGrid ( '-compact',row++,0,1,2 );
       this.makeASUContentInput ( grid );
 
     } else if (startsWith(dropdown.layCustom,'stoichiometry'))  {
 
-      var grid = customGrid.setGrid ( '-compact',row++,0,1,2 );
+      grid = customGrid.setGrid ( '-compact',row++,0,1,2 );
       grid.setLabel ( 'Number of copies in a.s.u.:',0,0,1,1 )
           .setFontItalic ( true ).setNoWrap ( true );
       var nc_value = this.ncopies;
@@ -155,6 +159,20 @@ if (!__template)  {
 
       if (row>0)
         customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
+
+    } else if (dropdown.layCustom=='chain-input-list')  {
+
+      if (!('chain_list' in this))
+        this.chain_list = []; // list of linked coordinate chains (for MR model prep)
+      grid = customGrid.setGrid ( '-compact',row++,0,1,2 );
+      grid.setLabel ( 'Associated chains:',0,0,1,1 )
+          .setFontItalic ( true ).setNoWrap ( true );
+      customGrid.chain_list_inp = grid.setInputText ( this.chain_list,0,1,1,1 )
+                    .setStyle ( 'text','','A,B,C,...',
+                      'Comma-separated list of chains from template structure ' +
+                      'corresponding to given sequence' )
+                    .setWidth_px ( 200 );
+      grid.setVerticalAlignment ( 0,0,'middle' );
 
     }
 
@@ -172,6 +190,8 @@ if (!__template)  {
       this.ncopies_auto = (nc_value.length<=0);
       if (!this.ncopies_auto)
         this.ncopies = parseInt ( nc_value );
+    } else if (dropdown.layCustom=='chain-input-list')  {
+      this.chain_list = customGrid.chain_list_inp.getValue();
     }
 
     return msg;

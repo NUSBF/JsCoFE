@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.12.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -237,12 +237,12 @@ if (!__template)  {
         var v = customGrid.seqid.getValue();
         if (v && (!isNaN(v)))
               this.seqId = parseFloat ( v );
-        else  msg += '<b><i>Sequence Identity not given or poorly formatted</i></b>';
+        else  msg += '|<b><i>Sequence Identity not given or poorly formatted</i></b>';
       } else if (this.simtype=='rmsd')  {
         var v = customGrid.rmsd.getValue();
         if (v && (!isNaN(v)))
               this.rmsd = parseFloat ( v );
-        else  msg += '<b><i>RMS difference not given or poorly formatted</i></b>';
+        else  msg += '|<b><i>RMS difference not given or poorly formatted</i></b>';
       }
     } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
       msg = DataXYZ.prototype.collectCustomDropdownInput.call ( this,dropdown );
