@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.08.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -383,9 +383,7 @@ if (!__template)  {
     var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
     function addMessage ( label,message )  {
-      if (input_msg.length>0)
-        input_msg += '<br>';
-      input_msg += '<b>' + label + ':</b> ' + message;
+      input_msg += '|<b>' + label + ':</b> ' + message;
     }
 
     var sec1 = this.parameters.sec1.contains;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.09.19   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Unmerged Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -167,11 +167,10 @@ if (!__template)  {
             }
           }
         }
-        if (!ok)
-        {
-          msg = '<b><i>Incorrect batch selection:</i>&nbsp;' + this.runs + '</b><br>';
-          msg += '<br>An example of a correct selection:<br>';
-          msg += '1-101, 110, 111, 112, 121-222<br>';
+        if (!ok)  {
+          msg = '|<b><i>Incorrect batch selection:</i>&nbsp;' + this.runs +
+                '</b><br><br>An example of a correct selection:<br>' +
+                '1-101, 110, 111, 112, 121-222<br>';
         }
       }
     }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -352,9 +352,9 @@ if (!__template)  {
         hkl = idata[0].HKL;
       if (hkl._type!='DataHKL')  {
         if (hkl.getSpaceGroup()=='Unspecified')
-          msg += '<b>Space group undefined</b>';
+          msg += '|<b><i>Space group undefined</i></b>';
         if (hkl.getCellParametersHTML()=='Unspecified')
-          msg += '<b>Cell parameters undefined</b>';
+          msg += '|<b><i>Cell parameters undefined</i></b>';
       }
     }
 

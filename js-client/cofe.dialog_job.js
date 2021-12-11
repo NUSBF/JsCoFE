@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.10.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -212,10 +212,18 @@ JobDialog.prototype.displayInputErrors = function ( input_msg )  {
     new MessageBox ( 'Input errors',input_msg.substring(1) );
   } else  {
     // alert ( input_msg );
-    new MessageBox ( 'Input errors',
-      'The following errors have been encountered at processing input parameters:' +
-      '<p><ul>' + input_msg.split('<b>').join('<li><b>') +
-      '</ul><p>Please adjust input parameters as appropriate.' );
+    var errlst  = input_msg.split('|');
+    var errlst1 = [];
+    for (var i=0;i<errlst.length;i++)  {
+      var s = errlst[i].trim();
+      if (s)
+        errlst1.push(s);
+    }
+    if (errlst1.length>0)
+      new MessageBox ( 'Input errors',
+        'The following errors have been encountered at processing input parameters:' +
+        '<p><ul><li>' + errlst1.join('</li><li>') +
+        '</li></ul><p>Please adjust input parameters as appropriate.' );
   }
 }
 

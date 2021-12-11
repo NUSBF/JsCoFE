@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.04.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -195,7 +195,7 @@ if (!__template)  {
       ligCode = this.parameters.CODE3.value;
 
     if (__coot_reserved_codes.indexOf(ligCode)>=0)
-      msg += '<b>ligand code ' + ligCode + ' is reserved by Coot for own ' +
+      msg += '|<b>ligand code ' + ligCode + ' is reserved by Coot for own ' +
              'purposes and cannot be used</b>';
 
     return msg;

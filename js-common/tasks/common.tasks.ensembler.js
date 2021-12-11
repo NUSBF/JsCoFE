@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.08.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -121,9 +121,7 @@ if (!__template)  {
     for (var i=1;(i<models.length) && ok;i++)
       ok = (models[i].sequence.dname==sname0);
     if (!ok)  {
-      if (msg.length>0)
-        msg += '<br>';
-      msg += '<b>All models must be associated with the same sequence, ' +
+      msg += '|<b>All models must be associated with the same sequence, ' +
              'but they are not.</b>';
     }
 
@@ -138,9 +136,7 @@ if (!__template)  {
         }
       }
       if (!ok)  {
-        if (msg.length>0)
-          msg += '<br>';
-        msg += '<b>Errors in trim levels list (must contain comma-separated ' +
+        msg += '|<b>Errors in trim levels list (must contain comma-separated ' +
                'integers between 10 and 100)</b>';
       }
     }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.06.20   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CrosSec Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2019-2021
  *
  *  =================================================================
  *
@@ -387,9 +387,7 @@ TaskCrosSec.prototype.collectInput = function ( inputPanel )  {
   var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
   var sc = checkElementSymbol ( this.parameters.ATOM.value );
   if (!sc)  {
-    if (input_msg)
-      input_msg += '<br>';
-    input_msg += '<b>Invalid atom type ' + this.parameters.ATOM.value + '</b>';
+    input_msg += '|<b>Invalid atom type ' + this.parameters.ATOM.value + '</b>';
   } else
     this.parameters.ATOM.value = sc;
 

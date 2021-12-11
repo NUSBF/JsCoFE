@@ -2,62 +2,32 @@
 What is *Structure Revision*?
 =============================
 
-*Structure Revision* may be viewed as a box, where CCP4 Cloud keeps various
-data items corresponding to a particular state of structure solution project.
-The minimal **Structure Revision contains a reflection dataset (HKL) and
-composition of asymmetric unit (ASU).** Usually, minimal *Structure Revision*
-is created first as a result of the ASU Content Definition Task. As structure
-solution project develops, *Structure Revisions* are passed from one task to
-another, getting updated with new or improved data (such as atomic coordinates,
-phases, ligands), until structure is considered as solved. The final data is
-passed to PDB Deposition task, which generates files necessary for the deposition
-of solved structure in the Protein Data Bank.
+**Structure Revision** may be viewed as a box, where CCP4 Cloud keeps various data items corresponding to a particular state of structure solution project. The minimal **Structure Revision contains a reflection dataset (HKL) and composition of asymmetric unit (ASU).** Usually, minimal Structure Revision is created first as a result of the `ASU Content Definition Task <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ASUDef.html>`_. As structure solution project develops, Structure Revisions are passed from one task to another, getting updated with new or improved data (such as atomic coordinates, phases, ligands), until structure is considered as solved. The final data is passed to `PDB Deposition task <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Deposition.html>`_, which generates files necessary for the deposition of solved structure in the `Protein Data Bank <https://www.rcsb.org/>`_.
 
 -------------------------------------------
 Scope of visibility and Project development
 -------------------------------------------
 
-Unlike other data entities in CCP4 Cloud, ``Structure Revision is seen only immediately after the job where it was created.`` This means, that tasks  can access *Structure Revisions* created by their "parents", but not "grand-parents".  This rule does not apply to import tasks, which are "transparent" for *Structure Revisions* created upstream.
+Unlike other data entities in CCP4 Cloud, **Structure Revision is seen only immediately after the job where it was created.** This means, that tasks can access Structure Revisions created by their "parents", but not "grand-parents".  This rule does not apply to import tasks, which are "transparent" for Structure Revisions created upstream.
 
-CCP4 Cloud tasks can accept only one *Structure Revision* on input, and most of
-them create a single *Structure Revision* on output. Therefore, due to the limited
-scope of visibility, only one *Structure Revision* appears as a choice on input
-of most tasks. A few tasks can create several *Structure Revisions*: MAD phasing with
-Crank-2, Experimental Phasing with Phaser-EP and Model Building with CCP4Build.
-Any task, which follows these, will have a choice of *Structure Revisions* on
-input, and user should exercise attention in these cases.
+CCP4 Cloud tasks can accept only one Structure Revision as input, and most of them create a single Structure Revision as output. Therefore, due to the limited scope of visibility, only one Structure Revision appears as a choice on input of most tasks. A few tasks can create several Structure Revisions: `MAD phasing with Crank-2 <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Crank2.html>`_, `Experimental Phasing with Phaser-EP <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Phaser.html>`_ and `Model Building with CCP4Build <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html>`_. Any task, which follows these, will have a choice of Structure Revisions as input, and user should exercise attention in these cases.
 
 -------------------------
 Structure Revision naming
 -------------------------
 
-*Structure Revisions* are named as in the following example: ::
+Structure Revisions are named as in the following example:  ``R0258.01: refmac (protein)/xyz,phases``
 
-    R0258.01: refmac (protein)/xyz,phases
-
-where ``R`` stands for "Revision", ``0258`` is serial number of job, which
-created the revision, ``01`` is serial number of output revision in that job,
-``refmac`` is task name of the job (either generic or user-provided),
-and the rest is a variable list of descriptors. In the above example, the
-revision describes crystal with protein content, for which some atomic coordinates
-and phases are calculated. If ``xyz`` prepends ``phases``, then the latter were
-calculated using the former (e.g., as in molecular replacement).
+where ``R`` stands for "Revision", ``0258`` is serial number of job, which created the revision, ``01`` is serial number of output revision in that job, ``refmac`` is task name of the job (either generic or user-provided), and the rest is a variable list of descriptors. In the above example, the revision describes crystal with protein content, for which some atomic coordinates and phases are calculated. If ``xyz`` prepends ``phases``, then the latter were calculated using the former (e.g., as in molecular replacement).
 
 ------------------
 Content inspection
 ------------------
 
-The content of *Structure Revision* may be inspected in both input and output
-pages. In input pages, use button with magnifying glass on the left from
-the *Structure Revision* selection widget. In output pages, use *"Inspect"*
-button on the left from the revision specification.
+The content of Structure Revision may be inspected in both input and output pages. In input pages, use button with **magnifying glass** on the left from the **Structure Revision selection widget**. In output pages, use **Inspect** button on the left from the revision specification.
 
 ---------------------------------------------------------------
 What is the difference between Structure and Structure Revision?
 ---------------------------------------------------------------
 
-In CCP4 Cloud, *Structure* provides description of crystal structure (a combination
-of atomic coordinates, phases and electron density), and *Structure Revision*
-represents the state of structure solution project in terms of data, both
-experimental and generated along given branch of the project. *Structure Revision*
-includes *Structure* as one of its items.
+In CCP4 Cloud, **Structure** provides description of crystal structure (a combination of atomic coordinates, phases and electron density), and **Structure Revision** represents the state of structure solution project in terms of data, both experimental and generated along given branch of the project. **Structure Revision includes Structure as one of its items.**

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.12.21   <--  Date of Last Modification.
+ *    11.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -699,8 +699,8 @@ if (!dbx)  {
     } else
         msg = this.collectInputData ( inputPanel );
 
-    if (msg.length>0)
-      msg += '<br>';
+    if (msg)
+      msg += '|';
     msg += this.collectParameterValues ( inputPanel );
 
     return msg;
@@ -1548,7 +1548,7 @@ if (!dbx)  {
       } else
         this.file_select[i].path = inputPanel.itext[i].getValue();
       if ((this.file_select[i].path.length<=0) && (this.file_select[i].min>0))
-        msg += '<b><i>' + this.file_select[i].label + ' file is not specified</i></b>';
+        msg += '|<b><i>' + this.file_select[i].label + ' file is not specified</i></b>';
     }
 
     this.file_system = inputPanel.file_system;
@@ -1568,9 +1568,9 @@ if (!dbx)  {
       this.input_ligands[i].code   = inputPanel.ligands[i].code.getValue();
       if (this.input_ligands[i].source!='none')  {
         if ((this.input_ligands[i].source=='M') && (!this.input_ligands[i].code))
-          msg += '<b><i>Code for ligand #' + (i+1) + ' is not given</i></b>';
+          msg += '|<b><i>Code for ligand #' + (i+1) + ' is not given</i></b>';
         if ((this.input_ligands[i].source=='S') && (!this.input_ligands[i].smiles))
-          msg += '<b><i>SMILES string for ligand #' + (i+1) + ' is not given</i></b>';
+          msg += '|<b><i>SMILES string for ligand #' + (i+1) + ' is not given</i></b>';
       }
     }
 
@@ -1581,7 +1581,7 @@ if (!dbx)  {
           if ((this.input_ligands[j].source!='none') &&
               (this.input_ligands[i].code==this.input_ligands[j].code))  {
             unique = false;
-            msg += '<b><i>Repeat use of ligand code ' + this.input_ligands[i].code +
+            msg += '|<b><i>Repeat use of ligand code ' + this.input_ligands[i].code +
                    '</i></b>';
           }
       }
@@ -1620,11 +1620,8 @@ if (!dbx)  {
               //dtj = deepClone ( dt[index] );
               if (dropdown[j].hasOwnProperty('customGrid'))  {
                 var msg_j = dtj.collectCustomDropdownInput ( dropdown[j] );
-                if (msg_j.length>0)  {
-                  if (msg.length>0)
-                    msg += '<br>';
-                  msg += msg_j;
-                }
+                if (msg_j.length>0)
+                  msg += '|' + msg_j;
               }
               dtj.visible = dropdown[j].isVisible();
               inp_data.addCustomData ( input[i].inputId,dtj );
@@ -2329,15 +2326,13 @@ if (!dbx)  {
 
     function addMessage ( item,key,message )  {
       if (item.visible)  {
-        if (msg.length>0)
-          msg += '<br>';
         var id = key;
         if ('reportas' in item)     id = item.reportas;
         else if ('label' in item)   id = item.label;
         else if ('keyword' in item) id = item.keyword;
         if (startsWith(id,'<b>'))
           id = id.replace('<b>','').replace('</b>','');
-        msg += '<b>' + id + ':</b> ' + message;
+        msg += '|<b>' + id + ':</b> ' + message;
       }
     }
 
