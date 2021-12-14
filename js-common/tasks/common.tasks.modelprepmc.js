@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    14.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,9 +33,9 @@ function TaskModelPrepMC()  {
              else  TaskModelPrepXYZ.call ( this );
 
   this._type   = 'TaskModelPrepMC';
-  this.name    = 'prepare multi-chain MR model';
+  this.name    = 'prepare complex MR model';
   this.setOName ( '*' );  // default output file name template; '*': hide the field
-  this.title   = 'Prepare Multi-Chain MR Model';
+  this.title   = 'Prepare Complex MR Model';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz'],
@@ -103,6 +103,7 @@ if (!__template)  {
       if (xyz[0].subtype.indexOf('protein')>=0)  typeMask += 0x01;
       if (xyz[0].subtype.indexOf('dna')>=0)      typeMask += 0x02;
       if (xyz[0].subtype.indexOf('rna')>=0)      typeMask += 0x04;
+      all_chains = [];
       for (var i=0;i<seq.length;i++)  {
         var stype = '';
         if (seq[i].subtype.indexOf('protein')>=0)  {
@@ -117,25 +118,36 @@ if (!__template)  {
           typeMask += 0x04;
           stype     = 'rna';
         }
-        var chain_list = seq[i].chain_list.split(',').map(function(item){
-          return item.trim();
-        });
-        for (var j=0;j<chain_list.length;j++)  {
-          var found = false;
-          for (var k=0;(k<xyz_chains.length) && (!found);k++)
-            if (chain_list[j]==xyz_chains[k].id)  {
-              found = true;
-              var ctype = xyz_chains[k].type.toLowerCase();
-              if (ctype!=stype)
-                msg_list.push (
-                  '<b><i>Chain ' + chain_list[j] + ' type mismatch with sequence ' +
-                  seq[i].dataId + ' (' + ctype + ':' + stype + ')</i></b>'
-                );
-            }
-          if (!found)
-            msg_list.push ( '<b><i>Chain ' + chain_list[j] +
-                            ' not found in template structure</i></b>' );
-        }
+        var clist = seq[i].chain_list.trim();
+        if (clist)  {
+          var chain_list = clist.split(',').map(function(item){
+            return item.trim();
+          });
+          for (var j=0;j<chain_list.length;j++)  {
+            if (all_chains.indexOf(chain_list[j])>=0)
+              msg_list.push (
+                '<b><i>Chain ' + chain_list[j] + ' used more than once</i></b>'
+              );
+            else
+              all_chains.push ( chain_list[j] );
+            var found = false;
+            for (var k=0;(k<xyz_chains.length) && (!found);k++)
+              if (chain_list[j]==xyz_chains[k].id)  {
+                found = true;
+                var ctype = xyz_chains[k].type.toLowerCase();
+                if (ctype!=stype)
+                  msg_list.push (
+                    '<b><i>Chain ' + chain_list[j] + ' type mismatch with sequence ' +
+                    seq[i].dataId + ' (' + ctype + ':' + stype + ')</i></b>'
+                  );
+              }
+            if (!found)
+              msg_list.push ( '<b><i>Chain ' + chain_list[j] +
+                              ' not found in template structure</i></b>' );
+          }
+        } else
+          msg_list.push ( '<b><i>No chain selection found for sequence ' +
+                          seq[i].dataId + '</i></b>' );
       }
 
       var modSel = this.parameters.sec1.contains.MODIFICATION_SEL.value;
