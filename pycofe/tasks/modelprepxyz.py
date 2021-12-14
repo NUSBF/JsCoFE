@@ -188,7 +188,11 @@ class ModelPrepXYZ(basic.TaskDriver):
             file.write  ( "REMARK PHASER ENSEMBLE MODEL " +\
                           str(i+1) + " ID " + seqid_lst[i] + "\n" )
             model.meta["seqId_ens"].append ( seqid_lst[i] )
-        file.write  ( fcnt )
+        lst = fcnt.split ( "\n" )
+        for s in lst:
+            if "REMARK PHASER ENSEMBLE MODEL" not in s:
+                file.write ( s + "\n" )
+        # file.write  ( fcnt )
         file.close  ()
         model.seqrem  = True
         model.simtype = "cardon"
@@ -197,17 +201,72 @@ class ModelPrepXYZ(basic.TaskDriver):
         return
 
 
-    def make_models ( self,seq,xyz,modSel,sclpSel,csMode ):
+    def trim_chain ( self,xyz,chainId,seq,modSel,sclpSel,csMode ):
+
+        sid = "0"
+
+        chainSel = chainId
+        if chainSel.startswith("/"):
+            chainSel = chainSel[1:].replace("/","_")  # split("/")[-1]
 
         fpath_seq = seq.getSeqFilePath ( self.inputDir() )
+        fpath_in  = self.fetch_chain   ( chainId, # this is correct
+                                         xyz.getXYZFilePath(self.inputDir()) )
+
+        if hasattr(xyz,"fpath_algn"):
+            fpath_algn = xyz.fpath_algn
+            sid        = str(xyz.seqid_algn)
+        else:
+            fpath_algn = "__align_" + xyz.dataId + "_" + chainSel + ".fasta"
+            rc         = seqal.run ( self,[seq,xyz],fpath_algn )
+            self.stdoutln ( str(rc) )
+            if rc["code"]==0:
+                sid = str(round(100.0*rc["stat"]["seq_id"],1))
+
+        fpath_out = xyz.getXYZFileName()
+        if chainId!="(all)":  # this is correct
+            fname, fext = os.path.splitext(fpath_out)
+            if not fname.endswith("_"+chainSel):
+                fpath_out   = fname + "_" + chainSel + fext
+
+        if modSel=="U":
+            shutil.copyfile ( fpath_in,fpath_out )
+        else:
+            fname, fext = os.path.splitext(fpath_out)
+            if modSel=="D":
+                fpath_out = fname + ".clip" + fext
+                self.prepare_clip ( fpath_in,fpath_out )
+            elif modSel=="M":
+                fpath_out = fname + ".mrep" + fext
+                self.prepare_molrep ( fpath_in,fpath_seq,fpath_out )
+            elif modSel=="S":
+                fpath_out = fname + ".sclp" + fext
+                self.prepare_sculptor ( sclpSel,fpath_in,fpath_algn,fpath_out )
+            elif modSel=="C":
+                fpath_out = fname + ".chnw" + fext
+                self.prepare_chainsaw ( csMode,fpath_in,fpath_algn,fpath_out )
+            elif modSel=="P":
+                fpath_out = fname + ".pala" + fext
+                self.prepare_polyalanine ( fpath_in,fpath_out )
+
+        if os.stat(fpath_out).st_size<100:
+            return [None,sid]
+
+        return [fpath_out,sid]
+
+
+    def make_models ( self,seq,xyz,modSel,sclpSel,csMode ):
+
+        # fpath_seq = seq.getSeqFilePath ( self.inputDir() )
         # ensNo     = 0
         ensOk     = False
         models    = []
 
         for i in range(len(xyz)):
 
-            chainSel = xyz[i].chainSel
-            if not chainSel:
+            # chainSel = xyz[i].chainSel
+            # if not chainSel:
+            if not xyz[i].chainSel:
                 chains = xyz[i].xyzmeta.xyz[0].chains
                 for j in range(len(chains)):
                     if len(chains[j].seq)>0:
@@ -215,54 +274,57 @@ class ModelPrepXYZ(basic.TaskDriver):
                         xyz[i].chainSel = chainSel
                         break
 
-            if chainSel.startswith("/"):
-                chainSel = chainSel[1:].replace("/","_")  # split("/")[-1]
-            fpath_in = self.fetch_chain ( xyz[i].chainSel, # this is correct
-                                          xyz[i].getXYZFilePath(self.inputDir()) )
+            fpath_out,sid = self.trim_chain ( xyz[i],xyz[i].chainSel,seq,modSel,sclpSel,csMode )
 
-            if hasattr(xyz[i],"fpath_algn"):
-                fpath_algn = xyz[i].fpath_algn
-                sid        = str(xyz[i].seqid_algn)
-            else:
-                fpath_algn = "__align_" + str(i) + ".fasta"
-                rc         = seqal.run ( self,[seq,xyz[i]],fpath_algn )
-                self.stdoutln ( str(rc) )
-                if rc["code"]==0:
-                    sid = str(round(100.0*rc["stat"]["seq_id"],1))
-                else:
-                    sid = "0"
+            # if chainSel.startswith("/"):
+            #     chainSel = chainSel[1:].replace("/","_")  # split("/")[-1]
+            # fpath_in = self.fetch_chain ( xyz[i].chainSel, # this is correct
+            #                               xyz[i].getXYZFilePath(self.inputDir()) )
+            #
+            # if hasattr(xyz[i],"fpath_algn"):
+            #     fpath_algn = xyz[i].fpath_algn
+            #     sid        = str(xyz[i].seqid_algn)
+            # else:
+            #     fpath_algn = "__align_" + str(i) + ".fasta"
+            #     rc         = seqal.run ( self,[seq,xyz[i]],fpath_algn )
+            #     self.stdoutln ( str(rc) )
+            #     if rc["code"]==0:
+            #         sid = str(round(100.0*rc["stat"]["seq_id"],1))
+            #     else:
+            #         sid = "0"
+            #
+            # fpath_out = xyz[i].getXYZFileName()
+            # if xyz[i].chainSel!="(all)":  # this is correct
+            #     fname, fext = os.path.splitext(fpath_out)
+            #     if not fname.endswith("_"+chainSel):
+            #         fpath_out   = fname + "_" + chainSel + fext
+            # #elif modSel=="S":
+            # #    fpath_tmp = "__input_sculptor_clipped.pdb"
+            # #    self.prepare_clip ( fpath_in,fpath_tmp )
+            # #    fpath_in  = fpath_tmp
+            #
+            # if modSel=="U":
+            #     shutil.copyfile ( fpath_in,fpath_out )
+            # else:
+            #     fname, fext = os.path.splitext(fpath_out)
+            #     if modSel=="D":
+            #         fpath_out = fname + ".clip" + fext
+            #         self.prepare_clip ( fpath_in,fpath_out )
+            #     elif modSel=="M":
+            #         fpath_out = fname + ".mrep" + fext
+            #         self.prepare_molrep ( fpath_in,fpath_seq,fpath_out )
+            #     elif modSel=="S":
+            #         fpath_out = fname + ".sclp" + fext
+            #         self.prepare_sculptor ( sclpSel,fpath_in,fpath_algn,fpath_out )
+            #     elif modSel=="C":
+            #         fpath_out = fname + ".chnw" + fext
+            #         self.prepare_chainsaw ( csMode,fpath_in,fpath_algn,fpath_out )
+            #     elif modSel=="P":
+            #         fpath_out = fname + ".pala" + fext
+            #         self.prepare_polyalanine ( fpath_in,fpath_out )
 
-            fpath_out = xyz[i].getXYZFileName()
-            if xyz[i].chainSel!="(all)":  # this is correct
-                fname, fext = os.path.splitext(fpath_out)
-                if not fname.endswith("_"+chainSel):
-                    fpath_out   = fname + "_" + chainSel + fext
-            #elif modSel=="S":
-            #    fpath_tmp = "__input_sculptor_clipped.pdb"
-            #    self.prepare_clip ( fpath_in,fpath_tmp )
-            #    fpath_in  = fpath_tmp
-
-            if modSel=="U":
-                shutil.copyfile ( fpath_in,fpath_out )
-            else:
-                fname, fext = os.path.splitext(fpath_out)
-                if modSel=="D":
-                    fpath_out = fname + ".clip" + fext
-                    self.prepare_clip ( fpath_in,fpath_out )
-                elif modSel=="M":
-                    fpath_out = fname + ".mrep" + fext
-                    self.prepare_molrep ( fpath_in,fpath_seq,fpath_out )
-                elif modSel=="S":
-                    fpath_out = fname + ".sclp" + fext
-                    self.prepare_sculptor ( sclpSel,fpath_in,fpath_algn,fpath_out )
-                elif modSel=="C":
-                    fpath_out = fname + ".chnw" + fext
-                    self.prepare_chainsaw ( csMode,fpath_in,fpath_algn,fpath_out )
-                elif modSel=="P":
-                    fpath_out = fname + ".pala" + fext
-                    self.prepare_polyalanine ( fpath_in,fpath_out )
-
-            if os.stat(fpath_out).st_size<100:
+            # if os.stat(fpath_out).st_size<100:
+            if not fpath_out:
                 if ensOk:
                     self.putMessage ( "&nbsp;" )
                 self.putMessage ( "<h3>*** Failed to prepare model for " +\
@@ -301,6 +363,112 @@ class ModelPrepXYZ(basic.TaskDriver):
                     ensOk = False
 
         return models
+
+
+    # def make_models ( self,seq,xyz,modSel,sclpSel,csMode ):
+    #
+    #     fpath_seq = seq.getSeqFilePath ( self.inputDir() )
+    #     # ensNo     = 0
+    #     ensOk     = False
+    #     models    = []
+    #
+    #     for i in range(len(xyz)):
+    #
+    #         chainSel = xyz[i].chainSel
+    #         if not chainSel:
+    #             chains = xyz[i].xyzmeta.xyz[0].chains
+    #             for j in range(len(chains)):
+    #                 if len(chains[j].seq)>0:
+    #                     chainSel = chains[j].id
+    #                     xyz[i].chainSel = chainSel
+    #                     break
+    #
+    #         if chainSel.startswith("/"):
+    #             chainSel = chainSel[1:].replace("/","_")  # split("/")[-1]
+    #         fpath_in = self.fetch_chain ( xyz[i].chainSel, # this is correct
+    #                                       xyz[i].getXYZFilePath(self.inputDir()) )
+    #
+    #         if hasattr(xyz[i],"fpath_algn"):
+    #             fpath_algn = xyz[i].fpath_algn
+    #             sid        = str(xyz[i].seqid_algn)
+    #         else:
+    #             fpath_algn = "__align_" + str(i) + ".fasta"
+    #             rc         = seqal.run ( self,[seq,xyz[i]],fpath_algn )
+    #             self.stdoutln ( str(rc) )
+    #             if rc["code"]==0:
+    #                 sid = str(round(100.0*rc["stat"]["seq_id"],1))
+    #             else:
+    #                 sid = "0"
+    #
+    #         fpath_out = xyz[i].getXYZFileName()
+    #         if xyz[i].chainSel!="(all)":  # this is correct
+    #             fname, fext = os.path.splitext(fpath_out)
+    #             if not fname.endswith("_"+chainSel):
+    #                 fpath_out   = fname + "_" + chainSel + fext
+    #         #elif modSel=="S":
+    #         #    fpath_tmp = "__input_sculptor_clipped.pdb"
+    #         #    self.prepare_clip ( fpath_in,fpath_tmp )
+    #         #    fpath_in  = fpath_tmp
+    #
+    #         if modSel=="U":
+    #             shutil.copyfile ( fpath_in,fpath_out )
+    #         else:
+    #             fname, fext = os.path.splitext(fpath_out)
+    #             if modSel=="D":
+    #                 fpath_out = fname + ".clip" + fext
+    #                 self.prepare_clip ( fpath_in,fpath_out )
+    #             elif modSel=="M":
+    #                 fpath_out = fname + ".mrep" + fext
+    #                 self.prepare_molrep ( fpath_in,fpath_seq,fpath_out )
+    #             elif modSel=="S":
+    #                 fpath_out = fname + ".sclp" + fext
+    #                 self.prepare_sculptor ( sclpSel,fpath_in,fpath_algn,fpath_out )
+    #             elif modSel=="C":
+    #                 fpath_out = fname + ".chnw" + fext
+    #                 self.prepare_chainsaw ( csMode,fpath_in,fpath_algn,fpath_out )
+    #             elif modSel=="P":
+    #                 fpath_out = fname + ".pala" + fext
+    #                 self.prepare_polyalanine ( fpath_in,fpath_out )
+    #
+    #         if os.stat(fpath_out).st_size<100:
+    #             if ensOk:
+    #                 self.putMessage ( "&nbsp;" )
+    #             self.putMessage ( "<h3>*** Failed to prepare model for " +\
+    #                               xyz[i].dname + " (empty output)</h3>" )
+    #             ensOk = False
+    #         else:
+    #             model = self.registerModel ( seq,fpath_out,checkout=True )
+    #             if model:
+    #                 #if ensNo<1:
+    #                 if len(models)<1:
+    #                     self.putMessage ( "<i><b>Prepared models are associated " +\
+    #                                       "with sequence:&nbsp;" + seq.dname + "</b></i>" )
+    #                     self.putTitle ( "Results" )
+    #                 else:
+    #                     self.putMessage ( "&nbsp;" )
+    #                 #ensNo += 1
+    #                 ensOk  = True
+    #                 self.putMessage ( "<h3>Model #" + str(len(models)+1) + ": " + model.dname + "</h3>" )
+    #                 model.addDataAssociation ( seq.dataId )
+    #                 model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
+    #                 model.seqId = model.meta["seqId"]
+    #                 model.rmsd  = model.meta["rmsd" ]
+    #
+    #                 if modSel!="S":
+    #                     self.add_seqid_remark ( model,[sid] )
+    #
+    #                 self.putModelWidget ( self.getWidgetId("model_btn"),
+    #                                       "Coordinates",model )
+    #                 models.append ( model )
+    #
+    #             else:
+    #                 if ensOk:
+    #                     self.putMessage ( "&nbsp;" )
+    #                 self.putMessage ( "<h3>*** Failed to form Model object for " +\
+    #                                   xyz[i].dname + "</h3>" )
+    #                 ensOk = False
+    #
+    #     return models
 
 
     # ------------------------------------------------------------------------
