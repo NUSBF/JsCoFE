@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    01.07.21   <--  Date of Last Modification.
+ *    14.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -43,11 +43,12 @@ var _taskIndex = {
 
   'B'  : { type: 'TaskImport'          , after: ['0','B','B1','C','D','E','m'] },
   'B1' : { type: 'TaskImportSeqCP'     , after: ['0','B','B1','C','D','E','m'] },
-  'C'  : { type: 'TaskEnsemblePrepSeq' , after: ['B','B1','D','m'] },
-  'D'  : { type: 'TaskEnsemblePrepXYZ' , after: ['B','B1','C','D','m'] },
-  'D1' : { type: 'TaskModelPrepXYZ'    , after: ['B','B1','C','D','m'] },
-  'D2' : { type: 'TaskModelPrepAlgn'   , after: ['B','B1','C','D','m'] },
+  'C'  : { type: 'TaskEnsemblePrepSeq' , after: ['B','B1','m'] },
+  'D'  : { type: 'TaskEnsemblePrepXYZ' , after: ['B','B1','C','m'] },
+  'D1' : { type: 'TaskModelPrepXYZ'    , after: ['B','B1','C','m'] },
+  'D2' : { type: 'TaskModelPrepAlgn'   , after: ['B','B1','C','m'] },
   'D3' : { type: 'TaskEnsembler'       , after: ['D1','D2'] },
+  'D4' : { type: 'TaskModelPrepMC'     , after: ['B','B1','C','m'] },
 
   // suggest Make Ligand after Import and Model Preparation
   'E'  : { type: 'TaskMakeLigand'      , after: ['B','B1','C','D','E','m'] },
