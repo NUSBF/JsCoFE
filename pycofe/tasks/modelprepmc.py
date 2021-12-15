@@ -84,22 +84,25 @@ class ModelPrepMC(modelprepxyz.ModelPrepXYZ):
                                       "\"clipped\" protocol will be used</b>" )
                     fpath_out,sid = self.trim_chain ( xyz,chainId,seq[i],"D",sclpSel,csMode )
                 if not fpath_out:
-                    self.putMessage ( "<h3>*** Failed to trim chain " + chainId + "</h3>" )
+                    self.putMessage ( "<h3>*** Failed to trim chain " + chainId + " (1)</h3>" )
                 else:
                     st = gemmi.read_structure ( fpath_out )
-                    st[0][0].name = chainId  # may be changed at trimming
-                    if not st0:
-                        st0 = st
+                    if len(st)>0 and len(st[0])>0:
+                        st[0][0].name = chainId  # may be changed at trimming
+                        if not st0:
+                            st0 = st
+                        else:
+                            st0[0].add_chain ( st[0][0] )
+                        if seq[i].isProtein():  nAA  += 1
+                        if seq[i].isDNA():      nDNA += 1
+                        if seq[i].isRNA():      nRNA += 1
+                        sidm += float(sid)*seq[i].size
+                        nRes += seq[i].size
+                        for stype in seq[i].subtype:
+                            if stype not in stypes:
+                                stypes.append ( stype )
                     else:
-                        st0[0].add_chain ( st[0][0] )
-                    if seq[i].isProtein():  nAA  += 1
-                    if seq[i].isDNA():      nDNA += 1
-                    if seq[i].isRNA():      nRNA += 1
-                    sidm += float(sid)*seq[i].size
-                    nRes += seq[i].size
-                    for stype in seq[i].subtype:
-                        if stype not in stypes:
-                            stypes.append ( stype )
+                        self.putMessage ( "<h3>*** Failed to trim chain " + chainId + " (2)</h3>" )
 
         model = None
         if st0:
