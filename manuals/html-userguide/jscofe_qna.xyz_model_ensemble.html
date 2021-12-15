@@ -48,38 +48,36 @@
         
   <div class="section" id="what-are-xyz-model-and-ensemble">
 <h1><span class="section-number">8.1. </span>What are <em>XYZ</em>, <em>Model</em> and <em>Ensemble</em>?<a class="headerlink" href="#what-are-xyz-model-and-ensemble" title="Permalink to this headline">¶</a></h1>
-<p><em>XYZ</em>, <em>Model</em> and <em>Ensemble</em> are related, but not identical, types of data in
-CCP4 Cloud. <em>XYZ</em> is a simple type, representing bare atomic coordinates, commonly
-obtained from a PDB or mmCIF-formatted files. <em>Model</em> is a complex type used to
-represent search models for Molecular Replacement (MR). It includes XYZ coordinates
-of one or more macromolecular chains linked to target sequence(s) that these chains
-relate to, alomng with the corresponding similarity scores, such as sequence
-identity and estimated r.m.s.d.. <em>Ensemble</em> is another complex data type used
-in MR tasks, which represents sets of closely related <em>Models</em>, superposed on each
-other.</p>
+<p><strong>XYZ</strong>, <strong>Model</strong> and <strong>Ensemble</strong> are related, but not identical, types of data in CCP4 Cloud.</p>
 <blockquote>
-<div><em>Models</em> and <em>Ensembles</em> can be used in <em>Phaser-MR</em> and <em>Molrep</em> tasks,
-while <em>XYZs</em> cannot be.</div></blockquote>
-<p><em>Models</em> and <em>Ensembles</em> are prepared from <em>XYZ</em> and/or <em>Sequence</em> data with the help
-of the following tasks, found in the “Molecualr Replacement” section of the <em>Task List</em>:</p>
+<div><p><strong>XYZ</strong> is a simple type, which corresponds to bare atomic coordinates, commonly obtained from PDB or mmCIF-formatted files.</p>
+<p><strong>Model</strong> is a complex type, used to represent search models for Molecular Replacement (MR). It includes XYZ coordinates of one or several macromolecular chains linked to target sequence(s) that these chains  relate to, along with the corresponding similarity scores, such as sequence  identity and estimated r.m.s.d..</p>
+<p><strong>Ensemble</strong> is another complex data type used in MR tasks, which represents sets of closely related Models, superposed on each other and truncated to the same length (if necessary).</p>
+<blockquote>
+<div><strong>Models</strong> and <strong>Ensembles</strong> <strong>can be used</strong> in <a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser-MR</a> and <a class="reference external" href="../html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a> tasks, while <strong>XYZs cannot be</strong>.</div></blockquote>
+</div></blockquote>
+<p>Models and Ensembles are prepared from XYZ and/or Sequence data with the following tasks, found in the <a class="reference external" href="../html-taskref/Molecular_Replacement.html" rel="noopener noreferrer" target="_blank">Molecular Replacement</a> section of the <a class="reference external" href="jscofe_tasklist.html" rel="noopener noreferrer" target="_blank">Task List</a>:</p>
 <blockquote>
 <div><ul class="simple">
-<li>Find and Prepare MR Models with MrParse</li>
-<li>Prepare MR Model(s) from Coordinate data</li>
-<li>Prepare MR MOdel(s) from Alighnment data</li>
-<li>Prepare MR Ensemble from Model(s)</li>
-<li>Prepare MR Ensemble from Sequence</li>
-<li>Prepare MR Ensemble from Coordinate data</li>
-<li>Prepare MR Ensemble with CCP4mg</li>
+<li><a class="reference external" href="../html-taskref/doc.task.MrParse.html" rel="noopener noreferrer" target="_blank">Find and Prepare MR Models with MrParse</a></li>
+<li><a class="reference external" href="../html-taskref/doc.task.ModelPrepXYZ.html" rel="noopener noreferrer" target="_blank">Prepare MR Model(s) from Coordinate data</a></li>
+<li><a class="reference external" href="../html-taskref/doc.task.ModelPrepAlgn.html" rel="noopener noreferrer" target="_blank">Prepare MR Model(s) from Alighnment data</a></li>
+<li><a class="reference external" href="../html-taskref/doc.task.Ensembler.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble from Model(s)</a></li>
+<li><a class="reference external" href="../html-taskref/doc.task.EnsemblePrepSeq.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble from Sequence</a></li>
+<li><a class="reference external" href="../html-taskref/doc.task.EnsemblePrepXYZ.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble from Coordinate data</a></li>
+<li><a class="reference external" href="../html-taskref/doc.task.EnsemblePrepMG.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble with CCP4mg</a></li>
 </ul>
 </div></blockquote>
-<p><strong>Why XYZ data cannot be used in Molecular Replacement tasks directly?</strong></p>
-<p>The main reason for disallowing the direct use of <em>XYZ</em> (<em>i.e.,</em> bare PDB or mmCIF files)
-in CCP4 Cloud’s MR tasks is to make the model preparation step mandatory and unavoidable.
-This procedure includes trimming XYZ data for achieving best similarity with the target
-sequence and should be always done before using coordinate data in MR tasks. This may seem
-to be redundant and even annoying in some cases, but in general, prparatory step
-significantly improves chances for successful Molecular Replacement.</p>
+<div class="section" id="why-xyz-data-cannot-be-used-in-molecular-replacement-tasks-directly">
+<h2><span class="section-number">8.1.1. </span>Why XYZ data cannot be used in Molecular Replacement tasks directly?<a class="headerlink" href="#why-xyz-data-cannot-be-used-in-molecular-replacement-tasks-directly" title="Permalink to this headline">¶</a></h2>
+<p>The main reason for disallowing the direct use of XYZ (<em>i.e.,</em> bare PDB or mmCIF files) in CCP4 Cloud’s MR tasks is to make the model preparation step mandatory and unavoidable. This procedure includes trimming XYZ data for achieving best similarity with the target sequence. Model preparation should always be done before using structure templates in Molecular Replacement. This may seem to be redundant and even annoying in some cases, but in general, the preparatory step significantly improves chances for successful Molecular Replacement.</p>
+<blockquote>
+<div><div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">trimming structure templates may be switched off in model preparation tasks, if necessary.</p>
+</div>
+</div></blockquote>
+</div>
 </div>
 
 
