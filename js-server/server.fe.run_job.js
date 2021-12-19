@@ -1181,21 +1181,18 @@ function getJobResults ( job_token,server_request,server_response )  {
               addJobAuto ( jobEntry,jobClass );
             ustats.registerJob ( jobClass );
             var nhours = (jobClass.end_time-jobEntry.start_time)/3600000.0;
-            console.log ( 'p1' );
             if (jobEntry.eoj_notification &&
                 jobEntry.eoj_notification.send &&
                 (nhours>jobEntry.eoj_notification.lapse))  {
-                  console.log ( 'p2' );
-                  var uData  = user.readUserData ( jobEntry.loginData );
-                  var mmm = emailer.sendTemplateMessage ( uData,
-                    cmd.appName() + ' Job Finished',
-                    'job_finished',{
-                      'job_id'     : jobEntry.jobId,
-                      'project_id' : jobEntry.project,
-                      'job_title'  : jobClass.title,
-                      'job_time'   : nhours
-                    });
-                  console.log ( mmm );
+              var uData = user.readUserData ( jobEntry.loginData );
+              emailer.sendTemplateMessage ( uData,
+                cmd.appName() + ' Job Finished',
+                'job_finished',{
+                  'job_id'     : jobEntry.jobId,
+                  'project_id' : jobEntry.project,
+                  'job_title'  : jobClass.title,
+                  'job_time'   : nhours
+                });
             }
           }
 
