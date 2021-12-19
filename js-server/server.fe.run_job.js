@@ -790,10 +790,10 @@ var response = null;
     var code        = utils.getJobSignalCode ( jobDir      );
     var jobData     = utils.readObject       ( jobDataPath );
 
-    console.log ( ' **** REPAIR JOB METADATA' );
-    console.log ( ' jobDir      = ' + jobDir );
-    console.log ( ' jobDataPath = ' + jobDataPath );
-    console.log ( ' code        = ' + code );
+    log.standard ( 80,' **** REPAIR JOB METADATA'          );
+    log.standard ( 80,'      jobDir      = ' + jobDir      );
+    log.standard ( 80,'      jobDataPath = ' + jobDataPath );
+    log.standard ( 80,'      code        = ' + code        );
 
     if (!jobData)
       jobData = task;

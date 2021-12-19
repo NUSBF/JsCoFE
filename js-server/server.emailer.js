@@ -80,7 +80,6 @@ var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
     var stage = 0;
 
     t.stdout.on ( 'data', function(data){
-      console.log ( "data=" + data );
       if ((!finish) && (stage>0))  {
         var msg = '';
         switch (stage)  {
@@ -101,7 +100,6 @@ var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
           case 6  : msg = 'QUIT';  break;
           default : ;
         }
-        console.log ( "msg=" + msg );
         if (msg)  {
           try {
             t.stdin.write ( msg + '\n' );
