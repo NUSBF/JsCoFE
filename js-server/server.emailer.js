@@ -61,7 +61,11 @@ var transporter = nodemailer.createTransport ( emailer );
 
 function send_telnet ( to,subject,message )  {
 var emailer = conf.getEmailerConfig();
-  var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
+var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
+
+console.log ( ' telnet ' + to );
+console.log ( ' telnet ' + subject );
+console.log ( ' telnet ' + message );
 
   telnet.stdin.setEncoding ( 'utf-8' );
 
@@ -80,6 +84,8 @@ var emailer = conf.getEmailerConfig();
     var stage = 0;
 
     t.stdout.on ( 'data', function(data){
+      console.log ( ' stage=' + stage );
+      console.log ( ' finish=' + finish );
       if ((!finish) && (stage>0))  {
         var msg = '';
         switch (stage)  {
@@ -102,6 +108,7 @@ var emailer = conf.getEmailerConfig();
         }
         if (msg)  {
           try {
+            console.log ( 'msg=' + msg );
             t.stdin.write ( msg + '\n' );
           } catch (e)  {
             log.error ( 3,'Emailer error: cannot send e-mail' );
