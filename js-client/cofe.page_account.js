@@ -154,9 +154,9 @@ function AccountPage ( sceneId )  {
 
   // make settings panel
   var spanel = new Grid('');
-  spanel.setWidth ( '300pt' );
+  spanel.setWidth ( '260pt' );
   panel.setLabel ( '&nbsp;',row,2,1,1 ).setWidth ( '80px' );
-  panel.setWidget ( spanel ,row,3,12,3 );
+  panel.setWidget ( spanel ,row,3,15,3 );
 
   panel.setLabel ( 'Preferences<sup>*</sup>',row-1,5,1,1 )
        .setFont ( 'times','150%',true,true );
@@ -164,7 +164,7 @@ function AccountPage ( sceneId )  {
 
   var prfrow = 0;
 
-  spanel.setLabel ( '<hr/>&nbsp;',prfrow++,0,1,2 );
+  spanel.setLabel ( '<hr/>',prfrow++,0,1,2 );
   spanel.setLabel ( 'On login, go to: ',prfrow,0,1,1 );
   spanel.setVerticalAlignment ( prfrow,0,'middle' );
   spanel.setCellSize  ( '120px','',prfrow,0   );
@@ -222,9 +222,6 @@ function AccountPage ( sceneId )  {
                                          'unless another prefix is specified in ' +
                                          'project settings'
                                        );
-  //if (__user_settings.hasOwnProperty('project_prefix'))
-  //  fprefix_cbx.setValue ( __user_settings.project_prefix );
-
 
   var gimport_cbx = spanel.setCheckbox ( 'Guide through data import',
                                          __user_settings.guided_import,
@@ -233,11 +230,33 @@ function AccountPage ( sceneId )  {
                           .setTooltip  ( 'If selected, extra guidance through ' +
                                          'data import procedure will be given.'
                                        );
-  //if (__user_settings.hasOwnProperty('guided_import'))
-  //  gimport_cbx.setValue ( __user_settings.guided_import );
+
+  var jnotify_cbx = spanel.setCheckbox ( 'Send end-of-job notifications',
+                                         __user_settings.notifications.end_of_job.send,
+                                         prfrow++,0,1,2 )
+                          .setWidth    ( '300px' )
+                          .setTooltip  ( 'If selected, end-of-job e-mails will ' +
+                                         'be sent for jobs that take longer than ' +
+                                         'the specified time period.'
+                                       );
+  var jngrid = spanel.setGrid ( '-compact', prfrow++,0,1,2 );
+  jngrid.setLabel ( '&nbsp;&nbsp; ',0,0,1,1 ).setWidth_px ( 45 );
+  jngrid.setLabel ( 'for jobs taking longer than',0,1,1,1 )
+         .setFontSize ( '90%' ).setFontItalic(true);
+  var jntime = jngrid.setInputText ( __user_settings.notifications.end_of_job.lapse,0,2,1,1 )
+            .setStyle ( 'text','real','','Execution time threshold' )
+            .setWidth_px(40);
+  jngrid.setLabel ( 'hours',0,3,1,1 )
+        .setFontSize ( '90%' ).setFontItalic(true);
+  jngrid.setVerticalAlignment ( 0,1,'middle' );
+  jngrid.setVerticalAlignment ( 0,3,'middle' );
+  jngrid.setVisible ( __user_settings.notifications.end_of_job.send );
+  jnotify_cbx.addOnClickListener ( function(){
+    jngrid.setVisible ( jnotify_cbx.getValue() );
+  });
 
   spanel.setLabel ( '&nbsp;<br><hr/><sup>*</sup> Save changes for Preferences to ' +
-                    'take an effect',prfrow+4,0,1,2 )
+                    'take an effect',prfrow,0,1,2 )
         .setFontSize ( '90%' ).setFontItalic(true);
 
 
@@ -358,6 +377,8 @@ function AccountPage ( sceneId )  {
       __user_settings.viewers_size   = [ defsize[2][2],defsize[3][2] ];
       __user_settings.project_prefix = fprefix_cbx.getValue();
       __user_settings.guided_import  = gimport_cbx.getValue();
+      __user_settings.notifications.end_of_job.send  = jnotify_cbx.getValue();
+      __user_settings.notifications.end_of_job.lapse = jntime.getValue();
       userData.settings = __user_settings;
 
       serverRequest ( fe_reqtype.updateUserData,userData,'My Account',

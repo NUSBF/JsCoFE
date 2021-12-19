@@ -69,7 +69,10 @@ function UserData()  {
     viewers_size   : [1.40,0.97],     // width, height
     jobdlg_size    : [1.25,0.85],     // width, height
     project_prefix : false,
-    guided_import  : true
+    guided_import  : true,
+    notifications  : {
+      end_of_job : { send : true, lapse : 24.0 }  // hours
+    }
   };
   this.action        = userdata_action.none;
 }
@@ -95,6 +98,11 @@ function checkUserData ( uData )  {
     uData.settings.onlogin      = 'project_list';  // 'project_list', 'last_project'
     uData.settings.viewers_size = [1.40,0.97];     // width, height
     uData.settings.jobdlg_size  = [1.25,0.85];     // width, height
+  }
+  if (!uData.settings.hasOwnProperty('notifications'))  {
+    uData.settings.notifications = {
+      end_of_job : { send : true, lapse : 24.0 }  // hours
+    }
   }
   if (!uData.settings.hasOwnProperty('guided_import'))
     uData.settings.guided_import = true;

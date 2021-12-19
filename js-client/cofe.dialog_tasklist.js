@@ -58,7 +58,6 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   this.dlg_width  = Math.min ( Math.max(700,4*this.dlg_width/9),6*this.dlg_width/8 );
   this.dlg_height = 6*window.innerHeight/8;
 
-  this.tabs       = null;
   this.tabs_basic = null;
   this.tabs_full  = null;
   this.combobox   = null;
@@ -132,14 +131,18 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
       ]
     });
 
-
-    if (self.tabs)  {
-      $(self.element).on( "dialogresize", function(event,ui){
-        //self.onResize();
-        $(self.tabs.element).height ( self.element.innerHeight-16 );
-        self.tabs.refresh();
-      });
-    }
+    $(self.element).on( "dialogresize", function(event,ui){
+      //self.onResize();
+      var height = self.element.innerHeight - 16;
+      if (self.tabs_basic)  {
+        $(self.tabs_basic.element).height ( height );
+        self.tabs_basic.refresh();
+      }
+      if (self.tabs_full)  {
+        $(self.tabs_full.element).height ( height );
+        self.tabs_full.refresh();
+      }
+    });
 
     if (self.combobox)  {
       self.combobox.addOnChangeListener ( function(value,text){

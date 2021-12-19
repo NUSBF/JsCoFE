@@ -136,7 +136,6 @@ function send ( to,subject,message )  {
   } else
     log.error ( 4,'attempt to send an empty e-mail to user; e-mail was not sent' );
   return '';
-
 }
 
 

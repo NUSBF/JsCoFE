@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.11.21   <--  Date of Last Modification.
+ *    18.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -61,7 +61,8 @@ function FEJobRegister()  {
 }
 
 FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
-                                            project,jobId,shared_logins )  {
+                                            project,jobId,shared_logins,
+                                            eoj_notification )  {
   this.job_map[job_token] = {
     nc_number  : nc_number,
     nc_type    : 'ordinary',
@@ -70,7 +71,8 @@ FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
     project    : project,
     jobId      : jobId,
     is_shared  : (shared_logins.length>0),
-    start_time : Date.now()
+    start_time : Date.now(),
+    eoj_notification : eoj_notification
   };
   var index = loginData.login + ':' + project + ':' + jobId;
   this.token_map[index] = job_token;
@@ -435,7 +437,8 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
           // On FE end, register job as engaged for further communication with
           // NC and client.
           feJobRegister.addJob ( retdata.job_token,nc_number,ownerLoginData,
-                                 task.project,task.id,shared_logins );
+                                 task.project,task.id,shared_logins,
+                                 uData.settings.notifications.end_of_job );
           writeFEJobRegister();
 
           if (callback_func)
@@ -563,7 +566,8 @@ function runJob ( loginData,data, callback_func )  {
                     'become available after job finishes.',true );
 
         feJobRegister.addJob ( job_token,-1,ownerLoginData,  // -1 is nc number
-                               task.project,task.id,shared_logins );
+                               task.project,task.id,shared_logins,
+                               null );  // no notifications for client jobs
         feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
         writeFEJobRegister();
 
@@ -658,7 +662,7 @@ function replayJob ( loginData,data, callback_func )  {
 
           var job_token = crypto.randomBytes(20).toString('hex');
           feJobRegister.addJob ( job_token,nc_number,loginData,
-                                 task.project,task.id,[] );
+                                 task.project,task.id,[],null );
           feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
           writeFEJobRegister();
 
@@ -692,7 +696,7 @@ function replayJob ( loginData,data, callback_func )  {
           // On FE end, register job as engaged for further communication with
           // NC and client.
           feJobRegister.addJob ( rdata.job_token,nc_number,loginData,
-                                 task.project,task.id,[] );
+                                 task.project,task.id,[],null );
           writeFEJobRegister();
 
         },function(stageNo,code){  // send failed
@@ -1176,6 +1180,20 @@ function getJobResults ( job_token,server_request,server_response )  {
             if (jobClass.autoRunId && jobClass.isSuccessful())
               addJobAuto ( jobEntry,jobClass );
             ustats.registerJob ( jobClass );
+            var nhours = (jobClass.end_time-jobEntry.start_time)/3600000.0;
+            if (jobEntry.eoj_notification &&
+                jobEntry.eoj_notification.send &&
+                (nhours>jobEntry.eoj_notification.lapse))  {
+                  var uData  = user.readUserData ( jobEntry.loginData );
+                  emailer.sendTemplateMessage ( uData,
+                    cmd.appName() + ' Job Finished',
+                    'job_finished',{
+                      'job_id'     : jobEntry.jobId,
+                      'project_id' : jobEntry.project,
+                      'job_title'  : jobClass.title,
+                      'job_time'   : nhours
+                    });
+            }
           }
 
           if ('tokens' in meta)

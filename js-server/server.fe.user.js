@@ -634,7 +634,7 @@ function readUsersData()  {
             udata.ration.jobs_total = udata.nJobs;
             ration.saveUserRation ( loginData,udata.ration );
           }
-          udata.ration.clearJobs();
+          udata.ration.clearJobs();  // just to make it slimmer for transmission
           usersData.userList.push ( udata );
         }
       }

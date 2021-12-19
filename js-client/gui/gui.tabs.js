@@ -40,7 +40,6 @@ Tabs.prototype.addTab = function ( name,open_bool )  {
 
   a.setAttribute ( 'href','#' + tab.id );
   a.setText ( name );
-//  a.element.innerHTML = name;
   hnd.addWidget ( a );
 
   // $('<a href="#' + tab.id + '"><span>' + name + '</span></a>')
