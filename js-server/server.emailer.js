@@ -63,10 +63,6 @@ function send_telnet ( to,subject,message )  {
 var emailer = conf.getEmailerConfig();
 var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
 
-console.log ( ' telnet ' + to );
-console.log ( ' telnet ' + subject );
-console.log ( ' telnet ' + message );
-
   telnet.stdin.setEncoding ( 'utf-8' );
 
   (function(t){
@@ -84,8 +80,7 @@ console.log ( ' telnet ' + message );
     var stage = 0;
 
     t.stdout.on ( 'data', function(data){
-      console.log ( ' stage=' + stage );
-      console.log ( ' finish=' + finish );
+      console.log ( "data=" + data );
       if ((!finish) && (stage>0))  {
         var msg = '';
         switch (stage)  {
@@ -106,9 +101,9 @@ console.log ( ' telnet ' + message );
           case 6  : msg = 'QUIT';  break;
           default : ;
         }
+        console.log ( "msg=" + msg );
         if (msg)  {
           try {
-            console.log ( 'msg=' + msg );
             t.stdin.write ( msg + '\n' );
           } catch (e)  {
             log.error ( 3,'Emailer error: cannot send e-mail' );
