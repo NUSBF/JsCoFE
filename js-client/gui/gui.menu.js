@@ -38,7 +38,7 @@ function MenuItem ( text,icon_uri )  {
   }
   if (text.length>0)  {
     this.text_div = new Widget ( 'div' );
-    this.text_div.element.innerHTML = text;
+    this.text_div.element.innerHTML = text.toString();
     $(this.text_div.element).css({
       'text-align'  : 'left',
       'white-space' : 'nowrap'
@@ -262,7 +262,7 @@ var item = new Widget ( 'option' );
   item.value = itemId;
   if (selected_bool)
     item.element.setAttribute ( 'selected','selected' );
-  item.element.innerHTML = text;
+  item.element.innerHTML = text.toString();
   this.addWidget ( item );
   return this;  // for chaining
 }
@@ -304,7 +304,7 @@ var item = new Widget ( 'option' );
     this.selected_value = itemId;
     this.selected_text  = text;
   }
-  item.element.innerHTML = text;
+  item.element.innerHTML = text.toString();
   this.select.addWidget ( item );
   if (this.select.child.length==1)  {
     this.selected_value = itemId;

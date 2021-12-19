@@ -161,7 +161,7 @@ TableRow.prototype = Object.create ( Widget.prototype );
 TableRow.prototype.constructor = TableRow;
 
 TableRow.prototype.addCell = function ( text )  {
-var td = new TableCell ( text );
+var td = new TableCell ( text.toString() );
   this.addWidget ( td );
   return td;
 }

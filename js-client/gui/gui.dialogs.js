@@ -503,7 +503,7 @@ InputBox.prototype = Object.create ( Widget.prototype );
 InputBox.prototype.constructor = InputBox;
 
 InputBox.prototype.setText = function ( text )  {
-  this.element.innerHTML = text;
+  this.element.innerHTML = text.toString();
 }
 
 InputBox.prototype.launch = function ( name_btn,add_func )  {

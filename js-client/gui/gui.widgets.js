@@ -83,8 +83,9 @@ Widget.prototype.removeAttribute = function ( attr )  {
 }
 
 Widget.prototype.setText = function ( text )  {
-  if (text)  this.element.innerHTML = text;
-       else  this.element.innerHTML = ' ';  // Safari 14 fix
+  this.element.innerHTML = text.toString();
+  // if (text)  this.element.innerHTML = text;
+  //      else  this.element.innerHTML = ' ';  // Safari 14 fix
   return this;
 }
 
@@ -913,8 +914,9 @@ IconLabel.prototype.constructor = IconLabel;
 
 IconLabel.prototype.setIconLabel = function ( text,icon_uri )  {
 //  this.setText ( text );
-  if (text)  this.element.innerHTML = text;
-       else  this.element.innerHTML = '&nbsp;';  // Safari 14 fix, ' ' does not work
+  this.element.innerHTML = text.toString();
+  // if (text)  this.element.innerHTML = text;
+  //      else  this.element.innerHTML = '&nbsp;';  // Safari 14 fix, ' ' does not work
   if (icon_uri.length>0)  {
     $(this.element).css({
       'text-align':'center',
@@ -1156,8 +1158,9 @@ Button.prototype = Object.create ( Widget.prototype );
 Button.prototype.constructor = Button;
 
 Button.prototype._set_button = function ( text,icon_uri )  {
-  if (text)  this.div.innerHTML = text;
-       else  this.div.innerHTML = ' ';  // Safari 14 fix
+  this.div.innerHTML = text.toString();
+  // if (text)  this.div.innerHTML = text;
+  //      else  this.div.innerHTML = ' ';  // Safari 14 fix
   if (icon_uri.length>0)  {
     $(this.div).css({'text-align':'center',
                      'margin-left':'1.2em'});
@@ -1298,8 +1301,9 @@ RadioSet.prototype.addButton = function ( text,btnId,tooltip,checked_bool )  {
 
   var label = new Widget ( 'label' );
   label.element.setAttribute ( 'for',_id );
-  if (text)  label.element.innerHTML = text;
-       else  label.element.innerHTML = ' ';  // Safari 14 fix
+  label.element.innerHTML = text.toString();
+  // if (text)  label.element.innerHTML = text;
+  //      else  label.element.innerHTML = ' ';  // Safari 14 fix
   this.addWidget ( label );
   if (tooltip)
     label.setTooltip ( tooltip );
@@ -1625,8 +1629,9 @@ Combobox.prototype.addItem = function ( text,itemId,selected_bool )  {
     this.selected_value = itemId;
     this.selected_text  = text;
   }
-  if (text)  item.element.innerHTML = text;
-       else  item.element.innerHTML = ' ';  // Safari 14 fix
+  item.element.innerHTML = text.toString();
+  // if (text)  item.element.innerHTML = text;
+  //      else  item.element.innerHTML = ' ';  // Safari 14 fix
   this.addWidget ( item );
   return this;  // for chaining
 }
@@ -1679,9 +1684,10 @@ function Checkbox ( label_txt,checked_bool )  {
   var _id = 'cbx-' + this.id;
 
   this.element.htmlFor   = _id;
-  if (label_txt)
-        this.element.innerHTML = label_txt;
-  else  this.element.innerHTML = ' ';
+  this.element.innerHTML = label_txt.toString();
+  // if (label_txt)
+  //       this.element.innerHTML = label_txt;
+  // else  this.element.innerHTML = ' ';
   $(this.element).css({'white-space':'nowrap','text-align':'left'});
 
   this.checkbox = document.createElement ( 'input' );
@@ -1731,8 +1737,9 @@ function RadioButton ( label_txt,checked_bool )  {
   var _id = 'cbx-' + this.id;
 
   this.element.htmlFor   = _id;
-  if (label_txt)  this.element.innerHTML = label_txt;
-            else  this.element.innerHTML = ' ';  // Safari 14 fix
+  this.element.innerHTML = label_txt.toString();
+  // if (label_txt)  this.element.innerHTML = label_txt;
+  //           else  this.element.innerHTML = ' ';  // Safari 14 fix
   $(this.element).css({'white-space':'nowrap'});
 
   this.radio = document.createElement ( 'input' );
