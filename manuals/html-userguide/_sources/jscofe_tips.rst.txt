@@ -12,4 +12,6 @@ Tips and Tricks
     jscofe_tips.login_project
     jscofe_tips.three_clouds
     jscofe_tips.hot_task_launchers
+    jscofe_tips.eoj_notifications
+    jscofe_tips.file_names
 

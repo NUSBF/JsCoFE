@@ -30,6 +30,16 @@
       "title"   : "Login in Project",
       "doc"     : "manuals/html-userguide",
       "link"    : "jscofe_tips.three_clouds.html"
+    },{
+      "summary" : "Did you know of end-of-job notifications? Read <a>here</a>.",
+      "title"   : "End of Job Notifications",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.eoj_notifications.html"
+    },{
+      "summary" : "Do you know how to customise generated file names? Read <a>here</a>.",
+      "title"   : "File Name Customisation",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.file_names.html"
     }
   ]
 }

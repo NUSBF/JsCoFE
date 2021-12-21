@@ -14,7 +14,7 @@
     
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms &#8212; CCP4 Cloud 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -27,7 +27,7 @@
     <link rel="search" title="Search" href="search.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+          <span>CCP4 Cloud 1.7 documentation</span></a></h1>
         <h2 class="heading"><span>Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -53,7 +53,7 @@
 <p class="last">Good hypothesis is important for making correct estimation of solvent fraction; grossly incorrect estimate may have a negative impact on the success of Experimental Phasing.</p>
 </div>
 <p><strong>b.</strong>  After ASU is defined, the workflow starts <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Crank2.html" rel="noopener noreferrer" target="_blank">Crank-2</a> automatic structure solver for <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/Experimental_Phasing.html" rel="noopener noreferrer" target="_blank">Experimental Phasing</a>.</p>
-<p>Crank-2 will take about 30-40 minutes to complete and should result solved structure. During this time, try solving Beta-lactamase structure manually, using fundamental programs as described below.</p>
+<p>Crank-2 job will take about 30-40 minutes to complete and should result in the solved structure. During this time, try solving Beta-lactamase structure manually, using fundamental programs as described below.</p>
 <p><code class="docutils literal notranslate"><span class="pre">3.</span></code> Just like in the workflow, start phasing procedure with the definition of the Asymmetric Unit composition (number of chains) by running the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ASUDef.html" rel="noopener noreferrer" target="_blank">Asymmetric Unit definition</a> task. It is convenient to start a separate project branch for manual structure solution, starting from the last import task: <strong>Click on the last file import task =&gt; add next job =&gt; All tasks =&gt; Asymmetric Unit and Structure Revision =&gt; Asymmetric Unit Contents</strong></p>
 <p>When preparing the task for run, specify <strong>Zn</strong> as <strong>Main anomalous scatterer</strong>.</p>
 <p>After the task finishes, inspect the <strong>Verdict</strong> section found in the report page. The verdict will help you to assess the likelihood of having the correct ASU composition.</p>
@@ -90,16 +90,13 @@ to define initial values of NCS operations. Start the task.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">jobs in different branches can be run simultaneously, therefore, there is no need to wait for Parrot job in the “Original hand” branch to finish before starting Parrot job in the “Inverted hand” branch!</p>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">7.</span></code> After density modification (Parrot) tasks finish, analyse the resulting FOMs and perform visual inspection of the modified density in
-<strong>UglyMol</strong> viewer (the corresponding launch button is found in the <em>Report</em> tab of the <em>task output</em> page).</p>
+<p><code class="docutils literal notranslate"><span class="pre">7.</span></code> After density modification (Parrot) tasks finish, analyse the resulting FOMs and perform visual inspection of the modified density in <strong>UglyMol</strong> viewer (the corresponding launch button is found in the <em>Report</em> tab of the <em>task output</em> page).</p>
 <p>Are resulting maps from Parrot jobs good enough for deciding on the hand?</p>
 <p><code class="docutils literal notranslate"><span class="pre">8.</span></code> Continue each project branch with the model building using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">Buccaneer</a> in both hands.</p>
 <p>Could more cycles of model building be useful?</p>
 <p><em>You may clone and run another Buccaneer job(s) if you think it could</em></p>
-<p><code class="docutils literal notranslate"><span class="pre">9.</span></code> The difference btween the builds is not so significant in this particular case. This suggests that the hands may be very close to each
-other, which implies the presence of inversion centre in the substructures. Can you find it (use <strong>UglyMol</strong> viewer)?</p>
-<p><code class="docutils literal notranslate"><span class="pre">10.</span></code> Perform structure comparison with <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Gesamt.html" rel="noopener noreferrer" target="_blank">Gesamt</a> (use multiple
-selection from the “Original” and “Inverted” branches):</p>
+<p><code class="docutils literal notranslate"><span class="pre">9.</span></code> The difference between the builds is not so significant in this particular case. This suggests that the hands may be very close to each other, which implies the presence of inversion centre in the substructures. Can you find it (use <strong>UglyMol</strong> viewer)?</p>
+<p><code class="docutils literal notranslate"><span class="pre">10.</span></code> Perform structure comparison with <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Gesamt.html" rel="noopener noreferrer" target="_blank">Gesamt</a> (use multiple selection from the “Original” and “Inverted” branches):</p>
 <a class="reference internal image-reference" href="_images/demo.multiple_selection.jpg"><img alt="_images/demo.multiple_selection.jpg" class="align-center" src="_images/demo.multiple_selection.jpg" style="width: 222.0px; height: 405.0px;" /></a>
 <p><strong>Select both models =&gt; add next job =&gt; All task =&gt;  Toolbox =&gt; Pairwise Structural Alignment with GESAMT</strong></p>
 <p><code class="docutils literal notranslate"><span class="pre">11.</span></code> Further refinement can be conveniently done with the <strong>Automated refinement and ligand fitting workflow</strong></p>

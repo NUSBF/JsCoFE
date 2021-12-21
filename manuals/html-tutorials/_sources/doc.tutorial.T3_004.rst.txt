@@ -20,7 +20,7 @@ Specify **Zn** atom type as **main anomalous scatterer**. Run the workflow.
 
 **b.**	After ASU is defined, the workflow starts `Crank-2 <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Crank2.html>`_ automatic structure solver for `Experimental Phasing <https://cloud.ccp4.ac.uk/manuals/html-taskref/Experimental_Phasing.html>`_.
 
-Crank-2 will take about 30-40 minutes to complete and should result solved structure. During this time, try solving Beta-lactamase structure manually, using fundamental programs as described below.
+Crank-2 job will take about 30-40 minutes to complete and should result in the solved structure. During this time, try solving Beta-lactamase structure manually, using fundamental programs as described below.
 
 ``3.`` Just like in the workflow, start phasing procedure with the definition of the Asymmetric Unit composition (number of chains) by running the `Asymmetric Unit definition <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ASUDef.html>`_ task. It is convenient to start a separate project branch for manual structure solution, starting from the last import task: **Click on the last file import task => add next job => All tasks => Asymmetric Unit and Structure Revision => Asymmetric Unit Contents**
 
@@ -67,8 +67,7 @@ Then, append Parrot task to the “Inverted hand” remark and make sure that th
 
 .. note:: jobs in different branches can be run simultaneously, therefore, there is no need to wait for Parrot job in the "Original hand" branch to finish before starting Parrot job in the "Inverted hand" branch!
 
-``7.`` After density modification (Parrot) tasks finish, analyse the resulting FOMs and perform visual inspection of the modified density in
-**UglyMol** viewer (the corresponding launch button is found in the *Report* tab of the *task output* page).
+``7.`` After density modification (Parrot) tasks finish, analyse the resulting FOMs and perform visual inspection of the modified density in **UglyMol** viewer (the corresponding launch button is found in the *Report* tab of the *task output* page).
 
 Are resulting maps from Parrot jobs good enough for deciding on the hand?
 
@@ -78,11 +77,9 @@ Could more cycles of model building be useful?
 
 *You may clone and run another Buccaneer job(s) if you think it could*
 
-``9.`` The difference btween the builds is not so significant in this particular case. This suggests that the hands may be very close to each
-other, which implies the presence of inversion centre in the substructures. Can you find it (use **UglyMol** viewer)?
+``9.`` The difference between the builds is not so significant in this particular case. This suggests that the hands may be very close to each other, which implies the presence of inversion centre in the substructures. Can you find it (use **UglyMol** viewer)?
 
-``10.`` Perform structure comparison with `Gesamt <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Gesamt.html>`_ (use multiple
-selection from the “Original” and “Inverted” branches):
+``10.`` Perform structure comparison with `Gesamt <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Gesamt.html>`_ (use multiple selection from the “Original” and “Inverted” branches):
 
 .. image:: images/demo.multiple_selection.jpg
         :align: center

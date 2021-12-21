@@ -1,4 +1,3 @@
-
 .. _ccp4-cloud-configuration:
 
 ========================
@@ -60,6 +59,7 @@ Front End Server configuration has the following structure: ::
     "reportURL"        : "https://cloud.ccp4.ac.uk",  // used only for reporting
     "exclusive"        : true,
     "stoppable"        : false,
+    "rejectUnauthorized" : true, // optional; use only for debugging, see below
     "exclude_tasks"    : [],
     "fsmount"          : "/",
     "localSetup"       : true,  // optional, overrides automatic definition
@@ -222,6 +222,14 @@ FE Server Configuration Items
         "stoppable" : false
         
     in production systems.
+
+
+**"rejectUnauthorized"** 
+
+    Switches on/off (true/false) the verification of SSL certificates. This should be set 
+    ``true`` by default. Switching the verification off may be used for debugging purposes 
+    or in case when site should be maintained even at risk while SSL certificates are being 
+    sorted. Note that this option is specific to server, not all Cloud setup.
 
 
 **"exclude_tasks"**
@@ -591,6 +599,7 @@ Client Proxy Server configuration has the following structure: ::
     "externalURL"      : "http://localhost:8082",
     "exclusive"        : true,
     "stoppable"        : false,
+    "rejectUnauthorized" : true, // optional; use only for debugging, see below
     "localisation"     : 1  // 0: all files are taken from remote server
                             // 1: images are taken from local setup
                             // 2: images and js libraries are taken from local setup
@@ -670,4 +679,10 @@ Client Proxy Server Configuration Items
             all CCP4 Cloud source files are obtained from local CCP4 setup
         
 
-    
+
+**"rejectUnauthorized"** 
+
+    Switches on/off (true/false) the verification of SSL certificates. This should be set 
+    ``true`` by default. Switching the verification off may be used for debugging purposes 
+    or in case when site should be maintained even at risk while SSL certificates are being 
+    sorted. Note that this option is specific to server, not all Cloud setup.
