@@ -1,0 +1,23 @@
+==========================
+Edit Coordinates with Coot
+==========================
+
+
+In this task `Coot <https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/>`_  is used as molecular viewer for editing structure models. It can be useful for preparing a suitable model for molecular replacement (MR). 
+
+
+
+**Useful links**
+
+`The COOT User Manual <https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/web/docs/coot.html#FOOT1>`_
+
+`COOT User Manual PDF format <http://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/web/docs/coot-user-manual.pdf>`_
+
+`COOT Quick Reference Guide <https://smb.slac.stanford.edu/facilities/software/coot/>`_
+
+`COOT Crib Sheet <https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/web/docs/crib-sheet.pdf>`_
+
+
+**References**
+
+`Emsley, P., Lohkamp, B., Scott, W.G., Cowtan, K. (2010) Features and development of Coot. Acta Cryst. D66: 486-501; doi:10.1107/S0907444910007493 <https://doi.org/10.1107/S0907444910007493>`_

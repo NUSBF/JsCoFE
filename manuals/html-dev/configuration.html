@@ -14,7 +14,7 @@
     
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3. CCP4 Cloud Configuration &#8212; CCP4 Cloud 1.6 documentation</title>
+    <title>3. CCP4 Cloud Configuration &#8212; CCP4 Cloud 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -29,7 +29,7 @@
     <link rel="prev" title="2. CCP4 Cloud Launch Scripts" href="launchers.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>CCP4 Cloud 1.6 documentation</span></a></h1>
+          <span>CCP4 Cloud 1.7 documentation</span></a></h1>
         <h2 class="heading"><span>3. CCP4 Cloud Configuration</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
@@ -93,6 +93,7 @@ other components.</p>
   <span class="s2">&quot;reportURL&quot;</span>        <span class="p">:</span> <span class="s2">&quot;https://cloud.ccp4.ac.uk&quot;</span><span class="p">,</span>  <span class="o">//</span> <span class="n">used</span> <span class="n">only</span> <span class="k">for</span> <span class="n">reporting</span>
   <span class="s2">&quot;exclusive&quot;</span>        <span class="p">:</span> <span class="n">true</span><span class="p">,</span>
   <span class="s2">&quot;stoppable&quot;</span>        <span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+  <span class="s2">&quot;rejectUnauthorized&quot;</span> <span class="p">:</span> <span class="n">true</span><span class="p">,</span> <span class="o">//</span> <span class="n">optional</span><span class="p">;</span> <span class="n">use</span> <span class="n">only</span> <span class="k">for</span> <span class="n">debugging</span><span class="p">,</span> <span class="n">see</span> <span class="n">below</span>
   <span class="s2">&quot;exclude_tasks&quot;</span>    <span class="p">:</span> <span class="p">[],</span>
   <span class="s2">&quot;fsmount&quot;</span>          <span class="p">:</span> <span class="s2">&quot;/&quot;</span><span class="p">,</span>
   <span class="s2">&quot;localSetup&quot;</span>       <span class="p">:</span> <span class="n">true</span><span class="p">,</span>  <span class="o">//</span> <span class="n">optional</span><span class="p">,</span> <span class="n">overrides</span> <span class="n">automatic</span> <span class="n">definition</span>
@@ -251,6 +252,12 @@ there is no reason to use value other than</p>
 </div>
 <p>in production systems.</p>
 </div></blockquote>
+<p><strong>“rejectUnauthorized”</strong></p>
+<blockquote>
+<div>Switches on/off (true/false) the verification of SSL certificates. This should be set
+<code class="docutils literal notranslate"><span class="pre">true</span></code> by default. Switching the verification off may be used for debugging purposes
+or in case when site should be maintained even at risk while SSL certificates are being
+sorted. Note that this option is specific to server, not all Cloud setup.</div></blockquote>
 <p><strong>“exclude_tasks”</strong></p>
 <blockquote>
 <div><p>Optional list of tasks that can be excluded from the list of available tasks.
@@ -578,6 +585,7 @@ initialised</dd>
   <span class="s2">&quot;externalURL&quot;</span>      <span class="p">:</span> <span class="s2">&quot;http://localhost:8082&quot;</span><span class="p">,</span>
   <span class="s2">&quot;exclusive&quot;</span>        <span class="p">:</span> <span class="n">true</span><span class="p">,</span>
   <span class="s2">&quot;stoppable&quot;</span>        <span class="p">:</span> <span class="n">false</span><span class="p">,</span>
+  <span class="s2">&quot;rejectUnauthorized&quot;</span> <span class="p">:</span> <span class="n">true</span><span class="p">,</span> <span class="o">//</span> <span class="n">optional</span><span class="p">;</span> <span class="n">use</span> <span class="n">only</span> <span class="k">for</span> <span class="n">debugging</span><span class="p">,</span> <span class="n">see</span> <span class="n">below</span>
   <span class="s2">&quot;localisation&quot;</span>     <span class="p">:</span> <span class="mi">1</span>  <span class="o">//</span> <span class="mi">0</span><span class="p">:</span> <span class="nb">all</span> <span class="n">files</span> <span class="n">are</span> <span class="n">taken</span> <span class="kn">from</span> <span class="nn">remote</span> <span class="n">server</span>
                           <span class="o">//</span> <span class="mi">1</span><span class="p">:</span> <span class="n">images</span> <span class="n">are</span> <span class="n">taken</span> <span class="kn">from</span> <span class="nn">local</span> <span class="n">setup</span>
                           <span class="o">//</span> <span class="mi">2</span><span class="p">:</span> <span class="n">images</span> <span class="ow">and</span> <span class="n">js</span> <span class="n">libraries</span> <span class="n">are</span> <span class="n">taken</span> <span class="kn">from</span> <span class="nn">local</span> <span class="n">setup</span>
@@ -648,6 +656,12 @@ librarries are obtained from local CCP4 setup</dd>
 </dl>
 </div></blockquote>
 </div></blockquote>
+<p><strong>“rejectUnauthorized”</strong></p>
+<blockquote>
+<div>Switches on/off (true/false) the verification of SSL certificates. This should be set
+<code class="docutils literal notranslate"><span class="pre">true</span></code> by default. Switching the verification off may be used for debugging purposes
+or in case when site should be maintained even at risk while SSL certificates are being
+sorted. Note that this option is specific to server, not all Cloud setup.</div></blockquote>
 </div>
 </div>
 </div>

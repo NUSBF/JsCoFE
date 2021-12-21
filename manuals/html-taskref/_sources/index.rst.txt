@@ -21,6 +21,7 @@ Task Reference
    Experimental_Phasing
    Density_Modification
    Refinement_and_Model_Building
+   COOT
    Ligands
    Validation_Analysis_and_Deposition
    Toolbox

@@ -1,0 +1,22 @@
+========================
+End of Job Notifications
+========================
+
+When a job takes long time to run, periodic checks on job status may be impractical. Alternatively, CCP4 Cloud can inform users of long-running job completion by e-mail.
+
+The corresponding configiration is found in *My Account* page:
+
+.. image:: images/eoj_notifications.png
+         :scale: 50 %
+         :align: center
+
+There, the checkbox switches end-of-job notifications on/off. The notifications will be send only for jobs that run longer than the specified number of hours. By default, notifications are active and CCP4 Cloud sends them for jobs that finish on or after 24 hours since starting.
+
+.. Note::
+    The job duration threshold corresponds to the wall-clock time, rather than CPU time.
+
+.. Note::
+    Changing notification settings does not have impact on jobs that are already running.
+
+
+:doc:`All CCP4 Cloud tips <jscofe_tips>` 

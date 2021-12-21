@@ -24,7 +24,7 @@ Preliminary notes
    c. The *Task List* is limited to a subset of tasks relevant to structure completion and refinement; if necessary, it can be switched to the full mode.
 
 
-In this example, there is a ligand present in the density, but it has not yet been built into the model. Since this ligand is present in the CCP4 monomer library (with code: C8M), we don't actually need to create a new dictionary for this ligand. However, for the purposes of this tutorial, we will create a new ligand dictionary using the latest version of AceDRG, fit the ligand into the map using Coot, then refine the model using REFMAC5. A chemical description of the ligand is available as a SMILES string, which is found in the file *c8m.txt* provided.
+In this example, there is a ligand present in the density, but it has not yet been built into the model. Since this ligand is present in the CCP4 monomer library (with code: C8M), we don't actually need to create a new dictionary for this ligand. However, for the purposes of this tutorial, we will create a new ligand dictionary using the latest version of AceDRG, fit the ligand into the map using Coot, then refine the model using REFMAC5. A chemical description of the ligand is available as a SMILES string below in the next section.
 
 --------
 Tutorial

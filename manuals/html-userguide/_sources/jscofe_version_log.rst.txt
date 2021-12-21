@@ -3,9 +3,29 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.7.002**
+
+    *Released on --.--.2022 with CCP4 8.0.001*
+
+    **Changes and new features**
+
+    #. New task ``Prepare Complex MR Model`` added
+
+    #. New style built-in tutorials 
+
+
+
+**Version 1.7.001**
+
+    *Released on 29.11.2021 with CCP4 7.1.018*
+
+    **Changes and new features**
+
+    #. Fixed bugs causing problems with https connections
+
 **Version 1.6.024**
 
-    *Released on --.--.2021 with CCP4 7.1.017*
+    *Released on 11.11.2021 with CCP4 7.1.017*
 
     **Changes and new features**
 
