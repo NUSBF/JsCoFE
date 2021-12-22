@@ -1616,7 +1616,7 @@ class TaskDriver(object):
         return
 
     def hotHelpLink ( self,title,helpFName,tooltip="what is this?",chapter="html-userguide" ):
-        hflist  = helpFName.split("#")
+        hflist = helpFName.split("#")
         if len(hflist)==2:
             hflist[1] = "#" + hflist[1]
         else:

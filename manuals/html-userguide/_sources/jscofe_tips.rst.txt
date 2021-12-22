@@ -14,4 +14,5 @@ Tips and Tricks
     jscofe_tips.hot_task_launchers
     jscofe_tips.eoj_notifications
     jscofe_tips.file_names
+    jscofe_tips.AlphaFold
 

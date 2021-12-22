@@ -1,0 +1,27 @@
+===================================
+Using AlphaFold2 and Rosetta models
+===================================
+
+CCP4 Cloud tasks automatically recognise AlphaFold and RoseTTAFold models and convert their per-residue pLDDT scores (AlphaFold) or rmsd estimates (RoseTTAFold) to B-factors. `Import <http://localhost:56570/manuals/html-taskref/doc.task.import.html>`_ task puts a notice of conversion in the *Import Summary* table, other tasks, such as `MrBump <http://localhost:56570/manuals/html-taskref/doc.task.MrBump.html>`_ and `MrParse <http://localhost:56570/manuals/html-taskref/doc.task.MrParse.html>`_, do that silently.
+
+.. note::
+        It is important to convert pLLDT scores and rmsd estimates, placed in B-factor columns of predicted models, into B-factors. Without that, best parts of the model will get the lowest weight in Molecular Replacement, which significantly decreases chances for solution. All is done automatically, you are fully set.
+
+
+.. toggle-header::
+       :header:  **pLDDT cut**
+                
+                AlphaFold produces a per-residue estimate of its confidence score, called **pLDDT**, ranging from 0 to 100. This option sets the minimum level of **pLDDT** of selected residues.
+                
+                * **pLDDT > 90**: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).
+                
+                * **70 < pLDDT < 90** residues are expected to be positioned reasonably well (generally, a good backbone prediction).
+                
+                * **50 < pLDDT < 70** corresponds to residues modelled with low confidence, which should be treated with caution.
+                
+                * **pLDDT < 50** indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.
+
+
+:doc:`All CCP4 Cloud tips <jscofe_tips>` 
+
+

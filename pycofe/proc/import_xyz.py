@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.10.21   <--  Date of Last Modification.
+#    22.12.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -140,24 +140,42 @@ def run ( body ):  # body is reference to the main Import class
                 contents += "Ligands:"
                 for name in xyzMeta["ligands"]:
                     contents += "&nbsp;&nbsp;" + name
+
             body.putTableLine ( xyzTableId,"Contents","File contents",contents,jrow+3 )
+
             pyrvapi.rvapi_add_data ( xyzTableId + "_structure_btn",
                                      xyz.dname  + "&nbsp;&nbsp;&nbsp;&nbsp;",
                                      # always relative to job_dir from job_dir/html
                                      "/".join(["..",body.outputDir(),xyz.getXYZFileName()]),
                                      "xyz",subSecId,1,0,1,1,-1 )
+
+            note = ""
             if xyz.BF_correction=="alphafold":
+                note = "Assuming AlphaFold model" + body.hotHelpLink (
+                            "Using AlphaFold and Rosetta Models",
+                            "jscofe_tips.AlphaFold"
+                       )
                 body.putTableLine ( xyzTableId,"B-factor correction",
                                                "Model for B-factors re-calculation",
-                                               "Assuming AlphaFold model",jrow+4 )
+                                               note,jrow+4 )
             elif xyz.BF_correction=="rosetta":
+                note = "Assuming Rosetta model" + body.hotHelpLink (
+                            "Using AlphaFold and Rosetta Models",
+                            "jscofe_tips.AlphaFold"
+                       )
                 body.putTableLine ( xyzTableId,"B-factor correction",
                                                "Model for B-factors re-calculation",
-                                               "Assuming Rosetta model",jrow+4 )
+                                               note,jrow+4 )
 
             body.addCitations ( ['uglymol','ccp4mg'] )
 
-            body.putSummaryLine ( body.get_cloud_import_path(f),"XYZ",xyz.dname )
+            if note:
+                body.putSummaryLine ( body.get_cloud_import_path(f),"XYZ",
+                                     xyz.dname + "<br><font size=\"-1\" style=\"color:maroon\">" +\
+                                     note.replace("Assuming","B-factors corrected assuming") +\
+                                     "</font>" )
+            else:
+                body.putSummaryLine ( body.get_cloud_import_path(f),"XYZ",xyz.dname )
 
         body.file_stdout.write ( "... processed: " + body.get_cloud_import_path(f) + "\n" )
         k += 1

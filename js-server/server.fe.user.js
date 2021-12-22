@@ -368,14 +368,14 @@ UserLoginHash.prototype.read = function()  {
 
 UserLoginHash.prototype.addUser = function ( token,login_data )  {
 
-  var loggedUsers = {};
+  var logUsers = {};
 
   for(var key in this.loggedUsers)
     if (this.loggedUsers[key].login!=login_data.login)
-      loggedUsers[key] = this.loggedUsers[key];
+      logUsers[key] = this.loggedUsers[key];
 
-  loggedUsers[token] = login_data;
-  this.loggedUsers   = loggedUsers;
+  logUsers[token]  = login_data;
+  this.loggedUsers = logUsers;
 
   this.save();
 

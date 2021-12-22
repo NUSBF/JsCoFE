@@ -1,0 +1,90 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FCVD2T7BGM');
+    </script>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>7.10. Using AlphaFold2 and Rosetta models &#8212; CCP4 Cloud 1.7 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="8. Questions and Answers" href="jscofe_QnA.html" />
+    <link rel="prev" title="7.9. File name customisation" href="jscofe_tips.file_names.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.7 documentation</span></a></h1>
+        <h2 class="heading"><span>7.10. Using AlphaFold2 and Rosetta models</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="jscofe_tips.file_names.html"><span class="section-number">7.9. </span>File name customisation</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jscofe_QnA.html"><span class="section-number">8. </span>Questions and Answers</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <div class="section" id="using-alphafold2-and-rosetta-models">
+<h1><span class="section-number">7.10. </span>Using AlphaFold2 and Rosetta models<a class="headerlink" href="#using-alphafold2-and-rosetta-models" title="Permalink to this headline">¶</a></h1>
+<p>CCP4 Cloud tasks automatically recognise AlphaFold and RoseTTAFold models and convert their per-residue pLDDT scores (AlphaFold) or rmsd estimates (RoseTTAFold) to B-factors. <a class="reference external" href="http://localhost:56570/manuals/html-taskref/doc.task.import.html" rel="noopener noreferrer" target="_blank">Import</a> task puts a notice of conversion in the <em>Import Summary</em> table, other tasks, such as <a class="reference external" href="http://localhost:56570/manuals/html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> and <a class="reference external" href="http://localhost:56570/manuals/html-taskref/doc.task.MrParse.html" rel="noopener noreferrer" target="_blank">MrParse</a>, do that silently.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is important to convert pLLDT scores and rmsd estimates, placed in B-factor columns of predicted models, into B-factors. Without that, best parts of the model will get the lowest weight in Molecular Replacement, which significantly decreases chances for solution. All is done automatically, you are fully set.</p>
+</div>
+<div class="toggle-header docutils container">
+<strong>pLDDT cut</strong></div>
+<div class="toggle-content docutils container">
+<blockquote>
+<div><p>AlphaFold produces a per-residue estimate of its confidence score, called <strong>pLDDT</strong>, ranging from 0 to 100. This option sets the minimum level of <strong>pLDDT</strong> of selected residues.</p>
+<ul class="simple">
+<li><strong>pLDDT &gt; 90</strong>: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).</li>
+<li><strong>70 &lt; pLDDT &lt; 90</strong> residues are expected to be positioned reasonably well (generally, a good backbone prediction).</li>
+<li><strong>50 &lt; pLDDT &lt; 70</strong> corresponds to residues modelled with low confidence, which should be treated with caution.</li>
+<li><strong>pLDDT &lt; 50</strong> indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.</li>
+</ul>
+</div></blockquote>
+</div>
+<p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="jscofe_tips.file_names.html"><span class="section-number">7.9. </span>File name customisation</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jscofe_QnA.html"><span class="section-number">8. </span>Questions and Answers</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

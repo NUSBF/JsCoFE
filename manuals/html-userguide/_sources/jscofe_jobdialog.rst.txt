@@ -4,11 +4,7 @@
 Job Dialog
 ==========
 
-Job Dialog is one of most central to CCP4 Cloud functionality. It is used for
-forming a job (choosing/setting input data and parameters), running it and inspecting
-the results. The Dialog opens automatically upon selecting a task in the **Task List** or p
-ressing the |openjob|  button
-in the **Project Page toolbar** (also available through right-click on the Job's line of the Job Tree).
+Job Dialog is one of most central to CCP4 Cloud functionality. It is used for forming a job (choosing/setting input data and parameters), running it and inspecting the results. The Dialog opens automatically upon selecting a task in the **Task List** or pressing the |openjob| button in the **Project Page toolbar** (also available through right-click on the Job's line of the Job Tree).
 
 .. |openjob| image:: images/openjob.png
     :width: 16
@@ -24,7 +20,7 @@ The dialog has two pages: Input and Output, and a toolbar in the upper part of t
          :scale: 50 %
          :align: center
 
-The radiobuttons in the left-hand-side of the toolbar switch between the **Input** and **Output** pages (the buttons are disabled if Output page is not formed yet). Central part of the toolbar may show either the **Run button** for starting the job, or show a "busy" indicator and **Stop button** while the job is running, or the final **job status** ("completed", "failed", "terminated") if job is finished. The **Ref. button** displays reference documentation on the task currently represented by the Dialog, while **Help button** provides the Dialog's manual you are currently reading. The Close button in the right-hand-side of the toolbar closes the Dialog without running the job.
+The buttons in the left-hand-side of the toolbar switch between the **Input** and **Output** pages (the buttons are disabled if Output page is not formed yet). Central part of the toolbar may show either the **Run button** for starting the job, or show a "busy" indicator and **Stop button** while the job is running, or the final **job status** ("completed", "failed", "terminated") if job is finished. The **Ref. button** displays reference documentation on the task currently represented by the Dialog, while **Help button** provides the Dialog's manual you are currently reading. The Close button in the right-hand-side of the toolbar closes the Dialog without running the job.
 
 ------------
  Input Page
@@ -36,7 +32,7 @@ The **Input** page has three parts: the *Header, Data Section and Parameters Sec
 The Header
 ++++++++++
 
-The Header displays the Job Title and two input fields: job description and ouput id:
+The Header displays the Job Title and two input fields: job description and output id:
 
 .. image:: images/job_dialog_toolbar.png
          :scale: 50 %
@@ -64,9 +60,9 @@ the job takes one Structure Revision, one or more anomalous HKL Datasets, and on
 
 In the above example, second combobox for anomalous dataset shows [do not use]. This means that only one anomalous HKL dataset, selected in first combobox, will be passed on to the job. If a user selects a dataset in second combobox as well, it will be passed as second anomalous dataset to the job, and another combobox with title *"Anomalous reflection data (3)"* and initial value [do not use] will be displayed, thus suggesting that yet another dataset may be passed on to the job, if needed and available.
 
-The comboboxes may be accompanied by additional input widgets, related to particular data object. In the above example, each anomalous dataset chosen must be annotated by wavelength as *"low-remote"*, *"peak"*, *"inflection"* or *"high-remote"*, which is done using additional comboboxes displayed right below the relevant input. Similarly, the input of native dataset is accompanied by a checkbox for specifying whether this dataset shoud be used for phasing in addition to model building and refinement.
+The comboboxes may be accompanied by additional input widgets, related to particular data object. In the above example, each anomalous dataset chosen must be annotated by wavelength as *"low-remote"*, *"peak"*, *"inflection"* or *"high-remote"*, which is done using additional comboboxes displayed right below the relevant input. Similarly, the input of native dataset is accompanied by a checkbox for specifying whether this dataset should be used for phasing in addition to model building and refinement.
 
-Finally, there is an inspection button on the left from all comboboxes with a data object selected. Pressing this button will launch a data inspector window, containing many useful details related to the object selected, such as space group, cell parameters, descriptions of macromolaular chains and many others.
+Finally, there is an inspection button on the left from all comboboxes with a data object selected. Pressing this button will launch a data inspector window, containing many useful details related to the object selected, such as space group, cell parameters, descriptions of macromolecular chains and many others.
 
 Note that input widgets for optional data input will not be displayed if the corresponding data is not found in the Project. For example, second widget for anomalous reflection dataset in the above example would not appear if there were only one such dataset imported or generated.
 
@@ -79,7 +75,7 @@ Parameters Section contains various parameters of the task given. They are usual
 .. image:: images/job_dialog_parameters_section__1_.png
          :scale: 40 %
          :align: center
-         
+
 Individual parameters may be hidden depending on choices made by user in both Data Section and Parameters Section, if such choices make the parameter not applicable.
 
 +++++++++++
@@ -100,5 +96,4 @@ In this Example, the report body is given by the set of sections, which are init
 
 After the report body, there is a summary of Structure Revisions and Structure Data generated by the job. These data objects are available for all tasks descending from the given one, and will appear in Data Sections of their Job Dialogs.
 
-All generated data object references are accompanied with either inspector buttons (as in case of Structure Revisions) or corresponding viewers (in case of Structure Data). Thus, **"Coot"**, **"ccp4mg"** and **"UglyMol"** buttons will launch ``Coot``, ``CCP4mg`` or ``UglyMol`` viewers with XYZ coordinates and density map loaded ("Coot" and "ccp4mg" buttons will appear only if your client machine has CCP4 Suite installed and a dedicated CCP4 Cloud client server running). **"ViewHKL"** will laucnch a utility for the inspection of MTZ file content. **"Display"** launches a viewer for the inspection of XYZ file (typically in PDB format).
-
+All generated data object references are accompanied with either inspector buttons (as in case of Structure Revisions) or corresponding viewers (in case of Structure Data). Thus, **"Coot"**, **"ccp4mg"** and **"UglyMol"** buttons will launch ``Coot``, ``CCP4mg`` or ``UglyMol`` viewers with XYZ coordinates and density map loaded ("Coot" and "ccp4mg" buttons will appear only if your client machine has CCP4 Suite installed and a dedicated CCP4 Cloud client server running). **"ViewHKL"** will launch a utility for the inspection of MTZ file content. **"Display"** launches a viewer for the inspection of XYZ file (typically in PDB format).
