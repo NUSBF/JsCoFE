@@ -10,11 +10,11 @@ This is the page you find yourself in immediately after login. If you read this 
 .. |menu| image:: images/menu.png
         :width: 16
         :height: 16
-        
+
 
 .. tip::
         Please read another CCP4 Cloud user guide documentation by pressing on **Contents** on your upright corner of the window.
-        
+
     .. image:: images/Contents.jpg
          :scale: 30 %
          :align: center
@@ -27,19 +27,19 @@ Software Authorisation
 
 .. _myprojects:
 
-CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. In order to use this software, a user needs to be authorised by the corresponding software provider. You can do that at **"My Account"** page. 
-   
+CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. In order to use this software, a user needs to be authorised by the corresponding software provider. You can do that at **"My Account"** page.
+
     .. image:: images/My_account_Authorizations.png
             :scale: 40 %
             :align: center
 
 
-Clik on |authorisation| manage button and you will redirect to the authorization page. This page gives a summary of your authorisations and allows you to send authorisation requests.
+Clik on |authorisation| manage button and you will redirect to the authorisation page. This page gives a summary of your authorisations and allows you to send authorisation requests.
 
 .. Note::
     Authorisation request will redirect you to the provider's web-site. Any data requested by software provider will be processed at provider's end and will not be stored in CCP4 Cloud.
 
-.. |authorisation| image:: images/authorisation.png 
+.. |authorisation| image:: images/authorisation.png
         :width: 16
         :height: 16
 --------
@@ -49,15 +49,15 @@ Projects
 In CCP4 Cloud, your work is arranged in Projects. There is no strict rules how to use them, but a good practice would be to put all work, related to a particular protein, into one Project. Projects start with uploading experimental data and subsequent jobs along the following line:
 
     *data processing*
-    
+
     *phasing (MR or EP)*
-    
+
     *density modification*
-    
+
     *model building*
-    
+
     *refinement*
-    
+
     *validation and deposition*
 
 ---------------
@@ -66,14 +66,14 @@ Getting started
 
 .. |addjob| image:: images/add.png
     :width: 16
-    :height: 16  
+    :height: 16
 
 The page shows the list of projects, which is empty at start. Press |addjob| button in the button line above the list, and create your first project. You will need to specify short project name, and a more descriptive title in the dialog appeared, for example:
 
 .. image:: images/add_project.png
          :scale: 50 %
          :align: center
-         
+
 then press |addjob| and see the new project appeared in the list.
 
 The project list is both sortable (use controls found in column titles) and selectable. In order to open a particular Project, select it and press |openjob|  button on top of the list or, alternatively, just double-click on the project line.
@@ -95,7 +95,7 @@ Project export and import
 .. |Export| image:: images/export.png
     :width: 16
     :height: 16
-    
+
 .. |Import| image:: images/task_import.png
     :width: 16
     :height: 16
@@ -114,10 +114,9 @@ After work
     :width: 16
     :height: 16
 
-Whenever you wish to end working with CCP4 Cloud, please ``do logout`` . This can be done through the Menu or by clicking on the exit button |logout| in the top-right corner. Doing so will ensure that all your data and projects will be found in exactly the same state as you left them. 
+Whenever you wish to end working with CCP4 Cloud, please ``do logout`` . This can be done through the Menu or by clicking on the exit button |logout| in the top-right corner. Doing so will ensure that all your data and projects will be found in exactly the same state as you left them.
 
 Do not worry about jobs still running: they will not be terminated if you quit your working session.
 
 .. Note::
     CCP4 Cloud does not support multiple logins of the same user. Each login will forcefully terminate any other session of the same user still open.
-    
