@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.11.21   <--  Date of Last Modification.
+#    23.12.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,8 +33,7 @@ import sys
 import shutil
 
 #  application imports
-#from . import basic
-import coot_ce
+from . import coot_ce
 from   pycofe.varut   import  signal
 try:
     from pycofe.varut import messagebox

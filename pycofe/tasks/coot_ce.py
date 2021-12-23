@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.11.21   <--  Date of Last Modification.
+#    23.12.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,7 +34,7 @@ import gzip
 import time
 
 #  application imports
-import basic
+from . import basic
 from   pycofe.dtypes  import  dtype_xyz, dtype_ensemble
 from   pycofe.varut   import  signal
 try:
