@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.09.21   <--  Date of Last Modification.
+ *    25.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +39,7 @@ function TaskArpWarp()  {
     this.nc_type = 'client';  // job may be run only on client NC with licensed Afrp/wArp
 
   this.input_dtypes = [{      // input data types
-      data_type   : {'DataRevision':['!protein','!seq','!phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!phases']}, // data type(s) and subtype(s)
       label       : 'Structure revision',        // label for input dialog
       inputId     : 'revision',      // input Id for referencing input fields
       version     : 7,          // minimum data version allowed
