@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    07.11.20   <--  Date of Last Modification.
+#    25.12.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #      jobDir/report  : directory receiving HTML report
 #    expire      is timeout for removing coot backup directories
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -33,8 +33,8 @@ import sys
 import shutil
 
 #  application imports
-import basic
-from   pycofe.varut   import  signal
+from  pycofe.tasks  import basic
+from  pycofe.varut  import signal
 try:
     from pycofe.varut import messagebox
 except:
