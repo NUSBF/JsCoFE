@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    29.09.21   <--  Date of Last Modification.
+#    01.01.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  Citation Framework Functions
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2022
 #
 # ============================================================================
 #
@@ -497,6 +497,20 @@ citations = {
                             'year'    : '2014',
                             'pages'   : '387-392',
                             'doi'     : '10.1107/S2052252514019290'
+                        }]
+                  },
+
+    'modelcraft': { 'name'     : 'Modelcraft',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Bond, P.',
+                            'title'   : 'Next generation software for placing atoms into electron density maps',
+                            'journal' : 'PhD thesis',
+                            'volume'  : 'University of York',
+                            'year'    : '2021',
+                            'pages'   : '',
+                            'doi'     : '',
+                            'url'     : 'https://etheses.whiterose.ac.uk/29044/'
                         }]
                   },
 
@@ -1139,6 +1153,9 @@ def makeCitation ( reference ):
     if reference['doi']:
         refhtml += "; <a href='https://doi.org/" + reference["doi"] +\
                    "' target='_blank'><i>doi:" + reference["doi"] + "</i></a>"
+    if 'url' in reference:
+        refhtml += "; <a href='" + reference["url"] +\
+                   "' target='_blank'><i>URL</i></a>"
     return refhtml
 
 

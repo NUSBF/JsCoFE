@@ -29,7 +29,6 @@ Model Building with Coot
 
 
 
-
 **References**
 
 `Emsley, P., Lohkamp, B., Scott, W.G., Cowtan, K. (2010) Features and development of Coot. Acta Cryst. D66: 486-501; doi:10.1107/S0907444910007493 <https://doi.org/10.1107/S0907444910007493>`_

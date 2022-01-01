@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.12.20   <--  Date of Last Modification.
+ *    31.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Buccaneer Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -78,7 +78,6 @@ function TaskBuccaneer()  {
   this.name    = 'buccaneer';
   this.setOName ( 'buccaneer' );  // default output file name template
   this.title   = 'Automatic Model Building with Buccaneer';
-  //this.helpURL = './html/jscofe_task_buccaneer.html';
 
   this.input_dtypes = [{      // input data types
       data_type   : {'DataRevision':['!protein','!seq','!phases']}, // data type(s) and subtype(s)
@@ -88,24 +87,6 @@ function TaskBuccaneer()  {
       version     : 7,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
-    /*
-    },
-      data_type   : {'DataStructure':['~substructure-am']}, // data type(s) and subtype(s)
-      label       : 'Work structure', // label for input dialog
-      inputId     : 'istruct',        // input Id for referencing input fields
-      customInput : 'buccaneer-ws',   // lay custom fields below the dropdown
-      tooltip     : 'Structure model with density to build in.',
-      min         : 1,          // minimum acceptable number of data instances
-      max         : 1           // maximum acceptable number of data instances
-    },{
-      data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)
-      label       : 'Sequence',          // label for input dialog
-      inputId     : 'seq',      // input Id for referencing input fields
-      tooltip     : 'Give all sequences expected in crystal, one entry per ' +
-                    'sequence irrespective of the expected numbers in a.s.u.',
-      min         : 1,          // minimum acceptable number of data instances
-      max         : 10000       // maximum acceptable number of data instances
-    */
     },{
       data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz']}, // data type(s) and subtype(s)
       desc        : 'fixed model',  // used in TaskDataDialog to discriminate between alike items
@@ -363,6 +344,9 @@ TaskBuccaneer.prototype.constructor = TaskBuccaneer;
 // export such that it could be used in both node and a browser
 
 TaskBuccaneer.prototype.icon = function()  { return 'task_buccaneer'; }
+// TaskBuccaneer.prototype.desc_title = function()  {
+//   return 'Automatic model building after MR or Experimental Phasing';
+// }
 
 TaskBuccaneer.prototype.currentVersion = function()  {
   var version = 0;

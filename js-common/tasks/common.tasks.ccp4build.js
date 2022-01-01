@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    31.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -68,7 +68,7 @@ function TaskCCP4Build()  {
                 NCYCLES_MAX : {
                       type     : 'integer',
                       keyword  : 'cycles_max',
-                      label    : 'Maximum number of building cycles',
+                      label    : 'Maximum number of build cycles',
                       tooltip  : 'Choose a value between 1 and 50 and not less ' +
                                  'than the minimum number of cycles',
                       range    : [1,50],
@@ -395,6 +395,9 @@ TaskCCP4Build.prototype.constructor = TaskCCP4Build;
 // export such that it could be used in both node and a browser
 
 TaskCCP4Build.prototype.icon = function() { return 'task_ccp4build'; }
+// TaskCCP4Build.prototype.desc_title = function()  {
+//   return 'Automatic model building after MR or Experimental Phasing';
+// }
 
 TaskCCP4Build.prototype.canEndGracefully = function() { return true; }
 

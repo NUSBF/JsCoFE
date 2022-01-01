@@ -59,7 +59,26 @@ def put_bfactors_section ( body,structure ):
     return
 
 
+def getEDStatsMetrics ( stdout_fpath ):
+    meta = {}
+    with open(stdout_fpath,"r") as f:
+        key = 0
+        for line in f:
+            if line.strip():
+                if key>0:
+                    lst = line.split()
+                    meta["EDCC"]  = float(lst[3])
+                    meta["ZEDCC"] = float(lst[4])
+                    break;
+                elif "Overall average scores for all residues:" in line:
+                    key = 1
+    return meta
+
+
 def put_edstats_section ( body,revision ):
+
+    edmeta = None
+
     if revision.Structure:
 
         struct = revision.Structure
@@ -134,12 +153,18 @@ def put_edstats_section ( body,revision ):
                 "XYZOUT",xyzout
                 # "OUT"   ,edstats_out
             ],logType="Service" )
+
         body.unsetLogParser()
+
+        body.flush()
+        body.file_stdout1.close()
+        edmeta = getEDStatsMetrics ( body.file_stdout1_path() )
+        body.file_stdout1 = open ( body.file_stdout1_path(),'a' )
 
         os.remove ( fo_map )   #  save space
         os.remove ( df_map )   #  save space
 
-    return
+    return edmeta
 
 
 def put_ramaplot_section ( body,structure ):
@@ -601,14 +626,18 @@ def quality_report ( body,revision,title="Quality Assessment",refmacXML=None ):
             body.putTitle ( title )
 
         put_bfactors_section ( body,revision.Structure )
-        put_edstats_section  ( body,revision )
-        meta = put_molprobity_section ( body,revision  )
+        edmeta = put_edstats_section    ( body,revision )
+        meta   = put_molprobity_section ( body,revision )
         put_ramaplot_section ( body,revision.Structure )
 
         if refmacXML:
             if os.path.exists(refmacXML):
                 refmacResults = RefmacXMLLog(refmacXML)
         put_Tab1_section(body, revision, meta, refmacResults)
+
+        if edmeta:
+            for key in edmeta:
+                meta[key] = edmeta[key]
 
     return meta
 

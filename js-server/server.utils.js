@@ -506,8 +506,8 @@ function removeSymLinks ( dir_path )  {
 
 
 function getDirectorySize ( dir_path )  {
-  var size = 0.0;
   try {
+    var size = 0.0;
     if (fileExists(dir_path))  {
       fs.readdirSync(dir_path).forEach(function(file,index){
         var curPath = path.join ( dir_path,file );
@@ -519,10 +519,11 @@ function getDirectorySize ( dir_path )  {
         }
       });
     }
+    return size;
   } catch (e)  {
     log.error ( 10,'error scanning directory ' + dir_path );
+    return 0.0;
   }
-  return size;
 }
 
 

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.11.21   <--  Date of Last Modification.
+ *    31.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -37,20 +37,97 @@ function TaskModelCraft()  {
   this.name    = 'modelcraft';
   this.setOName ( 'modelcraft' );  // default output file name template
   this.title   = 'Automatic Model Building with ModelCraft';
-  //this.helpURL = './html/jscofe_task_modelcraft.html';
-
+``
   this.input_dtypes = [{      // input data types
       data_type   : {'DataRevision':['!protein','!seq','!phases']}, // data type(s) and subtype(s)
       label       : 'Structure revision',   // label for input dialog
       inputId     : 'revision',   // input Id for referencing input fields
-      // customInput : 'modelcraft',  // lay custom fields below the dropdown
+      customInput : 'modelcraft', // lay custom fields below the dropdown
       version     : 7,            // minimum data version allowed
       min         : 1,            // minimum acceptable number of data instances
       max         : 1             // maximum acceptable number of data instances
     }
   ];
 
-  this.parameters = {}; // input parameters
+  this.parameters = { // input parameters
+    SEP_LBL : {
+              type     : 'label',
+              label    : '&nbsp;',
+              position : [0,0,1,5]
+            },
+    sec1 :  { type     : 'section',
+              title    : 'Parameters',
+              open     : true,  // true for the section to be initially open
+              position : [1,0,1,5],
+              contains : {
+                MODE_SEL : {
+                        type     : 'combobox',
+                        keyword  : '--basic',
+                        label    : 'Build mode',
+                        tooltip  : 'Basic mode will use only Buccaneer, '     +
+                                   'Nautilus and Refmac. Parrot density '     +
+                                   'modification is still used on the first ' +
+                                   'cycle and starting models are still '     +
+                                   'refined using Sheetbend and Refmac.',
+                        range    : ['full|Full', 'basic|Basic'],
+                        value    : 'full',
+                        iwidth   : 100,
+                        position : [0,0,1,3]
+                      },
+                NCYCLES_MAX : {
+                      type     : 'integer',
+                      keyword  : '--cycles',
+                      label    : 'Maximum number of build cycles',
+                      tooltip  : 'Choose a value between 1 and 100 (default 25).',
+                      range    : [1,100],
+                      value    : '25',
+                      iwidth   : 40,
+                      position : [1,0,1,1]
+                    },
+                NOIMPROVE_CYCLES : {
+                      type     : 'integer',
+                      keyword  : '--auto-stop-cycles',
+                      label    : 'Stop if results do not improve during',
+                      tooltip  : 'Choose a value between 0 and 100 (default 4). '   +
+                                 'Improvement is measured by R-free. A cycle must ' +
+                                 'improve on the previous best value to be marked ' +
+                                 'as an improvement. Setting this value to less than 1 ' +
+                                 'makes the program run to the maximum number of cycles.',
+                      range    : [0,100],
+                      value    : '4',
+                      iwidth   : 40,
+                      label2   : 'consequitive cycles',
+                      position : [2,0,1,1]
+                    }
+              }
+            }
+  };
+
+
+
+  // --cycles X            The maximum number of cycles. (default: 25)
+  // --auto-stop-cycles X  The number of cycles without improvement before the
+  //                       program stops automatically. Improvement is measured
+  //                       by R-free in X-ray mode and FSC in EM mode. A cycle
+  //                       must improve on the previous best value to be marked
+  //                       as an improvement. Setting this value to less than 1
+  //                       makes the program run to the maximum number of cycles.
+  //                       (default: 4)
+  //
+  // --phases X            Comma-separated column labels for the starting phases
+  //                       as either a phase and figure of merit (e.g. PHIB,FOM)
+  //                       or Hendrickson-Lattman coefficients (e.g.
+  //                       HLA,HLB,HLC,HLD). This is not required if the MTZ only
+  //                       contains one set of phases, unless a model is also
+  //                       provided and the starting phases should not come from
+  //                       refinement of that model. Parrot will be used for
+  //                       density modification before the phases are used for
+  //                       model building. (default: None)
+  //
+  //
+  // --twinned             Turn on twinned refinement. Only use this option if
+  //                       you are sure your crystal is twinned. (default: False)
+
 
 }
 
@@ -65,6 +142,11 @@ TaskModelCraft.prototype.constructor = TaskModelCraft;
 // export such that it could be used in both node and a browser
 
 TaskModelCraft.prototype.icon = function() { return 'task_modelcraft'; }
+// TaskModelCraft.prototype.desc_title = function()  {
+//   return 'Automatic model building after MR or Experimental Phasing';
+// }
+
+// TaskModelCraft.prototype.cleanJobDir = function ( jobDir )  {}
 
 // TaskModelCraft.prototype.canEndGracefully = function() { return false; }
 
@@ -98,36 +180,6 @@ if (!__template)  {
   TaskModelCraft.prototype.hotButtons = function() {
     return [CootMBHotButton()];
   }
-
-  // TaskModelCraft.prototype.collectInput = function ( inputPanel )  {
-  //
-  //   function addMessage ( label,message )  {
-  //     if (input_msg.length>0)
-  //       input_msg += '<br>';
-  //     input_msg += '<b>' + label + ':</b> ' + message;
-  //   }
-  //
-  //   var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-  //
-  //   if (this.parameters.sec1.contains.NCYCLES_MAX.value <
-  //       this.parameters.sec1.contains.NCYCLES_MIN.value)
-  //     addMessage ( "Maximum number of cycles",
-  //                  "cannot be less than the minimum number of cycles" );
-  //
-  //   if (this.parameters.sec2.contains.TRIMMODE_SEL.value=='restricted')  {
-  //     if (this.parameters.sec2.contains.TRIMMAX_ZDM.value <
-  //         this.parameters.sec2.contains.TRIMMIN_ZDM.value)
-  //       addMessage ( "Trim restrictions for mainchains",
-  //                    "maximum ZEDCC is less than minimum ZEDCC" );
-  //     if (this.parameters.sec2.contains.TRIMMAX_ZDS.value <
-  //         this.parameters.sec2.contains.TRIMMIN_ZDS.value)
-  //       addMessage ( "Trim restrictions for sidechains",
-  //                    "maximum ZEDCC is less than minimum ZEDCC" );
-  //   }
-  //
-  //   return input_msg;
-  //
-  // }
 
 } else  {
   //  for server side

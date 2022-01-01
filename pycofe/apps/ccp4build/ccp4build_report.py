@@ -385,7 +385,7 @@ class Report(ccp4build_edstats.EDStats):
                 [ "R<sub>free</sub>"  ,"R-free"                     ],
                 [ "EDCC"              ,"ED Correlation Coefficient" ]
             ])
-            self.rvrow += 5
+            self.rvrow += 9
 
             #self.putMessage ( "&nbsp;" )
 

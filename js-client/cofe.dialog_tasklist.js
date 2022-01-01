@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.12.21   <--  Date of Last Modification.
+ *    01.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task List Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -353,11 +353,12 @@ var r = 0;  // grid row
     //new TaskImportSeqCP(),
 
     "Model Building",
-    new TaskParrot   (),
-    new TaskCCP4Build(),
-    new TaskBuccaneer(),
-    new TaskArpWarp  (),
-    new TaskNautilus (),
+    new TaskParrot    (),
+    new TaskCCP4Build (),
+    new TaskBuccaneer (),
+    new TaskArpWarp   (),
+    new TaskModelCraft()
+    new TaskNautilus  (),
 
     "Deposition",
     new TaskDeposition()
@@ -580,7 +581,6 @@ var row      = 0;
     this.makeSection ( 'Tasks in Development',[
       // new TaskCootUtils    (),
       // ccp4go2_task,
-      new TaskModelCraft   (),  // excluded also from the bootstrap html
       new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
       new TaskFragon       (),
@@ -702,15 +702,15 @@ var row      = 0;
   ]);
 
   this.makeSection ( 'Refinement and Model Building',[
-    new TaskRefmac   (),
-    new TaskBuster   (),
-    new TaskLorestr  (),
-    new TaskCCP4Build(),
-    new TaskBuccaneer(),
-    new TaskArpWarp  (),
-    new TaskNautilus (),
-    new TaskDimple   (),
-    //new TaskCootMB   (),
+    new TaskRefmac    (),
+    new TaskBuster    (),
+    new TaskLorestr   (),
+    new TaskCCP4Build (),
+    new TaskBuccaneer (),
+    new TaskArpWarp   (),
+    new TaskModelCraft(),
+    new TaskNautilus  (),
+    new TaskDimple    (),
     new TaskCombStructure()
   ]);
 

@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    25.12.21   <--  Date of Last Modification.
+ *    01.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Server Command Definitions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ===========================================================================
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.7.002 [25.12.2021]';
+var jsCoFE_version = '1.7.002 [01.01.2022]';
 // var jsCoFE_version = '1.6.024 [02.11.2021]';
 
 function appVersion()  {

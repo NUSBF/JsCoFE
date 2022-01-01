@@ -125,10 +125,10 @@ def make_ligand ( name, ligdesc, revision, parentName ):
     return
 
 
-def refmac_jelly ( name,revision,parentName, ncyc=50 ):
+def refmac_jelly ( name,revision,parentName ):
     auto_api.addTask          ( name,"TaskRefmac",parentName )
     auto_api.addTaskData      ( name,"revision",revision )
-    auto_api.addTaskParameter ( name,"NCYC" , str(ncyc) )
+    auto_api.addTaskParameter ( name,"NCYC" ,"50"  )
     auto_api.addTaskParameter ( name,"JELLY","yes" )
     return
 
