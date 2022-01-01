@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    14.12.21   <--  Date of Last Modification.
+ *    01.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  Knowledge routines and data
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2021
+ *  (C) E. Krissinel, A. Lebedev 2018-2022
  *
  *  ========================================================================
  *
@@ -111,6 +111,9 @@ var _taskIndex = {
 
   // suggest Nautilus after Simbad, Parrot, Acorn, MR and EP; do not suggest it after itself
   'U1' : { type: 'TaskNautilus'        , after: ['J','K','L','M','N','O','S','T','n'] },
+
+  // suggest Modelcraft after Simbad, Parrot, Acorn, MR and EP; do not suggest it after itself
+  'U2' : { type: 'TaskModelCraft'      , after: ['J','K','L','M','N','O','S','T','n'] },
 
   // suggest Refmac after both elementary MR, auto-EP, Buccaneer
   'V'  : { type: 'TaskRefmac'          , after: ['M','N','O','P','Q','U','U1','j','r'] },
