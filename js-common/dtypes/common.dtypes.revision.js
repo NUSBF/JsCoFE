@@ -552,8 +552,8 @@ if (!__template)  {
       case 'phaser-ep'  :
             this._layCDI_PhaserEP ( dropdown );
           break;
-      case 'reindex'    :  case 'refmac'     :  case 'ccp4build' :
-      case 'cell-info'  :  case 'changereso' :
+      case 'reindex'    :  case 'refmac'     :  case 'ccp4build'  :
+      case 'cell-info'  :  case 'changereso' :  case 'modelcraft' :
             this.HKL.layCustomDropdownInput ( dropdown );
           break;
       case 'parrot'     :
@@ -655,8 +655,8 @@ if (!__template)  {
               this.ASU.ha_type = dropdown.customGrid.ha_type.getValue();
           break;
 
-      case 'reindex'    :  case 'refmac' :  case 'ccp4build' :
-      case 'changereso' :
+      case 'reindex'    :  case 'refmac'     :  case 'ccp4build' :
+      case 'changereso' :  case 'modelcraft' :
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    31.12.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -55,7 +55,8 @@ function DataHKL()  {
   this.spg_alt       = 'ALL';  // alternative space groups for Phaser
   this.freeRds       = null;   // reference to freeR dataset meta
   this.useHKLSet     = 'F';    // if given, forces use of F,Fpm,TI,TF (Refmac)
-  this.dataStats      = null;   // if not null, contains dictionary with info for Table 1
+  this.detwin        = false;  // used by modelcraft
+  this.dataStats     = null;   // if not null, contains dictionary with info for Table 1
   this.aimless_meta  = {
     'jobId'    : 0,
     'file_xml' : null,   // reference to aimless xml file
@@ -555,6 +556,15 @@ if (!__template)  {
       this.makeResolutionLimits ( 'auto' );
     }
 
+    this.modelcraftLayout = function()  {
+      if (!('detwin' in this))
+        thius.detwin = false;
+      customGrid.detwin = customGrid.setCheckbox ( 'Apply detwinning',
+                               this.detwin, 0,0,1,1 )
+                .setTooltip ( 'Check for twinned refinement. Only use this ' +
+                              'option if you are sure your crystal is twinned.' );
+    }
+
     switch (dropdown.layCustom)  {
       case 'crank2'          :
       case 'anomData'        :  this.anomDataLayout   ();  break;
@@ -575,6 +585,7 @@ if (!__template)  {
       case 'arpwarp'         :
       case 'refmac'          :  this.refmacLayout     ();  break;
       case 'ccp4build'       :  this.ccp4buildLayout  ();  break;
+      case 'modelcraft'      :  this.modelcraftLayout ();  break;
       default : ;
     }
 
@@ -694,6 +705,10 @@ if (!__template)  {
       this.collectResoLimits();
     }
 
+    this.collectModelcraft = function()  {
+      this.detwin = customGrid.detwin.getValue();
+    }
+
     this.collectChangeReso = function()  {
       this.collectResoLimits();
       if ((this.res_high=='') && (this.res_low==''))
@@ -736,6 +751,7 @@ if (!__template)  {
       case 'arpwarp'         :
       case 'refmac'          : this.collectRefmac    ();  break;
       case 'ccp4build'       : this.collectCCP4build ();  break;
+      case 'modelcraft'      : this.collectModelcraft();  break;
       default : ;
     }
 

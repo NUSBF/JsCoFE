@@ -44,32 +44,31 @@ RationJobDesc_toString = function ( ration_job_desc )  {
 }
 
 
-
 function UserRation ( cfg_ration )  {
 
   this._type = 'UserRation';
 
   // limits
-  this.storage     = 0.0;  // MBytes (0: unlimited)
-  this.cpu_day     = 0.0;  // hours  (0: unlimited)
-  this.cpu_month   = 0.0;  // hours  (0: unlimited)
+  this.storage      = 0.0;  // MBytes (0: unlimited)
+  this.cpu_day      = 0.0;  // hours  (0: unlimited)
+  this.cpu_month    = 0.0;  // hours  (0: unlimited)
   this.cloudrun_day = 100;  // cloudruns (0: unlimited)
   if (cfg_ration)  {
-    this.storage     = cfg_ration.storage;
-    this.cpu_day     = cfg_ration.cpu_day;
-    this.cpu_month   = cfg_ration.cpu_month;
+    this.storage      = cfg_ration.storage;
+    this.cpu_day      = cfg_ration.cpu_day;
+    this.cpu_month    = cfg_ration.cpu_month;
     this.cloudrun_day = cfg_ration.cloudrun_day;
   }
 
   this.jobs = [];
 
   // usage
-  this.storage_used     = 0.0;  // MBytes, actually used
-  this.cpu_day_used     = 0.0;  // hours, actually used
-  this.cpu_month_used   = 0.0;  // hours, actually used
-  this.cpu_total_used   = 0.0;  // hours, actually used
+  this.storage_used      = 0.0;  // MBytes, actually used
+  this.cpu_day_used      = 0.0;  // hours, actually used
+  this.cpu_month_used    = 0.0;  // hours, actually used
+  this.cpu_total_used    = 0.0;  // hours, actually used
   this.cloudrun_day_used = 0;    // total number of scripts submitted
-  this.jobs_total       = 0;    // total number of jobs done
+  this.jobs_total        = 0;    // total number of jobs done
 
 }
 

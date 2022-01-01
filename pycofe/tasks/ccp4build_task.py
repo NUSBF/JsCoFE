@@ -41,7 +41,7 @@ from . import basic
 from   pycofe.dtypes   import dtype_template, dtype_revision
 from   pycofe.proc     import qualrep
 from   pycofe.verdicts import verdict_ccp4build
-from   pycofe.auto    import auto
+from   pycofe.auto     import auto
 
 
 # ============================================================================
@@ -443,7 +443,7 @@ class CCP4Build(basic.TaskDriver):
                             rvrow0 = self.rvrow
                             try:
                                 self.rvrow = meta["page"][i] + 2
-                                self.putSpacer ( 6 )
+                                self.putSpacer ( 8 )
                                 qrmeta = qualrep.quality_report ( self,rev,title=None )
                                 self.putMessage ( "<b>Assigned structure" +\
                                     self.hotHelpLink("Structure","jscofe_qna.structure") +\
