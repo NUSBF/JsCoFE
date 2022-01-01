@@ -358,7 +358,7 @@ var r = 0;  // grid row
     new TaskBuccaneer (),
     new TaskArpWarp   (),
     new TaskModelCraft(),
-    new TaskNautilus  ()
+    new TaskNautilus  (),
 
     "Deposition",
     new TaskDeposition()
