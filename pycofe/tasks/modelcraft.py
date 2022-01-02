@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.01.22   <--  Date of Last Modification.
+#    02.01.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -55,6 +55,7 @@ class ModelCraft(basic.TaskDriver):
     def modelcraft_pdb  (self):  return "modelcraft.pdb"
     def modelcraft_cif  (self):  return "modelcraft.cif"
     def modelcraft_mtz  (self):  return "modelcraft.mtz"
+    def contents_json   (self):  return "contents.json"
     def modelcraft_json (self):  return "modelcraft.json"
     def modelcraft_tmp  (self):  return "modelcraft_pipeline"
 
@@ -86,6 +87,11 @@ class ModelCraft(basic.TaskDriver):
         seq      = idata.seq
         sec1     = self.task.parameters.sec1.contains
 
+        if hasattr(idata,"isubstruct"):
+            isubstruct = self.makeClass ( idata.isubstruct[0] )
+        else:
+            isubstruct = istruct
+
         # If starting from experimental phases:
         #
         # modelcraft --contents sequences.fasta --data data.mtz --unbiased
@@ -112,34 +118,69 @@ class ModelCraft(basic.TaskDriver):
         labin_fo[2] = hkl.getFreeRColumn()
         input_mtz   = "_input.mtz"
         labin_ph    = []
-        if istruct.HLA:  #  experimental phases
-            labin_ph = [istruct.HLA,istruct.HLB,istruct.HLC,istruct.HLD]
+        if istruct.leadKey==2:  # experimental phases
+            if istruct.HLA:
+                labin_ph = [istruct.HLA,istruct.HLB,istruct.HLC,istruct.HLD]
+            else:
+                labin_ph = [istruct.PHI,istruct.FOM]
             self.makePhasesMTZ (
                     hkl.getHKLFilePath(self.inputDir())    ,labin_fo,
                     istruct.getMTZFilePath(self.inputDir()),labin_ph,
                     input_mtz )
-            # else:  # MR phases
-            #     labin_ph = [istruct.PHI,istruct.FOM]
         else:
             self.sliceMTZ ( hkl.getHKLFilePath(self.inputDir()),labin_fo,
                             input_mtz )
 
-        #self.makeFullASUSequenceFile ( seq,self.modelcraft_seq() )
+        # with open(self.modelcraft_seq(),'w') as newf:
+        #     if len(seq)>0:
+        #         for s in seq:
+        #             s1 = self.makeClass ( s )
+        #             with open(s1.getSeqFilePath(self.inputDir()),'r') as hf:
+        #                 newf.write(hf.read())
+        #             newf.write ( '\n' );
+        #     else:
+        #         newf.write ( ">polyUNK\nU\n" );
+        #
+        # # make command-line parameters
+        # cmd = [ "xray","--contents",self.modelcraft_seq(),"--data",input_mtz ]
 
-        with open(self.modelcraft_seq(),'w') as newf:
-            if len(seq)>0:
-                for s in seq:
-                    s1 = self.makeClass ( s )
-                    with open(s1.getSeqFilePath(self.inputDir()),'r') as hf:
-                        newf.write(hf.read())
-                    newf.write ( '\n' );
-            else:
-                newf.write ( ">polyUNK\nU\n" );
+        # prepare contents json file
+        contents = {
+            "copies"  : 1,
+            "proteins": [],
+            "rnas"    : [],
+            "dnas"    : [],
+            "carbs"   : [],
+            "ligands" : [],
+            "buffers" : []
+        }
+        for s in seq:
+            s1 = self.makeClass ( s )
+            item = {
+                "sequence"      : s1.getSequence(self.inputDir()),
+                "stoichiometry" : s1.ncopies
+            }
+            if s1.isProtein():  contents["proteins"].append(item)
+            elif s1.isDNA()  :  contents["dnas"    ].append(item)
+            elif s1.isRNA()  :  contents["rnas"    ].append(item)
+
+        with open(self.contents_json(),"w") as contfile:
+            json.dump ( contents,contfile )
 
         # make command-line parameters
-        cmd = [ "xray","--contents",self.modelcraft_seq(),"--data",input_mtz ]
+        cmd = [ "xray","--contents",self.contents_json(),"--data",input_mtz ]
+
         if istruct.HLA:  #  experimental phases
-            cmd += [ "--unbiased" ]
+            if revision.Substructure and revision.Options.useSubstruct:
+                cmd += [
+                    "--model" , isubstruct.getSubFilePath(self.inputDir()),
+                    "--phases", ",".join(labin_ph)
+                ]
+            else:
+                cmd += [
+                    "--phases", ",".join(labin_ph),
+                    "--unbiased"
+                ]
         else:  #  molecular replacement
             cmd += [ "--model", istruct.getXYZFilePath(self.inputDir()) ]
         cmd += [
@@ -192,43 +233,21 @@ class ModelCraft(basic.TaskDriver):
             verdict_rvrow = self.rvrow
             if os.path.isfile(jsonout):
                 with open(jsonout) as json_file:
-                    data   = json.load ( json_file )
-                    final  = data["final"]
-                    Nbuilt = str(final["residues"])
-                    Nwat   = str(final["waters"])
-                    Rwork  = str(final["r_work"])
-                    Rfree  = str(final["r_free"])
-                    Compl  = 100.0*int(Nbuilt)/asuNres
-                    self.putMessage ( "<h3>Completion status: <i>" +\
-                                      data["termination_reason"] + "</i></h3>" )
-                    verdict_rvrow = self.rvrow
-                    # tdict = {
-                    #     "title": "Build summary",
-                    #     "state": 0, "class": "table-blue", "css": "text-align:right;",
-                    #     "rows" : [
-                    #         { "header": { "label"  : "No<sub>residues</sub>",
-                    #                       "tooltip": "Number of built residues"},
-                    #           "data"  : [ Nbuilt + " ({0:.1f}%)".format(Compl) ]},
-                    #         { "header": { "label"  : "N<sub>waters</sub>",
-                    #                       "tooltip": "Number of placed water molecules"},
-                    #           "data"  : [ Nwat ]},
-                    #         { "header": { "label"  : "R<sub>work</sub>",
-                    #                       "tooltip": "R-factor"},
-                    #           "data"  : [ Rwork ]},
-                    #         { "header": { "label"  : "R<sub>free</sub>",
-                    #                       "tooltip": "Free R-factor"},
-                    #           "data"  : [ Rfree ]}
-                    #     ]
-                    # }
-                    # rvapi_utils.makeTable ( tdict, self.getWidgetId("score_table"),
-                    #             self.report_page_id(),
-                    #             self.rvrow,0,1,1 )
-                    # self.rvrow += 1
-
-            self.rvrow = verdict_rvrow + 5
+                    data = json.load ( json_file )
+                    if "final" in data:
+                        final  = data["final"]
+                        Nbuilt = str(final["residues"])
+                        Nwat   = str(final["waters"])
+                        Rwork  = str(final["r_work"])
+                        Rfree  = str(final["r_free"])
+                        Compl  = 100.0*int(Nbuilt)/asuNres
+                        self.putMessage ( "<h3>Completion status: <i>" +\
+                                          data["termination_reason"] + "</i></h3>" )
+                        verdict_rvrow = self.rvrow
 
             if os.path.isfile(cifout) and os.path.isfile(mtzout) and final:
 
+                self.rvrow = verdict_rvrow + 5
 
                 pdbout = os.path.join ( self.modelcraft_tmp(),self.modelcraft_pdb() )
                 st = gemmi.read_structure ( cifout )

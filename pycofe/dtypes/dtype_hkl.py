@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    17.06.21   <--  Date of Last Modification.
+#    02.01.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  HKL DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2022
 #
 # ============================================================================
 #
@@ -51,6 +51,8 @@ class DType(dtype_template.DType):
             self.new_spg       = ""     # new space group for reindexing
             self.spg_alt       = "ALL"  # alternative space groups for Phaser
             self.freeRds       = None   # reference to freeR dataset
+            self.detwin        = False  # used by modelcraft
+            self.useSubstruct  = False  # used by modelcraft
             self.useHKLSet     = "F"    # if given, forces use of F,Fpm,TI,TF (Refmac)
             self.dataStats     = None   # if not None, contains dictionary with info for Table 1
             self.aimless_meta  = {

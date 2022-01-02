@@ -196,8 +196,12 @@ if (!__template)  {
       this.input_data.data['hkl'] = [revision.HKL];
       this.input_data.data['seq'] = revision.ASU.seq;
       if (revision.Options.leading_structure=='substructure')
-            this.input_data.data['istruct'] = [revision.Substructure];
-      else  this.input_data.data['istruct'] = [revision.Structure];
+        this.input_data.data['istruct'] = [revision.Substructure];
+      else  {
+        this.input_data.data['istruct'] = [revision.Structure];
+        if (revision.Substructure)
+          this.input_data.data['isubstruct'] = [revision.Substructure];
+      }
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    02.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Revision Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -71,7 +71,8 @@ function DataRevision()  {
     //'fitindensity_cbx'  : false,          // for mr-phases
     'ncsmodel_sel'      : 'do-not-use',   // for parrot
     'seqNo'             : 0,              // selected sequence number (not used?)
-    'load_all'          : false           // for Coot-MB
+    'load_all'          : false,          // for Coot-MB
+    'useSubstruct'      : false           // used by modelcraft
   };
 
   this.backtrace      = false;  // take data only from the latest job
@@ -543,6 +544,19 @@ if (!__template)  {
   }
 
 
+  DataRevision.prototype._layCDI_ModelCraft = function ( dropdown )  {
+  var customGrid = dropdown.customGrid;
+  var row        = customGrid.getNRows();
+    if (!('useSubstruct' in this.Options))
+      this.Options.useSubstruct = false;
+    if (this.Substructure)
+      customGrid.use_substruct_cbx = customGrid.setCheckbox (
+                        'Use substructure',this.Options.useSubstruct,row,0, 1,1 )
+                .setTooltip ( 'Check if substructure atoms should be taken into ' +
+                              'account as fixed model.' );
+  }
+
+
   DataRevision.prototype.layCustomDropdownInput = function ( dropdown )  {
 
     switch (dropdown.layCustom)  {
@@ -553,7 +567,11 @@ if (!__template)  {
             this._layCDI_PhaserEP ( dropdown );
           break;
       case 'reindex'    :  case 'refmac'     :  case 'ccp4build'  :
-      case 'cell-info'  :  case 'changereso' :  case 'modelcraft' :
+      case 'cell-info'  :  case 'changereso' :
+            this.HKL.layCustomDropdownInput ( dropdown );
+          break;
+      case 'modelcraft' :
+            this._layCDI_ModelCraft ( dropdown );
             this.HKL.layCustomDropdownInput ( dropdown );
           break;
       case 'parrot'     :
@@ -656,7 +674,13 @@ if (!__template)  {
           break;
 
       case 'reindex'    :  case 'refmac'     :  case 'ccp4build' :
-      case 'changereso' :  case 'modelcraft' :
+      case 'changereso' :
+          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+        break;
+
+      case 'modelcraft' :
+          if (this.Substructure)
+            this.Options.useSubstruct = dropdown.customGrid.use_substruct_cbx.getValue();
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
 
