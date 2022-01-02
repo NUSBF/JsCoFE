@@ -531,6 +531,11 @@ class CCP4Build(basic.TaskDriver):
 
         #shutil.rmtree ( self.workdir() )
 
+        rvrow0 = self.rvrow
+        for i in range(20):
+            self.putMessage ( " " )
+        self.rvrow = rvrow0
+
         # close execution logs and quit
         self.success ( have_results )
         return

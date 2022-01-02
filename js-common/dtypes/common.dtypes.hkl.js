@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.12.21   <--  Date of Last Modification.
+ *    02.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  HKL Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -558,9 +558,12 @@ if (!__template)  {
 
     this.modelcraftLayout = function()  {
       if (!('detwin' in this))
-        thius.detwin = false;
+        this.detwin = false;
+      var col = 0;
+      if (customGrid.getNRows()>0)
+        col = 1;
       customGrid.detwin = customGrid.setCheckbox ( 'Apply detwinning',
-                               this.detwin, 0,0,1,1 )
+                                                   this.detwin, 0,col,1,1 )
                 .setTooltip ( 'Check for twinned refinement. Only use this ' +
                               'option if you are sure your crystal is twinned.' );
     }
