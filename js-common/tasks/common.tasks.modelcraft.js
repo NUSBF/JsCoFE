@@ -146,7 +146,7 @@ TaskModelCraft.prototype.icon = function() { return 'task_modelcraft'; }
 //   return 'Automatic model building after MR or Experimental Phasing';
 // }
 
-// TaskModelCraft.prototype.cleanJobDir = function ( jobDir )  {}
+TaskModelCraft.prototype.cleanJobDir = function ( jobDir )  {}
 
 // TaskModelCraft.prototype.canEndGracefully = function() { return false; }
 
