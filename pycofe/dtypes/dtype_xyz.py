@@ -47,6 +47,15 @@ class DType(dtype_template.DType):
             self.version      += 0             # versioning increments from parent to children
         return
 
+    def hasProtein(self):
+        return dtype_template.subtypeProtein() in self.subtype
+
+    def hasDNA(self):
+        return dtype_template.subtypeDNA() in self.subtype
+
+    def hasRNA(self):
+        return dtype_template.subtypeRNA() in self.subtype
+
     def getSpaceGroup ( self ):
         if type(self.xyzmeta) == dict:
             if "cryst" in self.xyzmeta:
