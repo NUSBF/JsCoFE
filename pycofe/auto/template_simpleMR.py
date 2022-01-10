@@ -48,6 +48,8 @@ def makeNextTask ( crTask,data ):
     if crTask._type=="TaskWFlowSMR":
         auto_tasks.store ( data["unm"],data["hkl"],data["seq"],data["lig"],data["ligdesc"] )
         auto_api.addContext("xyz", data["xyz"])
+        auto_api.addContext('na', data['na'])
+
         # unmerged data present -> aimless, otherwise make asu for MR
         if len(data["unm"]) > 0:
             auto_tasks.aimless ( "aimless", crTask.autoRunName )
@@ -77,7 +79,11 @@ def makeNextTask ( crTask,data ):
         if data['Rfree'] < 0.35:
             auto_api.addContext("build_parent", crTask.autoRunName)
             auto_api.addContext("build_revision", data["revision"])
-            auto_tasks.buccaneer("buccAfterPhaser", data["revision"], crTask.autoRunName)
+            hasNA = auto_api.getContext("na")
+            if hasNA:
+                auto_tasks.refmac_jelly("jellyAfterNA", data["revision"], crTask.autoRunName)
+            else:
+                auto_tasks.buccaneer("buccAfterPhaser", data["revision"], crTask.autoRunName)
             return
 
         # "Rfree"
@@ -91,7 +97,11 @@ def makeNextTask ( crTask,data ):
 
         # no subunits to fit, but high Rfree
         # go into refinement and see what's happened?
-        auto_tasks.refmac_jelly("jellyAfterPhaser", data["revision"], crTask.autoRunName)
+        hasNA = auto_api.getContext("na")
+        if hasNA:
+            auto_tasks.refmac_jelly("jellyAfterNA", data["revision"], crTask.autoRunName)
+        else:
+            auto_tasks.refmac_jelly("jellyAfterPhaser", data["revision"], crTask.autoRunName)
         return
 
 
@@ -171,6 +181,22 @@ def makeNextTask ( crTask,data ):
             else:
                 auto_tasks.refligWF("refligWF_", revision, parentTask)
             return
+
+        elif crTask.autoRunName == 'jellyAfterNA':
+            if float(data["Rfree"])<0.4:
+                auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+                return
+            else:
+                strTree = 'Large parts of the structure are likely missing as Rfree is only %0.3f (click for more comments)' % float(
+                    data["Rfree"])
+                strText = 'Simple MR seems to perform not very well on your structure, we will not try to build into ' + \
+                          'the available density as the resolution of your data seems to be lower than 3.0 A.\n' + \
+                          'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
+                          'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models ' + \
+                          'or try automated Auto-MR Workflow that will search the homologues for you.\n'
+                auto_tasks.remark("rem_sorry2", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+                return
+
 
         elif crTask.autoRunName == 'jellyAfterPhaser':
             if float(data["Rfree"])<0.4:
