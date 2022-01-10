@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.12.21   <--  Date of Last Modification.
+ *    05.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Login page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -28,8 +28,6 @@ function _privacyStatement()  {
 }
 
 function _ccp4_download()  {
-  // because CCP4 is on http an does not mix with https, open this in new
-  // tab/window just for now
   window.open ( "https://www.ccp4.ac.uk/download/" );
   //new HelpBox ( 'CCP4 Download','./html/link_to_ccp4.html',null );
 }
