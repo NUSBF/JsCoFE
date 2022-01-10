@@ -222,6 +222,9 @@ def modelprepXYZ ( name, revision, parentName ):
         auto_api.addTask(name, "TaskModelPrepXYZ", parentName)
         auto_api.addTaskData(name, "seq", seq)
         auto_api.addTaskData(name, "xyz", xyz)
+        hasNA = auto_api.getContext("na")
+        if hasNA:
+            auto_api.addTaskParameter(name, "MODIFICATION_SEL", "U")
     return
 
 def phaserFirst ( name,model,parentName ):

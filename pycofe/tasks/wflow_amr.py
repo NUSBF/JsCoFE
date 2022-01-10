@@ -146,6 +146,20 @@ class WFlowAMR(import_task.Import):
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
 
+        seqHasNA = False
+        seqHasProtein = False
+        for s in self.seq:
+            if s.isDNA() or s.isRNA():
+                seqHasNA = True
+            elif s.isProtein():
+                seqHasProtein = True
+
+        if seqHasNA and not seqHasProtein:
+            fmsg = 'Sequence is provided for nucleic acid only; Automated MR Workflow can deal only with proteins or complexes\n'+ \
+                      '<p>Please try Simple Molecular Replacement Workflow or solve the structure manually in the Expert Mode.\n'
+            self.putMessage("<h3>%s</hr>" % fmsg)
+            self.fail('','SMR_WF')
+
         self.flush()
 
         have_results = True

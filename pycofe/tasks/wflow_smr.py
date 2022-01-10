@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    30.06.21   <--  Date of Last Modification.
+#    10.01.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -146,11 +146,46 @@ class WFlowSMR(import_task.Import):
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
 
+        seqHasNA = False
+        seqHasProtein = False
+        xyzHasNA = False
+        xyzHasProtein = False
+        for s in self.seq:
+            if s.isDNA() or s.isRNA():
+                seqHasNA = True
+            elif s.isProtein():
+                seqHasProtein = True
+        for x in self.xyz:
+            if x.hasDNA() or x.hasRNA():
+                xyzHasNA = True
+            elif x.hasProtein():
+                xyzHasProtein = True
+
+        if not seqHasNA and not seqHasProtein:
+            fmsg = 'Sequence seems not to have any protein or nucleic acids; please check input.'
+            self.putMessage("<h3>%s</hr>" % fmsg)
+            self.fail('','SMR_WF')
+
+        if not xyzHasNA and not xyzHasProtein:
+            fmsg = 'PDB structure seems not to have any protein or nucleic acids; please check input.'
+            self.putMessage("<h3>%s</hr>" % fmsg)
+            self.fail('','SMR_WF')
+
+        if not seqHasProtein and xyzHasProtein:
+            fmsg = 'Sequence is nucleic acid only while PDB structure has protein; please check input.'
+            self.putMessage("<h3>%s</hr>" % fmsg)
+            self.fail('', 'SMR_WF')
+
+        if not seqHasNA and xyzHasNA:
+            fmsg = 'Sequence is protein only while PDB structure has nucleic acid; please check input.'
+            self.putMessage("<h3>%s</hr>" % fmsg)
+            self.fail('', 'SMR_WF')
+
         self.flush()
 
         have_results = True
 
-        if ((len(self.unm)>0) or (len(self.hkl)>0)) and (len(self.seq)>0):
+        if ((len(self.unm)>0) or (len(self.hkl)>0)) and (len(self.seq)>0) and (len(self.xyz)>0):
             self.task.autoRunName = "_root"
             if auto.makeNextTask ( self,{
                     "unm"       : self.unm,
@@ -158,7 +193,8 @@ class WFlowSMR(import_task.Import):
                     "seq"       : self.seq,
                     "lig"       : self.lig,
                     "ligdesc"   : self.ligdesc,
-                    "xyz"       : self.xyz
+                    "xyz"       : self.xyz,
+                    "na"        : xyzHasNA
                     # "mr_engine" : mr_engine,
                     # "mb_engine" : mb_engine
                },self.file_stderr):
