@@ -125,17 +125,13 @@ def makeNextTask ( crTask,data ):
 
 
     elif crTask._type == "TaskXyzUtils":
-        if float(auto_api.getContext("arpWarp_rfree")) > float(auto_api.getContext("buccaneer_rfree")):
-            parentTask = auto_api.getContext("buccaneer_taskName")
-            revision = auto_api.getContext("buccaneer_revision")
-        else:
-            parentTask = crTask.autoRunName
-            revision = data["revision"]
+        parentTask = crTask.autoRunName
+        revision = data["revision"]
         resHi = float(data["revision"].HKL.dataset.RESO[1]) # RESO[0] is low res limit
         if resHi > 3.0:
-            auto_tasks.lorestr("lorestr", revision, parentTask)
+            auto_tasks.refmac_jelly("refAfterArpwarpHOHremoval", revision, parentTask, ncyc=10)
         else:
-            auto_tasks.refligWF("refligWF_", revision, parentTask)
+            auto_tasks.refmac("refAfterArpwarpHOHremoval", revision, parentTask)
         return
 
 
@@ -161,7 +157,22 @@ def makeNextTask ( crTask,data ):
 
 
     elif crTask._type=="TaskRefmac":
-        if crTask.autoRunName == 'jellyAfterPhaser':
+
+        if crTask.autoRunName == 'refAfterArpwarpHOHremoval':
+            if float(data["Rfree"]) > float(auto_api.getContext("buccaneer_rfree")):
+                parentTask = auto_api.getContext("buccaneer_taskName")
+                revision = auto_api.getContext("buccaneer_revision")
+            else:
+                parentTask = crTask.autoRunName
+                revision = data["revision"]
+            resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
+            if resHi > 3.0:
+                auto_tasks.lorestr("lorestr", revision, parentTask)
+            else:
+                auto_tasks.refligWF("refligWF_", revision, parentTask)
+            return
+
+        elif crTask.autoRunName == 'jellyAfterPhaser':
             if float(data["Rfree"])<0.4:
                 auto_api.addContext("build_parent", crTask.autoRunName)
                 auto_api.addContext("build_revision", data["revision"])
