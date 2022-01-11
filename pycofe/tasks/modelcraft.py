@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.01.22   <--  Date of Last Modification.
+#    11.01.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -170,7 +170,7 @@ class ModelCraft(basic.TaskDriver):
         # make command-line parameters
         cmd = [ "xray","--contents",self.contents_json(),"--data",input_mtz ]
 
-        if istruct.HLA:  #  experimental phases
+        if istruct.leadKey==2:  #  experimental phases
             if revision.Substructure and revision.Options.useSubstruct:
                 cmd += [
                     "--model" , isubstruct.getSubFilePath(self.inputDir()),
