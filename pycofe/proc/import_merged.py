@@ -36,6 +36,7 @@ from   pycofe.proc    import import_filetype, mtz, patterson
 
 def freerflag_script(): return "freerflag.script"
 def cad_script():       return "cad.script"
+def mtzutils_script():       return "mtzutils.script"
 
 def makeHKLTable ( body,tableId,holderId,original_data,new_data,
                         truncation,trunc_msg,row ):
@@ -198,8 +199,10 @@ def run ( body,   # body is reference to the main Import class
                 rc = command.comrc()
 
                 p_mtzin1 = "temp.mtz"
+                p_mtzin2 = "temp2.mtz"
                 try:
                     os.remove ( p_mtzin1 )
+                    os.remove ( p_mtzin2 )
                 except OSError:
                     pass
 
@@ -210,12 +213,11 @@ def run ( body,   # body is reference to the main Import class
                 body.stdoutln ( ', '.join("%s: %s" % item for item in attrs.items()) )
                 body.stdoutln ( " ############################################" )
                 """
-
+                mf = mtz.mtz_file(p_mtzin)
                 if f_fmt==import_filetype.ftype_CIFMerged():
                     rc.msg = "recalculate"
                 else:
                     scr_file = open ( freerflag_script(),"w" )
-                    mf = mtz.mtz_file ( p_mtzin )
                     if mf.FREE:
                         scr_file.write ( "COMPLETE FREE=" + mf.FREE + "\n" )
                     scr_file.write ( "END\n" )
@@ -231,11 +233,23 @@ def run ( body,   # body is reference to the main Import class
                                         citation_ref="freerflag-srv",
                                         file_stdout_alt=body.file_stdout )
                 if rc.msg:
+                    scr_file = open ( mtzutils_script(),"w" )
+                    scr_file.write ( "EXCLUDE " + mf.FREE + " \nEND\n" )
+                    scr_file.close ()
+                    rc = command.call ( "mtzutils",
+                                        ["HKLIN",p_mtzin,
+                                         "HKLOUT",p_mtzin2],"./",
+                                        mtzutils_script(),body.file_stdout1,
+                                        body.file_stderr,log_parser=None,
+                                        citation_ref="freerflag-srv",
+                                        file_stdout_alt=body.file_stdout )
+
+
                     scr_file = open ( freerflag_script(),"w" )
                     scr_file.write ( "FREERFRAC  0.05\nEND\n" )
                     scr_file.close ()
                     rc = command.call ( "freerflag",
-                                        ["HKLIN",p_mtzin,
+                                        ["HKLIN",p_mtzin2,
                                          "HKLOUT",p_mtzin1],"./",
                                         freerflag_script(),body.file_stdout1,
                                         body.file_stderr,log_parser=None,
@@ -243,7 +257,6 @@ def run ( body,   # body is reference to the main Import class
                                         file_stdout_alt=body.file_stdout )
 
             #  get rid of redundant reflections with cad
-
             scr_file = open ( cad_script(),"w" )
             scr_file.write ( "LABIN FILE 1 ALLIN\nEND\n" )
             scr_file.close ()
