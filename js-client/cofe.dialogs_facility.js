@@ -497,10 +497,12 @@ function CloudFileBrowser ( inputPanel,task,fileKey,extFilter,onSelect_func,onCl
     modal     : true
   }
 
-  dlg_options.width  = Math.max ( 500,Math.round ( 1*$(window).width()/2 ) );
+  // dlg_options.width  = Math.max ( 500,Math.round ( 1*$(window).width()/2 ) );
+  dlg_options.width  = Math.max ( 500,Math.round ( (1*window.innerWidth)/2 ) );
   //dlg_options.width  = 500;
-  dlg_options.height = Math.round ( 5*$(window).height()/6 );
-console.log ( ' width=' + dlg_options.width+ '    height=' + dlg_options.height );
+  // dlg_options.height = Math.round ( 5*$(window).height()/6 );
+  dlg_options.height = Math.round ( (5*window.innerHeight)/6 );
+console.log ( 'wh=' + window.innerHeight + '   width=' + dlg_options.width+ '    height=' + dlg_options.height );
   this.btn_ids = [this.id+'_open_btn',this.id+'_select_btn',this.id+'_cancel_btn'];
   dlg_options.buttons = [{
     text  : 'Cancel',
