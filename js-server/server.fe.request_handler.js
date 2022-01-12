@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.04.21   <--  Date of Last Modification.
+ *    12.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Request Handler
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -120,6 +120,10 @@ var response = null;
 
     case cmd.fe_reqtype.renameProject :  // returns _current_ project data
           response = prj.renameProject ( loginData,data );
+       break;
+
+    case cmd.fe_reqtype.cloneProject :
+          response = prj.cloneProject ( loginData,data );
        break;
 
     // case cmd.fe_reqtype.advanceJobCounter :
@@ -237,6 +241,8 @@ var response = null;
 
   if (response)
     callback_func ( response );
+  else
+    console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
 
 }
 

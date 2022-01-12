@@ -134,6 +134,7 @@ var fe_reqtype = {
   checkFJobExport   : '-checkFJobExport',   // request to check failed job export state
   finishFJobExport  : '-finishFJobExport',  // request to finish failed job export
   renameProject     : '-renameProject',     // request to rename a project
+  cloneProject      : '-cloneProject',      // request to clone a project
   importProject     : '-importProject',     // request to save import a project
   shareProject      : '-shareProject',      // request to share a project
   saveJobData       : '-saveJobData',       // request to save job data
