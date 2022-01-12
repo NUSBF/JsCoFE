@@ -1589,6 +1589,7 @@ var t_email  = 1000; //msec
 
 }
 
+
 // ===========================================================================
 
 function renameProject ( loginData,data )  {  // data must contain new title
@@ -1657,6 +1658,94 @@ var pData    = readProjectData ( loginData,data.name );
         response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
       }
     }
+
+  } else  {
+    response = new cmd.Response ( cmd.fe_retcode.readError,
+                             '[00032] Project metadata cannot be read.','' );
+  }
+
+  return response;
+
+}
+
+
+// ===========================================================================
+
+function cloneProject ( loginData,projectName )  {
+var response = null;
+var pData    = readProjectData ( loginData,projectName );
+
+  console.log ( ' projectName=' + projectName );
+
+  if (pData)  {
+
+    console.log ( ' project read' );
+
+    /*
+    var rdata = { 'code' : 'ok' };
+    pData.desc.title = data.title;
+    if (('new_name' in data) && (data.new_name!=pData.desc.name))  {
+      // project ID to be changed: serious
+      // make sure that the project is not shared and that no jobs are running
+      if (pData.desc.owner.share.length>0)  {
+        rdata.code = 'Not possible to change ID of a shared project';
+      } else  {
+        // Get users' projects directory name
+        var projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
+        var newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
+        if (utils.fileExists(newPrjDirPath))  {
+          rdata.code = 'Project with requested ID (' + data.new_name + ') already exists';
+        } else  {
+          var jmeta = [];
+          if (utils.dirExists(projectDirPath))  {
+            var files = fs.readdirSync ( projectDirPath );
+            for (var i=0;(i<files.length) && (rdata.code=='ok');i++)  {
+              var jmpath = path.join ( projectDirPath,files[i],task_t.jobDataFName );
+              var jm     = utils.readObject ( jmpath );
+              if (jm)  {
+                if ((jm.state==task_t.job_code.running) ||
+                    (jm.state==task_t.job_code.exiting))
+                  rdata.code = 'Jobs are running -- not possible to change Project ID before they finish.';
+                else
+                  jmeta.push ( [jmpath,jm] );
+              }
+            }
+          }
+          if (rdata.code=='ok')  {
+            // change code id in all files and rename project directory
+            for (var i=0;i<jmeta.length;i++)  {
+              jmeta[i][1].project = data.new_name;
+              utils.writeObject ( jmeta[i][0],jmeta[i][1] );
+            }
+            pData.desc.name = data.new_name;
+            utils.moveDir ( projectDirPath,newPrjDirPath,false );
+            if (!writeProjectData(loginData,pData,true))  {
+              utils.moveDir ( newPrjDirPath,projectDirPath,false );
+              response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                   '[00031] Project metadata cannot be written (1).','' );
+            } else  {
+              rdata.meta = pData;
+              response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+            }
+          }
+        }
+      }
+
+      if (!response)
+        response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+
+    } else  {
+      if (!writeProjectData(loginData,pData,true))  {
+        response = new cmd.Response ( cmd.fe_retcode.writeError,
+                             '[00031] Project metadata cannot be written (2).','' );
+      } else  {
+        rdata.meta = pData;
+        response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+      }
+    }
+    */
+
+    response   = new cmd.Response ( cmd.fe_retcode.ok,'',{} );
 
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.readError,
@@ -2123,6 +2212,7 @@ module.exports.makeNodeName           = makeNodeName;
 module.exports.saveProjectData        = saveProjectData;
 module.exports.shareProject           = shareProject;
 module.exports.renameProject          = renameProject;
+module.exports.cloneProject           = cloneProject;
 module.exports.importProject          = importProject;
 module.exports.startDemoImport        = startDemoImport;
 module.exports.startSharedImport      = startSharedImport;

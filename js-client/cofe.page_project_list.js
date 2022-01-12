@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.21   <--  Date of Last Modification.
+ *    12.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project list page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -323,6 +323,18 @@ function ProjectListPage ( sceneId )  {
       new MessageBox ( 'No Project','No Project selected' );
   }
 
+  var clonePrj = function()  {
+    panel.click();  // get rid of context menu
+    var cloneName = currentProjectName();
+    if (cloneName)  {
+      serverRequest ( fe_reqtype.cloneProject,cloneName,'Clone Project',
+        function(data){
+          loadProjectList1();
+        },null,'persist' );
+    } else
+      new MessageBox ( 'No Project','No Project selected' );
+  }
+
   var repairProject = function()  {
     panel.click();  // get rid of context menu
     new QuestionBox (
@@ -405,11 +417,12 @@ function ProjectListPage ( sceneId )  {
         var trow = self.tablesort_tbl.addRow();
 
         var contextMenu = new ContextMenu ( trow );
-        contextMenu.addItem('Open'  ,image_path('go')    ).addOnClickListener(openProject  );
-        contextMenu.addItem('Rename',image_path('rename')).addOnClickListener(renameProject);
-        contextMenu.addItem('Delete',image_path('remove')).addOnClickListener(deleteProject);
-        contextMenu.addItem('Export',image_path('export')).addOnClickListener(exportProject);
-        contextMenu.addItem('Share' ,image_path('share') ).addOnClickListener(sharePrj     );
+        contextMenu.addItem('Open'  ,image_path('go')      ).addOnClickListener(openProject  );
+        contextMenu.addItem('Rename',image_path('rename')  ).addOnClickListener(renameProject);
+        contextMenu.addItem('Delete',image_path('remove')  ).addOnClickListener(deleteProject);
+        contextMenu.addItem('Export',image_path('export')  ).addOnClickListener(exportProject);
+        contextMenu.addItem('Share' ,image_path('share')   ).addOnClickListener(sharePrj     );
+        contextMenu.addItem('Clone' ,image_path('cloneprj')).addOnClickListener(clonePrj     );
         // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
 
         //contextMenu.setWidth ( '10px' );
