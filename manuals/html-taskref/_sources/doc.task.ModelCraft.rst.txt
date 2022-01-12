@@ -2,4 +2,96 @@
 Automatic Model Building with Modelcraft
 ========================================
 
-*To be written ...*
+ModelCraft is an automated model building pipeline for X-ray crystallography based on `BUCCANEER <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html>`_ model building pipeline. ModelCraft allows building protein, RNA and DNA in a single pipeline.
+
+Developments have been made to the `BUCCANEER <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html>`_ model building pipeline:
+
+• Solvent scaling and hydrogen atom generation options in `REFMAC <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html>`_. 
+
+• An increased number of cycles with automatic stopping criteria.
+
+• Selection of the output model with the lowest R-free.
+
+• Machine-learned pruning of residues and chains.
+
+• Initial refinement of molecular replacement models using `SHEETBEND <https://pure.york.ac.uk/portal/en/publications/sheetbend-software-for-model-morphing-of-atomic-models(497dd49d-c29c-4958-863b-18563a7dde17).html>`_.
+
+• Default addition of waters using `COOT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html>`_.
+
+--------
+Workflow
+--------
+
+After the model was provided, ModelCraft performs `shift-field refinement <https://journals.iucr.org/d/issues/2020/12/00/di5041/>`_  with SHEETBEND with following cycles of `REFMAC <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html>`_
+
+**Single cycle of ModelCraft** consist following seven steps: 
+
+1. **Prune chains, residues and side chains** using `COOT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html>`_ followed by 5 cycles of `REFMAC <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html>`_. 
+
+.. note:: This step is not performed on the first cycle or if the resolution is 2.3 Å or worse. 
+   
+Prune chains algorithm deletes chains, residues and side chains using two neural networks, which were trained to predict main-chain and side-chain correctness by combining many validation metrics.
+   
+2. **Density modification** using `Parrot <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html>`_ (map improvement step).
+   
+3. **Add dummy atoms** using `COOT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html>`_.
+   
+   Dummy atoms are pseudo atoms that are added to an atomic model to represent unknown scattering matter. They do not have a chemical identity but are assigned an element, often oxygen, so their contribution to the structure factor equation can be calculated. As dummy atoms do not represent real atom sites with known bonding, they are refined without geometry restraints. However, at high resolution, it is often possible to determine individual atomic positions even with unrestrained refinement. At lower resolution, the unrestrained atoms will become over-fitted, but it could still be beneficial to include them even without accurate parameters. In ModelCraft, they are only used as a tool for phase improvement. **Dummy atoms are accepted if after adding those the R factor improves. Overwise, the map from the previous step will be used.**
+   
+4. `BUCCANEER <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html>`_ will discard dummy atoms in the input model and build the model.
+   
+5. **Prune misbuild chains** using `COOT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html>`_ followed by 5 cycles of `REFMAC <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html>`_.
+   
+6. **Build RNA and DNA** with `Nautilus <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Nautilus.html>`_ followed by `REFMAC <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html>`_.
+   
+7. **Add waters** using `COOT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html>`_ findwaters program.
+   
+   *It is performed after pruning whole chains from the model so that chain fragments built into the solvent do not block ordered water positions. As in the third step, the model with waters is only accepted if it has a better R-free than the model without waters.*
+
+If the resolution is better than 2.5 Å and R-work is better than 30% **ModelCraft rebuilds side chains** using `COOT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html>`_ followed by `REFMAC <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html>`_. This side chain rebuilding step is performed once at the end of the pipeline to fix side chains that are either missing or predicted to be in incorrect conformations.
+
+-----
+Input
+-----
+
+Two **build modes** are available. In **basic mode** ModelCraft uses only `BUCCANEER <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html>`_, `Nautilus <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Nautilus.html>`_ and `REFMAC <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html>`_. `Parrot <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html>`_ density modification is used only on the first cycle.  
+
+**Stop if results do not improve during** 4 cycles by default (by setting this value to less than 1 makes ModelCraft run to the maximum number of cycles). Improvement is measured by R-free in X-ray mode and FSC in EM mode. A cycle must improve on the previous best value to be marked as an improvement. 
+
+
+**Before running ModelCraft:**
+
+    ● Remove incorrect parts of the model before starting
+
+    ● Include non-incorporated heavy atoms in the input model
+
+**If ModelCraft didn’t produce a good model:**
+
+    ● Improve initial model or phases
+
+    ● Interactively prune/build the output model in `COOT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html>`_ and try again
+
+    ● Use other model building programs (`CCP4Build <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html>`_, `Buccaneer <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html>`_, `Arp/wArp <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ArpWarp.html>`_)
+
+    ● Perform prior `density modification <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ArpWarp.html>`_ step (`PARROT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html>`_, `ACORN <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Acorn.html>`_)
+
+    ● Rebuild side chains using `COOT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html>`_.
+
+
+**Useful links**
+
+`ModelCraft web page <https://paulsbond.co.uk/modelcraft/>`_
+
+`GitHub <https://github.com/paulsbond/modelcraft>`_
+
+
+**Acknowledge**
+
+This article uses materials kindly provided by **Paul Bond**, whose help is greatly appreciated.
+
+
+**References**
+
+`P Bond. Next generation software for placing atoms into electron density maps. PhD thesis, University of York (2021) <https://etheses.whiterose.ac.uk/29044/>`_
+
+`Cowtan, K., Metcalfe, S. & Bond, P. Shift-field refinement of macromolecular atomic models. Acta Crystallographica Section D 76, 1192–1200 (2020) <https://doi.org/10.1107/S2059798320013170>`_

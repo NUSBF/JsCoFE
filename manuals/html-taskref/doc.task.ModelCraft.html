@@ -14,7 +14,7 @@
     
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Automatic Model Building with Modelcraft &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>10.7. Automatic Model Building with Modelcraft &#8212; CCP4 Cloud 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -24,16 +24,22 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="10.8. Automatic Model Building of RNA/DNA with Nautilus" href="doc.task.Nautilus.html" />
+    <link rel="prev" title="10.6. Automated Model Building with Arp/wArp" href="doc.task.ArpWarp.html" /> 
   </head><body>
       <div class="header" role="banner"><h1 class="heading"><a href="index.html">
           <span>CCP4 Cloud 1.7 documentation</span></a></h1>
-        <h2 class="heading"><span>Automatic Model Building with Modelcraft</span></h2>
+        <h2 class="heading"><span>10.7. Automatic Model Building with Modelcraft</span></h2>
       </div>
       <div class="topnav" role="navigation" aria-label="top navigation">
       
         <p>
+        «&#160;&#160;<a href="doc.task.ArpWarp.html"><span class="section-number">10.6. </span>Automated Model Building with Arp/wArp</a>
+        &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="doc.task.Nautilus.html"><span class="section-number">10.8. </span>Automatic Model Building of RNA/DNA with Nautilus</a>&#160;&#160;»
         </p>
 
       </div>
@@ -41,8 +47,73 @@
         
         
   <div class="section" id="automatic-model-building-with-modelcraft">
-<h1>Automatic Model Building with Modelcraft<a class="headerlink" href="#automatic-model-building-with-modelcraft" title="Permalink to this headline">¶</a></h1>
-<p><em>To be written …</em></p>
+<h1><span class="section-number">10.7. </span>Automatic Model Building with Modelcraft<a class="headerlink" href="#automatic-model-building-with-modelcraft" title="Permalink to this headline">¶</a></h1>
+<p>ModelCraft is an automated model building pipeline for X-ray crystallography based on <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">BUCCANEER</a> model building pipeline. ModelCraft allows building protein, RNA and DNA in a single pipeline.</p>
+<p>Developments have been made to the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">BUCCANEER</a> model building pipeline:</p>
+<ul class="simple">
+<li>Solvent scaling and hydrogen atom generation options in <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a>.</li>
+<li>An increased number of cycles with automatic stopping criteria.</li>
+<li>Selection of the output model with the lowest R-free.</li>
+<li>Machine-learned pruning of residues and chains.</li>
+<li>Initial refinement of molecular replacement models using <a class="reference external" href="https://pure.york.ac.uk/portal/en/publications/sheetbend-software-for-model-morphing-of-atomic-models(497dd49d-c29c-4958-863b-18563a7dde17).html" rel="noopener noreferrer" target="_blank">SHEETBEND</a>.</li>
+<li>Default addition of waters using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a>.</li>
+</ul>
+<div class="section" id="workflow">
+<h2><span class="section-number">10.7.1. </span>Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h2>
+<p>After the model was provided, ModelCraft performs <a class="reference external" href="https://journals.iucr.org/d/issues/2020/12/00/di5041/" rel="noopener noreferrer" target="_blank">shift-field refinement</a>  with SHEETBEND with following cycles of <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a></p>
+<p><strong>Single cycle of ModelCraft</strong> consist following seven steps:</p>
+<ol class="arabic simple">
+<li><strong>Prune chains, residues and side chains</strong> using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a> followed by 5 cycles of <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a>.</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This step is not performed on the first cycle or if the resolution is 2.3 Å or worse.</p>
+</div>
+<p>Prune chains algorithm deletes chains, residues and side chains using two neural networks, which were trained to predict main-chain and side-chain correctness by combining many validation metrics.</p>
+<ol class="arabic" start="2">
+<li><p class="first"><strong>Density modification</strong> using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html" rel="noopener noreferrer" target="_blank">Parrot</a> (map improvement step).</p>
+</li>
+<li><p class="first"><strong>Add dummy atoms</strong> using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a>.</p>
+<p>Dummy atoms are pseudo atoms that are added to an atomic model to represent unknown scattering matter. They do not have a chemical identity but are assigned an element, often oxygen, so their contribution to the structure factor equation can be calculated. As dummy atoms do not represent real atom sites with known bonding, they are refined without geometry restraints. However, at high resolution, it is often possible to determine individual atomic positions even with unrestrained refinement. At lower resolution, the unrestrained atoms will become over-fitted, but it could still be beneficial to include them even without accurate parameters. In ModelCraft, they are only used as a tool for phase improvement. <strong>Dummy atoms are accepted if after adding those the R factor improves. Overwise, the map from the previous step will be used.</strong></p>
+</li>
+<li><p class="first"><a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">BUCCANEER</a> will discard dummy atoms in the input model and build the model.</p>
+</li>
+<li><p class="first"><strong>Prune misbuild chains</strong> using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a> followed by 5 cycles of <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a>.</p>
+</li>
+<li><p class="first"><strong>Build RNA and DNA</strong> with <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Nautilus.html" rel="noopener noreferrer" target="_blank">Nautilus</a> followed by <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a>.</p>
+</li>
+<li><p class="first"><strong>Add waters</strong> using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a> findwaters program.</p>
+<p><em>It is performed after pruning whole chains from the model so that chain fragments built into the solvent do not block ordered water positions. As in the third step, the model with waters is only accepted if it has a better R-free than the model without waters.</em></p>
+</li>
+</ol>
+<p>If the resolution is better than 2.5 Å and R-work is better than 30% <strong>ModelCraft rebuilds side chains</strong> using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a> followed by <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a>. This side chain rebuilding step is performed once at the end of the pipeline to fix side chains that are either missing or predicted to be in incorrect conformations.</p>
+</div>
+<div class="section" id="input">
+<h2><span class="section-number">10.7.2. </span>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
+<p>Two <strong>build modes</strong> are available. In <strong>basic mode</strong> ModelCraft uses only <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">BUCCANEER</a>, <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Nautilus.html" rel="noopener noreferrer" target="_blank">Nautilus</a> and <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a>. <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html" rel="noopener noreferrer" target="_blank">Parrot</a> density modification is used only on the first cycle.</p>
+<p><strong>Stop if results do not improve during</strong> 4 cycles by default (by setting this value to less than 1 makes ModelCraft run to the maximum number of cycles). Improvement is measured by R-free in X-ray mode and FSC in EM mode. A cycle must improve on the previous best value to be marked as an improvement.</p>
+<p><strong>Before running ModelCraft:</strong></p>
+<blockquote>
+<div><p>● Remove incorrect parts of the model before starting</p>
+<p>● Include non-incorporated heavy atoms in the input model</p>
+</div></blockquote>
+<p><strong>If ModelCraft didn’t produce a good model:</strong></p>
+<blockquote>
+<div><p>● Improve initial model or phases</p>
+<p>● Interactively prune/build the output model in <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a> and try again</p>
+<p>● Use other model building programs (<a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">CCP4Build</a>, <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">Buccaneer</a>, <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ArpWarp.html" rel="noopener noreferrer" target="_blank">Arp/wArp</a>)</p>
+<p>● Perform prior <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ArpWarp.html" rel="noopener noreferrer" target="_blank">density modification</a> step (<a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html" rel="noopener noreferrer" target="_blank">PARROT</a>, <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Acorn.html" rel="noopener noreferrer" target="_blank">ACORN</a>)</p>
+<p>● Rebuild side chains using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a>.</p>
+</div></blockquote>
+<p><strong>Useful links</strong></p>
+<p><a class="reference external" href="https://paulsbond.co.uk/modelcraft/" rel="noopener noreferrer" target="_blank">ModelCraft web page</a></p>
+<p><a class="reference external" href="https://github.com/paulsbond/modelcraft" rel="noopener noreferrer" target="_blank">GitHub</a></p>
+<p><strong>Acknowledge</strong></p>
+<p>This article uses materials kindly provided by <strong>Paul Bond</strong>, whose help is greatly appreciated.</p>
+<p><strong>References</strong></p>
+<p><a class="reference external" href="https://etheses.whiterose.ac.uk/29044/" rel="noopener noreferrer" target="_blank">P Bond. Next generation software for placing atoms into electron density maps. PhD thesis, University of York (2021)</a></p>
+<p><a class="reference external" href="https://doi.org/10.1107/S2059798320013170" rel="noopener noreferrer" target="_blank">Cowtan, K., Metcalfe, S. &amp; Bond, P. Shift-field refinement of macromolecular atomic models. Acta Crystallographica Section D 76, 1192–1200 (2020)</a></p>
+</div>
 </div>
 
 
@@ -50,7 +121,11 @@
       <div class="bottomnav" role="navigation" aria-label="bottom navigation">
       
         <p>
+        «&#160;&#160;<a href="doc.task.ArpWarp.html"><span class="section-number">10.6. </span>Automated Model Building with Arp/wArp</a>
+        &#160;&#160;::&#160;&#160;
         <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="doc.task.Nautilus.html"><span class="section-number">10.8. </span>Automatic Model Building of RNA/DNA with Nautilus</a>&#160;&#160;»
         </p>
 
       </div>

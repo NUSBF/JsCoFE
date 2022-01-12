@@ -11,6 +11,7 @@ Refinement and Model Building
     doc.task.CCP4Build
     doc.task.Buccaneer
     doc.task.ArpWarp
+    doc.task.ModelCraft
     doc.task.Nautilus
     doc.task.Dimple
     doc.task.CombStructure
