@@ -162,8 +162,9 @@ TableRow.prototype.constructor = TableRow;
 
 TableRow.prototype.addCell = function ( text )  {
 var td;
-  if (text)  td = new TableCell ( text.toString() );
-       else  td = new TableCell ( '&nbsp;' );
+  if ((typeof(text)!='undefined') && (text!=null))
+        td = new TableCell ( text.toString() );
+  else  td = new TableCell ( '&nbsp;' );
   this.addWidget ( td );
   return td;
 }

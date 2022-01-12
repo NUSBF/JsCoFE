@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    12.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -289,14 +289,19 @@ JobDialog.prototype.setDlgState = function()  {
     this.hot_btn[i].setVisible ( show_hot_buttons );
     this.hot_btn[i].setEnabled ( (!__dormant) && (this.task.state==job_code.finished) );
   }
-  this.addjob_btn.setVisible ( show_hot_buttons );
-  this.addjob_btn.setEnabled ( (!__dormant) && (
-                                   (this.task.state==job_code.finished) ||
-                                   this.task.isRemark()
-                                 )
-                             );
-  this.clone_btn .setVisible ( (!__dormant) && (this.task.state!=job_code.new) &&
-                               (!isRunning) );
+
+  if (this.addjob_btn)  {
+    this.addjob_btn.setVisible ( show_hot_buttons );
+    this.addjob_btn.setEnabled ( (!__dormant) && (
+                                     (this.task.state==job_code.finished) ||
+                                     this.task.isRemark()
+                                   )
+                               );
+  }
+
+  if (this.clone_btn)
+    this.clone_btn.setVisible ( (!__dormant) && (this.task.state!=job_code.new) &&
+                                (!isRunning) );
 
   if (this.export_btn)
     this.export_btn.setVisible ( !this.task.isRemark() );
