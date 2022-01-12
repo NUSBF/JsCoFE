@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.11.21   <--  Date of Last Modification.
+ *    12.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *       ~~~~~~~~~  TableScroll  - table with scrollable body
  *                  TableSort    - table with sortable columns
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -161,7 +161,9 @@ TableRow.prototype = Object.create ( Widget.prototype );
 TableRow.prototype.constructor = TableRow;
 
 TableRow.prototype.addCell = function ( text )  {
-var td = new TableCell ( text.toString() );
+var td;
+  if (text)  td = new TableCell ( text.toString() );
+       else  td = new TableCell ( '&nbsp;' );
   this.addWidget ( td );
   return td;
 }
