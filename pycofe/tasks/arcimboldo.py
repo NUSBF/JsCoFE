@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    12.01.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,7 +23,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022
 #
 # ============================================================================
 #
@@ -446,7 +446,7 @@ class Arcimboldo(basic.TaskDriver):
         # seed Arcimboldo's html report
         with (open(os.path.join(self.arcimboldoDir(),"arcimboldo.html"),"w")) as f:
             f.write (
-                "<html><head><title>Report is being generated</title>" +\
+                "<!DOCTYPE html>\n<html><head><title>Report is being generated</title>" +\
                 "<meta http-equiv=\"refresh\" content=\"90\" /></head>" +\
                 "<body class=\"main-page\">" +\
                 "<h2><i>Report is being generated ....</i></h2>" +\

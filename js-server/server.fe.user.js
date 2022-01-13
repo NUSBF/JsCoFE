@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.09.21   <--  Date of Last Modification.
+ *    12.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- User Support Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -1441,7 +1441,7 @@ function authResponse ( server_request,server_response )  {
                .replace('$software_key',software_key)
                .replace('$auth_result' ,auth_result );
   } else
-    html = '<html><body class="main-page">' +
+    html = '<!DOCTYPE html>\n<html><body class="main-page">' +
            '<h2>Authorisation response template is missing</h2>' +
            '<h3>Please file a bug report</h3></body></html>';
 
