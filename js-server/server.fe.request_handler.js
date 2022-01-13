@@ -126,6 +126,10 @@ var response = null;
           response = prj.cloneProject ( loginData,data );
        break;
 
+    case cmd.fe_reqtype.checkCloneProject :
+          response = prj.checkCloneProject ( loginData,data );
+       break;
+
     // case cmd.fe_reqtype.advanceJobCounter :
     //       response = prj.advanceJobCounter ( loginData,data );
     //    break;
@@ -219,7 +223,8 @@ var response = null;
        break;
 
     case cmd.fe_reqtype.getCloudFileTree :
-          response = fcl.getCloudFileTree ( loginData,data,callback_func );
+          // response = fcl.getCloudFileTree ( loginData,data,callback_func );
+          fcl.getCloudFileTree ( loginData,data,callback_func );
        break;
 
     case cmd.fe_reqtype.updateFacility :
@@ -241,8 +246,14 @@ var response = null;
 
   if (response)
     callback_func ( response );
-  else
-    console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
+  else  {
+    switch (request_cmd)  {
+      case cmd.fe_reqtype.runJob :
+      case cmd.fe_reqtype.getCloudFileTree :
+        break;
+      default:  console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
+    }
+  }
 
 }
 

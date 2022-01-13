@@ -1671,81 +1671,55 @@ var pData    = readProjectData ( loginData,data.name );
 
 // ===========================================================================
 
-function cloneProject ( loginData,projectName )  {
+function cloneProject ( loginData,data )  {
 var response = null;
-var pData    = readProjectData ( loginData,projectName );
-
-  console.log ( ' projectName=' + projectName );
+var pData    = readProjectData ( loginData,data.name );
 
   if (pData)  {
 
-    console.log ( ' project read' );
-
-    /*
     var rdata = { 'code' : 'ok' };
-    pData.desc.title = data.title;
-    if (('new_name' in data) && (data.new_name!=pData.desc.name))  {
-      // project ID to be changed: serious
-      // make sure that the project is not shared and that no jobs are running
-      if (pData.desc.owner.share.length>0)  {
-        rdata.code = 'Not possible to change ID of a shared project';
-      } else  {
-        // Get users' projects directory name
-        var projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
-        var newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
-        if (utils.fileExists(newPrjDirPath))  {
-          rdata.code = 'Project with requested ID (' + data.new_name + ') already exists';
-        } else  {
-          var jmeta = [];
-          if (utils.dirExists(projectDirPath))  {
-            var files = fs.readdirSync ( projectDirPath );
-            for (var i=0;(i<files.length) && (rdata.code=='ok');i++)  {
-              var jmpath = path.join ( projectDirPath,files[i],task_t.jobDataFName );
-              var jm     = utils.readObject ( jmpath );
-              if (jm)  {
-                if ((jm.state==task_t.job_code.running) ||
-                    (jm.state==task_t.job_code.exiting))
-                  rdata.code = 'Jobs are running -- not possible to change Project ID before they finish.';
-                else
-                  jmeta.push ( [jmpath,jm] );
-              }
-            }
+    var projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
+    var newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
+    if (utils.fileExists(newPrjDirPath))  {
+      rdata.code = 'Project with requested ID (' + data.new_name + ') already exists';
+    } else  {
+      var jmeta = [];
+      if (utils.dirExists(projectDirPath))  {
+        var files = fs.readdirSync ( projectDirPath );
+        for (var i=0;(i<files.length) && (rdata.code=='ok');i++)  {
+          var jm = utils.readObject ( path.join(projectDirPath,files[i],task_t.jobDataFName) );
+          if (jm)  {
+            if ((jm.state==task_t.job_code.running) ||
+                (jm.state==task_t.job_code.exiting))
+              rdata.code = 'Jobs are running -- not possible to change Project ID before they finish.';
+            else
+              jmeta.push ( [path.join(newPrjDirPath,files[i],task_t.jobDataFName),jm] );
           }
-          if (rdata.code=='ok')  {
+        }
+      }
+      if (rdata.code=='ok')  {
+        utils.copyDirAsync ( projectDirPath,newPrjDirPath,true,function(err){
+          if (err)  {
+            log.error ( 96,'clone project failed:' );
+            log.error ( 96,'  from: ' + projectDirPath );
+            log.error ( 96,'    to: ' + newPrjDirPath );
+            console.error ( err );
+            utils.removePath ( newPrjDirPath );
+          } else  {
             // change code id in all files and rename project directory
             for (var i=0;i<jmeta.length;i++)  {
               jmeta[i][1].project = data.new_name;
               utils.writeObject ( jmeta[i][0],jmeta[i][1] );
             }
-            pData.desc.name = data.new_name;
-            utils.moveDir ( projectDirPath,newPrjDirPath,false );
-            if (!writeProjectData(loginData,pData,true))  {
-              utils.moveDir ( newPrjDirPath,projectDirPath,false );
-              response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                   '[00031] Project metadata cannot be written (1).','' );
-            } else  {
-              rdata.meta = pData;
-              response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-            }
+            pData.desc.name  = data.new_name;
+            pData.desc.title = data.new_title;
+            writeProjectData ( loginData,pData,true );
           }
-        }
-      }
-
-      if (!response)
-        response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
-
-    } else  {
-      if (!writeProjectData(loginData,pData,true))  {
-        response = new cmd.Response ( cmd.fe_retcode.writeError,
-                             '[00031] Project metadata cannot be written (2).','' );
-      } else  {
-        rdata.meta = pData;
-        response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+        });
       }
     }
-    */
 
-    response   = new cmd.Response ( cmd.fe_retcode.ok,'',{} );
+    response  = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.readError,
@@ -1756,6 +1730,19 @@ var pData    = readProjectData ( loginData,projectName );
 
 }
 
+
+function checkCloneProject ( loginData,projectName )  {
+var status = '';
+var newPrjDirPath = getProjectDirPath ( loginData,projectName );
+  if (utils.dirExists(newPrjDirPath))  {
+    var pData = readProjectData ( loginData,projectName );
+    if (pData && (pData.desc.name==projectName))
+      status = 'done';
+
+  } else
+    status = 'fail';
+  return new cmd.Response ( cmd.fe_retcode.ok,'',status );
+}
 
 // ===========================================================================
 
@@ -2213,6 +2200,7 @@ module.exports.saveProjectData        = saveProjectData;
 module.exports.shareProject           = shareProject;
 module.exports.renameProject          = renameProject;
 module.exports.cloneProject           = cloneProject;
+module.exports.checkCloneProject      = checkCloneProject;
 module.exports.importProject          = importProject;
 module.exports.startDemoImport        = startDemoImport;
 module.exports.startSharedImport      = startSharedImport;

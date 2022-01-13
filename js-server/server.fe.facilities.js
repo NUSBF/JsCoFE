@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.11.21   <--  Date of Last Modification.
+ *    13.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -490,6 +490,7 @@ function getCloudFileTree ( loginData,data,callback_func )  {
   } else  {
     get_user_facility_list ( loginData,callback_func );
   }
+  return null;
 }
 
 
