@@ -325,14 +325,108 @@ function ProjectListPage ( sceneId )  {
 
   var clonePrj = function()  {
     panel.click();  // get rid of context menu
-    var cloneName = currentProjectName();
-    if (cloneName)  {
-      serverRequest ( fe_reqtype.cloneProject,cloneName,'Clone Project',
-        function(data){
-          loadProjectList1();
-        },null,'persist' );
-    } else
-      new MessageBox ( 'No Project','No Project selected' );
+
+    var pDesc = getCurrentProjectDesc();
+    if (!pDesc)  {
+      new MessageBox ( 'Current project not identified',
+          '<h2>Current project is not identified</h2>' +
+          '<i>This is a bug please report to developers.</i>'
+      );
+      return false;
+    }
+    var prjName   = pDesc.name;
+    var inputBox  = new InputBox ( 'Clone Project' );
+    var ibx_grid  = new Grid     ( '' );
+    ibx_grid.setLabel    ( '<h2>Clone Project "' + prjName + '"</h2>',0,0,1,2 );
+    ibx_grid.setLabel    ( 'Cloned Project ID:',1,0,1,1 );
+    var name_inp  = ibx_grid.setInputText ( prjName + '-clone',1,1,1,1 )
+          .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
+          .setFontItalic ( true )
+          .setWidth      ( '120px' );
+    ibx_grid.setLabel    ( 'Cloned Project Name:',2,0,1,1 );
+    var title_inp = ibx_grid.setInputText
+                         ( self.tablesort_tbl.selectedRow.child[1].text +
+                           ' (cloned)',2,1,1,1 )
+          .setStyle      ( 'text','','Put a descriptive title here','' )
+          .setFontItalic ( true )
+          .setWidth      ( '520px' );
+    ibx_grid.setNoWrap   ( 0,0 );
+    ibx_grid.setNoWrap   ( 1,0 );
+    ibx_grid.setVerticalAlignment ( 0,0,'middle' );
+    ibx_grid.setVerticalAlignment ( 1,0,'middle' );
+    inputBox.addWidget   ( ibx_grid );
+
+    inputBox.launch ( 'Clone',function(){
+      if (name_inp.getValue().length<=0)  {
+        new MessageBox ( 'No Project ID',
+                 '<b>Project ID is not given</b>.<p>' +
+                 'Project cannot be renamed with empty ID.' );
+        return false;
+      }
+      if (title_inp.getValue().length<=0)  {
+        new MessageBox ( 'No Project Name',
+                 '<b>Project Name is not given</b>.<p>' +
+                 'Project cannot be renamed with empty name.' );
+        return false;
+      }
+      var new_name = name_inp.getValue();
+      if (projectList.getProject(new_name))  {
+        new MessageBox ( 'Duplicate Project ID',
+                 '<div style="width:400px;"><h2>Duplicate Project ID</h2>' +
+                 'A Project with ID <b>"' + new_name +
+                 '"</b> already exists.</div>' );
+        return false;
+      }
+      pDesc.new_name  = new_name;
+      pDesc.new_title = title_inp.getValue();
+
+      new WaitDialog ( 'Clone Project','',
+        function(dlg,close_func){
+
+          var grid = new Grid('');
+          dlg.addWidget ( grid );
+          grid.setLabel ( '<h3>Cloning project in progress, please wait ...</h3>',0,0,1,3 );
+          var progressBar = new ProgressBar ( 0 );
+          grid.setWidget ( progressBar, 1,0,1,3 );
+          grid.setLabel ( '<i style="font-size:85%;">this may take long time; ' +
+                          'the dialog will close automatically</i>',2,0,1,3 );
+          // projectList.current = prjName;
+
+          function checkCloneReady() {
+            serverRequest ( fe_reqtype.checkCloneProject,new_name,
+                            'Check Project Clone Status',function(status){
+              if (status=='done')  {
+                close_func();
+                loadProjectList1();
+              } else if (status=='fail')  {
+                close_func();
+                new MessageBox ( 'Project cloning failed',
+                  '<h2>Project cloning failed</h2>' +
+                  '<i>Please report this to your ' + appName() + ' maintainer</i>.'
+                );
+              } else
+                window.setTimeout ( checkCloneReady,1000 );
+            },null,function(){ // depress error messages in this case!
+              window.setTimeout ( checkCloneReady,1000 );
+            });
+          }
+
+          serverRequest ( fe_reqtype.cloneProject,pDesc,'Clone Project',
+            function(data){
+              if (data.code=='ok')  {
+                checkCloneReady();
+              } else  {
+                close_func();
+                new MessageBox ( 'Project cloning rejected',
+                  '<h2>Project cloning rejected</h2><i>' + data.code + '</i>.'
+                );
+                // makeProjectListTable();
+              }
+            },null,'persist' );
+        });
+      return true;  // close dialog
+    });
+
   }
 
   var repairProject = function()  {
@@ -417,12 +511,12 @@ function ProjectListPage ( sceneId )  {
         var trow = self.tablesort_tbl.addRow();
 
         var contextMenu = new ContextMenu ( trow );
-        contextMenu.addItem('Open'  ,image_path('go')      ).addOnClickListener(openProject  );
-        contextMenu.addItem('Rename',image_path('rename')  ).addOnClickListener(renameProject);
-        contextMenu.addItem('Delete',image_path('remove')  ).addOnClickListener(deleteProject);
-        contextMenu.addItem('Export',image_path('export')  ).addOnClickListener(exportProject);
-        contextMenu.addItem('Share' ,image_path('share')   ).addOnClickListener(sharePrj     );
-        contextMenu.addItem('Clone' ,image_path('cloneprj')).addOnClickListener(clonePrj     );
+        contextMenu.addItem('Open'  ,image_path('go')       ).addOnClickListener(openProject  );
+        contextMenu.addItem('Rename',image_path('renameprj')).addOnClickListener(renameProject);
+        contextMenu.addItem('Delete',image_path('remove')   ).addOnClickListener(deleteProject);
+        contextMenu.addItem('Export',image_path('export')   ).addOnClickListener(exportProject);
+        contextMenu.addItem('Share' ,image_path('share')    ).addOnClickListener(sharePrj     );
+        contextMenu.addItem('Clone' ,image_path('cloneprj') ).addOnClickListener(clonePrj     );
         // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
 
         //contextMenu.setWidth ( '10px' );
@@ -611,13 +705,13 @@ function ProjectListPage ( sceneId )  {
     left_margin  = '2pt';
     right_margin = '22pt';
 
-    open_btn   = new Button ( '',image_path('go'    ) );
-    add_btn    = new Button ( '',image_path('add'   ) );
-    rename_btn = new Button ( '',image_path('rename') );
-    del_btn    = new Button ( '',image_path('remove') );
-    export_btn = new Button ( '',image_path('export') );
-    import_btn = new Button ( '',image_path('import') );
-    join_btn   = new Button ( '',image_path('join'  ) );
+    open_btn   = new Button ( '',image_path('go'       ) );
+    add_btn    = new Button ( '',image_path('add'      ) );
+    rename_btn = new Button ( '',image_path('renameprj') );
+    del_btn    = new Button ( '',image_path('remove'   ) );
+    export_btn = new Button ( '',image_path('export'   ) );
+    import_btn = new Button ( '',image_path('import'   ) );
+    join_btn   = new Button ( '',image_path('join'     ) );
     if (__demo_projects)  {
       demoprj_btn = new Button ( '',image_path('demoprj') );
       demoprj_btn.setWidth ( btn_width ).setHeight ( btn_height );
@@ -626,13 +720,13 @@ function ProjectListPage ( sceneId )  {
 
   } else  {
 
-    open_btn   = new Button ( 'Open'  ,image_path('go'    ) );
-    add_btn    = new Button ( 'Add'   ,image_path('add'   ) );
-    rename_btn = new Button ( 'Rename',image_path('rename') );
-    del_btn    = new Button ( 'Delete',image_path('remove') );
-    export_btn = new Button ( 'Export',image_path('export') );
-    import_btn = new Button ( 'Import',image_path('import') );
-    join_btn   = new Button ( 'Join'  ,image_path('join'  ) );
+    open_btn   = new Button ( 'Open'  ,image_path('go'       ) );
+    add_btn    = new Button ( 'Add'   ,image_path('add'      ) );
+    rename_btn = new Button ( 'Rename',image_path('renameprj') );
+    del_btn    = new Button ( 'Delete',image_path('remove'   ) );
+    export_btn = new Button ( 'Export',image_path('export'   ) );
+    import_btn = new Button ( 'Import',image_path('import'   ) );
+    join_btn   = new Button ( 'Join'  ,image_path('join'     ) );
     if (__demo_projects)  {
       demoprj_btn = new Button ( 'Tutorials',image_path('demoprj') );
       demoprj_btn.setWidth ('80pt').setHeight(btn_height).setNoWrap();

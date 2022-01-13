@@ -430,10 +430,10 @@ function WaitDialog ( title,message,process_wait )  {
   });
 
   (function(dlg){
-    process_wait ( function(){
-      $(dlg).dialog('close');
+    process_wait ( dlg,function(){
+      $(dlg.element).dialog('close');
     });
-  }(this.element));
+  }(this));
 
 }
 
