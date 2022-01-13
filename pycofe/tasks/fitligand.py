@@ -100,7 +100,7 @@ class FitLigand(basic.TaskDriver):
         if sys.platform.startswith("win"):
             self.runApp ( "findligand.bat",cmd,logType="Main" )
         else:
-            self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findligand-bin"),
+            self.runApp ( "findligand",
                           cmd,logType="Main" )
 
         nligs   = 0
