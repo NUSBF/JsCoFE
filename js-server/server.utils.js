@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.10.21   <--  Date of Last Modification.
+ *    13.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Server-side utility functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -625,7 +625,7 @@ function killProcess ( pid )  {
 function writeJobReportMessage ( jobDirPath, message, updating_bool )  {
 var fpath = path.join ( jobDirPath,task_t.jobReportDirName,
                                    task_t.jobReportHTMLName );
-var html  = '<html><link rel="stylesheet" type="text/css" ' +
+var html  = '<!DOCTYPE html>\n<html><link rel="stylesheet" type="text/css" ' +
                         'href="jsrview/css/jsrview.css">';
 
   if (updating_bool)

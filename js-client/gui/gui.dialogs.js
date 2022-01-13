@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.09.21   <--  Date of Last Modification.
+ *    12.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
  *                                          btn2_name,onButton2_func )
  *           function InputBox      ( title )
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -264,7 +264,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     this.options.height = h0 + 116;
   }
 
-  var loading_msg = '<html><body><h2>Loading ...</h2></body></html>';
+  var loading_msg = '<!DOCTYPE html>\n<html><body><h2>Loading ...</h2></body></html>';
 
   (function(dlg){
 

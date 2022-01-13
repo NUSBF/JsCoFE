@@ -833,7 +833,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
         //                'location=no,menubar=no,titlebar=no,toolbar=no' );
         if (dlg.outputPanel)  {
           var iframe =
-            '<html><head>' +
+            '<!DOCTYPE html>\n<html><head>' +
             '<style>body, html {' +
                    'width: 100%; height: 100%; margin: 0; padding: 0}' +
             '</style>' +

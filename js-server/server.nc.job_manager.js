@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.11.21   <--  Date of Last Modification.
+ *    12.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server -- Job Manager
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -539,7 +539,7 @@ var cap   = false;
           server_response.writeHead ( 200,
                                       {'Content-Type': 'text/html;charset=UTF-8'} );
           server_response.end (
-            '<html><head>' +
+            '<!DOCTYPE html>\n<html><head>' +
               '<title>Job is not prepared yet</title>' +
               '<meta http-equiv="refresh" content="2" />' +
             '</head><body class="main-page">' +
