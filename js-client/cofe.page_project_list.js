@@ -46,6 +46,7 @@ function ProjectListPage ( sceneId )  {
   var open_btn    = null;
   var add_btn     = null;
   var rename_btn  = null;
+  var clone_btn   = null;
   var del_btn     = null;
   var export_btn  = null;
   var import_btn  = null;
@@ -286,14 +287,7 @@ function ProjectListPage ( sceneId )  {
       serverRequest ( fe_reqtype.deleteProject,delName,'Delete Project',
         function(data){
           loadProjectList1();
-          // self.updateUserRationDisplay ( data );
         },null,'persist' );
-      // projectList.deleteProject ( delName );
-      // saveProjectList ( function(data){
-      //   makeProjectListTable   ();
-      //   welcome_lbl.setVisible ( (projectList.projects.length<1) );
-      //   self.getUserRation();
-      // });
       return true;  // close dialog
     });
   }
@@ -323,7 +317,7 @@ function ProjectListPage ( sceneId )  {
       new MessageBox ( 'No Project','No Project selected' );
   }
 
-  var clonePrj = function()  {
+  var cloneProject = function()  {
     panel.click();  // get rid of context menu
 
     var pDesc = getCurrentProjectDesc();
@@ -334,6 +328,24 @@ function ProjectListPage ( sceneId )  {
       );
       return false;
     }
+
+    if (self.ration && (self.ration.storage>0.0) &&
+        (self.ration.storage_used+pDesc.disk_space>self.ration.storage))  {
+      new MessageBox ( 'Disk Quota is short',
+          '<div style="width:500px;"><h3>Insufficient Disk Space</h3>' +
+          'The project cannot be cloned because disk quota is short. ' +
+          'Your account currently uses <b>' + round(self.ration.storage_used,1) +
+          '</b> MBytes out of <b>' + round(self.ration.storage,1) +
+          '</b> MBytes allocated.<p>' +
+          '<i><b>Hint 1:</b></i> deleting jobs and projects will free up disk space.<p>' +
+          '<i><b>Hint 2:</b></i> resource usage can be monitored using disk and ' +
+          'CPU widgets in the top-right corner of the screen.<p>' +
+          '<i><b>Recommended action:</b></i> export an old project and then ' +
+          'delete it from the list. You will be able to re-import that ' +
+          'project later using the file exported.</div>' );
+      return false;
+    }
+
     var prjName   = pDesc.name;
     var inputBox  = new InputBox ( 'Clone Project' );
     var ibx_grid  = new Grid     ( '' );
@@ -394,11 +406,11 @@ function ProjectListPage ( sceneId )  {
 
           function checkCloneReady() {
             serverRequest ( fe_reqtype.checkCloneProject,new_name,
-                            'Check Project Clone Status',function(status){
-              if (status=='done')  {
+                            'Check Project Clone Status',function(rdata){
+              if (rdata.code=='done')  {
                 close_func();
                 loadProjectList1();
-              } else if (status=='fail')  {
+              } else if (rdata.code=='fail')  {
                 close_func();
                 new MessageBox ( 'Project cloning failed',
                   '<h2>Project cloning failed</h2>' +
@@ -499,6 +511,7 @@ function ProjectListPage ( sceneId )  {
       open_btn  .setDisabled ( true  );
       add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       rename_btn.setDisabled ( true  );
+      clone_btn .setDisabled ( true  );
       del_btn   .setDisabled ( true  );
       import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       export_btn.setDisabled ( true  );
@@ -516,7 +529,7 @@ function ProjectListPage ( sceneId )  {
         contextMenu.addItem('Delete',image_path('remove')   ).addOnClickListener(deleteProject);
         contextMenu.addItem('Export',image_path('export')   ).addOnClickListener(exportProject);
         contextMenu.addItem('Share' ,image_path('share')    ).addOnClickListener(sharePrj     );
-        contextMenu.addItem('Clone' ,image_path('cloneprj') ).addOnClickListener(clonePrj     );
+        contextMenu.addItem('Clone' ,image_path('cloneprj') ).addOnClickListener(cloneProject );
         // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
 
         //contextMenu.setWidth ( '10px' );
@@ -610,6 +623,7 @@ function ProjectListPage ( sceneId )  {
       open_btn  .setDisabled ( false );
       add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       rename_btn.setDisabled ( false );
+      clone_btn .setDisabled ( false );
       del_btn   .setDisabled ( false );
       import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       export_btn.setDisabled ( false );
@@ -692,7 +706,8 @@ function ProjectListPage ( sceneId )  {
     saveProjectList ( function(data){ logout(sceneId,0); } );
   });
 
-  var btn_width    = '30pt';
+  // var btn_width    = '30pt';
+  var btn_width    = [];
   var btn_height   = '26pt';
   var left_margin  = '18pt';
   var right_margin = '28pt';
@@ -708,53 +723,61 @@ function ProjectListPage ( sceneId )  {
     open_btn   = new Button ( '',image_path('go'       ) );
     add_btn    = new Button ( '',image_path('add'      ) );
     rename_btn = new Button ( '',image_path('renameprj') );
+    clone_btn  = new Button ( '',image_path('cloneprj' ) );
     del_btn    = new Button ( '',image_path('remove'   ) );
     export_btn = new Button ( '',image_path('export'   ) );
     import_btn = new Button ( '',image_path('import'   ) );
     join_btn   = new Button ( '',image_path('join'     ) );
     if (__demo_projects)  {
       demoprj_btn = new Button ( '',image_path('demoprj') );
-      demoprj_btn.setWidth ( btn_width ).setHeight ( btn_height );
+      btn_width.push ( '30pt' );
+      demoprj_btn.setWidth ( btn_width[0] ).setHeight ( btn_height );
     }
-    help_btn     = new Button ( '',image_path('help') ); //.setTooltip('Documentation' );
+    help_btn   = new Button ( '',image_path('help') ); //.setTooltip('Documentation' );
+
+    for (var i=0;i<9;i++)
+      btn_width.push ( '30pt' );
 
   } else  {
 
     open_btn   = new Button ( 'Open'  ,image_path('go'       ) );
     add_btn    = new Button ( 'Add'   ,image_path('add'      ) );
     rename_btn = new Button ( 'Rename',image_path('renameprj') );
+    clone_btn  = new Button ( 'Clone' ,image_path('cloneprj' ) );
     del_btn    = new Button ( 'Delete',image_path('remove'   ) );
     export_btn = new Button ( 'Export',image_path('export'   ) );
     import_btn = new Button ( 'Import',image_path('import'   ) );
     join_btn   = new Button ( 'Join'  ,image_path('join'     ) );
+    btn_width = [
+      '65pt',
+      '60pt',
+      '80pt',
+      '70pt',
+      '70pt',
+      '70pt',
+      '70pt',
+      '60pt',
+    ];
+
     if (__demo_projects)  {
       demoprj_btn = new Button ( 'Tutorials',image_path('demoprj') );
+      btn_width.push ( '80pt' );
       demoprj_btn.setWidth ('80pt').setHeight(btn_height).setNoWrap();
     }
     help_btn   = new Button ( 'Help',image_path('help') ); //.setTooltip('Documentation' );
-
-    btn_width = '80pt';
-    /*
-    open_btn    .setWidth ( '80pt' );
-    add_btn     .setWidth ( '80pt' );
-    rename_btn  .setWidth ( '80pt' );
-    del_btn     .setWidth ( '80pt' );
-    export_btn  .setWidth ( '80pt' );
-    import_btn  .setWidth ( '80pt' );
-    join_btn.setWidth ( '80pt' );
-    help_btn    .setWidth ( '60pt' );
-    */
+    btn_width.push ( '60pt' );
 
   }
 
-  open_btn  .setWidth ( btn_width ).setHeight ( btn_height );
-  add_btn   .setWidth ( btn_width ).setHeight ( btn_height );
-  rename_btn.setWidth ( btn_width ).setHeight ( btn_height );
-  del_btn   .setWidth ( btn_width ).setHeight ( btn_height );
-  export_btn.setWidth ( btn_width ).setHeight ( btn_height );
-  import_btn.setWidth ( btn_width ).setHeight ( btn_height );
-  join_btn  .setWidth ( btn_width ).setHeight ( btn_height );
-  help_btn  .setWidth ( btn_width ).setHeight ( btn_height );
+  open_btn  .setWidth ( btn_width[0] ).setHeight ( btn_height );
+  add_btn   .setWidth ( btn_width[1] ).setHeight ( btn_height );
+  rename_btn.setWidth ( btn_width[2] ).setHeight ( btn_height );
+  clone_btn .setWidth ( btn_width[3] ).setHeight ( btn_height );
+  del_btn   .setWidth ( btn_width[4] ).setHeight ( btn_height );
+  export_btn.setWidth ( btn_width[5] ).setHeight ( btn_height );
+  import_btn.setWidth ( btn_width[6] ).setHeight ( btn_height );
+  join_btn  .setWidth ( btn_width[7] ).setHeight ( btn_height );
+  help_btn  .setWidth ( btn_width[9] ).setHeight ( btn_height );
 
   // make panel
   panel = new Grid('');
@@ -778,6 +801,7 @@ function ProjectListPage ( sceneId )  {
   panel.setWidget              ( open_btn  ,row,nCols++,1,1 );
   panel.setWidget              ( add_btn   ,row,nCols++,1,1 );
   panel.setWidget              ( rename_btn,row,nCols++,1,1 );
+  panel.setWidget              ( clone_btn ,row,nCols++,1,1 );
   panel.setWidget              ( del_btn   ,row,nCols++,1,1 );
   panel.setWidget              ( export_btn,row,nCols++,1,1 );
   panel.setWidget              ( import_btn,row,nCols++,1,1 );
@@ -785,24 +809,15 @@ function ProjectListPage ( sceneId )  {
   if (demoprj_btn)
     panel.setWidget            ( demoprj_btn,row,nCols++,1,1 );
   panel.setWidget              ( help_btn  ,row,nCols++,1,1  );
-  //panel.setWidget              ( title_lbl, row-2,0,1,nCols  );
 
   for (var i=0;i<nCols-1;i++)
-    panel.setCellSize ( btn_width,'',row,i );
-    //panel.setCellSize ( '2%' ,'',row,i );
+    panel.setCellSize ( btn_width[i],'',row,i );
   panel.setCellSize            ( 'auto','',row++,nCols-1 );
-  /*
-  panel.setCellSize            ( '2%' ,'',row,0     );
-  panel.setCellSize            ( '2%' ,'',row,1     );
-  panel.setCellSize            ( '2%' ,'',row,2     );
-  panel.setCellSize            ( '2%' ,'',row,3     );
-  panel.setCellSize            ( '2%' ,'',row,4     );
-  panel.setCellSize            ( '2%' ,'',row,5     );
-  panel.setCellSize            ( '88%','',row++,5   );
-  */
+
   open_btn  .setDisabled       ( true );
   add_btn   .setDisabled       ( true );
   rename_btn.setDisabled       ( true );
+  clone_btn .setDisabled       ( true );
   del_btn   .setDisabled       ( true );
   import_btn.setDisabled       ( true );
   table_row = row;  // note the project list table position here
@@ -811,6 +826,7 @@ function ProjectListPage ( sceneId )  {
   open_btn  .addOnClickListener ( openProject   );
   add_btn   .addOnClickListener ( addProject    );
   rename_btn.addOnClickListener ( renameProject );
+  clone_btn .addOnClickListener ( cloneProject  );
   del_btn   .addOnClickListener ( deleteProject );
   export_btn.addOnClickListener ( exportProject );
   //join_btn.addOnClickListener ( importSharedProject  );

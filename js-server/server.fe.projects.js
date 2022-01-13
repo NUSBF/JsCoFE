@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.21   <--  Date of Last Modification.
+ *    13.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -319,37 +319,6 @@ function writeProjectList ( loginData,projectList )  {
 function readProjectList ( loginData )  {
   var userProjectsListPath = getUserProjectListPath ( loginData );
   var pList = utils.readObject ( userProjectsListPath );
-  /*
-  if (pList)  {
-    var pdescs = pList.projects;
-    pList.projects = [];
-    if (!('startmode' in pList))
-      pList.startmode = pd.start_mode.auto;
-    for (var i=0;i<pdescs.length;i++)  {
-      var pdesc = pdescs[i];
-      if (pdesc && checkProjectDescData(pdesc,loginData))  {
-        var pData = readProjectData ( loginData,pdesc.name );
-        if (pData)  {
-          writeProjectData ( loginData,pData,true );
-        } else  {
-          log.error ( 70,'project data not found at ' +
-                         getProjectDataPath(loginData,pdesc.name) );
-          pdesc = null;
-        }
-      }
-      //if (pdesc.owner.share.length>0)  // the project could have been changed
-      if (pdesc)  {
-        pdesc = readProjectDesc ( loginData,pdescs[i].name );
-        if (pdesc && (pdesc.owner.login!=loginData.login) &&
-                     (!pd.isProjectAccessible(loginData.login,pdesc)))
-          pdesc = null;
-        if (pdesc)
-          pList.projects.push ( pdesc );
-      }
-    }
-    writeProjectList ( loginData,pList );
-  }
-  */
   if (pList)  {
     pList.projects = [];
     if (!('startmode' in pList))
@@ -1711,9 +1680,18 @@ var pData    = readProjectData ( loginData,data.name );
               jmeta[i][1].project = data.new_name;
               utils.writeObject ( jmeta[i][0],jmeta[i][1] );
             }
-            pData.desc.name  = data.new_name;
-            pData.desc.title = data.new_title;
+            pData.desc.name        = data.new_name;
+            pData.desc.title       = data.new_title;
+            pData.desc.owner.share = [];
+            if (!('author' in pData.desc.owner))
+              pData.desc.owner.author = pData.desc.owner.login;
+            pData.desc.owner.login = loginData.login;
             writeProjectData ( loginData,pData,true );
+            var pList = readProjectList ( loginData );
+            if (pList)  {
+              pList.current = data.new_name;
+              writeProjectList ( loginData,pList );
+            }
           }
         });
       }
@@ -1732,16 +1710,18 @@ var pData    = readProjectData ( loginData,data.name );
 
 
 function checkCloneProject ( loginData,projectName )  {
-var status = '';
+var rdata = {};
 var newPrjDirPath = getProjectDirPath ( loginData,projectName );
   if (utils.dirExists(newPrjDirPath))  {
     var pData = readProjectData ( loginData,projectName );
-    if (pData && (pData.desc.name==projectName))
-      status = 'done';
-
+    if (pData && (pData.desc.name==projectName))  {
+      rdata.code   ='done';
+      rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
+    } else
+      rdata.code = 'in_progress';
   } else
-    status = 'fail';
-  return new cmd.Response ( cmd.fe_retcode.ok,'',status );
+    rdata.code = 'fail';
+  return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 }
 
 // ===========================================================================
