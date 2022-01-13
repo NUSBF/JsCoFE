@@ -352,7 +352,8 @@ function moveDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
 function copyDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
   fs.copy ( old_path,new_path,{
     'overwrite'          : overwrite_bool,
-    'preserveTimestamps' : true
+    'preserveTimestamps' : true,
+    'dereference'        : true
   }, callback_func );
 }
 

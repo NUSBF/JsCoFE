@@ -709,7 +709,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                   new MessageBox ( 'Disk Quota Exceeded',
                       'The job cannot be run because disk quota is up. ' +
                       'Your<br>account currently uses <b>' + round(ration.storage_used,1) +
-                      '</b> MBytes at <b>' + round(ration.storage,1) +
+                      '</b> MBytes out of <b>' + round(ration.storage,1) +
                       '</b> MBytes<br>allocated.<p>' +
                       '<i><b>Hint 1:</b></i> deleting jobs and projects will free up disk space.<p>' +
                       '<i><b>Hint 2:</b></i> resource usage can be monitored using disk and<br>' +

@@ -2,4 +2,21 @@
 Prepare data for deposition
 ===========================
 
-to be written...
+The final stage of the crystallographic structure solution is the deposition of the final structure and the observations in the `Protein Data Bank (PDB) <https://www.wwpdb.org/>`_. The PDB require that the files be provided in a standard form, specifically the observations and the atomic model must be in `CIF <https://pdb101.rcsb.org/learn/guide-to-understanding-pdb-data/beginner%E2%80%99s-guide-to-pdb-structures-and-the-pdbx-mmcif-format>`_ format. The deposition task will automatically prepare the required files in the appropriate formats.
+
+After Deposition task finishes, inspect the `PDB Validation Report <https://www.wwpdb.org/validation/validation-reports>`_, delivered by task. If you find that the structure is worth deposition, then:
+
+    * Download the `mmCIF <https://pdb101.rcsb.org/learn/guide-to-understanding-pdb-data/beginner%E2%80%99s-guide-to-pdb-structures-and-the-pdbx-mmcif-format>`_ files with final model and structure factors using **Download buttons** in the task output page. 
+  
+    * Start new deposition session at `wwPDB Deposition Site <https://deposit.wwpdb.org/>`_ (`X-ray Deposition tutorial <https://www.youtube.com/watch?v=yFMG_cFebTA>`_).
+
+
+**Useful links**
+
+https://www.wwpdb.org/
+
+`wwPDB OneDep System Coordinate Deposition <https://www.wwpdb.org/deposition/tutorial#coordinate-deposition>`_
+
+`FAQ: Starting a deposition session <https://www.wwpdb.org/deposition/faq#start>`_
+
+`5 Easy Steps to PDB Deposition with OneDep guide <https://cdn.rcsb.org/wwpdb/docs/deposition/one-dep-brochure-letter.pdf>`_
