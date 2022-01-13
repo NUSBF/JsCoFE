@@ -87,7 +87,7 @@ class FitWaters(basic.TaskDriver):
         if sys.platform.startswith("win"):
             self.runApp ( "findwaters.bat",cmd,logType="Main" )
         else:
-            self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findwaters-bin"),
+            self.runApp ( "findwaters",
                           cmd,logType="Main" )
 
         pdbout  = self.outputFName + ".pdb"
