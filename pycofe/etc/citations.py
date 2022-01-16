@@ -72,6 +72,7 @@ citations = {
     'auto_tracing'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'diff_fourier'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'mrparse'         : { 'name' : '', 'category' : 'primary', 'refs' : [] },
+    'gemmi'           : { 'name' : '', 'category' : 'primary', 'refs' : [] },
 
     'pointless' : { 'name'     : 'Pointless',
                     'category' : 'primary',
