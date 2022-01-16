@@ -256,7 +256,7 @@ class Deposition(basic.TaskDriver):
         hkl_path = hkl.getHKLFilePath ( self.inputDir() )
         cmd = [ "mtz2cif",hkl_path,sfCIF ]
                 # hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
-        self.runApp ( "gemmi",cmd,logType="Main" )
+        self.runApp ( gemmi_path,cmd,logType="Main" )
 
 
         # 3. Prepare the combined coordinate-sequence CIF
@@ -278,9 +278,10 @@ class Deposition(basic.TaskDriver):
                     )
                 )
 
-            cmd = [ "mtz2cif",  #   "--depo",
+            cmd = [ "mtz2cif","--depo",
                     hkl_path,aimless_unm,sfCIF_unm ]
-            rc = self.runApp ( "gemmi",cmd,logType="Main",quitOnError=False )
+            gemmi_path = os.path.join ( os.environ["CCP4"],"bin","gemmi" )
+            rc = self.runApp ( gemmi_path,cmd,logType="Main",quitOnError=False )
             if rc.msg:
                 self.putMessage (
                     "<hr/><h3>Note:</h3><i>" +\

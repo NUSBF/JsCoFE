@@ -32,6 +32,8 @@ echo $XDS_home
 echo $XDSGUI_home
 echo $DOCREPO
 echo $Xia2_durin
+which gemmi
+gemmi --version
 echo ""
 
 #killall node
