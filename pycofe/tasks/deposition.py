@@ -256,6 +256,7 @@ class Deposition(basic.TaskDriver):
         hkl_path = hkl.getHKLFilePath ( self.inputDir() )
         cmd = [ "mtz2cif",hkl_path,sfCIF ]
                 # hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
+        gemmi_path = os.path.join ( os.environ["CCP4"],"bin","gemmi" )
         self.runApp ( gemmi_path,cmd,logType="Main" )
 
 
@@ -280,7 +281,6 @@ class Deposition(basic.TaskDriver):
 
             cmd = [ "mtz2cif","--depo",
                     hkl_path,aimless_unm,sfCIF_unm ]
-            gemmi_path = os.path.join ( os.environ["CCP4"],"bin","gemmi" )
             rc = self.runApp ( gemmi_path,cmd,logType="Main",quitOnError=False )
             if rc.msg:
                 self.putMessage (
