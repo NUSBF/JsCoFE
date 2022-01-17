@@ -173,10 +173,10 @@ def depositionAfterRefmac(driver):
             isDeposLog = False
             deposLog = []
             for s in logStrings:
-                if s.decode('utf-8').strip() == 'RUNNING DATA PREPARATION SCRIPT FROM EBI':
+                if str(s).strip() == 'RUNNING DATA PREPARATION SCRIPT FROM EBI':
                     isDeposLog = True
                 if isDeposLog:
-                    deposLog.append(s.decode('utf-8'))
+                    deposLog.append(str(s))
             if len(deposLog) > 1:
                 sendEmail(deposLog)
 
