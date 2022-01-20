@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.12.21   <--  Date of Last Modification.
+ *    18.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Job Run Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -1033,12 +1033,15 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
               // place job tree node
 
-              pid = jobEntry.jobId;
+              var pid = jobEntry.jobId;
               if (auto_meta[key].parentName in auto_meta.context.job_register)
                 pid = auto_meta.context.job_register[auto_meta[key].parentName];
 
               var pnode = pd.getProjectNode ( projectData,pid );
-              if (pnode)  {
+              if (!pnode)  {
+                log.error ( 22,'cannot get project node [' + loginData.login +
+                               ']:' + projectName + ':' + pid );
+              } else  {
 
                 // form task
 
@@ -1100,7 +1103,7 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
           var jobDirPath = prj.getJobDirPath ( loginData,projectName,task.id );
 
           if (!utils.mkDir(jobDirPath)) {
-            log.error ( 22,'cannot create job directory at ' + jobDirPath );
+            log.error ( 23,'cannot create job directory at ' + jobDirPath );
           } else  {
 
             // handle remarks and other pseudo-jobs here
@@ -1113,7 +1116,7 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
             var jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
 
             if (!utils.writeObject(jobDataPath,task))  {
-              log.error ( 23,'cannot write job metadata at ' + jobDataPath );
+              log.error ( 24,'cannot write job metadata at ' + jobDataPath );
             } else if (task_state==task_t.job_code.new)  {
 
               auto_meta.context.custom.excludedTasks = conf.getFEConfig().exclude_tasks;
@@ -1332,7 +1335,7 @@ var nc_servers = conf.getNCConfigs();
           rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
         },function(error,response,body){
             if (error)
-              log.error ( 10,'errors communicating with NC' + i + ': ' + error );
+              log.error ( 17,'errors communicating with NC' + i + ': ' + error );
         });
      }
 

@@ -54,7 +54,7 @@ function ProjectListPage ( sceneId )  {
   var join_btn    = null;
   var help_btn    = null;
   var panel       = null;
-  var welcome_lbl = null;
+  this.welcome_lbl = null;
   var nCols       = 0;                  // column span of project table
   var table_row   = 0;                  // project list position in panel
   var self        = this;               // for reference to Base class
@@ -482,14 +482,23 @@ function ProjectListPage ( sceneId )  {
     */
 
     panel.setWidget ( self.tablesort_tbl,table_row,0,1,nCols );
-    var message = '&nbsp;<p>&nbsp;<p><h2>' +
-                  'Your List of Projects is currently empty.<br>'  +
-                  'Press "Add" button to create a new Project<br>' +
-                  'and then "Open" to open it.<p>' +
-                  'You may also import an old project (using<br>'  +
-                  'the "Import" button) if one was previously<br>' +
-                  'exported from ' + appName() + '.</h2>';
-    welcome_lbl = panel.setLabel ( message.fontcolor('darkgrey'),
+    // var message = '&nbsp;<p>&nbsp;<p><h2>' +
+    //               'Your List of Projects is currently empty.<br>'  +
+    //               'Press "Add" button to create a new Project<br>' +
+    //               'and then "Open" to open it.<p>' +
+    //               'You may also import an old project (using<br>'  +
+    //               'the "Import" button) if one was previously<br>' +
+    //               'exported from ' + appName() + '.</h2>';
+
+    var message = '&nbsp;<p>&nbsp;<p><h3>' +
+                  'Your List of Projects is currently empty.'  +
+                  '<p>Use "Add" button to create a new Project' +
+                  ';<br>"Import" button for importing a project exported from ' +
+                    appName() +
+                  ';<br>"Join" button for joining project shared with you by ' +
+                  'another user;<br>or "Tutorials" button for loading ' +
+                  'tutorial/demo projects.</h3></div>';
+    self.welcome_lbl = panel.setLabel ( message.fontcolor('darkgrey'),
                                    table_row+1,0,1,nCols )
                        .setFontItalic ( true )
                        .setNoWrap();
@@ -629,7 +638,7 @@ function ProjectListPage ( sceneId )  {
       export_btn.setDisabled ( false );
       join_btn  .setDisabled ( (__dormant!=0) );
 
-      welcome_lbl.hide();
+      self.welcome_lbl.hide();
 
     }
 
@@ -882,7 +891,8 @@ ProjectListPage.prototype.onResize = function ( width,height )  {
 //  this.tablesort_tbl.table_div.element.style.height = h;
   if (this.tablesort_tbl)  {
     this.tablesort_tbl.fixHeader();
-    this.tablesort_tbl.setTableHeight ( height-72 );
+    if (this.welcome_lbl && (!this.welcome_lbl.isVisible()))
+      this.tablesort_tbl.setTableHeight ( height-72 );
   }
 }
 
