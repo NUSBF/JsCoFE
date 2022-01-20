@@ -104,6 +104,7 @@ def ccp4build ( name,revision,parentName ):
 def arpwarp ( name,revision,parentName ):
     auto_api.addTask ( name,"TaskArpWarp",parentName  )
     auto_api.addTaskData ( name,"revision",revision )
+    auto_api.addTaskParameter ( name,"AWA_BIG_CYCLES","2" )
     return
 
 

@@ -51,7 +51,7 @@ function ProjectDesc()  {
     share  : []    // list of login share objects
   };
   this.jobCount     = 0;      // job count
-  this.timestamp    = 0;      // Date.now();
+  this.timestamp    = 0;      // Date.now()
   this.autorun      = false;  // true if a task in autorun mode is runnng
   this.startmode    = start_mode.standard;  // will be overwritten when
                                             // project is created
