@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    20.03.19   <--  Date of Last Modification.
+#    21.01.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build Coot class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2022
 #
 # ============================================================================
 #
@@ -85,7 +85,10 @@ class FindWaters(ccp4build_coot.Coot):
             self.runApp ( "findwaters.bat",cmd,
                           fpath_stdout=stdout_fpath,fpath_stderr=stdout_fpath )
         else:
-            self.runApp ( os.path.join(os.environ["CCP4"],"libexec","findwaters-bin"),
+            findwaters_path = os.path.join ( os.environ["CCP4"],"bin","findwaters" )
+            if not os.path.isfile(findwaters_path):
+                findwaters_path = os.path.join ( os.environ["CCP4"],"libexec","findwaters-bin" )
+            self.runApp ( findwaters_path,
                           cmd,fpath_stdout=stdout_fpath,fpath_stderr=stdout_fpath )
 
         xyzout   = os.path.join  ( self.workdir,nameout+".pdb" )

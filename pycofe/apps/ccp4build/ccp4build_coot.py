@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    09.11.20   <--  Date of Last Modification.
+#    21.01.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build Coot class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2022
 #
 # ============================================================================
 #
@@ -28,17 +28,24 @@ import ccp4build_refmac
 
 class Coot(ccp4build_refmac.Refmac):
 
-    is_coot = True
+    is_coot   = False
+    coot_path = None
 
     # ----------------------------------------------------------------------
 
     def checkCoot ( self ):
         if sys.platform.startswith("win"):
-            self.is_coot = os.path.isfile (
-                        os.path.join(os.environ["CCP4"],"libexec","coot.bat") )
+            self.coot_path = os.path.join(os.environ["CCP4"],"bin","coot.bat")
+            self.is_coot   = os.path.isfile ( self.coot_path )
+            # if not self.is_coot:
+            #     self.coot_path = os.path.join(os.environ["CCP4"],"libexec","coot.bat")
+            #     self.is_coot   = os.path.isfile ( self.coot_path )
         else:
-            self.is_coot = os.path.isfile (
-                        os.path.join(os.environ["CCP4"],"libexec","coot-bin") )
+            self.coot_path = os.path.join(os.environ["CCP4"],"bin","coot")
+            self.is_coot   = os.path.isfile ( self.coot_path )
+            # if not self.is_coot:
+            #     self.coot_path = os.path.join(os.environ["CCP4"],"libexec","coot-bin")
+            #     self.is_coot   = os.path.isfile ( self.coot_path )
         return self.is_coot
 
     def _escape_path ( self,path ):
@@ -89,13 +96,16 @@ class Coot(ccp4build_refmac.Refmac):
 
         stdout_fpath = self.getStdOutPath ( nameout )
         stderr_fpath = self.getStdErrPath ( nameout )
-        if sys.platform.startswith("win"):
-            coot_bat = os.path.join(os.environ["CCP4"], "libexec", "coot.bat")
-            rc = self.runApp ( coot_bat,cmd,
-                          fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
-        else:
-            rc = self.runApp ( "coot",cmd,
-                          fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
+        # if sys.platform.startswith("win"):
+        #     coot_bat = os.path.join(os.environ["CCP4"], "libexec", "coot.bat")
+        #     rc = self.runApp ( coot_bat,cmd,
+        #                   fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
+        # else:
+        #     rc = self.runApp ( "coot",cmd,
+        #                   fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
+
+        rc = self.runApp ( self.coot_path,cmd,
+                           fpath_stdout=stdout_fpath,fpath_stderr=stderr_fpath )
 
         out_meta = meta.copy()
         if rc.msg:
