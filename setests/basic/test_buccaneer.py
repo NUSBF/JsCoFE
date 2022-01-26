@@ -143,6 +143,39 @@ def startCCP4Build(driver):
     return()
 
 
+def startModelcraft(driver):
+    print('Starting Modelcraft')
+
+    # Add button
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
+    time.sleep(3)
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+    time.sleep(1)
+
+    time.sleep(1)
+    # presing Close button
+    sf.clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
+    time.sleep(1)
+
+    return()
+
+
 def verifyBuccaneer(driver, waitLong, jobNumber, targetRwork, targetRfree):
     rWork = 1.0
     rFree = 1.0
@@ -217,6 +250,42 @@ def verifyCCP4Build(driver, waitLong, jobNumber, targetRwork, targetRfree):
     return ()
 
 
+def verifyModelcraft(driver, waitLong, jobNumber, targetRwork, targetRfree):
+    rWork = 1.0
+    rFree = 1.0
+    print('Modelcraft verification, job ' + jobNumber)
+
+    time.sleep(1.05)
+    startTime = time.time()
+
+    while (True):
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
+            # Job number as string
+            match = re.search('\[' + jobNumber + '\] modelcraft -- Compl=(.*)% R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+            if match:
+                rWork = float(match.group(2))
+                rFree = float(match.group(3))
+                break
+        if (rWork != 1.0) or (rFree != 1.0):
+            break
+        curTime = time.time()
+        if curTime > startTime + float(waitLong):
+            print('*** Timeout for CCP4Build results! Waited for %d seconds.' % waitLong)
+            break
+        time.sleep(59)
+
+    if (rWork == 1.0) or (rFree == 1.0):
+        print('*** Verification: could not find Rwork or Rfree value after CCP4Build run')
+    else:
+        print('*** Verification: CCP4Build Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecing <%0.2f)' % (
+            rWork, targetRwork, rFree, targetRfree))
+    assert rWork < targetRwork
+    assert rFree < targetRfree
+
+    return ()
+
+
 def test_1RefmacBasic(browser,
                 cloud,
                 nologin,
@@ -254,6 +323,8 @@ def test_1RefmacBasic(browser,
         startBuccaneer(d.driver) # 5
         sf.clickTaskInTaskTree(d.driver, '\[0004\]')
         startCCP4Build(d.driver) # 6
+        sf.clickTaskInTaskTree(d.driver, '\[0004\]')
+        startModelcraft(d.driver) # 7
 
     except:
         d.driver.quit()
@@ -270,6 +341,14 @@ def test_2buccaneer():
 def test_3ccp4build():
     try:
         verifyCCP4Build(d.driver, 1200, '0006', 0.27, 0.30) # run takes long
+    except:
+        d.driver.quit()
+        raise
+
+
+def test_4modelcraft():
+    try:
+        verifyModelcraft(d.driver, 1200, '0007', 0.22, 0.255) # run takes long
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
     except:
