@@ -130,7 +130,7 @@ var sendmail = utils.spawn ( 'sendmail',[to],{} );
     '\nSubject: ' + subject +
     '\n\n<html><body>\n'    +
     message                 +
-    '\n</body></html>\n'    +
+    '\n</body></html>\n'
   );
   sendmail.stdin.end();
 }
