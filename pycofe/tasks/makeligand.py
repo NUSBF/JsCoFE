@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    24.01.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -78,7 +78,7 @@ class MakeLigand(basic.TaskDriver):
                 for i in range(len(revisions)):
                     ligands = revisions[i].Ligands
                     for j in range(len(ligands)):
-                        exclude_list.append ( ligands[i]["code"] )
+                        exclude_list.append ( ligands[i].code )
                 code = self.get_ligand_code ( exclude_list )
 
             if code:

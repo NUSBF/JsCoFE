@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.05.21   <--  Date of Last Modification.
+ *    26.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Admin page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -250,6 +250,7 @@ AdminPage.prototype.refresh = function()  {
             }
             if (!__local_service)  {
               self.makeNodesInfoTab ( data.nodesInfo );
+              self.onResize ( window.innerWidth,window.innerHeight );
             } else  {
               localCommand ( nc_command.getNCInfo,{},'NC Info Request',
                 function(response){
@@ -262,10 +263,11 @@ AdminPage.prototype.refresh = function()  {
                         'when trying to fetch Client NC data.' );
                   }
                   self.makeNodesInfoTab ( data.nodesInfo );
+                  self.onResize ( window.innerWidth,window.innerHeight );
                   return (response!=null);
                 });
             }
-            self.tabs.refresh();
+            // self.tabs.refresh();
             return (rsp!=null);
           });
       }
@@ -280,10 +282,14 @@ AdminPage.prototype.refresh = function()  {
 AdminPage.prototype.onResize = function ( width,height )  {
   this.tabs.setWidth_px  ( width -50  );
   this.tabs.setHeight_px ( height-116 );
-  this.usageStats.setFramePosition ( '0px','50px','100%',(height-148)+'px' );
+  this.usageStats.setFramePosition ( '0px','50px','100%',(height-160)+'px' );
   this.tabs.refresh();
+  var inner_height = (height-190)+'px';
+  $(this.usersTab.element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.nodesTab.element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.usageTab.element).css({'height':inner_height,'overflow-y':'scroll'});
+  $(this.jobsTab .element).css({'height':inner_height,'overflow-y':'scroll'});
 }
-
 
 AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
   // function to create user info tables and fill them with data
@@ -362,6 +368,8 @@ AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
   this.userListTable.setHeaderColWidth ( 12,'4%'   );  // Last seen
 
   this.userListTable.setHeaderFontSize ( '100%' );
+
+//  $(this.userListTable.element).css({'overflow-y':'hidden'});
 
 //  this.usersTab.grid.setWidget ( this.userListTable,1,0,1,2 );
 
