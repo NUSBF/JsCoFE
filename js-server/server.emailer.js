@@ -126,10 +126,12 @@ var sendmail = utils.spawn ( 'sendmail',[to],{} );
   sendmail.stdin.setEncoding('utf-8');
   // sendmail.stdout.pipe(process.stdout);
   sendmail.stdin.write (
-    'From: '      + emailer.emailFrom +
-    '\nSubject: ' + subject +
-    '\n\n<html><body>\n'    +
-    message                 +
+    'From: '        + emailer.headerFrom +
+    '\nSubject: '   + subject +
+    '\nMIME-Version: 1.0'     +
+    '\nContent-Type: text/html; charset="ISO-8859-1"' +
+    '\n\n<html><body>\n'      +
+    message                   +
     '\n</body></html>\n'
   );
   sendmail.stdin.end();
