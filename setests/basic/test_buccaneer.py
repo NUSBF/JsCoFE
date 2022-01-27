@@ -271,14 +271,14 @@ def verifyModelcraft(driver, waitLong, jobNumber, targetRwork, targetRfree):
             break
         curTime = time.time()
         if curTime > startTime + float(waitLong):
-            print('*** Timeout for CCP4Build results! Waited for %d seconds.' % waitLong)
+            print('*** Timeout for Modelcraft results! Waited for %d seconds.' % waitLong)
             break
         time.sleep(59)
 
     if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after CCP4Build run')
+        print('*** Verification: could not find Rwork or Rfree value after Modelcraft run')
     else:
-        print('*** Verification: CCP4Build Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecing <%0.2f)' % (
+        print('*** Verification: Modelcraft Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecing <%0.2f)' % (
             rWork, targetRwork, rFree, targetRfree))
     assert rWork < targetRwork
     assert rFree < targetRfree
@@ -340,7 +340,7 @@ def test_2buccaneer():
 
 def test_3ccp4build():
     try:
-        verifyCCP4Build(d.driver, 1200, '0006', 0.27, 0.30) # run takes long
+        verifyCCP4Build(d.driver, 1300, '0006', 0.27, 0.30) # run takes long
     except:
         d.driver.quit()
         raise
@@ -348,7 +348,7 @@ def test_3ccp4build():
 
 def test_4modelcraft():
     try:
-        verifyModelcraft(d.driver, 1200, '0007', 0.22, 0.255) # run takes long
+        verifyModelcraft(d.driver, 1800, '0007', 0.22, 0.255) # run takes long
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
     except:
