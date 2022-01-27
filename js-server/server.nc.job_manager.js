@@ -878,10 +878,12 @@ function ncJobFinished ( job_token,code )  {
           //              ' back to FE. TASK DELETED.' );
           // ****
 
+          // jobEntry.sendTrials = 0;
           log.error ( 5,'job ' + task.id + ' is put in zombi state, token:' +
                          job_token );
 
         }
+        writeNCJobRegister();
 
       });
 

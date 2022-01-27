@@ -566,7 +566,7 @@ function CCP4DirName()  {
   ],
 
   "Emailer" : {
-    "type"               : "nodemailer",
+    "type"               : "nodemailer",  // nodemailer, telnet, sendmail
     "emailFrom"          : "CCP4 Cloud <ccp4.cofe@gmail.com>",
     "maintainerEmail"    : "ccp4.cofe@gmail.com",
     "host"               : "smtp.gmail.com",

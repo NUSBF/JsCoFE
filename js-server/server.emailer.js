@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.08.20   <--  Date of Last Modification.
+ *    27.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  E-mail Support
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -120,6 +120,22 @@ var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
 }
 
 
+function send_sendmail ( to,subject,message )  {
+var emailer  = conf.getEmailerConfig();
+var sendmail = utils.spawn ( 'sendmail',[to],{} );
+  sendmail.stdin.setEncoding('utf-8');
+  // sendmail.stdout.pipe(process.stdout);
+  sendmail.stdin.write (
+    'From: '      + emailer.emailFrom +
+    '\nSubject: ' + subject +
+    '\n\n<html><body>\n'    +
+    message                 +
+    '\n</body></html>\n'    +
+  );
+  sendmail.stdin.end();
+}
+
+
 function send ( to,subject,message )  {
   if (message)  {
     var emailer_type = conf.getEmailerConfig().type;
@@ -128,6 +144,10 @@ function send ( to,subject,message )  {
     } else if (emailer_type=='telnet')  {
       setTimeout ( function(){
         send_telnet ( to,subject,message );
+      },200);
+    } else if (emailer_type=='sendmail')  {
+      setTimeout ( function(){
+        send_sendmail ( to,subject,message );
       },200);
     } else if (emailer_type=='desktop')  {
       //log.standard ( 1,'send e-mail in desktop mode:\n' + message );
