@@ -321,9 +321,13 @@ def test_1RefmacBasic(browser,
         sf.editRevisionStructure_rnase(d.driver, d.waitShort) # 3
         refmacAfterRevision(d.driver, d.waitLong) # 4
         startBuccaneer(d.driver) # 5
+        time.sleep(3)
         sf.clickTaskInTaskTree(d.driver, '\[0004\]')
+        time.sleep(3)
         startCCP4Build(d.driver) # 6
+        time.sleep(3)
         sf.clickTaskInTaskTree(d.driver, '\[0004\]')
+        time.sleep(3)
         startModelcraft(d.driver) # 7
 
     except:
