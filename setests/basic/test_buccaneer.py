@@ -136,9 +136,12 @@ def startCCP4Build(driver):
     time.sleep(1)
 
     time.sleep(1)
-    # presing Close button
-    sf.clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
-    time.sleep(1)
+    # Close button is out of screen on STFC Cloud VM, pressing cross instead
+    # sf.clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
+    # <button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close"
+    # title="Close"><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>Close</button>
+    sf.clickByXpath(driver, "//button[@title='Close' and text()='Close' and @class='ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close']")
+    time.sleep(2)
 
     return()
 
