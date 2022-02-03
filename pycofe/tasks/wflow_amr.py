@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.05.21   <--  Date of Last Modification.
+#    03.02.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2021-2022
 #
 # ============================================================================
 #
@@ -148,11 +148,19 @@ class WFlowAMR(import_task.Import):
 
         seqHasNA = False
         seqHasProtein = False
-        for s in self.seq:
+        # for s in self.seq:
+        #     if s.isDNA() or s.isRNA():
+        #         seqHasNA = True
+        #     elif s.isProtein():
+        #         seqHasProtein = True
+
+        for i in range(len(self.seq)):
+            s = self.makeClass ( self.seq[i] )
             if s.isDNA() or s.isRNA():
                 seqHasNA = True
             elif s.isProtein():
                 seqHasProtein = True
+
 
         if seqHasNA and not seqHasProtein:
             fmsg = 'Sequence is provided for nucleic acid only; Automated MR Workflow can deal only with proteins or complexes\n'+ \

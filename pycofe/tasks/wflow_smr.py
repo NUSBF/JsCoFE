@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    10.01.22   <--  Date of Last Modification.
+#    03.02.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -146,16 +146,26 @@ class WFlowSMR(import_task.Import):
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
 
-        seqHasNA = False
+        seqHasNA      = False
         seqHasProtein = False
-        xyzHasNA = False
+        xyzHasNA      = False
         xyzHasProtein = False
-        for s in self.seq:
+        # for s in self.seq:
+        #     sc = self.makeClass ( s )
+        #     if sc.isDNA() or sc.isRNA():
+        #         seqHasNA = True
+        #     elif sc.isProtein():
+        #         seqHasProtein = True
+        for i in range(len(self.seq)):
+            s = self.makeClass ( self.seq[i] )
             if s.isDNA() or s.isRNA():
                 seqHasNA = True
             elif s.isProtein():
                 seqHasProtein = True
-        for x in self.xyz:
+
+        # for x in self.xyz:
+        for i in range(len(self.xyz)):
+            x = self.makeClass ( self.xyz[i] )
             if x.hasDNA() or x.hasRNA():
                 xyzHasNA = True
             elif x.hasProtein():

@@ -185,6 +185,8 @@ class MrParse(basic.TaskDriver):
                             nhomologs += 1
                             self.putMessage ( "<h3>Model #" + str(nhomologs) + ": " + model.dname + "</h3>" )
                             model.addDataAssociation ( seq.dataId )
+                            if not homologs[i]["seq_ident"]:
+                                homologs[i]["seq_ident"] = "0.0"
                             model.meta  = {
                                 "rmsd"  : homologs[i]["rmsd"],
                                 "seqId" : str(100.0*float(homologs[i]["seq_ident"])),
@@ -219,6 +221,8 @@ class MrParse(basic.TaskDriver):
                             self.putMessage ( "<h3>Model #" + str(nhomologs+nafmodels) + ": " +\
                                               model.dname + "</h3>" )
                             model.addDataAssociation ( seq.dataId )
+                            if not afmodels[i]["seq_ident"]:
+                                afmodels[i]["seq_ident"] = "0.0"
                             model.meta  = {
                                 "rmsd"    : afmodels[i]["rmsd"],
                                 "seqId"   : str(100.0*float(afmodels[i]["seq_ident"])),
