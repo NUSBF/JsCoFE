@@ -11,7 +11,11 @@ CCP4 Cloud Version Log
 
     #. New task ``Prepare Complex MR Model`` added
 
+    #. New task ``Model building with Modelcraft`` added
+
     #. New style built-in tutorials 
+
+    #. Projects can be cloned now
 
 
 
