@@ -20,6 +20,7 @@ MR Search Model(s) and/or MR Ensemble(s) must be prepared before molecular repla
     doc.task.MrParse
     doc.task.ModelPrepXYZ
     doc.task.ModelPrepAlgn
+    doc.task.ModelPrepMC
     doc.task.Ensembler
     doc.task.EnsemblePrepSeq
     doc.task.EnsemblePrepXYZ
