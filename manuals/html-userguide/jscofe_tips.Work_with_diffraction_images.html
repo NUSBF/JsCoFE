@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-FCVD2T7BGM');
+    </script>
+    
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>7.11. Work with diffraction images within CCP4 Cloud &#8212; CCP4 Cloud 1.7 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="8. Questions and Answers" href="jscofe_QnA.html" />
+    <link rel="prev" title="7.10. Using AlphaFold2 and Rosetta models" href="jscofe_tips.AlphaFold.html" /> 
+  </head><body>
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>CCP4 Cloud 1.7 documentation</span></a></h1>
+        <h2 class="heading"><span>7.11. Work with diffraction images within CCP4 Cloud</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        «&#160;&#160;<a href="jscofe_tips.AlphaFold.html"><span class="section-number">7.10. </span>Using AlphaFold2 and Rosetta models</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jscofe_QnA.html"><span class="section-number">8. </span>Questions and Answers</a>&#160;&#160;»
+        </p>
+
+      </div>
+      <div class="content" role="main">
+        
+        
+  <div class="section" id="work-with-diffraction-images-within-ccp4-cloud">
+<h1><span class="section-number">7.11. </span>Work with diffraction images within CCP4 Cloud<a class="headerlink" href="#work-with-diffraction-images-within-ccp4-cloud" title="Permalink to this headline">¶</a></h1>
+<p>X-ray diffraction images have a considerable size, which makes uploading them to remote servers impractical. Due to bandwidth and disk space considerations, CCP4 Cloud does <strong>NOT</strong> allow users to upload raw files.</p>
+<p>Users may launch one of the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/Data_Processing.html" rel="noopener noreferrer" target="_blank">data processing tools (Xia-2, DUI, iMosflm, XDSGUI)</a> from CCP4 Cloud project as usual, and process data locally. The result will be sent to the CCP4 Cloud automatically after the task finishes.</p>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<blockquote class="last">
+<div>Launch CCP4 Cloud through the local installation of CCP4 on your computer <a class="reference internal" href="_images/ccp4cloud_remote.png"><img alt="ccp4cloud_remote" src="_images/ccp4cloud_remote.png" style="width: 20px; height: 20px;" /></a>.</div></blockquote>
+</div>
+<p><a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Xia2.html" rel="noopener noreferrer" target="_blank">Xia-2</a> task can be also run remotely when diffraction images are placed on Cloud’s servers. Images can be placed on Cloud by respective CCP4 Cloud maintainers.</p>
+<p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        «&#160;&#160;<a href="jscofe_tips.AlphaFold.html"><span class="section-number">7.10. </span>Using AlphaFold2 and Rosetta models</a>
+        &#160;&#160;::&#160;&#160;
+        <a class="uplink" href="index.html">Contents</a>
+        &#160;&#160;::&#160;&#160;
+        <a href="jscofe_QnA.html"><span class="section-number">8. </span>Questions and Answers</a>&#160;&#160;»
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </div>
+  </body>
+</html>

@@ -45,6 +45,11 @@
       "title"   : "Using AlphaFold and Rosetta Models",
       "doc"     : "manuals/html-userguide",
       "link"    : "jscofe_tips.AlphaFold.html"
+    },{
+      "summary" : "Did you know how diffraction images can be processed in CCP4 Cloud? Check out <a>here</a>.",
+      "title"   : "Processing Diffraction Images",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.Work_with_diffraction_images.html"
     }
   ]
 }

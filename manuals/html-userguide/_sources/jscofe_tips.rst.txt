@@ -15,4 +15,5 @@ Tips and Tricks
     jscofe_tips.eoj_notifications
     jscofe_tips.file_names
     jscofe_tips.AlphaFold
+    jscofe_tips.Work_with_diffraction_images
 
