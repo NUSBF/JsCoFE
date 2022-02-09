@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    09.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Template Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -1239,9 +1239,10 @@ if (!dbx)  {
           if (layCustom)  {
             ddn.customGrid = grid.setGrid ( '-compact',r++,3,1,1 );
             dt[dn[n]].layCustomDropdownInput ( ddn );
+            ddn.grid.setRowVisible ( ddn.row+1,(n<ndset) );
             ddn.customGrid.setVisible ( (n<ndset) );
           }
-          ddn.dt   = dt;
+          ddn.dt = dt;
           (function(dd,m){
             dd[m].addSignalHandler ( 'state_changed',function(data){
               var visible = (data.item>=0) && (!dd[m].dt[data.item].hasSubtype('proxy'));
@@ -1257,6 +1258,7 @@ if (!dbx)  {
                   dd[m].customGrid.clear();
                   dd[m].dt[data.item].layCustomDropdownInput ( dd[m] );
                 }
+                dd[m].grid.setRowVisible ( dd[m].row+1,visible );
                 dd[m].customGrid.setVisible ( visible );
               }
             });
@@ -1393,6 +1395,7 @@ if (!dbx)  {
                   dropdown[i][n].layCustom = layCustom;
                   dropdown[i][n].customGrid.clear();
                   dt[dn[k]].layCustomDropdownInput ( dropdown[i][n] );
+                  dropdown[i][n].grid.setRowVisible ( dropdown[i][n].row+1,true );
                   dropdown[i][n].customGrid.setVisible ( true );
                 }
                 k++;
@@ -1441,6 +1444,7 @@ if (!dbx)  {
                   dropdown[i][n].layCustom = layCustom;
                   dropdown[i][n].customGrid.clear();
                   dt[dn[j]].layCustomDropdownInput ( dropdown[i][n] );
+                  dropdown[i][n].grid.setRowVisible ( dropdown[i][n].row+1,true );
                   dropdown[i][n].customGrid.setVisible ( true );
                 }
                 //console.log ( dropdown[i][n].getContent() );
@@ -1519,8 +1523,10 @@ if (!dbx)  {
             if (dropdown[n].getValue()>=0)
               n0 = -1;
             else {
-              if (dropdown[n].hasOwnProperty('customGrid'))
+              if (dropdown[n].hasOwnProperty('customGrid'))  {
+                dropdown[n].grid.setRowVisible ( dropdown[n].row+1,false );
                 dropdown[n].customGrid.setVisible ( false );
+              }
               if (n0<0)
                 n0 = n;
             }
