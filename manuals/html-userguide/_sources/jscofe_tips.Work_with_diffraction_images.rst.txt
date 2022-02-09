@@ -1,0 +1,18 @@
+==============================================
+Work with diffraction images within CCP4 Cloud
+==============================================
+
+X-ray diffraction images have a considerable size, which makes uploading them to remote servers impractical. Due to bandwidth and disk space considerations, CCP4 Cloud does **NOT** allow users to upload raw files. 
+
+Users may launch one of the `data processing tools (Xia-2, DUI, iMosflm, XDSGUI) <https://cloud.ccp4.ac.uk/manuals/html-taskref/Data_Processing.html>`_ from CCP4 Cloud project as usual, and process data locally. The result will be sent to the CCP4 Cloud automatically after the task finishes. 
+
+.. important::
+             Launch CCP4 Cloud through the local installation of CCP4 on your computer |ccp4cloud_remote|.
+
+            .. |ccp4cloud_remote| image:: images/ccp4cloud_remote.png
+                :width: 20
+                :height: 20
+
+`Xia-2 <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Xia2.html>`_ task can be also run remotely when diffraction images are placed on Cloud’s servers. Images can be placed on Cloud by respective CCP4 Cloud maintainers.
+
+:doc:`All CCP4 Cloud tips <jscofe_tips>`
