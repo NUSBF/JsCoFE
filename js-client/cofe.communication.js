@@ -251,6 +251,8 @@ function __process_network_indicators()  {
   }
 }
 
+var __check_session_drops = 0;
+
 function processServerQueue()  {
   if (__server_queue.length>0)  {
     var q0 = __server_queue[0];
@@ -271,40 +273,50 @@ function processServerQueue()  {
       },__delays_wait);
       __holdup_timer = window.setTimeout ( function(){
         __holdup_timer = null;
-        __holdup_dlg   = new QuestionBox ( 'Communication hold-up',
-            '<div style="width:450px"><h3>Communication hold-up</h3>' +
-            'Communication with ' + appName() + ' is severely delayed. ' +
-            'Please be patient, the problem may resolve in few moments, ' +
-            'after which this dialog will disappear automatically.<p>' +
-            'If communication does not resume after a long time, you can ' +
-            'either reload the current page (quick option) or start new ' +
-            'working session (complete refresh, hard option) using buttons ' +
-            'below.<p>Make sure that your Internet connection is stable.',
-            'Reload current page',function(){
-              __holdup_dlg = null;
-              window.setTimeout ( function(){
-                if (__current_page)  {
-                  __server_queue = [];
-                  __process_network_indicators();
-                  makePage (
-                    eval (
-                      'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
-                    )
-                  );
-                  makeSessionCheck ( __current_page.sceneId );
-                } else  {  // should never come to here
-                  window.location = window.location;  // complete refresh
-                  // less safe version:
-                  // __server_queue.shift();
-                  // __process_network_indicators();
-                  // processServerQueue();
-                }
-              },10);
-            },
-            'Start new working session',function(){
-              window.location = window.location;  // complete refresh
-            }
-        );
+        if ((__server_queue.length>0) && (__server_queue[0].type=='command') &&
+            (__server_queue[0].request_type==fe_command.checkSession) &&
+            (__check_session_drops<10))  {
+          __check_session_drops++;
+          __server_queue.shift();
+          __process_network_indicators();
+          processServerQueue();
+        } else  {
+          __holdup_dlg   = new QuestionBox ( 'Communication hold-up',
+              '<div style="width:450px"><h3>Communication hold-up</h3>' +
+              'Communication with ' + appName() + ' is severely delayed. ' +
+              'Please be patient, the problem may resolve in few moments, ' +
+              'after which this dialog will disappear automatically.<p>' +
+              'If communication does not resume after a long time, you can ' +
+              'either reload the current page (quick option) or start new ' +
+              'working session (complete refresh, hard option) using buttons ' +
+              'below.<p>Make sure that your Internet connection is stable.',
+              'Reload current page',
+              function(){
+                  __holdup_dlg = null;
+                  window.setTimeout ( function(){
+                    if (__current_page)  {
+                      __server_queue = [];
+                      __process_network_indicators();
+                      makePage (
+                        eval (
+                          'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
+                        )
+                      );
+                      makeSessionCheck ( __current_page.sceneId );
+                    } else  {  // should never come to here
+                      window.location = window.location;  // complete refresh
+                      // less safe version:
+                      // __server_queue.shift();
+                      // __process_network_indicators();
+                      // processServerQueue();
+                    }
+                  },10);
+              },
+              'Start new working session',function(){
+                window.location = window.location;  // complete refresh
+              }
+          );
+        }
       },__holdup_wait);
     }
   }
@@ -372,6 +384,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
       }
     })
     .always ( function(){
+      __check_session_drops = 0;
       if (function_always)
         function_always();
     })
@@ -452,7 +465,9 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
     })
 
-    .always ( function(){} )
+    .always ( function(){
+      __check_session_drops = 0;
+    })
 
     .fail ( function(xhr,err){
 
