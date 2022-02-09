@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.08.21   <--  Date of Last Modification.
+ *    09.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-MR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -62,16 +62,21 @@ function TaskPhaserMR()  {
       customInput : 'phaser-mr', // lay custom fields below the dropdown (Ncopies, R.m.s.d.)
 //**      castTo      : 'DataEnsemble', // all input types will be casted to the specified
       min         : 1,           // minimum acceptable number of data instances
-      max         : 50           // maximum acceptable number of data instances
+      max         : 1000         // maximum acceptable number of data instances
     }
   ];
 
   this.parameters = { // input parameters
 
+    sep0: { type     : 'label',   // just a separator
+            label    : '&nbsp;',
+            position : [0,0,1,5]
+          },
+
     sec0: { type     : 'section',
             title    : 'Rotation and translation target function parameters',
             open     : false,  // true for the section to be initially open
-            position : [0,0,1,5],
+            position : [1,0,1,5],
             contains : {
 
               RF_TARGET_SEL : {
