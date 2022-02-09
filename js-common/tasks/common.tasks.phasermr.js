@@ -62,7 +62,7 @@ function TaskPhaserMR()  {
       customInput : 'phaser-mr', // lay custom fields below the dropdown (Ncopies, R.m.s.d.)
 //**      castTo      : 'DataEnsemble', // all input types will be casted to the specified
       min         : 1,           // minimum acceptable number of data instances
-      max         : 100000       // maximum acceptable number of data instances
+      max         : 50           // maximum acceptable number of data instances
     }
   ];
 
