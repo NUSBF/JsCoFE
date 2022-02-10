@@ -71,6 +71,7 @@ if (navigator.userAgentData) {
   __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
                       (navigator.maxTouchPoints && (navigator.maxTouchPoints > 2) &&
                        /MacIntel/.test(navigator.platform));
+  alert ( 'no userAgentData' );
 }
 
 var __any_mobile_device = __mobile_device || __iOS_device;
