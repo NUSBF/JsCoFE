@@ -52,11 +52,13 @@ var __environ_client  = [];     // list of key environmental variables on Client
 
 var __tips = null;  // tips loaded from FE (optional), used in login page
 
-// var __mobile_device = (/Android|webOS|BlackBerry/i.test(navigator.userAgent) );
-// var __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
-//                       (navigator.maxTouchPoints && (navigator.maxTouchPoints > 2) &&
-//                        /MacIntel/.test(navigator.platform));
-// var __any_mobile_device = __mobile_device || __iOS_device;
+var __mobile_device = (/Android|webOS|BlackBerry/i.test(navigator.userAgent) );
+var __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
+                      (navigator.maxTouchPoints && (navigator.maxTouchPoints > 2) &&
+                       /MacIntel/.test(navigator.platform));
+var __any_mobile_device = __mobile_device || __iOS_device;
+
+/*  ==================== unfinished userAgentData version -- for future
 
 var __mobile_device     = false;  // not iOS
 var __iOS_device        = false;
@@ -75,6 +77,8 @@ if (navigator.userAgentData) {
 }
 
 var __any_mobile_device = __mobile_device || __iOS_device;
+======================= */
+
 
 var __browser_checked = false;
 
