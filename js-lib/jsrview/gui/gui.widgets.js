@@ -1,10 +1,10 @@
 
 /*
- *  =================================================================
+ *  ========================================================================
  *
- *    18.12.17   <--  Date of Last Modification.
+ *    29.10.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- *  -----------------------------------------------------------------
+ *  -----------------------------------------------------------------------
  *
  *  **** Module  :  js-client/gui/gui.widgets.js
  *       ~~~~~~~~~
@@ -13,9 +13,9 @@
  *  **** Content :  Common GUI widgets
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
- *  =================================================================
+ *  ========================================================================
  *
  *  Requires: 	jquery.js
  *
@@ -41,6 +41,8 @@ function Widget ( type )  {
   this.parent  = null;
   this.element = document.createElement ( type );
   this.element.setAttribute ( 'id',this.id );
+  this.element.setAttribute ( 'name','name-'+this.id );
+  this.element.style.fontSize = '16px';
 }
 
 /** Setting HTML id attribute for Widget.
@@ -54,10 +56,12 @@ Widget.prototype.setId = function ( id )  {
 }
 
 Widget.prototype.delete = function()  {
-  if (this.parent)
-    this.parent.removeChild ( this );
-  else if (this.element.parentNode)
-    this.element.parentNode.removeChild ( this.element );
+  $(this.element).empty();
+  $(this.element).remove();
+  // if (this.parent)
+  //   this.parent.removeChild ( this );
+  // else if (this.element.parentNode)
+  //   this.element.parentNode.removeChild ( this.element );
 }
 
 Widget.prototype.setAttribute = function ( attr,value )  {
@@ -78,9 +82,96 @@ Widget.prototype.removeAttribute = function ( attr )  {
   return this;
 }
 
-Widget.prototype.setTooltip = function ( text )  {
-  this.element.setAttribute ( 'title',text );
+Widget.prototype.setText = function ( text )  {
+  this.element.innerHTML = text.toString();
+  // if (text)  this.element.innerHTML = text;
+  //      else  this.element.innerHTML = ' ';  // Safari 14 fix
   return this;
+}
+
+Widget.prototype.addClass = function ( class_name )  {
+  this.element.classList.add(class_name);
+  return this;
+}
+
+Widget.prototype.removeClass = function ( class_name )  {
+  this.element.classList.remove(class_name);
+  return this;
+}
+
+Widget.prototype.toggleClass = function ( class_name )  {
+  this.element.classList.toggle(class_name);
+  return this;
+}
+
+Widget.prototype.setCursor = function ( cursor )  {
+// e.g., cursor='pointer'
+  $(this.element).css ( 'cursor',cursor );
+  return this;
+}
+
+Widget.prototype.setTooltip = function ( text )  {
+  if (text)  {
+    this.element.setAttribute ( 'title',text );
+    var delay    = 1500;
+    var duration = Math.sqrt(text.split(' ').length)*1500; // dynamic duration
+    if (duration>0)  {
+      $(this.element).tooltip({
+          show  : { effect : 'slideDown', delay: delay },
+          track : true,
+          content: function (callback) {
+              callback($(this).prop('title'));
+          },
+          open  : function (event, ui) {
+              setTimeout(function() {
+                  $(ui.tooltip).hide('explode');
+              },delay+duration);
+          }
+      });
+    }
+  }
+  /*
+  $(this.element).tooltip({
+      content : text,
+      show    : { effect: 'slideDown' },
+      track   : true,
+      open    : function (event, ui) {
+          setTimeout(function() {
+              $(ui.tooltip).hide('explode');
+          },1500);
+      }
+  });
+  */
+  return this;
+}
+
+Widget.prototype.setTooltip1 = function ( text,showType,track_bool,delay_ms )  {
+  this.element.setAttribute ( 'title',text );
+  if (delay_ms<=0)
+    $(this.element).tooltip({
+        content : text,
+        show    : { effect : showType, },
+        track   : track_bool
+    })
+  else
+    $(this.element).tooltip({
+        content : text,
+        show    : { effect : showType },
+        track   : track_bool,
+        open    : function (event, ui) {
+            setTimeout(function() {
+                $(ui.tooltip).hide('explode');
+            },delay_ms);
+        }
+    });
+  return this;
+}
+
+Widget.prototype.redraw = function ( width )  {
+var disp = this.element.display;
+  this.element.display = 'none';
+  this.element.offsetHeight; // no need to store this anywhere, the reference is enough
+  this.element.display = disp;
 }
 
 Widget.prototype.setWidth = function ( width )  {
@@ -95,6 +186,11 @@ Widget.prototype.setWidth_px = function ( width_int )  {
 
 Widget.prototype.setHeight = function ( height )  {
   this.element.style.height = height;
+  return this;
+}
+
+Widget.prototype.setMaxHeight = function ( height_str )  {
+  this.element.style.maxHeight = height_str;  // e.g., '200px'
   return this;
 }
 
@@ -147,6 +243,10 @@ Widget.prototype.setFontItalic = function ( italic )  {
   return this;
 }
 
+Widget.prototype.setBackgroundColor = function ( color )  {
+  this.element.style.backgroundColor = color;
+  return this;
+}
 
 Widget.prototype.setFontColor = function ( color )  {
   this.element.style.color = color;
@@ -155,6 +255,11 @@ Widget.prototype.setFontColor = function ( color )  {
 
 Widget.prototype.setFontFamily = function ( family )  {
   this.element.style.fontFamily = family;
+  return this;
+}
+
+Widget.prototype.setFontLineHeight = function ( lineHeight )  {
+  this.element.style.lineHeight = lineHeight;
   return this;
 }
 
@@ -168,12 +273,41 @@ Widget.prototype.setFont = function ( family,size,bold,italic )  {
   return this;
 }
 
+Widget.prototype.setPaddings = function ( left,top,right,bottom )  {
+  var css = {};
+  if (left)   css['padding-left'  ] = left;
+  if (top)    css['padding-top'   ] = top;
+  if (right)  css['padding-right' ] = right;
+  if (bottom) css['padding-bottom'] = bottom;
+  $(this.element).css ( css );
+  return this;
+}
+
+Widget.prototype.setMargins = function ( left,top,right,bottom )  {
+  var css = {};
+  if (left)   css['margin-left'  ] = left;
+  if (top)    css['margin-top'   ] = top;
+  if (right)  css['margin-right' ] = right;
+  if (bottom) css['margin-bottom'] = bottom;
+  $(this.element).css ( css );
+  return this;
+}
+
 Widget.prototype.setScrollable = function ( onx_value,ony_value )  {
   if (onx_value.length>0)
     $(this.element).css ({'overflow-x':onx_value});
   if (ony_value.length>0)
     $(this.element).css ({'overflow-y':ony_value});
   return this;
+}
+
+Widget.prototype.getScrollPosition = function()  {
+  return [this.element.scrollLeft,this.element.scrollTop];
+}
+
+Widget.prototype.setScrollPosition = function ( scrollPos )  {
+  this.element.scrollLeft = scrollPos[0];
+  this.element.scrollTop  = scrollPos[1];
 }
 
 Widget.prototype.setHorizontalAlignment = function ( alignment )  {
@@ -254,6 +388,20 @@ Widget.prototype.toggle = function()  {
   return this;
 }
 
+Widget.prototype.setOpacity = function ( opacity )  {
+  $(this.element).css({'opacity':opacity});
+  // if (yn_bool)  $(this.element).css({'opacity':1});
+  //         else  $(this.element).css({'opacity':0});
+  // if (yn_bool)  $(this.element).fadeIn();
+  //         else  $(this.element).fadeOut();
+  return this;
+}
+
+Widget.prototype.fade = function ( in_bool )  {
+  if (in_bool)  $(this.element).fadeIn();
+          else  $(this.element).fadeOut();
+}
+
 Widget.prototype.setDisabled = function ( disabled_bool )  {
   this.element.disabled = disabled_bool;
   return this;
@@ -273,38 +421,63 @@ Widget.prototype.isDisabled = function()  {
 }
 
 Widget.prototype.setDisabledAll = function ( disabled_bool )  {
+  $(this.element).find(':input').prop('disabled',disabled_bool);
   (function(w){
     window.setTimeout ( function(){
       $(w.element).find(':input').prop('disabled',disabled_bool);
     },0 );
   }(this))
-  $(this.element).find(':input').prop('disabled',disabled_bool);
   return this;
-
 }
 
 Widget.prototype.setEnabledAll = function ( enabled_bool )  {
+  $(this.element).find(':input').prop('disabled',!enabled_bool);
   (function(w){
     window.setTimeout ( function(){
       $(w.element).find(':input').prop('disabled',!enabled_bool);
     },0 );
   }(this))
-  $(this.element).find(':input').prop('disabled',!enabled_bool);
   return this;
 }
 
 Widget.prototype.addOnClickListener = function ( listener_func )  {
-  this.element.addEventListener('click',listener_func );
+  this.element.addEventListener('click',function(e){
+    e.preventDefault();
+    listener_func(e);
+  });
+  // $(this.element).on( 'click', function() {
+  //   listener_func();
+  // });
+  // this.element.onclick = function() {
+  //   listener_func();
+  // };
   return this;
 }
 
 Widget.prototype.addOnDblClickListener = function ( listener_func )  {
-  this.element.addEventListener('dblclick',listener_func );
+  this.element.addEventListener('dblclick',function(e){
+    e.preventDefault();
+    listener_func(e);
+  });
+  return this;
+}
+
+Widget.prototype.addOnRightClickListener = function ( listener_func )  {
+  this.element.addEventListener ( 'contextmenu',function(e){
+    e.preventDefault();
+    listener_func(e);
+    return false;
+  },false );
   return this;
 }
 
 Widget.prototype.addOnChangeListener = function ( listener_func )  {
   this.element.addEventListener('change',listener_func );
+  return this;
+}
+
+Widget.prototype.addOnInputListener = function ( listener_func )  {
+  this.element.addEventListener('input',listener_func );
   return this;
 }
 
@@ -328,6 +501,11 @@ Widget.prototype.addSignalHandler = function ( signal,onReceive )  {
   this.element.addEventListener ( signal,function(e){
     onReceive ( e.detail );
   },false );
+  // false: use the Bubbling mode
+  // true:  use Capturing mode
+  // The difference is in response to nested widgets: Bubbling mode gives
+  // priority to event handlers associated with the innermost widget, while
+  // Capturing mode gives priority to the outmost one.
 }
 
 Widget.prototype.click = function()  {
@@ -348,7 +526,7 @@ Grid.prototype = Object.create ( Widget.prototype );
 Grid.prototype.constructor = Grid;
 
 Grid.prototype.clear = function()  {
-  this.element.innerHTML = '';
+  this.element.innerHTML = ' ';  // Safari 14 fix
 }
 
 Grid.prototype.setStyle = function ( style )  {
@@ -401,7 +579,26 @@ Grid.prototype.getCell = function ( row,col )  {
   }
 }
 
+Grid.prototype.insertCell = function ( row,col )  {
+  // make sure that cell [row,col] is there
+  this.getCell ( row,col );
+  var gridRow = this.element.rows[row];
+  gridRow.insertCell ( col );  // this inserts a cell
+  return gridRow.cells[col];   // return inserted cell
+}
+
 Grid.prototype.getNRows = function()  {
+  return this.element.rows.length;
+}
+
+Grid.prototype.truncateRows = function ( row )  {
+  while (this.element.rows.length>row+1)
+    this.element.deleteRow ( -1 );  // deletes last row
+  return this.element.rows.length;
+}
+
+Grid.prototype.deleteRow = function ( row )  {
+  this.element.deleteRow ( row );
   return this.element.rows.length;
 }
 
@@ -426,6 +623,17 @@ var cell = this.getCell ( row,col );
 
 Grid.prototype.addWidget = function ( widget, row,col, rowSpan,colSpan )  {
 var cell = this.getCell ( row,col );
+  cell.rowSpan = rowSpan;
+  cell.colSpan = colSpan;
+  if (widget)  {
+    cell.appendChild ( widget.element );
+    widget.parent = this;
+  }
+  return cell;
+}
+
+Grid.prototype.insertWidget = function ( widget, row,col, rowSpan,colSpan )  {
+var cell = this.insertCell ( row,col );
   cell.rowSpan = rowSpan;
   cell.colSpan = colSpan;
   if (widget)  {
@@ -475,6 +683,12 @@ var button = new Button ( text,icon_uri );
   return button;
 }
 
+Grid.prototype.addButton = function ( text,icon_uri, row,col, rowSpan,colSpan )  {
+var button = new Button ( text,icon_uri );
+  this.addWidget ( button, row,col, rowSpan,colSpan );
+  return button;
+}
+
 Grid.prototype.setRadioSet = function ( row,col, rowSpan,colSpan )  {
 var radio = new RadioSet();
   this.setWidget ( radio, row,col, rowSpan,colSpan );
@@ -491,6 +705,12 @@ var label = new Label ( text );
 Grid.prototype.addLabel = function ( text, row,col, rowSpan,colSpan )  {
 var label = new Label ( text );
   this.addWidget ( label, row,col, rowSpan,colSpan );
+  return label;
+}
+
+Grid.prototype.setIconLabel = function ( text,icon_uri, row,col, rowSpan,colSpan )  {
+var label = new IconLabel ( text,icon_uri );
+  this.setWidget ( label, row,col, rowSpan,colSpan );
   return label;
 }
 
@@ -580,6 +800,18 @@ var checkbox = new Checkbox ( label_txt,checked_bool );
   return checkbox;
 }
 
+Grid.prototype.setIFrame = function ( url, row,col, rowSpan,colSpan )  {
+var iframe = new IFrame ( url );
+  this.setWidget ( iframe, row,col, rowSpan,colSpan );
+  return iframe;
+}
+
+Grid.prototype.addIFrame = function ( url, row,col, rowSpan,colSpan )  {
+  var iframe = new IFrame ( url );
+  this.addWidget ( iframe, row,col, rowSpan,colSpan );
+  return iframe;
+}
+
 Grid.prototype.setCellSize = function ( width,height, row,col )  {
 // Sets specified widths to cell in row,col
 var cell = this.getCell ( row,col );
@@ -593,6 +825,14 @@ var cell = this.getCell ( row,col );
   */
   return this;
 }
+
+
+Grid.prototype.setFontFamily = function ( row,col,family )  {
+  var cell = this.getCell ( row,col );
+  $(cell).css ({"font-family":family});
+  return this;
+}
+
 
 Grid.prototype.setNoWrap = function ( row,col )  {
 var cell = this.getCell ( row,col );
@@ -612,6 +852,12 @@ var cell = this.getCell ( row,col );
   return this;
 }
 
+Grid.prototype.setAlignment = function ( row,col,valign,halign )  {
+var cell = this.getCell ( row,col );
+  $(cell).css ({ "text-align":halign, "vertical-align":valign });
+  return this;
+}
+
 
 // -------------------------------------------------------------------------
 // Fieldset class
@@ -619,7 +865,8 @@ var cell = this.getCell ( row,col );
 function Fieldset ( title )  {
   Widget.call ( this,'fieldset' );
   this.legend = new Widget ( 'legend' );
-  this.legend.element.innerHTML = title;
+  this.legend.setText ( title );
+  // this.legend.element.innerHTML = title;
   this.addWidget ( this.legend );
 }
 
@@ -632,14 +879,20 @@ Fieldset.prototype.constructor = Fieldset;
 
 function Label ( text )  {
   Widget.call ( this,'div' );
-  this.element.innerHTML = text;
+  this.setText ( text );
+//  this.element.innerHTML = text;
 }
 
 Label.prototype = Object.create ( Widget.prototype );
 Label.prototype.constructor = Label;
 
-Label.prototype.setText = function ( text )  {
-  this.element.innerHTML = text;
+// Label.prototype.setText = function ( text )  {
+//   this.element.innerHTML = text;
+//   return this;
+// }
+
+Label.prototype.setDocFromURL = function ( url )  {
+  this.element.innerHTML = '<object type="text/html" data="' + url + '" ></object>';
   return this;
 }
 
@@ -660,18 +913,26 @@ IconLabel.prototype = Object.create ( Widget.prototype );
 IconLabel.prototype.constructor = IconLabel;
 
 IconLabel.prototype.setIconLabel = function ( text,icon_uri )  {
-  this.element.innerHTML = text;
+//  this.setText ( text );
+  this.element.innerHTML = text.toString();
+  // if (text)  this.element.innerHTML = text;
+  //      else  this.element.innerHTML = '&nbsp;';  // Safari 14 fix, ' ' does not work
   if (icon_uri.length>0)  {
-    $(this.element).css(
-      {'text-align':'center',
+    $(this.element).css({
+      'text-align':'center',
 //       'margin-left':'1.2em',
-       'background-image'   :'url("'+icon_uri+'")',
-       'background-repeat'  :'no-repeat',
-       'background-size'    :'22px',
-       'background-position':'0.5em center'});
+      'background-image'   :'url("' + icon_uri + '")',
+      'background-repeat'  :'no-repeat',
+      'background-size'    :'22px',
+      'background-position':'0.5em center'
+    });
   }
 }
 
+IconLabel.prototype.setBackground = function ( icon_uri )  {
+  if (icon_uri.length>0)
+    $(this.element).css({'background-image':'url("'+icon_uri+'")'});
+}
 
 
 // -------------------------------------------------------------------------
@@ -688,16 +949,22 @@ InputText.prototype.constructor = InputText;
 
 InputText.prototype.setStyle = function ( type,pattern,placeholder,tooltip )  {
   if (placeholder) this.element.setAttribute ( 'placeholder',placeholder );
-  if (tooltip)     this.element.setAttribute ( 'title'  ,tooltip );
-  if (type)        this.element.setAttribute ( 'type'   ,type    );
+  if (tooltip)     this.setTooltip ( tooltip );
+  if (type)        this.element.setAttribute ( 'type',type );
   if (pattern)     {
     if ((pattern=='integer') || (pattern=='integer_'))
       this.element.setAttribute ( 'pattern','^(-?[0-9]+\d*)$|^0$' );
     else if ((pattern=='real') || (pattern=='real_'))
       this.element.setAttribute ( 'pattern','^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$' );
     else
+      //this.element.pattern = pattern;
       this.element.setAttribute ( 'pattern',pattern );
   }
+  return this;
+}
+
+InputText.prototype.setType = function ( type )  {
+  if (type) this.element.setAttribute ( 'type',type );
   return this;
 }
 
@@ -726,10 +993,12 @@ InputText.prototype.setValue = function ( text )  {
   return this.element.value = text;
 }
 
+/*
 InputText.prototype.addOnInputListener = function ( listener_func )  {
   this.element.addEventListener('input',listener_func );
   return this;
 }
+*/
 
 InputText.prototype.setOnEnterListener = function ( socket_function )  {
   (function(self){
@@ -740,6 +1009,87 @@ InputText.prototype.setOnEnterListener = function ( socket_function )  {
   }(this))
 }
 
+
+// -------------------------------------------------------------------------
+// ACEditor class
+
+function ACEditor ( width,height,options )  {
+// all optional options:
+//  options = {
+//    'border'     : '1px solid black',
+//    'box-shadow' : '6px 6px lightgray',
+//    'font-size'  : '12px',
+//    'theme'      : 'chrome',
+//    'mode'       : 'python'
+//  }
+//
+
+  Widget.call ( this,'div' );
+
+  var css1 = {
+    'position' : 'relative',
+    'width'    : width,
+    'height'   : height,
+    'border'   : '1px solid gray'
+  };
+  if ('border' in options)
+    css1.border = options.border;
+  if ('box-shadow' in options)
+    css1['box-shadow'] = options['box-shadow'];
+
+  $(this.element).css ( css1 );
+
+  this.panel = new Widget ( 'div' );
+  this.element.appendChild ( this.panel.element );
+
+  var css2 = {
+    'position'  : 'absolute',
+    'top'       : 0,
+    'right'     : 0,
+    'bottom'    : 0,
+    'left'      : 0,
+    'width'     : '100%',
+    'font-size' : '14px'
+  };
+  if ('font-size' in options)
+    css2['font-size'] = options['font-size'];
+
+  $(this.panel.element).css ( css2 );
+
+  this.editor_theme = 'chrome';
+  this.editor_mode  = 'python';
+  if ('theme' in options)
+    this.editor_theme = options.theme;
+  if ('mode' in options)
+    this.editor_mode  = options.mode;
+  this.editor = null;
+
+}
+
+ACEditor.prototype = Object.create ( Widget.prototype );
+ACEditor.prototype.constructor = ACEditor;
+
+ACEditor.prototype.init = function ( text )  {
+  if (!this.editor)  {
+    this.editor = ace.edit ( this.panel.element.id );
+    this.editor.setTheme ( 'ace/theme/' + this.editor_theme );
+    this.editor.session.setMode ( 'ace/mode/' + this.editor_mode );
+    if (text)
+      this.setText ( text );
+  }
+}
+
+ACEditor.prototype.setText = function ( text )  {
+  if (this.editor)  {
+    this.editor.setValue ( text );
+    this.editor.clearSelection();
+  }
+}
+
+ACEditor.prototype.getText = function()  {
+  if (this.editor)  return this.editor.getValue();
+              else  return '';
+}
 
 
 // -------------------------------------------------------------------------
@@ -781,11 +1131,16 @@ function Image ( source,width,height )  {
   Widget.call ( this,'img' );
   if (source.length>0)  this.element.setAttribute ( 'src'   ,source );
   if (width .length>0)  this.element.setAttribute ( 'width' ,width  );
-  if (height.length>0)  this.element.setAttribute ( 'height',height  );
+  if (height.length>0)  this.element.setAttribute ( 'height',height );
 }
 
 Image.prototype = Object.create ( Widget.prototype );
 Image.prototype.constructor = Image;
+
+Image.prototype.setImage = function ( image_source )  {
+  if (image_source.length>0)
+    this.element.setAttribute ( 'src',image_source );
+}
 
 
 // -------------------------------------------------------------------------
@@ -796,13 +1151,16 @@ function Button ( text,icon_uri )  {
   this.div = document.createElement ( 'div' );
   this.element.appendChild ( this.div );
   this._set_button ( text,icon_uri );
+  this.click_count = 1;
 }
 
 Button.prototype = Object.create ( Widget.prototype );
 Button.prototype.constructor = Button;
 
 Button.prototype._set_button = function ( text,icon_uri )  {
-  this.div.innerHTML = text;
+  this.div.innerHTML = text.toString();
+  // if (text)  this.div.innerHTML = text;
+  //      else  this.div.innerHTML = ' ';  // Safari 14 fix
   if (icon_uri.length>0)  {
     $(this.div).css({'text-align':'center',
                      'margin-left':'1.2em'});
@@ -815,9 +1173,22 @@ Button.prototype._set_button = function ( text,icon_uri )  {
   $(this.element).button();
 }
 
+Button.prototype.getText = function()  {
+  return this.div.innerHTML;
+}
+
 Button.prototype.setButton = function ( text,icon_uri )  {
   this._set_button ( text,icon_uri );
   return this;
+}
+
+Button.prototype.setText = function ( text )  {
+  this._set_button ( text,'' );
+  return this;
+}
+
+Button.prototype.setIcon = function ( icon_uri )  {
+  $(this.element).css({'background-image' :'url("' + icon_uri + '")'});
 }
 
 Button.prototype.setDisabled = function ( disabled_bool )  {
@@ -830,7 +1201,6 @@ Button.prototype.setEnabled = function ( enabled_bool )  {
   return this;
 }
 
-
 Button.prototype.isDisabled = function()  {
   return $(this.element).button ( 'option','disabled' );
 }
@@ -840,7 +1210,7 @@ Button.prototype.setSize = function ( width,height )  {
   var h = parseInt(height);
   var icon_size = Math.min ( w,h );
   var margin    = Math.max ( 1,Math.floor(icon_size/8) );
-  icon_size -= 2*margin;
+  icon_size    -= 2*margin;
   var lm = (w-icon_size)/2.25;
   if (this.div.innerHTML.length>0)
     lm = Math.min ( (h-icon_size)/2,lm );
@@ -857,33 +1227,56 @@ Button.prototype.setSize_px = function ( width,height )  {
 }
 
 
+Button.prototype.addOnClickListener = function ( listener_func )  {
+  (function(button){
+    button.element.addEventListener('click',function(){
+      if (button.click_count>0)  {
+        button.click_count = 0;
+        listener_func();
+        window.setTimeout ( function(){
+          button.click_count = 1;
+        },1000 );
+      }
+    });
+  }(this))
+  return this;
+}
+
+
 // -------------------------------------------------------------------------
 // Image Button class
 
 function ImageButton ( icon_uri,width,height )  {
   Label.call ( this,' ' );
-  var image = new Image ( icon_uri,width,height );
-  this.addWidget ( image  );
-  this.setWidth  ( width  );
-  this.setHeight ( height );
+  this.image = new Image ( icon_uri,width,height );
+  this.addWidget ( this.image );
+  this.setWidth  ( width      );
+  this.setHeight ( height     );
 }
 
 ImageButton.prototype = Object.create ( Label.prototype );
 ImageButton.prototype.constructor = ImageButton;
 
+ImageButton.prototype.setImage = function ( icon_uri )  {
+  this.image.setImage ( icon_uri );
+}
+
 function setDefaultButton ( button,context_widget )  {
   button.element.style.fontWeight = 'bold';
-  jQuery(context_widget.element).keydown ( function(e){
+  $(context_widget.element).keydown ( function(e){
     if (e.keyCode == 13) {
+    //if (e.which == 13) {
       // handle click logic here
-      button.element.click();
+      button.click();
+      //e.preventDefault();
+      //return true;
     }
   });
 }
 
 function unsetDefaultButton ( button,context_widget )  {
   button.element.style.fontWeight = 'normal';
-  jQuery(context_widget.element).keydown();
+  $(context_widget.element).keydown();
 }
 
 
@@ -903,18 +1296,22 @@ RadioSet.prototype = Object.create ( Widget.prototype );
 RadioSet.prototype.constructor = RadioSet;
 
 RadioSet.prototype.addButton = function ( text,btnId,tooltip,checked_bool )  {
+
   var _id = this.element.id + '_' + btnId;
 
   var label = new Widget ( 'label' );
   label.element.setAttribute ( 'for',_id );
-  label.element.innerHTML = text;
+  label.element.innerHTML = text.toString();
+  // if (text)  label.element.innerHTML = text;
+  //      else  label.element.innerHTML = ' ';  // Safari 14 fix
   this.addWidget ( label );
   if (tooltip)
-    label.element.setAttribute ( 'title',tooltip );
+    label.setTooltip ( tooltip );
 
   var button = new Widget ( 'input' );
   button.element.setAttribute ( 'type','radio' );
   button.setId ( _id );
+  button.radioID = btnId;
   button.element.setAttribute ( 'name',this.name );
   if (checked_bool)  {
     button.element.setAttribute ( 'checked','checked' );
@@ -923,9 +1320,11 @@ RadioSet.prototype.addButton = function ( text,btnId,tooltip,checked_bool )  {
   this.addWidget ( button );
 
   return this;  // for chaining
+
 }
 
 RadioSet.prototype.make = function (  onClick_func  )  {
+
   (function(rs){
     function onClick()  {
       for (var i=0;i<rs.child.length;i++)
@@ -939,13 +1338,34 @@ RadioSet.prototype.make = function (  onClick_func  )  {
     }
     for (var i=0;i<rs.child.length;i++)
       if (rs.child[i].type=='input')
-        rs.child[i].addOnClickListener ( onClick );
+        rs.child[i].element.addEventListener('click',function(e){
+          onClick();
+        });
   }(this));
 
-//  $( 'input[name="' + this.name + '"]' ).checkboxradio();
-//  $(this.element).buttonset();
+  //  $( 'input[name="' + this.name + '"]' ).checkboxradio();
+  //$(this.element).buttonset();
   $(this.element).controlgroup();
+  //$(this.element).checkboxradio();
+
+  //this.addOnClickListener ( function(){
+  //   alert ('click');
+  //  } );
+
+/*
+  for (var i=0;i<this.child.length;i++)
+    if (this.child[i].type=='input')  {
+      (function(btn){
+        btn.addOnClickListener ( function(){
+          $(btn.element).click();
+//                  onClick_func ( btn.radioID );
+        });
+      }(this.child[i]))
+    }
+*/
+
   return this;
+
 }
 
 RadioSet.prototype.selectButton = function ( btnId )  {
@@ -973,78 +1393,6 @@ RadioSet.prototype.isDisabled = function()  {
 RadioSet.prototype.getValue = function()  {
   return this.selected;
 }
-
-
-/*
-function RadioSet()  {
-  Widget.call ( this,'div' );
-  // now use addButton to stuff Set with buttons,
-  // then call make()
-}
-
-RadioSet.prototype = Object.create ( Widget.prototype );
-RadioSet.prototype.constructor = RadioSet;
-
-RadioSet.prototype.addButton = function ( text,btnId,tooltip,checked_bool )  {
-  var _id = this.element.id + '_' + btnId;
-  var button = new Widget ( 'input' );
-  button.element.setAttribute ( 'type','radio' );
-  button.setId ( _id );
-  button.element.setAttribute ( 'name',this.element.id );
-  if (tooltip)
-    button.element.setAttribute ( 'title',tooltip );
-  if (checked_bool)
-    button.element.setAttribute ( 'checked','checked' );
-  this.addWidget ( button );
-  var label = new Widget ( 'label' );
-  label.element.setAttribute ( 'for',_id );
-  label.element.innerHTML = text;
-  this.addWidget ( label );
-  return this;  // for chaining
-}
-
-
-RadioSet.prototype.make = function (  onClick_func  )  {
-  (function(rs){
-    function onClick()  {
-      for (var i=0;i<rs.child.length;i++)
-        if (rs.child[i].type=='input')  {
-          if (rs.child[i].element.checked)  {
-            onClick_func ( rs.child[i].element.id.substr(rs.element.id.length+1) );
-          }
-        }
-    }
-    for (var i=0;i<rs.child.length;i++)
-      if (rs.child[i].type=='input')
-        rs.child[i].addOnClickListener ( onClick );
-  }(this));
-  $(this.element).buttonset();
-//  $(this.element).controlgroup();
-  return this;
-}
-
-RadioSet.prototype.selectButton = function ( btnId )  {
-  var _id = this.element.id + '_' + btnId;
-  for (var i=0;i<this.child.length;i++)
-    if (this.child[i].element.id==_id)
-      $(this.child[i].element).click();
-  return this;
-}
-
-RadioSet.prototype.setDisabled = function ( disabled_bool )  {
-  $(this.element).buttonset ( 'option','disabled',disabled_bool );
-  return this;
-}
-
-RadioSet.prototype.setEnabled = function ( enabled_bool )  {
-  $(this.element).buttonset ( 'option','disabled',!enabled_bool );
-  return this;
-}
-
-RadioSet.prototype.isDisabled = function()  {
-  return $(this.element).buttonset ( 'option','disabled' );
-}
-*/
 
 
 // -------------------------------------------------------------------------
@@ -1100,6 +1448,10 @@ function SelectFile ( multiple_bool,accept_str )  {
 SelectFile.prototype = Object.create ( Widget.prototype );
 SelectFile.prototype.constructor = SelectFile;
 
+SelectFile.prototype.getFiles = function()  {
+  return this.element.files;
+}
+
 
 // -------------------------------------------------------------------------
 // ToolBar class
@@ -1120,25 +1472,62 @@ function IFrame ( uri )  {
   Widget.call ( this,'iframe' );
   if (uri.length>0)
     this.element.setAttribute ( 'src',uri );
+  //this.element.setAttribute ( 'sandbox','allow-same-origin' );
   $(this.element).css ( {'border':'none'} );
+  //var body = this.element.contentWindow.document.querySelector('body');
+  //body.style.fontSize = '16px';
   /*
   (function(iframe){
-    iframe.element.onload = function(){ iframe.setVisible(true); };
+    iframe.element.onload = function(){
+      var body = iframe.element.contentWindow.document.querySelector('body');
+      body.style.fontSize = '16px';
+      window.setTimeout ( function(){
+        iframe.setVisible ( true );
+      },100 );
+    };
   }(this))
   */
+  //this.setOnLoadListener ( null );
 }
 
 IFrame.prototype = Object.create ( Widget.prototype );
 IFrame.prototype.constructor = IFrame;
 
+IFrame.prototype.setFramePosition = function ( left,top,width,height )  {
+  this.setAttribute ( 'style','border:none;position:absolute;top:' + top +
+                              ';left:' + left + ';width:' + width +
+                              ';height:' + height + ';' );
+  return this;
+}
+
+IFrame.prototype.setOnLoadListener = function ( onload_func )  {
+// this does not wait until ready
+  this.element.addEventListener ( 'load',function() {
+    onload_func();
+  });
+  /*
+  (function(iframe){
+    iframe.element.onload = function(){
+      var body = iframe.element.contentWindow.document.querySelector('body');
+      body.style.fontSize = '16px';
+      window.setTimeout ( function(){
+        iframe.setVisible ( true );
+      },150 );
+      if (onload_func)
+        onload_func();
+    };
+  }(this))
+  */
+}
+
 IFrame.prototype.loadPage = function ( uri )  {
-  //this.setVisible ( false );
   this.element.src = uri;
+  return this;
 }
 
 IFrame.prototype.setHTML = function ( html )  {
-  //this.setVisible ( false );
   this.element.src = 'data:text/html;charset=utf-8,' + encodeURI(html);
+  return this;
 }
 
 IFrame.prototype.getURL = function()  {
@@ -1146,13 +1535,20 @@ IFrame.prototype.getURL = function()  {
 }
 
 IFrame.prototype.clear = function()  {
-  //this.setVisible ( false );
   this.element.src = 'about:blank';
+  return this;
 }
 
 IFrame.prototype.reload = function()  {
-  //this.setVisible ( false );
   this.element.src = this.element.src;
+  return this;
+}
+
+IFrame.prototype.getDocument = function()  {
+  return this.element.contentWindow || this.element.contentDocument;
+  // return this.element.contentDocument || this.element.contentWindow;
+  //return this.element.contentWindow || this.element.contentDocument.document ||
+  //       this.element.contentDocument;
 }
 
 
@@ -1217,6 +1613,8 @@ function Combobox()  {
   // then call make()
   this.selected_value = null;
   this.selected_text  = null;
+  this.onchange       = null;
+  this.width          = 'auto';
 }
 
 Combobox.prototype = Object.create ( Widget.prototype );
@@ -1231,20 +1629,30 @@ Combobox.prototype.addItem = function ( text,itemId,selected_bool )  {
     this.selected_value = itemId;
     this.selected_text  = text;
   }
-  item.element.innerHTML = text;
+  item.element.innerHTML = text.toString();
+  // if (text)  item.element.innerHTML = text;
+  //      else  item.element.innerHTML = ' ';  // Safari 14 fix
   this.addWidget ( item );
   return this;  // for chaining
 }
 
+Combobox.prototype.setWidth = function ( w )  {
+  this.width = w;
+  return this;
+}
+
+
 Combobox.prototype.make = function()  {
 
-  $(this.element).selectmenu();
+  $(this.element).selectmenu ({ width:this.width });
   //.addClass( "combobox-overflow" );
   (function(combobox){
-    $(combobox.element).on('change', function(){
+    $(combobox.element).on('selectmenuchange', function(){
       combobox.selected_value = combobox.element.value;
       combobox.selected_text  =
                 combobox.element.options[combobox.element.selectedIndex].text;
+      if (combobox.onchange)
+        combobox.onchange ( combobox.selected_value,combobox.selected_text );
     });
   }(this));
 
@@ -1252,6 +1660,19 @@ Combobox.prototype.make = function()  {
 
 }
 
+Combobox.prototype.addOnChangeListener = function ( listener_func )  {
+  this.onchange = listener_func;
+  return this;
+}
+
+
+Combobox.prototype.getValue = function()  {
+  return this.selected_value;
+}
+
+Combobox.prototype.getText = function()  {
+  return this.selected_text;
+}
 
 
 // -------------------------------------------------------------------------
@@ -1263,7 +1684,10 @@ function Checkbox ( label_txt,checked_bool )  {
   var _id = 'cbx-' + this.id;
 
   this.element.htmlFor   = _id;
-  this.element.innerHTML = label_txt;
+  this.element.innerHTML = label_txt.toString();
+  // if (label_txt)
+  //       this.element.innerHTML = label_txt;
+  // else  this.element.innerHTML = ' ';
   $(this.element).css({'white-space':'nowrap','text-align':'left'});
 
   this.checkbox = document.createElement ( 'input' );
@@ -1290,6 +1714,11 @@ Checkbox.prototype.getValue = function() {
   return this.checkbox.checked;
 }
 
+Checkbox.prototype.setValue = function ( checked_bool ) {
+  this.checkbox.checked = checked_bool;
+  $(this.checkbox).checkboxradio( "refresh" );
+}
+
 Checkbox.prototype.setDisabled = function ( disabled_bool )  {
   if (disabled_bool)
         $(this.checkbox).checkboxradio( "disable" );
@@ -1308,7 +1737,9 @@ function RadioButton ( label_txt,checked_bool )  {
   var _id = 'cbx-' + this.id;
 
   this.element.htmlFor   = _id;
-  this.element.innerHTML = label_txt;
+  this.element.innerHTML = label_txt.toString();
+  // if (label_txt)  this.element.innerHTML = label_txt;
+  //           else  this.element.innerHTML = ' ';  // Safari 14 fix
   $(this.element).css({'white-space':'nowrap'});
 
   this.radio = document.createElement ( 'input' );

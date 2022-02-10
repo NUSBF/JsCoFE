@@ -52,32 +52,28 @@ var __environ_client  = [];     // list of key environmental variables on Client
 
 var __tips = null;  // tips loaded from FE (optional), used in login page
 
-//var __mobile_device = ('ontouchstart' in document.documentElement);
-// the following will also include desktops with touch screens:
-//var __mobile_device = (navigator.maxTouchPoints || 'ontouchstart' in document.documentElement);
+// var __mobile_device = (/Android|webOS|BlackBerry/i.test(navigator.userAgent) );
+// var __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
+//                       (navigator.maxTouchPoints && (navigator.maxTouchPoints > 2) &&
+//                        /MacIntel/.test(navigator.platform));
+// var __any_mobile_device = __mobile_device || __iOS_device;
 
-//var __mobile_device = (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) );
-var __mobile_device = (/Android|webOS|BlackBerry/i.test(navigator.userAgent) );
-var __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
+var __mobile_device     = false;  // not iOS
+var __iOS_device        = false;
+
+if (navigator.userAgentData) {
+  // use new hints
+  __mobile_device = navigator.userAgentData.mobile;
+  alert ( navigator.userAgentData.platform );
+} else {
+  // fall back to user-agent string parsing
+  __mobile_device = (/Android|webOS|BlackBerry/i.test(navigator.userAgent) );
+  __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream ) ||
                       (navigator.maxTouchPoints && (navigator.maxTouchPoints > 2) &&
                        /MacIntel/.test(navigator.platform));
-var __any_mobile_device = __mobile_device || __iOS_device;
-//var iOS = !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+}
 
-/*
-if ((navigator.userAgent.indexOf('Version/14')>=0) &&
-    (navigator.userAgent.indexOf('Safari')>=0))
-  window.setTimeout ( function(){
-    //alert ( 'You are using Mac OSX Safari Version 14, which is known not to work ' +
-    //        'well with ' + appName() + '. Please use another browser, such as ' +
-    //        'Opera, Chrome, Firefox.' );
-    new MessageBox ( 'Unsuitable browser',
-        '<div style="width:450px">You are using Mac OSX Safari Version 14, ' +
-        'which is known not to work well with ' + appName() +
-        '. Please use another browser, such as Opera, Chrome, Firefox.</div>'
-    );
-  },500);
-*/
+var __any_mobile_device = __mobile_device || __iOS_device;
 
 var __browser_checked = false;
 
