@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.08.17   <--  Date of Last Modification.
+ *    12.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *       ~~~~~~~~~  TableScroll  - table with scrollable body
  *                  TableSort    - table with sortable columns
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -121,7 +121,8 @@ Table.prototype.setAllColumnCSS = function ( css,start_row,start_col )  {
 
 function TableCell ( text )  {
   Widget.call ( this,'td' );
-  this.element.innerHTML = text;
+  this.setText ( text );
+//  this.element.innerHTML = text;
   this.text = text;
   this.css0 = null;
 }
@@ -140,7 +141,8 @@ TableCell.prototype.setNoWrap = function()  {
 
 function TableHeaderCell ( text )  {
   Widget.call ( this,'th' );
-  this.element.innerHTML = text;
+  this.setText ( text );
+//  this.element.innerHTML = text;
 }
 
 TableHeaderCell.prototype = Object.create ( Widget.prototype );
@@ -159,7 +161,10 @@ TableRow.prototype = Object.create ( Widget.prototype );
 TableRow.prototype.constructor = TableRow;
 
 TableRow.prototype.addCell = function ( text )  {
-var td = new TableCell ( text );
+var td;
+  if ((typeof(text)!='undefined') && (text!=null))
+        td = new TableCell ( text.toString() );
+  else  td = new TableCell ( '&nbsp;' );
   this.addWidget ( td );
   return td;
 }
@@ -225,7 +230,8 @@ function TableScroll ( topCaption,bottomCaption,header_list,tooltip_list )  {
   }
   if (topCaption)  {
     this.topLegend = new Widget ( 'caption' );
-    caption.innerHTML = topCaption;
+    //caption.innerHTML = topCaption;
+    this.topLegend.setText ( topCaption );
     this.table.addWidget ( this.topLegend );
   }
 
@@ -304,15 +310,43 @@ TableScroll.prototype.clearBody = function()  {
 // -------------------------------------------------------------------------
 // TableSort class:  table with sortable columns
 
+/*
 function TableSort()  {
   Widget.call ( this,'table' );
   this.element.className = 'tablesorter widget-zebra';
 //  this.element.setAttribute ( 'class','tablesorter widget-zebra' );
-  this.head = new Widget('thead');
-  this.body = new Widget('tbody');
+  this.spacer = new Widget('div');
+  this.head   = new Widget('thead');
+  this.body   = new Widget('tbody');
   this.element.appendChild ( this.head.element );
   this.element.appendChild ( this.body.element );
   this.selectedRow = null;  // none is selected initially
+  this.spacer.setWidth_px ( 1 );
+  this.head_top    = 0;
+  this.head_height = 0;
+}
+*/
+
+function TableSort()  {
+  Widget.call ( this,'div' );
+//  this.element.setAttribute ( 'class','tablesorter widget-zebra' );
+  this.spacer    = new Widget('div');
+  this.table_div = new Widget('div');
+  this.table_div.element.className = 'table-content';
+  this.element.appendChild ( this.spacer   .element );
+  this.element.appendChild ( this.table_div.element );
+  this.table  = new Widget('table');
+  this.table.element.className = 'tablesorter widget-zebra';
+  this.table_div.element.appendChild ( this.table.element );
+  this.head   = new Widget('thead');
+  this.body   = new Widget('tbody');
+  this.table.element.appendChild ( this.head.element );
+  this.table.element.appendChild ( this.body.element );
+  this.selectedRow = null;  // none is selected initially
+  this.spacer.setWidth_px ( 1 );
+  this.head_top    = 0;
+  this.head_height = 0;
+  this.onsorted    = null;
 }
 
 TableSort.prototype = Object.create ( Widget.prototype );
@@ -341,8 +375,19 @@ var trow = this.head.child[0];
 }
 
 TableSort.prototype.setHeaderColWidth = function ( col,width )  {
-  var trow = this.head.child[0];
+var trow = this.head.child[0];
   trow.child[col].element.style.width = width;
+  //if (this.body.child.length>0)
+  //  this.body.child[col].element.style.width = width;
+  if (this.body.child.length>0)  {
+    trow = this.body.child[0];
+    trow.child[col].element.style.width = width;
+  }
+  /*
+  $(trow.child[col].element).css('width',width);
+  if (this.body.child.length>0)
+    $(this.body.child[col].element).css('width',width);
+  */
 }
 
 TableSort.prototype.selectRow = function ( trow )  {
@@ -370,9 +415,14 @@ var tr = new TableRow();
   (function(table,trow)  {
     trow.addOnClickListener ( function(){
       table.selectRow ( trow );
+      table.emitSignal ( 'row_click',trow );
     });
     trow.addOnDblClickListener ( function(){
-      table.emitSignal ( 'row_dblclick',tr );
+      table.emitSignal ( 'row_dblclick',trow );
+    });
+    trow.addOnRightClickListener ( function(e) {
+      table.selectRow  ( trow );
+      table.emitSignal ( 'row_rightclick',trow );
     });
   }(this,tr));
   return tr;
@@ -383,31 +433,128 @@ TableSort.prototype.removeAllRows = function()  {
 }
 
 TableSort.prototype.clear = function()  {
-  this.element.removeChild ( this.head.element );
-  this.element.removeChild ( this.body.element );
+  this.table.element.removeChild ( this.head.element );
+  this.table.element.removeChild ( this.body.element );
   this.head = new Widget('thead');
   this.body = new Widget('tbody');
-  this.element.appendChild ( this.head.element );
-  this.element.appendChild ( this.body.element );
+  this.table.element.appendChild ( this.head.element );
+  this.table.element.appendChild ( this.body.element );
 }
 
-TableSort.prototype.createTable = function()  {
+TableSort.prototype.createTable = function ( onSorted_func )  {
 //  alert ( this.parent.element.innerHTML );
+
+  this.onsorted = onSorted_func;
+
+  (function(self){
+    $(self.table.element).tablesorter({
+      theme   : 'blue',
+      widgets : ['zebra']
+    })
+    .bind("sortEnd",function(e, t) {
+      if (self.onsorted)
+        self.onsorted();
+    });
+  }(this))
+
+/*
   $(this.element).tablesorter({
-    theme: 'blue'
+    theme: 'blue',
+    headerTemplate: '{content} {icon}', // Add icon for various themes
+    widgets: ['zebra', 'filter', 'stickyHeaders'],
+    widgetOptions: {
+      // jQuery selector or object to attach sticky header to
+      stickyHeaders_attachTo: '#tbspopup',
+      stickyHeaders_offset: 0,
+      stickyHeaders_addCaption: true
+    }
   });
+
+
+    $("table")
+      .tablesorter({
+        theme: 'blue',
+        showProcessing : true
+      })
+
+      // assign the sortStart event
+      .bind("sortStart",function(e, t) {
+        start = e.timeStamp;
+        $("#display").append('<li>Sort Started</li>').find('li:first').remove();
+      })
+
+      .bind("sortEnd",function(e, t) {
+        $("#display").append('<li>Sort Ended after ' + ( (e.timeStamp - start)/1000 ).toFixed(2) + ' seconds</li>').find('li:first').remove();
+      });
+
+*/
+
   var child = this.body.child;
   for (var i=0;i<child.length;i++)  {
     var childi = child[i].child;
     for (var j=0;j<childi.length;j++)
       childi[j].css0 = $(childi[j].element).css("background");
   }
+
+  /*
+  this.head.element.className = 'fixthead';
+  var hrow = this.head.child[0];
+  for (var j=0;j<child[0].length;j++)
+    hrow.child[j].element.style.width = child[0][j].element.style.width;
+*/
+
+}
+
+TableSort.prototype.fixHeader = function()  {
+
+  if ((this.body.child.length>0) && (this.head.child.length>0))  {
+
+    $(this.head.element).addClass ('fixthead');
+
+    var hrow = this.head.child[0].child;
+    var trow = this.body.child[0].child;
+
+    if (this.head_height<=0)  {
+      this.head_height = Math.round($(this.head.element).outerHeight());
+      this.head_top    = Math.round($(this.head.element).position().top);
+      //this.head.element.style.top = (this.head_top-this.head_height) + 'px';
+      this.head.element.style.top = this.head_top + 'px';
+      this.spacer.setHeight_px ( this.head_height );
+    }
+
+    this.head.setWidth_px ( this.body.width_px() );
+
+    for (var j=0;j<hrow.length;j++)
+      $(hrow[j].element).outerWidth ( $(trow[j].element).outerWidth() );
+
+    for (var j=0;j<hrow.length;j++)
+      $(trow[j].element).outerWidth ( $(hrow[j].element).outerWidth() );
+
+/*
+    var hwidth = [];
+    vat twidth = [];
+    for (var j=0;j<hrow.length;j++)
+
+
+*/
+
+  }
+
+}
+
+TableSort.prototype.setTableHeight = function ( height_int )  {
+  if (this.body.child.length>0)
+    this.table_div.element.style.height = height_int - this.head_top + 'px';
 }
 
 TableSort.prototype.getSortList = function()  {
-  return $(this.element)[0].config.sortList;
+  return $(this.table.element)[0].config.sortList;
 }
 
-TableSort.prototype.applySortList = function ( sortList )  {
-  $(this.element).trigger("sorton",[sortList]);
+TableSort.prototype.applySortList = function ( sortList,block_callback )  {
+var onSorted_func = this.onsorted;
+  if (block_callback)
+    this.onsorted = null;
+  $(this.table.element).trigger("sorton",[sortList]);
+  this.onsorted = onSorted_func;
 }
