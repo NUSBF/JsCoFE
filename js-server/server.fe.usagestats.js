@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.02.21   <--  Date of Last Modification.
+ *    13.02.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,6 +27,7 @@ var child_process = require('child_process');
 var cmd     = require('../js-common/common.commands');
 var cutils  = require('../js-common/common.utils');
 var conf    = require('./server.configuration');
+var anl     = require('./server.fe.analytics');
 var user    = require('./server.fe.user');
 var emailer = require('./server.emailer');
 var utils   = require('./server.utils');
@@ -203,6 +204,9 @@ var generate_report = false;
   utils.writeObject ( statsFilePath,usageStats );
 
   if (generate_report)  {
+
+    log.standard ( 2,'save current analytics ...' );
+    anl.writeFEAnalytics();
 
     // generate usage report once in 24 hours
 

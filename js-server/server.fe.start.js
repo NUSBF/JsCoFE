@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.11.21   <--  Date of Last Modification.
+ *    13.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -27,6 +27,7 @@ var request = require('request');
 //  load application modules
 var conf  = require('./server.configuration');
 var pp    = require('./server.process_post');
+var anl   = require('./server.fe.analytics');
 var user  = require('./server.fe.user');
 var fcl   = require('./server.fe.facilities');
 var rj    = require('./server.fe.run_job');
@@ -76,8 +77,11 @@ function start ( callback_func )  {
   user.readUserLoginHash();
 
   // read job register
-  rj.readFEJobRegister ();
+  rj.readFEJobRegister();
   //rj.cleanFEJobRegister();
+
+  // read analytics
+  anl.readFEAnalytics();
 
   //  instantiate the server
   var server = http.createServer();

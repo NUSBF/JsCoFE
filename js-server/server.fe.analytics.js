@@ -1,0 +1,448 @@
+
+/*
+ *  ==========================================================================
+ *
+ *    12.02.22   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  --------------------------------------------------------------------------
+ *
+ *  **** Module  :  js-server/server.fe.analytics.js
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  Front End Server -- Analytics
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel, A. Lebedev 2022
+ *
+ *  ==========================================================================
+ *
+ */
+
+//  load system modules
+//var fs            = require('fs-extra');
+/*
+var child_process = require('child_process');
+
+//  load application modules
+//var emailer  = require('./server.emailer');
+var uh    = require('./server.fe.upload_handler');
+var cmd   = require('../js-common/common.commands');
+var fcl   = require('../js-common/common.data_facility');
+*/
+
+//  load system modules
+var path  = require('path');
+
+//
+// //  load application modules
+var conf  = require('./server.configuration');
+
+// var user  = require('./server.fe.user');
+// var prj   = require('./server.fe.projects');
+var utils = require('./server.utils');
+// var urat  = require('../js-common/common.userration');
+
+//  prepare log
+var log = require('./server.log').newLog(25);
+
+// ===========================================================================
+
+var feAnalyticsFile = 'fe_analytics.meta';
+var feAnalytics     = null;
+var lastSaved       = 0;
+
+// ===========================================================================
+
+var countries = {
+  'com': 'Generic COM',
+  'edu': 'United States EDU',
+  'ac' : 'Ascension Island',
+  'ad' : 'Andorra',
+  'ae' : 'United Arab Emirates',
+  'af' : 'Afghanistan',
+  'ag' : 'Antigua and Barbuda',
+  'ai' : 'Anguilla',
+  'al' : 'Albania',
+  'am' : 'Armenia',
+  'an' : 'Netherlands Antilles',
+  'ao' : 'Angola',
+  'aq' : 'Antarctic',
+  'ar' : 'Argentina',
+  'as' : 'American Samoa',
+  'at' : 'Austria',
+  'au' : 'Australia',
+  'aw' : 'Aruba',
+  'ax' : 'Åland Islands',
+  'az' : 'Azerbaijan',
+  'ba' : 'Bosnia and Herzegovina',
+  'bb' : 'Barbados',
+  'bd' : 'Bangladesh',
+  'be' : 'Belgium',
+  'bf' : 'Burkina Faso',
+  'bg' : 'Bulgaria',
+  'bh' : 'Bahrain',
+  'bi' : 'Burundi',
+  'bj' : 'Benin',
+  'bl' : 'Saint-Barthélemy',
+  'bm' : 'Bermuda',
+  'bn' : 'Brunei',
+  'bo' : 'Bolivia',
+  'br' : 'Brazil',
+  'bq' : 'Bonaire, Saba, Sint Eustatius',
+  'bs' : 'Bahamas',
+  'bt' : 'Bhutan',
+  'bv' : 'Bouvet Island',
+  'bw' : 'Botswana',
+  'by' : 'Belarus',
+  'bz' : 'Belize',
+  'ca' : 'Canada',
+  'cc' : 'Cocos Islands',
+  'cd' : 'Democratic Republic of the Congo',
+  'cf' : 'Central African Republic',
+  'cg' : 'Republic of the Congo',
+  'ch' : 'Switzerland',
+  'ci' : 'Côte d’Ivoire',
+  'ck' : 'Cook Islands',
+  'cl' : 'Chile',
+  'cm' : 'Cameroon',
+  'cn' : 'China',
+  'co' : 'Colombia',
+  'cr' : 'Costa Rica',
+  'cs' : 'Czechoslovakia',
+  'cu' : 'Cuba',
+  'cv' : 'Cape Verde',
+  'cw' : 'Curaçao',
+  'cx' : 'Christmas Island',
+  'cy' : 'Cyprus',
+  'cz' : 'Czech Republic',
+  'dd' : 'German Democratic Republic',
+  'de' : 'Germany',
+  'dj' : 'Djibuti',
+  'dk' : 'Denmark',
+  'dm' : 'Dominica',
+  'do' : 'Dominican Republic',
+  'dz' : 'Algeria',
+  'ec' : 'Ecuador',
+  'ee' : 'Estonia',
+  'eg' : 'Egypt',
+  'eh' : 'Western Sahara',
+  'er' : 'Eritrea',
+  'es' : 'Spain',
+  'et' : 'Ethiopia',
+  'eu' : 'European Union',
+  'fi' : 'Finland',
+  'fj' : 'Fiji',
+  'fk' : 'Falkland Islands',
+  'fm' : 'Micronesia',
+  'fo' : 'Faroe',
+  'fr' : 'France',
+  'ga' : 'Gabon',
+  'gb' : 'United Kingdom',
+  'gd' : 'Grenada',
+  'ge' : 'Georgia',
+  'gf' : 'French Guiana',
+  'gg' : 'Guernsey',
+  'gh' : 'Ghana',
+  'gi' : 'Gibraltar',
+  'gl' : 'Greenland',
+  'gm' : 'Gambia',
+  'gn' : 'Guinea',
+  'gp' : 'Guadeloupe',
+  'gq' : 'Equatorial Guinea',
+  'gr' : 'Greece',
+  'gs' : 'South Georgia and the South Sandwich Islands',
+  'gt' : 'Guatemala',
+  'gu' : 'Guam',
+  'gw' : 'Guinea-Bissau',
+  'gy' : 'Guyana',
+  'hk' : 'Hong Kong',
+  'hm' : 'Heard Island and McDonald Islands',
+  'hn' : 'Honduras',
+  'hr' : 'Croatia',
+  'ht' : 'Haiti',
+  'hu' : 'Hungary',
+  'id' : 'Indonesia',
+  'ie' : 'Ireland',
+  'il' : 'Israel',
+  'im' : 'Isle of Man',
+  'in' : 'India',
+  'io' : 'British Indian Ocean Territory',
+  'iq' : 'Iraq',
+  'ir' : 'Iran',
+  'is' : 'Iceland',
+  'it' : 'Italy',
+  'je' : 'Jersey',
+  'jm' : 'Jamaica',
+  'jo' : 'Jordan',
+  'jp' : 'Japan',
+  'ke' : 'Kenya',
+  'kg' : 'Kyrgyzstan',
+  'kh' : 'Cambodia',
+  'ki' : 'Kiribati',
+  'km' : 'Comoros',
+  'kn' : 'St. Kitts and Nevis',
+  'kp' : 'North Korea',
+  'kr' : 'South Korea',
+  'kw' : 'Kuwait',
+  'ky' : 'Cayman Islands',
+  'kz' : 'Kazakhstan',
+  'la' : 'Laos',
+  'lb' : 'Lebanon',
+  'lc' : 'St. Lucia',
+  'li' : 'Liechtenstein',
+  'lk' : 'Sri Lanka',
+  'lr' : 'Liberia',
+  'ls' : 'Lesotho',
+  'lt' : 'Lithuania',
+  'lu' : 'Luxembourg',
+  'lv' : 'Latvia',
+  'ly' : 'Libya',
+  'ma' : 'Marocco',
+  'mc' : 'Monaco',
+  'md' : 'Moldova',
+  'me' : 'Montenegro',
+  'mf' : 'Saint Martin',
+  'mg' : 'Madagascar',
+  'mh' : 'Marshall Islands',
+  'mk' : 'Macedonia',
+  'ml' : 'Mali',
+  'mm' : 'Myanmar',
+  'mn' : 'Mongolia',
+  'mo' : 'Macau',
+  'mp' : 'Northern Mariana Islands',
+  'mq' : 'Martinique',
+  'mr' : 'Mauritania',
+  'ms' : 'Montserrat',
+  'mt' : 'Malta',
+  'mu' : 'Mauritius',
+  'mv' : 'Maldives',
+  'mw' : 'Malawi',
+  'mx' : 'Mexico',
+  'my' : 'Malaysia',
+  'mz' : 'Mozambique',
+  'na' : 'Namibia',
+  'nc' : 'New Caledonia',
+  'ne' : 'Niger',
+  'nf' : 'Norfolk Island',
+  'ng' : 'Nigeria',
+  'ni' : 'Nicaragua',
+  'nl' : 'Netherlands',
+  'no' : 'Norway',
+  'np' : 'Nepal',
+  'nr' : 'Nauru',
+  'nu' : 'Niue',
+  'nz' : 'New Zealand',
+  'om' : 'Oman',
+  'pa' : 'Panama',
+  'pe' : 'Peru',
+  'pf' : 'French Polynesia',
+  'pg' : 'Papua New Guinea',
+  'ph' : 'Philippines',
+  'pk' : 'Pakistan',
+  'pl' : 'Poland',
+  'pm' : 'Saint Pierre and Miquelon',
+  'pn' : 'Pitcairn Islands',
+  'pr' : 'Puerto Rico',
+  'ps' : 'Palestine',
+  'pt' : 'Portugal',
+  'pw' : 'Palau',
+  'py' : 'Paraguay',
+  'qa' : 'Qatar',
+  're' : 'Réunion',
+  'ro' : 'Romania',
+  'rs' : 'Serbia',
+  'ru' : 'Russia',
+  'rw' : 'Rwanda',
+  'sa' : 'Saudi Arabia',
+  'sb' : 'Solomon Islands',
+  'sc' : 'Seychelles',
+  'sd' : 'Sudan',
+  'se' : 'Sweden',
+  'sg' : 'Singapore',
+  'sh' : 'St. Helena',
+  'si' : 'Slovenia',
+  'sj' : 'Svalbard and Jan Mayen',
+  'sk' : 'Slovakia',
+  'sl' : 'Sierra Leone',
+  'sm' : 'San Marino',
+  'sn' : 'Senegal',
+  'so' : 'Somalia',
+  'sr' : 'Suriname',
+  'ss' : 'South Sudan',
+  'st' : 'São Tomé and Príncipe',
+  'su' : 'Soviet Union',
+  'sv' : 'El Salvador',
+  'sx' : 'Sint Maarten',
+  'sy' : 'Syria',
+  'sz' : 'Swaziland',
+  'tc' : 'Turks and Caicos Islands',
+  'td' : 'Chad',
+  'tf' : 'French Southern and Antarctic Lands',
+  'tg' : 'Togo',
+  'th' : 'Thailand',
+  'tj' : 'Tajikistan',
+  'tk' : 'Tokelau',
+  'tl' : 'Timor-Leste',
+  'tm' : 'Turkmenistan',
+  'tn' : 'Tunisia',
+  'to' : 'Tonga',
+  'tp' : 'Timor-Leste',
+  'tr' : 'Turkey, Turkish Republic of Northern Cyprus',
+  'tt' : 'Trinidad and Tobago',
+  'tv' : 'Tuvalu',
+  'tw' : 'Taiwan',
+  'tz' : 'Tanzania',
+  'ua' : 'Ukraine',
+  'ug' : 'Uganda',
+  'uk' : 'United Kingdom',
+  'um' : 'United States Minor Outlying Islands',
+  'us' : 'United States',
+  'uy' : 'Uruguay',
+  'uz' : 'Uzbekistan',
+  'va' : 'Vatican City',
+  'vc' : 'St. Vincent and the Grenadines',
+  've' : 'Venezuela',
+  'vg' : 'Britische Virgin Islands',
+  'vi' : 'United States Virgin Islands',
+  'vn' : 'Vietnam',
+  'vu' : 'Vanuatu',
+  'wf' : 'Wallis and Futuna',
+  'ws' : 'Samoa',
+  'ye' : 'Yemen',
+  'yt' : 'Mayotte',
+  'yu' : 'Yugoslavia',
+  'za' : 'South Africa',
+  'zm' : 'Zambia',
+  'zr' : 'Zaire',
+  'zw' : 'Zimbabwe'
+};
+
+// ===========================================================================
+
+
+function FEAnalytics()  {
+  this.activity  = {};
+}
+
+FEAnalytics.prototype.userLogin = function ( userData )  {
+  if (!(userData.login in this.activity))
+    this.activity[userData.login] = {};
+  var dlist = userData.email.toLowerCase().split('@')[1].split('.');
+  var n = Math.min(2,dlist.length);
+  if ((dlist.length>2) && (dlist[dlist.length-2]=='ac'))
+    n = 3;
+  this.activity[userData.login].domain    = dlist.slice(dlist.length-n).join('.');
+  this.activity[userData.login].lastLogin = Date.now();
+  this.activity[userData.login].lastSeen  = this.activity[userData.login].lastLogin;
+}
+
+FEAnalytics.prototype.logPresence = function ( userData,t )  {
+  if (userData.login in this.activity)
+    this.activity[userData.login].lastSeen = t;
+}
+
+FEAnalytics.prototype.getReport = function ( tWindow )  {
+  var report     = {};
+  var collection = {};
+  var t0         = Date.now() - tWindow;
+
+  for (var login in this.activity)
+    if (this.activity[login].lastSeen>t0)  {
+      var domain  = this.activity[login].domain;
+      var country = domain.split('.').pop();
+      if (!(country in collection))  {
+        collection[country] = { 'domains' : {} };
+        collection[country].ucount = 0;
+      }
+      collection[country].ucount++;
+      if (!(domain in collection[country].domains))
+        collection[country].domains[domain] = 0;
+      collection[country].domains[domain]++;
+    }
+
+  var inWindow = [];
+  var country  = 1;
+  while (country) {
+    country = null;
+    var cnt = 0;
+    for (var c in collection)
+      if (collection[c].ucount>cnt)  {
+        country = c;
+        cnt     = collection[c].ucount;
+      }
+    if (country)  {
+      var witem = {};
+      if (country in countries)  witem.country = countries[country];
+                           else  witem.country = 'Unidentified';
+      witem.ucount  = collection[country].ucount;
+      witem.domains = [];
+      for (var d in collection[country].domains)
+        witem.domains.push({
+          'domain' : d,
+          'count'  : collection[country].domains[d]
+        });
+      for (var i=0;i<witem.domains.length;i++)
+        for (var j=i+1;j<witem.domains.length;j++)
+          if (witem.domains[j].count>witem.domains[i].count)  {
+            var di = witem.domains[i];
+            witem.domains[i] = witem.domains[j];
+            witem.domains[j] = di;
+          }
+      inWindow.push ( witem );
+      collection[country].ucount = -1;
+    }
+  }
+  report.in_window = inWindow;
+  return report;
+}
+
+
+// ===========================================================================
+
+function getAnalyticsFPath()  {
+  return path.join ( conf.getFEConfig().storage,feAnalyticsFile );
+}
+
+function readFEAnalytics()  {
+  if (!feAnalytics)  {
+    var fpath = getAnalyticsFPath();
+    obj       = utils.readObject ( fpath );
+    if (obj)  {
+      feAnalytics = new FEAnalytics();
+      for (var key in obj)
+        feAnalytics[key] = obj[key];
+    } else
+      writeFEAnalytics();
+    lastSaved = Date.now();
+  }
+}
+
+function writeFEAnalytics()  {
+var fpath = getAnalyticsFPath();
+  if (!feAnalytics)
+    feAnalytics = new FEAnalytics();
+  utils.writeObject ( fpath,feAnalytics );
+}
+
+function getFEAnalytics()  {
+  return feAnalytics;
+}
+
+function logPresence ( userData )  {
+  var t = Date.now();
+  feAnalytics.logPresence ( userData,t );
+  if (t-lastSaved>3600000)  { // 1 hour
+    writeFEAnalytics();
+    lastSaved = t;
+  }
+}
+
+
+// ==========================================================================
+// export for use in node
+
+module.exports.readFEAnalytics  = readFEAnalytics;
+module.exports.writeFEAnalytics = writeFEAnalytics;
+module.exports.getFEAnalytics   = getFEAnalytics;
+module.exports.logPresence      = logPresence;

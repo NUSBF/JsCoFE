@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.22   <--  Date of Last Modification.
+ *    13.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,6 +33,7 @@ var prj     = require('./server.fe.projects');
 var ration  = require('./server.fe.ration');
 var fcl     = require('./server.fe.facilities');
 var adm     = require('./server.fe.admin');
+var anl     = require('./server.fe.analytics');
 var ud      = require('../js-common/common.data_user');
 var cmd     = require('../js-common/common.commands');
 
@@ -517,6 +518,10 @@ var fe_server = conf.getFEConfig();
         uData.lastSeen = Date.now();
         utils.writeObject ( userFilePath,uData );
 
+        anl.getFEAnalytics().userLogin ( uData );
+        // var rep = anl.getFEAnalytics().getReport ( 1800000 );  // 30 minute window
+        // console.log ( rep );
+
         if (uData.login=='devel')  {
           token = '340cef239bd34b777f3ece094ffb1ec5';
         } else  {
@@ -577,8 +582,10 @@ var fe_server = conf.getFEConfig();
 
 function checkSession ( userData,callback_func )  {  // gets UserData object
   var retcode = cmd.fe_retcode.wrongSession;
-  if (__userLoginHash.getLoginData(userData.login_token).login)
+  if (__userLoginHash.getLoginData(userData.login_token).login)  {
+    anl.logPresence ( userData );
     retcode = cmd.fe_retcode.ok;
+  }
   callback_func ( new cmd.Response(retcode,'','') );
 }
 
