@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.01.22   <--  Date of Last Modification.
+ *    15.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -24,6 +24,7 @@ var request = require('request');
 
 //  load application modules
 var conf    = require('./server.configuration');
+var anl     = require('./server.fe.analytics');
 var user    = require('./server.fe.user');
 var rj      = require('./server.fe.run_job');
 var ustats  = require('./server.fe.usagestats')
@@ -150,6 +151,24 @@ function getAdminData ( loginData,data,callback_func )  {
 }
 
 
+function getAnalytics ( loginData,data )  {
+var uData = user.readUserData ( loginData );
+var rdata = {};
+
+  anl.writeFEAnalytics();
+  if (uData.role!=ud.role_code.admin)  {
+    rdata.served = false;
+    rdata.code   = 'Data available only in account with administrative privileges.';
+  } else  {
+    rdata = anl.getFEAnalytics().getReport();
+    rdata.served = true;
+  }
+
+  return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+
+}
+
+
 function updateAndRestart ( loginData,data )  {
 
   var uData = user.readUserData ( loginData );
@@ -172,4 +191,5 @@ function updateAndRestart ( loginData,data )  {
 // export for use in node
 module.exports.getNCData        = getNCData;
 module.exports.getAdminData     = getAdminData;
+module.exports.getAnalytics     = getAnalytics;
 module.exports.updateAndRestart = updateAndRestart;

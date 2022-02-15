@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.22   <--  Date of Last Modification.
+ *    15.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -387,7 +387,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
     });
 
     $(dlg.element).on( "dialogclose",function(event,ui){
-      $(dlg.element).dialog( "destroy" );
+      // $(dlg.element).dialog( "destroy" );
       dlg.delete();
     });
 

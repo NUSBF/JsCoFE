@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    14.02.22   <--  Date of Last Modification.
+ *    15.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.7.002 [14.02.2022]';
+var jsCoFE_version = '1.7.002 [15.02.2022]';
 // var jsCoFE_version = '1.7.001 [26.11.2021]';
 
 function appVersion()  {
@@ -146,6 +146,7 @@ var fe_reqtype = {
   wakeZombiJobs     : '-wakeZombiJobs',     // request to send zombi jobs to FE
   getJobFile        : '-getJobFile',        // request to download a job's file
   getAdminData      : '-getAdminData',      // request to serve data for admin page
+  getAnalytics      : '-getAnalytics',      // request to serve analytics data
   sendAnnouncement  : '-sendAnnouncement',  // request to send announcement to users
   manageDormancy    : '-manageDormancy',    // request to manage dormant users
   getUserKnowledge  : '-getUserKnowledge',  // request to send user knowledge data

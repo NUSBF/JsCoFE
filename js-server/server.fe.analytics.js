@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.02.22   <--  Date of Last Modification.
+ *    14.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -51,6 +51,8 @@ var log = require('./server.log').newLog(25);
 var feAnalyticsFile = 'fe_analytics.meta';
 var feAnalytics     = null;
 var lastSaved       = 0;
+var twindow_current = 60000;    // 1 minute
+var twindow_recent  = 1800000;  // 30 minutes
 
 // ===========================================================================
 
@@ -318,11 +320,18 @@ var countries = {
   'zw' : 'Zimbabwe'
 };
 
+function getCountry ( code )  {
+  if (!(code in countries))
+    return 'Country not identified';
+  return countries[code];
+}
+
 // ===========================================================================
 
 
 function FEAnalytics()  {
-  this.activity  = {};
+  this.activity = {};
+  this.doclog   = {};
 }
 
 FEAnalytics.prototype.userLogin = function ( userData )  {
@@ -337,64 +346,103 @@ FEAnalytics.prototype.userLogin = function ( userData )  {
   this.activity[userData.login].lastSeen  = this.activity[userData.login].lastLogin;
 }
 
-FEAnalytics.prototype.logPresence = function ( userData,t )  {
-  if (userData.login in this.activity)
-    this.activity[userData.login].lastSeen = t;
+FEAnalytics.prototype.logPresence = function ( ulogin,t )  {
+  if (ulogin in this.activity)
+    this.activity[ulogin].lastSeen = t;
 }
 
-FEAnalytics.prototype.getReport = function ( tWindow )  {
-  var report     = {};
-  var collection = {};
-  var t0         = Date.now() - tWindow;
+FEAnalytics.prototype.logDocument = function ( fpath )  {
+var fname = path.parse(fpath).base;
+  if (!(fname in this.doclog))  this.doclog[fname] = 1;
+                          else  this.doclog[fname]++;
+}
+
+FEAnalytics.prototype.getReport = function()  {
+var users_current = [];
+var users_recent  = [];
+var uhash_recent  = {};
+var t0            = Date.now();
+var t_current     = t0 - twindow_current;
+var t_recent      = t0 - twindow_recent;
 
   for (var login in this.activity)
-    if (this.activity[login].lastSeen>t0)  {
+    if (this.activity[login].lastSeen>=t_recent)  {
       var domain  = this.activity[login].domain;
       var country = domain.split('.').pop();
-      if (!(country in collection))  {
-        collection[country] = { 'domains' : {} };
-        collection[country].ucount = 0;
+      if (!(country in uhash_recent))  {
+        uhash_recent[country] = { 'domains' : {} };
+        uhash_recent[country].ucount = 0;
       }
-      collection[country].ucount++;
-      if (!(domain in collection[country].domains))
-        collection[country].domains[domain] = 0;
-      collection[country].domains[domain]++;
+      uhash_recent[country].ucount++;
+      if (!(domain in uhash_recent[country].domains))
+        uhash_recent[country].domains[domain] = 0;
+      uhash_recent[country].domains[domain]++;
+      if (this.activity[login].lastSeen>=t_current)
+        users_current.push({
+          login   : login,
+          domain  : this.activity[login].domain,
+          country : getCountry(country)
+        });
     }
 
-  var inWindow = [];
-  var country  = 1;
+  var users_recent = [];
+  var country      = 1;
   while (country) {
     country = null;
     var cnt = 0;
-    for (var c in collection)
-      if (collection[c].ucount>cnt)  {
+    for (var c in uhash_recent)
+      if (uhash_recent[c].ucount>cnt)  {
         country = c;
-        cnt     = collection[c].ucount;
+        cnt     = uhash_recent[c].ucount;
       }
     if (country)  {
-      var witem = {};
-      if (country in countries)  witem.country = countries[country];
-                           else  witem.country = 'Unidentified';
-      witem.ucount  = collection[country].ucount;
-      witem.domains = [];
-      for (var d in collection[country].domains)
-        witem.domains.push({
+      var item = {};
+      item.country = getCountry ( country );
+      item.ucount  = uhash_recent[country].ucount;
+      item.domains = [];
+      for (var d in uhash_recent[country].domains)
+        item.domains.push({
           'domain' : d,
-          'count'  : collection[country].domains[d]
+          'count'  : uhash_recent[country].domains[d]
         });
-      for (var i=0;i<witem.domains.length;i++)
-        for (var j=i+1;j<witem.domains.length;j++)
-          if (witem.domains[j].count>witem.domains[i].count)  {
-            var di = witem.domains[i];
-            witem.domains[i] = witem.domains[j];
-            witem.domains[j] = di;
+      for (var i=0;i<item.domains.length;i++)
+        for (var j=i+1;j<item.domains.length;j++)
+          if (item.domains[j].count>item.domains[i].count)  {
+            var di = item.domains[i];
+            item.domains[i] = item.domains[j];
+            item.domains[j] = di;
           }
-      inWindow.push ( witem );
-      collection[country].ucount = -1;
+      users_recent.push ( item );
+      uhash_recent[country].ucount = -1;
     }
   }
-  report.in_window = inWindow;
-  return report;
+
+  var doc_stats = [];
+  var total     = 0;
+  for (var doc in this.doclog)  {
+    doc_stats.push ({
+      'name'  : doc,
+      'count' : this.doclog[doc]
+    });
+    total += this.doclog[doc];
+  }
+
+  for (var i=0;i<doc_stats.length;i++)  {
+    for (var j=i+1;j<doc_stats.length;j++)
+      if (doc_stats[j].count>doc_stats[i].count)  {
+        var dsi = doc_stats[i];
+        doc_stats[i] = doc_stats[j];
+        doc_stats[j] = di;
+      }
+    doc_stats[i].percent = 100.0*doc_stats[i].count/total;
+  }
+
+  return {
+    users_current : users_current,
+    users_recent  : users_recent,
+    doc_stats     : doc_stats,
+  };
+
 }
 
 
@@ -412,9 +460,9 @@ function readFEAnalytics()  {
       feAnalytics = new FEAnalytics();
       for (var key in obj)
         feAnalytics[key] = obj[key];
+      lastSaved = Date.now();
     } else
       writeFEAnalytics();
-    lastSaved = Date.now();
   }
 }
 
@@ -423,19 +471,18 @@ var fpath = getAnalyticsFPath();
   if (!feAnalytics)
     feAnalytics = new FEAnalytics();
   utils.writeObject ( fpath,feAnalytics );
+  lastSaved = Date.now();
 }
 
 function getFEAnalytics()  {
   return feAnalytics;
 }
 
-function logPresence ( userData )  {
+function logPresence ( ulogin )  {
   var t = Date.now();
-  feAnalytics.logPresence ( userData,t );
-  if (t-lastSaved>3600000)  { // 1 hour
+  feAnalytics.logPresence ( ulogin,t );
+  if (t-lastSaved>3600000)  // 1 hour
     writeFEAnalytics();
-    lastSaved = t;
-  }
 }
 
 
