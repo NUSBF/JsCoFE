@@ -455,7 +455,7 @@ AdminPage.prototype.loadAnalytics = function()  {
               1,2,1,1 ).setNoWrap();
       self.anlTab.grid.setCellSize ( '50%','',1,3 );
 
-      if (anldata.users_current.length<=0)  {
+      if (anldata.users_total.length<=0)  {
 
         self.anlTab.grid.setLabel ( '<i>Nobody</i>',2,2,1,1 );
 
@@ -474,7 +474,7 @@ AdminPage.prototype.loadAnalytics = function()  {
           ]
         );
 
-        for (var i=0;i<anldata.users_current.length;i++)  {
+        for (var i=0;i<anldata.users_total.length;i++)  {
           self.usersTotalTable.setRow ( '' + (i+1),'',[
               anldata.users_total[i]
             ],i+1,(i & 1)==1 );
