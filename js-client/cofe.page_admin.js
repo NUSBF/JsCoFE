@@ -305,12 +305,6 @@ AdminPage.prototype.loadAnalytics = function()  {
                   .setFontSize  ( '1.5em' )
                   .setFontBold  ( true    );
 
-  // return {
-  //   users_current : users_current,
-  //   users_recent  : users_recent,
-  //   doc_stats     : doc_stats,
-  // };
-
   (function(self){
 
     serverRequest ( fe_reqtype.getAnalytics,0,'Admin Page',function(anldata){
@@ -319,7 +313,7 @@ AdminPage.prototype.loadAnalytics = function()  {
 
       // 1. Currently active users
 
-      self.anlTab.grid.setLabel ( '<h3><i>Now on site</i></h3>',row++,0,1,1 )
+      self.anlTab.grid.setLabel ( '<h3><i>Now on site</i></h3>',row++,0,1,1 );
 
       if (anldata.users_current.length<=0)  {
 
@@ -362,11 +356,13 @@ AdminPage.prototype.loadAnalytics = function()  {
 
       // 2. Recent geography
 
-      self.anlTab.grid.setLabel ( '&nbsp;<br><h3><i>Recent geography</i></h3>',row++,0,1,1 )
+      self.anlTab.grid.setLabel ( '&nbsp;<br><h3><i>Recent users geography</i></h3>',
+                                  row++,0,1,1 );
 
       if (anldata.users_recent.length<=0)  {
 
-        self.anlTab.grid.setLabel ( '<i>No users were present recently</i>',row++,0,1,1 );
+        self.anlTab.grid.setLabel ( '<i>No users were present recently</i>',
+                                    row++,0,1,1 );
 
       } else  {
 
@@ -377,7 +373,7 @@ AdminPage.prototype.loadAnalytics = function()  {
         self.geographyTable.setHeaderRow (
           [ '##',
             'Country',
-            'Recent users',
+            'Users',
             'Domains'
           ],[
             'Ordinal number',
@@ -409,7 +405,8 @@ AdminPage.prototype.loadAnalytics = function()  {
 
       // 3. Page views
 
-      self.anlTab.grid.setLabel ( '&nbsp;<br><h3><i>Page views</i></h3>',row++,0,1,1 )
+      self.anlTab.grid.setLabel ( '&nbsp;<br><h3><i>Page views</i></h3>',
+                                  row++,0,1,1 );
 
       if (anldata.doc_stats.length<=0)  {
 
@@ -443,6 +440,49 @@ AdminPage.prototype.loadAnalytics = function()  {
         self.pageViewsTable.setAllColumnCSS ({
           'vertical-align' : 'middle',
           'text-align'     : 'left',
+          'white-space'    : 'nowrap'
+        },1,1 );
+
+      }
+
+
+      // 4. Cumulative unique users per week
+
+      self.anlTab.grid.setLabel ( '&nbsp;',1,1,1,1 )
+                      .setWidth_px(40).setNoWrap();
+      self.anlTab.grid.setLabel (
+              '<h3><i>Unique users since week from today</i></h3>',
+              1,2,1,1 ).setNoWrap();
+      self.anlTab.grid.setCellSize ( '50%','',1,3 );
+
+      if (anldata.users_current.length<=0)  {
+
+        self.anlTab.grid.setLabel ( '<i>Nobody</i>',2,2,1,1 );
+
+      } else  {
+
+        self.usersTotalTable = new Table();
+        $(self.usersTotalTable.element).css({'width':'auto'});
+        self.anlTab.grid.setWidget ( self.usersTotalTable,2,2,row,1 );
+
+        self.usersTotalTable.setHeaderRow (
+          [ 'Week',
+            'Users'
+          ],[
+            'Week number from today',
+            'Number of unique users detected after the week'
+          ]
+        );
+
+        for (var i=0;i<anldata.users_current.length;i++)  {
+          self.usersTotalTable.setRow ( '' + (i+1),'',[
+              anldata.users_total[i]
+            ],i+1,(i & 1)==1 );
+        }
+
+        self.usersTotalTable.setAllColumnCSS ({
+          'vertical-align' : 'middle',
+          'text-align'     : 'right',
           'white-space'    : 'nowrap'
         },1,1 );
 
