@@ -360,12 +360,15 @@ var fname = path.parse(fpath).base;
 FEAnalytics.prototype.getReport = function()  {
 var users_current = [];
 var users_recent  = [];
+var users_total   = [];  // cumulative unique users per week
+var doc_stats     = [];  // web page hits
 var uhash_recent  = {};
 var t0            = Date.now();
 var t_current     = t0 - twindow_current;
 var t_recent      = t0 - twindow_recent;
+var tweek         = 3600000*24*7;  // milliseconds in a week
 
-  for (var login in this.activity)
+  for (var login in this.activity)  {
     if (this.activity[login].lastSeen>=t_recent)  {
       var domain  = this.activity[login].domain;
       var country = domain.split('.').pop();
@@ -384,9 +387,16 @@ var t_recent      = t0 - twindow_recent;
           country : getCountry(country)
         });
     }
+    var nweek = Math.floor ( (t0-this.activity[login].lastSeen)/tweek );
+    while (users_total.length<=nweek)
+      users_total.push ( 0 );
+    users_total[nweek]++;
+  }
 
-  var users_recent = [];
-  var country      = 1;
+  for (var i=1;i<users_total.length;i++)
+    users_total[i] += users_total[i-1];
+
+  var country = 1;
   while (country) {
     country = null;
     var cnt = 0;
@@ -417,8 +427,7 @@ var t_recent      = t0 - twindow_recent;
     }
   }
 
-  var doc_stats = [];
-  var total     = 0;
+  var total = 0;
   for (var doc in this.doclog)  {
     doc_stats.push ({
       'name'  : doc,
@@ -440,7 +449,8 @@ var t_recent      = t0 - twindow_recent;
   return {
     users_current : users_current,
     users_recent  : users_recent,
-    doc_stats     : doc_stats,
+    users_total   : users_total,
+    doc_stats     : doc_stats
   };
 
 }
