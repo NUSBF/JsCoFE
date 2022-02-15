@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.22   <--  Date of Last Modification.
+ *    15.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -239,6 +239,10 @@ var response = null;
           response = adm.getAdminData ( loginData,data,callback_func );
        break;
 
+    case cmd.fe_reqtype.getAnalytics :
+          response = adm.getAnalytics ( loginData,data );
+       break;
+
     default: response = new cmd.Response ( cmd.fe_retcode.wrongRequest,
                   '[00001] Unrecognised request <i>"' + request_cmd + '"</i>','' );
 
@@ -250,6 +254,7 @@ var response = null;
     switch (request_cmd)  {
       case cmd.fe_reqtype.runJob :
       case cmd.fe_reqtype.getCloudFileTree :
+      case cmd.fe_reqtype.getAdminData :
         break;
       default:  console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
     }

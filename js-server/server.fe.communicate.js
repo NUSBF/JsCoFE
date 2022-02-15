@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.02.21   <--  Date of Last Modification.
+ *    14.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Communication Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -30,6 +30,7 @@ var tmp     = require('tmp');
 //var class_map = require('./server.class_map');
 var conf      = require('./server.configuration');
 var utils     = require('./server.utils');
+var anl       = require('./server.fe.analytics');
 var user      = require('./server.fe.user');
 var prj       = require('./server.fe.projects');
 var rj        = require('./server.fe.run_job');
@@ -254,6 +255,9 @@ function Communicate ( server_request )  {
       console.log ( ' === ' + this.filePath );
       */
       this.filePath = this.filePath.substr(ix);
+      if (this.filePath.endsWith('.html'))
+        anl.getFEAnalytics().logDocument ( this.filePath );
+      // console.log ( "requested manual " + this.filePath);
       log.debug2 ( 2,"calculated path " + this.filePath);
     }
   }

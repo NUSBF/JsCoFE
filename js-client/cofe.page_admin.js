@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.01.22   <--  Date of Last Modification.
+ *    14.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,10 +62,12 @@ function AdminPage ( sceneId )  {
   // make tabs
   this.tabs = new Tabs();
   // this.tabs.setVisible ( false );
-  this.usersTab = this.tabs.addTab ( 'Users',true  );
-  this.nodesTab = this.tabs.addTab ( 'Nodes',false );
-  this.usageTab = this.tabs.addTab ( 'Usage',false );
-  this.jobsTab  = this.tabs.addTab ( 'Jobs' ,false );
+  this.usersTab = this.tabs.addTab ( 'Users'  ,true  );
+  this.nodesTab = this.tabs.addTab ( 'Nodes'  ,false );
+  this.anlTab   = this.tabs.addTab ( 'Monitor',false );
+  this.usageTab = this.tabs.addTab ( 'Usage'  ,false );
+  this.jobsTab  = this.tabs.addTab ( 'Jobs'   ,false );
+  // this.tabs.setVisible ( true );
 
   // center panel horizontally and make left- and right-most columns page margins
   this.grid.setCellSize ( '5pt','auto',1,0,1,1 );
@@ -74,12 +76,13 @@ function AdminPage ( sceneId )  {
 
   this.makeLogoPanel ( 2,0,3 );
 
-  this.jobsTitle     = this.jobsTab.grid.setLabel  ( '',0,0,1,1 );
-  this.jobStats      = this.jobsTab.grid.setLabel  ( '',1,0,1,1 );
+  // this.makeAnalyticsTab ( null );
+
+  this.jobsTitle     = this.jobsTab.grid.setLabel  ( '',0,0,1,1 ).setHeight_px ( 32 );
+  this.jobStats      = this.jobsTab.grid.setLabel  ( '',1,0,1,1 ).setHeight_px ( 32 );
                                   //      .setFontSize ( '14px' );
 
-  this.usersTitle    = this.usersTab.grid.setLabel ( '',0,0,1,1 )
-                                         .setHeight_px ( 32 );
+  this.usersTitle    = this.usersTab.grid.setLabel ( '',0,0,1,1 ).setHeight_px ( 32 );
   this.userListTable = null;
   this.uaPanel       = new Grid('');
   this.usersTab.grid.setWidget   ( this.uaPanel,0,1,1,1 );
@@ -182,13 +185,15 @@ AdminPage.prototype.destructor = function ( function_ready )  {
 */
 
 AdminPage.prototype.loadUsageStats = function()  {
-  if ((!this.usageStats._loaded) && (this.tabs.getActiveTabNo()==2))  {
+  if ((!this.usageStats._loaded) && (this.tabs.getActiveTabNo()==3))  {
     this.usageStats.loadPage ( this.usageStats._url );
     this.usageStats._loaded = true;
   }
 }
 
 AdminPage.prototype.refresh = function()  {
+
+  this.loadAnalytics();
 
   (function(self){
 
@@ -285,10 +290,168 @@ AdminPage.prototype.onResize = function ( width,height )  {
   this.usageStats.setFramePosition ( '0px','50px','100%',(height-160)+'px' );
   this.tabs.refresh();
   var inner_height = (height-190)+'px';
+  $(this.anlTab  .element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.usersTab.element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.nodesTab.element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.usageTab.element).css({'height':inner_height,'overflow-y':'scroll'});
   $(this.jobsTab .element).css({'height':inner_height,'overflow-y':'scroll'});
+}
+
+
+AdminPage.prototype.loadAnalytics = function()  {
+
+  this.anlTab.grid.setLabel ( 'Site Monitor',0,0,1,1 )
+                  .setHeight_px ( 32      )
+                  .setFontSize  ( '1.5em' )
+                  .setFontBold  ( true    );
+
+  // return {
+  //   users_current : users_current,
+  //   users_recent  : users_recent,
+  //   doc_stats     : doc_stats,
+  // };
+
+  (function(self){
+
+    serverRequest ( fe_reqtype.getAnalytics,0,'Admin Page',function(anldata){
+
+      var row = 1;
+
+      // 1. Currently active users
+
+      self.anlTab.grid.setLabel ( '<h3><i>Now on site</i></h3>',row++,0,1,1 )
+
+      if (anldata.users_current.length<=0)  {
+
+        self.anlTab.grid.setLabel ( '<i>Nobody</i>',row++,0,1,1 );
+
+      } else  {
+
+        self.usersCurrentTable = new Table();
+        $(self.usersCurrentTable.element).css({'width':'auto'});
+        self.anlTab.grid.setWidget ( self.usersCurrentTable,row++,0,1,1 );
+
+        self.usersCurrentTable.setHeaderRow (
+          [ '##',
+            'Login',
+            'Country',
+            'Domain'
+          ],[
+            'Ordinal number',
+            'User login name',
+            'Country by registration',
+            'Internet domain'
+          ]
+        );
+
+        for (var i=0;i<anldata.users_current.length;i++)  {
+          self.usersCurrentTable.setRow ( '' + (i+1),'',[
+              anldata.users_current[i].login,
+              anldata.users_current[i].country,
+              anldata.users_current[i].domain
+            ],i+1,(i & 1)==1 );
+        }
+
+        self.usersCurrentTable.setAllColumnCSS ({
+          'vertical-align' : 'middle',
+          'text-align'     : 'left',
+          'white-space'    : 'nowrap'
+        },1,1 );
+
+      }
+
+      // 2. Recent geography
+
+      self.anlTab.grid.setLabel ( '&nbsp;<br><h3><i>Recent geography</i></h3>',row++,0,1,1 )
+
+      if (anldata.users_recent.length<=0)  {
+
+        self.anlTab.grid.setLabel ( '<i>No users were present recently</i>',row++,0,1,1 );
+
+      } else  {
+
+        self.geographyTable = new Table();
+        $(self.geographyTable.element).css({'width':'auto'});
+        self.anlTab.grid.setWidget ( self.geographyTable,row++,0,1,1 );
+
+        self.geographyTable.setHeaderRow (
+          [ '##',
+            'Country',
+            'Recent users',
+            'Domains'
+          ],[
+            'Ordinal number',
+            'Total number of recent users',
+            'Internet domains'
+          ]
+        );
+
+        for (var i=0;i<anldata.users_recent.length;i++)  {
+          var domains = [];
+          for (var j=0;j<anldata.users_recent[i].domains.length;j++)
+            domains.push ( anldata.users_recent[i].domains[j].domain + ' (' +
+                           anldata.users_recent[i].domains[j].count + ')' );
+          self.geographyTable.setRow ( '' + (i+1),'',[
+              anldata.users_recent[i].country,
+              anldata.users_recent[i].ucount,
+              domains.join('<br>')
+            ],i+1,(i & 1)==1 );
+        }
+
+        self.geographyTable.setAllColumnCSS ({
+          'vertical-align' : 'middle',
+          'text-align'     : 'left',
+          'white-space'    : 'nowrap'
+        },1,1 );
+
+      }
+
+
+      // 3. Page views
+
+      self.anlTab.grid.setLabel ( '&nbsp;<br><h3><i>Page views</i></h3>',row++,0,1,1 )
+
+      if (anldata.doc_stats.length<=0)  {
+
+        self.anlTab.grid.setLabel ( '<i>No views detected</i>',row++,0,1,1 );
+
+      } else  {
+
+        self.pageViewsTable = new Table();
+        $(self.pageViewsTable.element).css({'width':'auto'});
+        self.anlTab.grid.setWidget ( self.pageViewsTable,row++,0,1,1 );
+
+        self.pageViewsTable.setHeaderRow (
+          [ '##',
+            'Page',
+            'Views'
+          ],[
+            'Ordinal number',
+            'Page file name',
+            'Total number of views'
+          ]
+        );
+
+        for (var i=0;i<anldata.doc_stats.length;i++)  {
+          self.pageViewsTable.setRow ( ''  + (i+1),'',[
+              anldata.doc_stats[i].name,
+              anldata.doc_stats[i].count   + ' (' +
+                    round(anldata.doc_stats[i].percent,1) + '%)'
+            ],i+1,(i & 1)==1 );
+        }
+
+        self.pageViewsTable.setAllColumnCSS ({
+          'vertical-align' : 'middle',
+          'text-align'     : 'left',
+          'white-space'    : 'nowrap'
+        },1,1 );
+
+      }
+
+    },null,'persist');
+
+  }(this))
+
 }
 
 AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.02.22   <--  Date of Last Modification.
+ *    15.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -519,7 +519,7 @@ var fe_server = conf.getFEConfig();
         utils.writeObject ( userFilePath,uData );
 
         anl.getFEAnalytics().userLogin ( uData );
-        // var rep = anl.getFEAnalytics().getReport ( 1800000 );  // 30 minute window
+        // var rep = anl.getFEAnalytics().getReport();
         // console.log ( rep );
 
         if (uData.login=='devel')  {
@@ -582,8 +582,9 @@ var fe_server = conf.getFEConfig();
 
 function checkSession ( userData,callback_func )  {  // gets UserData object
   var retcode = cmd.fe_retcode.wrongSession;
-  if (__userLoginHash.getLoginData(userData.login_token).login)  {
-    anl.logPresence ( userData );
+  var ulogin  = __userLoginHash.getLoginData(userData.login_token).login;
+  if (ulogin)  {
+    anl.logPresence ( ulogin );
     retcode = cmd.fe_retcode.ok;
   }
   callback_func ( new cmd.Response(retcode,'','') );
