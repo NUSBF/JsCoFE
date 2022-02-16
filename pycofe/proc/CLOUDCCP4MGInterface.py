@@ -12,7 +12,8 @@ def InstallSaveToCloudMenuItem(workDirectory):
   from global_definitions import get_dispobj
   
   def SequenceView__init__(self,parent=None):
-      from PyQt4 import QtGui
+      #from PyQt4 import QtGui
+      from PySide2 import QtGui
       SequenceViewer.SequenceView.old__init__(self,parent)
       children = self.findChildren(QtGui.QAction)
       for child in children:
@@ -20,7 +21,7 @@ def InstallSaveToCloudMenuItem(workDirectory):
            child.setText("Load sequence/alignment from file")
 
   def setDelegateACVs(self):
-      from PyQt4 import QtGui
+      from PySide2 import QtGui
       import point_funcs
       atomColourVectors = []
       for sd in self.sequence_displays:
@@ -46,7 +47,7 @@ def InstallSaveToCloudMenuItem(workDirectory):
 
 
   def GetColourByNucleotideAtomTable():
-    from PyQt4 import QtGui
+    from PySide2 import QtGui
     colourByNucleotideAtomTable = {}
     colourByNucleotideAtomTable["A"] = QtGui.QColor(255,0,0);     # red
     colourByNucleotideAtomTable["T"] = QtGui.QColor(255,255,0);   # yellow
@@ -61,7 +62,7 @@ def InstallSaveToCloudMenuItem(workDirectory):
     return colourByNucleotideAtomTable
 
   def GetColourByAtomTable():
-    from PyQt4 import QtGui
+    from PySide2 import QtGui
     colourByAtomTable = {}
     colourByAtomTable["A"] = QtGui.QColor(255,127,80);  # coral
     colourByAtomTable["R"] = QtGui.QColor(0,0,255);     # blue
@@ -275,9 +276,9 @@ def SetupSequenceLoadingFromCommandLine():
       initSequenceViewer()
       SequenceViewer_initialized = 1
   
-    from PyQt4 import QtCore
+    from PySide2 import QtCore
     print("Treat",args,"as sequence")
-    global_definitions.MAINWINDOW().sequence_dialog.loadExternalAlignment(QtCore.QString(args))
+    global_definitions.MAINWINDOW().sequence_dialog.loadExternalAlignment(args)
   
   def initSequenceViewer():
     if not hasattr(global_definitions.MAINWINDOW(),"sequence_dialog"):
@@ -394,7 +395,8 @@ def saveEnsembleToI2(workDirectory):
           rfile = open(tname)
           fcontents = rfile.read()
           rfile.close()
-          ofile = open(fname,"wb+")
+          #ofile = open(fname,"wb+")
+          ofile = open(fname,"w+")
           ofile.write(preamble1)
           ofile.write(preamble2)
           ofile.write(fcontents)
@@ -403,7 +405,7 @@ def saveEnsembleToI2(workDirectory):
           newManager.WritePDBASCII(fname)
 
 #def RunMrBump(row,level=95,phmmer_cutoff=20,mrnum=10,jobid=None,workdir=None,use_hhpred=False,pdb_local=None):
-#    from PyQt4 import QtCore
+#    from PySide2 import QtCore
 #    import global_definitions
 #    #I do this just to fall back to old method if mg is out of sync with i2/Cloud. People might use this before MG is ready.
 #    try:
@@ -413,8 +415,9 @@ def saveEnsembleToI2(workDirectory):
 #            mrbumpwin_tmpdir = global_definitions.MAINWINDOW().sequence_dialog.mrbumpTriggered(row,level,phmmer_cutoff)
 #        except:
 #            mrbumpwin_tmpdir = global_definitions.MAINWINDOW().sequence_dialog.mrbumpTriggered(row,level)
+  # RunMrBump(0,  lvl,     pmr,             mrnum,   jobid,     workdir,     hhrfile,     use_hhpred,      pdb_local,     aflevel=aflvl)
 def RunMrBump(row,level=95,phmmer_cutoff=20,mrnum=10,jobid=None,workdir=None,hhrfile=None,use_hhpred=False,pdb_local=None,aflevel=None):
-    from PyQt4 import QtCore
+    from PySide2 import QtCore
     import global_definitions
     #I do this just to fall back to old method if mg is out of sync with i2. People might use this before MG is ready.
     try:
@@ -435,7 +438,7 @@ def RunMrBump(row,level=95,phmmer_cutoff=20,mrnum=10,jobid=None,workdir=None,hhr
     return None
           
 def InstallSaveEnsembleToCloudMenuItem(workDir):
-    from PyQt4 import QtCore
+    from PySide2 import QtCore
     import MGApplication
     mainwin = MGApplication.GetMainWindow()
 
@@ -444,7 +447,7 @@ def InstallSaveEnsembleToCloudMenuItem(workDir):
     window_item = mainwin.addMenuDefinition(menu_defn['text'],menu_defn,'_file_save',draw_menu=True)
     mainwin.connect(window_item,QtCore.SIGNAL('triggered()'),functools.partial(saveEnsembleToI2,workDir))
 
-if __name__ == "__main__" or __name__ == "__builtin__":
+if __name__ == "__main__" or __name__ == "builtins":
   import global_definitions
   saveDir = os.path.dirname(getsourcefile(lambda:0))
   sys.stdout.flush()
