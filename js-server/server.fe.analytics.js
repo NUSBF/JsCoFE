@@ -415,7 +415,7 @@ var tweek         = 3600000*24*7;  // milliseconds in a week
           'domain' : d,
           'count'  : uhash_recent[country].domains[d]
         });
-      for (var i=0;i<item.domains.length;i++)
+      for (var i=0;i<item.domains.length-1;i++)
         for (var j=i+1;j<item.domains.length;j++)
           if (item.domains[j].count>item.domains[i].count)  {
             var di = item.domains[i];
@@ -428,21 +428,20 @@ var tweek         = 3600000*24*7;  // milliseconds in a week
   }
 
   var total = 0;
-  for (var doc in this.doclog)
-    if (this.doclog[doc])  {
-      doc_stats.push ({
-        'name'  : doc,
-        'count' : this.doclog[doc]
-      });
-      total += this.doclog[doc];
-    }
+  for (var doc in this.doclog)  {
+    doc_stats.push ({
+      'name'  : doc,
+      'count' : this.doclog[doc]
+    });
+    total += this.doclog[doc];
+  }
 
   for (var i=0;i<doc_stats.length;i++)  {
     for (var j=i+1;j<doc_stats.length;j++)
       if (doc_stats[j].count>doc_stats[i].count)  {
         var dsi = doc_stats[i];
         doc_stats[i] = doc_stats[j];
-        doc_stats[j] = di;
+        doc_stats[j] = dsi;
       }
     doc_stats[i].percent = 100.0*doc_stats[i].count/total;
   }
