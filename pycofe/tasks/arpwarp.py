@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    12.09.21   <--  Date of Last Modification.
+#    16.02.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,7 +23,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2022
 #
 # ============================================================================
 #
@@ -219,6 +219,7 @@ class ArpWarp(basic.TaskDriver):
             scalml += " FREE"
 
         cmdopt += [
+            "sidemethod"      , "SNOW",
             #"fp"              , cols[0],
             #"sigfp"           , cols[1],
             #"freelabin"       , cols[3],

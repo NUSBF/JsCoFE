@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.02.22   <--  Date of Last Modification.
+ *    16.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -428,13 +428,14 @@ var tweek         = 3600000*24*7;  // milliseconds in a week
   }
 
   var total = 0;
-  for (var doc in this.doclog)  {
-    doc_stats.push ({
-      'name'  : doc,
-      'count' : this.doclog[doc]
-    });
-    total += this.doclog[doc];
-  }
+  for (var doc in this.doclog)
+    if (this.doclog[doc])  {
+      doc_stats.push ({
+        'name'  : doc,
+        'count' : this.doclog[doc]
+      });
+      total += this.doclog[doc];
+    }
 
   for (var i=0;i<doc_stats.length;i++)  {
     for (var j=i+1;j<doc_stats.length;j++)
