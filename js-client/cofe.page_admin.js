@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.02.22   <--  Date of Last Modification.
+ *    17.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -298,6 +298,59 @@ AdminPage.prototype.onResize = function ( width,height )  {
 }
 
 
+AdminPage.prototype.make_geography_table = function (
+                           title,grid,geography_list,row,col,rowspan )  {
+var r = row;
+
+  grid.setLabel ( title,r++,col,1,1 );
+
+  if (geography_list.length<=0)  {
+
+    grid.setLabel ( '<i>No users were present recently</i>',r++,col,1,1 );
+
+  } else  {
+
+    var geographyTable = new Table();
+    $(geographyTable.element).css({'width':'auto'});
+    grid.setWidget ( geographyTable,r++,col,rowspan,1 );
+
+    geographyTable.setHeaderRow (
+      [ '##',
+        'Country',
+        'Users',
+        'Domains'
+      ],[
+        'Ordinal number',
+        'Total number of recent users',
+        'Internet domains'
+      ]
+    );
+
+    for (var i=0;i<geography_list.length;i++)  {
+      var domains = [];
+      for (var j=0;j<geography_list[i].domains.length;j++)
+        domains.push ( geography_list[i].domains[j].domain + ' (' +
+                       geography_list[i].domains[j].count + ')' );
+      geographyTable.setRow ( '' + (i+1),'',[
+          geography_list[i].country,
+          geography_list[i].ucount,
+          domains.join('<br>')
+        ],i+1,(i & 1)==1 );
+    }
+
+    geographyTable.setAllColumnCSS ({
+      'vertical-align' : 'middle',
+      'text-align'     : 'left',
+      'white-space'    : 'nowrap'
+    },1,1 );
+
+  }
+
+  return r;
+
+}
+
+
 AdminPage.prototype.loadAnalytics = function()  {
 
   this.anlTab.grid.setLabel ( 'Site Monitor',0,0,1,1 )
@@ -356,10 +409,15 @@ AdminPage.prototype.loadAnalytics = function()  {
 
       // 2. Recent geography
 
+      row = self.make_geography_table (
+                        '&nbsp;<br><h3><i>Recent users geography</i></h3>',
+                        self.anlTab.grid,anldata.geography_recent,row,0,1 );
+
+      /*
       self.anlTab.grid.setLabel ( '&nbsp;<br><h3><i>Recent users geography</i></h3>',
                                   row++,0,1,1 );
 
-      if (anldata.users_recent.length<=0)  {
+      if (anldata.geography_recent.length<=0)  {
 
         self.anlTab.grid.setLabel ( '<i>No users were present recently</i>',
                                     row++,0,1,1 );
@@ -382,14 +440,14 @@ AdminPage.prototype.loadAnalytics = function()  {
           ]
         );
 
-        for (var i=0;i<anldata.users_recent.length;i++)  {
+        for (var i=0;i<anldata.geography_recent.length;i++)  {
           var domains = [];
-          for (var j=0;j<anldata.users_recent[i].domains.length;j++)
-            domains.push ( anldata.users_recent[i].domains[j].domain + ' (' +
-                           anldata.users_recent[i].domains[j].count + ')' );
+          for (var j=0;j<anldata.geography_recent[i].domains.length;j++)
+            domains.push ( anldata.geography_recent[i].domains[j].domain + ' (' +
+                           anldata.geography_recent[i].domains[j].count + ')' );
           self.geographyTable.setRow ( '' + (i+1),'',[
-              anldata.users_recent[i].country,
-              anldata.users_recent[i].ucount,
+              anldata.geography_recent[i].country,
+              anldata.geography_recent[i].ucount,
               domains.join('<br>')
             ],i+1,(i & 1)==1 );
         }
@@ -401,7 +459,7 @@ AdminPage.prototype.loadAnalytics = function()  {
         },1,1 );
 
       }
-
+      */
 
       // 3. Page views
 
@@ -453,9 +511,8 @@ AdminPage.prototype.loadAnalytics = function()  {
       self.anlTab.grid.setLabel (
               '<h3><i>Unique users since week from today</i></h3>',
               1,2,1,1 ).setNoWrap();
-      self.anlTab.grid.setCellSize ( '50%','',1,3 );
 
-      if (anldata.users_total.length<=0)  {
+      if (anldata.users_per_week.length<=0)  {
 
         self.anlTab.grid.setLabel ( '<i>Nobody</i>',2,2,1,1 );
 
@@ -474,9 +531,9 @@ AdminPage.prototype.loadAnalytics = function()  {
           ]
         );
 
-        for (var i=0;i<anldata.users_total.length;i++)  {
+        for (var i=0;i<anldata.users_per_week.length;i++)  {
           self.usersTotalTable.setRow ( '' + (i+1),'',[
-              anldata.users_total[i]
+              anldata.users_per_week[i]
             ],i+1,(i & 1)==1 );
         }
 
@@ -487,6 +544,15 @@ AdminPage.prototype.loadAnalytics = function()  {
         },1,1 );
 
       }
+
+      // 5. Years geography
+
+      self.anlTab.grid.setLabel ( '&nbsp;',1,3,1,1 )
+                      .setWidth_px(40).setNoWrap();
+      self.make_geography_table (
+                        '<h3><i>Year\'s geography</i></h3>',
+                        self.anlTab.grid,anldata.geography_year,1,4,row );
+      self.anlTab.grid.setCellSize ( '50%','',1,5 );
 
     },null,'persist');
 
