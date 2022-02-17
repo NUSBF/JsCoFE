@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.02.22   <--  Date of Last Modification.
+ *    17.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -357,63 +357,37 @@ var fname = path.parse(fpath).base;
                           else  this.doclog[fname]++;
 }
 
-FEAnalytics.prototype.getReport = function()  {
-var users_current = [];
-var users_recent  = [];
-var users_total   = [];  // cumulative unique users per week
-var doc_stats     = [];  // web page hits
-var uhash_recent  = {};
-var t0            = Date.now();
-var t_current     = t0 - twindow_current;
-var t_recent      = t0 - twindow_recent;
-var tweek         = 3600000*24*7;  // milliseconds in a week
-
-  for (var login in this.activity)  {
-    if (this.activity[login].lastSeen>=t_recent)  {
-      var domain  = this.activity[login].domain;
-      var country = domain.split('.').pop();
-      if (!(country in uhash_recent))  {
-        uhash_recent[country] = { 'domains' : {} };
-        uhash_recent[country].ucount = 0;
-      }
-      uhash_recent[country].ucount++;
-      if (!(domain in uhash_recent[country].domains))
-        uhash_recent[country].domains[domain] = 0;
-      uhash_recent[country].domains[domain]++;
-      if (this.activity[login].lastSeen>=t_current)
-        users_current.push({
-          login   : login,
-          domain  : this.activity[login].domain,
-          country : getCountry(country)
-        });
-    }
-    var nweek = Math.floor ( (t0-this.activity[login].lastSeen)/tweek );
-    while (users_total.length<=nweek)
-      users_total.push ( 0 );
-    users_total[nweek]++;
+function add_to_uhash ( country,domain,uhash )  {
+  if (!(country in uhash))  {
+    uhash[country] = { 'domains' : {} };
+    uhash[country].ucount = 0;
   }
+  uhash[country].ucount++;
+  if (!(domain in uhash[country].domains))
+    uhash[country].domains[domain] = 0;
+  uhash[country].domains[domain]++;
+}
 
-  for (var i=1;i<users_total.length;i++)
-    users_total[i] += users_total[i-1];
-
-  var country = 1;
+function uhash_to_geography ( uhash )  {
+var geography = [];
+var country   = 1;
   while (country) {
     country = null;
     var cnt = 0;
-    for (var c in uhash_recent)
-      if (uhash_recent[c].ucount>cnt)  {
+    for (var c in uhash)
+      if (uhash[c].ucount>cnt)  {
         country = c;
-        cnt     = uhash_recent[c].ucount;
+        cnt     = uhash[c].ucount;
       }
     if (country)  {
       var item = {};
       item.country = getCountry ( country );
-      item.ucount  = uhash_recent[country].ucount;
+      item.ucount  = uhash[country].ucount;
       item.domains = [];
-      for (var d in uhash_recent[country].domains)
+      for (var d in uhash[country].domains)
         item.domains.push({
           'domain' : d,
-          'count'  : uhash_recent[country].domains[d]
+          'count'  : uhash[country].domains[d]
         });
       for (var i=0;i<item.domains.length-1;i++)
         for (var j=i+1;j<item.domains.length;j++)
@@ -422,10 +396,48 @@ var tweek         = 3600000*24*7;  // milliseconds in a week
             item.domains[i] = item.domains[j];
             item.domains[j] = di;
           }
-      users_recent.push ( item );
-      uhash_recent[country].ucount = -1;
+      geography.push ( item );
+      uhash[country].ucount = -1;
     }
   }
+  return geography;
+}
+
+
+FEAnalytics.prototype.getReport = function()  {
+var users_current  = [];
+var users_per_week = [];  // cumulative unique users per week
+var doc_stats      = [];  // web page hits
+var uhash_recent   = {};
+var uhash_year     = {};
+var t0             = Date.now();
+var t_current      = t0 - twindow_current;
+var t_recent       = t0 - twindow_recent;
+var tweek          = 3600000*24*7;    // milliseconds in a week
+var t_year         = t0 - 3600000*24*365;  // milliseconds in an year
+
+  for (var login in this.activity)  {
+    if (this.activity[login].lastSeen>=t_year)  {
+      var domain  = this.activity[login].domain;
+      var country = domain.split('.').pop();
+      add_to_uhash ( country,domain,uhash_year );
+      if (this.activity[login].lastSeen>=t_recent)
+        add_to_uhash ( country,domain,uhash_recent );
+      if (this.activity[login].lastSeen>=t_current)
+        users_current.push({
+          login   : login,
+          domain  : this.activity[login].domain,
+          country : getCountry(country)
+        });
+    }
+    var nweek = Math.floor ( (t0-this.activity[login].lastSeen)/tweek );
+    while (users_per_week.length<=nweek)
+      users_per_week.push ( 0 );
+    users_per_week[nweek]++;
+  }
+
+  for (var i=1;i<users_per_week.length;i++)
+    users_per_week[i] += users_per_week[i-1];
 
   var total = 0;
   for (var doc in this.doclog)  {
@@ -447,10 +459,11 @@ var tweek         = 3600000*24*7;  // milliseconds in a week
   }
 
   return {
-    users_current : users_current,
-    users_recent  : users_recent,
-    users_total   : users_total,
-    doc_stats     : doc_stats
+    users_current    : users_current,
+    geography_recent : uhash_to_geography(uhash_recent),
+    geography_year   : uhash_to_geography(uhash_year),
+    users_per_week   : users_per_week,
+    doc_stats        : doc_stats
   };
 
 }
