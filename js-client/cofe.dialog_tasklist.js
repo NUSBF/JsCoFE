@@ -357,7 +357,7 @@ var r = 0;  // grid row
     new TaskCCP4Build (),
     new TaskBuccaneer (),
     new TaskArpWarp   (),
-    // new TaskModelCraft(),
+    new TaskModelCraft(),
     new TaskNautilus  (),
 
     "Deposition",
@@ -708,7 +708,7 @@ var row      = 0;
     new TaskCCP4Build (),
     new TaskBuccaneer (),
     new TaskArpWarp   (),
-    // new TaskModelCraft(),
+    new TaskModelCraft(),
     new TaskNautilus  (),
     new TaskDimple    (),
     new TaskCombStructure()
