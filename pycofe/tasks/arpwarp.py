@@ -219,7 +219,7 @@ class ArpWarp(basic.TaskDriver):
             scalml += " FREE"
 
         cmdopt += [
-            "sidemethod"      , "SNOW",
+            # "sidemethod"      , "SNOW",
             #"fp"              , cols[0],
             #"sigfp"           , cols[1],
             #"freelabin"       , cols[3],
