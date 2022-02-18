@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.02.22   <--  Date of Last Modification.
+ *    18.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -298,49 +298,31 @@ AdminPage.prototype.onResize = function ( width,height )  {
 }
 
 
-AdminPage.prototype.make_geography_table = function (
-                           title,grid,geography_list,row,col,rowspan )  {
+AdminPage.prototype.make_analytics_table = function (
+      row,col,rowspan,title,nItems,label_empty,header_list,tooltip_list,
+      makeRow_func,alignment )  {
 var r = row;
 
-  grid.setLabel ( title,r++,col,1,1 );
+  this.anlTab.grid.setLabel(title,r++,col,1,1).setNoWrap();
 
-  if (geography_list.length<=0)  {
+  if (nItems<=0)  {
 
-    grid.setLabel ( '<i>No users were present recently</i>',r++,col,1,1 );
+    this.anlTab.grid.setLabel ( label_empty,r++,col,rowspan,1 );
 
   } else  {
 
-    var geographyTable = new Table();
-    $(geographyTable.element).css({'width':'auto'});
-    grid.setWidget ( geographyTable,r++,col,rowspan,1 );
+    var anlTable = new Table();
+    $(anlTable.element).css({'width':'auto'});
+    this.anlTab.grid.setWidget ( anlTable,r++,col,rowspan,1 );
 
-    geographyTable.setHeaderRow (
-      [ '##',
-        'Country',
-        'Users',
-        'Domains'
-      ],[
-        'Ordinal number',
-        'Total number of recent users',
-        'Internet domains'
-      ]
-    );
+    anlTable.setHeaderRow ( header_list,tooltip_list );
 
-    for (var i=0;i<geography_list.length;i++)  {
-      var domains = [];
-      for (var j=0;j<geography_list[i].domains.length;j++)
-        domains.push ( geography_list[i].domains[j].domain + ' (' +
-                       geography_list[i].domains[j].count + ')' );
-      geographyTable.setRow ( '' + (i+1),'',[
-          geography_list[i].country,
-          geography_list[i].ucount,
-          domains.join('<br>')
-        ],i+1,(i & 1)==1 );
-    }
+    for (var i=0;i<nItems;i++)
+      makeRow_func ( anlTable,i );
 
-    geographyTable.setAllColumnCSS ({
+    anlTable.setAllColumnCSS ({
       'vertical-align' : 'middle',
-      'text-align'     : 'left',
+      'text-align'     : alignment,
       'white-space'    : 'nowrap'
     },1,1 );
 
@@ -366,192 +348,142 @@ AdminPage.prototype.loadAnalytics = function()  {
 
       // 1. Currently active users
 
-      self.anlTab.grid.setLabel ( '<h3><i>Now on site</i></h3>',row++,0,1,1 );
-
-      if (anldata.users_current.length<=0)  {
-
-        self.anlTab.grid.setLabel ( '<i>Nobody</i>',row++,0,1,1 );
-
-      } else  {
-
-        self.usersCurrentTable = new Table();
-        $(self.usersCurrentTable.element).css({'width':'auto'});
-        self.anlTab.grid.setWidget ( self.usersCurrentTable,row++,0,1,1 );
-
-        self.usersCurrentTable.setHeaderRow (
-          [ '##',
-            'Login',
-            'Country',
-            'Domain'
-          ],[
-            'Ordinal number',
-            'User login name',
-            'Country by registration',
-            'Internet domain'
-          ]
-        );
-
-        for (var i=0;i<anldata.users_current.length;i++)  {
-          self.usersCurrentTable.setRow ( '' + (i+1),'',[
-              anldata.users_current[i].login,
-              anldata.users_current[i].country,
-              anldata.users_current[i].domain
-            ],i+1,(i & 1)==1 );
-        }
-
-        self.usersCurrentTable.setAllColumnCSS ({
-          'vertical-align' : 'middle',
-          'text-align'     : 'left',
-          'white-space'    : 'nowrap'
-        },1,1 );
-
-      }
+      var row = self.make_analytics_table (
+        1,0,1,
+        '<h3><i>Now on site</i></h3>',
+        anldata.users_current.length,
+        '<i>Nobody</i>',
+        [ '##',
+          'Login',
+          'Country',
+          'Domain'
+        ],[
+          'Ordinal number',
+          'User login name',
+          'Country by registration',
+          'Internet domain'
+        ],
+        function(anlTable,i){
+          anlTable.setRow ( '' + (i+1),'',[
+            anldata.users_current[i].login,
+            anldata.users_current[i].country,
+            anldata.users_current[i].domain
+          ],i+1,(i & 1)==1 );
+        },
+        'left'
+      );
 
       // 2. Recent geography
 
-      row = self.make_geography_table (
-                        '&nbsp;<br><h3><i>Recent users geography</i></h3>',
-                        self.anlTab.grid,anldata.geography_recent,row,0,1 );
-
-      /*
-      self.anlTab.grid.setLabel ( '&nbsp;<br><h3><i>Recent users geography</i></h3>',
-                                  row++,0,1,1 );
-
-      if (anldata.geography_recent.length<=0)  {
-
-        self.anlTab.grid.setLabel ( '<i>No users were present recently</i>',
-                                    row++,0,1,1 );
-
-      } else  {
-
-        self.geographyTable = new Table();
-        $(self.geographyTable.element).css({'width':'auto'});
-        self.anlTab.grid.setWidget ( self.geographyTable,row++,0,1,1 );
-
-        self.geographyTable.setHeaderRow (
-          [ '##',
-            'Country',
-            'Users',
-            'Domains'
-          ],[
-            'Ordinal number',
-            'Total number of recent users',
-            'Internet domains'
-          ]
-        );
-
-        for (var i=0;i<anldata.geography_recent.length;i++)  {
+      row = self.make_analytics_table (
+        row,0,1,
+        '&nbsp;<br><h3><i>Recent users geography</i></h3>',
+        anldata.geography_recent.length,
+        '<i>No users were present recently</i>',
+        [ '##',
+          'Country',
+          'Users',
+          'Domains'
+        ],[
+          'Ordinal number',
+          'Total number of recent users',
+          'Internet domains'
+        ],
+        function(anlTable,i){
           var domains = [];
           for (var j=0;j<anldata.geography_recent[i].domains.length;j++)
             domains.push ( anldata.geography_recent[i].domains[j].domain + ' (' +
                            anldata.geography_recent[i].domains[j].count + ')' );
-          self.geographyTable.setRow ( '' + (i+1),'',[
+          anlTable.setRow ( '' + (i+1),'',[
               anldata.geography_recent[i].country,
               anldata.geography_recent[i].ucount,
               domains.join('<br>')
             ],i+1,(i & 1)==1 );
-        }
-
-        self.geographyTable.setAllColumnCSS ({
-          'vertical-align' : 'middle',
-          'text-align'     : 'left',
-          'white-space'    : 'nowrap'
-        },1,1 );
-
-      }
-      */
+        },
+        'left'
+      );
 
       // 3. Page views
 
-      self.anlTab.grid.setLabel ( '&nbsp;<br><h3><i>Page views</i></h3>',
-                                  row++,0,1,1 );
-
-      if (anldata.doc_stats.length<=0)  {
-
-        self.anlTab.grid.setLabel ( '<i>No views detected</i>',row++,0,1,1 );
-
-      } else  {
-
-        self.pageViewsTable = new Table();
-        $(self.pageViewsTable.element).css({'width':'auto'});
-        self.anlTab.grid.setWidget ( self.pageViewsTable,row++,0,1,1 );
-
-        self.pageViewsTable.setHeaderRow (
-          [ '##',
-            'Page',
-            'Views'
-          ],[
-            'Ordinal number',
-            'Page file name',
-            'Total number of views'
-          ]
-        );
-
-        for (var i=0;i<anldata.doc_stats.length;i++)  {
-          self.pageViewsTable.setRow ( ''  + (i+1),'',[
+      row = self.make_analytics_table (
+        row,0,1,
+        '&nbsp;<br><h3><i>Page views</i></h3>',
+        anldata.doc_stats.length,
+        '<i>No views detected</i>',
+        [ '##',
+          'Page',
+          'Views'
+        ],[
+          'Ordinal number',
+          'Page file name',
+          'Total number of views'
+        ],
+        function(anlTable,i){
+          anlTable.setRow ( ''  + (i+1),'',[
               anldata.doc_stats[i].name,
               anldata.doc_stats[i].count   + ' (' +
                     round(anldata.doc_stats[i].percent,1) + '%)'
             ],i+1,(i & 1)==1 );
-        }
-
-        self.pageViewsTable.setAllColumnCSS ({
-          'vertical-align' : 'middle',
-          'text-align'     : 'left',
-          'white-space'    : 'nowrap'
-        },1,1 );
-
-      }
-
+        },
+        'left'
+      );
 
       // 4. Cumulative unique users per week
 
       self.anlTab.grid.setLabel ( '&nbsp;',1,1,1,1 )
                       .setWidth_px(40).setNoWrap();
-      self.anlTab.grid.setLabel (
-              '<h3><i>Unique users since week from today</i></h3>',
-              1,2,1,1 ).setNoWrap();
 
-      if (anldata.users_per_week.length<=0)  {
-
-        self.anlTab.grid.setLabel ( '<i>Nobody</i>',2,2,1,1 );
-
-      } else  {
-
-        self.usersTotalTable = new Table();
-        $(self.usersTotalTable.element).css({'width':'auto'});
-        self.anlTab.grid.setWidget ( self.usersTotalTable,2,2,row,1 );
-
-        self.usersTotalTable.setHeaderRow (
-          [ 'Week',
-            'Users'
-          ],[
-            'Week number from today',
-            'Number of unique users detected after the week'
-          ]
-        );
-
-        for (var i=0;i<anldata.users_per_week.length;i++)  {
-          self.usersTotalTable.setRow ( '' + (i+1),'',[
+      self.make_analytics_table (
+        1,2,row,
+        '<h3><i>Unique users since week from today</i></h3>',
+        anldata.users_per_week.length,
+        '<i>No data collected yet</i>',
+        [ 'Week',
+          'Users'
+        ],[
+          'Week number from today',
+          'Number of unique users detected after the week'
+        ],
+        function(anlTable,i){
+          anlTable.setRow ( '' + (i+1),'',[
               anldata.users_per_week[i]
             ],i+1,(i & 1)==1 );
-        }
-
-        self.usersTotalTable.setAllColumnCSS ({
-          'vertical-align' : 'middle',
-          'text-align'     : 'right',
-          'white-space'    : 'nowrap'
-        },1,1 );
-
-      }
+        },
+        'right'
+      );
 
       // 5. Years geography
 
       self.anlTab.grid.setLabel ( '&nbsp;',1,3,1,1 )
                       .setWidth_px(40).setNoWrap();
-      self.make_geography_table (
-                        '<h3><i>Year\'s geography</i></h3>',
-                        self.anlTab.grid,anldata.geography_year,1,4,row );
+      self.make_analytics_table (
+        1,4,row,
+        '<h3><i>Year\'s geography</i></h3>',
+        anldata.geography_year.length,
+        '<i>No users were present yet</i>',
+        [ '##',
+          'Country',
+          'Users',
+          'Domains'
+        ],[
+          'Ordinal number',
+          'Total number of recent users',
+          'Internet domains'
+        ],
+        function(anlTable,i){
+          var domains = [];
+          for (var j=0;j<anldata.geography_year[i].domains.length;j++)
+            domains.push ( anldata.geography_year[i].domains[j].domain + ' (' +
+                           anldata.geography_year[i].domains[j].count + ')' );
+          anlTable.setRow ( '' + (i+1),'',[
+              anldata.geography_year[i].country,
+              anldata.geography_year[i].ucount,
+              domains.join('<br>')
+            ],i+1,(i & 1)==1 );
+        },
+        'left'
+      );
+
       self.anlTab.grid.setCellSize ( '50%','',1,5 );
 
     },null,'persist');
@@ -559,6 +491,7 @@ AdminPage.prototype.loadAnalytics = function()  {
   }(this))
 
 }
+
 
 AdminPage.prototype.makeUsersInfoTab = function ( udata,FEconfig )  {
   // function to create user info tables and fill them with data
