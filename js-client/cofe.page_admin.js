@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.02.22   <--  Date of Last Modification.
+ *    21.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -420,7 +420,12 @@ AdminPage.prototype.loadAnalytics = function()  {
         ],
         function(anlTable,i){
           anlTable.setRow ( ''  + (i+1),'',[
-              anldata.doc_stats[i].name,
+              '<a href="javascript:launchHelpBox(\'Documentation\',' +
+                '\'' +
+                  anldata.doc_stats[i].name.replaceAll('\\','/') +
+                '\',null,10)">' +
+                  anldata.doc_stats[i].name.replace(/^.*[\\\/]/, '') +
+              '</a>',
               anldata.doc_stats[i].count   + ' (' +
                     round(anldata.doc_stats[i].percent,1) + '%)'
             ],i+1,(i & 1)==1 );

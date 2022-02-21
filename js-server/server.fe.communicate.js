@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.02.22   <--  Date of Last Modification.
+ *    20.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -255,8 +255,8 @@ function Communicate ( server_request )  {
       console.log ( ' === ' + this.filePath );
       */
       this.filePath = this.filePath.substr(ix);
-      if (this.filePath.endsWith('.html'))
-        anl.getFEAnalytics().logDocument ( this.filePath );
+      // if (this.filePath.endsWith('.html'))
+      //   anl.getFEAnalytics().logDocument ( this.filePath );
       // console.log ( "requested manual " + this.filePath);
       log.debug2 ( 2,"calculated path " + this.filePath);
     }
@@ -341,6 +341,11 @@ Communicate.prototype.sendFile = function ( server_response )  {
     }
 
     this.__count_malicious_ip ( this.requester_ip,-1 );
+
+    if (this.filePath.endsWith('.html') && (
+          this.filePath.startsWith('manual') || this.filePath.startsWith('html')
+        ))
+      anl.getFEAnalytics().logDocument ( this.filePath );
 
     (function(self){
       if (!self.search)

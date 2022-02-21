@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.02.22   <--  Date of Last Modification.
+ *    21.02.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -353,8 +353,16 @@ FEAnalytics.prototype.logPresence = function ( ulogin,t )  {
 
 FEAnalytics.prototype.logDocument = function ( fpath )  {
 var fname = path.parse(fpath).base;
-  if (!(fname in this.doclog))  this.doclog[fname] = 1;
-                          else  this.doclog[fname]++;
+  // if (!(fname in this.doclog))  this.doclog[fname] = 1;
+  //                         else  this.doclog[fname]++;
+  if (!(fpath in this.doclog))  {  //code to repair existing stats
+    if (fname in this.doclog)  {
+      this.doclog[fpath] = this.doclog[fname] + 1;
+      delete this.doclog[fname];
+    } else
+      this.doclog[fpath] = 1;
+  } else
+    this.doclog[fpath]++;
 }
 
 function add_to_uhash ( country,domain,uhash )  {
