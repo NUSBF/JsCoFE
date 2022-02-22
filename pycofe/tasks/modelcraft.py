@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.01.22   <--  Date of Last Modification.
+#    22.02.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -74,8 +74,8 @@ class ModelCraft(basic.TaskDriver):
         if os.path.isfile(self.modelcraft_cif()):
             os.remove(self.modelcraft_cif())
 
-        if not os.path.exists(self.modelcraft_tmp()):
-            os.makedirs(self.modelcraft_tmp())
+        # if not os.path.exists(self.modelcraft_tmp()):
+        #     os.makedirs(self.modelcraft_tmp())
 
         # Prepare modelcraft input
         # fetch input data

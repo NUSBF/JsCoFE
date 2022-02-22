@@ -440,7 +440,7 @@ AdminPage.prototype.loadAnalytics = function()  {
 
       self.make_analytics_table (
         1,2,row,
-        '<h3><i>Unique users since week from today</i></h3>',
+        '<h3><i>Unique users by week</i></h3>',
         anldata.users_per_week.length,
         '<i>No data collected yet</i>',
         [ 'Week',
@@ -450,7 +450,7 @@ AdminPage.prototype.loadAnalytics = function()  {
           'Number of unique users detected after the week'
         ],
         function(anlTable,i){
-          anlTable.setRow ( '' + (i+1),'',[
+          anlTable.setRow ( '' + (anldata.users_per_week.length-i),'',[
               anldata.users_per_week[i]
             ],i+1,(i & 1)==1 );
         },
