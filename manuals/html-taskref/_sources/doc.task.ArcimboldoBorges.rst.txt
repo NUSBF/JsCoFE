@@ -92,7 +92,7 @@ Arcimboldo Borges report components are:
 
                     more than 8* 	**definitely** a solution
 
-                        *6 for 1st model in monoclinic space groups	
+                        * 6 for 1st model in monoclinic space groups	
 
 
 * A **search and expansion** table provides the characteristics and FOMs for each step and cluster

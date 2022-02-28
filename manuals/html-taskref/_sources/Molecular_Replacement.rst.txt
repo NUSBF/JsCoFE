@@ -16,7 +16,7 @@ From the diffraction pattern, the values of **I (h k l)** are obtained after app
 
 **We can’t measure the phases X-ray detectors**. We can measure only the intensity of the X-rays (which is the amplitude squared). It's create a phase problem, and by solving this problem we can solved the crystal structure.
 
-You can find `here <http://www.ysbl.york.ac.uk/~cowtan/fourier/magic.html>`_ how important the phase infomation is.
+You can find `here <http://www.cristal.org/DU-SDPD/nexus/teach/fourier/fourier.html>`_ how important the phase infomation is.
 
 **Molecular replacement** is the process of solving the phase problem for an unknown structure by placing the atomic model known structure in the unit cell of the unknown structure by trying all possible orientations and positions and picking the one which gives the best fit to the observed data. Once we do so we can calculate approximate structure factors phases which, in combination with the observed structure factors for the unknown structure, allow the model to be rebuilt and refined.
 

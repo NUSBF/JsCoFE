@@ -2,4 +2,21 @@
 Find and Fit Waters with Coot
 =============================
 
-to be written
+The **Find Waters with**  `Coot <https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/>`_ task searches an electron density map for any water-like peaks which are not already accounted for by atoms in an atomic model. Water molecules are added to account for any peaks which appear to be waters on the basis of size and distance from existing features. Waters are added if the feature is approximately water-sized and can make sensible hydrogen bonds to the protein atoms. The new waters are added to the atomic model as a new chain.
+
+The user is offered a selection of `electron density maps <https://www.rcsb.org/docs/general-help/x-ray-electron-density-maps>`_ to search: map showing all features (**2Fo-Fc**) or difference map (**Fo-Fc**), which shows where the model fails to account for the map
+
+**Map level**: Can be defined manually.
+
+.. note:: If you want to use a difference map (**Fo-Fc**), you must change the sigma level (typically to  **3σ's**) otherwise you run the risk of fitting waters to difference map noise peaks.
+
+Check **Flood** in order to fill all density peaks and blobs with water. **Water molecule radius [Å]** is 1.4Å, which can be changed if the solvent is something else but water.
+
+**Minimum and Maximum distance to macromolecule [Å]** sets the minimum and the maximum allowable distances between new waters and the masking molecule.
+
+Please refer to the `The Coot User Manual <https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/web/docs/coot.html#Find-Waters>`_ for further details. 
+
+
+**References**
+
+`Emsley, P., Lohkamp, B., Scott, W.G., Cowtan, K. (2010) Features and development of Coot. Acta Cryst. D66: 486-501; doi:10.1107/S0907444910007493 <https://doi.org/10.1107/S0907444910007493>`_

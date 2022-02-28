@@ -15,7 +15,7 @@ export GESAMT_ARCHIVE=$gesamt_dir
 #export JSPISA_CFG=$CCP4/share/pisa/jspisa.cfg
 export XDS_home=$xds_dir
 export XDSGUI_home=$xdsgui_dir
-export DOCREPO=/Users/eugene/Projects/jsCoFE/trunk-doc
+export DOCREPO=/Users/eugene/Projects/jsCoFE/jscofe-doc
 
 # custom plugin for Xia-2
 export Xia2_durin=/path/to/durin-plugin.so

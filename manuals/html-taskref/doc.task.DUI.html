@@ -113,7 +113,21 @@
 <div><code class="docutils literal notranslate"><span class="pre">It</span> <span class="pre">possible</span> <span class="pre">to</span> <span class="pre">have</span> <span class="pre">adjusted</span> <span class="pre">the</span> <span class="pre">resolution</span> <span class="pre">limits</span> <span class="pre">using</span> <span class="pre">arameters</span> <span class="pre">d_min</span> <span class="pre">and</span> <span class="pre">d_max</span> <span class="pre">under</span> <span class="pre">prediction</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">**“Advanced”**</span> <span class="pre">parameters</span> <span class="pre">tab.</span></code></div></blockquote>
 <p>After these jobs are finished, the reflections are ‘post-processed’, which includes the application of the LP correction to the intensities. Then summary tables are printed giving quality statistics first by frame, and then by resolution bin.</p>
 <blockquote>
-<div></div></blockquote>
+<div><div class="toggle-header docutils container">
+more about <strong>Report View</strong></div>
+<div class="toggle-content docutils container">
+<blockquote>
+<div><p>The <strong>“Report View”</strong> now contains additional plots under the <strong>“Analysis of reflection intensities”</strong> and <strong>“Analysis of reference profiles”</strong> sections. It is worth checking through these, particularly paying attention to the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Reflection and reference correlations binned in X/Y. These are useful companions to the plots of centroid residual as a function of detector position above. Whereas the above plots show systematic errors in the positions and orientations of tiles of a multi-panel detector, these plots indicate what effect that (and any other position-specific systematic error) has on the integrated data quality. The first of these plots shows the correlation between reflections and their reference profiles for all reflections in the dataset. The second shows only the correlations between the strong reference reflections and their profiles (thus these are expected to be higher and do not extend to such high resolution).</li>
+<li>Distribution of I/Sigma vs Z. This reproduces the IσIIσI information versus frame number given in the log file in a graphical form. Here we see that IσIIσI is fairly flat over the whole dataset, which we might use as an indication that there were no bad frames, not much radiation damage occurred and that scale factors are likely to be fairly uniform.</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">At</span> <span class="pre">this</span> <span class="pre">point</span> <span class="pre">we</span> <span class="pre">could</span> <span class="pre">export</span> <span class="pre">the</span> <span class="pre">integrated</span> <span class="pre">data</span> <span class="pre">set</span> <span class="pre">in</span> <span class="pre">MTZ</span> <span class="pre">format</span></code></p>
+</div></blockquote>
 </div>
 <div class="section" id="symmetry">
 <h2><span class="section-number">3.2.7. </span>Symmetry<a class="headerlink" href="#symmetry" title="Permalink to this headline">¶</a></h2>

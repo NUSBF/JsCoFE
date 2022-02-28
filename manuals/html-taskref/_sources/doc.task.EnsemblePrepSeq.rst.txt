@@ -8,7 +8,7 @@ The task may prepare several MR Ensembles up to the specified number, depending 
 
 **REFERENCES**
 
-`Keegan, R.M., McNicholas, S.J., Thomas, J.M.H., Simpkin, A.J., Simkovic, F., Uski, V., Ballard, C.C., Winn, M.D., Wilson, K.S., Rigden, D.J. (2018) Recent developments in MrBUMP: better search-model preparation, graphical interaction with search models, and solution improvement and assessment. Acta Cryst. D74: 167-182; <http://scripts.iucr.org/cgi-bin/paper?S2059798318003455.`_
+`Keegan, R.M., McNicholas, S.J., Thomas, J.M.H., Simpkin, A.J., Simkovic, F., Uski, V., Ballard, C.C., Winn, M.D., Wilson, K.S., Rigden, D.J. (2018) Recent developments in MrBUMP: better search-model preparation, graphical interaction with search models, and solution improvement and assessment. Acta Cryst. D74: 167-182; <http://scripts.iucr.org/cgi-bin/paper?S2059798318003455>`_
 
 `Durbin, R., Eddy, S. R., Krogh, A., and Mitchison, G. J. (1998) Biological Sequence Analysis: Probabilistic Models of Proteins and Nucleic Acids. Cambridge University Press ; <https://www.cambridge.org/core/books/biological-sequence-analysis/921BB7B78B745198829EF96BC7E0F29D>`_
 
