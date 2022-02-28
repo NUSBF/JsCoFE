@@ -2,7 +2,7 @@
 Automatic Experimental Phasing Workflow
 =======================================
 
-This task imports and prepares input data for solving structure with Automatic Experimental Phasing solver (Crank-2), and starts the corresponding *Workflow*. Once started, *Workflow* develops automatically, adding new tasks and branches in *Project Tree* as necessary, until arriving at the solution, or being stopped by user, or failing because of being unable to solve the structure. Read more about *Workflows* :ref:`here<workflows_guide>`. 
+This task imports and prepares input data for solving structure with Automatic Experimental Phasing solver (Crank-2), and starts the corresponding *Workflow*. Once started, *Workflow* develops automatically, adding new tasks and branches in *Project Tree* as necessary, until arriving at the solution, or being stopped by user, or failing because of being unable to solve the structure. Read more about *Workflows* `here <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_workflows.html>`_. 
 
 The *Automatic EP Workflow* includes the following stages:
 

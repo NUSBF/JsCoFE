@@ -4,6 +4,9 @@ Data Import
 
 This task allows **importing files stored on the user's device** and **attaching the pdf and html** (must be uploaded along with all corresponded files) **files** in project tree.
 
+.. note:: Users can switch off the extra guidance through the data import procedure in Account settings (Find **Guide through the data import** in **"My Account"** page)
+
+
 Following file formats can be imported: .pdb,.ent,.seq,.fasta,.pir,.mtz,.sca,.cif,.mmcif,.doc,.docx,.pdf,.txt,.jpg,.jpeg,.gif,.png,.html,.htm,.hkl,.hhr,.borges
 
 Import procedure automatically identifies the type of uploaded data and converts it into CCP4 Cloud's Data Objects

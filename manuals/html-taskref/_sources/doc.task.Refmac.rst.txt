@@ -274,7 +274,7 @@ With random amplitudes but exact phases, the correlation between the current and
 .. Note::  
          Using anything other than the expected amplitude will cause sudden jumps in the power spectrum of the Fourier series, resulting in ripples in the map. If absent reﬂections are to be replaced by a constant value then the value must be equal to the expected amplitude (for that resolution).
 
-We may have **exact phases and nonrandom amplitudes**:  if the correlation between the E-values of the current and “true” structure factors is larger than 47% then it makes sense to use these data, otherwise, it is better to replace the observed amplitudes with 〈|FC|〉 for map calculation. 
+We may have **exact phases and nonrandom amplitudes**:  if the correlation between the E-values of the current and “true” structure factors is larger than 47% then it makes sense to use these data, otherwise, it is better to replace the observed amplitudes with FC for map calculation. 
 
 .. Note::  
         This 47% threshold is a theoretical value, calculated under the assumption that phases are exact, and amplitudes correspond to a crystal. It is also interesting to note that this result indicates that if the isomorphism between two crystals is 47% then it is possible to use data from one of the crystals to restore missing data from the other.

@@ -4,7 +4,7 @@ Hop on CCP4 Cloud
 
 Hop on CCP4 Cloud task was made for continuation of structure solution projects from other interfaces. 
 
-As input user can provide import:
+As input user can provide:
 
 *  **Reflection data**: unmerged or merged `mtz <https://www.ccp4.ac.uk/html/mtzformat.html>`_ file
 

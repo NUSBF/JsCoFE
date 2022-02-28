@@ -29,9 +29,9 @@ In general the critical parameters for locating heavy atoms with SHELXD are:
 
 more information you can find `here <https://strucbio.biologie.uni-konstanz.de/ccp4wiki/index.php?title=SHELX_C/D/E#SHELXD>`_
 
-=======
+======
 SHELXE
-=======
+======
 
 The program `SHELXE <https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html>`_ was originally designed for the experimental phasing of macromolecules. SHELXE employs the sphere-of-influence algorithm for density modification to improve these phases `[Sheldrick, 2002] <https://www.degruyter.com/view/journals/zkri/217/12/article-p644.xml>`_. It can also prove useful for expanding a small protein fragment to an almost complete polyalanine trace of the structure
 

@@ -39,7 +39,13 @@
         
   <div class="section" id="find-and-fit-ligand-with-coot">
 <h1><span class="section-number">12.2. </span>Find and Fit Ligand with Coot<a class="headerlink" href="#find-and-fit-ligand-with-coot" title="Permalink to this headline">¶</a></h1>
-<p>to be written</p>
+<p>This task is used for the automatic fitting of ligands into electron-density maps with <a class="reference external" href="https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/" rel="noopener noreferrer" target="_blank">Coot</a></p>
+<p>The user is offered a selection of <a class="reference external" href="https://www.rcsb.org/docs/general-help/x-ray-electron-density-maps" rel="noopener noreferrer" target="_blank">electron density maps</a> to search: map showing all features (<strong>2Fo-Fc</strong>) or difference map (<strong>Fo-Fc</strong>), which shows where the model fails to account for the map</p>
+<p><strong>Search level</strong>: Can be set manually, <strong>1 σ</strong> in case of <strong>2Fo-Fc</strong> map search and <strong>2 σ’s</strong> for <strong>Fo-Fc</strong> search are recommended.</p>
+<p>If the <strong>Flexible fit</strong> check button is activated, the task will generate a number of variable conformations (according to the value of samples box) by rotating around the rotatable bonds. Each of these conformations will be fitted to each of the potential ligand sites in the map and the best one will be selected (if it passes the fitting criteria).</p>
+<p>Please refer to the <a class="reference external" href="https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/web/docs/coot.html#Find-Ligands" rel="noopener noreferrer" target="_blank">The Coot User Manual</a> for further details.</p>
+<p><strong>References</strong></p>
+<p><a class="reference external" href="https://doi.org/10.1107/S0907444910007493" rel="noopener noreferrer" target="_blank">Emsley, P., Lohkamp, B., Scott, W.G., Cowtan, K. (2010) Features and development of Coot. Acta Cryst. D66: 486-501; doi:10.1107/S0907444910007493</a></p>
 </div>
 
 

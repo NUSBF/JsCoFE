@@ -42,7 +42,8 @@ The program can detect and use **pseudo-translation vectors**. In this case, the
 Experimental data
 -----------------
 
-The **low-resolution cut-off** is applied in the form of a Gaussian F = F :subscript:`obs` (1 - exp|-B :subscript:`off` (sin θ/λ) :superscript:`2` |), where B :subscript:`off` = (2d :subscript:`max` ) :superscript:`2`
+
+The **low-resolution cut-off** is applied in the form of a Gaussian F = F :subscript:`obs` (1 - exp | - B :subscript:`off` (sin θ/λ) :superscript:`2` | )`, where B :subscript:`off` = (2d :subscript:`max` ) :superscript:`2`
 
 The common practice is to exclude low resolution reflections from calculations because they are corrupted by the bulk solvent contribution. However, this results in the series termination effect and introduces systematic errors in the electron density, particularly at the surface of the molecule `[Vagin and Teplyakov, 1997] <https://scripts.iucr.org/cgi-bin/paper?li5010>`_
 

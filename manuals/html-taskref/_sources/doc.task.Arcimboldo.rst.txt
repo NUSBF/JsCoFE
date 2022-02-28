@@ -43,7 +43,7 @@ Coil coiled mode entails:*
 * SHELXE with helical sliding, which improves the autotracing of the coiled coil structures.
 
 
-        *adapted from  http://chango.ibmb.csic.es/tutorial_coiled
+     * adapted from http://chango.ibmb.csic.es/tutorial_coiled.
 
 ------
 Output
@@ -93,7 +93,7 @@ A search and expansion tables shows:
 
                     more than 8* 	**definitely** a solution
 
-                        *6 for 1st model in monoclinic space groups	
+                        * 6 for 1st model in monoclinic space groups	
 
  
 

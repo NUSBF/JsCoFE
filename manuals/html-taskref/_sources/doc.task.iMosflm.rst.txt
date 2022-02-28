@@ -1,6 +1,6 @@
-==========================================
+=========================================
 Interactive Image Processing with iMosflm
-==========================================
+=========================================
 
 `iMOSFLM <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3069742/>`_ is a graphical user interface to the diffraction data-integration program `MOSFLM <http://journals.iucr.org/d/issues/2006/01/00/ba5082/index.html>`_.
 MOSFLM  is a program to process diffraction data collected using the oscillation method (Arndt & Wonacott, 1977). MOSFLM process the resulting diffraction images into three stages. The first is the determination of the crystal parameters, in particular the crystal lattice (unit cell) and its orientation relative to a laboratory axial system (usually based on the X-ray beam direction and the rotation axis). This is usually referred to as autoindexing. Knowledge of these parameters then allows an initial estimate of the crystal mosaicity. The second step is the determination of accurate unit-cell parameters, using a procedure known as post-refinement. This requires the integration of one or more segments of data with a few images in each segment. The final step is the integration of the entire set of diffraction images, while simultaneously refining parameters associated with both the crystal and the detector.

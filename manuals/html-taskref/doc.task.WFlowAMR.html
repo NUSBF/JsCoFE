@@ -39,13 +39,13 @@
         
   <div class="section" id="automatic-molecular-replacement-workflow">
 <h1><span class="section-number">1.2. </span>Automatic Molecular Replacement Workflow<a class="headerlink" href="#automatic-molecular-replacement-workflow" title="Permalink to this headline">¶</a></h1>
-<p>This task imports and prepares input data for solving structure with an Automatic Molecular Replacement solver (MrBump or MoRDa), and starts the corresponding <em>Workflow</em>. Once started, <em>Workflow</em> develops automatically, adding new tasks and branches in <em>Project Tree</em> as necessary, until arriving at the solution, or being stopped by user, or failing because of being unable to solve the structure. Read more about <em>workflows_guide</em> here.</p>
+<p>This task imports and prepares input data for solving structure with an Automatic Molecular Replacement solver (MrBump or MoRDa), and starts the corresponding <em>Workflow</em>. Once started, <em>Workflow</em> develops automatically, adding new tasks and branches in <em>Project Tree</em> as necessary, until arriving at the solution, or being stopped by user, or failing because of being unable to solve the structure. Read more about <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_workflows.html" rel="noopener noreferrer" target="_blank">here</a></p>
 <p>The <em>Automatic MR Workflow</em> includes the following stages:</p>
 <ul class="simple">
 <li>import of reflection dataset, target sequence and, optionally, ligand description</li>
 <li>checking PDB for identical lattice parameters with <a class="reference internal" href="doc.task.Simbad.html#simbad-doc"><span class="std std-ref">Simbad</span></a>;</li>
 <li>preparation of <a class="reference internal" href="doc.task.ASUDef.html#asudef"><span class="std std-ref">Asymmetric Unit</span></a></li>
-<li>Molecular Replacement with either <span class="xref std std-ref">MrBump</span> or <a class="reference internal" href="doc.task.Morda.html#morda-doc"><span class="std std-ref">MorDA</span></a></li>
+<li>Molecular Replacement with either <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> or <a class="reference internal" href="doc.task.Morda.html#morda-doc"><span class="std std-ref">MorDA</span></a></li>
 <li><dl class="first docutils">
 <dt>if a solution is found, either by <em>Simbad</em>, <em>MrBump</em> or <em>MoRDa</em>:</dt><dd><ul>
 <li>model building with <em>CCP4Build</em> or <em>Buccaneer</em></li>
