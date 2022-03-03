@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.02.22   <--  Date of Last Modification.
+ *    03.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -444,8 +444,8 @@ var t_year         = t0 - 3600000*24*365;  // milliseconds in an year
     users_per_week[nweek]++;
   }
 
-  for (var i=1;i<users_per_week.length;i++)
-    users_per_week[i] += users_per_week[i-1];
+  // for (var i=1;i<users_per_week.length;i++)
+  //   users_per_week[i] += users_per_week[i-1];
 
   var total = 0;
   for (var doc in this.doclog)  {

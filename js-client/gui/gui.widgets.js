@@ -110,13 +110,13 @@ Widget.prototype.setCursor = function ( cursor )  {
   return this;
 }
 
-Widget.prototype.setTooltip = function ( text )  {
+function __set_tooltip ( element,text )  {
   if (text)  {
-    this.element.setAttribute ( 'title',text );
+    element.setAttribute ( 'title',text );
     var delay    = 1500;
     var duration = Math.sqrt(text.split(' ').length)*1500; // dynamic duration
     if (duration>0)  {
-      $(this.element).tooltip({
+      $(element).tooltip({
           show  : { effect : 'slideDown', delay: delay },
           track : true,
           content: function (callback) {
@@ -130,6 +130,29 @@ Widget.prototype.setTooltip = function ( text )  {
       });
     }
   }
+}
+
+Widget.prototype.setTooltip = function ( text )  {
+  __set_tooltip ( this.element,text );
+  // if (text)  {
+  //   this.element.setAttribute ( 'title',text );
+  //   var delay    = 1500;
+  //   var duration = Math.sqrt(text.split(' ').length)*1500; // dynamic duration
+  //   if (duration>0)  {
+  //     $(this.element).tooltip({
+  //         show  : { effect : 'slideDown', delay: delay },
+  //         track : true,
+  //         content: function (callback) {
+  //             callback($(this).prop('title'));
+  //         },
+  //         open  : function (event, ui) {
+  //             setTimeout(function() {
+  //                 $(ui.tooltip).hide('explode');
+  //             },delay+duration);
+  //         }
+  //     });
+  //   }
+  // }
   /*
   $(this.element).tooltip({
       content : text,

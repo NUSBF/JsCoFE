@@ -386,6 +386,7 @@ AdminPage.prototype.loadAnalytics = function()  {
           'Domains'
         ],[
           'Ordinal number',
+          'Country by registration',
           'Total number of recent users',
           'Internet domains'
         ],
@@ -447,19 +448,20 @@ AdminPage.prototype.loadAnalytics = function()  {
           'Users'
         ],[
           'Week number from today',
-          'Number of unique users detected from 1st week'
+          'Number of unique users detected last time'
         ],
+        // function(anlTable,i){
+        //   var j = anldata.users_per_week.length - i;
+        //   anlTable.setRow ( j.toString(),'',[
+        //       anldata.users_per_week[j-1]
+        //     ],i+1,(i & 1)==1 );
+        // },
         function(anlTable,i){
           var j = anldata.users_per_week.length - i;
           anlTable.setRow ( j.toString(),'',[
-              anldata.users_per_week[j-1]
+              anldata.users_per_week[i]
             ],i+1,(i & 1)==1 );
         },
-        // function(anlTable,i){
-        //   anlTable.setRow ( '' + (anldata.users_per_week.length-i),'',[
-        //       anldata.users_per_week[i]
-        //     ],i+1,(i & 1)==1 );
-        // },
         'right'
       );
 
@@ -478,6 +480,7 @@ AdminPage.prototype.loadAnalytics = function()  {
           'Domains'
         ],[
           'Ordinal number',
+          'Country by registration',
           'Total number of recent users',
           'Internet domains'
         ],

@@ -67,8 +67,9 @@ Table.prototype.setHeaderRow = function ( header_list,tooltip_list )  {
     var headerCell = document.createElement('th');
     headerCell.innerHTML = header_list[i];
     headerCell.setAttribute ( 'class','table-blue-vh' );
-    if (tooltip_list.length>0)
-      headerCell.setAttribute ( 'title',tooltip_list[i] );
+    __set_tooltip ( headerCell,tooltip_list[i] );
+    // if (tooltip_list.length>0)
+    //   headerCell.setAttribute ( 'title',tooltip_list[i] );
     tableRow.appendChild ( headerCell );
   }
 }
