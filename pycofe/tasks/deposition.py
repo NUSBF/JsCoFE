@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.08.21   <--  Date of Last Modification.
+#    04.03.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -254,7 +254,7 @@ class Deposition(basic.TaskDriver):
         self.unsetLogParser()
 
         hkl_path = hkl.getHKLFilePath ( self.inputDir() )
-        cmd = [ "mtz2cif",hkl_path,sfCIF ]
+        cmd = [ "mtz2cif","--no-comments",hkl_path,sfCIF ]
                 # hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
         gemmi_path = os.path.join ( os.environ["CCP4"],"bin","gemmi" )
         self.runApp ( gemmi_path,cmd,logType="Main" )
@@ -279,7 +279,7 @@ class Deposition(basic.TaskDriver):
                     )
                 )
 
-            cmd = [ "mtz2cif","--depo",
+            cmd = [ "mtz2cif","--depo","--no-comments",
                     hkl_path,aimless_unm,sfCIF_unm ]
             rc = self.runApp ( gemmi_path,cmd,logType="Main",quitOnError=False )
             if rc.msg:

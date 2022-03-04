@@ -58,6 +58,7 @@ var twindow_recent  = 1800000;  // 30 minutes
 
 var countries = {
   'com': 'Generic COM',
+  'org': 'Generic ORG',
   'edu': 'United States EDU',
   'ac' : 'Ascension Island',
   'ad' : 'Andorra',
