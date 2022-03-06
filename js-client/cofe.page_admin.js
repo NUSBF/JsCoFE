@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.22   <--  Date of Last Modification.
+ *    06.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -461,6 +461,13 @@ AdminPage.prototype.loadAnalytics = function()  {
           anlTable.setRow ( j.toString(),'',[
               anldata.users_per_week[i]
             ],i+1,(i & 1)==1 );
+          if (j==1)  {
+            var total = 0;
+            for (var k=0;k<anldata.users_per_week.length;k++)
+              total += anldata.users_per_week[k];
+            anlTable.setRow ( 'Total:','Total number of active unique users',
+                              [total],i+2,(i & 1)!=1 );
+          }
         },
         'right'
       );
