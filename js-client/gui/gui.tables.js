@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.03.22   <--  Date of Last Modification.
+ *    06.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -83,8 +83,9 @@ Table.prototype.setRow = function ( header,tooltip,cell_list,row,alt_bool )  {
     var headerCell = document.createElement('th');
     headerCell.innerHTML = header;
     headerCell.setAttribute ( 'class','table-blue-vh' );
-    if (tooltip)
-      headerCell.setAttribute ( 'title',tooltip );
+    __set_tooltip ( headerCell,tooltip );
+    // if (tooltip)
+    //   headerCell.setAttribute ( 'title',tooltip );
     tableRow.appendChild ( headerCell );
     col_cnt++;
   }
