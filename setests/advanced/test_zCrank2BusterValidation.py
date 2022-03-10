@@ -96,7 +96,7 @@ def validateBusterRun(driver, waitLong):
     return ()
 
 
-def test_9Crank2validation(browser,
+def test_8BusterValidation(browser,
                 cloud,
                 nologin,
                 login,
@@ -112,7 +112,7 @@ def test_9Crank2validation(browser,
     d.remote = remote
     d.login = login
 
-    d.testName = 'crank2Test'
+    d.testName = 'busterTest'
 
     try:
         print('Opening URL: %s' % cloud)
@@ -123,20 +123,20 @@ def test_9Crank2validation(browser,
             sf.loginToCloud(d.driver, d.login, d.password)
 
         sf.enterProject(d.driver, d.testName)
-        validateCrank2run(d.driver, 3000)
+        validateBusterRun(d.driver, 3000)
         sf.renameProject(d.driver, d.testName)
 
     except:
         d.driver.quit()
         raise
 
-def test_9BusterValidation():
+def test_9Crank2Validation():
 
-    d.testName = 'busterTest'
+    d.testName = 'crank2Test'
 
     try:
         sf.enterProject(d.driver, d.testName)
-        validateBusterRun(d.driver, 600)
+        validateCrank2run(d.driver, 300)
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()

@@ -294,8 +294,8 @@ def refmac_0007(driver):
         print('*** Verification: could not find Rwork or Rfree value after REFMAC5 run')
     else:
         print('*** Verification: REFMAC5 Rwork is %0.4f (expecting <0.28), Rfree is %0.4f (expecing <0.29)' % (rWork, rFree))
-    assert rWork < 0.28
-    assert rFree < 0.29
+    assert rWork < 0.29
+    assert rFree < 0.30
 
     return ()
 
