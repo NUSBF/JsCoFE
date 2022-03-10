@@ -18,7 +18,7 @@ d = sf.driverHandler()
 
 def validate1AMR(driver, waitLong):
 
-    print ('validate1AMR verification - starting pulling job every minute')
+    print ('validate1AMR UNM verification - starting pulling job every minute')
 
     finished = False
 
@@ -67,23 +67,32 @@ def validate1AMR(driver, waitLong):
     print('Verifying WF task 0001 text... ')
     assert ttts[1] == 'auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started'
 
-    print('Verifying SIMBAD Rfree < 0.35... ')
+    print('Verifying MRBUMP Rfree < 0.42... ')
     match = False
     for t in ttts:
-        match = re.search('simbad --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        match = re.search('mrbump --.*R=(0\.\d*) Rfree=(0\.\d*).*', t)
         if match:
             break
     assert match
-    assert float(match.group(2)) < 0.35
+    assert float(match.group(2)) < 0.42
 
-    print('Verifying buccaneer Rfree < 0.35... ')
+    print('Verifying buccaneer Rfree < 0.36... ')
     match = False
     for t in ttts:
         match = re.search('buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
         if match:
             break
     assert match
-    assert float(match.group(2)) < 0.35
+    assert float(match.group(2)) < 0.36
+
+    print('Verifying arpwarp Rfree < 0.31... ')
+    match = False
+    for t in ttts:
+        match = re.search('arpwarp --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
+            break
+    assert match
+    assert float(match.group(2)) < 0.31
 
     print('Verifying fitligand = 1 ... ')
     match = False
@@ -93,61 +102,41 @@ def validate1AMR(driver, waitLong):
             break
     assert match
 
-    print('Verifying fitwaters >50 ... ')
+    print('Verifying fitwaters >40 ... ')
     match = False
     for t in ttts:
         match = re.search('fit waters -- Nwaters=(\d*)', t)
         if match:
             break
     assert match
-    assert float(match.group(1)) > 50
+    assert float(match.group(1)) > 40
 
-    print('Verifying refmac5  Rfree < 0.29... ')
+    print('Verifying refmac5  Rfree < 0.295... ')
     match = False
     for t in reversed(ttts):
         match = re.search('refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', t)
         if match:
             break
     assert match
-    assert float(match.group(2)) < 0.29
-
-    print('Verifying ccp4build  Rfree < 0.36... ')
-    match = False
-    for t in ttts:
-        match = re.search('ccp4build --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
-        if match:
-            break
-    assert match
-    assert float(match.group(2)) < 0.36
-
-    print('Verifying deposition ... ')
-    match = False
-    for t in ttts:
-        if 'deposition -- package prepared, pdb report' in t:
-            match = True
-            break
-    assert match
-
-
+    assert float(match.group(2)) < 0.295
 
     return ()
 
 
 def validate12AMR(driver, waitLong):
-
-    print ('validate1AMR verification - starting pulling job every minute')
+    print ('validate12AMR LYSO verification - starting pulling job every minute')
 
     finished = False
 
     time.sleep(1)
     startTime = time.time()
 
-
     while (True):
         ttts = sf.tasksTreeTexts(driver)
         for taskText in ttts:
             # Job number as string
-            match = re.search(r'^auto-MR:\[0016\] Automated Workflow has finished succesfully \(look inside for comments\)', taskText)
+            match = re.search(
+                r'^auto-MR:\[\d*\] Automated Workflow has finished succesfully \(look inside for comments\)', taskText)
             if match:
                 finished = True
                 break
@@ -155,88 +144,80 @@ def validate12AMR(driver, waitLong):
             break
         curTime = time.time()
         if curTime > startTime + float(waitLong):
-            print('*** Timeout for validate1AMR results! Waited for 50 minutes plus %d seconds.' % waitLong)
+            print('*** Timeout for validate1AMR results! Waited for long time plus %d seconds.' % waitLong)
             break
         time.sleep(60)
 
-#0 [amrWFTest_unm] amrWFTest_unm
-#1 auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started
-#2 auto-MR:[0002] aimless -- Compl=75.8% CC1/2=0.998 Rmeas_all=0.070 Rmeas_ano=0.068 Res=1.25-61.93 SpG=P 61 2 2
-#3 auto-MR:[0003] asymmetric unit contents -- 1 molecule in ASU, Solv=64.7%
-#4 auto-MR:[0004] simbad -- best model: 4hg7, LLG=132.0 TFZ=13.7 R=0.3291 Rfree=0.3295 SpG=P 65 2 2
-#5 auto-MR:[0005] buccaneer -- Compl=100.0% R=0.3222 Rfree=0.3294
-#6 auto-MR:[0007] refmac5 -- R=0.3133 Rfree=0.3293
-#7 auto-MR:[0008] make ligand -- ligand "00E" prepared
-#8 auto-MR:[0009] fit ligand -- Nfitted=1
-#9 auto-MR:[0010] refmac5 -- R=0.2789 Rfree=0.3031
-#10 auto-MR:[0011] fit waters -- Nwaters=65
-#11 auto-MR:[0012] refmac5 -- R=0.2468 Rfree=0.2768
-#12 auto-MR:[0013] refmac5 -- R=0.2479 Rfree=0.2767
-#13 auto-MR:[0014] refmac5 -- R=0.2498 Rfree=0.2778
-#14 auto-MR:[0015] deposition -- package prepared, pdb report obtained
-#15 auto-MR:[0016] Automated Workflow has finished succesfully (look inside for comments)
-#16 auto-MR:[0006] ccp4build -- Compl=100.0% R=0.317 Rfree=0.3401
+    # [amrWFTest_unm] amrWFTest_unm
+    # auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started
+    # auto-MR:[0002] aimless -- Compl=75.8% CC1/2=0.998 Rmeas_all=0.070 Rmeas_ano=0.068 Res=1.25-61.93 SpG=P 61 2 2
+    # auto-MR:[0003] asymmetric unit contents -- 1 molecule in ASU, Solv=64.7%
+    # auto-MR:[0004] simbad -- best model: 4hg7, LLG=132.0 TFZ=13.7 R=0.3291 Rfree=0.3295 SpG=P 65 2 2
+    # auto-MR:[0005] buccaneer -- Compl=100.0% R=0.3219 Rfree=0.3336
+    # auto-MR:[0006] ccp4build -- Compl=100.0% R=0.3153 Rfree=0.3288
+    # auto-MR:[0007] refmac5 -- R=0.3115 Rfree=0.3286
+    # auto-MR:[0008] refmac5 -- R=0.3119 Rfree=0.3280
+    # auto-MR:[0009] make ligand -- ligand "00E" prepared
+    # auto-MR:[0010] fit ligand -- Nfitted=1
+    # auto-MR:[0011] refmac5 -- R=0.2773 Rfree=0.2970
+    # auto-MR:[0012] fit waters -- Nwaters=65
+    # auto-MR:[0013] refmac5 -- R=0.2443 Rfree=0.2649
+    # auto-MR:[0014] refmac5 -- R=0.2116 Rfree=0.2481
+    # auto-MR:[0015] refmac5 -- R=0.2136 Rfree=0.2491
+    # auto-MR:[0016] refmac5 -- R=0.2148 Rfree=0.2510
+    # auto-MR:[0017] deposition -- package prepared, pdb report obtained
+    # auto-MR:[0018] Automated Workflow has finished succesfully (look inside for comments)
 
     ttts = sf.tasksTreeTexts(driver)
 
     print('Verifying WF task 0001 text... ')
-    assert ttts[1] == 'auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started'
+    assert ttts[
+               1] == 'auto-MR:[0001] MR automatic workflow -- imported HKL (1), Sequences (1); workflow started'
 
-    print('Verifying SIMBAD Rfree < 0.35... ')
+    print('Verifying MRBUMP Rfree < 0.35... ')
     match = False
     for t in ttts:
-        match = re.search('simbad --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        match = re.search('mrbump --.*R=(0\.\d*) Rfree=(0\.\d*).*', t)
         if match:
             break
     assert match
     assert float(match.group(2)) < 0.35
 
-    print('Verifying buccaneer Rfree < 0.35... ')
+    print('Verifying buccaneer Rfree < 0.33... ')
     match = False
     for t in ttts:
         match = re.search('buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
         if match:
             break
     assert match
-    assert float(match.group(2)) < 0.35
+    assert float(match.group(2)) < 0.33
 
-    print('Verifying fitligand = 1 ... ')
+    print('Verifying arpwarp Rfree < 0.27... ')
     match = False
     for t in ttts:
-        if 'fit ligand -- Nfitted=1' in t:
-            match = True
+        match = re.search('arpwarp --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        if match:
             break
     assert match
+    assert float(match.group(2)) < 0.27
 
-    print('Verifying fitwaters >50 ... ')
+    print('Verifying fitwaters >75 ... ')
     match = False
     for t in ttts:
         match = re.search('fit waters -- Nwaters=(\d*)', t)
         if match:
             break
     assert match
-    assert float(match.group(1)) > 50
+    assert float(match.group(1)) > 75
 
-    print('Verifying refmac5  Rfree < 0.29... ')
+    print('Verifying refmac5  Rfree < 0.26... ')
     match = False
-    for t in ttts[-5:-1]:
+    for t in reversed(ttts):
         match = re.search('refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', t)
         if match:
             break
     assert match
-    assert float(match.group(2)) < 0.29
-
-    print('Verifying ccp4build  Rfree < 0.36... ')
-    match = False
-    for t in ttts:
-        match = re.search('ccp4build --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
-        if match:
-            break
-    assert match
-    assert float(match.group(2)) < 0.36
-
-    print('Verifying deposition ... ')
-    assert 'deposition -- package prepared, pdb report' in ttts[-2]
+    assert float(match.group(2)) < 0.26
 
     return ()
 
@@ -282,12 +263,11 @@ def test_1_2_AMR_Validation():
     d.testName = 'amrWFTest_lyso'
 
     try:
-        pass
-#        sf.enterProject(d.driver, d.testName)
-#        validate12AMR(d.driver, 600)
-#        sf.renameProject(d.driver, d.testName)
+        sf.enterProject(d.driver, d.testName)
+        validate12AMR(d.driver, 600)
+        sf.renameProject(d.driver, d.testName)
 
-        # d.driver.quit()
+        d.driver.quit()
 
     except:
         d.driver.quit()
