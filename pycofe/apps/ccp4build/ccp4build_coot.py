@@ -91,7 +91,7 @@ class Coot(ccp4build_refmac.Refmac):
         shutil.move ( self.script_path,script_path )
         self.script_path = None
 
-        cmd = [ "--no-state-script", "--no-graphics", "--no-guano", "--python",
+        cmd = [ "--no-state-script", "--no-graphics", "--no-guano", "--script",
                 "--pdb",meta["xyzpath"], "--script",script_path ]
 
         stdout_fpath = self.getStdOutPath ( nameout )
