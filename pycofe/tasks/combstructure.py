@@ -139,7 +139,9 @@ class CombStructure(basic.TaskDriver):
             )
             f.close()
 
-            cmd = [ "--no-state-script", "--no-graphics", "--no-guano", "--python",
+            # cmd = [ "--no-state-script", "--no-graphics", "--no-guano", "--python",
+            #         "--pdb",work_xyz, "--script",coot_script ]
+            cmd = [ "--no-state-script", "--no-graphics", "--no-guano",
                     "--pdb",work_xyz, "--script",coot_script ]
 
             if sys.platform.startswith("win"):

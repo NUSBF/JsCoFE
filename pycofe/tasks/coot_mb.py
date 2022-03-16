@@ -247,7 +247,7 @@ class Coot(coot_ce.CootCE):
             shutil.copy2 ( molp_path,"molprobity_probe.txt" )
 
         #args += ["--python",coot_scr,"--no-guano"]
-        args += ["--python",coot_scr]
+        args += ["--script",coot_scr]
 
         # Run coot
         if sys.platform.startswith("win"):
