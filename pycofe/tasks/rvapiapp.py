@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.07.18   <--  Date of Last Modification.
+#    18.03.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -25,7 +25,7 @@
 #  corresponding button in RVAPI report pages. Although this is processed as
 #  a usual NC-side job, no results are sent back to FE server.
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -105,8 +105,13 @@ else:
         app  = "/bin/bash"
         args = ["-c"," ".join(["ccp4mg"] + task.rvapi_args)]
     elif task.rvapi_command == "{viewhkl}":
-        app = "viewhkl"
-        args = task.rvapi_args
+        if sys.platform.startswith("darwin"):
+            app  = "open"
+            args = [os.path.join(os.environ["CCP4"],"ViewHKL.app"),
+                    "--args",os.path.abspath(task.rvapi_args[0])]
+        else:
+            app = "viewhkl"
+            args = task.rvapi_args
 
 if app is None:
     print(" wrong command specification 'pycofe.tasks.rvapiapp' (" + task.rvapi_command + ")")
