@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.12.21   <--  Date of Last Modification.
+#    16.03.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #      jobDir/report  : directory receiving HTML report
 #    expire      is timeout for removing coot backup directories
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #

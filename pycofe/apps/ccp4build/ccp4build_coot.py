@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.01.22   <--  Date of Last Modification.
+#    17.03.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -91,7 +91,7 @@ class Coot(ccp4build_refmac.Refmac):
         shutil.move ( self.script_path,script_path )
         self.script_path = None
 
-        cmd = [ "--no-state-script", "--no-graphics", "--no-guano", "--script",
+        cmd = [ "--no-state-script", "--no-graphics", "--no-guano",
                 "--pdb",meta["xyzpath"], "--script",script_path ]
 
         stdout_fpath = self.getStdOutPath ( nameout )
