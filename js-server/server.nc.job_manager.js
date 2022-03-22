@@ -1054,7 +1054,8 @@ function ncRunJob ( job_token,meta )  {
                         jname,
                         ncores
                       ];
-                      var job = utils.spawn ( ncConfig.exeData,script_params.concat(command),{} );
+                      var job = utils.spawn ( ncConfig.exeData,script_params.concat(command),
+                                              { env : process.env });
                       // in this mode, we DO NOT put job listener on the spawn
                       // process, because it is just the launcher script, which
                       // quits nearly immediately; however, we use listeners to

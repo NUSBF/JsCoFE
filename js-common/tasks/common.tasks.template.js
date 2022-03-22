@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.02.22   <--  Date of Last Modification.
+ *    22.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -57,7 +57,7 @@ var jobReportHTMLName = 'index.html';
 var jobReportTaskName = 'task.tsk';
 
 var keyEnvironment = ['CCP4','BALBES_ROOT','ROSETTA_DIR','warpbin','BDG_home',
-                      'XDS_home','XDSGUI_home','DOCREPO',
+                      'XDS_home','XDSGUI_home','DOCREPO','AF2_script',
                       '$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe',
                       '$CCP4/share/mrd_data/VERSION','$CCP4/lib/py2/morda/LINKED',
                       'Xia2_durin','$CCP4_MASTER/BORGES_LIBS'

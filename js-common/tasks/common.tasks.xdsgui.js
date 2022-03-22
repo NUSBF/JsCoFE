@@ -64,7 +64,7 @@ TaskXDSGUI.prototype.constructor = TaskXDSGUI;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskXDSGUI.prototype.icon                = function()  { return 'task_xdsgui'; }
+TaskXDSGUI.prototype.icon                = function() { return 'task_xdsgui'; }
 TaskXDSGUI.prototype.requiredEnvironment = function() { return ['CCP4','XDS_home','XDSGUI_home']; }
 TaskXDSGUI.prototype.lowestClientVersion = function() { return '1.6.005 [29.01.2019]'; }
 TaskXDSGUI.prototype.cloneItems          = function() { return ['xds_dir']; }

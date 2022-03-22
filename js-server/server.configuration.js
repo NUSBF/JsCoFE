@@ -405,10 +405,15 @@ function CCP4DirName()  {
     "update_notifications" : false,  // optional notification on CCP4 updates
     "userDataPath"     : "./cofe-users",
     "storage"          : "./cofe-projects",  // for logs, stats, pids, tmp etc.
-    "projectsPath"     : "./cofe-projects",  // old version; in this case, "storage" may be omitted
+    "projectsPath"     : "./cofe-projects",  // old version; in this case, "storage" may be
+                                             // omitted. Although functional, do not use
+                                             // this in new setups
     "projectsPath"     : {   // new version; in this case, "storage" must be given
-        "***"   : { "path" : "./cofe-projects", // equivalent to "projectPath"
-                    "type" : "volume"           //    given by single string
+        "***"   : { "path" : "./cofe-projects", // "***" is special name for working with
+                                                // projects created with the old, single-path,
+                                                // version. The path for "***" should be set
+                                                // equal to former "projectPath"
+                    "type" : "volume",          //    given by single string
                         // type "volume" means an ordinary file system
                         // type "home" places projects in path/login/[dirName]
                         //      if path/login already exists and is writable
@@ -426,6 +431,17 @@ function CCP4DirName()  {
     "jobs_safe" : {  // should point on jobs_safe directory as in NCs
         "path"     : "./cofe-nc-storage/jobs_safe",
         "capacity" : 10
+    },
+    "archivePath"     : {  // optional CCP4 Archive storage configuration
+        "aname1" : { "path" : "./cofe-archive-1",  // any disk name and path name
+                    "type"  : "volume",            // should be always "volume"
+                    "diskReserve" : 10000  // spare capacity, in MBytes, to accomodate
+                                           // project versions
+                  },
+        "anameN" : { "path" : "pathN",  // any number of any disk and path names
+                    "type"  : "volume",
+                    "diskReserve" : 10000
+                  }
     },
     "facilitiesPath"   : "./cofe-facilities",
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
@@ -641,6 +657,7 @@ function readConfiguration ( confFilePath,serverType )  {
     fe_server.auth_software          = null;
     fe_server.malicious_attempts_max = -1;    // around 100; <0 means do not use
     fe_server.update_notifications   = false; // optional notification on CCP4 updates
+    fe_server.archivePath            = null;  // no archive by default
 
     // read configuration file
     for (var key in confObj.FrontEnd)
