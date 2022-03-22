@@ -12,7 +12,7 @@
  *  **** Content :  Structure Prediction Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) M. Fando, E. Krissinel, A. Lebedev 2022
  *
  *  ====================================================================
  *
@@ -55,7 +55,7 @@
       max         : 1           // maximum acceptable number of data instances
     }
   ];
-  
+
   this.parameters = { // container for all input parameters
 
     sec1  :  // unique Section ID used for fetching parameters in Task Driver
@@ -65,7 +65,7 @@
           position : [0,0,1,5],  // must span 5 columns
           contains : {           // container for Section's parameters
 
-            
+
             PROGRAM :
                   {
                     type     : 'combobox', // for AF preferable (0 - 5)

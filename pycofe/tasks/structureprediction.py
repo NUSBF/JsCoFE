@@ -1,5 +1,29 @@
 ##!/usr/bin/python
 
+#
+# ============================================================================
+#
+#    22.03.22   <--  Date of Last Modification.
+#                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# ----------------------------------------------------------------------------
+#
+#  SRF EXECUTABLE MODULE
+#
+#  Command-line:
+#     ccp4-python -m pycofe.tasks.srf jobManager jobDir jobId
+#
+#  where:
+#    jobManager  is either SHELL or SGE
+#    jobDir   is path to job directory, having:
+#      jobDir/output  : directory receiving output files with metadata of
+#                       all successful imports
+#      jobDir/report  : directory receiving HTML report
+#
+#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022
+#
+# ============================================================================
+#
+
 from fileinput import filename
 import os
 import uuid
@@ -11,7 +35,7 @@ from pycofe.tasks  import basic
 # StructurePrediction driver
 
 class StructurePrediction(basic.TaskDriver):
-     
+
     def add_seqid_remark ( self,model,seqid_lst ):
         ens_path = model.getXYZFilePath ( self.outputDir() )
         file = open ( ens_path,"r" )
@@ -49,7 +73,7 @@ class StructurePrediction(basic.TaskDriver):
         seq = self.makeClass ( self.input_data.data.seq[0] )
 
         sec1 = self.task.parameters.sec1.contains
-        
+
         filename=seq.getSeqFilePath(self.inputDir())
 
         dirName=uuid.uuid4().hex
@@ -58,10 +82,10 @@ class StructurePrediction(basic.TaskDriver):
         program = self.getParameter ( sec1.PROGRAM )
 
         cmd=['-m', program,
-            '-p', dirName, 
+            '-p', dirName,
             '-f', filename
         ]
-        
+
 
         appName=os.environ['AF2_script']
 
@@ -70,7 +94,7 @@ class StructurePrediction(basic.TaskDriver):
         # if os.path.isdir(dirName):
 
         #     xyzfile = "output_" + self.outdir_name() + ".pdb"
-        
+
         fpaths=[]
         for file in os.listdir(dirName):
             if file.lower().endswith(".pdb"):
@@ -79,19 +103,19 @@ class StructurePrediction(basic.TaskDriver):
         if len(fpaths) <=0:
             self.putMessage ( "<i><b>No models are found " )
         else:
-        
+
             self.putTitle ( "Results" )
             self.putMessage ( "<i><b>Prepared models are associated " +\
                                                 "with sequence:&nbsp;" + seq.dname + "</b></i>" )
 
             for fpath_out in fpaths:
-            
-                                            
+
+
                 model = self.registerModel ( seq,fpath_out,checkout=True )
                 if model:
                     #if ensNo<1:
-                    
-                        
+
+
                     #ensNo += 1
                     ensOk  = True
                     self.putMessage ( "<h3>Model #" + model.dname + "</h3>" )
@@ -101,15 +125,15 @@ class StructurePrediction(basic.TaskDriver):
                     model.seqId = model.meta["seqId"]
                     model.rmsd  = model.meta["rmsd" ]
 
-                    self.add_seqid_remark ( model,[sid] ) 
+                    self.add_seqid_remark ( model,[sid] )
 
                     self.putModelWidget ( self.getWidgetId("model_btn"),
                                             "Coordinates",model )
                     #models.append ( model )
-        
+
         self.success( True )
         return
-    
+
 
 # ============================================================================
 

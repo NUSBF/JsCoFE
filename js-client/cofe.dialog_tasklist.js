@@ -581,12 +581,12 @@ var row      = 0;
     this.makeSection ( 'Tasks in Development',[
       // new TaskCootUtils    (),
       // ccp4go2_task,
+      new TaskStructurePrediction(),
       new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
-      new TaskHelloWorld   (),
-      new TaskStructurePrediction ()
+      new TaskHelloWorld   ()
     ]);
 
   }
