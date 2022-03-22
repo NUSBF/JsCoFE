@@ -1014,6 +1014,8 @@ function ncRunJob ( job_token,meta )  {
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
                         '-N',jname
                       ]);
+                      console.log ( ' ==== ' + command );
+                      console.log ( ' ==== ' + qsub_params.concat(command) );
                       var job = utils.spawn ( 'qsub',qsub_params.concat(command),{} );
                       // in this mode, we DO NOT put job listener on the spawn
                       // process, because it is just SGE job scheduler, which
