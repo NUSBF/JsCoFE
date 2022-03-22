@@ -1014,8 +1014,6 @@ function ncRunJob ( job_token,meta )  {
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
                         '-N',jname
                       ]);
-                      console.log ( ' ==== ' + command );
-                      console.log ( ' ==== ' + qsub_params.concat(command) );
                       var job = utils.spawn ( 'qsub',qsub_params.concat(command),{} );
                       // in this mode, we DO NOT put job listener on the spawn
                       // process, because it is just SGE job scheduler, which
@@ -1056,8 +1054,10 @@ function ncRunJob ( job_token,meta )  {
                         jname,
                         ncores
                       ];
-                      var job = utils.spawn ( ncConfig.exeData,script_params.concat(command),
-                                              { env : process.env });
+                      log.standard ( 6, ' ==== ' + command );
+                      log.standard ( 6, ' ==== ' + qsub_params.concat(command) );
+                      var job = utils.spawn ( ncConfig.exeData,script_params.concat(command),{} );
+                                              // { env : process.env });
                       // in this mode, we DO NOT put job listener on the spawn
                       // process, because it is just the launcher script, which
                       // quits nearly immediately; however, we use listeners to
