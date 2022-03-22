@@ -585,7 +585,8 @@ var row      = 0;
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
-      new TaskHelloWorld   ()
+      new TaskHelloWorld   (),
+      new TaskStructurePrediction ()
     ]);
 
   }
