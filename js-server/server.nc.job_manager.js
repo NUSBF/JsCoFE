@@ -1055,7 +1055,7 @@ function ncRunJob ( job_token,meta )  {
                         ncores
                       ];
                       log.standard ( 6, ' ==== ' + command );
-                      log.standard ( 6, ' ==== ' + qsub_params.concat(command) );
+                      log.standard ( 6, ' ==== ' + script_params.concat(command) );
                       var job = utils.spawn ( ncConfig.exeData,script_params.concat(command),{} );
                                               // { env : process.env });
                       // in this mode, we DO NOT put job listener on the spawn

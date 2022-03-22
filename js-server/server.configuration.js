@@ -603,7 +603,7 @@ function CCP4DirName()  {
 
 var _python_name = 'ccp4-python';
 function pythonName()  {
-  return _python_name;
+  return path.join ( process.env.CCP4,'bin',_python_name );
 }
 
 var _python_ver = '0.0.0';
