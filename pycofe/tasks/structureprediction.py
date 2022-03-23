@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.03.22   <--  Date of Last Modification.
+#    23.03.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,7 +27,6 @@
 from fileinput import filename
 import os
 import uuid
-# import glob
 
 from pycofe.tasks  import basic
 
@@ -61,12 +60,6 @@ class StructurePrediction(basic.TaskDriver):
 
     def run(self):
 
-        # put message
-        # self.putMessage ( "Hi!" )
-
-        # print in standard output and standard error streams
-        # self.file_stdout.write ( "Some Stucture Prediction?\n" )
-        # self.file_stderr.write ( "Hmmm?\n" )
 
         # close execution logs and quit
 
@@ -95,45 +88,47 @@ class StructurePrediction(basic.TaskDriver):
 
         #     xyzfile = "output_" + self.outdir_name() + ".pdb"
 
-        fpaths=[]
+        fpaths=[] #  create a empty object list
         for file in os.listdir(dirName):
-            if file.lower().endswith(".pdb"):
+            if file.lower().endswith(".pdb"): # find all pdb files in folder
                 fpaths.append(os.path.join(dirName, file))
 
-        if len(fpaths) <=0:
-            self.putMessage ( "<i><b>No models are found " )
-        else:
-
+        if len(fpaths) <=0: # Result page in case of no models are found
             self.putTitle ( "Results" )
+            self.putMessage ( "<i><b>No models are found " )
+        else: # if models are found
+        
+            self.putTitle ( "Results" ) 
             self.putMessage ( "<i><b>Prepared models are associated " +\
                                                 "with sequence:&nbsp;" + seq.dname + "</b></i>" )
+            modelsNumber = 0
 
             for fpath_out in fpaths:
-
-
+                
+                modelsNumber = modelsNumber +1
+            
                 model = self.registerModel ( seq,fpath_out,checkout=True )
+
                 if model:
-                    #if ensNo<1:
+                    
 
-
-                    #ensNo += 1
                     ensOk  = True
-                    self.putMessage ( "<h3>Model #" + model.dname + "</h3>" )
+                    self.putMessage ( "<h3>Model #" + str(modelsNumber) + ": " + model.dname + "</h3>" )
                     model.addDataAssociation ( seq.dataId )
                     sid='100.0'
                     model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
                     model.seqId = model.meta["seqId"]
                     model.rmsd  = model.meta["rmsd" ]
 
-                    self.add_seqid_remark ( model,[sid] )
+                    self.add_seqid_remark ( model,[sid] ) 
 
                     self.putModelWidget ( self.getWidgetId("model_btn"),
                                             "Coordinates",model )
                     #models.append ( model )
-
+        
         self.success( True )
         return
-
+    
 
 # ============================================================================
 
