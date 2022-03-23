@@ -104,16 +104,21 @@ class StructurePrediction(basic.TaskDriver):
             modelsNumber = 0
 
             for fpath_out in fpaths:
-                
+                               
                 modelsNumber = modelsNumber +1
             
                 model = self.registerModel ( seq,fpath_out,checkout=True )
 
                 if model:
+
+                    if len(fpaths) <= 1:
+                        self.putMessage ( "<h3>Model" + ": " + model.dname + "</h3>" )
+                    
+                    else:
                     
 
-                    ensOk  = True
-                    self.putMessage ( "<h3>Model #" + str(modelsNumber) + ": " + model.dname + "</h3>" )
+                        ensOk  = True
+                        self.putMessage ( "<h3>Model #" + str(modelsNumber) + ": " + model.dname + "</h3>" )
                     model.addDataAssociation ( seq.dataId )
                     sid='100.0'
                     model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
