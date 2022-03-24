@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.03.22   <--  Date of Last Modification.
+#    24.03.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -79,6 +79,8 @@ class StructurePrediction(basic.TaskDriver):
             '-f', filename
         ]
 
+        self.putWaitMessageLF ( "Prediction in progress ..." )
+        self.rvrow -= 1
 
         appName=os.environ['AF2_script']
 
@@ -87,8 +89,10 @@ class StructurePrediction(basic.TaskDriver):
         # if os.path.isdir(dirName):
 
         #     xyzfile = "output_" + self.outdir_name() + ".pdb"
+        have_results = False
 
         fpaths=[] #  create a empty object list
+
         for file in os.listdir(dirName):
             if file.lower().endswith(".pdb"): # find all pdb files in folder
                 fpaths.append(os.path.join(dirName, file))
@@ -104,15 +108,26 @@ class StructurePrediction(basic.TaskDriver):
             modelsNumber = 0
 
             for fpath_out in fpaths:
-                               
+                
+                
                 modelsNumber = modelsNumber +1
+
+                if len(fpaths) <=1:
+                    outFName = self.getXYZOFName ( )
+                else:
+                    outFName = self.getXYZOFName ( modifier=modelsNumber )
+
+                os.rename(fpath_out, outFName)
             
-                model = self.registerModel ( seq,fpath_out,checkout=True )
+                model = self.registerModel ( seq,outFName,checkout=True )
+                    
 
                 if model:
 
+                    have_results = True
+
                     if len(fpaths) <= 1:
-                        self.putMessage ( "<h3>Model" + ": " + model.dname + "</h3>" )
+                        self.putMessage ( "<h3>Model" +  ": " + model.dname + "</h3>" )
                     
                     else:
                     
@@ -131,7 +146,7 @@ class StructurePrediction(basic.TaskDriver):
                                             "Coordinates",model )
                     #models.append ( model )
         
-        self.success( True )
+        self.success( have_results )
         return
     
 
