@@ -42,8 +42,7 @@
 
     this._type   = 'TaskStructurePrediction';  // must give name of the class
     this.name    = 'Structure Prediction';    // default name to be shown in Job Tree
-    this.oname   = '*';               // default output file name template;
-                                      // asterisk means do not use
+    this.setOName ( 'af_struct' );  // default output file name template                                    
     this.title   = 'Structure Prediction';         // title for job dialog
     // this.helpURL = './html/jscofe_task_structureprediction.html'; // documentation link,
                                           // please follow file name convention
