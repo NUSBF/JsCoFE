@@ -526,8 +526,8 @@ function CCP4DirName()  {
           "path"     : "./cofe-nc-storage/jobs_safe",
           "capacity" : 10
       },
-      "exeType"            : "SHELL",
-      "jobManager"         : "SLURM",
+      "exeType"            : "SHELL",  // SHELL, SGE, SLURM, SCRIPT
+      "jobManager"         : "SLURM",  // used if SCRIPT is provided
       "exeData"            : "",
       "jobCheckPeriod"     : 2000,
       "sendDataWaitTime"   : 1000,

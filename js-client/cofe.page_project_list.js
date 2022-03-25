@@ -541,6 +541,13 @@ function ProjectListPage ( sceneId )  {
         contextMenu.addItem('Clone' ,image_path('cloneprj') ).addOnClickListener(cloneProject );
         // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
 
+        (function(tr){
+          $( tr.element ).click(function() {
+            if (tr._shared)  del_btn.setText ( 'Unjoin' );
+                       else  del_btn.setText ( 'Delete' );
+          });
+        }(trow))
+
         //contextMenu.setWidth ( '10px' );
         // contextMenu.setHeight_px ( 400 );
         // contextMenu.setZIndex ( 101 );
@@ -551,11 +558,13 @@ function ProjectListPage ( sceneId )  {
         // when list of projects is served from FE, shared record is removed
         // in case of owner's login
         var joined = ['','',''];
+        trow._shared = false;
         if ('owner' in pDesc)  {
           if (pDesc.owner.share.length>0)  {
             if (pDesc.owner.login!=__login_id)  {
               joined = ['<i>','</i>',"is not included in user\'s quota"];
               pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
+              trow._shared = true;
             }
           } else if (('author' in pDesc.owner) && pDesc.owner.author &&
                      (pDesc.owner.author!=pDesc.owner.login) &&
@@ -629,6 +638,8 @@ function ProjectListPage ( sceneId )  {
           self.tablesort_tbl.applySortList ( projectList.sortList,true );
         },10 );
       self.tablesort_tbl.selectRow ( selectedRow );
+      if (selectedRow._shared)  del_btn.setText ( 'Unjoin' );
+                          else  del_btn.setText ( 'Delete' );
       open_btn  .setDisabled ( false );
       add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       rename_btn.setDisabled ( false );
