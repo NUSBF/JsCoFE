@@ -20,6 +20,9 @@ export DOCREPO=/Users/eugene/Projects/jsCoFE/jscofe-doc
 # custom plugin for Xia-2
 export Xia2_durin=/path/to/durin-plugin.so
 
+# custom script for AlphaFold
+export AF2_script=1
+
 # comment out if buster is not installed
 source /Applications/GPhL/Buster/setup.sh
 

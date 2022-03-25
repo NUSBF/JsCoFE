@@ -78,7 +78,7 @@ case "$1" in
       #  "$6" is path to executable script (usually ccp4-python)
       #  "$7" on are parameters to pass to the executable script
       #qsub -cwd -V -b y -q all.q -notify -o "$2" -e "$3" -N "$4" "${@:5}" | cut -d " " -f 3
-      sbatch -o "$2" -e "$3" -J "$4" -c "$5" "${@:6}" | cut -d " " -f 4
+      sbatch --export=ALL -o "$2" -e "$3" -J "$4" -c "$5" "${@:6}" | cut -d " " -f 4
       ;;
 
   check_waiting)
