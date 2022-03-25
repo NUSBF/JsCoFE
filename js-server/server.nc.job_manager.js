@@ -609,7 +609,35 @@ var nRegJobs = 0;  // number of jobs listed as active in registry
                     });
                 break;
 
-    case 'SCRIPT' : var job = utils.spawn ( ncConfig.exeData,
+case 'SCRIPT' :
+    case 'SLURM' :  var job = utils.spawn ( 'squeue',['-u',process.env.USER],{} );
+                    var slurm_output = '';
+                    job.stdout.on ( 'data', function(data) {
+                      slurm_output += data.toString();
+                    });
+                    job.on ( 'close', function(code) {
+                      // should return just the number but escape just in case
+                      var n = 0;
+                      try {
+                        var lines = slurm_output.trim().split(/\s*[\r\n]+\s*/g);
+                        for (var i=1;i<lines.length;i++)  {
+                          var llist = lines[i].match(/[^ ]+/g);
+                          if ((llist.length>5) && (llist[4].toLowerCase()!='r'))
+                            n++;
+                        }
+                      } catch(err)  {
+                        log.error ( 31,'error parsing NC capacity: "' +
+                                       slurm_output + '"' );
+                      }
+                      if (n>0)  capacity  = -n;
+                          else  capacity -= nRegJobs;
+                      //    else  capacity -= Object.keys(ncJobRegister.job_map).length;
+                      onFinish_func ( capacity );
+                    });
+                break;
+
+
+    case 'SCRIPT_' : var job = utils.spawn ( ncConfig.exeData,
                                             ['check_waiting',process.env.USER],{} );
                     var job_output = '';
                     job.stdout.on ( 'data', function(data) {
@@ -1054,10 +1082,9 @@ case 'SCRIPT' :
                         '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
                         '-J',jname,
-                        '-c',ncores,
-                        command.join(' ');
+                        '-c',ncores
                       ];
-                      var job = utils.spawn ( 'sbatch',script_params,{} );
+                      var job = utils.spawn ( 'sbatch',script_params.concat(command),{} );
                       // sbatch --export=ALL -o "$2" -e "$3" -J "$4" -c "$5" "${@:6}" | cut -d " " -f 4
 
                       // in this mode, we DO NOT put job listener on the spawn
@@ -1071,7 +1098,6 @@ case 'SCRIPT' :
                       job.on('close', function(code) {
                         // the script is supposed to retun only jobID, but
                         // escape just in case
-                        log.stadard ( 7,'  --  ' + slurm_output );
                         try {
                           var slurm_output_split = slurm_output.split(' ');
                           jobEntry.pid = parseInt(slurm_output_split[slurm_output_split.length-1]);
@@ -1094,7 +1120,7 @@ case 'SCRIPT' :
                   break;
 
 
-      case 'SCRIPT' : command.push ( 'queue=' + ncConfig.getQueueName() );
+      case 'SCRIPT_' : command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       command.push ( 'nproc=' + nproc.toString() );
                       var jname = getJobName();
