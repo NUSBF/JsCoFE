@@ -1043,6 +1043,57 @@ function ncRunJob ( job_token,meta )  {
 
                   break;
 
+
+case 'SCRIPT' :
+      case 'SLURM' :  command.push ( 'queue=' + ncConfig.getQueueName() );
+                      //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
+                      command.push ( 'nproc=' + nproc.toString() );
+                      var jname = getJobName();
+                      var script_params = [
+                        '--export=ALL',
+                        '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
+                        '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
+                        '-J',jname,
+                        '-c',ncores,
+                        command.join(' ');
+                      ];
+                      var job = utils.spawn ( 'sbatch',script_params,{} );
+                      // sbatch --export=ALL -o "$2" -e "$3" -J "$4" -c "$5" "${@:6}" | cut -d " " -f 4
+
+                      // in this mode, we DO NOT put job listener on the spawn
+                      // process, because it is just the launcher script, which
+                      // quits nearly immediately; however, we use listeners to
+                      // get the standard output and infer job id from there
+                      var slurm_output = '';
+                      job.stdout.on('data', function(data) {
+                        slurm_output += data.toString();
+                      });
+                      job.on('close', function(code) {
+                        // the script is supposed to retun only jobID, but
+                        // escape just in case
+                        log.stadard ( 7,'  --  ' + slurm_output );
+                        try {
+                          var slurm_output_split = slurm_output.split(' ');
+                          jobEntry.pid = parseInt(slurm_output_split[slurm_output_split.length-1]);
+                          log.standard ( 7,'task '    + task.id + ' submitted, ' +
+                                           'name='    + jname   +
+                                           ', pid='   + jobEntry.pid +
+                                           ', token:' + job_token );
+                        }
+                        catch(err) {
+                          jobEntry.pid = 0;
+                          log.error ( 30,'task ' + task.id + 'jobID parse log: "' +
+                                         slurm_output + '"' );
+                        }
+                      });
+
+                      // indicate queuing to please the user
+                      utils.writeJobReportMessage ( jobDir,
+                                '<h1>Queuing up on &lt;' + ncConfig.name +
+                                '&gt;, please wait ...</h1>', true );
+                  break;
+
+
       case 'SCRIPT' : command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       command.push ( 'nproc=' + nproc.toString() );
@@ -1054,8 +1105,6 @@ function ncRunJob ( job_token,meta )  {
                         jname,
                         ncores
                       ];
-                      log.standard ( 6, ' ==== ' + command );
-                      log.standard ( 6, ' ==== ' + script_params.concat(command) );
                       var job = utils.spawn ( ncConfig.exeData,script_params.concat(command),{} );
                                               // { env : process.env });
                       // in this mode, we DO NOT put job listener on the spawn
