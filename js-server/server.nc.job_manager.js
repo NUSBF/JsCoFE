@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.22   <--  Date of Last Modification.
+ *    25.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -609,7 +609,6 @@ var nRegJobs = 0;  // number of jobs listed as active in registry
                     });
                 break;
 
-case 'SCRIPT' :
     case 'SLURM' :  var job = utils.spawn ( 'squeue',['-u',process.env.USER],{} );
                     var slurm_output = '';
                     job.stdout.on ( 'data', function(data) {
@@ -637,7 +636,7 @@ case 'SCRIPT' :
                 break;
 
 
-    case 'SCRIPT_' : var job = utils.spawn ( ncConfig.exeData,
+    case 'SCRIPT' : var job = utils.spawn ( ncConfig.exeData,
                                             ['check_waiting',process.env.USER],{} );
                     var job_output = '';
                     job.stdout.on ( 'data', function(data) {
@@ -1072,7 +1071,6 @@ function ncRunJob ( job_token,meta )  {
                   break;
 
 
-case 'SCRIPT' :
       case 'SLURM' :  command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       command.push ( 'nproc=' + nproc.toString() );
@@ -1120,7 +1118,7 @@ case 'SCRIPT' :
                   break;
 
 
-      case 'SCRIPT_' : command.push ( 'queue=' + ncConfig.getQueueName() );
+      case 'SCRIPT' : command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       command.push ( 'nproc=' + nproc.toString() );
                       var jname = getJobName();
@@ -1304,6 +1302,16 @@ function _stop_job ( jobEntry )  {
                                        .replace(/(\r\n|\n|\r)/gm,' ')
                                        .replace(/\s\s+/g,' ').split(' ') );
                       utils.spawn ( 'qdel',pids,{} );
+                break;
+
+      case 'SLURM'  : var pids = ['kill',jobEntry.pid];
+                      var subjobs = utils.readString (
+                                      path.join(jobEntry.jobDir,'subjobs'));
+                      if (subjobs)
+                        pids = pids.concat ( subjobs
+                                       .replace(/(\r\n|\n|\r)/gm,' ')
+                                       .replace(/\s\s+/g,' ').split(' ') );
+                      utils.spawn ( 'scancel',pids,{} );
                 break;
 
       case 'SCRIPT' : var pids = ['kill',jobEntry.pid];
