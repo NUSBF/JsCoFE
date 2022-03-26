@@ -542,7 +542,7 @@ function ProjectListPage ( sceneId )  {
         // when list of projects is served from FE, shared record is removed
         // in case of owner's login
         var joined = ['','',''];
-        shared_project = false;
+        var shared_project = false;
         if ('owner' in pDesc)  {
           if (pDesc.owner.share.length>0)  {
             if (pDesc.owner.login!=__login_id)  {
@@ -556,24 +556,28 @@ function ProjectListPage ( sceneId )  {
             pName  = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
         }
 
-        var contextMenu = new ContextMenu ( trow );
-        contextMenu.addItem('Open'  ,image_path('go')       ).addOnClickListener(openProject  );
-        contextMenu.addItem('Rename',image_path('renameprj')).addOnClickListener(renameProject);
-        if (shared_project)  {
-          contextMenu.addItem('Unjoin',image_path('remove') ).addOnClickListener(deleteProject);
-          $(trow.element).click(function() {
-            del_btn.setText ( 'Unjoin' );
+        var contextMenu;
+        (function(shared_prj){
+
+          var del_label = 'Delete';
+          if (shared_prj)
+            del_label = 'Unjoin';
+
+          $(trow.element).click(function(){
+            del_btn.setText(del_label);
           });
-        } else  {
-          contextMenu.addItem('Delete',image_path('remove') ).addOnClickListener(deleteProject);
-          $(trow.element).click(function() {
-            del_btn.setText ( 'Delete' );
+          contextMenu = new ContextMenu ( trow,function(){
+            del_btn.setText ( del_label );
           });
-        }
-        contextMenu.addItem('Export',image_path('export')   ).addOnClickListener(exportProject);
-        contextMenu.addItem('Share' ,image_path('share')    ).addOnClickListener(sharePrj     );
-        contextMenu.addItem('Clone' ,image_path('cloneprj') ).addOnClickListener(cloneProject );
-        // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
+          contextMenu.addItem('Open'   ,image_path('go')       ).addOnClickListener(openProject  );
+          contextMenu.addItem('Rename' ,image_path('renameprj')).addOnClickListener(renameProject);
+          contextMenu.addItem(del_label,image_path('remove')   ).addOnClickListener(deleteProject);
+          contextMenu.addItem('Export' ,image_path('export')   ).addOnClickListener(exportProject);
+          contextMenu.addItem('Share'  ,image_path('share')    ).addOnClickListener(sharePrj     );
+          contextMenu.addItem('Clone'  ,image_path('cloneprj') ).addOnClickListener(cloneProject );
+          // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
+
+        }(shared_project))
 
         trow.addCell ( pName  ).setNoWrap();
         trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );

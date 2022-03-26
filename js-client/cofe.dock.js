@@ -75,7 +75,7 @@ function Dock ( parent,onClick_func,onRightClick_func,addTask_func )  {
   this.loadDockData();
 
   /*
-  var contextMenu = new ContextMenu ( this.dock );
+  var contextMenu = new ContextMenu ( this.dock,null );
   contextMenu.addItem('Add task to dock'  ,image_path('go')    ).addOnClickListener(function(){});
   contextMenu.addItem('Rename',image_path('rename')).addOnClickListener(function(){});
   this.dock.insertWidget ( contextMenu,0 );
