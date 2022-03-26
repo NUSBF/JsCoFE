@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.22   <--  Date of Last Modification.
+ *    26.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -532,22 +532,6 @@ function ProjectListPage ( sceneId )  {
       for (var i=0;i<projectList.projects.length;i++)  {
         var trow = self.tablesort_tbl.addRow();
 
-        var contextMenu = new ContextMenu ( trow );
-        contextMenu.addItem('Open'  ,image_path('go')       ).addOnClickListener(openProject  );
-        contextMenu.addItem('Rename',image_path('renameprj')).addOnClickListener(renameProject);
-        contextMenu.addItem('Delete',image_path('remove')   ).addOnClickListener(deleteProject);
-        contextMenu.addItem('Export',image_path('export')   ).addOnClickListener(exportProject);
-        contextMenu.addItem('Share' ,image_path('share')    ).addOnClickListener(sharePrj     );
-        contextMenu.addItem('Clone' ,image_path('cloneprj') ).addOnClickListener(cloneProject );
-        // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
-
-        (function(tr){
-          $( tr.element ).click(function() {
-            if (tr._shared)  del_btn.setText ( 'Unjoin' );
-                       else  del_btn.setText ( 'Delete' );
-          });
-        }(trow))
-
         //contextMenu.setWidth ( '10px' );
         // contextMenu.setHeight_px ( 400 );
         // contextMenu.setZIndex ( 101 );
@@ -558,19 +542,39 @@ function ProjectListPage ( sceneId )  {
         // when list of projects is served from FE, shared record is removed
         // in case of owner's login
         var joined = ['','',''];
-        trow._shared = false;
+        shared_project = false;
         if ('owner' in pDesc)  {
           if (pDesc.owner.share.length>0)  {
             if (pDesc.owner.login!=__login_id)  {
               joined = ['<i>','</i>',"is not included in user\'s quota"];
               pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
-              trow._shared = true;
+              shared_project = true;
             }
           } else if (('author' in pDesc.owner) && pDesc.owner.author &&
                      (pDesc.owner.author!=pDesc.owner.login) &&
                      (pDesc.owner.author!=__login_id))
             pName  = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
         }
+
+        var contextMenu = new ContextMenu ( trow );
+        contextMenu.addItem('Open'  ,image_path('go')       ).addOnClickListener(openProject  );
+        contextMenu.addItem('Rename',image_path('renameprj')).addOnClickListener(renameProject);
+        if (shared_project)  {
+          contextMenu.addItem('Unjoin',image_path('remove') ).addOnClickListener(deleteProject);
+          $(trow.element).click(function() {
+            del_btn.setText ( 'Unjoin' );
+          });
+        } else  {
+          contextMenu.addItem('Delete',image_path('remove') ).addOnClickListener(deleteProject);
+          $(trow.element).click(function() {
+            del_btn.setText ( 'Delete' );
+          });
+        }
+        contextMenu.addItem('Export',image_path('export')   ).addOnClickListener(exportProject);
+        contextMenu.addItem('Share' ,image_path('share')    ).addOnClickListener(sharePrj     );
+        contextMenu.addItem('Clone' ,image_path('cloneprj') ).addOnClickListener(cloneProject );
+        // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
+
         trow.addCell ( pName  ).setNoWrap();
         trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
         if (('metrics' in pDesc) && ('R_free' in pDesc.metrics)
@@ -638,8 +642,7 @@ function ProjectListPage ( sceneId )  {
           self.tablesort_tbl.applySortList ( projectList.sortList,true );
         },10 );
       self.tablesort_tbl.selectRow ( selectedRow );
-      if (selectedRow._shared)  del_btn.setText ( 'Unjoin' );
-                          else  del_btn.setText ( 'Delete' );
+      selectedRow.click();  // just sets the Delete/Unjoin button label
       open_btn  .setDisabled ( false );
       add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       rename_btn.setDisabled ( false );
