@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.12.21   <--  Date of Last Modification.
+ *    27.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MultiChain Model Preparation from Coordinates Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2021
+ *  (C) E. Krissinel, A. Lebedev 2021-2022
  *
  *  =================================================================
  *
@@ -67,7 +67,7 @@ TaskModelPrepMC.prototype.constructor = TaskModelPrepMC;
 
 // ===========================================================================
 
-TaskModelPrepMC.prototype.cleanJobDir = function ( jobDir )  {}
+// TaskModelPrepMC.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskModelPrepMC.prototype.icon = function()  { return 'task_modelprepmc'; }
 

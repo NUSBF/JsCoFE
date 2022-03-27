@@ -797,6 +797,12 @@ function ncJobFinished ( job_token,code )  {
     return;
   }
 
+  // deal with cleanup here, before every trial send; this is redundant in
+  // all most cases apart from rare situations where NC crashes or is taken
+  // down in the middle of operation; unless cleaned properly, jobball zipping
+  // may fail
+  task.cleanJobDir ( jobEntry.jobDir );
+
   if (jobEntry.sendTrials==conf.getServerConfig().maxSendTrials) {
 
     log.debug2 ( 101,'put status' );
@@ -822,8 +828,8 @@ function ncJobFinished ( job_token,code )  {
     // deal with output data here -- in future
     task.makeOutputData ( jobEntry.jobDir );
 
-    // deal with cleanup here -- in future
-    task.cleanJobDir ( jobEntry.jobDir );
+    // // deal with cleanup here -- in future
+    // task.cleanJobDir ( jobEntry.jobDir );
 
     // note residual disk space (in MB)
     // *** now done on FE after unpacking ***

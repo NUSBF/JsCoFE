@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.05.21   <--  Date of Last Modification.
+ *    27.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,12 +13,11 @@
  *  **** Content :  Privateer Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2021
+ *  (C) E. Krissinel, A. Lebedev 2021-2022
  *
  *  =================================================================
  *
  */
-
 
 
 var __template = null;
@@ -78,7 +77,7 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskPrivateer.prototype.cleanJobDir = function ( jobDir )  {}
+//  TaskPrivateer.prototype.cleanJobDir = function ( jobDir )  {}
 
   TaskPrivateer.prototype.makeInputData = function ( loginData,jobDir )  {
 

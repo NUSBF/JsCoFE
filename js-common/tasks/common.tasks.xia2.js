@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    27.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Xia-2 Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -254,7 +254,7 @@ TaskXia2.prototype.currentVersion = function()  {
 }
 
 // default post-job cleanup to save disk space
-TaskXia2.prototype.cleanJobDir = function ( jobDir )  {}
+//TaskXia2.prototype.cleanJobDir = function ( jobDir )  {}
 
 // export such that it could be used in both node and a browser
 if (!__template)  {
