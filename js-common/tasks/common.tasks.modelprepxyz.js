@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    27.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Coordinates Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -174,7 +174,7 @@ TaskModelPrepXYZ.prototype.constructor = TaskModelPrepXYZ;
 
 // ===========================================================================
 
-TaskModelPrepXYZ.prototype.cleanJobDir = function ( jobDir )  {}
+// TaskModelPrepXYZ.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskModelPrepXYZ.prototype.icon = function()  { return 'task_modelprepxyz'; }
 

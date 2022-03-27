@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.11.21   <--  Date of Last Modification.
+ *    27.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Remark Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -327,7 +327,7 @@ if (!__template)  {
 
 }
 
-TaskRemark.prototype.cleanJobDir   = function ( jobDir )  {}
+//TaskRemark.prototype.cleanJobDir   = function ( jobDir )  {}
 TaskRemark.prototype.runButtonName = function() { return ''; }  // removes Run Button and I/O panel switch
 TaskRemark.prototype.canMove       = function ( node,jobTree )  {
   return false;

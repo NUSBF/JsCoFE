@@ -13,13 +13,13 @@ Tutorials
 
 
    doc.tutorial.T1_001
-   doc.demo.001Refinement
-   doc.demo.002Refinement
-   doc.demo.003EP
-   doc.demo.004EP
-   doc.demo.T3_004
-   doc.demo.CCP4MG-MrBump
+   doc.tutorial.T2_001
+   doc.tutorial.T3_004
+   doc.tutorial.T4_001
+   doc.tutorial.T4_002
+   doc.tutorial.T4_003
    doc.demo.PISA_start
+
 
 ======
 Search

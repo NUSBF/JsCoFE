@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.09.20   <--  Date of Last Modification.
+ *    27.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  LSQKAB Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -201,7 +201,7 @@ TaskLsqKab.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-TaskLsqKab.prototype.cleanJobDir = function ( jobDir )  {}
+// TaskLsqKab.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskLsqKab.prototype.makeFitParamRow = function ( rowNo )  {
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    27.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -116,7 +116,7 @@ TaskDeposition.prototype.constructor = TaskDeposition;
 
 TaskDeposition.prototype.icon = function()  { return 'task_deposition'; }
 
-TaskDeposition.prototype.cleanJobDir = function ( jobDir )  {}
+// TaskDeposition.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskDeposition.prototype.currentVersion = function()  {
   var version = 3;

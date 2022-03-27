@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    31.12.21   <--  Date of Last Modification.
+ *    27.03.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ModelCraft Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2021
+ *  (C) E. Krissinel, A. Lebedev 2022
  *
  *  ==========================================================================
  *
@@ -146,7 +146,7 @@ TaskModelCraft.prototype.icon = function() { return 'task_modelcraft'; }
 //   return 'Automatic model building after MR or Experimental Phasing';
 // }
 
-TaskModelCraft.prototype.cleanJobDir = function ( jobDir )  {}
+// TaskModelCraft.prototype.cleanJobDir = function ( jobDir )  {}
 
 // TaskModelCraft.prototype.canEndGracefully = function() { return false; }
 

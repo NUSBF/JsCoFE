@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.02.21   <--  Date of Last Modification.
+ *    27.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Buster Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2021
+ *  (C) E. Krissinel, A. Lebedev 2020-2022
  *
  *  =================================================================
  *
@@ -243,7 +243,7 @@ TaskBuster.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-TaskBuster.prototype.cleanJobDir = function ( jobDir )  {}
+// TaskBuster.prototype.cleanJobDir = function ( jobDir )  {}
 
 if (__template)  {
   //  for server side
