@@ -265,7 +265,7 @@ def verifyModelcraft(driver, waitLong, jobNumber, targetRwork, targetRfree):
         ttts = sf.tasksTreeTexts(driver)
         for taskText in ttts:
             # Job number as string
-            match = re.search('\[' + jobNumber + '\] modelcraft -- Compl=(.*)% R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+            match = re.search('\[' + jobNumber + '\] modelcraft -- Compl=(.*)%.*R=(0\.\d*).*Rfree=(0\.\d*)', taskText)
             if match:
                 rWork = float(match.group(2))
                 rFree = float(match.group(3))

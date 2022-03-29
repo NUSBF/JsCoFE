@@ -252,8 +252,6 @@ def test_1_AMR_Validation(browser,
         validate1AMR(d.driver, 1800)
         sf.renameProject(d.driver, d.testName)
 
-        d.driver.quit()
-
     except:
         d.driver.quit()
         raise
