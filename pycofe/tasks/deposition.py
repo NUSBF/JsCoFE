@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.03.22   <--  Date of Last Modification.
+#    29.03.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -62,12 +62,28 @@ class Deposition(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
+    # def remove_hydr_zero_occ ( self,mmcif_in,mmcif_out ):
+    #     doc = gemmi.cif.read ( mmcif_in )
+    #     table = doc[0].find('_atom_site.', ['type_symbol', 'occupancy'])
+    #     for i in range(len(table)-1, -1, -1):
+    #         if table[i][0] == 'H' and float(table[i][1]) == 0:
+    #             table.remove_row(i)
+    #     doc.write_file ( mmcif_out )
+    #     return
+
     def remove_hydr_zero_occ ( self,mmcif_in,mmcif_out ):
         doc = gemmi.cif.read ( mmcif_in )
-        table = doc[0].find('_atom_site.', ['type_symbol', 'occupancy'])
+        ids = set()
+        table = doc[0].find('_atom_site.', ['type_symbol', 'occupancy', 'id'])
         for i in range(len(table)-1, -1, -1):
             if table[i][0] == 'H' and float(table[i][1]) == 0:
+                ids.add(table[i][2])
                 table.remove_row(i)
+        if ids:
+            table = doc[0].find(['_atom_site_anisotrop.id'])
+            for i in range(len(table)-1, -1, -1):
+                if table[i][0] in ids:
+                    table.remove_row(i)
         doc.write_file ( mmcif_out )
         return
 
