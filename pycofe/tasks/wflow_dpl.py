@@ -65,6 +65,7 @@ class WFlowDPL(migrate.Migrate):
         self.map = []    # maps/phases
         self.lib = None  # ligand descriptions
         self.unm = []
+        self.seq = []
 
         if "DataUnmerged" in self.outputDataBox.data:
             self.unm = self.outputDataBox.data["DataUnmerged"]
