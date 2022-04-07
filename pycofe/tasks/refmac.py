@@ -259,7 +259,7 @@ class Refmac(basic.TaskDriver):
         if len(external_restraint_files) > 0:
             stdin += [
                 'EXTE WEIGHT SCALE ' + str(sec3.EXTE_WEIGHT.value),
-                'EXTE WEIGHT GMWT '  + str(sec3.EXTE_GMWT.value),
+                'EXTE ALPHA '  + str(sec3.EXTE_ALPHA.value),
                 'EXTE DMAX '         + str(sec3.EXTE_MAXD.value)
             ]
             for i in range(len(external_restraint_files) ):
