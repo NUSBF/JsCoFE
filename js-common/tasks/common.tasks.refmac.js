@@ -388,12 +388,12 @@ function TaskRefmac()  {
               hideon   : {hmodel:[0,-1]},
               position : [11,3,1,1]
            },
-          EXTE_GMWT : { type : 'real',
+          EXTE_ALPHA : { type : 'real',
               keyword  : 'none',
               label    : 'Robustness parameter',
-              tooltip  : 'Geman-McClure parameter, controlling robustness to outliers',
-              range    : [0,'*'],
-              value    : '0.01',
+              tooltip  : 'Alpha parameter - controls robustness to outliers, with lower values resulting in outliers having less of an effect. E.g. 2.0 corresponds to Least Squares, and -2.0 corresponds to the Geman-McClure loss function.',
+              range    : ['*','*'],
+              value    : '1.0',
               hideon   : {hmodel:[0,-1]},
               position : [12,3,1,1]
           },
