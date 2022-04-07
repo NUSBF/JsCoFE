@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.06.21   <--  Date of Last Modification.
+#    07.04.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls,
-#                Oleg Kovalevskiy 2017-2021
+#                Oleg Kovalevskiy 2017-2022
 #
 # ============================================================================
 #
