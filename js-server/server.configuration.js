@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.11.21   <--  Date of Last Modification.
+ *    02.04.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Configuration Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -377,7 +377,9 @@ function CCP4DirName()  {
 {
   "FrontEnd" : {
     "description"      : {
-      "id"   : "ccp4",
+      "id"   : "ccp4",  // must be unique for each setup with external access;
+                        // "ccp4" is reserved for central setup at CCP4;
+                        // the id is used for maintenance of CCP4 archives
       "name" : "CCP4-Harwell",
       "icon" : "images_com/setup-harwell.png",
       "partners" : [  // custom logos only
@@ -434,12 +436,12 @@ function CCP4DirName()  {
     },
     "archivePath"     : {  // optional CCP4 Archive storage configuration
         "aname1" : { "path" : "./cofe-archive-1",  // any disk name and path name
-                    "type"  : "volume",            // should be always "volume"
+                    "type"  : "volume",            // must be "volume-name"
                     "diskReserve" : 10000  // spare capacity, in MBytes, to accomodate
                                            // project versions
                   },
-        "anameN" : { "path" : "pathN",  // any number of any disk and path names
-                    "type"  : "volume",
+        "anameN" : { "path" : "pathN",     // any number of any disk and path names
+                    "type"  : "volume",    // must be just "volumes"
                     "diskReserve" : 10000
                   }
     },
@@ -671,6 +673,9 @@ function readConfiguration ( confFilePath,serverType )  {
         "name" : "CCP4-Harwell",
         "icon" : "images_com/setup-harwell.png"
       };
+
+    if (!fe_server.description.hasOwnProperty('id'))
+      fe_server.description.id = "";  // this is not a typo
 
     if (!fe_server.description.hasOwnProperty('partners'))
       fe_server.description.partners = [];

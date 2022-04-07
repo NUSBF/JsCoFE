@@ -163,7 +163,7 @@ function readFEJobRegister()  {
   if (!feJobRegister)  {
     var fpath     = getJobRegisterPath();
     feJobRegister = new FEJobRegister();
-    obj           = utils.readObject ( fpath );
+    var obj       = utils.readObject ( fpath );
     if (obj)  {
       for (var key in obj)
         feJobRegister[key] = obj[key];
