@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.22   <--  Date of Last Modification.
+ *    13.04.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -747,34 +747,38 @@ function ProjectListPage ( sceneId )  {
     left_margin  = '2pt';
     right_margin = '22pt';
 
-    open_btn   = new Button ( '',image_path('go'       ) );
-    add_btn    = new Button ( '',image_path('add'      ) );
-    rename_btn = new Button ( '',image_path('renameprj') );
-    clone_btn  = new Button ( '',image_path('cloneprj' ) );
-    del_btn    = new Button ( '',image_path('remove'   ) );
-    export_btn = new Button ( '',image_path('export'   ) );
-    import_btn = new Button ( '',image_path('import'   ) );
-    join_btn   = new Button ( '',image_path('join'     ) );
-    if (__demo_projects)  {
-      demoprj_btn = new Button ( '',image_path('demoprj') );
-      btn_width.push ( '30pt' );
-      demoprj_btn.setWidth ( btn_width[0] ).setHeight ( btn_height );
-    }
-    help_btn   = new Button ( '',image_path('help') ); //.setTooltip('Documentation' );
+    open_btn    = new Button ( '',image_path('go'       ) );
+    add_btn     = new Button ( '',image_path('add'      ) );
+    rename_btn  = new Button ( '',image_path('renameprj') );
+    clone_btn   = new Button ( '',image_path('cloneprj' ) );
+    del_btn     = new Button ( '',image_path('remove'   ) );
+    export_btn  = new Button ( '',image_path('export'   ) );
+    import_btn  = new Button ( '',image_path('import'   ) );
+    join_btn    = new Button ( '',image_path('join'     ) );
+    // if (__demo_projects)  {
+    //   demoprj_btn = new Button ( '',image_path('demoprj') );
+    //   btn_width.push ( '30pt' );
+    //   demoprj_btn.setWidth ( btn_width[0] ).setHeight ( btn_height );
+    // }
+    demoprj_btn = new Button ( '',image_path('demoprj') );
+    help_btn    = new Button ( '',image_path('help') ); //.setTooltip('Documentation' );
 
-    for (var i=0;i<9;i++)
+    // for (var i=0;i<9;i++)
+    for (var i=0;i<10;i++)
       btn_width.push ( '30pt' );
 
   } else  {
 
-    open_btn   = new Button ( 'Open'  ,image_path('go'       ) );
-    add_btn    = new Button ( 'Add'   ,image_path('add'      ) );
-    rename_btn = new Button ( 'Rename',image_path('renameprj') );
-    clone_btn  = new Button ( 'Clone' ,image_path('cloneprj' ) );
-    del_btn    = new Button ( 'Delete',image_path('remove'   ) );
-    export_btn = new Button ( 'Export',image_path('export'   ) );
-    import_btn = new Button ( 'Import',image_path('import'   ) );
-    join_btn   = new Button ( 'Join'  ,image_path('join'     ) );
+    open_btn    = new Button ( 'Open'  ,image_path('go'       ) );
+    add_btn     = new Button ( 'Add'   ,image_path('add'      ) );
+    rename_btn  = new Button ( 'Rename',image_path('renameprj') );
+    clone_btn   = new Button ( 'Clone' ,image_path('cloneprj' ) );
+    del_btn     = new Button ( 'Delete',image_path('remove'   ) );
+    export_btn  = new Button ( 'Export',image_path('export'   ) );
+    import_btn  = new Button ( 'Import',image_path('import'   ) );
+    join_btn    = new Button ( 'Join'  ,image_path('join'     ) );
+    demoprj_btn = new Button ( 'Tutorials',image_path('demoprj') );
+    help_btn    = new Button ( 'Help'  ,image_path('help') ); //.setTooltip('Documentation' );
     btn_width = [
       '65pt',
       '60pt',
@@ -784,27 +788,41 @@ function ProjectListPage ( sceneId )  {
       '70pt',
       '70pt',
       '60pt',
+      '80pt',
+      '60pt'
     ];
 
-    if (__demo_projects)  {
-      demoprj_btn = new Button ( 'Tutorials',image_path('demoprj') );
-      btn_width.push ( '80pt' );
-      demoprj_btn.setWidth ('80pt').setHeight(btn_height).setNoWrap();
-    }
-    help_btn   = new Button ( 'Help',image_path('help') ); //.setTooltip('Documentation' );
-    btn_width.push ( '60pt' );
+    // btn_width = [
+    //   '65pt',
+    //   '60pt',
+    //   '80pt',
+    //   '70pt',
+    //   '70pt',
+    //   '70pt',
+    //   '70pt',
+    //   '60pt',
+    // ];
+    //
+    // if (__demo_projects)  {
+    //   demoprj_btn = new Button ( 'Tutorials',image_path('demoprj') );
+    //   btn_width.push ( '80pt' );
+    //   demoprj_btn.setWidth ('80pt').setHeight(btn_height).setNoWrap();
+    // }
+    // help_btn   = new Button ( 'Help',image_path('help') ); //.setTooltip('Documentation' );
+    // btn_width.push ( '60pt' );
 
   }
 
-  open_btn  .setWidth ( btn_width[0] ).setHeight ( btn_height );
-  add_btn   .setWidth ( btn_width[1] ).setHeight ( btn_height );
-  rename_btn.setWidth ( btn_width[2] ).setHeight ( btn_height );
-  clone_btn .setWidth ( btn_width[3] ).setHeight ( btn_height );
-  del_btn   .setWidth ( btn_width[4] ).setHeight ( btn_height );
-  export_btn.setWidth ( btn_width[5] ).setHeight ( btn_height );
-  import_btn.setWidth ( btn_width[6] ).setHeight ( btn_height );
-  join_btn  .setWidth ( btn_width[7] ).setHeight ( btn_height );
-  help_btn  .setWidth ( btn_width[9] ).setHeight ( btn_height );
+  open_btn   .setWidth ( btn_width[0] ).setHeight ( btn_height );
+  add_btn    .setWidth ( btn_width[1] ).setHeight ( btn_height );
+  rename_btn .setWidth ( btn_width[2] ).setHeight ( btn_height );
+  clone_btn  .setWidth ( btn_width[3] ).setHeight ( btn_height );
+  del_btn    .setWidth ( btn_width[4] ).setHeight ( btn_height );
+  export_btn .setWidth ( btn_width[5] ).setHeight ( btn_height );
+  import_btn .setWidth ( btn_width[6] ).setHeight ( btn_height );
+  join_btn   .setWidth ( btn_width[7] ).setHeight ( btn_height );
+  demoprj_btn.setWidth ( btn_width[8] ).setHeight ( btn_height );
+  help_btn   .setWidth ( btn_width[9] ).setHeight ( btn_height );
 
   // make panel
   panel = new Grid('');
@@ -823,19 +841,19 @@ function ProjectListPage ( sceneId )  {
 
   var row = 0;
   panel.setHorizontalAlignment ( row,0,'center'    );
-  panel.setCellSize            ( '','10pt' ,row++,0    );
+  panel.setCellSize            ( '','10pt'  ,row++,0    );
   nCols = 0;
-  panel.setWidget              ( open_btn  ,row,nCols++,1,1 );
-  panel.setWidget              ( add_btn   ,row,nCols++,1,1 );
-  panel.setWidget              ( rename_btn,row,nCols++,1,1 );
-  panel.setWidget              ( clone_btn ,row,nCols++,1,1 );
-  panel.setWidget              ( del_btn   ,row,nCols++,1,1 );
-  panel.setWidget              ( export_btn,row,nCols++,1,1 );
-  panel.setWidget              ( import_btn,row,nCols++,1,1 );
-  panel.setWidget              ( join_btn  ,row,nCols++,1,1 );
-  if (demoprj_btn)
-    panel.setWidget            ( demoprj_btn,row,nCols++,1,1 );
-  panel.setWidget              ( help_btn  ,row,nCols++,1,1  );
+  panel.setWidget              ( open_btn   ,row,nCols++,1,1 );
+  panel.setWidget              ( add_btn    ,row,nCols++,1,1 );
+  panel.setWidget              ( rename_btn ,row,nCols++,1,1 );
+  panel.setWidget              ( clone_btn  ,row,nCols++,1,1 );
+  panel.setWidget              ( del_btn    ,row,nCols++,1,1 );
+  panel.setWidget              ( export_btn ,row,nCols++,1,1 );
+  panel.setWidget              ( import_btn ,row,nCols++,1,1 );
+  panel.setWidget              ( join_btn   ,row,nCols++,1,1 );
+  // if (demoprj_btn)
+  panel.setWidget              ( demoprj_btn,row,nCols++,1,1 );
+  panel.setWidget              ( help_btn   ,row,nCols++,1,1  );
 
   for (var i=0;i<nCols-1;i++)
     panel.setCellSize ( btn_width[i],'',row,i );
@@ -869,22 +887,48 @@ function ProjectListPage ( sceneId )  {
   });
 
   // add a listener to 'demo project' button
-  if (demoprj_btn)
+  // if (demoprj_btn)
+  //   demoprj_btn.addOnClickListener ( function(){
+  //     // new ImportDemoProjectDialog ( loadProjectList1 );
+  //     (function(self){
+  //       self.currentCloudPath = __demo_projects;
+  //       new CloudFileBrowser ( null,self,5,[],function(items){
+  //         serverRequest ( fe_reqtype.startDemoImport,{
+  //                           'cloudpath' : self.currentCloudPath,
+  //                           'demoprj'   : items[0]
+  //                         },'Demo Project Import',function(data){
+  //                           new ImportDemoProjectDialog ( loadProjectList1 );
+  //                         });
+  //         return 1;  // do close browser window
+  //       });
+  //     }(this))
+  //   });
+
+  (function(self){
     demoprj_btn.addOnClickListener ( function(){
-      // new ImportDemoProjectDialog ( loadProjectList1 );
-      (function(self){
+      if (__demo_projects)  {
         self.currentCloudPath = __demo_projects;
         new CloudFileBrowser ( null,self,5,[],function(items){
           serverRequest ( fe_reqtype.startDemoImport,{
                             'cloudpath' : self.currentCloudPath,
                             'demoprj'   : items[0]
-                          },'Demo Project Import',function(data){
+                          },'Tutorial/Demo Project Import',function(data){
                             new ImportDemoProjectDialog ( loadProjectList1 );
                           });
           return 1;  // do close browser window
         });
-      }(this))
+      } else  {
+        new MessageBox (
+          'Tutorials/Demo not installed',
+          '<div style="width:450px">' +
+          '<h3>Tutorial/Demo package is not installed</h3>' +
+          'Use CCP4 Setup Manager to install the tutorials package, ' +
+          'or contact your ' + appName() + ' maintainer.' +
+          '</div>'
+        );
+      }
     });
+  }(this))
 
   help_btn.addOnClickListener ( function(){
     //new HelpBox ( '','./html/jscofe_myprojects.html',null );

@@ -84,13 +84,20 @@
         "cpu_day"   : 24,
         "cpu_month" : 240
     },
-    "cloud_mounts"     : {
+    "__cloud_mounts"     : {
       "My Computer"    : "/",
       "Home"           : ["$HOME","$USERPROFILE"],
       "CCP4 examples"  : "$CDEMODATA",
       "Demo projects"  : "./demo-projects",
       "Workshops"      : "./cofe-data/workshops",
       "Tutorials"      : "./cofe-data/tutorials"
+    },
+    "cloud_mounts"     : {
+      "My Computer"    : "/",
+      "Home"           : ["$HOME","$USERPROFILE"],
+      "CCP4 examples"  : "$CDEMODATA",
+      "Workshops"      : "./cofe-data/workshops",
+      "Tutorials"      : "$CEXAM/cloud_tutorials"
     }
   },
 
