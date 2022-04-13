@@ -4,7 +4,7 @@
     "====================================================================================",
     "                    jsCoFE Configuration for desktop setup mode                     ",
     "====================================================================================",
-    "   31.10.2020 "
+    "   13.04.2022 "
   ],
 
   "Desktop"  : {
@@ -67,8 +67,8 @@
     "cloud_mounts"     : {
       "My Computer"    : "/",
       "Home"           : ["$HOME","$USERPROFILE"],
-      "CCP4 examples"  : "$CDEMODATA",
-      "Tutorials"      : "$CTUTORIALS"
+      "CCP4 Examples"  : ["$CDEMODATA","$CEXAM"],
+      "Tutorials"      : ["$CTUTORIALS","$CEXAM/cloud_tutorials"]
     }
   },
 
