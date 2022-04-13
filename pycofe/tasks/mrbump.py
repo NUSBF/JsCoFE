@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    30.07.21   <--  Date of Last Modification.
+#    13.04.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -106,7 +106,7 @@ class MrBump(basic.TaskDriver):
             aflevel += self.getParameter ( sec1.AFLEVEL_SEL,False )
         else:
             aflevel = ""
-            
+
 
         # devmode = self.getCheckbox ( self.task.parameters.DEVMODE_CBX,
         #                              checkVisible=True )
@@ -182,9 +182,9 @@ class MrBump(basic.TaskDriver):
 
         # Start mrbump
         if sys.platform.startswith("win"):
-            self.runApp ( "mrbump.bat",cmd,logType="Main" )
+            self.runApp ( "mrbump.bat",cmd,logType="Main",quitOnError=False )
         else:
-            self.runApp ( "mrbump",cmd,logType="Main" )
+            self.runApp ( "mrbump",cmd,logType="Main",quitOnError=False )
         self.unsetLogParser()
 
         # check solution and register data
