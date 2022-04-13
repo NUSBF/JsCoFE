@@ -97,7 +97,7 @@
       "Home"           : ["$HOME","$USERPROFILE"],
       "CCP4 examples"  : "$CDEMODATA",
       "Workshops"      : "./cofe-data/workshops",
-      "Tutorials"      : "$CEXAM/cloud_tutorials"
+      "Tutorials"      : "$CTUTORIALS"
     }
   },
 

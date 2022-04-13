@@ -241,6 +241,11 @@ ServerConfig.prototype.getDemoProjectsMount = function()  {
           break;
         }
       }
+    if (mount)  {
+      var mpath = _make_path ( this.cloud_mounts[mount],'' );
+      if (!utils.fileExists(mpath))
+        mount = null;
+    }
   }
   return mount;
 }

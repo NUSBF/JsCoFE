@@ -25,6 +25,7 @@ export AF2_script=1
 
 # internal variable for mounting directopry with CCP4(i2) demo data
 export CDEMODATA=`ccp4-python -c "import sysconfig; print(sysconfig.get_path('purelib'))"`/ccp4i2/demo_data
+export CTUTORIALS=$CEXAM/cloud_tutorials
 
 # comment out if buster is not installed
 source /Applications/GPhL/Buster/setup.sh
