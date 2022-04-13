@@ -46,6 +46,13 @@ def doubleClickByXpath(driver, xpath):
 
 
 def loginToCloud(driver, cloudLogin, cloudPassword):
+    # potential maintenance message
+    time.sleep(1)
+    msgButton = driver.find_element_by_xpath("//button[normalize-space()='Ok']")
+    if msgButton:
+        msgButton.click()
+        time.sleep(2)
+
     # Shall return list of two elements for login and password
     loginInputs = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
 
