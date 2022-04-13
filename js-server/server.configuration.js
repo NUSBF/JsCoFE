@@ -613,6 +613,10 @@ function pythonVersion()  {
   return _python_ver;
 }
 
+function setPythonVersion ( version )  {
+  _python_ver = version;
+}
+
 function checkPythonVersion()  {
   child.exec ( pythonName() + ' -V',function(err, stdout, stderr) {
     if (stdout)
@@ -1219,6 +1223,7 @@ module.exports.assignPorts        = assignPorts;
 module.exports.writeConfiguration = writeConfiguration;
 module.exports.pythonName         = pythonName;
 module.exports.pythonVersion      = pythonVersion;
+module.exports.setPythonVersion   = setPythonVersion;
 module.exports.isSharedFileSystem = isSharedFileSystem;
 module.exports.isLocalSetup       = isLocalSetup;
 module.exports.getClientInfo      = getClientInfo;

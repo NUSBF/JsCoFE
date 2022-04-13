@@ -116,6 +116,8 @@ if (process.argv.length<3) {
 // ---------------------------------------------------------------------------
 //  Analyse input file
 
+conf.setPythonVersion ( 'x.x.x' );  // do not check python
+
 var cfgfpath = process.argv[2];
 var feConfig = null;
 var inpfpath = '';

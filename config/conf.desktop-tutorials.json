@@ -87,7 +87,7 @@
     "cloud_mounts"     : {
       "My Computer"    : "/",
       "Home"           : ["$HOME","$USERPROFILE"],
-      "CCP4 examples"  : "$CCP4/share/ccp4i2/demo_data",
+      "CCP4 examples"  : "$CDEMODATA",
       "Demo projects"  : "./demo-projects",
       "Workshops"      : "./cofe-data/workshops",
       "Tutorials"      : "./cofe-data/tutorials"
