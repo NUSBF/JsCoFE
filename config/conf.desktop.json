@@ -68,7 +68,7 @@
       "My Computer"    : "/",
       "Home"           : ["$HOME","$USERPROFILE"],
       "CCP4 examples"  : "$CDEMODATA",
-      "Demo projects"  : "./demo-projects"
+      "Tutorials"      : "$CEXAM/cloud_tutorials"
     }
   },
 
