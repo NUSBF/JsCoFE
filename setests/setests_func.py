@@ -48,9 +48,9 @@ def doubleClickByXpath(driver, xpath):
 def loginToCloud(driver, cloudLogin, cloudPassword):
     # potential maintenance message
     time.sleep(1)
-    msgButton = driver.find_element_by_xpath("//button[normalize-space()='Ok']")
-    if msgButton:
-        msgButton.click()
+    msgButtons = driver.find_elements_by_xpath("//button[normalize-space()='Ok']")
+    if len(msgButtons) > 0:
+        msgButtons[-1].click()
         time.sleep(2)
 
     # Shall return list of two elements for login and password
@@ -1095,7 +1095,7 @@ def startBrowser(remote, browser):
             print('Browser "%s" is not recognised; shall be Chrome or Firefox.' % browser)
             sys.exit(1)
 
-    driver.implicitly_wait(10)  # wait for up to 10 seconds for required HTML element to appear
+    driver.implicitly_wait(5)  # wait for up to 5 seconds for required HTML element to appear
 
     return (driver, waitLong, waitShort)
 
