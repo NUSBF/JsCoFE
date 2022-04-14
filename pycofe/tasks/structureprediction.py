@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.03.22   <--  Date of Last Modification.
+#    14.04.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -88,8 +88,9 @@ class StructurePrediction(basic.TaskDriver):
 
         # if os.path.isdir(dirName):
 
-        #     xyzfile = "output_" + self.outdir_name() + ".pdb"
-        have_results = False
+        self.putTitle ( "Results" )
+
+        modelsNumber = 0
 
         fpaths=[] #  create a empty object list
 
@@ -98,55 +99,57 @@ class StructurePrediction(basic.TaskDriver):
                 fpaths.append(os.path.join(dirName, file))
 
         if len(fpaths) <=0: # Result page in case of no models are found
-            self.putTitle ( "Results" )
             self.putMessage ( "<i><b>No models are found " )
         else: # if models are found
         
-            self.putTitle ( "Results" ) 
             self.putMessage ( "<i><b>Prepared models are associated " +\
-                                                "with sequence:&nbsp;" + seq.dname + "</b></i>" )
-            modelsNumber = 0
+                                                "with sequence:&nbsp;" + seq.dname + "</b></i>&nbsp;<br>&nbsp;" )
 
             for fpath_out in fpaths:
                 
-                
-                modelsNumber = modelsNumber +1
-
                 if len(fpaths) <=1:
                     outFName = self.getXYZOFName ( )
                 else:
-                    outFName = self.getXYZOFName ( modifier=modelsNumber )
+                    outFName = self.getXYZOFName ( modifier=modelsNumber+1 )
 
                 os.rename(fpath_out, outFName)
             
-                model = self.registerModel ( seq,outFName,checkout=True )
+                # model = self.registerModel ( seq,outFName,checkout=True )
+                xyz = self.registerXYZ ( outFName )
                     
+                if xyz:
 
-                if model:
+                    modelsNumber = modelsNumber +1
 
-                    have_results = True
+                    if len(fpaths)>1:
+                        self.putMessage ( "<h3>Prediction #" + str(modelsNumber) + "</h3>" )
 
-                    if len(fpaths) <= 1:
-                        self.putMessage ( "<h3>Model" +  ": " + model.dname + "</h3>" )
-                    
-                    else:
-                    
+                    self.putMessage ( "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + xyz.dname )                    
+                    xyz.addDataAssociation ( seq.dataId )
+                    # sid='100.0'
+                    # model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
+                    # model.seqId = model.meta["seqId"]
+                    # model.rmsd  = model.meta["rmsd" ]
 
-                        ensOk  = True
-                        self.putMessage ( "<h3>Model #" + str(modelsNumber) + ": " + model.dname + "</h3>" )
-                    model.addDataAssociation ( seq.dataId )
-                    sid='100.0'
-                    model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
-                    model.seqId = model.meta["seqId"]
-                    model.rmsd  = model.meta["rmsd" ]
+                    # self.add_seqid_remark ( model,[sid] ) 
 
-                    self.add_seqid_remark ( model,[sid] ) 
+                    self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Atomic coordinates",xyz,-1 )
 
-                    self.putModelWidget ( self.getWidgetId("model_btn"),
-                                            "Coordinates",model )
                     #models.append ( model )
+        if modelsNumber == 1:
+            self.generic_parser_summary["structureprediction"] = {
+
+                    "summary_line" : str(modelsNumber) + " structure predicted"
+            }    
+        else:
+            self.generic_parser_summary["structureprediction"] = {
+            
+                    "summary_line" : str(modelsNumber) + " structures predicted"
+
+            }
+
         
-        self.success( have_results )
+        self.success( (modelsNumber>0) )
         return
     
 
