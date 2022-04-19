@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.02.22   <--  Date of Last Modification.
+ *    19.04.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -68,14 +68,54 @@ Dialog.prototype.launch = function()  {
 
 
 // -------------------------------------------------------------------------
-// MessageBox class
+// MessageBox classes
 
-function MessageBox ( title,message )  {
+// function MessageBox ( title,message )  {
+// // plain message box
+//
+//   Widget.call ( this,'div' );
+//   this.element.setAttribute ( 'title',title );
+//   this.element.innerHTML = message;
+//   document.body.appendChild ( this.element );
+//
+//   $(this.element).dialog({
+//     resizable : false,
+//     height    : 'auto',
+//     width     : 'auto',
+//     modal     : true,
+//     buttons   : {
+//       "Ok": function() {
+//         $( this ).dialog( "close" );
+//       }
+//     }
+//   });
+//
+// }
+//
+// MessageBox.prototype = Object.create ( Widget.prototype );
+// MessageBox.prototype.constructor = MessageBox;
+
+
+// -------------------------------------------
+
+function MessageBox ( title,message,icon_name='' )  {
+// message box with icon
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title',title );
-  this.element.innerHTML = message;
   document.body.appendChild ( this.element );
+
+  if (icon_name)  {
+    var grid = new Grid ( '' );
+    this.addWidget   ( grid );
+    grid.setLabel    ( ' ',0,0,1,1 );
+    grid.setCellSize ( '','6px', 0,0 );
+    grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
+    grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
+    grid.setLabel    ( message,0,2,2,1 );
+    grid.setVerticalAlignment ( 0,2,'middle' );
+  } else
+    this.element.innerHTML = message;
 
   $(this.element).dialog({
     resizable : false,
@@ -95,8 +135,10 @@ MessageBox.prototype = Object.create ( Widget.prototype );
 MessageBox.prototype.constructor = MessageBox;
 
 
+// -------------------------------------------
 
 function MessageBoxW ( title,message,width_ratio )  {
+// message box with fixed width
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title',title );
@@ -123,6 +165,7 @@ MessageBoxW.prototype = Object.create ( Widget.prototype );
 MessageBoxW.prototype.constructor = MessageBoxW;
 
 
+// -------------------------------------------
 
 function MessageBoxF ( title,message,btn_name,onClick_func,uncloseable_bool )  {
 
