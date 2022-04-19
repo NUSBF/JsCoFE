@@ -30,7 +30,8 @@ function shareProject ( projectDesc,callback_func )  {
   if (author!=__login_id)  {
     new MessageBox ( 'Share Project',
                      'Only Project owner (<b>' + author +
-                     '</b>) can share this Project.' );
+                     '</b>) can share this Project.',
+                     'msg_excl_yellow' );
     callback_func ( null );
     return;
   }
