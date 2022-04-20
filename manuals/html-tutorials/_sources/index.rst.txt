@@ -32,7 +32,7 @@ Authors and Contributors
 ========================
 
 Tutorials for CCP4 Cloud were prepared by:
-    - *Maria Fando (Institute of Protein Research, Pushchino, Russian Federation)*
+    - *Maria Fando (Translational and Clinical Research Institute, Newcastle University, Newcastle Upon Tyne, UK)*
     - *Eugene Krissinel (CCP4, STFC, Harwell, UK)*
     
 
