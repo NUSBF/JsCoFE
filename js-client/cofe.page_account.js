@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.07.21   <--  Date of Last Modification.
+ *    19.04.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User account settings page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -403,10 +403,12 @@ function AccountPage ( sceneId )  {
   delete_btn.addOnClickListener ( function(){
 
     var inputBox  = new InputBox  ( 'Delete My Account' );
-    var ibx_grid  = new Grid      ( '' );
+    // var ibx_grid  = new Grid      ( '' );
     var pswd_inp  = new InputText ( '' );
     pswd_inp.setStyle    ( 'password','','Your password','' );
-    pswd_inp.setFontSize ( '112%' ).setFontItalic(true).setWidth('50%');
+    pswd_inp.setFontSize ( '112%' ).setFontItalic(true).setWidth_px(200);
+    inputBox.setText ( '','msg_confirm' );
+    ibx_grid  = inputBox.grid;
     ibx_grid .setWidget  ( new Label(
       '<h2>Delete My Account</h2>' +
       'Your account will be deleted, are you sure?<p>' +
@@ -415,15 +417,16 @@ function AccountPage ( sceneId )  {
       'the server irrevocably.<p>' +
       'In order to confirm complete deletion of your account and<br>' +
       'all associated data, in your password and press <b>Confirm</b><br>' +
-      'button.' ),0,0,1,3 );
-    ibx_grid .setWidget ( (new Label('Password:')).setWidth('5%'),1,0,1,1 );
-    ibx_grid .setWidget ( pswd_inp,1,1,1,1 );
-    ibx_grid .setWidget ( (new Label('&nbsp;')).setWidth('45%'),1,2,1,1 );
-    ibx_grid .setNoWrap ( 0,0 );
-    ibx_grid .setNoWrap ( 1,0 );
-    inputBox .addWidget            ( ibx_grid     );
-    ibx_grid .setVerticalAlignment ( 0,0,'middle' );
-    ibx_grid .setVerticalAlignment ( 1,0,'middle' );
+      'button.' ),0,2,2,3 );
+    ibx_grid .setWidget ( (new Label('Password:')).setWidth('75px'),2,2,1,1 );
+    ibx_grid .setWidget ( pswd_inp,2,3,1,1 );
+    ibx_grid .setLabel  ( '&nbsp;',2,4,1,1 ).setWidth('80px');
+
+//    ibx_grid .setNoWrap ( 0,0 );
+//    ibx_grid .setNoWrap ( 1,0 );
+//    inputBox .addWidget            ( ibx_grid     );
+    ibx_grid .setVerticalAlignment ( 2,2,'middle' );
+    ibx_grid .setVerticalAlignment ( 2,3,'middle' );
 
     inputBox.launch ( 'Confirm',function(){
 
