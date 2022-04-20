@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.21   <--  Date of Last Modification.
+ *    19.04.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2021
+ *  (C) E. Krissinel, A. Lebedev 2019-2022
  *
  *  =================================================================
  *
@@ -37,9 +37,12 @@ function shareProject ( projectDesc,callback_func )  {
   }
 
   var inputBox  = new InputBox ( 'Share Project' );
-  var ibx_grid  = new Grid     ( '' );
-  ibx_grid.setLabel ( '<h2>Share Project "' + projectDesc.name + '"</h2>',0,0,1,1 );
-  ibx_grid.setLabel ( 'The following users:<br>&nbsp;',1,0,1,1 );
+  inputBox.setText ( '<h2>Share Project "' + projectDesc.name + '"</h2>',
+                     'msg_share' );
+  // var ibx_grid  = new Grid     ( '' );
+  var ibx_grid  = inputBox.grid;
+  // ibx_grid.setLabel ( '<h2>Share Project "' + projectDesc.name + '"</h2>',0,2,2,1 );
+  ibx_grid.setLabel ( 'The following users:<br>&nbsp;',2,2,1,1 );
   var share_list = '';
   if (projectDesc.owner.share.length>0)  {
     share_list = projectDesc.owner.share[0].login;
@@ -53,18 +56,18 @@ function shareProject ( projectDesc,callback_func )  {
                      //   'this project.'
                      // );
   share_inp.setFontItalic ( true    );
-  ibx_grid .setWidget     ( share_inp,2,0,1,1 );
+  ibx_grid .setWidget     ( share_inp,3,2,1,1 );
   share_inp.setWidth      ( '300pt' );
   ibx_grid .setLabel      ( '&nbsp;<br>can join this project and work on ' +
-                            'it simultaneously.', 3,0,1,1  );
+                            'it simultaneously.', 4,2,1,1  );
   ibx_grid .setLabel      ( '&nbsp;<br>* Full (comma-separated) list of users ' +
                             'with access to the project<br>must be given. In ' +
                             'order to unshare project with a user, remove<br>' +
                             'their login name from the list.',
-                            4,0,1,1  )
+                            5,2,1,1  )
            .setFontItalic ( true  )
            .setFontSize   ( '85%' );
-  inputBox .addWidget     ( ibx_grid );
+  // inputBox .addWidget     ( ibx_grid );
   inputBox .launch ( 'Apply',function(){
     var logins     = share_inp.getValue();
     var share0     = projectDesc.owner.share;
@@ -116,12 +119,13 @@ function shareProject ( projectDesc,callback_func )  {
                           msg += '<br><font size="-1">(sharing request was not ' +
                                  'fulfilled for these users)</font></i>';
                         }
-                        new MessageBox ( 'Share Project',msg );
+                        new MessageBox ( 'Share Project',msg,'msg_share' );
                         callback_func ( data.desc );
                       } else  {
                         new MessageBox ( 'Share Project',
                               '<h2>Sharing request denied</h2>' +
-                              '<i>Only project owner can change sharing.</i>' );
+                              '<i>Only project owner can change sharing.</i>',
+                              'msg_excl_yellow' );
                         callback_func ( null );
                       }
                     },null,null );

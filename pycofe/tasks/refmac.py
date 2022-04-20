@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    07.04.22   <--  Date of Last Modification.
+#    20.04.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -231,7 +231,7 @@ class Refmac(basic.TaskDriver):
         if str(sec2.TLS.value) != 'none':
             stdin.append ( 'REFI TLSC ' + str(sec2.TLS_CYCLES.value) )
             if str(sec2.RESET_B.value) == 'yes':
-                stdin.append ( 'BFAC SET' + str(sec2.RESET_B_VAL.value) )
+                stdin.append ( 'BFAC SET ' + str(sec2.RESET_B_VAL.value) )
             if str(sec2.TLSOUT_ADDU.value) == 'yes':
                stdin.append ( 'TLSOUT ADDU' )
 

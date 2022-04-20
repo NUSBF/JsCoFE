@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.04.22   <--  Date of Last Modification.
+ *    19.04.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -282,7 +282,8 @@ function ProjectListPage ( sceneId )  {
       dlgTitle   = 'Unjoin Project';
     }
     var inputBox = new InputBox ( dlgTitle );
-    inputBox.setText ( '<div style="width:400px;">' + delMessage + '</div>' );
+    inputBox.setText ( '<div style="width:400px;">' + delMessage + '</div>',
+                       'msg_confirm' );
     inputBox.launch  ( btnName,function(){
       serverRequest ( fe_reqtype.deleteProject,delName,'Delete Project',
         function(data){

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.10.21   <--  Date of Last Modification.
+ *    20.04.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Documentation Development Task
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2021
+ *  (C) E. Krissinel, A. Lebedev 2020-2022
  *
  *  =================================================================
  *
@@ -63,7 +63,11 @@ function TaskDocDev()  {
            label    : 'Documentation theme:',
            tooltip  : 'Choose documentation theme',
            range    : ['haiku|HAIKU',
-                       'agogo|AGOGO'
+                       'agogo|AGOGO',
+                       'insegel|INSEGEL',
+                       'karma|KARMA',
+                       'material|MATERIAL',
+                       'insipid|INSIPID'
                       ],
            value    : 'haiku',
            iwidth   : 260,

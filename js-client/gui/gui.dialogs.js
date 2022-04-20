@@ -137,13 +137,24 @@ MessageBox.prototype.constructor = MessageBox;
 
 // -------------------------------------------
 
-function MessageBoxW ( title,message,width_ratio )  {
+function MessageBoxW ( title,message,width_ratio,icon_name='' )  {
 // message box with fixed width
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title',title );
-  this.element.innerHTML = message;
   document.body.appendChild ( this.element );
+
+  if (icon_name)  {
+    var grid = new Grid ( '' );
+    this.addWidget   ( grid );
+    grid.setLabel    ( ' ',0,0,1,1 );
+    grid.setCellSize ( '','6px', 0,0 );
+    grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
+    grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
+    grid.setLabel    ( message,0,2,2,1 );
+    grid.setVerticalAlignment ( 0,2,'middle' );
+  } else
+    this.element.innerHTML = message;
 
   var w = Math.round(width_ratio*$(window).width()) + 'px';
 
@@ -167,10 +178,22 @@ MessageBoxW.prototype.constructor = MessageBoxW;
 
 // -------------------------------------------
 
-function MessageBoxF ( title,message,btn_name,onClick_func,uncloseable_bool )  {
+function MessageBoxF ( title,message,btn_name,onClick_func,uncloseable_bool,
+                       icon_name='' )  {
 
   Dialog.call ( this,title );
-  this.element.innerHTML = message;
+
+  if (icon_name)  {
+    var grid = new Grid ( '' );
+    this.addWidget   ( grid );
+    grid.setLabel    ( ' ',0,0,1,1 );
+    grid.setCellSize ( '','6px', 0,0 );
+    grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
+    grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
+    grid.setLabel    ( message,0,2,2,1 );
+    grid.setVerticalAlignment ( 0,2,'middle' );
+  } else
+    this.element.innerHTML = message;
 
   this._options = {
     resizable : false,
@@ -545,8 +568,21 @@ function InputBox ( title )  {
 InputBox.prototype = Object.create ( Widget.prototype );
 InputBox.prototype.constructor = InputBox;
 
-InputBox.prototype.setText = function ( text )  {
-  this.element.innerHTML = text.toString();
+InputBox.prototype.setText = function ( text,icon_name='' )  {
+
+  if (icon_name)  {
+    this.grid = new Grid ( '' );
+    this.addWidget        ( this.grid );
+    this.grid.setLabel    ( ' ',0,0,1,1 );
+    this.grid.setCellSize ( '','6px', 0,0 );
+    this.grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
+    this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
+    this.grid.setLabel    ( text,0,2,2,1 );
+    this.grid.setVerticalAlignment ( 0,2,'middle' );
+  } else
+    this.element.innerHTML = message;
+
+  // this.element.innerHTML = text.toString();
 }
 
 InputBox.prototype.launch = function ( name_btn,add_func )  {
