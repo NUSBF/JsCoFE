@@ -922,9 +922,9 @@ function ProjectListPage ( sceneId )  {
         new MessageBox (
           'Tutorials/Demo not installed',
           '<div style="width:450px">' +
-          '<h3>Tutorial/Demo package is not installed</h3>' +
-          'Use CCP4 Setup Manager to install the tutorials package, ' +
-          'or contact your ' + appName() + ' maintainer.' +
+          '<h3>Tutorials package is not installed</h3>' +
+          'See installation instructions in CCP4 Download Pages or contact your ' +
+          appName() + ' maintainer.' +
           '</div>'
         );
       }

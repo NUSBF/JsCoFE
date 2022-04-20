@@ -243,7 +243,7 @@ ServerConfig.prototype.getDemoProjectsMount = function()  {
       }
     if (mount)  {
       var mpath = _make_path ( this.cloud_mounts[mount],'' );
-      if (!utils.fileExists(mpath))
+      if (!utils.dirExists(mpath))
         mount = null;
     }
   }
