@@ -2,4 +2,38 @@
 Comb Structure with Coot/Refmac
 ===============================
 
-to be written...
+The task provides an access to the model building `COOT <https://doi.org/10.1107/S0907444910007493>`_ tools with the following cycles of refinement with `Refmac <https://doi.org/10.1107/S0907444911001314>`_.
+
+
+.. note::
+      **Comb Structure with Coot/Refmac** task can be run in a bare browser and doesn't require local installation of CCP4 Cloud.
+
+
+The following model building stages are available:
+
+  #.   `Fill Partial Residues <https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/web/docs/coot.html#Fill-Partial-Residues>`_
+
+        Identifies residues with missing atoms, fills them and does a rotamer fit, and then performs real-space refinement
+
+  #. **Fit protein**
+
+        Does real-space refinement for every residue
+
+  #. **Stepped refine** (2 passes are optimal)
+
+        Steps through the residues of a molecule and at each step it does a residue range refinement
+
+
+  #. **Ramachandran Plot refine**
+
+        Refines each residue with Ramachandran restraints
+
+
+**References**
+
+`Emsley, P., Lohkamp, B., Scott, W.G., Cowtan, K. (2010) Features and development of Coot. Acta Cryst. D66: 486-501; doi:10.1107/S0907444910007493 <https://doi.org/10.1107/S0907444910007493>`_
+
+`Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A. (2011)  Acta Cryst. D67: 355-367; <https://doi.org/10.1107/S0907444911001314>`_
+
+`Nicholls R.A., Kovalevskiy O., Murshudov G.N. (2017). Methods Mol Biol. 1607: 565-593. <https://doi.org/10.1007/978-1-4939-7000-1_23>`_
+

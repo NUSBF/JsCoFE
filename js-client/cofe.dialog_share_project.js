@@ -36,11 +36,10 @@ function shareProject ( projectDesc,callback_func )  {
     return;
   }
 
-  var inputBox  = new InputBox ( 'Share Project' );
-  inputBox.setText ( '<h2>Share Project "' + projectDesc.name + '"</h2>',
-                     'msg_share' );
+  var inputBox = new InputBox ( 'Share Project' );
+  inputBox.setText ( '<h2>Share Project "' + projectDesc.name + '"</h2>','share' );
   // var ibx_grid  = new Grid     ( '' );
-  var ibx_grid  = inputBox.grid;
+  var ibx_grid = inputBox.grid;
   // ibx_grid.setLabel ( '<h2>Share Project "' + projectDesc.name + '"</h2>',0,2,2,1 );
   ibx_grid.setLabel ( 'The following users:<br>&nbsp;',2,2,1,1 );
   var share_list = '';

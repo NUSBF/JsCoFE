@@ -1,42 +1,228 @@
 
-<!DOCTYPE html>
 
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>6.1.4. Prepare Complex Model &#8212; CCP4 Cloud 1.7 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
-    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/contentui.js"></script>
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>6.1.4. Prepare Complex Model &mdash; CCP4 Cloud 1.7 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.min.css" type="text/css" />
+  <link rel="stylesheet" href="_static/contentui.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="6.1.5. Prepare MR Ensemble from Models" href="doc.task.Ensembler.html" />
     <link rel="prev" title="6.1.3. Prepare MR Model(s) from Alignment data" href="doc.task.ModelPrepAlgn.html" /> 
-  </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>CCP4 Cloud 1.7 documentation</span></a></h1>
-        <h2 class="heading"><span>6.1.4. Prepare Complex Model</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
-      
-        <p>
-        «&#160;&#160;<a href="doc.task.ModelPrepAlgn.html"><span class="section-number">6.1.3. </span>Prepare MR Model(s) from Alignment data</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="doc.task.Ensembler.html"><span class="section-number">6.1.5. </span>Prepare MR Ensemble from Models</a>&#160;&#160;»
-        </p>
 
-      </div>
-      <div class="content" role="main">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a class="site-nav-toggle hidden-lg-up"><i class="icon-menu"></i></a>
+            <a class="site-title" href="index.html">
+                CCP4 Cloud
+            </a>
+        </div>
+    </header>
+
+
+<div class="breadcrumbs-outer hidden-xs-down">
+    <div class="container">
         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="breadcrumbs">
+    
+      <li><a href="index.html">Docs</a></li>
         
+          <li><a href="Molecular_Replacement.html"><span class="section-number">6. </span>Molecular Replacement</a></li>
+        
+          <li><a href="doc.task.MR_model_preparation.html"><span class="section-number">6.1. </span>Molecular Replacement Models and Ensembles</a></li>
+        
+      <li><span class="section-number">6.1.4. </span>Prepare Complex Model</li>
+    
+    
+      <li class="breadcrumbs-aside">
+        
+            
+            <a href="_sources/doc.task.ModelPrepMC.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+</div>
+    </div>
+</div>
+    <div class="main-outer">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 col-lg-3 site-nav">
+                    
+<div role="search">
+    <form class="search" action="search.html" method="get">
+        <div class="icon-input">
+            <input type="text" name="q" placeholder="Search" />
+            <span class="icon-search"></span>
+        </div>
+        <input type="submit" value="Go" class="d-hidden" />
+        <input type="hidden" name="check_keywords" value="yes" />
+        <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+                    <div class="site-nav-tree">
+                        
+                            
+                            
+                                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Workflows.html">1. Automatic workflows</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.WFlowAEP.html">1.1. Automatic Experimental Phasing Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.WFlowAMR.html">1.2. Automatic Molecular Replacement Workflow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Data_Import.html">2. Data Import</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Import.html">2.1. Data Import</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.ImportSeqCP.html">2.2. Import Sequence(s) by Copy-Paste</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.ImportPDB.html">2.3. Import from PDB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.CloudImport.html">2.4. Import from Cloud Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.ImportReplace.html">2.5. Import &amp; Replace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Migrate.html">2.6. Hop on CCP4 Cloud</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Data_Processing.html">3. Data Processing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Xia2.html">3.1. Automatic Image Processing with Xia-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.DUI.html">3.2. Interactive Image Processing with DIALS/DUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.iMosflm.html">3.3. Interactive Image Processing with iMosflm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Aimless.html">3.4. Data Reduction with Aimless</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Asymmetric_Unit_and_Structure_Revision.html">4. Asymmetric Unit and Structure Revision</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Asymmetric_Unit_and_Structure_Revision.html#asymmetric-unit">4.1. Asymmetric Unit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Asymmetric_Unit_and_Structure_Revision.html#structure-revision">4.2. Structure Revision</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Automated_Molecular_Replacement.html">5. Automated Molecular Replacement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Morda.html">5.1. Morda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.MrBump.html">5.2. MrBump</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Balbes.html">5.3. Balbes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Simbad.html">5.4. Simbad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Ample.html">5.5. Ample</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="Molecular_Replacement.html">6. Molecular Replacement</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="doc.task.MR_model_preparation.html">6.1. Molecular Replacement Models and Ensembles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Phaser.html">6.2. Phaser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Molrep.html">6.3. Molrep</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Fragment-Based_Molecular_Replacement.html">7. Fragment-Based Molecular Replacement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Arcimboldo.html">7.1. Fragment Molecular Replacement with Arcimboldo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.ArcimboldoBorges.html">7.2. Arcimboldo Borges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.ArcimboldoShredder.html">7.3. Arcimboldo Shredder</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Experimental_Phasing.html">8. Experimental Phasing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Crank2.html">8.1. Crank-2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.SHELX.html">8.2. SHELXCD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.SHELX.html#id1">8.3. SHELXE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Phaser.html">6.2. Phaser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Density_Modification.html">9. Density Modification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Parrot.html">9.1. Density Modification with Parrot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Acorn.html">9.2. Phase Refinement and Dynamic Density Modification with ACORN</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.SHELX.html">8.2. SHELXCD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.SHELX.html#id1">8.3. SHELXE</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Refinement_and_Model_Building.html">10. Refinement and Model Building</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Refmac.html">10.1. REFMAC5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Buster.html">10.2. Buster Refinement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Lorestr.html">10.3. Low-Resolution Refinement with Lorestr</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.CCP4Build.html">10.4. Automatic Model Building with CCP4Build</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Buccaneer.html">10.5. Automatic Model Building with Buccaneer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.ArpWarp.html">10.6. Automated Model Building with Arp/wArp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.ModelCraft.html">10.7. Automatic Model Building with Modelcraft</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Nautilus.html">10.8. Automatic Model Building of RNA/DNA with Nautilus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Dimple.html">10.9. Dimple</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.CombStructure.html">10.10. Comb Structure with Coot/Refmac</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="COOT.html">11. COOT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.CootMB.html">11.1. Model Building with Coot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.CootCE.html">11.2. Edit Coordinates with Coot</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Ligands.html">12. Ligands</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.MakeLigand.html">12.1. Make Ligand with Acedrg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.FitLigand.html">12.2. Find and Fit Ligand with Coot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.FitWaters.html">12.3. Find and Fit Waters with Coot</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Validation_Analysis_and_Deposition.html">13. Validation, Analysis and Deposition</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Zanuda.html">13.1. Space Group Validation with Zanuda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Privateer.html">13.2. Validation of carbohydrate structures with Privateer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.PISA.html">13.3. Surface, Interfaces and Assembly Analysis with PISA</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Deposition.html">13.4. Prepare data for deposition</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Toolbox.html">14. Toolbox</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Auspex.html">14.1. Reflection data diagnostics with Auspex plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.SRF.html">14.2. Self-Rotation Function Analysis with Molrep</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.CrosSec.html">14.3. X-ray cross sections and anomalous scattering factors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.XyzUtils.html">14.4. Coordinate Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Gemmi.html">14.5. Gemmi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.Gesamt.html">14.6. Pairwise Structural Alignment with GESAMT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.LsqKab.html">14.7. Structure Superposition with LsqKab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.SeqAlign.html">14.8. Sequence Alignment with ClustalW</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.task.SymMatch.html">14.9. Symmetry Match to Reference Structure with CSymMatch</a></li>
+</ul>
+</li>
+</ul>
+
+                            
+                        
+                    </div>
+                </div>
+                <div class="col-12 col-lg-9">
+                    <div class="document">
+                        
+                            
   <div class="section" id="prepare-complex-model">
 <h1><span class="section-number">6.1.4. </span>Prepare Complex Model<a class="headerlink" href="#prepare-complex-model" title="Permalink to this headline">¶</a></h1>
 <p><strong>MR Search Models</strong> are structural templates prepared for use in molecular replacement programs (<a class="reference internal" href="doc.task.Phaser.html"><span class="doc">Phaser</span></a> and <a class="reference internal" href="doc.task.Molrep.html"><span class="doc">Molrep</span></a>). For the success of Molecular Replacement, MR model should be sufficiently similar to the target structure. This task prepares a complex (more than one domain) MR search model from atomic coordinates. A comma-separated list of <strong>associated chains</strong> needs to be provided.</p>
@@ -58,21 +244,39 @@
 </div>
 
 
-      </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="doc.task.ModelPrepAlgn.html"><span class="section-number">6.1.3. </span>Prepare MR Model(s) from Alignment data</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="doc.task.Ensembler.html"><span class="section-number">6.1.5. </span>Prepare MR Ensemble from Models</a>&#160;&#160;»
-        </p>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
 
-      </div>
 
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.7',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/contentui.js"></script>
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
     <div class="footer" role="contentinfo">
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
-    </div>
-  </body>
+        <div class="container">
+        Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.0.1.
+        </div>
+    </div>  
+
+</body>
 </html>

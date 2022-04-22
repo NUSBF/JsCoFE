@@ -243,8 +243,3 @@ def phaserNext ( name,revision,parentName ):
     auto_api.addTaskData(name, "revision", revision)
     auto_api.addTaskData(name, "model", model)
     return
-
-def afStructurePrediction ( name,seq,parentName ):
-    auto_api.addTask     ( name,"TaskStructurePrediction",parentName )
-    auto_api.addTaskData ( name,"seq",seq )
-    return

@@ -141,13 +141,16 @@ if (!__template)  {
                             job_dialog_reason.set_node_icon );
     if (this.theme_no==__remark_icon.length-1)  {
       var doclink_dlg = new InputBox ( 'Link document' );
-      var ibx_grid    = new Grid ( '' );
-      doclink_dlg.addWidget ( ibx_grid );
-      ibx_grid.setLabel ( '<h2>Set Document Link</h2>',0,0,1,2 );
-      ibx_grid.setLabel ( 'Link type:&nbsp;&nbsp;&nbsp;',1,0,1,1 );
-      ibx_grid.setVerticalAlignment ( 1,0,'middle' );
+      doclink_dlg.setText ( '','task_remark_doc' );
+      // var ibx_grid    = new Grid ( '' );
+      var ibx_grid = doclink_dlg.grid;
+      // var ibx_grid  = new Grid     ( '' );
+      // doclink_dlg.addWidget ( ibx_grid );
+      ibx_grid.setLabel ( '<h2>Set Document Link</h2>',0,2,2,3 );
+      ibx_grid.setLabel ( 'Link type:&nbsp;&nbsp;&nbsp;',2,3,1,1 );
+      ibx_grid.setVerticalAlignment ( 2,3,'middle' );
       var dropdown = new Dropdown();
-      ibx_grid.addWidget ( dropdown,1,1,1,1 );
+      ibx_grid.addWidget ( dropdown,2,4,1,1 );
       dropdown
         .addItem  ( 'No link'      ,'','none',this.doclink_type=='none' )
         .addItem  ( 'Web page'     ,'','url' ,this.doclink_type=='url'  )
@@ -159,9 +162,9 @@ if (!__template)  {
           .addItem  ( 'User guide article'  ,'','userguide',this.doclink_type=='userguide' )
           .addItem  ( 'Tutorial description','','tutorial' ,this.doclink_type=='tutorial'  );
       dropdown.make();
-      var doc_label  = ibx_grid.setLabel ( 'URL:&nbsp;&nbsp;&nbsp;',2,0,1,1 );
-      ibx_grid.setVerticalAlignment ( 2,0,'middle' );
-      var input_text = ibx_grid.setInputText ( '',2,1,1,1).setWidth('500px');
+      var doc_label  = ibx_grid.setLabel ( 'URL:&nbsp;&nbsp;&nbsp;',3,3,1,1 );
+      ibx_grid.setVerticalAlignment ( 3,3,'middle' );
+      var input_text = ibx_grid.setInputText ( '',3,4,1,1).setWidth('500px');
       (function(self){
         function _set_fields ( type )  {
           doc_label .setVisible ( type!='none' );

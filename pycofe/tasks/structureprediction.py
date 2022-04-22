@@ -29,7 +29,6 @@ import os
 import uuid
 
 from pycofe.tasks  import basic
-from pycofe.auto   import auto
 
 # ============================================================================
 # StructurePrediction driver
@@ -135,11 +134,6 @@ class StructurePrediction(basic.TaskDriver):
                     # self.add_seqid_remark ( model,[sid] ) 
 
                     self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Atomic coordinates",xyz,-1 )
-
-                    auto.makeNextTask ( self,{
-                        "xyz" : xyz,
-                    }, log=self.file_stderr)
-
 
                     #models.append ( model )
         if modelsNumber == 1:
