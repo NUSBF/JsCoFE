@@ -28,13 +28,10 @@
 
 function ImportProjectDialog ( onSuccess_func )  {
 
-  Widget.call ( this,'div' );
-  this.element.setAttribute ( 'title','Import Project' );
-  document.body.appendChild ( this.element );
-
-  grid = new Grid('');
-  this.addWidget ( grid );
-  grid.setLabel ( '<h3>Import Project</h3>',0,0,1,3 );
+  InputBox.call ( this,'Import Project' );
+  this.setText ( '','import' );
+  var grid = this.grid;
+  grid.setLabel ( '<h2>Import Project</h2>',0,2,2,3 );
 
   var msgLabel = new Label ( 'Use "<i>Select ...</i>" button to select archive file ' +
                              '(project_name' + projectFileExt +
@@ -42,7 +39,7 @@ function ImportProjectDialog ( onSuccess_func )  {
                              'The import will commence<br>automatically once '  +
                              'the upload is completed -- <b><i>do not close<br>' +
                              'this dialog until then</i></b>.<br>&nbsp;' );
-  grid.setWidget ( msgLabel, 1,0,1,3 );
+  grid.setWidget ( msgLabel, 2,2,1,3 );
 
   var customData = {};
   //  customData.login_token = __login_token.getValue();
@@ -59,7 +56,7 @@ function ImportProjectDialog ( onSuccess_func )  {
       upload.hide();
       msgLabel.setText ( 'The project is being imported, please wait ... ' );
       var progressBar = new ProgressBar ( 0 );
-      grid.setWidget ( progressBar, 3,0,1,3 );
+      grid.setWidget ( progressBar, 4,2,1,3 );
 
       upload.__keep_polling = true;
 
@@ -93,7 +90,7 @@ function ImportProjectDialog ( onSuccess_func )  {
 
   });
 
-  grid.setWidget ( upload,2,0,1,3 );
+  grid.setWidget ( upload,3,2,1,3 );
 
 //  w = 3*$(window).width()/5 + 'px';
 
@@ -135,5 +132,5 @@ function ImportProjectDialog ( onSuccess_func )  {
 }
 
 
-ImportProjectDialog.prototype = Object.create ( Widget.prototype );
+ImportProjectDialog.prototype = Object.create ( InputBox.prototype );
 ImportProjectDialog.prototype.constructor = ImportProjectDialog;

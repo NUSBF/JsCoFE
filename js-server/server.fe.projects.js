@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.01.22   <--  Date of Last Modification.
+ *    22.04.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -305,6 +305,12 @@ function readProjectDesc ( loginData,projectName )  {
     if (projectData)  {
       projectDesc = projectData.desc;
       utils.writeObject ( projectDescPath,projectDesc );
+    } else  {
+      var projectDir = getProjectDirPath ( loginData,projectName );
+      if (utils.isSymbolicLink(projectDir))  {
+        // dead link after deleting shared project by owner
+        utils.removeFile ( projectDir );  // no use anyway
+      }
     }
   }
   return projectDesc;  // may be null
@@ -1789,6 +1795,12 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
   } else  {
 
     var projectDir = getProjectDirPath ( loginData,projectDesc.name );
+
+    if (utils.isSymbolicLink(projectDir))  {
+      // check that the link is not dead (owner deleted project)
+      if (!utils.fileExists(getProjectDataPath(loginData,projectDesc.name)))
+        utils.removeFile ( projectDir );  // the link was dead
+    }
 
     // if (utils.fileExists(projectDir) && (!utils.isSymbolicLink(projectDir)))  {
     if (utils.fileExists(projectDir))  {
