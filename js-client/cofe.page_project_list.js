@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.04.22   <--  Date of Last Modification.
+ *    22.04.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -187,23 +187,26 @@ function ProjectListPage ( sceneId )  {
       }
       var prjName   = pDesc.name;
       var inputBox  = new InputBox ( 'Rename Project' );
-      var ibx_grid  = new Grid     ( '' );
-      ibx_grid.setLabel    ( '<h2>Rename Project "' + prjName + '"</h2>',0,0,1,2 );
-      ibx_grid.setLabel    ( 'New ID:',1,0,1,1 );
-      var name_inp  = ibx_grid.setInputText ( prjName,1,1,1,1 )
+      inputBox.setText ( '','renameprj' );
+      // var ibx_grid  = new Grid     ( '' );
+      var ibx_grid = inputBox.grid;
+      // var ibx_grid  = new Grid     ( '' );
+      ibx_grid.setLabel    ( '<h2>Rename Project "' + prjName + '"</h2>',0,2,2,3 );
+      ibx_grid.setLabel    ( 'New ID:',2,3,1,1 );
+      var name_inp  = ibx_grid.setInputText ( prjName,2,4,1,1 )
             .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
             .setFontItalic ( true )
             .setWidth      ( '120px' );
-      ibx_grid.setLabel    ( 'New Name:',2,0,1,1 );
+      ibx_grid.setLabel    ( 'New Name:&nbsp;',3,3,1,1 );
       var title_inp = ibx_grid.setInputText
-                           ( self.tablesort_tbl.selectedRow.child[1].text,2,1,1,1 )
+                           ( self.tablesort_tbl.selectedRow.child[1].text,3,4,1,1 )
             .setStyle      ( 'text','','Put a descriptive title here','' )
             .setFontItalic ( true )
             .setWidth      ( '520px' );
-      ibx_grid.setNoWrap   ( 0,0 );
-      ibx_grid.setNoWrap   ( 1,0 );
-      ibx_grid.setVerticalAlignment ( 0,0,'middle' );
-      ibx_grid.setVerticalAlignment ( 1,0,'middle' );
+      ibx_grid.setNoWrap   ( 2,2 );
+      ibx_grid.setNoWrap   ( 3,2 );
+      ibx_grid.setVerticalAlignment ( 2,3,'middle' );
+      ibx_grid.setVerticalAlignment ( 3,3,'middle' );
       inputBox.addWidget   ( ibx_grid );
 
       inputBox.launch ( 'Rename',function(){
@@ -349,25 +352,28 @@ function ProjectListPage ( sceneId )  {
 
     var prjName   = pDesc.name;
     var inputBox  = new InputBox ( 'Clone Project' );
-    var ibx_grid  = new Grid     ( '' );
-    ibx_grid.setLabel    ( '<h2>Clone Project "' + prjName + '"</h2>',0,0,1,2 );
-    ibx_grid.setLabel    ( 'Cloned Project ID:',1,0,1,1 );
-    var name_inp  = ibx_grid.setInputText ( prjName + '-clone',1,1,1,1 )
+    // var ibx_grid  = new Grid     ( '' );
+    inputBox.setText ( '','cloneprj' );
+    var ibx_grid = inputBox.grid;
+    // var ibx_grid  = new Grid     ( '' );
+    ibx_grid.setLabel    ( '<h2>Clone Project "' + prjName + '"</h2>',0,2,2,3 );
+    ibx_grid.setLabel    ( 'Cloned Project ID:',2,3,1,1 );
+    var name_inp  = ibx_grid.setInputText ( prjName + '-clone',2,4,1,1 )
           .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
           .setFontItalic ( true )
           .setWidth      ( '120px' );
-    ibx_grid.setLabel    ( 'Cloned Project Name:',2,0,1,1 );
+    ibx_grid.setLabel    ( 'Cloned Project Name:&nbsp;',3,3,1,1 );
     var title_inp = ibx_grid.setInputText
                          ( self.tablesort_tbl.selectedRow.child[1].text +
-                           ' (cloned)',2,1,1,1 )
+                           ' (cloned)',3,4,1,1 )
           .setStyle      ( 'text','','Put a descriptive title here','' )
           .setFontItalic ( true )
           .setWidth      ( '520px' );
-    ibx_grid.setNoWrap   ( 0,0 );
-    ibx_grid.setNoWrap   ( 1,0 );
-    ibx_grid.setVerticalAlignment ( 0,0,'middle' );
-    ibx_grid.setVerticalAlignment ( 1,0,'middle' );
-    inputBox.addWidget   ( ibx_grid );
+    ibx_grid.setNoWrap   ( 2,3 );
+    ibx_grid.setNoWrap   ( 3,3 );
+    ibx_grid.setVerticalAlignment ( 2,3,'middle' );
+    ibx_grid.setVerticalAlignment ( 3,3,'middle' );
+    // inputBox.addWidget   ( ibx_grid );
 
     inputBox.launch ( 'Clone',function(){
       if (name_inp.getValue().length<=0)  {

@@ -403,7 +403,6 @@ var r = 0;  // grid row
   var task_list = [
     new TaskWFlowAMR(),
     new TaskWFlowSMR(),
-    new TaskWFlowAFMR(),
     new TaskWFlowAEP(),
     new TaskWFlowDPL(),
   ];
@@ -452,7 +451,6 @@ var r = 0;  // grid row
     "Workflows for starting a Project",
     new TaskWFlowAMR(),
     new TaskWFlowSMR(),
-    new TaskWFlowAFMR(),
     new TaskWFlowAEP(),
     new TaskWFlowDPL(),
     "Workflows for using within a Project",
