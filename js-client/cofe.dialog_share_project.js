@@ -118,7 +118,7 @@ function shareProject ( projectDesc,callback_func )  {
                           msg += '<br><font size="-1">(sharing request was not ' +
                                  'fulfilled for these users)</font></i>';
                         }
-                        new MessageBox ( 'Share Project',msg,'msg_share' );
+                        new MessageBox ( 'Share Project',msg,'share' );
                         callback_func ( data.desc );
                       } else  {
                         new MessageBox ( 'Share Project',
