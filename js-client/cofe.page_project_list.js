@@ -304,7 +304,8 @@ function ProjectListPage ( sceneId )  {
     } else
       new MessageBox ( 'No project selected',
                        'No project is currently selected<br>' +
-                       '-- nothing to export.' );
+                       '-- nothing to export.',
+                        'msg_error' );
   }
 
   var sharePrj = function()  {

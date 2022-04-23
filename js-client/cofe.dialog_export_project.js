@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.21   <--  Date of Last Modification.
+ *    23.04.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -33,21 +33,18 @@ function ExportProjectDialog ( projectList )  {
     serverRequest ( fe_reqtype.preparePrjExport,projectList,
                     'Prepare Project Export',function(){  // on success
 
-      Widget.call ( dlg,'div' );
-      dlg.element.setAttribute ( 'title','Export Project' );
-      document.body.appendChild ( dlg.element );
+      InputBox.call ( dlg,'Export Project' );
 
-      var grid = new Grid('');
-      dlg.addWidget ( grid );
-
-      grid.setLabel ( '<h3>Export Project "' + projectList.current + '"</h3>',0,0,1,3 );
+      dlg.setText ( '','export' );
+      var grid = dlg.grid;
+      grid.setLabel ( '<h2>Export Project "' + projectList.current + '"</h2>',0,2,2,3 );
 
       var msgLabel = new Label ( 'Project <b>"' + projectList.current + '"</b> is being ' +
                                  'prepared for download ....' );
-      grid.setWidget ( msgLabel, 1,0,1,3 );
+      grid.setWidget ( msgLabel, 2,2,1,3 );
 
       var progressBar = new ProgressBar ( 0 );
-      grid.setWidget ( progressBar, 2,0,1,3 );
+      grid.setWidget ( progressBar, 3,2,1,3 );
 
       dlg.projectSize = -2;
 
@@ -134,5 +131,5 @@ function ExportProjectDialog ( projectList )  {
 
 }
 
-ExportProjectDialog.prototype = Object.create ( Widget.prototype );
+ExportProjectDialog.prototype = Object.create ( InputBox.prototype );
 ExportProjectDialog.prototype.constructor = ExportProjectDialog;
