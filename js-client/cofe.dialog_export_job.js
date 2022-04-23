@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.21   <--  Date of Last Modification.
+ *    23.04.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2021
+ *  (C) E. Krissinel, A. Lebedev 2019-2022
  *
  *  =================================================================
  *
@@ -33,23 +33,19 @@ function ExportJobDialog ( task )  {
     serverRequest ( fe_reqtype.prepareJobExport,task,
                     'Prepare Job Export',function(){  // on success
 
-      Widget.call ( dlg,'div' );
-
       var exportName  = task.project + '-job_' + task.id;
-      dlg.element.setAttribute ( 'title','Export Job ' + exportName );
-      document.body.appendChild ( dlg.element );
+      InputBox.call ( dlg,'Export Job ' + exportName );
 
-      var grid = new Grid('');
-      dlg.addWidget ( grid );
-
-      grid.setLabel ( '<h3>Export Job "' + exportName + '"</h3>',0,0,1,3 );
+      dlg.setText ( '','export' );
+      var grid = dlg.grid;
+      grid.setLabel ( '<h2>Export Job "' + exportName + '"</h2>',0,2,2,3 );
 
       var msgLabel = new Label ( 'Job <b>"' + exportName + '"</b> is being ' +
                                  'prepared for download ....' );
-      grid.setWidget ( msgLabel, 1,0,1,3 );
+      grid.setWidget ( msgLabel, 2,2,1,3 );
 
       var progressBar = new ProgressBar ( 0 );
-      grid.setWidget ( progressBar, 2,0,1,3 );
+      grid.setWidget ( progressBar, 3,2,1,3 );
 
       dlg.jobSize = -2;
 
@@ -134,5 +130,5 @@ function ExportJobDialog ( task )  {
 
 }
 
-ExportJobDialog.prototype = Object.create ( Widget.prototype );
+ExportJobDialog.prototype = Object.create ( InputBox.prototype );
 ExportJobDialog.prototype.constructor = ExportJobDialog;
