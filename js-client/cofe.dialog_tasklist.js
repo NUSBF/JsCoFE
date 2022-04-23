@@ -582,6 +582,7 @@ var row      = 0;
       // new TaskCootUtils    (),
       // ccp4go2_task,
       new TaskStructurePrediction(),
+      new TaskWFlowAFMR    (),
       new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
       new TaskFragon       (),
