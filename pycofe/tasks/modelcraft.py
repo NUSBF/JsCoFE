@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.02.22   <--  Date of Last Modification.
+#    25.02.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -200,10 +200,10 @@ class ModelCraft(basic.TaskDriver):
         self.setGenericLogParser ( "modelcraft_report",True )
 
         # start modelcraft
-        if sys.platform.startswith("win"):
-            rc = self.runApp ( "modelcraft.bat",cmd,logType="Main",quitOnError=False )
-        else:
-            rc = self.runApp ( "modelcraft",cmd,logType="Main",quitOnError=False )
+        # if sys.platform.startswith("win"):
+        #     rc = self.runApp ( "modelcraft.bat",cmd,logType="Main",quitOnError=False )
+        # else:
+        rc = self.runApp ( "modelcraft",cmd,logType="Main",quitOnError=False )
 
         self.unsetLogParser()
 
