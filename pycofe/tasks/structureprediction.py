@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.04.22   <--  Date of Last Modification.
+#    24.04.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -29,7 +29,6 @@ import os
 import uuid
 
 from pycofe.tasks  import basic
-from pycofe.auto   import auto
 
 # ============================================================================
 # StructurePrediction driver
@@ -93,7 +92,8 @@ class StructurePrediction(basic.TaskDriver):
 
         modelsNumber = 0
 
-        fpaths=[] #  create a empty object list
+        fpaths = []   #  create a empty object list
+        xyzs   = []   #  output data objects
 
         for file in os.listdir(dirName):
             if file.lower().endswith(".pdb"): # find all pdb files in folder
@@ -102,61 +102,65 @@ class StructurePrediction(basic.TaskDriver):
         if len(fpaths) <=0: # Result page in case of no models are found
             self.putMessage ( "<i><b>No models are found " )
         else: # if models are found
-        
+
             self.putMessage ( "<i><b>Prepared models are associated " +\
                                                 "with sequence:&nbsp;" + seq.dname + "</b></i>&nbsp;<br>&nbsp;" )
 
             for fpath_out in fpaths:
-                
+
                 if len(fpaths) <=1:
                     outFName = self.getXYZOFName ( )
                 else:
                     outFName = self.getXYZOFName ( modifier=modelsNumber+1 )
 
                 os.rename(fpath_out, outFName)
-            
+
                 # model = self.registerModel ( seq,outFName,checkout=True )
                 xyz = self.registerXYZ ( outFName )
-                    
+
                 if xyz:
 
                     modelsNumber = modelsNumber +1
 
+                    xyz.fixBFactors ( self.outputDir() )
+
                     if len(fpaths)>1:
                         self.putMessage ( "<h3>Prediction #" + str(modelsNumber) + "</h3>" )
 
-                    self.putMessage ( "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + xyz.dname )                    
+                    self.putMessage ( "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + xyz.dname )
                     xyz.addDataAssociation ( seq.dataId )
                     # sid='100.0'
                     # model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
                     # model.seqId = model.meta["seqId"]
                     # model.rmsd  = model.meta["rmsd" ]
 
-                    # self.add_seqid_remark ( model,[sid] ) 
+                    # self.add_seqid_remark ( model,[sid] )
 
                     self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Atomic coordinates",xyz,-1 )
 
-                    auto.makeNextTask ( self,{
-                        "xyz" : xyz,
-                    }, log=self.file_stderr)
+                    xyzs.append ( xyz )
 
                     #models.append ( model )
+
         if modelsNumber == 1:
             self.generic_parser_summary["structureprediction"] = {
 
                     "summary_line" : str(modelsNumber) + " structure predicted"
-            }    
+            }
         else:
             self.generic_parser_summary["structureprediction"] = {
-            
+
                     "summary_line" : str(modelsNumber) + " structures predicted"
 
             }
 
-        
+        auto.makeNextTask ( self,{
+            "xyz" : xyzs,
+        }, log=self.file_stderr)
+
         self.success( (modelsNumber>0) )
         return
-    
+
 
 # ============================================================================
 
