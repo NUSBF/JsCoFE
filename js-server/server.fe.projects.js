@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.04.22   <--  Date of Last Modification.
+ *    08.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -250,6 +250,11 @@ function checkProjectDescData ( projectDesc,loginData )  {
     projectDesc.autorun = false;
     update = true;
   }
+  if (!('folderPath' in projectDesc))  {
+    projectDesc.folderPath = 'My Projects';  // virtual project folder path
+    projectDesc.labels     = [];             // list of optional project labels
+    update = true;
+  }
   if (!projectDesc.hasOwnProperty('startmode'))
     projectDesc.startmode = pd.start_mode.standard; // too petty to save/update
   if (!projectDesc.hasOwnProperty('tasklistmode'))
@@ -324,12 +329,13 @@ function writeProjectList ( loginData,projectList )  {
 
 function readProjectList ( loginData )  {
   var userProjectsListPath = getUserProjectListPath ( loginData );
-  var pList = utils.readObject ( userProjectsListPath );
+  var pList = utils.readClass ( userProjectsListPath );
   if (pList)  {
     pList.projects = [];
     if (!('startmode' in pList))
       pList.startmode = pd.start_mode.auto;
     var dirlist = fs.readdirSync ( getUserProjectsDirPath(loginData) );
+    var folderPaths = [];
     for (var i=0;i<dirlist.length;i++)
       if (dirlist[i].endsWith(projectExt))  {
         var pname = path.parse(dirlist[i]).name;
@@ -345,8 +351,13 @@ function readProjectList ( loginData )  {
             pdesc = null;
           }
         }
-        if (pdesc)
+        if (pdesc)  {
           pList.projects.push ( pdesc );
+          if (folderPaths.indexOf(pdesc.folderPath)<0)  {
+            pList.addFolderPath ( pdesc.folderPath );
+            folderPaths.push    ( pdesc.folderPath );
+          }
+        }
       }
     writeProjectList ( loginData,pList );
   }

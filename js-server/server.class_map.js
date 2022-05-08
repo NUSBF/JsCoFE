@@ -53,7 +53,11 @@ function __object_to_instance ( key,value ) {
     className = getClassName ( value._type,4,'../js-common/dtypes/common.dtypes.' );
   } else if (value._type=='UserRation')  {
     className = getClassName ( value._type,0,'../js-common/common.' );
-  } else if (value._type=='ProjectShare')  {
+  // } else if (value._type=='ProjectShare')  {
+  //   className = getClassName1 ( value._type,'pd','../js-common/common.data_project' );
+  // } else if (value._type=='ProjectList')  {
+  //   className = getClassName1 ( value._type,'pd','../js-common/common.data_project' );
+  } else if (value._type.startsWith('Project'))  {
     className = getClassName1 ( value._type,'pd','../js-common/common.data_project' );
   } else if (value._type=='UsageStats')  {
     className = getClassName ( value._type,0,'../js-server/server.fe.' );
