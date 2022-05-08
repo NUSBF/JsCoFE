@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.11.21   <--  Date of Last Modification.
+ *    07.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -17,7 +17,7 @@
  *                  ProjectShare
  *                  DockData
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -41,15 +41,25 @@ var tasklist_mode = {
 // ===========================================================================
 
 function ProjectDesc()  {
+
   this._type        = 'ProjectDesc';
-  this.name         = '';
-  this.title        = '';
+  this.name         = '';    // short project ID
+  this.title        = '';    // descriptive title
   this.owner        = {
     login  : '',   // login where project was created
     name   : '',
     email  : '',
     share  : []    // list of login share objects
   };
+
+  this.folderPath   = 'My Projects';  // virtual project folder path
+  this.labels       = [];             // list of optional project labels
+  // this.archive = {
+  //   id      : '',   // archive ID
+  //   version : 0,    // archived project version
+  //   pdbCode : ''    // associated PDB code
+  // };
+
   this.jobCount     = 0;      // job count
   this.timestamp    = 0;      // Date.now()
   this.autorun      = false;  // true if a task in autorun mode is runnng
@@ -63,6 +73,7 @@ function ProjectDesc()  {
   this.dateCreated  = '';   // year/mm/dd
   this.dateLastUsed = '';   // year/mm/dd
   this.metrics      = {};   // for statistics and searches
+
 }
 
 ProjectDesc.prototype.init = function ( name_str,title_str,startmode,time_str )  {
@@ -99,6 +110,28 @@ function ProjectList()  {
   this.current   = '';     // current project name
   this.startmode = start_mode.auto; // 'auto', 'expert', 'migrate'
   this.sortList  = null;   // sort options
+  this.folders   = [ // project folders tree
+    { name : 'My Projects', folders : [] }  // basic element
+  ];
+  this.currentFolder = 'My Projects';
+}
+
+ProjectList.prototype._add_folder_path = function ( flist,level,folders )  {
+  if (level<flist.length)  {
+    var k = -1;
+    for (var i=0;(i<folders.length) && (k<0);i++)
+      if (flist[level]==folders[i].name)
+        k = i;
+    if (k<0)  {
+      k = folders.length;
+      folders.push ({ name : flist[level], folders : [] });
+    }
+    this._add_folder_path ( flist,level+1,folders[k].folders );
+  }
+}
+
+ProjectList.prototype.addFolderPath = function ( folderPath )  {
+  this._add_folder_path ( folderPath.split('/'),0,this.folders );
 }
 
 ProjectList.prototype.isProject = function ( name_str )  {
@@ -131,9 +164,9 @@ ProjectList.prototype.addProject = function ( name_str,title_str,
     var pDesc = new ProjectDesc();
     pDesc.init ( name_str,title_str,startmode,time_str );
     this.projects.unshift ( pDesc );  // put new project at beginning
-    this.current       = name_str;
-    this.startmode     = startmode;
-    this.sortList      = null;
+    this.current   = name_str;
+    this.startmode = startmode;
+    this.sortList  = null;
     return true;
   } else
     return false;

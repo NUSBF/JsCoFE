@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.04.22   <--  Date of Last Modification.
+ *    08.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,23 +41,25 @@ function ProjectListPage ( sceneId )  {
     return;
   }
 
-  var projectList = new ProjectList();  // project list data
+  var projectList    = new ProjectList();  // project list data
   this.tablesort_tbl = null;            // project list table
-  var open_btn    = null;
-  var add_btn     = null;
-  var rename_btn  = null;
-  var clone_btn   = null;
-  var del_btn     = null;
-  var export_btn  = null;
-  var import_btn  = null;
-  var demoprj_btn = null;
-  var join_btn    = null;
-  var help_btn    = null;
-  var panel       = null;
-  this.welcome_lbl = null;
-  var nCols       = 0;                  // column span of project table
-  var table_row   = 0;                  // project list position in panel
-  var self        = this;               // for reference to Base class
+  var folder_btn     = null;
+  var open_btn       = null;
+  var add_btn        = null;
+  var rename_btn     = null;
+  var clone_btn      = null;
+  var del_btn        = null;
+  var export_btn     = null;
+  var import_btn     = null;
+  var demoprj_btn    = null;
+  var join_btn       = null;
+  var help_btn       = null;
+  var panel          = null;
+  this.welcome_lbl   = null;
+  var nCols          = 0;                  // column span of project table
+  var table_row      = 0;                  // project list position in panel
+  var self           = this;               // for reference to Base class
+  var pageTitle_lbl  = null;
 
   function currentProjectName()  {
     return self.tablesort_tbl.selectedRow.child[0].text.split(':</b>').pop();
@@ -498,8 +500,10 @@ function ProjectListPage ( sceneId )  {
     //               'the "Import" button) if one was previously<br>' +
     //               'exported from ' + appName() + '.</h2>';
 
-    var message = '&nbsp;<p>&nbsp;<p><h3>' +
-                  'Your List of Projects is currently empty.'  +
+    __current_folder  = projectList.currentFolder;
+
+    var message = '<div style="width:100%;">&nbsp;<p>&nbsp;<p><h3>' +
+                  'There are no projects in folder "' + __current_folder + '".' +
                   '<p>Use "Add" button to create a new Project' +
                   ';<br>"Import" button for importing a project exported from ' +
                     appName() +
@@ -512,7 +516,12 @@ function ProjectListPage ( sceneId )  {
                        .setNoWrap();
     panel.setHorizontalAlignment ( table_row+1,0,"center" );
 
-    if (projectList.projects.length<=0)  {
+    var nrows = 0;
+    for (var i=0;i<projectList.projects.length;i++)
+      if (projectList.projects[i].folderPath==__current_folder)
+        nrows++;
+
+    if (nrows<=0)  {
 
       __current_project = null;
 
@@ -537,114 +546,117 @@ function ProjectListPage ( sceneId )  {
     } else  {
 
       var selectedRow = null;
-      for (var i=0;i<projectList.projects.length;i++)  {
-        var trow = self.tablesort_tbl.addRow();
+      nrows = 0;
+      for (var i=0;i<projectList.projects.length;i++)
+        if (projectList.projects[i].folderPath==__current_folder)  {
+          var trow = self.tablesort_tbl.addRow();
 
-        //contextMenu.setWidth ( '10px' );
-        // contextMenu.setHeight_px ( 400 );
-        // contextMenu.setZIndex ( 101 );
+          //contextMenu.setWidth ( '10px' );
+          // contextMenu.setHeight_px ( 400 );
+          // contextMenu.setZIndex ( 101 );
 
-        var pDesc = projectList.projects[i];
-        var pName = pDesc.name;
+          var pDesc = projectList.projects[i];
+          var pName = pDesc.name;
 
-        // when list of projects is served from FE, shared record is removed
-        // in case of owner's login
-        var joined = ['','',''];
-        var shared_project = false;
-        if ('owner' in pDesc)  {
-          if (pDesc.owner.share.length>0)  {
-            if (pDesc.owner.login!=__login_id)  {
-              joined = ['<i>','</i>',"is not included in user\'s quota"];
-              pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
-              shared_project = true;
-            }
-          } else if (('author' in pDesc.owner) && pDesc.owner.author &&
-                     (pDesc.owner.author!=pDesc.owner.login) &&
-                     (pDesc.owner.author!=__login_id))
-            pName  = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
-        }
-
-        var contextMenu;
-        (function(shared_prj){
-
-          var del_label = 'Delete';
-          if (shared_prj)
-            del_label = 'Unjoin';
-
-          $(trow.element).click(function(){
-            del_btn.setText(del_label);
-          });
-          contextMenu = new ContextMenu ( trow,function(){
-            del_btn.setText ( del_label );
-          });
-          contextMenu.addItem('Open'   ,image_path('go')       ).addOnClickListener(openProject  );
-          contextMenu.addItem('Rename' ,image_path('renameprj')).addOnClickListener(renameProject);
-          contextMenu.addItem(del_label,image_path('remove')   ).addOnClickListener(deleteProject);
-          contextMenu.addItem('Export' ,image_path('export')   ).addOnClickListener(exportProject);
-          contextMenu.addItem('Share'  ,image_path('share')    ).addOnClickListener(sharePrj     );
-          contextMenu.addItem('Clone'  ,image_path('cloneprj') ).addOnClickListener(cloneProject );
-          // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
-
-        }(shared_project))
-
-        trow.addCell ( pName  ).setNoWrap();
-        trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
-        if (('metrics' in pDesc) && ('R_free' in pDesc.metrics)
-                                 && (pDesc.metrics.R_free<'1.0'))  {
-          var info = '<table class="table-rations">' +
-                     '<tr><td colspan="2"><b><i>Best scores (job ' +
-                     padDigits(pDesc.metrics.jobId,4) + ')</i></b></td></tr>' +
-                     '<tr><td colspan="2"><hr/></td></tr>';
-          function add_info ( title,value )  {
-            info += '<tr><td>' + title + '</td><td>' + value + '</td></tr>';
+          // when list of projects is served from FE, shared record is removed
+          // in case of owner's login
+          var joined = ['','',''];
+          var shared_project = false;
+          if ('owner' in pDesc)  {
+            if (pDesc.owner.share.length>0)  {
+              if (pDesc.owner.login!=__login_id)  {
+                joined = ['<i>','</i>',"is not included in user\'s quota"];
+                pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
+                shared_project = true;
+              }
+            } else if (('author' in pDesc.owner) && pDesc.owner.author &&
+                       (pDesc.owner.author!=pDesc.owner.login) &&
+                       (pDesc.owner.author!=__login_id))
+              pName  = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
           }
-          add_info ( 'R-free/R-factor','<b>' + round(pDesc.metrics.R_free,4) +
-                     '</b> / ' + round(pDesc.metrics.R_factor,4) );
-          add_info ( 'Residues/Units modelled&nbsp;&nbsp;&nbsp;',
-                     '<b>' + pDesc.metrics.nRes_Model   + '</b> / ' +
-                     '<b>' + pDesc.metrics.nUnits_Model + '</b>' );
-          //add_info ( 'R-free'  ,round(pDesc.metrics.R_free,4)   );
-          //add_info ( 'R-factor',round(pDesc.metrics.R_factor,4) );
-          //add_info ( 'Residues modelled',pDesc.metrics.nRes_Model );
-          info += '</table><table class="table-rations">' +
-                     '<tr><td colspan="2">&nbsp;<br><b><i>Project data</i></b></td></tr>' +
-                     '<tr><td colspan="2"><hr/></td></tr>';
-          add_info ( 'Space group',pDesc.metrics.SG       );
-          add_info ( 'High resolution&nbsp;&nbsp;&nbsp;',
-                     round(pDesc.metrics.res_high,2) + ' &Aring;' );
-          if (pDesc.metrics.Solvent>0.0)
-            add_info ( 'Solvent content&nbsp;&nbsp;&nbsp;',
-                       round(pDesc.metrics.Solvent,1) + '%' );
-          if (pDesc.metrics.MolWeight>0.0)
-            add_info ( 'ASU Molecular weight',round(pDesc.metrics.MolWeight,1) );
-          if (pDesc.metrics.nRes_ASU>0)
-            add_info ( 'Residues/Units expected&nbsp;&nbsp;&nbsp;',
-                       '<b>' + pDesc.metrics.nRes_ASU   + '</b> / ' +
-                       '<b>' + pDesc.metrics.nUnits_ASU + '</b>' );
-          if (('ha_type' in pDesc.metrics) && (pDesc.metrics.ha_type.length>0))
-            add_info ( 'HA type',pDesc.metrics.ha_type );
-          trow.addCell ( pDesc.metrics.R_free ).setNoWrap()
-              .setTooltip1(info + '</table>','show',false,20000);
-        } else
-          trow.addCell ( '' );
-        if (pDesc.hasOwnProperty('disk_space'))
-              trow.addCell ( joined[0]+round(pDesc.disk_space,1)+joined[1] )
-                  .setNoWrap().setTooltip(joined[2]);
-        else  trow.addCell ( joined[0]+'-:-'+joined[1] )
-                  .setNoWrap().setTooltip(joined[2]);
-        if (pDesc.hasOwnProperty('cpu_time'))
-              trow.addCell ( joined[0]+round(pDesc.cpu_time,4)+joined[1] )
-                  .setNoWrap().setTooltip(joined[2]);
-        else  trow.addCell ( joined[0]+'-:-'+joined[1] )
-                  .setNoWrap().setTooltip(joined[2]);
-        trow.addCell ( pDesc.dateCreated ).setNoWrap().setHorizontalAlignment('center');
-        // trow.addCell ( pDesc.dateLastUsed + 'T' + (1000+i) // '<span style="visibility:hidden;font-size:1px;">' + (1000+i) + '</span>'
-        trow.addCell ( pDesc.dateLastUsed ).setNoWrap().setHorizontalAlignment('center');
-        //tablesort_tbl.addRow ( trow );
-        if ((i==0) || (pDesc.name==projectList.current))
-          selectedRow = trow;
 
-      }
+          var contextMenu;
+          (function(shared_prj){
+
+            var del_label = 'Delete';
+            if (shared_prj)
+              del_label = 'Unjoin';
+
+            $(trow.element).click(function(){
+              del_btn.setText(del_label);
+            });
+            contextMenu = new ContextMenu ( trow,function(){
+              del_btn.setText ( del_label );
+            });
+            contextMenu.addItem('Open'   ,image_path('go')       ).addOnClickListener(openProject  );
+            contextMenu.addItem('Rename' ,image_path('renameprj')).addOnClickListener(renameProject);
+            contextMenu.addItem(del_label,image_path('remove')   ).addOnClickListener(deleteProject);
+            contextMenu.addItem('Export' ,image_path('export')   ).addOnClickListener(exportProject);
+            contextMenu.addItem('Share'  ,image_path('share')    ).addOnClickListener(sharePrj     );
+            contextMenu.addItem('Clone'  ,image_path('cloneprj') ).addOnClickListener(cloneProject );
+            // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
+
+          }(shared_project))
+
+          trow.addCell ( pName  ).setNoWrap();
+          trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
+          if (('metrics' in pDesc) && ('R_free' in pDesc.metrics)
+                                   && (pDesc.metrics.R_free<'1.0'))  {
+            var info = '<table class="table-rations">' +
+                       '<tr><td colspan="2"><b><i>Best scores (job ' +
+                       padDigits(pDesc.metrics.jobId,4) + ')</i></b></td></tr>' +
+                       '<tr><td colspan="2"><hr/></td></tr>';
+            function add_info ( title,value )  {
+              info += '<tr><td>' + title + '</td><td>' + value + '</td></tr>';
+            }
+            add_info ( 'R-free/R-factor','<b>' + round(pDesc.metrics.R_free,4) +
+                       '</b> / ' + round(pDesc.metrics.R_factor,4) );
+            add_info ( 'Residues/Units modelled&nbsp;&nbsp;&nbsp;',
+                       '<b>' + pDesc.metrics.nRes_Model   + '</b> / ' +
+                       '<b>' + pDesc.metrics.nUnits_Model + '</b>' );
+            //add_info ( 'R-free'  ,round(pDesc.metrics.R_free,4)   );
+            //add_info ( 'R-factor',round(pDesc.metrics.R_factor,4) );
+            //add_info ( 'Residues modelled',pDesc.metrics.nRes_Model );
+            info += '</table><table class="table-rations">' +
+                       '<tr><td colspan="2">&nbsp;<br><b><i>Project data</i></b></td></tr>' +
+                       '<tr><td colspan="2"><hr/></td></tr>';
+            add_info ( 'Space group',pDesc.metrics.SG       );
+            add_info ( 'High resolution&nbsp;&nbsp;&nbsp;',
+                       round(pDesc.metrics.res_high,2) + ' &Aring;' );
+            if (pDesc.metrics.Solvent>0.0)
+              add_info ( 'Solvent content&nbsp;&nbsp;&nbsp;',
+                         round(pDesc.metrics.Solvent,1) + '%' );
+            if (pDesc.metrics.MolWeight>0.0)
+              add_info ( 'ASU Molecular weight',round(pDesc.metrics.MolWeight,1) );
+            if (pDesc.metrics.nRes_ASU>0)
+              add_info ( 'Residues/Units expected&nbsp;&nbsp;&nbsp;',
+                         '<b>' + pDesc.metrics.nRes_ASU   + '</b> / ' +
+                         '<b>' + pDesc.metrics.nUnits_ASU + '</b>' );
+            if (('ha_type' in pDesc.metrics) && (pDesc.metrics.ha_type.length>0))
+              add_info ( 'HA type',pDesc.metrics.ha_type );
+            trow.addCell ( pDesc.metrics.R_free ).setNoWrap()
+                .setTooltip1(info + '</table>','show',false,20000);
+          } else
+            trow.addCell ( '' );
+          if (pDesc.hasOwnProperty('disk_space'))
+                trow.addCell ( joined[0]+round(pDesc.disk_space,1)+joined[1] )
+                    .setNoWrap().setTooltip(joined[2]);
+          else  trow.addCell ( joined[0]+'-:-'+joined[1] )
+                    .setNoWrap().setTooltip(joined[2]);
+          if (pDesc.hasOwnProperty('cpu_time'))
+                trow.addCell ( joined[0]+round(pDesc.cpu_time,4)+joined[1] )
+                    .setNoWrap().setTooltip(joined[2]);
+          else  trow.addCell ( joined[0]+'-:-'+joined[1] )
+                    .setNoWrap().setTooltip(joined[2]);
+          trow.addCell ( pDesc.dateCreated ).setNoWrap().setHorizontalAlignment('center');
+          // trow.addCell ( pDesc.dateLastUsed + 'T' + (1000+i) // '<span style="visibility:hidden;font-size:1px;">' + (1000+i) + '</span>'
+          trow.addCell ( pDesc.dateLastUsed ).setNoWrap().setHorizontalAlignment('center');
+          //tablesort_tbl.addRow ( trow );
+          if ((nrows==0) || (pDesc.name==projectList.current))
+            selectedRow = trow;
+          nrows++;
+
+        }
 
       self.tablesort_tbl.createTable ( function(){  // onSorted callback
         saveProjectList ( null );
@@ -688,6 +700,16 @@ function ProjectListPage ( sceneId )  {
     //   __close_all_menus();
     // });
 
+    var fontSize = Math.round ( Math.max ( 1.0,
+                                  Math.min ( 2.0,60.0/__current_folder.length) ) *
+                                100.0 ) + '%';
+    pageTitle_lbl.setFont ( 'times',fontSize,true,true );
+    pageTitle_lbl.setText ( '&nbsp;' + __current_folder );
+    // self.headerPanel.setLabel ( __current_folder,0,3,1,1 )
+    //                 .setFont  ( 'times',fontSize,true,true )
+    //                 .setNoWrap()
+    //                 .setHorizontalAlignment ( 'center' );
+
   }
 
   function loadProjectList()  {
@@ -703,17 +725,38 @@ function ProjectListPage ( sceneId )  {
     self.getUserRation();
   }
 
+  function browseFolders()  {
+    new FoldersBrowser ( 'Choose project folder',[],function(){} );
+  }
+
 
   this.makeHeader ( 3,null );
 
   this.headerPanel.setCellSize ( '30%','',0,2 );
-  this.headerPanel.setLabel ( 'My Projects',0,3,1,1 )
-                  .setFont  ( 'times','200%',true,true )
-                  .setNoWrap()
-                  .setHorizontalAlignment ( 'center' );
-  this.headerPanel.setCellSize ( '60%','',0,3 );
+  folder_btn = new ImageButton ( image_path('folder_projects'),'28px','28px' )
+                  .setTooltip('Browse project folders' );
+                  // .setSize ( '28pt','26pt' );
+                  // .setWidth ( '28pt' ).setHeight ( '24pt' );
+  this.headerPanel.setWidget ( folder_btn,0,3,1,1 );
   this.headerPanel.setVerticalAlignment ( 0,3,'middle' );
-  this.headerPanel.setHorizontalAlignment ( 0,3,'center' );
+  this.headerPanel.setHorizontalAlignment ( 0,3,'right' );
+
+  pageTitle_lbl = this.headerPanel
+                  .setLabel ( '&nbsp;Projects',0,4,1,1 )
+                  .setFont  ( 'times','200%',true,true )
+                  .setNoWrap();
+                  // .setHorizontalAlignment ( 'center' );
+  this.headerPanel.setCellSize ( '60%','',0,4 );
+  this.headerPanel.setVerticalAlignment ( 0,4,'middle' );
+  this.headerPanel.setHorizontalAlignment ( 0,4,'left' );
+
+  folder_btn.addOnClickListener ( function(){
+    browseFolders();
+  });
+  pageTitle_lbl.addOnClickListener ( function(){
+    browseFolders();
+  });
+
 
   // Make Main Menu
   if (!__local_user)
