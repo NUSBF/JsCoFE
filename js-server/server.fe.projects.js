@@ -335,7 +335,7 @@ function readProjectList ( loginData )  {
     if (!('startmode' in pList))
       pList.startmode = pd.start_mode.auto;
     var dirlist = fs.readdirSync ( getUserProjectsDirPath(loginData) );
-    var folderPaths = [];
+    var folderPaths = {};
     for (var i=0;i<dirlist.length;i++)
       if (dirlist[i].endsWith(projectExt))  {
         var pname = path.parse(dirlist[i]).name;
@@ -353,12 +353,18 @@ function readProjectList ( loginData )  {
         }
         if (pdesc)  {
           pList.projects.push ( pdesc );
-          if (folderPaths.indexOf(pdesc.folderPath)<0)  {
-            pList.addFolderPath ( pdesc.folderPath );
-            folderPaths.push    ( pdesc.folderPath );
-          }
+          if (pdesc.folderPath in folderPaths)
+                folderPaths[pdesc.folderPath]++;
+          else  folderPaths[pdesc.folderPath] = 1;
+          // if (folderPaths.indexOf(pdesc.folderPath)<0)  {
+          //   pList.addFolderPath ( pdesc.folderPath,0 );
+          //   folderPaths.push    ( pdesc.folderPath );
+          // }
         }
       }
+    pList.resetFolders();
+    for (var fpath in folderPaths)
+      pList.addFolderPath ( fpath,folderPaths[fpath] );
     writeProjectList ( loginData,pList );
   }
   return pList;
