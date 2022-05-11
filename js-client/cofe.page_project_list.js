@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.05.22   <--  Date of Last Modification.
+ *    11.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -734,11 +734,19 @@ function ProjectListPage ( sceneId )  {
 
   function browseFolders()  {
     // console.log ( projectList.folders );
-    new FoldersBrowser ( 'Project folder',projectList.folders,__current_folder,
+    new FoldersBrowser ( 'Project folder',projectList,__current_folder,
       function ( key,data ){
         switch (key)  {
+          case 'delete' :
           case 'select' : projectList.currentFolder = data.folder;
-                          saveProjectList ( function(data){
+                          saveProjectList ( function(rdata){
+                            makeProjectListTable();
+                          });
+                      break;
+          case 'add'    : saveProjectList ( function(rdata){} );
+                      break;
+          case 'move'   : 
+                          saveProjectList ( function(rdata){
                             makeProjectListTable();
                           });
                       break;
@@ -751,7 +759,6 @@ function ProjectListPage ( sceneId )  {
         }
       });
   }
-
 
   this.makeHeader ( 3,null );
 
