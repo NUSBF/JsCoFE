@@ -215,13 +215,15 @@ function ProjectListPage ( sceneId )  {
         if (name_inp.getValue().length<=0)  {
           new MessageBox ( 'No Project ID',
                    '<b>Project ID is not given</b>.<p>' +
-                   'Project cannot be renamed with empty ID.' );
+                   'Project cannot be renamed with empty ID.',
+                   'msg_error' );
           return false;
         }
         if (title_inp.getValue().length<=0)  {
           new MessageBox ( 'No Project Name',
                    '<b>Project Name is not given</b>.<p>' +
-                   'Project cannot be renamed with empty name.' );
+                   'Project cannot be renamed with empty name.',
+                   'msg_error' );
           return false;
         }
         pDesc = projectList.renameProject ( prjName,title_inp.getValue(),getDateString() );
@@ -305,9 +307,10 @@ function ProjectListPage ( sceneId )  {
       new ExportProjectDialog ( projectList );
     } else
       new MessageBox ( 'No project selected',
-                       'No project is currently selected<br>' +
-                       '-- nothing to export.',
-                        'msg_error' );
+                       '<h2>No project is selected<h2>' +
+                       'This is likely to be a program error. ' +
+                       'Select project and try again.',
+                       'msg_error' );
   }
 
   var sharePrj = function()  {
@@ -321,7 +324,11 @@ function ProjectListPage ( sceneId )  {
         }
       });
     } else
-      new MessageBox ( 'No Project','No Project selected' );
+      new MessageBox ( 'No Project',
+                       '<h2>No Project is selected<h2>' +
+                       'This is likely to be a program error. ' +
+                       'Select project and try again.',
+                       'msg_error' );
   }
 
   var cloneProject = function()  {
@@ -726,7 +733,23 @@ function ProjectListPage ( sceneId )  {
   }
 
   function browseFolders()  {
-    new FoldersBrowser ( 'Choose project folder',[],function(){} );
+    // console.log ( projectList.folders );
+    new FoldersBrowser ( 'Project folder',projectList.folders,__current_folder,
+      function ( key,data ){
+        switch (key)  {
+          case 'select' : projectList.currentFolder = data.folder;
+                          saveProjectList ( function(data){
+                            makeProjectListTable();
+                          });
+                      break;
+          case 'cancel' : break;
+          default       : new MessageBox ( 'Unknown action key',
+                              '<h2>Unknown action key</h2>' +
+                              'This is likely to be a program error. ' +
+                              'Please report code PPL-BF-001 to developers.',
+                              'msg_error' );
+        }
+      });
   }
 
 

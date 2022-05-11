@@ -111,12 +111,12 @@ function ProjectList()  {
   this.startmode = start_mode.auto; // 'auto', 'expert', 'migrate'
   this.sortList  = null;   // sort options
   this.folders   = [ // project folders tree
-    { name : 'My Projects', folders : [] }  // basic element
+    { name : 'My Projects', path : 'My Projects', nprojects : 0, folders : [] }  // basic element
   ];
   this.currentFolder = 'My Projects';
 }
 
-ProjectList.prototype._add_folder_path = function ( flist,level,folders )  {
+ProjectList.prototype._add_folder_path = function ( flist,level,folders,nprojects )  {
   if (level<flist.length)  {
     var k = -1;
     for (var i=0;(i<folders.length) && (k<0);i++)
@@ -124,14 +124,36 @@ ProjectList.prototype._add_folder_path = function ( flist,level,folders )  {
         k = i;
     if (k<0)  {
       k = folders.length;
-      folders.push ({ name : flist[level], folders : [] });
+      var fpath = flist[0];
+      for (var i=1;i<=level;i++)
+        fpath += '/' + flist[i];
+      var folder = {
+         name      : flist[level],
+         path      : fpath,
+         nprojects : 0,
+         folders   : []
+      };
+      folders.push ( folder );
     }
-    this._add_folder_path ( flist,level+1,folders[k].folders );
+    if (level==flist.length-1)
+      folders[k].nprojects = nprojects;
+    this._add_folder_path ( flist,level+1,folders[k].folders,nprojects );
   }
 }
 
-ProjectList.prototype.addFolderPath = function ( folderPath )  {
-  this._add_folder_path ( folderPath.split('/'),0,this.folders );
+ProjectList.prototype.addFolderPath = function ( folderPath,nprojects )  {
+  this._add_folder_path ( folderPath.split('/'),0,this.folders,nprojects );
+}
+
+ProjectList.prototype._reset_folders = function ( folders )  {
+  for (var i=0;i<folders.length;i++)  {
+    folders[i].nprojects = 0;
+    this._reset_folders ( folders[i].folders );
+  }
+}
+
+ProjectList.prototype.resetFolders = function()  {
+  this._reset_folders ( this.folders );
 }
 
 ProjectList.prototype.isProject = function ( name_str )  {
