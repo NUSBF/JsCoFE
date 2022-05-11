@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.05.22   <--  Date of Last Modification.
+ *    11.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -110,8 +110,13 @@ function ProjectList()  {
   this.current   = '';     // current project name
   this.startmode = start_mode.auto; // 'auto', 'expert', 'migrate'
   this.sortList  = null;   // sort options
-  this.folders   = [ // project folders tree
-    { name : 'My Projects', path : 'My Projects', nprojects : 0, folders : [] }  // basic element
+  this.folders   = [ // project folders tree basic element
+    { name      : 'My Projects',
+      path      : 'My Projects',
+      nprojects : 0,
+      folders   : [],
+      projects  : []
+    }
   ];
   this.currentFolder = 'My Projects';
 }
@@ -131,7 +136,8 @@ ProjectList.prototype._add_folder_path = function ( flist,level,folders,nproject
          name      : flist[level],
          path      : fpath,
          nprojects : 0,
-         folders   : []
+         folders   : [],
+         projects  : []
       };
       folders.push ( folder );
     }

@@ -215,7 +215,7 @@ FoldersBrowser.prototype.onAddFolder = function()  {
       return false;
     }
     var selNode = self.ftree.getSelectedNode();
-    var pFolder = this.findFolder ( selNode.dataId );
+    var pFolder = self.findFolder ( selNode.dataId );
     if (!pFolder)  {
       new MessageBox ( 'No current folder ',
                '<h2>Curret folder not found</h2>' +
