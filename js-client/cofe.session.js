@@ -37,7 +37,13 @@ function startSession ( sceneId,dev_switch )  {
       __url_parameters[p[0]] = p[1];
     }
     // alert ( JSON.stringify(__url_parameters) );
-    window.history.replaceState ( {},document.title,'/jscofe-dev/' );
+alert ( window.location.pathname );
+    var lpath = window.location.pathname.split('/');
+    var wpath = '/';
+    if (lpath.length>0)
+      wpath = '/' + lpath[0] + '/';
+alert ( wpath );
+    window.history.replaceState ( {},document.title,wpath );
   }
 
   checkLocalService ( function(rc){
