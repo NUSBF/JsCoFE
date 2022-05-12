@@ -82,13 +82,13 @@ function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
 
 function MessageAJAXFailure ( title,jqXHR,exception )  {
 
-  var msg = '<h3>Communication errors</h3><p><i>';
+  var msg = '<h2>Communication errors</h2><p><i>';
   if (!jqXHR)  {
     msg += 'Unknown error.';
   } else if (jqXHR.status === 0) {
     msg += 'Not connected.<br>Please verify your network connection.';
   } else if (jqXHR.status == 404) {
-    msg += 'The requested page not found. [404]';
+    msg += 'The requested page not found. [404] ' + jqXHR.responseText;
   } else if (jqXHR.status == 500) {
     msg += 'Internal Server Error [500].';
   } else if (exception === 'parsererror') {
@@ -104,7 +104,7 @@ function MessageAJAXFailure ( title,jqXHR,exception )  {
   new MessageBox ( title,msg + '</i><p>' +
     'This may be an intermittent error due to a poor internet connection,<br>' +
     'however, persistent appearance of this message is likely to indicate<br>' +
-    appName() + ' failure or temporary shutdown.' );
+    appName() + ' failure or temporary shutdown.','msg_error' );
 
 }
 
@@ -115,7 +115,7 @@ var msg = '<h3>General failure: project metadata not found on server</h3>';
     msg += 'Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
     '<p>This is an internal error, and the respective maintener ' +
-    'has been informed.<p>Sorry and please come back later!' );
+    'has been informed.<p>Sorry and please come back later!','msg_error' );
 }
 
 function MessageDataWriteError ( title,message )  {
@@ -221,7 +221,7 @@ function MessageServerInactive()  {
 function MessageFileNotFound ( message )  {
   new MessageBox ( 'File not found',
     '<div style="width:500px"><h2>File not found</h2>' +
-    '<p>' + message + 
+    '<p>' + message +
     '<p>Please come back later.</div>' );
 }
 

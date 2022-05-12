@@ -694,58 +694,6 @@ var response = null;  // must become a cmd.Response object to return
   var pList = readProjectList ( loginData );
   if (pList)  {
 
-    // delete missing projects
-    // var disk_space_change = 0.0;
-    // var del_lst = [];
-    // for (var i=0;i<pList.projects.length;i++)  {
-    //   var pDesc  = pList.projects[i];
-    //   var pName  = pDesc.name;
-    //   var jfound = -1;
-    //   for (var j=0;(j<newProjectList.projects.length) && (jfound<0);j++)
-    //     if (pName==newProjectList.projects[j].name)
-    //       jfound = j;
-    //   if (jfound<0)
-    //     del_lst.push ( [pName,pDesc] );
-    //   else  {
-    //     if (pDesc.owner.login==loginData.login)
-    //       pDesc.title = newProjectList.projects[jfound].title; // if it was renamed
-    //     newProjectList.projects[jfound] = pDesc;
-    //   }
-    // }
-    //
-    // /*
-    // for (var i=0;i<del_lst.length;i++)  {
-    //   var pName = del_lst[i][0];
-    //   var pDesc = del_lst[i][1];
-    //   var rsp   = deleteProject ( loginData,pName );
-    //   if (rsp.status!=cmd.fe_retcode.ok)
-    //     response = rsp;
-    //   else if (('owner' in pDesc) && (pDesc.owner.login==loginData.login))  {
-    //     // monitor disk space only if own projects are deleted; deleting
-    //     // a shared project is a logical, rather than physical, operation,
-    //     // which does not release disk space
-    //     if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
-    //       disk_space_change -= pList.projects[i].disk_space;
-    //   }
-    // }
-    // */
-    //
-    // for (var i=0;i<del_lst.length;i++)  {
-    //   var pName = del_lst[i][0];
-    //   var pDesc = del_lst[i][1];
-    //   if (('owner' in pDesc) && (pDesc.owner.login!=loginData.login))  {
-    //     // monitor disk space only if own projects are deleted; deleting
-    //     // a shared project is a logical, rather than physical, operation,
-    //     // which does not release disk space
-    //     if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
-    //       disk_space_change -= pList.projects[i].disk_space;
-    //   } else  {
-    //     var rsp = deleteProject ( loginData,pName );
-    //     if (rsp.status!=cmd.fe_retcode.ok)
-    //       response = rsp;
-    //   }
-    // }
-
     // create new projects
     for (var i=0;i<newProjectList.projects.length;i++)
       if (newProjectList.projects[i].owner.login=='')  {
@@ -757,7 +705,9 @@ var response = null;  // must become a cmd.Response object to return
           var rsp = makeNewProject ( loginData,newProjectList.projects[i] );
           if (rsp.status!=cmd.fe_retcode.ok)
             response = rsp;
-        }
+        } // else
+          //  ***** CHECK IF FOLDER PATH HAS CHANGED AND REWRITE PROJECT METADATA AS NECESSARY HERE
+
       }
 
     if (!response)  {
