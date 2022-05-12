@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.11.21   <--  Date of Last Modification.
+ *    12.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User session management
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2021
+ *  (C) E. Krissinel, A. Lebedev 2020-2022
  *
  *  =================================================================
  *
@@ -37,12 +37,10 @@ function startSession ( sceneId,dev_switch )  {
       __url_parameters[p[0]] = p[1];
     }
     // alert ( JSON.stringify(__url_parameters) );
-alert ( window.location.pathname );
     var lpath = window.location.pathname.substr(1).split('/');  // skip first slash
     var wpath = '/';
     if (lpath.length>0)
       wpath = '/' + lpath[0] + '/';
-alert ( wpath );
     window.history.replaceState ( {},document.title,wpath );
   }
 
