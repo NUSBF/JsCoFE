@@ -38,7 +38,7 @@ function startSession ( sceneId,dev_switch )  {
     }
     // alert ( JSON.stringify(__url_parameters) );
 alert ( window.location.pathname );
-    var lpath = window.location.pathname.split('/');
+    var lpath = window.location.pathname.substr(1).split('/');  // skip first slash
     var wpath = '/';
     if (lpath.length>0)
       wpath = '/' + lpath[0] + '/';
