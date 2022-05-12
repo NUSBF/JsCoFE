@@ -88,7 +88,7 @@ function MessageAJAXFailure ( title,jqXHR,exception )  {
   } else if (jqXHR.status === 0) {
     msg += 'Not connected.<br>Please verify your network connection.';
   } else if (jqXHR.status == 404) {
-    msg += 'The requested page not found. [404] ' + jqXHR.responseText;
+    msg += 'The requested page not found. [404]';
   } else if (jqXHR.status == 500) {
     msg += 'Internal Server Error [500].';
   } else if (exception === 'parsererror') {
@@ -110,7 +110,7 @@ function MessageAJAXFailure ( title,jqXHR,exception )  {
 
 
 function MessageNoProjectDataError ( title,message )  {
-var msg = '<h3>General failure: project metadata not found on server</h3>';
+var msg = '<h2>General failure: project metadata not found on server</h2>';
   if (message.length>0)
     msg += 'Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
@@ -119,37 +119,37 @@ var msg = '<h3>General failure: project metadata not found on server</h3>';
 }
 
 function MessageDataWriteError ( title,message )  {
-var msg = '<h3>General failure: data cannot be written</h3>';
+var msg = '<h2>General failure: data cannot be written</h2>';
   if (message.length>0)
     msg += 'Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
     '<p>This is an internal error, and the respective maintener ' +
-    'has been informed.<p>Sorry and please come back later!' );
+    'has been informed.<p>Sorry and please come back later!','msg_error' );
 }
 
 function MessageMkDirError ( title,message )  {
-var msg = '<b>General failure: cannot create a directory.</b>';
+var msg = '<h2>General failure: cannot create a directory.</h2>';
   if (message.length>0)
     msg += '<p>Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
     '<p>This is an internal error, and the respective maintener ' +
-    'has been informed.<p>Sorry and please come back later!' );
+    'has been informed.<p>Sorry and please come back later!','msg_error' );
 }
 
 function MessageDataReadError ( title,message )  {
-var msg = '<b>General failure: data cannot be read.</b>';
+var msg = '<h2>General failure: data cannot be read.</h2>';
   if (message.length>0)
     msg += '<p>Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
     '<p>This is an internal error, and the respective maintener ' +
-    'has been informed.<p>Sorry and please come back later!' );
+    'has been informed.<p>Sorry and please come back later!','msg_error' );
 }
 
 function MessageNotLoggedIn ( title )  {
   if (__current_page && (['LogoutPage','LoginPage'].indexOf(__current_page._type)>=0))
     return;
   new MessageBox ( title,
-    '<div style="width:500px"><b>User not logged in.</b>' +
+    '<div style="width:500px"><h2>User not logged in.</h2>' +
     '<p>This may result from duplicate logging (either explicitly in another ' +
     'browser or machine, or implicitly by, e.g., copy/pasting URL in another ' +
     'browser tab or window), or using forward/back/reload buttons in your ' +
@@ -158,22 +158,22 @@ function MessageNotLoggedIn ( title )  {
     report_problem(
       'CCP4 Cloud Report: D0001',
       'Report code: D0001','' ) +
-    '.</div>' );
+    '.</div>','msg_stop' );
   return;
 }
 
 function MessageUploadErrors ( title,message )  {
-var msg = '<b>General failure: upload errors.</b>';
+var msg = '<h2>General failure: upload errors.</h2>';
   if (message.length>0)
     msg += '<p>Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
     '<p>This is an internal error, and the respective maintener ' +
-    'has been informed.<p>Sorry and please come back later!' );
+    'has been informed.<p>Sorry and please come back later!','msg_error' );
 }
 
 function MessageNoJobDir ( title )  {
   new MessageBox ( title,
-    '<div style="width:500px"><b>Job directory not found on server.</b>' +
+    '<div style="width:500px"><h2>Job directory not found on server.</h2>' +
     '<p>This may result from duplicate logging (either explicitly in another ' +
     'browser or machine, or implicitly by, e.g., copy/pasting URL in another' +
     'browser tab or window), or using forward/back/reload buttons in your ' +
@@ -182,19 +182,19 @@ function MessageNoJobDir ( title )  {
     report_problem(
       'CCP4 Cloud Report: D0002',
       'Report code: D0002','' ) +
-    '.</div>' );
+    '.</div>','msg_error' );
 }
 
 function MessageProxyError ( title )  {
   new MessageBox ( title,
-    '<b>Proxy server error.</b>' +
+    '<h2>Proxy server error.</h2>' +
     '<p>Usually, this means that connection with ' + appName() +
     ' is lost.<br>Please check your internet connection. ' +
     '<p>If problem persists, please report to ' +
     report_problem(
       'CCP4 Cloud Report: D0003',
       'Report code: D0003','' ) +
-    '.' );
+    '.','msg_error' );
 }
 
 function MessageProjectAccess ( title )  {
