@@ -37,7 +37,7 @@ function startSession ( sceneId,dev_switch )  {
       __url_parameters[p[0]] = p[1];
     }
     // alert ( JSON.stringify(__url_parameters) );
-    window.history.replaceState ( {},document.title,'/' );
+    window.history.replaceState ( {},document.title,'/jscofe-dev/' );
   }
 
   checkLocalService ( function(rc){
