@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.04.22   <--  Date of Last Modification.
+ *    13.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -69,7 +69,7 @@ function TaskDocDev()  {
                        'karma|KARMA',
                        'insipid|INSIPID'
                       ],
-           value    : 'haiku',
+           value    : 'material',
            iwidth   : 260,
            position : [2,0,1,1]
          },
