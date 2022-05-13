@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.11.21   <--  Date of Last Modification.
+ *    11.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -17,7 +17,7 @@
  *                  ProjectShare
  *                  DockData
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -41,15 +41,25 @@ var tasklist_mode = {
 // ===========================================================================
 
 function ProjectDesc()  {
+
   this._type        = 'ProjectDesc';
-  this.name         = '';
-  this.title        = '';
+  this.name         = '';    // short project ID
+  this.title        = '';    // descriptive title
   this.owner        = {
     login  : '',   // login where project was created
     name   : '',
     email  : '',
     share  : []    // list of login share objects
   };
+
+  this.folderPath   = 'My Projects';  // virtual project folder path
+  this.labels       = [];             // list of optional project labels
+  // this.archive = {
+  //   id      : '',   // archive ID
+  //   version : 0,    // archived project version
+  //   pdbCode : ''    // associated PDB code
+  // };
+
   this.jobCount     = 0;      // job count
   this.timestamp    = 0;      // Date.now()
   this.autorun      = false;  // true if a task in autorun mode is runnng
@@ -63,6 +73,7 @@ function ProjectDesc()  {
   this.dateCreated  = '';   // year/mm/dd
   this.dateLastUsed = '';   // year/mm/dd
   this.metrics      = {};   // for statistics and searches
+
 }
 
 ProjectDesc.prototype.init = function ( name_str,title_str,startmode,time_str )  {
@@ -99,6 +110,68 @@ function ProjectList()  {
   this.current   = '';     // current project name
   this.startmode = start_mode.auto; // 'auto', 'expert', 'migrate'
   this.sortList  = null;   // sort options
+  this.folders   = [ // project folders tree basic element
+    { name      : 'My Projects',
+      path      : 'My Projects',
+      nprojects : 0,
+      folders   : [],
+      projects  : []
+    }
+  ];
+  this.currentFolder = 'My Projects';
+}
+
+ProjectList.prototype._add_folder_path = function ( flist,level,folders,nprojects )  {
+  if (level<flist.length)  {
+    var k = -1;
+    for (var i=0;(i<folders.length) && (k<0);i++)
+      if (flist[level]==folders[i].name)
+        k = i;
+    if (k<0)  {
+      k = folders.length;
+      var fpath = flist[0];
+      for (var i=1;i<=level;i++)
+        fpath += '/' + flist[i];
+      var folder = {
+         name      : flist[level],
+         path      : fpath,
+         nprojects : 0,
+         folders   : [],
+         projects  : []
+      };
+      folders.push ( folder );
+    }
+    if (level==flist.length-1)
+      folders[k].nprojects = nprojects;
+    this._add_folder_path ( flist,level+1,folders[k].folders,nprojects );
+  }
+}
+
+ProjectList.prototype.addFolderPath = function ( folderPath,nprojects )  {
+  this._add_folder_path ( folderPath.split('/'),0,this.folders,nprojects );
+}
+
+ProjectList.prototype._reset_folders = function ( folders )  {
+  for (var i=0;i<folders.length;i++)  {
+    folders[i].nprojects = 0;
+    this._reset_folders ( folders[i].folders );
+  }
+}
+
+ProjectList.prototype.resetFolders = function()  {
+  this._reset_folders ( this.folders );
+}
+
+ProjectList.prototype._rename_folders = function ( folders,oldpath,newpath )  {
+  for (var i=0;i<folders.length;i++)  {
+    if (folders[i].path.startsWith(oldpath))
+      folders[i].path = folders[i].path.replace ( oldpath,newpath );
+    this._rename_folders ( folders[i].folders,oldpath,newpath );
+  }
+}
+
+ProjectList.prototype.renameFolders = function ( oldpath,newpath )  {
+  this._rename_folders ( this.folders,oldpath,newpath );
 }
 
 ProjectList.prototype.isProject = function ( name_str )  {
@@ -130,10 +203,11 @@ ProjectList.prototype.addProject = function ( name_str,title_str,
   if (!this.isProject(name_str))  {
     var pDesc = new ProjectDesc();
     pDesc.init ( name_str,title_str,startmode,time_str );
+    pDesc.folderPath = this.currentFolder;
     this.projects.unshift ( pDesc );  // put new project at beginning
-    this.current       = name_str;
-    this.startmode     = startmode;
-    this.sortList      = null;
+    this.current   = name_str;
+    this.startmode = startmode;
+    this.sortList  = null;
     return true;
   } else
     return false;

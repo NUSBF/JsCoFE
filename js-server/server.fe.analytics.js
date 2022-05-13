@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.03.22   <--  Date of Last Modification.
+ *    07.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -292,7 +292,7 @@ var countries = {
   'tn' : 'Tunisia',
   'to' : 'Tonga',
   'tp' : 'Timor-Leste',
-  'tr' : 'Turkey, Turkish Republic of Northern Cyprus',
+  'tr' : 'Turkey',
   'tt' : 'Trinidad and Tobago',
   'tv' : 'Tuvalu',
   'tw' : 'Taiwan',
@@ -425,6 +425,7 @@ var t_current      = t0 - twindow_current;
 var t_recent       = t0 - twindow_recent;
 var tweek          = 3600000*24*7;    // milliseconds in a week
 var t_year         = t0 - 3600000*24*365;  // milliseconds in an year
+var tw0            = Math.ceil(t0/tweek)*tweek;
 
   for (var login in this.activity)  {
     if (this.activity[login].lastSeen>=t_year)  {
@@ -440,7 +441,7 @@ var t_year         = t0 - 3600000*24*365;  // milliseconds in an year
           country : getCountry(country)
         });
     }
-    var nweek = Math.floor ( (t0-this.activity[login].lastSeen)/tweek );
+    var nweek = Math.floor ( (tw0-this.activity[login].lastSeen)/tweek );
     while (users_per_week.length<=nweek)
       users_per_week.push ( 0 );
     users_per_week[nweek]++;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.04.22   <--  Date of Last Modification.
+ *    11.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -511,12 +511,24 @@ WaitDialog.prototype.constructor = WaitDialog;
 // QuestionBox class
 
 function QuestionBox ( title,message,btn1_name,onButton1_func,
-                                     btn2_name,onButton2_func )  {
+                                     btn2_name,onButton2_func,
+                                     icon_name='' )  {
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title',title );
-  this.element.innerHTML = message;
   document.body.appendChild ( this.element );
+
+  if (icon_name)  {
+    var grid = new Grid ( '' );
+    this.addWidget   ( grid );
+    grid.setLabel    ( ' ',0,0,1,1 );
+    grid.setCellSize ( '','6px', 0,0 );
+    grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
+    grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
+    grid.setLabel    ( message,0,2,2,1 );
+    grid.setVerticalAlignment ( 0,2,'middle' );
+  } else
+    this.element.innerHTML = message;
 
   this.options = {
     resizable     : false,

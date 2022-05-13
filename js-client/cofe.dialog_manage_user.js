@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.06.21   <--  Date of Last Modification.
+ *    13.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Manage User Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -138,16 +138,16 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                     if (response)
                       new MessageBoxW ( 'Reset User Password',response,0.5 );
                     else
-                      new MessageBox ( 'Rest User Password',
+                      new MessageBox ( 'Reset User Password',
                         'Password of <i>' + dlg.userData.name +
                         '</i> has been successfully reset, and ' +
                         'notification<br>sent to e-mail address:<p><b><i>' +
-                        dlg.userData.email + '</i></b>.' );
+                        dlg.userData.email + '</i></b>.', 'msg_ok' );
                     onExit_func();
                     $(dlg.element).dialog("close");
                   },null,'persist' );
                 },
-                'Cancel',function(){});
+                'Cancel',function(){},'msg_confirm');
           }
 
         }, {
@@ -160,7 +160,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                 'Account of <i>' + dlg.userData.name + '</i> will be deleted.<p>' +
                 'Once deleted, all user data, including registration details,<br>' +
                 'imported files, projects and results will be removed from<br>' +
-                'the server irrevocably.<p>' + 
+                'the server irrevocably.<p>' +
                 'Are you sure?',
                 'Yes, delete',function(){
                   serverRequest ( fe_reqtype.deleteUser_admin,dlg.userData,
@@ -177,7 +177,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                     $(dlg.element).dialog("close");
                   },null,'persist' );
                 },
-                'Cancel',function(){});
+                'Cancel',function(){},'msg_confirm');
           }
 
         }, {

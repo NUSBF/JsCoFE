@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    04.10.20   <--  Date of Last Modification.
+#    03.05.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  UNMERGED DATA IMPORT CLASS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -140,7 +140,7 @@ def run ( body,        # body is reference to the main Import class
                                     stdout=body.file_stdout,
                                     stderr=body.file_stderr )
 
-            sp.stdin.write('XDSIN ' + p_orig + '\nHKLOUT ' + p_mtzin + '\nCOPY\n')
+            sp.stdin.write(('XDSIN ' + p_orig + '\nHKLOUT ' + p_mtzin + '\nCOPY\n').encode())
             sp.stdin.close()
             if sp.wait():
                 p_mtzin = None

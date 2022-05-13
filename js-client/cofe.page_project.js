@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.11.21   <--  Date of Last Modification.
+ *    12.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -96,7 +96,7 @@ function ProjectPage ( sceneId )  {
 
   (function(self){
 
-    self.addMenuItem ( 'My Projects','list',function(){
+    self.addMenuItem ( 'Project folder','list',function(){
       if (self.jobTree && self.jobTree.projectData)
         self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
           makeProjectListPage ( sceneId );
@@ -410,7 +410,8 @@ ProjectPage.prototype.start_action = function ( action_key )  {
     new MessageBox ( 'Communication delays',
                      'Communication delays, please wait a moment.<br>' +
                      'If this message persists, reload Project using<br>' +
-                     '<i>Refresh</i> button in the vertical toolbar.', 'msg_system' );
+                     '<i>Refresh</i> button in the vertical toolbar.',
+                     'msg_system' );
     console.log ( ' >>>> action requested: ' + action_key + ', pending: ' + this.pending_act );
   }
   return false;
@@ -904,6 +905,7 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
   this._set_button_state();
 
   __current_project = job_tree.projectData.desc.name;
+  __current_folder  = job_tree.projectData.desc.folderPath;
 
   (function(self){
     job_tree.addSignalHandler ( cofe_signals.jobDialogOpened,function(data){
@@ -1141,7 +1143,8 @@ ProjectPage.prototype.makeDock = function()  {
                 icon_uri +
                 '" width="26" height="24"><span style="vertical-align:middle">&nbsp;&nbsp;<b>' +
                 title + '</b></span></div><p>has been retired and cannot be added ' +
-                'to the Project. You may remove this task from the dock.</div>', 'msg_warning' );
+                'to the Project. You may remove this task from the dock.</div>',
+                'msg_warning' );
 
           } else  {
 
@@ -1236,7 +1239,8 @@ function rvapi_cloneJob ( jobId )  {
                      'please contact ' + appName() + ' developer.', 'msg_error' );
   } else if (__current_page._type!='ProjectPage')  {
     new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
-                     'This is a bug, please contact ' + appName() + ' developer.', 'msg_error' );
+                     'This is a bug, please contact ' + appName() + ' developer.',
+                     'msg_error' );
   } else  {
     __current_page.cloneJobWithSuggestedParameters ( jobId );
   }
