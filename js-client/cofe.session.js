@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.11.21   <--  Date of Last Modification.
+ *    12.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User session management
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2021
+ *  (C) E. Krissinel, A. Lebedev 2020-2022
  *
  *  =================================================================
  *
@@ -37,7 +37,11 @@ function startSession ( sceneId,dev_switch )  {
       __url_parameters[p[0]] = p[1];
     }
     // alert ( JSON.stringify(__url_parameters) );
-    window.history.replaceState ( {},document.title,'/' );
+    var lpath = window.location.pathname.substr(1).split('/');  // skip first slash
+    var wpath = '/';
+    if (lpath.length>0)
+      wpath = '/' + lpath[0] + '/';
+    window.history.replaceState ( {},document.title,wpath );
   }
 
   checkLocalService ( function(rc){
@@ -130,7 +134,8 @@ function checkAnnouncement()  {
             rdata.data.message = rdata.data.message.split('\n').slice(1).join('\n');
           if (rdata.data.message)
             new MessageBox ( 'Announcement','<div style="width:500px;">' +
-                                            rdata.data.message + '</div>' );
+                                            rdata.data.message + '</div>',
+                                            'msg_notification' );
         }
         __tips = rdata.data.tips;  // may be null
         __announcement_made = true;
@@ -254,7 +259,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                     '<a href="mailto:' + __maintainerEmail +
                       '?Subject=' + appName() + '%20Account re-activation">' +
                        __maintainerEmail +
-                    '</a>.<p>Kind regards<p>' + appName() + ' maintenance.'
+                    '</a>.<p>Kind regards<p>' + appName() + ' maintenance.',
+                    'msg_mail'
                   );
                 },100);
 
@@ -264,7 +270,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                 new MessageBox ( 'Login',
                   '<b>Login data cannot be recognised.</b><p>' +
                   'Please check that provided login name and password are ' +
-                  'correct.' );
+                  'correct.', 'msg_excl_yellow' );
           return true;
 
       case fe_retcode.suspendedLogin:
@@ -280,7 +286,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                     '?Subject=License%20enquiry">' + __maintainerEmail +
                     '</a> if your account remains suspended for ' +
                   'unreasonably long time.<p>Sincere apologies for any ' +
-                  'inconvenience this may be causing to you.</div>' );
+                  'inconvenience this may be causing to you.</div>',
+                  'msg_stop' );
           return true;
 
       default: ;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.03.22   <--  Date of Last Modification.
+ *    13.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -52,11 +52,11 @@ function AdminPage ( sceneId )  {
       .addMenuItem ( 'Make announcement','announce',function(){ new AnnounceDialog();      })
       .addMenuSeparator()
       .addMenuItem ( 'My Account','settings',function(){ makeAccountPage(sceneId); })
-      .addMenuItem ( 'My Projects','list',function(){ makeProjectListPage(sceneId); })
+      .addMenuItem ( 'Project folder','list',function(){ makeProjectListPage(sceneId); })
       .addLogoutToMenu ( function(){ logout(sceneId,0); });
   */
   this.addMenuItem ( 'My Account','settings',function(){ makeAccountPage(sceneId); })
-      .addMenuItem ( 'My Projects','list',function(){ makeProjectListPage(sceneId); })
+      .addMenuItem ( 'Project folder','list',function(){ makeProjectListPage(sceneId); })
       .addLogoutToMenu ( function(){ logout(sceneId,0); });
 
   // make tabs

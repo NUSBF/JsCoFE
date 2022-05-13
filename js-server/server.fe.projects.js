@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.04.22   <--  Date of Last Modification.
+ *    12.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -250,6 +250,11 @@ function checkProjectDescData ( projectDesc,loginData )  {
     projectDesc.autorun = false;
     update = true;
   }
+  if (!('folderPath' in projectDesc))  {
+    projectDesc.folderPath = 'My Projects';  // virtual project folder path
+    projectDesc.labels     = [];             // list of optional project labels
+    update = true;
+  }
   if (!projectDesc.hasOwnProperty('startmode'))
     projectDesc.startmode = pd.start_mode.standard; // too petty to save/update
   if (!projectDesc.hasOwnProperty('tasklistmode'))
@@ -324,12 +329,13 @@ function writeProjectList ( loginData,projectList )  {
 
 function readProjectList ( loginData )  {
   var userProjectsListPath = getUserProjectListPath ( loginData );
-  var pList = utils.readObject ( userProjectsListPath );
+  var pList = utils.readClass ( userProjectsListPath );
   if (pList)  {
     pList.projects = [];
     if (!('startmode' in pList))
       pList.startmode = pd.start_mode.auto;
     var dirlist = fs.readdirSync ( getUserProjectsDirPath(loginData) );
+    var folderPaths = {};
     for (var i=0;i<dirlist.length;i++)
       if (dirlist[i].endsWith(projectExt))  {
         var pname = path.parse(dirlist[i]).name;
@@ -345,9 +351,20 @@ function readProjectList ( loginData )  {
             pdesc = null;
           }
         }
-        if (pdesc)
+        if (pdesc)  {
           pList.projects.push ( pdesc );
+          if (pdesc.folderPath in folderPaths)
+                folderPaths[pdesc.folderPath]++;
+          else  folderPaths[pdesc.folderPath] = 1;
+          // if (folderPaths.indexOf(pdesc.folderPath)<0)  {
+          //   pList.addFolderPath ( pdesc.folderPath,0 );
+          //   folderPaths.push    ( pdesc.folderPath );
+          // }
+        }
       }
+    pList.resetFolders();
+    for (var fpath in folderPaths)
+      pList.addFolderPath ( fpath,folderPaths[fpath] );
     writeProjectList ( loginData,pList );
   }
   return pList;
@@ -677,71 +694,25 @@ var response = null;  // must become a cmd.Response object to return
   var pList = readProjectList ( loginData );
   if (pList)  {
 
-    // delete missing projects
-    // var disk_space_change = 0.0;
-    // var del_lst = [];
-    // for (var i=0;i<pList.projects.length;i++)  {
-    //   var pDesc  = pList.projects[i];
-    //   var pName  = pDesc.name;
-    //   var jfound = -1;
-    //   for (var j=0;(j<newProjectList.projects.length) && (jfound<0);j++)
-    //     if (pName==newProjectList.projects[j].name)
-    //       jfound = j;
-    //   if (jfound<0)
-    //     del_lst.push ( [pName,pDesc] );
-    //   else  {
-    //     if (pDesc.owner.login==loginData.login)
-    //       pDesc.title = newProjectList.projects[jfound].title; // if it was renamed
-    //     newProjectList.projects[jfound] = pDesc;
-    //   }
-    // }
-    //
-    // /*
-    // for (var i=0;i<del_lst.length;i++)  {
-    //   var pName = del_lst[i][0];
-    //   var pDesc = del_lst[i][1];
-    //   var rsp   = deleteProject ( loginData,pName );
-    //   if (rsp.status!=cmd.fe_retcode.ok)
-    //     response = rsp;
-    //   else if (('owner' in pDesc) && (pDesc.owner.login==loginData.login))  {
-    //     // monitor disk space only if own projects are deleted; deleting
-    //     // a shared project is a logical, rather than physical, operation,
-    //     // which does not release disk space
-    //     if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
-    //       disk_space_change -= pList.projects[i].disk_space;
-    //   }
-    // }
-    // */
-    //
-    // for (var i=0;i<del_lst.length;i++)  {
-    //   var pName = del_lst[i][0];
-    //   var pDesc = del_lst[i][1];
-    //   if (('owner' in pDesc) && (pDesc.owner.login!=loginData.login))  {
-    //     // monitor disk space only if own projects are deleted; deleting
-    //     // a shared project is a logical, rather than physical, operation,
-    //     // which does not release disk space
-    //     if ('disk_space' in pList.projects[i])  // backward compatibility 05.06.2018
-    //       disk_space_change -= pList.projects[i].disk_space;
-    //   } else  {
-    //     var rsp = deleteProject ( loginData,pName );
-    //     if (rsp.status!=cmd.fe_retcode.ok)
-    //       response = rsp;
-    //   }
-    // }
-
     // create new projects
-    for (var i=0;i<newProjectList.projects.length;i++)
-      if (newProjectList.projects[i].owner.login=='')  {
-        var found = false;
-        var pName = newProjectList.projects[i].name;
-        for (var j=0;(j<pList.projects.length) && (!found);j++)
-          found = (pName==pList.projects[j].name);
-        if (!found)  {
-          var rsp = makeNewProject ( loginData,newProjectList.projects[i] );
-          if (rsp.status!=cmd.fe_retcode.ok)
-            response = rsp;
-        }
+    for (var i=0;i<newProjectList.projects.length;i++)  {
+      var k = -1;
+      var pName = newProjectList.projects[i].name;
+      for (var j=0;(j<pList.projects.length) && (k<0);j++)
+        if (pName==pList.projects[j].name)
+          k = j;
+      if ((k<0) && (newProjectList.projects[i].owner.login==''))  {
+        var rsp = makeNewProject ( loginData,newProjectList.projects[i] );
+        if (rsp.status!=cmd.fe_retcode.ok)
+          response = rsp;
+      } else if ((k>=0) &&
+           (newProjectList.projects[i].folderPath!=pList.projects[k].folderPath))  {
+        // project folder changed, update project metafile
+        var pData  = readProjectData ( loginData,pName );
+        pData.desc = newProjectList.projects[i];
+        writeProjectData ( loginData,pData,true );
       }
+    }
 
     if (!response)  {
       //var userProjectsListPath = getUserProjectListPath ( loginData );
