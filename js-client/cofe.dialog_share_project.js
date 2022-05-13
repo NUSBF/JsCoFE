@@ -31,7 +31,7 @@ function shareProject ( projectDesc,callback_func )  {
     new MessageBox ( 'Share Project',
                      'Only Project owner (<b>' + author +
                      '</b>) can share this Project.',
-                     'msg_excl_yellow' );
+                     'msg_information');
     callback_func ( null );
     return;
   }
@@ -124,7 +124,7 @@ function shareProject ( projectDesc,callback_func )  {
                         new MessageBox ( 'Share Project',
                               '<h2>Sharing request denied</h2>' +
                               '<i>Only project owner can change sharing.</i>',
-                              'msg_excl_yellow' );
+                              'msg_excl' );
                         callback_func ( null );
                       }
                     },null,null );

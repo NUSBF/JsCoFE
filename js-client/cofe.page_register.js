@@ -190,7 +190,7 @@ function RegisterPage ( sceneId )  {
 
       new MessageBox ( 'Registration',
          'Registration of new user cannot be done due to the following:<p>' +
-          msg + 'Please provide all needful data and try again.' );
+          msg + 'Please provide all needful data and try again.', 'msg_information' );
 
     } else  {
 
@@ -224,7 +224,7 @@ function RegisterPage ( sceneId )  {
                   '<li><b>Do not register again!</i> Instead, use the ' +
                   '<i>"Forgotten password"</i> option</li>' +
                   '<li>Write to CCP4 if recovering your account is not successful ' +
-                  'after several attempts.</li></ol>' );
+                  'after several attempts.</li></ol>', 'msg_information' );
             return true;
 
           case fe_retcode.existingLogin:
@@ -233,11 +233,11 @@ function RegisterPage ( sceneId )  {
               'If this is your name: Go back to Login Page and use button ' +
               '<i>Forgotten password</i><p>' +
               'If you try to register a new user: Please choose a different ' +
-              'login name.' );
+              'login name.', 'msg_excl' );
             return true;
 
           case fe_retcode.regFailed:
-            new MessageBox ( 'Registration Failed',response.message );
+            new MessageBox ( 'Registration Failed',response.message, 'msg_error' );
             return true;
 
           default: ;

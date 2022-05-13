@@ -118,7 +118,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
                      'New project cannot be created due to the following:<p>' +
                       msg.join('<br>') +
                       '<p>Please provide all needful data in correct format ' +
-                      'and try again.' );
+                      'and try again.', 'msg_warning');
           } else  {
 
             var pspecs = {

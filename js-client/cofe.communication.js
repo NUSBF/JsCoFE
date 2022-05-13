@@ -156,7 +156,7 @@ function checkVersionMatch ( response,localServer_bool )  {
             appVersion() + '</b>, running<br>on the server.<p>' + whattodo +
             '.<p>You may use ' + appName() + ' by using the direct web-link, ' +
             'however,<br><i>Coot</i> and other graphical applications will ' +
-            'not be available.'
+            'not be available.', 'msg_excl'
         );
         return false;
       }
@@ -172,9 +172,9 @@ function checkVersionMatch ( response,localServer_bool )  {
           'end the current login<br>' +
           'session. Please login again after update; your projects and data should<br>' +
           'be safe, however, you may find that you cannot clone some old tasks.<hr/></center>',
-          'Update',function(){
+          'Update', function(){
             location.reload();
-          },true );
+          },true,  'msg_excl' );
       return false;
     }
   }
@@ -200,7 +200,7 @@ var json = null;
       '<p>Try repeating your actions making sure that your keyboard is on ' +
       'English register. If this does not help, close this page or tab in ' +
       'your browser and log on ' + appName() + ' again. Ultimately, contact ' +
-      appName() + ' support.</div>' );
+      appName() + ' support.</div>', 'msg_error' );
   }
   return json;
 }

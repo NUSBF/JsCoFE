@@ -209,7 +209,7 @@ JobDialog.prototype.statusLine = function()  {
 JobDialog.prototype.displayInputErrors = function ( input_msg )  {
 //  if (input_msg.startsWith('#'))  {
   if (input_msg[0]=='#')  {
-    new MessageBox ( 'Input errors',input_msg.substring(1) );
+    new MessageBox ( 'Input errors',input_msg.substring(1), 'msg_error' );
   } else  {
     // alert ( input_msg );
     var errlst  = input_msg.split('|');
@@ -223,7 +223,7 @@ JobDialog.prototype.displayInputErrors = function ( input_msg )  {
       new MessageBox ( 'Input errors',
         'The following errors have been encountered at processing input parameters:' +
         '<p><ul><li>' + errlst1.join('</li><li>') +
-        '</li></ul><p>Please adjust input parameters as appropriate.' );
+        '</li></ul><p>Please adjust input parameters as appropriate.', 'msg_error' );
   }
 }
 
@@ -690,7 +690,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
         var avail_key = dlg.task.isTaskAvailable();
         if (avail_key[0]!='ok')  {
 
-          new MessageBox ( 'The task cannot be run',avail_key[2] );
+          new MessageBox ( 'The task cannot be run',avail_key[2], 'msg_warning' );
 
         } else  {
 
@@ -716,7 +716,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       'CPU widgets in the top-right corner of the screen.<p>' +
                       '<i><b>Recommended action:</b></i> export an old project and then<br>' +
                       'delete it from the list. You will be able to re-import that<br>' +
-                      'project later using the file exported.' );
+                      'project later using the file exported.', 'msg_excl');
                   return;
                 }
                 if ((ration.cpu_day>0.0) && (ration.cpu_day_used>=ration.cpu_day))  {
@@ -729,7 +729,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       'CPU widgets in the top-right corner of the screen. You<br>' +
                       'may need to push "Reload" button in the toolbar after<br>' +
                       'periods of inactivity to get updated readings.<p>' +
-                      '<i><b>Recommended action:</b></i> run the job later.' );
+                      '<i><b>Recommended action:</b></i> run the job later.', 'msg_excl' );
                   return;
                 }
                 if ((ration.cpu_month>0.0) && (ration.cpu_month_used>=ration.cpu_month))  {
@@ -742,7 +742,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       'CPU widgets in the top-right corner of the screen. You<br>' +
                       'may need to push "Reload" button in the toolbar after<br>' +
                       'periods of inactivity to get updated readings.<p>' +
-                      '<i><b>Recommended action:</b></i> run the job later.' );
+                      '<i><b>Recommended action:</b></i> run the job later.', 'msg_excl');
                   return;
                 }
               }
@@ -880,7 +880,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                      '" is not found on server</h3>' +
                   'Project "' + dlg.tree.projectData.desc.name +
                      '" was shared with you, please check<br>' +
-                  'whether it was deleted by project owner.'
+                  'whether it was deleted by project owner.', 'msg_error'
               );
               dlg.tree.emitSignal ( cofe_signals.makeProjectList,rdata );
             }

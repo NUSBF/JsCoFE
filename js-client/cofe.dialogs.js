@@ -82,7 +82,7 @@ function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
 
 function MessageAJAXFailure ( title,jqXHR,exception )  {
 
-  var msg = '<h2>Communication errors</h2><p><i>';
+  var msg = '<h3>Communication errors</h3><p><i>';
   if (!jqXHR)  {
     msg += 'Unknown error.';
   } else if (jqXHR.status === 0) {
@@ -104,52 +104,52 @@ function MessageAJAXFailure ( title,jqXHR,exception )  {
   new MessageBox ( title,msg + '</i><p>' +
     'This may be an intermittent error due to a poor internet connection,<br>' +
     'however, persistent appearance of this message is likely to indicate<br>' +
-    appName() + ' failure or temporary shutdown.','msg_error' );
+    appName() + ' failure or temporary shutdown.', 'msg_information' );
 
 }
 
 
 function MessageNoProjectDataError ( title,message )  {
-var msg = '<h2>General failure: project metadata not found on server</h2>';
+var msg = '<h3>General failure: project metadata not found on server</h3>';
   if (message.length>0)
     msg += 'Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
     '<p>This is an internal error, and the respective maintener ' +
-    'has been informed.<p>Sorry and please come back later!','msg_error' );
+    'has been informed.<p>Sorry and please come back later!', 'msg_warning');
 }
 
 function MessageDataWriteError ( title,message )  {
-var msg = '<h2>General failure: data cannot be written</h2>';
+var msg = '<h3>General failure: data cannot be written</h3>';
   if (message.length>0)
     msg += 'Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
     '<p>This is an internal error, and the respective maintener ' +
-    'has been informed.<p>Sorry and please come back later!','msg_error' );
+    'has been informed.<p>Sorry and please come back later!', 'msg_error');
 }
 
 function MessageMkDirError ( title,message )  {
-var msg = '<h2>General failure: cannot create a directory.</h2>';
+var msg = '<b>General failure: cannot create a directory.</b>';
   if (message.length>0)
     msg += '<p>Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
     '<p>This is an internal error, and the respective maintener ' +
-    'has been informed.<p>Sorry and please come back later!','msg_error' );
+    'has been informed.<p>Sorry and please come back later!', 'msg_error');
 }
 
 function MessageDataReadError ( title,message )  {
-var msg = '<h2>General failure: data cannot be read.</h2>';
+var msg = '<b>General failure: data cannot be read.</b>';
   if (message.length>0)
     msg += '<p>Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
     '<p>This is an internal error, and the respective maintener ' +
-    'has been informed.<p>Sorry and please come back later!','msg_error' );
+    'has been informed.<p>Sorry and please come back later!', 'msg_error');
 }
 
 function MessageNotLoggedIn ( title )  {
   if (__current_page && (['LogoutPage','LoginPage'].indexOf(__current_page._type)>=0))
     return;
   new MessageBox ( title,
-    '<div style="width:500px"><h2>User not logged in.</h2>' +
+    '<div style="width:500px"><b>User not logged in.</b>' +
     '<p>This may result from duplicate logging (either explicitly in another ' +
     'browser or machine, or implicitly by, e.g., copy/pasting URL in another ' +
     'browser tab or window), or using forward/back/reload buttons in your ' +
@@ -158,22 +158,22 @@ function MessageNotLoggedIn ( title )  {
     report_problem(
       'CCP4 Cloud Report: D0001',
       'Report code: D0001','' ) +
-    '.</div>','msg_stop' );
+    '.</div>' );
   return;
 }
 
 function MessageUploadErrors ( title,message )  {
-var msg = '<h2>General failure: upload errors.</h2>';
+var msg = '<b>General failure: upload errors.</b>';
   if (message.length>0)
     msg += '<p>Server replied: <i>' + message + '</i>';
   new MessageBox ( title,msg +
     '<p>This is an internal error, and the respective maintener ' +
-    'has been informed.<p>Sorry and please come back later!','msg_error' );
+    'has been informed.<p>Sorry and please come back later!', 'msg_error');
 }
 
 function MessageNoJobDir ( title )  {
   new MessageBox ( title,
-    '<div style="width:500px"><h2>Job directory not found on server.</h2>' +
+    '<div style="width:500px"><b>Job directory not found on server.</b>' +
     '<p>This may result from duplicate logging (either explicitly in another ' +
     'browser or machine, or implicitly by, e.g., copy/pasting URL in another' +
     'browser tab or window), or using forward/back/reload buttons in your ' +
@@ -182,19 +182,19 @@ function MessageNoJobDir ( title )  {
     report_problem(
       'CCP4 Cloud Report: D0002',
       'Report code: D0002','' ) +
-    '.</div>','msg_error' );
+    '.</div>' );
 }
 
 function MessageProxyError ( title )  {
   new MessageBox ( title,
-    '<h2>Proxy server error.</h2>' +
+    '<b>Proxy server error.</b>' +
     '<p>Usually, this means that connection with ' + appName() +
     ' is lost.<br>Please check your internet connection. ' +
     '<p>If problem persists, please report to ' +
     report_problem(
       'CCP4 Cloud Report: D0003',
       'Report code: D0003','' ) +
-    '.','msg_error' );
+    '.' );
 }
 
 function MessageProjectAccess ( title )  {
@@ -215,14 +215,14 @@ function MessageServerInactive()  {
     '<div style="width:500px"><h2>' + appName() + ' Inactive</h2>' +
     '<p>' + appName() + ' is inactive, which may be because of ' +
     'starting up, shutting down or being temporary suspended for maintenance.' +
-    '<p>Please come back later.</div>' );
+    '<p>Please come back later.</div>', 'msg_warning');
 }
 
 function MessageFileNotFound ( message )  {
   new MessageBox ( 'File not found',
     '<div style="width:500px"><h2>File not found</h2>' +
-    '<p>' + message +
-    '<p>Please come back later.</div>' );
+    '<p>' + message + 
+    '<p>Please come back later.</div>', 'msg_error');
 }
 
 function MessageUnknownError ( title,message )  {
@@ -232,5 +232,5 @@ function MessageUnknownError ( title,message )  {
     report_problem(
       'CCP4 Cloud Report: D0005',
       'Report code: D0005','' ) +
-    '. Sorry and please come back later!</div>' );
+    '. Sorry and please come back later!</div>', 'msg_error' );
 }

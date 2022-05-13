@@ -133,7 +133,7 @@ function ImportPDBDialog ( onOk_func )  {
             } else
               new MessageBox ( 'Invalid PDB code(s)',
                   'The following PDB codes:<p><b>' + err_list + '</b><p>' +
-                  'are invalid. Please revise.' );
+                  'are invalid. Please revise.', 'msg_error' );
           } else
             $(this).dialog("close");
         }

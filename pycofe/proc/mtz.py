@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.05.22   <--  Date of Last Modification.
+#    18.01.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -14,7 +14,7 @@
 #  **** Content :  MTZ HANDLING UTILS
 #      ~~~~~~~~~
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
 #
 # ============================================================================
 #
@@ -449,7 +449,7 @@ def hkl_format(path, vstream=None):
                 return 'mtz_merged'
 
         istream.seek(0)
-        rec_data = rec_xds.search ( istream.read(256).decode() )
+        rec_data = rec_xds.search ( istream.read(256) )
         if rec_data:
             merge = rec_data.group(1)
             if merge == 'TRUE':

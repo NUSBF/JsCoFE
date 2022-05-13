@@ -11,7 +11,7 @@ Ice-ring detection
 If the background was poorly estimated during data integration, ice rings may become visible as distinct peaks in the distribution of intensity against resolution. The ice rings occur at specific resolutions, as shown below, and, in case of difficulties with structure solution, the corresponding reflections may need to be removed from the dataset.
 
 .. image:: images/ice_rings.jpeg
-   :target: http://www.auspex.de/pathol/#1
+   :target: https://auspex.physnet.uni-hamburg.de/pathol/#1
    :align: center
 
 Image is taken from http://www.auspex.de/
@@ -25,7 +25,7 @@ Beamstop
 Reflections with intensity or amplitude values near 0 at low resolution indicate that the beam stop was not masked or not masked out completely at integration. The correct beam stop mask should be applied during data processing or low resolution cutoff should be used.
 
 .. image:: images/beamstop.jpeg
-   :target: http://www.auspex.de/pathol/#2
+   :target: https://auspex.physnet.uni-hamburg.de/pathol/#2
    :align: center
    :scale: 70 %
 
@@ -40,7 +40,7 @@ Manhattan Skyline
 This is a feature peculiar to datasets processed with HKL/SCALEPACK software, and does not require corrective actions.
 
 .. image:: images/manhattan.png
-   :target: http://www.auspex.de/pathol/#3
+   :target: https://auspex.physnet.uni-hamburg.de/pathol/#3
    :align: center
    :scale: 30 %
 
@@ -55,7 +55,7 @@ Missing Rings
 If entire resolution ranges, corresponding to spheres in reciprocal space and rings on an image around the beam stop, are missing, this is typically due to the ice-rings masked-out. In other cases, this feature may need additional investigation.
 
 .. image:: images/missing_rings.png
-   :target: http://www.auspex.de/pathol/#4
+   :target: https://auspex.physnet.uni-hamburg.de/pathol/#4
    :align: center
    :scale: 30 %
 
@@ -70,7 +70,7 @@ Missing Line
 A missing line between 5.6 and 6.0 Fobs/σ(Fobs) is, most probably, due to a bug in the lookup table in CTRUNCATE and TRUNCATE, respectively.
 
 .. image:: images/missing_line.png
-   :target: http://www.auspex.de/pathol/#5
+   :target: https://auspex.physnet.uni-hamburg.de/pathol/#5
    :align: center
 
 Image is taken from http://www.auspex.de/
@@ -85,7 +85,7 @@ Multiplicity Ladder
 This feature indicates the discrete character of multiplicity in the data, which sometimes manifests itself at low resolution. This is not a pathology and does not require any corrective actions. 
 
 .. image:: images/multiplicity.png
-   :target: http://www.auspex.de/pathol/#6
+   :target: https://auspex.physnet.uni-hamburg.de/pathol/#6
    :align: center
    :scale: 30 %
 
@@ -100,7 +100,7 @@ Separation of Distributions
 These effects indicate deviations from ideal distribution of Wilson type, which may require various manipulations (such as resolution cut-offs) in severe cases.
 
 .. image:: images/separation.png
-   :target: http://www.auspex.de/pathol/#7
+   :target: https://auspex.physnet.uni-hamburg.de/pathol/#7
    :align: center
 
 Image is taken from http://www.auspex.de/
@@ -114,7 +114,7 @@ Background Misestimation
 Systematically high reflection intensities in the absence of weak reflections indicate an incorrect background estimation. This can be a consequence of a suboptimal background estimation during integration, or a stem from a very high background during measurement, for example, when the loop, holding the crystal, was too large, which gave a diffuse scattering from the cooled liquid, in which the crystal sits.
 
 .. image:: images/background.png
-   :target: http://www.auspex.de/pathol/#8
+   :target: https://auspex.physnet.uni-hamburg.de/pathol/#8
    :align: center
 
 Image is taken from http://www.auspex.de/
@@ -128,7 +128,7 @@ Terracing
 In case of generally low reflection data, the discrete character of intensities, amplitudes or sigmas may become visible in plots in form of 'terraced' values. This effect is different for different data processing software, and is normal.
 
 .. image:: images/lines.png
-   :target: http://www.auspex.de/pathol/#9
+   :target: https://auspex.physnet.uni-hamburg.de/pathol/#9
    :align: center
    :scale: 40 %
 
