@@ -62,11 +62,11 @@ function TaskDocDev()  {
            type     : 'combobox',
            label    : 'Documentation theme:',
            tooltip  : 'Choose documentation theme',
-           range    : ['haiku|HAIKU',
+           range    : ['material|MATERIAL',
+                       'haiku|HAIKU',
                        'agogo|AGOGO',
                        'insegel|INSEGEL',
                        'karma|KARMA',
-                       'material|MATERIAL',
                        'insipid|INSIPID'
                       ],
            value    : 'haiku',
