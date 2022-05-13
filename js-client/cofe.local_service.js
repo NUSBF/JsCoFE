@@ -66,7 +66,7 @@ function checkLocalService ( callback_func )  {
               '<h2>Cannot connect to Local Service</h2>' +
               'You will not be able to use Coot and other local applications.<p>' +
               '<i>Local Service was either not launched or has terminated because ' +
-              'of error.<br>Please contact ' + appName() + ' maintainer.<i>' );
+              'of error.<br>Please contact ' + appName() + ' maintainer.<i>', 'msg_warning');
             //return false;  // issue standard AJAX failure message
           }
         } else if (response.status!=nc_retcode.ok)  {
@@ -77,7 +77,7 @@ function checkLocalService ( callback_func )  {
               '<h2>Local Service Is Not Available</h2>' +
               'You will not be able to use Coot and other local applications.<p>' +
               '<i>Local Service was either not launched or has terminated because ' +
-              'of error.<br>Please contact ' + appName() + ' maintainer.<i>' );
+              'of error.<br>Please contact ' + appName() + ' maintainer.<i>', 'msg_warning');
           }
         } else  {
           __client_version = response.version;
@@ -134,7 +134,7 @@ function checkLocalService ( callback_func )  {
           callback_func ( 0 );
       } else  {
         new MessageBox ( 'Server not Configured',
-            'Server not configured, contact administrator.' );
+            'Server not configured, contact administrator.', 'msg_warning');
         callback_func ( 1 );
       }
       return true;

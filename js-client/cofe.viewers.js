@@ -26,10 +26,10 @@ function rvapi_rsviewer ( jobId,title,rlpFilePath,mapFilePath )  {
 
   if (!__current_page)  {
     new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
-                     'please contact ' + appName() + ' developer.' );
+                     'please contact ' + appName() + ' developer.', 'msg_error' );
   } else if (__current_page._type!='ProjectPage')  {
     new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
-                     'This is a bug, please contact ' + appName() + ' developer.' );
+                     'This is a bug, please contact ' + appName() + ' developer.', 'msg_error' );
   } else  {
     var task = __current_page.getJobTree().getTask ( jobId );
     if (task)  {
@@ -38,7 +38,7 @@ function rvapi_rsviewer ( jobId,title,rlpFilePath,mapFilePath )  {
       //startRSViewer ( title,rlpFilePath,mapFilePath );
     } else  {
       new MessageBox ( 'Task not found','Project Task not found. This is a bug, ' +
-                       'please contact ' + appName() + ' developer.' );
+                       'please contact ' + appName() + ' developer.', 'msg_error' );
     }
   }
 
@@ -51,10 +51,10 @@ function rvapi_umviewer ( jobId,title,xyzFilePath,mapFilePath,dmapFilePath )  {
 
   if (!__current_page)  {
     new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
-                     'please contact ' + appName() + ' developer.' );
+                     'please contact ' + appName() + ' developer.', 'msg_error' );
   } else if (__current_page._type!='ProjectPage')  {
     new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
-                     'This is a bug, please contact ' + appName() + ' developer.' );
+                     'This is a bug, please contact ' + appName() + ' developer.', 'msg_error' );
   } else  {
     var task = __current_page.getJobTree().getTask ( jobId );
     if (task)  {
@@ -67,7 +67,7 @@ function rvapi_umviewer ( jobId,title,xyzFilePath,mapFilePath,dmapFilePath )  {
       startUglyMol ( title,xyz_uri,'',map_uri,dmap_uri,null );
     } else  {
       new MessageBox ( 'Task not found','Project Task not found. This is a bug, ' +
-                       'please contact ' + appName() + ' developer.' );
+                       'please contact ' + appName() + ' developer.', 'msg_error' );
     }
   }
 

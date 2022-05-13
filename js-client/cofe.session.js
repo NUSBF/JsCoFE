@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.05.22   <--  Date of Last Modification.
+ *    19.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User session management
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2022
+ *  (C) E. Krissinel, A. Lebedev 2020-2021
  *
  *  =================================================================
  *
@@ -37,11 +37,7 @@ function startSession ( sceneId,dev_switch )  {
       __url_parameters[p[0]] = p[1];
     }
     // alert ( JSON.stringify(__url_parameters) );
-    var lpath = window.location.pathname.substr(1).split('/');  // skip first slash
-    var wpath = '/';
-    if (lpath.length>0)
-      wpath = '/' + lpath[0] + '/';
-    window.history.replaceState ( {},document.title,wpath );
+    window.history.replaceState ( {},document.title,'/' );
   }
 
   checkLocalService ( function(rc){
@@ -187,7 +183,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                       } else  {
                         new MessageBox ( 'Get NC Info Error',
                           'Unknown error: <b>' + response.status + '</b><p>' +
-                          'when trying to fetch Client NC data.' );
+                          'when trying to fetch Client NC data.', 'msg_error' );
                       }
                       return true;
                     }

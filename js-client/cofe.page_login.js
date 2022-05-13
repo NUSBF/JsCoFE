@@ -277,7 +277,7 @@ function LoginPage ( sceneId )  {
     else
       new MessageBox ( 'New user registration',
         '<p>In order to register as a new user, please contact ' + appName() +
-        '<br>admin or maintainer in your organisation.' );
+        '<br>admin or maintainer in your organisation.', 'msg_information' );
   });
 
   pwd_btn.addOnClickListener ( function(){
@@ -286,7 +286,7 @@ function LoginPage ( sceneId )  {
     else
       new MessageBox ( 'Password recovery',
         '<p>In order to reset your password, please contact ' + appName() +
-        '<br>admin or maintainer in your organisation.' );
+        '<br>admin or maintainer in your organisation.', 'msg_information' );
   });
 
   login_btn.addOnClickListener ( function(){
@@ -310,7 +310,7 @@ function LoginPage ( sceneId )  {
 
       new MessageBox ( 'Login',
          'Login cannot be done due to the following reasons:<p>' +
-          msg + '<p>Please provide all needful data and try again' );
+          msg + '<p>Please provide all needful data and try again', 'msg_excl' );
 
     } else  {
 

@@ -31,7 +31,7 @@
 function FacilityUserDialog ( meta,onReturn_fnc )  {
 
   if (!meta.facility)  {
-    new MessageBox ( 'Error','No facility to update.' );
+    new MessageBox ( 'Error','No facility to update.', 'msg_error' );
     return;
   }
 
@@ -78,7 +78,7 @@ function FacilityUserDialog ( meta,onReturn_fnc )  {
           var uid = login_inp.getValue().trim();
           var pwd = pwd_inp  .getValue().trim();
           if (uid=='')  {
-            new MessageBox ( 'Error','User ID cannot be blank' );
+            new MessageBox ( 'Error','User ID cannot be blank', 'msg_error' );
           } else  {
             meta.uid = uid;
             meta.pwd = pwd;
@@ -162,13 +162,13 @@ function FacilityCheckDialog ( task,onDone_fnc )  {
           if (data.status==fe_retcode.readError)
             new MessageBox ( 'Errors','&nbsp;<br><b>File read errors.</b><p>' +
                   '<i>This is a server-side error caused by program bug<br>' +
-                  'or hardware malfunction. Apologies.</i>' );
+                  'or hardware malfunction. Apologies.</i>', 'msg_error');
           else if (data.status==fe_retcode.fileNotFound)
             new MessageBox ( 'Errors','&nbsp;<br><b>File not found.</b><p>' +
                   '<i>This is a server-side error caused by program bug<br>' +
-                  'or hardware malfunction. Apologies.</i>' );
+                  'or hardware malfunction. Apologies.</i>', 'msg_error' );
           else if ((data.status!=fe_retcode.ok) && (data.status!=fe_retcode.askPassword))
-            new MessageBox ( 'Errors','&nbsp;<br><b>' + data.status + '</b><br>&nbsp;' );
+            new MessageBox ( 'Errors','&nbsp;<br><b>' + data.status + '</b><br>&nbsp;', 'msg_error' );
           onDone_fnc(data);
           /*
           if ((data.status==fe_retcode.ok) || (data.status==fe_retcode.askPassword))

@@ -216,7 +216,7 @@ var msg = '';
   if (msg.length>0)
     new MessageBox ( 'Annotation not complete',
                      'Please complete annotation of imported data item(s):<ul>' +
-                     msg + '</ul' );
+                     msg + '</ul', 'msg_warning' );
 
   return (msg.length<=0);
 

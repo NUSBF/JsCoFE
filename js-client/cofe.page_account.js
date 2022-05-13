@@ -360,7 +360,7 @@ function AccountPage ( sceneId )  {
 
       new MessageBox ( 'My Account Update',
          'Account Update cannot be done due to the following:<p>' +
-          msg + 'Please provide all needful data and try again' );
+          msg + 'Please provide all needful data and try again', 'msg_information');
 
     } else  {
 
@@ -385,14 +385,14 @@ function AccountPage ( sceneId )  {
                       function(response){
         if (response)
           new MessageBoxW ( 'My Account',response +
-            '<p>You are logged out now, please login again.',0.5 );
+            '<p>You are logged out now, please login again.',0.5, 'msg_excl');
         else
           new MessageBox ( 'My Account',
             'Dear ' + userData.name +
             ',<p>Your account has been successfully updated, and ' +
             'notification<br>sent to your e-mail address:<p><b><i>' +
             userData.email + '</i></b>.' +
-            '<p>You are logged out now, please login again.' );
+            '<p>You are logged out now, please login again.', 'msg_information');
         stopSessionChecks();
         makeLoginPage ( sceneId );
       },null,'persist' );
@@ -432,7 +432,7 @@ function AccountPage ( sceneId )  {
 
       if (pswd_inp.getValue().length<=0)  {
         new MessageBox ( 'Delete My Account',
-                         'Please provide password and try again' );
+                         'Please provide password and try again', 'msg_excl' );
         return false;  // close dialog
       } else  {
 
@@ -474,7 +474,7 @@ function AccountPage ( sceneId )  {
       window.setTimeout ( function(){
         new MessageBox ( 'Update Account Data',
           'Please check your account settings:<ul>' + msg + '</ul>' +
-          'To confirm your changes, push <b>Save changes</b> button.' );
+          'To confirm your changes, push <b>Save changes</b> button.', 'msg_excl' );
       },0);
     user_inp    .setValue  ( userData.name     );
     email_inp   .setValue  ( userData.email    );

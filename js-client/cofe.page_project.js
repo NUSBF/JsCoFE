@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.05.22   <--  Date of Last Modification.
+ *    11.11.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  ==========================================================================
  *
@@ -132,7 +132,7 @@ function ProjectPage ( sceneId )  {
             new ProjectSettingsDialog ( self.jobTree,function(){
               self.jobTree.saveProjectData ( [],[],true, null );
             });
-      else  new MessageBox ( 'No Project','No Project loaded' );
+      else  new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
     });
 
     self.addMenuItem ( 'Share Project','share',function(){
@@ -410,7 +410,7 @@ ProjectPage.prototype.start_action = function ( action_key )  {
     new MessageBox ( 'Communication delays',
                      'Communication delays, please wait a moment.<br>' +
                      'If this message persists, reload Project using<br>' +
-                     '<i>Refresh</i> button in the vertical toolbar.' );
+                     '<i>Refresh</i> button in the vertical toolbar.', 'msg_system' );
     console.log ( ' >>>> action requested: ' + action_key + ', pending: ' + this.pending_act );
   }
   return false;
@@ -552,7 +552,7 @@ ProjectPage.prototype.archiveJobs = function() {
                                 'Empty selection',
                                 '<h2>Empty selection</h2>' +
                                 'At least one checkbox must be checked<br>' +
-                                'for acrhiving.'
+                                'for acrhiving.', 'msg_warning'
                             );
                             self.end_action();
                           } else  {
@@ -566,7 +566,7 @@ ProjectPage.prototype.archiveJobs = function() {
                                 new MessageBox (
                                   'Project updating',
                                   '<h3>Project updating</h3>Project update in progress, please ' +
-                                  'repeat archiving operation later.'
+                                  'repeat archiving operation later.', 'msg_system'
                                 );
                               } else  {
                                 // self._set_button_state();
@@ -597,7 +597,7 @@ ProjectPage.prototype.archiveJobs = function() {
             new MessageBox (
               'Project updating',
               '<h3>Project updating</h3>Project update in progress, please ' +
-              'repeat archiving operation later.'
+              'repeat archiving operation later.', 'msg_system'
             );
           } else  {
             // self._set_button_state();
@@ -735,7 +735,7 @@ ProjectPage.prototype.share_project = function()  {
       });
     }(this))
   } else
-    new MessageBox ( 'No Project','No Project loaded' );
+    new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
 }
 
 
@@ -884,7 +884,7 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
           '<h2>Intermittent Connection Problems</h2>' +
           'Try to reload the Project by pushing refresh button ' +
           'in the toolbar. If problem persists, check your ' +
-          'Internet connection.' );
+          'Internet connection.', 'msg_system' );
     } else
       makeProjectListPage ( sceneId );
     return false;
@@ -904,7 +904,6 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
   this._set_button_state();
 
   __current_project = job_tree.projectData.desc.name;
-  __current_folder  = job_tree.projectData.desc.folderPath;
 
   (function(self){
     job_tree.addSignalHandler ( cofe_signals.jobDialogOpened,function(data){
@@ -1142,7 +1141,7 @@ ProjectPage.prototype.makeDock = function()  {
                 icon_uri +
                 '" width="26" height="24"><span style="vertical-align:middle">&nbsp;&nbsp;<b>' +
                 title + '</b></span></div><p>has been retired and cannot be added ' +
-                'to the Project. You may remove this task from the dock.</div>' );
+                'to the Project. You may remove this task from the dock.</div>', 'msg_warning' );
 
           } else  {
 
@@ -1234,10 +1233,10 @@ function rvapi_cloneJob ( jobId )  {
 
   if (!__current_page)  {
     new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
-                     'please contact ' + appName() + ' developer.' );
+                     'please contact ' + appName() + ' developer.', 'msg_error' );
   } else if (__current_page._type!='ProjectPage')  {
     new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
-                     'This is a bug, please contact ' + appName() + ' developer.' );
+                     'This is a bug, please contact ' + appName() + ' developer.', 'msg_error' );
   } else  {
     __current_page.cloneJobWithSuggestedParameters ( jobId );
   }

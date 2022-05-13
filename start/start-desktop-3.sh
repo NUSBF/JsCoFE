@@ -45,7 +45,7 @@ echo ""
 
 #killall node
 
-node --trace-warnings ./js-server/desktop.js ./config/conf.desktop-tutorials.json
+node ./js-server/desktop.js ./config/conf.desktop-tutorials.json
 #while [ $? -eq 212 ]
 #do
 #    node ./js-server/desktop.js ./config/conf.desktop.json

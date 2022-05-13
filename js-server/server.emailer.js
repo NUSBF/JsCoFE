@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.04.22   <--  Date of Last Modification.
+ *    27.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -60,71 +60,60 @@ var transporter = nodemailer.createTransport ( emailer );
 }
 
 function send_telnet ( to,subject,message )  {
-  try {
-    var emailer = conf.getEmailerConfig();
-    var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
+var emailer = conf.getEmailerConfig();
+var telnet  = utils.spawn ( 'telnet',[emailer.host,emailer.port],{} );
 
-      if (telnet)  {
+  telnet.stdin.setEncoding ( 'utf-8' );
 
-        telnet.stdin.setEncoding ( 'utf-8' );
+  (function(t){
 
-        (function(t){
+    var finish = false;
+    t.on ( 'exit',function(code){
+      finish = true;
+    });
 
-          var finish = false;
-          t.on ( 'exit',function(code){
-            finish = true;
-          });
+    t.on ( 'error',function(e){
+      log.error ( 2,'Emailer error: cannot send e-mail' );
+      log.error ( e.stack || e );
+    });
 
-          t.on ( 'error',function(e){
-            log.error ( 2,'Emailer error: cannot send e-mail' );
+    var stage = 0;
+
+    t.stdout.on ( 'data', function(data){
+      if ((!finish) && (stage>0))  {
+        var msg = '';
+        switch (stage)  {
+          case 1  : msg = 'HELO '         + emailer.host;             break;
+          case 2  : msg = 'MAIL FROM: <'  + emailer.emailFrom + '>';  break;
+          case 3  : msg = 'RCPT TO: <'    + to + '>';                 break;
+          case 4  : msg = 'DATA';                                     break;
+          case 5  : msg = 'From: '        + emailer.headerFrom +
+                          '\nTo: '        + to      +
+                          '\nSubject: '   + subject +
+                          '\nMIME-Version: 1.0'     +
+                          '\nContent-Type: text/html; charset="ISO-8859-1"' +
+                          '\n\n<html><body>\n'      +
+                          message                   +
+                          '\n</body></html>\n'      +
+                          '.';
+                    break;
+          case 6  : msg = 'QUIT';  break;
+          default : ;
+        }
+        if (msg)  {
+          try {
+            t.stdin.write ( msg + '\n' );
+          } catch (e)  {
+            log.error ( 3,'Emailer error: cannot send e-mail' );
             log.error ( e.stack || e );
-          });
-
-          var stage = 0;
-
-          t.stdout.on ( 'data', function(data){
-            if ((!finish) && (stage>0))  {
-              var msg = '';
-              switch (stage)  {
-                case 1  : msg = 'HELO '         + emailer.host;             break;
-                case 2  : msg = 'MAIL FROM: <'  + emailer.emailFrom + '>';  break;
-                case 3  : msg = 'RCPT TO: <'    + to + '>';                 break;
-                case 4  : msg = 'DATA';                                     break;
-                case 5  : msg = 'From: '        + emailer.headerFrom +
-                                '\nTo: '        + to      +
-                                '\nSubject: '   + subject +
-                                '\nMIME-Version: 1.0'     +
-                                '\nContent-Type: text/html; charset="ISO-8859-1"' +
-                                '\n\n<html><body>\n'      +
-                                message                   +
-                                '\n</body></html>\n'      +
-                                '.';
-                          break;
-                case 6  : msg = 'QUIT';  break;
-                default : ;
-              }
-              if (msg)  {
-                try {
-                  t.stdin.write ( msg + '\n' );
-                } catch (e)  {
-                  log.error ( 3,'Emailer error: cannot send e-mail' );
-                  log.error ( e.stack || e );
-                  finish = false;
-                }
-              }
-            }
-            stage += 1;
-          });
-
-        }(telnet));
-
-      } else {
-        log.warning ( 6,'telnet is not found, emailer will not work' );
+            finish = false;
+          }
+        }
       }
+      stage += 1;
+    });
 
-  } catch (e)  {
-    log.error ( 6,'exception while using telnet' );
-  }
+  }(telnet));
 
   return;
 
@@ -132,27 +121,20 @@ function send_telnet ( to,subject,message )  {
 
 
 function send_sendmail ( to,subject,message )  {
-  try {
-    var emailer  = conf.getEmailerConfig();
-    var sendmail = utils.spawn ( 'sendmail',[to],{} );
-      if (sendmail)  {
-        sendmail.stdin.setEncoding('utf-8');
-        // sendmail.stdout.pipe(process.stdout);
-        sendmail.stdin.write (
-          'From: '        + emailer.headerFrom +
-          '\nSubject: '   + subject +
-          '\nMIME-Version: 1.0'     +
-          '\nContent-Type: text/html; charset="ISO-8859-1"' +
-          '\n\n<html><body>\n'      +
-          message                   +
-          '\n</body></html>\n'
-        );
-        sendmail.stdin.end();
-      } else
-        log.warning ( 5,'sendmail not found, e-mailer will not work' );
-  } catch(e)  {
-    log.error ( 5,'exception while using sendmail' );
-  }
+var emailer  = conf.getEmailerConfig();
+var sendmail = utils.spawn ( 'sendmail',[to],{} );
+  sendmail.stdin.setEncoding('utf-8');
+  // sendmail.stdout.pipe(process.stdout);
+  sendmail.stdin.write (
+    'From: '        + emailer.headerFrom +
+    '\nSubject: '   + subject +
+    '\nMIME-Version: 1.0'     +
+    '\nContent-Type: text/html; charset="ISO-8859-1"' +
+    '\n\n<html><body>\n'      +
+    message                   +
+    '\n</body></html>\n'
+  );
+  sendmail.stdin.end();
 }
 
 

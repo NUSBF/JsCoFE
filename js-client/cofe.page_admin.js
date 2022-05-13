@@ -251,7 +251,7 @@ AdminPage.prototype.refresh = function()  {
               else
                 new MessageBox ( 'Get FE Proxy Info Error',
                   'Unknown error: <b>' + rsp.status + '</b><p>' +
-                  'when trying to fetch FE Proxy data.' );
+                  'when trying to fetch FE Proxy data.', 'msg_error' );
             }
             if (!__local_service)  {
               self.makeNodesInfoTab ( data.nodesInfo );
@@ -265,7 +265,7 @@ AdminPage.prototype.refresh = function()  {
                     else
                       new MessageBox ( 'Get NC Info Error',
                         'Unknown error: <b>' + response.status + '</b><p>' +
-                        'when trying to fetch Client NC data.' );
+                        'when trying to fetch Client NC data.', 'msg_error' );
                   }
                   self.makeNodesInfoTab ( data.nodesInfo );
                   self.onResize ( window.innerWidth,window.innerHeight );

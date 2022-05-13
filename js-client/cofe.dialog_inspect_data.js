@@ -169,10 +169,10 @@ function rvapi_inspectData ( jobId,dataType,dataId )  {
 
   if (!__current_page)  {
     new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
-                     'please contact ' + appName() + ' developer.' );
+                     'please contact ' + appName() + ' developer.', 'msg_excl' );
   } else if (__current_page._type!='ProjectPage')  {
     new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
-                     'This is a bug, please contact ' + appName() + ' developer.' );
+                     'This is a bug, please contact ' + appName() + ' developer.', 'msg_excl');
   } else  {
     __current_page.getJobTree().inspectData ( jobId,dataType,dataId );
   }

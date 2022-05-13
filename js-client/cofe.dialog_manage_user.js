@@ -113,7 +113,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                         'Account of <i>' + dlg.userData.name +
                         '</i> has been successfully updated, and ' +
                         'notification<br>sent to e-mail address:<p><b><i>' +
-                        dlg.userData.email + '</i></b>.' );
+                        dlg.userData.email + '</i></b>.', 'msg_confirm' );
                     onExit_func();
                     $(dlg.element).dialog("close");
                   },null,'persist' );
@@ -160,7 +160,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                 'Account of <i>' + dlg.userData.name + '</i> will be deleted.<p>' +
                 'Once deleted, all user data, including registration details,<br>' +
                 'imported files, projects and results will be removed from<br>' +
-                'the server irrevocably.<p>' +
+                'the server irrevocably.<p>' + 
                 'Are you sure?',
                 'Yes, delete',function(){
                   serverRequest ( fe_reqtype.deleteUser_admin,dlg.userData,

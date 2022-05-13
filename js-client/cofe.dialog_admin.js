@@ -182,7 +182,7 @@ function DormantUsersDialog ( callback_func )  {
             if ((_params.period1=='NaN') || (_params.period2=='NaN') ||
                 (_params.period3=='NaN') || (_params.njobs=='NaN'))  {
               new MessageBox ( 'Wrong integer input',
-                               '<h2>Wrong integer input</h2>Please check input fields' );
+                               '<h2>Wrong integer input</h2>Please check input fields', 'msg_error' );
               return;
             }
 
@@ -190,7 +190,7 @@ function DormantUsersDialog ( callback_func )  {
                             function(data){
               if (data.status!='ok')  {
                 new MessageBox ( 'Dormancy management',
-                                 '<h2>Failure</h2>' + data.status );
+                                 '<h2>Failure</h2>' + data.status, 'msg_error');
               } else  {
                 new QuestionBox ( 'Dormancy management',
                       '<h2>Changes about to be made</h2><table><tr>'     +
@@ -214,7 +214,7 @@ function DormantUsersDialog ( callback_func )  {
                                         function(data){
                           if (data.status!='ok')  {
                             new MessageBox ( 'Dormancy management',
-                                             '<h2>Failure</h2>' + data.status );
+                                             '<h2>Failure</h2>' + data.status, 'msg_error' );
                           } else  {
                             new MessageBox ( 'Dormancy management',
                                '<h2>Summary</h2>Out of ' + data.total_users +

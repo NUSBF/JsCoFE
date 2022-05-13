@@ -106,7 +106,7 @@ function ForgottenLoginPage ( sceneId )  {
 
       new MessageBox ( 'Login Recover',
          'Login Recovery cannot be done due to the following reasons:<p>' +
-          msg + '<p>Please provide all needful data and try again' );
+          msg + '<p>Please provide all needful data and try again', 'msg_warning' );
 
     } else  {
 
@@ -126,13 +126,13 @@ function ForgottenLoginPage ( sceneId )  {
                   'Dear ' + response.message +
                   ',<p>You login details have been successfully recovered and ' +
                   'sent to you at<br><i>"' + ud.email + '"</i>.' +
-                  '<p>Please check your e-mail and return to the login page.' );
+                  '<p>Please check your e-mail and return to the login page.', 'msg_information');
             return true;
 
           case fe_retcode.userNotFound:
               new MessageBox ( 'CCP4 Login Recovery',
                 'No user with e-mail <i>"' + ud.email +
-                '"</i> has been found.<p>' );
+                '"</i> has been found.<p>', 'msg_excl'  );
             return true;
 
           default: ;
