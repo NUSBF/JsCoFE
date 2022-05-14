@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.05.22   <--  Date of Last Modification.
+ *    14.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -53,7 +53,7 @@ function ProjectPage ( sceneId )  {
   //var this.insert_btn    = null;
   this.moveup_btn     = null;
   this.del_btn        = null;
-  this.archive_btn    = null;
+  this.stack_btn      = null;
   this.open_btn       = null;
   this.stop_btn       = null;
   this.clone_btn      = null;
@@ -173,7 +173,7 @@ function ProjectPage ( sceneId )  {
   //this.moveup_btn   = toolbar.setButton ( '',image_path('moveup')   ,cnt++,0,1,1 );
   this.clone_btn   = toolbar.setButton ( '',image_path('clonejob'),cnt++,0,1,1 );
   this.del_btn     = toolbar.setButton ( '',image_path('remove')  ,cnt++,0,1,1 );
-  this.archive_btn = toolbar.setButton ( '',image_path('folder_jobtree'),cnt++,0,1,1 );
+  this.stack_btn   = toolbar.setButton ( '',image_path('job_stack')   ,cnt++,0,1,1 );
   toolbar.setLabel ( '<hr style="border:1px dotted;"/>',cnt++,0,1,1 );
   this.add_rem_btn = toolbar.setButton ( '',image_path('task_remark'     ),cnt++,0,1,1 );
   this.thlight_btn = toolbar.setButton ( '',image_path('highlight_branch'),cnt++,0,1,1 );
@@ -200,8 +200,8 @@ function ProjectPage ( sceneId )  {
     this.moveup_btn.setSize('40px','40px').setTooltip(
                    'Move job one position up the tree branch').setDisabled(true);
   this.del_btn    .setSize('40px','40px').setTooltip('Delete job').setDisabled(true);
-  this.archive_btn.setSize('40px','40px').setTooltip(
-                                  'Archive/Unarchive jobs').setDisabled(true);
+  this.stack_btn  .setSize('40px','40px').setTooltip(
+                                             'Stack/Unstack jobs').setDisabled(true);
   this.open_btn   .setSize('40px','40px').setTooltip('Open job'  ).setDisabled(true);
   this.stop_btn   .setSize('40px','40px').setTooltip('Stop job'  ).setDisabled(true);
   this.clone_btn  .setSize('40px','40px').setTooltip('Clone job' ).setDisabled(true);
@@ -318,7 +318,7 @@ function ProjectPage ( sceneId )  {
           if (self.moveup_btn)
             self.moveup_btn.addOnClickListener ( function(){ self.moveJobUp();  } );
           self.del_btn    .addOnClickListener ( function(){ self.deleteJob  (); } );
-          self.archive_btn.addOnClickListener ( function(){ self.archiveJobs(); } );
+          self.stack_btn  .addOnClickListener ( function(){ self.stackJobs  (); } );
           self.open_btn   .addOnClickListener ( function(){ self.openJob    (); } );
           self.stop_btn   .addOnClickListener ( function(){ self.stopJob    (); } );
           self.clone_btn  .addOnClickListener ( function(){ self.cloneJob   (); } );
@@ -387,7 +387,7 @@ ProjectPage.prototype.setDisabled = function ( disabled_bool )  {
     if (this.moveup_btn)
       this.moveup_btn.setDisabled ( disabled_bool );
     this.del_btn    .setDisabled ( disabled_bool );
-    this.archive_btn.setDisabled ( disabled_bool );
+    this.stack_btn  .setDisabled ( disabled_bool );
     this.open_btn   .setDisabled ( disabled_bool );
     this.stop_btn   .setDisabled ( disabled_bool );
     this.clone_btn  .setDisabled ( disabled_bool );
@@ -516,31 +516,31 @@ ProjectPage.prototype.toggleBranchHighlight = function()  {
   this.jobTree.toggleBranchHighlight();
 }
 
-ProjectPage.prototype.archiveJobs = function() {
-  if (this.start_action('archive_jobs'))  {
-    var adata = this.jobTree.selectArchiveJobs();
+ProjectPage.prototype.stackJobs = function() {
+  if (this.start_action('stack_jobs'))  {
+    var adata = this.jobTree.selectStackJobs();
     var save  = false;
     if (adata[0]==1)  {
       if (adata[1].length<=0)  {
-        this.jobTree.makeFolder1 ( adata[2],'',image_path('folder_jobtree') );
+        this.jobTree.makeStack1 ( adata[2],'',image_path('job_stack') );
         save = true;
       } else if (adata[2].length<=0)  {
-        this.jobTree.makeFolder1 ( adata[1],'',image_path('folder_jobtree') );
+        this.jobTree.makeStack1 ( adata[1],'',image_path('job_stack') );
         save = true;
       } else  {
-        var qdlg = new Dialog('Archive direction');
+        var qdlg = new Dialog('Stacking direction');
         var grid = new Grid('');
         qdlg.addWidget ( grid );
-        grid.setLabel ( '<h2>Archive direction</h2>' +
-                        'You can choose to archive suitable jobs which are<br>' +
-                        '(selected job included):<br>&nbsp;',0,0,1,3 );
-        var above_cbx = grid.setCheckbox ( 'above currently selected',false,1,1,1,1 );
-        var below_cbx = grid.setCheckbox ( 'below currently selected',true, 2,1,1,1 );
-        grid.setLabel ( '&nbsp;<br>Make your choice and click <b><i>Archive</i></b> ' +
+        grid.setLabel ( '<h2>Stacking direction</h2>' +
+                        'You can choose to stack suitable jobs which are<br>' +
+                        '(the selected job is included):<br>&nbsp;',0,0,1,3 );
+        var above_cbx = grid.setCheckbox ( 'above the currently selected job',false,1,1,1,1 );
+        var below_cbx = grid.setCheckbox ( 'below the currently selected job',true, 2,1,1,1 );
+        grid.setLabel ( '&nbsp;<br>Make your choice and click <b><i>Stack</i></b> ' +
                         'button.',3,0,1,3 );
         (function(self){
           qdlg._options.buttons = {
-            "Archive" : function() {
+            "Stack"   : function() {
                           var nodelist = [];
                           if (above_cbx.getValue())
                             nodelist = adata[1];
@@ -558,8 +558,8 @@ ProjectPage.prototype.archiveJobs = function() {
                             self.end_action();
                           } else  {
                             $( this ).dialog( 'close' );
-                            self.jobTree.makeFolder1 ( nodelist,'',
-                                                  image_path('folder_jobtree') );
+                            self.jobTree.makeStack1 ( nodelist,'',
+                                                  image_path('job_stack') );
                             self.jobTree.saveProjectData ( [],[],true, function(tree,rdata){
                               self.setSelMode ( 1 );
                               self.end_action();
@@ -665,7 +665,7 @@ ProjectPage.prototype._set_button_state = function() {
     dsel = (node.parentId!=null);
   this.open_btn   .setEnabled ( dsel );
   this.del_btn    .setEnabled ( dsel );
-  this.archive_btn.setEnabled ( (this.jobTree.selectArchiveJobs()[0]>0) );
+  this.stack_btn  .setEnabled ( (this.jobTree.selectStackJobs()[0]>0) );
 
   if (task)  {
     var is_remark   = task.isRemark();
@@ -840,18 +840,18 @@ ProjectPage.prototype.onTreeContextMenu = function() {
       action: function(){ self.toggleBranchHighlight(); }
     };
 
-    var adata = self.jobTree.selectArchiveJobs();
+    var adata = self.jobTree.selectStackJobs();
     if (adata[0]==1)  {
-      items.addArchiveItem = {
-        label : "Archive jobs",
-        icon  : image_path('folder_jobtree'),
-        action: function(){ self.archiveJobs(); }
+      items.addStackItem = {
+        label : "Stack jobs",
+        icon  : image_path('job_stack'),
+        action: function(){ self.stackJobs(); }
       };
     } else if (adata[0]==2)  {
-      items.addUnarchiveItem = {
-        label : "Unarchive jobs",
-        icon  : image_path('folder_jobtree'),
-        action: function(){ self.archiveJobs(); }
+      items.addUnstackItem = {
+        label : "Unstack jobs",
+        icon  : image_path('job_stack'),
+        action: function(){ self.stackJobs(); }
       };
     }
 
@@ -1034,7 +1034,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
             case 'clone_job'        : self.cloneJob    ();  break;
             case 'delete_job'       : self.deleteJob   ();  break;
             case 'move_job_up'      : self.moveJobUp   ();  break;
-            case 'archive_jobs'     : self.archiveJobs ();  break;
+            case 'stack_jobs'     : self.stackJobs ();  break;
             case 'set_button_state' :
             default:  self.jobTree.startTaskLoop();
           }

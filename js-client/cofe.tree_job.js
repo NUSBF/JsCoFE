@@ -54,7 +54,7 @@
  *      function selectTasks     ( task_lst );
  *      function saveProjectData ( tasks_add,tasks_del,onDone_func(tree,rdata) );
  *      function hasRunningJobs  ( nodeId );
- *      function selectArchiveJobs();
+ *      function selectStackJobs();
  *      function addJob          ( insert_bool,parent_page,onAdd_func );
  *      function moveJobUp       ();
  *      function calcMetrics     ();
@@ -799,14 +799,14 @@ JobTree.prototype.hasRunningJobs = function ( nodeId )  {
 
 }
 
-JobTree.prototype.selectArchiveJobs = function()  {
+JobTree.prototype.selectStackJobs = function()  {
 // return:
-//   [0,[],[]]       - no jobs can be archived or unarchived
+//   [0,[],[]]       - no jobs can be stacked or unstacked
 //   [1,[...],[...]] - only jobs with given node ids in two alternative lists
-//                     (archive up or down) can be archived; any of the lists
+//                     (archive up or down) can be stacked; any of the lists
 //                     can be empty
 //   [2,[.][]]       - selected job is archive (node id returned in 1st list),
-//                     which can be unarchived
+//                     which can be unstacked
 var sel_lst = this.calcSelectedNodeIds();
   if (sel_lst.length>1)  {  // multiple selection
     var ok = true;
