@@ -89,7 +89,7 @@
  *      function moveSelectedNodeUp   ();
  *      function deleteSelectedNodes  ();
  *      function canMakeFolder        ();
- *      function makeFolder           ( text,icon_uri ); // works on current selection
+ *      function makeStack            ( text,icon_uri ); // works on current selection
  *      function unfoldFolder         ();                // works on current selection
  *
  *   }
@@ -1192,12 +1192,12 @@ Tree.prototype.canMakeFolder1 = function ( sel_list )  {
 }
 
 
-Tree.prototype.makeFolder = function ( text,icon_uri )  {
-  return this.makeFolder1 ( this.calcSelectedNodeIds(),text,icon_uri );
+Tree.prototype.makeStack = function ( text,icon_uri )  {
+  return this.makeStack1 ( this.calcSelectedNodeIds(),text,icon_uri );
 }
 
 
-Tree.prototype.makeFolder1 = function ( sel_node_list,text,icon_uri )  {
+Tree.prototype.makeStack1 = function ( sel_node_list,text,icon_uri )  {
 // make a folder node and places currently selected nodes in it; current selction
 // must be validated with canMakeFolder() before using this function
   var sel_list = this.__connectivity_sort ( sel_node_list );
@@ -1216,7 +1216,7 @@ Tree.prototype.makeFolder1 = function ( sel_node_list,text,icon_uri )  {
     var name = text;
     if (name)
       name += ' ';
-    name += njobs + ' jobs archived';
+    name += njobs + ' jobs stacked';
     var folder_node = new TreeNode ( name,icon_uri,null );
     var pnode = this.node_map[node.parentId];
     for (var i=0;i<pnode.children.length;i++)
