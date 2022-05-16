@@ -2,31 +2,31 @@
 
 ==================
 Project Management
-==================
+
 
 ----------------
 Basic principles
-----------------
+
 
 Projects in CCP4 Cloud are designed to keep the track of structure solution process in such a way that it may be reviewed at any time later.
 
 .. _job-tree:
 
-Apart from straightforward cases, structure solution involves repeats of certain actions and branching due to decision making or exploration of range of parameters. Correspondingly, **project structure in CCP4 Cloud is a tree**, rather than a linear (chronological) list of jobs.
+Apart from straightforward cases, structure solution involves repeating certain actions and branching due to decision-making or exploration of a range of parameters. Correspondingly, **project structure in CCP4 Cloud is a tree**, rather than a linear (chronological) list of jobs.
 
-*Projects Trees* are built with few basic operations, associated with first five buttons in the vertical toolbar on the left-hand side of the screen:
+*Projects Trees* are built with a few basic operations, associated with the first five buttons in the vertical toolbar on the left-hand side of the screen:
 
 .. Note::
-    all buttons are duplicated by items in the dropdown context menu, which is displayed upon right-clicking on a jon line in the *Tree*
+    all buttons are duplicated by items in the dropdown context menu, which is displayed upon right-clicking on a job line in the *Tree*
 
 .. |addjob| image:: images/add.png
     :width: 18
     :height: 18   
     
-|addjob| **Add a job**. The new job will be added as a child to one currently selected in the *Tree*. When this button is pressed, the new job is chosen from the list of tasks, which opens automatically. Repeat addition of jobs to the same node will result in *Project Tree* branching.
+|addjob| **Add a job**. The new job will be added as a child to one currently selected in the *Tree*. When this button is pressed, the new job is chosen from the list of tasks, which opens automatically. Repeat the addition of jobs to the same node will result in *Project Tree* branching.
 
 .. Note::
-    the context menu also offers the addition of a job with parameters set in the previous invocation of that type of job up the *Project Tree*. You may find this particularly useful in the model building and refinement stage, when a number of similar-type jobs need to be run in multiple successions
+    the context menu also offers the addition of a job with parameters set in the previous invocation of that type of job up the *Project Tree*. You may find this particularly useful in the model building and refinement stage when a number of similar-type jobs need to be run in multiple successions
 
 
 .. |clonejob| image:: images/clonejob.png
@@ -46,28 +46,28 @@ Apart from straightforward cases, structure solution involves repeats of certain
     Once deleted, jobs cannot be restored.
 
 
-.. |archive| image:: images/folder_jobtree.png
+.. |stack| image:: images/job_stack.png
     :width: 18
     :height: 18
 
-|archive| **Archive/Unarchive jobs**. Excessively long project branches can be optimised (shortened) by archiving jobs in their *linear sections* (i.e., sections where each job has exactly one ancestor and one descendant). A typical example of such section is given by the succession of model building and refinement jobs leading to a completed structure; such sections may reach tens and hundreds of jobs, which may be found inconvenient to work with. Archived jobs are placed in a folder, which substitutes all of them in the branch. When necessary, the folder can be expanded back (unarchived).
+|stack| **Stack/Unstack jobs**. Excessively long project branches can be optimised (shortened) by stacking jobs in their *linear sections* (i.e., sections where each job has exactly one ancestor and one descendant). A typical example of such a section is given by the succession of model building and refinement jobs leading to a completed structure; these sections may reach tens and hundreds of jobs, which may be found inconvenient to work with. Stacking jobs are placed in a stack, which substitutes all of them in the branch. When necessary, the folder can be expanded back (unstacked).
 
-Archiving can be done in two ways:
+Stacking can be done in two ways:
 
-1. Select all jobs to be archived and click on the |archive| button in the toolbar.
-
-.. Note::
-    unless selected jobs represent a continuos linear section of the project branch, the |archive| button is disabled
+1. Select all jobs to be stacked and click on the |stack| button in the toolbar.
 
 .. Note::
-    it is possible to include previously archived folder in the selection, in which case it will be merged with the new one
-
-2. Select a job in a *linear section* of the project branch and click the |archive| button. The GUI will automatically identify boundaries of the *linear section*, and make lists of jobs, suitable for archiving, that are ancestors or descendants of the selected one. If one of the lists is empty, the other one is used for archiving. If both lists are not empty, the user is asked which one, or both, should be used.
+    unless selected jobs represent a continuous linear section of the project branch, the |stack| button is disabled
 
 .. Note::
-    automatically identified *linear sections* are constrained by either project branching or previously created archive folders
+    it is possible to include a previously stacked folder in the selection, in which case it will be merged with the new one
 
-For unarchiving jobs, select the archive folder and click the |archive| button.
+2. Select a job in a *linear section* of the project branch and click the |stack| button. The GUI will automatically identify boundaries of the *linear section*, and make lists of jobs, suitable for stacking, that are ancestors or descendants of the selected one. If one of the lists is empty, the other is used for stacking. If both lists are not empty, the user is asked which one, or both, should be used.
+
+.. Note::
+    automatically identified *linear sections* are constrained by either project branching or previously created stack folders
+
+For unstacking jobs, select the stack folder and click the |stack| button.
 
 
 .. |remark| image:: images/task_remark.png
@@ -78,7 +78,7 @@ For unarchiving jobs, select the archive folder and click the |archive| button.
     :width: 18
     :height: 18
 
-|remark| **Remarks** are used for general annotation and can be placed in any place of the Projects. Remarks can be sticky (denoted by a pin dot in the icon: |remark_s|) and non-sticky. Sticky remarks make a pair with their parent jobs, and are moved and deleted synchronously with them. Unlike all other items in the *Project Tree*, remarks can be deleted without deleting their descendants.
+|remark| **Remarks** are used for general annotation and can be placed in any place of the Projects. Remarks can be sticky (denoted by a pin dot in the icon: |remark_s|) and non-sticky. Sticky remarks make a pair with their parent jobs and are moved and deleted synchronously with them. Unlike all other items in the *Project Tree*, remarks can be deleted without deleting their descendants.
 
 -----------------
 Managing the jobs
@@ -90,13 +90,13 @@ The following buttons in the toolbar **do not change the Project Tree**:
     :width: 18
     :height: 18
     
-|openjob| **Open Job** dialog for the currently selected job. Alternatively, double click the corresponding line in the *Project Tree*. Job dialogs are used for setting job's input data and parameters, and for running them.
+|openjob| **Open Job** dialog for the currently selected job. Alternatively, double click the corresponding line in the *Project Tree*. Job dialogs are used for setting the job's input data and parameters, and for running them.
  
 .. |stop| image:: images/stop.png
     :width: 18
     :height: 18
     
-|stop| **Stop** the currently selected job. This button is active only when job is running. **Once stopped, jobs cannot be resumed or restarted. However, you can clone job that was stopped and run the clone**.
+|stop| **Stop** the currently selected job. This button is active only when a job is running. **Once stopped, jobs cannot be resumed or restarted. However, you can clone job that was stopped and run the clone**.
 
 -------------------
 Branch highlighting
@@ -109,7 +109,7 @@ Branch highlighting
 In complex projects, it may be difficult to trace branches of interest. This may be helped by branch highlighting. Select a job and click the |highlight| button in the toolbar (or the corresponding item in the context right-click menu). This will highlight all ancestors of the selected job to the project origin, and the descending branch which contains the most recent job. In order to clear the highlighting, click the |highlight| button again.
 
 .. note:
-    in order to find the most recent job in ithe project, select the projet root and click the |highlight| button
+    in order to find the most recent job in the project, select the project root and click the |highlight| button
 
 
 
@@ -119,7 +119,7 @@ In complex projects, it may be difficult to trace branches of interest. This may
 Refresh
 --------
 
-Nobody and nothing are perfect, and sometimes the Project Page may stop working for you due to intermittent connection errors or a hidden bug. Should this unlikely event happen, click the |refresh| button to refresh the Project Page. |refresh| simply reloads the project data and re-initialises internal page functions.
+Nobody and nothing is perfect, and sometimes the Project Page may stop working for you due to intermittent connection errors or a hidden bug. Should this unlikely event happen, click the |refresh| button to refresh the Project Page. |refresh| simply reloads the project data and re-initialises internal page functions.
 
 .. Note::
     this action is different from that of the browser's Refresh button; the latter will log you out.
@@ -133,9 +133,9 @@ Nobody and nothing are perfect, and sometimes the Project Page may stop working 
 Project development
 -------------------
 
-You can start developing your first Project right after creating it. In most cases, you should start with a task from the "Data Import" section of the *Task List* at the root of the *Project Tree* in order to import available data (reflection datasets, sequences, structure homologues, ligand descriptions *etc.*), and then add computational jobs which use the imported data, as appropriate.
+You can start developing your first Project right after creating it. In most cases, you should start with a task from the "Data Import" section of the *Task List* at the root of the *Project Tree* in order to import available data (reflection datasets, sequences, structure homologs, ligand descriptions *, etc.*), and then add computational jobs which use the imported data, as appropriate.
 
 *You can create and run any number of jobs simultaneously, however, a child job cannot use its parent's job output until the parent job is completed.*
  
-CCP4 Cloud is not prescriptive about how you should grow and branch your *Project Tree*. **It is highly advisable, though, to understand the principles of data management in CCP4 Cloud in order to avoid most common mistakes and confusions.**
+CCP4 Cloud is not prescriptive about how you should grow and branch your *Project Tree*. **It is highly advisable, though, to understand the principles of data management in CCP4 Cloud in order to avoid the most common mistakes and confusion.**
 **Please read the corresponding documentation.**

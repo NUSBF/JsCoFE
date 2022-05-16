@@ -265,8 +265,8 @@ FoldersBrowser.prototype.onAddFolder = function()  {
                'msg_stop' );
       return false;
     } else if (folderName.indexOf('/')>=0)  {
-      new MessageBox ( 'Illegal folder name',
-            '<h2>Illegal folder name</h2>Folder name must not contain slashes.',
+      new MessageBox ( 'Invalid folder name',
+            '<h2>Invalid folder name</h2>Folder name must not contain slashes.',
             'msg_stop' );
       return false;
     }
@@ -360,8 +360,8 @@ var selNode = this.ftree.getSelectedNode();
                'msg_stop' );
       return false;
     } else if (newName.indexOf('/')>=0)  {
-      new MessageBox ( 'Illegal folder name',
-            '<h2>Illegal folder name</h2>Folder name must not contain slashes.',
+      new MessageBox ( 'Invalid folder name',
+            '<h2>Invalid folder name</h2>Folder name must not contain slashes.',
             'msg_stop' );
       return false;
     }

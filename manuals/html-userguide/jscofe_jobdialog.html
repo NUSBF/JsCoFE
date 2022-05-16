@@ -5,9 +5,50 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>4. Job Dialog &#8212; CCP4 Cloud 1.7 documentation</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>7. Job Dialog &#8212; CCP4 Cloud 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/haiku.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
@@ -16,104 +57,447 @@
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="5. CCP4 Cloud education capabilities" href="jscofe_CloudED.html" />
-    <link rel="prev" title="3. Task List" href="jscofe_tasklist.html" /> 
-  </head><body>
-      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
-          <span>CCP4 Cloud 1.7 documentation</span></a></h1>
-        <h2 class="heading"><span>4. Job Dialog</span></h2>
-      </div>
-      <div class="topnav" role="navigation" aria-label="top navigation">
+    <link rel="next" title="8. CCP4 Cloud education capabilities" href="jscofe_CloudED.html" />
+    <link rel="prev" title="6. Task List" href="jscofe_tasklist.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=blue-grey data-md-color-accent=blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
       
-        <p>
-        «&#160;&#160;<a href="jscofe_tasklist.html"><span class="section-number">3. </span>Task List</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="jscofe_CloudED.html"><span class="section-number">5. </span>CCP4 Cloud education capabilities</a>&#160;&#160;»
-        </p>
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#jscofe_jobdialog" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
+           class="md-header-nav__button md-logo">
+          
+            &nbsp;
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
+          <span class="md-header-nav__topic"> 7. Job Dialog </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
       </div>
-      <div class="content" role="main">
+      
+      
+  
+  <script src="_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = ""versions.json"",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
         
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
+      
+        <img src="_static/" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="index.html"
+       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
+  </label>
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_myprojects.html" class="md-nav__link">1. My Projects</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_project.html" class="md-nav__link">2. Managing the jobs</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_project.html#branch-highlighting" class="md-nav__link">3. Branch highlighting</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_project.html#refresh" class="md-nav__link">4. Refresh</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_project.html#project-development" class="md-nav__link">5. Project development</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_tasklist.html" class="md-nav__link">6. Task List</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> 7. Job Dialog </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">7. Job Dialog</a>
+      
         
-  <div class="section" id="job-dialog">
-<span id="id1"></span><h1><span class="section-number">4. </span>Job Dialog<a class="headerlink" href="#job-dialog" title="Permalink to this headline">¶</a></h1>
-<p>Job Dialog is one of most central to CCP4 Cloud functionality. It is used for forming a job (choosing/setting input data and parameters), running it and inspecting the results. The Dialog opens automatically upon selecting a task in the <strong>Task List</strong> or pressing the <a class="reference internal" href="_images/openjob.png"><img alt="openjob" src="_images/openjob.png" style="width: 16px; height: 16px;" /></a> button in the <strong>Project Page toolbar</strong> (also available through right-click on the Job’s line of the Job Tree).</p>
-<div class="section" id="general-layout">
-<h2><span class="section-number">4.1. </span>General Layout<a class="headerlink" href="#general-layout" title="Permalink to this headline">¶</a></h2>
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#jscofe-jobdialog--page-root" class="md-nav__link">7. Job Dialog</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#general-layout" class="md-nav__link">7.1. General Layout</a>
+        </li>
+        <li class="md-nav__item"><a href="#input-page" class="md-nav__link">7.2. Input Page</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#the-header" class="md-nav__link">7.2.1. The Header</a>
+        </li>
+        <li class="md-nav__item"><a href="#data-section" class="md-nav__link">7.2.2. Data Section</a>
+        </li>
+        <li class="md-nav__item"><a href="#parameters-section" class="md-nav__link">7.2.3. Parameters Section</a>
+        </li>
+        <li class="md-nav__item"><a href="#output-page" class="md-nav__link">7.2.4. Output Page</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+    
+<li class="md-nav__item"><a class="md-nav__extra_link" href="_sources/jscofe_jobdialog.rst.txt">Show Source</a> </li>
+
+  </ul>
+</nav>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="#general-layout" class="md-nav__link">7.1. General Layout</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#input-page" class="md-nav__link">7.2. Input Page</a>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="#the-header" class="md-nav__link">7.2.1. The Header</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#data-section" class="md-nav__link">7.2.2. Data Section</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#parameters-section" class="md-nav__link">7.2.3. Parameters Section</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#output-page" class="md-nav__link">7.2.4. Output Page</a>
+      
+    
+    </li></ul>
+    
+    </li></ul>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_CloudED.html" class="md-nav__link">8. CCP4 Cloud education capabilities</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_workflows.html" class="md-nav__link">9. Automatic workflows</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_tips.html" class="md-nav__link">10. Tips and Tricks</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_QnA.html" class="md-nav__link">11. Questions and Answers</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_troubleshooting.html" class="md-nav__link">12. Troubleshooting</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_version_log.html" class="md-nav__link">13. CCP4 Cloud Version Log</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#jscofe-jobdialog--page-root" class="md-nav__link">7. Job Dialog</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#general-layout" class="md-nav__link">7.1. General Layout</a>
+        </li>
+        <li class="md-nav__item"><a href="#input-page" class="md-nav__link">7.2. Input Page</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#the-header" class="md-nav__link">7.2.1. The Header</a>
+        </li>
+        <li class="md-nav__item"><a href="#data-section" class="md-nav__link">7.2.2. Data Section</a>
+        </li>
+        <li class="md-nav__item"><a href="#parameters-section" class="md-nav__link">7.2.3. Parameters Section</a>
+        </li>
+        <li class="md-nav__item"><a href="#output-page" class="md-nav__link">7.2.4. Output Page</a>
+        </li></ul>
+            </nav>
+        </li></ul>
+            </nav>
+        </li>
+    
+<li class="md-nav__item"><a class="md-nav__extra_link" href="_sources/jscofe_jobdialog.rst.txt">Show Source</a> </li>
+
+<li id="searchbox" class="md-nav__item"></li>
+
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  
+<span id="id1"></span><h1 id="jscofe-jobdialog--page-root"><span class="section-number">7. </span>Job Dialog<a class="headerlink" href="#jscofe-jobdialog--page-root" title="Permalink to this headline">¶</a></h1>
+<p>Job Dialog is one of most central to CCP4 Cloud functionality. It is used for forming a job (choosing/setting input data and parameters), running it, and inspecting the results. The Dialog opens automatically upon selecting a task in the <strong>Task List</strong> or pressing the <a class="reference internal" href="_images/openjob.png"><img alt="openjob" src="_images/openjob.png" style="width: 16px; height: 16px;"/></a> button in the <strong>Project Page toolbar</strong> (also available through right-clicking on the Job’s line of the Job Tree).</p>
+
+<h2 id="general-layout"><span class="section-number">7.1. </span>General Layout<a class="headerlink" href="#general-layout" title="Permalink to this headline">¶</a></h2>
 <p>The dialog has two pages: Input and Output, and a toolbar in the upper part of the dialog:</p>
-<a class="reference internal image-reference" href="_images/job_dialog_toolbar.png"><img alt="_images/job_dialog_toolbar.png" class="align-center" src="_images/job_dialog_toolbar.png" style="width: 711.0px; height: 63.0px;" /></a>
-<p>The buttons in the left-hand-side of the toolbar switch between the <strong>Input</strong> and <strong>Output</strong> pages (the buttons are disabled if Output page is not formed yet). Central part of the toolbar may show either the <strong>Run button</strong> for starting the job, or show a “busy” indicator and <strong>Stop button</strong> while the job is running, or the final <strong>job status</strong> (“completed”, “failed”, “terminated”) if job is finished. The <strong>Ref. button</strong> displays reference documentation on the task currently represented by the Dialog, while <strong>Help button</strong> provides the Dialog’s manual you are currently reading. The Close button in the right-hand-side of the toolbar closes the Dialog without running the job.</p>
-</div>
-<div class="section" id="input-page">
-<h2><span class="section-number">4.2. </span>Input Page<a class="headerlink" href="#input-page" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/job_dialog_toolbar.png"><img alt="_images/job_dialog_toolbar.png" class="align-center" src="_images/job_dialog_toolbar.png" style="width: 711.0px; height: 63.0px;"/></a>
+<p>The buttons on the left-hand side of the toolbar switch between the <strong>Input</strong> and <strong>Output</strong> pages (the buttons are disabled if the Output page is not formed yet). The central part of the toolbar may show either the <strong>Run button</strong> for starting the job, or show a “busy” indicator and <strong>Stop button</strong> while the job is running or the final <strong>job status</strong> (“completed”, “failed”, “terminated”) if the job is finished. The <strong>Ref. button</strong> displays reference documentation on the task currently represented by the Dialog, while <strong>Help button</strong> provides the Dialog’s manual you are currently reading. The Close button on the right-hand side of the toolbar closes the Dialog without running the job.</p>
+
+
+<h2 id="input-page"><span class="section-number">7.2. </span>Input Page<a class="headerlink" href="#input-page" title="Permalink to this headline">¶</a></h2>
 <p>The <strong>Input</strong> page has three parts: the <em>Header, Data Section and Parameters Section</em>.</p>
-<div class="section" id="the-header">
-<h3><span class="section-number">4.2.1. </span>The Header<a class="headerlink" href="#the-header" title="Permalink to this headline">¶</a></h3>
+
+<h3 id="the-header"><span class="section-number">7.2.1. </span>The Header<a class="headerlink" href="#the-header" title="Permalink to this headline">¶</a></h3>
 <p>The Header displays the Job Title and two input fields: job description and output id:</p>
-<a class="reference internal image-reference" href="_images/job_dialog_toolbar.png"><img alt="_images/job_dialog_toolbar.png" class="align-center" src="_images/job_dialog_toolbar.png" style="width: 711.0px; height: 63.0px;" /></a>
+<a class="reference internal image-reference" href="_images/job_dialog_toolbar.png"><img alt="_images/job_dialog_toolbar.png" class="align-center" src="_images/job_dialog_toolbar.png" style="width: 711.0px; height: 63.0px;"/></a>
 <p>Both fields always have default parameters, which may be found suitable in many cases. However, sometimes you will want to adjust them.</p>
-<table border="1" class="docutils align-default">
+<table border="1">
 <colgroup>
-<col width="5%" />
-<col width="95%" />
+<col width="5%"/>
+<col width="95%"/>
 </colgroup>
 <tbody valign="top">
 <tr class="row-odd"><td>job description</td>
-<td>Provides a brief job description for displaying in the Job Tree. This field may be used to annotate your project, for example “2nd molecular replacement attempt using sequence correction of the model”. The field may be changed both before and after running the job.</td>
+<td>Provides a brief job description for displaying in the Job Tree. This field may be used to annotate your project, for example, “2nd molecular replacement attempt using sequence correction of the model”. The field may be changed both before and after running the job.</td>
 </tr>
 <tr class="row-even"><td>output id</td>
 <td>Provides a template name output data. Please see the “Naming” section in Data Management. Using this field will help to obtain and download output files with more meaningful names.</td>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section" id="data-section">
-<h3><span class="section-number">4.2.2. </span>Data Section<a class="headerlink" href="#data-section" title="Permalink to this headline">¶</a></h3>
-<p>Data Section contains selection widgets (comboboxes) for data objects needed by given job. Typically, a job takes several types of data, each of which will be represented by own combobox. Some jobs may accept several data objects of a particular type, in which case the comboboxes are repeated. In the following example:</p>
-<a class="reference internal image-reference" href="_images/job_dialog_data_section_1.png"><img alt="_images/job_dialog_data_section_1.png" class="align-center" src="_images/job_dialog_data_section_1.png" style="width: 577.6px; height: 220.8px;" /></a>
-<p>the job takes one Structure Revision, one or more anomalous HKL Datasets, and one native HKL Dataset. Correspondingly, the Data Section presents one combobox for structure revision, one for native dataset, and a variable number of comboboxes for anomalous reflection datasets. Initial selections in all comboboxes are chosen according to intrinsic task and project’s logics and should be suitable in most cases; however, this must be checked in each and every case.</p>
-<p>In the above example, second combobox for anomalous dataset shows [do not use]. This means that only one anomalous HKL dataset, selected in first combobox, will be passed on to the job. If a user selects a dataset in second combobox as well, it will be passed as second anomalous dataset to the job, and another combobox with title <em>“Anomalous reflection data (3)”</em> and initial value [do not use] will be displayed, thus suggesting that yet another dataset may be passed on to the job, if needed and available.</p>
-<p>The comboboxes may be accompanied by additional input widgets, related to particular data object. In the above example, each anomalous dataset chosen must be annotated by wavelength as <em>“low-remote”</em>, <em>“peak”</em>, <em>“inflection”</em> or <em>“high-remote”</em>, which is done using additional comboboxes displayed right below the relevant input. Similarly, the input of native dataset is accompanied by a checkbox for specifying whether this dataset should be used for phasing in addition to model building and refinement.</p>
+
+
+<h3 id="data-section"><span class="section-number">7.2.2. </span>Data Section<a class="headerlink" href="#data-section" title="Permalink to this headline">¶</a></h3>
+<p>Data Section contains selection widgets (comboboxes) for data objects needed by a given job. Typically, a job takes several types of data, each of which will be represented by its own Combobox. Some jobs may accept several data objects of a particular type, in which case the combo boxes are repeated. In the following example:</p>
+<a class="reference internal image-reference" href="_images/job_dialog_data_section_1.png"><img alt="_images/job_dialog_data_section_1.png" class="align-center" src="_images/job_dialog_data_section_1.png" style="width: 577.6px; height: 220.8px;"/></a>
+<p>the job takes one Structure Revision, one or more anomalous HKL Datasets, and one native HKL Dataset. Correspondingly, the Data Section presents one Combobox for structure revision, one for native dataset, and a variable number of comboboxes for anomalous reflection datasets. Initial selections in all comboboxes are chosen according to intrinsic task and project logic and should be suitable in most cases; however, this must be checked in each and every case.</p>
+<p>In the above example, the second combobox for anomalous dataset shows [do not use]. This means that only one anomalous HKL dataset, selected in the first combobox, will be passed on to the job. If a user selects a dataset in the second combobox as well, it will be passed as second anomalous dataset to the job, and another combobox with the title <em>“Anomalous reflection data (3)”</em> and initial value [do not use] will be displayed, thus suggesting that yet another dataset may be passed on to the job, if needed and available.</p>
+<p>The comboboxes may be accompanied by additional input widgets, related to particular data object. In the above example, each anomalous dataset chosen must be annotated by wavelength as <em>“low-remote”</em>, <em>“peak”</em>, <em>“inflection”</em> or <em>“high-remote”</em>, which is done using additional comboboxes displayed right below the relevant input. Similarly, the input of the native dataset is accompanied by a checkbox for specifying whether this dataset should be used for phasing in addition to model building and refinement.</p>
 <p>Finally, there is an inspection button on the left from all comboboxes with a data object selected. Pressing this button will launch a data inspector window, containing many useful details related to the object selected, such as space group, cell parameters, descriptions of macromolecular chains and many others.</p>
-<p>Note that input widgets for optional data input will not be displayed if the corresponding data is not found in the Project. For example, second widget for anomalous reflection dataset in the above example would not appear if there were only one such dataset imported or generated.</p>
-</div>
-<div class="section" id="parameters-section">
-<h3><span class="section-number">4.2.3. </span>Parameters Section<a class="headerlink" href="#parameters-section" title="Permalink to this headline">¶</a></h3>
+<p>Note that input widgets for optional data input will not be displayed if the corresponding data is not found in the Project. For example, the second widget for the anomalous reflection dataset in the above example would not appear if there were only one such dataset imported or generated.</p>
+
+
+<h3 id="parameters-section"><span class="section-number">7.2.3. </span>Parameters Section<a class="headerlink" href="#parameters-section" title="Permalink to this headline">¶</a></h3>
 <p>Parameters Section contains various parameters of the task given. They are usually arranged in one or more collapsable sections, like in the example below:</p>
-<a class="reference internal image-reference" href="_images/job_dialog_parameters_section__1_.png"><img alt="_images/job_dialog_parameters_section__1_.png" class="align-center" src="_images/job_dialog_parameters_section__1_.png" style="width: 588.8000000000001px; height: 217.60000000000002px;" /></a>
+<a class="reference internal image-reference" href="_images/job_dialog_parameters_section__1_.png"><img alt="_images/job_dialog_parameters_section__1_.png" class="align-center" src="_images/job_dialog_parameters_section__1_.png" style="width: 588.8000000000001px; height: 217.60000000000002px;"/></a>
 <p>Individual parameters may be hidden depending on choices made by user in both Data Section and Parameters Section, if such choices make the parameter not applicable.</p>
-</div>
-<div class="section" id="output-page">
-<h3><span class="section-number">4.2.4. </span>Output Page<a class="headerlink" href="#output-page" title="Permalink to this headline">¶</a></h3>
-<p>Output Page uses tabbed layout to present job results. Common tabs include <strong>“Report”</strong>, <strong>“Log file”</strong> and <strong>“Errors”</strong>, some tasks may introduce additional tabs for better structuring the output. The output is dynamic, i.e. it progresses in real time as the corresponding job progresses, and may be viewed at any stage.</p>
-<p>Tabs <strong>“Log file”</strong> and <strong>“Errors”</strong> display the standard output and standard error streams from the running job. Usually, a job involves execution of several programs one after another, in which case their standard outputs are concatenated. Before each program’s output, <strong>“Log file”</strong> displays the command line, used to invoke the program, and the the corresponding standard input stream, which contain data and parameters read from the <strong>Input Page</strong>.</p>
+
+
+<h3 id="output-page"><span class="section-number">7.2.4. </span>Output Page<a class="headerlink" href="#output-page" title="Permalink to this headline">¶</a></h3>
+<p>Output Page uses a tabbed layout to present job results. Common tabs include <strong>“Report”</strong>, <strong>“Log file”</strong> and <strong>“Errors”</strong>, some tasks may introduce additional tabs for better structuring the output. The output is dynamic, i.e. it progresses in real time as the corresponding job progresses, and may be viewed at any stage.</p>
+<p>Tabs <strong>“Log file”</strong> and <strong>“Errors”</strong> display the standard output and standard error streams from the running job. Usually, a job involves execution of several programs one after another, in which case their standard outputs are concatenated. Before each program’s output, <strong>“Log file”</strong> displays the command line, used to invoke the program, and the corresponding standard input stream, which contains data and parameters read from the <strong>Input Page</strong>.</p>
 <p>The <strong>“Report”</strong> tab’s content and structure may vary, but you may expect it to present the job title, report body and summary of generated data, which may be used in subsequent tasks. A typical example of report is shown below:</p>
-<a class="reference internal image-reference" href="_images/job_dialog_output_page.png"><img alt="_images/job_dialog_output_page.png" class="align-center" src="_images/job_dialog_output_page.png" style="width: 690.4000000000001px; height: 478.40000000000003px;" /></a>
-<p>In this Example, the report body is given by the set of sections, which are initially folded for the brevity of presentation. Unfolding the sections reveals fine report details, including tables, graphs and intermediate results, which may be inspected using built-in viewers.</p>
-<p>After the report body, there is a summary of Structure Revisions and Structure Data generated by the job. These data objects are available for all tasks descending from the given one, and will appear in Data Sections of their Job Dialogs.</p>
-<p>All generated data object references are accompanied with either inspector buttons (as in case of Structure Revisions) or corresponding viewers (in case of Structure Data). Thus, <strong>“Coot”</strong>, <strong>“ccp4mg”</strong> and <strong>“UglyMol”</strong> buttons will launch <code class="docutils literal notranslate"><span class="pre">Coot</span></code>, <code class="docutils literal notranslate"><span class="pre">CCP4mg</span></code> or <code class="docutils literal notranslate"><span class="pre">UglyMol</span></code> viewers with XYZ coordinates and density map loaded (“Coot” and “ccp4mg” buttons will appear only if your client machine has CCP4 Suite installed and a dedicated CCP4 Cloud client server running). <strong>“ViewHKL”</strong> will launch a utility for the inspection of MTZ file content. <strong>“Display”</strong> launches a viewer for the inspection of XYZ file (typically in PDB format).</p>
-</div>
-</div>
-</div>
+<a class="reference internal image-reference" href="_images/job_dialog_output_page.png"><img alt="_images/job_dialog_output_page.png" class="align-center" src="_images/job_dialog_output_page.png" style="width: 690.4000000000001px; height: 478.40000000000003px;"/></a>
+<p>In this Example, the report body is given by the set of sections, which are initially folded for the brevity of the presentation. Unfolding the sections reveals fine report details, including tables, graphs and intermediate results, which may be inspected using built-in viewers.</p>
+<p>After the report body, there is a summary of Structure Revisions and Structure Data generated by the job. These data objects are available for all tasks descending from the given one, and will appear in the Data Sections of their Job Dialogs.</p>
+<p>All generated data object references are accompanied with either inspector buttons (as in the case of Structure Revisions) or corresponding viewers (in case of Structure Data). Thus, <strong>“Coot”</strong>, <strong>“ccp4mg”</strong> and <strong>“UglyMol”</strong> buttons will launch <code class="docutils literal notranslate"><span class="pre">Coot</span></code>, <code class="docutils literal notranslate"><span class="pre">CCP4mg</span></code> or <code class="docutils literal notranslate"><span class="pre">UglyMol</span></code> viewers with XYZ coordinates and density map loaded (“Coot” and “ccp4mg” buttons will appear only if your client machine has CCP4 Suite installed and a dedicated CCP4 Cloud client server running). <strong>“ViewHKL”</strong> will launch a utility for the inspection of MTZ file content. <strong>“Display”</strong> launches a viewer for the inspection of XYZ file (typically in PDB format).</p>
 
 
+
+
+
+          </article>
+        </div>
       </div>
-      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
-      
-        <p>
-        «&#160;&#160;<a href="jscofe_tasklist.html"><span class="section-number">3. </span>Task List</a>
-        &#160;&#160;::&#160;&#160;
-        <a class="uplink" href="index.html">Contents</a>
-        &#160;&#160;::&#160;&#160;
-        <a href="jscofe_CloudED.html"><span class="section-number">5. </span>CCP4 Cloud education capabilities</a>&#160;&#160;»
-        </p>
-
-      </div>
-
-    <div class="footer" role="contentinfo">
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="jscofe_tasklist.html" title="6. Task List"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">6. </span>Task List </span>
+              </div>
+            </a>
+          
+          
+            <a href="jscofe_CloudED.html" title="8. CCP4 Cloud education capabilities"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">8. </span>CCP4 Cloud education capabilities </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
     </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
   </body>
 </html>

@@ -14,7 +14,7 @@ The Setup procedure is described in terms of servers and file systems, rather th
 
 * **NC(s)** must be able to submit jobs to your computational infrastructure (**Queue(s)**), but they do not require a particular CPU power by themselves. However, if **Queue** represents a queue-less shell (*cf.* below), jobs will be run on the **NC's** host machine, in which case a more powerful machine will be needed
 
-* we recommend having at least 2 **NCs** in CCP4 Cloud, such that jobs can be run even if one **NC** is temporarily down. Duplicate **NCs** can be placed on the same host machine and work with the same **Queue**.
+* we recommend having at least two **NCs** in CCP4 Cloud, such that jobs can be run even if one **NC** is temporarily down. Duplicate **NCs** can be placed on the same host machine and work with the same **Queue**. Should you wish to install only one *NC* at the beginning, simply ignore all instructions and configurations related to *NC2* in this document.
 
 **For setting up CCP4 Cloud, you will require:**
 
@@ -24,9 +24,10 @@ The Setup procedure is described in terms of servers and file systems, rather th
 
 2. CCP4 Setup version 7.1 or higher (download link). All **FE** , **NC(s)** and **Queue(s)** must have access to CCP4 Setup. For convenience, we assume that CCP4 will be installed in the following location, visible from all servers and **Queue(s)** : ::
 
-    /path/to/CCP4/ccp4-7.1
+    /path/to/CCP4/ccp4-8.0
 
   .. note:: having different CCP4 Setups for different servers or hosts is possible but inconvenient from the maintenance point of view.
+  .. note:: we always recommend using the latest CCP4 release; upgrading CCP4 in CCP4 Cloud setup involves only a minor adjustment of configuration files and start scripts 
 
 3. Directories for **FE** and **NC(s)** *in respective hardware hosts*: ::
 
@@ -136,7 +137,7 @@ Configuration of CCP4 Cloud Clients
 
 It is recommended that users access CCP4 Cloud via CCP4 Cloud Client, rather than direct web-link in browser. Using CCP4 Cloud Client allows to use interactive graphical software, such as ``Coot``, with the remote CCP4 Cloud instance.
 
-CCP4 Cloud Client is launched by clicking on icon with CCP4 Diamond, cloud and Wi-Fi sign, found in CCP4 Setup 7.1 on user machines. By default, it connects to CCP4 Cloud run by CCP4 at Harwell, and should be re-configured for using your own CCP4 Cloud instance. For that, launch CCP4 Cloud Client Configurator by clicking on icon with CCP4 Diamond, cloud and gear sign, and change the URL in the field provided. In terms, used in this document, the URL will be ::
+CCP4 Cloud Client is launched by clicking on icon with CCP4 Diamond, cloud and Wi-Fi sign, found in CCP4 Setup 8.0 on user machines. By default, it connects to CCP4 Cloud run by CCP4 at Harwell, and should be re-configured for using your own CCP4 Cloud instance. For that, launch CCP4 Cloud Client Configurator by clicking on icon with CCP4 Diamond, cloud and gear sign, and change the URL in the field provided. In terms, used in this document, the URL will be ::
 
     https://www.mysite.com/ccp4cloud/ 
 
@@ -159,7 +160,7 @@ You may find it more convenient to write a single script for (re)starting CCP4 C
 
 CCP4 Software is regularly updated (once in 2-4 weeks). CCP4 Cloud maintainer will be informed by e-mail when a new update is issued; in addtion, CCP4 Cloud users may see notification of new updates when working via CCP4 Cloud Client. Updates may be applied with the following commands, which can be, again, put into a single convenience script): ::
 
-    /path/to/CCP4/ccp4-7.1/bin/ccp4um -auto
+    /path/to/CCP4/ccp4-8.0/bin/ccp4um -auto
     /path/to/NC1/start-nc.sh 
     /path/to/NC2/start-nc.sh 
     /path/to/FE/start-fe.sh
@@ -401,7 +402,7 @@ Below is an *excerpt* of **FE** configuration settings that must be revised. Oth
                     }
         }
 
-    Here, ``"disk1"`` is the logical disk name, which can be used arbitrarily. However, it cannot be changed once user accounts are created
+    Here, ``"disk1"`` is the logical disk name, which can be chosen arbitrarily. Disk names cannot be changed once user accounts are created
 
 **jobs_safe**
     this is disk area for retaining working directories for failed jobs. In **FE** configuration, it should be given only if **NC** configurations place it in a shared file system
@@ -627,7 +628,7 @@ Admin user account is essential for CCP4 Cloud maintenance. By default, CCP4 Clo
 
 After this, go to CCP4 Cloud login page, and login as ``admin`` with password ``devel``. After login, proceed to *My Account* and change password to your liking.
 
-.. note:: you cannot remove user ``devel``, but it is advisable to change its password promptly.
+.. note:: for security purposes, change password for ``devel`` user promptly.
  
 
 

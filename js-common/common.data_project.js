@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.05.22   <--  Date of Last Modification.
+ *    14.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -66,7 +66,6 @@ function ProjectDesc()  {
   this.startmode    = start_mode.standard;  // will be overwritten when
                                             // project is created
   this.tasklistmode = tasklist_mode.full;
-  // this.project_version = 0;  // possibly, completely redundant and may be deleted
   this.disk_space   = 0.0;  // in MBs, corresponds to current project state
   this.cpu_time     = 0.0;  // in hours, accumulated over all project history
   this.njobs        = 0;    // over all project history

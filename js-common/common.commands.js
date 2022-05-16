@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    14.05.22   <--  Date of Last Modification.
+ *    16.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.7.003 [14.05.2022]';
+var jsCoFE_version = '1.7.003 [16.05.2022]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -107,6 +107,7 @@ var fe_reqtype = {
   updateUData_admin : '-updateUData_admin', // request to update user data by admin
   deleteUser        : '-deleteUser',        // request to delete user account and data
   deleteUser_admin  : '-deleteUser_admin',  // request to delete user account and data by admin
+  retireUser_admin  : '-retireUser_admin',  // request to retire user by admin
   resetUser_admin   : '-resetUser_admin',   // request to reset user password by admin
   updateAndRestart  : '-updateAndRestart',  // request to update and restart all servers
   getUserRation     : '-getUserRation',     // request to retrieve current user ration

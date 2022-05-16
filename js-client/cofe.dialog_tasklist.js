@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.03.22   <--  Date of Last Modification.
+ *    16.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -58,16 +58,17 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   this.dlg_width  = Math.min ( Math.max(700,4*this.dlg_width/9),6*this.dlg_width/8 );
   this.dlg_height = 6*window.innerHeight/8;
 
-  this.tabs_basic = null;
-  this.tabs_full  = null;
-  this.combobox   = null;
-  var help_link   = __user_guide_base_url + 'jscofe_tasklist.html';
+  this.tabs_basic   = null;
+  this.tabs_full    = null;
+  this.combobox     = null;
+  this.combobox_lbl = null;
+  var help_link     = __user_guide_base_url + 'jscofe_tasklist.html';
   if (projectDesc.startmode==start_mode.migrate)  {
     this.makeLayout ( 30 );
     this.combobox = new Combobox();
     this.combobox
-        .addItem  ( 'Hop-on mode'  ,'basic',projectDesc.tasklistmode==tasklist_mode.basic )
-        .addItem  ( 'Standard mode','full',projectDesc.tasklistmode==tasklist_mode.full  )
+        .addItem  ( 'Basic task list','basic',projectDesc.tasklistmode==tasklist_mode.basic )
+        .addItem  ( 'Full task list' ,'full' ,projectDesc.tasklistmode==tasklist_mode.full  )
         .setWidth ( '180px' );
   } else if (projectDesc.startmode==start_mode.auto)  {
     if (tree.countTasks()>0)  {
@@ -76,8 +77,8 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
       else  this.makeLayout ( 22 );
       this.combobox = new Combobox();
       this.combobox
-          .addItem  ( 'Autostart mode','basic',projectDesc.tasklistmode==tasklist_mode.basic )
-          .addItem  ( 'Standard mode' ,'full',projectDesc.tasklistmode==tasklist_mode.full  )
+          .addItem  ( 'Basic task list','basic',projectDesc.tasklistmode==tasklist_mode.basic )
+          .addItem  ( 'Full task list' ,'full' ,projectDesc.tasklistmode==tasklist_mode.full  )
           .setWidth ( '180px' );
     } else  {
       this.makeLayout ( 20 );
@@ -86,9 +87,15 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   } else
     this.makeLayout ( 10 );
 
+  if (this.combobox)  {
+    this.combobox_lbl = new Label ( 'Switch to full list<br>for more tasks' );
+    this.combobox_lbl.setFontSize('80%').setFontItalic(true).setWidth('150px');
+  }
+
   if (this.tabs_basic)  {
-    this.tabs_basic.setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
-    this.tabs_full .setVisible ( projectDesc.tasklistmode==tasklist_mode.full );
+    this.tabs_basic  .setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
+    this.tabs_full   .setVisible ( projectDesc.tasklistmode==tasklist_mode.full  );
+    this.combobox_lbl.setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
   }
 
   (function(self){
@@ -111,6 +118,13 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
                         'position' : 'relative',
                         'left'     : '10px',
                         'top'      : '8px'
+                      });
+                      span.addWidget ( self.combobox_lbl );
+                      $(self.combobox_lbl.element).css({
+                        'position' : 'relative',
+                        'left'     : '200px',
+                        'top'      : '32px',
+                        'margin-top' : '-64px'
                       });
                     }
                   },
@@ -146,8 +160,9 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
 
     if (self.combobox)  {
       self.combobox.addOnChangeListener ( function(value,text){
-        self.tabs_basic.setVisible ( value==tasklist_mode.basic );
-        self.tabs_full.setVisible ( value==tasklist_mode.full );
+        self.tabs_basic  .setVisible ( value==tasklist_mode.basic );
+        self.tabs_full   .setVisible ( value==tasklist_mode.full  );
+        self.combobox_lbl.setVisible ( value==tasklist_mode.basic );
         if (value=='full')  self.tabs_full.refresh();
                       else  self.tabs_basic.refresh();
       });
@@ -319,12 +334,12 @@ var r = 0;  // grid row
   var infotip = '<i>This list contains ' + appName() +
                 ' tasks commonly used for structure completion after running ' +
                 'structure solution workflows. For full set of tasks, switch ' +
-                'to </i>"Standard set"<i> below.</i>';
+                'to </i>"Full task list"<i> below.</i>';
   if (key==30)
     infotip = '<i>This list contains ' + appName() +
               ' tasks commonly used for structure completion after importing ' +
               'partially solved structures. For full set of tasks, switch to ' +
-              '</i>"Standard set"<i> below.</i>';
+              '</i>"Full task list"<i> below.</i>';
   grid.setLabel ( infotip,r++,0,1,3 ).setFontSize('90%');
   grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('20%');
 
@@ -342,6 +357,7 @@ var r = 0;  // grid row
     new TaskFitWaters (),
 
     "Import Additional Data",
+    new TaskImport        (),
     new TaskImportReplace (),
   ];
 

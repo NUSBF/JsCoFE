@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.02.22   <--  Date of Last Modification.
+ *    15.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1043,6 +1043,77 @@ var userFilePath = getUserDataFName ( loginData );
 }
 
 
+function retireUser_admin ( loginData,userData )  {
+var response     = null;  // must become a cmd.Response object to return
+var userFilePath = getUserDataFName ( loginData );
+
+  log.standard ( 11,'delete user ' + userData.login +
+                    ' by admin, login ' + loginData.login );
+
+  if (utils.fileExists(userFilePath))  {
+
+    var uData = utils.readObject ( userFilePath );
+
+    if (uData)  {
+
+      ud.checkUserData ( uData );
+
+      if (uData.role==ud.role_code.admin)  {
+
+        userFilePath = getUserDataFName ( userData );
+
+        if (utils.fileExists(userFilePath))  {
+
+          var rationFilePath = ration.getUserRationFPath ( userData );
+          if (!utils.removeFile(rationFilePath))
+            log.error ( 111,'User ration file: ' + rationFilePath + ' cannot be removed.' );
+
+          var userProjectsDir = prj.getUserProjectsDirPath ( userData );
+          if (!utils.removePath(userProjectsDir))
+            log.error ( 112,'User directory: ' + userProjectsDir + ' cannot be removed.' );
+
+          if (utils.removeFile(userFilePath))  {
+
+            response = new cmd.Response ( cmd.fe_retcode.ok,'',
+              emailer.sendTemplateMessage ( userData,
+                        cmd.appName() + ' Account Deleted',
+                        'account_deleted_admin',{})
+            );
+
+            //removeUserFromHash ( userData.login );
+            __userLoginHash.removeUser ( userData.login );
+
+          } else  {
+            response = new cmd.Response ( cmd.fe_retcode.userNotDeleted,
+                                          'Cannot delete user data.','' );
+          }
+
+        } else  {
+          response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
+        }
+
+      } else  {
+        log.error ( 113,'Attempt to delete user data without privileges from login ' +
+                        loginData.login );
+        response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
+                                       'No admin privileges','' );
+      }
+    } else  {
+      log.error ( 114,'Admin user file: ' + userFilePath + ' cannot be read.' );
+      response = new cmd.Response ( cmd.fe_retcode.readError,
+                                    'Admin user file cannot be read.','' );
+    }
+  } else  {
+    log.error ( 115,'Admin user file: ' + userFilePath + ' does not exist.' );
+    response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
+                                   'Wrong admin login','' );
+  }
+
+  return response;
+
+}
+
+
 function resetUser_admin ( loginData,userData )  {
 var response     = null;  // must become a cmd.Response object to return
 var fe_server    = conf.getFEConfig();
@@ -1478,6 +1549,7 @@ module.exports.updateUserData       = updateUserData;
 module.exports.updateUserData_admin = updateUserData_admin;
 module.exports.deleteUser           = deleteUser;
 module.exports.deleteUser_admin     = deleteUser_admin;
+module.exports.retireUser_admin     = retireUser_admin;
 module.exports.resetUser_admin      = resetUser_admin;
 module.exports.sendAnnouncement     = sendAnnouncement;
 module.exports.manageDormancy       = manageDormancy;
