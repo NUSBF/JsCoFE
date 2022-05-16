@@ -85,9 +85,15 @@ def removeProject(driver, testName):
             clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
             time.sleep(1)
 
-            textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Delete')
-            textEls[-1].click()
-            time.sleep(1)
+            textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Yes, delete')
+            if len(textEls) > 0:
+                textEls[-1].click()
+                time.sleep(1)
+            else:             
+                textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Delete')
+                textEls[-1].click()
+                time.sleep(1)
+
 
         except:
             return ()
