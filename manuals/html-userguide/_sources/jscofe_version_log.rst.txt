@@ -3,9 +3,20 @@ CCP4 Cloud Version Log
 ======================
 
 
-**Version 1.7.002**
+**Version 1.7.003**
 
     *Released on --.--.2022 with CCP4 8.0.001*
+
+    **Changes and new features**
+
+    #. Fixed a bug in ``Import files`` task blocking import of XDS files
+
+    #. Project can be now organised in Folders
+
+
+**Version 1.7.002**
+
+    *Released on 27.04.2022 with CCP4 8.0.000*
 
     **Changes and new features**
 

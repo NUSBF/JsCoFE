@@ -68,7 +68,7 @@ Getting started
     :width: 16
     :height: 16
 
-The page shows the list of projects, which is empty at start. Press |addjob| button in the button line above the list, and create your first project. You will need to specify short project name, and a more descriptive title in the dialog appeared, for example:
+The page shows the list of projects, which is empty at the start. Press |addjob| button in the button line above the list, and create your first project. You will need to specify a short project name, and a more descriptive title in the dialog appeared, for example:
 
 .. image:: images/add_project.png
          :scale: 50 %
@@ -82,7 +82,7 @@ The project list is both sortable (use controls found in column titles) and sele
     :width: 16
     :height: 16
 
-You can delete your projects as well: simply select unwanted project in the list and press |delete| button. Do this with due care: once deleted, projects cannot be restored.
+You can delete your projects as well: simply select the unwanted project in the list and press the |delete| button. Do this with due care: once deleted, projects cannot be restored.
 
 .. |delete| image:: images/delete.png
     :width: 16
@@ -102,7 +102,7 @@ Project export and import
 
 Using the |Export| button, you can download the selected project as a compressed RAR archive. Exported archives can be uploaded later to your CCP4 Cloud account using the |Import| button above the project list.
 
-Exporting projects may be needed if there is no disk space left in your account, personal archival or for transferring data to another CCP4 Cloud setup.
+Exporting projects may be needed if there is no disk space left in your account, personal archival, or for transferring data to another CCP4 Cloud setup.
 
 Beware that projects usually grow to a considerable size, from 100s MBs to few GBs. You will be advised about the project size before downloading.
 
@@ -114,7 +114,7 @@ After work
     :width: 16
     :height: 16
 
-Whenever you wish to end working with CCP4 Cloud, please ``do logout`` . This can be done through the Menu or by clicking on the exit button |logout| in the top-right corner. Doing so will ensure that all your data and projects will be found in exactly the same state as you left them.
+Whenever you wish to end working with CCP4 Cloud, please ``do logout``. This can be done through the Menu or by clicking on the exit button |logout| in the top-right corner. Doing so will ensure that all your data and projects will be found in exactly the same state as you left them.
 
 Do not worry about jobs still running: they will not be terminated if you quit your working session.
 

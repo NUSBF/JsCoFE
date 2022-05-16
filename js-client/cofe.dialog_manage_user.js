@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.05.22   <--  Date of Last Modification.
+ *    14.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -156,12 +156,12 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
           click: function() {
 
             new QuestionBox ( 'Delete User Account',
-                '<h2>Delete User Account</h2>' +
-                'Account of <i>' + dlg.userData.name + '</i> will be deleted.<p>' +
-                'Once deleted, all user data, including registration details,<br>' +
-                'imported files, projects and results will be removed from<br>' +
-                'the server irrevocably.<p>' +
-                'Are you sure?',
+                '<div style="width:450px;"><h2>Delete User Account "' +
+                dlg.userData.login + '"</h2>Account "<i>' + dlg.userData.login +
+                '</i>" will be deleted.<p>Once deleted, all user data, ' +
+                'including registration details, imported files, projects ' +
+                'and results will be removed from the server irrevocably.' +
+                '<p>Are you sure?</div>',
                 'Yes, delete',function(){
                   serverRequest ( fe_reqtype.deleteUser_admin,dlg.userData,
                                   'Delete User', function(response){
@@ -177,13 +177,72 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                     $(dlg.element).dialog("close");
                   },null,'persist' );
                 },
-                'Cancel',function(){},'msg_confirm');
+                'Cancel',function(){},'msg_question');
+          }
+
+        }, {
+          id   : "retire_btn",
+          text : "Retire User",
+          click: function() {
+
+            var inputBox = new InputBox ( 'Retire user' );
+            inputBox.setText ( '','user_leaving' );
+            var ibx_grid = inputBox.grid;
+            ibx_grid.setLabel    ( '<div style="width:300px"><h2>Retire user "' +
+                                   dlg.userData.login +
+                                   '"</h2>User\'s account will be suspended and ' +
+                                   'all their projects moved to the successor.' +
+                                   '<br>&nbsp;</div>',
+                                   0,2,2,3 );
+            ibx_grid.setLabel    ( 'Successor:&nbsp;',2,2,1,1 );
+            var name_inp  = ibx_grid.setInputText ( '',2,3,1,1 )
+                  .setStyle      ( 'text','^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
+                                   'login name of successor','' )
+                  .setFontItalic ( true )
+                  .setWidth      ( '200px' );
+            ibx_grid.setNoWrap   ( 2,2 );
+            ibx_grid.setVerticalAlignment ( 2,3,'middle' );
+            inputBox.addWidget   ( ibx_grid );
+            inputBox.launch ( 'Retire now',function(){
+              var succName = name_inp.getValue();
+              if (succName.length<=0)  {
+                new MessageBox ( 'No login name',
+                         '<h2>Successor login name not given</h2>' +
+                         'Successor login name must be specified.',
+                         'msg_stop' );
+                return false;
+              } else if (name_inp.element.validity.patternMismatch)  {
+                new MessageBox ( 'Invalid login name',
+                      '<h2>Invalid login name</h2>Provide a valid login name.',
+                      'msg_stop' );
+                return false;
+              }
+              alert ( 'Not implemented' );
+              return true;
+              serverRequest ( fe_reqtype.retireUser_admin,{
+                                userData  : dlg.userData,
+                                successor : succName
+                              },'Retire User', function(response){
+                if (response)
+                  new MessageBoxW ( 'Retire User',response,0.5 );
+                else
+                  new MessageBox ( 'Retire User',
+                    'Account of <i>' + dlg.userData.login +
+                    '</i> has been successfully deleted, and ' +
+                    'notification<br>sent to e-mail address:<p><b><i>' +
+                    dlg.userData.email + '</i></b>.' );
+                onExit_func();
+                $(dlg.element).dialog("close");
+              },null,'persist' );
+              return true;
+            });
+
           }
 
         }, {
 
           id   : "cancel_btn",
-          text : "Cancel",
+          text : "Close",
           click: function() {
             $(dlg.element).dialog("close");
           }

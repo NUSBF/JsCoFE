@@ -232,8 +232,8 @@ function ProjectListPage ( sceneId )  {
                    'msg_error' );
           return false;
         } else if (name_inp.element.validity.patternMismatch)  {
-          new MessageBox ( 'Illegal Project ID',
-                '<div style="width:400px"><h2>Illegal project ID</h2>' +
+          new MessageBox ( 'Invalid Project ID',
+                '<div style="width:400px"><h2>Invalid project ID</h2>' +
                 '<b>Project ID</b> should contain only latin letters, ' +
                 'numbers, undescores, dashes and dots, and must start ' +
                 'with a letter.</div>','msg_stop' );
