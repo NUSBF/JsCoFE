@@ -63,7 +63,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
         pdbLocal  = ""
         checkLine = "CHECK True\n"
         if "PDB_DIR" in os.environ:
-            pdbLocal  = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+            #pdbLocal  = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
             checkLine = "CHECK False\n"
         elif not self.have_internet():
             self.fail ( "<h3>No internet connection.</h3>" +\

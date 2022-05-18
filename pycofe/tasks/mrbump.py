@@ -66,7 +66,7 @@ class MrBump(basic.TaskDriver):
         pdbLine   = ""
         checkLine = "CHECK True"
         if self.checkPDB(False):
-            pdbLine   = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+            #pdbLine   = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
             checkLine = "CHECK False"
         elif not self.have_internet():
             self.fail ( "<h3>No internet connection.</h3>" +\

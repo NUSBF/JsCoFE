@@ -42,9 +42,10 @@ class MrBUMP(ccp4go_morda.MoRDa):
             return ""
 
         pdbLine = ""
-        if "PDB_DIR" in os.environ:
-            pdbLine = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
-        elif not self.have_internet():
+        #if "PDB_DIR" in os.environ:
+        #    pdbLine = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
+        #elif not self.have_internet():
+        if not self.have_internet():
             self.putMessage ( "<h3>No internet connection.</h3>" +\
                     "MrBUMP requires either access to PDB archive " +\
                     "installed locally or internet connection for " +\
