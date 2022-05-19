@@ -26,9 +26,11 @@
 
 # from fileinput import filename
 import os
+import stat
 # import uuid
 
 from pycofe.tasks  import basic
+from pycofe.auto   import auto
 
 # ============================================================================
 # StructurePrediction driver
@@ -60,6 +62,8 @@ class StructurePrediction(basic.TaskDriver):
 
     def run(self):
 
+        scriptf = "process.sh"
+
         # close execution logs and quit
 
         seq  = self.makeClass ( self.input_data.data.seq[0] )
@@ -85,16 +89,46 @@ class StructurePrediction(basic.TaskDriver):
         # if os.path.isdir(dirName):
 
         dirName = "af2_output"
-        os.mkdir ( dirName )
+        # os.mkdir ( dirName )
 
-        cmd = [
-          "--seqin", seqfilename,
-          "--out"  , dirName,
-          "--colabfold"
-        ]
+        # cmd = [
+        #   os.path.join ( os.environ["CCP4"],"bin","af2start" ),
+        #   "--seqin" , seqfilename,
+        #   "--out"   , dirName,
+        #   "--colabfold"
+        # ]
+        # self.putWaitMessageLF ( "Prediction in progress ..." )
+        # self.rvrow -= 1
+        # self.runApp ( "python",cmd,logType="Main",quitOnError=False )
+
+        script = "#!/bin/bash\n" +\
+                 os.path.join ( os.environ["CCP4"],"bin","af2start" ) +\
+                 " --seqin " + seqfilename  +\
+                 " --out " + dirName + " --colabfold\n"
+
+        self.stdout (
+            "-------------------------------------------------------------------------\n" +\
+            "   Processing script:\n\n" +\
+            script +\
+            "-------------------------------------------------------------------------\n"
+        )
+
+        f = open ( scriptf,"w" )
+        f.write ( script )
+        f.close()
+
+        os.chmod ( scriptf, stat.S_IRUSR  | stat.S_IXUSR )
+
         self.putWaitMessageLF ( "Prediction in progress ..." )
-        self.rvrow -= 1
-        self.runApp ( "af2start",cmd,logType="Main",quitOnError=False )
+        # self.rvrow -= 1
+
+        rc = self.runApp ( "env",[
+                                "-i",
+                                "HOME=" + os.environ["HOME"],
+                                "PATH=" + os.environ["PATH"],
+                                "ALPHAFOLD_CFG=" + os.environ["ALPHAFOLD_CFG"],
+                                "/bin/bash","-l","-c","./"+scriptf
+                            ],logType="Main",quitOnError=False )
 
         self.putTitle ( "Results" )
 
@@ -131,6 +165,7 @@ class StructurePrediction(basic.TaskDriver):
                     modelsNumber = modelsNumber +1
 
                     xyz.fixBFactors ( self.outputDir() )
+                    xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
 
                     if len(fpaths)>1:
                         self.putMessage ( "<h3>Prediction #" + str(modelsNumber) + "</h3>" )
