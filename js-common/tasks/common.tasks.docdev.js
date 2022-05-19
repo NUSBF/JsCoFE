@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.05.22   <--  Date of Last Modification.
+ *    17.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -67,7 +67,9 @@ function TaskDocDev()  {
                        'agogo|AGOGO',
                        'insegel|INSEGEL',
                        'karma|KARMA',
-                       'insipid|INSIPID'
+                       'insipid|INSIPID',
+                       'book|BOOK',
+                       'furo|FURO'
                       ],
            value    : 'material',
            iwidth   : 260,
