@@ -982,7 +982,9 @@ def renameProject(driver, testName):
     menuButton.click()
     time.sleep(1)
 
-    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+    clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+    if not clickResult:
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
     time.sleep(1)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
