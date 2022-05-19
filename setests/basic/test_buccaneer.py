@@ -31,7 +31,7 @@ def refmacAfterRevision(driver, waitLong):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
-    time.sleep(1)
+    time.sleep(6)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -87,7 +87,7 @@ def startBuccaneer(driver):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
-    time.sleep(1)
+    time.sleep(6)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -120,7 +120,7 @@ def startCCP4Build(driver):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with CCP4Build')
-    time.sleep(3)
+    time.sleep(6)
 
     inputNcycles = driver.find_elements_by_xpath("//input[@title='Choose a value between 1 and 50 and not less than the minimum number of cycles']")
     inputNcycles[-1].clear()
@@ -161,7 +161,7 @@ def startModelcraft(driver):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
-    time.sleep(3)
+    time.sleep(6)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -324,13 +324,13 @@ def test_1RefmacBasic(browser,
         sf.editRevisionStructure_rnase(d.driver, d.waitShort) # 3
         refmacAfterRevision(d.driver, d.waitLong) # 4
         startBuccaneer(d.driver) # 5
-        time.sleep(3)
+        time.sleep(6)
         sf.clickTaskInTaskTree(d.driver, '\[0004\]')
-        time.sleep(3)
+        time.sleep(6)
         startCCP4Build(d.driver) # 6
-        time.sleep(3)
+        time.sleep(6)
         sf.clickTaskInTaskTree(d.driver, '\[0004\]')
-        time.sleep(3)
+        time.sleep(6)
         startModelcraft(d.driver) # 7
 
     except:
