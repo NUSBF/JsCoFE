@@ -1,7 +1,7 @@
 /*
  *  ====================================================================
  *
- *    23.03.22   <--  Date of Last Modification.
+ *    19.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------
  *
@@ -42,7 +42,7 @@
 
     this._type   = 'TaskStructurePrediction';  // must give name of the class
     this.name    = 'Structure Prediction';    // default name to be shown in Job Tree
-    this.setOName ( 'af_struct' );  // default output file name template                                    
+    this.setOName ( 'af_struct' );  // default output file name template
     this.title   = 'Structure Prediction';         // title for job dialog
     // this.helpURL = './html/jscofe_task_structureprediction.html'; // documentation link,
                                           // please follow file name convention
@@ -111,7 +111,7 @@
   //  return './images_png/task_structureprediction_20x20.png';
   //}
 
-  TaskStructurePrediction.prototype.requiredEnvironment = function() { return ['CCP4','AF2_script']; }
+  TaskStructurePrediction.prototype.requiredEnvironment = function() { return ['CCP4','ALPHAFOLD_CFG']; }
 
 
   // 3. Define task version. Whenever task changes (e.g. receives new input

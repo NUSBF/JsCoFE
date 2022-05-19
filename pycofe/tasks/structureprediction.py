@@ -3,17 +3,17 @@
 #
 # ============================================================================
 #
-#    24.04.22   <--  Date of Last Modification.
+#    19.05.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SRF EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.srf jobManager jobDir jobId
+#     ccp4-python -m pycofe.structureprediction.srf jobManager jobDir jobId
 #
 #  where:
-#    jobManager  is either SHELL or SGE
+#    jobManager  is either SHELL, SGE or SLURM
 #    jobDir   is path to job directory, having:
 #      jobDir/output  : directory receiving output files with metadata of
 #                       all successful imports
@@ -24,9 +24,9 @@
 # ============================================================================
 #
 
-from fileinput import filename
+# from fileinput import filename
 import os
-import uuid
+# import uuid
 
 from pycofe.tasks  import basic
 
@@ -63,30 +63,38 @@ class StructurePrediction(basic.TaskDriver):
 
         # close execution logs and quit
 
-        seq = self.makeClass ( self.input_data.data.seq[0] )
-
+        seq  = self.makeClass ( self.input_data.data.seq[0] )
         sec1 = self.task.parameters.sec1.contains
 
-        filename=seq.getSeqFilePath(self.inputDir())
+        seqfilename = seq.getSeqFilePath(self.inputDir())
 
-        dirName=uuid.uuid4().hex
-
-
-        program = self.getParameter ( sec1.PROGRAM )
-
-        cmd=['-m', program,
-            '-p', dirName,
-            '-f', filename
-        ]
-
-        self.putWaitMessageLF ( "Prediction in progress ..." )
-        self.rvrow -= 1
-
-        appName=os.environ['AF2_script']
-
-        self.runApp ( appName,cmd,logType="Main",quitOnError=False )
+        # dirName=uuid.uuid4().hex
+        # program = self.getParameter ( sec1.PROGRAM )
+        #
+        # cmd=['-m', program,
+        #     '-p', dirName,
+        #     '-f', filename
+        # ]
+        #
+        # self.putWaitMessageLF ( "Prediction in progress ..." )
+        # self.rvrow -= 1
+        #
+        # appName=os.environ['ALPHAFOLD_CFG']
+        #
+        # self.runApp ( appName,cmd,logType="Main",quitOnError=False )
 
         # if os.path.isdir(dirName):
+
+        dirName = "af2_output"
+
+        cmd = [
+          "--seqin", seqfilename,
+          "--out"  , dirName,
+          "--colabfold"
+        ]
+        self.putWaitMessageLF ( "Prediction in progress ..." )
+        self.rvrow -= 1
+        self.runApp ( "af2start",cmd,logType="Main",quitOnError=False )
 
         self.putTitle ( "Results" )
 
