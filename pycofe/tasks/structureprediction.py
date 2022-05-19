@@ -60,7 +60,6 @@ class StructurePrediction(basic.TaskDriver):
 
     def run(self):
 
-
         # close execution logs and quit
 
         seq  = self.makeClass ( self.input_data.data.seq[0] )
@@ -86,6 +85,7 @@ class StructurePrediction(basic.TaskDriver):
         # if os.path.isdir(dirName):
 
         dirName = "af2_output"
+        os.mkdir ( dirName )
 
         cmd = [
           "--seqin", seqfilename,
