@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.05.22   <--  Date of Last Modification.
+#    20.05.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -107,10 +107,10 @@ class StructurePrediction(basic.TaskDriver):
                  " --out " + dirName + " --colabfold\n"
 
         self.stdout (
-            "-------------------------------------------------------------------------\n" +\
+            "--------------------------------------------------------------------------------\n" +\
             "   Processing script:\n\n" +\
             script +\
-            "-------------------------------------------------------------------------\n"
+            "--------------------------------------------------------------------------------\n"
         )
 
         f = open ( scriptf,"w" )
@@ -150,7 +150,7 @@ class StructurePrediction(basic.TaskDriver):
 
             for fpath_out in fpaths:
 
-                if len(fpaths) <=1:
+                if len(fpaths)<=1:
                     outFName = self.getXYZOFName ( )
                 else:
                     outFName = self.getXYZOFName ( modifier=modelsNumber+1 )
