@@ -114,11 +114,12 @@ def validate1AMR(driver, waitLong):
     print('Verifying refmac5  Rfree < 0.295... ')
     match = False
     for t in reversed(ttts):
-        match = re.search('refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', t)
+        match = re.search('\[(\d*)\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', t)
         if match:
-            break
+            if int(match.group(1)) > 16:
+                break
     assert match
-    assert float(match.group(2)) < 0.295
+    assert float(match.group(3)) < 0.295
 
     return ()
 
