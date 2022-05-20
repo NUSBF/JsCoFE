@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.05.21   <--  Date of Last Modification.
+#    20.05.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2022
 #
 # ============================================================================
 #
@@ -119,7 +119,8 @@ class Buster(basic.TaskDriver):
 
         cmd = [ "-m",hkl.getHKLFilePath(self.inputDir()),
                 "-p",xyzin,
-                "-d",self.buster_dir() ]
+                "-d",self.buster_dir(),
+                'PdbChk_ChecksNotToDo="PdbChk_MoleculeTooFarFromOrigin"' ]
 
         if libin:
             cmd += ["-l",libin]
