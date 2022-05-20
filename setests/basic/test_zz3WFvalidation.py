@@ -68,14 +68,14 @@ def validate3AEP(driver, waitLong):
     assert match
     assert float(match.group(2)) < 0.31
 
-    print('Verifying fitwaters  >90 ... ')
+    print('Verifying fitwaters  >30 ... ')
     match = False
     for t in ttts:
         match = re.search('fit waters -- Nwaters=(\d*)', t)
         if match:
             break
     assert match
-    assert float(match.group(1)) > 90
+    assert float(match.group(1)) > 30
 
     print('Verifying refmac5 Rfree < 0.28... ')
     match = False
