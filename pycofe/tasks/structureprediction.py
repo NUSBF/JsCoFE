@@ -7,7 +7,7 @@
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  SRF EXECUTABLE MODULE
+#  ALPHAFOLD EXECUTABLE MODULE
 #
 #  Command-line:
 #     ccp4-python -m pycofe.structureprediction.srf jobManager jobDir jobId
@@ -37,28 +37,28 @@ from pycofe.auto   import auto
 
 class StructurePrediction(basic.TaskDriver):
 
-    def add_seqid_remark ( self,model,seqid_lst ):
-        ens_path = model.getXYZFilePath ( self.outputDir() )
-        file = open ( ens_path,"r" )
-        fcnt = file.read()
-        file.close  ()
-        file = open ( ens_path,"w" )
-        model.meta["seqId_ens"] = []
-        for i in range(len(seqid_lst)):
-            file.write  ( "REMARK PHASER ENSEMBLE MODEL " +\
-                          str(i+1) + " ID " + seqid_lst[i] + "\n" )
-            model.meta["seqId_ens"].append ( seqid_lst[i] )
-        lst = fcnt.split ( "\n" )
-        for s in lst:
-            if "REMARK PHASER ENSEMBLE MODEL" not in s:
-                file.write ( s + "\n" )
-        # file.write  ( fcnt )
-        file.close  ()
-        model.seqrem  = True
-        model.simtype = "cardon"
-        if len(seqid_lst)==1:
-            model.meta["seqId"] = seqid_lst[0]
-        return
+    # def add_seqid_remark ( self,model,seqid_lst ):
+    #     ens_path = model.getXYZFilePath ( self.outputDir() )
+    #     file = open ( ens_path,"r" )
+    #     fcnt = file.read()
+    #     file.close  ()
+    #     file = open ( ens_path,"w" )
+    #     model.meta["seqId_ens"] = []
+    #     for i in range(len(seqid_lst)):
+    #         file.write  ( "REMARK PHASER ENSEMBLE MODEL " +\
+    #                       str(i+1) + " ID " + seqid_lst[i] + "\n" )
+    #         model.meta["seqId_ens"].append ( seqid_lst[i] )
+    #     lst = fcnt.split ( "\n" )
+    #     for s in lst:
+    #         if "REMARK PHASER ENSEMBLE MODEL" not in s:
+    #             file.write ( s + "\n" )
+    #     # file.write  ( fcnt )
+    #     file.close  ()
+    #     model.seqrem  = True
+    #     model.simtype = "cardon"
+    #     if len(seqid_lst)==1:
+    #         model.meta["seqId"] = seqid_lst[0]
+    #     return
 
     def run(self):
 
@@ -130,79 +130,118 @@ class StructurePrediction(basic.TaskDriver):
                                 "/bin/bash","-l","-c","./"+scriptf
                             ],logType="Main",quitOnError=False )
 
-        self.putTitle ( "Results" )
+        # import shutil
+        # shutil.copytree ( "/Users/eugene.krissinel/Downloads/af2-job_20/af2_output", dirName )
 
-        modelsNumber = 0
+        nModels = 0
 
-        fpaths = []   #  create a empty object list
-        xyzs   = []   #  output data objects
-
-        for file in os.listdir(dirName):
-            if file.lower().endswith(".pdb"): # find all pdb files in folder
-                fpaths.append(os.path.join(dirName, file))
-
-        if len(fpaths)<=0: # Result page in case of no models are found
-            self.putMessage ( "<i><b>No models are found " )
-        else: # if models are found
-
-            self.putMessage ( "<i><b>Prepared models are associated " +\
-                              "with sequence:&nbsp;" + seq.dname +\
-                              "</b></i>&nbsp;<br>&nbsp;" )
-
-            for fpath_out in fpaths:
-
-                if len(fpaths)<=1:
-                    outFName = self.getXYZOFName ( )
-                else:
-                    outFName = self.getXYZOFName ( modifier=modelsNumber+1 )
-
-                os.rename(fpath_out, outFName)
-
-                # model = self.registerModel ( seq,outFName,checkout=True )
-                xyz = self.registerXYZ ( outFName )
-
-                if xyz:
-
-                    modelsNumber = modelsNumber +1
-
-                    xyz.fixBFactors ( self.outputDir() )
-                    xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
-
-                    if len(fpaths)>1:
-                        self.putMessage ( "<h3>Prediction #" + str(modelsNumber) + "</h3>" )
-
-                    self.putMessage ( "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + xyz.dname )
-                    xyz.addDataAssociation ( seq.dataId )
-                    # sid='100.0'
-                    # model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
-                    # model.seqId = model.meta["seqId"]
-                    # model.rmsd  = model.meta["rmsd" ]
-
-                    # self.add_seqid_remark ( model,[sid] )
-
-                    self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Atomic coordinates",xyz,-1 )
-
-                    xyzs.append ( xyz )
-
-                    #models.append ( model )
-
-        if modelsNumber == 1:
-            self.generic_parser_summary["structureprediction"] = {
-
-                    "summary_line" : str(modelsNumber) + " structure predicted"
-            }
+        if rc.msg:
+            self.putTitle ( "Failed to make models" )
+            self.putMessage ( "<b>Execution errors</b>" )
         else:
-            self.generic_parser_summary["structureprediction"] = {
 
-                    "summary_line" : str(modelsNumber) + " structures predicted"
+            fpaths = []   #  create a empty object list
+            xyzs   = []   #  output data objects
 
-            }
+            coverage_png = ""
+            PAE_png      = ""
+            plddt_png    = ""
 
-        auto.makeNextTask ( self,{
-            "xyz" : xyzs,
-        }, log=self.file_stderr)
+            for file in os.listdir(dirName):
+                if file.lower().endswith(".pdb"): # find all pdb files in folder
+                    fpaths.append(os.path.join(dirName,file))
+                elif file.endswith("coverage.png"):
+                    coverage_png = "../" + dirName + "/" + file
+                elif file.endswith("PAE.png"):
+                    PAE_png      = "../" + dirName + "/" + file
+                elif file.endswith("plddt.png"):
+                    plddt_png    = "../" + dirName + "/" + file
 
-        self.success( (modelsNumber>0) )
+            if len(fpaths)<=0: # Result page in case of no models are found
+                self.putTitle ( "No models generated" )
+            else: # if models are found
+
+                if PAE_png:
+                    self.putMessage ( "<h3>PAE matrices</h3>" )
+                    self.putMessage1 ( self.report_page_id(),"<img src=\"" + PAE_png +\
+                                "\" height=\"200px\" style=\"position:relative; left:-140px;\"/>",
+                                self.rvrow,col=0,rowSpan=1 )
+                    self.rvrow += 1
+                if plddt_png:
+                    self.putMessage ( "<h3>PLLDT scores</h3>" )
+                    self.putMessage1 ( self.report_page_id(),"<img src=\"" + plddt_png +\
+                                "\" height=\"500px\" style=\"vertical-align: middle;\"/>",
+                                self.rvrow,col=0,rowSpan=1 )
+                    self.rvrow += 1
+                if coverage_png:
+                    self.putMessage ( "<h3>Sequence coverages</h3>" )
+                    self.putMessage1 ( self.report_page_id(),"<img src=\"" + coverage_png +\
+                                "\" height=\"500px\" style=\"vertical-align: middle;\"/>",
+                                self.rvrow,col=0,rowSpan=1 )
+                    self.rvrow += 1
+
+
+                self.putTitle ( "Generated models" )
+
+                self.putMessage ( "<i><b>Prepared models are associated " +\
+                                  "with sequence:&nbsp;" + seq.dname +\
+                                  "</b></i>&nbsp;<br>&nbsp;" )
+
+                for fpath_out in fpaths:
+
+                    if len(fpaths)<=1:
+                        outFName = self.getXYZOFName ( )
+                    else:
+                        outFName = self.getXYZOFName ( modifier=nModels+1 )
+
+                    os.rename ( fpath_out,outFName )
+
+                    # model = self.registerModel ( seq,outFName,checkout=True )
+                    xyz = self.registerXYZ ( outFName )
+
+                    if xyz:
+
+                        nModels = nModels +1
+
+                        xyz.fixBFactors ( self.outputDir() )
+                        xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+
+                        if len(fpaths)>1:
+                            self.putMessage ( "<h3>Prediction #" + str(nModels) + "</h3>" )
+
+                        self.putMessage ( "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + xyz.dname )
+                        xyz.addDataAssociation ( seq.dataId )
+                        # sid='100.0'
+                        # model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
+                        # model.seqId = model.meta["seqId"]
+                        # model.rmsd  = model.meta["rmsd" ]
+
+                        # self.add_seqid_remark ( model,[sid] )
+
+                        self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Atomic coordinates",xyz,-1 )
+
+                        xyzs.append ( xyz )
+
+                        #models.append ( model )
+
+            if nModels == 1:
+                self.generic_parser_summary["structureprediction"] = {
+
+                        "summary_line" : str(nModels) + " structure predicted"
+                }
+            else:
+                self.generic_parser_summary["structureprediction"] = {
+
+                        "summary_line" : str(nModels) + " structures predicted"
+
+                }
+
+            auto.makeNextTask ( self,{
+                "xyz" : xyzs,
+            }, log=self.file_stderr)
+
+
+        self.success( (nModels>0) )
         return
 
 

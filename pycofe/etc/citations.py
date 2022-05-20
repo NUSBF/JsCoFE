@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    01.01.22   <--  Date of Last Modification.
+#    20.05.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -72,7 +72,7 @@ citations = {
     'auto_tracing'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'diff_fourier'    : { 'name' : '', 'category' : 'service', 'refs' : [] },
     'mrparse'         : { 'name' : '', 'category' : 'primary', 'refs' : [] },
-    'gemmi'           : { 'name' : '', 'category' : 'primary', 'refs' : [] },
+    'env'             : { 'name' : '', 'category' : 'primary', 'refs' : [] },
 
     'pointless' : { 'name'     : 'Pointless',
                     'category' : 'primary',
@@ -843,6 +843,21 @@ citations = {
                         }]
                   },
 
+    'gemmi'   :   { 'name'     : 'GEMMI',
+                    'desc'     : 'library for structural biology',
+                    'category' : 'primary',
+                    'refs' : [{
+                          'authors' : 'Wojdyr, M.',
+                          'title'   : 'GEMMI: A library for structural biology',
+                          'journal' : 'J. Open Source Softw.',
+                          'volume'  : '7(73)',
+                          'year'    : '2022',
+                          'pages'   : '4200',
+                          'doi'     : '10.21105/joss.04200'
+                        }]
+                  },
+
+
     'ccp4mg'  :   { 'name'     : 'CCP4 MG',
                     'desc'     : 'CCP4 molecular graphics',
                     'category' : 'viewer',
@@ -857,7 +872,7 @@ citations = {
                         }]
                   },
 
-    'ccp4mg-primary'  :   { 'name'     : 'CCP4 MG',
+    'ccp4mg-primary'  :  { 'name'     : 'CCP4 MG',
                     'desc'     : 'CCP4 molecular graphics',
                     'category' : 'primary',
                     'refs'     : [{
