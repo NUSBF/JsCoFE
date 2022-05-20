@@ -119,8 +119,9 @@ class Buster(basic.TaskDriver):
 
         cmd = [ "-m",hkl.getHKLFilePath(self.inputDir()),
                 "-p",xyzin,
-                "-d",self.buster_dir(),
-                'PdbChk_ChecksNotToDo="PdbChk_MoleculeTooFarFromOrigin"' ]
+                "-d",self.buster_dir()
+                # 'PdbChk_ChecksNotToDo="PdbChk_MoleculeTooFarFromOrigin"'
+              ]
 
         if libin:
             cmd += ["-l",libin]

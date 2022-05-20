@@ -141,12 +141,13 @@ class StructurePrediction(basic.TaskDriver):
             if file.lower().endswith(".pdb"): # find all pdb files in folder
                 fpaths.append(os.path.join(dirName, file))
 
-        if len(fpaths) <=0: # Result page in case of no models are found
+        if len(fpaths)<=0: # Result page in case of no models are found
             self.putMessage ( "<i><b>No models are found " )
         else: # if models are found
 
             self.putMessage ( "<i><b>Prepared models are associated " +\
-                                                "with sequence:&nbsp;" + seq.dname + "</b></i>&nbsp;<br>&nbsp;" )
+                              "with sequence:&nbsp;" + seq.dname +\
+                              "</b></i>&nbsp;<br>&nbsp;" )
 
             for fpath_out in fpaths:
 
