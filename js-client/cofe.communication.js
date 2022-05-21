@@ -314,7 +314,8 @@ function processServerQueue()  {
               },
               'Start new working session',function(){
                 window.location = window.location;  // complete refresh
-              }
+              },
+              'msg_system'
           );
         }
       },__holdup_wait);

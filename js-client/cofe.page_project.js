@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.05.22   <--  Date of Last Modification.
+ *    21.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1177,7 +1177,7 @@ ProjectPage.prototype.makeDock = function()  {
           'Yes, remove',function(){
             self.dock.removeTask ( taskType );
           },
-          'Cancel',function(){} );
+          'Cancel',function(){},'msg_confirm' );
         return 0;
       },
 

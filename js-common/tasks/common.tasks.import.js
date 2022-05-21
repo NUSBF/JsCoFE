@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.10.21   <--  Date of Last Modification.
+ *    21.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -122,7 +122,7 @@ if (!__template)  {
                         },
                         'Finish later',function(){
                           callback_func ( true );
-                        });
+                        },'msg_question');
     } else
       callback_func ( true );
   }
@@ -204,7 +204,7 @@ if (!__template)  {
                               },
                               'Finish import',function(){
                                 panel.job_dialog.run_btn.click();
-                              });
+                              },'msg_question');
           }
         });
 

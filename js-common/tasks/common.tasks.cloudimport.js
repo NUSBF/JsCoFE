@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.21   <--  Date of Last Modification.
+ *    21.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Facility Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2021
+ *  (C) E. Krissinel, A. Lebedev 2018-2022
  *
  *  =================================================================
  *
@@ -121,7 +121,7 @@ if (!__template)  {
                         },
                         'Finish later',function(){
                           callback_func ( true );
-                        });
+                        },'msg_question');
     } else
       callback_func ( true );
   }
@@ -177,7 +177,7 @@ if (!__template)  {
                                 },
                                 'Finish import',function(){
                                   div.job_dialog.run_btn.click();
-                                });
+                                },'msg_question');
             }
           });
           return 1;  // close browser window

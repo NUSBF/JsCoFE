@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.11.21   <--  Date of Last Modification.
+ *    21.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Tree
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -1345,7 +1345,7 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func ) {
               tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
           if (onDelete_func)
             onDelete_func(false);
-        });
+        },'msg_confirm');
 
     }(this));
 
@@ -1507,7 +1507,7 @@ JobTree.prototype.stopJob = function ( nodeId,gracefully_bool,callback_func )  {
       if (callback_func)
         callback_func ( 1 );
 
-    },'Cancel',null );
+    },'Cancel',null,'msg_confirm' );
 
     if (callback_func)
       callback_func ( 0 );
