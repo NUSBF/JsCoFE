@@ -2228,15 +2228,18 @@ class TaskDriver(object):
         self.end_date = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         cpu_time = ""
         if self.task and hasattr(self.task,"cpu_time"):
-            cpu_time = "<br>CPU: " + "{:.3f}s".format(self.task.cpu_time*3600)
-            #hours = int(self.task.cpu_time)
-            #mins  = int((self.task.cpu_time-hours)*60)
-            #secs  = int(((self.task.cpu_time-hours)*60-mins)*60)
-            #msecs = int((((self.task.cpu_time-hours)*60-mins)*60-secs)*1000)
-            #cpu_time = "<br>CPU (sec): " + "{:02d}".format(hours) + ":" +\
-            #                         "{:02d}".format(mins)  + ":" +\
-            #                         "{:02d}".format(secs)  + "." +\
-            #                         "{:03d}".format(msecs)
+            # cpu_time = "<br>CPU: " + "{:.3f}s".format(self.task.cpu_time*3600)
+            # cpu_time = "<br>CPU: " + str(datetime.timedelta(seconds=round(self.task.cpu_time*3600,3)))
+            hours = int(self.task.cpu_time)
+            mins  = int((self.task.cpu_time-hours)*60)
+            secs  = int(((self.task.cpu_time-hours)*60-mins)*60)
+            msecs = int((((self.task.cpu_time-hours)*60-mins)*60-secs)*1000)
+            cpu_time = "<br>CPU: "
+            if hours:
+                cpu_time += "{:02d}:".format(hours)
+            if mins:
+                cpu_time += "{:02d}:".format(mins)
+            cpu_time += "{:02d}.".format(secs) + "{:03d}".format(msecs)
         self.putMessage1 ( self.title_grid_id,
                 "<div style=\"text-align:right;font-size:12px;white-space:nowrap;\">" +\
                 "CCP4 v." + self.getCCP4Version() + "; " +\
