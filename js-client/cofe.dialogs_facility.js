@@ -143,7 +143,7 @@ function FacilityCheckDialog ( task,onDone_fnc )  {
                   'automatically<br>after request is complete.</i>',
                   'Stop waiting',function(){
                     $(dlg.element).dialog( "close" );
-                  },'Wait',function(){} );
+                  },'Wait',function(){},'msg_confirm' );
           }
         }
       ]

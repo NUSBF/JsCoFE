@@ -118,7 +118,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                     $(dlg.element).dialog("close");
                   },null,'persist' );
                 },
-                'Cancel',function(){});
+                'Cancel',function(){},'msg_confirm');
           }
 
         }, {
