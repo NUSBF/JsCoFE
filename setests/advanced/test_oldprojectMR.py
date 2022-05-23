@@ -30,15 +30,18 @@ def startRefmac(driver, waitLong):
     time.sleep(1.25)
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
-    time.sleep(1.25)
+    time.sleep(6)
+
+    sf.clickByXpath(driver, "//button[contains(@style, 'images_png/runjob.png')]" )
 
     # There are several forms - active and inactive. We need one displayed.
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-    time.sleep(1)
+    #buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    #for buttonRun in buttonsRun:
+        #if buttonRun.is_displayed():
+            #buttonRun.click()
+            #break
+            
+    time.sleep(6)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
