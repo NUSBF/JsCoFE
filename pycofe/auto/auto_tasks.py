@@ -215,8 +215,7 @@ def mrbump ( name,revision,parentName, nModels ):
     auto_api.addTaskParameter(name, "MRNUM", nModels)
     return
 
-def modelprepXYZ ( name, revision, parentName ):
-    auto_api.addContext("revisionForPhaser", revision)
+def modelprepXYZ ( name, parentName ):
     xyz = auto_api.getContext("xyz")
     seq = auto_api.getContext("seq")
     if xyz and seq:
@@ -228,9 +227,9 @@ def modelprepXYZ ( name, revision, parentName ):
             auto_api.addTaskParameter(name, "MODIFICATION_SEL", "U")
     return
 
-def phaserFirst ( name,model,parentName ):
+def phaserFirst ( name,parentName ):
     revision = auto_api.getContext("revisionForPhaser")
-    auto_api.addContext("modelForPhaser", model)
+    model = auto_api.getContext("modelForPhaser")
 
     auto_api.addTask(name, "TaskPhaserMR", parentName)
     auto_api.addTaskData(name, "revision", revision)

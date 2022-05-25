@@ -67,18 +67,20 @@ def makeNextTask ( crTask,data ):
 
 
     elif crTask._type=="TaskASUDef":
-        auto_tasks.phaserFirst('phaser', data['model'], crTask.autoRunName)
+        auto_api.addContext("revisionForPhaser", data['revision'])
+        auto_tasks.phaserFirst('phaser', crTask.autoRunName)
         return
 
 
     elif crTask._type=="TaskStructurePrediction":
         if len(data["xyz"])>0:
             auto_api.addContext ( "xyz",data["xyz"][0] )
-            auto_tasks.modelprepXYZ('modelprepxyz', data['xyz'][0], crTask.autoRunName)
+            auto_tasks.modelprepXYZ('modelprepxyz', crTask.autoRunName)
         return
 
 
     elif crTask._type=="TaskModelPrepXYZ":
+        auto_api.addContext("modelForPhaser", data['model'])
         auto_tasks.asu("asu", crTask.autoRunName)
         return
 
