@@ -66,12 +66,14 @@ def makeNextTask ( crTask,data ):
 
 
     elif crTask._type=="TaskASUDef":  # could be elif crTask.autoRunName.startsWith("asu")
-        auto_tasks.modelprepXYZ('modelprepxyz', data['revision'], crTask.autoRunName)
+        auto_api.addContext("revisionForPhaser", data['revision'])
+        auto_tasks.modelprepXYZ('modelprepxyz', crTask.autoRunName)
         return
 
 
     elif crTask._type=="TaskModelPrepXYZ":
-        auto_tasks.phaserFirst('phaser', data['model'], crTask.autoRunName)
+        auto_api.addContext("modelForPhaser", data['model'])
+        auto_tasks.phaserFirst('phaser', crTask.autoRunName)
         return
 
     elif crTask._type=="TaskPhaserMR":
