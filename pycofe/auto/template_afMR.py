@@ -53,30 +53,33 @@ def makeNextTask ( crTask,data ):
         if len(data["unm"]) > 0:
             auto_tasks.aimless ( "aimless", crTask.autoRunName )
         else:
-            auto_tasks.asu("asu", crTask.autoRunName)
+            seq = auto_api.getContext('seq')
+            auto_tasks.afStructurePrediction('afPredictStructure', seq, crTask.autoRunName)
         return
 
 
     elif crTask._type=="TaskAimless":
         if len(data["hkl"])>0:
             auto_api.addContext ( "hkl",data["hkl"][0] )
-            auto_tasks.asu("asu", crTask.autoRunName)
+            seq = auto_api.getContext('seq')
+            auto_tasks.afStructurePrediction('afPredictStructure', seq, crTask.autoRunName)
         return
 
 
     elif crTask._type=="TaskASUDef":
-        seq = auto_api.getContext('seq')
-        auto_tasks.afStructurePrediction('afPredictStructure', seq, crTask.autoRunName)
+        auto_tasks.phaserFirst('phaser', data['model'], crTask.autoRunName)
         return
 
 
     elif crTask._type=="TaskStructurePrediction":
-        auto_tasks.modelprepXYZ('modelprepxyz', data['xyz'], crTask.autoRunName)
+        if len(data["xyz"])>0:
+            auto_api.addContext ( "xyz",data["xyz"][0] )
+            auto_tasks.modelprepXYZ('modelprepxyz', data['xyz'][0], crTask.autoRunName)
         return
 
 
     elif crTask._type=="TaskModelPrepXYZ":
-        auto_tasks.phaserFirst('phaser', data['model'], crTask.autoRunName)
+        auto_tasks.asu("asu", crTask.autoRunName)
         return
 
 
