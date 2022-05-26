@@ -193,14 +193,14 @@ def validate12AMR(driver, waitLong):
     assert match
     assert float(match.group(2)) < 0.33
 
-    print('Verifying arpwarp Rfree < 0.27... ')
-    match = False
-    for t in ttts:
-        match = re.search('arpwarp --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
-        if match:
-            break
-    assert match
-    assert float(match.group(2)) < 0.27
+    # print('Verifying arpwarp Rfree < 0.27... ')
+    # match = False
+    # for t in ttts:
+    #     match = re.search('arpwarp --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+    #     if match:
+    #         break
+    # assert match
+    # assert float(match.group(2)) < 0.27
 
     print('Verifying fitwaters >75 ... ')
     match = False
