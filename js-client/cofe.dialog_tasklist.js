@@ -694,6 +694,7 @@ var row      = 0;
     new TaskModelPrepXYZ   (),
     new TaskModelPrepAlgn  (),
     new TaskModelPrepMC    (),
+    new TaskSlice          (),
     'MR ensemble preparation',
     new TaskEnsembler      (),
     new TaskEnsemblePrepSeq(),
