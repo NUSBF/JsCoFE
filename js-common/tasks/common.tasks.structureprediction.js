@@ -55,34 +55,34 @@
     }
   ];
 
-  this.parameters = { // container for all input parameters
-
-    sec1  :  // unique Section ID used for fetching parameters in Task Driver
-        { type     : 'section',      // widget type
-          title    : 'Main options', // Section title
-          open     : true,       // true for the section to be initially open
-          position : [0,0,1,5],  // must span 5 columns
-          contains : {           // container for Section's parameters
-
-
-            PROGRAM :
-                  {
-                    type     : 'combobox', // for AF preferable (0 - 5)
-                    label    : 'Protocol number',
-                    tooltip  : 'The program that will be used for ' +
-                               'structure prediction',
-                    range    : ['1|1', // the part for python|the part for users
-                                '2|2',
-                                '3|3',
-                                '4|4',
-                                '5|5'
-                   ],
-                    value    : '1',
-                    position : [0,0,1,1]
-                  },
-          }
-        }
-  };
+  // this.parameters = { // container for all input parameters
+  //
+  //   sec1  :  // unique Section ID used for fetching parameters in Task Driver
+  //       { type     : 'section',      // widget type
+  //         title    : 'Main options', // Section title
+  //         open     : true,       // true for the section to be initially open
+  //         position : [0,0,1,5],  // must span 5 columns
+  //         contains : {           // container for Section's parameters
+  //
+  //
+  //           PROGRAM :
+  //                 {
+  //                   type     : 'combobox', // for AF preferable (0 - 5)
+  //                   label    : 'Protocol number',
+  //                   tooltip  : 'The program that will be used for ' +
+  //                              'structure prediction',
+  //                   range    : ['1|1', // the part for python|the part for users
+  //                               '2|2',
+  //                               '3|3',
+  //                               '4|4',
+  //                               '5|5'
+  //                  ],
+  //                   value    : '1',
+  //                   position : [0,0,1,1]
+  //                 },
+  //         }
+  //       }
+  // };
 
 }
 
@@ -104,7 +104,7 @@
 
   TaskStructurePrediction.prototype.desc_title = function()  {
   // this appears under task title in the task list
-    return 'finds structural homologs in AF Database';
+    return 'generate structure model with AlphaFild-2';
   }
 
   // TaskStructurePrediction.prototype.icon_large = function()  {

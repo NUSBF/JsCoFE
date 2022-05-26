@@ -21,7 +21,7 @@ export DOCREPO=/Users/eugene/Projects/jsCoFE/jscofe-doc
 export Xia2_durin=/path/to/durin-plugin.so
 
 # custom script for AlphaFold
-export ALPHAFOLD_CFG=1
+# export ALPHAFOLD_CFG=1
 
 # internal variable for mounting directopry with CCP4(i2) demo data
 export CDEMODATA=`ccp4-python -c "import sysconfig; print(sysconfig.get_path('purelib'))"`/ccp4i2/demo_data

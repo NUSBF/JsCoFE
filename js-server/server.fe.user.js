@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.05.22   <--  Date of Last Modification.
+ *    22.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1043,71 +1043,84 @@ var userFilePath = getUserDataFName ( loginData );
 }
 
 
-function retireUser_admin ( loginData,userData )  {
-var response     = null;  // must become a cmd.Response object to return
-var userFilePath = getUserDataFName ( loginData );
+function retireUser_admin ( loginData,meta )  {
+var response      = null;  // must become a cmd.Response object to return
+var admData       = readUserData ( loginData     );
+var userData      = meta.userData;
+var uData         = readUserData ( userData );
+var succLoginData = getUserLoginData ( meta.successor );
 
-  log.standard ( 11,'delete user ' + userData.login +
+  log.standard ( 16,'retire user ' + userData.login +
                     ' by admin, login ' + loginData.login );
 
-  if (utils.fileExists(userFilePath))  {
+  // sanity checks
 
-    var uData = utils.readObject ( userFilePath );
-
-    if (uData)  {
-
-      ud.checkUserData ( uData );
-
-      if (uData.role==ud.role_code.admin)  {
-
-        userFilePath = getUserDataFName ( userData );
-
-        if (utils.fileExists(userFilePath))  {
-
-          var rationFilePath = ration.getUserRationFPath ( userData );
-          if (!utils.removeFile(rationFilePath))
-            log.error ( 111,'User ration file: ' + rationFilePath + ' cannot be removed.' );
-
-          var userProjectsDir = prj.getUserProjectsDirPath ( userData );
-          if (!utils.removePath(userProjectsDir))
-            log.error ( 112,'User directory: ' + userProjectsDir + ' cannot be removed.' );
-
-          if (utils.removeFile(userFilePath))  {
-
-            response = new cmd.Response ( cmd.fe_retcode.ok,'',
-              emailer.sendTemplateMessage ( userData,
-                        cmd.appName() + ' Account Deleted',
-                        'account_deleted_admin',{})
-            );
-
-            //removeUserFromHash ( userData.login );
-            __userLoginHash.removeUser ( userData.login );
-
-          } else  {
-            response = new cmd.Response ( cmd.fe_retcode.userNotDeleted,
-                                          'Cannot delete user data.','' );
-          }
-
-        } else  {
-          response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
-        }
-
-      } else  {
-        log.error ( 113,'Attempt to delete user data without privileges from login ' +
-                        loginData.login );
-        response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
-                                       'No admin privileges','' );
-      }
-    } else  {
-      log.error ( 114,'Admin user file: ' + userFilePath + ' cannot be read.' );
-      response = new cmd.Response ( cmd.fe_retcode.readError,
-                                    'Admin user file cannot be read.','' );
-    }
-  } else  {
-    log.error ( 115,'Admin user file: ' + userFilePath + ' does not exist.' );
-    response  = new cmd.Response ( cmd.fe_retcode.wrongLogin,
-                                   'Wrong admin login','' );
+  if (userData.login==meta.successor)  {
+    log.error ( 17,'User and successor cannot be the same (' + userData.login + ').' );
+    return new cmd.Response ( cmd.fe_retcode.wrongLogin,'',{
+      code : 'duplicate_users'
+    });
   }
+
+  if (!admData)  {
+    log.error ( 18,'Admin user file: ' + adminFilePath + ' cannot be read.' );
+    return new cmd.Response ( cmd.fe_retcode.readError,
+                              'Admin user file cannot be read.','' );
+  }
+  if (admData.role!=ud.role_code.admin)  {
+    log.error ( 19,'Attempt to retire a user without privileges from login ' +
+                   loginData.login );
+    return new cmd.Response ( cmd.fe_retcode.wrongLogin,'No admin privileges','' );
+  }
+
+  if (!uData)  {
+    log.error ( 20,'User data file cannot be read, login=' + userData.login );
+    return new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
+  }
+
+  if (!succLoginData)  {
+    log.error ( 21,'Successor data file cannot be read, login=' + succLoginData.login );
+    return new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
+  }
+  var sData = readUserData ( succLoginData );
+  if (!sData)  {
+    log.error ( 22,'Successor data file cannot be read, login=' + succLoginData.login );
+    return new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
+  }
+
+  // check that there are no duplicate project ids
+
+  var userPrjList = prj.readProjectList ( userData );
+  var succPrjList = prj.readProjectList ( succLoginData );
+  var duplPrjIDs  = [];
+
+  for (var i=0;i<userPrjList.projects.length;i++)  {
+    var projectNo = succPrjList.getProjectNo ( userPrjList.projects[i].name );
+    if (projectNo>=0)  {
+      var userPrjData = userPrjList.projects[i];
+      if (userPrjData.desc.owner.login==succLoginData.login)  {
+        // Project is owned by user and clashes with one of successor's projects.
+        // We do not check here if clashing project is also shared or is in fact
+        // the same. All conflicts to be resolved by admin, succssor and user.
+        duplPrjIDs.push ( userPrjData.name );
+      }
+    }
+  }
+
+  if (duplPrjIDs.length>0)  {
+    log.error ( 23,duplPrjIDs.length + ' project ID(s) clashing.' );
+    return new cmd.Response ( cmd.fe_retcode.wrongLogin,'',{
+      code : 'duplicate_ids',
+      list : duplPrjIDs
+    });
+  }
+
+
+  response = new cmd.Response ( cmd.fe_retcode.ok,'',
+    emailer.sendTemplateMessage ( userData,
+              cmd.appName() + ' User Retired',
+              'user_retired_admin',{})
+  );
 
   return response;
 

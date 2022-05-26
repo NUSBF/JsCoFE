@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.05.22   <--  Date of Last Modification.
+ *    26.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -417,10 +417,11 @@ var r = 0;  // grid row
                   'your data best:</h3>',r++,0,1,4 );
 
   var task_list = [
-    new TaskWFlowAMR(),
-    new TaskWFlowSMR(),
-    new TaskWFlowAEP(),
-    new TaskWFlowDPL(),
+    new TaskWFlowAMR (),
+    new TaskWFlowAFMR(),
+    new TaskWFlowSMR (),
+    new TaskWFlowAEP (),
+    new TaskWFlowDPL (),
   ];
 
   for (var i=0;i<task_list.length;i++)  {
@@ -465,10 +466,11 @@ var r = 0;  // grid row
 
   var task_list = [
     "Workflows for starting a Project",
-    new TaskWFlowAMR(),
-    new TaskWFlowSMR(),
-    new TaskWFlowAEP(),
-    new TaskWFlowDPL(),
+    new TaskWFlowAMR (),
+    new TaskWFlowAFMR(),
+    new TaskWFlowSMR (),
+    new TaskWFlowAEP (),
+    new TaskWFlowDPL (),
     "Workflows for using within a Project",
     new TaskWFlowREL()
   ];
@@ -597,8 +599,8 @@ var row      = 0;
     this.makeSection ( 'Tasks in Development',[
       // new TaskCootUtils    (),
       // ccp4go2_task,
-      new TaskStructurePrediction(),
-      new TaskWFlowAFMR    (),
+      // new TaskStructurePrediction(),
+      // new TaskWFlowAFMR    (),
       new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
       new TaskFragon       (),
@@ -646,6 +648,11 @@ var row      = 0;
     new TaskXyz2Revision()
   ]));
   */
+
+  this.makeSection ( 'Structure Prediction',[
+    new TaskStructurePrediction()
+  ]);
+
 
   this.makeSection ( 'Data Processing',[
     new TaskXia2        (),
