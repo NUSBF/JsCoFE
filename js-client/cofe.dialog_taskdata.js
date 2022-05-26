@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.21   <--  Date of Last Modification.
+ *    26.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -191,7 +191,7 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
                              '<a href="javascript:' +
                                 'launchHelpBox(\'Data Management\',' +
                                 '\'' + __task_reference_base_url +
-                                  'doc.task.import.html#ccp4-cloud-data-managment\',null,10)"><i>' +
+                                  'doc.task.Import.html#ccp4-cloud-data-managment\',null,10)"><i>' +
                                 String('here').fontcolor('blue') + '</i></a>.',
                              drow++,0, 1,2 );
       } else
