@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.05.22   <--  Date of Last Modification.
+ *    26.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -21,7 +21,6 @@
 
 function startSession ( sceneId,dev_switch )  {
 
-
   setClientCode ( client_code.ccp4 );
 
   // set jsrview path, which is used in jsrview iframes
@@ -37,11 +36,13 @@ function startSession ( sceneId,dev_switch )  {
       __url_parameters[p[0]] = p[1];
     }
     // alert ( JSON.stringify(__url_parameters) );
-    var lpath = window.location.pathname.substr(1).split('/');  // skip first slash
-    var wpath = '/';
-    if (lpath.length>0)
-      wpath = '/' + lpath[0] + '/';
-    window.history.replaceState ( {},document.title,wpath );
+    if (window.location.href.indexOf('localhost')<0)  {
+      var lpath = window.location.pathname.substr(1).split('/');  // skip first slash
+      var wpath = '/';
+      if (lpath.length>0)
+        wpath = '/' + lpath[0] + '/';
+      window.history.replaceState ( {},document.title,wpath );
+    }
   }
 
   checkLocalService ( function(rc){
