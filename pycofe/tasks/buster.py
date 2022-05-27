@@ -207,6 +207,8 @@ class Buster(basic.TaskDriver):
         -sim_swap_equiv_plus          : same as -sim_swap_equiv but also considering Asn, Gln and His
         """
 
+        self.putWaitMessageLF ( "Refinement in progress ..." )
+
         # run buster
         os.environ["autoBUSTER_HIGHLIGHT"] = "no"
         os.environ["UseDictionaryCommonCompoundsOwn"] =\

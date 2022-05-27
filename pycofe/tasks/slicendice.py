@@ -116,6 +116,8 @@ class SliceNDice(basic.TaskDriver):
                 self.putMessage ( "<i>No solution was produced, although expected</i>" )
             else:
 
+                self.putMessage ( "&nbsp;" )
+
                 self.verdict_row = self.rvrow
                 self.rvrow += 4
 
