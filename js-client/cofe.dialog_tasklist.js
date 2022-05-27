@@ -597,7 +597,6 @@ var row      = 0;
     // */
 
     this.makeSection ( 'Tasks in Development',[
-      new TaskSliceNDice  (),
       // new TaskCootUtils    (),
       // ccp4go2_task,
       // new TaskStructurePrediction(),
@@ -683,6 +682,7 @@ var row      = 0;
     new TaskMorda (),
     new TaskMrBump(),
     new TaskBalbes(),
+    new TaskSliceNDice(),
     'No-sequence methods',
     new TaskSimbad() //,
     // 'No-model methods',
