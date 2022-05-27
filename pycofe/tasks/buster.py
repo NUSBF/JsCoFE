@@ -492,7 +492,7 @@ class Buster(basic.TaskDriver):
         #shutil.copy2 ( os.path.join(self.buster_dir(),"BUSTER_model.cif"),"BUSTER_model.cif" )
         #shutil.copy2 ( os.path.join(self.buster_dir(),"BUSTER_refln.cif"),"BUSTER_refln.cif" )
 
-        shutil.rmtree ( self.buster_dir() )
+        # shutil.rmtree ( self.buster_dir() )
 
         # for root, dirs, files in os.walk(self.buster_dir()):
         #     for name in files:

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.05.22   <--  Date of Last Modification.
+#    27.05.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -67,7 +67,7 @@ class StructurePrediction(basic.TaskDriver):
         # close execution logs and quit
 
         seq  = self.makeClass ( self.input_data.data.seq[0] )
-        sec1 = self.task.parameters.sec1.contains
+        # sec1 = self.task.parameters.sec1.contains
 
         seqfilename = seq.getSeqFilePath(self.inputDir())
 
