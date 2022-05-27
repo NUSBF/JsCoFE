@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.05.22   <--  Date of Last Modification.
+ *    27.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -597,6 +597,7 @@ var row      = 0;
     // */
 
     this.makeSection ( 'Tasks in Development',[
+      new TaskSliceNDice  (),
       // new TaskCootUtils    (),
       // ccp4go2_task,
       // new TaskStructurePrediction(),
