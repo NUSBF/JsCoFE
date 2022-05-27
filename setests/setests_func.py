@@ -975,6 +975,55 @@ def asymmetricUnitContents_2fx0(driver, waitShort):
 
     return()
 
+def exitProject(driver):
+    print('cloning test project')
+    menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
+    menuButton.click()
+    time.sleep(1)
+
+    clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+    if not clickResult:
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
+    time.sleep(3)
+
+
+
+def cloneProject(driver, testName):
+    print('cloning test project')
+    menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
+    menuButton.click()
+    time.sleep(1)
+
+    clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+    if not clickResult:
+        clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Clone')
+    time.sleep(1)
+    cloneButton = driver.find_element_by_xpath("//button[normalize-space()='Clone']")
+    ActionChains(driver).move_to_element(cloneButton).click(cloneButton).perform()
+    time.sleep(1)
+
+    projectInput = driver.find_elements_by_xpath("//input[contains(@value,'%s')]" % testName)
+    projectInput[0].click()
+    projectInput[0].clear()
+    projectInput[0].send_keys('clonedTest')
+    projectInput[-1].click()
+    projectInput[-1].clear()
+    projectInput[-1].send_keys('Cloned_%s' % testName)
+
+    textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Clone')
+    textEls[-1].click()
+    time.sleep(6)
+    # wait.until(EC.presence_of_element_located
+    #                ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'CloneTest-clone')")))
+
+
+    return ()
 
 def renameProject(driver, testName):
     print('Renaming succesfull test project')
@@ -1196,12 +1245,12 @@ def startBuccaneer(driver):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(1)
+    time.sleep(3)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
-    time.sleep(1)
+    time.sleep(3)
 
     return ()
 
