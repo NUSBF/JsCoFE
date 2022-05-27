@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.03.22   <--  Date of Last Modification.
+ *    27.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2558,8 +2558,9 @@ if (!dbx)  {
                                   ' R<sub>meas_ano</sub>=' + d.R_meas_ano   +
                                   ' SpG=' + d.Space_group  + ' ';
                         break;
-            case 'phaser'   : S += 'N<sub>sol</sub>=' + d.count +
-                                   ' LLG=' + d.llg + ' TFZ=' + d.tfz + ' ';
+            case 'phaser'   : if ('count' in d)
+                                S += 'N<sub>sol</sub>=' + d.count;
+                              S += ' LLG=' + d.llg + ' TFZ=' + d.tfz + ' ';
                         break;
             case 'cbuccaneer' : S += 'Compl=' + d.percentage + '% ';
                         break;

@@ -118,8 +118,25 @@ class SliceNDice(basic.TaskDriver):
 
                 self.putMessage ( "&nbsp;" )
 
-                self.verdict_row = self.rvrow
+                verdict_row = self.rvrow
                 self.rvrow += 4
+
+                splitId = None
+                llg     = None
+                tfz     = None
+                r_fact  = None
+                r_free  = None
+
+                with (open(os.path.join("slicendice_0","slicendice.log"),'r')) as fstd:
+                    for line in fstd:
+                        words = line.split()
+                        if len(words)==5 and words[0].startswith("split_"):
+                            splitId = words[0]
+                            llg     = words[1]
+                            tfz     = words[2]
+                            r_fact  = words[3]
+                            r_free  = words[4]
+                            break
 
                 shutil.copyfile ( refmac_pdb,self.getXYZOFName() )
                 shutil.copyfile ( refmac_mtz,self.getMTZOFName() )
@@ -150,17 +167,31 @@ class SliceNDice(basic.TaskDriver):
                         self.stderr ( " *** molprobity failure" )
                         self.rvrow = rvrow0
 
-                    # if meta:
-                    #     verdict_meta = {
-                    #         "data"       : { "resolution" : hkl.getHighResolution(raw=True) },
-                    #         "params"     : None, # will be read from log file
-                    #         "molprobity" : meta,
-                    #         "xyzmeta"    : structure.xyzmeta
-                    #     }
-                    #     suggestedParameters = verdict_refmac.putVerdictWidget (
-                    #           self,verdict_meta,self.verdict_row )
-                    #                                       # refmac_log=self.refmac_log )
+                    if meta and splitId:
+                        verdict_meta = {
+                            "data"       : { "resolution" : hkl.getHighResolution(raw=True) },
+                            "params"     : None, # will be read from log file
+                            "molprobity" : meta,
+                            "xyzmeta"    : structure.xyzmeta
+                        }
+                        refmac_log = os.path.join
+                        suggestedParameters = verdict_refmac.putVerdictWidget (
+                            self,verdict_meta,verdict_row,
+                            refmac_log=os.path.join("slicendice_0",splitId,"refmac",splitId+"_refmac.log") )
+                        # if suggestedParameters:
+                        #     self.task.suggestedParameters = suggestedParameters
+                        #     self.putCloneJobButton ( "Clone job with suggested parameters",
+                        #                              self.report_page_id(),verdict_row+3,0 )
 
+                    if splitId:
+                        self.generic_parser_summary["phaser"] = {
+                            "llg" : llg,
+                            "tfz" : tfz
+                        }
+                        self.generic_parser_summary["refmac"] = {
+                            "R_factor" : r_fact,
+                            "R_free"   : r_free
+                        }
 
         # self.generic_parser_summary["slicendice"] = {
         #   "summary_line" : str(nmodels) + " model(s) generated"
