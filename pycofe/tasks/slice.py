@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.08.21   <--  Date of Last Modification.
+#    27.05.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022
 #
 # ============================================================================
 #
@@ -43,70 +43,6 @@ from . import basic
 # Model preparation driver
 
 class Slice(basic.TaskDriver):
-
-
-    def make_models ( self,seq,xyz,modSel,sclpSel,csMode ):
-
-        # fpath_seq = seq.getSeqFilePath ( self.inputDir() )
-        # ensNo     = 0
-        ensOk     = False
-        models    = []
-
-        for i in range(len(xyz)):
-
-            # chainSel = xyz[i].chainSel
-            # if not chainSel:
-            if not xyz[i].chainSel:
-                chains = xyz[i].xyzmeta.xyz[0].chains
-                for j in range(len(chains)):
-                    if len(chains[j].seq)>0:
-                        chainSel = chains[j].id
-                        xyz[i].chainSel = chainSel
-                        break
-
-            fpath_out,sid = self.trim_chain ( xyz[i],xyz[i].chainSel,seq,modSel,sclpSel,csMode )
-
-            # if os.stat(fpath_out).st_size<100:
-            if not fpath_out:
-                if ensOk:
-                    self.putMessage ( "&nbsp;" )
-                self.putMessage ( "<h3>*** Failed to prepare model for " +\
-                                  xyz[i].dname + " (empty output)</h3>" )
-                ensOk = False
-            else:
-                model = self.registerModel ( seq,fpath_out,checkout=True )
-                if model:
-                    #if ensNo<1:
-                    if len(models)<1:
-                        self.putMessage ( "<i><b>Prepared models are associated " +\
-                                          "with sequence:&nbsp;" + seq.dname + "</b></i>" )
-                        self.putTitle ( "Results" )
-                    else:
-                        self.putMessage ( "&nbsp;" )
-                    #ensNo += 1
-                    ensOk  = True
-                    self.putMessage ( "<h3>Model #" + str(len(models)+1) + ": " + model.dname + "</h3>" )
-                    model.addDataAssociation ( seq.dataId )
-                    model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
-                    model.seqId = model.meta["seqId"]
-                    model.rmsd  = model.meta["rmsd" ]
-
-                    if modSel!="S":
-                        self.add_seqid_remark ( model,[sid] )
-
-                    self.putModelWidget ( self.getWidgetId("model_btn"),
-                                          "Coordinates",model )
-                    models.append ( model )
-
-                else:
-                    if ensOk:
-                        self.putMessage ( "&nbsp;" )
-                    self.putMessage ( "<h3>*** Failed to form Model object for " +\
-                                      xyz[i].dname + "</h3>" )
-                    ensOk = False
-
-        return models
-
 
     # ------------------------------------------------------------------------
 
