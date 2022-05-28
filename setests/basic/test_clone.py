@@ -170,7 +170,7 @@ def verifyModelcraft(driver, waitLong, jobNumber, targetRwork, targetRfree):
     rFree = 1.0
     print('Modelcraft verification, job ' + jobNumber)
 
-    time.sleep(1.05)
+    time.sleep(30)
     startTime = time.time()
 
     while (True):
