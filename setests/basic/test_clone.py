@@ -410,7 +410,7 @@ def test_cloneBasic(browser,
 
         sf.enterProject(d.driver, 'clonedTest')
         sf.clickTaskInTaskTree(d.driver, '\[0005\]')
-        time.sleep(30)
+        time.sleep(200)
 
         verifyModelcraft(d.driver, d.waitLong, '0005', 0.3, 0.3)
         sf.verifyBuccaneer(d.driver, d.waitLong, '0006', 0.3, 0.35)
