@@ -165,6 +165,42 @@ def startModelCraft(driver, waitLong):
 
     return ()
 
+def verifyModelcraft(driver, waitLong, jobNumber, targetRwork, targetRfree):
+
+    rWork = 1.0
+    rFree = 1.0
+    print('Modelcraft verification, job ' + jobNumber)
+
+    time.sleep(3)
+    startTime = time.time()
+
+    while (True):
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
+            # Job number as string
+            match = re.search('\[' + jobNumber + '\] modelcraft -- Compl=(.*)%.*R=(0\.\d*).*Rfree=(0\.\d*)', taskText)
+            if match:
+                rWork = float(match.group(2))
+                rFree = float(match.group(3))
+                break
+        if (rWork != 1.0) or (rFree != 1.0):
+            break
+        curTime = time.time()
+        if curTime > startTime + float(waitLong):
+            print('*** Timeout for Modelcraft results! Waited for %d seconds.' % waitLong)
+            break
+        time.sleep(60)
+
+    if (rWork == 1.0) or (rFree == 1.0):
+        print('*** Verification: could not find Rwork or Rfree value after Modelcraft run')
+    else:
+        print('*** Verification: Modelcraft Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecing <%0.2f)' % (
+            rWork, targetRwork, rFree, targetRfree))
+    assert rWork < targetRwork
+    assert rFree < targetRfree
+
+    return ()
+
 
 def refmacAfterBuccaner(driver, waitLong):
     print('Running REFMAC5')
@@ -373,7 +409,12 @@ def test_cloneBasic(browser,
         sf.clickTaskInTaskTree(d.driver, '\[0005\]')
         refmacAfterBuccaner(d.driver, d.waitLong)
         sf.renameProject(d.driver, d.testName)
-        
+
+        sf.enterProject(d.driver, 'clonedTest')
+        sf.verifyBuccaneer(d.driver, 900, '0006', 0.3, 0.35)
+        verifyModelcraft(d.driver, 1500, '0005', 0.3, 0.3)
+        sf.renameProject(d.driver, 'Cloned_cloneTest')
+
         d.driver.quit()
 
     except:
