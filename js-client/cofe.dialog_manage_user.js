@@ -217,22 +217,37 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                       'msg_stop' );
                 return false;
               }
-              alert ( 'Not implemented' );
-              return true;
+              // alert ( 'Not implemented' );
+              // return true;
               serverRequest ( fe_reqtype.retireUser_admin,{
                                 userData  : dlg.userData,
                                 successor : succName
                               },'Retire User', function(response){
-                if (response)
-                  new MessageBoxW ( 'Retire User',response,0.5 );
-                else
-                  new MessageBox ( 'Retire User',
-                    'Account of <i>' + dlg.userData.login +
-                    '</i> has been successfully deleted, and ' +
-                    'notification<br>sent to e-mail address:<p><b><i>' +
-                    dlg.userData.email + '</i></b>.' );
-                onExit_func();
-                $(dlg.element).dialog("close");
+                var stop_reason = '';
+                switch (response.code)  {
+                  case 'duplicate_users': stop_reason = 'Unsuitable successor name';
+                                          break;
+                  case 'no_privileges'  : stop_reason = 'No privileges';
+                                          break;
+                  case 'duplicate_ids'  : stop_reason = 'Duplicate project IDs';
+                                          break;
+                  default : alert ( JSON.stringify(response) );
+                }
+                if (stop_reason)
+                  new MessageBox ( stop_reason,'<div style="width:400px"><h2>' +
+                                      stop_reason + '</h2>' + response.message +
+                                      '.</div>','msg_stop' );
+
+                // if (response)
+                //   new MessageBoxW ( 'Retire User',response,0.5 );
+                // else
+                //   new MessageBox ( 'Retire User',
+                //     'Account of <i>' + dlg.userData.login +
+                //     '</i> has been successfully deleted, and ' +
+                //     'notification<br>sent to e-mail address:<p><b><i>' +
+                //     dlg.userData.email + '</i></b>.' );
+                // onExit_func();
+                // $(dlg.element).dialog("close");
               },null,'persist' );
               return true;
             });
