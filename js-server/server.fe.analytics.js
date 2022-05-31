@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.05.22   <--  Date of Last Modification.
+ *    31.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -361,7 +361,7 @@ var fname = path.parse(fpath).base;
     if (fname in this.doclog)  {
       this.doclog[fpath] = this.doclog[fname] + 1;
       delete this.doclog[fname];
-    } else
+    } else if (utils.fileExists(fpath))
       this.doclog[fpath] = 1;
   } else
     this.doclog[fpath]++;

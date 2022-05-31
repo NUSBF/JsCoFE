@@ -1044,11 +1044,10 @@ var userFilePath = getUserDataFName ( loginData );
 
 
 function retireUser_admin ( loginData,meta )  {
-var response      = null;  // must become a cmd.Response object to return
-var admData       = readUserData ( loginData     );
-var userData      = meta.userData;
-var uData         = readUserData ( userData );
-var succLoginData = getUserLoginData ( meta.successor );
+var admData    = readUserData ( loginData );
+var userData   = meta.userData;
+var uData      = readUserData ( userData );
+var sLoginData = getUserLoginData ( meta.successor );
 
   log.standard ( 16,'retire user ' + userData.login +
                     ' by admin, login ' + loginData.login );
@@ -1056,49 +1055,57 @@ var succLoginData = getUserLoginData ( meta.successor );
   // sanity checks
 
   if (userData.login==meta.successor)  {
-    log.error ( 17,'User and successor cannot be the same (' + userData.login + ').' );
-    return new cmd.Response ( cmd.fe_retcode.wrongLogin,'',{
-      code : 'duplicate_users'
+    var msg = 'User and successor cannot be the same (' + userData.login + ').';
+    log.error ( 17,msg );
+    return new cmd.Response ( cmd.fe_retcode.ok,'',{
+      code    : 'duplicate_users',
+      message : msg
     });
   }
 
   if (!admData)  {
-    log.error ( 18,'Admin user file: ' + adminFilePath + ' cannot be read.' );
+    log.error ( 18,'Admin user file cannot be read, login='+loginData.login );
     return new cmd.Response ( cmd.fe_retcode.readError,
-                              'Admin user file cannot be read.','' );
+                              'Admin user data cannot be read.','' );
   }
   if (admData.role!=ud.role_code.admin)  {
     log.error ( 19,'Attempt to retire a user without privileges from login ' +
                    loginData.login );
-    return new cmd.Response ( cmd.fe_retcode.wrongLogin,'No admin privileges','' );
+    return new cmd.Response ( cmd.fe_retcode.ok,'',{
+      code    : 'no_privileges',
+      message : 'Attempt to retire a user without having privileges'
+    });
   }
 
   if (!uData)  {
-    log.error ( 20,'User data file cannot be read, login=' + userData.login );
-    return new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
+    var msg = 'User data cannot be read, login=' + userData.login;
+    log.error ( 20,msg );
+    return new cmd.Response ( cmd.fe_retcode.readError,msg,'' );
   }
 
-  if (!succLoginData)  {
-    log.error ( 21,'Successor data file cannot be read, login=' + succLoginData.login );
-    return new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
+  if (!sLoginData)  {
+    var msg = 'Successor data file cannot be found (' + sLoginData.login +')';
+    log.error ( 21,msg );
+    return new cmd.Response ( cmd.fe_retcode.readError,msg,'' );
   }
-  var sData = readUserData ( succLoginData );
+  var sData = readUserData ( sLoginData );
   if (!sData)  {
-    log.error ( 22,'Successor data file cannot be read, login=' + succLoginData.login );
-    return new cmd.Response ( cmd.fe_retcode.wrongLogin,'','' );
+    var msg = 'Successor data file cannot be read (' + sLoginData.login +')';
+    log.error ( 22,msg );
+    return new cmd.Response ( cmd.fe_retcode.readError,msg,'' );
   }
 
   // check that there are no duplicate project ids
 
   var userPrjList = prj.readProjectList ( userData );
-  var succPrjList = prj.readProjectList ( succLoginData );
+  var succPrjList = prj.readProjectList ( sLoginData );
   var duplPrjIDs  = [];
 
   for (var i=0;i<userPrjList.projects.length;i++)  {
     var projectNo = succPrjList.getProjectNo ( userPrjList.projects[i].name );
     if (projectNo>=0)  {
       var userPrjData = userPrjList.projects[i];
-      if (userPrjData.desc.owner.login==succLoginData.login)  {
+      if (userPrjData.desc.owner.login==sLoginData.login)  {
         // Project is owned by user and clashes with one of successor's projects.
         // We do not check here if clashing project is also shared or is in fact
         // the same. All conflicts to be resolved by admin, succssor and user.
@@ -1109,20 +1116,98 @@ var succLoginData = getUserLoginData ( meta.successor );
 
   if (duplPrjIDs.length>0)  {
     log.error ( 23,duplPrjIDs.length + ' project ID(s) clashing.' );
-    return new cmd.Response ( cmd.fe_retcode.wrongLogin,'',{
-      code : 'duplicate_ids',
-      list : duplPrjIDs
+    return new cmd.Response ( cmd.fe_retcode.ok,'',{
+      code    : 'duplicate_ids',
+      message : 'Project(s) with ID(s):<p><i>' + duplPrjIDs.join(', ') +
+                '</i><p>are already found in successor\'s account'
     });
   }
 
+  setTimeout ( function(){   // move projects to successor
 
-  response = new cmd.Response ( cmd.fe_retcode.ok,'',
-    emailer.sendTemplateMessage ( userData,
+    // log out user and successor and suspend their accounts
+
+    var uDataFile = getUserDataFName ( uData );
+    var sDataFile = getUserDataFName ( sData );
+
+    var ulogin = uData.login;
+    __userLoginHash.removeUser ( ulogin );     // logout
+    uData.login = __suspend_prefix + uData.login;   // suspend
+    utils.writeObject ( uDataFile,uData );  // commit
+    uData.login = ulogin;
+
+    var slogin = sData.login;
+    __userLoginHash.removeUser ( slogin );     // logout
+    sData.login = __suspend_prefix + sData.login;   // suspend
+    utils.writeObject ( sDataFile,sData );  // commit
+    sData.login = slogin;
+
+    // loop and move
+    var folder_name = slogin + '\'s projects';
+    var failed_move = [];
+    for (var i=0;i<userPrjList.projects.length;i++)  {
+      var pName = userPrjList.projects[i].desc.name;
+      var uProjectDir = prj.getProjectDirPath ( uData,pName );
+      if (!utils.isSymbolicLink(uProjectDir))  {
+        var sProjectDir = prj.getProjectDirPath ( sData,pName );
+        if (utils.moveDir(uProjectDir,sProjectDir,false))  {
+          var pData = prj.readProjectData ( sData,pName );
+          pData.desc.owner.login = sData.login;
+          pData.desc.folderPath  = pData.desc.folderPath.replace (
+                                                  'My Projects',folder_name );
+          prj.writeProjectData ( sData,pData,true );
+        } else
+          failed_move.push ( userPrjList.projects[i].desc.name );
+      }
+    }
+
+    // update rations and activate user and successor accounts
+
+    var uRation = ration.getUserRation ( uData );
+    var sRation = ration.getUserRation ( sData );
+
+    sRation.storage      += uRation.storage;
+    sRation.storage_used += uRation.storage_used;
+    uRation.storage       = 1.0;  // block by outquoting
+
+    ration.saveUserRation ( sData,sRation );
+    ration.saveUserRation ( uData,uRation );
+
+    utils.writeObject ( uDataFile,uData );  // commit
+    utils.writeObject ( sDataFile,sData );  // commit
+
+    var msg = 'Operation finished successfully.';
+    if (failed_move.length>0)
+      msg = 'The following project(s) could not be moved:<p>' +
+            failed_move.join(', ');
+
+    emailer.sendTemplateMessage ( uData,
               cmd.appName() + ' User Retired',
-              'user_retired_admin',{})
-  );
+              'user_retired_admin',{
+                  message : msg
+              });
+    emailer.sendTemplateMessage ( sData,
+              cmd.appName() + ' User Retired',
+              'succ_retired_admin',{
+                  retLogin    : uData.login,
+                  message     : msg,
+                  folder_name : folder_name
+              });
 
-  return response;
+  },2000);
+
+  return new cmd.Response ( cmd.fe_retcode.ok,'',{
+    code : 'started'
+  });
+
+
+  // response = new cmd.Response ( cmd.fe_retcode.ok,'',
+  //   emailer.sendTemplateMessage ( userData,
+  //             cmd.appName() + ' User Retired',
+  //             'user_retired_admin',{})
+  // );
+  //
+  // return response;
 
 }
 

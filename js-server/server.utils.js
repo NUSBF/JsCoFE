@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.01.22   <--  Date of Last Modification.
+ *    31.05.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -754,114 +754,117 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
 
   fs.stat ( fpath,function(err,stats){
 
-    if (err)  {
+    if (stats && stats.isFile())  {
+      if (err)  {
 
-      if (persistance>0)  {
-        setTimeout ( function(){
-          send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
-                      persistance-1,nofile_callback );
-        },50 );
-      } else  {
-        var rc = true;
-        if (nofile_callback)
-          rc = nofile_callback ( fpath,mimeType,deleteOnDone,capSize );
-        else if (deleteOnDone)
-          removeFile ( fpath );
-        if (rc)  {
-          log.error ( 13,'Read file errors, file = ' + fpath );
-          log.error ( 13,'Error: ' + err );
-          server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-          server_response.end ( '<p><b>[05-0006] FILE NOT FOUND [' + fpath + ']</b></p>' );
+        if (persistance>0)  {
+          setTimeout ( function(){
+            send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
+                        persistance-1,nofile_callback );
+          },50 );
+        } else  {
+          var rc = true;
+          if (nofile_callback)
+            rc = nofile_callback ( fpath,mimeType,deleteOnDone,capSize );
+          else if (deleteOnDone)
+            removeFile ( fpath );
+          if (rc)  {
+            log.error ( 13,'Read file errors, file = ' + fpath );
+            log.error ( 13,'Error: ' + err );
+            server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+            server_response.end ( '<p><b>[05-0006] FILE NOT FOUND [' + fpath + ']</b></p>' );
+          }
         }
-      }
 
-    } else  {
+      } else  {
 
-      server_response.writeHeader ( 200, {
-          'Content-Type'      : mimeType,
-          //'Content-Length'    : stats.size
-          //'Transfer-Encoding' : 'chunked'
-          //'Content-Encoding' : 'gzip'
-          //'Vary'           : 'Accept-Encoding'
-          //'Content-Disposition' : 'inline'
-      });
+        server_response.writeHeader ( 200, {
+            'Content-Type'      : mimeType,
+            //'Content-Length'    : stats.size
+            //'Transfer-Encoding' : 'chunked'
+            //'Content-Encoding' : 'gzip'
+            //'Vary'           : 'Accept-Encoding'
+            //'Content-Disposition' : 'inline'
+        });
 
-      var fReadStream = fs.createReadStream ( fpath );
-      fReadStream.on ( 'end',function(){
-        server_response.end();
-        if (deleteOnDone)
-          removeFile ( fpath );
-      });
+        var fReadStream = fs.createReadStream ( fpath );
+        fReadStream.on ( 'end',function(){
+          server_response.end();
+          if (deleteOnDone)
+            removeFile ( fpath );
+        });
 
-      fReadStream.on ( 'error',function(e){
-        log.error ( 14,'Read file errors, file = ' + fpath );
-        console.error ( e.stack || e );
-        server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-        server_response.end ( '<p><b>[05-0007] FILE READ ERRORS</b></p>' );
-        if (deleteOnDone)
-          removeFile ( fpath );
-      });
+        fReadStream.on ( 'error',function(e){
+          log.error ( 14,'Read file errors, file = ' + fpath );
+          console.error ( e.stack || e );
+          server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+          server_response.end ( '<p><b>[05-0007] FILE READ ERRORS</b></p>' );
+          if (deleteOnDone)
+            removeFile ( fpath );
+        });
 
-      if ((capSize<=0) || (stats.size<=capSize))  {  // send whole file
+        if ((capSize<=0) || (stats.size<=capSize))  {  // send whole file
 
-        fReadStream.pipe ( server_response );
+          fReadStream.pipe ( server_response );
 
-      } else  {  // send capped file
+        } else  {  // send capped file
 
-        server_response.write ( '[[[[]]]]\n' );
+          server_response.write ( '[[[[]]]]\n' );
 
-        var inlet =
-          '\n\n' +
-          ' ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n' +
-          ' ************************************************************************\n' +
-          '            C  O  N  T  E  N  T       R  E  M  O  V  E  D \n' +
-          ' ************************************************************************\n' +
-          ' ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n' +
-          '\n';
+          var inlet =
+            '\n\n' +
+            ' ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n' +
+            ' ************************************************************************\n' +
+            '            C  O  N  T  E  N  T       R  E  M  O  V  E  D \n' +
+            ' ************************************************************************\n' +
+            ' ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n' +
+            '\n';
 
-        var ncut1 = (capSize - inlet.length)/2;
-        var ncut2 = stats.size - ncut1;
-        var nsent = 0;
-        fReadStream.on ( 'data',function(chunk){
-          var key = 0;  // do not write by default
-          var ns  = nsent + chunk.length;
-          var s;
-          if (nsent<ncut1)  {
-            if (ns<ncut1)
-              key = 1;  // write the whole chunk
-            else if (ns>ncut1)  {
-              key = 2;  // write modified data from s
-              var cstr = chunk.toString();
-              s   = cstr.substring(0,cstr.indexOf('\n',cstr.length-(ns-ncut1))) + inlet;
-              if (ns>ncut2)  {
-                cstr = cstr.slice ( ncut2-ns );
-                s   += cstr.substr(cstr.indexOf('\n'));
+          var ncut1 = (capSize - inlet.length)/2;
+          var ncut2 = stats.size - ncut1;
+          var nsent = 0;
+          fReadStream.on ( 'data',function(chunk){
+            var key = 0;  // do not write by default
+            var ns  = nsent + chunk.length;
+            var s;
+            if (nsent<ncut1)  {
+              if (ns<ncut1)
+                key = 1;  // write the whole chunk
+              else if (ns>ncut1)  {
+                key = 2;  // write modified data from s
+                var cstr = chunk.toString();
+                s   = cstr.substring(0,cstr.indexOf('\n',cstr.length-(ns-ncut1))) + inlet;
+                if (ns>ncut2)  {
+                  cstr = cstr.slice ( ncut2-ns );
+                  s   += cstr.substr(cstr.indexOf('\n'));
+                }
               }
+            } else if (nsent>=ncut1)  {
+              if (ns>ncut2)  {
+                key = 2;
+                var cstr = chunk.toString().slice(ncut2-ns);
+                s   = cstr.substr(cstr.indexOf('\n'));
+              }
+            } else  {
+              key = 1;
             }
-          } else if (nsent>=ncut1)  {
-            if (ns>ncut2)  {
-              key = 2;
-              var cstr = chunk.toString().slice(ncut2-ns);
-              s   = cstr.substr(cstr.indexOf('\n'));
+
+            if (key==1)  {
+              if (!server_response.write(chunk))
+                fReadStream.pause();
+            } else if (key==2)  {
+              if (!server_response.write(s))
+                fReadStream.pause();
             }
-          } else  {
-            key = 1;
-          }
+            nsent = ns;
 
-          if (key==1)  {
-            if (!server_response.write(chunk))
-              fReadStream.pause();
-          } else if (key==2)  {
-            if (!server_response.write(s))
-              fReadStream.pause();
-          }
-          nsent = ns;
+          });
 
-        });
+          server_response.on('drain',function(){
+            fReadStream.resume();
+          });
 
-        server_response.on('drain',function(){
-          fReadStream.resume();
-        });
+        }
 
       }
 

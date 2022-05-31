@@ -214,6 +214,7 @@ class Buster(basic.TaskDriver):
         os.environ["UseDictionaryCommonCompoundsOwn"] =\
                     os.path.join ( os.environ["CCP4"],"lib","data","monomers" )
         self.runApp ( "refine",cmd,logType="Main" )
+        self.putMessage ( "&nbsp;" )  # take the spinner off
 
         # check results and finish report
         have_results = False
