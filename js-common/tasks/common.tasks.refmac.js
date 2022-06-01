@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.04.22   <--  Date of Last Modification.
+ *    01.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -60,7 +60,8 @@ function TaskRefmac()  {
              open     : true,
              position : [0,0,1,5],
              contains : {
-                NCYC  : { type  : 'integer',
+                NCYC  : {
+                   type     : 'integer',
                    keyword  : 'none',
                    label    : 'Number of refinement cycles',
                    tooltip  : 'Number of refinement cycles',
@@ -68,7 +69,8 @@ function TaskRefmac()  {
                    value    : '10',
                    position : [0,0,1,1]
                 },
-                WAUTO_YES : { type : 'combobox',
+                WAUTO_YES : {
+                   type     : 'combobox',
                    keyword  : 'none',
                    label    : 'Overall data-geometry weight',
                    tooltip  : 'Overall Data-geometry weight',
@@ -76,7 +78,8 @@ function TaskRefmac()  {
                    value    : 'yes',
                    position : [1,0,1,1]
                 },
-                WAUTO_VAL : { type : 'real',
+                WAUTO_VAL : {
+                   type     : 'real',
                    keyword  : 'none',
                    label    : 'value',
                    tooltip  : 'Weight for X-ray term',
@@ -85,7 +88,8 @@ function TaskRefmac()  {
                    showon   : {'WAUTO_YES':['no']},
                    position : [1,3,1,1]
                 },
-                WAUTO_VAL_AUTO : { type : 'real_',
+                WAUTO_VAL_AUTO : {
+                   type     : 'real_',
                    keyword  : 'none',
                    label    : 'starting value',
                    tooltip  : 'Weight for X-ray term',
@@ -95,7 +99,8 @@ function TaskRefmac()  {
                    showon   : {'WAUTO_YES':['yes']},
                    position : [1,3,1,1]
                 },
-                VDW_VAL : { type : 'real_',
+                VDW_VAL : {
+                   type     : 'real_',
                    keyword  : 'none',
                    label    : 'VDW repulsion weight',
                    tooltip  : 'Weight factor for the VDW repulsion (leave blank for default value)',
@@ -103,14 +108,16 @@ function TaskRefmac()  {
                    value    : '',
                    position : [2,0,1,1]
                 },
-                MKHYDR : { type : 'combobox',
-                       keyword  : 'none',
-                       label    : 'Generate H-atoms for refinement',
-                       tooltip  : 'Select how to represent hydrogen atoms in refinement',
-                       range    : ['NO|No','YES|Yes if in input file','ALL|Yes'],
-                       value    : 'ALL',
-                       position : [3,0,1,3]
-                }  /*,
+                MKHYDR : {
+                   type     : 'combobox',
+                   keyword  : 'none',
+                   label    : 'Generate H-atoms for refinement',
+                   tooltip  : 'Select how to represent hydrogen atoms in refinement',
+                   range    : ['NO|No','YES|Yes if in input file','ALL|Yes'],
+                   value    : 'ALL',
+                   position : [3,0,1,3]
+                }
+                /*,
                 TWIN : { type : 'combobox',
                    keyword  : 'none',
                    label    : 'Crystal is twinned',
@@ -122,7 +129,8 @@ function TaskRefmac()  {
                 */
              }
     },
-     sec2 : { type     : 'section',
+    sec2 : {
+        type     : 'section',
         title    : 'Model Parameterisation',
         open     : false,
         position : [1,0,1,5],
@@ -238,8 +246,9 @@ function TaskRefmac()  {
               position : [9,5,1,1]
            },
              }
-     },
-     sec3 : { type     : 'section',
+    },
+    sec3 : {
+        type     : 'section',
         title    : 'Restraints',
         open     : false,
         position : [2,0,1,5],
@@ -287,19 +296,29 @@ function TaskRefmac()  {
               showon   : {'JELLY':['yes']},
               position : [1,8,1,1]
            },
+           MKLINKS : {
+              type     : 'combobox',
+              keyword  : 'none',
+              label    : 'Covalent/metal link identification',
+              tooltip  : 'Identify covalent/metal links automatlically and ' +
+                         'make the corresponding link records',
+              range    : ['NO|No','YES|Yes'],
+              value    : 'NO',
+              position : [2,0,1,3]
+           },
            HBOND_RESTR : { type   : 'combobox',
               keyword  : 'none',
               label    : 'Generate backbone H-bond restraints',
               tooltip  : 'Use ProSMART to generate H-bond restraints for the protein backbone',
               range    : ['no|No','yes|Yes'],
               value    : 'no',
-              position : [2,0,1,1]
+              position : [3,0,1,1]
            },
            EXTE_GEN : { type   : 'label',
               keyword  : 'none',
               label    : 'Generate external restraints<br>with following ProSMART parameters:',
               hideon   : {hmodel:[0,-1]},
-              position : [3,0,1,1]
+              position : [4,0,1,1]
            },
            ALL_BEST : { type   : 'combobox',
               keyword  : 'none',
@@ -308,7 +327,7 @@ function TaskRefmac()  {
               range    : ['all|All','best|Most structurally similar'],
               value    : 'all',
               hideon   : {hmodel:[0,-1]},
-              position : [3,3,1,1]
+              position : [4,3,1,1]
            },
            SEQID : { type : 'real',
               keyword  : 'none',
@@ -317,7 +336,7 @@ function TaskRefmac()  {
               range    : [0,100],
               value    : '75.0',
               hideon   : {hmodel:[0,-1]},
-              position : [4,3,1,1]
+              position : [5,3,1,1]
            },
            SIDE_MAIN : { type   : 'combobox',
               keyword  : 'none',
@@ -326,7 +345,7 @@ function TaskRefmac()  {
               range    : ['side|Main and side chain','main|Only main chain'],
               value    : 'side',
               hideon   : {hmodel:[0,-1]},
-              position : [5,3,1,1]
+              position : [6,3,1,1]
            },
            RMIN : { type : 'real',
               keyword  : 'none',
@@ -335,7 +354,7 @@ function TaskRefmac()  {
               range    : [0,'*'],
               value    : '2.5',
               hideon   : {hmodel:[0,-1]},
-              position : [6,3,1,1]
+              position : [7,3,1,1]
            },
            RMAX : { type : 'real',
               keyword  : 'none',
@@ -344,7 +363,7 @@ function TaskRefmac()  {
               range    : [0,'*'],
               value    : '6.0',
               hideon   : {hmodel:[0,-1]},
-              position : [7,3,1,1]
+              position : [8,3,1,1]
            },
            BFAC_RM : { type   : 'real',
               keyword  : 'none',
@@ -353,7 +372,7 @@ function TaskRefmac()  {
               range    : [0, '*'],
               value    : '2.0',
               hideon   : {hmodel:[0,-1]},
-              position : [8,3,1,1]
+              position : [9,3,1,1]
            },
            TOGGLE_ALT : { type   : 'combobox',
               keyword  : 'none',
@@ -362,7 +381,7 @@ function TaskRefmac()  {
               range    : ['yes|Yes','no|No'],
               value    : 'no',
               hideon   : {hmodel:[0,-1]},
-              position : [9,3,1,1]
+              position : [10,3,1,1]
            },
            OCCUPANCY : { type   : 'real',
               keyword  : 'none',
@@ -371,13 +390,13 @@ function TaskRefmac()  {
               range    : [0, 1],
               value    : '0.0',
               hideon   : {hmodel:[0,-1]},
-              position : [10,3,1,1]
+              position : [11,3,1,1]
            },
            EXTE_APPLY : { type   : 'label',
               keyword  : 'none',
               label    : 'Apply external restraints<br>with following REFMAC5 parameters:',
               hideon   : {hmodel:[0,-1]},
-              position : [11,0,1,1]
+              position : [12,0,1,1]
            },
           EXTE_WEIGHT : { type : 'real',
               keyword  : 'none',
@@ -386,7 +405,7 @@ function TaskRefmac()  {
               range    : [0,'*'],
               value    : '10.0',
               hideon   : {hmodel:[0,-1]},
-              position : [11,3,1,1]
+              position : [12,3,1,1]
            },
           EXTE_ALPHA : { type : 'real',
               keyword  : 'none',
@@ -395,7 +414,7 @@ function TaskRefmac()  {
               range    : ['*','*'],
               value    : '1.0',
               hideon   : {hmodel:[0,-1]},
-              position : [12,3,1,1]
+              position : [13,3,1,1]
           },
           EXTE_MAXD : { type : 'real',
               keyword  : 'none',
@@ -404,11 +423,12 @@ function TaskRefmac()  {
               range    : [0,'*'],
               value    : '4.2',
               hideon   : {hmodel:[0,-1]},
-              position : [13,3,1,1]
+              position : [14,3,1,1]
           }
         }
-     },
-     sec4 : { type     : 'section',
+    },
+    sec4 : {
+        type     : 'section',
         title    : 'Output',
         open     : false,
         position : [3,0,1,5],
@@ -441,8 +461,9 @@ function TaskRefmac()  {
               position : [1,3,1,1]
            },
         }
-     },
-     sec5 : { type     : 'section',
+    },
+    sec5 : {
+        type     : 'section',
         title    : 'Advanced',
         open     : false,
         position : [4,0,1,5],
@@ -514,7 +535,7 @@ TaskRefmac.prototype.constructor = TaskRefmac;
 TaskRefmac.prototype.icon = function()  { return 'task_refmac'; }
 
 TaskRefmac.prototype.currentVersion = function()  {
-  var version = 3;
+  var version = 4;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

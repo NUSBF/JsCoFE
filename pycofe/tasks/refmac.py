@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    20.04.22   <--  Date of Last Modification.
+#    01.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -218,7 +218,8 @@ class Refmac(basic.TaskDriver):
             if vdwrestraints:
                stdin.append ( 'VDWRESTRAINTS ' + vdwrestraints )
 
-        stdin.append ( 'MAKE HYDR ' + str(sec1.MKHYDR.value) )
+        stdin.append ( 'MAKE HYDR ' + str(sec1.MKHYDR.value)  )
+        stdin.append ( 'MAKE LINK ' + str(sec3.MKLINKS.value) )
 
         isTwinning = False
         if (str(hkl.useHKLSet) == 'TI') or (str(hkl.useHKLSet) == 'TF'):
