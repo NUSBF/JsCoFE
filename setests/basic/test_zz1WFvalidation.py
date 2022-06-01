@@ -202,14 +202,14 @@ def validate12AMR(driver, waitLong):
     # assert match
     # assert float(match.group(2)) < 0.27
 
-    print('Verifying fitwaters >75 ... ')
+    print('Verifying fitwaters >60 ... ')
     match = False
     for t in ttts:
         match = re.search('fit waters -- Nwaters=(\d*)', t)
         if match:
             break
     assert match
-    assert float(match.group(1)) > 75
+    assert float(match.group(1)) > 60
 
     print('Verifying refmac5  Rfree < 0.26... ')
     match = False
