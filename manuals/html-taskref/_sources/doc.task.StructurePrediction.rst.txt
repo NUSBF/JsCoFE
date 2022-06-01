@@ -1,0 +1,36 @@
+====================	
+Structure Prediction
+====================	
+
+Task designed for prediction a protein’s 3D structure from amino acid sequence with `ColabFold <https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb>`_ or `Openfold <https://colab.research.google.com/github/aqlaboratory/openfold/blob/main/notebooks/OpenFold.ipynb>`_ services.  
+
+------
+Output
+------
+
+**Predicted Aligned Error (PAE)** reports AlphaFold’s expected position error of predicted residue regarding the structure aligned. PAE is useful for assessing confidence in global features (molecule interface), especially domain packing. **Low PAE** suggests **AlphaFold is confident** about the relative domain positions. Meanwhile, **high PAE** values suggest the relative positions of the domains should not be interpreted.
+
+
+**PLLDT scores plot** shows the pLDDT score per position for each of the five AlphaFold models predicted.
+
+AlphaFold produces a per-residue estimate of its confidence score (**pLDDT**) ranging from 0 to 100. 
+                
+* **pLDDT > 90**: residues are expected to be positioned with a high accuracy. These models should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).
+                
+* **70 < pLDDT < 90** residues are expected to be positioned reasonably well (generally, a good backbone prediction).
+                
+* **50 < pLDDT < 70** corresponds to residues modelled with low confidence, which should be treated with caution.
+                
+* **pLDDT < 50** indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.
+
+**Sequence coverages plot** shows the number of homologous identified across the representative sequence and coloured by the sequence identity to query.
+
+
+**References**
+
+`Ozaki, Y., Suzuki, Y., Hawai, T. et al. Automated crystal structure analysis based on blackbox optimisation. npj Comput Mater 6, 75 (2020). <https://doi.org/10.1038/s41524-020-0330-9>`_
+
+`Mirdita, M., Ovchinnikov, S., Steinegger, M.. ColabFold - Making protein folding accessible to all. bioRxiv 2021.08.15.456425. <https://doi.org/10.1101/2021.08.15.456425>`_
+
+`Gustaf Ahdritz, Nazim Bouatta, Sachin Kadyan, Qinghui Xia, William Gerecke, & Mohammed AlQuraishi. (2021). aqlaboratory/openfold: Openfold v1.0.0 (v1.0.0). Zenodo. <https://doi.org/10.5281/zenodo.5709540>`_
+

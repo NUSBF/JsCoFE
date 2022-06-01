@@ -9,5 +9,8 @@ Data Processing
     doc.task.DUI
     doc.task.iMosflm
     doc.task.Aimless
+    doc.task.ChangeSpGHKL
+    doc.task.ChangeReso
+    doc.task.FreeRFlag
     
   

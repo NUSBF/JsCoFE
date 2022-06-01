@@ -4,11 +4,11 @@ Prepare MR Ensemble with CCP4mg
 
 This task starts `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ graphical viewer on your computer in a special mode, which allows you to find structural homologs to your target protein, trim and ensemble them interactively with full visual control in real-time. This task uses :doc:`MrBump <doc.task.MrBump>` software to make the :doc:`MR Ensemble <doc.task.Ensembler>` from given structural homologs.
 
-MR Ensembles are obtained with an alignment and truncation procedure using homologues structures found in the PDB and `AFDB (AlphaFold DataBase) <https://doi.org/10.1038/s41586-021-03819-2>`_ with a sequence-based search.
+MR Ensembles are obtained with an alignment and truncation procedure using homologues structures found in the PDB and `AFDB (AlphaFold DataBase) <https://doi.org/10.1038/s41586-021-03819-2>`__ with a sequence-based search.
 
-Automatically generated ensembles may be further improved by manual selection of found homologs and removing unsuitable structural features. That can be especially useful in cases where homologous structures, found by `phmmer <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002195>`_, have multiple domains and no structural alignment can adequately superpose all domains simultaneously. For such proteins, the user may wish to specify which domain to use as the search model or to use more than one domain with different structural alignments. In other instances, only distant homologues may be found and it may be necessary to use only part of the structures in MR.
+Automatically generated ensembles may be further improved by manual selection of found homologs and removing unsuitable structural features. That can be especially useful in cases where homologous structures, found by `phmmer <https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002195>`__, have multiple domains and no structural alignment can adequately superpose all domains simultaneously. For such proteins, the user may wish to specify which domain to use as the search model or to use more than one domain with different structural alignments. In other instances, only distant homologues may be found and it may be necessary to use only part of the structures in MR.
 
-It may be convenient to group, or cluster, the homologs found on the basis of their structural similarity. This can be done in CCP4mg interface with the rainbow colouring of structures displayed, using their `phmmer score <https://academic.oup.com/bioinformatics/article/21/7/951/268976>`_. The colouring scheme corresponds to that of the `HHpred <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1160169/>`_ web-application, with red indicating a high-scoring match through to blue at the lower end of the scale.
+It may be convenient to group, or cluster, the homologs found on the basis of their structural similarity. This can be done in CCP4mg interface with the rainbow colouring of structures displayed, using their `phmmer score <https://academic.oup.com/bioinformatics/article/21/7/951/268976>`__. The colouring scheme corresponds to that of the `HHpred <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1160169/>`_ web-application, with red indicating a high-scoring match through to blue at the lower end of the scale.
 
 
 ----------
@@ -44,7 +44,7 @@ Workflow
 
 The task requires only amino acid sequence to prepare MR Ensemble with MrBump and CCP4mg.
 
- * homologous structures are found in PDB and/or AFDB by :doc:`MrBump <doc.task.MrBump>`, which uses `phmmer <https://www.ebi.ac.uk/Tools/hmmer/search/phmmer>`_ for scenning the corresponding sequence databases.
+ * homologous structures are found in PDB and/or AFDB by :doc:`MrBump <doc.task.MrBump>`, which uses `phmmer <https://www.ebi.ac.uk/Tools/hmmer/search/phmmer>`__ for scenning the corresponding sequence databases.
 
  * Based on the sequence alignment, search models are made from found homologs using `Sculptor <https://doi.org/10.1107/S0907444910051218>`_, which can modify the the structures in three different ways: main-chain deletion, side-chain pruning and B-factor modification.
 

@@ -26,8 +26,8 @@ Content inspection
 
 The content of Structure Revision may be inspected in both input and output pages. In input pages, use the button with **magnifying glass** on the left from the **Structure Revision selection widget**. In output pages, use **Inspect** button on the left from the revision specification.
 
----------------------------------------------------------------
+----------------------------------------------------------------
 What is the difference between Structure and Structure Revision?
----------------------------------------------------------------
+----------------------------------------------------------------
 
 In CCP4 Cloud, **Structure** provides a description of crystal structure (a combination of atomic coordinates, phases, and electron density), and **Structure Revision** represents the state of the structure solution project in terms of data, both experimental and generated along given branch of the project. **Structure Revision includes Structure as one of its items.**

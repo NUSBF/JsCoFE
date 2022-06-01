@@ -13,6 +13,12 @@ CCP4 Cloud Version Log
 
     #. Project can be now organised in Folders
 
+    #. Fixed a bug in handling AFDB models, causing MR failure in certain cases
+
+    #. Added new tasks ``Slice`` for splitiing models in domains, and ``Slice-n-dice`` for splitting followed by auto-MR with Phaser
+
+    #. Covalent/metal link identification switch added in ``Refmac`` task
+
 
 **Version 1.7.002**
 

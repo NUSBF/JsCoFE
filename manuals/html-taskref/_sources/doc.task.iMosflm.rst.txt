@@ -2,7 +2,7 @@
 Interactive Image Processing with iMosflm
 =========================================
 
-`iMOSFLM <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3069742/>`_ is a graphical user interface to the diffraction data-integration program `MOSFLM <http://journals.iucr.org/d/issues/2006/01/00/ba5082/index.html>`_.
+`iMOSFLM <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3069742/>`__ is a graphical user interface to the diffraction data-integration program `MOSFLM <http://journals.iucr.org/d/issues/2006/01/00/ba5082/index.html>`__.
 MOSFLM  is a program to process diffraction data collected using the oscillation method (Arndt & Wonacott, 1977). MOSFLM process the resulting diffraction images into three stages. The first is the determination of the crystal parameters, in particular the crystal lattice (unit cell) and its orientation relative to a laboratory axial system (usually based on the X-ray beam direction and the rotation axis). This is usually referred to as autoindexing. Knowledge of these parameters then allows an initial estimate of the crystal mosaicity. The second step is the determination of accurate unit-cell parameters, using a procedure known as post-refinement. This requires the integration of one or more segments of data with a few images in each segment. The final step is the integration of the entire set of diffraction images, while simultaneously refining parameters associated with both the crystal and the detector.
 
 There are the six basic “tasks” that iMosflm can perform:
@@ -18,13 +18,13 @@ There are the six basic “tasks” that iMosflm can perform:
 Images
 ------
 
-`User Guide <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId486119>`_
+`User Guide <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId486119>`__
 
 .. tip::
         ``There is no need to select all the images in the dataset - iMosflm assumes that (normally) you will want to load a complete dataset, so it finds all images that fit the "image template" if you pick any file in the dataset and the displayed image will the one you chose.``
 
 
-Images collected using the Dectris Eiger detector are not written as a single file per image, but multiple images are written to a single file in **HDF5** format. iMosflm will read **HDF5 "master" files** (Not NeXus files). The program has been tested on HDF5 files produced at Diamond Light Source and ESRF. However, at present, there is no well defined standard for the way in which the experimental information is stored in the HDF5 files (wavelength, detector distance, beam coordinates, rotation angles etc), and so this information may be incomplete or incorrect.  It may therefore be necessary to enter or correct this data in iMosflm before attempting to process the images (see the `iMosflm tutorial <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId215473>`_ ).
+Images collected using the Dectris Eiger detector are not written as a single file per image, but multiple images are written to a single file in **HDF5** format. iMosflm will read **HDF5 "master" files** (Not NeXus files). The program has been tested on HDF5 files produced at Diamond Light Source and ESRF. However, at present, there is no well defined standard for the way in which the experimental information is stored in the HDF5 files (wavelength, detector distance, beam coordinates, rotation angles etc), and so this information may be incomplete or incorrect.  It may therefore be necessary to enter or correct this data in iMosflm before attempting to process the images (see the `iMosflm tutorial <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId215473>`__ ).
 
 --------
 Indexing
@@ -76,7 +76,7 @@ Data collection strategy
 
     **Suggestion for optimization of data collection**
 
-`User Guide <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver711/documentation/tutorial.html#mozTocId339960>`_
+`User Guide <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver711/documentation/tutorial.html#mozTocId339960>`__
 
 The total φ rotation to be used is normally calculated by MOSFLM based on the Laue group and the crystal orientation (the Auto setting).
 
@@ -86,7 +86,7 @@ Cell Refinement
 
     **Optimize the fit of observed to predicted spot positions, so that the measurement boxes can be placed accurately over the spots.**
 
-`User guide <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver711/documentation/tutorial.html#mozTocId885357>`_
+`User guide <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver711/documentation/tutorial.html#mozTocId885357>`__
 
 Indexing is based on approximations, and the fit of observed spots to their calculated positions can be improved by refinement. These approximations include the phi position of the centroid of each reflection and various parameters like crystal to detector distance and detector mis-setting angles. Provided that there are sufficient usable data at high enough resolution, refinement not only gives better information about where on the detector the spots occur, but also gives better estimates of both the crystal and instrument parameters.
 
@@ -110,7 +110,7 @@ Integration
 
     **recording how many counts in each spot, subtract background, usually fit reflection profiles.**
 
-`User guide <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId907047>`_
+`User guide <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html#mozTocId907047>`__
 
 The first part of integration is to work out where the diffraction spot is, and where it ends. The assumption is made that, in the region of the spot, the background is planar and may have a slope. The background plane and its slope are calculated from pixels in the neighbourhood of the spot, once the spot pixels have been determined. Mosflm uses a rectangular mask, which is divided between an octagonal spot region and the background region
 
@@ -168,4 +168,4 @@ Arndt, U. W. & Wonacott, A. J. (1977). Editors. The Rotation Method in Crystallo
 **ACKNOWLEDGEMENTS**
 
 
-This article uses materials from Dr. Harry Powell lecture  "Integration and Scaling".   We wish to thank  Dr. Harry Powell, Dr. Andrew Leslie, Dr. Owen Johnson for an amazing `iMosflm Tutorial <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html>`_.
+This article uses materials from Dr. Harry Powell lecture  "Integration and Scaling".   We wish to thank  Dr. Harry Powell, Dr. Andrew Leslie, Dr. Owen Johnson for an amazing `iMosflm Tutorial <https://www.mrc-lmb.cam.ac.uk/harry/imosflm/ver730/documentation/tutorial.html>`__.

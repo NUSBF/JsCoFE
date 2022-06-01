@@ -1,12 +1,10 @@
-===========================
-Data Reduction with Aimless
-===========================
+================================
+Merging and Scaling with Aimless
+================================
 
-`Aimless <http://journals.iucr.org/d/issues/2013/07/00/ba5190/index.html>`_ is a scaling program. It puts all the measurements on a common scale, averages measurements of symmetry-related reflections (using the symmetry determined previously) and produces many statistics that provide the first important measures of data quality.
+`Aimless <http://journals.iucr.org/d/issues/2013/07/00/ba5190/index.html>`__ puts all the measurements on a common scale, averages measurements of symmetry-related reflections (using the symmetry determined previously) and produces many statistics that provide the first important measures of data quality.
 
-**Data reduction** represent as series of operations are performed on the data.
-
-`Aimless <http://journals.iucr.org/d/issues/2013/07/00/ba5190/index.html>`_  is used immediately after the program POINTLESS `[Evans 2006] <https://doi.org/10.1107/S0907444905036693>`_ and  `[Evans_2011] <https://doi.org/10.1107/S090744491003982X>`_ , which determines the likely point group and possible space group, as well as optionally combining data from multiple files each containing a "sweep" of data and putting them on a common indexing system if necessary.
+Aimless is used immediately after the program POINTLESS `[Evans 2006] <https://doi.org/10.1107/S0907444905036693>`_ and  `[Evans_2011] <https://doi.org/10.1107/S090744491003982X>`_ , which determines the likely point group and possible space group, as well as optionally combining data from multiple files each containing a "sweep" of data and putting them on a common indexing system if necessary.
 
 -------------
 Basic Options
@@ -111,10 +109,10 @@ Output
 • **Data analysis (CTruncate)** => **Acentric Moments of I** => **2nd moment of I** if 2 probably not twinned, if 1.5 probably twinned.
 
 
-Common indicators of data precision and their recommended usage you can find `here <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4684713/table/T1/?report=objectonly>`_
+Common indicators of data precision and their recommended usage you can find `here <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4684713/table/T1/?report=objectonly>`__
 
 
-More about Aimlees you can find `here <http://www.ccp4.ac.uk/html/aimless.html>`_
+More about Aimlees you can find `here <http://www.ccp4.ac.uk/html/aimless.html>`__
 
 **References**
 

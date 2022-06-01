@@ -4,13 +4,19 @@ Work with CCP4 Cloud
 
 This tutorial is designed to describe how to start a project and load the data in CCP4 Cloud.
 
-The `CCP4 Cloud <https://cloud.ccp4.ac.uk/>`_ account should be created or/and CCP4 Software Suite version 7.1 and above must be installed (download `here <https://www.ccp4.ac.uk/download/>`_)
+The `CCP4 Cloud <https://cloud.ccp4.ac.uk/>`_ account should be created or/and CCP4 Software Suite version 7.1 and above must be installed (download `here <https://www.ccp4.ac.uk/download/>`_).
+
+**Creating an account on CCP4Cloud remote**
+
+.. youtube:: oZeaD54oovs
+   :align: center
+
 
 ------------------
 Starting a Project
 ------------------
 
-In CCP4 Cloud, your work is arranged in `Projects <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_myprojects.html>`_. Projects are used for organising your data in a logical way.
+In CCP4 Cloud, work is arranged in `Projects <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_myprojects.html>`_. 
 
 
 .. |addjob| image:: images/add.png
@@ -24,6 +30,10 @@ The CCP4 Cloud provides 3 projects initialisation modes:
 ++++++++++++++
 Autostart mode
 ++++++++++++++
+
+.. image:: images/autostart.gif
+   :align: center
+   :scale: 40 %
 
 
 Autostart mode is designed for starting with one of `automatic workflows <https://cloud.ccp4.ac.uk/manuals/html-taskref/Workflows.html>`_ featuring structure solution scenarios in CCP4 Cloud, and optimised list of essential tasks for structure completion which can be switched to the full list at any point.
@@ -45,19 +55,28 @@ Once added the Cloud will provide you a choice of the project templates:
 
 After the template was picked the workflow would ask you to upload the data. You may choose **CCP4 Cloud storage** in **Import data from** if you have no data, yet want to practice working in the Cloud.
 
+**Automation in CCP4 Cloud: Workflows**
+
+.. youtube:: ph2rxQSYiE0
+   :align: center
+
 +++++++++++++
 Standard mode 
 +++++++++++++
 
+.. image:: images/standart_mode.gif
+   :align: center
+   :scale: 40 %
+
 Standard mode is designed for operating all CCP4 Cloud tasks manually, with access to the full `task list <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_tasklist.html>`_ by default. The Cloud learns your preferences and suggests tasks as it accumulates knowledge about your habits. Those tasks will show up in the Suggested task tab
 
-Cloud has several `data import <https://cloud.ccp4.ac.uk/manuals/html-taskref/Data_Import.html>`_ tasks:
+Cloud has several `data import <https://cloud.ccp4.ac.uk/manuals/html-taskref/Data_Import.html>`__ tasks:
 
 .. image:: images/T0_001_data_import.png
    :align: center
    :scale: 80 %
 
-#. `Data import <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Import.html>`_ 
+#. `Data import <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Import.html>`__ 
 
 #. `Import Sequence(s) by Copy-Paste <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ImportSeqCP.html>`_
 
@@ -87,7 +106,7 @@ It will direct you to `Hop on task <https://cloud.ccp4.ac.uk/manuals/html-taskre
 CCP4 Cloud tutorials
 --------------------
 
-Tutorials include examples are designed for demonstrating the use of structure solution techniques in CCP4 Cloud. Tutorials are presented as seed projects with pre-loaded data, which can be imported into the account. Each tutorial has instructions which will uid you through project developmet stages required. 
+Tutorials include examples designed to demonstrate structure solution techniques in CCP4 Cloud. Tutorials are presented as seed projects with pre-loaded data, which can be imported into the account. Each tutorial has instructions that will guide you through the required project development stages. 
 
 Tutorials can be added by links below:
 

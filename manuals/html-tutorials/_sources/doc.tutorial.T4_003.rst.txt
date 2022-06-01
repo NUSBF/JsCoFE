@@ -64,21 +64,26 @@ We can find the position of the ligand by using Coot's **Unmodelled blobs** feat
 * Coot should find one blob - click the button to centre on the blob.
 
  If it finds many blobs then something has gone wrong... perhaps the map was masked using the ligand coordinates instead of the protein coordinates?
-* Zoom in (keyword: **m**) and you should see green difference density corresponding to the ligand. 
+
+* Zoom in (keyword: **m**) and you should see green difference density corresponding to the ligand.
 
 Now we must fit our ligand coordinates into the blob, whilst ensuring chemical sense using the AceDRG restraint dictionary.
 
 ``5. Fit the ligand``
 
 * Go to the **Ligand** menu, and select **Find Ligands** *(this tool used to be found in "Other Modelling Tools" in the "Calculate" menu)*.
+
 * Select the coordinates for the ligand (**C8M_from_dict**), and tick the box to do flexible fitting. 
 
- This will result in Coot trialling multiple conformers by sampling different rotatable bond angles – since this ligand has rotatable bonds, we try generating many conformers in the hope that one of them matches our blob sufficiently well.
+   This will result in Coot trialling multiple conformers by sampling different rotatable bond angles – since this ligand has rotatable bonds, we try generating many conformers in the hope that one of them matches our blob sufficiently well.
+
 * Ensure that the protein model is selected in the **Select Protein** section.
+  
 * Under **Where to Search?** select **Right here**.
+  
 * Leave everything else at the default values, and click **Find ligands**.
 
- Hopefully it will find one ligand - select this ligand. If the ligand is not found, then repeat the process again, perhaps increasing the number of conformers to trial.
+Hopefully it will find one ligand - select this ligand. If the ligand is not found, then repeat the process again, perhaps increasing the number of conformers to trial.
 The ligand should have been placed in roughly the correct place, but it is unlikely to be in exactly the correct conformation. Manual intervention is required in order to correctly position the ligand. 
 
 * Try real space refinement (keyword: **r**), and manually drag atoms until the ligand is in a reasonable position.
@@ -92,6 +97,7 @@ The ligand should have been placed in roughly the correct place, but it is unlik
 ``6. Re-refine the protein-ligand complex``
 
 Go back to the main job tree in CCP4 Cloud. Ensure that your **Model Building with Coot** job is selected, and click the green **+** button in order to add a follow-on job. Choose **Refinement with Refmac**.
+
 Run the job. Note that you do not need to explicitly provide the AceDRG ligand dictionary, as it is part of the structure revision – any particular job can **see** and thus use the output from all previous jobs up the tree. Close the job dialog, and wait for the job to finish.
 
 ``7. Inspect the results in Coot, and perform ligand validation``
@@ -99,11 +105,15 @@ Run the job. Note that you do not need to explicitly provide the AceDRG ligand d
 Follow the refinement job with a **Model Building with Coot** job. Note that the atomic model, the map coefficients, and the ligand geometry dictionary will be automatically transferred to Coot, as they are all part of the structure revision.
 
 Within Coot, click the **Go to (next) ligand** button in order to bring focus to the ligand. Cycle through the ligands until you find the correct one. Green and red difference density should help inform whether the current conformation of the ligand is reasonable, or if further (manual) changes are required in order to model the ligand correctly.
+
 In addition to looking at the fit-to-density, it is recommended to utilise Coot’s ligand validation tools in order to gain further insight regarding the quality of the ligand in the structural context of macromolecular complex:
 
 * Select **Environment Distances** from the **Measures** menu, and enable **Show Residue Environment** in order to analyse interactions between the protein and ligand. This helps to analyse the hydrogen-bonding network.
+
 * Select **Contact Dots for Ligand** from the **Ligand** menu. This helps to identify any atoms that clash.
+
 * Select **Display Ligand Distortions** from the **Ligand** menu. This assesses the geometry (bonds, angles, etc.) of the ligand, in order to compare the current conformation against the "ideal" values listed in the dictionary.
-To further analyse the ligand's environment, you can use Coot's Flatland Ligand Environment View. Select **FLEV this residue** from the Ligands menu. The Lidia ligand builder will open - click the **Env. Residues** button to analyse the ligand’s structural environment in 2D. Clicking the **Key** button will display a legend below the image.
+
+To further analyse the ligand's environment, you can use Coot's Flatland Ligand Environment View. Select **FLEV this residue** from the Ligands menu. The Lidia ligand builder will open - click the **Env. Residues** button to analyse the ligand's structural environment in 2D. Clicking the **Key** button will display a legend below the image.
 
 If the ligand requires further intervention in order to produce an optimal model then: fix the model in Coot, re-refine the model using REFMAC5, and inspect/validate the model in Coot. In practice, further rounds of manual and full-model refinement would be performed by iterating the above procedure.

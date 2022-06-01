@@ -1,8 +1,8 @@
 .. _shelx:
 
-The programs `SHELXC, SHELXD and SHELXE <https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html>`_ are designed to provide experimental phasing of macromolecules by the *MAD* (multi-wavelength anomalous dispersion), *SAD* (single-wavelength anomalous dispersion), *SIR* (single isomorphous replacement), *SIRAS* (combined SAD and SIR) and *RIP* (phasing based on radiation-induced changes in the structure) methods.
+The programs `SHELXC, SHELXD and SHELXE <https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html>`__ are designed to provide experimental phasing of macromolecules by the *MAD* (multi-wavelength anomalous dispersion), *SAD* (single-wavelength anomalous dispersion), *SIR* (single isomorphous replacement), *SIRAS* (combined SAD and SIR) and *RIP* (phasing based on radiation-induced changes in the structure) methods.
 
-**SHELXC** is designed to provide a simple and fast way of setting up the files for the programs `SHELXD <https://doi.org/10.1107/S0907444902011678>`_ (heavy atom location) and `SHELXE <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817699/>`_ (phasing and density modification).
+**SHELXC** is designed to provide a simple and fast way of setting up the files for the programs `SHELXD <https://doi.org/10.1107/S0907444902011678>`_ (heavy atom location) and `SHELXE <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817699/>`__ (phasing and density modification).
 
 ========
 SHELXC\D
@@ -27,13 +27,13 @@ In general the critical parameters for locating heavy atoms with SHELXD are:
     In the case of a soak, the rejection of sites on special positions should be switched off.
     
 
-more information you can find `here <https://strucbio.biologie.uni-konstanz.de/ccp4wiki/index.php?title=SHELX_C/D/E#SHELXD>`_
+more information you can find `here <https://strucbio.biologie.uni-konstanz.de/ccp4wiki/index.php?title=SHELX_C/D/E#SHELXD>`__
 
 ======
 SHELXE
 ======
 
-The program `SHELXE <https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html>`_ was originally designed for the experimental phasing of macromolecules. SHELXE employs the sphere-of-influence algorithm for density modification to improve these phases `[Sheldrick, 2002] <https://www.degruyter.com/view/journals/zkri/217/12/article-p644.xml>`_. It can also prove useful for expanding a small protein fragment to an almost complete polyalanine trace of the structure
+The program `SHELXE <https://journals.iucr.org/a/issues/2008/01/00/sc5010/index.html>`__ was originally designed for the experimental phasing of macromolecules. SHELXE employs the sphere-of-influence algorithm for density modification to improve these phases `[Sheldrick, 2002] <https://www.degruyter.com/view/journals/zkri/217/12/article-p644.xml>`_. It can also prove useful for expanding a small protein fragment to an almost complete polyalanine trace of the structure
 
 SHELXE autotracing algorithm is primarily designed to obtain a toehold in maps with very poor starting phases, e.g. with a mean phase error greater than 60°. The tracing of a polyalanine backbone, combining the phases from the trace with the experimental phases and repeating the density modification iteratively. The tracing proceeds as follows.
 
@@ -55,7 +55,7 @@ SHELXE always uses σ\ :sub:`A`\ weights based on the correlation coefficient be
     
     3. A reasonable poly-ALA trace (average 10 residues per chain) and a CC > 25%
 
-You can find more information about SHELXE  `here <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817699/>`_
+You can find more information about SHELXE  `here <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3817699/>`__
 
 **References**
 

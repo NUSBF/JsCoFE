@@ -32,5 +32,5 @@ In case you have anomalous diffraction dataset use:
     :maxdepth: 2
     
     doc.task.Crank2
-    doc.task.SHELX
     doc.task.Phaser
+    doc.task.SHELX

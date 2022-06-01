@@ -356,10 +356,6 @@ function readProjectList ( loginData )  {
           if (pdesc.folderPath in folderPaths)
                 folderPaths[pdesc.folderPath]++;
           else  folderPaths[pdesc.folderPath] = 1;
-          // if (folderPaths.indexOf(pdesc.folderPath)<0)  {
-          //   pList.addFolderPath ( pdesc.folderPath,0 );
-          //   folderPaths.push    ( pdesc.folderPath );
-          // }
         }
       }
     pList.resetFolders();

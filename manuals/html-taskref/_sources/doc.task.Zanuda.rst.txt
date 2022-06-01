@@ -37,7 +37,7 @@ Point Group
 
 In three dimensional objects, such as crystals, symmetry elements may be present in several different combinations.  In fact, in crystals there are 32 possible combinations of symmetry elements.  These operations can be thus combined to form a group of symmetry operations. These groups of operations are called **point groups** because the symmetry elements of these operations all pass through a single point of the object.Examples for point group symmetry operations are **rotation axes**, **inversion axes**, and **mirror planes**. ``In case of point group you have a point to which all symmetry operations go through`` with a net result that the actual molecule does not change.
 
-More about **Symmetry in Crystallography** you can find `here <http://xrayweb.chem.ou.edu/notes/symmetry.html>`_
+More about **Symmetry in Crystallography** you can find `here <http://xrayweb.chem.ou.edu/notes/symmetry.html>`__
 
 --------------
 Pseudosymmetry
@@ -73,4 +73,4 @@ In structures with one molecule per asymmetric unit (AU) there is no pseudosymme
 
 This article uses materials provided by Andrey Lebedev.
 
-More about **space group validation with Zanuda** you can find `here <https://www.ccp4.ac.uk/newsletters/newsletter48/articles/Zanuda/zanuda.html>`_
+More about **space group validation with Zanuda** you can find `here <https://www.ccp4.ac.uk/newsletters/newsletter48/articles/Zanuda/zanuda.html>`__
