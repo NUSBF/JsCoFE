@@ -1,0 +1,31 @@
+===============
+Project folders
+===============
+
+:ref:`Project<myprojects>` in CCP4 Cloud can be organised in folders.
+
+To move the project:
+
+1. **select the project** to be moved (1), 
+2. click move |move| button in the button line above
+3. select a target folder
+4. press select button
+
+.. image:: images/tips_folders2.png
+   :align: center
+
+
+.. |move| image:: images/folder_jobtree.png
+        :width: 16
+        :height: 16
+
+In order to display Project folders availible click on the |move| name of the folder you are currently in (1) or look for the Menu icon: |menu| in the top-left corner of the page and then press the Change project folder button in drop-down menu (2).
+
+.. |menu| image:: images/menu.png
+        :width: 16
+        :height: 16
+
+
+.. image:: images/tips_folders1.png
+   :align: center
+   :scale: 40 % 

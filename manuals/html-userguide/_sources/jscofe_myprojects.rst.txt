@@ -25,12 +25,11 @@ This is the page you find yourself in immediately after login. If you read this 
 Software Authorisation
 -----------------------
 
-.. _myprojects:
 
 CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. In order to use this software, a user needs to be authorised by the corresponding software provider. You can do that at **"My Account"** page.
 
     .. image:: images/My_account_Authorizations.png
-            :scale: 40 %
+            :scale: 50 %
             :align: center
 
 
@@ -42,6 +41,8 @@ Clik on |authorisation| manage button and you will redirect to the authorisation
 .. |authorisation| image:: images/authorisation.png
         :width: 16
         :height: 16
+
+.. _myprojects:
 --------
 Projects
 --------

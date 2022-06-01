@@ -2,11 +2,11 @@
 
 ==================
 Project Management
-
+==================
 
 ----------------
 Basic principles
-
+----------------
 
 Projects in CCP4 Cloud are designed to keep the track of structure solution process in such a way that it may be reviewed at any time later.
 

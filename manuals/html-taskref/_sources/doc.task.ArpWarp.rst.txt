@@ -2,7 +2,7 @@
 Automated Model Building with Arp/wArp
 ======================================
 
-`ARP/wARP <https://www.embl-hamburg.de/ARP/>`_ is a software suite for building macromolecular models in electron density maps. As a distinguishing feature of ARP/wARP approach, model building starts from interpreting a density map with free atoms of unknown chemical identity; all structural information for such chemically unassigned atoms is discarded. 
+`ARP/wARP <https://arpwarp.embl-hamburg.de/>`_ is a software suite for building macromolecular models in electron density maps. As a distinguishing feature of ARP/wARP approach, model building starts from interpreting a density map with free atoms of unknown chemical identity; all structural information for such chemically unassigned atoms is discarded. 
  
 **ARP/wARP** implementation in CCP4 Cloud tackles several tasks: 
 

@@ -2,7 +2,7 @@
 Arcimboldo Shredder
 ===================
 
-`Arcimboldo Shredder <http://chango.ibmb.csic.es/shredder>`_ uses fragments derived from distant homologs based on the experimental data, instead of by sequence similarity. In this approach, the initial template is systematically shredded, and fragments are scored against each unique solution of the rotation function. Results are combined into a score per residue and the template is trimmed accordingly.
+`Arcimboldo Shredder <http://chango.ibmb.csic.es/shredder>`__ uses fragments derived from distant homologs based on the experimental data, instead of by sequence similarity. In this approach, the initial template is systematically shredded, and fragments are scored against each unique solution of the rotation function. Results are combined into a score per residue and the template is trimmed accordingly.
 
 The Arcimboldo Shredder performs parallel and systematic molecular-replacement searches using a library of small structure motifs derived from a homologous structure and analyses the results to extract information from the persistence of solutions for different fragments among the noisy rotation-function results from Phaser.
 
@@ -46,10 +46,10 @@ Perform LLG-guided pruning
 
 LLG-guided pruning is used to trim the model of residues that are not contributing signal to the LLG at the target rmsd value.
 
-To find out more please read article `here <https://dx.doi.org/10.1107%2FS2059798318004357>`_
+To find out more please read article `here <https://dx.doi.org/10.1107%2FS2059798318004357>`__
 
 
-    more Shredder tutorial you can find on `here <http://chango.ibmb.csic.es/tutorial_shredder>`_ and `here <http://chango.ibmb.csic.es/tutorial_shredder_spherical>`_
+    more Shredder tutorial you can find on `here <http://chango.ibmb.csic.es/tutorial_shredder>`__ and `here <http://chango.ibmb.csic.es/tutorial_shredder_spherical>`__
 
 
 

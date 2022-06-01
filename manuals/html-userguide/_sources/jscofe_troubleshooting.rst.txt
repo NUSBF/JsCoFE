@@ -10,7 +10,7 @@ Troubleshooting
 Some tasks cannot be created or added to the job tree
 -----------------------------------------------------
 
-If a task cannot be created and added to the :ref:`Job Tree <job-tree>`, its icon in the :ref:`task-list` is shown in a red frame and the corresponding list entry is grayed. Clicking on the red-framed icon does not start :ref:`job-dialog` for the task; instead, an explanation of why the task cannot be run, is given. It will be one of the following:
+If a task cannot be created and added to the :ref:`Job Tree <job-tree>`, its icon in the :ref:`task-list` is shown in a red frame and the corresponding list entry is grayed. Clicking on the red-framed icon does not start :ref:`Job dialog<job-dialog>` for the task; instead, an explanation of why the task cannot be run, is given. It will be one of the following:
 
 * **not all input data, needed for the task, is available**
     Tasks see data produced by its ancestors in the :ref:`Job Tree <job-tree>`. Quite possibly, you need to import missing data or run another task to create the data needed. For example, ``Phaser`` and ``Molrep`` require molecular replacement model(s) or ensembles of models, which need to be prepared from atomic coordinates or sequences with appropriate model preparation tasks. If the data required is found in other branches of the :ref:`Job Tree <job-tree>`, you may access them by selecting jobs with needful data before adding the new one. For that, make multiple selections in :ref:`Job Tree <job-tree>` (hold "*Ctrl*" (Windows, Linux) or "*Apple*" (Mac OSX) button pressed and click on the respective jobs), select the parent for the next job in the end, and right-click on it for making the new task.
@@ -40,7 +40,7 @@ Job seems to never finish
 Occasionally, this may happen due to 4 reasons:
 
 * **job takes considerable time and only seems to be stalled**
-    Some jobs, typically automatic structure solvers, can take weeks time, depending on input data and parameters chosen. Inspect the output log in the "**Main Log**" tab of the :ref:`job-dialog`. If the log does not advance for really long time, you may consider the job as stalled and check the points below. If the log advances but shows signs of infinite looping, the job run away (see the next point). Otherwise, the job is running. If you wish you may :ref:`stop it<stop-job>`.
+    Some jobs, typically automatic structure solvers, can take weeks time, depending on input data and parameters chosen. Inspect the output log in the "**Main Log**" tab of the :ref:`Job dialog<job-dialog>`. If the log does not advance for really long time, you may consider the job as stalled and check the points below. If the log advances but shows signs of infinite looping, the job run away (see the next point). Otherwise, the job is running. If you wish you may :ref:`stop it<stop-job>`.
 
 * **job has run away**
     The computational process has entered an infinite loop, either because of a program bugs or because of algorithmic features. If you suspect that this is the situation, :ref:`stop job<stop-job>`.
@@ -55,7 +55,7 @@ Occasionally, this may happen due to 4 reasons:
 
 **Stopping a job**
 
-If you wish to stop a job, just press the "**Stop**" button in its :ref:`job-dialog`. The job should stop within several minutes, and normally much faster. Avoid deleting jobs that are shown as running, because this only removes a job from the project but *does not actually delete or stop it*.
+If you wish to stop a job, just press the "**Stop**" button in its :ref:`Job dialog<job-dialog>`. The job should stop within several minutes, and normally much faster. Avoid deleting jobs that are shown as running, because this only removes a job from the project but *does not actually delete or stop it*.
 
 
 .. _cant-clone:

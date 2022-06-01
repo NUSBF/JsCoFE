@@ -43,7 +43,11 @@ function FoldersBrowser ( title,projectList,currentFolderPath,funcKey,
   this.folders           = projectList.folders;
   this.currentFolderPath = currentFolderPath;
   this.onReturn_fnc      = onReturn_fnc;
-  this.nprojects         = this.findFolder(currentFolderPath).nprojects;
+  this.nprojects         = 0;
+  
+  var crFolder = this.findFolder(currentFolderPath);
+  if (crFolder)
+    this.nprojects = crFolder.nprojects;
 
   if ((funcKey=='move') && (this.nprojects<=0))  {
     new MessageBox ( 'No projects to move',

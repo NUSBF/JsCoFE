@@ -11,7 +11,7 @@ Tutorials
    :numbered:
    :maxdepth: 2
 
-
+   doc.tutorial.T0_001
    doc.tutorial.T1_001
    doc.tutorial.T2_001
    doc.tutorial.T3_004

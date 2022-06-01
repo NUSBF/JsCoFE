@@ -13,6 +13,7 @@ Task Reference
 
    Workflows
    Data_Import
+   Structure_prediction
    Data_Processing
    Asymmetric_Unit_and_Structure_Revision
    Automated_Molecular_Replacement
