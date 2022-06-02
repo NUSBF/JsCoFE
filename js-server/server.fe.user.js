@@ -1211,15 +1211,6 @@ var sLoginData = getUserLoginData ( meta.successor );
     code : 'started'
   });
 
-
-  // response = new cmd.Response ( cmd.fe_retcode.ok,'',
-  //   emailer.sendTemplateMessage ( userData,
-  //             cmd.appName() + ' User Retired',
-  //             'user_retired_admin',{})
-  // );
-  //
-  // return response;
-
 }
 
 
