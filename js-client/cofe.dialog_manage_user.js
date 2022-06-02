@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.05.22   <--  Date of Last Modification.
+ *    02.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -188,18 +188,21 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
             var inputBox = new InputBox ( 'Retire user' );
             inputBox.setText ( '','user_leaving' );
             var ibx_grid = inputBox.grid;
-            ibx_grid.setLabel    ( '<div style="width:300px"><h2>Retire user "' +
+            ibx_grid.setLabel    ( '<div style="width:350px"><h2>Retire user "' +
                                    dlg.userData.login +
-                                   '"</h2>User\'s account will be suspended and ' +
-                                   'all their projects moved to the successor.' +
-                                   '<br>&nbsp;</div>',
+                                   '"</h2>User\'s projects will be moved to the ' +
+                                   'Successor.' +
+                                   '<p><span style="font-size:85%"><i>User and ' +
+                                   'Successor will be logged out and their ' +
+                                   'accounts suspended until the move is complete.' +
+                                   '</i></span></div>',
                                    0,2,2,3 );
             ibx_grid.setLabel    ( 'Successor:&nbsp;',2,2,1,1 );
             var name_inp  = ibx_grid.setInputText ( '',2,3,1,1 )
                   .setStyle      ( 'text','^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
                                    'login name of successor','' )
                   .setFontItalic ( true )
-                  .setWidth      ( '200px' );
+                  .setWidth      ( '250px' );
             ibx_grid.setNoWrap   ( 2,2 );
             ibx_grid.setVerticalAlignment ( 2,3,'middle' );
             inputBox.addWidget   ( ibx_grid );
