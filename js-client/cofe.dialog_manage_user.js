@@ -234,23 +234,18 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                                           break;
                   case 'duplicate_ids'  : stop_reason = 'Duplicate project IDs';
                                           break;
-                  default : alert ( JSON.stringify(response) );
+                  case 'started'        : break;
+                  default : alert ( 'Unknown stop code.\nresponse=' +
+                                    JSON.stringify(response) );
                 }
-                if (stop_reason)
+                if (stop_reason)  {
                   new MessageBox ( stop_reason,'<div style="width:400px"><h2>' +
                                       stop_reason + '</h2>' + response.message +
                                       '.</div>','msg_stop' );
-
-                // if (response)
-                //   new MessageBoxW ( 'Retire User',response,0.5 );
-                // else
-                //   new MessageBox ( 'Retire User',
-                //     'Account of <i>' + dlg.userData.login +
-                //     '</i> has been successfully deleted, and ' +
-                //     'notification<br>sent to e-mail address:<p><b><i>' +
-                //     dlg.userData.email + '</i></b>.' );
-                // onExit_func();
-                // $(dlg.element).dialog("close");
+                } else  {
+                  onExit_func();
+                  $(dlg.element).dialog("close");
+                }
               },null,'persist' );
               return true;
             });
