@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    13.05.22   <--  Date of Last Modification.
+ *    02.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -42,9 +42,10 @@ function FoldersBrowser ( title,projectList,currentFolderPath,funcKey,
   this.projectList       = projectList;
   this.folders           = projectList.folders;
   this.currentFolderPath = currentFolderPath;
+  this.funcKey           = funcKey;
   this.onReturn_fnc      = onReturn_fnc;
   this.nprojects         = 0;
-  
+
   var crFolder = this.findFolder(currentFolderPath);
   if (crFolder)
     this.nprojects = crFolder.nprojects;
@@ -184,7 +185,9 @@ FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
     function(){
     },function(){
     },function(){  // onDblClick
-      self.onSelectBtn();
+      if (self.funcKey=='select')
+            self.onSelectBtn();
+      else  self.onMoveTo();
     },function(){  // onSelect
       self.onSelect();
     }
