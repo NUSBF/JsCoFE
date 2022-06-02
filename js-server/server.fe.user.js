@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.05.22   <--  Date of Last Modification.
+ *    02.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1102,15 +1102,14 @@ var sLoginData = getUserLoginData ( meta.successor );
   var duplPrjIDs  = [];
 
   for (var i=0;i<userPrjList.projects.length;i++)  {
-    var projectNo = succPrjList.getProjectNo ( userPrjList.projects[i].name );
+    var userPrjDesc = userPrjList.projects[i];
+    var projectNo   = succPrjList.getProjectNo ( userPrjDesc.name );
+    // if ((projectNo>=0) && (userPrjDesc.owner.login!=sLoginData.login))  {
     if (projectNo>=0)  {
-      var userPrjData = userPrjList.projects[i];
-      if (userPrjData.desc.owner.login==sLoginData.login)  {
-        // Project is owned by user and clashes with one of successor's projects.
-        // We do not check here if clashing project is also shared or is in fact
-        // the same. All conflicts to be resolved by admin, succssor and user.
-        duplPrjIDs.push ( userPrjData.name );
-      }
+      // Project is owned by user and clashes with one of successor's projects.
+      // We do not check here if clashing project is also shared or is in fact
+      // the same. All conflicts to be resolved by admin, successor and user.
+      duplPrjIDs.push ( userPrjDesc.name );
     }
   }
 
@@ -1119,7 +1118,8 @@ var sLoginData = getUserLoginData ( meta.successor );
     return new cmd.Response ( cmd.fe_retcode.ok,'',{
       code    : 'duplicate_ids',
       message : 'Project(s) with ID(s):<p><i>' + duplPrjIDs.join(', ') +
-                '</i><p>are already found in successor\'s account'
+                '</i><p>are found in Successor\'s account and cannot be ' +
+                'moved. Rename these projects in either account'
     });
   }
 
@@ -1143,10 +1143,11 @@ var sLoginData = getUserLoginData ( meta.successor );
     sData.login = slogin;
 
     // loop and move
-    var folder_name = slogin + '\'s projects';
+    var folder_name = ulogin + '\'s projects';
     var failed_move = [];
+    var were_shared = [];
     for (var i=0;i<userPrjList.projects.length;i++)  {
-      var pName = userPrjList.projects[i].desc.name;
+      var pName = userPrjList.projects[i].name;
       var uProjectDir = prj.getProjectDirPath ( uData,pName );
       if (!utils.isSymbolicLink(uProjectDir))  {
         var sProjectDir = prj.getProjectDirPath ( sData,pName );
@@ -1157,8 +1158,9 @@ var sLoginData = getUserLoginData ( meta.successor );
                                                   'My Projects',folder_name );
           prj.writeProjectData ( sData,pData,true );
         } else
-          failed_move.push ( userPrjList.projects[i].desc.name );
-      }
+          failed_move.push ( pName );
+      } else
+        were_shared.push ( pName );
     }
 
     // update rations and activate user and successor accounts
@@ -1168,7 +1170,8 @@ var sLoginData = getUserLoginData ( meta.successor );
 
     sRation.storage      += uRation.storage;
     sRation.storage_used += uRation.storage_used;
-    uRation.storage       = 1.0;  // block by outquoting
+    uRation.storage       = 0.1;  // block user by outquoting
+    sRation.storage_used  = 1.0;
 
     ration.saveUserRation ( sData,sRation );
     ration.saveUserRation ( uData,uRation );
@@ -1176,10 +1179,18 @@ var sLoginData = getUserLoginData ( meta.successor );
     utils.writeObject ( uDataFile,uData );  // commit
     utils.writeObject ( sDataFile,sData );  // commit
 
-    var msg = 'Operation finished successfully.';
+    var msg = '';
     if (failed_move.length>0)
-      msg = 'The following project(s) could not be moved:<p>' +
+      msg = 'The following project(s) could not be moved due to errors:<p>' +
             failed_move.join(', ');
+    if (were_shared.length>0)  {
+      if (msg)  msg += '<p>';
+      msg += 'The following project(s) were not moved because they are ' +
+             'shared with the user:<p>' +
+             were_shared.join(', ');
+    }
+    if (!msg)
+      msg = 'Operation finished successfully.';
 
     emailer.sendTemplateMessage ( uData,
               cmd.appName() + ' User Retired',
