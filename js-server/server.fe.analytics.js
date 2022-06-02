@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    31.05.22   <--  Date of Last Modification.
+ *    02.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -61,6 +61,7 @@ var countries = {
   'org': 'Generic ORG',
   'net': 'Generic NET',
   'edu': 'United States EDU',
+  'gov': 'United States GOV',
   'ac' : 'Ascension Island',
   'ad' : 'Andorra',
   'ae' : 'United Arab Emirates',

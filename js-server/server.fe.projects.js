@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.05.22   <--  Date of Last Modification.
+ *    02.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1551,7 +1551,8 @@ var pData    = readProjectData ( loginData,data.name );
         var projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
         var newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
         if (utils.fileExists(newPrjDirPath))  {
-          rdata.code = 'Project with requested ID (' + data.new_name + ') already exists';
+          rdata.code = 'Project with requested ID (' + data.new_name +
+                       ') already exists (check all folders)';
         } else  {
           var jmeta = [];
           if (utils.dirExists(projectDirPath))  {
@@ -1623,7 +1624,8 @@ var pData    = readProjectData ( loginData,data.name );
     var projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
     var newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
     if (utils.fileExists(newPrjDirPath))  {
-      rdata.code = 'Project with requested ID (' + data.new_name + ') already exists';
+      rdata.code = 'Project with requested ID (' + data.new_name +
+                   ') already exists (check all folders)';
     } else  {
       var jmeta = [];
       if (utils.dirExists(projectDirPath))  {
@@ -1716,6 +1718,11 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
   }
   var prj_meta = utils.readObject ( prj_meta_path );
 
+  // Get users' projects list here for finding the current folder
+  var pList = readProjectList ( loginData );
+  if (!pList)
+    pList = new pd.ProjectList();  // *** should throw error instead
+
   // validate metadata and read project name
   var projectDesc = new pd.ProjectDesc();
   try {
@@ -1727,6 +1734,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       projectDesc.njobs        = prj_meta.desc.njobs;
       projectDesc.dateCreated  = prj_meta.desc.dateCreated;
       projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
+      projectDesc.folderPath   = pList.currentFolder;
+      projectDesc.labels       = prj_meta.labels;
       if ('owner' in prj_meta.desc)  {
         projectDesc.owner = prj_meta.desc.owner;
         if (!prjDir)  {  // this means that the project is imported, not shared
@@ -1743,7 +1752,9 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       }
       if (!projectDesc.owner.login)
         projectDesc.owner.login = loginData.login;
-      prj_meta.desc.owner = projectDesc.owner;
+      prj_meta.desc.owner      = projectDesc.owner;
+      prj_meta.desc.folderPath = projectDesc.folderPath;
+      prj_meta.desc.labels     = projectDesc.labels;
       utils.writeObject ( prj_meta_path,prj_meta    );
       utils.writeObject ( prj_desc_path,projectDesc );
     } else
@@ -1786,7 +1797,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       } else  {
 
         utils.writeString ( signal_path,'Project "' + projectDesc.name +
-                                        '" already exists.\n' +
+                                        '" already exists (check all folders)\n' +
                                         projectDesc.name );
       }
 
@@ -1808,19 +1819,6 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       if (placed)  {
         // the project's content was moved to user's area, now
         // make the corresponding entry in project list
-
-        // Get users' projects list file name
-        /*
-        var userProjectsListPath = getUserProjectListPath ( loginData );
-        var pList = null;
-        if (utils.fileExists(userProjectsListPath))
-              pList = utils.readObject ( userProjectsListPath );
-        else  pList = new pd.ProjectList();
-        */
-
-        var pList = readProjectList ( loginData );
-        if (!pList)
-          pList = new pd.ProjectList();  // *** should throw error instead
 
         var projects = pList.projects;
         pList.projects = [projectDesc];

@@ -253,8 +253,9 @@ function ProjectListPage ( sceneId )  {
           if ((new_name!=pDesc.name) && projectList.getProject(new_name))  {
             new MessageBox ( 'Duplicate Project ID',
                      '<div style="width:400px;"><h2>Duplicate Project ID</h2>' +
-                     'A Project with ID <b>"' + new_name +
-                     '"</b> already exists.</div>','msg_excl_yellow' );
+                     'Project with ID <b>"' + new_name +
+                     '"</b> already exists (check all folders).</div>',
+                     'msg_excl_yellow' );
             return false;
           }
           pDesc.new_name      = new_name;
@@ -427,8 +428,8 @@ function ProjectListPage ( sceneId )  {
       if (projectList.getProject(new_name))  {
         new MessageBox ( 'Duplicate Project ID',
                  '<div style="width:400px;"><h2>Duplicate Project ID</h2>' +
-                 'A Project with ID <b>"' + new_name +
-                 '"</b> already exists.</div>','msg_stop' );
+                 'Project with ID <b>"' + new_name +
+                 '"</b> already exists (check all folders).</div>','msg_stop' );
         return false;
       }
       pDesc.new_name  = new_name;
