@@ -323,7 +323,23 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  var path  = require('path');
+  var conf  = require('../../js-server/server.configuration');
+  var utils = require('../../js-server/server.utils');
+
+  TaskEnsemblePrepXYZ.prototype.cleanJobDir = function ( jobDir )  {
+
+    __template.TaskTemplate.prototype.cleanJobDir.call ( this,jobDir );
+
+    // paranoid piece of code, ugly
+    var badDirPath = path.join ( jobDir,'search_a' );
+    if (utils.fileExists(badDirPath))  {
+      console.log ( ' +++ remove stray directory ' + badDirPath +
+                    ' from TaskEnsemblePrepXYZ job' );
+      utils.removePath ( badDirPath );
+    }
+
+  }
 
   TaskEnsemblePrepXYZ.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.ensembleprepxyz', jobManager, jobDir, this.id];

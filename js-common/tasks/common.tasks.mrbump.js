@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    30.07.21   <--  Date of Last Modification.
+ *    03.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -217,7 +217,10 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  var path  = require('path');
+  var fs    = require('fs-extra');
+  var conf  = require('../../js-server/server.configuration');
+  var utils = require('../../js-server/server.utils');
 
   TaskMrBump.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -231,6 +234,46 @@ if (!__template)  {
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
+
+  }
+
+  TaskMrBump.prototype.cleanJobDir = function ( jobDir )  {
+
+    __template.TaskTemplate.prototype.cleanJobDir.call ( this,jobDir );
+
+    if ((this.state==__template.job_code.stopped) ||
+        (this.state==__template.job_code.failed))  {
+
+      fs.readdirSync(jobDir).forEach(function(file,index){
+        if (([ __template.jobDataFName,    __template.jobReportDirName,
+               __template.jobInputDirName, __template.jobOutputDirName,
+               'output_files', 'signal', 'rvapi_document',
+               'references.bib', '_job.stde', '_job.stdo' ].indexOf(file)<0) &&
+            (!file.endsWith('.log')) && (!file.endsWith('.meta')) &&
+            (!file.endsWith('.script')))  {
+          var curPath = path.join ( jobDir,file );
+          if (fs.lstatSync(curPath).isDirectory()) {
+            utils.removePath ( curPath );
+          } else { // delete file
+            try {
+              fs.unlinkSync ( curPath );
+            } catch (e)  {
+              console.log ( ' +++ cannot remove file ' + curPath +
+                            ' from failed or terminated MrBump directory' );
+            }
+          }
+        }
+      });
+
+    } else  {
+      // paranoid piece of code, ugly
+      var badDirPath = path.join ( jobDir,'search_a' );
+      if (utils.fileExists(badDirPath))  {
+        console.log ( ' +++ remove stray directory ' + badDirPath +
+                      ' from MrBump job' );
+        utils.removePath ( badDirPath );
+      }
+    }
 
   }
 

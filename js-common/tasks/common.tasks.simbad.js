@@ -419,7 +419,8 @@ if (!__template)  {
                __template.jobInputDirName, __template.jobOutputDirName,
                'output_files', 'signal', 'rvapi_document',
                'references.bib', '_job.stde', '_job.stdo' ].indexOf(file)<0) &&
-            (!file.endsWith('.log')))  {
+            (!file.endsWith('.log')) && (!file.endsWith('.meta')) &&
+            (!file.endsWith('.script')))  {
           var curPath = path.join ( jobDir,file );
           if (fs.lstatSync(curPath).isDirectory()) {
             utils.removePath ( curPath );
