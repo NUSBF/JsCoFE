@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    02.06.22   <--  Date of Last Modification.
+ *    03.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -308,17 +308,35 @@ var folder  = this.findFolder ( selNode.dataId );
           'before deleting it.','msg_stop' );
   } else  {
     var self = this;
+    // new QuestionBox ( 'Delete folder',
+    //                   '<h2>Folder ' + folder.name + ' will be deleted</h2>' +
+    //                   'Please confirm.','Yes, delete',function(){
+    //   self.deleteFolder     ( selNode.dataId );
+    //   self.ftree.deleteNode ( selNode        );
+    //   var node  = self.ftree.getSelectedNode();
+    //   var fpath = 'My Projects';
+    //   if (node)
+    //     fpath = node.dataId;
+    //   self.onReturn_fnc ( 'delete',{ folder : fpath } );
+    // },'Cancel',null,'msg_confirm' );
     new QuestionBox ( 'Delete folder',
                       '<h2>Folder ' + folder.name + ' will be deleted</h2>' +
-                      'Please confirm.','Yes, delete',function(){
-      self.deleteFolder     ( selNode.dataId );
-      self.ftree.deleteNode ( selNode        );
-      var node  = self.ftree.getSelectedNode();
-      var fpath = 'My Projects';
-      if (node)
-        fpath = node.dataId;
-      self.onReturn_fnc ( 'delete',{ folder : fpath } );
-    },'Cancel',null,'msg_confirm' );
+                      'Please confirm.',[
+        { name    : 'Yes, delete',
+          onclick : function(){
+                      self.deleteFolder     ( selNode.dataId );
+                      self.ftree.deleteNode ( selNode        );
+                      var node  = self.ftree.getSelectedNode();
+                      var fpath = 'My Projects';
+                      if (node)
+                        fpath = node.dataId;
+                      self.onReturn_fnc ( 'delete',{ folder : fpath } );
+                    }
+        },{
+          name    : 'Cancel',
+          onclick : null
+        }
+      ],'msg_confirm' );
   }
 }
 
@@ -332,13 +350,27 @@ var folder  = this.findFolder ( selNode.dataId );
           'msg_stop' );
   else  {
     var self = this;
+    // new QuestionBox ( 'Move project to folder',
+    //                   '<h2>Selected project will be moved to<br>"' +
+    //                   folder.name + '"</h2>' +
+    //                   'Please confirm.','Please move',function(){
+    //   $(self.element).dialog ( 'close' );
+    //   self.onReturn_fnc ( 'move',{ folder : selNode.dataId } );
+    // },'Cancel',null,'msg_confirm' );
     new QuestionBox ( 'Move project to folder',
                       '<h2>Selected project will be moved to<br>"' +
                       folder.name + '"</h2>' +
-                      'Please confirm.','Please move',function(){
-      $(self.element).dialog ( 'close' );
-      self.onReturn_fnc ( 'move',{ folder : selNode.dataId } );
-    },'Cancel',null,'msg_confirm' );
+                      'Please confirm.',[
+        { name    : 'Please move',
+          onclick : function(){
+                      $(self.element).dialog ( 'close' );
+                      self.onReturn_fnc ( 'move',{ folder : selNode.dataId } );
+                    }
+        },{
+          name    : 'Cancel',
+          onclick : null
+        }
+      ],'msg_confirm' );
   }
 }
 

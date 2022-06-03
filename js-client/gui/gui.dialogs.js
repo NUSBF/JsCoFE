@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.05.22   <--  Date of Last Modification.
+ *    03.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -510,6 +510,58 @@ WaitDialog.prototype.constructor = WaitDialog;
 // -------------------------------------------------------------------------
 // QuestionBox class
 
+function QuestionBox ( title,message,buttons,icon_name='' )  {
+// buttons = [{
+//   name    : button_name,
+//   onclick : button_function(){}
+// },{
+//   name    : button_name,
+//   onclick : button_function(){}
+// }]
+
+  Widget.call ( this,'div' );
+  this.element.setAttribute ( 'title',title );
+  document.body.appendChild ( this.element );
+
+  if (icon_name)  {
+    var grid = new Grid ( '' );
+    this.addWidget   ( grid );
+    grid.setLabel    ( ' ',0,0,1,1 );
+    grid.setCellSize ( '','6px', 0,0 );
+    grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
+    grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
+    grid.setLabel    ( message,0,2,2,1 );
+    grid.setVerticalAlignment ( 0,2,'middle' );
+  } else
+    this.element.innerHTML = message;
+
+  this.options = {
+    resizable     : false,
+    height        : 'auto',
+    width         : 'auto',
+    modal         : true,
+    closeOnEscape : false,
+    open          : function(event, ui) {
+                      //hide close button.
+                      $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+                    },
+    buttons       : {}
+  };
+
+  for (var i=0;i<buttons.length;i++)
+    (function(self,btn){
+      self.options.buttons[btn.name] = function() {
+        $(this).dialog( "close" );
+        if (('onclick' in btn) && btn.onclick)
+          window.setTimeout ( btn.onclick,0 );
+      }
+    }(this,buttons[i]))
+
+  $(this.element).dialog ( this.options );
+
+}
+
+/*
 function QuestionBox ( title,message,btn1_name,onButton1_func,
                                      btn2_name,onButton2_func,
                                      icon_name='' )  {
@@ -559,6 +611,8 @@ function QuestionBox ( title,message,btn1_name,onButton1_func,
   $(this.element).dialog ( this.options );
 
 }
+*/
+
 
 QuestionBox.prototype = Object.create ( Widget.prototype );
 QuestionBox.prototype.constructor = QuestionBox;

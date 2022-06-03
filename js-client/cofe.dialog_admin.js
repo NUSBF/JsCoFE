@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    03.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Announcement Dialog
  *       ~~~~~~~~~  Dorman Users Dialog
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -192,6 +192,45 @@ function DormantUsersDialog ( callback_func )  {
                 new MessageBox ( 'Dormancy management',
                                  '<h2>Failure</h2>' + data.status, 'msg_error');
               } else  {
+                // new QuestionBox ( 'Dormancy management',
+                //       '<h2>Changes about to be made</h2><table><tr>'     +
+                //           '<td></td>'         +
+                //           '<td><b><i>Number&nbsp;&nbsp;</b></i></td>'    +
+                //           '<td><b><i>Disk effect (MB)</b></i></td>'      +
+                //       '</tr><tr><td><b><i>Total user accounts:</b></i></td><td>' +
+                //           '&nbsp;&nbsp;&nbsp;' + data.total_users   + '</td><td></td>' +
+                //       '</tr><tr><td><b><i>To become dormant:&nbsp;&nbsp;</b></i></td><td>' +
+                //           '&nbsp;&nbsp;&nbsp;' + data.dormant_users + '</td><td>'      +
+                //           '&nbsp;&nbsp;&nbsp;' + data.disk_released + '</td>'          +
+                //       '</tr><tr><td><b><i>To be deleted:</b></i></td><td>' +
+                //           '&nbsp;&nbsp;&nbsp;' + data.deleted_users + '</td><td>'      +
+                //           '&nbsp;&nbsp;&nbsp;' + data.disk_freed    + '</td></tr>'     +
+                //       '</tr><tr><td><b><i>Total disk effect:</b></i></td><td>&nbsp;</td><td>' +
+                //           '&nbsp;&nbsp;&nbsp;' + (data.disk_freed + data.disk_released) + '</td>' +
+                //       '</tr></table>',
+                //       'Confirm',function(){
+                //         _params.checkOnly = false;
+                //         serverRequest ( fe_reqtype.manageDormancy,_params,'Admin Page',
+                //                         function(data){
+                //           if (data.status!='ok')  {
+                //             new MessageBox ( 'Dormancy management',
+                //                              '<h2>Failure</h2>' + data.status, 'msg_error' );
+                //           } else  {
+                //             new MessageBox ( 'Dormancy management',
+                //                '<h2>Summary</h2>Out of ' + data.total_users +
+                //                ' users accounts, ' +
+                //                data.dormant_users + ' were declared dormant,<br>and ' +
+                //                data.deleted_users + ' were deleted. ' +
+                //                (data.disk_freed + data.disk_released) +
+                //                ' MBytes of disk released.' );
+                //             $(dlg.element).dialog("close");
+                //             if (callback_func)
+                //               callback_func();
+                //           }
+                //         },null,'persist' );
+                //       },
+                //       'Cancel' ,function(){});
+
                 new QuestionBox ( 'Dormancy management',
                       '<h2>Changes about to be made</h2><table><tr>'     +
                           '<td></td>'         +
@@ -207,29 +246,35 @@ function DormantUsersDialog ( callback_func )  {
                           '&nbsp;&nbsp;&nbsp;' + data.disk_freed    + '</td></tr>'     +
                       '</tr><tr><td><b><i>Total disk effect:</b></i></td><td>&nbsp;</td><td>' +
                           '&nbsp;&nbsp;&nbsp;' + (data.disk_freed + data.disk_released) + '</td>' +
-                      '</tr></table>',
-                      'Confirm',function(){
-                        _params.checkOnly = false;
-                        serverRequest ( fe_reqtype.manageDormancy,_params,'Admin Page',
-                                        function(data){
-                          if (data.status!='ok')  {
-                            new MessageBox ( 'Dormancy management',
-                                             '<h2>Failure</h2>' + data.status, 'msg_error' );
-                          } else  {
-                            new MessageBox ( 'Dormancy management',
-                               '<h2>Summary</h2>Out of ' + data.total_users +
-                               ' users accounts, ' +
-                               data.dormant_users + ' were declared dormant,<br>and ' +
-                               data.deleted_users + ' were deleted. ' +
-                               (data.disk_freed + data.disk_released) +
-                               ' MBytes of disk released.' );
-                            $(dlg.element).dialog("close");
-                            if (callback_func)
-                              callback_func();
-                          }
-                        },null,'persist' );
-                      },
-                      'Cancel' ,function(){});
+                      '</tr></table>',[
+                      { name    : 'Confirm',
+                        onclick : function(){
+                                    _params.checkOnly = false;
+                                    serverRequest ( fe_reqtype.manageDormancy,_params,'Admin Page',
+                                                    function(data){
+                                      if (data.status!='ok')  {
+                                        new MessageBox ( 'Dormancy management',
+                                                         '<h2>Failure</h2>' + data.status, 'msg_error' );
+                                      } else  {
+                                        new MessageBox ( 'Dormancy management',
+                                           '<h2>Summary</h2>Out of ' + data.total_users +
+                                           ' users accounts, ' +
+                                           data.dormant_users + ' were declared dormant,<br>and ' +
+                                           data.deleted_users + ' were deleted. ' +
+                                           (data.disk_freed + data.disk_released) +
+                                           ' MBytes of disk released.' );
+                                        $(dlg.element).dialog("close");
+                                        if (callback_func)
+                                          callback_func();
+                                      }
+                                    },null,'persist' );
+                                  }
+                      },{
+                        name    : 'Cancel',
+                        onclick : function(){}
+                      }
+                    ],'msg_confirm');
+
               }
             },null,'persist' );
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.05.22   <--  Date of Last Modification.
+ *    03.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -88,11 +88,11 @@ if (!__template)  {
     return 'browse ' + appName() + ' storage and import various files from it';
   }
 
-  TaskCloudImport.prototype.taskDescription = function()  {
-  // this appears under task title in the Task Dialog
-    return 'Browse ' + appName() + ' storage and import various files from it';
-    // return 'Task description in small font which will appear under the task title in Task Dialog';
-  }
+  // TaskCloudImport.prototype.taskDescription = function()  {
+  // // this appears under task title in the Task Dialog
+  //   return 'Browse ' + appName() + ' storage and import various files from it';
+  //   // return 'Task description in small font which will appear under the task title in Task Dialog';
+  // }
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
@@ -105,23 +105,41 @@ if (!__template)  {
   }
 
   TaskCloudImport.prototype.onJobDialogStart = function ( job_dialog )  {
-    job_dialog.inputPanel.select_btn.click();
+    // job_dialog.inputPanel.select_btn.click();
   }
 
   TaskCloudImport.prototype.onJobDialogClose = function ( job_dialog,callback_func )  {
     if ((this.selected_items.length>0) && (this.state==job_code.new))  {
+      // new QuestionBox ( 'Import not finished',
+      //                   '<h3>Import not finished</h3>' +
+      //                   'You have selected data files, however the import<br>' +
+      //                   'is not finished yet: the files need to be processed<br>' +
+      //                   'before they can be used in subsequent tasks.',
+      //                   'Finish now',function(){
+      //                     callback_func ( false );
+      //                     job_dialog.run_btn.click();
+      //                   },
+      //                   'Finish later',function(){
+      //                     callback_func ( true );
+      //                   },'msg_question');
+
       new QuestionBox ( 'Import not finished',
                         '<h3>Import not finished</h3>' +
                         'You have selected data files, however the import<br>' +
                         'is not finished yet: the files need to be processed<br>' +
-                        'before they can be used in subsequent tasks.',
-                        'Finish now',function(){
-                          callback_func ( false );
-                          job_dialog.run_btn.click();
-                        },
-                        'Finish later',function(){
-                          callback_func ( true );
-                        },'msg_question');
+                        'before they can be used in subsequent tasks.',[
+          { name    : 'Finish now',
+            onclick : function(){
+                        callback_func ( false );
+                        job_dialog.run_btn.click();
+                      }
+          },{
+            name    : 'Finish later',
+            onclick : function(){
+                        callback_func ( true );
+                      }
+          }],'msg_question' );
+
     } else
       callback_func ( true );
   }
@@ -135,8 +153,8 @@ if (!__template)  {
     this.setInputDataFields ( div.grid,0,dataBox,this );
 
     if ((this.state==job_code.new) || (this.state==job_code.running)) {
-      div.header.setLabel ( ' ',2,0,1,1 );
-      div.header.setLabel ( ' ',2,1,1,1 );
+      // div.header.setLabel ( ' ',2,0,1,1 );
+      // div.header.setLabel ( ' ',2,1,1,1 );
       div.header.setLabel ( '<hr/>Use the file selection button below to select and ' +
                           'transfer facility data to the Project (use multiple ' +
                           'file selections and repeat uploads if necessary). ' +
@@ -168,16 +186,30 @@ if (!__template)  {
           task.setSelectedCloudFiles ( div,items,function(new_items){
             if (new_items.length>0)  {
               div.select_btn.setText ( 'Upload more files' );
+              // new QuestionBox ( 'Files selected',
+              //                   '<h3>Files selected:</h3><ul><li>' +
+              //                   new_items.join('</li><li>') +
+              //                   '</li></ul?',
+              //                   'Select more files',function(){
+              //                     div.select_btn.click();
+              //                   },
+              //                   'Finish import',function(){
+              //                     div.job_dialog.run_btn.click();
+              //                   },'msg_question');
+
               new QuestionBox ( 'Files selected',
                                 '<h3>Files selected:</h3><ul><li>' +
                                 new_items.join('</li><li>') +
-                                '</li></ul?',
-                                'Select more files',function(){
-                                  div.select_btn.click();
-                                },
-                                'Finish import',function(){
-                                  div.job_dialog.run_btn.click();
-                                },'msg_question');
+                                '</li></ul?',[
+                  { name    : 'Select more files',
+                    onclick : function(){ div.select_btn.click(); }
+                  },{
+                    name    : 'Finish import',
+                    onclick : function(){ div.job_dialog.run_btn.click(); }
+                  },{
+                    name    : 'Close'
+                  }],'msg_question' );
+
             }
           });
           return 1;  // close browser window

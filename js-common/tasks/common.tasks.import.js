@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.05.22   <--  Date of Last Modification.
+ *    03.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -105,24 +105,42 @@ if (!__template)  {
   }
 
   TaskImport.prototype.onJobDialogStart = function ( job_dialog )  {
-    if (__user_settings.guided_import)
-      job_dialog.inputPanel.upload.button.click();
+    // if (__user_settings.guided_import)
+    //   job_dialog.inputPanel.upload.button.click();
   }
 
   TaskImport.prototype.onJobDialogClose = function ( job_dialog,callback_func )  {
     if ((this.upload_files.length>0) && (this.state==job_code.new))  {
+      // new QuestionBox ( 'Import not finished',
+      //                   '<h3>Import not finished</h3>' +
+      //                   'You have uploaded data files, however the import<br>' +
+      //                   'is not finished yet: the files need to be processed<br>' +
+      //                   'before they can be used in subsequent tasks.',
+      //                   'Finish now',function(){
+      //                     job_dialog.run_btn.click();
+      //                     callback_func ( false );
+      //                   },
+      //                   'Finish later',function(){
+      //                     callback_func ( true );
+      //                   },'msg_question');
       new QuestionBox ( 'Import not finished',
                         '<h3>Import not finished</h3>' +
                         'You have uploaded data files, however the import<br>' +
                         'is not finished yet: the files need to be processed<br>' +
                         'before they can be used in subsequent tasks.',
-                        'Finish now',function(){
-                          job_dialog.run_btn.click();
-                          callback_func ( false );
-                        },
-                        'Finish later',function(){
-                          callback_func ( true );
-                        },'msg_question');
+                        [
+          { name    : 'Finish now',
+            onclick : function(){
+                        job_dialog.run_btn.click();
+                        callback_func ( false );
+                      }
+          },{
+            name    : 'Finish later',
+            onclick : function(){
+                        callback_func ( true );
+                      }
+          }
+        ],'msg_question');
     } else
       callback_func ( true );
   }
@@ -195,16 +213,29 @@ if (!__template)  {
               files_ignored = '<h3>Files ignored:</h3><ul><li>' +
                               panel.upload.ignored_list.join('</li><li>') +
                               '</li></ul>';
+            // new QuestionBox ( 'Files uploaded',
+            //                   '<h3>Files uploaded:</h3><ul><li>' +
+            //                   panel.upload.new_files.join('</li><li>') +
+            //                   '</li></ul>' + files_ignored,
+            //                   'Upload more files',function(){
+            //                     panel.upload.button.click();
+            //                   },
+            //                   'Finish import',function(){
+            //                     panel.job_dialog.run_btn.click();
+            //                   },'msg_question');
             new QuestionBox ( 'Files uploaded',
                               '<h3>Files uploaded:</h3><ul><li>' +
                               panel.upload.new_files.join('</li><li>') +
-                              '</li></ul>' + files_ignored,
-                              'Upload more files',function(){
-                                panel.upload.button.click();
-                              },
-                              'Finish import',function(){
-                                panel.job_dialog.run_btn.click();
-                              },'msg_question');
+                              '</li></ul>' + files_ignored,[
+                { name    : 'Upload more files',
+                  onclick : function(){ panel.upload.button.click(); }
+                },{
+                  name    : 'Finish import',
+                  onclick : function(){ panel.job_dialog.run_btn.click(); }
+                },{
+                  name    : 'Close'
+                }
+              ],'msg_question');
           }
         });
 

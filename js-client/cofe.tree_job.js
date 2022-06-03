@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.05.22   <--  Date of Last Modification.
+ *    03.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1335,17 +1335,36 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func ) {
 
       if (silent_bool)
         yes_delete();
-      else
-        new QuestionBox ( title,message, 'Yes',yes_delete,'No',function(){
-          for (var i=0;i<delNodeId.length;i++)
-            if (tree.isRemark(delNodeId[i]))  {
-              tree.setRemarkStyle ( tree.node_map[delNodeId[i]],tree.task_map[delNodeId[i]] );
-              // tree.setStyle ( tree.node_map[delNodeId[i]],__remarkStyle,0 );
-            } else
-              tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
-          if (onDelete_func)
-            onDelete_func(false);
-        },'msg_confirm');
+      else  {
+        // new QuestionBox ( title,message, 'Yes',yes_delete,'No',function(){
+        //   for (var i=0;i<delNodeId.length;i++)
+        //     if (tree.isRemark(delNodeId[i]))  {
+        //       tree.setRemarkStyle ( tree.node_map[delNodeId[i]],tree.task_map[delNodeId[i]] );
+        //       // tree.setStyle ( tree.node_map[delNodeId[i]],__remarkStyle,0 );
+        //     } else
+        //       tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
+        //   if (onDelete_func)
+        //     onDelete_func(false);
+        // },'msg_confirm');
+
+        new QuestionBox ( title,message,[
+          { name    : 'Yes',
+            onclick : yes_delete
+          },{
+            name    : 'No',
+            onclick : function(){
+                        for (var i=0;i<delNodeId.length;i++)
+                          if (tree.isRemark(delNodeId[i]))  {
+                            tree.setRemarkStyle ( tree.node_map[delNodeId[i]],tree.task_map[delNodeId[i]] );
+                            // tree.setStyle ( tree.node_map[delNodeId[i]],__remarkStyle,0 );
+                          } else
+                            tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
+                        if (onDelete_func)
+                          onDelete_func(false);
+                      }
+          }],'msg_confirm' );
+
+      }
 
     }(this));
 
@@ -1485,29 +1504,59 @@ JobTree.prototype.stopJob = function ( nodeId,gracefully_bool,callback_func )  {
   if ((data.meta.state==job_code.running) ||
       ((data.meta.state==job_code.ending) && (!gracefully_bool)))  {
 
-    new QuestionBox ( msg[0],msg[1],msg[2],function(){
+    // new QuestionBox ( msg[0],msg[1],msg[2],function(){
+    //
+    //   // Raise the exiting state here, which will prevent requesting FE with
+    //   // task update if the job dialog is currently opened and gets closed
+    //   // before job actually terminates (see the close_btn listener in JobDialog).
+    //   // This is necessary to enoforce, or this request may overwrite data
+    //   // FE receives back from NC upon job termination.
+    //
+    //   if (gracefully_bool)  data.meta.state = job_code.ending;
+    //                   else  data.meta.state = job_code.exiting;
+    //
+    //   if (data.meta.nc_type=='client')
+    //        localCommand  ( nc_command.stopJob,data,data.meta.title,null );
+    //   else serverRequest ( fe_reqtype.stopJob,data,data.meta.title,null,null,null );
+    //
+    //   setTimeout ( function(){
+    //     new MessageBox ( msg[3],msg[3] + ', please wait a while.' );
+    //   },100 );
+    //
+    //   if (callback_func)
+    //     callback_func ( 1 );
+    //
+    // },'Cancel',null,'msg_confirm' );
 
-      // Raise the exiting state here, which will prevent requesting FE with
-      // task update if the job dialog is currently opened and gets closed
-      // before job actually terminates (see the close_btn listener in JobDialog).
-      // This is necessary to enoforce, or this request may overwrite data
-      // FE receives back from NC upon job termination.
+    new QuestionBox ( msg[0],msg[1],[
+      { name    : msg[2],
+        onclick : function(){
 
-      if (gracefully_bool)  data.meta.state = job_code.ending;
-                      else  data.meta.state = job_code.exiting;
+                    // Raise the exiting state here, which will prevent requesting FE with
+                    // task update if the job dialog is currently opened and gets closed
+                    // before job actually terminates (see the close_btn listener in JobDialog).
+                    // This is necessary to enoforce, or this request may overwrite data
+                    // FE receives back from NC upon job termination.
 
-      if (data.meta.nc_type=='client')
-           localCommand  ( nc_command.stopJob,data,data.meta.title,null );
-      else serverRequest ( fe_reqtype.stopJob,data,data.meta.title,null,null,null );
+                    if (gracefully_bool)  data.meta.state = job_code.ending;
+                                    else  data.meta.state = job_code.exiting;
 
-      setTimeout ( function(){
-        new MessageBox ( msg[3],msg[3] + ', please wait a while.' );
-      },100 );
+                    if (data.meta.nc_type=='client')
+                         localCommand  ( nc_command.stopJob,data,data.meta.title,null );
+                    else serverRequest ( fe_reqtype.stopJob,data,data.meta.title,null,null,null );
 
-      if (callback_func)
-        callback_func ( 1 );
+                    setTimeout ( function(){
+                      new MessageBox ( msg[3],msg[3] + ', please wait a while.' );
+                    },100 );
 
-    },'Cancel',null,'msg_confirm' );
+                    if (callback_func)
+                      callback_func ( 1 );
+
+                  }
+      },{
+        name    : 'Cancel',
+        onclick : null
+      }],'msg_confirm' );
 
     if (callback_func)
       callback_func ( 0 );

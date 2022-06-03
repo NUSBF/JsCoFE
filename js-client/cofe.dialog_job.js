@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.22   <--  Date of Last Modification.
+ *    03.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -221,9 +221,9 @@ JobDialog.prototype.displayInputErrors = function ( input_msg )  {
     }
     if (errlst1.length>0)
       new MessageBox ( 'Input errors',
-        'The following errors have been encountered at processing input parameters:' +
+        'The following errors occurred while processing task input:' +
         '<p><ul><li>' + errlst1.join('</li><li>') +
-        '</li></ul><p>Please adjust input parameters as appropriate.', 'msg_error' );
+        '</li></ul><p>Please correct the task input.', 'msg_error' );
   }
 }
 
