@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.05.22   <--  Date of Last Modification.
+ *    03.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1168,16 +1168,32 @@ ProjectPage.prototype.makeDock = function()  {
       },
 
       function(taskType,title,icon_uri){  // right click: delete icon
+        // new QuestionBox ( 'Remove dock item',
+        //   '<div style="min-width:400px"><h2>Remove dock item</h2>Remove<p>' +
+        //   '<div style="text-align:center"><img style="vertical-align:middle" src="' +
+        //   icon_uri +
+        //   '" width="26" height="24"><span style="vertical-align:middle">&nbsp;&nbsp;<b>' +
+        //   title + '</b></span></div><p>from the dock?</div>',
+        //   'Yes, remove',function(){
+        //     self.dock.removeTask ( taskType );
+        //   },
+        //   'Cancel',function(){},'msg_confirm' );
+
         new QuestionBox ( 'Remove dock item',
           '<div style="min-width:400px"><h2>Remove dock item</h2>Remove<p>' +
           '<div style="text-align:center"><img style="vertical-align:middle" src="' +
           icon_uri +
           '" width="26" height="24"><span style="vertical-align:middle">&nbsp;&nbsp;<b>' +
-          title + '</b></span></div><p>from the dock?</div>',
-          'Yes, remove',function(){
-            self.dock.removeTask ( taskType );
-          },
-          'Cancel',function(){},'msg_confirm' );
+          title + '</b></span></div><p>from the dock?</div>',[
+          { name    : 'Yes, remove',
+            onclick : function(){
+                        self.dock.removeTask ( taskType );
+                      }
+          },{
+            name    : 'Cancel',
+            onclick : function(){}
+          }],'msg_confirm' );
+
         return 0;
       },
 

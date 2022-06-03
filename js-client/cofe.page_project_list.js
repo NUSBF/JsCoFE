@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.05.22   <--  Date of Last Modification.
+ *    03.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -488,15 +488,30 @@ function ProjectListPage ( sceneId )  {
 
   var repairProject = function()  {
     panel.click();  // get rid of context menu
+    // new QuestionBox (
+    //     'Repair Project',
+    //     '<h2>Repair Project</h2>',
+    //     'Repair',function(){
+    //       new MessageBox ( 'Not implemented','<h2>Function not implemented</h2>' );
+    //     },
+    //     'Cancel',function(){
+    //       new MessageBox ( 'Not implemented','<h2>Function not implemented</h2>' );
+    //     },'msg_error');
+
     new QuestionBox (
         'Repair Project',
-        '<h2>Repair Project</h2>',
-        'Repair',function(){
-          new MessageBox ( 'Not implemented','<h2>Function not implemented</h2>' );
-        },
-        'Cancel',function(){
-          new MessageBox ( 'Not implemented','<h2>Function not implemented</h2>' );
-        },'msg_error');
+        '<h2>Repair Project</h2>',[
+        { name    : 'Repair',
+          onclick : function(){
+                      new MessageBox ( 'Not implemented','<h2>Function not implemented</h2>' );
+                    }
+        },{
+          name    : 'Cancel',
+          onclick : function(){
+                      new MessageBox ( 'Not implemented','<h2>Function not implemented</h2>' );
+                    }
+        }],'msg_error' );
+
   }
 
   // function to create project list table and fill it with data

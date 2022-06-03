@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    17.11.21   <--  Date of Last Modification.
+ *    03.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -15,7 +15,7 @@
  *                  FacilityBrowser
  *                  CloudFileBrowser
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ===========================================================================
  *
@@ -135,15 +135,31 @@ function FacilityCheckDialog ( task,onDone_fnc )  {
       buttons   : [
         { text  : 'Stop waiting',
           click : function() {
+            // new QuestionBox ( 'Stop waiting',
+            //       '&nbsp;<br><b>Stop waiting, are you sure?</b><p>' +
+            //       '<i>Closing this dialog will not terminate current ' +
+            //       'operation,<br>but unlock the interface and let you do ' +
+            //       'other tasks.<br>However, facility tree will not refresh ' +
+            //       'automatically<br>after request is complete.</i>',
+            //       'Stop waiting',function(){
+            //         $(dlg.element).dialog( "close" );
+            //       },'Wait',function(){},'msg_confirm' );
+
             new QuestionBox ( 'Stop waiting',
                   '&nbsp;<br><b>Stop waiting, are you sure?</b><p>' +
                   '<i>Closing this dialog will not terminate current ' +
                   'operation,<br>but unlock the interface and let you do ' +
                   'other tasks.<br>However, facility tree will not refresh ' +
-                  'automatically<br>after request is complete.</i>',
-                  'Stop waiting',function(){
-                    $(dlg.element).dialog( "close" );
-                  },'Wait',function(){},'msg_confirm' );
+                  'automatically<br>after request is complete.</i>',[
+                  { name    : 'Stop waiting',
+                    onclick : function(){
+                                $(dlg.element).dialog( "close" );
+                              }
+                  },{
+                    name    : 'Wait',
+                    onclick : function(){}
+                  }],'msg_confirm' );
+
           }
         }
       ]
