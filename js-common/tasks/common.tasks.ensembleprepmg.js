@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.08.21   <--  Date of Last Modification.
+ *    03.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -138,7 +138,23 @@ TaskEnsemblePrepMG.prototype.currentVersion = function()  {
 if (__template)  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  var path  = require('path');
+  var conf  = require('../../js-server/server.configuration');
+  var utils = require('../../js-server/server.utils');
+
+  TaskEnsemblePrepMG.prototype.cleanJobDir = function ( jobDir )  {
+
+    __template.TaskTemplate.prototype.cleanJobDir.call ( this,jobDir );
+
+    // paranoid piece of code, ugly
+    var badDirPath = path.join ( jobDir,'mrbump_dir' );
+    if (utils.fileExists(badDirPath))  {
+      console.log ( ' +++ remove stray directory ' + badDirPath +
+                    ' from TaskEnsemblePrepMG job' );
+      utils.removePath ( badDirPath );
+    }
+
+  }
 
   TaskEnsemblePrepMG.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.ensembleprepmg', jobManager, jobDir, this.id];

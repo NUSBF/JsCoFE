@@ -30,6 +30,7 @@
 import os
 import sys
 import json
+import time
 import shutil
 
 #  ccp4-python imports
@@ -189,16 +190,16 @@ class MrBump(basic.TaskDriver):
 
         # check solution and register data
 
-        have_results   = False
+        have_results = False
 
-        search_dir     = "search_" + self.outdir_name()
-        citations_json = os.path.join ( search_dir,"logs","programs.json" )
-
-        if os.path.isfile(citations_json):
-            with open(citations_json) as json_file:
-                self.addCitations ( json.loads(json_file.read()) )
+        search_dir   = "search_" + self.outdir_name()
 
         if os.path.isdir(search_dir):
+
+            citations_json = os.path.join ( search_dir,"logs","programs.json" )
+            if os.path.isfile(citations_json):
+                with open(citations_json) as json_file:
+                    self.addCitations ( json.loads(json_file.read()) )
 
             xyzfile = "output_" + self.outdir_name() + ".pdb"
             mtzfile = "output_" + self.outdir_name() + ".mtz"
@@ -249,15 +250,21 @@ class MrBump(basic.TaskDriver):
         else:
             self.putTitle ( "No resuts produced" )
 
-        # unless deleted, symbolic links inside this directory will not let
-        # it to be sent back to FE.
-        shutil.rmtree ( search_dir )
-
         # this will go in the project tree job's line
         if not have_results:
             self.generic_parser_summary["mrbump"] = {
               "summary_line" : "solution not found"
             }
+
+        # apparently log parser completes action when stdout is closed. this
+        # may happen after STOP_POLL is issued, in which case parser's report
+        # is not seen until the whole page is reloaded.
+        #  is there a way to flush generic parser at some moment?
+        time.sleep(1)
+
+        # unless deleted, symbolic links inside this directory will not let
+        # it to be sent back to FE.
+        shutil.rmtree ( search_dir )
 
         # close execution logs and quit
         self.success ( have_results )
