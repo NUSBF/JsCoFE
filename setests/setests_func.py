@@ -223,6 +223,9 @@ def importLocal_P9(driver, dirName, waitShort=90):
     clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Upload', 'Import'))
     time.sleep(1)
 
+    clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Upload', 'file(s)'))
+    time.sleep(1)
+
     scaFileName = os.path.join(dirName, 'p9_sca', 'p9.sca')
     seqFileName = os.path.join(dirName, 'p9_sca', 'p9.seq')
 
