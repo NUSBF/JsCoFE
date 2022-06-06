@@ -285,6 +285,9 @@ def importFromCloud_rnase(driver, waitShort):
     clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Import', 'Cloud'))
     time.sleep(1)
 
+    clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Select', 'file(s)'))
+    time.sleep(1)
+
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
     if len(textEl2) < 1:
         textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'ccp4-examples')
@@ -348,6 +351,9 @@ def importFromCloud_insulin(driver, waitShort):
     clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Import', 'Cloud'))
     time.sleep(1)
 
+    clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Select', 'file(s)'))
+    time.sleep(1)
+
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
     if len(textEl2) < 1:
         textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'CCP4 examples')
@@ -400,6 +406,9 @@ def importFromCloud_mdm2(driver, waitShort):
     time.sleep(1)
 
     clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Import', 'Cloud'))
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Select', 'file(s)'))
     time.sleep(1)
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
@@ -456,6 +465,9 @@ def importFromCloud_mdm2NoLigand(driver, waitShort):
     time.sleep(1)
 
     clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Import', 'Cloud'))
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Select', 'file(s)'))
     time.sleep(1)
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
@@ -579,6 +591,9 @@ def importFromCloud_rnaseNochains(driver, waitShort):
     clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Import', 'Cloud'))
     time.sleep(1)
 
+    clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Select', 'file(s)'))
+    time.sleep(1)
+
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
     if len(textEl2) < 1:
         textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'ccp4-examples')
@@ -637,6 +652,9 @@ def importFromCloud_twin(driver, waitShort):
     time.sleep(1)
 
     clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Import', 'Cloud'))
+    time.sleep(1)
+
+    clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Select', 'file(s)'))
     time.sleep(1)
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
