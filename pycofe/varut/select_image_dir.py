@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    22.10.18   <--  Date of Last Modification.
+#    07.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  QT SELECT DIRCTORY DIALOG FOR CLIENT-SIDE WRAPPERS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -18,7 +18,9 @@ import sys
 import os
 import re
 import json
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets
+from PyQt5 import QtCore
+
 
 def dirpath2sectors(dirpath, sectors, file_list):
     '''
@@ -148,24 +150,24 @@ def dirpath2sectors(dirpath, sectors, file_list):
 
 def select ( title ):
 
-    settings = QtCore.QSettings ( "CCP4","SelectDir" );
-    startDir = settings.value ( "last_path" ).toString()
+    settings = QtCore.QSettings ( "CCP4","SelectDir" )
+    startDir = str ( settings.value ( "last_path" ) )
 
     if not startDir and "HOME" in os.environ:
         startDir = os.environ["HOME"]
 
-    app  = QtGui.QApplication([])
+    app  = QtWidgets.QApplication([])
 
     if sys.platform.startswith("win"):
-        dialog = QtGui.QFileDialog()
+        dialog = QtWidgets.QFileDialog()
         dialog.setWindowTitle ( title )
         if startDir:
             dialog.setDirectory ( startDir )
     else:
-        dialog = QtGui.QFileDialog ( None,title,startDir )
-    dialog.setFileMode ( QtGui.QFileDialog.Directory)
-    dialog.setOption   ( QtGui.QFileDialog.DontUseNativeDialog,True )
-    #dialog.setOption(QtGui.QFileDialog.ShowDirsOnly, True)
+        dialog = QtWidgets.QFileDialog ( None,title,startDir )
+    dialog.setFileMode ( QtWidgets.QFileDialog.Directory)
+    dialog.setOption   ( QtWidgets.QFileDialog.DontUseNativeDialog,True )
+    #dialog.setOption(QtWidgets.QFileDialog.ShowDirsOnly, True)
     dialog.show  ()
     dialog.raise_()
 
