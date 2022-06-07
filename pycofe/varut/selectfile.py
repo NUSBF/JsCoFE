@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.03.19   <--  Date of Last Modification.
+#    07.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -15,16 +15,15 @@
 #
 #
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
 
 import sys
 import os
-from PyQt4 import QtGui, QtCore
-
-#from PyQt4 import QtCore
+from PyQt5 import QtWidgets
+from PyQt5 import QtCore
 
 def select ( title,filters,startDir=None,saveSettings=True ):
 
@@ -39,18 +38,18 @@ def select ( title,filters,startDir=None,saveSettings=True ):
     if not start_dir:
         start_dir = "."
 
-    app = QtGui.QApplication([])
+    app = QtWidgets.QApplication([])
 
     if sys.platform.startswith("win"):
-        dialog = QtGui.QFileDialog()
+        dialog = QtWidgets.QFileDialog()
         dialog.setWindowTitle ( title )
         dialog.setDirectory ( start_dir )
     else:
-        dialog = QtGui.QFileDialog ( None,title,start_dir )
-    #dialog.setFileMode ( QtGui.QFileDialog.Directory)
+        dialog = QtWidgets.QFileDialog ( None,title,start_dir )
+    #dialog.setFileMode ( QtWidgets.QFileDialog.Directory)
     dialog.setNameFilters ( filters )
-    dialog.setOption      ( QtGui.QFileDialog.DontUseNativeDialog,True )
-    #dialog.setOption(QtGui.QFileDialog.ShowDirsOnly, True)
+    dialog.setOption      ( QtWidgets.QFileDialog.DontUseNativeDialog,True )
+    #dialog.setOption(QtWidgets.QFileDialog.ShowDirsOnly, True)
     dialog.show  ()
     dialog.raise_()
 
@@ -64,10 +63,8 @@ def select ( title,filters,startDir=None,saveSettings=True ):
 
     return ""
 
-    """
-    file = str ( QtGui.QFileDialog.getExistingDirectory(None,title,start_dir) )
-    return file
-    """
+    # file = str ( QtWidgets.QFileDialog.getExistingDirectory(None,title,start_dir) )
+    # return file
 
 if __name__ == '__main__':
 

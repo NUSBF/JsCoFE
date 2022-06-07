@@ -147,7 +147,7 @@ function Communicate ( server_request )  {
   if (ix<0) {
     var rtag = cmd.__special_url_tag + '-fe/';
     ix = this.filePath.lastIndexOf(rtag);
-//console.log ( 'rtag=' + rtag + ',  file=' + this.filePath + ', ix=' + ix );
+// console.log ( 'rtag=' + rtag + ',  file=' + this.filePath + ', ix=' + ix );
     if (ix>=0)  {
       this.filePath = this.filePath.substr(ix+rtag.length);
       log.debug2 ( 4,"calculated path " + this.filePath);
@@ -218,7 +218,7 @@ function Communicate ( server_request )  {
         else // file in a project directory
           this.filePath = path.join ( prj.getProjectDirPath(loginData,flist[2]),
                                       flist[3] );
-        //console.log ( ' fp='+this.filePath );
+        // console.log ( ' fp='+this.filePath );
 
         // now check whether the job is currently running, in which case the
         // requested file should be fetched from the respective number cruncher

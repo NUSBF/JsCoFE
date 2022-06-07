@@ -838,7 +838,7 @@ function ProjectListPage ( sceneId )  {
   this.headerPanel.setHorizontalAlignment ( 0,3,'right' );
 
   pageTitle_lbl = this.headerPanel
-                  .setLabel ( '&nbsp;Projects',0,4,1,1 )
+                  .setLabel ( '&nbsp;My Projects',0,4,1,1 )
                   .setFont  ( 'times','200%',true,true )
                   .setNoWrap();
                   // .setHorizontalAlignment ( 'center' );

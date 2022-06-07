@@ -46,114 +46,215 @@ MTZ.prototype.Init = function()  {
 MTZ.prototype.Load = function ( source,function_success,function_fail,
                                        function_always )  {
 
-  this.Init();
-  var oReq = null;
-
-  if (typeof source === 'string' || source instanceof String)  {
-    this.url = source;
-    var oReq = new XMLHttpRequest();
-    oReq.open ( this.method, this.url, true );
-    oReq.responseType = "arraybuffer";
-    oReq.timeout      = 9999999;
+  function getHeaderOffset ( dataView,dataLength )  {
+    var offset = 4*dataView.getUint32(4,self.endian) - 4;
+    if ((offset>0) && (offset<dataLength))  {
+      var spattern = 'VERS MTZ:';
+      var matched  = true;
+      for (var i=0;(i<spattern.length) && matched;i++)
+        matched = spattern.codePointAt(i) == dataView.getUint8(offset+i);
+      if (matched)  return offset;
+              else  return -2;
+    } else {
+      return -1;
+    }
   }
 
-  (function(t){
+  function processBuffer ( arrayBuffer )  {
 
-    function getHeaderOffset ( dataView,dataLength )  {
-      var offset = 4*dataView.getUint32(4,t.endian) - 4;
-      if ((offset>0) && (offset<dataLength))  {
-        var spattern = 'VERS MTZ:';
-        var matched  = true;
-        for (var i=0;(i<spattern.length) && matched;i++)
-          matched = spattern.codePointAt(i) == dataView.getUint8(offset+i);
-        if (matched)  return offset;
-                else  return -2;
-      } else {
-        return -1;
-      }
+    var dataView = new DataView(arrayBuffer);
+    var hoffset  = getHeaderOffset ( dataView,arrayBuffer.byteLength );
+    if (hoffset<0)  {
+      self.endian = !self.endian;
+      hoffset = getHeaderOffset ( dataView,arrayBuffer.byteLength );
     }
 
-    function processBuffer ( arrayBuffer )  {
-
-      var dataView = new DataView(arrayBuffer);
-      var hoffset  = getHeaderOffset ( dataView,arrayBuffer.byteLength );
-      if (hoffset<0)  {
-        t.endian = !t.endian;
-        hoffset = getHeaderOffset ( dataView,arrayBuffer.byteLength );
-      }
-
-      if (hoffset<0)  {
-        if (function_fail)
-          function_fail ( 1 );  // no header
-      } else  {
-
-        t.header = [];  // will be a list of 80-character strings
-        for (var i=hoffset;i<arrayBuffer.byteLength;i+=80)  {
-          var s = "";
-          var imax = Math.min(i+80,arrayBuffer.byteLength);
-          for (var j=i;j<imax;j++)
-            s += String.fromCharCode ( dataView.getUint8(j) );
-          t.header.push ( s );
-        }
-
-        t.reflections = new DataView ( arrayBuffer,80,hoffset-80 );
-        t.processData();
-
-        //I've put makeLayouthere for now as variables won't show if put in initialisation
-        if (function_success)
-          function_success();
-
-      }
-
-    }
-
-    if (oReq)  {
-
-      oReq.onload = function(oEvent) {
-
-        var arrayBuffer = oReq.response; // Note: not oReq.responseText
-        if (arrayBuffer) {
-          processBuffer ( arrayBuffer );
-        } else {
-          if (function_fail)
-            function_fail ( 2 );   // no data
-        }
-
-        if (function_always)
-          function_always();
-
-      };
-
-      oReq.onerror = function()  {
-        if (function_fail)
-          function_fail ( 3 );
-        if (function_always)
-          function_always();
-      }
-
-      oReq.send(null);
-
+    if (hoffset<0)  {
+      if (function_fail)
+        function_fail ( 1 );  // no header
     } else  {
-      // source is coming from SelectFile widget, use FileReader API
 
-      // Read in the image file as a data URL.
-      reader.readAsDataURL(source);
+      self.header = [];  // will be a list of 80-character strings
+      for (var i=hoffset;i<arrayBuffer.byteLength;i+=80)  {
+        var s = "";
+        var imax = Math.min(i+80,arrayBuffer.byteLength);
+        for (var j=i;j<imax;j++)
+          s += String.fromCharCode ( dataView.getUint8(j) );
+        self.header.push ( s );
+      }
 
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        //var fname         = source.name;
-        //var contents_list = e.target.result;
-        var arrayBuffer = e.target.result; // Note: not oReq.responseText
-        if (arrayBuffer)
-          processBuffer ( arrayBuffer );
-      };
-      reader.readAsBinaryString ( source );
+      self.reflections = new DataView ( arrayBuffer,80,hoffset-80 );
+      self.processData();
+
+      //I've put makeLayouthere for now as variables won't show if put in initialisation
+      if (function_success)
+        function_success();
 
     }
 
-  }(this))
+  }
+
+  this.Init();
+
+  this.url = source;
+  var self = this;
+
+  if (typeof source === 'string' || source instanceof String)  {
+
+    var oReq = new XMLHttpRequest();
+
+    // oReq.onreadystatechange = function() {
+    //   alert ( 'readystate = ' + oReq.readyState);
+    // };
+
+    oReq.onload = function(oEvent) {
+
+      var arrayBuffer = oReq.response; // Note: not oReq.responseText
+      if (arrayBuffer) {
+        processBuffer ( arrayBuffer );
+      } else {
+        if (function_fail)
+          function_fail ( 2 );   // no data
+      }
+
+      if (function_always)
+        function_always();
+
+    };
+
+    oReq.onerror = function()  {
+      if (function_fail)
+        function_fail ( 3 );
+      if (function_always)
+        function_always();
+    }
+
+    // alert ( 'oReq 1');
+    // oReq.send(null);
+    // alert ( 'oReq 2 status=' + oReq.status);
+
+    // oReq.overrideMimeType ( "text/plain; charset=x-user-defined" );
+    oReq.responseType = 'arraybuffer';
+    oReq.timeout      = 9999999;
+    oReq.open ( self.method, self.url, true );
+
+    try {
+      oReq.send(null);
+    } catch (e) {
+      alert ( 'loading ' + self.url + ' failed:\n' + e );
+    }
+
+/*
+    function str2ab(str) {
+      var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+      var bufView = new Uint16Array(buf);
+      for (var i=0, strLen=str.length; i < strLen; i++) {
+        bufView[i] = str.charCodeAt(i);
+      }
+      return buf;
+    }
+
+    $.ajax ({
+      url         : self.url,
+      async       : true,
+      type        : 'POST',
+      data        : null,
+      // dataType    : 'text',
+      crossDomain : true,
+      cache       : false,   // added on 27.03.2019
+      processData : false,
+      // contentType : false,
+      responseType: 'arraybuffer',
+      headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      timeout     : 0  // in ms; '0' means no timeout
+    })
+    .done ( function(rdata, status, xhr) {
+      // alert ( rdata.length );
+      // var arrayBuffer = str2ab ( rdata );
+      console.log ( xhr );
+      var arrayBuffer = xhr.responseText;
+      if (arrayBuffer) {
+        processBuffer ( arrayBuffer );
+      } else {
+        if (function_fail)
+          function_fail ( 2 );   // no data
+      }
+      if (function_always)
+        function_always();
+    })
+    .always ( function(){
+      // if (function_always)
+      //   function_always();
+    })
+    .fail   ( function(xhr,err){
+      if (function_fail)
+        function_fail ( 3 );
+      if (function_always)
+        function_always();
+    });
+*/
+
+  } else  {
+    // source is coming from SelectFile widget, use FileReader API
+
+    // Read in the image file as a data URL.
+    reader.readAsDataURL(source);
+
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      //var fname         = source.name;
+      //var contents_list = e.target.result;
+      var arrayBuffer = e.target.result; // Note: not oReq.responseText
+      if (arrayBuffer)
+        processBuffer ( arrayBuffer );
+    };
+    reader.readAsBinaryString ( source );
+
+  }
 
 }
+
+// Viewer.prototype.load_file = function load_file (url/*:string*/, options/*:{[id:string]: mixed}*/,
+//           callback/*:Function*/) {
+//   if (this.renderer === null) { return; }// no WebGL detected
+//   var req = new XMLHttpRequest();
+//   req.open('GET', url, true);
+//   req.responseType = 'arraybuffer';
+//   var self = this;
+//   Object.keys(this.xhr_headers).forEach(function (name) {
+//     req.setRequestHeader(name, self.xhr_headers[name]);
+//   });
+//   req.onreadystatechange = function () {
+//     if (req.readyState === 4) {
+//       // chrome --allow-file-access-from-files gives status 0
+//       if (req.status === 200 || (req.status === 0 && req.response !== null &&
+//                                                      req.response !== '')) {
+//         try {
+//           callback(req);
+//         } catch (e) {
+//           self.hud('Error: ' + e.message + '\nwhen processing ' + url, 'ERR');
+//         }
+//       } else {
+//         self.hud('Failed to fetch ' + url, 'ERR');
+//       }
+//     }
+//   };
+//   if (options.progress) {
+//     req.addEventListener('progress', function (evt /*:ProgressEvent*/) {
+//       if (evt.lengthComputable && evt.loaded && evt.total) {
+//         var fn = url.split('/').pop();
+//         self.hud('loading ' + fn + ' ... ' + ((evt.loaded / 1024) | 0) +
+//                  ' / ' + ((evt.total / 1024) | 0) + ' kB');
+//         if (evt.loaded === evt.total) { self.hud(); } // clear progress message
+//       }
+//     });
+//   }
+//   try {
+//     req.send(null);
+//   } catch (e) {
+//     self.hud('loading ' + url + ' failed:\n' + e, 'ERR');
+//   }
+// };
 
 
 MTZ.prototype.processData = function()  {

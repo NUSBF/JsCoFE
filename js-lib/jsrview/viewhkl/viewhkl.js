@@ -28,7 +28,8 @@ ViewHKL.prototype.Load = function ( source )  {
   else
     url_str = source.name;
 
-  //alert ( ' url_str=' + url_str );
+  // url_str = url_str.split('/').reverse()[0];
+  // alert ( ' url_str=' + url_str );
 
   // clear the page first
 
@@ -69,9 +70,13 @@ ViewHKL.prototype.Load = function ( source )  {
     self.mtz.Load ( source,
       function(){  // on success
 
+// alert ( 'success ' + url_str );
+
         self.makeTabs();
 
       },function(errCode){  // on failure
+
+// alert ( 'failure ' + url_str );
 
         var err_msg;
         switch (errCode)  {
