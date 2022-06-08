@@ -528,6 +528,9 @@ def importFromCloud_rnaseHHPRED(driver, waitShort):
 
     clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Import', 'Cloud'))
     time.sleep(1)
+    
+    clickByXpath(driver, "//*[contains(text(), '%s') and contains(text(), '%s')]" % ('Select', 'file(s)'))
+    time.sleep(1)
 
 
     textEl2 = driver.find_elements_by_xpath("//a[normalize-space()='%s']" % 'test-data')
