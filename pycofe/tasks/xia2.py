@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.06.21   <--  Date of Last Modification.
+#    08.06.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -157,11 +157,11 @@ class Xia2(basic.TaskDriver):
             environ["PATH"] = os.environ["XDSGUI_home"] + ":" +\
                               os.environ["XDS_home"] + ":" +\
                               os.environ["PATH"]
-
-        if sys.platform.startswith("win"):
-            rc = self.runApp ( "xia2.bat",cmd,logType="Main",env=environ )
-        else:
-            rc = self.runApp ( "xia2",cmd,logType="Main",env=environ )
+        #
+        # if sys.platform.startswith("win"):
+        #     rc = self.runApp ( "xia2.bat",cmd,logType="Main",env=environ )
+        # else:
+        rc = self.runApp ( "xia2",cmd,logType="Main",env=environ )
 
         if pipeline=="2d":
             self.addCitations ( ["dials","mosflm","aimless"] )

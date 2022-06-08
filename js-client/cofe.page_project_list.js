@@ -789,17 +789,21 @@ function ProjectListPage ( sceneId )  {
           case 'delete' :
           case 'select' : projectList.currentFolder = data.folder;
                           saveProjectList ( function(rdata){
-                            makeProjectListTable();
+                            loadProjectList();
+                            // makeProjectListTable();
                           });
                       break;
-          case 'add'    : saveProjectList ( function(rdata){} );
+          case 'add'    : saveProjectList ( function(rdata){
+                            loadProjectList();
+                          });
                       break;
           case 'move'   : var pDesc = getCurrentProjectDesc();
                           if (pDesc)  {
                             pDesc.folderPath          = data.folder;
                             projectList.currentFolder = data.folder;
                             saveProjectList ( function(rdata){
-                              makeProjectListTable();
+                              loadProjectList();
+                              // makeProjectListTable();
                             });
                           }
                       break;
@@ -814,7 +818,9 @@ function ProjectListPage ( sceneId )  {
                                 projectList.projects[i].folderPath.replace (
                                   data.folder,data.rename
                                 );
-                          saveProjectList ( function(rdata){} );
+                          saveProjectList ( function(rdata){
+                            loadProjectList();
+                          });
                       break;
           case 'cancel' : break;
           default       : new MessageBox ( 'Unknown action key',

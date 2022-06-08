@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.05.22   <--  Date of Last Modification.
+#    08.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,6 +21,7 @@ import os
 import sys
 import traceback
 import subprocess
+import time
 
 #  ccp4-python imports
 import pyrvapi
@@ -139,7 +140,6 @@ def run ( body,        # body is reference to the main Import class
             sp = subprocess.Popen ( 'pointless', stdin=subprocess.PIPE,
                                     stdout=body.file_stdout,
                                     stderr=body.file_stderr )
-
             sp.stdin.write(('XDSIN ' + p_orig + '\nHKLOUT ' + p_mtzin + '\nCOPY\n').encode())
             sp.stdin.close()
             if sp.wait():
@@ -188,19 +188,7 @@ def run ( body,        # body is reference to the main Import class
             rc = command.call ( "pointless",[],"./",pointless_script(),
                                 body.file_stdout,body.file_stderr,log_parser )
             body.unsetLogParser()
-
-            symmTablesId = body.getWidgetId ( "file_seq_" + symm_det() )
-            pyrvapi.rvapi_add_section ( symmTablesId,"Symmetry determination tables",
-                    fileSecId,frow,0,1,1,True )
-            pyrvapi.rvapi_set_text ( "&nbsp;",fileSecId,frow+1,0,1,1 )
-            frow += 2
-
-            #body.putSection ( symmTablesId,"Symmetry determination tables",True )
-            table_list = datred_utils.parse_xmlout(pointless_xml())
-            datred_utils.report ( table_list,symmTablesId )
-
-            # dump_keyargs = dict(sort_keys=True, indent=4, separators=(',', ': '))
-            # print json.dumps(datred_utils.tabs_as_dict(tab_list), **dump_keyargs)
+            time.sleep(1)
 
             if rc.msg:
                 msg = "\n\n Pointless failed with message:\n\n" + \
@@ -213,6 +201,20 @@ def run ( body,        # body is reference to the main Import class
                                           "Failed to process/import, ignored" )
 
             else:
+
+                symmTablesId = body.getWidgetId ( "file_seq_" + symm_det() )
+                pyrvapi.rvapi_add_section ( symmTablesId,"Symmetry determination tables",
+                                            fileSecId,frow,0,1,1,True )
+                pyrvapi.rvapi_set_text ( "&nbsp;",fileSecId,frow+1,0,1,1 )
+                frow += 2
+
+                #body.putSection ( symmTablesId,"Symmetry determination tables",True )
+                table_list = datred_utils.parse_xmlout(pointless_xml())
+                datred_utils.report ( table_list,symmTablesId )
+
+                # dump_keyargs = dict(sort_keys=True, indent=4, separators=(',', ': '))
+                # print json.dumps(datred_utils.tabs_as_dict(tab_list), **dump_keyargs)
+
                 mf = mtz.mtz_file ( p_mtzin )
 
                 dset_list = datred_utils.point_symm_datasets ( pointless_xml(), f_fmt )
@@ -298,7 +300,7 @@ def run ( body,        # body is reference to the main Import class
             pyrvapi.rvapi_flush()
 
             # move imported file into output directory
-            os.rename(p_mtzin, os.path.join(body.outputDir(), os.path.basename(p_mtzin)))
+            os.rename ( p_mtzin, os.path.join(body.outputDir(), os.path.basename(p_mtzin)) )
 
             body.file_stdout.write ( "... processed: " + f_orig + "\n    " )
 
