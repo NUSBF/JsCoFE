@@ -22,8 +22,12 @@
 
 import sys
 import os
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
+try:
+    from PyQt4 import QtGui as QtWidgets
+    from PyQt4 import QtCore
+except:
+    from PyQt5 import QtWidgets
+    from PyQt5 import QtCore
 
 def select ( title,filters,startDir=None,saveSettings=True ):
 

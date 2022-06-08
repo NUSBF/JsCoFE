@@ -350,6 +350,8 @@ function moveDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
 }
 
 function copyDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
+// if old_path is a directory, it will copy all its content but not the directory
+// itself
   fs.copy ( old_path,new_path,{
     'overwrite'          : overwrite_bool,
     'preserveTimestamps' : true,

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.02.22   <--  Date of Last Modification.
+#    08.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -98,7 +98,7 @@ class DocDev(basic.TaskDriver):
         f.write ( script )
         f.close()
 
-        os.chmod ( scriptf, stat.S_IRUSR  | stat.S_IXUSR )
+        os.chmod ( scriptf, os.stat(scriptf).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH )
 
         rc = self.runApp ( "env",[
                                 "-i",
