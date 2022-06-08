@@ -15,6 +15,9 @@
 select_file_dialog = "$selfile.py"
 cloud_backup_dir   = "$backup_dir"
 
+# sys.stdout.write ( " env = " + os.environ["CCP4"] + "\n" )
+# sys.stderr.write ( " env = " + os.environ["CCP4"] + "\n" )
+
 if (have_coot_python):
 
     import subprocess
