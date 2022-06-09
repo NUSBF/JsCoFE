@@ -38,7 +38,6 @@ import shutil
 from . import basic
 from   pycofe.proc      import qualrep
 from   pycofe.verdicts  import verdict_refmac
-# from   pycofe.proc   import seqal
 # from   pycofe.auto   import auto
 
 # ============================================================================
@@ -87,7 +86,8 @@ class SliceNDice(basic.TaskDriver):
             "-hklin"     ,input_mtz,
             "-seqin"     ,input_seq,
             "-min_splits",min_nsplits,
-            "-max_splits",max_nsplits
+            "-max_splits",max_nsplits,
+            "-xyz_source","alphafold_bfactor"
         ]
 
         self.putWaitMessageLF ( "Solution in progress ..." )
