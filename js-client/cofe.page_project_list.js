@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.06.22   <--  Date of Last Modification.
+ *    09.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -788,22 +788,25 @@ function ProjectListPage ( sceneId )  {
         switch (key)  {
           case 'delete' :
           case 'select' : projectList.currentFolder = data.folder;
+                          projectList.resetFolders ( true );
                           saveProjectList ( function(rdata){
-                            loadProjectList();
-                            // makeProjectListTable();
+                            // loadProjectList();
+                            makeProjectListTable();
                           });
                       break;
-          case 'add'    : saveProjectList ( function(rdata){
-                            loadProjectList();
+          case 'add'    : projectList.resetFolders ( true );
+                          saveProjectList ( function(rdata){
+                            // loadProjectList();
                           });
                       break;
           case 'move'   : var pDesc = getCurrentProjectDesc();
                           if (pDesc)  {
                             pDesc.folderPath          = data.folder;
                             projectList.currentFolder = data.folder;
+                            projectList.resetFolders ( true );
                             saveProjectList ( function(rdata){
-                              loadProjectList();
-                              // makeProjectListTable();
+                              // loadProjectList();
+                              makeProjectListTable();
                             });
                           }
                       break;
@@ -818,11 +821,13 @@ function ProjectListPage ( sceneId )  {
                                 projectList.projects[i].folderPath.replace (
                                   data.folder,data.rename
                                 );
+                          projectList.resetFolders ( true );
                           saveProjectList ( function(rdata){
-                            loadProjectList();
+                            // loadProjectList();
                           });
                       break;
-          case 'cancel' : break;
+          case 'cancel' : projectList.resetFolders ( true );
+                      break;
           default       : new MessageBox ( 'Unknown action key',
                               '<h2>Unknown action key</h2>' +
                               'This is likely to be a program error. ' +
@@ -858,7 +863,6 @@ function ProjectListPage ( sceneId )  {
   pageTitle_lbl.addOnClickListener ( function(){
     browseFolders ( 'select' );
   });
-
 
   // Make Main Menu
   this.addMenuItem ( 'Change project folder','folder_projects',function(){

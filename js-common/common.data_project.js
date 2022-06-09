@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.05.22   <--  Date of Last Modification.
+ *    09.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -157,8 +157,19 @@ ProjectList.prototype._reset_folders = function ( folders )  {
   }
 }
 
-ProjectList.prototype.resetFolders = function()  {
+ProjectList.prototype.resetFolders = function ( recalculate_bool )  {
   this._reset_folders ( this.folders );
+  if (recalculate_bool)  {
+    var folderPaths = {};
+    for (var i=0;i<this.projects.length;i++)  {
+      var folder_path = this.projects[i].folderPath;
+      if (folder_path in folderPaths)
+            folderPaths[folder_path]++;
+      else  folderPaths[folder_path] = 1;
+    }
+    for (var fpath in folderPaths)
+      this.addFolderPath ( fpath,folderPaths[fpath] );
+  }
 }
 
 ProjectList.prototype._rename_folders = function ( folders,oldpath,newpath )  {
