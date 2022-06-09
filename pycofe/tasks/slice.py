@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    27.05.22   <--  Date of Last Modification.
+#    09.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -58,7 +58,8 @@ class Slice(basic.TaskDriver):
         cmd = [
             "-xyzin"     ,xyz.getXYZFilePath(self.inputDir()),
             "-min_splits",nsplits,
-            "-max_splits",nsplits
+            "-max_splits",nsplits,
+            "-xyz_source","alphafold_bfactor"
         ]
 
         rc = self.runApp ( "slicendice",cmd,logType="Main",quitOnError=False )

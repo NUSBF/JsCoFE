@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.04.22   <--  Date of Last Modification.
+ *    09.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -143,7 +143,9 @@ TaskWFlowAFMR.prototype.desc_title = function()  {
 //   'L'  : Linux
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
-//TaskWFlowAFMR.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+TaskWFlowAFMR.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+
+TaskWFlowAFMR.prototype.requiredEnvironment = function() { return ['CCP4','ALPHAFOLD_CFG']; }
 
 TaskWFlowAFMR.prototype.currentVersion = function()  {
   var version = 0;
