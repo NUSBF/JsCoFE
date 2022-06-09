@@ -327,6 +327,7 @@ function writeProjectList ( loginData,projectList )  {
   return utils.writeObject ( userProjectsListPath,projectList );
 }
 
+/*
 function readProjectList ( loginData )  {
   var userProjectsListPath = getUserProjectListPath ( loginData );
   var pList = utils.readClass ( userProjectsListPath );
@@ -358,14 +359,46 @@ function readProjectList ( loginData )  {
           else  folderPaths[pdesc.folderPath] = 1;
         }
       }
-    pList.resetFolders();
+    pList.resetFolders ( false );
     for (var fpath in folderPaths)
       pList.addFolderPath ( fpath,folderPaths[fpath] );
     writeProjectList ( loginData,pList );
   }
   return pList;
 }
+*/
 
+function readProjectList ( loginData )  {
+  var userProjectsListPath = getUserProjectListPath ( loginData );
+  var pList = utils.readClass ( userProjectsListPath );
+  if (pList)  {
+    pList.projects = [];
+    if (!('startmode' in pList))
+      pList.startmode = pd.start_mode.auto;
+    var dirlist = fs.readdirSync ( getUserProjectsDirPath(loginData) );
+    for (var i=0;i<dirlist.length;i++)
+      if (dirlist[i].endsWith(projectExt))  {
+        var pname = path.parse(dirlist[i]).name;
+        var pdesc = readProjectDesc ( loginData,pname );
+        if (pdesc && checkProjectDescData(pdesc,loginData))  {
+          var pData = readProjectData ( loginData,pdesc.name );
+          if (pData)  {
+            writeProjectData ( loginData,pData,true );
+            pdesc = pData.desc;
+          } else  {
+            log.error ( 70,'project data not found at ' +
+                           getProjectDataPath(loginData,pdesc.name) );
+            pdesc = null;
+          }
+        }
+        if (pdesc)
+          pList.projects.push ( pdesc );
+      }
+    pList.resetFolders ( true );
+    writeProjectList ( loginData,pList );
+  }
+  return pList;
+}
 
 function writeDockData ( loginData,dockData )  {
   var userDockDataPath = getUserDockDataPath ( loginData );
