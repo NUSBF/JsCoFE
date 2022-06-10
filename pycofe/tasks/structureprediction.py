@@ -104,6 +104,8 @@ class StructurePrediction(basic.TaskDriver):
         script = "#!/bin/bash\n" +\
                  os.path.join ( os.environ["CCP4"],"bin","af2start" ) +\
                  " --seqin " + seqfilename  +\
+                 " --stop-at-score " + "80" +\
+                 " --num_models "    + "1"  +\
                  " --out " + dirName + " --colabfold\n"
 
         self.stdout (
