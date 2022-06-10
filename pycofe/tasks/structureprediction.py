@@ -101,8 +101,9 @@ class StructurePrediction(basic.TaskDriver):
         # self.rvrow -= 1
         # self.runApp ( "python",cmd,logType="Main",quitOnError=False )
 
+        # os.path.join ( os.environ["CCP4"],"bin","af2start" )
+
         script = "#!/bin/bash\n" +\
-                 # os.path.join ( os.environ["CCP4"],"bin","af2start" ) +\
                  "af2start"  +\
                  " --seqin " + seqfilename  +\
                  " --stop-at-score " + "80" +\
