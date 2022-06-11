@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.06.22   <--  Date of Last Modification.
+#    11.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -67,48 +67,30 @@ class StructurePrediction(basic.TaskDriver):
         # close execution logs and quit
 
         seq  = self.makeClass ( self.input_data.data.seq[0] )
-        # sec1 = self.task.parameters.sec1.contains
+        sec1 = self.task.parameters.sec1.contains
+
+        sec1 = self.task.parameters.sec1.contains
+        min_nsplits = self.getParameter ( sec1.MIN_NSPLITS )
+        max_nsplits = self.getParameter ( sec1.MAX_NSPLITS )
+
 
         seqfilename = seq.getSeqFilePath(self.inputDir())
 
-        # dirName=uuid.uuid4().hex
-        # program = self.getParameter ( sec1.PROGRAM )
-        #
-        # cmd=['-m', program,
-        #     '-p', dirName,
-        #     '-f', filename
-        # ]
-        #
-        # self.putWaitMessageLF ( "Prediction in progress ..." )
-        # self.rvrow -= 1
-        #
-        # appName=os.environ['ALPHAFOLD_CFG']
-        #
-        # self.runApp ( appName,cmd,logType="Main",quitOnError=False )
-
-        # if os.path.isdir(dirName):
-
         dirName = "af2_output"
-        # os.mkdir ( dirName )
-
-        # cmd = [
-        #   os.path.join ( os.environ["CCP4"],"bin","af2start" ),
-        #   "--seqin" , seqfilename,
-        #   "--out"   , dirName,
-        #   "--colabfold"
-        # ]
-        # self.putWaitMessageLF ( "Prediction in progress ..." )
-        # self.rvrow -= 1
-        # self.runApp ( "python",cmd,logType="Main",quitOnError=False )
 
         # os.path.join ( os.environ["CCP4"],"bin","af2start" )
 
         script = "#!/bin/bash\n" +\
                  "af2start"  +\
-                 " --seqin " + seqfilename  +\
-                 " --stop-at-score " + "80" +\
-                 " --num_models "    + "1"  +\
-                 " --out " + dirName + " --colabfold\n"
+                 " --seqin " + seqfilename
+
+        if hasattr(sec1,"MINSCORE"):
+            script += " --stop-at-score " + self.getParameter(sec1.MINSCORE)
+
+        if hasattr(sec1,"NSTRUCTS"):
+            script += " --num_models " + self.getParameter(sec1.NSTRUCTS)
+
+        sript += " --out " + dirName + " --colabfold\n"
 
         self.stdout (
             "--------------------------------------------------------------------------------\n" +\

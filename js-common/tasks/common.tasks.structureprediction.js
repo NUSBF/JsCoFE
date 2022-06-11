@@ -1,7 +1,7 @@
 /*
  *  ====================================================================
  *
- *    08.06.22   <--  Date of Last Modification.
+ *    11.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------
  *
@@ -38,14 +38,11 @@ function TaskStructurePrediction()  {   // must start with Task...
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  // define fields important for |jsCoFE| framework
+  this._type   = 'TaskStructurePrediction'; // must give name of the class
+  this.name    = 'structure prediction';    // default name to be shown in Job Tree
+  this.setOName ( 'af_struct' );            // default output file name template
+  this.title   = 'Structure Prediction';    // title for job dialog
 
-  this._type   = 'TaskStructurePrediction';  // must give name of the class
-  this.name    = 'Structure Prediction';    // default name to be shown in Job Tree
-  this.setOName ( 'af_struct' );  // default output file name template
-  this.title   = 'Structure Prediction';         // title for job dialog
-  // this.helpURL = './html/jscofe_task_structureprediction.html'; // documentation link,
-                                        // please follow file name convention
   this.input_dtypes = [{  // input data types
       data_type   : {'DataSequence':['protein']}, // data type(s) and subtype(s)
       label       : 'Sequence',          // label for input dialog
@@ -55,34 +52,53 @@ function TaskStructurePrediction()  {   // must start with Task...
     }
   ];
 
-// this.parameters = { // container for all input parameters
-//
-//   sec1  :  // unique Section ID used for fetching parameters in Task Driver
-//       { type     : 'section',      // widget type
-//         title    : 'Main options', // Section title
-//         open     : true,       // true for the section to be initially open
-//         position : [0,0,1,5],  // must span 5 columns
-//         contains : {           // container for Section's parameters
-//
-//
-//           PROGRAM :
-//                 {
-//                   type     : 'combobox', // for AF preferable (0 - 5)
-//                   label    : 'Protocol number',
-//                   tooltip  : 'The program that will be used for ' +
-//                              'structure prediction',
-//                   range    : ['1|1', // the part for python|the part for users
-//                               '2|2',
-//                               '3|3',
-//                               '4|4',
-//                               '5|5'
-//                  ],
-//                   value    : '1',
-//                   position : [0,0,1,1]
-//                 },
-//         }
-//       }
-// };
+  this.parameters = { // container for all input parameters
+    sec1  :  // unique Section ID used for fetching parameters in Task Driver
+        { type     : 'section',      // widget type
+          title    : 'Main options', // Section title
+          open     : true,       // true for the section to be initially open
+          position : [0,0,1,5],  // must span 5 columns
+          contains : {           // container for Section's parameters
+            // PROGRAM : {
+            //         type     : 'combobox', // for AF preferable (0 - 5)
+            //         label    : 'Protocol number',
+            //         tooltip  : 'The program that will be used for ' +
+            //                    'structure prediction',
+            //         range    : ['1|1', // the part for python|the part for users
+            //                     '2|2',
+            //                     '3|3',
+            //                     '4|4',
+            //                     '5|5'
+            //        ],
+            //         value    : '1',
+            //         position : [0,0,1,1]
+            //       }
+            NSTRUCTS : { type     : 'integer',
+                         keyword  : 'NSTRUCTS',
+                         label    : 'Number of structures',
+                         tooltip  : 'Number of structures to produce. Single ' +
+                                    'structure is sufficient in most cases. ' +
+                                    'Producing additional structures will ' +
+                                    'increase wait times.',
+                         range    : [1,'*'],
+                         value    : 1,
+                         iwidth   : 40,
+                         position : [0,0,1,1]
+                       },
+            MINSCORE : { type     : 'real',
+                         keyword  : 'MINSCORE',
+                         label    : 'Minimal score',
+                         tooltip  : 'Minimal score parameter (0-100) to accept. ' +
+                                    'Requesting higher scores may reduce calculation ' +
+                                    'times, however solutions may be missed.',
+                         range    : [1,'*'],
+                         value    : 80,
+                         iwidth   : 40,
+                         position : [1,0,1,1]
+                       }
+          }
+        }
+  };
 
 }
 
