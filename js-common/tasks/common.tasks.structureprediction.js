@@ -76,10 +76,11 @@ function TaskStructurePrediction()  {   // must start with Task...
             NSTRUCTS : { type     : 'integer',
                          keyword  : 'NSTRUCTS',
                          label    : 'Number of structures',
-                         tooltip  : 'Number of structures to produce. Single ' +
-                                    'structure is sufficient in most cases. ' +
-                                    'Producing additional structures will ' +
-                                    'increase wait times.',
+                         tooltip  : 'Maximum number of structures to produce. Single ' +
+                                    'structure is sufficient in most cases. Producing ' +
+                                    'additional structures will increase wait times. ' +
+                                    'Fewer structures may be produced if score threshold' +
+                                    'is met.',
                          range    : [1,'*'],
                          value    : 1,
                          iwidth   : 40,
@@ -87,10 +88,10 @@ function TaskStructurePrediction()  {   // must start with Task...
                        },
             MINSCORE : { type     : 'real',
                          keyword  : 'MINSCORE',
-                         label    : 'Minimal score',
-                         tooltip  : 'Minimal score parameter (0-100) to accept. ' +
-                                    'Requesting higher scores may reduce calculation ' +
-                                    'times, however solutions may be missed.',
+                         label    : 'Stop at score',
+                         tooltip  : 'Score threshold to stop calculations. Higher ' +
+                                    'thresholds may reduce calculation times, however, ' +
+                                    'solutions may be missed.',
                          range    : [1,'*'],
                          value    : 80,
                          iwidth   : 40,
