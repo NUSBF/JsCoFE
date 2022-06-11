@@ -43,7 +43,7 @@ var _taskIndex = {
 
   'B'  : { type: 'TaskImport'             , after: ['0','B','B1','C','D','E','m'] },
   'B1' : { type: 'TaskImportSeqCP'        , after: ['0','B','B1','C','D','E','m'] },
-  'B2' : { type: 'TaskStructurePrediction', after: ['0','B','B1','C','D','E','m'] },
+  'B2' : { type: 'TaskStructurePrediction', after: ['B','B1','m'] },
   'C'  : { type: 'TaskEnsemblePrepSeq'    , after: ['B','B1','m'] },
   'D'  : { type: 'TaskEnsemblePrepXYZ'    , after: ['B','B1','C','m'] },
   'D1' : { type: 'TaskModelPrepXYZ'       , after: ['B','B1','C','m'] },
