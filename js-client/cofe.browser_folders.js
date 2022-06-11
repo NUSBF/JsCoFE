@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    03.06.22   <--  Date of Last Modification.
+ *    11.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -288,11 +288,18 @@ FoldersBrowser.prototype.onAddFolder = function()  {
                'msg_error' );
       return false;
     }
+    var fpath = selNode.dataId + '/' + folderName;
+    if (self.findFolder(fpath))  {
+      new MessageBox ( 'Duplicate folder name',
+            '<h2>Duplicate folder name</h2>Folder names must be unique within any folder.',
+            'msg_stop' );
+      return false;
+    }
     var newNode = self.ftree.addNode ( selNode,folderName,
                                        image_path('folder_projects'),null );
-    newNode.dataId = selNode.dataId + '/' + folderName;
-    self.projectList.addFolderPath ( newNode.dataId,0 );
-    self.onReturn_fnc ( 'add',{ folder : newNode.dataId } );
+    newNode.dataId = fpath;
+    self.projectList.addFolderPath ( fpath,0 );
+    self.onReturn_fnc ( 'add',{ folder : fpath } );
     return true;
   });
 }
