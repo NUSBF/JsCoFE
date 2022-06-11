@@ -63,20 +63,14 @@ class StructurePrediction(basic.TaskDriver):
     def run(self):
 
         scriptf = "process.sh"
+        dirName = "af2_output"
 
         # close execution logs and quit
 
         seq  = self.makeClass ( self.input_data.data.seq[0] )
         sec1 = self.task.parameters.sec1.contains
 
-        sec1 = self.task.parameters.sec1.contains
-        min_nsplits = self.getParameter ( sec1.MIN_NSPLITS )
-        max_nsplits = self.getParameter ( sec1.MAX_NSPLITS )
-
-
         seqfilename = seq.getSeqFilePath(self.inputDir())
-
-        dirName = "af2_output"
 
         # os.path.join ( os.environ["CCP4"],"bin","af2start" )
 
@@ -90,7 +84,7 @@ class StructurePrediction(basic.TaskDriver):
         if hasattr(sec1,"NSTRUCTS"):
             script += " --num_models " + self.getParameter(sec1.NSTRUCTS)
 
-        sript += " --out " + dirName + " --colabfold\n"
+        script += " --out " + dirName + " --colabfold\n"
 
         self.stdout (
             "--------------------------------------------------------------------------------\n" +\
