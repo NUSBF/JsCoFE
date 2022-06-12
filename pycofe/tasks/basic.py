@@ -1206,7 +1206,7 @@ class TaskDriver(object):
     def putCitations(self):
         if len(citations.citation_list)>0:
             self.putTitle ( "References" )
-            self.putMessage ( citations.makeCitationsHTML(self) )
+            self.putMessage ( citations.makeCitationsHTML(self),colSpan=3 )
         self._add_citations ( citations.citation_list )
         self.outputDataBox.putCitations ( self.citation_list )
         return

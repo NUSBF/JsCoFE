@@ -1264,7 +1264,7 @@ def make_html_list ( clist,category,desc_bool,lists ):
     return rlist
 
 
-def makeCitationsHTML ( body ):
+def makeCitationsHTML ( body,width="" ):
     # makes list of references after a job
 
     if not citation_list:
@@ -1318,8 +1318,6 @@ def makeCitationsHTML ( body ):
             html += "<p><font style='font-size:85%'><i>Developer: citation index errors: " +\
                     str(lists['nocopy']) + ", please correct</i></font>"
 
-
-
         """
         html    = "<b>The following programs were used:</b><ul>"
         noref   = []
@@ -1372,6 +1370,8 @@ def makeCitationsHTML ( body ):
                     str(nocopy) + ", please correct</i></font>"
         """
 
+    if width:
+        html = "<div style=\"width:" + width + "\">" + html + "</div>"
     return html
 
 

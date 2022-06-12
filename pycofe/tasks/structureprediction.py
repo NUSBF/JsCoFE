@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.06.22   <--  Date of Last Modification.
+#    12.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -148,7 +148,7 @@ class StructurePrediction(basic.TaskDriver):
                     self.putMessage1 ( self.report_page_id(),"<img src=\"" + PAE_png +\
                                 "\" height=\"200px\" style=\"position:relative; left:-" +\
                                 str(35*(len(fpaths)-1)) + "px;\"/>",
-                                self.rvrow,col=0,rowSpan=1,colSpan=2 )
+                                self.rvrow,col=0,rowSpan=1,colSpan=3 )
                     self.rvrow += 1
                 if plddt_png:
                     self.putMessage ( "<h3>PLLDT scores</h3>" )
