@@ -1206,7 +1206,7 @@ class TaskDriver(object):
     def putCitations(self):
         if len(citations.citation_list)>0:
             self.putTitle ( "References" )
-            self.putMessage ( citations.makeCitationsHTML(self),colSpan=3 )
+            self.putMessage ( citations.makeCitationsHTML(self,width="800px"),colSpan=1 )
         self._add_citations ( citations.citation_list )
         self.outputDataBox.putCitations ( self.citation_list )
         return
@@ -2268,9 +2268,9 @@ class TaskDriver(object):
         self.putMessage1 ( self.title_grid_id,
                 "<div style=\"text-align:right;font-size:12px;white-space:nowrap;\">" +\
                 "CCP4 v." + self.getCCP4Version() + "; " +\
-                self.appName() + " v." + self.appVersion.split()[0] +\
+                self.appName()   + " v." + self.appVersion.split()[0] +\
                 "<br>Started: "  + self.start_date +\
-                "<br>Finished: " + self.end_date + cpu_time +\
+                "<br>Finished: " + self.end_date   + cpu_time +\
                 "</div>",
                 0,col=1 )
         self.flush()
