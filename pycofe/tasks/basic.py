@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    26.05.22   <--  Date of Last Modification.
+#    12.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -493,8 +493,8 @@ class TaskDriver(object):
         pyrvapi.rvapi_flush ()
         return
 
-    def putMessage ( self,message_str ):
-        pyrvapi.rvapi_set_text ( message_str,self.report_page_id(),self.rvrow,0,1,1 )
+    def putMessage ( self,message_str,col=0,colSpan=1 ):
+        pyrvapi.rvapi_set_text ( message_str,self.report_page_id(),self.rvrow,col,1,colSpan )
         self.rvrow += 1
         return
 

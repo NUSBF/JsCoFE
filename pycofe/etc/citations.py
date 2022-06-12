@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    20.05.22   <--  Date of Last Modification.
+#    12.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -226,7 +226,7 @@ citations = {
                   },
 
     'alphafold' : { 'name'     : 'AlphaFold',
-                    'category' : 'service',
+                    'category' : 'primary',
                     'refs'     : [{
                             'authors' : 'Jumper, J., Evans, R., Pritzel, A. et al.',
                             'title'   : 'Highly accurate protein structure prediction with AlphaFold',
@@ -235,6 +235,19 @@ citations = {
                             'year'    : '2021',
                             'pages'   : '583-589',
                             'doi'     : '10.1038/s41586-021-03819-2'
+                        }]
+                  },
+
+    'colabfold' : { 'name'     : 'ColabFold',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Mirdita M., Schütz K., Moriwaki Y., Heo L., Ovchinnikov S., and Steinegger M.',
+                            'title'   : 'ColabFold: Making protein folding accessible to all',
+                            'journal' : 'Nature Methods',
+                            'volume'  : '19',
+                            'year'    : '2022',
+                            'pages'   : '679–682',
+                            'doi'     : '10.1038/s41592-022-01488-1'
                         }]
                   },
 

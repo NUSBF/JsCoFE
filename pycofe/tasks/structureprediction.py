@@ -141,12 +141,14 @@ class StructurePrediction(basic.TaskDriver):
                 self.putTitle ( "No models generated" )
             else: # if models are found
 
+                self.addCitations ( ["alphafold","colabfold"] )
+
                 if PAE_png:
                     self.putMessage ( "<h3>PAE matrices</h3>" )
                     self.putMessage1 ( self.report_page_id(),"<img src=\"" + PAE_png +\
                                 "\" height=\"200px\" style=\"position:relative; left:-" +\
                                 str(35*(len(fpaths)-1)) + "px;\"/>",
-                                self.rvrow,col=0,rowSpan=1 )
+                                self.rvrow,col=0,rowSpan=1,colSpan=2 )
                     self.rvrow += 1
                 if plddt_png:
                     self.putMessage ( "<h3>PLLDT scores</h3>" )
