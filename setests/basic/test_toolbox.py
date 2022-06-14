@@ -138,7 +138,7 @@ def srf(driver):
     assert size1['width'] > 50
     assert size1['height'] > 100
     assert ratio1 > 0.4
-    assert ratio1 < 0.7
+    assert ratio1 < 0.8
 
     # SWITCHING FRAME BACK!
     driver.switch_to.default_content()
