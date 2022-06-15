@@ -1390,8 +1390,9 @@ var projectName = projectDesc.name;
                   '[00026] Cannot create Job Directory',
                   emailer.send ( conf.getEmailerConfig().maintainerEmail,
                       'CCP4 Create Job Dir Fails',
-                      'Detected mkdir failure at making new job directory, ' +
-                      'please investigate.' )
+                      '[00026] Detected mkdir failure at making new job directory at<p>' +
+                      jobDirPath +
+                      '<p>please investigate.' )
               );
         }
 // pd.printProjectTree ( ' >>>saveProjectData--addJob',projectData );

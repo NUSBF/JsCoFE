@@ -17,39 +17,69 @@
  *
  *  ==========================================================================
  *
+ *  Classes:
+ *  ~~~~~~~~
+ *     FEJobRegister
+ *
+ *  Functions:
+ *  ~~~~~~~~~~
+ *     getJobRegisterPath   ()
+ *     getJobStatPath       ( logNo )
+ *     readFEJobRegister    ()
+ *     writeFEJobRegister   ()
+ *     cleanFEJobRegister   ( nattempts )
+ *     getEFJobEntry        ( loginData,project,jobId )
+ *     selectNumberCruncher ( task )
+ *     ncSelectAndCheck     ( nc_counter,task,callback_func )
+ *     _run_job             ( loginData,task,job_token,ownerLoginData,
+ *                            shared_logins, callback_func )
+ *     runJob               ( loginData,data, callback_func )
+ *     replayJob            ( loginData,data, callback_func )
+ *     stopJob              ( loginData,data )
+ *     killJob              ( loginData,projectName,taskId )
+ *     writeJobStats        ( jobEntry )
+ *     readJobStats         ()
+ *     addJobAuto           ( jobEntry,jobClass )
+ *     getJobResults        ( job_token,server_request,server_response )
+ *     checkJobs            ( loginData,data )
+ *     wakeZombiJobs        ( loginData,data )
+ *     cloudRun             ( server_request,server_response )
+ *
+ *  ==========================================================================
  */
 
+'use strict';
 
 //  load system modules
-var path      = require('path');
-var crypto    = require('crypto');
-var request   = require('request');
+const path      = require('path');
+const crypto    = require('crypto');
+const request   = require('request');
 
 //  load application modules
-var emailer   = require('./server.emailer');
-var utils     = require('./server.utils');
-var user      = require('./server.fe.user');
-var prj       = require('./server.fe.projects');
-var conf      = require('./server.configuration');
-var send_dir  = require('./server.send_dir');
-var ration    = require('./server.fe.ration');
-var ustats    = require('./server.fe.usagestats');
-var class_map = require('./server.class_map');
-var task_t    = require('../js-common/tasks/common.tasks.template');
-var cmd       = require('../js-common/common.commands');
-var ud        = require('../js-common/common.data_user');
-var pd        = require('../js-common/common.data_project');
-var com_utils = require('../js-common/common.utils');
-var knlg      = require('../js-common/common.knowledge');
+const emailer   = require('./server.emailer');
+const utils     = require('./server.utils');
+const user      = require('./server.fe.user');
+const prj       = require('./server.fe.projects');
+const conf      = require('./server.configuration');
+const send_dir  = require('./server.send_dir');
+const ration    = require('./server.fe.ration');
+const ustats    = require('./server.fe.usagestats');
+const class_map = require('./server.class_map');
+const task_t    = require('../js-common/tasks/common.tasks.template');
+const cmd       = require('../js-common/common.commands');
+const ud        = require('../js-common/common.data_user');
+const pd        = require('../js-common/common.data_project');
+const com_utils = require('../js-common/common.utils');
+const knlg      = require('../js-common/common.knowledge');
 
 //  prepare log
-var log = require('./server.log').newLog(8);
+const log = require('./server.log').newLog(8);
 
 
 // ===========================================================================
 
-var feJobStatFile     = 'fe_job_stats';
-var feJobRegisterFile = 'fe_job_register.meta';
+const feJobStatFile     = 'fe_job_stats';
+const feJobRegisterFile = 'fe_job_register.meta';
 
 function FEJobRegister()  {
   this.job_map   = {};
@@ -857,10 +887,10 @@ function killJob ( loginData,projectName,taskId )  {
 
 // ===========================================================================
 
-var _day  = 86400000;
-var _hour = 3600000;
-var _min  = 60000;
-var _sec  = 1000;
+const _day  = 86400000;
+const _hour = 3600000;
+const _min  = 60000;
+const _sec  = 1000;
 
 function writeJobStats ( jobEntry )  {
 
@@ -1569,6 +1599,6 @@ module.exports.readJobStats       = readJobStats;
 module.exports.stopJob            = stopJob;
 module.exports.killJob            = killJob;
 module.exports.getJobResults      = getJobResults;
-module.exports.cloudRun           = cloudRun;
 module.exports.checkJobs          = checkJobs;
 module.exports.wakeZombiJobs      = wakeZombiJobs;
+module.exports.cloudRun           = cloudRun;

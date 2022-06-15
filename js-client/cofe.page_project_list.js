@@ -781,8 +781,18 @@ function ProjectListPage ( sceneId )  {
   function browseFolders ( funcKey )  {
     // console.log ( projectList.folders );
     var title = 'Select project folder';
-    if (funcKey!='select')
+    if (funcKey!='select')  {
+      if (isCurrentProjectShared())  {
+        new MessageBox ( 'Cannot move shared project',
+              '<h2>Cannot move shared project</h2>' +
+              'The currently selected project cannot be moved into ' +
+              'another project folder because it is shared with ' +
+              'other user(s).',
+              'msg_stop' );
+        return;
+      }
       title = 'Move project to folder';
+    }
     new FoldersBrowser ( title,projectList,__current_folder,funcKey,
       function ( key,data ){
         switch (key)  {
