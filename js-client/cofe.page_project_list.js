@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.06.22   <--  Date of Last Modification.
+ *    15.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -783,11 +783,11 @@ function ProjectListPage ( sceneId )  {
     var title = 'Select project folder';
     if (funcKey!='select')  {
       if (isCurrentProjectShared())  {
-        new MessageBox ( 'Cannot move shared project',
-              '<h2>Cannot move shared project</h2>' +
-              'The currently selected project cannot be moved into ' +
-              'another project folder because it is shared with ' +
-              'other user(s).',
+        new MessageBox ( 'Cannot move a shared project',
+              '<h2>Cannot move a shared project</h2>' +
+              'The currently selected project cannot be moved into<br>' +
+              'another project folder because it is shared with other<br>' +
+              'user(s).',
               'msg_stop' );
         return;
       }

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    27.05.22   <--  Date of Last Modification.
+#    15.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,6 +30,7 @@
 import os
 # import sys
 import shutil
+import json
 #
 # #  ccp4-python imports
 # import gemmi
@@ -100,16 +101,39 @@ class SliceNDice(basic.TaskDriver):
             self.putTitle ( "Failure" )
             self.putMessage ( "<i>Program failure, please report</i>" )
         else:
-            dirName    = os.path.join ( "slicendice_0","output" )
-            outFiles   = [f for f in os.listdir(dirName)]
+
             refmac_pdb = None
             refmac_mtz = None
-            for fname in outFiles:
-                fpath = os.path.join ( dirName,fname )
-                if fname.endswith(".pdb"):
-                    refmac_pdb = fpath
-                elif fname.endswith(".mtz"):
-                    refmac_mtz = fpath
+            splitId    = None
+            llg        = None
+            tfz        = None
+            r_fact     = None
+            r_free     = 2.0
+            results    = None
+
+            with open(os.path.join("slicendice_0","results.json")) as json_file:
+                results = json.load(json_file)
+
+            if results:
+                for key in results["final_r_free"]:
+                    rfree = float(results["final_r_free"][key])
+                    if rfree<r_free:
+                        r_free     = rfree
+                        r_fact     = float(results["final_r_fact"][key])
+                        llg        = float(results["phaser_llg"  ][key])
+                        tfz        = float(results["phaser_tfz"  ][key])
+                        splitId    = results["split_id"][key]
+                        refmac_pdb = results["xyzout"  ][key]
+                        refmac_mtz = results["hklout"  ][key]
+
+            # dirName    = os.path.join ( "slicendice_0","output" )
+            # outFiles   = [f for f in os.listdir(dirName)]
+            # for fname in outFiles:
+            #     fpath = os.path.join ( dirName,fname )
+            #     if fname.endswith(".pdb"):
+            #         refmac_pdb = fpath
+            #     elif fname.endswith(".mtz"):
+            #         refmac_mtz = fpath
 
             if not refmac_pdb or not refmac_mtz:
                 self.putTitle ( "No solution generated" )
@@ -121,22 +145,22 @@ class SliceNDice(basic.TaskDriver):
                 verdict_row = self.rvrow
                 self.rvrow += 4
 
-                splitId = None
-                llg     = None
-                tfz     = None
-                r_fact  = None
-                r_free  = None
-
-                with (open(os.path.join("slicendice_0","slicendice.log"),'r')) as fstd:
-                    for line in fstd:
-                        words = line.split()
-                        if len(words)==5 and words[0].startswith("split_"):
-                            splitId = words[0]
-                            llg     = words[1]
-                            tfz     = words[2]
-                            r_fact  = words[3]
-                            r_free  = words[4]
-                            break
+                # splitId = None
+                # llg     = None
+                # tfz     = None
+                # r_fact  = None
+                # r_free  = None
+                #
+                # with (open(os.path.join("slicendice_0","slicendice.log"),'r')) as fstd:
+                #     for line in fstd:
+                #         words = line.split()
+                #         if len(words)==5 and words[0].startswith("split_"):
+                #             splitId = words[0]
+                #             llg     = words[1]
+                #             tfz     = words[2]
+                #             r_fact  = words[3]
+                #             r_free  = words[4]
+                #             break
 
                 shutil.copyfile ( refmac_pdb,self.getXYZOFName() )
                 shutil.copyfile ( refmac_mtz,self.getMTZOFName() )
@@ -185,12 +209,12 @@ class SliceNDice(basic.TaskDriver):
 
                     if splitId:
                         self.generic_parser_summary["phaser"] = {
-                            "llg" : llg,
-                            "tfz" : tfz
+                            "llg" : str(llg),
+                            "tfz" : str(tfz)
                         }
                         self.generic_parser_summary["refmac"] = {
-                            "R_factor" : r_fact,
-                            "R_free"   : r_free
+                            "R_factor" : str(r_fact),
+                            "R_free"   : str(r_free)
                         }
 
         # self.generic_parser_summary["slicendice"] = {

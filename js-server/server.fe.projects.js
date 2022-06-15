@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.06.22   <--  Date of Last Modification.
+ *    15.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1768,7 +1768,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       projectDesc.njobs        = prj_meta.desc.njobs;
       projectDesc.dateCreated  = prj_meta.desc.dateCreated;
       projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
-      projectDesc.folderPath   = pList.currentFolder;
+      if (!prjDir)  // this will leave original folder path for shared projects
+        projectDesc.folderPath = pList.currentFolder;
       projectDesc.labels       = prj_meta.labels;
       if ('owner' in prj_meta.desc)  {
         projectDesc.owner = prj_meta.desc.owner;
