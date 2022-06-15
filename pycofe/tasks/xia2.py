@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    08.06.21   <--  Date of Last Modification.
+#    15.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -342,15 +342,18 @@ class Xia2(basic.TaskDriver):
             self.putMessage ( "No output files were produced" )
             ilist = "None"
 
-        if self.task.uname:
-            if self.task.uname.startswith("created datasets:"):
-                self.task.uname = ""
-            else:
-                self.task.uname += " / "
-        self.task.uname += "created datasets: <i><b>" + ilist + "</b></i>"
-        with open('job.meta','w') as file_:
-            file_.write ( self.task.to_JSON() )
+        # if self.task.uname:
+        #     if self.task.uname.startswith("created datasets:"):
+        #         self.task.uname = ""
+        #     else:
+        #         self.task.uname += " / "
+        # self.task.uname += "created datasets: <i><b>" + ilist + "</b></i>"
+        # with open('job.meta','w') as file_:
+        #     file_.write ( self.task.to_JSON() )
 
+        self.generic_parser_summary["xia2"] = {
+          "summary_line" : "created datasets: " + ilist
+        }
 
         # Add Xia-2 own html report
         self.insertTab   ( "xia2_report","Xia-2 Report",None,True )
@@ -374,6 +377,9 @@ class Xia2(basic.TaskDriver):
         if rc.msg == "":
             self.success ( (self.outputDataBox.nDTypes()>0) )
         else:
+            self.putMessage ( "<i>Finished with error:<p><b>" + rc.msg + "</b></i>" )
+            self.stdoutln ( "xia-2 finished with error '" + rc.msg + "'" )
+            self.stderrln ( "xia-2 finished with error '" + rc.msg + "'" )
             self.file_stdout.close()
             self.file_stderr.close()
             if messagebox:

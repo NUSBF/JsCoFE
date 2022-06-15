@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.06.22   <--  Date of Last Modification.
+ *    15.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1779,6 +1779,7 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
         task.autoRunId0 = task0.autoRunId;
       task.autoRunName = task0.autoRunName;
       task.inputMode   = task0.inputMode;
+      task.nc_type     = task0.nc_type;
 
       task.file_select = [];
       for (var i=0;i<task0.file_select.length;i++)
