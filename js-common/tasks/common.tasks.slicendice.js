@@ -72,7 +72,7 @@ function TaskSliceNDice()  {
                                 label    : 'Try from',
                                 tooltip  : 'Minimum number of splits to try.',
                                 range    : [1,'*'],
-                                value    : 2,
+                                value    : 1,
                                 iwidth   : 40,
                                 label2   : '',
                                 position : [0,0,1,1]
