@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.10.19   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019
+ *  (C) E. Krissinel, A. Lebedev 2019-2022
  *
  *  =================================================================
  *
@@ -26,13 +26,14 @@
  *
  */
 
+'use strict';
 
 //  load application modules
-var conf          = require('./server.configuration');
-var feproxy_start = require('./server.feproxy.start');
+const conf          = require('./server.configuration');
+const feproxy_start = require('./server.feproxy.start');
 
 //  prepare log
-var log = require('./server.log').newLog(24);
+const log = require('./server.log').newLog(24);
 
 
 // ==========================================================================

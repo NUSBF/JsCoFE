@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.06.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -19,44 +19,29 @@
  *
  */
 
+'use strict';
+
 //  load system modules
-//var fs            = require('fs-extra');
-/*
-var child_process = require('child_process');
+const path  = require('path');
 
 //  load application modules
-//var emailer  = require('./server.emailer');
-var uh    = require('./server.fe.upload_handler');
-var cmd   = require('../js-common/common.commands');
-var fcl   = require('../js-common/common.data_facility');
-*/
-
-//  load system modules
-var path  = require('path');
-
-//
-// //  load application modules
-var conf  = require('./server.configuration');
-
-// var user  = require('./server.fe.user');
-// var prj   = require('./server.fe.projects');
-var utils = require('./server.utils');
-// var urat  = require('../js-common/common.userration');
+const conf  = require('./server.configuration');
+const utils = require('./server.utils');
 
 //  prepare log
-var log = require('./server.log').newLog(25);
+const log = require('./server.log').newLog(25);
 
 // ===========================================================================
 
-var feAnalyticsFile = 'fe_analytics.meta';
-var feAnalytics     = null;
-var lastSaved       = 0;
-var twindow_current = 60000;    // 1 minute
-var twindow_recent  = 1800000;  // 30 minutes
+const feAnalyticsFile = 'fe_analytics.meta';
+var   feAnalytics     = null;
+var   lastSaved       = 0;
+const twindow_current = 60000;    // 1 minute
+const twindow_recent  = 1800000;  // 30 minutes
 
 // ===========================================================================
 
-var countries = {
+const countries = {
   'com': 'Generic COM',
   'org': 'Generic ORG',
   'net': 'Generic NET',
@@ -490,7 +475,7 @@ function getAnalyticsFPath()  {
 function readFEAnalytics()  {
   if (!feAnalytics)  {
     var fpath = getAnalyticsFPath();
-    obj       = utils.readObject ( fpath );
+    var obj   = utils.readObject ( fpath );
     if (obj)  {
       feAnalytics = new FEAnalytics();
       for (var key in obj)

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.03.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,13 +19,15 @@
  *
  */
 
+'use strict';
+
 //  load system modules
 // var fs        = require('fs-extra');
-var path      = require('path');
-var crypto    = require('crypto');
+const path      = require('path');
+const crypto    = require('crypto');
 
 //  load application modules
-var conf      = require('./server.configuration');
+const conf      = require('./server.configuration');
 // var emailer   = require('./server.emailer');
 // var utils     = require('./server.utils');
 // var send_dir  = require('./server.send_dir');
@@ -40,11 +42,11 @@ var conf      = require('./server.configuration');
 // var task_t    = require('../js-common/tasks/common.tasks.template');
 
 //  prepare log
-var log = require('./server.log').newLog(26);
+const log = require('./server.log').newLog(26);
 
 // ==========================================================================
 
-var archiveIndexFile = 'archive.meta';
+const archiveIndexFile = 'archive.meta';
 
 var archive_index = null;
 

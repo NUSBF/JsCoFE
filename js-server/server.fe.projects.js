@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.06.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,43 +19,43 @@
  *
  */
 
+'use strict';
+
 //  load system modules
-var fs        = require('fs-extra');
-var path      = require('path');
-//var child_process = require('child_process');
-//var archiver      = require('archiver');
+const fs        = require('fs-extra');
+const path      = require('path');
 
 //  load application modules
-var emailer   = require('./server.emailer');
-var conf      = require('./server.configuration');
-var utils     = require('./server.utils');
-var send_dir  = require('./server.send_dir');
-var ration    = require('./server.fe.ration');
-var fcl       = require('./server.fe.facilities');
-var user      = require('./server.fe.user');
-var class_map = require('./server.class_map');
-var rj        = require('./server.fe.run_job');
-var pd        = require('../js-common/common.data_project');
-var cmd       = require('../js-common/common.commands');
-var com_utils = require('../js-common/common.utils');
-var task_t    = require('../js-common/tasks/common.tasks.template');
+const emailer   = require('./server.emailer');
+const conf      = require('./server.configuration');
+const utils     = require('./server.utils');
+const send_dir  = require('./server.send_dir');
+const ration    = require('./server.fe.ration');
+const fcl       = require('./server.fe.facilities');
+const user      = require('./server.fe.user');
+const class_map = require('./server.class_map');
+const rj        = require('./server.fe.run_job');
+const pd        = require('../js-common/common.data_project');
+const cmd       = require('../js-common/common.commands');
+const com_utils = require('../js-common/common.utils');
+const task_t    = require('../js-common/tasks/common.tasks.template');
 
 //  prepare log
-var log = require('./server.log').newLog(6);
+const log = require('./server.log').newLog(6);
 
 // ===========================================================================
 
-var projectExt         = '.prj';
-var userProjectsExt    = '.projects';
-var projectListFName   = 'projects.list';
-var projectShareFName  = 'projects.share';
-var dockDataFName      = 'dock.meta';
-var userKnowledgeFName = 'knowledge.meta';
-var projectDataFName   = 'project.meta';
-var projectDescFName   = 'project.desc';
-var jobDirPrefix       = 'job_';
-var replayDir          = 'replay';
-var treeNodeFName      = 'tree.node'
+const projectExt         = '.prj';
+const userProjectsExt    = '.projects';
+const projectListFName   = 'projects.list';
+const projectShareFName  = 'projects.share';
+const dockDataFName      = 'dock.meta';
+const userKnowledgeFName = 'knowledge.meta';
+const projectDataFName   = 'project.meta';
+const projectDescFName   = 'project.desc';
+const jobDirPrefix       = 'job_';
+const replayDir          = 'replay';
+const treeNodeFName      = 'tree.node'
 
 // ===========================================================================
 

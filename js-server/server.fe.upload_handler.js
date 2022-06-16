@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.03.20   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,27 +13,29 @@
  *  **** Content :  Front End Server -- Uploads Handler
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
  */
 
-var path          = require('path');
-var formidable    = require('formidable');
-var child_process = require('child_process');
-var crypto        = require('crypto');
-var fs            = require('fs-extra');
+'use strict';
 
-var conf     = require('./server.configuration');
-var cmd      = require('../js-common/common.commands');
-var user     = require('./server.fe.user');
-var prj      = require('./server.fe.projects');
-var send_dir = require('./server.send_dir');
-var utils    = require('./server.utils');
+const path          = require('path');
+const formidable    = require('formidable');
+const child_process = require('child_process');
+const crypto        = require('crypto');
+const fs            = require('fs-extra');
+
+const conf     = require('./server.configuration');
+const cmd      = require('../js-common/common.commands');
+const user     = require('./server.fe.user');
+const prj      = require('./server.fe.projects');
+const send_dir = require('./server.send_dir');
+const utils    = require('./server.utils');
 
 //  prepare log
-var log = require('./server.log').newLog(9);
+const log = require('./server.log').newLog(9);
 
 // ==========================================================================
 
@@ -131,7 +133,7 @@ var upload_meta = {};
                   }
                 }
 
-                for (key in upload_meta.files)  {
+                for (var key in upload_meta.files)  {
                   var fname = upload_meta.files[key];
                   if (redundant_files.indexOf(fname)>=0)  {
                     utils.removeFile ( key );

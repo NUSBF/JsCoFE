@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.03.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,26 +19,28 @@
  *
  */
 
+'use strict';
+
 //  load system modules
-var path          = require('path');
-var child_process = require('child_process');
-var crypto        = require('crypto');
-var fs            = require('fs-extra');
-var psTree        = require('ps-tree');
-var request       = require('request');
+const path          = require('path');
+const child_process = require('child_process');
+const crypto        = require('crypto');
+const fs            = require('fs-extra');
+const psTree        = require('ps-tree');
+const request       = require('request');
 
 //  load application modules
-var conf          = require('./server.configuration');
-var send_dir      = require('./server.send_dir');
-var utils         = require('./server.utils');
-var task_t        = require('../js-common/tasks/common.tasks.template');
-var task_rvapiapp = require('../js-common/tasks/common.tasks.rvapiapp');
-var cmd           = require('../js-common/common.commands');
-var ud            = require('../js-common/common.data_user');
-var comut         = require('../js-common/common.utils');
+const conf          = require('./server.configuration');
+const send_dir      = require('./server.send_dir');
+const utils         = require('./server.utils');
+const task_t        = require('../js-common/tasks/common.tasks.template');
+const task_rvapiapp = require('../js-common/tasks/common.tasks.rvapiapp');
+const cmd           = require('../js-common/common.commands');
+const ud            = require('../js-common/common.data_user');
+const comut         = require('../js-common/common.utils');
 
 //  prepare log
-var log = require('./server.log').newLog(11);
+const log = require('./server.log').newLog(11);
 
 // ===========================================================================
 
@@ -47,8 +49,8 @@ var log = require('./server.log').newLog(11);
 
 // ===========================================================================
 
-var jobsDir       = 'jobs';  // area in nc-storage to host all job directories
-var registerFName = 'job_register.meta';  // file name to keep job register
+const jobsDir       = 'jobs';  // area in nc-storage to host all job directories
+const registerFName = 'job_register.meta';  // file name to keep job register
 
 // ===========================================================================
 
@@ -175,13 +177,13 @@ function readNCJobRegister ( readKey )  {
     var saveRegister = true;
 
     ncJobRegister = new NCJobRegister();
-    obj           = utils.readObject ( fpath );
+    var obj       = utils.readObject ( fpath );
 
     if (obj)  {
 
       saveRegister = false;
 
-      for (key in obj)
+      for (var key in obj)
         ncJobRegister[key] = obj[key];
 
       if (readKey==0)  {
@@ -252,7 +254,7 @@ function removeJobDelayed ( job_token,jobStatus )  {
   }
 }
 
-var __day_ms = 86400000;
+const __day_ms = 86400000;
 
 function cleanNC ( cleanDeadJobs_bool )  {
 

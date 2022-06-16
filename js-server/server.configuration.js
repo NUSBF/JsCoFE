@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,21 +19,22 @@
  *
  */
 
+'use strict';
 
 //  load system modules
-var path    = require('path');
-var http    = require('http');
-var crypto  = require('crypto');
-var request = require('request');
-var child   = require('child_process');
+const path    = require('path');
+const http    = require('http');
+const crypto  = require('crypto');
+const request = require('request');
+const child   = require('child_process');
 
 //  load application modules
-var utils     = require('./server.utils');
-var cmd       = require('../js-common/common.commands');
-var com_utils = require('../js-common/common.utils');
+const utils     = require('./server.utils');
+const cmd       = require('../js-common/common.commands');
+const com_utils = require('../js-common/common.utils');
 
 //  prepare log
-var log    = require('./server.log').newLog(3);
+const log    = require('./server.log').newLog(3);
 
 
 // ===========================================================================
@@ -208,7 +209,7 @@ var plist;
 ServerConfig.prototype.getCloudMounts = function ( login )  {
 var paths = [];
   if ('cloud_mounts' in this)  {
-    for (name in this.cloud_mounts)  {
+    for (var name in this.cloud_mounts)  {
       var cloud_path = _make_path ( this.cloud_mounts[name],login );
       if (cloud_path)
         paths.push ( [name,cloud_path] );
@@ -226,7 +227,7 @@ ServerConfig.prototype.getJobsSafePath = function()  {
 ServerConfig.prototype.getDemoProjectsMount = function()  {
   var mount = null;
   if (this.hasOwnProperty('cloud_mounts'))  {
-    for (name in this.cloud_mounts)  {
+    for (var name in this.cloud_mounts)  {
       var lname = name.toLowerCase();
       if (lname.indexOf('tutorial')>=0)  {
         mount = name;
@@ -234,7 +235,7 @@ ServerConfig.prototype.getDemoProjectsMount = function()  {
       }
     }
     if (!mount)
-      for (name in this.cloud_mounts)  {
+      for (var name in this.cloud_mounts)  {
         var lname = name.toLowerCase();
         if ((lname.indexOf('demo')>=0) && (lname.indexOf('projects')>=0))  {
           mount = name;

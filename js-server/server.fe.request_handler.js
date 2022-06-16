@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.02.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,16 +19,17 @@
  *
  */
 
-var user = require('./server.fe.user');
-var prj  = require('./server.fe.projects');
-var fcl  = require('./server.fe.facilities');
-var rj   = require('./server.fe.run_job');
-var adm  = require('./server.fe.admin');
-var fcl  = require('./server.fe.facilities');
-var cmd  = require('../js-common/common.commands');
+'use strict';
+
+const user = require('./server.fe.user');
+const prj  = require('./server.fe.projects');
+const fcl  = require('./server.fe.facilities');
+const rj   = require('./server.fe.run_job');
+const adm  = require('./server.fe.admin');
+const cmd  = require('../js-common/common.commands');
 
 //  prepare log
-//var log = require('./server.log').newLog(7);
+//const log = require('./server.log').newLog(7);
 
 
 // ==========================================================================

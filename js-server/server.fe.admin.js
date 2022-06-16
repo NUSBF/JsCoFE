@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.02.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,21 +19,23 @@
  *
  */
 
+'use strict';
+
 //  load system modules
-var request = require('request');
+const request = require('request');
 
 //  load application modules
-var conf    = require('./server.configuration');
-var anl     = require('./server.fe.analytics');
-var user    = require('./server.fe.user');
-var rj      = require('./server.fe.run_job');
-var ustats  = require('./server.fe.usagestats')
-var utils   = require('./server.utils');
-var cmd     = require('../js-common/common.commands');
-var ud      = require('../js-common/common.data_user');
+const conf    = require('./server.configuration');
+const anl     = require('./server.fe.analytics');
+const user    = require('./server.fe.user');
+const rj      = require('./server.fe.run_job');
+const ustats  = require('./server.fe.usagestats')
+const utils   = require('./server.utils');
+const cmd     = require('../js-common/common.commands');
+const ud      = require('../js-common/common.data_user');
 
 //  prepare log
-var log = require('./server.log').newLog(16);
+const log = require('./server.log').newLog(16);
 
 
 // ===========================================================================

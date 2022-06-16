@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.10.20   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Local (on-desktop) jsCoFE launcher
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -28,20 +28,22 @@
  *
  */
 
+'use strict';
+
 //  load system modules
-var child_process = require('child_process');
-var path          = require('path');
-var tmp           = require('tmp');
-var fse           = require('fs-extra');
+const child_process = require('child_process');
+const path          = require('path');
+const tmp           = require('tmp');
+const fse           = require('fs-extra');
 
 //  load application modules
-var conf     = require('./server.configuration');
-var fe_start = require('./server.fe.start');
-var fe_proxy = require('./server.feproxy.start');
-var utils    = require('./server.utils');
+const conf     = require('./server.configuration');
+const fe_start = require('./server.fe.start');
+const fe_proxy = require('./server.feproxy.start');
+const utils    = require('./server.utils');
 
 //  prepare log
-var log = require('./server.log').newLog(23);
+const log = require('./server.log').newLog(23);
 
 
 // ==========================================================================
@@ -54,6 +56,7 @@ tmp.setGracefulCleanup();
 var arg2      = null;
 var localuser = null;
 var confout   = null;
+
 for (var arg of process.argv.slice(2).reverse()) {
   if (arg == '-localuser') {
     if (arg2 == null) break;
@@ -228,7 +231,9 @@ function start_client_application()  {
 function startClientApplication()  {
   if (startFEProxy)  {
     fe_proxy.start ( function(){
-      start_client_application();
+      setTimeout ( function(){
+        start_client_application();
+      },1000 );
     });
   } else
     start_client_application();

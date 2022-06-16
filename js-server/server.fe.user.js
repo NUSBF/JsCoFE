@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.06.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,32 +19,34 @@
  *
  */
 
+'use strict';
+
 //  load system modules
-var crypto  = require('crypto');
-var fs      = require('fs-extra');
-var path    = require('path');
-var checkDiskSpace = require('check-disk-space').default;
+const crypto  = require('crypto');
+const fs      = require('fs-extra');
+const path    = require('path');
+const checkDiskSpace = require('check-disk-space').default;
 
 //  load application modules
-var emailer = require('./server.emailer');
-var conf    = require('./server.configuration');
-var utils   = require('./server.utils');
-var prj     = require('./server.fe.projects');
-var ration  = require('./server.fe.ration');
-var fcl     = require('./server.fe.facilities');
-var adm     = require('./server.fe.admin');
-var anl     = require('./server.fe.analytics');
-var ud      = require('../js-common/common.data_user');
-var cmd     = require('../js-common/common.commands');
+const emailer = require('./server.emailer');
+const conf    = require('./server.configuration');
+const utils   = require('./server.utils');
+const prj     = require('./server.fe.projects');
+const ration  = require('./server.fe.ration');
+const fcl     = require('./server.fe.facilities');
+const adm     = require('./server.fe.admin');
+const anl     = require('./server.fe.analytics');
+const ud      = require('../js-common/common.data_user');
+const cmd     = require('../js-common/common.commands');
 
 //  prepare log
-var log = require('./server.log').newLog(10);
+const log = require('./server.log').newLog(10);
 
 
 // ===========================================================================
 
-var __userDataExt       = '.user';
-var __userLoginHashFile = 'login.hash';
+const __userDataExt       = '.user';
+const __userLoginHashFile = 'login.hash';
 
 // ===========================================================================
 
@@ -348,7 +350,7 @@ UserLoginHash.prototype.save = function()  {
 
 UserLoginHash.prototype.read = function()  {
   var userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
-  hash = utils.readObject ( userHashPath);
+  var hash = utils.readObject ( userHashPath);
   if (hash)  {
     if (!hash.hasOwnProperty('_type'))  {
       // transformation for backward compatibility
@@ -480,7 +482,7 @@ function getLoginData ( token )  {
 
 // ===========================================================================
 
-var __suspend_prefix = '**suspended**';
+const __suspend_prefix = '**suspended**';
 
 function userLogin ( userData,callback_func )  {  // gets UserData object
 var response  = null;  // must become a cmd.Response object to return
@@ -522,6 +524,7 @@ var fe_server = conf.getFEConfig();
         // var rep = anl.getFEAnalytics().getReport();
         // console.log ( rep );
 
+        var token = '';
         if (uData.login=='devel')  {
           token = '340cef239bd34b777f3ece094ffb1ec5';
         } else  {

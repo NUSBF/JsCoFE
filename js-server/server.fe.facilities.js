@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.01.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,28 +19,29 @@
  *
  */
 
+'use strict';
+
 //  load system modules
-var fs    = require('fs-extra');
-var path  = require('path');
+const fs    = require('fs-extra');
+const path  = require('path');
 
 //  load application modules
-//var emailer  = require('./server.emailer');
-var conf  = require('./server.configuration');
-var prj   = require('./server.fe.projects');
-var utils = require('./server.utils');
-var uh    = require('./server.fe.upload_handler');
-var cmd   = require('../js-common/common.commands');
-var fcl   = require('../js-common/common.data_facility');
+const conf  = require('./server.configuration');
+const prj   = require('./server.fe.projects');
+const utils = require('./server.utils');
+const uh    = require('./server.fe.upload_handler');
+const cmd   = require('../js-common/common.commands');
+const fcl   = require('../js-common/common.data_facility');
 
 //  prepare log
-var log   = require('./server.log').newLog(18);
+const log   = require('./server.log').newLog(18);
 
 // ===========================================================================
 
-var facilityListFName  = 'facilities.list';
-var cloudFileListFName = 'cloudfiles.list';
-var ICATDirName        = 'ICAT_facility';
-var cloudDirMetaFName  = '__jscofe__.meta';
+const facilityListFName  = 'facilities.list';
+const cloudFileListFName = 'cloudfiles.list';
+const ICATDirName        = 'ICAT_facility';
+const cloudDirMetaFName  = '__jscofe__.meta';
 
 // ===========================================================================
 
@@ -530,8 +531,8 @@ var response = null;  // must become a cmd.Response object to return
 
 // ===========================================================================
 
-var updateResultFName = 'update_result.json';
-var updateInputFName  = 'update_input.json';
+const updateResultFName = 'update_result.json';
+const updateInputFName  = 'update_input.json';
 
 // ---------------------------------------------------------------------------
 

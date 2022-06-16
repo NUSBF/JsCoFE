@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.02.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,26 +19,28 @@
  *
  */
 
+'use strict';
+
 //  load system modules
-var http    = require('http');
-var path    = require('path');
-var request = require('request');
+const http    = require('http');
+const path    = require('path');
+const request = require('request');
 
 //  load application modules
-var conf  = require('./server.configuration');
-var pp    = require('./server.process_post');
-var anl   = require('./server.fe.analytics');
-var user  = require('./server.fe.user');
-var fcl   = require('./server.fe.facilities');
-var rj    = require('./server.fe.run_job');
-var comm  = require('./server.fe.communicate');
-var rh    = require('./server.fe.request_handler');
-var uh    = require('./server.fe.upload_handler');
-var utils = require('./server.utils');
-var cmd   = require('../js-common/common.commands');
+const conf  = require('./server.configuration');
+const pp    = require('./server.process_post');
+const anl   = require('./server.fe.analytics');
+const user  = require('./server.fe.user');
+const fcl   = require('./server.fe.facilities');
+const rj    = require('./server.fe.run_job');
+const comm  = require('./server.fe.communicate');
+const rh    = require('./server.fe.request_handler');
+const uh    = require('./server.fe.upload_handler');
+const utils = require('./server.utils');
+const cmd   = require('../js-common/common.commands');
 
 //  prepare log
-var log = require('./server.log').newLog(0);
+const log = require('./server.log').newLog(0);
 
 // ==========================================================================
 
