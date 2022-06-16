@@ -23,6 +23,7 @@
  *
  */
 
+'use strict';
 
 // ===========================================================================
 
@@ -262,7 +263,7 @@ function ProjectData()  {
   this.settings.prefix     = '';
 }
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+// if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
 
   function __find_project_node ( node,dataId )  {
     if (node.dataId==dataId)
@@ -279,7 +280,6 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
       node = __find_project_node ( projectData.tree[i],dataId );
     return node;
   }
-
 
   function __delete_project_node ( nodes,dataId )  {
     var nodes1 = [];
@@ -325,7 +325,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
     return node_lst;
   }
 
-}
+// }
 
 function __print_project_tree ( node,indent )  {
   console.log ( indent + '[' + node.dataId + '] ' + node.text );

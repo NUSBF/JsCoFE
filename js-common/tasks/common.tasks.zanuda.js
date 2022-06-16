@@ -19,7 +19,7 @@
  *
  */
 
-
+'use strict';
 
 var __template = null;
 

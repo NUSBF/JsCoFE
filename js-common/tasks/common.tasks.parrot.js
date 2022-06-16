@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.07.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,11 +13,13 @@
  *  **** Content :  Parrot Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
  */
+
+'use strict'; // *client*
 
 var __template = null;
 
@@ -230,17 +232,16 @@ TaskParrot.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+// hotButtons return list of buttons added in JobDialog's toolBar.
+function ParrotHotButton()  {
+  return {
+    'task'    : 'TaskParrot',
+    'tooltip' : 'Density Modification with Parrot'
+  };
+}
 
 if (!__template)  {
   //  for client side
-
-  // hotButtons return list of buttons added in JobDialog's toolBar.
-  function ParrotHotButton()  {
-    return {
-      'task'    : 'TaskParrot',
-      'tooltip' : 'Density Modification with Parrot'
-    };
-  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskParrot.prototype.hotButtons = function() {

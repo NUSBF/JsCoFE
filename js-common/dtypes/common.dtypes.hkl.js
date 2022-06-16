@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.01.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -18,6 +18,8 @@
  *  =================================================================
  *
  */
+
+'use strict';
 
 var __template = null;
 
@@ -483,7 +485,7 @@ if (!__template)  {
       var is_Fmean = this.isFmean();
       var is_Ipm   = this.isIpm  ();
       var is_Fpm   = this.isFpm  ();
-      n = 0;
+      var n        = 0;
       if (is_Imean)  n++;
       if (is_Fmean)  n++;
       if (is_Ipm)    n++;

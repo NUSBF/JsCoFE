@@ -19,7 +19,7 @@
  *
  */
 
-
+'use strict';
 
 function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
 //

@@ -19,6 +19,7 @@
  *
  */
 
+'use strict';
 
 var __template = null;
 var __cmd      = null;

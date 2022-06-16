@@ -22,11 +22,10 @@
  *
  */
 
+'use strict';
 
 // -------------------------------------------------------------------------
 // License dialog class
-
-
 
 function LicenceDialog ( current_licence,onclose_fnc )  {
 

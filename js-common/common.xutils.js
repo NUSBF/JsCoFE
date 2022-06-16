@@ -19,7 +19,9 @@
  *
  */
 
-_chem_elements = [
+ 'use strict';
+
+var _chem_elements = [
   'H' ,'He','Li','Be','B' ,'C' ,'N' ,'O' ,'F' ,'Ne','Na','Mg','Al','Si','P' ,
   'S' ,'Cl','Ar','K' ,'Ca','Sc','Ti','V' ,'Cr','Mn','Fe','Co','Ni','Cu','Zn',
   'Ga','Ge','As','Se','Br','Kr','Rb','Sr','Y' ,'Zr','Nb','Mo','Tc','Ru','Rh',
@@ -39,7 +41,7 @@ function checkElementSymbol ( symbol )  {
   return sc;
 }
 
-_sg_class_list = [
+var _sg_class_list = [
    ['P 4 3 2', 'P 41 3 2', 'P 42 3 2', 'P 43 3 2'],
    ['I 4 3 2', 'I 41 3 2'],
    ['F 4 3 2', 'F 41 3 2'],
@@ -67,7 +69,7 @@ _sg_class_list = [
    ['P 1'    ]
 ];
 
-_sg_enantimorph_list = [
+var _sg_enantimorph_list = [
    ['P 41 3 2' , 'P 43 3 2' ],
    ['P 41 2 2' , 'P 43 2 2' ],
    ['P 41 21 2', 'P 43 21 2'],
@@ -81,7 +83,7 @@ _sg_enantimorph_list = [
    ['P 31'     , 'P 32'     ]
 ];
 
-_sg_indistinguishable_list = [
+var _sg_indistinguishable_list = [
    ['I 2 3'  , 'I 21 3'    ],
    ['I 2 2 2', 'I 21 21 21']
 ];

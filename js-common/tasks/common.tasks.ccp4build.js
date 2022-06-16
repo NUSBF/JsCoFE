@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    31.12.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,12 +13,13 @@
  *  **** Content :  CCP4Build Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2021
+ *  (C) E. Krissinel, A. Lebedev 2019-2022
  *
  *  ==========================================================================
  *
  */
 
+'use strict'; // *client*
 
 var __template = null;
 
@@ -416,16 +417,16 @@ TaskCCP4Build.prototype.currentVersion = function()  {
 //TaskCCP4Build.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 
+// hotButtons return list of buttons added in JobDialog's toolBar.
+function CCP4BuildHotButton()  {
+  return {
+    'task'    : 'TaskCCP4Build',
+    'tooltip' : 'Automated model building with CCP4Build'
+  };
+}
+
 if (!__template)  {
   //  for client side
-
-  // hotButtons return list of buttons added in JobDialog's toolBar.
-  function CCP4BuildHotButton()  {
-    return {
-      'task'    : 'TaskCCP4Build',
-      'tooltip' : 'Automated model building with CCP4Build'
-    };
-  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskCCP4Build.prototype.hotButtons = function() {

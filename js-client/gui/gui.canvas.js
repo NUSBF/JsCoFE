@@ -17,6 +17,7 @@
 //  =================================================================
 //
 
+'use strict'; // *client*
 
 function Canvas ( width_px,height_px, x0,y0,x1,y1 )  {
 

@@ -123,7 +123,7 @@ function getNCData ( ncInfo,callback_func )  {
 
 function getAdminData ( loginData,data,callback_func )  {
 
-  adminData = {};
+  var adminData = {};
   adminData.served    = false;
   adminData.jobsStat  = '';
   adminData.usersInfo = [];

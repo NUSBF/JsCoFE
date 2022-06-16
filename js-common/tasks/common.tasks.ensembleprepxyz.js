@@ -32,6 +32,7 @@
 //  COORDINATE UTILITIES TASK FOR THIS **
 
 
+'use strict';
 
 var __template = null;
 

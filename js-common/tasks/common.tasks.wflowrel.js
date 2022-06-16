@@ -17,6 +17,7 @@
  *
  */
 
+'use strict';
 
 var __template = null;
 var __make_lig = null;

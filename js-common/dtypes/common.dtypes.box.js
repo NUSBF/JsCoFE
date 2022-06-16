@@ -19,7 +19,7 @@
  *
  */
 
-
+'use strict';
 
 // -------------------------------------------------------------------------
 // Data container class:
@@ -236,7 +236,7 @@ DataBox.prototype.getDataIds = function ( data_type )  {
         ids.push ( this.data[data_type][i].dataId );
     }
   } else  {
-    for (dtype in this.data)  {
+    for (var dtype in this.data)  {
       for (var i=0;i<this.data[dtype].length;i++)
         ids.push ( this.data[dtype][i].dataId );
     }

@@ -19,6 +19,8 @@
  *
  */
 
+'use strict';
+
 // local service url (used also as indicator of presentce in RVAPI)
 var __local_service        = null;    // full URL when defined
 //var __rvapi_local_service  = null;    // no var! used as flag in rvapi
