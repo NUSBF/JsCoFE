@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.03.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -19,6 +19,7 @@
  *
  */
 
+'use strict'; // *client*
 
 var __template = null;
 
@@ -164,17 +165,16 @@ TaskModelCraft.prototype.currentVersion = function()  {
 //   'U'  : Unix ( = Linux + Mac)
 //TaskModelCraft.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
+// hotButtons return list of buttons added in JobDialog's toolBar.
+function ModelCraftHotButton()  {
+  return {
+    'task'    : 'TaskModelCraft',
+    'tooltip' : 'Automated model building with ModelCraft'
+  };
+}
 
 if (!__template)  {
   //  for client side
-
-  // hotButtons return list of buttons added in JobDialog's toolBar.
-  function ModelCraftHotButton()  {
-    return {
-      'task'    : 'TaskModelCraft',
-      'tooltip' : 'Automated model building with ModelCraft'
-    };
-  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskModelCraft.prototype.hotButtons = function() {

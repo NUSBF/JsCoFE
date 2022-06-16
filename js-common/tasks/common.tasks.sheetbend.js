@@ -4,7 +4,7 @@
 /*
  *  =================================================================
  *
- *    14.11.20   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -15,11 +15,13 @@
  *  **** Content :  Sheetbend Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2022
  *
  *  =================================================================
  *
  */
+
+'use strict'; // *client*
 
 var __template = null;
 
@@ -90,17 +92,16 @@ TaskSheetbend.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+// hotButtons return list of buttons added in JobDialog's toolBar.
+function SheetbendHotButton()  {
+  return {
+    'task'    : 'TaskSheetbend',
+    'tooltip' : 'Post-MR model correction with Sheetbend'
+  };
+}
 
 if (!__template)  {
   //  for client side
-
-  // hotButtons return list of buttons added in JobDialog's toolBar.
-  function SheetbendHotButton()  {
-    return {
-      'task'    : 'TaskSheetbend',
-      'tooltip' : 'Post-MR model correction with Sheetbend'
-    };
-  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskSheetbend.prototype.hotButtons = function() {

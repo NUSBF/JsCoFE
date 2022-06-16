@@ -26,6 +26,7 @@
  *
  */
 
+'use strict'; // *client*
 
 // -------------------------------------------------------------------------
 // Table class:  plain table, built as a Grid widget with direct access to all

@@ -22,6 +22,7 @@
  *
  */
 
+'use strict';
 
 // -------------------------------------------------------------------------
 // Export from Failed Jobs Safe dialog class

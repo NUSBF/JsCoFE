@@ -17,6 +17,7 @@
 //  =================================================================
 //
 
+'use strict'; // *client*
 
 function Sortable ( cellwidth_px,cellheight_px,
                     onclick_func, onrightclick_func,

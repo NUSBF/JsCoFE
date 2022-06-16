@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.20   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  File upload class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -23,6 +23,7 @@
  *
  */
 
+'use strict';
 
 // -------------------------------------------------------------------------
 // Upload class
@@ -183,7 +184,7 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
         var formData = new FormData();
 
         if (customData!=null)
-          for (key in customData)
+          for (var key in customData)
             if ((customData[key]!==null) && (typeof customData[key] === 'object'))
                   formData.append ( key,JSON.stringify(customData[key]) );
             else  formData.append ( key,customData[key] );

@@ -18,6 +18,7 @@
  *
  */
 
+'use strict';
 
 // -------------------------------------------------------------------------
 // Workflow index for calculating initial task suggestions.
@@ -262,12 +263,12 @@ function getTaskKeyFromType ( task_type )  {
     return '0';
 }
 
+
 function getTaskKey ( task )  {
   if (task)
     return getTaskKeyFromType(task._type);
   return '0';
 }
-
 
 // -------------------------------------------------------------------------
 
@@ -303,8 +304,8 @@ function addWfKnowledgeByTypes ( wfKnowledge, new_task_type, task_type_list )  {
 
 }
 
-if ((typeof module === 'undefined') || (typeof module.exports === 'undefined'))  {
-  // clent side
+// if ((typeof module === 'undefined') || (typeof module.exports === 'undefined'))  {
+//   // clent side
 
   /*
     _wfKnowledge is the following structure:
@@ -389,8 +390,11 @@ if ((typeof module === 'undefined') || (typeof module.exports === 'undefined')) 
   }
 
 
-} else  {
-  // server side
+// } else  {
+//   // server side
+
+// export such that it could be used in both node and a browser
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
 
   module.exports.addWfKnowledgeByTypes = addWfKnowledgeByTypes;
 

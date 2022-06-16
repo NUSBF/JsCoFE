@@ -19,6 +19,8 @@
  *
  */
 
+'use strict';
+
 var __template = null;
 var __migrate  = null;
 

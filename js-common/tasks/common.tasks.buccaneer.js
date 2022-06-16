@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.12.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Buccaneer Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -57,9 +57,7 @@ EP:
 
 */
 
-
-
-
+'use strict'; // *client*
 
 var __template = null;
 
@@ -355,16 +353,16 @@ TaskBuccaneer.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+// hotButtons return list of buttons added in JobDialog's toolBar.
+function BuccaneerHotButton()  {
+  return {
+    'task'    : 'TaskBuccaneer',
+    'tooltip' : 'Automated model building with Buccaneer'
+  };
+}
+
 if (!__template)  {
   //  for client side
-
-  // hotButtons return list of buttons added in JobDialog's toolBar.
-  function BuccaneerHotButton()  {
-    return {
-      'task'    : 'TaskBuccaneer',
-      'tooltip' : 'Automated model building with Buccaneer'
-    };
-  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskBuccaneer.prototype.hotButtons = function() {

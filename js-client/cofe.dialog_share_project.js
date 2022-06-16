@@ -22,6 +22,8 @@
  *
  */
 
+'use strict';
+
 function shareProject ( projectDesc,callback_func )  {
 
   var author = projectDesc.owner.login;

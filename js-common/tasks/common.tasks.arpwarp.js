@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.12.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,11 +13,13 @@
  *  **** Content :  ArpWarp Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
  */
+
+'use strict';
 
 var __template = null;
 
@@ -434,16 +436,16 @@ TaskArpWarp.prototype.authorisationID = function() {
   return '';
 }
 
+// hotButtons return list of buttons added in JobDialog's toolBar.
+function ArpWarpHotButton()  {
+  return {
+    'task'    : 'TaskArpWarp',
+    'tooltip' : 'Automated model building with Arp/wArp'
+  };
+}
+
 if (!__template)  {
   //  for client side
-
-  // hotButtons return list of buttons added in JobDialog's toolBar.
-  function ArpWarpHotButton()  {
-    return {
-      'task'    : 'TaskArpWarp',
-      'tooltip' : 'Automated model building with Arp/wArp'
-    };
-  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskArpWarp.prototype.hotButtons = function() {

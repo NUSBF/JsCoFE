@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.08.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,12 +13,13 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
  */
 
+'use strict'; // *client*
 
 var __template = null;
 
@@ -209,6 +210,13 @@ TaskASUDef.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+// hotButtons return list of buttons added in JobDialog's toolBar.
+function AsuDefHotButton()  {
+  return {
+    'task'    : 'TaskASUDef',
+    'tooltip' : 'Define Asymmetric Unit'
+  };
+}
 
 if (!__template)  {
   //  for client side
@@ -222,14 +230,6 @@ if (!__template)  {
   // // this appears under task title in the Task Dialog
   //   return 'Sets anticipated number of chains in ASU and forms initial Structure Revision';
   // }
-
-  // hotButtons return list of buttons added in JobDialog's toolBar.
-  function AsuDefHotButton()  {
-    return {
-      'task'    : 'TaskASUDef',
-      'tooltip' : 'Define Asymmetric Unit'
-    };
-  }
 
   TaskASUDef.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 

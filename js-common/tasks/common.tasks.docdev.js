@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.05.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -18,6 +18,8 @@
  *  =================================================================
  *
  */
+
+'use strict'; // *client*
 
 var __template = null;
 
@@ -117,16 +119,16 @@ TaskDocDev.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+// hotButtons return list of buttons added in JobDialog's toolBar.
+function DocDevHotButton()  {
+  return {
+    'task'    : 'TaskDocDev',
+    'tooltip' : 'Documentation Development with Sphinx'
+  };
+}
+
 if (!__template)  {
   //  for client side
-
-  // hotButtons return list of buttons added in JobDialog's toolBar.
-  function DocDevHotButton()  {
-    return {
-      'task'    : 'TaskDocDev',
-      'tooltip' : 'Documentation Development with Sphinx'
-    };
-  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskDocDev.prototype.hotButtons = function() {

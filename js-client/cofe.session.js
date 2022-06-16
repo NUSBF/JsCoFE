@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.05.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -18,6 +18,8 @@
  *  =================================================================
  *
  */
+
+'use strict';
 
 function startSession ( sceneId,dev_switch )  {
 
@@ -151,7 +153,7 @@ function checkAnnouncement()  {
 
 function login ( user_login_name,user_password,sceneId,page_switch )  {
 
-  ud       = new UserData();
+  var ud   = new UserData();
   ud.login = user_login_name;
   ud.pwd   = user_password;
 

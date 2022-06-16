@@ -18,6 +18,8 @@
  *
  */
 
+'use strict';
+
 var __template = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')

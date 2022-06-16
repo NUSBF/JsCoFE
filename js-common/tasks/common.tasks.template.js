@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.05.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -19,6 +19,7 @@
  *
  */
 
+'use strict'; // *client*
 
 // ===========================================================================
 // Task classes MUST BE named as 'TaskSomething' AND put in file named
@@ -248,6 +249,56 @@ TaskTemplate.prototype._clone_suggested = function ( parameters,suggestedParamet
       this._clone_suggested ( parameters[item],suggestedParameters );
 }
 
+function update_project_metrics ( task,metrics )  {
+  /* add: MR/EP, Space group, solvent, residues in ASU, residues in model */
+  if (task)  {
+    if (!('R_free' in metrics))  {
+      metrics.R_free   = 2.0;
+      metrics.R_factor = 2.0;
+    }
+    var r = null;  // revision
+    if (('output_data' in task) && ('DataRevision' in task.output_data.data))
+      r = task.output_data.data.DataRevision[0];
+    if ('scores' in task)
+      for (var key in task.scores)  {
+        var d = task.scores[key];
+        if ('R_free' in d)  {
+          var rfree = parseFloat(d.R_free);
+          if (d.R_free<metrics.R_free)  {
+            metrics.R_free   = rfree;
+            metrics.R_factor = parseFloat(d.R_factor);
+            metrics.jobId    = task.id;
+            if (r)  {
+              metrics.SG        = r.HKL.dataset.HM;
+              metrics.res_high  = r.HKL.dataset.RESO[1];
+              metrics.res_low   = r.HKL.dataset.RESO[0];
+              metrics.Solvent   = r.ASU.solvent;
+              metrics.MolWeight = r.ASU.molWeight;
+              metrics.nRes_ASU  = r.ASU.nRes;
+              if ('ha_type' in r.ASU)  metrics.ha_type = r.ASU.ha_type;
+                                 else  metrics.ha_type = '';
+              var nunits = 0;
+              for (var i=0;i<r.ASU.seq.length;i++)
+                nunits += r.ASU.seq[i].ncopies;
+              metrics.nUnits_ASU  = nunits;
+              if (('Structure' in r) && (r.Structure))  {
+                var nr     = 0;
+                var models = r.Structure.xyzmeta.xyz;
+                if (models.length>0)
+                  for (var i=0;i<models[0].chains.length;i++)
+                    nr += models[0].chains[i].size;
+                metrics.nRes_Model   = nr;
+                metrics.nUnits_Model = models[0].chains.length;
+              } else  {
+                metrics.nRes_Model   = 0;
+                metrics.nUnits_Model = 0;
+              }
+            }
+          }
+        }
+      }
+  }
+}
 
 // export such that it could be used in both node and a browser
 if (!dbx)  {
@@ -1516,7 +1567,7 @@ if (!dbx)  {
       var input = inpParamRef.grid.inpDataRef.input;
 
       for (var i=0;i<input.length;i++)  {
-        dropdown = input[i].dropdown;
+        var dropdown = input[i].dropdown;
         if (dropdown.length>1)  {
           var n0 = -1;
           for (var n=0;n<dropdown.length;n++)
@@ -1622,8 +1673,8 @@ if (!dbx)  {
               // clone data object, otherwise input from customGrid will be
               // stored in original metadata, which is not good
               //$$$$ does not clone!
-              dtj = jQuery.extend ( true,{},dt[index] );
-              //dtj = deepClone ( dt[index] );
+              var dtj = jQuery.extend ( true,{},dt[index] );
+              //var dtj = deepClone ( dt[index] );
               if (dropdown[j].hasOwnProperty('customGrid'))  {
                 var msg_j = dtj.collectCustomDropdownInput ( dropdown[j] );
                 if (msg_j.length>0)
@@ -2374,8 +2425,8 @@ if (!dbx)  {
 
         for (var key in widget.inpParamRef.parameters)  {
 
-          param = widget.inpParamRef.parameters[key];
-          item  = param.ref;
+          var param = widget.inpParamRef.parameters[key];
+          var item  = param.ref;
 
           switch (item.type)  {
 
@@ -2593,57 +2644,6 @@ if (!dbx)  {
 //        S = '-- <font style="font-size:80%">' + S + '</font>';
     }
     return S.trim();
-  }
-
-  function update_project_metrics ( task,metrics )  {
-    /* add: MR/EP, Space group, solvent, residues in ASU, residues in model */
-    if (task)  {
-      if (!('R_free' in metrics))  {
-        metrics.R_free   = 2.0;
-        metrics.R_factor = 2.0;
-      }
-      var r = null;  // revision
-      if (('output_data' in task) && ('DataRevision' in task.output_data.data))
-        r = task.output_data.data.DataRevision[0];
-      if ('scores' in task)
-        for (var key in task.scores)  {
-          var d = task.scores[key];
-          if ('R_free' in d)  {
-            var rfree = parseFloat(d.R_free);
-            if (d.R_free<metrics.R_free)  {
-              metrics.R_free   = rfree;
-              metrics.R_factor = parseFloat(d.R_factor);
-              metrics.jobId    = task.id;
-              if (r)  {
-                metrics.SG        = r.HKL.dataset.HM;
-                metrics.res_high  = r.HKL.dataset.RESO[1];
-                metrics.res_low   = r.HKL.dataset.RESO[0];
-                metrics.Solvent   = r.ASU.solvent;
-                metrics.MolWeight = r.ASU.molWeight;
-                metrics.nRes_ASU  = r.ASU.nRes;
-                if ('ha_type' in r.ASU)  metrics.ha_type = r.ASU.ha_type;
-                                   else  metrics.ha_type = '';
-                var nunits = 0;
-                for (var i=0;i<r.ASU.seq.length;i++)
-                  nunits += r.ASU.seq[i].ncopies;
-                metrics.nUnits_ASU  = nunits;
-                if (('Structure' in r) && (r.Structure))  {
-                  var nr     = 0;
-                  var models = r.Structure.xyzmeta.xyz;
-                  if (models.length>0)
-                    for (var i=0;i<models[0].chains.length;i++)
-                      nr += models[0].chains[i].size;
-                  metrics.nRes_Model   = nr;
-                  metrics.nUnits_Model = models[0].chains.length;
-                } else  {
-                  metrics.nRes_Model   = 0;
-                  metrics.nUnits_Model = 0;
-                }
-              }
-            }
-          }
-        }
-    }
   }
 
   TaskTemplate.prototype.result_indicator = function() {

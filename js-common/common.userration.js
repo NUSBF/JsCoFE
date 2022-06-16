@@ -19,6 +19,8 @@
  *
  */
 
+'use strict';
+
 var utils = null;
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
   utils = require('../js-server/server.utils');
@@ -34,7 +36,7 @@ function RationJobDesc ( job_meta )  {
   this.status     = 0;    // processing status
 }
 
-RationJobDesc_toString = function ( ration_job_desc )  {
+function RationJobDesc_toString ( ration_job_desc )  {
   return 'prj='         + ration_job_desc.project    +
          ' jobId='      + ration_job_desc.jobId      +
          ' nc_type='    + ration_job_desc.nc_type    +

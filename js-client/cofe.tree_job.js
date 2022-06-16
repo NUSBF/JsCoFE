@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.06.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -74,6 +74,7 @@
  *
  */
 
+'use strict';
 
 // ===========================================================================
 // JobTree class
@@ -2201,7 +2202,7 @@ JobTree.prototype.replayTree = function ( ref_tree )  {
   this.checkLoop = false;  // true if job check loop is running
 
   var task_del_list = [];
-  for (nodeId in this.task_map)
+  for (var nodeId in this.task_map)
     task_del_list.push ( [this.task_map[nodeId].id,this.task_map[nodeId].disk_space] );
   this.task_map = {};  // map[nodeId]==task of all tasks in the tree
     this.run_map  = {};  // map[taskId]==nodeId of all running tasks

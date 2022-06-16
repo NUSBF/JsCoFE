@@ -19,6 +19,7 @@
  *
  */
 
+'use strict';
 
 function mapExcludeKey ( map,exclKey )  {
   var m = {};

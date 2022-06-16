@@ -19,6 +19,7 @@
  *
  */
 
+'use strict';
 
 /*
 http://tablesorter.com/docs/#Introduction

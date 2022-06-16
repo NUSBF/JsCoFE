@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.01.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Annotation Dialog (to annotate data before upload)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -22,6 +22,7 @@
  *
  */
 
+'use strict';
 
 // ---------------------------------------------------------------------------
 // ImportAnnotationDialog class
@@ -88,7 +89,7 @@ ImportAnnotationDialog.prototype.makePage = function()  {
     var sca_grid = this.grid.setGrid ( '-compact',row++,0,1,5 );
 
     r = 0;
-    for (fname in this.scalepack)  {
+    for (var fname in this.scalepack)  {
       sca_grid.setLabel ( 'File:&nbsp;',r,0, 1,1 );
       sca_grid.setLabel ( '<span class="pre-heavy">' + fname + '</span>',r,1, 1,1 );
       sca_grid.setLabel ( '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.05.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,6 +22,7 @@
  *
  */
 
+'use strict';
 
 // -------------------------------------------------------------------------
 // TaskListDialog class
@@ -543,7 +544,7 @@ var row      = 0;
     var section = grid.setSection ( title,false, row++,0,1,3 );
     var cnt = 0;
     var r   = 0;
-    for (n=0;n<task_list.length;n++)
+    for (var n=0;n<task_list.length;n++)
       if (typeof task_list[n] === 'string' || task_list[n] instanceof String) {
         section.grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
         section.grid.setLabel ( '<hr/>',r,0,1,1 );

@@ -21,6 +21,7 @@
  *
  */
 
+'use strict';
 
 var cofe_signals = {
   taskReady       : 'task_ready',         // fired by Job Dialog's input panels

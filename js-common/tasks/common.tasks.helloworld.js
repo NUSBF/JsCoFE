@@ -1,7 +1,9 @@
-  /*  ------------------------------------------------------------------------
-   *  file js-common/tasks/common.tasks.helloworld.js
-   *  ------------------------------------------------------------------------
-   */
+/*  ------------------------------------------------------------------------
+ *  file js-common/tasks/common.tasks.helloworld.js
+ *  ------------------------------------------------------------------------
+ */
+
+'use strict';
 
   var __template = null;   // null __template indicates that the code runs in
                            // client browser

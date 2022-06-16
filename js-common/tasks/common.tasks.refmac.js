@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.06.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -18,6 +18,8 @@
  *  ==========================================================================
  *
  */
+
+'use strict'; // *client*
 
 var __template = null;
 
@@ -543,16 +545,16 @@ TaskRefmac.prototype.currentVersion = function()  {
 
 //TaskRefmac.prototype.cleanJobDir = function ( jobDir )  {}
 
+// hotButtons return list of buttons added in JobDialog's toolBar.
+function RefmacHotButton()  {
+  return {
+    'task'    : 'TaskRefmac',
+    'tooltip' : 'Refine results using parameters of last refinement'
+  };
+}
+
 if (!__template)  {
   //  for client side
-
-  // hotButtons return list of buttons added in JobDialog's toolBar.
-  function RefmacHotButton()  {
-    return {
-      'task'    : 'TaskRefmac',
-      'tooltip' : 'Refine results using parameters of last refinement'
-    };
-  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskRefmac.prototype.hotButtons = function() {
