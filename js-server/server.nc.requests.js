@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.04.20   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,25 +13,26 @@
  *  **** Content :  Number Cruncher Server -- Requests Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
  */
 
+'use strict';
+
 //  load system modules
-//var child_process = require('child_process');
-var path   = require('path');
+const path   = require('path');
 
 //  load application modules
-var conf   = require('./server.configuration');
-var utils  = require('./server.utils');
-var jm     = require('./server.nc.job_manager');
-var cmd    = require('../js-common/common.commands');
-var task_t = require('../js-common/tasks/common.tasks.template');
+const conf   = require('./server.configuration');
+const utils  = require('./server.utils');
+const jm     = require('./server.nc.job_manager');
+const cmd    = require('../js-common/common.commands');
+const task_t = require('../js-common/tasks/common.tasks.template');
 
 //  prepare log
-var log  = require('./server.log').newLog(15);
+const log  = require('./server.log').newLog(15);
 
 
 // ===========================================================================

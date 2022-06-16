@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.01.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -139,7 +139,7 @@ FEJobRegister.prototype.removeJob = function ( job_token )  {
     if (index in this.token_map)
       delete this.token_map[index];
     if (this.job_map[job_token].is_shared)  {
-      index_list = [];
+      var index_list = [];
       for (var indx in this.token_map)
         if (this.token_map[indx]==job_token)
           index_list.push ( indx );
@@ -1052,7 +1052,7 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
         var tasks = [];
 
-        for (key in auto_meta)
+        for (var key in auto_meta)
           if (key!='context')  {
 
             var task = class_map.makeTaskClass ( auto_meta[key]._type );
@@ -1293,7 +1293,7 @@ function checkJobs ( loginData,data )  {
   var completed_map = {};
   var empty = true;
 
-  for (key in run_map)  {
+  for (var key in run_map)  {
     var jobDataPath = prj.getJobDataPath ( loginData,projectName,key );
     var jobData     = utils.readObject   ( jobDataPath );
     if (jobData)  {

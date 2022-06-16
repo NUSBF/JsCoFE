@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.05.20   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -26,13 +26,14 @@
  *
  */
 
+'use strict';
 
 //  load application modules
-var conf     = require('./server.configuration');
-var fe_start = require('./server.fe.start');
+const conf     = require('./server.configuration');
+const fe_start = require('./server.fe.start');
 
 //  prepare log
-var log = require('./server.log').newLog(21);
+const log = require('./server.log').newLog(21);
 
 /*
 conf.setEmailerConfig ( 'telnet'          );

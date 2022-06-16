@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.04.17   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,17 +13,19 @@
  *  **** Content :  Log file functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2017
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
  */
 
-var com_utils = require('../js-common/common.utils');
+'use strict';
+
+const com_utils = require('../js-common/common.utils');
 
 // ==========================================================================
 
-var vrb = {  // verbosity levels
+const vrb = {  // verbosity levels
   standard : 0,
   detailed : 1,
   debug    : 2,

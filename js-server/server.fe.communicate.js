@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.02.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -19,26 +19,27 @@
  *
  */
 
+'use strict';
+
 //  load system modules
-var url     = require('url');
-var fs      = require('fs-extra');
-var path    = require('path');
-var request = require('request');
-var tmp     = require('tmp');
+const url     = require('url');
+const fs      = require('fs-extra');
+const path    = require('path');
+const request = require('request');
+const tmp     = require('tmp');
 
 //  load application modules
-//var class_map = require('./server.class_map');
-var conf      = require('./server.configuration');
-var utils     = require('./server.utils');
-var anl       = require('./server.fe.analytics');
-var user      = require('./server.fe.user');
-var prj       = require('./server.fe.projects');
-var rj        = require('./server.fe.run_job');
-var ustats    = require('./server.fe.usagestats');
-var cmd       = require('../js-common/common.commands');
+const conf      = require('./server.configuration');
+const utils     = require('./server.utils');
+const anl       = require('./server.fe.analytics');
+const user      = require('./server.fe.user');
+const prj       = require('./server.fe.projects');
+const rj        = require('./server.fe.run_job');
+const ustats    = require('./server.fe.usagestats');
+const cmd       = require('../js-common/common.commands');
 
 //  prepare log
-var log = require('./server.log').newLog(5);
+const log = require('./server.log').newLog(5);
 
 
 // ==========================================================================

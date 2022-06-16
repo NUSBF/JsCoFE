@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,11 +13,13 @@
  *  **** Content :  Class extension functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
  */
+
+'use strict';
 
 //  prepare log
 //var log = require('./server.log').newLog(2);

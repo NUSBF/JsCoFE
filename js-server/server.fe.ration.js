@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.07.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,40 +13,30 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
  */
 
-//  load system modules
-//var fs            = require('fs-extra');
-/*
-var child_process = require('child_process');
-
-//  load application modules
-//var emailer  = require('./server.emailer');
-var uh    = require('./server.fe.upload_handler');
-var cmd   = require('../js-common/common.commands');
-var fcl   = require('../js-common/common.data_facility');
-*/
+'use strict';
 
 //  load system modules
-var path  = require('path');
+const path  = require('path');
 
 //  load application modules
-var conf  = require('./server.configuration');
-var user  = require('./server.fe.user');
-var prj   = require('./server.fe.projects');
-var utils = require('./server.utils');
-var urat  = require('../js-common/common.userration');
+const conf  = require('./server.configuration');
+const user  = require('./server.fe.user');
+const prj   = require('./server.fe.projects');
+const utils = require('./server.utils');
+const urat  = require('../js-common/common.userration');
 
 //  prepare log
-var log = require('./server.log').newLog(19);
+const log = require('./server.log').newLog(19);
 
 // ===========================================================================
 
-var rationFileExt = '.ration';
+const rationFileExt = '.ration';
 
 // ===========================================================================
 

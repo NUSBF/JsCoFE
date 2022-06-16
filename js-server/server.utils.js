@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.05.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,18 +19,20 @@
  *
  */
 
-var fs            = require('fs-extra');
-var path          = require('path');
-var child_process = require('child_process');
+'use strict';
 
-var class_map     = require('./server.class_map');
-var task_t        = require('../js-common/tasks/common.tasks.template');
-var com_utils     = require('../js-common/common.utils');
+const fs            = require('fs-extra');
+const path          = require('path');
+const child_process = require('child_process');
+
+const class_map     = require('./server.class_map');
+const task_t        = require('../js-common/tasks/common.tasks.template');
+const com_utils     = require('../js-common/common.utils');
 
 //  prepare log
-var log = require('./server.log').newLog(14);
+const log = require('./server.log').newLog(14);
 
-var _is_windows = /^win/.test(process.platform);
+const _is_windows = /^win/.test(process.platform);
 
 // ==========================================================================
 
@@ -641,7 +643,7 @@ var html  = '<!DOCTYPE html>\n<html><link rel="stylesheet" type="text/css" ' +
 
 // ===========================================================================
 
-var signal_file_name = 'signal';  // signal file of job termination status
+const signal_file_name = 'signal';  // signal file of job termination status
 
 function jobSignalExists ( jobDir ) {
   return fileExists ( path.join(jobDir,signal_file_name) );
@@ -884,12 +886,12 @@ function checkInternet ( url,callback_func ) {
 }
 */
 
-function spawn ( exeName,arguments,options )  {
+function spawn ( exeName,args,options )  {
   if (_is_windows)  {  // MS Windows
-    return  child_process.spawn ( 'cmd',['/s','/c',exeName].concat(arguments),
+    return  child_process.spawn ( 'cmd',['/s','/c',exeName].concat(args),
                                   options );
   } else  { // Mac, Linux
-    return  child_process.spawn ( exeName,arguments,options );
+    return  child_process.spawn ( exeName,args,options );
   }
 }
 

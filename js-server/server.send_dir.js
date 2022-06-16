@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.11.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,37 +13,39 @@
  *  **** Content :  Send Directory Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
  */
 
+'use strict';
+
 //  load system modules
 
-var __use_ziplib = true;
+const __use_ziplib = true;
 
-var request    = require('request'   );
-var formidable = require('formidable');
-var path       = require('path'      );
-var fs         = require('fs-extra'  );
-var crypto     = require('crypto'    );
+const request    = require('request'   );
+const formidable = require('formidable');
+const path       = require('path'      );
+const fs         = require('fs-extra'  );
+const crypto     = require('crypto'    );
 
-if (__use_ziplib)
-  var zl = require('zip-lib'   );
+// if (__use_ziplib)
+const zl = require('zip-lib'   );
 
 //  load application modules
-var conf  = require('./server.configuration'      );
-var cmd   = require('../js-common/common.commands');
-var utils = require('./server.utils'              );
+const conf  = require('./server.configuration'      );
+const cmd   = require('../js-common/common.commands');
+const utils = require('./server.utils'              );
 
 //  prepare log
-var log = require('./server.log').newLog(13);
+const log = require('./server.log').newLog(13);
 
 // ==========================================================================
 
-//var jobballName = '__dir.tar.gz';
-var jobballName = '__dir.zip';
+//const jobballName = '__dir.tar.gz';
+const jobballName = '__dir.zip';
 
 // ==========================================================================
 
@@ -175,7 +177,7 @@ var sender_cfg = conf.getServerConfig();
     formData['sender' ] = sender_cfg.externalURL;
     formData['dirpath'] = path.resolve ( dirPath );  // convert to absolute path
     if (metaData)  // pass in form of simple key-value pairs
-      for (key in metaData)
+      for (var key in metaData)
         formData[key] = metaData[key];
 
     pushToServer ( formData,null );
@@ -194,7 +196,7 @@ var sender_cfg = conf.getServerConfig();
         formData['sender'] = conf.getServerConfig().externalURL;
 
         if (metaData)  // pass in form of simple key-value pairs
-          for (key in metaData)
+          for (var key in metaData)
             formData[key] = metaData[key];
 
         var jobballPath  = path.join(dirPath,jobballName);
@@ -383,7 +385,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
         } else  {
 
           // restore original file names
-          for (key in upload_meta.files)
+          for (var key in upload_meta.files)
             if (!utils.moveFile(key,path.join(jobDir,upload_meta.files[key])))
               errs = 'file move error';
 

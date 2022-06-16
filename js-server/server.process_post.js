@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.12.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,19 +13,21 @@
  *  **** Content :  POST Processing Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
  */
 
- //  load application modules
- var class_map = require('./server.class_map');
- var user      = require('./server.fe.user');
- var cmd       = require('../js-common/common.commands');
+'use strict';
+
+//  load application modules
+const class_map = require('./server.class_map');
+const user      = require('./server.fe.user');
+const cmd       = require('../js-common/common.commands');
 
 //  prepare log
-var log = require('./server.log').newLog(12);
+const log = require('./server.log').newLog(12);
 
 
 // ==========================================================================

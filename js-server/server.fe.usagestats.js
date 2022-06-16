@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.02.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,39 +13,41 @@
  *  **** Content :  Front End Server -- User Support Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2021
+ *  (C) E. Krissinel, A. Lebedev 2019-2022
  *
  *  =================================================================
  *
  */
 
+'use strict';
+
 //  load system modules
-var path          = require('path');
-var child_process = require('child_process');
+const path          = require('path');
+const child_process = require('child_process');
 
 //  load application modules
-var cmd     = require('../js-common/common.commands');
-var cutils  = require('../js-common/common.utils');
-var conf    = require('./server.configuration');
-var anl     = require('./server.fe.analytics');
-var user    = require('./server.fe.user');
-var emailer = require('./server.emailer');
-var utils   = require('./server.utils');
-var task_t  = require('../js-common/tasks/common.tasks.template');
-var ud      = require('../js-common/common.data_user');
+const cmd     = require('../js-common/common.commands');
+const cutils  = require('../js-common/common.utils');
+const conf    = require('./server.configuration');
+const anl     = require('./server.fe.analytics');
+const user    = require('./server.fe.user');
+const emailer = require('./server.emailer');
+const utils   = require('./server.utils');
+const task_t  = require('../js-common/tasks/common.tasks.template');
+const ud      = require('../js-common/common.data_user');
 
 //  prepare log
-var log = require('./server.log').newLog(20);
+const log = require('./server.log').newLog(20);
 
 
 // ===========================================================================
 
-var statsDirName  = 'usage_stats';
-var statsFileName = 'stats.json';
+const statsDirName  = 'usage_stats';
+const statsFileName = 'stats.json';
 
 // ===========================================================================
 
-var day_ms = 86400000;  // milliseconds in a day
+const day_ms = 86400000;  // milliseconds in a day
 
 function UsageStats()  {
   this._type       = 'UsageStats';

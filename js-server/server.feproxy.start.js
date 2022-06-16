@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.11.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Proxy Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2021
+ *  (C) E. Krissinel, A. Lebedev 2019-2022
  *
  *  =================================================================
  *
@@ -26,19 +26,21 @@
  *
  */
 
-var http      = require('http');
-var https     = require('https');
-var httpProxy = require('http-proxy');
-var url       = require('url');
-var path      = require('path');
+'use strict';
+
+const http      = require('http');
+const https     = require('https');
+const httpProxy = require('http-proxy');
+const url       = require('url');
+const path      = require('path');
 
 //  load application modules
-var conf      = require('./server.configuration');
-var utils     = require('./server.utils');
-var cmd       = require('../js-common/common.commands');
+const conf      = require('./server.configuration');
+const utils     = require('./server.utils');
+const cmd       = require('../js-common/common.commands');
 
 //  prepare log
-var log = require('./server.log').newLog(22);
+const log = require('./server.log').newLog(22);
 
 
 // ==========================================================================
@@ -151,7 +153,9 @@ function start ( callback_func )  {
     //log.warning ( 3,'failed proxy fetch ' + url.parse(server_request.url).pathname.substr(1) );
     //log.warning ( 3,'             error ' + err );
     log.warning ( 3,err + ' fetching ' + url.parse(server_request.url).pathname.substr(1) );
-    proxy.web ( server_request,server_response,options_web );
+    setTimeout ( function(){
+      proxy.web ( server_request,server_response,options_web );
+    },10);
   });
 
   // Listen to the `upgrade` event in order to proxy the WebSocket requests as well.
@@ -181,7 +185,9 @@ function start ( callback_func )  {
 
     proxy_client.on ( 'error', function(err,server_request,server_response){
       log.warning ( 4,err + ' fetching ' + url.parse(server_request.url).pathname.substr(1) );
-      proxy_client.web ( server_request,server_response,options_web );
+      setTimeout ( function(){
+        proxy_client.web ( server_request,server_response,options_web );
+      },10);
     });
 
     // Listen to the `upgrade` event in order to proxy the WebSocket requests as well.

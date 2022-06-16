@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.21   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Data Box
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -405,7 +405,7 @@ DataBox.prototype.getDataSummary = function ( task )  {
 
   }
 
-  for (t in summary)
+  for (var t in summary)
     if (t!='status')
       summary.status = Math.min ( summary.status,summary[t].status );
 

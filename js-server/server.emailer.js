@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.04.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -19,19 +19,20 @@
  *
  */
 
+'use strict';
+
 //  load system modules
-var nodemailer = require('nodemailer');
-var path       = require('path');
-//var child_process = require('child_process');
+const nodemailer = require('nodemailer');
+const path       = require('path');
 
 //  load application modules
-var conf       = require('./server.configuration');
-var utils      = require('./server.utils');
-var cmd        = require('../js-common/common.commands');
-var com_utils  = require('../js-common/common.utils');
+const conf       = require('./server.configuration');
+const utils      = require('./server.utils');
+const cmd        = require('../js-common/common.commands');
+const com_utils  = require('../js-common/common.utils');
 
 //  prepare log
-var log = require('./server.log').newLog(4);
+const log = require('./server.log').newLog(4);
 
 // ==========================================================================
 
