@@ -1926,7 +1926,7 @@ function importProject ( loginData,upload_meta )  {
     var errs = '';
 
     // we run this loop although expect only one file on upload
-    for (key in upload_meta.files)  {
+    for (var key in upload_meta.files)  {
 
       // rename file with '__' prefix in order to use the standard
       // unpack directory function
