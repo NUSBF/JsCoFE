@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.09.20   <--  Date of Last Modification.
+ *    17.06.26   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,18 +13,18 @@
  *  **** Content :  Code minimiser
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2022
  *
  *  =================================================================
  *
  * Invocation:
  *
- *    node js-utils/deploy.js {configFile.json | template}
+ *    node js-utils/deploy.js {configFile.json | template} [--no-strict]
  *
- *  where "configFile.json" is path to JSON-formatted configuration file of
- *  jsCoFE, containing configurations for the Front End server. Alternatively,
- *  "template" file can be used, for example, html bootstrap page or any
- *  text file, containing lists of .css and .js files in quotes, e.g.,
+ * where "configFile.json" is path to JSON-formatted configuration file of
+ * jsCoFE, containing configurations for the Front End server. Alternatively,
+ * "template" file can be used, for example, html bootstrap page or any
+ * text file, containing lists of .css and .js files in quotes, e.g.,
  *
  *    "path/file1.css"
  *    "path/file2.css"
@@ -32,6 +32,11 @@
  *    "path/file1.js"
  *    "path/file2.js"
  *    "path/file3.js"
+ *
+ * If optional --no-strict parameter is provided (must be the last one in
+ * the command line), 'use strict'; sentences will be deleted from the code.
+ * This is recommended for the deployment on the production server, and not
+ * recommended for developer's and test servers.
  *
  * How it works if jsCoFE .json configuration file is provided:
  *
@@ -105,8 +110,12 @@ function change_extention ( fpath,new_ext )  {
                      path.basename(fpath,path.extname(fpath)) + new_ext );
 }
 
-if (process.argv.length<3) {
-  var usage = 'Usage: ' + process.argv[0] + ' ' + process.argv[1] + ' config.json';
+if (
+    (process.argv.length<3) ||
+    ((process.argv.length==4) && (process.argv[3]!='--no-strict'))
+   )  {
+  var usage = 'Usage: ' + process.argv[0] + ' ' + process.argv[1] +
+                          ' config.json --no-strict';
   log.error ( 1,'Incorrect command line. Stop.' );
   log.error ( 1,usage );
   process.exit(1);
@@ -118,10 +127,11 @@ if (process.argv.length<3) {
 
 conf.setPythonVersion ( 'x.x.x' );  // do not check python
 
-var cfgfpath = process.argv[2];
-var feConfig = null;
-var inpfpath = '';
-var inpfdata = '';
+var cfgfpath  = process.argv[2];
+var feConfig  = null;
+var inpfpath  = '';
+var inpfdata  = '';
+var no_strict = (process.argv.length==4);  // the syntax is checked above
 
 if (cfgfpath.endsWith('.json'))  {
 
@@ -210,7 +220,7 @@ if (data_css)  {
     else log.error    ( 12,'cannot write ' + csspath );
 
   } else
-    log.standard ( 11,'failed to minig=fy css' );
+    log.standard ( 11,'failed to minigify css' );
 
 }
 
@@ -221,9 +231,11 @@ if (data_css)  {
 var jscode = {};
 for (var i=0;i<jslist.length;i++)  {
   var jsdata = utils.readString ( jslist[i] );
-  if (jsdata)
-    jscode[jslist[i]] = jsdata;
-  else
+  if (jsdata)  {
+    if (no_strict)  // remove all occurencies
+          jscode[jslist[i]] = jsdata.split('\'use strict\';').join('');
+    else  jscode[jslist[i]] = jsdata;
+  } else
     log.error ( 20,'js file not found at ' + jslist[i] );
 }
 
