@@ -822,7 +822,7 @@ function checkProjectExport ( loginData,projectList )  {
   var projectDirPath = getProjectDirPath ( loginData,projectList.current );
   var archivePath    = path.join ( projectDirPath,
                                    projectList.current + cmd.projectFileExt );
-  rdata = {};
+  var rdata = {};
   if (utils.fileExists(archivePath))
         rdata.size = utils.fileSize(archivePath);
   else  rdata.size = -1;

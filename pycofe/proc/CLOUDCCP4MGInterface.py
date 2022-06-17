@@ -10,14 +10,17 @@ def InstallSaveToCloudMenuItem(workDirectory):
   import MolLabel
   import SequenceViewer
   from global_definitions import get_dispobj
-  
+
   def SequenceView__init__(self,parent=None):
       #from PyQt4 import QtGui
-      from PySide2 import QtGui
+      # from PySide2 import QtGui
+      from PySide2 import QtWidgets
       SequenceViewer.SequenceView.old__init__(self,parent)
-      children = self.findChildren(QtGui.QAction)
+      # children = self.findChildren(QtGui.QAction)
+      children = self.findChildren(QtWidgets.QAction)
       for child in children:
-        if str(child.text().toUtf8()) == "Load alignment from file":
+        # if str(child.text().toUtf8()) == "Load alignment from file":
+        if str(child.text()) == "Load alignment from file":
            child.setText("Load sequence/alignment from file")
 
   def setDelegateACVs(self):
@@ -38,7 +41,7 @@ def InstallSaveToCloudMenuItem(workDirectory):
                 acv.append(QtGui.QColor(int(a[0]*255), int(a[1]*255), int(a[2]*255)))
             else:
               acv = sd.atomColourVector
-              
+
             atomColourVectors.append(acv)
       self.sequenceView.itemDelegate().setAtomColourVectorsSize(len(atomColourVectors))
       for i in range(len(atomColourVectors)):
@@ -102,12 +105,12 @@ def InstallSaveToCloudMenuItem(workDirectory):
                               """
                               if not align:
                                   print "Might be nice to make AtomColourVector for",new_seq,"here!!"
-                                  print new_seq.seqtype 
+                                  print new_seq.seqtype
                                   acv = acvFromSequence(new_seq.seq,new_seq.seqtype)
                               """
                         else:
                               acv = alignmentAtomColourVector(new_seq.seq)
-                  
+
                   contConservScores = self.computeConservationScore(new_sequences)
 
                   pm = global_definitions.PM("sequence_prefs")
@@ -115,7 +118,7 @@ def InstallSaveToCloudMenuItem(workDirectory):
                   if pm is not None:
                     continuous = pm.getparams()["colouring_mode"]
                   print("Got continuous",continuous)
-                    
+
                   for seq in self.sequence_displays:
                         seq.isAligned = False
                         if seq.name+"_"+seq.chain in self.mappings:
@@ -175,7 +178,7 @@ def InstallSaveToCloudMenuItem(workDirectory):
                                 else:
                                   colourTable = GetColourByNucleotideAtomTable()
                                   isNucleotide = True
- 
+
                                 acv = []
                                 for seqi in val:
                                   if seqi in colourTable:
@@ -207,7 +210,7 @@ def InstallSaveToCloudMenuItem(workDirectory):
     if not target:
       print('Can not find GMolDisp target',self)
       return []
-  
+
     if name == "icon":
         labels = [self.tr('Atom labels')]
         labels.extend(MolLabel.LABEL_SELECTION_ALIAS)
@@ -221,13 +224,13 @@ def InstallSaveToCloudMenuItem(workDirectory):
         return menu
     else:
       return displayTableObjects.GMolDisp._getGuiDef(self,name,pickevent)
-  
+
   def getActionDef(self,name,**info):
    if name =='savetocloud':
      return dict (text = self.tr('Save selected atoms to CCP4 Cloud'), slot = self.saveToCloud, enabled = 1 )
    else:
      return displayTableObjects.GMolDisp._getActionDef(self,name,**info)
-  
+
   def saveToCloud(self):
 
     target = get_dispobj(name=self.objectName())
@@ -250,10 +253,10 @@ def InstallSaveToCloudMenuItem(workDirectory):
      shutil.copy2(dlfname,fname)
     else:
       print("Some failure!!!!")
-  
+
   displayTableObjects.GMolDisp._getGuiDef = displayTableObjects.GMolDisp.getGuiDef
   displayTableObjects.GMolDisp._getActionDef = displayTableObjects.GMolDisp.getActionDef
-  
+
   displayTableObjects.GMolDisp.getGuiDef = getGuiDef
   displayTableObjects.GMolDisp.getActionDef = getActionDef
   displayTableObjects.GMolDisp.saveToCloud = saveToCloud
@@ -269,17 +272,17 @@ def SetupSequenceLoadingFromCommandLine():
   import global_definitions
 
   SEQUENCE_SUFFIXES = [".pir",".fasta",".pfam",".gde",".rsf",".gcg",".cd",".amps",".gb",".msf",".clw",".afa",".seq"]
-  
+
   def openSequence(args):
     global SequenceViewer_initialized
     if not SequenceViewer_initialized:
       initSequenceViewer()
       SequenceViewer_initialized = 1
-  
+
     from PySide2 import QtCore
     print("Treat",args,"as sequence")
     global_definitions.MAINWINDOW().sequence_dialog.loadExternalAlignment(args)
-  
+
   def initSequenceViewer():
     if not hasattr(global_definitions.MAINWINDOW(),"sequence_dialog"):
       import SequenceViewer
@@ -291,14 +294,14 @@ def SetupSequenceLoadingFromCommandLine():
     global_definitions.MAINWINDOW().sequence_dialog.updateUDDs()
     global_definitions.MAINWINDOW().sequence_dialog.applySelectionsFromDispobjs()
     global_definitions.MAINWINDOW().UnClose()
-  
+
   def loadSequencesFromCommandLine():
-  
+
     for f in global_definitions.HISTORY().command_line_other_files:
       suffix = os.path.splitext(f)[1]
       if suffix.lower() in SEQUENCE_SUFFIXES:
         openSequence(f)
-  
+
   loadSequencesFromCommandLine()
 
 def saveEnsembleToI2(workDirectory):
@@ -368,7 +371,7 @@ def saveEnsembleToI2(workDirectory):
                    print("Clearing preambles")
                    preamble1 = None
                    preamble2 = None
-                   
+
                 sys.stdout.flush()
                 newchid += 1
               obj.molHnd.DeleteSelection(selHndCh)
@@ -436,7 +439,7 @@ def RunMrBump(row,level=95,phmmer_cutoff=20,mrnum=10,jobid=None,workdir=None,hhr
         except:
             pass
     return None
-          
+
 def InstallSaveEnsembleToCloudMenuItem(workDir):
     from PySide2 import QtCore
     import MGApplication
