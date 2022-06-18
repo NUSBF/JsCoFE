@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.06.22   <--  Date of Last Modification.
+ *    18.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -53,8 +53,8 @@ function ProjectDesc()  {
     share  : []    // list of login share objects
   };
 
-  this.folderPath   = 'My Projects';  // virtual project folder path
-  this.labels       = [];             // list of optional project labels
+  this.folderPath   = '';   // virtual project folder path
+  this.labels       = [];   // list of optional project labels
   // this.archive = {
   //   id      : '',   // archive ID
   //   version : 0,    // archived project version
@@ -101,24 +101,75 @@ function isProjectAccessible ( login,projectDesc )  {
   return found;
 }
 
+function getProjectAuthor ( projectDesc )  {
+var author = projectDesc.owner.login;
+  if (('author' in projectDesc.owner) && projectDesc.owner.author)
+    author = projectDesc.owner.author;
+  return author;
+}
 
 // ===========================================================================
 
-function ProjectList()  {
+function ProjectList ( loginName )  {
   this._type     = 'ProjectList';
   this.projects  = [];     // will contain ProjectDesc
   this.current   = '';     // current project name
   this.startmode = start_mode.auto; // 'auto', 'expert', 'migrate'
   this.sortList  = null;   // sort options
-  this.folders   = [ // project folders tree basic element
-    { name      : 'My Projects',
-      path      : 'My Projects',
+  this.seedFolders ( loginName );
+}
+
+ProjectList.prototype.seedFolders = function ( loginName )  {
+  var f0name   = loginName + '\'s Projects';
+  this.folders = [  // project folders tree basic elements
+    { name      : f0name,
+      path      : f0name,
+      nprojects : 0,
+      folders   : [],
+      projects  : []
+    },{
+      name      : '**joined**', // project folders tree basic element
+      path      : '**joined**',
+      nprojects : 0,
+      folders   : [],
+      projects  : []
+    },{
+      name      : '**all_projects**', // project folders tree basic element
+      path      : '**all_projects**',
       nprojects : 0,
       folders   : [],
       projects  : []
     }
   ];
-  this.currentFolder = 'My Projects';
+  this.currentFolder = f0name;
+}
+
+ProjectList.prototype.getRootFolderName = function ( folderNo,loginName )  {
+var fdname = '???';
+  if (folderNo<this.folders.length)  {
+    fdname = this.folders[folderNo].name;
+    if (fdname.startsWith(loginName+'\'s '))
+      fdname = 'My Projects';
+    else if (fdname=='**joined**')
+      fdname = '<i>Projects joined by me</i>';
+    else if (fdname=='**all_projects**')
+      fdname = '<i>All Projects</i>';
+  }
+  return fdname;
+}
+
+function folderPathTitle ( folderPath,loginName,maxLength )  {
+var title  = folderPath;
+var f0name = loginName + '\'s ';
+  if (title.startsWith(f0name))
+    title = title.replace(f0name,'My ');
+  else if (title=='**joined**')
+    title = 'Projects joined by me';
+  else if (title=='**all_projects**')
+    title = 'All Projects';
+  if (title.length>maxLength)
+    title = '&hellip; ' + title.substr(title.length-maxLength+3);
+  return title;
 }
 
 ProjectList.prototype._add_folder_path = function ( flist,level,folders,nprojects )  {
@@ -159,17 +210,23 @@ ProjectList.prototype._reset_folders = function ( folders )  {
 }
 
 ProjectList.prototype.resetFolders = function ( recalculate_bool )  {
+  this.folders = this.folders.slice(0,3);
   this._reset_folders ( this.folders );
   if (recalculate_bool)  {
-    var folderPaths = {};
+    var folderPaths   = {};
+    var crFolderValid = this.currentFolder.startsWith('**');
     for (var i=0;i<this.projects.length;i++)  {
       var folder_path = this.projects[i].folderPath;
       if (folder_path in folderPaths)
             folderPaths[folder_path]++;
       else  folderPaths[folder_path] = 1;
+      if (folder_path.startsWith(this.currentFolder))
+        crFolderValid = true;
     }
     for (var fpath in folderPaths)
       this.addFolderPath ( fpath,folderPaths[fpath] );
+    if (!crFolderValid)
+      this.currentFolder = this.folders[0].path;
   }
 }
 
@@ -393,4 +450,5 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.ProjectShare         = ProjectShare;
   module.exports.DockData             = DockData;
   module.exports.isProjectAccessible  = isProjectAccessible;
+  module.exports.getProjectAuthor     = getProjectAuthor;
 }

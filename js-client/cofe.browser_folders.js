@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    11.06.22   <--  Date of Last Modification.
+ *    18.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -66,6 +66,8 @@ function FoldersBrowser ( title,projectList,currentFolderPath,funcKey,
   this.addWidget ( grid );
 
   // grid.setLabel ( '<h3>' + __login_user + '\'s project folders</h3>', 0,0,1,1 );
+  // grid.setLabel ( '<h2>My Project Folders</h2>', 0,0,1,1 );
+  grid.setLabel ( '&nbsp;<br><span style="font-size:160%"><b>My Project Folders</b></span>', 0,0,1,1 );
 
   this.ftree   = this.makeFolderTree(this.folders)
   var tree_div = new Widget ( 'div' );
@@ -169,11 +171,16 @@ FoldersBrowser.prototype.setFolders = function ( pnode,folders,ftree )  {
 }
 
 FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
-  var ftree = new Tree ( '<u><i><b>' + __login_user + '\'s project folders<b></i></u>' );
+//  var ftree = new Tree ( '<u><i><b>' + __login_user + '\'s project folders<b></i></u>' );
+// var ftree = new Tree ( '<i><b>Project Folders<b></i><br>' +
+//                        '<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>' );
+  var ftree = new Tree ( '<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>' );
   for (var i=0;i<folders.length;i++)  {
-    var node = ftree.addRootNode ( folders[i].name,
-                                   image_path('folder_projects'),
-                                   null );
+    var icon = 'folder_projects_user';
+    if (folders[i].name.startsWith('**'))
+      icon = 'folder_projects_list';
+    var node = ftree.addRootNode ( this.projectList.getRootFolderName(i,__login_id),
+                                   image_path(icon),null );
     node.dataId = folders[i].path;
     if (node.dataId==this.currentFolderPath)
       ftree.selectNode ( node,true );
@@ -200,13 +207,18 @@ FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
 
 FoldersBrowser.prototype.onSelect = function()  {
 var selNode = this.ftree.getSelectedNode();
-  // this.disableButton ( 'moveto',this.nprojects<=0 );
-  this.disableButton ( 'rename',selNode.dataId=='My Projects' );
-  this.disableButton ( 'delete',selNode.dataId=='My Projects' );
+  if (selNode)  {
+    var myprojects = selNode.dataId.startsWith(__login_id+'\'s ');
+    this.disableButton ( 'add',!myprojects );
+    this.disableButton ( 'rename',(!(selNode.parentId)) || (!myprojects) );
+    this.disableButton ( 'delete',(!(selNode.parentId)) || (!myprojects) );
+    if (this.funcKey=='move')
+      this.disableButton ( 'select',!myprojects );
+  }
 }
 
 FoldersBrowser.prototype.onSelectBtn = function()  {
-  var selNode = this.ftree.getSelectedNode();
+var selNode = this.ftree.getSelectedNode();
   if (selNode)  {
     $(this.element).dialog ( 'close' );
     this.onReturn_fnc ( 'select',{ folder : selNode.dataId } );
@@ -316,17 +328,6 @@ var folder  = this.findFolder ( selNode.dataId );
           'before deleting it.','msg_stop' );
   } else  {
     var self = this;
-    // new QuestionBox ( 'Delete folder',
-    //                   '<h2>Folder ' + folder.name + ' will be deleted</h2>' +
-    //                   'Please confirm.','Yes, delete',function(){
-    //   self.deleteFolder     ( selNode.dataId );
-    //   self.ftree.deleteNode ( selNode        );
-    //   var node  = self.ftree.getSelectedNode();
-    //   var fpath = 'My Projects';
-    //   if (node)
-    //     fpath = node.dataId;
-    //   self.onReturn_fnc ( 'delete',{ folder : fpath } );
-    // },'Cancel',null,'msg_confirm' );
     new QuestionBox ( 'Delete folder',
                       '<h2>Folder ' + folder.name + ' will be deleted</h2>' +
                       'Please confirm.',[
@@ -335,7 +336,7 @@ var folder  = this.findFolder ( selNode.dataId );
                       self.deleteFolder     ( selNode.dataId );
                       self.ftree.deleteNode ( selNode        );
                       var node  = self.ftree.getSelectedNode();
-                      var fpath = 'My Projects';
+                      var fpath = '';
                       if (node)
                         fpath = node.dataId;
                       self.onReturn_fnc ( 'delete',{ folder : fpath } );
@@ -351,6 +352,8 @@ var folder  = this.findFolder ( selNode.dataId );
 FoldersBrowser.prototype.onMoveTo = function()  {
 var selNode = this.ftree.getSelectedNode();
 var folder  = this.findFolder ( selNode.dataId );
+  if (!selNode.dataId.startsWith(__login_id+'\'s '))
+    return;
   if (selNode.dataId==this.currentFolderPath)
     new MessageBox ( 'Already in folder',
           '<h2>Already in "' + folder.name + '"</h2>' +

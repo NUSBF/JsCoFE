@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.05.22   <--  Date of Last Modification.
+ *    18.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,9 +26,12 @@
 
 function shareProject ( projectDesc,callback_func )  {
 
-  var author = projectDesc.owner.login;
-  if (('author' in projectDesc.owner) && projectDesc.owner.author)
-    author = projectDesc.owner.author;
+  // var author = projectDesc.owner.login;
+  // if (('author' in projectDesc.owner) && projectDesc.owner.author)
+  //   author = projectDesc.owner.author;
+
+  var author = getProjectAuthor ( projectDesc );
+
   if (author!=__login_id)  {
     new MessageBox ( 'Share Project',
                      'Only Project owner (<b>' + author +
