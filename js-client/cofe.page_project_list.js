@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.06.22   <--  Date of Last Modification.
+ *    18.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,8 +42,8 @@ function ProjectListPage ( sceneId )  {
     return;
   }
 
-  var projectList    = new ProjectList();  // project list data
-  this.tablesort_tbl = null;            // project list table
+  var projectList    = new ProjectList(__login_id);  // project list data
+  this.tablesort_tbl = null;                         // project list table
   var folder_btn     = null;
   var open_btn       = null;
   var add_btn        = null;
@@ -93,24 +93,40 @@ function ProjectListPage ( sceneId )  {
     return false;
   }
 
-  function isCurrentProjectOwned ( check_author )  {
+  function isProjectJoined ( projectDesc )  {
+    return (projectDesc.owner.login!=__login_id) &&
+           (projectDesc.owner.share.length>0);
+  }
+
+  function isCurrentProjectAuthored ( check_author )  {
     var pdesc = getCurrentProjectDesc();
-    if (pdesc)  {
-      var owner = pdesc.owner.login;
-      if (check_author && ('author' in pdesc.owner))
-        owner = pdesc.owner.author;
-      return (owner==__login_id);
-    }
+    // if (pdesc)  {
+    //   var owner = pdesc.owner.login;
+    //   if (check_author && ('author' in pdesc.owner))
+    //     owner = pdesc.owner.author;
+    //   return (owner==__login_id);
+    // }
+    if (pdesc)
+      return (getProjectAuthor(pdesc)==__login_id);
     return false;
   }
 
   function setPageTitle ( pageTitle )  {
     if (pageTitle_lbl)  {
-      var title = pageTitle;
-      if (title.length>50)
-        title = '&hellip; ' + title.substr(title.length-47);
-      pageTitle_lbl.setText ( '&nbsp;' + title );
+      // var title = pageTitle;
+      // if (title.length>50)
+      //   title = '&hellip; ' + title.substr(title.length-47);
+      // pageTitle_lbl.setText ( '&nbsp;' + title );
+      pageTitle_lbl.setText ( '&nbsp;' + folderPathTitle(pageTitle,__login_id,50) );
       pageTitle_lbl.setFont ( 'times','200%',true,true );
+    }
+    if (folder_btn)  {
+      var icon = 'folder_projects';
+      if (__current_folder.startsWith('**'))
+        icon = 'folder_projects_list';
+      else if (__current_folder.indexOf('/')<=0)
+        icon = 'folder_projects_user';
+      folder_btn.setImage ( image_path(icon) );
     }
   }
 
@@ -176,7 +192,7 @@ function ProjectListPage ( sceneId )  {
 
     if (isCurrentProjectShared())  {
 
-      if (isCurrentProjectOwned(true))  {
+      if (isCurrentProjectAuthored(true))  {
         new MessageBox ( 'Rename Project',
             '<h2>Rename Project</h2>' +
             'You cannot rename this project because it was shared with other ' +
@@ -297,7 +313,7 @@ function ProjectListPage ( sceneId )  {
     var delMessage = '';
     var btnName    = 'Yes, delete';
     var dlgTitle   = 'Delete Project';
-    if (isCurrentProjectOwned(false))  {
+    if (isCurrentProjectAuthored(false))  {
       delMessage = '<h2>Delete Project</h2>' +
                    'Project: <b>"' + delName +
                    '"</b> will be deleted. All project ' +
@@ -551,16 +567,18 @@ function ProjectListPage ( sceneId )  {
     //               'the "Import" button) if one was previously<br>' +
     //               'exported from ' + appName() + '.</h2>';
 
-    __current_folder  = projectList.currentFolder;
+    __current_folder = projectList.currentFolder;
 
     var message = '<div style="width:100%;">&nbsp;<p>&nbsp;<p><h3>' +
-                  'There are no projects in folder "' + __current_folder + '".' +
+                  'There are no projects in folder "' +
+                  folderPathTitle(__current_folder,__login_id,1000) + '".' +
                   '<p>Use "Add" button to create a new Project' +
                   ';<br>"Import" button for importing a project exported from ' +
                     appName() +
                   ';<br>"Join" button for joining project shared with you by ' +
                   'another user;<br>or "Tutorials" button for loading ' +
-                  'tutorial/demo projects.</h3></div>';
+                  'tutorial/demo projects;<br>or click on page title or folder ' +
+                  'icon in it to change the folder.</h3></div>';
     self.welcome_lbl = panel.setLabel ( message.fontcolor('darkgrey'),
                                    table_row+1,0,1,nCols )
                        .setFontItalic ( true )
@@ -569,7 +587,9 @@ function ProjectListPage ( sceneId )  {
 
     var nrows = 0;
     for (var i=0;i<projectList.projects.length;i++)
-      if (projectList.projects[i].folderPath==__current_folder)
+      if ((projectList.projects[i].folderPath==__current_folder) ||
+          ((__current_folder=='**joined**') && isProjectJoined(projectList.projects[i])) ||
+          (__current_folder=='**all_projects**'))
         nrows++;
 
     if (nrows<=0)  {
@@ -599,8 +619,12 @@ function ProjectListPage ( sceneId )  {
 
       var selectedRow = null;
       nrows = 0;
+      // alert ( __current_folder );
       for (var i=0;i<projectList.projects.length;i++)
-        if (projectList.projects[i].folderPath==__current_folder)  {
+        if ((projectList.projects[i].folderPath==__current_folder) ||
+            ((__current_folder=='**joined**') && isProjectJoined(projectList.projects[i])) ||
+            (__current_folder=='**all_projects**'))  {
+
           var trow = self.tablesort_tbl.addRow();
 
           //contextMenu.setWidth ( '10px' );
@@ -769,7 +793,7 @@ function ProjectListPage ( sceneId )  {
   function loadProjectList()  {
     //  Read list of projects from server
     serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
-      projectList = jQuery.extend ( true, new ProjectList(),data );
+      projectList = jQuery.extend ( true, new ProjectList(__login_id),data );
       makeProjectListTable();
     },null,'persist');
   }
@@ -851,7 +875,7 @@ function ProjectListPage ( sceneId )  {
   this.makeHeader ( 3,null );
 
   this.headerPanel.setCellSize ( '30%','',0,2 );
-  folder_btn = new ImageButton ( image_path('folder_projects'),'28px','28px' )
+  folder_btn = new ImageButton ( image_path('folder_projects'),'34px','34px' )
                   .setTooltip('Browse project folders' );
                   // .setSize ( '28pt','26pt' );
                   // .setWidth ( '28pt' ).setHeight ( '24pt' );
@@ -1012,9 +1036,6 @@ function ProjectListPage ( sceneId )  {
   panel.setVerticalAlignment ( 1,1,'middle' );
 
   this.makeLogoPanel ( 2,0,3 );
-
-  //var title_lbl = new Label ( 'My Projects'  );
-  //title_lbl.setFont         ( 'times','200%',true,true );
 
   var row = 0;
   panel.setHorizontalAlignment ( row,0,'center'    );

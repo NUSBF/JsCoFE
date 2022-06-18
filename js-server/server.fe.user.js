@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    18.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1146,7 +1146,7 @@ var sLoginData = getUserLoginData ( meta.successor );
     sData.login = slogin;
 
     // loop and move
-    var folder_name = ulogin + '\'s projects';
+    // var folder_name = ulogin + '\'s projects';
     var failed_move = [];
     var were_shared = [];
     for (var i=0;i<userPrjList.projects.length;i++)  {
@@ -1156,9 +1156,11 @@ var sLoginData = getUserLoginData ( meta.successor );
         var sProjectDir = prj.getProjectDirPath ( sData,pName );
         if (utils.moveDir(uProjectDir,sProjectDir,false))  {
           var pData = prj.readProjectData ( sData,pName );
+          if (!('author' in pData.desc.owner))
+            pData.desc.owner.author = pData.desc.owner.login;
           pData.desc.owner.login = sData.login;
-          pData.desc.folderPath  = pData.desc.folderPath.replace (
-                                                  'My Projects',folder_name );
+          // pData.desc.folderPath  = pData.desc.folderPath.replace (
+          //                                         'My Projects',folder_name );
           prj.writeProjectData ( sData,pData,true );
         } else
           failed_move.push ( pName );

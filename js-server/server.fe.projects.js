@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    18.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -250,11 +250,21 @@ function checkProjectDescData ( projectDesc,loginData )  {
     projectDesc.autorun = false;
     update = true;
   }
-  if (!('folderPath' in projectDesc))  {
-    projectDesc.folderPath = 'My Projects';  // virtual project folder path
-    projectDesc.labels     = [];             // list of optional project labels
+  var f0name = pd.getProjectAuthor ( projectDesc ) + '\'s Projects';
+  if ((!('folderPath' in projectDesc)) || (!(projectDesc.folderPath)))  {
+    projectDesc.folderPath = f0name;  // virtual project folder path
+    projectDesc.labels     = [];      // list of optional project labels
     update = true;
   }
+  var flist  = projectDesc.folderPath.split('/');
+  if (flist.length<=0)  {
+    flist.push ( f0name );
+    update   = true;
+  } else if (flist[0]=='My Projects')  {
+    flist[0] = f0name;
+    update   = true;
+  }
+  projectDesc.folderPath = flist.join('/');
   if (!projectDesc.hasOwnProperty('startmode'))
     projectDesc.startmode = pd.start_mode.standard; // too petty to save/update
   if (!projectDesc.hasOwnProperty('tasklistmode'))
@@ -394,6 +404,8 @@ function readProjectList ( loginData )  {
         if (pdesc)
           pList.projects.push ( pdesc );
       }
+    if (pList.folders[0].path=='My Projects')
+      pList.seedFolders ( loginData.login );
     pList.resetFolders ( true );
     writeProjectList ( loginData,pList );
   }
@@ -439,7 +451,7 @@ var response = null;  // must become a cmd.Response object to return
     response = new cmd.Response ( cmd.fe_retcode.ok,
                                 '[00012] User projects directory exists','' );
   } else if (utils.mkDir(userProjectsDirPath)) {
-    if (utils.writeObject(getUserProjectListPath(loginData),new pd.ProjectList())) {
+    if (utils.writeObject(getUserProjectListPath(loginData),new pd.ProjectList(loginData.login))) {
       response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
     } else  {
       response = new cmd.Response ( cmd.fe_retcode.writeError,
@@ -1755,7 +1767,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
   // Get users' projects list here for finding the current folder
   var pList = readProjectList ( loginData );
   if (!pList)
-    pList = new pd.ProjectList();  // *** should throw error instead
+    pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
 
   // validate metadata and read project name
   var projectDesc = new pd.ProjectDesc();
@@ -1768,9 +1780,10 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       projectDesc.njobs        = prj_meta.desc.njobs;
       projectDesc.dateCreated  = prj_meta.desc.dateCreated;
       projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
-      if (!prjDir)  // this will leave original folder path for shared projects
-        projectDesc.folderPath = pList.currentFolder;
-      projectDesc.labels       = prj_meta.labels;
+      // if (!prjDir)  // this will leave original folder path for shared projects
+      //   projectDesc.folderPath = pList.currentFolder;
+      projectDesc.folderPath   = prj_meta.desc.folderPath;
+      projectDesc.labels       = prj_meta.desc.labels;
       if ('owner' in prj_meta.desc)  {
         projectDesc.owner = prj_meta.desc.owner;
         if (!prjDir)  {  // this means that the project is imported, not shared
@@ -1788,7 +1801,6 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       if (!projectDesc.owner.login)
         projectDesc.owner.login = loginData.login;
       prj_meta.desc.owner      = projectDesc.owner;
-      prj_meta.desc.folderPath = projectDesc.folderPath;
       prj_meta.desc.labels     = projectDesc.labels;
       utils.writeObject ( prj_meta_path,prj_meta    );
       utils.writeObject ( prj_desc_path,projectDesc );
@@ -1822,8 +1834,10 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
 
         var pList = readProjectList ( loginData );
         if (!pList)
-          pList = new pd.ProjectList();  // *** should throw error instead
+          pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
         pList.current = projectDesc.name;        // make it current
+        if (!pList.currentFolder.startsWith('**all_projects**'))
+          pList.currentFolder = projectDesc.folderPath;
         if (writeProjectList(loginData,pList))
               utils.writeString ( signal_path,'Success\n' + projectDesc.name );
         else  utils.writeString ( signal_path,'Cannot write project list\n' +
@@ -1862,7 +1876,9 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
             pList.projects.push ( projects[i] );
 
         //pList.projects.unshift ( projectDesc );  // put it first
-        pList.current = projectDesc.name;        // make it current
+        pList.current       = projectDesc.name;        // make it current
+        if (!pList.currentFolder.startsWith('**'))
+          pList.currentFolder = projectDesc.folderPath;
         //if (utils.writeObject(userProjectsListPath,pList))
         if (writeProjectList(loginData,pList))
               utils.writeString ( signal_path,'Success\n' + projectDesc.name );

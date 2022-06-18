@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    18.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -275,9 +275,10 @@ JobTree.prototype.readProjectData = function ( page_title,
 
 //printProjectTree ( ' >>>getProjectData',tree.projectData );
 
-        var author = tree.projectData.desc.owner.login;
-        if ('author' in tree.projectData.desc.owner)
-          author = tree.projectData.desc.owner.author;
+        // var author = tree.projectData.desc.owner.login;
+        // if ('author' in tree.projectData.desc.owner)
+        //   author = tree.projectData.desc.owner.author;
+        var author = getProjectAuthor ( tree.projectData.desc );
         if (author==__login_id)  author  = '';
         if (author)  author += ':';
         var root_title =
