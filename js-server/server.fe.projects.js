@@ -1877,7 +1877,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
 
         //pList.projects.unshift ( projectDesc );  // put it first
         pList.current       = projectDesc.name;        // make it current
-        if (!pList.currentFolder.startsWith('**'))
+        if (!pList.currentFolder.startsWith('**all_projects**'))
           pList.currentFolder = projectDesc.folderPath;
         //if (utils.writeObject(userProjectsListPath,pList))
         if (writeProjectList(loginData,pList))

@@ -212,6 +212,7 @@ ProjectList.prototype._reset_folders = function ( folders )  {
 ProjectList.prototype.resetFolders = function ( recalculate_bool )  {
   this.folders = this.folders.slice(0,3);
   this._reset_folders ( this.folders );
+  this.folders[2].nprojects = this.projects.length;
   if (recalculate_bool)  {
     var folderPaths   = {};
     var crFolderValid = this.currentFolder.startsWith('**');
