@@ -106,8 +106,11 @@ function ProjectListPage ( sceneId )  {
     //     owner = pdesc.owner.author;
     //   return (owner==__login_id);
     // }
-    if (pdesc)
-      return (getProjectAuthor(pdesc)==__login_id);
+    if (pdesc)  {
+      if (check_author)
+            return (getProjectAuthor(pdesc)==__login_id);
+      else  return (pdesc.owner.login==__login_id);
+    }
     return false;
   }
 
@@ -591,6 +594,8 @@ function ProjectListPage ( sceneId )  {
           ((__current_folder=='**joined**') && isProjectJoined(projectList.projects[i])) ||
           (__current_folder=='**all_projects**'))
         nrows++;
+    if (__current_folder=='**joined**')
+      projectList.folders[1].nprojects = nrows;
 
     if (nrows<=0)  {
 

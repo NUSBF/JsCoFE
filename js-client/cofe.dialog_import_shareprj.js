@@ -135,15 +135,18 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
                     $( "#cancel_btn" ).button ( "option","label","Close" );
                     if (data.signal=='Success')  {
                       dlg.grid.setLabel ( '<h2>Project Joined Successfully</h2>',0,2,2,3 );
+                      var msg1 = '';
+                      if (!__current_folder.startsWith('**'))
+                        msg1 = '<p><b>Note that you are now in the owner\'s project '+
+                               'folder. To navigate back to your folder(s), click on ' +
+                               'the page title or use Main Menu.</b>';
                       msg_lbl.setText (
                           '<div style="width:400px">' +
                           'Project "' + data.name + '" is now joined, ' +
                           'and you may work on it simultaneously with ' +
                           'the project owner and other users, with whom the ' +
                           'project may have been also shared.' +
-                          '<p><b>Note that you are now in the project\'s owner '+
-                          'folder. Click on page title to navigate back to your ' +
-                          'folder.</b>' +
+                          msg1 +
                           '<p>You may close this dialog now.</div>' );
                       if (onSuccess_func)
                         onSuccess_func();
