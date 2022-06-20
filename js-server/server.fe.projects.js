@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.06.22   <--  Date of Last Modification.
+ *    20.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -250,7 +250,9 @@ function checkProjectDescData ( projectDesc,loginData )  {
     projectDesc.autorun = false;
     update = true;
   }
-  var f0name = pd.getProjectAuthor ( projectDesc ) + '\'s Projects';
+  var f0name = pd.getProjectAuthor ( projectDesc );
+  if (f0name!=pd.folder_type.tutorials)
+    f0name += '\'s Projects';
   if ((!('folderPath' in projectDesc)) || (!(projectDesc.folderPath)))  {
     projectDesc.folderPath = f0name;  // virtual project folder path
     projectDesc.labels     = [];      // list of optional project labels
@@ -1773,6 +1775,9 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
   var projectDesc = new pd.ProjectDesc();
   try {
     if (prj_meta._type=='ProjectData')  {
+
+      checkProjectData ( prj_meta,loginData );
+
       projectDesc.name         = prj_meta.desc.name;
       projectDesc.title        = prj_meta.desc.title;
       projectDesc.disk_space   = prj_meta.desc.disk_space;
@@ -1782,15 +1787,21 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
       // if (!prjDir)  // this will leave original folder path for shared projects
       //   projectDesc.folderPath = pList.currentFolder;
-      projectDesc.folderPath   = prj_meta.desc.folderPath;
-      projectDesc.labels       = prj_meta.desc.labels;
+      // if ('folderPath' in prj_meta.desc)  {
+        projectDesc.folderPath   = prj_meta.desc.folderPath;
+        projectDesc.labels       = prj_meta.desc.labels;
+      // }
       if ('owner' in prj_meta.desc)  {
         projectDesc.owner = prj_meta.desc.owner;
         if (!prjDir)  {  // this means that the project is imported, not shared
           switch (chown_key)  {
-            case 'user' : projectDesc.owner.author = loginData.login;  break;
-            case '*'    : projectDesc.owner.author = '';               break;
-            default     : projectDesc.owner.author = prj_meta.desc.owner.login;
+            case 'user'     : projectDesc.owner.author = loginData.login;
+                          break;
+            case '*'        : projectDesc.owner.author = '';
+                          break;
+            case 'tutorial' : projectDesc.owner.author = pd.folder_type.tutorials;
+                          break;
+            default         : projectDesc.owner.author = prj_meta.desc.owner.login;
           }
           // if (chown_bool)  projectDesc.owner.author = loginData.login;
           //            else  projectDesc.owner.author = prj_meta.desc.owner.login;
@@ -1804,6 +1815,30 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       prj_meta.desc.labels     = projectDesc.labels;
       utils.writeObject ( prj_meta_path,prj_meta    );
       utils.writeObject ( prj_desc_path,projectDesc );
+
+      // if ('owner' in prj_meta.desc)  {
+      //   projectDesc.owner = prj_meta.desc.owner;
+      //   if (!prjDir)  {  // this means that the project is imported, not shared
+      //     switch (chown_key)  {
+      //       case 'user' : projectDesc.owner.author = loginData.login;  break;
+      //       case '*'    : projectDesc.owner.author = '';               break;
+      //       default     : projectDesc.owner.author = prj_meta.desc.owner.login;
+      //     }
+      //     // if (chown_bool)  projectDesc.owner.author = loginData.login;
+      //     //            else  projectDesc.owner.author = prj_meta.desc.owner.login;
+      //     projectDesc.owner.login = loginData.login;
+      //     projectDesc.owner.share = [];
+      //   }
+      // }
+      // if (!projectDesc.owner.login)
+      //   projectDesc.owner.login = loginData.login;
+      // prj_meta.desc.owner      = projectDesc.owner;
+      // prj_meta.desc.folderPath = projectDesc.folderPath;
+      // prj_meta.desc.labels     = projectDesc.labels;
+      // utils.writeObject ( prj_meta_path,prj_meta    );
+      // utils.writeObject ( prj_desc_path,projectDesc );
+
+
     } else
       prj_meta = null;
   } catch(err) {
@@ -1836,7 +1871,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
         if (!pList)
           pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
         pList.current = projectDesc.name;        // make it current
-        if (!pList.currentFolder.startsWith('**all_projects**'))
+        if (!pList.currentFolder.startsWith(pd.folder_type.all_projects))
           pList.currentFolder = projectDesc.folderPath;
         if (writeProjectList(loginData,pList))
               utils.writeString ( signal_path,'Success\n' + projectDesc.name );
@@ -1876,8 +1911,9 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
             pList.projects.push ( projects[i] );
 
         //pList.projects.unshift ( projectDesc );  // put it first
-        pList.current       = projectDesc.name;        // make it current
-        if (!pList.currentFolder.startsWith('**all_projects**'))
+        pList.current = projectDesc.name;        // make it current
+        if (((!prjDir) || (!pList.currentFolder.startsWith(pd.folder_type.joined))) &&
+            (!pList.currentFolder.startsWith(pd.folder_type.all_projects)))
           pList.currentFolder = projectDesc.folderPath;
         //if (utils.writeObject(userProjectsListPath,pList))
         if (writeProjectList(loginData,pList))
@@ -2016,7 +2052,7 @@ function startDemoImport ( loginData,meta )  {
           function(code,jobballSize){
             if (code)
               log.error ( 55,'unpack errors, code=' + code + ', filesize=' + jobballSize );
-            _import_project ( loginData,tempdir,null,'*',duplicate );
+            _import_project ( loginData,tempdir,null,'tutorial',duplicate );
           });
       } else  {
         rc     = cmd.fe_retcode.fileNotFound;

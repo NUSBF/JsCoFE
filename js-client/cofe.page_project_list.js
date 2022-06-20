@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.06.22   <--  Date of Last Modification.
+ *    20.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -125,8 +125,10 @@ function ProjectListPage ( sceneId )  {
     }
     if (folder_btn)  {
       var icon = 'folder_projects';
-      if (__current_folder.startsWith('**'))
+      if (__current_folder.startsWith(folder_type.list))
         icon = 'folder_projects_list';
+      else if (__current_folder.startsWith(folder_type.tutorials))
+        icon = 'folder_tutorials';
       else if (__current_folder.indexOf('/')<=0)
         icon = 'folder_projects_user';
       folder_btn.setImage ( image_path(icon) );
@@ -591,10 +593,10 @@ function ProjectListPage ( sceneId )  {
     var nrows = 0;
     for (var i=0;i<projectList.projects.length;i++)
       if ((projectList.projects[i].folderPath==__current_folder) ||
-          ((__current_folder=='**joined**') && isProjectJoined(projectList.projects[i])) ||
-          (__current_folder=='**all_projects**'))
+          ((__current_folder==folder_type.joined) && isProjectJoined(projectList.projects[i])) ||
+          (__current_folder==folder_type.all_projects))
         nrows++;
-    if (__current_folder=='**joined**')
+    if (__current_folder==folder_type.joined)
       projectList.folders[1].nprojects = nrows;
 
     if (nrows<=0)  {
@@ -627,8 +629,8 @@ function ProjectListPage ( sceneId )  {
       // alert ( __current_folder );
       for (var i=0;i<projectList.projects.length;i++)
         if ((projectList.projects[i].folderPath==__current_folder) ||
-            ((__current_folder=='**joined**') && isProjectJoined(projectList.projects[i])) ||
-            (__current_folder=='**all_projects**'))  {
+            ((__current_folder==folder_type.joined) && isProjectJoined(projectList.projects[i])) ||
+            (__current_folder==folder_type.all_projects))  {
 
           var trow = self.tablesort_tbl.addRow();
 

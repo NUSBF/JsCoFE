@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.06.22   <--  Date of Last Modification.
+ *    20.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,7 +32,7 @@ function shareProject ( projectDesc,callback_func )  {
 
   var author = getProjectAuthor ( projectDesc );
 
-  if (author!=__login_id)  {
+  if ((author!=__login_id) && (author!=folder_type.tutorials))  {
     new MessageBox ( 'Share Project',
                      'Only Project owner (<b>' + author +
                      '</b>) can share this Project.',
@@ -128,7 +128,7 @@ function shareProject ( projectDesc,callback_func )  {
                       } else  {
                         new MessageBox ( 'Share Project',
                               '<h2>Sharing request denied</h2>' +
-                              '<i>Only project owner can change sharing.</i>',
+                              '<i>Only Project owner can change sharing.</i>',
                               'msg_excl' );
                         callback_func ( null );
                       }

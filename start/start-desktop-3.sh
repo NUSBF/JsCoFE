@@ -25,7 +25,7 @@ export Xia2_durin=/path/to/durin-plugin.so
 
 # internal variable for mounting directopry with CCP4(i2) demo data
 export CDEMODATA=`ccp4-python -c "import sysconfig; print(sysconfig.get_path('purelib'))"`/ccp4i2/demo_data
-export CTUTORIALS=/Users/eugene/cloud-tutorials
+export CTUTORIALS=/Users/eugene/Projects/jsCoFE/cloud_tutorials
 
 # comment out if buster is not installed
 source /Applications/GPhL/Buster/setup.sh
