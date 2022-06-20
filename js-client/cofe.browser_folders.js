@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    18.06.22   <--  Date of Last Modification.
+ *    20.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -177,8 +177,10 @@ FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
   var ftree = new Tree ( '<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>' );
   for (var i=0;i<folders.length;i++)  {
     var icon = 'folder_projects_user';
-    if (folders[i].name.startsWith('**'))
+    if (folders[i].name.startsWith(folder_type.list))
       icon = 'folder_projects_list';
+    else if (folders[i].name.startsWith(folder_type.tutorials))
+      icon = 'folder_tutorials';
     var node = ftree.addRootNode ( this.projectList.getRootFolderName(i,__login_id),
                                    image_path(icon),null );
     node.dataId = folders[i].path;

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.06.22   <--  Date of Last Modification.
+ *    20.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -35,8 +35,15 @@ var start_mode = {
 };
 
 var tasklist_mode = {
-  basic : 'basic',
-  full  : 'full'
+  basic  : 'basic',
+  full   : 'full'
+};
+
+var folder_type = {
+  joined       : '**joined**',
+  all_projects : '**all_projects**',
+  list         : '**',
+  tutorials    : 'Tutorials'
 };
 
 // ===========================================================================
@@ -128,14 +135,14 @@ ProjectList.prototype.seedFolders = function ( loginName )  {
       folders   : [],
       projects  : []
     },{
-      name      : '**joined**', // project folders tree basic element
-      path      : '**joined**',
+      name      : folder_type.joined, // project folders tree basic element
+      path      : folder_type.joined,
       nprojects : 0,
       folders   : [],
       projects  : []
     },{
-      name      : '**all_projects**', // project folders tree basic element
-      path      : '**all_projects**',
+      name      : folder_type.all_projects, // project folders tree basic element
+      path      : folder_type.all_projects,
       nprojects : 0,
       folders   : [],
       projects  : []
@@ -150,10 +157,12 @@ var fdname = '???';
     fdname = this.folders[folderNo].name;
     if (fdname.startsWith(loginName+'\'s '))
       fdname = 'My Projects';
-    else if (fdname=='**joined**')
+    else if (fdname==folder_type.joined)
       fdname = '<i>Projects joined by me</i>';
-    else if (fdname=='**all_projects**')
+    else if (fdname==folder_type.all_projects)
       fdname = '<i>All Projects</i>';
+    else if (fdname==folder_type.tutorials)
+      fdname = '<i>Tutorials</i>';
   }
   return fdname;
 }
@@ -163,9 +172,9 @@ var title  = folderPath;
 var f0name = loginName + '\'s ';
   if (title.startsWith(f0name))
     title = title.replace(f0name,'My ');
-  else if (title=='**joined**')
+  else if (title==folder_type.joined)
     title = 'Projects joined by me';
-  else if (title=='**all_projects**')
+  else if (title==folder_type.all_projects)
     title = 'All Projects';
   if (title.length>maxLength)
     title = '&hellip; ' + title.substr(title.length-maxLength+3);
@@ -215,7 +224,7 @@ ProjectList.prototype.resetFolders = function ( recalculate_bool )  {
   this.folders[2].nprojects = this.projects.length;
   if (recalculate_bool)  {
     var folderPaths   = {};
-    var crFolderValid = this.currentFolder.startsWith('**');
+    var crFolderValid = this.currentFolder.startsWith(folder_type.list);
     for (var i=0;i<this.projects.length;i++)  {
       var folder_path = this.projects[i].folderPath;
       if (folder_path in folderPaths)
@@ -226,6 +235,14 @@ ProjectList.prototype.resetFolders = function ( recalculate_bool )  {
     }
     for (var fpath in folderPaths)
       this.addFolderPath ( fpath,folderPaths[fpath] );
+    var tutorialNo = -1;
+    for (var i=0;(i<this.folders.length) && (tutorialNo<0);i++)
+      if (this.folders[i].name==folder_type.tutorials)
+        tutorialNo = i;
+    if (tutorialNo>=0)  {
+      var folder = this.folders.splice(tutorialNo,1)[0];
+      this.folders.splice ( 3,0,folder );
+    }
     if (!crFolderValid)
       this.currentFolder = this.folders[0].path;
   }
@@ -441,6 +458,7 @@ function DockData()  {
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.start_mode           = start_mode;
   module.exports.tasklist_mode        = tasklist_mode;
+  module.exports.folder_type          = folder_type;
   module.exports.ProjectDesc          = ProjectDesc;
   module.exports.ProjectList          = ProjectList;
   module.exports.ProjectData          = ProjectData;
