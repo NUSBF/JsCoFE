@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.22   <--  Date of Last Modification.
+ *    21.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -894,7 +894,7 @@ function prepareJobExport ( loginData,task )  {
 
 function checkJobExport ( loginData,task )  {
   var archivePath = getJobExportNames(loginData,task)[2];
-  rdata = {};
+  var rdata = {};
   if (utils.fileExists(archivePath))
         rdata.size = utils.fileSize(archivePath);
   else  rdata.size = -1;
