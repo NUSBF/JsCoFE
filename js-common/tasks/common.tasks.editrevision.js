@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.08.21   <--  Date of Last Modification.
+ *    21.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2021
+ *  (C) E. Krissinel, A. Lebedev 2019-2022
  *
  *  =================================================================
  *
@@ -169,8 +169,8 @@ if (!__template)  {
           if (!obj.hasSubtype('proxy'))  {
             var spg = obj.getSpaceGroup();
             if (spg=='Unspecified')  return 'No space group';
-            s_spg = spg.replace(/\s/g, '');
-            s_spg0 = spg0.replace(/\s/g, '');
+            var s_spg  = spg .replace(/\s/g, '');
+            var s_spg0 = spg0.replace(/\s/g, '');
             if (s_spg!=s_spg0)    return 'Unmatched space group';
             var cell = obj.getCellParameters();
             if (cell[0]<2.0)  return 'No cell parameters';
