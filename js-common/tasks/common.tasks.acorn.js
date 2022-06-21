@@ -905,17 +905,16 @@ TaskAcorn.prototype.currentVersion = function()  {
 
 //TaskAcorn.prototype.cleanJobDir = function ( jobDir )  {}
 
+// hotButtons return list of buttons added in JobDialog's toolBar.
+function AcornHotButton()  {
+  return {
+    'task'    : 'TaskAcorn',
+    'tooltip' : 'Phase Refinement and Dynamic Density Modification with ACORN'
+  };
+}
 
 if (!__template)  {
   //  for client side
-
-  // hotButtons return list of buttons added in JobDialog's toolBar.
-  function AcornHotButton()  {
-    return {
-      'task'    : 'TaskAcorn',
-      'tooltip' : 'Phase Refinement and Dynamic Density Modification with ACORN'
-    };
-  }
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskAcorn.prototype.hotButtons = function() {
