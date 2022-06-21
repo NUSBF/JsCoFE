@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    21.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -181,7 +181,7 @@ if (!__template)  {
     dsp.makeRow ( 'Resolution low' ,round(this.getLowResolution (),2),'Low resolution limit'  );
     dsp.makeRow ( 'Resolution high',round(this.getHighResolution(),2),'High resolution limit' );
 
-    v = 'Not present';
+    var v = 'Not present';
     if (this.hasAnomalousSignal())  {
       v = 'Present';
       if (this.ha_type)

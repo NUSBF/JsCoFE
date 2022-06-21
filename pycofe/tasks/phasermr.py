@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    24.03.21   <--  Date of Last Modification.
+#    21.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -401,6 +401,8 @@ class PhaserMR(basic.TaskDriver):
                         pos = line.rfind("TFZ=")
                         if pos>=0:
                             tfz = line[pos:].split()[0].split("=")[-1]
+                            if tfz=="*":
+                                tfz = None
 
             if not llg: llg = "0"
             if not tfz: tfz = "0"
