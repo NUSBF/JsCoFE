@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    21.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -92,7 +92,7 @@ if (!__template)  {
 
     customGrid.setLabel ( 'Hits:',row,0,1,1 ).setFontItalic(true).setWidth ( '50px' );
     customGrid.setVerticalAlignment ( row,0,'middle' );
-    tooltip = 'Available hits: 1-' + this.align_meta.hits.length;
+    var tooltip = 'Available hits: 1-' + this.align_meta.hits.length;
     customGrid.hitlist = customGrid.setInputText ( this.hitlist,row,1,1,1 )
                                    .setTooltip1 ( tooltip,'slideDown',true,5000 )
                                    .setWidth ( '440px' );

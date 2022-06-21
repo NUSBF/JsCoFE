@@ -40,6 +40,7 @@ var tasklist_mode = {
 };
 
 var folder_type = {
+  shared       : '**shared**',
   joined       : '**joined**',
   all_projects : '**all_projects**',
   list         : '**',
@@ -135,6 +136,12 @@ ProjectList.prototype.seedFolders = function ( loginName )  {
       folders   : [],
       projects  : []
     },{
+      name      : folder_type.shared, // project folders tree basic element
+      path      : folder_type.shared,
+      nprojects : 0,
+      folders   : [],
+      projects  : []
+    },{
       name      : folder_type.joined, // project folders tree basic element
       path      : folder_type.joined,
       nprojects : 0,
@@ -157,6 +164,8 @@ var fdname = '???';
     fdname = this.folders[folderNo].name;
     if (fdname.startsWith(loginName+'\'s '))
       fdname = 'My Projects';
+    else if (fdname==folder_type.shared)
+      fdname = '<i>Projects shared by me</i>';
     else if (fdname==folder_type.joined)
       fdname = '<i>Projects joined by me</i>';
     else if (fdname==folder_type.all_projects)
@@ -172,6 +181,8 @@ var title  = folderPath;
 var f0name = loginName + '\'s ';
   if (title.startsWith(f0name))
     title = title.replace(f0name,'My ');
+  else if (title==folder_type.shared)
+    title = 'Projects shared by me';
   else if (title==folder_type.joined)
     title = 'Projects joined by me';
   else if (title==folder_type.all_projects)
@@ -219,33 +230,48 @@ ProjectList.prototype._reset_folders = function ( folders )  {
 }
 
 ProjectList.prototype.resetFolders = function ( recalculate_bool )  {
-  this.folders = this.folders.slice(0,3);
+  this.folders = this.folders.slice(0,4);
   this._reset_folders ( this.folders );
-  this.folders[2].nprojects = this.projects.length;
+  this.folders[3].nprojects = this.projects.length;
   if (recalculate_bool)  {
     var folderPaths   = {};
-    var crFolderValid = this.currentFolder.startsWith(folder_type.list);
+    // var crFolderValid = this.currentFolder.startsWith(folder_type.list);
     for (var i=0;i<this.projects.length;i++)  {
       var folder_path = this.projects[i].folderPath;
       if (folder_path in folderPaths)
             folderPaths[folder_path]++;
       else  folderPaths[folder_path] = 1;
-      if (folder_path.startsWith(this.currentFolder))
-        crFolderValid = true;
+      // if (folder_path.startsWith(this.currentFolder))
+      //   crFolderValid = true;
     }
     for (var fpath in folderPaths)
       this.addFolderPath ( fpath,folderPaths[fpath] );
-    var tutorialNo = -1;
-    for (var i=0;(i<this.folders.length) && (tutorialNo<0);i++)
-      if (this.folders[i].name==folder_type.tutorials)
-        tutorialNo = i;
-    if (tutorialNo>=0)  {
-      var folder = this.folders.splice(tutorialNo,1)[0];
-      this.folders.splice ( 3,0,folder );
-    }
-    if (!crFolderValid)
+    // sort
+    for (var i=4;i<this.folders.length;i++)
+      for (var j=i+1;j<this.folders.length;j++)  {
+        var swap = (this.folders[j].path==folder_type.tutorials);
+        if (!swap)
+          swap = (this.folders[j].name<this.folders[i].name)
+        if (swap)  {
+          var fldi = this.folders[i];
+          this.folders[i] = this.folders[j];
+          this.folders[j] = fldi;
+        }
+      }
+    // var tutorialNo = -1;
+    // for (var i=0;(i<this.folders.length) && (tutorialNo<0);i++)
+    //   if (this.folders[i].name==folder_type.tutorials)
+    //     tutorialNo = i;
+    // if (tutorialNo>=0)  {
+    //   var folder = this.folders.splice(tutorialNo,1)[0];
+    //   this.folders.splice ( 4,0,folder );
+    // }
+    // if (!crFolderValid)
+    //   this.currentFolder = this.folders[0].path;
+    if (!this.findFolder(this.currentFolder))
       this.currentFolder = this.folders[0].path;
   }
+
 }
 
 ProjectList.prototype._rename_folders = function ( folders,oldpath,newpath )  {
@@ -259,6 +285,22 @@ ProjectList.prototype._rename_folders = function ( folders,oldpath,newpath )  {
 ProjectList.prototype.renameFolders = function ( oldpath,newpath )  {
   this._rename_folders ( this.folders,oldpath,newpath );
 }
+
+
+ProjectList.prototype._find_folder = function ( folders,fpath )  {
+var folder = null;
+  for (var i=0;(i<folders.length) && (!folder);i++)  {
+    if (folders[i].path==fpath)
+          folder = folders[i];
+    else  folder = this._find_folder ( folders[i].folders,fpath );
+  }
+  return folder;
+}
+
+ProjectList.prototype.findFolder = function ( fpath )  {
+  return this._find_folder ( this.folders,fpath );
+}
+
 
 ProjectList.prototype.isProject = function ( name_str )  {
   var is_project = false;
