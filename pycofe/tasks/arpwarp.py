@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.02.22   <--  Date of Last Modification.
+#    21.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -219,7 +219,7 @@ class ArpWarp(basic.TaskDriver):
             scalml += " FREE"
 
         cmdopt += [
-            "sidemethod"      , "SNOW",
+            # "sidemethod"      , "SNOW",
             #"fp"              , cols[0],
             #"sigfp"           , cols[1],
             #"freelabin"       , cols[3],
