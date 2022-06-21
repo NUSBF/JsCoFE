@@ -346,10 +346,16 @@ class PhaserEP(basic.TaskDriver):
                 words = line.split()
                 if len(words)>5 and words[0]=="#":
                     try:
-                        LLG = max ( LLG,float(words[-3]) )
-                        FOM = max ( FOM,float(words[-4]) )
+                        words = line[len("   #  1 *  P 21 21 21"):].split()
+                        FOM1  = float(words[0])
+                        LLG1  = float(words[1])
+                        if LLG1>LLG:
+                            FOM = FOM1
+                            LLG = LLG1
                     except:
                         pass
+                elif words[0]=="$$":
+                    break
             elif "SAD Refinement Table" in line:
                 key = 0
         f.close()
