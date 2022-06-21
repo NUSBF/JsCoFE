@@ -119,7 +119,7 @@ if (!__template)  {
         var range_list = [];
         for (var i=0;i<this.dataset.runs.length;i++)
           range_list.push(this.dataset.runs[i][1] + '-' + this.dataset.runs[i][2]);
-        tooltip = 'Available batches: ' + range_list.join(', ');
+        var tooltip = 'Available batches: ' + range_list.join(', ');
         customGrid.runs = customGrid.setInputText ( this.runs,row,1,1,1 )
                                     .setTooltip1 ( tooltip,'slideDown',true,5000 )
                                     .setWidth ( '440px' );
