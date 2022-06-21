@@ -98,6 +98,11 @@ function ProjectListPage ( sceneId )  {
            (projectDesc.owner.share.length>0);
   }
 
+  function isProjectShared ( projectDesc )  {
+    return (projectDesc.owner.login==__login_id) &&
+           (projectDesc.owner.share.length>0);
+  }
+
   function isCurrentProjectAuthored ( check_author )  {
     var pdesc = getCurrentProjectDesc();
     // if (pdesc)  {
@@ -126,8 +131,8 @@ function ProjectListPage ( sceneId )  {
     if (folder_btn)  {
       var icon = 'folder_projects';
       if (__current_folder.startsWith(folder_type.list))
-        icon = 'folder_projects_list';
-      else if (__current_folder.startsWith(folder_type.tutorials))
+        icon = 'folder_list';
+      else if (__current_folder==folder_type.tutorials)
         icon = 'folder_tutorials';
       else if (__current_folder.indexOf('/')<=0)
         icon = 'folder_projects_user';
@@ -573,6 +578,7 @@ function ProjectListPage ( sceneId )  {
     //               'exported from ' + appName() + '.</h2>';
 
     __current_folder = projectList.currentFolder;
+    var owners_folder = __login_id + '\'s Projects';
 
     var message = '<div style="width:100%;">&nbsp;<p>&nbsp;<p><h3>' +
                   'There are no projects in folder "' +
@@ -594,10 +600,13 @@ function ProjectListPage ( sceneId )  {
     for (var i=0;i<projectList.projects.length;i++)
       if ((projectList.projects[i].folderPath==__current_folder) ||
           ((__current_folder==folder_type.joined) && isProjectJoined(projectList.projects[i])) ||
+          ((__current_folder==folder_type.shared) && isProjectShared(projectList.projects[i])) ||
           (__current_folder==folder_type.all_projects))
         nrows++;
-    if (__current_folder==folder_type.joined)
+    if (__current_folder==folder_type.shared)
       projectList.folders[1].nprojects = nrows;
+    if (__current_folder==folder_type.joined)
+      projectList.folders[2].nprojects = nrows;
 
     if (nrows<=0)  {
 
@@ -630,6 +639,7 @@ function ProjectListPage ( sceneId )  {
       for (var i=0;i<projectList.projects.length;i++)
         if ((projectList.projects[i].folderPath==__current_folder) ||
             ((__current_folder==folder_type.joined) && isProjectJoined(projectList.projects[i])) ||
+            ((__current_folder==folder_type.shared) && isProjectShared(projectList.projects[i])) ||
             (__current_folder==folder_type.all_projects))  {
 
           var trow = self.tablesort_tbl.addRow();
@@ -677,8 +687,10 @@ function ProjectListPage ( sceneId )  {
             contextMenu.addItem('Export' ,image_path('export')   ).addOnClickListener(exportProject);
             contextMenu.addItem('Share'  ,image_path('share')    ).addOnClickListener(sharePrj     );
             contextMenu.addItem('Clone'  ,image_path('cloneprj') ).addOnClickListener(cloneProject );
-            contextMenu.addItem('Move'   ,image_path('folder_projects') )
-                       .addOnClickListener(function(){ browseFolders('move') });
+            if (__current_folder.startsWith(owners_folder) ||
+                (__current_folder==folder_type.tutorials))
+              contextMenu.addItem('Move',image_path('folder_projects') )
+                         .addOnClickListener(function(){ browseFolders('move') });
             // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
 
           }(shared_project))
@@ -756,7 +768,9 @@ function ProjectListPage ( sceneId )  {
       add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       rename_btn.setDisabled ( false );
       clone_btn .setDisabled ( false );
-      move_btn  .setDisabled ( false );
+      // move_btn  .setDisabled ( false );
+      move_btn  .setEnabled  ( __current_folder.startsWith(owners_folder) ||
+                               (__current_folder==folder_type.tutorials) );
       del_btn   .setDisabled ( false );
       import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       export_btn.setDisabled ( false );
@@ -839,6 +853,7 @@ function ProjectListPage ( sceneId )  {
           case 'add'    : projectList.resetFolders ( true );
                           saveProjectList ( function(rdata){
                             // loadProjectList();
+                            // makeProjectListTable();
                           });
                       break;
           case 'move'   : var pDesc = getCurrentProjectDesc();

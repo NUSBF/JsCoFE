@@ -406,7 +406,9 @@ function readProjectList ( loginData )  {
         if (pdesc)
           pList.projects.push ( pdesc );
       }
-    if (pList.folders[0].path=='My Projects')
+    //  ****** remove comments when done!
+    if ((pList.folders[0].path=='My Projects') ||
+        (pList.folders[1].path!=pd.folder_type.shared))
       pList.seedFolders ( loginData.login );
     pList.resetFolders ( true );
     writeProjectList ( loginData,pList );

@@ -62,45 +62,18 @@ function FoldersBrowser ( title,projectList,currentFolderPath,funcKey,
   this.element.setAttribute ( 'title',title );
   document.body.appendChild ( this.element );
 
-  this.grid = new Grid('-compact');
-  this.addWidget ( this.grid );
+  var grid = new Grid('-compact');
+  this.addWidget ( grid );
 
   // grid.setLabel ( '<h3>' + __login_user + '\'s project folders</h3>', 0,0,1,1 );
   // grid.setLabel ( '<h2>My Project Folders</h2>', 0,0,1,1 );
-  // this.grid.setLabel ( '&nbsp;&nbsp;&nbsp;',0,0,1,1 );
-  this.grid.setLabel (
-    '<span style="font-size:160%"><b>Project Folders</b></span>',
-    1,0,1,1
-  ).setNoWrap(); //.setVerticalAlignment('middle');
-  this.grid.setLabel ( '&nbsp;&nbsp;&nbsp;',1,1,1,1 );
-  this.makeToolBar   ( 1,2 );
-  this.grid.setCellSize ( '30%' ,'',1,0 );
-  this.grid.setCellSize ( 'auto','',1,1 );
-  this.grid.setCellSize ( '30%' ,'',1,2 );
-  this.grid.setVerticalAlignment ( 1,0,'bottom' );
-  this.grid.setVerticalAlignment ( 1,1,'middle' );
-  this.grid.setVerticalAlignment ( 1,2,'middle' );
-
-  // this.grid.setLabel   ( '&nbsp;&nbsp;&nbsp;',1,1,1,1 );
-  this.makeFoldersTree ( 2,0,4 );
-
-
-
-}
-
-FoldersBrowser.prototype = Object.create ( Widget.prototype );
-FoldersBrowser.prototype.constructor = FoldersBrowser;
-
-
-// ---------------------------------------------------------------------------
-
-FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
+  grid.setLabel ( '&nbsp;<br><span style="font-size:160%"><b>My Project Folders</b></span>', 0,0,1,1 );
 
   this.ftree   = this.makeFolderTree(this.folders)
   var tree_div = new Widget ( 'div' );
   tree_div.element.setAttribute ( 'class','tree-content' );
   tree_div.addWidget ( this.ftree );
-  this.grid.setWidget ( tree_div,row,col,1,colSpan );
+  grid.setWidget ( tree_div,1,0,1,1 );
 
   var w = 550;
   var h = 310;
@@ -108,16 +81,16 @@ FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
 
   this.btn_ids = {
     select : this.id + '_select_btn',
-    // moveto : this.id + '_moveto_btn',
-    // add    : this.id + '_add_btn',
-    // rename : this.id + '_rename_btn',
+    moveto : this.id + '_moveto_btn',
+    add    : this.id + '_add_btn',
+    rename : this.id + '_rename_btn',
     delete : this.id + '_delete_btn',
   };
 
   var self = this;
 
   var funcTitle = 'Select';
-  if (this.funcKey!='select')
+  if (funcKey!='select')
     funcTitle = 'Move';
 
   $(this.element).dialog({
@@ -129,8 +102,8 @@ FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
       { text  : funcTitle,
         id    : self.btn_ids.select,
         click : function(){
-          if (self.funcKey=='select')  self.onSelectBtn();
-                                 else  self.onMoveTo();
+          if (funcKey=='select')  self.onSelectBtn();
+                            else  self.onMoveTo();
         }
       },
       // { text  : 'Move to',
@@ -139,24 +112,24 @@ FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
       //     self.onMoveTo();
       //   }
       // },
-      // { text  : 'Add folder',
-      //   id    : self.btn_ids.add,
-      //   click : function(){
-      //     self.onAddFolder();
-      //   }
-      // },
-      // { text  : 'Rename',
-      //   id    : self.btn_ids.rename,
-      //   click : function(){
-      //     self.onRenameFolder();
-      //   }
-      // },
-      // { text  : 'Delete',
-      //   id    : self.btn_ids.delete,
-      //   click : function(){
-      //     self.onDeleteFolder();
-      //   }
-      // },
+      { text  : 'Add folder',
+        id    : self.btn_ids.add,
+        click : function(){
+          self.onAddFolder();
+        }
+      },
+      { text  : 'Rename',
+        id    : self.btn_ids.rename,
+        click : function(){
+          self.onRenameFolder();
+        }
+      },
+      { text  : 'Delete',
+        id    : self.btn_ids.delete,
+        click : function(){
+          self.onDeleteFolder();
+        }
+      },
       { text  : 'Close',
         click : function(){
           $(this).dialog ( 'close' );
@@ -170,46 +143,19 @@ FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
 
 }
 
-FoldersBrowser.prototype.makeToolBar = function ( row,col )  {
-
-  this.toolbar_div = new Widget('div');
-  // this.toolbar_div.element.setAttribute ( 'class','toolbox-content' );
-  var toolbar = new Grid('-compact');
-  this.toolbar_div.addWidget ( toolbar );
-  this.grid.setWidget ( this.toolbar_div, row,col,1,1 );
-
-  // make the toolbar
-
-  var bsize = '36px';
-  var cnt   = 0;
-  this.add_folder_btn = toolbar.setButton ( '',image_path('folder_new'),0,cnt++,1,1 )
-                           .setSize(bsize,bsize).setTooltip('Add sub-folder');
-  this.add_list_btn   = toolbar.setButton ( '',image_path('folder_list_custom_new'),0,cnt++,1,1 )
-                           .setSize(bsize,bsize).setTooltip('Add custom list');
-  this.rename_btn     = toolbar.setButton ( '',image_path('renameprj'),0,cnt++,1,1 )
-                           .setSize(bsize,bsize).setTooltip('Rename');
-  this.delete_btn     = toolbar.setButton ( '',image_path('remove'),0,cnt++,1,1 )
-                           .setSize(bsize,bsize).setTooltip('Remove');
-  this.help_btn       = toolbar.setButton ( '',image_path('help'),0,cnt++,1,1 )
-                           .setSize(bsize,bsize).setTooltip('Help');
-
-  var self = this;
-
-  this.add_folder_btn.addOnClickListener ( function(){ self.onAddFolder   (); });
-  this.add_list_btn  .addOnClickListener ( function(){ self.onAddList     (); });
-  this.rename_btn    .addOnClickListener ( function(){ self.onRenameFolder(); });
-  this.delete_btn    .addOnClickListener ( function(){ self.onDeleteFolder(); });
-
-  this.help_btn.addOnClickListener ( function(){
-    new HelpBox ( '',__user_guide_base_url + 'jscofe_project.html',null );
-  });
+FoldersBrowser.prototype = Object.create ( Widget.prototype );
+FoldersBrowser.prototype.constructor = FoldersBrowser;
 
 
-}
-
+// ---------------------------------------------------------------------------
 
 FoldersBrowser.prototype.disableButton = function ( btn_id,disable_bool )  {
   $('#' + this.btn_ids[btn_id]).button ( "option", "disabled",disable_bool );
+}
+
+FoldersBrowser.prototype.hideButton = function ( btn_id,hide_bool )  {
+  if (hide_bool)  $('#' + this.btn_ids[btn_id]).hide();
+            else  $('#' + this.btn_ids[btn_id]).show();
 }
 
 FoldersBrowser.prototype.setFolders = function ( pnode,folders,ftree )  {
@@ -265,12 +211,9 @@ FoldersBrowser.prototype.onSelect = function()  {
 var selNode = this.ftree.getSelectedNode();
   if (selNode)  {
     var myprojects = selNode.dataId.startsWith(__login_id+'\'s ');
-    this.add_folder_btn.setEnabled ( myprojects );
-    this.rename_btn    .setEnabled ( myprojects && selNode.parentId );
-    this.delete_btn    .setEnabled ( myprojects && selNode.parentId );
-    // this.disableButton ( 'add',!myprojects );
-    // this.disableButton ( 'rename',(!(selNode.parentId)) || (!myprojects) );
-    // this.disableButton ( 'delete',(!(selNode.parentId)) || (!myprojects) );
+    this.disableButton ( 'add',!myprojects );
+    this.disableButton ( 'rename',(!(selNode.parentId)) || (!myprojects) );
+    this.disableButton ( 'delete',(!(selNode.parentId)) || (!myprojects) );
     if (this.funcKey=='move')
       this.disableButton ( 'select',!myprojects );
   }
@@ -292,8 +235,9 @@ FoldersBrowser.prototype._find_folder = function ( fpath,folders )  {
 var folder = null;
   for (var i=0;(i<folders.length) && (!folder);i++)
     if (folders[i].path==fpath)
-          folder = folders[i];
-    else  folder = this._find_folder ( fpath,folders[i].folders );
+      folder = folders[i];
+    else
+      folder = this._find_folder ( fpath,folders[i].folders );
   return folder;
 }
 
@@ -305,8 +249,9 @@ FoldersBrowser.prototype._delete_folder = function ( fpath,folders )  {
 var k = -1;
   for (var i=0;(i<folders.length) && (k==-1);i++)
     if (folders[i].path==fpath)
-          k = i;
-    else  k = this._delete_folder ( fpath,folders[i].folders );
+      k = i;
+    else
+      k = this._delete_folder ( fpath,folders[i].folders );
   if (k>=0)  {
     for (var i=k;i<folders.length-1;i++)
       folders[i] = folders[i+1];
@@ -321,8 +266,8 @@ FoldersBrowser.prototype.deleteFolder = function ( fpath )  {
 }
 
 FoldersBrowser.prototype.onAddFolder = function()  {
-var self = this;
-var inputBox = new InputBox ( 'Add folder' );
+  var self = this;
+  var inputBox = new InputBox ( 'Add folder' );
   inputBox.setText ( '','folder_projects_new' );
   var ibx_grid = inputBox.grid;
   ibx_grid.setLabel    ( '<h2>Add new folder</h2>',0,2,2,3 );
@@ -369,13 +314,9 @@ var inputBox = new InputBox ( 'Add folder' );
                                        image_path('folder_projects'),null );
     newNode.dataId = fpath;
     self.projectList.addFolderPath ( fpath,0 );
-    // self.projectList.currentFolder = fpath;
     self.onReturn_fnc ( 'add',{ folder : fpath } );
     return true;
   });
-}
-
-FoldersBrowser.prototype.onAddList = function()  {
 }
 
 FoldersBrowser.prototype.onDeleteFolder = function()  {
