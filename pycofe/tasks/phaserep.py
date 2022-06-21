@@ -354,7 +354,7 @@ class PhaserEP(basic.TaskDriver):
                             LLG = LLG1
                     except:
                         pass
-                elif words[0]=="$$":
+                elif line.strip()=="$$":
                     break
             elif "SAD Refinement Table" in line:
                 key = 0
