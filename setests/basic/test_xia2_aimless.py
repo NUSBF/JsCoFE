@@ -87,25 +87,25 @@ def xia2Processing(driver, isLocal):
     closeButton.click()
     time.sleep(1)
 
-    found = False
-    ttts = sf.tasksTreeTexts(driver)
-    for taskText in ttts:
-        match = re.search('\[0002\] created datasets: Unmerged \(2\) HKL \(1\) -- completed', taskText)
-        if match:
-            found = True
-            break
-        match = re.search('\[0002\] created datasets: HKL \(1\) Unmerged \(2\) -- completed', taskText)
-        if match:
-            found = True
-            break
+    # found = False
+    # ttts = sf.tasksTreeTexts(driver)
+    # for taskText in ttts:
+    #     match = re.search('\[0002\] created datasets: Unmerged \(2\) HKL \(1\) -- completed', taskText)
+    #     if match:
+    #         found = True
+    #         break
+    #     match = re.search('\[0002\] created datasets: HKL \(1\) Unmerged \(2\) -- completed', taskText)
+    #     if match:
+    #         found = True
+    #         break
 
-    if not found:
-        print('*** Verification: could not find message about created datasets after xia-2 run')
-    else:
-        print('*** Verification: datasets created by XIA-2')
-    assert found
+    # if not found:
+    #     print('*** Verification: could not find message about created datasets after xia-2 run')
+    # else:
+    #     print('*** Verification: datasets created by XIA-2')
+    # assert found
 
-    return ()
+    # return ()
 
 
 def aimlessAfterXia2(driver, waitLong):
@@ -455,5 +455,5 @@ if __name__ == "__main__":
                       password=parameters.password,  # Used to login into remote Cloud
                       remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
                       )
-    test_2aimless()
-    test_3simbadDimple()
+    # test_2aimless()
+    # test_3simbad()
