@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.06.22   <--  Date of Last Modification.
+ *    22.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -2035,7 +2035,7 @@ var task = this.getTask ( jobId );
     var td0 = null;
     for (var dtype in td)
       if (dtype==dataType)  {
-        tdr = td[dtype];
+        var tdr = td[dtype];
         for (var i=0;(i<tdr.length) && (!td0);i++)
           if (tdr[i].dataId==dataId)
             td0 = tdr[i];

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.21   <--  Date of Last Modification.
+#    22.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -80,7 +80,9 @@ class EditRevision(asudef.ASUDef):
             for s in self.input_data.data.seq0:
                 seq.append ( self.makeClass(s) )
 
-        xyz = struct0  # this is leading Structure/Substructure or None
+        xyz = None
+        if struct0 and struct0.hasXYZSubtype():
+            xyz = struct0   # this is leading Structure/Substructure or None
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
             xyz = self.makeClass ( self.input_data.data.xyz[0] )
             #  note this may be XYZ, Structure or Substructure
@@ -91,7 +93,9 @@ class EditRevision(asudef.ASUDef):
             else:
                 change_list.append ( "xyz" )
 
-        phases = struct0  # ground default
+        phases = None
+        if struct0 and struct0.hasPhasesSubtype():
+            phases = struct0    # ground default
         #if xyz._type==dtype_structure.dtype():
         #    phases = xyz  # need to be in sync with xyz by default
         if hasattr(self.input_data.data,"phases"):  # optional data parameter
@@ -191,7 +195,6 @@ class EditRevision(asudef.ASUDef):
         elif "phases" in remove_list:
             trow = self.add_change ( trow,tableId,"Phases","remove","N/A" )
 
-
         # --------------------------------------------------------------------
 
         revision = None
@@ -223,7 +226,8 @@ class EditRevision(asudef.ASUDef):
 
                     self.putTitle  ( "New Structure" )
 
-                    lead_key = 1   #  XYZ lead (MR phases)
+                    lead_key = revision.leadKey
+                    # lead_key = 1   #  XYZ lead (MR phases)
                     if ("phases" in change_list) or (phases and not struct0.getXYZFileName()):
                         lead_key = 2  #  Phase lead (EP phases)
 
@@ -242,11 +246,15 @@ class EditRevision(asudef.ASUDef):
                                     #leadKey=2 if "phases" in change_list else 1,
                                     copy_files=False,
                                     refiner=refiner )
+
                     if structure:
                         if lig_codes:
                             structure.setLigands  ( lig_codes )
                         if xyz_fpath or sub_fpath:
+                            hasPhases = structure.hasPhasesSubtype()
                             structure.addSubtypes ( xyz.getSubtypes() )
+                            if not hasPhases:  # because xyz may be casted from structure
+                                structure.removePhasesSubtype()
                         else:
                             if revision0.Structure:
                                 structure.addSubtypes ( revision0.Structure.subtype )

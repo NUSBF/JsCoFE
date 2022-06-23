@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.06.22   <--  Date of Last Modification.
+ *    23.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -371,7 +371,7 @@ function readProjectList ( loginData )  {
           else  folderPaths[pdesc.folderPath] = 1;
         }
       }
-    pList.resetFolders ( false );
+    pList.resetFolders ( loginData.login,false );
     for (var fpath in folderPaths)
       pList.addFolderPath ( fpath,folderPaths[fpath] );
     writeProjectList ( loginData,pList );
@@ -406,12 +406,12 @@ function readProjectList ( loginData )  {
         if (pdesc)
           pList.projects.push ( pdesc );
       }
-    //  ****** remove comments when done!
-    if ((pList.folders[0].path=='My Projects') ||
-        (pList.folders[1].path!=pd.folder_type.shared))
-      pList.seedFolders ( loginData.login );
-    pList.resetFolders ( true );
-    writeProjectList ( loginData,pList );
+    // if ((pList.folders[0].path=='My Projects') ||
+    //     (pList.folders[1].type!=pd.folder_type.shared))
+    // if (typeof pList.currentFolder === 'string' || pList.currentFolder instanceof String)
+      pList.seedFolders ( loginData.login );  // to be commented
+    pList.resetFolders ( loginData.login,true );
+    writeProjectList   ( loginData,pList );
   }
   return pList;
 }
@@ -1788,7 +1788,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       projectDesc.dateCreated  = prj_meta.desc.dateCreated;
       projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
       // if (!prjDir)  // this will leave original folder path for shared projects
-      //   projectDesc.folderPath = pList.currentFolder;
+      //   projectDesc.folderPath = pList.currentFolder.path;
       // if ('folderPath' in prj_meta.desc)  {
         projectDesc.folderPath   = prj_meta.desc.folderPath;
         projectDesc.labels       = prj_meta.desc.labels;
@@ -1813,8 +1813,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       }
       if (!projectDesc.owner.login)
         projectDesc.owner.login = loginData.login;
-      prj_meta.desc.owner      = projectDesc.owner;
-      prj_meta.desc.labels     = projectDesc.labels;
+      prj_meta.desc.owner  = projectDesc.owner;
+      prj_meta.desc.labels = projectDesc.labels;
       utils.writeObject ( prj_meta_path,prj_meta    );
       utils.writeObject ( prj_desc_path,projectDesc );
 
@@ -1873,8 +1873,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
         if (!pList)
           pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
         pList.current = projectDesc.name;        // make it current
-        if (!pList.currentFolder.startsWith(pd.folder_type.all_projects))
-          pList.currentFolder = projectDesc.folderPath;
+        if (pList.currentFolder.path!=pd.folder_type.all_projects)
+          pList.currentFolder = pList.findFolder ( projectDesc.folderPath );
         if (writeProjectList(loginData,pList))
               utils.writeString ( signal_path,'Success\n' + projectDesc.name );
         else  utils.writeString ( signal_path,'Cannot write project list\n' +
@@ -1914,9 +1914,9 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
 
         //pList.projects.unshift ( projectDesc );  // put it first
         pList.current = projectDesc.name;        // make it current
-        if (((!prjDir) || (!pList.currentFolder.startsWith(pd.folder_type.joined))) &&
-            (!pList.currentFolder.startsWith(pd.folder_type.all_projects)))
-          pList.currentFolder = projectDesc.folderPath;
+        if (((!prjDir) || (pList.currentFolder.type!=pd.folder_type.joined)) &&
+            (pList.currentFolder.type!=pd.folder_type.all_projects))
+          pList.currentFolder = pList.findFolder ( projectDesc.folderPath );
         //if (utils.writeObject(userProjectsListPath,pList))
         if (writeProjectList(loginData,pList))
               utils.writeString ( signal_path,'Success\n' + projectDesc.name );

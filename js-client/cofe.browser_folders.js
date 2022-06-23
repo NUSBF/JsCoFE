@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    20.06.22   <--  Date of Last Modification.
+ *    23.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -27,7 +27,7 @@
  // ===========================================================================
 // Folders dialog class
 
-function FoldersBrowser ( title,projectList,currentFolderPath,funcKey,
+function FoldersBrowser ( title,projectList,currentFolder,funcKey,
                           onReturn_fnc )  {
 // funcKey = 'select' or 'move'
 // folders = [
@@ -40,14 +40,14 @@ function FoldersBrowser ( title,projectList,currentFolderPath,funcKey,
 //   ....
 // ]
 
-  this.projectList       = projectList;
-  this.folders           = projectList.folders;
-  this.currentFolderPath = currentFolderPath;
-  this.funcKey           = funcKey;
-  this.onReturn_fnc      = onReturn_fnc;
-  this.nprojects         = 0;
+  this.projectList   = projectList;
+  this.folders       = projectList.folders;
+  this.currentFolder = currentFolder;
+  this.funcKey       = funcKey;
+  this.onReturn_fnc  = onReturn_fnc;
+  this.nprojects     = 0;
 
-  var crFolder = this.findFolder(currentFolderPath);
+  var crFolder = this.findFolder(currentFolder.path);
   if (crFolder)
     this.nprojects = crFolder.nprojects;
 
@@ -84,8 +84,6 @@ function FoldersBrowser ( title,projectList,currentFolderPath,funcKey,
   // this.grid.setLabel   ( '&nbsp;&nbsp;&nbsp;',1,1,1,1 );
   this.makeFoldersTree ( 2,0,4 );
 
-
-
 }
 
 FoldersBrowser.prototype = Object.create ( Widget.prototype );
@@ -96,15 +94,15 @@ FoldersBrowser.prototype.constructor = FoldersBrowser;
 
 FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
 
-  this.ftree   = this.makeFolderTree(this.folders)
-  var tree_div = new Widget ( 'div' );
-  tree_div.element.setAttribute ( 'class','tree-content' );
-  tree_div.addWidget ( this.ftree );
-  this.grid.setWidget ( tree_div,row,col,1,colSpan );
+  this.ftree    = this.makeFolderTree ( this.folders );
+  this.tree_div = new Widget ( 'div' );
+  this.tree_div.element.setAttribute ( 'class','tree-content' );
+  this.tree_div.addWidget ( this.ftree );
+  this.grid.setWidget ( this.tree_div,row,col,1,colSpan );
 
   var w = 550;
   var h = 310;
-  tree_div.setSize_px ( w-50,h );
+  this.tree_div.setSize_px ( w-50,h );
 
   this.btn_ids = {
     select : this.id + '_select_btn',
@@ -161,7 +159,7 @@ FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
         click : function(){
           $(this).dialog ( 'close' );
           window.setTimeout ( function(){
-            onReturn_fnc ( 'cancel',{} );
+            self.onReturn_fnc ( 'cancel',{} );
           },0 );
         }
       }
@@ -214,11 +212,11 @@ FoldersBrowser.prototype.disableButton = function ( btn_id,disable_bool )  {
 
 FoldersBrowser.prototype.setFolders = function ( pnode,folders,ftree )  {
   for (var i=0;i<folders.length;i++)  {
-    var node = ftree.addNode ( pnode,folders[i].name,
+    var node = ftree.addNode ( pnode,folders[i].name + ' (' + folders[i].nprojects + ')',
                                image_path('folder_projects'),
                                null );
     node.dataId = folders[i].path;
-    if (node.dataId==this.currentFolderPath)
+    if (node.dataId==this.currentFolder.path)
       ftree.selectNode ( node,true );
     this.setFolders ( node,folders[i].folders,ftree );
   }
@@ -231,14 +229,21 @@ FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
   var ftree = new Tree ( '<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>' );
   for (var i=0;i<folders.length;i++)  {
     var icon = 'folder_projects_user';
-    if (folders[i].name.startsWith(folder_type.list))
-      icon = 'folder_list';
-    else if (folders[i].path==folder_type.tutorials)
-      icon = 'folder_tutorials';
-    var node = ftree.addRootNode ( this.projectList.getRootFolderName(i,__login_id),
-                                   image_path(icon),null );
+    var nprj = ' <i>(' + folders[i].nprojects + ')</i>';
+    switch (folders[i].type)  {
+      case folder_type.shared       :
+      case folder_type.joined       :
+      case folder_type.all_projects : icon = 'folder_list';         break
+      case folder_type.custom_list  : icon = 'folder_list_custom';  break;
+      case folder_type.tutorials    : icon = 'folder_tutorials';    break;
+      default :     var nprj = ' (' + folders[i].nprojects + ')';
+    }
+    var node = ftree.addRootNode ( this.projectList.getRootFolderName(i,__login_id) +
+                                   nprj,image_path(icon),null );
+    if (i==0)
+      this.node0_id = node.id;
     node.dataId = folders[i].path;
-    if (node.dataId==this.currentFolderPath)
+    if (node.dataId==this.currentFolder.path)
       ftree.selectNode ( node,true );
     this.setFolders ( node,folders[i].folders,ftree );
   }
@@ -266,11 +271,10 @@ var selNode = this.ftree.getSelectedNode();
   if (selNode)  {
     var myprojects = selNode.dataId.startsWith(__login_id+'\'s ');
     this.add_folder_btn.setEnabled ( myprojects );
-    this.rename_btn    .setEnabled ( myprojects && selNode.parentId );
-    this.delete_btn    .setEnabled ( myprojects && selNode.parentId );
-    // this.disableButton ( 'add',!myprojects );
-    // this.disableButton ( 'rename',(!(selNode.parentId)) || (!myprojects) );
-    // this.disableButton ( 'delete',(!(selNode.parentId)) || (!myprojects) );
+    var enable_rd  = (myprojects && selNode.parentId) ||
+                     (selNode.icon.indexOf('folder_list_custom')>=0);
+    this.rename_btn.setEnabled ( enable_rd );
+    this.delete_btn.setEnabled ( enable_rd );
     if (this.funcKey=='move')
       this.disableButton ( 'select',!myprojects );
   }
@@ -280,7 +284,7 @@ FoldersBrowser.prototype.onSelectBtn = function()  {
 var selNode = this.ftree.getSelectedNode();
   if (selNode)  {
     $(this.element).dialog ( 'close' );
-    this.onReturn_fnc ( 'select',{ folder : selNode.dataId } );
+    this.onReturn_fnc ( 'select',{ folder_path : selNode.dataId } );
   } else
     new MessageBox ( 'No selection in tree',
            '<h2>No folder is selected</h3>' +
@@ -365,78 +369,154 @@ var inputBox = new InputBox ( 'Add folder' );
             'msg_stop' );
       return false;
     }
-    var newNode = self.ftree.addNode ( selNode,folderName,
+    var newNode = self.ftree.addNode ( selNode,folderName + ' (0)',
                                        image_path('folder_projects'),null );
     newNode.dataId = fpath;
     self.projectList.addFolderPath ( fpath,0 );
-    // self.projectList.currentFolder = fpath;
-    self.onReturn_fnc ( 'add',{ folder : fpath } );
+    self.onReturn_fnc ( 'add',{ folder_path : fpath } );
+    self.onSelect();
     return true;
   });
 }
 
 FoldersBrowser.prototype.onAddList = function()  {
+var self = this;
+var inputBox = new InputBox ( 'Add list' );
+  inputBox.setText ( '','folder_list_custom_new' );
+  var ibx_grid = inputBox.grid;
+  ibx_grid.setLabel    ( '<h2>Add new list</h2>',0,2,2,3 );
+  ibx_grid.setLabel    ( 'Name:',2,3,1,1 );
+  var name_inp  = ibx_grid.setInputText ( '',2,4,1,1 )
+        .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., XX-Series','' )
+        .setFontItalic ( true )
+        .setWidth      ( '400px' );
+  ibx_grid.setNoWrap   ( 2,2 );
+  ibx_grid.setVerticalAlignment ( 2,3,'middle' );
+  inputBox.addWidget   ( ibx_grid );
+  inputBox.launch ( 'Add',function(){
+    var folderName = name_inp.getValue();
+    if (folderName.length<=0)  {
+      new MessageBox ( 'No list name',
+               '<h2>List name not given</h2>New list name must be specified.',
+               'msg_stop' );
+      return false;
+    } else if (folderName.indexOf('/')>=0)  {
+      new MessageBox ( 'Invalid list name',
+            '<h2>Invalid list name</h2>List name must not contain slashes.',
+            'msg_stop' );
+      return false;
+    }
+    var fpath = folderName;
+    if (self.findFolder(fpath))  {
+      new MessageBox ( 'Duplicate list name',
+            '<h2>Duplicate list name</h2>List names must be unique and different ' +
+            'from names of top-level folders.',
+            'msg_stop' );
+      return false;
+    }
+    self.projectList.addFolderPath ( fpath,0 );
+    self.folders = self.projectList.folders;
+    var folder   = self.findFolder ( fpath );
+    if (folder)  {
+      folder.type = folder_type.custom_list;
+      self.projectList.currentFolder = folder;
+      self.currentFolder = folder;
+      self.projectList.sortFolders();
+      self.tree_div.removeChild ( self.ftree );
+      self.ftree = self.makeFolderTree ( self.folders );
+      self.tree_div.addWidget ( self.ftree );
+
+    // var newNode = self.ftree.addRootNode ( folderName,
+    //                             image_path('folder_list_custom'),null );
+    // newNode.dataId = fpath;
+    // self.projectList.addFolderPath ( fpath,0 );
+    // var folder = self.findFolder ( fpath );
+    // if (folder)  {
+      // folder.type = folder_type.custom_list;
+      self.onReturn_fnc ( 'add',{ folder_path : fpath } );
+    } else
+      new MessageBox ( 'Error','<h2>Error</h2>Error when adding List.','msg_error' );
+    return true;
+  });
 }
 
 FoldersBrowser.prototype.onDeleteFolder = function()  {
 var selNode = this.ftree.getSelectedNode();
 var folder  = this.findFolder ( selNode.dataId );
-  if ((folder.nprojects>0) || (folder.folders.length>0)
-                           || (folder.projects.length>0))  {
-    new MessageBox ( 'Non-empty folder',
-          '<h2>Folder ' + folder.name + ' is not empty</h2>' +
-          'Delete all projects and any sub-folders in this folder ' +
-          'before deleting it.','msg_stop' );
-  } else  {
-    var self = this;
-    new QuestionBox ( 'Delete folder',
-                      '<h2>Folder ' + folder.name + ' will be deleted</h2>' +
-                      'Please confirm.',[
-        { name    : 'Yes, delete',
-          onclick : function(){
-                      self.deleteFolder     ( selNode.dataId );
-                      self.ftree.deleteNode ( selNode        );
-                      var node  = self.ftree.getSelectedNode();
-                      var fpath = '';
-                      if (node)
-                        fpath = node.dataId;
-                      self.onReturn_fnc ( 'delete',{ folder : fpath } );
-                    }
-        },{
-          name    : 'Cancel',
-          onclick : null
-        }
-      ],'msg_confirm' );
-  }
+
+  if (folder)  {
+    if ((folder.type!=folder_type.custom_list) &&
+        ((folder.nprojects>0) || (folder.folders.length>0)
+                              || (folder.projects.length>0)))  {
+      new MessageBox ( 'Non-empty folder',
+            '<h2>Folder ' + folder.name + ' is not empty</h2>' +
+            'Delete all projects and any sub-folders in this folder ' +
+            'before deleting it.','msg_stop' );
+    } else  {
+
+      var self  = this;
+      var label = 'Folder';
+      if (folder.type==folder_type.custom_list)
+        label = 'List';
+      var label_l = name.toLowerCase();
+
+      new QuestionBox ( 'Delete ' + label_l,
+                        '<h2>' + label + ' ' + folder.name + ' will be deleted</h2>' +
+                        'Please confirm.',[
+          { name    : 'Yes, delete',
+            onclick : function(){
+                        self.deleteFolder ( selNode.dataId );
+                        var fpath = self.folders[0].path;
+                        if (selNode.parentId)  {
+                          self.ftree.deleteNode ( selNode );
+                          var node = self.ftree.getSelectedNode();
+                          if (node)
+                            fpath = node.dataId;
+                        } else  {
+                          self.ftree.deleteRootNode ( selNode );
+                          self.ftree.selectNodeById ( self.node0_id );
+                        }
+                        self.onReturn_fnc ( 'delete',{ folder_path : fpath } );
+                      }
+          },{
+            name    : 'Cancel',
+            onclick : null
+          }
+        ],'msg_confirm' );
+    }
+
+  } else
+    new MessageBox ( 'Error','<h2>Error</h2>Error deleting folder','msg_error' );
+
 }
 
 FoldersBrowser.prototype.onMoveTo = function()  {
 var selNode = this.ftree.getSelectedNode();
 var folder  = this.findFolder ( selNode.dataId );
+var fldName = folderPathTitle ( folder.name,__login_id,0 );
+var label   = 'Folder';
+
+  if (folder.type==folder_type.custom_list)
+    label = 'List';
+  var label_l = name.toLowerCase();
+
   if (!selNode.dataId.startsWith(__login_id+'\'s '))
     return;
-  if (selNode.dataId==this.currentFolderPath)
-    new MessageBox ( 'Already in folder',
-          '<h2>Already in "' + folder.name + '"</h2>' +
-          'The currently selected project is already in the chosen folder.',
+  if (selNode.dataId==this.currentFolder.path)
+    new MessageBox ( 'Already in ' + label_l,
+          '<h2>Already in "' + fldName + '"</h2>' +
+          'The currently selected project is already in the chosen ' + label_l +'.',
           'msg_stop' );
   else  {
     var self = this;
-    // new QuestionBox ( 'Move project to folder',
-    //                   '<h2>Selected project will be moved to<br>"' +
-    //                   folder.name + '"</h2>' +
-    //                   'Please confirm.','Please move',function(){
-    //   $(self.element).dialog ( 'close' );
-    //   self.onReturn_fnc ( 'move',{ folder : selNode.dataId } );
-    // },'Cancel',null,'msg_confirm' );
-    new QuestionBox ( 'Move project to folder',
-                      '<h2>Selected project will be moved to<br>"' +
-                      folder.name + '"</h2>' +
+    new QuestionBox ( 'Move project to ' + label_l,
+                      '<h2>Selected project will be moved to ' + label_l +
+                      '<br>"' + fldName + '"</h2>' +
                       'Please confirm.',[
         { name    : 'Please move',
           onclick : function(){
                       $(self.element).dialog ( 'close' );
-                      self.onReturn_fnc ( 'move',{ folder : selNode.dataId } );
+                      self.onReturn_fnc ( 'move',{ folder_path : selNode.dataId } );
                     }
         },{
           name    : 'Cancel',
@@ -448,11 +528,16 @@ var folder  = this.findFolder ( selNode.dataId );
 
 FoldersBrowser.prototype.onRenameFolder = function()  {
 var selNode = this.ftree.getSelectedNode();
+var label   = 'Folder';
 
-  var inputBox  = new InputBox ( 'Rename folder' );
+  if (selNode.dataId.startsWith(folder_type.custom_list))
+    label = 'List';
+  var label_l = name.toLowerCase();
+
+  var inputBox  = new InputBox ( 'Rename ' + label_l );
   inputBox.setText ( '','renameprj' );
   var ibx_grid = inputBox.grid;
-  ibx_grid.setLabel    ( '<h2>Rename folder "' + selNode.dataId.split('/').pop() +
+  ibx_grid.setLabel    ( '<h2>Rename ' + label_l + ' "' + selNode.dataId.split('/').pop() +
                          '"</h2>',0,2,2,3 ).setWidth ( '400px' );
   ibx_grid.setLabel    ( 'New name:',2,3,1,1 ).setNoWrap();
   var name_inp  = ibx_grid.setInputText ( '',2,4,1,1 )
@@ -466,13 +551,15 @@ var selNode = this.ftree.getSelectedNode();
   inputBox.launch ( 'Rename',function(){
     var newName = name_inp.getValue();
     if (newName.length<=0)  {
-      new MessageBox ( 'No folder name',
-               '<h2>Folder name not given</h2>New folder name must be given.',
+      new MessageBox ( 'No ' + label_l + ' name',
+               '<h2>' + label + ' name not given</h2>New ' + label_l +
+               ' name must be given.',
                'msg_stop' );
       return false;
     } else if (newName.indexOf('/')>=0)  {
-      new MessageBox ( 'Invalid folder name',
-            '<h2>Invalid folder name</h2>Folder name must not contain slashes.',
+      new MessageBox ( 'Invalid ' + label_l + ' name',
+            '<h2>Invalid ' + label_l + ' name</h2>' + label +
+            ' name must not contain slashes.',
             'msg_stop' );
       return false;
     }
@@ -482,7 +569,7 @@ var selNode = this.ftree.getSelectedNode();
     folder.name       = newName;
     var newPath       = fpl.join('/');
     self.projectList.renameFolders ( selNode.dataId,newPath );
-    self.onReturn_fnc  ( 'rename',{ folder: selNode.dataId, rename: newPath } );
+    self.onReturn_fnc  ( 'rename',{ folder_path: selNode.dataId, rename: newPath } );
     self.ftree.setText ( selNode,newName );
     selNode.dataId = newPath;
     return true;

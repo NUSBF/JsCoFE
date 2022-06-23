@@ -43,6 +43,7 @@ Clik on |authorisation| manage button and you will redirect to the authorisation
         :height: 16
 
 .. _myprojects:
+
 --------
 Projects
 --------

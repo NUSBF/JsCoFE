@@ -40,7 +40,13 @@ var __ccp4_version    = '';     // undefined
 
 var __current_page    = null;
 var __current_project = null;
-var __current_folder  = 'My Projects';
+var __current_folder  = { name      : 'My Projects',
+                          path      : 'My Projects',
+                          nprojects : 0,
+                          type      : folder_type.user,
+                          folders   : [],
+                          projects  : []
+                        };
 var __local_setup     = false;
 var __cloud_storage   = false;  // true if user has cloud storage allocated
 var __demo_projects   = false;  // true if demo projects are configured

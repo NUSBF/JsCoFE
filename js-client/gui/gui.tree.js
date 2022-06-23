@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.10.21   <--  Date of Last Modification.
+ *    23.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Generic tree class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -73,6 +73,7 @@
  *      function setStyle           ( treeNode,style_str,propagate_int );
  *      function confirmCustomIconsVisibility();
  *      function deleteNode         ( node );
+ *      function deleteRootNode     ( node );
  *      function deleteBranch       ( node );
  *      function createTree         ( make_initial_selection,
                                       onReady_func   ,onContextMenu_func,
@@ -797,6 +798,32 @@ Tree.prototype.deleteNode = function ( node )  {
     if (pnode.children.length>0)
           this.selectSingle ( pnode.children[0] );
     else  this.selectSingle ( pnode );
+  }
+
+}
+
+
+Tree.prototype.deleteRootNode = function ( node )  {
+// does not delete root node with children
+
+  if (!node)
+    return;
+
+  if (!(node.id in this.node_map))
+    return;
+
+  // remove node from general tree index
+  this.node_map[node.id] = null;
+  var node_map = {};  // new node map
+  for (var key in this.node_map)
+    if (this.node_map[key])
+      node_map[key] = this.node_map[key];
+  this.node_map = node_map;
+
+  if (this.created)  {
+    // remove node from tree
+    $(this.root.element).jstree(true).delete_node([node]);
+    this.confirmCustomIconsVisibility();
   }
 
 }

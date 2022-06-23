@@ -132,7 +132,7 @@
   
   <script src="_static/javascripts/version_dropdown.js"></script>
   <script>
-    var json_loc = ""versions.json"",
+    var json_loc = "versions.json",
         target_loc = "../",
         text = "Versions";
     $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
@@ -371,6 +371,8 @@
             
   
 <h1 id="doc-task-changespghkl--page-root"><span class="section-number">4.5. </span>Change Dataset Space Group<a class="headerlink" href="#doc-task-changespghkl--page-root" title="Permalink to this headline">¶</a></h1>
+<p>The task allows changing the merged reflection dataset space group with the same point group. It can be useful in order to compare similar structures or to <a class="reference external" href="./doc.task.EditRevision.html" rel="noopener noreferrer" target="_blank">edit structure revision</a>  in order to replace the dataset. Sometimes the spacegroup or indexing convention may be different even when the crystal packing is similar. In this case, the symmetry and the indexing convention changed to match the existing structure.</p>
+<p>During the structure solution, it may become obvious that the spacegroup has been incorrectly determined. For example, a symmetry that is present in the data may have been missed leading to the selection of a spacegroup with lower symmetry, or a higher space group may have been selected due to the presence of twinning or pseudo-symmetry. If the point group has changed, then the data processing should be repeated to obtain a correct list of unique reflections.</p>
 
 
 

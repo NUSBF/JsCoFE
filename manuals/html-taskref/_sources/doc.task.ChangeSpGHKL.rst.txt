@@ -1,3 +1,7 @@
 ==========================
 Change Dataset Space Group
 ==========================
+
+The task allows changing the merged reflection dataset space group with the same point group. It can be useful in order to compare similar structures or to `edit structure revision <./doc.task.EditRevision.html>`_  in order to replace the dataset. Sometimes the spacegroup or indexing convention may be different even when the crystal packing is similar. In this case, the symmetry and the indexing convention changed to match the existing structure.
+
+During the structure solution, it may become obvious that the spacegroup has been incorrectly determined. For example, a symmetry that is present in the data may have been missed leading to the selection of a spacegroup with lower symmetry, or a higher space group may have been selected due to the presence of twinning or pseudo-symmetry. If the point group has changed, then the data processing should be repeated to obtain a correct list of unique reflections.

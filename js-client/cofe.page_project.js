@@ -151,7 +151,6 @@ function ProjectPage ( sceneId )  {
 
   }(this))
 
-
   // make central panel and the toolbar
   this.toolbar_div = new Widget('div');
   this.toolbar_div.element.setAttribute ( 'class','toolbox-content' );

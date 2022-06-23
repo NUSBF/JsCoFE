@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    22.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  STRUCTURE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -371,8 +371,15 @@ class DType(dtype_xyz.DType):
         self.addSubtype ( dtype_template.subtypePhases() )
         return
 
+    def removePhasesSubtype ( self ):
+        self.removeSubtype ( dtype_template.subtypePhases() )
+        return
+
     def hasXYZSubtype ( self ):
         return dtype_template.subtypeXYZ() in self.subtype
+
+    def hasPhasesSubtype ( self ):
+        return dtype_template.subtypePhases() in self.subtype
 
     def hasSubSubtype ( self ):
         return dtype_template.subtypeSubstructure() in self.subtype

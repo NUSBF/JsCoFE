@@ -131,7 +131,7 @@
   
   <script src="_static/javascripts/version_dropdown.js"></script>
   <script>
-    var json_loc = ""versions.json"",
+    var json_loc = "versions.json",
         target_loc = "../",
         text = "Versions";
     $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
@@ -285,16 +285,25 @@
             
   
 <h1 id="jscofe-version-log--page-root"><span class="section-number">10. </span>CCP4 Cloud Version Log<a class="headerlink" href="#jscofe-version-log--page-root" title="Permalink to this headline">¶</a></h1>
+<p><strong>Version 1.7.004</strong></p>
+<blockquote>
+<div><p><em>Released on –.–.2022 with CCP4 8.0.002</em></p>
+<p><strong>Changes and new features</strong></p>
+<ol class="arabic simple">
+<li>Project can be now organised in Folders</li>
+<li>Added new tasks <code class="docutils literal notranslate"><span class="pre">Slice</span></code> for splitiing models in domains, and <code class="docutils literal notranslate"><span class="pre">Slice-n-dice</span></code> for splitting followed by auto-MR with Phaser</li>
+<li>Covalent/metal link identification switch added in <code class="docutils literal notranslate"><span class="pre">Refmac</span></code> task</li>
+<li>Users can be now retired by admin with moving their projects to successor</li>
+<li>Fixed a bug that could cause a number cruncher halt if tasks <code class="docutils literal notranslate"><span class="pre">MrBump</span></code>, <code class="docutils literal notranslate"><span class="pre">Ensemble</span> <span class="pre">preparation</span> <span class="pre">from</span> <span class="pre">sequences</span></code>, <code class="docutils literal notranslate"><span class="pre">Ensemple</span> <span class="pre">preparation</span> <span class="pre">from</span> <span class="pre">coordinates</span></code>, <code class="docutils literal notranslate"><span class="pre">Interactive</span> <span class="pre">model</span> <span class="pre">preparation</span> <span class="pre">with</span> <span class="pre">CCP4mg</span></code> are forcefully terminated from the <em>Project Page</em></li>
+</ol>
+</div></blockquote>
 <p><strong>Version 1.7.003</strong></p>
 <blockquote>
-<div><p><em>Released on –.–.2022 with CCP4 8.0.001</em></p>
+<div><p><em>Released on 01.05.2022 with CCP4 8.0.001</em></p>
 <p><strong>Changes and new features</strong></p>
 <ol class="arabic simple">
 <li>Fixed a bug in <code class="docutils literal notranslate"><span class="pre">Import</span> <span class="pre">files</span></code> task blocking import of XDS files</li>
-<li>Project can be now organised in Folders</li>
 <li>Fixed a bug in handling AFDB models, causing MR failure in certain cases</li>
-<li>Added new tasks <code class="docutils literal notranslate"><span class="pre">Slice</span></code> for splitiing models in domains, and <code class="docutils literal notranslate"><span class="pre">Slice-n-dice</span></code> for splitting followed by auto-MR with Phaser</li>
-<li>Covalent/metal link identification switch added in <code class="docutils literal notranslate"><span class="pre">Refmac</span></code> task</li>
 </ol>
 </div></blockquote>
 <p><strong>Version 1.7.002</strong></p>
