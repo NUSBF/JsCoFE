@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.06.22   <--  Date of Last Modification.
+ *    22.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -136,7 +136,8 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
                     if (data.signal=='Success')  {
                       dlg.grid.setLabel ( '<h2>Project Joined Successfully</h2>',0,2,2,3 );
                       var msg1 = '';
-                      if (!__current_folder.startsWith(folder_type.list))
+                      if ((__current_folder.path!=folder_type.list) &&
+                          (__current_folder.path!=folder_type.custom_list))
                         msg1 = '<p><b>Note that you are now in the owner\'s project '+
                                'folder. To navigate back to your folder(s), click on ' +
                                'the page title or use Main Menu.</b>';

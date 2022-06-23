@@ -3,21 +3,32 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.7.004**
+
+    *Released on --.--.2022 with CCP4 8.0.002*
+
+    **Changes and new features**
+
+    #. Project can be now organised in Folders
+
+    #. Added new tasks ``Slice`` for splitiing models in domains, and ``Slice-n-dice`` for splitting followed by auto-MR with Phaser
+
+    #. Covalent/metal link identification switch added in ``Refmac`` task
+
+    #. Users can be now retired by admin with moving their projects to successor
+
+    #. Fixed a bug that could cause a number cruncher halt if tasks ``MrBump``, ``Ensemble preparation from sequences``, ``Ensemple preparation from coordinates``, ``Interactive model preparation with CCP4mg`` are forcefully terminated from the *Project Page*
+
+
 **Version 1.7.003**
 
-    *Released on --.--.2022 with CCP4 8.0.001*
+    *Released on 01.05.2022 with CCP4 8.0.001*
 
     **Changes and new features**
 
     #. Fixed a bug in ``Import files`` task blocking import of XDS files
 
-    #. Project can be now organised in Folders
-
     #. Fixed a bug in handling AFDB models, causing MR failure in certain cases
-
-    #. Added new tasks ``Slice`` for splitiing models in domains, and ``Slice-n-dice`` for splitting followed by auto-MR with Phaser
-
-    #. Covalent/metal link identification switch added in ``Refmac`` task
 
 
 **Version 1.7.002**

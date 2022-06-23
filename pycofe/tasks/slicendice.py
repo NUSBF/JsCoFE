@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.06.22   <--  Date of Last Modification.
+#    21.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -53,6 +53,7 @@ class SliceNDice(basic.TaskDriver):
         # Prepare task input
         # fetch input data
 
+        revision    = self.makeClass ( self.input_data.data.revision[0] )
         xyz         = self.makeClass ( self.input_data.data.xyz[0] )
         hkl         = self.makeClass ( self.input_data.data.hkl[0] )
         seq         = self.input_data.data.seq
@@ -86,6 +87,7 @@ class SliceNDice(basic.TaskDriver):
             "-xyzin"     ,xyz.getXYZFilePath(self.inputDir()),
             "-hklin"     ,input_mtz,
             "-seqin"     ,input_seq,
+            "-no_mols"   ,str(revision.getNofASUMonomers()),
             "-min_splits",min_nsplits,
             "-max_splits",max_nsplits,
             "-xyz_source","alphafold_bfactor"
@@ -178,7 +180,6 @@ class SliceNDice(basic.TaskDriver):
                                               "Structure and electron density",
                                               structure )
                     # update structure revision
-                    revision = self.makeClass  ( self.input_data.data.revision[0] )
                     revision.setStructureData  ( structure )
                     self.registerRevision      ( revision  )
                     have_results = True

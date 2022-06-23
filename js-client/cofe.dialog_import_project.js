@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.20   <--  Date of Last Modification.
+ *    22.06.20   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -71,7 +71,7 @@ function ImportProjectDialog ( onSuccess_func )  {
             progressBar.hide();
             $( "#cancel_btn" ).button ( "option","label","Close" );
             if (data.signal=='Success')  {
-              if (__current_folder.startsWith(folder_type.all_projects))
+              if (__current_folder.type==folder_type.all_projects)
                 msgLabel.setText (
                       'Project "' + data.name + '" is imported, ' +
                       'you may close this dialog now.' );

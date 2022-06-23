@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.06.22   <--  Date of Last Modification.
+ *    23.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -40,11 +40,14 @@ var tasklist_mode = {
 };
 
 var folder_type = {
-  shared       : '**shared**',
-  joined       : '**joined**',
-  all_projects : '**all_projects**',
-  list         : '**',
-  tutorials    : 'Tutorials'
+  user         : 'user',
+  common       : 'common',
+  shared       : 'shared',
+  joined       : 'joined',
+  all_projects : 'all_projects',
+  list         : 'list',
+  custom_list  : 'custom_list',
+  tutorials    : 'tutorials'
 };
 
 // ===========================================================================
@@ -109,6 +112,16 @@ function isProjectAccessible ( login,projectDesc )  {
   return found;
 }
 
+function isProjectJoined ( login,projectDesc )  {
+  return (projectDesc.owner.login!=login) &&
+         (projectDesc.owner.share.length>0);
+}
+
+function isProjectShared ( login,projectDesc )  {
+  return (projectDesc.owner.login==login) &&
+         (projectDesc.owner.share.length>0);
+}
+
 function getProjectAuthor ( projectDesc )  {
 var author = projectDesc.owner.login;
   if (('author' in projectDesc.owner) && projectDesc.owner.author)
@@ -133,61 +146,63 @@ ProjectList.prototype.seedFolders = function ( loginName )  {
     { name      : f0name,
       path      : f0name,
       nprojects : 0,
+      type      : folder_type.user,
       folders   : [],
       projects  : []
     },{
-      name      : folder_type.shared, // project folders tree basic element
-      path      : folder_type.shared,
+      name      : 'Projects shared by me', // project folders tree basic element
+      path      : 'Projects shared by me',
       nprojects : 0,
+      type      : folder_type.shared,
       folders   : [],
       projects  : []
     },{
-      name      : folder_type.joined, // project folders tree basic element
-      path      : folder_type.joined,
+      name      : 'Projects joined by me', // project folders tree basic element
+      path      : 'Projects joined by me',
       nprojects : 0,
+      type      : folder_type.joined,
       folders   : [],
       projects  : []
     },{
-      name      : folder_type.all_projects, // project folders tree basic element
-      path      : folder_type.all_projects,
+      name      : 'All projects', // project folders tree basic element
+      path      : 'All projects',
       nprojects : 0,
+      type      : folder_type.all_projects,
       folders   : [],
       projects  : []
     }
   ];
-  this.currentFolder = f0name;
+  this.currentFolder = this.folders[0];
 }
 
 ProjectList.prototype.getRootFolderName = function ( folderNo,loginName )  {
 var fdname = '???';
   if (folderNo<this.folders.length)  {
     fdname = this.folders[folderNo].name;
-    if (fdname.startsWith(loginName+'\'s '))
-      fdname = 'My Projects';
-    else if (fdname==folder_type.shared)
-      fdname = '<i>Projects shared by me</i>';
-    else if (fdname==folder_type.joined)
-      fdname = '<i>Projects joined by me</i>';
-    else if (fdname==folder_type.all_projects)
-      fdname = '<i>All Projects</i>';
-    else if (fdname==folder_type.tutorials)
-      fdname = '<i>Tutorials</i>';
+    switch (this.folders[folderNo].type)  {
+      case folder_type.user   : if (fdname.startsWith(loginName))
+                                   fdname = 'My Projects';
+                                break;
+      case folder_type.common : break;
+      default                 : fdname = '<i>' + fdname + '</i>';
+    };
   }
   return fdname;
 }
 
-function folderPathTitle ( folderPath,loginName,maxLength )  {
-var title  = folderPath;
+function folderPathTitle ( folder,loginName,maxLength )  {
+var title  = folder.path;
 var f0name = loginName + '\'s ';
   if (title.startsWith(f0name))
     title = title.replace(f0name,'My ');
-  else if (title==folder_type.shared)
-    title = 'Projects shared by me';
-  else if (title==folder_type.joined)
-    title = 'Projects joined by me';
-  else if (title==folder_type.all_projects)
-    title = 'All Projects';
-  if (title.length>maxLength)
+  else
+    switch (folder.type)  {
+      case folder_type.shared       : title = 'Projects shared by me';  break;
+      case folder_type.joined       : title = 'Projects joined by me';  break;
+      case folder_type.all_projects : title = 'All Projects';           break;
+      default : title = folder.name;
+    }
+  if ((maxLength>0) && (title.length>maxLength))
     title = '&hellip; ' + title.substr(title.length-maxLength+3);
   return title;
 }
@@ -203,9 +218,17 @@ ProjectList.prototype._add_folder_path = function ( flist,level,folders,nproject
       var fpath = flist[0];
       for (var i=1;i<=level;i++)
         fpath += '/' + flist[i];
+      var ftype = folder_type.common;
+      if (!level)  {
+        ftype = folder_type.tutorials;
+        if ((fpath.toLowerCase()!=folder_type.tutorials) &&
+            (fpath!=folder_type.custom_list))
+          ftype = folder_type.user;
+      }
       var folder = {
          name      : flist[level],
          path      : fpath,
+         type      : ftype,
          nprojects : 0,
          folders   : [],
          projects  : []
@@ -229,47 +252,93 @@ ProjectList.prototype._reset_folders = function ( folders )  {
   }
 }
 
-ProjectList.prototype.resetFolders = function ( recalculate_bool )  {
+ProjectList.prototype._get_folder_list = function ( ftype )  {
+var flist = [];
+  for (var i=4;i<this.folders.length;i++)
+    if (this.folders[i].type==ftype)
+      flist.push ( this.folders[i] );
+  for (var i=0;i<flist.length;i++)
+    for (var j=i+1;j<flist.length;j++)
+      if (flist[j].name<flist[i].name)  {
+        var fi   = flist[i];
+        flist[i] = flist[j];
+        flist[j] = fi;
+      }
+  return flist;
+}
+
+ProjectList.prototype.sortFolders = function()  {
+var l1 = this._get_folder_list ( folder_type.custom_list );
+var l2 = this._get_folder_list ( folder_type.tutorials   );
+var l3 = this._get_folder_list ( folder_type.user        );
+var i  = 4;
+  for (var j=0;j<l1.length;j++)
+    this.folders[i++] = l1[j];
+  for (var j=0;j<l2.length;j++)
+    this.folders[i++] = l2[j];
+  for (var j=0;j<l3.length;j++)
+    this.folders[i++] = l3[j];
+  // for (var i=4;i<this.folders.length;i++)
+  //   for (var j=i+1;j<this.folders.length;j++)  {
+  //     var swap = false;
+  //     if ((this.folders[i].type==folder_type.custom_list) &&
+  //         (this.folders[j].type==folder_type.custom_list) &&
+  //         (this.folders[j].name<this.folders[i].name))
+  //       swap = true;
+  //     if ((this.folders[i].type!=folder_type.custom_list) &&
+  //         (this.folders[j].type==folder_type.custom_list))
+  //       swap = true;
+  //     if ((this.folders[i].type!=folder_type.custom_list) &&
+  //         (this.folders[j].type==folder_type.custom_list))
+  //       swap = true;
+  //
+  //     switch (this.folders[i].type)  {
+  //       case folder_type.custom_list :
+  //               swap = (this.folders[j].type==folder_type.custom_list) &&
+  //                      (this.folders[j].name<this.folders[i].name);
+  //             break;
+  //       case folder_type.tutorials :
+  //               swap = (this.folders[j].type==folder_type.custom_list);
+  //             break;
+  //       default :
+  //               swap = (this.folders[i].type!=folder_type.custom_list) &&
+  //                      (this.folders[j].name<this.folders[i].name);
+  //     }
+  //     if (swap)  {
+  //       var fldi = this.folders[i];
+  //       this.folders[i] = this.folders[j];
+  //       this.folders[j] = fldi;
+  //     }
+  //   }
+}
+
+ProjectList.prototype.resetFolders = function ( login,recalculate_bool )  {
+var folders = this.folders;
   this.folders = this.folders.slice(0,4);
+  for (var i=4;i<folders.length;i++)
+    if (folders[i].type==folder_type.custom_list)
+      this.folders.push ( folders[i] );
   this._reset_folders ( this.folders );
-  this.folders[3].nprojects = this.projects.length;
+  this.folders[3].nprojects = this.projects.length;  // "All folders"
   if (recalculate_bool)  {
-    var folderPaths   = {};
-    // var crFolderValid = this.currentFolder.startsWith(folder_type.list);
+    var folderPaths = {};
+    var nshared = 0;
+    var njoined = 0;
     for (var i=0;i<this.projects.length;i++)  {
       var folder_path = this.projects[i].folderPath;
       if (folder_path in folderPaths)
             folderPaths[folder_path]++;
       else  folderPaths[folder_path] = 1;
-      // if (folder_path.startsWith(this.currentFolder))
-      //   crFolderValid = true;
+      if (isProjectJoined(login,this.projects[i]))  njoined++;
+      if (isProjectShared(login,this.projects[i]))  nshared++;
     }
+    this.folders[1].nprojects = nshared;  // "shared by me"
+    this.folders[2].nprojects = njoined;  // "joined by me"
     for (var fpath in folderPaths)
       this.addFolderPath ( fpath,folderPaths[fpath] );
-    // sort
-    for (var i=4;i<this.folders.length;i++)
-      for (var j=i+1;j<this.folders.length;j++)  {
-        var swap = (this.folders[j].path==folder_type.tutorials);
-        if (!swap)
-          swap = (this.folders[j].name<this.folders[i].name)
-        if (swap)  {
-          var fldi = this.folders[i];
-          this.folders[i] = this.folders[j];
-          this.folders[j] = fldi;
-        }
-      }
-    // var tutorialNo = -1;
-    // for (var i=0;(i<this.folders.length) && (tutorialNo<0);i++)
-    //   if (this.folders[i].name==folder_type.tutorials)
-    //     tutorialNo = i;
-    // if (tutorialNo>=0)  {
-    //   var folder = this.folders.splice(tutorialNo,1)[0];
-    //   this.folders.splice ( 4,0,folder );
-    // }
-    // if (!crFolderValid)
-    //   this.currentFolder = this.folders[0].path;
-    if (!this.findFolder(this.currentFolder))
-      this.currentFolder = this.folders[0].path;
+    this.sortFolders();
+    if (!this.findFolder(this.currentFolder.path))
+      this.currentFolder = this.folders[0];
   }
 
 }
@@ -286,7 +355,6 @@ ProjectList.prototype.renameFolders = function ( oldpath,newpath )  {
   this._rename_folders ( this.folders,oldpath,newpath );
 }
 
-
 ProjectList.prototype._find_folder = function ( folders,fpath )  {
 var folder = null;
   for (var i=0;(i<folders.length) && (!folder);i++)  {
@@ -300,7 +368,6 @@ var folder = null;
 ProjectList.prototype.findFolder = function ( fpath )  {
   return this._find_folder ( this.folders,fpath );
 }
-
 
 ProjectList.prototype.isProject = function ( name_str )  {
   var is_project = false;
@@ -331,7 +398,7 @@ ProjectList.prototype.addProject = function ( name_str,title_str,
   if (!this.isProject(name_str))  {
     var pDesc = new ProjectDesc();
     pDesc.init ( name_str,title_str,startmode,time_str );
-    pDesc.folderPath = this.currentFolder;
+    pDesc.folderPath = this.currentFolder.path;
     this.projects.unshift ( pDesc );  // put new project at beginning
     this.current   = name_str;
     this.startmode = startmode;
@@ -511,5 +578,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.ProjectShare         = ProjectShare;
   module.exports.DockData             = DockData;
   module.exports.isProjectAccessible  = isProjectAccessible;
+  module.exports.isProjectJoined      = isProjectJoined;
+  module.exports.isProjectShared      = isProjectShared;
   module.exports.getProjectAuthor     = getProjectAuthor;
 }

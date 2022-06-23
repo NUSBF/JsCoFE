@@ -2,12 +2,21 @@
 Free R-flag (Regenerate)
 ========================
 
-This program is used to tag each reflection with a R-flag or transfer FreeR assignments to a new data sets, or to isomorphous data sets such as substrate complexes. This is important if you plan to start refinement against new data using the previously refined model, or if you are combining different methods of refinement. In these cases it is essential to tag the SAME reflections.
+This program is used to tag each reflection with a R-flag or transfer FreeR assignments to a new data sets, or to isomorphous data sets such as substrate complexes. This is important if you plan to start refinement against new data using the previously refined model, or if you are combining different methods of refinement. In these cases it is essential to tag the **same** reflections.
 
-**Free R-flag** is a fraction of reflections for use as "R free" (measure of model-to-data agreement) set during later refinement. 
+**Free R-flag** is a fraction of reflections for use as **Rfree** (measure of model-to-data agreement) set during later refinement. 
 
-A set of Free-R reflections is selected at random for a given set of observations. The proportion of the reflections assigned to the Free-R set defaults to 5% yet can be altered. FreeR_flag = 0 reflections remain untouched during refinement of the model.
-The Free-R set is selected in the highest symmetry point group consistent with the current point group, in case the spacegroup has been wrongly determined.
+A set of Free-R reflections is selected at random for a given set of observations. The proportion of the reflections assigned to the Free-R set defaults to 5% yet can be altered. For very small structures, a larger value may be required to provide sufficient reflections in the Free-R set in any given resolution shell.
+
+For successful cross validation:
+
+- select the same FreeR reflections for all related data sets (e.g. mutants, higher resolution data collected half-way through refinement, etc.).
+
+- preserve the same FreeR set as you move from program to program.
+
+- The FreeR set should itself be unbiased by prior refinement.
+
+- The FreeR set should be representative of the full data set with respect to the distribution of structure factor amplitudes and the distribution of reflection resolution.
 
 **Useful links**
 

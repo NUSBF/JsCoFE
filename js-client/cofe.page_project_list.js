@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.22   <--  Date of Last Modification.
+ *    23.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -93,16 +93,6 @@ function ProjectListPage ( sceneId )  {
     return false;
   }
 
-  function isProjectJoined ( projectDesc )  {
-    return (projectDesc.owner.login!=__login_id) &&
-           (projectDesc.owner.share.length>0);
-  }
-
-  function isProjectShared ( projectDesc )  {
-    return (projectDesc.owner.login==__login_id) &&
-           (projectDesc.owner.share.length>0);
-  }
-
   function isCurrentProjectAuthored ( check_author )  {
     var pdesc = getCurrentProjectDesc();
     // if (pdesc)  {
@@ -119,23 +109,27 @@ function ProjectListPage ( sceneId )  {
     return false;
   }
 
-  function setPageTitle ( pageTitle )  {
+  function setPageTitle ( folder )  {
     if (pageTitle_lbl)  {
       // var title = pageTitle;
       // if (title.length>50)
       //   title = '&hellip; ' + title.substr(title.length-47);
       // pageTitle_lbl.setText ( '&nbsp;' + title );
-      pageTitle_lbl.setText ( '&nbsp;' + folderPathTitle(pageTitle,__login_id,50) );
+      pageTitle_lbl.setText ( '&nbsp;' + folderPathTitle(folder,__login_id,50) );
       pageTitle_lbl.setFont ( 'times','200%',true,true );
     }
     if (folder_btn)  {
       var icon = 'folder_projects';
-      if (__current_folder.startsWith(folder_type.list))
-        icon = 'folder_list';
-      else if (__current_folder==folder_type.tutorials)
-        icon = 'folder_tutorials';
-      else if (__current_folder.indexOf('/')<=0)
-        icon = 'folder_projects_user';
+      switch (folder.type)  {
+        case folder_type.custom_list  : icon = 'folder_list_custom';    break;
+        case folder_type.list         :
+        case folder_type.shared       :
+        case folder_type.joined       :
+        case folder_type.all_projects : icon = 'folder_list';           break;
+        case folder_type.tutorials    : icon = 'folder_tutorials';      break;
+        case folder_type.user         : icon = 'folder_projects_user';  break;
+        default : ;
+      }
       folder_btn.setImage ( image_path(icon) );
     }
   }
@@ -598,14 +592,16 @@ function ProjectListPage ( sceneId )  {
 
     var nrows = 0;
     for (var i=0;i<projectList.projects.length;i++)
-      if ((projectList.projects[i].folderPath==__current_folder) ||
-          ((__current_folder==folder_type.joined) && isProjectJoined(projectList.projects[i])) ||
-          ((__current_folder==folder_type.shared) && isProjectShared(projectList.projects[i])) ||
-          (__current_folder==folder_type.all_projects))
+      if ((projectList.projects[i].folderPath==__current_folder.path) ||
+          ((__current_folder.type==folder_type.joined) &&
+            isProjectJoined(__login_id,projectList.projects[i])) ||
+          ((__current_folder.type==folder_type.shared) &&
+            isProjectShared(__login_id,projectList.projects[i])) ||
+           (__current_folder.type==folder_type.all_projects))
         nrows++;
-    if (__current_folder==folder_type.shared)
+    if (__current_folder.type==folder_type.shared)
       projectList.folders[1].nprojects = nrows;
-    if (__current_folder==folder_type.joined)
+    if (__current_folder.type==folder_type.joined)
       projectList.folders[2].nprojects = nrows;
 
     if (nrows<=0)  {
@@ -637,10 +633,12 @@ function ProjectListPage ( sceneId )  {
       nrows = 0;
       // alert ( __current_folder );
       for (var i=0;i<projectList.projects.length;i++)
-        if ((projectList.projects[i].folderPath==__current_folder) ||
-            ((__current_folder==folder_type.joined) && isProjectJoined(projectList.projects[i])) ||
-            ((__current_folder==folder_type.shared) && isProjectShared(projectList.projects[i])) ||
-            (__current_folder==folder_type.all_projects))  {
+        if ((projectList.projects[i].folderPath==__current_folder.path) ||
+            ((__current_folder.type==folder_type.joined) &&
+              isProjectJoined(__login_id,projectList.projects[i])) ||
+            ((__current_folder.type==folder_type.shared) &&
+              isProjectShared(__login_id,projectList.projects[i])) ||
+             (__current_folder.type==folder_type.all_projects))  {
 
           var trow = self.tablesort_tbl.addRow();
 
@@ -687,8 +685,8 @@ function ProjectListPage ( sceneId )  {
             contextMenu.addItem('Export' ,image_path('export')   ).addOnClickListener(exportProject);
             contextMenu.addItem('Share'  ,image_path('share')    ).addOnClickListener(sharePrj     );
             contextMenu.addItem('Clone'  ,image_path('cloneprj') ).addOnClickListener(cloneProject );
-            if (__current_folder.startsWith(owners_folder) ||
-                (__current_folder==folder_type.tutorials))
+            if (__current_folder.name.startsWith(owners_folder) ||
+                (__current_folder.type==folder_type.tutorials))
               contextMenu.addItem('Move',image_path('folder_projects') )
                          .addOnClickListener(function(){ browseFolders('move') });
             // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
@@ -769,8 +767,8 @@ function ProjectListPage ( sceneId )  {
       rename_btn.setDisabled ( false );
       clone_btn .setDisabled ( false );
       // move_btn  .setDisabled ( false );
-      move_btn  .setEnabled  ( __current_folder.startsWith(owners_folder) ||
-                               (__current_folder==folder_type.tutorials) );
+      move_btn  .setEnabled  ( __current_folder.path.startsWith(owners_folder) ||
+                               (__current_folder.type==folder_type.tutorials) );
       del_btn   .setDisabled ( false );
       import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       export_btn.setDisabled ( false );
@@ -843,14 +841,24 @@ function ProjectListPage ( sceneId )  {
       function ( key,data ){
         switch (key)  {
           case 'delete' :
-          case 'select' : projectList.currentFolder = data.folder;
-                          projectList.resetFolders ( true );
+          case 'select' : projectList.currentFolder =
+                                  projectList.findFolder ( data.folder_path );
+                          if (!projectList.currentFolder)  {
+                            new MessageBox (
+                                'Error',
+                                '<h2>Error</h2>Selected folder:<p><i>"' +
+                                data.folder_path + '</i>"<p>not found (1).',
+                                'msg_error'
+                              );
+                            projectList.currentFolder = projectList.folders[0];
+                          }
+                          projectList.resetFolders ( __login_id,true );
                           saveProjectList ( function(rdata){
                             // loadProjectList();
                             makeProjectListTable();
                           });
                       break;
-          case 'add'    : projectList.resetFolders ( true );
+          case 'add'    : projectList.resetFolders ( __login_id,true );
                           saveProjectList ( function(rdata){
                             // loadProjectList();
                             // makeProjectListTable();
@@ -858,32 +866,54 @@ function ProjectListPage ( sceneId )  {
                       break;
           case 'move'   : var pDesc = getCurrentProjectDesc();
                           if (pDesc)  {
-                            pDesc.folderPath          = data.folder;
-                            projectList.currentFolder = data.folder;
-                            projectList.resetFolders ( true );
-                            saveProjectList ( function(rdata){
-                              // loadProjectList();
-                              makeProjectListTable();
-                            });
+                            projectList.currentFolder =
+                                    projectList.findFolder ( data.folder_path );
+                            if (!projectList.currentFolder)  {
+                              new MessageBox (
+                                  'Error',
+                                  '<h2>Error</h2>Selected folder:<p><i>"' +
+                                  data.folder_path + '</i>"<p>not found (2).',
+                                  'msg_error'
+                                );
+                              projectList.currentFolder = projectList.folders[0];
+                            } else  {
+                              pDesc.folderPath = data.folder_path;
+                              projectList.resetFolders ( __login_id,true );
+                              saveProjectList ( function(rdata){
+                                // loadProjectList();
+                                makeProjectListTable();
+                              });
+                            }
                           }
                       break;
-          case 'rename' : if (data.folder==__current_folder)  {
+          case 'rename' : if (data.folder_path==__current_folder.path)  {
                             setPageTitle ( data.rename );
-                            __current_folder = data.rename;
-                            projectList.currentFolder = data.rename;
+                            projectList.currentFolder =
+                                    projectList.findFolder ( data.rename );
+                            if (!projectList.currentFolder)  {
+                              new MessageBox (
+                                  'Error',
+                                  '<h2>Error</h2>Selected folder:<p><i>"' +
+                                  data.rename + '</i>"<p>not found (2).',
+                                  'msg_error'
+                                );
+                              projectList.currentFolder = projectList.folders[0];
+                            }
+                            __current_folder = projectList.currentFolder;
                           }
                           for (var i=0;i<projectList.projects.length;i++)
                             if (startsWith(projectList.projects[i].folderPath,data.folder))
                               projectList.projects[i].folderPath =
                                 projectList.projects[i].folderPath.replace (
-                                  data.folder,data.rename
+                                  data.folder_path,data.rename
                                 );
-                          projectList.resetFolders ( true );
+                          projectList.resetFolders ( __login_id,true );
                           saveProjectList ( function(rdata){
                             // loadProjectList();
+                            makeProjectListTable();
                           });
                       break;
-          case 'cancel' : projectList.resetFolders ( true );
+          case 'cancel' : projectList.resetFolders ( __login_id,true );
                       break;
           default       : new MessageBox ( 'Unknown action key',
                               '<h2>Unknown action key</h2>' +
