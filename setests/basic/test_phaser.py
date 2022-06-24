@@ -31,7 +31,7 @@ def prepareMRmodelCOORD(driver, waitShort):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Coordinate data')
-    time.sleep(1)
+    time.sleep(3)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -74,7 +74,7 @@ def prepareMRmodelALIGN(driver, waitShort):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Alignment data')
-    time.sleep(1)
+    time.sleep(3)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -117,7 +117,7 @@ def prepareMRensembleMODEL(driver, waitShort):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Models')
-    time.sleep(1)
+    time.sleep(3)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -160,7 +160,7 @@ def prepareMRensembleSEQ(driver, waitShort):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Sequence')
-    time.sleep(1)
+    time.sleep(3)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
