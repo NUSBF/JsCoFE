@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.06.22   <--  Date of Last Modification.
+ *    26.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -64,43 +64,43 @@ function ProjectListPage ( sceneId )  {
   var pageTitle_lbl  = null;
 
   function currentProjectName()  {
-    return self.tablesort_tbl.selectedRow.child[0].text.split(':</b>').pop();
+    if (__current_folder.nprojects>0)
+          return self.tablesort_tbl.selectedRow.child[0].text.split(':</b>').pop();
+    else  return '';
   }
 
   function getCurrentProjectDesc()  {
-    var pname = currentProjectName();
     var pdesc = null;
-    for (var i=0;(i<projectList.projects.length) && (!pdesc);i++)
-      if (projectList.projects[i].name==pname)
-        pdesc = projectList.projects[i];
+    if (__current_folder.nprojects>0)  {
+      var pname = currentProjectName();
+      for (var i=0;(i<projectList.projects.length) && (!pdesc);i++)
+        if (projectList.projects[i].name==pname)
+          pdesc = projectList.projects[i];
+    }
     return pdesc;
   }
 
   function getCurrentProjectNo()  {
-    var pname = currentProjectName();
     var pno = -1;
-    for (var i=0;(i<projectList.projects.length) && (pno<0);i++)
-      if (projectList.projects[i].name==pname)
-        pno = i;
+    if (__current_folder.nprojects>0)  {
+      var pname = currentProjectName();
+      for (var i=0;(i<projectList.projects.length) && (pno<0);i++)
+        if (projectList.projects[i].name==pname)
+          pno = i;
+    }
     return pno;
   }
 
   function isCurrentProjectShared()  {
     var pdesc = getCurrentProjectDesc();
     if (pdesc)
-      return (pdesc.owner.share.length>0);
+      return (Object.keys(pdesc.share).length>0);
       //return (pdesc.owner.share.length>0);
     return false;
   }
 
   function isCurrentProjectAuthored ( check_author )  {
     var pdesc = getCurrentProjectDesc();
-    // if (pdesc)  {
-    //   var owner = pdesc.owner.login;
-    //   if (check_author && ('author' in pdesc.owner))
-    //     owner = pdesc.owner.author;
-    //   return (owner==__login_id);
-    // }
     if (pdesc)  {
       if (check_author)
             return (getProjectAuthor(pdesc)==__login_id);
@@ -111,10 +111,6 @@ function ProjectListPage ( sceneId )  {
 
   function setPageTitle ( folder )  {
     if (pageTitle_lbl)  {
-      // var title = pageTitle;
-      // if (title.length>50)
-      //   title = '&hellip; ' + title.substr(title.length-47);
-      // pageTitle_lbl.setText ( '&nbsp;' + title );
       pageTitle_lbl.setText ( '&nbsp;' + folderPathTitle(folder,__login_id,50) );
       pageTitle_lbl.setFont ( 'times','200%',true,true );
     }
@@ -195,119 +191,109 @@ function ProjectListPage ( sceneId )  {
     panel.click();  // get rid of context menu
 
     if (isCurrentProjectShared())  {
+      var msg = '<div style="width:450px"><h2>Rename Project</h2>';
+      if (isCurrentProjectAuthored(true))
+            msg += 'You cannot rename this project because you shared it with other ' +
+                   'users.<p>Shared projects cannot be renamed until they are unshared.';
+      else  msg += 'You cannot rename this project because it was shared with you.' +
+                   '<p>Joined projects cannot be renamed.';
+      new MessageBox ( 'Rename Project',msg,'msg_stop' );
+      return;
+    }
 
-      if (isCurrentProjectAuthored(true))  {
-        new MessageBox ( 'Rename Project',
-            '<h2>Rename Project</h2>' +
-            'You cannot rename this project because it was shared with other ' +
-            'users.','msg_stop'
-        );
-      } else  {
-        new MessageBox ( 'Insufficient privileges',
-            '<h2>Insufficient privileges</h2>' +
-            'You cannot rename this project because it was shared with you.' +
-            '<p>Projects can be renamed only by their owners.','msg_stop'
-        );
-      }
+    var pDesc = getCurrentProjectDesc();
+    if (!pDesc)  {
+      new MessageBox ( 'Current project not identified',
+          '<h2>Current project is not identified</h2>' +
+          '<i>This is a bug please report to developers.</i>',
+          'msg_error'
+      );
+      return;
+    }
 
-    } else  {
+    var prjName   = pDesc.name;
+    var inputBox  = new InputBox ( 'Rename Project' );
+    inputBox.setText ( '','renameprj' );
+    var ibx_grid = inputBox.grid;
+    ibx_grid.setLabel    ( '<h2>Rename Project "' + prjName + '"</h2>',0,2,2,3 );
+    ibx_grid.setLabel    ( 'New ID:',2,3,1,1 );
+    var name_inp  = ibx_grid.setInputText ( prjName,2,4,1,1 )
+          .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
+          .setFontItalic ( true )
+          .setWidth      ( '120px' );
+    ibx_grid.setLabel    ( 'New Name:&nbsp;',3,3,1,1 );
+    var title_inp = ibx_grid.setInputText
+                         ( self.tablesort_tbl.selectedRow.child[1].text,3,4,1,1 )
+          .setStyle      ( 'text','','Put a descriptive title here','' )
+          .setFontItalic ( true )
+          .setWidth      ( '520px' );
+    ibx_grid.setNoWrap   ( 2,2 );
+    ibx_grid.setNoWrap   ( 3,2 );
+    ibx_grid.setVerticalAlignment ( 2,3,'middle' );
+    ibx_grid.setVerticalAlignment ( 3,3,'middle' );
+    inputBox.addWidget   ( ibx_grid );
 
-      var pDesc = getCurrentProjectDesc();
-      if (!pDesc)  {
-        new MessageBox ( 'Current project not identified',
-            '<h2>Current project is not identified</h2>' +
-            '<i>This is a bug please report to developers.</i>',
-            'msg_error'
-        );
+    inputBox.launch ( 'Rename',function(){
+      if (name_inp.getValue().length<=0)  {
+        new MessageBox ( 'No Project ID',
+                 '<b>Project ID is not given</b>.<p>' +
+                 'Project cannot be renamed with empty ID.',
+                 'msg_error' );
+        return false;
+      } else if (name_inp.element.validity.patternMismatch)  {
+        new MessageBox ( 'Invalid Project ID',
+              '<div style="width:400px"><h2>Invalid project ID</h2>' +
+              '<b>Project ID</b> should contain only latin letters, ' +
+              'numbers, undescores, dashes and dots, and must start ' +
+              'with a letter.</div>','msg_stop' );
         return false;
       }
-      var prjName   = pDesc.name;
-      var inputBox  = new InputBox ( 'Rename Project' );
-      inputBox.setText ( '','renameprj' );
-      // var ibx_grid  = new Grid     ( '' );
-      var ibx_grid = inputBox.grid;
-      // var ibx_grid  = new Grid     ( '' );
-      ibx_grid.setLabel    ( '<h2>Rename Project "' + prjName + '"</h2>',0,2,2,3 );
-      ibx_grid.setLabel    ( 'New ID:',2,3,1,1 );
-      var name_inp  = ibx_grid.setInputText ( prjName,2,4,1,1 )
-            .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
-            .setFontItalic ( true )
-            .setWidth      ( '120px' );
-      ibx_grid.setLabel    ( 'New Name:&nbsp;',3,3,1,1 );
-      var title_inp = ibx_grid.setInputText
-                           ( self.tablesort_tbl.selectedRow.child[1].text,3,4,1,1 )
-            .setStyle      ( 'text','','Put a descriptive title here','' )
-            .setFontItalic ( true )
-            .setWidth      ( '520px' );
-      ibx_grid.setNoWrap   ( 2,2 );
-      ibx_grid.setNoWrap   ( 3,2 );
-      ibx_grid.setVerticalAlignment ( 2,3,'middle' );
-      ibx_grid.setVerticalAlignment ( 3,3,'middle' );
-      inputBox.addWidget   ( ibx_grid );
 
-      inputBox.launch ( 'Rename',function(){
-        if (name_inp.getValue().length<=0)  {
-          new MessageBox ( 'No Project ID',
-                   '<b>Project ID is not given</b>.<p>' +
-                   'Project cannot be renamed with empty ID.',
-                   'msg_error' );
-          return false;
-        } else if (name_inp.element.validity.patternMismatch)  {
-          new MessageBox ( 'Invalid Project ID',
-                '<div style="width:400px"><h2>Invalid project ID</h2>' +
-                '<b>Project ID</b> should contain only latin letters, ' +
-                'numbers, undescores, dashes and dots, and must start ' +
-                'with a letter.</div>','msg_stop' );
+      if (title_inp.getValue().length<=0)  {
+        new MessageBox ( 'No Project Name',
+                 '<b>Project Name is not given</b>.<p>' +
+                 'Project cannot be renamed with empty name.',
+                 'msg_error' );
+        return false;
+      }
+      pDesc = projectList.renameProject ( prjName,title_inp.getValue(),getDateString() );
+      if (pDesc)  {
+        var new_name = name_inp.getValue();
+        if ((new_name!=pDesc.name) && projectList.getProject(new_name))  {
+          new MessageBox ( 'Duplicate Project ID',
+                   '<div style="width:400px;"><h2>Duplicate Project ID</h2>' +
+                   'Project with ID <b>"' + new_name +
+                   '"</b> already exists (check all folders).</div>',
+                   'msg_excl_yellow' );
           return false;
         }
-
-        if (title_inp.getValue().length<=0)  {
-          new MessageBox ( 'No Project Name',
-                   '<b>Project Name is not given</b>.<p>' +
-                   'Project cannot be renamed with empty name.',
-                   'msg_error' );
-          return false;
-        }
-        pDesc = projectList.renameProject ( prjName,title_inp.getValue(),getDateString() );
-        if (pDesc)  {
-          var new_name = name_inp.getValue();
-          if ((new_name!=pDesc.name) && projectList.getProject(new_name))  {
-            new MessageBox ( 'Duplicate Project ID',
-                     '<div style="width:400px;"><h2>Duplicate Project ID</h2>' +
-                     'Project with ID <b>"' + new_name +
-                     '"</b> already exists (check all folders).</div>',
-                     'msg_excl_yellow' );
-            return false;
-          }
-          pDesc.new_name      = new_name;
-          projectList.current = prjName;
-          serverRequest ( fe_reqtype.renameProject,pDesc,'Rename Project',
-            function(data){
-              if (data.code=='ok')  {
-                pDesc.name = new_name;
-                delete pDesc.new_name;
-                saveProjectList ( function(data){
-                  projectList.current = new_name;
-                  makeProjectListTable();
-                });
-              } else  {
-                new MessageBox ( 'Project renaming rejected',
-                  '<h2>Project renaming rejected</h2><i>' + data.code + '</i>.',
-                  'msg_error'
-                );
+        pDesc.new_name      = new_name;
+        projectList.current = prjName;
+        serverRequest ( fe_reqtype.renameProject,pDesc,'Rename Project',
+          function(data){
+            if (data.code=='ok')  {
+              pDesc.name = new_name;
+              delete pDesc.new_name;
+              saveProjectList ( function(data){
+                projectList.current = new_name;
                 makeProjectListTable();
-              }
-            },null,'persist' );
-          return true;  // close dialog
-        } else  {
-          new MessageBox ( 'Project ID not found',
-              'The Project ID <b>'+prjName+'</b> is not found in the list.<p>' +
-              'This is program error, please report as a bug.','msg_error' );
-          return false;
-        }
-      });
-
-    }
+              });
+            } else  {
+              new MessageBox ( 'Project renaming rejected',
+                '<h2>Project renaming rejected</h2><i>' + data.code + '</i>.',
+                'msg_error'
+              );
+              makeProjectListTable();
+            }
+          },null,'persist' );
+        return true;  // close dialog
+      } else  {
+        new MessageBox ( 'Project ID not found',
+            'The Project ID <b>'+prjName+'</b> is not found in the list.<p>' +
+            'This is program error, please report as a bug.','msg_error' );
+        return false;
+      }
+    });
 
   }
 
@@ -319,15 +305,24 @@ function ProjectListPage ( sceneId )  {
     var dlgTitle   = 'Delete Project';
     if (isCurrentProjectAuthored(false))  {
       delMessage = '<h2>Delete Project</h2>' +
-                   'Project: <b>"' + delName +
+                   'Project <b>"' + delName +
                    '"</b> will be deleted. All project ' +
                    'structure and data will be lost.'    +
                    '<p>Please confirm your choice.';
+    } else if (__current_folder.type==folder_type.custom_list)  {
+      delMessage = '<h2>Unlist Project</h2>' +
+                   'Project <b>"' + delName  +
+                   '"</b> will be removed from list <i>"'   +
+                   __current_folder.path     + '"</i>. The project will ' +
+                   'remain intact in its folder.' +
+                   '<p>Please confirm.';
+      btnName    = 'Please unlist';
+      dlgTitle   = 'Unlist Project';
     } else  {
       delMessage = '<h2>Unjoin Project</h2>' +
-                   'Project, shared with you: <b>"' + delName     +
-                   '"</b> will be unjoined, and you will be no '  +
-                   'longer able to access it until joined again.' +
+                   'Project <b>"' + delName  + '"</b>, shared with you, ' +
+                   'will be unjoined, and you will be no longer ' +
+                   'able to access it until joined again.'        +
                    '<p>Please confirm your choice.';
       btnName    = 'Please unjoin';
       dlgTitle   = 'Unjoin Project';
@@ -336,10 +331,17 @@ function ProjectListPage ( sceneId )  {
     inputBox.setText ( '<div style="width:400px;">' + delMessage + '</div>',
                        'msg_confirm' );
     inputBox.launch  ( btnName,function(){
-      serverRequest ( fe_reqtype.deleteProject,delName,dlgTitle,
-        function(data){
-          loadProjectList1();
-        },null,'persist' );
+      if (__current_folder.type==folder_type.custom_list)  {
+        saveProjectList ( function(rdata){
+          // loadProjectList();
+          // makeProjectListTable();
+        });
+      } else  {
+        serverRequest ( fe_reqtype.deleteProject,delName,dlgTitle,
+          function(data){
+            loadProjectList1();
+          },null,'persist' );
+      }
       return true;  // close dialog
     });
   }
@@ -364,6 +366,7 @@ function ProjectListPage ( sceneId )  {
       shareProject ( projectList.projects[pno],function(desc){
         if (desc)  {
           projectList.projects[pno] = desc;
+          projectList.resetFolders ( __login_id );
           saveProjectList ( function(data){} );
         }
       });
@@ -407,10 +410,8 @@ function ProjectListPage ( sceneId )  {
 
     var prjName   = pDesc.name;
     var inputBox  = new InputBox ( 'Clone Project' );
-    // var ibx_grid  = new Grid     ( '' );
     inputBox.setText ( '','cloneprj' );
     var ibx_grid = inputBox.grid;
-    // var ibx_grid  = new Grid     ( '' );
     ibx_grid.setLabel    ( '<h2>Clone Project "' + prjName + '"</h2>',0,2,2,3 );
     ibx_grid.setLabel    ( 'Cloned Project ID:',2,3,1,1 );
     var name_inp  = ibx_grid.setInputText ( prjName + '-clone',2,4,1,1 )
@@ -428,7 +429,6 @@ function ProjectListPage ( sceneId )  {
     ibx_grid.setNoWrap   ( 3,3 );
     ibx_grid.setVerticalAlignment ( 2,3,'middle' );
     ibx_grid.setVerticalAlignment ( 3,3,'middle' );
-    // inputBox.addWidget   ( ibx_grid );
 
     inputBox.launch ( 'Clone',function(){
       if (name_inp.getValue().length<=0)  {
@@ -509,15 +509,6 @@ function ProjectListPage ( sceneId )  {
 
   var repairProject = function()  {
     panel.click();  // get rid of context menu
-    // new QuestionBox (
-    //     'Repair Project',
-    //     '<h2>Repair Project</h2>',
-    //     'Repair',function(){
-    //       new MessageBox ( 'Not implemented','<h2>Function not implemented</h2>' );
-    //     },
-    //     'Cancel',function(){
-    //       new MessageBox ( 'Not implemented','<h2>Function not implemented</h2>' );
-    //     },'msg_error');
 
     new QuestionBox (
         'Repair Project',
@@ -563,13 +554,6 @@ function ProjectListPage ( sceneId )  {
     */
 
     panel.setWidget ( self.tablesort_tbl,table_row,0,1,nCols );
-    // var message = '&nbsp;<p>&nbsp;<p><h2>' +
-    //               'Your List of Projects is currently empty.<br>'  +
-    //               'Press "Add" button to create a new Project<br>' +
-    //               'and then "Open" to open it.<p>' +
-    //               'You may also import an old project (using<br>'  +
-    //               'the "Import" button) if one was previously<br>' +
-    //               'exported from ' + appName() + '.</h2>';
 
     __current_folder = projectList.currentFolder;
     var owners_folder = __login_id + '\'s Projects';
@@ -654,7 +638,8 @@ function ProjectListPage ( sceneId )  {
           var joined = ['','',''];
           var shared_project = false;
           if ('owner' in pDesc)  {
-            if (pDesc.owner.share.length>0)  {
+            // if (pDesc.owner.share.length>0)  {
+            if (Object.keys(pDesc.share).length>0)  {
               if (pDesc.owner.login!=__login_id)  {
                 joined = ['<i>','</i>',"is not included in user\'s quota"];
                 pName  = '<b>[<i>' + pDesc.owner.login  + '</i>]:</b>' + pName;
@@ -670,7 +655,9 @@ function ProjectListPage ( sceneId )  {
           (function(shared_prj){
 
             var del_label = 'Delete';
-            if (shared_prj)
+            if (__current_folder.type==folder_type.custom_list)
+              del_label = 'Unlist';
+            else if (shared_prj)
               del_label = 'Unjoin';
 
             $(trow.element).click(function(){
@@ -685,7 +672,8 @@ function ProjectListPage ( sceneId )  {
             contextMenu.addItem('Export' ,image_path('export')   ).addOnClickListener(exportProject);
             contextMenu.addItem('Share'  ,image_path('share')    ).addOnClickListener(sharePrj     );
             contextMenu.addItem('Clone'  ,image_path('cloneprj') ).addOnClickListener(cloneProject );
-            if (__current_folder.name.startsWith(owners_folder) ||
+            if (((__current_folder.type==folder_type.user) &&
+                 __current_folder.path.startsWith(owners_folder)) ||
                 (__current_folder.type==folder_type.tutorials))
               contextMenu.addItem('Move',image_path('folder_projects') )
                          .addOnClickListener(function(){ browseFolders('move') });
@@ -798,21 +786,16 @@ function ProjectListPage ( sceneId )  {
     //   __close_all_menus();
     // });
 
-    // var fontSize = Math.round ( Math.max ( 1.0,
-    //                               Math.min ( 2.0,140.0/__current_folder.length) ) *
-    //                             100.0 ) + '%';
     setPageTitle ( __current_folder );
-    // self.headerPanel.setLabel ( __current_folder,0,3,1,1 )
-    //                 .setFont  ( 'times',fontSize,true,true )
-    //                 .setNoWrap()
-    //                 .setHorizontalAlignment ( 'center' );
 
   }
 
   function loadProjectList()  {
     //  Read list of projects from server
     serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
+// printFolders ( data );
       projectList = jQuery.extend ( true, new ProjectList(__login_id),data );
+// printFolders ( projectList );
       makeProjectListTable();
     },null,'persist');
   }
@@ -837,48 +820,46 @@ function ProjectListPage ( sceneId )  {
       }
       title = 'Move project to folder';
     }
-    new FoldersBrowser ( title,projectList,__current_folder,funcKey,
+    var pDesc = getCurrentProjectDesc();
+    new FoldersBrowser ( title,projectList,__current_folder,pDesc,funcKey,
       function ( key,data ){
         switch (key)  {
           case 'delete' :
-          case 'select' : projectList.currentFolder =
-                                  projectList.findFolder ( data.folder_path );
-                          if (!projectList.currentFolder)  {
+          case 'select' : if (!projectList.setCurrentFolder(
+                                  projectList.findFolder(data.folder_path)))
                             new MessageBox (
                                 'Error',
                                 '<h2>Error</h2>Selected folder:<p><i>"' +
                                 data.folder_path + '</i>"<p>not found (1).',
                                 'msg_error'
                               );
-                            projectList.currentFolder = projectList.folders[0];
-                          }
-                          projectList.resetFolders ( __login_id,true );
+                          // projectList.resetFolders ( __login_id );
                           saveProjectList ( function(rdata){
                             // loadProjectList();
                             makeProjectListTable();
                           });
                       break;
-          case 'add'    : projectList.resetFolders ( __login_id,true );
+          case 'add'    : projectList.resetFolders ( __login_id );
                           saveProjectList ( function(rdata){
                             // loadProjectList();
                             // makeProjectListTable();
                           });
                       break;
-          case 'move'   : var pDesc = getCurrentProjectDesc();
+          case 'move'   : //var pDesc = getCurrentProjectDesc();
                           if (pDesc)  {
-                            projectList.currentFolder =
-                                    projectList.findFolder ( data.folder_path );
-                            if (!projectList.currentFolder)  {
+                            if (!projectList.setCurrentFolder(
+                                    projectList.findFolder(data.folder_path)))  {
                               new MessageBox (
                                   'Error',
                                   '<h2>Error</h2>Selected folder:<p><i>"' +
                                   data.folder_path + '</i>"<p>not found (2).',
                                   'msg_error'
                                 );
-                              projectList.currentFolder = projectList.folders[0];
                             } else  {
-                              pDesc.folderPath = data.folder_path;
-                              projectList.resetFolders ( __login_id,true );
+                              if (projectList.currentFolder.type==folder_type.custom_list)
+                                    addProjectLabel ( pDesc,data.folder_path );
+                              else  pDesc.folderPath = data.folder_path;
+                              projectList.resetFolders ( __login_id );
                               saveProjectList ( function(rdata){
                                 // loadProjectList();
                                 makeProjectListTable();
@@ -888,17 +869,14 @@ function ProjectListPage ( sceneId )  {
                       break;
           case 'rename' : if (data.folder_path==__current_folder.path)  {
                             setPageTitle ( data.rename );
-                            projectList.currentFolder =
-                                    projectList.findFolder ( data.rename );
-                            if (!projectList.currentFolder)  {
+                            if (!projectList.setCurrentFolder(
+                                    projectList.findFolder(data.rename)))
                               new MessageBox (
                                   'Error',
                                   '<h2>Error</h2>Selected folder:<p><i>"' +
                                   data.rename + '</i>"<p>not found (2).',
                                   'msg_error'
                                 );
-                              projectList.currentFolder = projectList.folders[0];
-                            }
                             __current_folder = projectList.currentFolder;
                           }
                           for (var i=0;i<projectList.projects.length;i++)
@@ -907,13 +885,13 @@ function ProjectListPage ( sceneId )  {
                                 projectList.projects[i].folderPath.replace (
                                   data.folder_path,data.rename
                                 );
-                          projectList.resetFolders ( __login_id,true );
+                          projectList.resetFolders ( __login_id );
                           saveProjectList ( function(rdata){
                             // loadProjectList();
                             makeProjectListTable();
                           });
                       break;
-          case 'cancel' : projectList.resetFolders ( __login_id,true );
+          case 'cancel' : projectList.resetFolders ( __login_id );
                       break;
           default       : new MessageBox ( 'Unknown action key',
                               '<h2>Unknown action key</h2>' +
@@ -1127,7 +1105,6 @@ function ProjectListPage ( sceneId )  {
   move_btn  .addOnClickListener ( function(){ browseFolders('move'); });
   del_btn   .addOnClickListener ( deleteProject );
   export_btn.addOnClickListener ( exportProject );
-  //join_btn.addOnClickListener ( importSharedProject  );
 
   // add a listener to 'import' button
   import_btn.addOnClickListener ( function(){

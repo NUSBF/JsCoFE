@@ -46,7 +46,7 @@ function ImportSharedProjectDialog ( onSuccess_func )  {
     resizable : false,
     height    : 'auto',
     maxHeight : 500,
-    width     : 'auto',
+    width     : '720px',
     modal     : true,
     open      : function(event, ui) {
       $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
@@ -101,9 +101,10 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
              .setWidth ( '600px' );
     for (var i=0;i<shared_projects.length;i++)
       share_ddn.addItem (
-           shared_projects[i].owner.login + ':[' +
-           shared_projects[i].name  + '] "' +
-           shared_projects[i].title + '"','',i,i==0 );
+        shared_projects[i].owner.login + ':[' +
+        shared_projects[i].name  + '] "' +
+        shared_projects[i].title + '"','',i,i==0
+      );
 
     share_ddn.make();
     this.grid.setWidget   ( share_ddn,3,2,1,1 );
@@ -120,6 +121,7 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
         share_ddn .hide();
         import_btn.hide();
         var progressBar = new ProgressBar ( 0 );
+        progressBar.setWidth_px ( 600 );
         dlg.grid.setWidget ( progressBar, 4,2,1,1 );
 
         serverRequest ( fe_reqtype.startSharedImport,pDesc,'Join Shared Project',
@@ -136,26 +138,36 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
                     if (data.signal=='Success')  {
                       dlg.grid.setLabel ( '<h2>Project Joined Successfully</h2>',0,2,2,3 );
                       var msg1 = '';
-                      if ((__current_folder.path!=folder_type.list) &&
-                          (__current_folder.path!=folder_type.custom_list))
-                        msg1 = '<p><b>Note that you are now in the owner\'s project '+
+                      if ((__current_folder.type!=folder_type.joined) &&
+                          (__current_folder.type!=folder_type.all_projects))
+                        msg1 = '<p><b>Note that you are now in the project\'s owner '+
                                'folder. To navigate back to your folder(s), click on ' +
                                'the page title or use Main Menu.</b>';
                       msg_lbl.setText (
-                          '<div style="width:400px">' +
+                          '<div style="width:600px">' +
                           'Project "' + data.name + '" is now joined, ' +
                           'and you may work on it simultaneously with ' +
                           'the project owner and other users, with whom the ' +
-                          'project may have been also shared.' +
+                          'project may have also been shared.' +
                           msg1 +
                           '<p>You may close this dialog now.</div>' );
                       if (onSuccess_func)
                         onSuccess_func();
                     } else  {
                       dlg.grid.setLabel ( '<h2>Join Shared Project Failed</h2>',0,2,2,3 );
-                      msg_lbl.setText ( 'Project "' + data.name + '" was not joined, ' +
-                                        'the reason being:<p><b>*** <i>' + data.signal +
-                                        '</i></b>' );
+                      var msg2 = '<div style="width:600px">Project "'  + data.name  +
+                                 '" was not joined, the reason being:<p><b>*** <i>' +
+                                 data.signal + '</i></b>';
+                      if (data.signal.indexOf('already exists')>=0)
+                        msg2 += '<p>You can:<ul>' +
+                                '<li>find and rename your project "' + data.name +
+                                '" and try joining again</li>' +
+                                '<li>ask your collaborator to rename the project ' +
+                                'and re-share it with you</li>' +
+                                '<li>delete/unjoin project ' + data.name +
+                                ' if renaming is not possible (project\'s backup ' +
+                                'copy may be exported before deletion)</li></ul>';
+                      msg_lbl.setText ( msg2 + '</div>' );
                     }
                   }
                 },null,function(){

@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    23.06.22   <--  Date of Last Modification.
+ *    26.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -27,7 +27,7 @@
  // ===========================================================================
 // Folders dialog class
 
-function FoldersBrowser ( title,projectList,currentFolder,funcKey,
+function FoldersBrowser ( title,projectList,currentFolder,currentPDesc,funcKey,
                           onReturn_fnc )  {
 // funcKey = 'select' or 'move'
 // folders = [
@@ -43,13 +43,14 @@ function FoldersBrowser ( title,projectList,currentFolder,funcKey,
   this.projectList   = projectList;
   this.folders       = projectList.folders;
   this.currentFolder = currentFolder;
+  this.currentPDesc  = currentPDesc;
   this.funcKey       = funcKey;
   this.onReturn_fnc  = onReturn_fnc;
-  this.nprojects     = 0;
+  this.nprojects     = currentFolder.nprojects; // 0;
 
-  var crFolder = this.findFolder(currentFolder.path);
-  if (crFolder)
-    this.nprojects = crFolder.nprojects;
+  // var crFolder = this.findFolder(currentFolder.path);
+  // if (crFolder)
+  //   this.nprojects = crFolder.nprojects;
 
   if ((funcKey=='move') && (this.nprojects<=0))  {
     new MessageBox ( 'No projects to move',
@@ -65,9 +66,6 @@ function FoldersBrowser ( title,projectList,currentFolder,funcKey,
   this.grid = new Grid('-compact');
   this.addWidget ( this.grid );
 
-  // grid.setLabel ( '<h3>' + __login_user + '\'s project folders</h3>', 0,0,1,1 );
-  // grid.setLabel ( '<h2>My Project Folders</h2>', 0,0,1,1 );
-  // this.grid.setLabel ( '&nbsp;&nbsp;&nbsp;',0,0,1,1 );
   this.grid.setLabel (
     '<span style="font-size:160%"><b>Project Folders</b></span>',
     1,0,1,1
@@ -202,7 +200,6 @@ FoldersBrowser.prototype.makeToolBar = function ( row,col )  {
     new HelpBox ( '',__user_guide_base_url + 'jscofe_project.html',null );
   });
 
-
 }
 
 
@@ -223,9 +220,6 @@ FoldersBrowser.prototype.setFolders = function ( pnode,folders,ftree )  {
 }
 
 FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
-//  var ftree = new Tree ( '<u><i><b>' + __login_user + '\'s project folders<b></i></u>' );
-// var ftree = new Tree ( '<i><b>Project Folders<b></i><br>' +
-//                        '<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>' );
   var ftree = new Tree ( '<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>' );
   for (var i=0;i<folders.length;i++)  {
     var icon = 'folder_projects_user';
@@ -419,8 +413,8 @@ var inputBox = new InputBox ( 'Add list' );
     var folder   = self.findFolder ( fpath );
     if (folder)  {
       folder.type = folder_type.custom_list;
-      self.projectList.currentFolder = folder;
-      self.currentFolder = folder;
+      self.projectList.setCurrentFolder ( folder );
+      self.currentFolder = self.projectList.currentFolder;
       self.projectList.sortFolders();
       self.tree_div.removeChild ( self.ftree );
       self.ftree = self.makeFolderTree ( self.folders );
@@ -493,7 +487,7 @@ var folder  = this.findFolder ( selNode.dataId );
 FoldersBrowser.prototype.onMoveTo = function()  {
 var selNode = this.ftree.getSelectedNode();
 var folder  = this.findFolder ( selNode.dataId );
-var fldName = folderPathTitle ( folder.name,__login_id,0 );
+var fldPath = folderPathTitle ( folder,__login_id,0 );
 var label   = 'Folder';
 
   if (folder.type==folder_type.custom_list)
@@ -504,14 +498,15 @@ var label   = 'Folder';
     return;
   if (selNode.dataId==this.currentFolder.path)
     new MessageBox ( 'Already in ' + label_l,
-          '<h2>Already in "' + fldName + '"</h2>' +
-          'The currently selected project is already in the chosen ' + label_l +'.',
+          '<h2>Already in the "' + label_l + '"</h2>' +
+          'Project "' + this.currentPDesc.name + '" is already in ' + label_l +
+          ' "' + fldPath + '".',
           'msg_stop' );
   else  {
     var self = this;
     new QuestionBox ( 'Move project to ' + label_l,
                       '<h2>Selected project will be moved to ' + label_l +
-                      '<br>"' + fldName + '"</h2>' +
+                      '<br>"' + fldPath + '"</h2>' +
                       'Please confirm.',[
         { name    : 'Please move',
           onclick : function(){

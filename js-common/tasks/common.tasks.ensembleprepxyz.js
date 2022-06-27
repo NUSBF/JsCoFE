@@ -284,7 +284,7 @@ if (!__template)  {
         if (xyz[i].subtype.indexOf('rna')>=0)      nRNAs++;
       }
 
-      msg_list = [];
+      var msg_list = [];
 
       if ((['U','D'].indexOf(modSel)<0) && ((nDNAs+nRNAs>0) || isDNA || isRNA))
         msg_list.push ( this.invalidParamMessage (

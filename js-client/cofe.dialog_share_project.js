@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.22   <--  Date of Last Modification.
+ *    26.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,7 +32,7 @@ function shareProject ( projectDesc,callback_func )  {
 
   var author = getProjectAuthor ( projectDesc );
 
-  if ((author!=__login_id) && (author!=folder_type.tutorials))  {
+  if ((author!=__login_id) && (author.toLowerCase()!=folder_type.tutorials))  {
     new MessageBox ( 'Share Project',
                      'Only Project owner (<b>' + author +
                      '</b>) can share this Project.',
@@ -43,17 +43,16 @@ function shareProject ( projectDesc,callback_func )  {
 
   var inputBox = new InputBox ( 'Share Project' );
   inputBox.setText ( '<h2>Share Project "' + projectDesc.name + '"</h2>','share' );
-  // var ibx_grid  = new Grid     ( '' );
   var ibx_grid = inputBox.grid;
-  // ibx_grid.setLabel ( '<h2>Share Project "' + projectDesc.name + '"</h2>',0,2,2,1 );
   ibx_grid.setLabel ( 'The following users:<br>&nbsp;',2,2,1,1 );
-  var share_list = '';
-  if (projectDesc.owner.share.length>0)  {
-    share_list = projectDesc.owner.share[0].login;
-    for (var i=1;i<projectDesc.owner.share.length;i++)
-      share_list += ',' + projectDesc.owner.share[i].login;
-  }
-  var share_inp = new InputText ( share_list );
+  // var share_list = '';
+  // if (projectDesc.owner.share.length>0)  {
+  //   share_list = projectDesc.owner.share[0].login;
+  //   for (var i=1;i<projectDesc.owner.share.length;i++)
+  //     share_list += ',' + projectDesc.owner.share[i].login;
+  // }
+  var share_list = Object.keys(projectDesc.share).join(',');
+  var share_inp  = new InputText ( share_list );
   share_inp.setStyle ( 'text','','login1,login2,...','' );
                      //   'Give a comma-separated list of login names of ' +
                      //   'users who will be allowed to access and modify ' +
@@ -71,10 +70,9 @@ function shareProject ( projectDesc,callback_func )  {
                             5,2,1,1  )
            .setFontItalic ( true  )
            .setFontSize   ( '85%' );
-  // inputBox .addWidget     ( ibx_grid );
   inputBox .launch ( 'Apply',function(){
     var logins     = share_inp.getValue();
-    var share0     = projectDesc.owner.share;
+    var share0     = projectDesc.share;
     var logins_lst = logins.split(',')
                            .map(function(item){
                              return item.trim();
@@ -82,13 +80,16 @@ function shareProject ( projectDesc,callback_func )  {
                            .filter(function(item,pos,self){
                              return self.indexOf(item)==pos;
                            });
-    projectDesc.owner.share = [];
+    projectDesc.share = {};
     for (var i=0;i<logins_lst.length;i++)
       if (logins_lst[i]!=projectDesc.owner.login)  {
-        projectDesc.owner.share.push({
-          'login'       : logins_lst[i],
-          'permissions' : 'rw'
-        });
+        if (logins_lst[i] in share0)
+          projectDesc.share[logins_lst[i]] = share0[logins_lst[i]];
+        else
+          projectDesc.share[logins_lst[i]] = {
+            labels      : [],
+            permissions : 'rw'
+          };
       }
     serverRequest ( fe_reqtype.shareProject,{
                       desc   : projectDesc,
@@ -97,12 +98,14 @@ function shareProject ( projectDesc,callback_func )  {
                       if (data.desc)  {
                         var msg = '<h2>Project "' + data.desc.name +
                                   '" Share Status</h2><b>Shared with:</b>&nbsp;<i>';
-                        if (data.desc.owner.share.length<=0)
+                        var logins_lst = Object.keys(data.desc.share);
+                        if (logins_lst.length<=0)
                           msg += 'nobody';
                         else  {
-                          msg += data.desc.owner.share[0].login;
-                          for (var i=1;i<data.desc.owner.share.length;i++)
-                            msg += ', ' + data.desc.owner.share[i].login;
+                          msg += logins_lst.join(', ');
+                          // msg += data.desc.owner.share[0].login;
+                          // for (var i=1;i<data.desc.owner.share.length;i++)
+                          //   msg += ', ' + data.desc.owner.share[i].login;
                           msg += '<br><font size="-1">(these users can join ' +
                                  'this project and work on it simultaneously ' +
                                  'with you)</font>';

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    25.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -100,14 +100,14 @@ FEJobRegister.prototype.addJob = function ( job_token,nc_number,loginData,
     loginData  : loginData,
     project    : project,
     jobId      : jobId,
-    is_shared  : (shared_logins.length>0),
+    is_shared  : (Object.keys(shared_logins).length>0),
     start_time : Date.now(),
     eoj_notification : eoj_notification
   };
   var index = loginData.login + ':' + project + ':' + jobId;
   this.token_map[index] = job_token;
-  for (var i=0;i<shared_logins.length;i++)  {
-    index = shared_logins[i].login + ':' + project + ':' + jobId;
+  for (var login in shared_logins)  {
+    index = login + ':' + project + ':' + jobId;
     this.token_map[index] = job_token;
   }
 }
@@ -536,16 +536,16 @@ function runJob ( loginData,data, callback_func )  {
 
   // run job
 
-  var shared_logins  = [];
+  var shared_logins  = {};
   var projectData    = prj.readProjectData ( loginData,task.project );
   var ownerLoginData = loginData;
   if (projectData)  {
-    shared_logins = projectData.desc.owner.share;
+    shared_logins = projectData.desc.share;
     if (projectData.desc.owner.login!=loginData.login)
       ownerLoginData = user.getUserLoginData ( projectData.desc.owner.login );
     if (task.autoRunId.length>0)
       projectData.desc.autorun = true;
-    if ((shared_logins.length>0) || projectData.desc.autorun) // update the timestamp
+    if ((Object.keys(shared_logins).length>0) || projectData.desc.autorun) // update the timestamp
       prj.writeProjectData ( loginData,projectData,true );
   }
 
@@ -1042,7 +1042,7 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
       if (!('_root' in auto_meta.context.job_register))
         auto_meta.context.job_register._root = jobEntry.jobId;
 
-      var shared_logins  = projectData.desc.owner.share;
+      var shared_logins  = projectData.desc.share;
       var ownerLoginData = loginData;
       if (projectData.desc.owner.login!=loginData.login)
         ownerLoginData = user.getUserLoginData ( projectData.desc.owner.login );

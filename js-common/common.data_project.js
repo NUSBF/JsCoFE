@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.06.22   <--  Date of Last Modification.
+ *    25.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -54,18 +54,32 @@ var folder_type = {
 
 function ProjectDesc()  {
 
-  this._type        = 'ProjectDesc';
-  this.name         = '';    // short project ID
-  this.title        = '';    // descriptive title
-  this.owner        = {
+  this._type = 'ProjectDesc';
+  this.name  = '';    // short project ID
+  this.title = '';    // descriptive title
+
+  this.owner = {
     login  : '',   // login where project was created
     name   : '',
     email  : '',
-    share  : []    // list of login share objects
+    labels : {  // owner's labels index
+      // 'label1' : 1,
+      // 'label2' : 1,
+    }
+    // share  : []    // list of login share objects
+  };
+
+  this.share = {  // shared users index
+    // 'login' : { labels      : [
+    //               'label1' : 1,
+    //               'label2' : 1,
+    //             ],
+    //             permissions : 'rw'
+    //           }
   };
 
   this.folderPath   = '';   // virtual project folder path
-  this.labels       = [];   // list of optional project labels
+  // this.labels       = [];   // list of optional project labels
   // this.archive = {
   //   id      : '',   // archive ID
   //   version : 0,    // archived project version
@@ -99,27 +113,27 @@ ProjectDesc.prototype.init = function ( name_str,title_str,startmode,time_str ) 
   else  this.tasklistmode = tasklist_mode.basic;
 }
 
-
 function isProjectAccessible ( login,projectDesc )  {
   if (!('owner' in projectDesc))        return true;
   if (!('login' in projectDesc.owner))  return true;
   if (!projectDesc.owner.login)         return true;
   if (projectDesc.owner.login==login)   return true;
   if (projectDesc.owner.login=='localuser') return true;
-  var found = false;
-  for (var i=0;(i<projectDesc.owner.share.length) && (!found);i++)
-    found = (projectDesc.owner.share[i].login==login);
-  return found;
+  return (login in projectDesc.share);
+  // var found = false;
+  // for (var i=0;(i<projectDesc.owner.share.length) && (!found);i++)
+  //   found = (projectDesc.owner.share[i].login==login);
+  // return found;
 }
 
 function isProjectJoined ( login,projectDesc )  {
   return (projectDesc.owner.login!=login) &&
-         (projectDesc.owner.share.length>0);
+         (Object.keys(projectDesc.share).length>0);
 }
 
 function isProjectShared ( login,projectDesc )  {
   return (projectDesc.owner.login==login) &&
-         (projectDesc.owner.share.length>0);
+         (Object.keys(projectDesc.share).length>0);
 }
 
 function getProjectAuthor ( projectDesc )  {
@@ -127,6 +141,43 @@ var author = projectDesc.owner.login;
   if (('author' in projectDesc.owner) && projectDesc.owner.author)
     author = projectDesc.owner.author;
   return author;
+}
+
+function addProjectLabel ( projectDesc,label )  {
+  if (projectDesc.labels.indexOf(label)<0)
+    projectDesc.labels.push ( label );
+}
+
+function removeProjectLabel ( projectDesc,label )  {
+var index = projectDesc.labels.indexOf ( label );
+  if (index>=0)
+    projectDesc.labels.splice ( index,1 );
+}
+
+function compareProjectLabels ( login,projectDesc1,projectDesc2 )  {
+var labels1 = [];
+var labels2 = [];
+
+  if (projectDesc1.owner.login==login)
+    labels1 = projectDesc1.owner.labels;
+  else if (login in projectDesc1.share)
+    labels1 = projectDesc1.share[login].labels;
+
+  if (projectDesc2.owner.login==login)
+    labels2 = projectDesc2.owner.labels;
+  else if (login in projectDesc2.share)
+    labels2 = projectDesc2.share[login].labels;
+
+  var same = (labels1.length==labels2.length);
+  if (same)  {
+    labels1.sort();
+    labels2.sort();
+    for (var i=0;(i<labels1.length) && same;i++)
+      same = (lebels1[i]==labels2[i]);
+  }
+
+  return same;
+
 }
 
 // ===========================================================================
@@ -141,38 +192,34 @@ function ProjectList ( loginName )  {
 }
 
 ProjectList.prototype.seedFolders = function ( loginName )  {
-  var f0name   = loginName + '\'s Projects';
+  var f0name = loginName + '\'s Projects';
   this.folders = [  // project folders tree basic elements
     { name      : f0name,
       path      : f0name,
       nprojects : 0,
       type      : folder_type.user,
-      folders   : [],
-      projects  : []
+      folders   : []
     },{
       name      : 'Projects shared by me', // project folders tree basic element
       path      : 'Projects shared by me',
       nprojects : 0,
       type      : folder_type.shared,
-      folders   : [],
-      projects  : []
+      folders   : []
     },{
       name      : 'Projects joined by me', // project folders tree basic element
       path      : 'Projects joined by me',
       nprojects : 0,
       type      : folder_type.joined,
-      folders   : [],
-      projects  : []
+      folders   : []
     },{
       name      : 'All projects', // project folders tree basic element
       path      : 'All projects',
       nprojects : 0,
       type      : folder_type.all_projects,
-      folders   : [],
-      projects  : []
+      folders   : []
     }
   ];
-  this.currentFolder = this.folders[0];
+  this.setCurrentFolder ( this.folders[0] );
 }
 
 ProjectList.prototype.getRootFolderName = function ( folderNo,loginName )  {
@@ -180,11 +227,13 @@ var fdname = '???';
   if (folderNo<this.folders.length)  {
     fdname = this.folders[folderNo].name;
     switch (this.folders[folderNo].type)  {
-      case folder_type.user   : if (fdname.startsWith(loginName))
-                                   fdname = 'My Projects';
+      case folder_type.user      : if (this.folders[folderNo]
+                                           .path.startsWith(loginName+'\'s '))
+                                     fdname = 'My Projects';
                                 break;
-      case folder_type.common : break;
-      default                 : fdname = '<i>' + fdname + '</i>';
+      case folder_type.tutorials : fdname = '<i>Tutorials</i>'; break;
+      case folder_type.common    : break;
+      default                    : fdname = '<i>' + fdname + '</i>';
     };
   }
   return fdname;
@@ -200,7 +249,8 @@ var f0name = loginName + '\'s ';
       case folder_type.shared       : title = 'Projects shared by me';  break;
       case folder_type.joined       : title = 'Projects joined by me';  break;
       case folder_type.all_projects : title = 'All Projects';           break;
-      default : title = folder.name;
+      case folder_type.tutorials    : title = 'Tutorials';              break;
+      default : ; //title = folder.name;
     }
   if ((maxLength>0) && (title.length>maxLength))
     title = '&hellip; ' + title.substr(title.length-maxLength+3);
@@ -219,7 +269,7 @@ ProjectList.prototype._add_folder_path = function ( flist,level,folders,nproject
       for (var i=1;i<=level;i++)
         fpath += '/' + flist[i];
       var ftype = folder_type.common;
-      if (!level)  {
+      if (level==0)  {
         ftype = folder_type.tutorials;
         if ((fpath.toLowerCase()!=folder_type.tutorials) &&
             (fpath!=folder_type.custom_list))
@@ -230,8 +280,7 @@ ProjectList.prototype._add_folder_path = function ( flist,level,folders,nproject
          path      : fpath,
          type      : ftype,
          nprojects : 0,
-         folders   : [],
-         projects  : []
+         folders   : []
       };
       folders.push ( folder );
     }
@@ -278,70 +327,104 @@ var i  = 4;
     this.folders[i++] = l2[j];
   for (var j=0;j<l3.length;j++)
     this.folders[i++] = l3[j];
-  // for (var i=4;i<this.folders.length;i++)
-  //   for (var j=i+1;j<this.folders.length;j++)  {
-  //     var swap = false;
-  //     if ((this.folders[i].type==folder_type.custom_list) &&
-  //         (this.folders[j].type==folder_type.custom_list) &&
-  //         (this.folders[j].name<this.folders[i].name))
-  //       swap = true;
-  //     if ((this.folders[i].type!=folder_type.custom_list) &&
-  //         (this.folders[j].type==folder_type.custom_list))
-  //       swap = true;
-  //     if ((this.folders[i].type!=folder_type.custom_list) &&
-  //         (this.folders[j].type==folder_type.custom_list))
-  //       swap = true;
-  //
-  //     switch (this.folders[i].type)  {
-  //       case folder_type.custom_list :
-  //               swap = (this.folders[j].type==folder_type.custom_list) &&
-  //                      (this.folders[j].name<this.folders[i].name);
-  //             break;
-  //       case folder_type.tutorials :
-  //               swap = (this.folders[j].type==folder_type.custom_list);
-  //             break;
-  //       default :
-  //               swap = (this.folders[i].type!=folder_type.custom_list) &&
-  //                      (this.folders[j].name<this.folders[i].name);
-  //     }
-  //     if (swap)  {
-  //       var fldi = this.folders[i];
-  //       this.folders[i] = this.folders[j];
-  //       this.folders[j] = fldi;
-  //     }
-  //   }
 }
 
-ProjectList.prototype.resetFolders = function ( login,recalculate_bool )  {
-var folders = this.folders;
+function _print_folder ( folder )  {
+  console.log ( ' - ' + folder.path );
+  for (var i=0;i<folder.folders.length;i++)
+    _print_folder ( folder.folders[i] );
+}
+
+function printFolders ( projectList )  {
+  console.log ( ' ======================================================== ' )
+  console.log ( ' Project Folders' );
+  for (var i=0;i<projectList.folders.length;i++)  {
+    console.log ( '\n Folder #' + i );
+    _print_folder ( projectList.folders[i] );
+  }
+  console.log ( '\n Current folder: ' + projectList.currentFolder.path + '\n ' );
+  console.log ( ' ======================================================== ' )
+}
+
+
+ProjectList.prototype.resetFolders = function ( login )  {
+
+  // check if the pre-defined folde structure is non-existent or corrupt
+  // and make a deep reset in such case
+  if ((!('folders' in this)) || (this.folders.length<4) ||
+      (!this.folders[0].name.startsWith(login+'\'s '))  ||
+       (this.folders[0].type!=folder_type.user)   ||
+       (this.folders[1].type!=folder_type.shared) ||
+       (this.folders[2].type!=folder_type.joined) ||
+       (this.folders[3].type!=folder_type.all_projects))
+    this.seedFolders ( login );
+
+  // leave four predefined leading folders
+  var folders  = this.folders;
   this.folders = this.folders.slice(0,4);
+
+  // complement with all custom lists
   for (var i=4;i<folders.length;i++)
     if (folders[i].type==folder_type.custom_list)
       this.folders.push ( folders[i] );
+
+  // set zero number of projects in all copied folders recursively
   this._reset_folders ( this.folders );
-  this.folders[3].nprojects = this.projects.length;  // "All folders"
-  if (recalculate_bool)  {
-    var folderPaths = {};
-    var nshared = 0;
-    var njoined = 0;
-    for (var i=0;i<this.projects.length;i++)  {
-      var folder_path = this.projects[i].folderPath;
-      if (folder_path in folderPaths)
-            folderPaths[folder_path]++;
-      else  folderPaths[folder_path] = 1;
-      if (isProjectJoined(login,this.projects[i]))  njoined++;
-      if (isProjectShared(login,this.projects[i]))  nshared++;
-    }
-    this.folders[1].nprojects = nshared;  // "shared by me"
-    this.folders[2].nprojects = njoined;  // "joined by me"
-    for (var fpath in folderPaths)
-      this.addFolderPath ( fpath,folderPaths[fpath] );
-    this.sortFolders();
-    if (!this.findFolder(this.currentFolder.path))
-      this.currentFolder = this.folders[0];
+  this.folders[3].nprojects = this.projects.length;  // "All folders" length
+
+  // reconstruct other folders from project descriptions
+
+  var folderPaths = {};
+  var nshared = 0;
+  var njoined = 0;
+
+  for (var i=0;i<this.projects.length;i++)  {
+    var folder_path = this.projects[i].folderPath;
+    if (folder_path in folderPaths)
+          folderPaths[folder_path]++;  // folder population
+    else  folderPaths[folder_path] = 1;
+    // special cases
+    if (isProjectJoined(login,this.projects[i]))  njoined++;
+    if (isProjectShared(login,this.projects[i]))  nshared++;
   }
+  this.folders[1].nprojects = nshared;  // "shared by me"
+  this.folders[2].nprojects = njoined;  // "joined by me"
+
+  for (var fpath in folderPaths)
+    this.addFolderPath ( fpath,folderPaths[fpath] );
+
+  this.sortFolders();
+
+  if (('currentFolder' in this) && this.currentFolder)
+    // do this because folder may have changed
+        this.setCurrentFolder ( this.findFolder(this.currentFolder.path) );
+  else  this.setCurrentFolder ( this.folders[0] );
+
+  // printFolders ( this );
 
 }
+
+
+ProjectList.prototype.setCurrentFolder = function ( folder )  {
+  if (folder)  {
+    this.currentFolder = {
+      name      : folder.name,
+      path      : folder.path,
+      type      : folder.type,
+      nprojects : folder.nprojects
+    };
+    return true;
+  } else  {
+    this.currentFolder = {
+      name      : this.folders[0].name,
+      path      : this.folders[0].path,
+      type      : this.folders[0].type,
+      nprojects : this.folders[0].nprojects
+    };
+  }
+  return false;
+}
+
 
 ProjectList.prototype._rename_folders = function ( folders,oldpath,newpath )  {
   for (var i=0;i<folders.length;i++)  {
@@ -581,4 +664,5 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.isProjectJoined      = isProjectJoined;
   module.exports.isProjectShared      = isProjectShared;
   module.exports.getProjectAuthor     = getProjectAuthor;
+  module.exports.compareProjectLabels = compareProjectLabels;
 }
