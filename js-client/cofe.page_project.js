@@ -905,7 +905,7 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
   this._set_button_state();
 
   __current_project = job_tree.projectData.desc.name;
-  __current_folder  = job_tree.projectData.desc.folderPath;
+  // __current_folder  = findFolder ( job_tree.projectData.desc.folderPath );
 
   (function(self){
     job_tree.addSignalHandler ( cofe_signals.jobDialogOpened,function(data){

@@ -178,7 +178,7 @@ function TaskCrank2()  {
                                            //   ['*',max]  : limited from top
                                            //   [min,'*']  : limited from bottom
                                            //   [min,max]  : limited from top and bottom
-                    value     : '',        // value to be paired with the keyword
+                    value     : '1000',    // value to be paired with the keyword
                     position  : [0,0,1,1]  // [row,col,rowSpan,colSpan]
                   },
               SUBSTRDET_HIGH_RES_CUTOFF_SHELXD : {
@@ -250,12 +250,12 @@ function TaskCrank2()  {
                     tooltip  : 'The program that will be used for estimation ' +
                                'of FA respective E values, inputted to ' +
                                'substructure determination program',
-                    range    : ['_blank_|Auto',
+                    range    : ['afro|Afro',
+                                '_blank_|Auto',
                                 'shelxc|ShelXC',
-                                'ecalc|ECalc',
-                                'afro|Afro'
+                                'ecalc|ECalc'
                                ],
-                    value    : '_blank_',
+                    value    : 'afro',
                     position : [4,0,1,1],
                     showon   : {sec1:['crank2']},
                     hideon   : {SUBSTRDET_PROGRAM:['shelxd']}

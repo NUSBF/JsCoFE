@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    27.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Migration Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2021
+ *  (C) E. Krissinel, A. Lebedev 2020-2022
  *
  *  =================================================================
  *
@@ -138,6 +138,7 @@ if (!__template)  {
   // makes input panel for Import task; dataBox is not used as import task
   // does not have any input data from the project
   var nSeqInputs = 1;
+  var self = this;
 
     var div = this.makeInputLayout();
 
@@ -179,7 +180,7 @@ if (!__template)  {
       var btn  = div.grid1.addButton ( 'Browse',image_path('open_file'),rowNo,2,1,1 );
 //                          .setWidth_px ( 86 );
       var filename = fname;
-      if ((this.state==job_code.new) && (div.file_system=='local'))
+      if ((self.state==job_code.new) && (div.file_system=='local'))
         filename = '';
 
       div.grid1.setLabel ( '&nbsp;',rowNo,1,1,1 ).setNoWrap();

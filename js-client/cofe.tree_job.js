@@ -470,7 +470,6 @@ JobTree.prototype.__checkTaskLoop = function()  {
 
       var request_data = {};
       request_data.project   = tree.projectData.desc.name;
-      //request_data.shared    = (tree.projectData.desc.owner.share.length>0);
       request_data.shared    = tree.isShared();
       request_data.timestamp = tree.projectData.desc.timestamp;
       request_data.run_map   = tree.run_map;
@@ -566,7 +565,6 @@ JobTree.prototype.__checkTaskLoop = function()  {
             if (tree.checkTimeout &&  // task loop was not terminated, and
                 ((Object.keys(tree.run_map).length>0) ||  // there are jobs to check on
                  (tree.isShared())  // or project is shared
-                 //(tree.projectData.desc.owner.share.length>0)  // or project is shared
                 )
               )  {
               tree.__checkTaskLoop();
@@ -593,7 +591,6 @@ JobTree.prototype.startTaskLoop = function()  {
       this.projectData     &&   // works in case of shared projects
       ((Object.keys(this.run_map).length>0) ||  // there are jobs to check on
        (this.isShared())  // or project is shared
-       //(this.projectData.desc.owner.share.length>0)  // or project is shared
       )
     )  {
     this.__checkTaskLoop();
@@ -699,10 +696,11 @@ JobTree.prototype.checkReload = function ( self,rdata,details )  {
       '<div style="width:400px;"><h2>Project Update Required</h2>' +
       'Requested operation cannot be performed because the Project was ' +
       'just updated ';
-    if ((this.projectData.desc.owner.share.length>0) && (this.projectData.desc.autorun))
+    var is_shared = (Object.keys(this.projectData.desc.share).length>0);
+    if (is_shared && (this.projectData.desc.autorun))
       msg += 'by either a user, with whom this Project is shared, or automatic ' +
              'workflow running, or both.';
-    else if (this.projectData.desc.owner.share.length>0)
+    else if (is_shared)
       msg += 'by user, with whom this Project is shared.';
     else
       msg += 'by automatic workflow running.';
@@ -1740,7 +1738,7 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 
 JobTree.prototype.isShared = function()  {
   if (this.projectData)
-    return (this.projectData.desc.owner.share.length>0) ||
+    return (Object.keys(this.projectData.desc.share).length>0) ||
             this.projectData.desc.autorun;  // autorun framework uses sharing
                                             // mechanism for tree updates
   return false;
