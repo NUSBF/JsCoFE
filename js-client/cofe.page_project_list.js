@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.06.22   <--  Date of Last Modification.
+ *    27.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -509,7 +509,6 @@ function ProjectListPage ( sceneId )  {
 
   var repairProject = function()  {
     panel.click();  // get rid of context menu
-
     new QuestionBox (
         'Repair Project',
         '<h2>Repair Project</h2>',[
@@ -581,6 +580,9 @@ function ProjectListPage ( sceneId )  {
             isProjectJoined(__login_id,projectList.projects[i])) ||
           ((__current_folder.type==folder_type.shared) &&
             isProjectShared(__login_id,projectList.projects[i])) ||
+          ((__current_folder.type==folder_type.custom_list) &&
+            checkProjectLabel(__login_id,projectList.projects[i],
+                                         __current_folder.path)) ||
            (__current_folder.type==folder_type.all_projects))
         nrows++;
     if (__current_folder.type==folder_type.shared)
@@ -622,6 +624,9 @@ function ProjectListPage ( sceneId )  {
               isProjectJoined(__login_id,projectList.projects[i])) ||
             ((__current_folder.type==folder_type.shared) &&
               isProjectShared(__login_id,projectList.projects[i])) ||
+            ((__current_folder.type==folder_type.custom_list) &&
+              checkProjectLabel(__login_id,projectList.projects[i],
+                                           __current_folder.path)) ||
              (__current_folder.type==folder_type.all_projects))  {
 
           var trow = self.tablesort_tbl.addRow();
@@ -857,7 +862,7 @@ function ProjectListPage ( sceneId )  {
                                 );
                             } else  {
                               if (projectList.currentFolder.type==folder_type.custom_list)
-                                    addProjectLabel ( pDesc,data.folder_path );
+                                    addProjectLabel ( __login_id,pDesc,data.folder_path );
                               else  pDesc.folderPath = data.folder_path;
                               projectList.resetFolders ( __login_id );
                               saveProjectList ( function(rdata){

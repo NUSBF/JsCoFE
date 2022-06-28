@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    26.06.22   <--  Date of Last Modification.
+ *    27.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -270,7 +270,8 @@ var selNode = this.ftree.getSelectedNode();
     this.rename_btn.setEnabled ( enable_rd );
     this.delete_btn.setEnabled ( enable_rd );
     if (this.funcKey=='move')
-      this.disableButton ( 'select',!myprojects );
+      this.disableButton ( 'select',
+            (!myprojects) && (selNode.icon.indexOf('folder_list_custom')<0) );
   }
 }
 
@@ -366,7 +367,7 @@ var inputBox = new InputBox ( 'Add folder' );
     var newNode = self.ftree.addNode ( selNode,folderName + ' (0)',
                                        image_path('folder_projects'),null );
     newNode.dataId = fpath;
-    self.projectList.addFolderPath ( fpath,0 );
+    self.projectList.addFolderPath ( fpath,0,false );
     self.onReturn_fnc ( 'add',{ folder_path : fpath } );
     self.onSelect();
     return true;
@@ -408,7 +409,7 @@ var inputBox = new InputBox ( 'Add list' );
             'msg_stop' );
       return false;
     }
-    self.projectList.addFolderPath ( fpath,0 );
+    self.projectList.addFolderPath ( fpath,0,true );
     self.folders = self.projectList.folders;
     var folder   = self.findFolder ( fpath );
     if (folder)  {
@@ -419,14 +420,6 @@ var inputBox = new InputBox ( 'Add list' );
       self.tree_div.removeChild ( self.ftree );
       self.ftree = self.makeFolderTree ( self.folders );
       self.tree_div.addWidget ( self.ftree );
-
-    // var newNode = self.ftree.addRootNode ( folderName,
-    //                             image_path('folder_list_custom'),null );
-    // newNode.dataId = fpath;
-    // self.projectList.addFolderPath ( fpath,0 );
-    // var folder = self.findFolder ( fpath );
-    // if (folder)  {
-      // folder.type = folder_type.custom_list;
       self.onReturn_fnc ( 'add',{ folder_path : fpath } );
     } else
       new MessageBox ( 'Error','<h2>Error</h2>Error when adding List.','msg_error' );
@@ -492,26 +485,29 @@ var label   = 'Folder';
 
   if (folder.type==folder_type.custom_list)
     label = 'List';
-  var label_l = name.toLowerCase();
+  var label_l = label.toLowerCase();
 
-  if (!selNode.dataId.startsWith(__login_id+'\'s '))
+  if ((!selNode.dataId.startsWith(__login_id+'\'s ')) &&
+      (selNode.icon.indexOf('folder_list_custom')<0))
     return;
+
   if (selNode.dataId==this.currentFolder.path)
-    new MessageBox ( 'Already in ' + label_l,
-          '<h2>Already in the "' + label_l + '"</h2>' +
-          'Project "' + this.currentPDesc.name + '" is already in ' + label_l +
-          ' "' + fldPath + '".',
+    new MessageBox ( 'Already in the ' + label_l,
+          '<h2>Already in the ' + label + '</h2>' +
+          'Project <i>"' + this.currentPDesc.name + '"</i> is already in ' + label_l +
+          '<p><i>"' + fldPath + '"</i>',
           'msg_stop' );
   else  {
     var self = this;
     new QuestionBox ( 'Move project to ' + label_l,
-                      '<h2>Selected project will be moved to ' + label_l +
-                      '<br>"' + fldPath + '"</h2>' +
-                      'Please confirm.',[
+                      '<h2>Move project to ' + label + '</h2>' +
+                      'Project <i>"'  + this.currentPDesc.name + '"</i> will be moved to ' +
+                      label_l + '<p><i>"' + fldPath +
+                      '"</i><p>Please confirm.',[
         { name    : 'Please move',
           onclick : function(){
                       $(self.element).dialog ( 'close' );
-                      self.onReturn_fnc ( 'move',{ folder_path : selNode.dataId } );
+                      self.onReturn_fnc ( 'move',{ folder_path : selNode.dataId });
                     }
         },{
           name    : 'Cancel',
@@ -519,6 +515,7 @@ var label   = 'Folder';
         }
       ],'msg_confirm' );
   }
+
 }
 
 FoldersBrowser.prototype.onRenameFolder = function()  {

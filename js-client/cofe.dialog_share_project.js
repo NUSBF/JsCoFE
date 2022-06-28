@@ -87,7 +87,7 @@ function shareProject ( projectDesc,callback_func )  {
           projectDesc.share[logins_lst[i]] = share0[logins_lst[i]];
         else
           projectDesc.share[logins_lst[i]] = {
-            labels      : [],
+            labels      : {},
             permissions : 'rw'
           };
       }
