@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.06.22   <--  Date of Last Modification.
+ *    27.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -232,15 +232,21 @@ function checkProjectDescData ( projectDesc,loginData )  {
       for (var i=0;i<lst.length;i++)
         if (lst[i])
           projectDesc.share[lst[i]] = {
-            labels      : [],   // not used at time of writing, safe to be empty
+            labels      : {},   // not used at time of writing, safe to be empty
             permissions : 'rw'  // not used, reserved for future
           };
       delete projectDesc.owner.share;
     }
     update = true;
   }
-  if (!('labels' in projectDesc.owner))  {
-    projectDesc.owner.labels = [];  // was not used before writing this, so empty
+  for (var login in projectDesc.share)
+    if (projectDesc.share[login].labels.constructor===Array)  {
+      projectDesc.share[login].labels = {};
+      update = true;
+    }
+  if ((!('labels' in projectDesc.owner)) ||
+      (projectDesc.owner.labels.constructor===Array))  {
+    projectDesc.owner.labels = {};  // was not used before writing this, so empty
     update = true;
   }
   if ('labels' in projectDesc)  {
@@ -727,7 +733,7 @@ var response = null;  // must become a cmd.Response object to return
            ((newProjectList.projects[i].folderPath!=pList.projects[k].folderPath) ||
             (!pd.compareProjectLabels(loginData.login,
                                       newProjectList.projects[i],
-                                      newProjectList.projects[k])
+                                      pList.projects[k])
             )
            ))  {
         // project folder changed, update project metafile

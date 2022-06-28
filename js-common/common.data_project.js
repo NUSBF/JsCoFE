@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.06.22   <--  Date of Last Modification.
+ *    27.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -70,10 +70,10 @@ function ProjectDesc()  {
   };
 
   this.share = {  // shared users index
-    // 'login' : { labels      : [
+    // 'login' : { labels      : {
     //               'label1' : 1,
     //               'label2' : 1,
-    //             ],
+    //             },
     //             permissions : 'rw'
     //           }
   };
@@ -143,20 +143,31 @@ var author = projectDesc.owner.login;
   return author;
 }
 
-function addProjectLabel ( projectDesc,label )  {
-  if (projectDesc.labels.indexOf(label)<0)
-    projectDesc.labels.push ( label );
+function addProjectLabel ( loginName,projectDesc,label )  {
+  if (loginName==projectDesc.owner.login)
+    projectDesc.owner.labels[label] = 1;
+  else if (loginName in projectDesc.share)
+    projectDesc.share[loginName].labels[label] = 1;
 }
 
-function removeProjectLabel ( projectDesc,label )  {
-var index = projectDesc.labels.indexOf ( label );
-  if (index>=0)
-    projectDesc.labels.splice ( index,1 );
+function removeProjectLabel ( loginName,projectDesc,label )  {
+  if (loginName==projectDesc.owner.login)
+    delete projectDesc.owner.labels[label];
+  else if (loginName in projectDesc.share)
+    delete projectDesc.share[loginName].labels[label];
 }
+
+function checkProjectLabel ( loginName,projectDesc,label )  {
+  if (loginName==projectDesc.owner.login)
+    return (label in projectDesc.owner.labels);
+  return (loginName in projectDesc.share) &&
+         (label in projectDesc.share[loginName].labels);
+}
+
 
 function compareProjectLabels ( login,projectDesc1,projectDesc2 )  {
-var labels1 = [];
-var labels2 = [];
+var labels1 = {};
+var labels2 = {};
 
   if (projectDesc1.owner.login==login)
     labels1 = projectDesc1.owner.labels;
@@ -168,13 +179,19 @@ var labels2 = [];
   else if (login in projectDesc2.share)
     labels2 = projectDesc2.share[login].labels;
 
-  var same = (labels1.length==labels2.length);
+  var list1 = Object.keys(labels1);
+  var same  = (list1.length==Object.keys(labels2).length);
   if (same)  {
-    labels1.sort();
-    labels2.sort();
-    for (var i=0;(i<labels1.length) && same;i++)
-      same = (lebels1[i]==labels2[i]);
+    for (var i=0;(i<list1.length) && same;i++)
+      same = (list1[i] in labels2);
   }
+
+  // console.log ( ' *** ' + projectDesc1.name + " " +
+  // JSON.stringify(labels1) + '  ' +
+  // projectDesc2.name + ' ' +
+  // JSON.stringify(labels2) + '   ' + same
+  // );
+
 
   return same;
 
@@ -257,7 +274,8 @@ var f0name = loginName + '\'s ';
   return title;
 }
 
-ProjectList.prototype._add_folder_path = function ( flist,level,folders,nprojects )  {
+ProjectList.prototype._add_folder_path = function (
+                                   flist,level,folders,nprojects,list_bool )  {
   if (level<flist.length)  {
     var k = -1;
     for (var i=0;(i<folders.length) && (k<0);i++)
@@ -269,7 +287,9 @@ ProjectList.prototype._add_folder_path = function ( flist,level,folders,nproject
       for (var i=1;i<=level;i++)
         fpath += '/' + flist[i];
       var ftype = folder_type.common;
-      if (level==0)  {
+      if (list_bool)
+        ftype = folder_type.custom_list;
+      else if (level==0)  {
         ftype = folder_type.tutorials;
         if ((fpath.toLowerCase()!=folder_type.tutorials) &&
             (fpath!=folder_type.custom_list))
@@ -286,12 +306,12 @@ ProjectList.prototype._add_folder_path = function ( flist,level,folders,nproject
     }
     if (level==flist.length-1)
       folders[k].nprojects = nprojects;
-    this._add_folder_path ( flist,level+1,folders[k].folders,nprojects );
+    this._add_folder_path ( flist,level+1,folders[k].folders,nprojects,list_bool );
   }
 }
 
-ProjectList.prototype.addFolderPath = function ( folderPath,nprojects )  {
-  this._add_folder_path ( folderPath.split('/'),0,this.folders,nprojects );
+ProjectList.prototype.addFolderPath = function ( folderPath,nprojects,list_bool )  {
+  this._add_folder_path ( folderPath.split('/'),0,this.folders,nprojects,list_bool );
 }
 
 ProjectList.prototype._reset_folders = function ( folders )  {
@@ -330,7 +350,7 @@ var i  = 4;
 }
 
 function _print_folder ( folder )  {
-  console.log ( ' - ' + folder.path );
+  console.log ( ' - ' + folder.path + '(' + folder.nprojects + ')' );
   for (var i=0;i<folder.folders.length;i++)
     _print_folder ( folder.folders[i] );
 }
@@ -375,6 +395,7 @@ ProjectList.prototype.resetFolders = function ( login )  {
   // reconstruct other folders from project descriptions
 
   var folderPaths = {};
+  var listPaths   = {};
   var nshared = 0;
   var njoined = 0;
 
@@ -386,12 +407,23 @@ ProjectList.prototype.resetFolders = function ( login )  {
     // special cases
     if (isProjectJoined(login,this.projects[i]))  njoined++;
     if (isProjectShared(login,this.projects[i]))  nshared++;
+    var labels = {};
+    if (this.projects[i].owner.login==login)
+      labels = this.projects[i].owner.labels;
+    else if (login in this.projects[i].share)
+      labels = this.projects[i].share[login].labels;
+    for (var label in labels)
+      if (label in listPaths)  listPaths[label]++;
+                         else  listPaths[label] = 1;
   }
   this.folders[1].nprojects = nshared;  // "shared by me"
   this.folders[2].nprojects = njoined;  // "joined by me"
 
   for (var fpath in folderPaths)
-    this.addFolderPath ( fpath,folderPaths[fpath] );
+    this.addFolderPath ( fpath,folderPaths[fpath],false );
+
+  for (var fpath in listPaths)
+    this.addFolderPath ( fpath,listPaths[fpath],true );
 
   this.sortFolders();
 
