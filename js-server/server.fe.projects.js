@@ -1425,8 +1425,8 @@ var projectName = projectDesc.name;
 
 function shareProject ( loginData,data )  {  // data must contain new title
 var pDesc    = data.desc;
-var share    = pDesc.share;
-var share0   = data.share0;
+var share    = pDesc.share;  // requested share state
+var share0   = data.share0;  // old share state
 var shared   = {};  // index of new shared logins
 var unshared = [];  // return list of unshared logins
 var unknown  = [];
@@ -1453,27 +1453,27 @@ var t_email  = 1000; //msec
 
     // unshare by comparison of share0 and share
     var uData_unshared = [];
-    for (var shareLogin in share0)
-      if (!(shareLogin in share))  {
+    for (var shareLogin in share0)  // loop on the existing share state
+      if (shareLogin && (!(shareLogin in share)))  {  // not found in the requested -- unshare
         var uLoginData = user.getUserLoginData ( shareLogin );
+        unshared.push ( shareLogin );
         if (uLoginData)  {
           var pShare = readProjectShare ( uLoginData );
           pShare.removeShare ( pDesc );
           writeProjectShare  ( uLoginData,pShare );
-        }
-        unshared.push ( shareLogin );
-        var userData = user.readUserData ( uLoginData );
-        if (userData)  {
-          uData_unshared.push ( '<b>' + userData.login + '</b> (<i>' +
-                                        userData.name + '</i>)' );
-          (function(udata,mparams,delay){
-            setTimeout ( function(){
-              emailer.sendTemplateMessage ( udata,
-                         cmd.appName() + ': A project was unshared with you',
-                         'project_unshared',mparams );
-            },delay);
-          }(userData,msg_params,n_email*t_email))
-          n_email++;
+          var userData = user.readUserData ( uLoginData );
+          if (userData)  {
+            uData_unshared.push ( '<b>' + userData.login + '</b> (<i>' +
+                                          userData.name + '</i>)' );
+            (function(udata,mparams,delay){
+              setTimeout ( function(){
+                emailer.sendTemplateMessage ( udata,
+                           cmd.appName() + ': A project was unshared with you',
+                           'project_unshared',mparams );
+              },delay);
+            }(userData,msg_params,n_email*t_email))
+            n_email++;
+          }
         }
       }
 
@@ -1509,6 +1509,7 @@ var t_email  = 1000; //msec
 
 
     // share with users given by share
+
     var share1 = pData.desc.share;
     var uData_newShared = [];
     var uData_oldShared = [];
@@ -1537,13 +1538,12 @@ var t_email  = 1000; //msec
                                            userData.name + '</i>)' );
         }
       } else
-        unknown.push ( shareLogin );
+        unknown.push ( share[i] );
     }
 
-    pDesc.share      = shared;
+    pDesc.share = shared;
     pData.desc.share = pDesc.share;
     writeProjectData ( loginData,pData,true );
-
 
     // var share1 = pData.desc.owner.share;
     // var uData_newShared = [];
@@ -1836,6 +1836,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       projectDesc.dateCreated  = prj_meta.desc.dateCreated;
       projectDesc.dateLastUsed = prj_meta.desc.dateLastUsed;
       projectDesc.folderPath   = prj_meta.desc.folderPath;
+      projectDesc.share        = prj_meta.desc.share;
 
       if ('owner' in prj_meta.desc)  {
         projectDesc.owner = prj_meta.desc.owner;

@@ -93,7 +93,7 @@ function shareProject ( projectDesc,callback_func )  {
       }
     serverRequest ( fe_reqtype.shareProject,{
                       desc   : projectDesc,
-                      share0 : share0
+                      share0 : share0  // previous share state
                     },'Share Project',function(data){
                       if (data.desc)  {
                         var msg = '<h2>Project "' + data.desc.name +
