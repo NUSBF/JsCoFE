@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.01.21   <--  Date of Last Modification.
+ *    29.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -46,6 +46,13 @@ var role_code = {
   developer : 'developer'
 }
 
+var on_login = {
+  all_projects : 'all_projects',
+  my_projects  : 'my_projects',
+  last_folder  : 'last_folder',
+  last_project : 'last-project'
+}
+
 var __local_user_id = 'localuser';  // local user name
 
 // ---------------------------------------------------------------------------
@@ -66,7 +73,7 @@ function UserData()  {
   this.helpTopics    = [];
   this.authorisation = {};
   this.settings      = {
-    onlogin        : 'project_list',  // 'project_list', 'last_project'
+    onlogin        : on_login.all_projects,  // place to land on login
     viewers_size   : [1.40,0.97],     // width, height
     jobdlg_size    : [1.25,0.85],     // width, height
     project_prefix : false,
@@ -79,7 +86,8 @@ function UserData()  {
 }
 
 function checkUserData ( uData )  {
-  var msg = '';
+var msg = '';
+
   if (!uData.hasOwnProperty('action'))    uData.action   = userdata_action.revise;
   if (!uData.hasOwnProperty('feedback'))  uData.feedback = '';
   if (uData.feedback.length<=0)  {
@@ -92,23 +100,32 @@ function checkUserData ( uData )  {
     else
       msg = '<li>confirm your account details</li>';
   }
-  if (!uData.hasOwnProperty('authorisation'))  uData.authorisation = {};
+
+  if (!uData.hasOwnProperty('authorisation'))
+    uData.authorisation = {};
+
   if (!uData.hasOwnProperty('settings'))
     uData.settings = { project_prefix : false };
   if (!uData.settings.hasOwnProperty('onlogin'))  {
-    uData.settings.onlogin      = 'project_list';  // 'project_list', 'last_project'
+    uData.settings.onlogin      = on_login.all_projects;  // 'project_list', 'last_project'
     uData.settings.viewers_size = [1.40,0.97];     // width, height
     uData.settings.jobdlg_size  = [1.25,0.85];     // width, height
-  }
+  } else if (!(uData.settings.onlogin in Object.values(on_login)))
+    uData.settings.onlogin      = on_login.all_projects;
+
   if (!uData.settings.hasOwnProperty('notifications'))  {
     uData.settings.notifications = {
       end_of_job : { send : true, lapse : 24.0 }  // hours
     }
   }
+
   if (!uData.settings.hasOwnProperty('guided_import'))
     uData.settings.guided_import = true;
+
   if (!uData.hasOwnProperty('volume'))   uData.volume  = '***';
+
   if (!uData.hasOwnProperty('dormant'))  uData.dormant = 0;
+
   if (uData.hasOwnProperty('admin'))  {
     if (!uData.hasOwnProperty('role'))  {
       if (uData.admin)  uData.role = role_code.admin;
@@ -116,7 +133,9 @@ function checkUserData ( uData )  {
     }
     delete uData.admin;
   }
+
   return msg;
+
 }
 
 

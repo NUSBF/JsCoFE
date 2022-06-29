@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.05.22   <--  Date of Last Modification.
+ *    29.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -170,9 +170,15 @@ function AccountPage ( sceneId )  {
   spanel.setVerticalAlignment ( prfrow,0,'middle' );
   spanel.setCellSize  ( '120px','',prfrow,0   );
   var onlogin_sel = new Dropdown();
-  onlogin_sel.addItem ( 'list of projects','','project_list',
-                        __user_settings.onlogin =='project_list' );
-  onlogin_sel.addItem ( 'last project','','last_project',
+  onlogin_sel.addItem ( '"All Projects" list','',on_login.all_projects,
+                        __user_settings.onlogin ==on_login.all_projects );
+  onlogin_sel.addItem ( '"My Projects" folder'  ,'',on_login.my_projects,
+                        __user_settings.onlogin ==on_login.my_projects );
+  onlogin_sel.addItem ( 'last used project folder','',on_login.last_folder,
+                        __user_settings.onlogin ==on_login.last_folder );
+  // onlogin_sel.addItem ( 'list of projects','','project_list',
+  //                       __user_settings.onlogin =='project_list' );
+  onlogin_sel.addItem ( 'last opened project','','last_project',
                         __user_settings.onlogin =='last_project' );
   spanel.setWidget ( onlogin_sel, prfrow++,1,1,1 );
   onlogin_sel.make();
