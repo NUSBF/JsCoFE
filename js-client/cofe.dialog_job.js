@@ -100,12 +100,12 @@ function JobDialog ( params,          // data and task projections up the tree b
       height    : size[1],
       buttons   : {},
       open      : function(event, ui) {
-        dlg._created = true;
         if (__any_mobile_device)
           $(this).siblings('.ui-dialog-titlebar').remove();
         if (dlg.task.state==job_code.new)  {
           window.setTimeout ( function(){
             dlg.task.onJobDialogStart ( dlg );
+            dlg._created = true;
           },0);
         }
       },
