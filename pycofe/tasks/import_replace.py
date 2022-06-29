@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    28.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2022
 #
 # ============================================================================
 #
@@ -81,7 +81,7 @@ class ImportReplace(migrate.Migrate):
         #  check cell compatibility
 
         compatible = True
-        sp0  = ihkl.getCellParameters()  #  reference cell parameters
+        sp0 = ihkl.getCellParameters()  #  reference cell parameters
 
         msg_err = []
         msg_wrn = []
@@ -154,7 +154,7 @@ class ImportReplace(migrate.Migrate):
 
         implist = []
 
-        if xyzPath or istruct:   # replace Structure
+        if xyzPath or mtzPath or istruct:   # replace Structure
             if xyzPath:  implist.append ( "XYZ"    )
             if mtzPath:  implist.append ( "Phases" )
             if libPath:  implist.append ( "Ligand(s)" )
@@ -204,7 +204,8 @@ class ImportReplace(migrate.Migrate):
                         sxyz.copyAssociations ( istruct )
                         sxyz.addSubtypes      ( istruct.subtype )
                         sxyz.copyLabels       ( istruct )
-                    sxyz.addSubtype ( dtype_template.subtypeXYZ() )
+                    if xyzPath:
+                        sxyz.addSubtype ( dtype_template.subtypeXYZ() )
                     self.putTitle   ( "Created Structure" + doc_link )
                     self.putStructureWidget ( "structure_btn",
                                               "Structure and electron density",
@@ -234,7 +235,7 @@ class ImportReplace(migrate.Migrate):
 
             mtzPath = None
 
-        if subPath or isub:   # replace Structure
+        if subPath or isub:   # replace Substructure
 
             if (not xyz_path) and (not mtz_path) and lib_path:
                 self.putTitle ( "Import & Replace not possible" )
