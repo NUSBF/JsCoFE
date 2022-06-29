@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.06.22   <--  Date of Last Modification.
+ *    29.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -113,6 +113,7 @@ function ProjectListPage ( sceneId )  {
     if (pageTitle_lbl)  {
       pageTitle_lbl.setText ( '&nbsp;' + folderPathTitle(folder,__login_id,50) );
       pageTitle_lbl.setFont ( 'times','200%',true,true );
+      pageTitle_lbl.setVisible ( true );
     }
     if (folder_btn)  {
       var icon = 'folder_projects';
@@ -127,6 +128,7 @@ function ProjectListPage ( sceneId )  {
         default : ;
       }
       folder_btn.setImage ( image_path(icon) );
+      folder_btn.setVisible ( true );
     }
   }
 
@@ -525,6 +527,20 @@ function ProjectListPage ( sceneId )  {
 
   }
 
+
+  function listProject ( projectDesc )  {
+    return (
+      (projectDesc.folderPath==__current_folder.path) ||
+      ((__current_folder.type==folder_type.joined) &&
+       isProjectJoined(__login_id,projectDesc)) ||
+      ((__current_folder.type==folder_type.shared) &&
+       isProjectShared(__login_id,projectDesc)) ||
+      ((__current_folder.type==folder_type.custom_list) &&
+       checkProjectLabel(__login_id,projectDesc,__current_folder.path)) ||
+      (__current_folder.type==folder_type.all_projects)
+    );
+  }
+
   // function to create project list table and fill it with data
   function makeProjectListTable()  {
 
@@ -554,8 +570,11 @@ function ProjectListPage ( sceneId )  {
 
     panel.setWidget ( self.tablesort_tbl,table_row,0,1,nCols );
 
-    __current_folder = projectList.currentFolder;
+    if (__current_folder.nprojects>=0)  // works first time after login
+      __current_folder = projectList.currentFolder;
     var owners_folder = __login_id + '\'s Projects';
+
+    setPageTitle ( __current_folder );
 
     var message = '<div style="width:100%;">&nbsp;<p>&nbsp;<p><h3>' +
                   'There are no projects in folder "' +
@@ -575,16 +594,20 @@ function ProjectListPage ( sceneId )  {
 
     var nrows = 0;
     for (var i=0;i<projectList.projects.length;i++)
-      if ((projectList.projects[i].folderPath==__current_folder.path) ||
-          ((__current_folder.type==folder_type.joined) &&
-            isProjectJoined(__login_id,projectList.projects[i])) ||
-          ((__current_folder.type==folder_type.shared) &&
-            isProjectShared(__login_id,projectList.projects[i])) ||
-          ((__current_folder.type==folder_type.custom_list) &&
-            checkProjectLabel(__login_id,projectList.projects[i],
-                                         __current_folder.path)) ||
-           (__current_folder.type==folder_type.all_projects))
+      if (listProject(projectList.projects[i]))
         nrows++;
+      // if ((projectList.projects[i].folderPath==__current_folder.path) ||
+      //     ((__current_folder.type==folder_type.joined) &&
+      //       isProjectJoined(__login_id,projectList.projects[i])) ||
+      //     ((__current_folder.type==folder_type.shared) &&
+      //       isProjectShared(__login_id,projectList.projects[i])) ||
+      //     ((__current_folder.type==folder_type.custom_list) &&
+      //       checkProjectLabel(__login_id,projectList.projects[i],
+      //                                    __current_folder.path)) ||
+      //      (__current_folder.type==folder_type.all_projects))
+      //   nrows++;
+
+    __current_folder.nprojects = nrows;
     if (__current_folder.type==folder_type.shared)
       projectList.folders[1].nprojects = nrows;
     if (__current_folder.type==folder_type.joined)
@@ -619,15 +642,16 @@ function ProjectListPage ( sceneId )  {
       nrows = 0;
       // alert ( __current_folder );
       for (var i=0;i<projectList.projects.length;i++)
-        if ((projectList.projects[i].folderPath==__current_folder.path) ||
-            ((__current_folder.type==folder_type.joined) &&
-              isProjectJoined(__login_id,projectList.projects[i])) ||
-            ((__current_folder.type==folder_type.shared) &&
-              isProjectShared(__login_id,projectList.projects[i])) ||
-            ((__current_folder.type==folder_type.custom_list) &&
-              checkProjectLabel(__login_id,projectList.projects[i],
-                                           __current_folder.path)) ||
-             (__current_folder.type==folder_type.all_projects))  {
+        if (listProject(projectList.projects[i]))  {
+        // if ((projectList.projects[i].folderPath==__current_folder.path) ||
+        //     ((__current_folder.type==folder_type.joined) &&
+        //       isProjectJoined(__login_id,projectList.projects[i])) ||
+        //     ((__current_folder.type==folder_type.shared) &&
+        //       isProjectShared(__login_id,projectList.projects[i])) ||
+        //     ((__current_folder.type==folder_type.custom_list) &&
+        //       checkProjectLabel(__login_id,projectList.projects[i],
+        //                                    __current_folder.path)) ||
+        //      (__current_folder.type==folder_type.all_projects))  {
 
           var trow = self.tablesort_tbl.addRow();
 
@@ -791,7 +815,7 @@ function ProjectListPage ( sceneId )  {
     //   __close_all_menus();
     // });
 
-    setPageTitle ( __current_folder );
+    // setPageTitle ( __current_folder );
 
   }
 
@@ -911,7 +935,8 @@ function ProjectListPage ( sceneId )  {
 
   this.headerPanel.setCellSize ( '30%','',0,2 );
   folder_btn = new ImageButton ( image_path('folder_projects'),'34px','34px' )
-                  .setTooltip('Browse project folders' );
+                  .setTooltip ( 'Browse project folders' )
+                  .setVisible ( false );
                   // .setSize ( '28pt','26pt' );
                   // .setWidth ( '28pt' ).setHeight ( '24pt' );
   this.headerPanel.setWidget ( folder_btn,0,3,1,1 );
@@ -919,9 +944,10 @@ function ProjectListPage ( sceneId )  {
   this.headerPanel.setHorizontalAlignment ( 0,3,'right' );
 
   pageTitle_lbl = this.headerPanel
-                  .setLabel ( '&nbsp;My Projects',0,4,1,1 )
-                  .setFont  ( 'times','200%',true,true )
-                  .setNoWrap();
+                  .setLabel   ( '&nbsp;My Projects',0,4,1,1 )
+                  .setFont    ( 'times','200%',true,true )
+                  .setNoWrap  ()
+                  .setVisible ( false );
                   // .setHorizontalAlignment ( 'center' );
   this.headerPanel.setCellSize ( '60%','',0,4 );
   this.headerPanel.setVerticalAlignment ( 0,4,'middle' );

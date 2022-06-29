@@ -206,6 +206,20 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
               loadKnowledge ( 'Login' );
 
+              switch (__user_settings.onlogin)  {
+                case on_login.all_projects :
+                            __current_folder.path = 'All Projects';
+                            __current_folder.type = folder_type.all_projects;
+                            __current_folder.nprojects = -1;
+                          break;
+                case on_login.my_projects :
+                            __current_folder.path = __login_id + '\'s Projects';
+                            __current_folder.type = folder_type.user;
+                            __current_folder.nprojects = -1;
+                          break;
+                default : ;
+              }
+
               switch (page_switch)  {
 
                 //case 0 : if (__admin && (userData.login=='admin'))
@@ -214,7 +228,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                           else if ((!__local_setup) && (userData.action!=userdata_action.none))
                           //else if (userData.action!=userdata_action.none)
                             makeAccountPage     ( sceneId );
-                          else if (__user_settings.onlogin=='last_project')  {
+                          else if (__user_settings.onlogin==on_login.last_project)  {
                             serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
                               var found = false;
                               for (var i=0;(i<data.projects.length) && (!found);i++)
@@ -222,7 +236,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                               if (found)  makeProjectPage     ( sceneId );
                                     else  makeProjectListPage ( sceneId );
                             },null,'persist');
-                          } else  makeProjectListPage ( sceneId );
+                          } else
+                            makeProjectListPage ( sceneId );
                         break;
 
                 case 1 :  makeProjectListPage ( sceneId );  break;
