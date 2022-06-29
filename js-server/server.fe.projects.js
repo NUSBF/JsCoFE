@@ -938,7 +938,7 @@ function prepareFailedJobExport ( loginData,fjdata )  {
 
 function checkFailedJobExport ( loginData,fjdata )  {
   var archivePath = getFailedJobExportNames(fjdata)[2];
-  rdata = {};
+  var rdata = {};
   if (archivePath && utils.fileExists(archivePath))
         rdata.size = utils.fileSize(archivePath);
   else  rdata.size = -1;
@@ -1860,6 +1860,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       if (!projectDesc.owner.login)
         projectDesc.owner.login = loginData.login;
       prj_meta.desc.owner = projectDesc.owner;
+      prj_meta.desc.share = projectDesc.share;
       utils.writeObject ( prj_meta_path,prj_meta    );
       utils.writeObject ( prj_desc_path,projectDesc );
 

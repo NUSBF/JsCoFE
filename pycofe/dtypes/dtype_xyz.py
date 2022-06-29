@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    14.10.21   <--  Date of Last Modification.
+#    28.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ (COORDINATES) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -117,29 +117,38 @@ class DType(dtype_template.DType):
         fpath = self.getXYZFilePath ( dirPath )
         if fpath and fpath.lower().endswith(".pdb"):
             st = gemmi.read_structure ( fpath )
-            need_to_fix = True
-            max_bfactor = 0.0
-            min_bfactor = 1000000.0
+            need_to_fix  = True
+            max_bfactor  = 0.0
+            min_bfactor  = 1000000.0
+            full_residue = False;
             for model in st:
                 for chain in model:
-                    for res in chain:
-                        bfactor = -1.0
-                        for atom in res:
-                            if bfactor>=0.0 and atom.b_iso!=bfactor:
-                                need_to_fix = False
-                            else:
-                                bfactor     = atom.b_iso
-                                max_bfactor = max ( max_bfactor,bfactor )
-                                min_bfactor = max ( min_bfactor,bfactor )
+                    polymer = chain.get_polymer()
+                    t = polymer.check_polymer_type()
+                    if t in (gemmi.PolymerType.PeptideL, gemmi.PolymerType.PeptideD):
+                        for res in chain:
+                            if not full_residue:
+                                full_residue = (len(res)>1)
+                            bfactor = -1.0
+                            for atom in res:
+                                if bfactor>=0.0 and atom.b_iso!=bfactor:
+                                    need_to_fix = False
+                                else:
+                                    bfactor     = atom.b_iso
+                                    max_bfactor = max ( max_bfactor,bfactor )
+                                    min_bfactor = max ( min_bfactor,bfactor )
+                                if not need_to_fix:
+                                    break
                             if not need_to_fix:
                                 break
                         if not need_to_fix:
                             break
-                    if not need_to_fix:
-                        break
+                    else:  # not a protein structure, cannot be alphafold
+                        need_to_fix = False;
+                        break;
                 if not need_to_fix:
                     break
-            if need_to_fix and max_bfactor!=min_bfactor:
+            if need_to_fix and max_bfactor!=min_bfactor and full_residue:
                 for model in st:
                     for chain in model:
                         for res in chain:
