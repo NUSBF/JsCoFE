@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.06.22   <--  Date of Last Modification.
+ *    30.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -250,12 +250,12 @@ function TaskCrank2()  {
                     tooltip  : 'The program that will be used for estimation ' +
                                'of FA respective E values, inputted to ' +
                                'substructure determination program',
-                    range    : ['afro|Afro',
-                                '_blank_|Auto',
+                    range    : ['_blank_|Auto',
+                                'afro|Afro',
                                 'shelxc|ShelXC',
                                 'ecalc|ECalc'
                                ],
-                    value    : 'afro',
+                    value    : '_blank_',
                     position : [4,0,1,1],
                     showon   : {sec1:['crank2']},
                     hideon   : {SUBSTRDET_PROGRAM:['shelxd']}
