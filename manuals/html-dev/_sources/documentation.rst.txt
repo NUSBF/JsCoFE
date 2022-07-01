@@ -1,0 +1,112 @@
+===========================
+How to add a new Sphinx theme
+===========================
+
+#. Choose a theme in `Sphinx theme gallery <https://sphinx-themes.org/>`_
+
+Install theme as written in theme documentation::
+    pip3 install theme-name
+
+#. Create ``conf.py`` file in ``jscofe-doc/build`` and add all required extension and theme options (see theme documentation). ``conf.py`` should be named as **conf-themeName.py**
+#. To be able to insert Youtube videos in documentation copy the following in ``conf.py`` ::
+
+        try:
+
+        from sphinx.writers.html import HTMLTranslator
+        from docutils import nodes
+        from docutils.nodes import Element
+
+        class PatchedHTMLTranslator(HTMLTranslator):
+
+         # def visit_reference(self, node: Element) -> None:
+            def visit_reference(self,node):
+                atts = {'class': 'reference'}
+                if node.get('internal') or 'refuri' not in node:
+                    atts['class'] += ' internal'
+                else:
+                    atts['class'] += ' external'
+                    # ---------------------------------------------------------
+                    # Customize behavior (open in new tab, secure linking site)
+                    atts['target'] = '_blank'
+                    atts['rel'] = 'noopener noreferrer'
+                    # ---------------------------------------------------------
+                if 'refuri' in node:
+                    atts['href'] = node['refuri'] or '#'
+                    if self.settings.cloak_email_addresses and atts['href'].startswith('mailto:'):
+                        atts['href'] = self.cloak_mailto(atts['href'])
+                        self.in_mailto = True
+                else:
+                    assert 'refid' in node, \
+                        'References must have "refuri" or "refid" attribute.'
+                    atts['href'] = '#' + node['refid']
+                if not isinstance(node.parent, nodes.TextElement):
+                    assert len(node) == 1 and isinstance(node[0], nodes.image)
+                    atts['class'] += ' image-reference'
+                if 'reftitle' in node:
+                    atts['title'] = node['reftitle']
+                if 'target' in node:
+                    atts['target'] = node['target']
+                self.body.append(self.starttag(node, 'a', '', **atts))
+        
+                if node.get('secnumber'):
+                    self.body.append(('%s' + self.secnumber_suffix) %
+                                    '.'.join(map(str, node['secnumber'])))
+
+        def setup(app):
+            app.set_translator('html', PatchedHTMLTranslator)
+            # app.add_js_file ( None, body="function __try_it(){ alert('working'); }" )
+
+    except:
+        pass
+
+    from docutils import nodes
+    from docutils.parsers.rst import directives
+
+    CODE = """\
+    <object type="application/x-shockwave-flash"
+            width="%(width)s"
+            height="%(height)s"
+            class="youtube-embed"
+            data="http://www.youtube.com/v/%(yid)s">
+        <param name="movie" value="http://www.youtube.com/v/%(yid)s"></param>
+        <param name="wmode" value="transparent"></param>%(extra)s
+    </object>
+    """
+
+    PARAM = """\n    <param name="%s" value="%s"></param>"""
+
+    def youtube(name, args, options, content, lineno,
+                contentOffset, blockText, state, stateMachine):
+        """ Restructured text extension for inserting youtube embedded videos """
+        if len(content) == 0:
+            return
+        string_vars = {
+            'yid': content[0],
+            'width': 734,
+            'height': 540,
+            'extra': ''
+            }
+        extra_args = content[1:] # Because content[0] is ID
+        extra_args = [ea.strip().split("=") for ea in extra_args] # key=value
+        extra_args = [ea for ea in extra_args if len(ea) == 2] # drop bad lines
+        extra_args = dict(extra_args)
+        if 'width' in extra_args:
+            string_vars['width'] = extra_args.pop('width')
+        if 'height' in extra_args:
+            string_vars['height'] = extra_args.pop('height')
+        if extra_args:
+            params = [PARAM % (key, extra_args[key]) for key in extra_args]
+            string_vars['extra'] = "".join(params)
+        return [nodes.raw('', CODE % (string_vars), format='html')]
+    youtube.content = True
+    directives.register_directive('youtube', youtube)
+
+#. Open ``jsCoFE/js-common/tasks/common.tasks.docdev.js`` file
+#. Add a new theme in ``THEME_SEL`` as follows (the part after conf- in confy.py name | name for CCP4 Cloud).
+
+    For example: confy file for Material theme is conf-**material**.py. Use :: 
+        
+            range    : ['material|MATERIAL']
+    
+
+.. note:: Material theme should be installed as **pip3 install git+https://github.com/bwithd/sphinx-material**ß

@@ -1,42 +1,42 @@
-================================
-What is |jsCoFE| Client Software
-================================
+==================================
+What is CCP4 Cloud Client Software
+==================================
 
-|jsCoFE| Client is an optional package, which is installed on your local machine
+CCP4 Cloud Client is an optional package, which is installed on your local machine
 for:
 
   * seamless integration of CCP4 graphical applications, such as **Coot** with
-    remote |jsCoFE| setups.
+    remote CCP4 Cloud setups.
 
-  * running |jsCoFE| locally on your own machine. In local mode, there is no
-    connection to remote |jsCoFE| remote servers, all tasks are run on your
+  * running CCP4 Cloud locally on your own machine. In local mode, there is no
+    connection to remote CCP4 Cloud remote servers, all tasks are run on your
     machine and all your data and projects are kept on your local hard drive.
 
 
 
---------------------------------------------
-Do I have to have |jsCoFE| Client installed?
---------------------------------------------
+----------------------------------------------
+Do I have to have CCP4 Cloud Client installed?
+----------------------------------------------
 
-Remote |jsCoFE| setups are accessible via common browsers just like any ordinary
+Remote CCP4 Cloud setups are accessible via common browsers just like any ordinary
 web-site, and you can do most of tasks without having Client software installed.
-As an example, |jsCoFE| can be used from tablet devices and smartphones, for
-which |jsCoFE| Clients do not exist.
+As an example, CCP4 Cloud can be used from tablet devices and smartphones, for
+which CCP4 Cloud Clients do not exist.
 
-However, without |jsCoFE| Client installed, you cannot use certain software,
-such as **Coot**, directly with |jsCoFE|. There will be other functional
+However, without CCP4 Cloud Client installed, you cannot use certain software,
+such as **Coot**, directly with CCP4 Cloud. There will be other functional
 limitations as well, for example, you will not be able to process X-ray
 diffraction images locally on your machine with either **Xia2**, **DUI/DIALS** or
-**iMosflm** software. Besides, |jsCoFE| Client provides a convenient launcher and
+**iMosflm** software. Besides, CCP4 Cloud Client provides a convenient launcher and
 configuration facilities.
 
 
---------------------------------------------------
-How do I use |jsCoFE| Client once it is installed?
---------------------------------------------------
+----------------------------------------------------
+How do I use CCP4 Cloud Client once it is installed?
+----------------------------------------------------
 
-Simply use icon launchers, which appear after |jsCoFE| Client installation, for
+Simply use icon launchers, which appear after CCP4 Cloud Client installation, for
 starting your working session. Upon double-clicking on icon for either *remote* or *local*
-mode, the Client will open a |jsCoFE| login page in chosen browser, by which time
+mode, the Client will open a CCP4 Cloud login page in chosen browser, by which time
 all needed local software will be already integrated with the system, and you are
 fully set to go.

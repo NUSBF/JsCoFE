@@ -1,0 +1,181 @@
+========================
+Software testing in CCP4
+========================
+
+CCP4 comand line tests contains **unix scripts** and **pytest** tests.
+
+------------
+Unix scripts 
+------------
+
+* $CEXAM/unix/runnable: 
+    unix scripts using the rnase/toxd data which should actually run
+
+* $CEXAM/unix/non-runnable: unix scripts without usable input data, e.g. for image processing and data reduction
+
+------
+Pytest
+------
+
+Pytests are designed using the Arrange-Act-Assert model:
+
+1. **Arrange**, or set up, the conditions for the test
+
+2. **Act** by calling some function or method
+
+3. **Assert** that some end condition is true
+
+All changes and new tests should be committed to ``http://fg.oisin.rc-harwell.ac.uk/anonscm/bzr/examples/trunk``
+
+The transition from "trunk" to "series" is performed by Charles Ballard and must be requested.
+
+Testsys ($CCP4/examples/pytest/testsys/) require additional located in ``data test_data.tar.gz``
+
+Testsys data also shall be available for download::
+
+    # Downloading data for Pavol's test-sys tests (will run from $CEXAM/pytest/)
+    wget http://devtools.fg.oisin.rc-harwell.ac.uk/files/test_data/test_data.tar.gz
+    tar zxvf test_data.tar.gz
+    ccp4-python -m pytest $CEXAM/pytest/ --junit-xml runallTest.xml
+
+Can be run:
+
+*  Locally
+    **CCP4 console** => ``ccp4-python -m pytest ./path/to/tests``
+
+*  Nigtly on `Jenkins <https://anvil.softeng-support.ac.uk/jenkins/job/CCP4/>`_
+
+Groovy scripts for Jenkins can be found `here <https://gitlab.stfc.ac.uk/ccb63/ccp4-groovy/-/tree/master/vars>`_
+
+**testCCP4.groovy** runs nigtly, **testCCP4Exhaustive.groovy** runs weekly (longer)
+
+.. attention:: Groovy scripts have Mac/Linux and Windows parts, all changes should be duplicated
+
+In order to get emails after tests run all emails should be listed in **emailNotification.groovy**
+
++++++++++++++++++++++++
+Test new build manually 
++++++++++++++++++++++++
+
+#. Download build from Jenkins => build (for example, Series 8.0 python3 pyside2 on windows (msvc/intel) => Build # or name => Build Artifacts
+
+#. Run **postinstall.bat** (Windows) or **BINARY.setup** (Mac/Linux)
+
+#. Open build console
+
+#. Run **ccp4.setup.bat** (Windows) or **$CCP4/bin/ccp4.setup-sh** (Mac/Linux)
+
+#. ccp4-python -m pytest ./path/to/tests
+
+.. attention:: Do NOT forget to install SHELX and add the data folder for testsys
+
+================
+CCP4 Cloud tests
+================
+
+Performed using `Selenium WebDriver <https://www.selenium.dev/documentation/>`_
+
+Tests can be found in ``jsCoFE/setests``
+
+ **Before running the tests**
+
+   - Tests require Selenium and PyTest installed. Please do ::
+
+        python -m pip install --upgrade pip
+        python -m pip install selenium
+        python -m pip install pytest
+
+   - If you would like to generate local HTML reports, please also install pytest-html::
+   
+        python -m pip install pytest-html
+
+   'chromedriver' and 'geckodriver' shall be installed and available in the $PATH for running tests on Chrome and Firefox correspondingly
+
+
+**Running the tests on a local computer**
+
+- Typical local run via Firefox and developer's CCP4Cloud (DEV server) is easy and will run all available tests ::
+    
+        python -m pytest ./setests/.
+
+.. note::  if change the current directory deeply into the tests directory like ./setests/basic/, tests may fail as Python will not find some imports; always run tests from at least ./setests/
+
+
+
+- For verbose output during a run (highly recommended, so you know what test script is doing) ::
+    
+        python -m pytest -v -s .
+
+- To generate HTML reports, please do ::
+    
+        python -m pytest . --html report.html
+
+- To generate JUNIT XML report (Jenkins integration, for instance) ::
+   
+        python -m pytest .  --junit-xml report.xml
+
+- To specify particular test to run ::
+   
+        python -m pytest ./basic/test_molrep.py
+
+- To specify a browser::
+   
+        python -m pytest . --browser Chrome  # Chrome or Firefox, Firefox is default
+
+- To test other CCP4Cloud installations ::
+   
+        python -m pytest . --cloud https://cloud.ccp4.ac.uk  # default is http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/
+
+- You can also provide user name and password to login into CCP4Cloud ::
+   
+        python -m pytest . --cloud https://cloud.ccp4.ac.uk --login abcd --password efgh  # default is setests
+
+- To test CCP4Cloud for developers running locally, you may use following ::
+   
+        python -m pytest . --cloud http://localhost:8085 --login devel --password devel
+
+- To test CCP4Cloud Destop (for instance, to test Cloud from standard CCP4 installation on Windows or Mac), you may use following. Just run CCP4Cloud Desktop first and **look for correct port number instead of 12345**. Only basic tests will be run from the ./basic/directory ::
+   
+        python -m pytest ./basic/ -v -s --cloud http://localhost:12345 --nologin True 
+
+- You can use any combination of all abovementioned parameters.
+
+These tests will start the browser (controlled by Selenium) on your computer
+
+**browser shall be on screen all the time or otherwise tests may fail! Do not change to other Desktop or full-screen programs on Mac or tests will fail.**
+
+2. **Running the tests in remote mode.**
+
+   - It is possible to run the browser on a remote machine (Linux VM provided by STFC Cloud) running Selenium Server Hub.
+
+All the tests will be run remotely, locally you will get the report (the browser will not start on your local machine,
+it will start on STFC Cloud VM). This Cloud machine is accessible only from STFC intranet (use VPN from home) ::
+
+        python -m pytest . --remote http://130.246.213.187:4444/wd/hub
+
+   - All parameters from (1) will also work in this remote mode, just add them as appropriate.
+
+--------------------
+Data for Cloud tests
+--------------------
+
+#. Directory ``test_data`` shall be copied into ``$HOME`` of the current user, so Cloud tests would be able
+to upload data to the Cloud from that location (required for tests of imports and WorkFlows).
+Python code addresses this as ``~/test_data`` or ``%userprofile%\\test_data`` on Windows.
+It also shall be available on STFC VM running Selenium Hub.
+
+
+#. Directory ``old_cloud`` shall also be copied into ``$HOME`` of the current user, so Cloud tests would be able
+to import old Cloud projects to the Cloud from that location (required for 'oldproject' tests).
+Python code addresses this as ``~/old_cloud`` or ``%userprofile%\\old_cloud`` on Windows.
+
+**Only 01.ccp4cloud and 05.ccp4cloud are used, the others are kept just in case**
+
+It also shall be available on STFC VM running Selenium Hub.
+
+
+#. Contents of the directory ``test_data_cloud`` shall be in the ``ccp4@ccp4serv9.rc-harwell.ac.uk:/data1/opt/cloud_storage/test-data/``
+This is 'test-data' directory of the CCP4Cloud DEV and PRE Clouds; Cloud tests do 'Cloud import' from these data.
+
+Cloud tests are run on setest machine on https://openstack.stfc.ac.uk/auth/login/ 
+

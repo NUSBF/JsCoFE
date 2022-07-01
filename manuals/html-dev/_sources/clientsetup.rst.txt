@@ -22,17 +22,17 @@ Installation should be performed in account with administrative privileges.
 
 After successful installation, *local* (marked with airplane sign),
 *remote* (marked with WiFi sign) and *configuration* (bearing gears sign)
-|jsCoFE| icons should appear on your desktop. You are ready to use
-|jsCoFE| -- simply double-click on the *remote* or *local* icon.
+CCP4 Cloud icons should appear on your desktop. You are ready to use
+CCP4 Cloud -- simply double-click on the *remote* or *local* icon.
 
 The *configuration* icon starts a configuration editor that allows you
-to change web-browser, switch to different |jsCoFE| server (e.g. the one that
+to change web-browser, switch to different CCP4 Cloud server (e.g. the one that
 might have been installed in your lab) and apply updates.
 
 
-----------
+-----
 Linux
-----------
+-----
 
 **Installation**
 
@@ -72,29 +72,29 @@ Linux
 
 On successful installation, the installer should expose *local* (marked with
 airplane sign), *remote* (marked with with WiFi sign) and *configuration*
-(bearing the gears sign) |jsCoFE| icons. The *local* and *remote* icons start
-|jsCoFE| in the corresponding mode, while the *configuration* icon starts
+(bearing the gears sign) CCP4 Cloud icons. The *local* and *remote* icons start
+CCP4 Cloud in the corresponding mode, while the *configuration* icon starts
 a configuration editor. The editor allows you to change the web-browser used,
-switch to a different |jsCoFE| server (e.g. the one that might have been
+switch to a different CCP4 Cloud server (e.g. the one that might have been
 installed in your lab) and apply updates.
 
-In a modern Linux, you will find |jsCoFE| launchers in the "Activities" menu.
+In a modern Linux, you will find CCP4 Cloud launchers in the "Activities" menu.
 In order to find them, examine the full list of applications (the dock button
 with vertical lines) or type CCP4 in the search text box. Then drug all three
-|jsCoFE| launchers to the Dock or choose the "Add to Favourites" option of
+CCP4 Cloud launchers to the Dock or choose the "Add to Favourites" option of
 their context menus. In case of older Linux versions, the launchers will
 be placed on the Desktop.
 
 In some cases you may find that provided launchers do not work. In this happens,
-|jsCoFE| can be launched from terminal with one of the following commands: ::
+CCP4 Cloud can be launched from terminal with one of the following commands: ::
 
   $ /path/to/ccp4cloud/bin/ccp4cloud-desktop.sh
   $ /path/to/ccp4cloud/bin/ccp4cloud-remote.sh
 
 
-----------
+-------
 Mac OSX
-----------
+-------
 
 **Installation**
 
@@ -138,24 +138,24 @@ Mac OSX
 
 On successful installation, the installer will place *local* (marked with
 airplane sign), *remote* (marked with with WiFi sign) and *configuration*
-(bearing the gears sign) |jsCoFE| icons inside ``ccp4cloud`` folder found
-in |jsCoFE| destination directory. The *local* and *remote* icons start
-|jsCoFE| in the corresponding mode, while the *configuration* icon starts
+(bearing the gears sign) CCP4 Cloud icons inside ``ccp4cloud`` folder found
+in CCP4 Cloud destination directory. The *local* and *remote* icons start
+CCP4 Cloud in the corresponding mode, while the *configuration* icon starts
 a configuration editor. The editor allows you to change the web-browser used,
-switch to a different |jsCoFE| server (e.g. the one that might have been
+switch to a different CCP4 Cloud server (e.g. the one that might have been
 installed in your lab) and apply updates. Depending on the security settings
 in your machine, a few more steps may be required before you can use the icons.
 
-#. Open Finder and navigate to ``ccp4cloud`` directory, found in |jsCoFE|
+#. Open Finder and navigate to ``ccp4cloud`` directory, found in CCP4 Cloud
    destination directory. The directory should contain application launchers
    ``ccp4cloud-remote.app``, ``ccp4cloud-desktop.app`` and ``ccp4cloud-config.app``.
    You can drag them to the location of your choice, for example, Desktop or Dock.
-#. Double-click on any of the icon. If the corresponding |jsCoFE| component does
+#. Double-click on any of the icon. If the corresponding CCP4 Cloud component does
    not start, it may be that the launchers are disabled by OSX security.
    In order to enable them, go to System Preferences, then to Security and Privacy,
    and then select "Anywhere" checkbox found in in section "Allow apps downloaded from".
-   After that, right-click on each |jsCoFE| icon and choose "Open" from the context
-   menu. This will start |jsCoFE| components for first time, after which deselect
+   After that, right-click on each CCP4 Cloud icon and choose "Open" from the context
+   menu. This will start CCP4 Cloud components for first time, after which deselect
    checkbox "Anywhere" in the "Allow apps downloaded from" section of System
    Preferences.
 #. If "Allow apps downloaded from" does not have option "Anywhere", open Terminal

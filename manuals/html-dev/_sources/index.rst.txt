@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 Developer's Reference
-==================
+=====================
 
 .. toctree::
    :numbered:
@@ -15,6 +15,11 @@ Developer's Reference
    configuration
    interface_desc
    dev_hello_world
+   tests
+   clientsetup
+   clientwhatfor
+   documentation
+
 
 
 Search
