@@ -1527,7 +1527,7 @@ function cloudRun ( server_request,server_response )  {
                   var pnode_json = JSON.stringify ( pnode );
 
                   var cnode = JSON.parse ( pnode_json );
-                  cnode.id       = pnode.id + '_' + key;
+                  cnode.id       = pnode.id + '_' + crypto.randomBytes(20).toString('hex'); //key;
                   cnode.parentId = pnode.id;
                   cnode.dataId   = task.id;
                   cnode.icon     = cmd.image_path ( task.icon() );
