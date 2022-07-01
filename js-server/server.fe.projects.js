@@ -270,7 +270,10 @@ function checkProjectDescData ( projectDesc,loginData )  {
     f0name += '\'s Projects';
   if ((!('folderPath' in projectDesc)) || (!(projectDesc.folderPath)))  {
     projectDesc.folderPath = f0name;  // virtual project folder path
-    // projectDesc.labels     = [];      // list of optional project labels
+    update = true;
+  }
+  if (projectDesc.folderPath=='tutorials')  {
+    projectDesc.folderPath = pd.folder_path.tutorials;
     update = true;
   }
   var flist = projectDesc.folderPath.split('/');
@@ -1849,7 +1852,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
             case 'tutorial' : projectDesc.owner.author   = pd.folder_type.tutorials;
                               projectDesc.folderPath     = pd.folder_type.tutorials;
                               prj_meta.desc.owner.author = pd.folder_type.tutorials;
-                              prj_meta.desc.folderPath   = pd.folder_type.tutorials;
+                              prj_meta.desc.folderPath   = pd.folder_path.tutorials;
                           break;
             default         : projectDesc.owner.author   = prj_meta.desc.owner.login;
           }

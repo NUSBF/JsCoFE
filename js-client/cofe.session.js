@@ -208,7 +208,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
               switch (__user_settings.onlogin)  {
                 case on_login.all_projects :
-                            __current_folder.path = 'All projects';
+                            __current_folder.path = folder_path.all_projects;
                             __current_folder.type = folder_type.all_projects;
                             __current_folder.nprojects = -1;
                           break;
