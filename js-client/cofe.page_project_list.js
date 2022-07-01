@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.06.22   <--  Date of Last Modification.
+ *    30.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -410,8 +410,8 @@ function ProjectListPage ( sceneId )  {
       return false;
     }
 
-    var prjName   = pDesc.name;
-    var inputBox  = new InputBox ( 'Clone Project' );
+    var prjName  = pDesc.name;
+    var inputBox = new InputBox ( 'Clone Project' );
     inputBox.setText ( '','cloneprj' );
     var ibx_grid = inputBox.grid;
     ibx_grid.setLabel    ( '<h2>Clone Project "' + prjName + '"</h2>',0,2,2,3 );
@@ -527,6 +527,39 @@ function ProjectListPage ( sceneId )  {
 
   }
 
+  var unlistProject = function()  {
+    panel.click();  // get rid of context menu
+
+    var pDesc = getCurrentProjectDesc();
+    if (!pDesc)  {
+      new MessageBox ( 'Current project not identified',
+          '<h2>Current project is not identified</h2>' +
+          '<i>This is a bug please report to developers.</i>',
+          'msg_error'
+      );
+      return false;
+    }
+
+    var inputBox = new InputBox ( 'Unlist project' );
+    inputBox.setText (
+        '<div style="width:400px;">' +
+        '<h2>Unlist Project</h2>Project <b>"'  + pDesc.name  +
+        '"</b> will be removed from list <i>"' + __current_folder.path +
+        '"</i>. This is not deletion; the project will remain intact ' +
+        'in its folder.<p>Please confirm.</div>',
+        'folder_list_custom_unlist' );
+    inputBox.launch  ( 'Unlist',function(){
+      removeProjectLabel ( __login_id,pDesc,__current_folder.path );
+      projectList.resetFolders ( __login_id );
+      saveProjectList ( function(rdata){
+        // loadProjectList();
+        makeProjectListTable();
+      });
+      return true;  // close dialog
+    });
+
+  }
+
 
   function listProject ( projectDesc )  {
     return (
@@ -613,6 +646,11 @@ function ProjectListPage ( sceneId )  {
     if (__current_folder.type==folder_type.joined)
       projectList.folders[2].nprojects = nrows;
 
+    if ([folder_type.custom_list,folder_type.shared,folder_type.joined,
+         folder_type.all_projects].includes(__current_folder.type))
+          move_btn.setButton ( 'Unlist',image_path('folder_list_custom_unlist') );
+    else  move_btn.setButton ( 'Move'  ,image_path('folder_projects') );
+
     if (nrows<=0)  {
 
       __current_project = null;
@@ -684,9 +722,7 @@ function ProjectListPage ( sceneId )  {
           (function(shared_prj){
 
             var del_label = 'Delete';
-            if (__current_folder.type==folder_type.custom_list)
-              del_label = 'Unlist';
-            else if (shared_prj)
+            if (shared_prj)
               del_label = 'Unjoin';
 
             $(trow.element).click(function(){
@@ -706,6 +742,9 @@ function ProjectListPage ( sceneId )  {
                 (__current_folder.type==folder_type.tutorials))
               contextMenu.addItem('Move',image_path('folder_projects') )
                          .addOnClickListener(function(){ browseFolders('move') });
+            else if (__current_folder.type==folder_type.custom_list)
+              contextMenu.addItem('Unlist',image_path('folder_list_custom_unlist') )
+                         .addOnClickListener(function(){ unlistProject });
             // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
 
           }(shared_project))
@@ -785,7 +824,7 @@ function ProjectListPage ( sceneId )  {
       clone_btn .setDisabled ( false );
       // move_btn  .setDisabled ( false );
       move_btn  .setEnabled  ( __current_folder.path.startsWith(owners_folder) ||
-                               (__current_folder.type==folder_type.tutorials) );
+          [folder_type.tutorials,folder_type.custom_list].includes(__current_folder.type) );
       del_btn   .setDisabled ( false );
       import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       export_btn.setDisabled ( false );
@@ -1133,7 +1172,11 @@ function ProjectListPage ( sceneId )  {
   add_btn   .addOnClickListener ( addProject    );
   rename_btn.addOnClickListener ( renameProject );
   clone_btn .addOnClickListener ( cloneProject  );
-  move_btn  .addOnClickListener ( function(){ browseFolders('move'); });
+  move_btn  .addOnClickListener ( function(){
+    if (__current_folder.type==folder_type.custom_list)
+          unlistProject();
+    else  browseFolders('move');
+  });
   del_btn   .addOnClickListener ( deleteProject );
   export_btn.addOnClickListener ( exportProject );
 
