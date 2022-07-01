@@ -272,7 +272,7 @@ function checkProjectDescData ( projectDesc,loginData )  {
     projectDesc.folderPath = f0name;  // virtual project folder path
     update = true;
   }
-  if (projectDesc.folderPath=='tutorials')  {
+  if (projectDesc.folderPath.startsWith('tutorials'))  {
     projectDesc.folderPath = pd.folder_path.tutorials;
     update = true;
   }
