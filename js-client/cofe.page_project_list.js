@@ -545,7 +545,7 @@ function ProjectListPage ( sceneId )  {
         '<div style="width:400px;">' +
         '<h2>Unlist Project</h2>Project <b>"'  + pDesc.name  +
         '"</b> will be removed from list <i>"' + __current_folder.path +
-        '"</i>. This is not deletion; the project will remain intact ' +
+        '"</i>. This is not a deletion; the project will remain intact ' +
         'in its folder.<p>Please confirm.</div>',
         'folder_list_custom_unlist' );
     inputBox.launch  ( 'Unlist',function(){

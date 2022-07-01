@@ -50,6 +50,21 @@ var folder_type = {
   tutorials    : 'tutorials'
 };
 
+var folder_path = {
+  shared       : 'Projects shared by me',
+  joined       : 'Projects joined by me',
+  all_projects : 'All projects',
+  tutorials    : 'Tutorials'
+};
+
+var folder_name = {
+  shared       : 'Projects shared by me',
+  joined       : 'Projects joined by me',
+  all_projects : 'All projects',
+  tutorials    : 'Tutorials'
+};
+
+
 // ===========================================================================
 
 function ProjectDesc()  {
@@ -66,7 +81,6 @@ function ProjectDesc()  {
       // 'label1' : 1,
       // 'label2' : 1,
     }
-    // share  : []    // list of login share objects
   };
 
   this.share = {  // shared users index
@@ -79,7 +93,6 @@ function ProjectDesc()  {
   };
 
   this.folderPath   = '';   // virtual project folder path
-  // this.labels       = [];   // list of optional project labels
   // this.archive = {
   //   id      : '',   // archive ID
   //   version : 0,    // archived project version
@@ -217,20 +230,20 @@ ProjectList.prototype.seedFolders = function ( loginName )  {
       type      : folder_type.user,
       folders   : []
     },{
-      name      : 'Projects shared by me', // project folders tree basic element
-      path      : 'Projects shared by me',
+      name      : folder_name.shared, // project folders tree basic element
+      path      : folder_path.shared,
       nprojects : 0,
       type      : folder_type.shared,
       folders   : []
     },{
-      name      : 'Projects joined by me', // project folders tree basic element
-      path      : 'Projects joined by me',
+      name      : folder_name.joined, // project folders tree basic element
+      path      : folder_path.joined,
       nprojects : 0,
       type      : folder_type.joined,
       folders   : []
     },{
-      name      : 'All projects', // project folders tree basic element
-      path      : 'All projects',
+      name      : folder_name.all_projects, // project folders tree basic element
+      path      : folder_path.all_projects,
       nprojects : 0,
       type      : folder_type.all_projects,
       folders   : []
@@ -263,10 +276,10 @@ var f0name = loginName + '\'s ';
     title = title.replace(f0name,'My ');
   else
     switch (folder.type)  {
-      case folder_type.shared       : title = 'Projects shared by me';  break;
-      case folder_type.joined       : title = 'Projects joined by me';  break;
-      case folder_type.all_projects : title = 'All Projects';           break;
-      case folder_type.tutorials    : title = 'Tutorials';              break;
+      case folder_type.shared       : title = folder_name.shared;       break;
+      case folder_type.joined       : title = folder_name.joined;       break;
+      case folder_type.all_projects : title = folder_name.all_projects; break;
+      case folder_type.tutorials    : title = folder_name.tutorials;    break;
       default : ; //title = folder.name;
     }
   if ((maxLength>0) && (title.length>maxLength))
@@ -291,8 +304,7 @@ ProjectList.prototype._add_folder_path = function (
         ftype = folder_type.custom_list;
       else if (level==0)  {
         ftype = folder_type.tutorials;
-        if ((fpath.toLowerCase()!=folder_type.tutorials) &&
-            (fpath!=folder_type.custom_list))
+        if ((fpath!=folder_path.tutorials) && (fpath!=folder_type.custom_list))
           ftype = folder_type.user;
       }
       var folder = {
@@ -683,6 +695,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.start_mode           = start_mode;
   module.exports.tasklist_mode        = tasklist_mode;
   module.exports.folder_type          = folder_type;
+  module.exports.folder_path          = folder_path;
   module.exports.ProjectDesc          = ProjectDesc;
   module.exports.ProjectList          = ProjectList;
   module.exports.ProjectData          = ProjectData;
