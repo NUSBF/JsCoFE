@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.06.22   <--  Date of Last Modification.
+ *    05.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -178,7 +178,7 @@ function TaskCrank2()  {
                                            //   ['*',max]  : limited from top
                                            //   [min,'*']  : limited from bottom
                                            //   [min,max]  : limited from top and bottom
-                    value     : '1000',    // value to be paired with the keyword
+                    value     : '',        // value to be paired with the keyword
                     position  : [0,0,1,1]  // [row,col,rowSpan,colSpan]
                   },
               SUBSTRDET_HIGH_RES_CUTOFF_SHELXD : {
