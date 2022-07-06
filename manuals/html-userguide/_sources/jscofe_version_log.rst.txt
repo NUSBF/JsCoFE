@@ -3,9 +3,24 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.7.005**
+
+    *Released on --.--.2022 with CCP4 8.0.003*
+
+    **Changes and new features**
+
+    #. Project can be now organised in custom lists
+
+    #. shared and imported projects maintain their original folder paths, starting from owner's name
+
+    #. Fixed bug causing crashes when job was rerun with last used parameters from a lower-version job
+
+    #. Added "Structure Prediction" task based on AlphaFold-2
+
+
 **Version 1.7.004**
 
-    *Released on --.--.2022 with CCP4 8.0.002*
+    *Released on 10.06.2022 with CCP4 8.0.002*
 
     **Changes and new features**
 
