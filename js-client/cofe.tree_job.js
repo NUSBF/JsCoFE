@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.06.22   <--  Date of Last Modification.
+ *    06.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -245,9 +245,10 @@ JobTree.prototype.readProjectData = function ( page_title,
 
         tree.projectData = null;
         new MessageBox ( 'Missing Project',
-          '<h2>Missing Project</h2>' +
-          'The project does not exist. If it was shared with you,<br>' +
-          'then it could be deleted by owner.'
+          '<div style="width:400px"><h2>Missing Project</h2>' +
+          'The project does not exist. If it was shared with you, ' +
+          'then it could be deleted by owner.</div>',
+          'msg_error'
         );
 
       } else if ('message' in data)  {
@@ -719,11 +720,11 @@ JobTree.prototype.checkReload = function ( self,rdata,details )  {
 
 JobTree.prototype.missingProject = function()  {
   new MessageBox ( 'Project not found',
-      '<h3>Project "' + this.projectData.desc.name +
-         '" is not found on server</h3>' +
-      'Project "' + this.projectData.desc.name +
-         '" was shared with you, please check<br>' +
-      'whether it was deleted by project owner.'
+      '<div style="width:400px"><h2>Project not found on server</h2>' +
+      'Project "' + this.projectData.desc.name + '" was not found on server. ' +
+      'This project was shared with you, please check whether it was deleted ' +
+      'by project owner.</div>',
+      'msg_error'
   );
   this.emitSignal ( cofe_signals.makeProjectList,{} );
 }
@@ -946,12 +947,17 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
 
 
 JobTree.prototype._copy_task_parameters = function ( task,branch_task_list )  {
-  var reftask = null;
+var reftask = null;
   for (var i=0;(i<branch_task_list.length) && (!reftask);i++)
     if (task._type==branch_task_list[i]._type)
       reftask = branch_task_list[i];
-  if (reftask)
+  if (reftask)  {
+    if (reftask.version<task.currentVersion())
+      return -1;  // version clash, stop
     task.parameters = jQuery.extend ( true,{},reftask.parameters );
+    return 1;  // reference task found and parameters copied, Ok
+  }
+  return 0;  // reference task not found, Ok
 }
 
 
@@ -977,8 +983,22 @@ JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_
             if (tasklistmode)
               tree.projectData.desc.tasklistmode = tasklistmode;
             if (task)  {  // task chosen
-              if (copy_params)
-                tree._copy_task_parameters ( task,branch_task_list );
+              if (copy_params)  {
+                if (tree._copy_task_parameters(task,branch_task_list)<0)  {
+                  new MessageBox ( 'Cannot copy job parameters',
+                    '<div style="width:500px;"</div>' +
+                    '<h2>Cannot copy parameters from previous job.</h2>' +
+                    'The previous job was created with a lower version of ' +
+                    appName() + ' and its parameters cannot be copied into ' +
+                    'the new one.<p>Please add the job with default parameters, ' +
+                    'using "<i>Add Job</i>" button from the control bar, and set ' +
+                    'parameters manually.</div>',
+                    'msg_stop' );
+                  if (onAdd_func)
+                    onAdd_func(-5);
+                  return;
+                }
+              }
               tree._copy_task_cloud_path ( task,branch_task_list );
               tree._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
             } else if (onAdd_func)  { // "Cancel" was pressed
@@ -1546,7 +1566,8 @@ JobTree.prototype.stopJob = function ( nodeId,gracefully_bool,callback_func )  {
                     else serverRequest ( fe_reqtype.stopJob,data,data.meta.title,null,null,null );
 
                     setTimeout ( function(){
-                      new MessageBox ( msg[3],msg[3] + ', please wait a while.' );
+                      new MessageBox ( msg[3],msg[3] + ', please wait a while.',
+                            'msg_information' );
                     },100 );
 
                     if (callback_func)
@@ -1565,13 +1586,16 @@ JobTree.prototype.stopJob = function ( nodeId,gracefully_bool,callback_func )  {
 
     if (data.meta.state==job_code.exiting)
       new MessageBox ( msg[0],'The job ' + jobId +
-                              ' is in exit state -- please wait.' );
+                              ' is in exit state -- please wait.',
+                              'msg_information' );
     else if (data.meta.state==job_code.ending)
       new MessageBox ( msg[0],'The job ' + jobId +
-                              ' is ending -- please wait.' );
+                              ' is ending -- please wait.',
+                              'msg_information' );
     else
       new MessageBox ( msg[0],'The job ' + jobId +
-                       ' is not running -- nothing to do.' );
+                       ' is not running -- nothing to do.',
+                       'msg_information' );
 
     if (node_id in this.node_map)
       this.node_map[node_id].setCustomIconVisible ( false );
@@ -1760,10 +1784,10 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
     if (task0.version<task.currentVersion())  {
 
       new MessageBox ( 'Cannot clone',
-        '<b>This job cannot be cloned.</b><p>' +
+        '<div style="width:400px"><h2>This job cannot be cloned.</h2><p>' +
         'The job was created with a lower version of ' + appName() + ' and cannot ' +
-        'be cloned.<br>Please create the job as a new one, using ' +
-        '"<i>Add Job</i>" button from the<br>control bar.' );
+        'be cloned.<p>Please create the job as a new one, using ' +
+        '"<i>Add Job</i>" button from the control bar.</div>','msg_stop' );
       if (onAdd_func)
         onAdd_func(-5);
 
@@ -2026,7 +2050,7 @@ var task = this.getTask ( jobId );
   if (!task)  {
     new MessageBox ( 'Job ' + jobId + ' not found',
               'Job ' + jobId + ' not found. This may be a bug, please ' +
-              'contact ' + appName() + ' developer.' );
+              'contact ' + appName() + ' developer.','msg_error' );
   } else  {
 
     var td  = task.output_data.data;
@@ -2044,10 +2068,10 @@ var task = this.getTask ( jobId );
     if (!td0)  {
 
       new MessageBox ( 'Data ' + dataType.substr(4) + ' [' + dataId + '] not found',
-                '<h3><i>Data ' + dataType.substr(4) + ' [' + dataId +
-                                                 '] not found in job ' + jobId +
+                '<div style="width:400px"><h3><i>Data ' + dataType.substr(4) +
+                    ' [' + dataId + '] not found in job ' + jobId +
                 '</i></h3><p>If job is still running, wait until it finishes ' +
-                'and try again.'  );
+                'and try again.','msg_excl_yellow'  );
 
     } else  {
 
