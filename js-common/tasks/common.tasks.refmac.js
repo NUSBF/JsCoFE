@@ -537,7 +537,7 @@ TaskRefmac.prototype.constructor = TaskRefmac;
 TaskRefmac.prototype.icon = function()  { return 'task_refmac'; }
 
 TaskRefmac.prototype.currentVersion = function()  {
-  var version = 5; //4;
+  var version = 4;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
