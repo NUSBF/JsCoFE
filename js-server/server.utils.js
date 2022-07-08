@@ -393,8 +393,8 @@ function mkDir_anchor ( dirPath )  {
 
 
 function removePath ( dir_path ) {
-  var rc   = true;
-  var stat = fileExists(dir_path);
+var rc   = true;
+var stat = fileExists(dir_path);
 
 //  removeLock ( dir_path );
 

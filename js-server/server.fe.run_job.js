@@ -1445,13 +1445,14 @@ function cloudRun ( server_request,server_response )  {
               if (response.status==cmd.fe_retcode.ok)  {
                 pData = prj.readProjectData ( loginData,meta.project );
                 if (!pData)  {
-                  log.error ( 12,'error creating new project for cloudRun: login ' + loginData.login );
+                  log.error ( 12,'error creating new project for cloudRun: login ' +
+                                 loginData.login );
                   response = new cmd.Response ( cmd.fe_retcode.noProjectData,
                                                 'error creating new project',{} );
                 } else  {
                   message = 'project "' + meta.project + '" created, ';
                   pData.tree.push({
-                    id          : 'treenode_06062',
+                    id          : 'treenode_06062',  // can be any
                     parentId    : null,
                     folderId    : null,
                     fchildren   : [],
@@ -1482,6 +1483,9 @@ function cloudRun ( server_request,server_response )  {
             if (pData)  {
               // console.log ( meta );
 
+              pData.desc.jobCount++;
+              prj.writeProjectData ( loginData,pData,true );  // fix job count quickly
+
               // 4. The project is either created or retrieved. Prepare task and run it
 
               var task = utils.readClass ( path.join(tmpJobDir,task_t.jobDataFName) );
@@ -1495,7 +1499,7 @@ function cloudRun ( server_request,server_response )  {
                 // 5. Prepare task object
 
                 task.project    = meta.project;
-                task.id         = ++pData.desc.jobCount;
+                task.id         = pData.desc.jobCount;
                 task.submitter  = loginData.login;
                 task.start_time = Date.now();
 
@@ -1507,6 +1511,7 @@ function cloudRun ( server_request,server_response )  {
 
                 if (!utils.writeObject(jobDataPath,task))  {
                   log.error ( 14,'cannot write job metadata at ' + jobDataPath );
+                  utils.removePath ( jobDirPath );
                 } else  {
 
                   // 6. Shape job getDirectory

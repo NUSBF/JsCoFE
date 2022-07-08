@@ -19,7 +19,7 @@
  *
  * Invocation:
  *
- *    node js-utils/deploy.js {configFile.json | template} [--no-strict]
+ *    node js-utils/deploy.js {configFile.json | template} [--no-strict|--strict]
  *
  * where "configFile.json" is path to JSON-formatted configuration file of
  * jsCoFE, containing configurations for the Front End server. Alternatively,
@@ -36,7 +36,8 @@
  * If optional --no-strict parameter is provided (must be the last one in
  * the command line), 'use strict'; sentences will be deleted from the code.
  * This is recommended for the deployment on the production server, and not
- * recommended for developer's and test servers.
+ * recommended for developer's and test servers. This is the default option;
+ * use --strict to enforce strict checks at run time.
  *
  * How it works if jsCoFE .json configuration file is provided:
  *
@@ -112,10 +113,11 @@ function change_extention ( fpath,new_ext )  {
 
 if (
     (process.argv.length<3) ||
-    ((process.argv.length==4) && (process.argv[3]!='--no-strict'))
+    ((process.argv.length==4) && (process.argv[3]!='--no-strict')
+                              && (process.argv[3]!='--strict'))
    )  {
   var usage = 'Usage: ' + process.argv[0] + ' ' + process.argv[1] +
-                          ' config.json --no-strict';
+                          ' config.json [--no-strict|--strict]';
   log.error ( 1,'Incorrect command line. Stop.' );
   log.error ( 1,usage );
   process.exit(1);
@@ -131,7 +133,8 @@ var cfgfpath  = process.argv[2];
 var feConfig  = null;
 var inpfpath  = '';
 var inpfdata  = '';
-var no_strict = (process.argv.length==4);  // the syntax is checked above
+var no_strict = (process.argv.length==4) && (process.argv[3]=='--no-strict');
+                                                     // syntax is checked above
 
 if (cfgfpath.endsWith('.json'))  {
 
