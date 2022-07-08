@@ -1,11 +1,9 @@
 
 /*
  *
- *     UNDER DEVELOPMENT, DO NOT USE!
- *
  *  =================================================================
  *
- *    25.11.21   <--  Date of Last Modification.
+ *    08.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -16,7 +14,7 @@
  *  **** Content :  Initiation of Cloud projects from command line
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2021
+ *  (C) E. Krissinel, A. Lebedev 2021-2022
  *
  *  =================================================================
  *
@@ -39,7 +37,7 @@
  *    node js-utils/cloudrun.js
  *    node js-utils/cloudrun.js -h
  *
- * where task is one of import, auto-mr, auto-ep or hop-on.
+ * where task is one of import, auto-af2, auto-mr, auto-ep, hop-on or dimple.
  *
  * Commands (hash # may be used for comments, anything on the right from # is
  * ignored):
@@ -48,7 +46,7 @@
  *   USER        user_login                  # mandatory
  *   PROJECT     project_id                  # mandatory
  *   TITLE       Optional Project Title      # used only if project is created
- *   TASK        [import|auto-mr|auto-ep|hop-on|dimple]  # import if not given
+ *   TASK        [import|auto-af2|auto-mr|auto-ep|hop-on|dimple]  # import if not given
  *   HA_TYPE     Se                          # used only for auto-ep
  *   FILE        /path/to/file.[mtz|pdb|seq|fasta|pir|cif]  # generic import
  *   HKL         /path/to/file.mtz   # the file should be used as hkl in hop-on
@@ -58,6 +56,7 @@
  *   SEQ_RNA     /path/to/file.[seq|fasta|pir]
  *   XYZ         /path/to/file.pdb
  *   LIGAND      /path/to/file.cif   # ML or ligand library file
+ *   SMILES      smiles-string       # ligand smiles string, not enquoted
  *
  *  Notes:
  *    - if sequence file is given by the FILE keyword, protein sequence is assumed
@@ -77,18 +76,28 @@ var send_dir = require('../js-server/server.send_dir');
 var utils    = require('../js-server/server.utils');
 var cmd      = require('../js-common/common.commands');
 
-var task_t        = require('../js-common/tasks/common.tasks.template');
-var task_import   = require('../js-common/tasks/common.tasks.import'  );
-var task_wflowamr = require('../js-common/tasks/common.tasks.wflowamr');
-var task_wflowaep = require('../js-common/tasks/common.tasks.wflowaep');
-var task_wflowdpl = require('../js-common/tasks/common.tasks.wflowdpl');
-var task_hopon    = require('../js-common/tasks/common.tasks.migrate' );
+var task_t         = require('../js-common/tasks/common.tasks.template' );
+var task_import    = require('../js-common/tasks/common.tasks.import'   );
+var task_wflowafmr = require('../js-common/tasks/common.tasks.wflowafmr');
+var task_wflowamr  = require('../js-common/tasks/common.tasks.wflowamr' );
+var task_wflowaep  = require('../js-common/tasks/common.tasks.wflowaep' );
+var task_wflowdpl  = require('../js-common/tasks/common.tasks.wflowdpl' );
+var task_hopon     = require('../js-common/tasks/common.tasks.migrate'  );
 
 // var conf   = require('../js-server/server.configuration');
 // var cmd    = require('../js-common/common.commands');
 
 
 // ==========================================================================
+
+var cloudrun_code = {
+  import   : 'import',
+  auto_af2 : 'auto-af2',
+  auto_mr  : 'auto-mr',
+  auto_ep  : 'auto-ep',
+  hop_on   : 'hop-on',
+  dimple   : 'dimple'
+}
 
 function printInstructions()  {
   var msg = [
@@ -115,7 +124,7 @@ function printInstructions()  {
     '',
     '    node js-utils/cloudrun.js -t task',
     '',
-    'where "task" is one of import, auto-mr, auto-ep, hop-on or dimple.',
+    'where "task" is one of import, auto-af2, auto-mr, auto-ep, hop-on or dimple.',
     '',
     '    node js-utils/cloudrun.js -h',
     '',
@@ -151,11 +160,12 @@ function printTemplate ( task )  {
     default :
         msg = [
           'Task code "' + task + '" is invalid. Acceptable tasks include:',
-          '   "import"  : generic data import',
-          '   "auto-mr" : auto-MR workflow',
-          '   "auto-ep" : auto-EP workflow',
-          '   "hop-on"  : project initiation from phased structure',
-          '   "dimple"  : fast phasing with 100% homolog for ligand blob identification'
+          '   "' + cloudrun_code.import + '"   : generic data import',
+          '   "' + cloudrun_code.auto_af2 + '" : auto-AF2 workflow (uses AlphaFold-2 for model generation)',
+          '   "' + cloudrun_code.auto_mr + '"  : auto-MR workflow (uses PDB and AFDB as source of models)',
+          '   "' + cloudrun_code.auto_ep + '"  : auto-EP workflow',
+          '   "' + cloudrun_code.hop_on + '"   : project initiation from phased structure',
+          '   "' + cloudrun_code.dimple + '"   : fast phasing with 100% homolog for ligand blob identification'
         ];
         console.log (
           msg.join('\n')
@@ -163,7 +173,7 @@ function printTemplate ( task )  {
         process.exit();
       break;
 
-    case 'import'  :
+    case cloudrun_code.import :
         msg = [
           '# The task uploads files specified, creates CCP4 Cloud Project (if it',
           '# does not exist already) and runs the "File Import" task.'
@@ -184,42 +194,55 @@ function printTemplate ( task )  {
         ]);
       break;
 
-    case 'auto-mr' :
+    case cloudrun_code.auto_af2 :
+        msg = [
+          '# The task uploads files specified, creates CCP4 Cloud Project (if it',
+          '# does not exist already) and starts the "Auto-AFMR" workflow (this',
+          '# requires an AlphaFold (or OpenFold or ColabFold) to be installed ',
+          '# in CCP4 Cloud).'
+        ].concat(msg);
+        msg = msg.concat([
+          'HKL         /path/to/hkl.mtz               # reflection data',
+          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # protein sequence',
+          '#',
+          '# Either SMILES or LIG_CODE should be used for ligand description,',
+          '# but not both.',
+          '#',
+          'SMILES      smiles-string  # optional ligand smiles string, not enquoted',
+          'LIG_CODE    ATP            # e.g., ATP, optional 3-letter ligand code'
+        ]);
+      break;
+
+    case cloudrun_code.auto_mr :
         msg = [
           '# The task uploads files specified, creates CCP4 Cloud Project (if it',
           '# does not exist already) and starts the "Auto-MR" workflow.'
         ].concat(msg);
         msg = msg.concat([
-          'HKL         /path/to/hkl.mtz  # import reflection data',
+          'HKL         /path/to/hkl.mtz               # reflection data',
+          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # protein sequence',
           '#',
-          '# use one or more of the following sequence upload statements as',
-          '# appropriate',
+          '# Either SMILES or LIG_CODE should be used for ligand description,',
+          '# but not both.',
           '#',
-          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # import protein sequence',
-          '#SEQ_DNA     /path/to/file.[seq|fasta|pir]  # import dna sequence',
-          '#SEQ_RNA     /path/to/file.[seq|fasta|pir]  # import rna sequence'
+          'SMILES      smiles-string  # optional ligand smiles string, not enquoted',
+          'LIG_CODE    ATP            # e.g., ATP, optional 3-letter ligand code'
         ]);
       break;
 
-    case 'auto-ep' :
+    case cloudrun_code.auto_ep :
         msg = [
           '# The task uploads files specified, creates CCP4 Cloud Project (if it',
           '# does not exist already) and starts the "Auto-EP" workflow.'
         ].concat(msg);
         msg = msg.concat([
           'HA_TYPE     Se                # atom type of main anomalous scatterer',
-          'HKL         /path/to/hkl.mtz  # import reflection data',
-          '#',
-          '# use one or more of the following sequence upload statements as',
-          '# appropriate',
-          '#',
-          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # import protein sequence',
-          '#SEQ_DNA     /path/to/file.[seq|fasta|pir]  # import dna sequence',
-          '#SEQ_RNA     /path/to/file.[seq|fasta|pir]  # import rna sequence'
+          'HKL         /path/to/hkl.mtz               # reflection data',
+          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # protein sequence'
         ]);
       break;
 
-    case 'hop-on'  :
+    case cloudrun_code.hop_on :
         msg = [
           '# The task uploads files specified, creates CCP4 Cloud Project (if it',
           '# does not exist already) and runs the "Hop-On Import" task (project',
@@ -237,27 +260,27 @@ function printTemplate ( task )  {
         ]);
       break;
 
-      case 'dimple'  :
-          msg = [
-            '# The task uploads files specified, creates CCP4 Cloud Project (if it',
-            '# does not exist already) and runs "Dimple" workflow (fast MR with',
-            '# 100% homologue for ligand blob identification and fitting).'
-          ].concat(msg);
-          msg = msg.concat([
-            'HKL         /path/to/hkl.mtz      # reflection data (mandatory)',
-            'XYZ         /path/to/apo.pdb      # model',
-            'LIGAND      /path/to/file.cif     # ligand (optional)',
-            '#',
-            '# providing sequence is optional and may be used if a close, but',
-            '# not 100% struture homologue is used, in which case the resulting',
-            '# structure will be rebuilt. Use one or more of the following',
-            '# sequence upload statements asappropriate',
-            '#',
-            'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # import protein sequence',
-            '#SEQ_DNA     /path/to/file.[seq|fasta|pir]  # import dna sequence',
-            '#SEQ_RNA     /path/to/file.[seq|fasta|pir]  # import rna sequence'
-          ]);
-        break;
+    case cloudrun_code.dimple :
+        msg = [
+          '# The task uploads files specified, creates CCP4 Cloud Project (if it',
+          '# does not exist already) and runs "Dimple" workflow (fast MR with',
+          '# 100% homologue for ligand blob identification and fitting).'
+        ].concat(msg);
+        msg = msg.concat([
+          'HKL         /path/to/hkl.mtz      # reflection data (mandatory)',
+          'XYZ         /path/to/apo.pdb      # model',
+          'LIGAND      /path/to/file.cif     # ligand (optional)',
+          '#',
+          '# providing sequence is optional and may be used if a close, but',
+          '# not 100% structure homologue is used, in which case the resulting',
+          '# structure will be rebuilt. Use one or more of the following',
+          '# sequence upload statements asappropriate',
+          '#',
+          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # protein sequence'
+          // '#SEQ_DNA     /path/to/file.[seq|fasta|pir]  # import dna sequence',
+          // '#SEQ_RNA     /path/to/file.[seq|fasta|pir]  # import rna sequence'
+        ]);
+      break;
 
   }
 
@@ -400,7 +423,9 @@ var meta = {
 };
 
 var options = {
-  ha_type : ''
+  ha_type  : '',
+  smiles   : '',
+  lig_code : ''
 };
 
 var files = {
@@ -526,7 +551,7 @@ for (var key in meta)
     console.log ( ' *** ' + key.toUpperCase() + ' not specified' );
   }
 
-if (['import','auto-mr','auto-ep','hop-on','dimple'].indexOf(meta.task)<0)  {
+if (!Object.values(cloudrun_code).includes(meta.task)<0)  {
   ok = false;
   console.log ( ' *** task key ' + meta.task + ' is not valid' );
 }
@@ -631,24 +656,59 @@ var task = null;
 switch (meta.task)  {
 
   default :
-  case 'import'   : task = new task_import.TaskImport  ();
+  case cloudrun_code.import :
+                    task = new task_import.TaskImport  ();
                     task.upload_files = fnames;
                   break;
 
-  case 'auto-mr'  : task = new task_wflowamr.TaskWFlowAMR();
+  case cloudrun_code.auto_af2 :
+                    task = new task_wflowafmr.TaskWFlowAFMR();
                     task.inputMode = task_t.input_mode.root;
                     task.file_select[0].path = path.parse(files.hkl[0]).base;
                     task.file_select[1].path = path.parse(files.seq[0]).base;
+                    if (options.smiles)
+                      task.input_ligands = [{
+                        source : 'S',
+                        smiles : options.smiles,
+                        code   : ''
+                      }];
+                    else if (options.lig_code)
+                      task.input_ligands = [{
+                        source : 'M',
+                        smiles : '',
+                        code   : options.lig_code
+                      }];
                   break;
 
-  case 'auto-ep'  : task = new task_wflowaep.TaskWFlowAEP();
+  case cloudrun_code.auto_mr :
+                    task = new task_wflowamr.TaskWFlowAMR();
+                    task.inputMode = task_t.input_mode.root;
+                    task.file_select[0].path = path.parse(files.hkl[0]).base;
+                    task.file_select[1].path = path.parse(files.seq[0]).base;
+                    if (options.smiles)
+                      task.input_ligands = [{
+                        source : 'S',
+                        smiles : options.smiles,
+                        code   : ''
+                      }];
+                    else if (options.lig_code)
+                      task.input_ligands = [{
+                        source : 'M',
+                        smiles : '',
+                        code   : options.lig_code
+                      }];
+                  break;
+
+  case cloudrun_code.auto_ep :
+                    task = new task_wflowaep.TaskWFlowAEP();
                     task.inputMode = task_t.input_mode.root;
                     task.file_select[0].path = path.parse(files.hkl[0]).base;
                     task.file_select[1].path = path.parse(files.seq[0]).base;
                     task.parameters.HATOM.value = options.ha_type;
                   break;
 
-  case 'hop-on'   : task = new task_hopon.TaskMigrate();
+  case cloudrun_code.hop_on :
+                    task = new task_hopon.TaskMigrate();
                     task.inputMode = task_t.input_mode.root;
                     task.upload_files = fnames;
                     if (files.hkl.length>0)
@@ -661,7 +721,8 @@ switch (meta.task)  {
                       task.file_lib = path.parse(files.ligand[0]).base;
                   break;
 
-  case 'dimple'   : task = new task_wflowdpl.TaskWFlowDPL();
+  case cloudrun_code.dimple :
+                    task = new task_wflowdpl.TaskWFlowDPL();
                     task.inputMode = task_t.input_mode.root;
                     task.file_select[0].path = path.parse(files.hkl[0]).base;
                     task.file_select[1].path = path.parse(files.xyz[0]).base;

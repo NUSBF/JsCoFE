@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    08.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2285,7 +2285,7 @@ if (!dbx)  {
                          // 'do not use'
           // clone data object, otherwise input from customGrid will be
           // stored in original metadata, which is not good
-          dti = jQuery.extend ( true,{},dt[index] );
+          var dti = jQuery.extend ( true,{},dt[index] );
           if (dropdown[i].hasOwnProperty('customGrid'))
             dti.collectCustomDropdownInput ( dropdown[i] );
           dti.visible = dropdown[i].isVisible();
