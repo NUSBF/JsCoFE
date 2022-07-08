@@ -133,7 +133,7 @@ var cfgfpath  = process.argv[2];
 var feConfig  = null;
 var inpfpath  = '';
 var inpfdata  = '';
-var no_strict = (process.argv.length==4) && (process.argv[3]=='--no-strict');
+var no_strict = (process.argv.length<4) || (process.argv[3]=='--no-strict');
                                                      // syntax is checked above
 
 if (cfgfpath.endsWith('.json'))  {
