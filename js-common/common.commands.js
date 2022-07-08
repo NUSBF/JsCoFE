@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    07.07.22   <--  Date of Last Modification.
+ *    08.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.7.005 [07.07.2022]';
+var jsCoFE_version = '1.7.005 [08.07.2022]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -231,6 +231,7 @@ var nc_retcode = {
   jobNotFound    : 'jobNotFound',    // job token not found in registry
   pidNotFound    : 'pidNotFound'     // job's pid not found in registry
 };
+
 
 // ============================================================================
 // Image loader
