@@ -231,6 +231,11 @@ if (data_css)  {
 // ---------------------------------------------------------------------------
 //  Minify JS
 
+if (no_strict)
+      log.standard ( 12,'remove strict checks runtime' );
+else  log.standard ( 12,'keep strict checks runtime' );
+
+
 var jscode = {};
 for (var i=0;i<jslist.length;i++)  {
   var jsdata = utils.readString ( jslist[i] );
