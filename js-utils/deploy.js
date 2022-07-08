@@ -232,17 +232,19 @@ if (data_css)  {
 //  Minify JS
 
 if (no_strict)
-      log.standard ( 12,'remove strict checks runtime' );
-else  log.standard ( 12,'keep strict checks runtime' );
-
+      log.standard ( 13,'remove strict checks runtime' );
+else  log.standard ( 13,'keep strict checks runtime' );
 
 var jscode = {};
 for (var i=0;i<jslist.length;i++)  {
   var jsdata = utils.readString ( jslist[i] );
   if (jsdata)  {
+    var len0 = jsdata.length;
     if (no_strict)  // remove all occurencies
           jscode[jslist[i]] = jsdata.split('\'use strict\';').join('');
     else  jscode[jslist[i]] = jsdata;
+    if (jscode[jslist[i]].length!=len0)
+      log.standard ( 14,'destricted: ' + jslist[i] );
   } else
     log.error ( 20,'js file not found at ' + jslist[i] );
 }
