@@ -150,7 +150,7 @@ function printTemplate ( task )  {
     'USER        user_login                  # mandatory',
     'PROJECT     project_id                  # mandatory',
     'TITLE       Optional Project Title      # used only if project is created',
-    'TASK        ' + task + '                      # mandatory',
+    'TASK        ' + task + '                    # mandatory',
     'TASK_NAME   Optional Task Name          # if not given, default name is used',
     '#'
   ];
@@ -202,14 +202,14 @@ function printTemplate ( task )  {
           '# in CCP4 Cloud).'
         ].concat(msg);
         msg = msg.concat([
-          'HKL         /path/to/hkl.mtz               # reflection data',
-          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # protein sequence',
+          'HKL         /path/to/hkl.mtz               # reflection data (mandatory)',
+          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # protein sequence (mandatory)',
           '#',
-          '# Either SMILES or LIG_CODE should be used for ligand description,',
+          '# Either SMILES or LIG_CODE should be used for optional ligand description,',
           '# but not both.',
           '#',
-          'SMILES      smiles-string  # optional ligand smiles string, not enquoted',
-          'LIG_CODE    ATP            # e.g., ATP, optional 3-letter ligand code'
+          'SMILES      smiles-string  # ligand smiles string, not enquoted',
+          'LIG_CODE    ATP            # 3-letter ligand code, e.g., ATP'
         ]);
       break;
 
@@ -219,14 +219,14 @@ function printTemplate ( task )  {
           '# does not exist already) and starts the "Auto-MR" workflow.'
         ].concat(msg);
         msg = msg.concat([
-          'HKL         /path/to/hkl.mtz               # reflection data',
-          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # protein sequence',
+          'HKL         /path/to/hkl.mtz               # reflection data (mandatory)',
+          'SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # protein sequence (mandatory)',
           '#',
-          '# Either SMILES or LIG_CODE should be used for ligand description,',
+          '# Either SMILES or LIG_CODE should be used for optional ligand description,',
           '# but not both.',
           '#',
-          'SMILES      smiles-string  # optional ligand smiles string, not enquoted',
-          'LIG_CODE    ATP            # e.g., ATP, optional 3-letter ligand code'
+          'SMILES      smiles-string  # ligand smiles string, not enquoted',
+          'LIG_CODE    ATP            # 3-letter ligand code, e.g., ATP'
         ]);
       break;
 

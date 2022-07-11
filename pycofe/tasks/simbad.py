@@ -140,7 +140,7 @@ class Simbad(asudef.ASUDef):
                     "-F"                  ,hkl.dataset.Fmean.value,
                     "-SIGF"               ,hkl.dataset.Fmean.sigma,
                     "-FREE"               ,hkl.dataset.FREE,
-                    "--cleanup"           ,
+                    # "--cleanup"           ,
                     "--display_gui"       ,
                     "-webserver_uri"      ,"jsrview",
                     "-work_dir"           ,"./",
