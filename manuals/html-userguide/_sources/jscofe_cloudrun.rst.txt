@@ -1,0 +1,216 @@
+==============================================
+Starting CCP4 Cloud projects from command line
+==============================================
+
+CCP4 Cloud projects may be initiated and executed from command line, which can be useful in various scenarios. For example, data collection session at a synchrotron beamline may include sending reflection data, along with supplied sequence file and ligand description, to user's CCP4 Cloud account and start a suitable structure solution workflow there. Or, a large series of structure solution projects can be initiated by script to save time for manipulations with CCP4 Cloud's graphical interface.
+
+----------------
+CloudRun utility
+----------------
+
+CloudRun utility, included in CCP4 Software Suite, can create projects, upload data and start automatic structure solution workflow in a single run as shown below: ::
+
+  $ node $CCP4/share/jscofe/js-utils/cloudrun.js -c command_file
+
+where ``command_file`` is a text file with instructions given as keyword-value pairs (described below). An alternative syntax may be also used: ::
+
+  $ node $CCP4/share/jscofe/js-utils/cloudrun.js -i <<eof
+  keyword value
+  .......
+  eof 
+
+where the set of keyword-value pairs is supplied in the standard input stream.
+
+The set of instructions in ``command_file`` depends on the required task and can be obtained with the following command: ::
+
+  $ node $CCP4/share/jscofe/js-utils/cloudrun.js -t task >> command_file
+
+where ``task`` is one of:
+
+  - ``import``: create standard project, import data and stop 
+  - ``hop-on``: create "hop-on" project, import data and stop
+  - ``auto-af2``: create standard project, import data and start Auto-MR workflow based on structure prediction with AlphaFold-2
+  - ``auto-mr``: create standard project, import data and start Auto-MR workflow utilising ``MrBump`` and ``Simbad`` pipelines
+  - ``auto-ep``: create standard project, import data and start Auto-MR workflow based in ``Crank-2`` pipeline
+  - ``dimple``: create standard project, import data and start ``Dimple`` workflow for fast ligand blob identification and fitting
+
+Example: ::
+
+  $ node $CCP4/share/jscofe/js-utils/cloudrun.js -t auto-af2 > auto-af2.com
+  $ cat auto-af2.com
+  # CloudRun template command file for auto-af2 task.
+  #
+  # The task uploads files specified, creates CCP4 Cloud Project (if it
+  # does not exist already) and starts the "Auto-AFMR" workflow (this
+  # requires an AlphaFold (or OpenFold or ColabFold) to be installed 
+  # in CCP4 Cloud).
+  #
+  # Notes: a) hash indicates a comment b) line order is insignificant
+  #        c) CloudRun tasks are added at Project's root.
+  #
+  URL         https://ccp4cloud.server    # mandatory
+  USER        user_login                  # mandatory
+  PROJECT     project_id                  # mandatory
+  TITLE       Optional Project Title      # used only if project is created
+  TASK        auto-af2                    # mandatory
+  TASK_NAME   Optional Task Name          # if not given, default name is used
+  #
+  HKL         /path/to/hkl.mtz               # reflection data
+  SEQ_PROTEIN /path/to/file.[seq|fasta|pir]  # protein sequence
+  #
+  # Either SMILES or LIG_CODE should be used for optional ligand description,
+  # but not both.
+  #
+  SMILES      smiles-string  # ligand smiles string, not enquoted
+  LIG_CODE    ATP            # 3-letter ligand code, e.g., ATP
+  $
+
+
+---------------------
+Command file keywords
+---------------------
+
+**URL**
+    (mandatory) CCP4 Cloud server URL, for example: ::
+    
+        URL   https://cloud.ccp4.ac.uk
+
+
+**USER**
+    (mandatory) CCP4 Cloud's user account name, for example: ::
+    
+        USER   my.user.name
+
+**PROJECT**
+    (mandatory) Project Id, where the data should be uploaded, for example: ::
+    
+        PROJECT   cloudrun-amr
+
+**TITLE**
+    (mandatory for new projects) Project title, which is used for creating new project, for example: ::
+    
+        TITLE   Auto-MR Project started with CloudRun utility
+
+**TASK**
+    (optional) The task that should be performed after data is uploaded. Can be one of ``import``,
+    ``auto-af2``, ``auto-mr``, ``auto-ep``, ``hop-on`` or ``dimple``, as described above. Example: ::
+
+        TASK  auto-mr 
+
+    if TASK is not given, ``import`` is assumed.     
+    
+**HA_TYPE**
+    (must be given for ``auto-ep`` task) Atom type of main anomalous scatterer, for example: ::
+    
+        HA_TYPE   Se
+    
+**FILE**
+    (required) Path to file that should be uploaded, for example: ::
+    
+        FILE   /path/to/file/my_file.mtz 
+
+    Files with the following extensions are acceptable: ``.mtz``, ``.pdb``, ``.seq``, ``.fasta``,
+    ``.pir``, ``.cif``.
+
+    .. note::
+        CCP4 Cloud will attempt to identify the file content automatically. This should work in most cases, yet a confusion
+        may arise when complex MTZ file (combining several datasets and/or phases), non-protein sequences or CIF files are
+        uploaded. In order to avoid possible ambiguity, use specific keywords described below. 
+
+**HKL**
+    Path to MTZ or CIF file with reflection data, for example: ::
+    
+        HKL  /path/to/file.mtz
+
+**PHASES**
+    Path to MTZ file with phases, for example: ::
+    
+        PHASES  /path/to/file.mtz
+
+    Phases are usually required in the ``hop-on`` task.
+
+**SEQ_PROTEIN**
+    Path to file with aminoacid sequence(s), for example: ::
+    
+        SEQ_PROTEIN  /path/to/file_protein.seq 
+        
+    The following file extensions are accepted: ``.seq``, ``.fasta``, ``.pir``.
+    
+    .. note::
+        The file may contain several aminoacid sequences in FASTA/PIR formats, but it **must not** include nucleic acid 
+        sequence(s)
+
+**SEQ_DNA**
+    Path to file with DNA sequence, for example: ::
+    
+        SEQ_DNA    /path/to/file_dna.seq
+
+    The following file extensions are accepted: ``.seq``, ``.fasta``, ``.pir``. Only DNA sequence(s) must be found in the file.
+
+**SEQ_RNA**
+    Path to file with RNA sequence, for example: ::
+    
+        SEQ_RNA    /path/to/file_rna.seq
+
+    The following file extensions are accepted: ``.seq``, ``.fasta``, ``.pir``. Only RNA sequence(s) must be found in the file.
+
+**XYZ**
+    Path to file with macromolecular atomic model, for example: ::
+    
+        XYZ    /path/to/file_xyz.pdb
+
+    Acceptable file extensions include ``.pdb`` and ``.cif``.
+
+**LIGAND**
+    File with ligand descriptors (crystallographic restraints), for example: ::
+    
+        LIGAND   /path/to/file_ligand.cif
+
+    Both single-ligand (``.cif``) and multiple-ligand ("libraries", ``.lib``) files are acceptable.
+
+**SMILES**
+    SMILES string for generating ligand descriptors. For example, benzene is specified as follows: ::
+    
+        SMILES   C1=CC=CC=C1
+
+**LIG_CODE**
+    3-character ligand code. For example: ::
+    
+        LIG_CODE  ATP
+
+    .. note::
+        SMILES and LIG_CODE can be used only for describing single ligand that should be fitted in
+        structure solution workflows. For ``hop-on`` and ``import`` tasks, use LIGAND. 
+
+
+-------
+Example
+-------
+
+The following commands will import data and start Auto-MR with generating AlphaFold-2 model and ligand fitting 
+for MDM2 Protein bound to Nutlin molecule from the standard set of CCP4 examples: ::
+
+  $ source /path/to/ccp4-8.0/bin/ccp4.setup-sh
+  $ export CDEMODATA=`ccp4-python -c "import sysconfig; print(sysconfig.get_path('purelib'))"`/ccp4i2/demo_data
+  $ cp $CDEMODATA/mdm2/mdm2_unmerged.mtz .
+  $ cp $CDEMODATA/mdm2/4hg7.seq .
+  $ node $CCP4/share/jscofe/js-utils/cloudrun.js -i <<eof
+  URL         https://cloud.ccp4.ac.uk
+  USER        my.ccp4.cloud.login
+  PROJECT     cloudrun_mdm2
+  TITLE       Solving MDM2 Protein bound to Nutlin molecule for testing CloudRun
+  TASK        auto-af2
+  HKL         mdm2_unmerged.mtz
+  SEQ_PROTEIN 4hg7.seq
+  SMILES      COc1ccc(C2=N[C@H]([C@H](N2C(=O)N2CCNC(=O)C2)c2ccc(Cl)cc2)c2ccc(Cl)cc2)c(OC(C)C)c1
+  eof
+
+.. note::
+  Use your actual CCP4 Cloud login name in ``USER`` field
+
+.. note::
+  AlphaFold-2 is not part of CCP4 and is installed in CCP4 Cloud separately. It is installed at https://cloud.ccp4.ac.uk, 
+  but may be unavailable on other servers. In this case, this example is solvable by changing TASK from ``auto-af2`` to 
+  ``auto-mr``.
+
+  
