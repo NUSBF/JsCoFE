@@ -65,6 +65,7 @@ function UserData()  {
   this.licence       = '';
   this.feedback      = '';
   this.pwd           = '';
+  // this.cloudrun_id   = '';
   this.knownSince    = '';  // date
   this.lastSeen      = '';  // date
   this.role          = role_code.user;
