@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.08.21   <--  Date of Last Modification.
+ *    11.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-Auto Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -45,6 +45,7 @@ function TaskShelxAuto()  {
   this.input_dtypes[1].customInput = 'anomData-Shelx'; // lay custom fields next to the selection
 
   this.parameters.sec1.value = 'shelx-auto';
+  // this.parameters.sec2.contains.SUBSTRDET_PROGRAM.value = 'shelxd';
 
 }
 

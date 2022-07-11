@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    11.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -206,8 +206,11 @@ class Crank2(basic.TaskDriver):
 
     def add_substrdet ( self ):
         substrdet_pgm = self.getParameter ( self.sec2.SUBSTRDET_PROGRAM )
-        if substrdet_pgm=="_blank_":
-            substrdet_pgm = ""
+        if not substrdet_pgm or substrdet_pgm=="_blank_":
+            if self.task._type=="TaskShelxAuto":
+                substrdet_pgm = "shelxd"
+            else:
+                substrdet_pgm = ""
         ndisulph = self.revision.ASU.ndisulph
         if ndisulph or ndisulph==0:
             ndisulph = " num_dsul::" + str(ndisulph)
