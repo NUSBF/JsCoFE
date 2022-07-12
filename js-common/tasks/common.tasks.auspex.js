@@ -130,6 +130,10 @@ TaskAuspex.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskAuspex.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'detects problems and artifacts in the reflection data';
+  };
 
 if (!__template)  {
 

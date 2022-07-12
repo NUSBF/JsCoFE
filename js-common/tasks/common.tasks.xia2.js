@@ -261,6 +261,12 @@ TaskXia2.prototype.currentVersion = function()  {
 if (!__template)  {
   // for client side
 
+  TaskXia2.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'performs X-ray diffraction data processing';
+    };
+  
+
   TaskXia2.prototype.disableDirectoryInput = function ( inputPanel,disable_bool ) {
     for (var i=0;i<inputPanel.dir_input.length;i++)
       inputPanel.dir_input[i].browse_btn.setDisabled ( disable_bool );

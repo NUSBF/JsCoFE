@@ -118,6 +118,11 @@ TaskDeposition.prototype.constructor = TaskDeposition;
 
 TaskDeposition.prototype.icon = function()  { return 'task_deposition'; }
 
+TaskDeposition.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'prepares mmCIF files for deposition and acquires the PDB Validation report from wwPDB servers';
+  };
+
 // TaskDeposition.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskDeposition.prototype.currentVersion = function()  {

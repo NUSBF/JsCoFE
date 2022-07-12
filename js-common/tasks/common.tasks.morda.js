@@ -94,6 +94,11 @@ TaskMorda.prototype.constructor = TaskMorda;
 
 TaskMorda.prototype.icon = function()  { return 'task_morda'; }
 
+TaskMorda.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'performs automated molecular replacement protein structure solution based on its own domain database';
+  };
+
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux

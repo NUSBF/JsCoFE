@@ -114,6 +114,11 @@ TaskGemmi.prototype.currentVersion = function()  {
 
 TaskGemmi.prototype.icon = function()  { return 'task_gemmi'; }
 
+TaskGemmi.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'exposes python terminal to user for performing very custom operations on coordinate data';
+  };
+
 if (__template)  {
   //  for server side
 

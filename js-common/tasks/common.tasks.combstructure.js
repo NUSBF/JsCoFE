@@ -287,6 +287,11 @@ TaskCombStructure.prototype.constructor = TaskCombStructure;
 
 TaskCombStructure.prototype.icon = function()  { return 'task_combstructure'; }
 
+TaskCombStructure.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'provides an access to the model building COOT tools with the following cycles of refinement with Refmac';
+  };
+
 TaskCombStructure.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)

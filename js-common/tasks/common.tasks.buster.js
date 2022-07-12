@@ -229,6 +229,11 @@ TaskBuster.prototype.constructor = TaskBuster;
 
 TaskBuster.prototype.icon = function()  { return 'task_buster'; }
 
+TaskBuster.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'refines macromolecular structure';
+  };
+
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux

@@ -75,6 +75,11 @@ TaskJLigand.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskJLigand.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'generates new ligand entries';
+  };
+
 if (__template)  {
   //  for server side
 

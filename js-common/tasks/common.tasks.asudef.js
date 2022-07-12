@@ -222,6 +222,11 @@ if (!__template)  {
   //  for client side
 
   TaskASUDef.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'to define Asymmetric Unit Contents';
+    };
+
+  TaskASUDef.prototype.desc_title = function()  {
   // this appears under task title in the task list
     return 'specify the expected ASU composition and form the initial Structure Revision';
   }

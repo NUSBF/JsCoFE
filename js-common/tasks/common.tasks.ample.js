@@ -83,6 +83,10 @@ TaskAmple.prototype.currentVersion = function()  {
 
 if (__template)  {
   //  for server side
+  TaskAmple.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'use ab initio models as search models in molecular replacement';
+    };
 
   var conf = require('../../js-server/server.configuration');
 

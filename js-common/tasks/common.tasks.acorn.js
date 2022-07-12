@@ -915,7 +915,11 @@ function AcornHotButton()  {
 
 if (!__template)  {
   //  for client side
-
+  
+  TaskAcorn.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'refine a starting set of phases using Dynamic Density Modification';
+    };
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskAcorn.prototype.hotButtons = function() {
     return [ArpWarpHotButton(),BuccaneerHotButton()];

@@ -543,6 +543,11 @@ TaskRefmac.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskRefmac.prototype.desc_title = function()  {
+   // this appears under task title in the task list
+     return 'refines of macromolecular structures';
+   };
+
 //TaskRefmac.prototype.cleanJobDir = function ( jobDir )  {}
 
 // hotButtons return list of buttons added in JobDialog's toolBar.

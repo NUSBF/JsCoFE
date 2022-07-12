@@ -215,6 +215,11 @@ TaskXyzUtils.prototype.currentVersion = function()  {
 if (!__template)  {
   // client side
 
+  TaskXyzUtils.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'allows selecting a limited set of atoms in a coordinate file and saving them to new files';
+    };
+
   TaskXyzUtils.prototype.collectInput = function ( inputPanel )  {
 
     var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );

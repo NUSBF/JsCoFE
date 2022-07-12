@@ -77,6 +77,10 @@ TaskSeqAlign.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskSeqAlign.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'aligns protein sequences';
+  };
 
 if (__template)  {
   //  for server side

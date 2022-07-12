@@ -249,6 +249,11 @@ function ShelxEMRHotButton()  {
 if (!__template)  {
   //  for client side
 
+  TaskShelxEMR.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'performs iterative density modification by the inclusion of automated protein main-chain tracing';
+    };
+
   TaskShelxEMR.prototype.getHelpURL = function()  {
     return __task_reference_base_url + 'doc.task.SHELX.html#id1';
   }

@@ -143,9 +143,10 @@ TaskModelCraft.prototype.constructor = TaskModelCraft;
 // export such that it could be used in both node and a browser
 
 TaskModelCraft.prototype.icon = function() { return 'task_modelcraft'; }
-// TaskModelCraft.prototype.desc_title = function()  {
-//   return 'Automatic model building after MR or Experimental Phasing';
-// }
+
+TaskModelCraft.prototype.desc_title = function()  {
+  return 'performs automatic model building after MR or Experimental Phasing';
+}
 
 // TaskModelCraft.prototype.cleanJobDir = function ( jobDir )  {}
 

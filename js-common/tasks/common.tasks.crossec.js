@@ -337,6 +337,11 @@ TaskCrosSec.prototype.constructor = TaskCrosSec;
 
 TaskCrosSec.prototype.icon = function()  { return 'task_crossec'; }
 
+TaskCrosSec.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'interpolates X-ray cross sections and compute anomalous scattering factors';
+  };
+
 TaskCrosSec.prototype.currentVersion = function()  {
   var version = 1;
   if (__template)

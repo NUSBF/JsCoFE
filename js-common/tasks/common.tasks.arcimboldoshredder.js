@@ -238,6 +238,11 @@ TaskArcimboldoShredder.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskArcimboldoShredder.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'uses fragments derived from a distant homologue template for MR';
+  };
+
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux

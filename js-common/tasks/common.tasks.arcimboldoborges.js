@@ -140,6 +140,11 @@ TaskArcimboldoBorges.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskArcimboldoBorges.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'performs ab initio phasing with nonspecific libraries of small folds';
+  };
+
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux

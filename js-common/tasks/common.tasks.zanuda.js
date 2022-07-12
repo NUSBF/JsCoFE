@@ -112,6 +112,12 @@ TaskZanuda.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskZanuda.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'validates space group in case of the presence of pseudosymmetry and twinning';
+  };
+
+
 
 if (__template)  {
   //  for server side

@@ -120,6 +120,11 @@ TaskFreeRFlag.prototype.currentVersion = function()  {
 if (!__template)  {
   //  for client side
 
+  TaskFreeRFlag.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'tags each reflection in an MTZ file with a flag for cross-validation';
+    };
+
   TaskFreeRFlag.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
     function makeSuffix ( title,suffix )  {

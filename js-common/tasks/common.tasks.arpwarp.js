@@ -447,6 +447,11 @@ function ArpWarpHotButton()  {
 if (!__template)  {
   //  for client side
 
+  TaskArpWarp.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'builds macromolecular models';
+    };
+
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskArpWarp.prototype.hotButtons = function() {
     return [CootMBHotButton()];
