@@ -47,16 +47,6 @@ function TaskMolrep()  {
       version     : 7,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
-    /*
-    },{
-      data_type   : {'DataStructure':['phases']}, // data type(s) and subtype(s)
-      label       : 'Phases',  // label for input dialog
-      inputId     : 'phases',       // input Id for referencing input fields
-      tooltip     : 'Fit model into the ED map obtained from these phases.',
-      version     : 0,          // minimum data version allowed
-      min         : 0,          // minimum acceptable number of data instances
-      max         : 1           // maximum acceptable number of data instances
-    */
     },{
       data_type   : {'DataEnsemble':[],'DataModel':[]},  // data type(s) and subtype(s)
       label       : 'Model ensemble',     // label for input dialog

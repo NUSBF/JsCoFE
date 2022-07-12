@@ -73,6 +73,7 @@ function AccountPage ( sceneId )  {
   var login_lbl    = new Label     ( 'Login name:' ).setNoWrap();
   var pwd_lbl      = new Label     ( 'Password:'   );
   var pwd1_lbl     = new Label     ( 'Retype password:'   ).setNoWrap();
+  var cloudrun_lbl = new Label     ( 'CloudRun Id:'       ).setNoWrap();
   var licence_lbl  = new Label     ( 'Licence agreement:' ).setNoWrap();
   var feedback_lbl = new Label     ( 'Feedback agreement:').setNoWrap();
   var authoris_lbl = null;
@@ -86,6 +87,7 @@ function AccountPage ( sceneId )  {
   var login_inp    = new InputText ( '' );
   var pwd_inp      = new InputText ( '' );
   var pwd1_inp     = new InputText ( '' );
+  var cloudrun_inp = new InputText ( '' );
 
   //user_inp    .setStyle   ( 'text',"^[A-Za-z\\-\\.\\s]+$",'John Smith',
   //user_inp    .setStyle   ( 'text',"^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$",
@@ -103,12 +105,17 @@ function AccountPage ( sceneId )  {
                             'Choose new password' );
   pwd1_inp    .setStyle   ( 'password','','confirm password',
                             'Type password again here' );
+  cloudrun_inp.setTooltip ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
+                            'from command prompt. It should be changed periodically ' +
+                            'for security reasons. Press button on the left to ' +
+                            'generate new CloudRun Id.' );
   title_lbl   .setFont    ( 'times','300%',true,true );
   user_lbl    .setFontSize( '112%' ).setWidth('auto');
   email_lbl   .setFontSize( '112%' );
   login_lbl   .setFontSize( '112%' );
   pwd_lbl     .setFontSize( '112%' );
   pwd1_lbl    .setFontSize( '112%' );
+  cloudrun_lbl.setFontSize( '112%' );
   licence_lbl .setFontSize( '112%' );
   feedback_lbl.setFontSize( '112%' );
   /* == authoris_lbl.setFontSize( '112%' ); */
@@ -117,6 +124,7 @@ function AccountPage ( sceneId )  {
   login_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt').setReadOnly(true);
   pwd_inp     .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
   pwd1_inp    .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
+  cloudrun_inp.setFontSize( '94%'  ).setReadOnly  (true).setWidth('110pt').setHeight('26px');
 
   var row = 0;
   panel.setWidget              ( title_lbl   ,row,0,1,4   );
@@ -128,10 +136,11 @@ function AccountPage ( sceneId )  {
   panel.setWidget              ( login_lbl   ,row+2,0,1,1 );
   panel.setWidget              ( pwd_lbl     ,row+3,0,1,1 );
   panel.setWidget              ( pwd1_lbl    ,row+4,0,1,1 );
-  panel.setWidget              ( licence_lbl ,row+5,0,1,2 );
-  panel.setWidget              ( feedback_lbl,row+6,0,1,2 );
+  panel.setWidget              ( cloudrun_lbl,row+5,0,1,1 );
+  panel.setWidget              ( licence_lbl ,row+6,0,1,2 );
+  panel.setWidget              ( feedback_lbl,row+7,0,1,2 );
   if (__auth_software)
-    panel.setWidget            ( authoris_lbl,row+7,0,1,2 );
+    panel.setWidget            ( authoris_lbl,row+8,0,1,2 );
   for (var i=0;i<5;i++)
     panel.setCellSize  ( '96pt','',row+i,0   );
   panel.setWidget              ( user_inp    ,row  ,1,1,3 );
@@ -139,9 +148,12 @@ function AccountPage ( sceneId )  {
   panel.setWidget              ( login_inp   ,row+2,1,1,3 );
   panel.setWidget              ( pwd_inp     ,row+3,1,1,3 );
   panel.setWidget              ( pwd1_inp    ,row+4,1,1,3 );
+  var cloudrun_pnl = new Grid('-compact');
+  cloudrun_pnl.setWidget       ( cloudrun_inp,0,0,1,1     );
+  panel.setWidget              ( cloudrun_pnl,row+5,1,1,3 );
   /* == for (var i=0;i<7;i++)  { */
   if (__auth_software)  {
-    for (var i=0;i<8;i++)  {
+    for (var i=0;i<9;i++)  {
       panel.setVerticalAlignment ( row+i,0,'middle' );
       panel.setVerticalAlignment ( row+i,1,'middle' );
     }
@@ -152,15 +164,14 @@ function AccountPage ( sceneId )  {
     }
   }
 
-
   // make settings panel
   var spanel = new Grid('');
   spanel.setWidth ( '260pt' );
-  panel.setLabel ( '&nbsp;',row,2,1,1 ).setWidth ( '80px' );
+  panel.setLabel  ( '&nbsp;',row,2,1,1 ).setWidth ( '80px' );
   panel.setWidget ( spanel ,row,3,15,3 );
 
-  panel.setLabel ( 'Preferences<sup>*</sup>',row-1,5,1,1 )
-       .setFont ( 'times','150%',true,true );
+  panel.setLabel  ( 'Preferences<sup>*</sup>',row-1,5,1,1 )
+       .setFont   ( 'times','150%',true,true );
   //spanel.setCellSize ( '','10pt',1,0   );
 
   var prfrow = 0;
@@ -185,8 +196,7 @@ function AccountPage ( sceneId )  {
 
   var dgrid = spanel.setGrid ( '-compact', prfrow++,0,1,2 );
   dgrid.setLabel ( '&nbsp;',0,0,1,3 ).setFontSize('50%');
-  dgrid.setLabel ( 'Initial size (% of browser window):',1,0,1,3 )
-       .setNoWrap();
+  dgrid.setLabel ( 'Initial size (% of browser window):',1,0,1,3 ).setNoWrap();
   dgrid.setLabel ( 'width' ,2,1,1,1 ).setFontItalic(true);
   dgrid.setLabel ( 'height',2,2,1,1 ).setFontItalic(true);
   dgrid.setLabel ( '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Job dialogs:',3,0,1,1 )
@@ -267,7 +277,22 @@ function AccountPage ( sceneId )  {
         .setFontSize ( '90%' ).setFontItalic(true);
 
 
-  row += 5;
+  var cloudrun_btn = new Button  ( 'renew',image_path('regenerate') );
+  cloudrun_btn.setTooltip ( 'Generate new CloudRun Id (do this periodically for ' +
+                            'security reasons)' );
+  cloudrun_pnl.setWidget ( cloudrun_btn,0,1,1,1 );
+  cloudrun_pnl.setVerticalAlignment ( 0,0,'middle' );
+  cloudrun_pnl.setVerticalAlignment ( 0,1,'middle' );
+  cloudrun_btn.addOnClickListener ( function(){
+    cloudrun_inp.setValue ( getRandomToken() );
+    new MessageBox ( 'Save changes',
+                     '<div style="width:300px"><h2>CloudRun Id changed</h2>' +
+                     'Do not forget to save changes and update your CloudRun ' +
+                     'scripts.</div>','msg_excl_yellow' );
+  });
+
+
+  row += 6;
   var licence_btn = new Button  ( 'choose',image_path('licence') );
   licence_btn.setWidth          ( '100%' );
   licence_btn.setTooltip        ( 'Type of licence must be chosen' );
@@ -371,13 +396,14 @@ function AccountPage ( sceneId )  {
 
     } else  {
 
-      userData.name     = user_inp    .getValue();
-      userData.email    = email_inp   .getValue();
-      userData.login    = login_inp   .getValue();
-      userData.pwd      = pwd_inp     .getValue();
-      userData.licence  = licence_btn .getText ();
-      userData.feedback = feedback_btn.getText ();
-      userData.action   = userdata_action.none;
+      userData.name        = user_inp    .getValue();
+      userData.email       = email_inp   .getValue();
+      userData.login       = login_inp   .getValue();
+      userData.pwd         = pwd_inp     .getValue();
+      userData.cloudrun_id = cloudrun_inp.getValue();
+      userData.licence     = licence_btn .getText ();
+      userData.feedback    = feedback_btn.getText ();
+      userData.action      = userdata_action.none;
 
       __user_settings.onlogin        = onlogin_sel.getValue();
       __user_settings.jobdlg_size    = [ defsize[0][2],defsize[1][2] ];
@@ -483,9 +509,10 @@ function AccountPage ( sceneId )  {
           'Please check your account settings:<ul>' + msg + '</ul>' +
           'To confirm your changes, push <b>Save changes</b> button.', 'msg_excl' );
       },0);
-    user_inp    .setValue  ( userData.name     );
-    email_inp   .setValue  ( userData.email    );
-    login_inp   .setValue  ( userData.login    );
+    user_inp    .setValue  ( userData.name  );
+    email_inp   .setValue  ( userData.email );
+    login_inp   .setValue  ( userData.login );
+    cloudrun_inp.setValue  ( userData.cloudrun_id );
     licence_btn .setButton ( userData.licence,image_path('licence') )
     if ((userData.feedback.length>0) &&
         ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]

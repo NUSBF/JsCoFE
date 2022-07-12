@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    29.06.22   <--  Date of Last Modification.
+ *    11.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -65,7 +65,7 @@ function UserData()  {
   this.licence       = '';
   this.feedback      = '';
   this.pwd           = '';
-  // this.cloudrun_id   = '';
+  this.cloudrun_id   = '';
   this.knownSince    = '';  // date
   this.lastSeen      = '';  // date
   this.role          = role_code.user;
@@ -86,6 +86,13 @@ function UserData()  {
   this.action        = userdata_action.none;
 }
 
+function getRandomToken()  {
+  return  Math.random().toString(36).substring(2,6) + '-' +
+          Math.random().toString(36).substring(2,6) + '-' +
+          Math.random().toString(36).substring(2,6) + '-' +
+          Math.random().toString(36).substring(2,6);
+}
+
 function checkUserData ( uData )  {
 var msg = '';
 
@@ -104,6 +111,9 @@ var msg = '';
 
   if (!uData.hasOwnProperty('authorisation'))
     uData.authorisation = {};
+
+  if ((!uData.hasOwnProperty('cloudrun_id')) || (!uData.cloudrun_id))
+    uData.cloudrun_id = getRandomToken();
 
   if (!uData.hasOwnProperty('settings'))
     uData.settings = { project_prefix : false };
