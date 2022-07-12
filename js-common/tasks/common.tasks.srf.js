@@ -208,6 +208,11 @@ TaskSRF.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskSRF.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'allows determining the internal symmetry of the native data by comparison the native Patterson function against itself';
+  };
+
 
 if (__template)  {
   //  for server side

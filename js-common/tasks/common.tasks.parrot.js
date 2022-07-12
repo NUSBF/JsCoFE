@@ -243,6 +243,11 @@ function ParrotHotButton()  {
 if (!__template)  {
   //  for client side
 
+  TaskParrot.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'performs automated density modification';
+    };
+
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskParrot.prototype.hotButtons = function() {
     return [BuccaneerHotButton(),ArpWarpHotButton()];

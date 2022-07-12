@@ -210,6 +210,11 @@ TaskDimple.prototype.constructor = TaskDimple;
 
 TaskDimple.prototype.icon = function()  { return 'task_dimple'; }
 
+TaskDimple.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'allows quick assessment of crystal data to see if a ligand has bound to the structure';
+  };
+
 TaskDimple.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)

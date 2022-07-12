@@ -36,6 +36,10 @@ function TaskArcimboldo()  {
              else  TaskArcimboldoLite.call ( this );
   this._type = 'TaskArcimboldo';
 }
+TaskArcimboldo.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'performs ab initio phasing using polyalanine helices or other single search fragments';
+  };
 
 if (__template)
       TaskArcimboldo.prototype = Object.create ( __template.TaskArcimboldoLite.prototype );

@@ -169,6 +169,11 @@ TaskNautilus.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskNautilus.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'performs automated building of RNA/DNA from electron density';
+  };
+
 if (__template)  {
   //  for server side
 

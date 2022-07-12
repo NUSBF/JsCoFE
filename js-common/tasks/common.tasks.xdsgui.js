@@ -80,6 +80,11 @@ TaskXDSGUI.prototype.currentVersion = function()  {
 
 if (!__template)  {
   //  for client side
+  TaskXDSGUI.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return '';
+    };
+  
 
   TaskXDSGUI.prototype.onJobDialogStart = function ( job_dialog )  {
     job_dialog.run_btn.click();  // start automatically

@@ -115,6 +115,10 @@ TaskSymMatch.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskSymMatch.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'uses symmetry to match chains';
+  };
 
 if (__template)  {
   //  for server side

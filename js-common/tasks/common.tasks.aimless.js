@@ -1207,8 +1207,15 @@ TaskAimless.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+
+
 if (!__template)  {
   //  for client side
+
+  TaskAimless.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'scale together multiple observations of reflections';
+    };
 
   TaskAimless.prototype.collectInput = function ( inputPanel )  {
 

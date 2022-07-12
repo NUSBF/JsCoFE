@@ -15,7 +15,9 @@ CCP4 Cloud Version Log
 
     #. Fixed bug causing crashes when job was rerun with last used parameters from a lower-version job
 
-    #. Added "Structure Prediction" task based on AlphaFold-2
+    #. Added ``Structure Prediction`` task based on AlphaFold-2
+
+    #. Fixed bug in ``SHELX Auto-EP via Crank-2`` associated with making PRASA the default choice for structure determination
 
 
 **Version 1.7.004**

@@ -94,6 +94,11 @@ TaskPISA.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskPISA.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'performs the calculation of macromolecular surfaces and interfaces and their various properties, and predicts probable macromolecular assemblies';
+  };
+
 
 if (__template)  {
   //  for server side

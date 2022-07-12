@@ -84,6 +84,11 @@ TaskChangeSpGASU.prototype.currentVersion = function()  {
 if (!__template)  {
   //  for client side
 
+  TaskChangeSpGASU.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'changes ASU Space Group';
+    };
+
   TaskChangeSpGASU.prototype.addDataDialogHints = function ( inp_item,summary )  {
     // This function may be used for adding or modifying hints in summary.hints
     // when they are dependent on task rather than, or in addition to, daat type.

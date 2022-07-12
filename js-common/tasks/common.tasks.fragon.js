@@ -300,6 +300,11 @@ TaskFragon.prototype.currentVersion = function()  {
 if (!__template)  {
   //  for client side
 
+  TaskFragon.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'uses fragments of secondary structure such as ideal alpha helices or ensembles of beta strands as model for MR ';
+    };
+
   // hotButtons return list of buttons added in JobDialog's toolBar.
   //TaskFragon.prototype.hotButtons = function() {
   //  return [RefmacHotButton()];

@@ -103,6 +103,12 @@ function SheetbendHotButton()  {
 if (!__template)  {
   //  for client side
 
+  TaskSheetbend.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return '';
+    };
+  
+
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskSheetbend.prototype.hotButtons = function() {
     return [BuccaneerHotButton(),ArpWarpHotButton()];

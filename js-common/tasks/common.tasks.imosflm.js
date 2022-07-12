@@ -86,6 +86,11 @@ TaskIMosflm.prototype.currentVersion = function()  {
 if (!__template)  {
   //  for client side
 
+  TaskIMosflm.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'process diffraction data';
+    };
+
   TaskIMosflm.prototype.onJobDialogStart = function ( job_dialog )  {
     job_dialog.run_btn.click();  // start automatically
   }

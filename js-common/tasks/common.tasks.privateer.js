@@ -72,6 +72,11 @@ TaskPrivateer.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskPrivateer.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'validates carbohydrate structures';
+  };
+
 
 if (__template)  {
   //  for server side

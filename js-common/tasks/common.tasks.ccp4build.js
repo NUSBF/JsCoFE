@@ -400,6 +400,11 @@ TaskCCP4Build.prototype.icon = function() { return 'task_ccp4build'; }
 //   return 'Automatic model building after MR or Experimental Phasing';
 // }
 
+TaskCCP4Build.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'builds model with density modification, model trimming, side-chain reconstruction and real-space refinement';
+  };
+
 TaskCCP4Build.prototype.canEndGracefully = function() { return true; }
 
 TaskCCP4Build.prototype.currentVersion = function()  {

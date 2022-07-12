@@ -364,6 +364,11 @@ function BuccaneerHotButton()  {
 if (!__template)  {
   //  for client side
 
+  TaskBuccaneer.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'performs statistical Model Building';
+    };
+
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskBuccaneer.prototype.hotButtons = function() {
     return [CootMBHotButton()];

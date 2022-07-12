@@ -244,6 +244,11 @@ TaskArcimboldoLite.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskArcimboldoLite.prototype.desc_title = function()  {
+  // this appears under task title in the task list
+    return 'performs ab initio phasing using polyalanine helices or other single search fragments for MR';
+  };
+
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux

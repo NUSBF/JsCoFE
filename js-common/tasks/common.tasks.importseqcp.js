@@ -103,6 +103,11 @@ if (!__template)  {
 
   //  for client side
 
+  TaskImportSeqCP.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'imports sequence copy-pasted from other web pages';
+    };
+
   TaskImportSeqCP.prototype.customDataClone = function ( cloneMode,task )  {
     this.uname = '';
     return;

@@ -91,6 +91,11 @@ TaskChangeSpG.prototype.currentVersion = function()  {
 if (!__template)  {
   // for client side
 
+  TaskChangeSpG.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return 'allows changing the merged reflection dataset space group with the same point group';
+    };
+
   TaskChangeSpG.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
     function makeSuffix ( title,suffix )  {

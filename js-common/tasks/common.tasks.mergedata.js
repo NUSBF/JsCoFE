@@ -67,6 +67,11 @@ TaskMergeData.prototype.currentVersion = function()  {
 if (!__template)  {
   // for client side
 
+  TaskMergeData.prototype.desc_title = function()  {
+    // this appears under task title in the task list
+      return '';
+    };
+
   // reserved function name
   TaskMergeData.prototype.makeInputPanel = function ( dataBox )  {
   // makes input panel for Import task; dataBox is not used as import task
