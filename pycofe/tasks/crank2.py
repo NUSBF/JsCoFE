@@ -751,7 +751,7 @@ class Crank2(basic.TaskDriver):
                     self.addCitations ( meta["programs_used"] )
                 else:
                     self.putMessage ( "<b>Program error:</b> <i>no program list in meta</i>" +
-                                  "<p>'" + meta_str + "'" )
+                                      "<p>'" + meta_str + "'" )
             except:
                 self.putMessage ( "<b>Program error:</b> <i>unparseable metadata from Crank-2</i>" +
                                   "<p>'" + meta_str + "'" )

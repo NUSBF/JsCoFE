@@ -1411,23 +1411,37 @@ function cloudRun ( server_request,server_response )  {
       } else  {
 
         // directory with data in 'uploads' subdirectory received safely
-        //   meta.user     - user login
-        //   meta.project  - project Id
-        //   meta.title    - project title (for new projects)
-        //   meta.task     - task code
+        //   meta.user        - user login
+        //   meta.cloudrun_id - user login
+        //   meta.project     - project Id
+        //   meta.title       - project title (for new projects)
+        //   meta.task        - task code
 
         // 2. Check that user exists and make loginData structure
 
-        var loginData = user.getUserLoginData ( meta.user );
-        if (!loginData)  {
+        var loginData = { login : meta.user, volume : null };
+        var uData = user.readUserData ( loginData );
+        if (!uData)  {
           log.standard ( 60,'cloudrun request for unknown user ('+meta.user+') -- ignored' );
           response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'unknown user',{} );
+        } else if (uData.cloudrun_id!=meta.cloudrun_id)  {
+          log.standard ( 61,'cloudrun request with wrong cloudrun_id (user '+meta.user+') -- ignored' );
+          response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'wrong CloudRun Id',{} );
         } else  {
+          loginData.volume = uData.volume;
+        // }
+        //
+        //
+        // var loginData = user.getUserLoginData ( meta.user );
+        // if (!loginData)  {
+        //   log.standard ( 60,'cloudrun request for unknown user ('+meta.user+') -- ignored' );
+        //   response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'unknown user',{} );
+        // } else  {
 
           var check_list = ration.checkUserRation ( loginData,true );
           if (check_list.length>0)  {
 
-            log.standard ( 61,'cloudrun rejected for user ('+meta.user+'): ' +
+            log.standard ( 62,'cloudrun rejected for user ('+meta.user+'): ' +
                                check_list.join(', ') );
             response = new cmd.Response ( cmd.fe_retcode.errors,
               'cloudrun rejected: ' + check_list.join(', ') + ' quota is up',{} );
@@ -1467,9 +1481,9 @@ function cloudRun ( server_request,server_response )  {
                       ci_state   : 'hidden'
                     },
                     state : {
-                      opened   : true,
-                      disabled : false,
-                      selected : false
+                      opened     : true,
+                      disabled   : false,
+                      selected   : false
                     },
                     children : [],
                     li_attr  : {},

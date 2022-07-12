@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    08.07.22   <--  Date of Last Modification.
+ *    11.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,6 +44,8 @@
  *
  *   URL         https://ccp4cloud.server    # mandatory
  *   USER        user_login                  # mandatory
+ *   CLOUDRUN_ID aaaa-bbbb-cccc-dddd         # mandatory
+ *   AUTH_FILE   /path/to/auth.dat           # alternative to USER/CLOUDRUN_ID
  *   PROJECT     project_id                  # mandatory
  *   TITLE       Optional Project Title      # used only if project is created
  *   TASK        [import|auto-af2|auto-mr|auto-ep|hop-on|dimple]  # import if not given
@@ -147,7 +149,16 @@ function printTemplate ( task )  {
     '#        c) CloudRun tasks are added at Project\'s root.',
     '#',
     'URL         https://ccp4cloud.server    # mandatory',
+    '#',
+    '# User authentication: either in-line specification',
+    '#',
     'USER        user_login                  # mandatory',
+    'CLOUDRUN_ID aaaa-bbbb-cccc-dddd         # mandatory, found in "My Account"',
+    '#',
+    '# or a file containing single line: user_login aaaa-bbbb-cccc-dddd',
+    '#',
+    '# AUTH_FILE   /path/to/auth.dat           # mandatory',
+    '#'
     'PROJECT     project_id                  # mandatory',
     'TITLE       Optional Project Title      # used only if project is created',
     'TASK        ' + task + '                    # mandatory',
@@ -414,18 +425,19 @@ if (!input)
   printInstructions();
 
 var meta = {
-  url       : '',
-  user      : '',
-  project   : '',
-  title     : '*',
-  task      : 'import',
-  task_name : '*'
+  url         : '',
+  user        : '',
+  cloudrun_id : '',
+  project     : '',
+  title       : '*',
+  task        : 'import',
+  task_name   : '*'
 };
 
 var options = {
-  ha_type  : '',
-  smiles   : '',
-  lig_code : ''
+  ha_type     : '',
+  smiles      : '',
+  lig_code    : ''
 };
 
 var files = {
@@ -524,6 +536,20 @@ for (var i=0;i<commands.length;i++)  {
           console.log ( '   ^^^^ file not found (' + val + ')' );
           ok = false;
         }
+      } else if (key=='auth_file')  {
+        var auth_line = utils.readString ( val );
+        if (!auth_line)  {
+          console.log ( '\n  *** STOP: AUTH_FILE is absent or corrupt' );
+          process.exit();
+        }
+        auth = auth_line.match ( /\S+/g );
+        if (auth.length!=2)  {
+          console.log ( '\n  *** STOP: AUTH_FILE must contain only login name and CloudRun Id' );
+          process.exit();
+        }
+        meta.user        = auth[0]
+        meta.cloudrun_id = auth[1];
+        console.log ( ' ... login name and cloudrun_id were read from file ' + val );
       } else  {
         console.log ( '   ^^^^ unknown key' );
         ok = false;
@@ -584,20 +610,20 @@ if (meta.task=='hop-on')  {
 
 } else if (meta.task=='dimple')  {
 
-    if (files.hkl.length<=0)  {
-      ok = false;
-      console.log ( ' *** no reflection data provided' );
-    } else if (files.hkl.length>1)  {
-      ok = false;
-      console.log ( ' *** multiple reflection datasets not aceptable for dimple workflow' );
-    }
-    if (files.xyz.length<=0)  {
-      ok = false;
-      console.log ( ' *** no structure homologue provided' );
-    } else if (files.xyz.length>1)  {
-      ok = false;
-      console.log ( ' *** multiple structure homologues not aceptable for dimple workflow' );
-    }
+  if (files.hkl.length<=0)  {
+    ok = false;
+    console.log ( ' *** no reflection data provided' );
+  } else if (files.hkl.length>1)  {
+    ok = false;
+    console.log ( ' *** multiple reflection datasets not aceptable for dimple workflow' );
+  }
+  if (files.xyz.length<=0)  {
+    ok = false;
+    console.log ( ' *** no structure homologue provided' );
+  } else if (files.xyz.length>1)  {
+    ok = false;
+    console.log ( ' *** multiple structure homologues not aceptable for dimple workflow' );
+  }
 
 } else if (meta.task!='import')  {
 
@@ -617,8 +643,7 @@ if (meta.task=='hop-on')  {
 
 }
 
-
-if ((!ok) ||(fnames.length<=0))  {
+if ((!ok) || (fnames.length<=0))  {
   console.log ( '\n  *** STOP DUE TO INSUFFICIENT INPUT' );
   process.exit();
 }
