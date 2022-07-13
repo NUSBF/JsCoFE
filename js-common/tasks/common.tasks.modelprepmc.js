@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.22   <--  Date of Last Modification.
+ *    13.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MultiChain Model Preparation from Coordinates Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2021-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2022
  *
  *  =================================================================
  *
@@ -105,7 +105,7 @@ if (!__template)  {
       if (xyz[0].subtype.indexOf('protein')>=0)  typeMask += 0x01;
       if (xyz[0].subtype.indexOf('dna')>=0)      typeMask += 0x02;
       if (xyz[0].subtype.indexOf('rna')>=0)      typeMask += 0x04;
-      all_chains = [];
+      var all_chains = [];
       for (var i=0;i<seq.length;i++)  {
         var stype = '';
         if (seq[i].subtype.indexOf('protein')>=0)  {
