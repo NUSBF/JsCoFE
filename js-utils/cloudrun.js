@@ -155,7 +155,7 @@ function printTemplate ( task )  {
     'USER        user_login                  # mandatory',
     'CLOUDRUN_ID aaaa-bbbb-cccc-dddd         # mandatory, found in "My Account"',
     '#',
-    '# alternatively, read user_login and aaaa-bbbb-cccc-dddd (in that order)',
+    '# or reading user_login and aaaa-bbbb-cccc-dddd (in that order)',
     '# from a file:',
     '#',
     '# AUTH_FILE   /path/to/auth.dat           # mandatory',

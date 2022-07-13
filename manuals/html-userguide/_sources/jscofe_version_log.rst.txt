@@ -19,6 +19,8 @@ CCP4 Cloud Version Log
 
     #. Fixed bug in ``SHELX Auto-EP via Crank-2`` associated with making PRASA the default choice for structure determination
 
+    #. ``MorDA`` task can now use custom search models
+
 
 **Version 1.7.004**
 

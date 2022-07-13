@@ -328,23 +328,23 @@
             
   
 <h1 id="jscofe-cloudrun--page-root"><span class="section-number">7. </span>Starting CCP4 Cloud projects from command line<a class="headerlink" href="#jscofe-cloudrun--page-root" title="Permalink to this headline">¶</a></h1>
-<p>CCP4 Cloud projects may be initiated and executed from command line, which can be useful in various scenarios. For example, data collection session at a synchrotron beamline may include sending reflection data, along with supplied sequence file and ligand description, to user’s CCP4 Cloud account and start a suitable structure solution workflow there. Or, a large series of structure solution projects can be initiated by script to save time for manipulations with CCP4 Cloud’s graphical interface.</p>
+<p>CCP4 Cloud projects can be initiated and executed from command line, which may be useful in various scenarios. For example, data collection session at a synchrotron beamline may include sending reflection data, sequence, optional structural homolog and ligand descriptions, to a specified CCP4 Cloud account and starting a suitable structure solution workflow in it. Or, large series of structure solution projects can be initiated by a custom script to save time for manipulations with CCP4 Cloud’s graphical interface.</p>
 
 <h2 id="cloudrun-utility"><span class="section-number">7.1. </span>CloudRun utility<a class="headerlink" href="#cloudrun-utility" title="Permalink to this headline">¶</a></h2>
-<p>CloudRun utility, included in CCP4 Software Suite, can create projects, upload data and start automatic structure solution workflow in a single run as shown below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ node $CCP4/share/jscofe/js-utils/cloudrun.js -c command_file
+<p>CloudRun utility, included in CCP4 Software Suite, can create projects, upload data and start automatic structure solution workflow in a single run as shown below (CCP4 8.0.003+ environment is assumed on Linux/Mac OSX, use CCP4 Console on Windows):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cloudrun -c command_file
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">command_file</span></code> is a text file with instructions given as keyword-value pairs (described below). An alternative syntax may be also used:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ node $CCP4/share/jscofe/js-utils/cloudrun.js -i &lt;&lt;eof
+<p>where <code class="docutils literal notranslate"><span class="pre">command_file</span></code> is a text file with instructions given as keyword-value pairs (described below). An alternative syntax may also be used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cloudrun -i &lt;&lt;eof
 keyword value
 .......
 eof
 </pre></div>
 </div>
-<p>where the set of keyword-value pairs is supplied in the standard input stream.</p>
+<p>in which case the set of keyword-value pairs is supplied in the standard input stream.</p>
 <p>The set of instructions in <code class="docutils literal notranslate"><span class="pre">command_file</span></code> depends on the required task and can be obtained with the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ node $CCP4/share/jscofe/js-utils/cloudrun.js -t task &gt;&gt; command_file
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cloudrun -t task &gt; command_file
 </pre></div>
 </div>
 <p>where <code class="docutils literal notranslate"><span class="pre">task</span></code> is one of:</p>
@@ -359,7 +359,7 @@ eof
 </ul>
 </div></blockquote>
 <p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ node $CCP4/share/jscofe/js-utils/cloudrun.js -t auto-af2 &gt; auto-af2.com
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cloudrun -t auto-af2 &gt; auto-af2.com
 $ cat auto-af2.com
 # CloudRun template command file for auto-af2 task.
 #
@@ -372,7 +372,16 @@ $ cat auto-af2.com
 #        c) CloudRun tasks are added at Project's root.
 #
 URL         https://ccp4cloud.server    # mandatory
+#
+# User authentication: either in-line specification
+#
 USER        user_login                  # mandatory
+CLOUDRUN_ID aaaa-bbbb-cccc-dddd         # mandatory, found in "My Account"
+#
+# or reading user_login and aaaa-bbbb-cccc-dddd (in that order)
+# from a file:
+# AUTH_FILE   /path/to/auth.dat         # mandatory
+#
 PROJECT     project_id                  # mandatory
 TITLE       Optional Project Title      # used only if project is created
 TASK        auto-af2                    # mandatory
@@ -389,6 +398,10 @@ LIG_CODE    ATP            # 3-letter ligand code, e.g., ATP
 $
 </pre></div>
 </div>
+<p>The use of CloudRun utility is capped by the maximum number of runs per day (configurable).
+The remaining number of available runs is shown in CCP4 Cloud pages only if it is less
+than the maximum. The CloudRun quota may be adjusted by CCP4 Cloud administrator for
+individual users.</p>
 
 
 <h2 id="command-file-keywords"><span class="section-number">7.2. </span>Command file keywords<a class="headerlink" href="#command-file-keywords" title="Permalink to this headline">¶</a></h2>
@@ -398,12 +411,35 @@ $
 </pre></div>
 </div>
 </dd>
-<dt><strong>USER</strong></dt><dd><p>(mandatory) CCP4 Cloud’s user account name, for example:</p>
+<dt><strong>USER</strong></dt><dd><p>(mandatory unless <code class="docutils literal notranslate"><span class="pre">AUTH_FILE</span></code> is used) CCP4 Cloud’s user account name, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">USER</span>   <span class="n">my</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">name</span>
 </pre></div>
 </div>
 </dd>
-<dt><strong>PROJECT</strong></dt><dd><p>(mandatory) Project Id, where the data should be uploaded, for example:</p>
+<dt><strong>CLOUDRUN_ID</strong></dt><dd><p>(mandatory unless <code class="docutils literal notranslate"><span class="pre">AUTH_FILE</span></code> is used) CloudRun Id, which is unique for each user:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CLOUDRUN_ID</span>   <span class="n">aaaa</span><span class="o">-</span><span class="n">bbbb</span><span class="o">-</span><span class="n">cccc</span><span class="o">-</span><span class="n">dddd</span>
+</pre></div>
+</div>
+<p>The CloudRun Id may be found in the users’s “My Account” page in CCP4 Cloud. The page
+also allows a user to change their CloudRun Id if necessary.</p>
+</dd>
+<dt><strong>AUTH_FILE</strong></dt><dd><p>(mandatory if <code class="docutils literal notranslate"><span class="pre">USER</span></code> and <code class="docutils literal notranslate"><span class="pre">CLOUDRUN_ID</span></code> keywords are not used) Path to file with
+user authorisation information, for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AUTH_FILE</span>   <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">auth</span><span class="o">.</span><span class="n">dat</span>
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">/path/to/auth.dat</span></code> should contain user’s login name and cloudrun Id, in that order,
+for example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">name</span>   <span class="n">aaaa</span><span class="o">-</span><span class="n">bbbb</span><span class="o">-</span><span class="n">cccc</span><span class="o">-</span><span class="n">dddd</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Using <code class="docutils literal notranslate"><span class="pre">AUTH_FILE</span></code> instead of keyword pair <code class="docutils literal notranslate"><span class="pre">USER</span></code> and <code class="docutils literal notranslate"><span class="pre">CLOUDRUN_ID</span></code> is recommended
+if a collection of cloudrun scripts should be maintained and/or exchanged between users.</p>
+</div>
+</dd>
+<dt><strong>PROJECT</strong></dt><dd><p>(mandatory) Project Id, where the data should be imported, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PROJECT</span>   <span class="n">cloudrun</span><span class="o">-</span><span class="n">amr</span>
 </pre></div>
 </div>
@@ -418,7 +454,7 @@ $
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TASK</span>  <span class="n">auto</span><span class="o">-</span><span class="n">mr</span>
 </pre></div>
 </div>
-<p>if TASK is not given, <code class="docutils literal notranslate"><span class="pre">import</span></code> is assumed.</p>
+<p>if <code class="docutils literal notranslate"><span class="pre">TASK</span></code> is not given, <code class="docutils literal notranslate"><span class="pre">import</span></code> is assumed.</p>
 </dd>
 <dt><strong>HA_TYPE</strong></dt><dd><p>(must be given for <code class="docutils literal notranslate"><span class="pre">auto-ep</span></code> task) Atom type of main anomalous scatterer, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HA_TYPE</span>   <span class="n">Se</span>
@@ -495,23 +531,26 @@ sequence(s)</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">SMILES and LIG_CODE can be used only for describing single ligand that should be fitted in
-structure solution workflows. For <code class="docutils literal notranslate"><span class="pre">hop-on</span></code> and <code class="docutils literal notranslate"><span class="pre">import</span></code> tasks, use LIGAND.</p>
+<p class="last"><code class="docutils literal notranslate"><span class="pre">SMILES</span></code> and <code class="docutils literal notranslate"><span class="pre">LIG_CODE</span></code> are mutually exclusive and can be used only for describing a single
+ligand that should be fitted in a structure solution workflow. For <code class="docutils literal notranslate"><span class="pre">hop-on</span></code> and <code class="docutils literal notranslate"><span class="pre">import</span></code>
+tasks, use <code class="docutils literal notranslate"><span class="pre">LIGAND</span></code> keyword instead.</p>
 </div>
 </dd>
 </dl>
 
 
 <h2 id="example"><span class="section-number">7.3. </span>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<p>The following commands will import data and start Auto-MR with generating AlphaFold-2 model and ligand fitting
-for MDM2 Protein bound to Nutlin molecule from the standard set of CCP4 examples:</p>
+<p>The following commands will import data and start automatic Molecular Replacement workflow including the
+generation of AlphaFold-2 model and ligand fitting, for solving MDM2 Protein bound to Nutlin molecule
+from the standard set of CCP4 examples:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source /path/to/ccp4-8.0/bin/ccp4.setup-sh
 $ export CDEMODATA=`ccp4-python -c "import sysconfig; print(sysconfig.get_path('purelib'))"`/ccp4i2/demo_data
 $ cp $CDEMODATA/mdm2/mdm2_unmerged.mtz .
 $ cp $CDEMODATA/mdm2/4hg7.seq .
-$ node $CCP4/share/jscofe/js-utils/cloudrun.js -i &lt;&lt;eof
+$ cloudrun -i &lt;&lt;eof
 URL         https://cloud.ccp4.ac.uk
 USER        my.ccp4.cloud.login
+CLOUDRUN_ID aaaa-bbbb-cccc-dddd
 PROJECT     cloudrun_mdm2
 TITLE       Solving MDM2 Protein bound to Nutlin molecule for testing CloudRun
 TASK        auto-af2
@@ -523,13 +562,14 @@ eof
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Use your actual CCP4 Cloud login name in <code class="docutils literal notranslate"><span class="pre">USER</span></code> field</p>
+<p class="last">Use your actual CCP4 Cloud login name and cloudrun id in <code class="docutils literal notranslate"><span class="pre">USER</span></code> and <code class="docutils literal notranslate"><span class="pre">CLOUDRUN_ID</span></code> fields; both can be found in
+“My Account” page in CCP4 Cloud.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">AlphaFold-2 is not part of CCP4 and is installed in CCP4 Cloud separately. It is installed at <a class="reference external" href="https://cloud.ccp4.ac.uk" rel="noopener noreferrer" target="_blank">https://cloud.ccp4.ac.uk</a>,
-but may be unavailable on other servers. In this case, this example is solvable by changing TASK from <code class="docutils literal notranslate"><span class="pre">auto-af2</span></code> to
-<code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>.</p>
+<p class="last">AlphaFold-2 is not part of CCP4 and should be installed in CCP4 Cloud separately. It is installed at
+CCP4 Cloud instance supported by CCP4 (<a class="reference external" href="https://cloud.ccp4.ac.uk" rel="noopener noreferrer" target="_blank">https://cloud.ccp4.ac.uk</a>), but it may be unavailable on other servers.
+In this case, this example is solvable by changing TASK from <code class="docutils literal notranslate"><span class="pre">auto-af2</span></code> to <code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>.</p>
 </div>
 
 
