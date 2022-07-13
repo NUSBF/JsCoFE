@@ -333,8 +333,9 @@ if (!__template)  {
 
   }
 
-  DataRevision.prototype._layMROptions = function ( customGrid,row,sep_bool )  {
+  DataRevision.prototype._layMROptions = function ( dropdown,row,sep_bool )  {
   var struct_sel_list = null;
+  var customGrid = dropdown.customGrid;
 
     if (this.Options.leading_structure=='structure')  {
 
@@ -383,7 +384,7 @@ if (!__template)  {
   DataRevision.prototype._layCDI_Molrep = function ( dropdown )  {
   var customGrid = dropdown.customGrid;
   var row        = customGrid.getNRows();
-    this._layMROptions ( customGrid,row,true );
+    this._layMROptions ( dropdown,row,true );
   }
 
   DataRevision.prototype._layCDI_AsuMod = function ( dropdown )  {
@@ -461,7 +462,7 @@ if (!__template)  {
       customGrid.setVerticalAlignment ( i,1,'middle' );
     }
 
-    this._layMROptions ( customGrid,row,false );
+    this._layMROptions ( dropdown,row,false );
 
     if (this.Structure || this.Substructure)
       dropdown.layCustom = 'phaser-mr-fixed';

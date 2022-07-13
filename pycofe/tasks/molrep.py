@@ -89,14 +89,14 @@ class Molrep(basic.TaskDriver):
         #    model_2 = xstruct.getXYZFilePath(self.inputDir())
 
         if hasattr(self.input_data.data,"xmodel"):
-            xmodel = self.makeClass ( self.input_data.data.xmodel[0] )
+            xmodel  = self.makeClass ( self.input_data.data.xmodel[0] )
             model_2 = xmodel.getXYZFilePath(self.inputDir())
 
         if hasattr(self.input_data.data, "phases"):
             phases = self.makeClass ( self.input_data.data.phases[0] )
-            prf = self.getParameter ( self.task.parameters.sec1.contains.PRF )
+            prf    = self.getParameter ( self.task.parameters.sec1.contains.PRF )
             self.write_stdin (
-                "file_f " + phases.getMTZFilePath(self.inputDir()) + "\n" + \
+                "file_f "  + phases.getMTZFilePath(self.inputDir()) + "\n" + \
                 "labin F=" + phases.FWT + " PH=" + phases.PHWT + \
                 "\n" + \
                 "prf " + prf + "\n" + \

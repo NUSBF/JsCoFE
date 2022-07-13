@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.08.21   <--  Date of Last Modification.
+ *    13.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Molrep Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -37,7 +37,6 @@ function TaskMolrep()  {
   this.name    = 'molrep';
   this.setOName ( 'molrep' );  // default output file name template
   this.title   = 'Molecular Replacement with Molrep';
-  //this.helpURL = './html/jscofe_task_molrep.html';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision':['hkl']}, // data type(s) and subtype(s)
@@ -65,18 +64,6 @@ function TaskMolrep()  {
              open     : true,  // true for the section to be initially open
              position : [0,0,1,5],
              contains : {
-               PRF : { type     : 'combobox',
-                       keyword  : 'PRF',
-                       label    : 'Search protocol',
-                       tooltip  : 'Using pseudo-translation',
-                       range    : ['N|Density Search (RF + Phased TF)',
-                                   'Y|Density Search (SAPTF + Local Phased RF + Phased TF)',
-                                   'S|Density Search (SAPTF + Local RF + Phased TF)'
-                                  ],
-                       value    : 'N',
-                       position : [1,0,1,7],
-                       hideon   : {'phases.phases':[0,-1]} // from input data section
-                     },
               NMON : { type    : 'integer_', // '_' means blank value is allowed
                        keyword  : 'NMON',       // the real keyword for job input stream
                        label    : 'Number of copies to find',
@@ -88,7 +75,7 @@ function TaskMolrep()  {
                                             //   [min,'*']  : limited from bottom
                                             //   [min,max]  : limited from top and bottom
                        value    : '',       // value to be paired with the keyword
-                       position : [4,0,1,1] // [row,col,rowSpan,colSpan]
+                       position : [0,0,1,1] // [row,col,rowSpan,colSpan]
                      },
               NP  :  { type     : 'integer_', // '_' means blank value is allowed
                        keyword  : 'NP',       // the real keyword for job input stream
@@ -101,7 +88,7 @@ function TaskMolrep()  {
                                             //   [min,'*']  : limited from bottom
                                             //   [min,max]  : limited from top and bottom
                        value    : '',       // value to be paired with the keyword
-                       position : [5,0,1,1] // [row,col,rowSpan,colSpan]
+                       position : [1,0,1,1] // [row,col,rowSpan,colSpan]
                      },
               NPT :  { type     : 'integer_',
                        keyword  : 'NPT',
@@ -110,7 +97,7 @@ function TaskMolrep()  {
                                   'blank for automatic choice',
                        range    : [1,50],
                        value    : '',
-                       position : [6,0,1,1]
+                       position : [2,0,1,1]
                      },
               LOCK : { type     : 'combobox',
                        keyword  : 'LOCK',
@@ -123,7 +110,7 @@ function TaskMolrep()  {
                                   // and 'text' is displayed as an option in the
                                   // combobox.
                        value    : 'N',
-                       position : [7,0,1,1]
+                       position : [3,0,1,1]
                      },
               NSRF : { type     : 'integer_',
                        keyword  : 'NSRF',
@@ -135,13 +122,13 @@ function TaskMolrep()  {
                                   'blank for automatic choice',
                        range    : [1,50],
                        value    : '',
-                       position : [7,3,1,1],
+                       position : [3,3,1,1],
                        align    : 'right',
                        showon   : {'LOCK':['A','Y']}
                      },
               NSPL : { type     : 'label',
                        label    : 'top SRF peaks',
-                       position : [7,6,1,1],
+                       position : [3,6,1,1],
                        showon   : {'LOCK':['A','Y']}
                      },
               PST :  { type     : 'combobox',
@@ -150,7 +137,19 @@ function TaskMolrep()  {
                        tooltip  : 'Using pseudo-translation',
                        range    : ['A|Auto','N|Do not use'],
                        value    : 'A',
-                       position : [8,0,1,1]
+                       position : [4,0,1,1]
+                     },
+              PRF :  { type     : 'combobox',
+                       keyword  : 'PRF',
+                       label    : 'Density search protocol',
+                       tooltip  : 'Density search protocol',
+                       range    : ['N|Density Search (RF + Phased TF)',
+                                   'Y|Density Search (SAPTF + Local Phased RF + Phased TF)',
+                                   'S|Density Search (SAPTF + Local RF + Phased TF)'
+                                  ],
+                       value    : 'N',
+                       position : [5,0,1,7],
+                       hideon   : {'revision.subtype:phases':[0,-1]} // from input data section
                      }
              }
            },

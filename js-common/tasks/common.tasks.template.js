@@ -1789,6 +1789,8 @@ if (!dbx)  {
   var grid      = inpDataRef.grid;
   var dataState = {};
 
+// console.log ( ' data state eval ');
+
     for (var i=0;i<this.input_dtypes.length;i++)  {
       var inputId = this.input_dtypes[i].inputId;
       var item    = this.getInputItem ( inpDataRef,inputId );
@@ -1811,6 +1813,15 @@ if (!dbx)  {
                     dataState[ids] = 1;
               else  dataState[ids]++;
             }
+            // if ('Options' in dt[index])  {
+            //   // special for revisions
+            //   console.log ( JSON.stringify (dt[index].Options));
+            //   ids = inputId + '.options:structure_sel=' + dt[index].Options.structure_sel;
+            //   console.log ( ids );
+            //   if (!dataState.hasOwnProperty(ids))
+            //         dataState[ids] = 1;
+            //   else  dataState[ids]++;
+            // }
           }
         }
       }
