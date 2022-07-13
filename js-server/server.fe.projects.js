@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.07.22   <--  Date of Last Modification.
+ *    13.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -219,7 +219,8 @@ function checkProjectDescData ( projectDesc,loginData )  {
     projectDesc.timestamp = Date.now();
     update = true;
   }
-  if (!('share' in projectDesc))  {
+  if ((!('share' in projectDesc)) ||
+      (Object.prototype.toString.call(projectDesc.share)!=='[object Object]')) {
     projectDesc.share = {};
     if ('share' in projectDesc.owner)  {
       var lst = [];
