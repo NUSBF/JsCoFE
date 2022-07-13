@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    11.07.22   <--  Date of Last Modification.
+ *    13.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -155,10 +155,11 @@ function printTemplate ( task )  {
     'USER        user_login                  # mandatory',
     'CLOUDRUN_ID aaaa-bbbb-cccc-dddd         # mandatory, found in "My Account"',
     '#',
-    '# or a file containing single line: user_login aaaa-bbbb-cccc-dddd',
+    '# alternatively, read user_login and aaaa-bbbb-cccc-dddd (in that order)',
+    '# from a file:',
     '#',
     '# AUTH_FILE   /path/to/auth.dat           # mandatory',
-    '#'
+    '#',
     'PROJECT     project_id                  # mandatory',
     'TITLE       Optional Project Title      # used only if project is created',
     'TASK        ' + task + '                    # mandatory',
@@ -479,9 +480,10 @@ var annotation = {
 //   }
 // }
 
-var commands = input.trim().split('\n');
-var ok       = true;
-var fnames   = [];
+var commands  = input.trim().split('\n');
+var ok        = true;
+var fnames    = [];
+var auth_file = '';
 console.log ( ' ========== COMMANDS:' );
 for (var i=0;i<commands.length;i++)  {
   console.log ( ' \$ ' + commands[i] );
@@ -549,7 +551,7 @@ for (var i=0;i<commands.length;i++)  {
         }
         meta.user        = auth[0]
         meta.cloudrun_id = auth[1];
-        console.log ( ' ... login name and cloudrun_id were read from file ' + val );
+        auth_file        = val;
       } else  {
         console.log ( '   ^^^^ unknown key' );
         ok = false;
@@ -566,6 +568,9 @@ if (!ok)  {
   console.log ( '\n **** ERRORS IN COMMANDS -- STOP\n\n' );
   printInstructions();
 }
+
+if (auth_file)
+  console.log ( ' ... login name and cloudrun_id were read from file ' + auth_file );
 
 
 // --------------------------------------------------------------------------
@@ -644,7 +649,7 @@ if (meta.task=='hop-on')  {
 }
 
 if ((!ok) || (fnames.length<=0))  {
-  console.log ( '\n  *** STOP DUE TO INSUFFICIENT INPUT' );
+  console.log ( '\n *** STOP DUE TO INSUFFICIENT INPUT' );
   process.exit();
 }
 

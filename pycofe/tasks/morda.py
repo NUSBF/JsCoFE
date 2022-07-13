@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.06.21   <--  Date of Last Modification.
+#    13.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,7 +34,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -133,7 +133,11 @@ class Morda(basic.TaskDriver):
         if self.task.parameters.sec1.contains.ALTGROUPS_CBX.value:
             cmd.append ( "-a" )
 
-        if self.task.parameters.sec1.contains.NMODELS.value:
+        if hasattr(self.input_data.data,"model"):
+            model_cls = self.makeClass ( self.input_data.data.model[0] )
+            cmd = cmd + [ "-p",model_cls.getXYZFilePath(self.inputDir()) ]
+
+        elif self.task.parameters.sec1.contains.NMODELS.value:
             cmd = cmd + [ "-n",str(self.task.parameters.sec1.contains.NMODELS.value) ]
 
         morda_out_pdb  = self.getXYZOFName()
