@@ -2,28 +2,28 @@
 Starting CCP4 Cloud projects from command line
 ==============================================
 
-CCP4 Cloud projects may be initiated and executed from command line, which can be useful in various scenarios. For example, data collection session at a synchrotron beamline may include sending reflection data, along with supplied sequence file and ligand description, to user's CCP4 Cloud account and start a suitable structure solution workflow there. Or, a large series of structure solution projects can be initiated by script to save time for manipulations with CCP4 Cloud's graphical interface.
+CCP4 Cloud projects can be initiated and executed from command line, which may be useful in various scenarios. For example, data collection session at a synchrotron beamline may include sending reflection data, sequence, optional structural homolog and ligand descriptions, to a specified CCP4 Cloud account and starting a suitable structure solution workflow in it. Or, large series of structure solution projects can be initiated by a custom script to save time for manipulations with CCP4 Cloud's graphical interface.
 
 ----------------
 CloudRun utility
 ----------------
 
-CloudRun utility, included in CCP4 Software Suite, can create projects, upload data and start automatic structure solution workflow in a single run as shown below: ::
+CloudRun utility, included in CCP4 Software Suite, can create projects, upload data and start automatic structure solution workflow in a single run as shown below (CCP4 8.0.003+ environment is assumed on Linux/Mac OSX, use CCP4 Console on Windows): ::
 
-  $ node $CCP4/share/jscofe/js-utils/cloudrun.js -c command_file
+  $ cloudrun -c command_file
 
-where ``command_file`` is a text file with instructions given as keyword-value pairs (described below). An alternative syntax may be also used: ::
+where ``command_file`` is a text file with instructions given as keyword-value pairs (described below). An alternative syntax may also be used: ::
 
-  $ node $CCP4/share/jscofe/js-utils/cloudrun.js -i <<eof
+  $ cloudrun -i <<eof
   keyword value
   .......
   eof 
 
-where the set of keyword-value pairs is supplied in the standard input stream.
+in which case the set of keyword-value pairs is supplied in the standard input stream.
 
 The set of instructions in ``command_file`` depends on the required task and can be obtained with the following command: ::
 
-  $ node $CCP4/share/jscofe/js-utils/cloudrun.js -t task >> command_file
+  $ cloudrun -t task > command_file
 
 where ``task`` is one of:
 
@@ -36,7 +36,7 @@ where ``task`` is one of:
 
 Example: ::
 
-  $ node $CCP4/share/jscofe/js-utils/cloudrun.js -t auto-af2 > auto-af2.com
+  $ cloudrun -t auto-af2 > auto-af2.com
   $ cat auto-af2.com
   # CloudRun template command file for auto-af2 task.
   #
@@ -49,7 +49,16 @@ Example: ::
   #        c) CloudRun tasks are added at Project's root.
   #
   URL         https://ccp4cloud.server    # mandatory
+  #
+  # User authentication: either in-line specification
+  #
   USER        user_login                  # mandatory
+  CLOUDRUN_ID aaaa-bbbb-cccc-dddd         # mandatory, found in "My Account"
+  #
+  # or reading user_login and aaaa-bbbb-cccc-dddd (in that order)
+  # from a file:
+  # AUTH_FILE   /path/to/auth.dat         # mandatory
+  #
   PROJECT     project_id                  # mandatory
   TITLE       Optional Project Title      # used only if project is created
   TASK        auto-af2                    # mandatory
@@ -65,6 +74,11 @@ Example: ::
   LIG_CODE    ATP            # 3-letter ligand code, e.g., ATP
   $
 
+The use of CloudRun utility is capped by the maximum number of runs per day (configurable).
+The remaining number of available runs is shown in CCP4 Cloud pages only if it is less
+than the maximum. The CloudRun quota may be adjusted by CCP4 Cloud administrator for 
+individual users.
+
 
 ---------------------
 Command file keywords
@@ -77,12 +91,35 @@ Command file keywords
 
 
 **USER**
-    (mandatory) CCP4 Cloud's user account name, for example: ::
+    (mandatory unless ``AUTH_FILE`` is used) CCP4 Cloud's user account name, for example: ::
     
         USER   my.user.name
 
+**CLOUDRUN_ID**
+    (mandatory unless ``AUTH_FILE`` is used) CloudRun Id, which is unique for each user: ::
+    
+        CLOUDRUN_ID   aaaa-bbbb-cccc-dddd 
+
+    The CloudRun Id may be found in the users's "My Account" page in CCP4 Cloud. The page 
+    also allows a user to change their CloudRun Id if necessary.  
+
+**AUTH_FILE**
+    (mandatory if ``USER`` and ``CLOUDRUN_ID`` keywords are not used) Path to file with 
+    user authorisation information, for example: ::
+    
+        AUTH_FILE   /path/to/auth.dat
+
+    where ``/path/to/auth.dat`` should contain user's login name and cloudrun Id, in that order,
+    for example: ::
+
+        my.user.name   aaaa-bbbb-cccc-dddd 
+
+    .. note::
+       Using ``AUTH_FILE`` instead of keyword pair ``USER`` and ``CLOUDRUN_ID`` is recommended 
+       if a collection of cloudrun scripts should be maintained and/or exchanged between users.
+
 **PROJECT**
-    (mandatory) Project Id, where the data should be uploaded, for example: ::
+    (mandatory) Project Id, where the data should be imported, for example: ::
     
         PROJECT   cloudrun-amr
 
@@ -97,7 +134,7 @@ Command file keywords
 
         TASK  auto-mr 
 
-    if TASK is not given, ``import`` is assumed.     
+    if ``TASK`` is not given, ``import`` is assumed.     
     
 **HA_TYPE**
     (must be given for ``auto-ep`` task) Atom type of main anomalous scatterer, for example: ::
@@ -179,24 +216,27 @@ Command file keywords
         LIG_CODE  ATP
 
     .. note::
-        SMILES and LIG_CODE can be used only for describing single ligand that should be fitted in
-        structure solution workflows. For ``hop-on`` and ``import`` tasks, use LIGAND. 
+        ``SMILES`` and ``LIG_CODE`` are mutually exclusive and can be used only for describing a single
+        ligand that should be fitted in a structure solution workflow. For ``hop-on`` and ``import``
+        tasks, use ``LIGAND`` keyword instead.
 
 
 -------
 Example
 -------
 
-The following commands will import data and start Auto-MR with generating AlphaFold-2 model and ligand fitting 
-for MDM2 Protein bound to Nutlin molecule from the standard set of CCP4 examples: ::
+The following commands will import data and start automatic Molecular Replacement workflow including the
+generation of AlphaFold-2 model and ligand fitting, for solving MDM2 Protein bound to Nutlin molecule
+from the standard set of CCP4 examples: ::
 
   $ source /path/to/ccp4-8.0/bin/ccp4.setup-sh
   $ export CDEMODATA=`ccp4-python -c "import sysconfig; print(sysconfig.get_path('purelib'))"`/ccp4i2/demo_data
   $ cp $CDEMODATA/mdm2/mdm2_unmerged.mtz .
   $ cp $CDEMODATA/mdm2/4hg7.seq .
-  $ node $CCP4/share/jscofe/js-utils/cloudrun.js -i <<eof
+  $ cloudrun -i <<eof
   URL         https://cloud.ccp4.ac.uk
   USER        my.ccp4.cloud.login
+  CLOUDRUN_ID aaaa-bbbb-cccc-dddd
   PROJECT     cloudrun_mdm2
   TITLE       Solving MDM2 Protein bound to Nutlin molecule for testing CloudRun
   TASK        auto-af2
@@ -206,11 +246,11 @@ for MDM2 Protein bound to Nutlin molecule from the standard set of CCP4 examples
   eof
 
 .. note::
-  Use your actual CCP4 Cloud login name in ``USER`` field
+  Use your actual CCP4 Cloud login name and cloudrun id in ``USER`` and ``CLOUDRUN_ID`` fields; both can be found in 
+  "My Account" page in CCP4 Cloud.
 
 .. note::
-  AlphaFold-2 is not part of CCP4 and is installed in CCP4 Cloud separately. It is installed at https://cloud.ccp4.ac.uk, 
-  but may be unavailable on other servers. In this case, this example is solvable by changing TASK from ``auto-af2`` to 
-  ``auto-mr``.
+  AlphaFold-2 is not part of CCP4 and should be installed in CCP4 Cloud separately. It is installed at
+  CCP4 Cloud instance supported by CCP4 (https://cloud.ccp4.ac.uk), but it may be unavailable on other servers.
+  In this case, this example is solvable by changing TASK from ``auto-af2`` to ``auto-mr``.
 
-  
