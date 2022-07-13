@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    13.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MoRDa Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -45,6 +45,16 @@ function TaskMorda()  {
       inputId     : 'revision', // input Id for referencing input fields
       version     : 0,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
+      max         : 1           // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataEnsemble':[],'DataModel':[]},  // data type(s) and subtype(s)
+      label       : 'Model(s)',     // label for input dialog
+      inputId     : 'model',    // input Id for referencing input fields
+      customInput : 'model',    // lay custom fields below the dropdown
+      unchosen_label : '[from DB]',
+      tooltip     : 'Prepare MR search models from this model, do not search for homologues in the database',
+      version     : 0,          // minimum data version allowed
+      min         : 0,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     }
   ];
@@ -95,9 +105,10 @@ TaskMorda.prototype.constructor = TaskMorda;
 TaskMorda.prototype.icon = function()  { return 'task_morda'; }
 
 TaskMorda.prototype.desc_title = function()  {
-  // this appears under task title in the task list
-    return 'performs automated molecular replacement protein structure solution based on its own domain database';
-  };
+// this appears under task title in the task list
+  return 'performs automated molecular replacement protein structure solution using own domain database';
+};
+
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
