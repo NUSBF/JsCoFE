@@ -182,7 +182,7 @@ def test_slicenDiceBasic(browser,
         addSliceNDice(d.driver)
         sf.clickTaskInTaskTree(d.driver, '\[0003\]')
         addSlice(d.driver)
-
+        sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
 
