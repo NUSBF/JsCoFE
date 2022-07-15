@@ -1253,9 +1253,16 @@ class TaskDriver(object):
 
 
     def calcAnomEDMap ( self,xyzPath,hklData,anom_form,filePrefix ):
+
         edmap.calcAnomEDMap ( xyzPath,hklData.getHKLFilePath(self.inputDir()),
                               hklData.dataset,anom_form,filePrefix,self.job_dir,
                               self.file_stdout1,self.file_stderr,self.log_parser )
+
+        if not self.log_parser:
+            self.file_stdout1.close()
+            self.parseRefmacLog ( self.file_stdout1_path() )
+            self.file_stdout1 = open ( self.file_stdout1_path(),"a" )
+
         return [ filePrefix + edmap.file_pdb (),
                  filePrefix + edmap.file_mtz (),
                  filePrefix + edmap.file_map (),
@@ -1469,8 +1476,6 @@ class TaskDriver(object):
             #                             self.rvrow,0,1,1 )
             #     self.rvrow += 1
 
-            self.stdoutln ( str(self.generic_parser_summary) )
-
             self.rvrow += reserveRows
 
             # Register output data. This moves needful files into output directory
@@ -1507,7 +1512,7 @@ class TaskDriver(object):
 
     def finaliseAnomSubstructure ( self,xyzPath,name_pattern,hkl,
                                         associated_data_list,
-                                        anom_form,openState="closed",
+                                        anom_form,openState="hidden",
                                         title="" ):
 
         anom_structure = self.finaliseAnomSubstructure1 ( xyzPath,name_pattern,
@@ -1525,25 +1530,23 @@ class TaskDriver(object):
 
     def finaliseAnomSubstructure1 ( self,xyzPath,name_pattern,hkl,
                                          associated_data_list,anom_form,pageId,
-                                         row,openState="closed",title="" ):
+                                         row,openState="hidden",title="" ):
 
-        sec_id = self.refmac_section() + "_" + str(self.widget_no)
-        row1   = row
+        row1 = row
+        if openState!="hidden":
+            sec_id = self.refmac_section() + "_" + str(self.widget_no)
 
-        pyrvapi.rvapi_add_section ( sec_id,
-                        "Anomalous Electron Density Calculations with Refmac",
-                        pageId,row1,0,1,1,openState=="open" )
-        row1 += 1
+            pyrvapi.rvapi_add_section ( sec_id,
+                            "Anomalous Electron Density Calculations with Refmac",
+                            pageId,row1,0,1,1,openState=="open" )
+            row1 += 1
 
-        panel_id = self.refmac_report() + "_" + str(self.widget_no)
-        pyrvapi.rvapi_add_panel ( panel_id,sec_id,0,0,1,1 )
-        #self.log_parser = pyrvapi_ext.parsers.generic_parser (
-        #                                 panel_id,False,
-        #                                 summary=self.generic_parser_summary,
-        #                                 graph_tables=False,
-        #                                 hide_refs=True )
+            panel_id = self.refmac_report() + "_" + str(self.widget_no)
+            pyrvapi.rvapi_add_panel ( panel_id,sec_id,0,0,1,1 )
 
-        self.setRefmacLogParser ( panel_id,False,graphTables=False,makePanel=False )
+            self.setRefmacLogParser ( panel_id,False,graphTables=False,makePanel=False )
+        else:
+            self.unsetLogParser()
 
         fnames = self.calcAnomEDMap ( xyzPath,hkl,anom_form,name_pattern )
 

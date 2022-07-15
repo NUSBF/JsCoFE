@@ -112,6 +112,12 @@ class DType(dtype_template.DType):
                     n += 1
         return n
 
+    def getNofAtoms ( self ):
+        if type(self.xyzmeta) == dict:
+            return self.xyzmeta["natoms"]
+        else:
+            return self.xyzmeta.natoms
+
     def fixBFactors ( self,dirPath ):
         self.BF_correction = "none"        # "none", "af2", "rosetta"
         fpath = self.getXYZFilePath ( dirPath )

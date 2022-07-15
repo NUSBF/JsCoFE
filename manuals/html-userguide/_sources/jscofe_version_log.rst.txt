@@ -21,6 +21,8 @@ CCP4 Cloud Version Log
 
     #. ``MorDA`` task can now use custom search models
 
+    #. Density search protocol is added in ``Molrep`` task
+
 
 **Version 1.7.004**
 
