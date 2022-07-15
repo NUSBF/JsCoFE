@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2022
 #
 # ============================================================================
 #
@@ -97,7 +95,7 @@ class SymMatch(basic.TaskDriver):
 
             structure = self.finaliseStructure ( out_file_path,basename,hkl,None,
                                                  [],structureType,leadKey=1,
-                                                 openState_bool=False,
+                                                 # openState="closed",
                                                  title="",
                                                  stitle="Symmetry matched structure and<br>electron density" )
 

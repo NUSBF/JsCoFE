@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    13.02.20   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -139,7 +137,7 @@ class ShelxSubstr(crank2.Crank2):
         self.putTitle ( "Substructure Found" )
         structure = self.finaliseStructure ( self.xyzout_fpath,self.outputFName,
                                              hkls,None,[],1,
-                                             leadKey=1,openState_bool=False,
+                                             leadKey=1, # openState="closed",
                                              title="" )
         revisions = []
 
@@ -148,7 +146,8 @@ class ShelxSubstr(crank2.Crank2):
             self.putMessage ( "&nbsp;" )
 
             anom_structure = self.finaliseAnomSubstructure ( self.xyzout_fpath,
-                                        "anom_substructure",hkls,[],"",False )
+                                        "anom_substructure",hkls,[],"",
+                                        openState="closed" )
             if anom_structure:
                 anom_structure.setAnomSubstrSubtype() # substructure
                 anom_structure.setHLLabels()

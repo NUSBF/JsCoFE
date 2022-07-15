@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.04.20   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,7 +23,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -175,7 +175,7 @@ class Ample(basic.TaskDriver):
 
                 structure = self.finaliseStructure ( final_pdb,self.outputFName,
                                                      sol_hkl,None,[seq],0,
-                                                     leadKey=1,openState_bool=False,
+                                                     leadKey=1, # openState="closed",
                                                      title="" )
 
                 if structure:

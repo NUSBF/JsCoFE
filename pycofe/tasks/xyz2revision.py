@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -52,7 +50,7 @@ class Xyz2Revision(dimple.Dimple,asudef.ASUDef):
             structure = self.finaliseStructure (
                                 xyz.getXYZFilePath(self.inputDir()),
                                 self.outputFName,hkl,None,
-                                [],0,leadKey=1,openState_bool=False ) # "0" means "XYZ"
+                                [],0,leadKey=1 ) # ,openState="closed" ) # "0" means "XYZ"
 
         else:
             structure = self.runDimple ( hkl,xyz )

@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    21.06.22   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -425,7 +423,7 @@ class PhaserMR(basic.TaskDriver):
         row0 = self.rvrow + 1
         structure = self.finaliseStructure ( self.outputFName+".1.pdb",
                                     self.outputFName,sol_hkl,None,seq,0,
-                                    leadKey=1,openState_bool=False,
+                                    leadKey=1, # openState="closed",
                                     reserveRows=3 )
         if structure:
             # update structure revision

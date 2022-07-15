@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    12.06.22   <--  Date of Last Modification.
+#    15.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1214,6 +1212,25 @@ class TaskDriver(object):
 
     # ============================================================================
 
+    def parseRefmacLog ( self,filepath ):
+        rfree_pattern   = "             R free"
+        rfactor_pattern = "           R factor"
+        rfree   = 0.0
+        rfactor = 0.0
+        with open(filepath,"r") as f:
+            for line in f:
+                if line.startswith(rfree_pattern):
+                    rfree   = float(line.split()[3])
+                elif line.startswith(rfactor_pattern):
+                    rfactor = float(line.split()[3])
+        if rfree>0.0 and rfactor>0.0:
+            self.generic_parser_summary["refmac"] = {
+                "R_factor" : rfactor,
+                "R_free"   : rfree
+            }
+        return
+
+
     def calcEDMap ( self,xyzPath,hklData,libPath,filePrefix,inpDir=None ):
         idir = inpDir
         if not idir:
@@ -1226,12 +1243,14 @@ class TaskDriver(object):
             xyzout += edmap.file_pdb()
         else:
             xyzout += edmap.file_cif()
+
+        if not self.log_parser:
+            self.file_stdout1.close()
+            self.parseRefmacLog ( self.file_stdout1_path() )
+            self.file_stdout1 = open ( self.file_stdout1_path(),"a" )
+
         return [ xyzout,filePrefix + edmap.file_mtz(),None,None ]
-        # for old UglyMol
-        #return [ xyzout,
-        #         filePrefix + edmap.file_mtz (),
-        #         filePrefix + edmap.file_map (),
-        #         filePrefix + edmap.file_dmap() ]
+
 
     def calcAnomEDMap ( self,xyzPath,hklData,anom_form,filePrefix ):
         edmap.calcAnomEDMap ( xyzPath,hklData.getHKLFilePath(self.inputDir()),
@@ -1405,7 +1424,9 @@ class TaskDriver(object):
     # ----------------------------------------------------------------------
 
     def finaliseStructure ( self,xyzPath,name_pattern,hkl,libPath,associated_data_list,
-                                 structureType,leadKey=1,openState_bool=False,
+                                 structureType,
+                                 leadKey=1,
+                                 openState="hidden",
                                  title="Output Structure",
                                  inpDir=None,
                                  stitle="Structure and electron density",
@@ -1417,22 +1438,38 @@ class TaskDriver(object):
 
         if os.path.isfile(xyzPath):
 
-            sec_id = self.getWidgetId ( self.refmac_section() )
-            self.putSection ( sec_id,"Electron Density Calculations with Refmac",
-                              openState_bool )
+            if openState!="hidden":
+                sec_id = self.getWidgetId ( self.refmac_section() )
+                self.putSection ( sec_id,"Electron Density Calculations with Refmac",
+                                  openState=="open" )
 
-            panel_id = self.getWidgetId ( self.refmac_report() )
-            pyrvapi.rvapi_add_panel ( panel_id,sec_id,0,0,1,1 )
-            #self.log_parser = pyrvapi_ext.parsers.generic_parser (
-            #                             panel_id,False,
-            #                             summary=self.generic_parser_summary,
-            #                             graph_tables=False,
-            #                             hide_refs=True )
+                panel_id = self.getWidgetId ( self.refmac_report() )
+                pyrvapi.rvapi_add_panel ( panel_id,sec_id,0,0,1,1 )
 
-            self.setRefmacLogParser ( panel_id,False,
-                                      graphTables=False,makePanel=False )
+                self.setRefmacLogParser ( panel_id,False,
+                                          graphTables=False,makePanel=False )
+            else:
+                self.unsetLogParser()
 
             fnames = self.calcEDMap ( xyzPath,hkl,libPath,name_pattern,inpDir )
+
+            # if openState_bool=="hidden":
+            #     tdict = {
+            #         "title": "Final R-factors",
+            #         "state": 0, "class": "table-blue", "css": "text-align:right;",
+            #         "rows" : [
+            #             { "header": { "label": "R<sub>free</sub>", "tooltip": "R-free"},
+            #               "data"  : [ str(self.generic_parser_summary["refmac"]["R_free"]) ]},
+            #             { "header": { "label": "R<sub>factor</sub>", "tooltip": "R-factor"},
+            #               "data"  : [ str(self.generic_parser_summary["refmac"]["R_factor"]) ]}
+            #         ]
+            #     }
+            #     rvapi_utils.makeTable ( tdict, self.getWidgetId("ref_table"),
+            #                             self.report_page_id(),
+            #                             self.rvrow,0,1,1 )
+            #     self.rvrow += 1
+
+            self.stdoutln ( str(self.generic_parser_summary) )
 
             self.rvrow += reserveRows
 
@@ -1470,13 +1507,13 @@ class TaskDriver(object):
 
     def finaliseAnomSubstructure ( self,xyzPath,name_pattern,hkl,
                                         associated_data_list,
-                                        anom_form,openState_bool=False,
+                                        anom_form,openState="closed",
                                         title="" ):
 
         anom_structure = self.finaliseAnomSubstructure1 ( xyzPath,name_pattern,
                                         hkl,associated_data_list,anom_form,
                                         self.report_page_id(),self.rvrow,
-                                        openState_bool,title )
+                                        openState,title )
         self.rvrow += 2
         if anom_structure:
             self.rvrow += 2
@@ -1487,15 +1524,15 @@ class TaskDriver(object):
 
 
     def finaliseAnomSubstructure1 ( self,xyzPath,name_pattern,hkl,
-                                        associated_data_list,anom_form,pageId,
-                                        row,openState_bool=False,title="" ):
+                                         associated_data_list,anom_form,pageId,
+                                         row,openState="closed",title="" ):
 
         sec_id = self.refmac_section() + "_" + str(self.widget_no)
         row1   = row
 
         pyrvapi.rvapi_add_section ( sec_id,
                         "Anomalous Electron Density Calculations with Refmac",
-                        pageId,row1,0,1,1,openState_bool )
+                        pageId,row1,0,1,1,openState=="open" )
         row1 += 1
 
         panel_id = self.refmac_report() + "_" + str(self.widget_no)
@@ -1525,12 +1562,12 @@ class TaskDriver(object):
             if title!="":
                 self.putTitle1 ( pageId,title,row1,1 )
                 row1 += 1
-            openState = -1
-            if openState_bool:
-                openState = 1
+            open_state = -1
+            if openState=="open":
+                open_state = 1
             self.putStructureWidget1 ( pageId,"anom_structure_btn_",
                                         "Anomalous substructure and electron density",
-                                        anom_structure,openState,row1,1 )
+                                        anom_structure,open_state,row1,1 )
             return anom_structure
 
         else:
