@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    06.05.19   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -91,8 +91,9 @@ class ASUMod(asudef.ASUDef):
                             istruct.getXYZFilePath(self.inputDir()),
                             os.path.splitext(istruct.getXYZFileName())[0],hkl,
                             None,[],0,  # "0" means "XYZ"
-                            leadKey=istruct.leadKey,
-                            openState_bool=False )
+                            leadKey=istruct.leadKey
+                            # ,openState="closed"
+                            )
 
                 if not structure:
                     self.putMessage ( "<h3>Conversion failed, no output</h3>" )

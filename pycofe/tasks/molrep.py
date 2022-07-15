@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    04.04.20   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -162,11 +160,8 @@ class Molrep(basic.TaskDriver):
         have_results = False
 
         self.putMessage ( '&nbsp;' );
-        #structure = self.finaliseStructure ( self.molrep_pdb(),self.outputFName,
-        #                        hkl,None,[seq],0,leadKey=1,openState_bool=False,
-        #                        title="Positioned Structure" )
         structure = self.finaliseStructure ( self.molrep_pdb(),self.outputFName,
-                                hkl,None,[],0,leadKey=1,openState_bool=False,
+                                hkl,None,[],0,leadKey=1, # openState="hidden",
                                 title="Positioned Structure" )
 
         if structure:

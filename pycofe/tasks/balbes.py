@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    25.06.21   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -95,7 +93,7 @@ class Balbes(basic.TaskDriver):
         pdb_path = os.path.join ( workDir,"results","refmac_final_result.pdb" )
 
         structure = self.finaliseStructure ( pdb_path,self.outputFName,hkl,None,
-                                             seq,0,leadKey=1,openState_bool=False )
+                                             seq,0,leadKey=1 ) #,openState="closed" )
         if structure:
             # update structure revision
             revision = self.makeClass ( self.input_data.data.revision[0] )

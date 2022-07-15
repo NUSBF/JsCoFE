@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    11.07.22   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -499,7 +497,8 @@ class Crank2(basic.TaskDriver):
                             self.putTitle ( "Heavy Atom Substructure Found" )
                             substructure = self.finaliseStructure ( sub_path,
                                         self.outputFName,hkls,None,[],1,
-                                        leadKey=1,openState_bool=False,title="" )
+                                        leadKey=1, # openState="closed",
+                                        title="" )
                             if not substructure:
                                 self.putMessage ( "<b><i>Failed to form heavy atom substructure object</i></b>" )
                             else:

@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    13.07.22   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -194,7 +192,7 @@ class Morda(basic.TaskDriver):
 
             structure = self.finaliseStructure ( final_pdb,self.outputFName,
                                                  sol_hkl,None,seq,0,
-                                                 leadKey=1,openState_bool=False )
+                                                 leadKey=1 ) #,openState="closed" )
             if structure:
                 # update structure revision
                 revision = self.makeClass  ( self.input_data.data.revision[0] )

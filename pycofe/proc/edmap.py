@@ -128,55 +128,6 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
         "Pdbout keep true\n"
     )
 
-    # scr_file.write (
-    #    "make check NONE\n" +
-    #    "make -\n" +
-    #    "    hydrogen ALL -\n" +
-    #    "    hout NO -\n" +
-    #    "    peptide NO -\n" +
-    #    "    cispeptide YES -\n" +
-    #    "    ssbridge YES -\n" +
-    #    "    symmetry YES -\n" +
-    #    "    sugar YES -\n" +
-    #    "    connectivity NO -\n" +
-    #    "    link NO\n" +
-    #    "refi -\n" +
-    #    "    type UNREST -\n" +
-    #    "    resi MLKF -\n" +
-    #    "    meth CGMAT -\n" +
-    #    "    bref ISOT\n" +
-    #    "ncyc 0\n" +
-    #    "scal -\n" +
-    #    "    type SIMP -\n" +
-    #    "    LSSC -\n" +
-    #    "    ANISO -\n" +
-    #    "    EXPE\n" +
-    #    "solvent YES\n" +
-    #    "weight -\n" +
-    #    "    AUTO\n" +
-    #    "monitor MEDIUM -\n" +
-    #    "    torsion 10.0 -\n" +
-    #    "    distance 10.0 -\n" +
-    #    "    angle 10.0 -\n" +
-    #    "    plane 10.0 -\n" +
-    #    "    chiral 10.0 -\n" +
-    #    "    bfactor 10.0 -\n" +
-    #    "    bsphere 10.0 -\n" +
-    #    "    rbond 10.0 -\n" +
-    #    "    ncsr 10.0\n" +
-    #    "    labin  FP=" + hkl_dataset.Fmean.value +
-    #              " SIGFP=" + hkl_dataset.Fmean.sigma + " -\n" +
-    #    "       FREE=" + hkl_dataset.FREE + "\n" +
-    #    "labout  FC=FC FWT=FWT PHIC=PHIC PHWT=PHWT DELFWT=DELFWT PHDELWT=PHDELWT FOM=FOM\n" +
-    #    "PNAME CoFE\n" +
-    #    "DNAME\n" +
-    #    "RSIZE 80\n" +
-    #    "EXTERNAL WEIGHT SCALE 10.0\n" +
-    #    "EXTERNAL USE MAIN\n" +
-    #    "EXTERNAL DMAX 4.2\n" +
-    #    "END\n"
-    # )
-
     scr_file.close()
 
     # prepare refmac command line
@@ -191,10 +142,6 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
     if libin:
         cmd += ["LIBIN",libin]
 
-    #import shutil
-    # check as refmac outs TER card before "UNK" residues
-    #shutil.copy2 ( xyzin,"output/xyz_before_edcalcs_refmac.pdb" )
-
     # Start refmac
     rc = command.call ( "refmac5",cmd,
                 job_dir,refmac_script(),file_stdout,file_stderr,
@@ -203,20 +150,10 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
     if not xyzin.lower().endswith('.pdb'):
         shutil.copy2 ( xyzout,output_file_prefix + file_cif() )
 
-    # have to do this copying because refmac an put unwanted TER cards before
-    # UNK residues; since we use 0 refmac cycles for map calculations, this
-    # should not change any coordinates
-    #if xyzin!=xyzout:
-    #    shutil.copy2 ( xyzin,xyzout )
-
     if rc.msg:
         file_stdout.write ( "Error calling refmac5: " + rc.msg )
         file_stderr.write ( "Error calling refmac5: " + rc.msg )
-
-    #else: # Generate maps
-    #    calcCCP4Maps ( mtzout,output_file_prefix,
-    #                   job_dir,file_stdout,file_stderr,"refmac",log_parser )
-
+        
     return
 
 

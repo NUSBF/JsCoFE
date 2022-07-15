@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    28.05.21   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  PDB DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2022
 #
 # ============================================================================
 #
@@ -230,7 +230,7 @@ def run ( body,pdb_list,
                     structure = body.finaliseStructure (
                                     xyz[0].getXYZFilePath(body.outputDir()),
                                     lcode,hkl[0],None,[],0, # "0" means "XYZ"
-                                    leadKey=1,openState_bool=False,
+                                    leadKey=1, # openState="closed",
                                     title=None,inpDir=body.outputDir() )
 
                 if revision[0]:

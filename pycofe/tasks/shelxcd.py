@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    14.02.20   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -255,14 +253,15 @@ class ShelxCD(basic.TaskDriver):
             structure = self.finaliseStructure ( pdbfile,self.outputFName,
                                                  hkl0,None,[],1,
                                                  leadKey=1,
-                                                 openState_bool=False,
+                                                 # openState="closed",
                                                  title="" )
             if structure:
 
                 if hkla:
                     self.putMessage ( "&nbsp;" )
                     anom_structure = self.finaliseAnomSubstructure ( pdbfile,
-                                                "anom_substructure",hkla,[],"",False )
+                                                "anom_substructure",hkla,[],"",
+                                                openState="closed" )
                     if anom_structure:
                         anom_structure.setAnomSubstrSubtype() # substructure
                         #anom_structure.setHLLabels()
