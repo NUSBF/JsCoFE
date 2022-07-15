@@ -109,12 +109,14 @@ def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
                  beta =round(st.cell.beta ,6),
                  gamma=round(st.cell.gamma,6))
 
-    xyz = []
+    xyz    = []
+    natoms = 0
     for model in st:
         chains = []
         for chain in model:
             polymer = chain.get_polymer()
-            t = polymer.check_polymer_type()
+            t       = polymer.check_polymer_type()
+            psize   = len(polymer)
             if t in (gemmi.PolymerType.PeptideL, gemmi.PolymerType.PeptideD):
                 abbr = 'Protein'
             #elif t in (gemmi.PolymerType.Dna, gemmi.PolymerType.Rna,
@@ -127,11 +129,17 @@ def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
             elif t==gemmi.PolymerType.DnaRnaHybrid:
                 abbr = 'NA'
             else:
-                abbr = 'LIG'
+                abbr  = 'LIG'
+                psize = 1
+            nats = 0
+            for res in chain:
+                nats += len(res)
+            natoms += nats
             chains.append(dict(id=str(chain.name),
                                type=abbr,
                                seq=str(polymer.make_one_letter_sequence()),
-                               size=len(polymer)))
+                               size=psize,
+                               natoms=natoms))
         xyz.append(dict(model=int(model.name), chains=chains))
 
-    return dict(cryst=cryst, xyz=xyz, ligands=[])
+    return dict ( cryst=cryst, xyz=xyz, ligands=[], natoms=natoms )

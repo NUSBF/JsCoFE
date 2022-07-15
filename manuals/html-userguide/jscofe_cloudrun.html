@@ -46,7 +46,7 @@
   
   
   
-    <title>7. Starting CCP4 Cloud projects from command line &#8212; CCP4 Cloud 1.8 documentation</title>
+    <title>7. Starting CCP4 Cloud projects from the command line &#8212; CCP4 Cloud 1.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -95,7 +95,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
-          <span class="md-header-nav__topic"> 7. Starting CCP4 Cloud projects from command line </span>
+          <span class="md-header-nav__topic"> 7. Starting CCP4 Cloud projects from the command line </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -221,15 +221,15 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> 7. Starting CCP4 Cloud projects from command line </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> 7. Starting CCP4 Cloud projects from the command line </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">7. Starting CCP4 Cloud projects from command line</a>
+      <a href="#" class="md-nav__link md-nav__link--active">7. Starting CCP4 Cloud projects from the command line</a>
       
         
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#jscofe-cloudrun--page-root" class="md-nav__link">7. Starting CCP4 Cloud projects from command line</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#jscofe-cloudrun--page-root" class="md-nav__link">7. Starting CCP4 Cloud projects from the command line</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#cloudrun-utility" class="md-nav__link">7.1. CloudRun utility</a>
         </li>
@@ -307,7 +307,7 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#jscofe-cloudrun--page-root" class="md-nav__link">7. Starting CCP4 Cloud projects from command line</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#jscofe-cloudrun--page-root" class="md-nav__link">7. Starting CCP4 Cloud projects from the command line</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#cloudrun-utility" class="md-nav__link">7.1. CloudRun utility</a>
         </li>
@@ -327,11 +327,11 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="jscofe-cloudrun--page-root"><span class="section-number">7. </span>Starting CCP4 Cloud projects from command line<a class="headerlink" href="#jscofe-cloudrun--page-root" title="Permalink to this headline">¶</a></h1>
-<p>CCP4 Cloud projects can be initiated and executed from command line, which may be useful in various scenarios. For example, data collection session at a synchrotron beamline may include sending reflection data, sequence, optional structural homolog and ligand descriptions, to a specified CCP4 Cloud account and starting a suitable structure solution workflow in it. Or, large series of structure solution projects can be initiated by a custom script to save time for manipulations with CCP4 Cloud’s graphical interface.</p>
+<h1 id="jscofe-cloudrun--page-root"><span class="section-number">7. </span>Starting CCP4 Cloud projects from the command line<a class="headerlink" href="#jscofe-cloudrun--page-root" title="Permalink to this headline">¶</a></h1>
+<p>CCP4 Cloud projects can be initiated and executed from the command line. Which may be useful for data collection session at a synchrotron beamline may include sending reflection data, sequence, optional structural homolog and ligand descriptions, to a specified CCP4 Cloud account and starting a suitable structure solution workflow in it. Or, large series of structure solution projects can be initiated by a custom script to save time for manipulations with CCP4 Cloud’s graphical interface.</p>
 
 <h2 id="cloudrun-utility"><span class="section-number">7.1. </span>CloudRun utility<a class="headerlink" href="#cloudrun-utility" title="Permalink to this headline">¶</a></h2>
-<p>CloudRun utility, included in CCP4 Software Suite, can create projects, upload data and start automatic structure solution workflow in a single run as shown below (CCP4 8.0.003+ environment is assumed on Linux/Mac OSX, use CCP4 Console on Windows):</p>
+<p>CloudRun utility, included in <a class="reference external" href="https://www.ccp4.ac.uk/download/" rel="noopener noreferrer" target="_blank">CCP4 Software Suite</a>, can create projects, upload data and start automatic structure solution workflow in a single run as shown below (CCP4 8.0.003+ environment is assumed on Linux/Mac OSX, <strong>use CCP4 Console</strong> on Windows):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cloudrun -c command_file
 </pre></div>
 </div>
@@ -350,12 +350,12 @@ eof
 <p>where <code class="docutils literal notranslate"><span class="pre">task</span></code> is one of:</p>
 <blockquote>
 <div><ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">import</span></code>: create standard project, import data and stop</li>
-<li><code class="docutils literal notranslate"><span class="pre">hop-on</span></code>: create “hop-on” project, import data and stop</li>
-<li><code class="docutils literal notranslate"><span class="pre">auto-af2</span></code>: create standard project, import data and start Auto-MR workflow based on structure prediction with AlphaFold-2</li>
-<li><code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>: create standard project, import data and start Auto-MR workflow utilising <code class="docutils literal notranslate"><span class="pre">MrBump</span></code> and <code class="docutils literal notranslate"><span class="pre">Simbad</span></code> pipelines</li>
-<li><code class="docutils literal notranslate"><span class="pre">auto-ep</span></code>: create standard project, import data and start Auto-MR workflow based in <code class="docutils literal notranslate"><span class="pre">Crank-2</span></code> pipeline</li>
-<li><code class="docutils literal notranslate"><span class="pre">dimple</span></code>: create standard project, import data and start <code class="docutils literal notranslate"><span class="pre">Dimple</span></code> workflow for fast ligand blob identification and fitting</li>
+<li><code class="docutils literal notranslate"><span class="pre">import</span></code>: create standard project, <a class="reference external" href="../html-taskref/doc.task.Import.html" rel="noopener noreferrer" target="_blank">import data</a> and stop</li>
+<li><code class="docutils literal notranslate"><span class="pre">hop-on</span></code>: create <a class="reference external" href="../html-taskref/doc.task.Migrate.html" rel="noopener noreferrer" target="_blank">hop-on</a> project, import data and stop</li>
+<li><code class="docutils literal notranslate"><span class="pre">auto-af2</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAMR.html" rel="noopener noreferrer" target="_blank">Auto-MR workflow</a> based on structure prediction with AlphaFold-2</li>
+<li><code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAMR.html" rel="noopener noreferrer" target="_blank">Auto-MR workflow</a> utilising <a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> and <a class="reference external" href="../html-taskref/doc.task.Simbad.html" rel="noopener noreferrer" target="_blank">Simbad</a> pipelines</li>
+<li><code class="docutils literal notranslate"><span class="pre">auto-ep</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAEP.html" rel="noopener noreferrer" target="_blank">Auto-EP workflow</a> based in <a class="reference external" href="../html-taskref/doc.task.Crank2.html" rel="noopener noreferrer" target="_blank">Crank-2</a> pipeline</li>
+<li><code class="docutils literal notranslate"><span class="pre">dimple</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.Dimple.html" rel="noopener noreferrer" target="_blank">Dimple</a> workflow for fast ligand blob identification and fitting</li>
 </ul>
 </div></blockquote>
 <p>Example:</p>
@@ -398,37 +398,48 @@ LIG_CODE    ATP            # 3-letter ligand code, e.g., ATP
 $
 </pre></div>
 </div>
-<p>The use of CloudRun utility is capped by the maximum number of runs per day (configurable).
-The remaining number of available runs is shown in CCP4 Cloud pages only if it is less
-than the maximum. The CloudRun quota may be adjusted by CCP4 Cloud administrator for
-individual users.</p>
+<p><strong>The use of CloudRun utility is capped by the maximum number of runs per day</strong> (<em>configurable</em>).</p>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">The remaining number of available runs is shown in CCP4 Cloud pages only if it is less than the maximum.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The CloudRun quota may be adjusted by CCP4 Cloud administrator for individual users.</p>
+</div>
 
 
 <h2 id="command-file-keywords"><span class="section-number">7.2. </span>Command file keywords<a class="headerlink" href="#command-file-keywords" title="Permalink to this headline">¶</a></h2>
 <dl class="docutils">
-<dt><strong>URL</strong></dt><dd><p>(mandatory) CCP4 Cloud server URL, for example:</p>
+<dt><strong>URL</strong></dt><dd><p><em>(mandatory)</em></p>
+<p>CCP4 Cloud server URL, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">URL</span>   <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">cloud</span><span class="o">.</span><span class="n">ccp4</span><span class="o">.</span><span class="n">ac</span><span class="o">.</span><span class="n">uk</span>
 </pre></div>
 </div>
 </dd>
-<dt><strong>USER</strong></dt><dd><p>(mandatory unless <code class="docutils literal notranslate"><span class="pre">AUTH_FILE</span></code> is used) CCP4 Cloud’s user account name, for example:</p>
+<dt><strong>USER</strong></dt><dd><p><em>(mandatory unless</em> <a class="reference internal" href="#auth-file">AUTH_FILE</a> <em>is used)</em></p>
+<p>CCP4 Cloud’s user account name, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">USER</span>   <span class="n">my</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">name</span>
 </pre></div>
 </div>
 </dd>
-<dt><strong>CLOUDRUN_ID</strong></dt><dd><p>(mandatory unless <code class="docutils literal notranslate"><span class="pre">AUTH_FILE</span></code> is used) CloudRun Id, which is unique for each user:</p>
+<dt><strong>CLOUDRUN_ID</strong></dt><dd><p><em>(mandatory unless</em> <a class="reference internal" href="#auth-file">AUTH_FILE</a> <em>is used)</em></p>
+<p>CloudRun Id is unique for each user:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CLOUDRUN_ID</span>   <span class="n">aaaa</span><span class="o">-</span><span class="n">bbbb</span><span class="o">-</span><span class="n">cccc</span><span class="o">-</span><span class="n">dddd</span>
 </pre></div>
 </div>
-<p>The CloudRun Id may be found in the users’s “My Account” page in CCP4 Cloud. The page
-also allows a user to change their CloudRun Id if necessary.</p>
+<p><strong>The CloudRun ID may be found in the users’s “My Account” page</strong> in CCP4 Cloud. The page
+also allows a user to change their CloudRun ID if necessary.</p>
 </dd>
-<dt><strong>AUTH_FILE</strong></dt><dd><p>(mandatory if <code class="docutils literal notranslate"><span class="pre">USER</span></code> and <code class="docutils literal notranslate"><span class="pre">CLOUDRUN_ID</span></code> keywords are not used) Path to file with
-user authorisation information, for example:</p>
+</dl>
+<p id="auth-file"><strong>AUTH_FILE</strong></p>
+<blockquote>
+<div><p><em>(mandatory if USER and CLOUDRUN_ID keywords are not used)</em></p>
+<p>Path to file with user authorisation information, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AUTH_FILE</span>   <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">auth</span><span class="o">.</span><span class="n">dat</span>
 </pre></div>
 </div>
-<p>where <code class="docutils literal notranslate"><span class="pre">/path/to/auth.dat</span></code> should contain user’s login name and cloudrun Id, in that order,
+<p>where <code class="docutils literal notranslate"><span class="pre">/path/to/auth.dat</span></code> should contain user’s login name and Cloudrun Id, in that order,
 for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">name</span>   <span class="n">aaaa</span><span class="o">-</span><span class="n">bbbb</span><span class="o">-</span><span class="n">cccc</span><span class="o">-</span><span class="n">dddd</span>
 </pre></div>
@@ -438,38 +449,52 @@ for example:</p>
 <p class="last">Using <code class="docutils literal notranslate"><span class="pre">AUTH_FILE</span></code> instead of keyword pair <code class="docutils literal notranslate"><span class="pre">USER</span></code> and <code class="docutils literal notranslate"><span class="pre">CLOUDRUN_ID</span></code> is recommended
 if a collection of cloudrun scripts should be maintained and/or exchanged between users.</p>
 </div>
-</dd>
-<dt><strong>PROJECT</strong></dt><dd><p>(mandatory) Project Id, where the data should be imported, for example:</p>
+</div></blockquote>
+<dl class="docutils">
+<dt><strong>PROJECT</strong></dt><dd><p><em>(mandatory)</em></p>
+<p>Project Id, where the data should be imported, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PROJECT</span>   <span class="n">cloudrun</span><span class="o">-</span><span class="n">amr</span>
 </pre></div>
 </div>
 </dd>
-<dt><strong>TITLE</strong></dt><dd><p>(mandatory for new projects) Project title, which is used for creating new project, for example:</p>
+<dt><strong>TITLE</strong></dt><dd><p><em>(mandatory for new projects)</em></p>
+<p>Project title, which is used for creating new project, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TITLE</span>   <span class="n">Auto</span><span class="o">-</span><span class="n">MR</span> <span class="n">Project</span> <span class="n">started</span> <span class="k">with</span> <span class="n">CloudRun</span> <span class="n">utility</span>
 </pre></div>
 </div>
 </dd>
-<dt><strong>TASK</strong></dt><dd><p>(optional) The task that should be performed after data is uploaded. Can be one of <code class="docutils literal notranslate"><span class="pre">import</span></code>,
-<code class="docutils literal notranslate"><span class="pre">auto-af2</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-ep</span></code>, <code class="docutils literal notranslate"><span class="pre">hop-on</span></code> or <code class="docutils literal notranslate"><span class="pre">dimple</span></code>, as described above. Example:</p>
+<dt><strong>TASK</strong></dt><dd><p><em>(optional)</em></p>
+<p>The task that should be performed after data is uploaded.</p>
+<p>Can be one of <code class="docutils literal notranslate"><span class="pre">import</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-af2</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-ep</span></code>, <code class="docutils literal notranslate"><span class="pre">hop-on</span></code> or <code class="docutils literal notranslate"><span class="pre">dimple</span></code>, as described above.</p>
+<p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TASK</span>  <span class="n">auto</span><span class="o">-</span><span class="n">mr</span>
 </pre></div>
 </div>
-<p>if <code class="docutils literal notranslate"><span class="pre">TASK</span></code> is not given, <code class="docutils literal notranslate"><span class="pre">import</span></code> is assumed.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">if <code class="docutils literal notranslate"><span class="pre">TASK</span></code> is not given, <code class="docutils literal notranslate"><span class="pre">import</span></code> is assumed.</p>
+</div>
 </dd>
-<dt><strong>HA_TYPE</strong></dt><dd><p>(must be given for <code class="docutils literal notranslate"><span class="pre">auto-ep</span></code> task) Atom type of main anomalous scatterer, for example:</p>
+</dl>
+<p><strong>HA_TYPE</strong></p>
+<blockquote>
+<div><p><em>(must be given for auto-ep task)</em></p>
+<p>Atom type of main anomalous scatterer, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">HA_TYPE</span>   <span class="n">Se</span>
 </pre></div>
 </div>
-</dd>
-<dt><strong>FILE</strong></dt><dd><p>(required) Path to file that should be uploaded, for example:</p>
+</div></blockquote>
+<dl class="docutils">
+<dt><strong>FILE</strong></dt><dd><p><em>(required)</em></p>
+<p>Path to file that should be uploaded, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FILE</span>   <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file</span><span class="o">/</span><span class="n">my_file</span><span class="o">.</span><span class="n">mtz</span>
 </pre></div>
 </div>
-<p>Files with the following extensions are acceptable: <code class="docutils literal notranslate"><span class="pre">.mtz</span></code>, <code class="docutils literal notranslate"><span class="pre">.pdb</span></code>, <code class="docutils literal notranslate"><span class="pre">.seq</span></code>, <code class="docutils literal notranslate"><span class="pre">.fasta</span></code>,
+<p>The following files extensions are acceptable: <code class="docutils literal notranslate"><span class="pre">.mtz</span></code>, <code class="docutils literal notranslate"><span class="pre">.pdb</span></code>, <code class="docutils literal notranslate"><span class="pre">.seq</span></code>, <code class="docutils literal notranslate"><span class="pre">.fasta</span></code>,
 <code class="docutils literal notranslate"><span class="pre">.pir</span></code>, <code class="docutils literal notranslate"><span class="pre">.cif</span></code>.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">CCP4 Cloud will attempt to identify the file content automatically. This should work in most cases, yet a confusion
+<p class="last">CCP4 Cloud will attempt to identify the file content automatically. This should work in most cases, yet confusion
 may arise when complex MTZ file (combining several datasets and/or phases), non-protein sequences or CIF files are
 uploaded. In order to avoid possible ambiguity, use specific keywords described below.</p>
 </div>
@@ -500,13 +525,21 @@ sequence(s)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SEQ_DNA</span>    <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file_dna</span><span class="o">.</span><span class="n">seq</span>
 </pre></div>
 </div>
-<p>The following file extensions are accepted: <code class="docutils literal notranslate"><span class="pre">.seq</span></code>, <code class="docutils literal notranslate"><span class="pre">.fasta</span></code>, <code class="docutils literal notranslate"><span class="pre">.pir</span></code>. Only DNA sequence(s) must be found in the file.</p>
+<p>The following file extensions are accepted: <code class="docutils literal notranslate"><span class="pre">.seq</span></code>, <code class="docutils literal notranslate"><span class="pre">.fasta</span></code>, <code class="docutils literal notranslate"><span class="pre">.pir</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only DNA sequence(s) must be found in the file.</p>
+</div>
 </dd>
 <dt><strong>SEQ_RNA</strong></dt><dd><p>Path to file with RNA sequence, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SEQ_RNA</span>    <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file_rna</span><span class="o">.</span><span class="n">seq</span>
 </pre></div>
 </div>
-<p>The following file extensions are accepted: <code class="docutils literal notranslate"><span class="pre">.seq</span></code>, <code class="docutils literal notranslate"><span class="pre">.fasta</span></code>, <code class="docutils literal notranslate"><span class="pre">.pir</span></code>. Only RNA sequence(s) must be found in the file.</p>
+<p>The following file extensions are accepted: <code class="docutils literal notranslate"><span class="pre">.seq</span></code>, <code class="docutils literal notranslate"><span class="pre">.fasta</span></code>, <code class="docutils literal notranslate"><span class="pre">.pir</span></code>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only RNA sequence(s) must be found in the file.</p>
+</div>
 </dd>
 <dt><strong>XYZ</strong></dt><dd><p>Path to file with macromolecular atomic model, for example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">XYZ</span>    <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file_xyz</span><span class="o">.</span><span class="n">pdb</span>
@@ -568,7 +601,7 @@ eof
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">AlphaFold-2 is not part of CCP4 and should be installed in CCP4 Cloud separately. It is installed at
-CCP4 Cloud instance supported by CCP4 (<a class="reference external" href="https://cloud.ccp4.ac.uk" rel="noopener noreferrer" target="_blank">https://cloud.ccp4.ac.uk</a>), but it may be unavailable on other servers.
+CCP4 Cloud instance is supported by CCP4 (<a class="reference external" href="https://cloud.ccp4.ac.uk" rel="noopener noreferrer" target="_blank">https://cloud.ccp4.ac.uk</a>), but it may be unavailable on other servers.
 In this case, this example is solvable by changing TASK from <code class="docutils literal notranslate"><span class="pre">auto-af2</span></code> to <code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>.</p>
 </div>
 

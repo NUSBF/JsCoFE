@@ -1,14 +1,14 @@
-==============================================
-Starting CCP4 Cloud projects from command line
-==============================================
+==================================================
+Starting CCP4 Cloud projects from the command line
+==================================================
 
-CCP4 Cloud projects can be initiated and executed from command line, which may be useful in various scenarios. For example, data collection session at a synchrotron beamline may include sending reflection data, sequence, optional structural homolog and ligand descriptions, to a specified CCP4 Cloud account and starting a suitable structure solution workflow in it. Or, large series of structure solution projects can be initiated by a custom script to save time for manipulations with CCP4 Cloud's graphical interface.
+CCP4 Cloud projects can be initiated and executed from the command line. Which may be useful for data collection session at a synchrotron beamline may include sending reflection data, sequence, optional structural homolog and ligand descriptions, to a specified CCP4 Cloud account and starting a suitable structure solution workflow in it. Or, large series of structure solution projects can be initiated by a custom script to save time for manipulations with CCP4 Cloud's graphical interface.
 
 ----------------
 CloudRun utility
 ----------------
 
-CloudRun utility, included in CCP4 Software Suite, can create projects, upload data and start automatic structure solution workflow in a single run as shown below (CCP4 8.0.003+ environment is assumed on Linux/Mac OSX, use CCP4 Console on Windows): ::
+CloudRun utility, included in `CCP4 Software Suite <https://www.ccp4.ac.uk/download/>`_, can create projects, upload data and start automatic structure solution workflow in a single run as shown below (CCP4 8.0.003+ environment is assumed on Linux/Mac OSX, **use CCP4 Console** on Windows): ::
 
   $ cloudrun -c command_file
 
@@ -27,12 +27,12 @@ The set of instructions in ``command_file`` depends on the required task and can
 
 where ``task`` is one of:
 
-  - ``import``: create standard project, import data and stop 
-  - ``hop-on``: create "hop-on" project, import data and stop
-  - ``auto-af2``: create standard project, import data and start Auto-MR workflow based on structure prediction with AlphaFold-2
-  - ``auto-mr``: create standard project, import data and start Auto-MR workflow utilising ``MrBump`` and ``Simbad`` pipelines
-  - ``auto-ep``: create standard project, import data and start Auto-MR workflow based in ``Crank-2`` pipeline
-  - ``dimple``: create standard project, import data and start ``Dimple`` workflow for fast ligand blob identification and fitting
+  - ``import``: create standard project, `import data <../html-taskref/doc.task.Import.html>`_ and stop 
+  - ``hop-on``: create `hop-on <../html-taskref/doc.task.Migrate.html>`_ project, import data and stop
+  - ``auto-af2``: create standard project, import data and start `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`_ based on structure prediction with AlphaFold-2
+  - ``auto-mr``: create standard project, import data and start `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`_ utilising `MrBump <../html-taskref/doc.task.MrBump.html>`_ and `Simbad <../html-taskref/doc.task.Simbad.html>`_ pipelines
+  - ``auto-ep``: create standard project, import data and start `Auto-EP workflow <../html-taskref/doc.task.WFlowAEP.html>`_ based in `Crank-2 <../html-taskref/doc.task.Crank2.html>`_ pipeline
+  - ``dimple``: create standard project, import data and start `Dimple <../html-taskref/doc.task.Dimple.html>`_ workflow for fast ligand blob identification and fitting
 
 Example: ::
 
@@ -74,10 +74,11 @@ Example: ::
   LIG_CODE    ATP            # 3-letter ligand code, e.g., ATP
   $
 
-The use of CloudRun utility is capped by the maximum number of runs per day (configurable).
-The remaining number of available runs is shown in CCP4 Cloud pages only if it is less
-than the maximum. The CloudRun quota may be adjusted by CCP4 Cloud administrator for 
-individual users.
+**The use of CloudRun utility is capped by the maximum number of runs per day** (*configurable*).
+
+.. important:: The remaining number of available runs is shown in CCP4 Cloud pages only if it is less than the maximum. 
+
+.. note:: The CloudRun quota may be adjusted by CCP4 Cloud administrator for individual users.
 
 
 ---------------------
@@ -85,72 +86,98 @@ Command file keywords
 ---------------------
 
 **URL**
-    (mandatory) CCP4 Cloud server URL, for example: ::
+    *(mandatory)* 
+    
+    CCP4 Cloud server URL, for example: ::
     
         URL   https://cloud.ccp4.ac.uk
 
 
 **USER**
-    (mandatory unless ``AUTH_FILE`` is used) CCP4 Cloud's user account name, for example: ::
+    *(mandatory unless* `AUTH_FILE`_ *is used)*
+    
+    CCP4 Cloud's user account name, for example: ::
     
         USER   my.user.name
 
 **CLOUDRUN_ID**
-    (mandatory unless ``AUTH_FILE`` is used) CloudRun Id, which is unique for each user: ::
+    *(mandatory unless* `AUTH_FILE`_ *is used)*
+    
+    CloudRun Id is unique for each user: ::
     
         CLOUDRUN_ID   aaaa-bbbb-cccc-dddd 
 
-    The CloudRun Id may be found in the users's "My Account" page in CCP4 Cloud. The page 
-    also allows a user to change their CloudRun Id if necessary.  
+    **The CloudRun ID may be found in the users's "My Account" page** in CCP4 Cloud. The page 
+    also allows a user to change their CloudRun ID if necessary.  
+
+.. _AUTH_FILE:
+
 
 **AUTH_FILE**
-    (mandatory if ``USER`` and ``CLOUDRUN_ID`` keywords are not used) Path to file with 
-    user authorisation information, for example: ::
+
+
+
+    *(mandatory if USER and CLOUDRUN_ID keywords are not used)* 
+    
+    Path to file with user authorisation information, for example: ::
     
         AUTH_FILE   /path/to/auth.dat
 
-    where ``/path/to/auth.dat`` should contain user's login name and cloudrun Id, in that order,
+    where ``/path/to/auth.dat`` should contain user's login name and Cloudrun Id, in that order,
     for example: ::
 
         my.user.name   aaaa-bbbb-cccc-dddd 
 
-    .. note::
-       Using ``AUTH_FILE`` instead of keyword pair ``USER`` and ``CLOUDRUN_ID`` is recommended 
+    .. note:: Using ``AUTH_FILE`` instead of keyword pair ``USER`` and ``CLOUDRUN_ID`` is recommended 
        if a collection of cloudrun scripts should be maintained and/or exchanged between users.
 
 **PROJECT**
-    (mandatory) Project Id, where the data should be imported, for example: ::
+    *(mandatory)* 
+    
+    Project Id, where the data should be imported, for example: ::
     
         PROJECT   cloudrun-amr
 
 **TITLE**
-    (mandatory for new projects) Project title, which is used for creating new project, for example: ::
+    *(mandatory for new projects)* 
+    
+    Project title, which is used for creating new project, for example: ::
     
         TITLE   Auto-MR Project started with CloudRun utility
 
 **TASK**
-    (optional) The task that should be performed after data is uploaded. Can be one of ``import``,
-    ``auto-af2``, ``auto-mr``, ``auto-ep``, ``hop-on`` or ``dimple``, as described above. Example: ::
+    *(optional)* 
+    
+    The task that should be performed after data is uploaded. 
+    
+    Can be one of ``import``, ``auto-af2``, ``auto-mr``, ``auto-ep``, ``hop-on`` or ``dimple``, as described above.
+    
+    Example: ::
 
         TASK  auto-mr 
 
-    if ``TASK`` is not given, ``import`` is assumed.     
+    .. note:: if ``TASK`` is not given, ``import`` is assumed.     
     
 **HA_TYPE**
-    (must be given for ``auto-ep`` task) Atom type of main anomalous scatterer, for example: ::
+
+    *(must be given for auto-ep task)* 
+    
+    Atom type of main anomalous scatterer, for example: ::
     
         HA_TYPE   Se
     
 **FILE**
-    (required) Path to file that should be uploaded, for example: ::
+    *(required)* 
+    
+    Path to file that should be uploaded, for example: ::
     
         FILE   /path/to/file/my_file.mtz 
 
-    Files with the following extensions are acceptable: ``.mtz``, ``.pdb``, ``.seq``, ``.fasta``,
+    The following files extensions are acceptable: ``.mtz``, ``.pdb``, ``.seq``, ``.fasta``,
     ``.pir``, ``.cif``.
 
     .. note::
-        CCP4 Cloud will attempt to identify the file content automatically. This should work in most cases, yet a confusion
+        CCP4 Cloud will attempt to identify the file content automatically. This should work in most cases, yet confusion
         may arise when complex MTZ file (combining several datasets and/or phases), non-protein sequences or CIF files are
         uploaded. In order to avoid possible ambiguity, use specific keywords described below. 
 
@@ -182,14 +209,18 @@ Command file keywords
     
         SEQ_DNA    /path/to/file_dna.seq
 
-    The following file extensions are accepted: ``.seq``, ``.fasta``, ``.pir``. Only DNA sequence(s) must be found in the file.
+    The following file extensions are accepted: ``.seq``, ``.fasta``, ``.pir``. 
+    
+    .. note:: Only DNA sequence(s) must be found in the file.
 
 **SEQ_RNA**
     Path to file with RNA sequence, for example: ::
     
         SEQ_RNA    /path/to/file_rna.seq
 
-    The following file extensions are accepted: ``.seq``, ``.fasta``, ``.pir``. Only RNA sequence(s) must be found in the file.
+    The following file extensions are accepted: ``.seq``, ``.fasta``, ``.pir``. 
+    
+    .. note:: Only RNA sequence(s) must be found in the file.
 
 **XYZ**
     Path to file with macromolecular atomic model, for example: ::
@@ -251,6 +282,6 @@ from the standard set of CCP4 examples: ::
 
 .. note::
   AlphaFold-2 is not part of CCP4 and should be installed in CCP4 Cloud separately. It is installed at
-  CCP4 Cloud instance supported by CCP4 (https://cloud.ccp4.ac.uk), but it may be unavailable on other servers.
+  CCP4 Cloud instance is supported by CCP4 (https://cloud.ccp4.ac.uk), but it may be unavailable on other servers.
   In this case, this example is solvable by changing TASK from ``auto-af2`` to ``auto-mr``.
 

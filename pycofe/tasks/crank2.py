@@ -749,10 +749,10 @@ class Crank2(basic.TaskDriver):
                 if "programs_used" in meta:
                     self.addCitations ( meta["programs_used"] )
                 else:
-                    self.putMessage ( "<b>Program error:</b> <i>no program list in meta</i>" +
+                    self.putMessage ( "<b>Program error:</b> <i>no program list in meta</i>" +\
                                       "<p>'" + meta_str + "'" )
             except:
-                self.putMessage ( "<b>Program error:</b> <i>unparseable metadata from Crank-2</i>" +
+                self.putMessage ( "<b>Program error:</b> <i>unparseable metadata from Crank-2</i>" +\
                                   "<p>'" + meta_str + "'" )
         if self.task._type!="TaskCrank2":
             self.addCitations ( ['crank2'] )
@@ -762,10 +762,27 @@ class Crank2(basic.TaskDriver):
         revisions = self.finalise()
 
         if len(revisions)>0:
+
+            Rfactor = self.generic_parser_summary["refmac"]["R_factor"]
+            Rfree   = self.generic_parser_summary["refmac"]["R_free"]
+            self.generic_parser_summary.pop ( "refmac",None )
+
+            if self.task._type!="TaskShelxSubstr":
+                self.generic_parser_summary["crank2"] = {
+                  "summary_line" : "R=" + str(Rfactor) +\
+                                   " R<sub>free</sub>=" + str(Rfree)
+                }
+            else:
+                self.generic_parser_summary["crank2"] = {
+                    "summary_line" : revisions[0].ASU.ha_type + "<sub>" +\
+                                     str(revisions[0].Substructure.getNofAtoms()) +\
+                                     "</sub> substructure found"
+                }
+
             auto.makeNextTask ( self,{
                 "revision" : revisions[0],
-                "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                "Rfactor"  : Rfactor,
+                "Rfree"    : Rfree
             }, self.file_stderr )
 
         # close execution logs and quit

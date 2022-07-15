@@ -260,8 +260,8 @@ class ShelxCD(basic.TaskDriver):
                 if hkla:
                     self.putMessage ( "&nbsp;" )
                     anom_structure = self.finaliseAnomSubstructure ( pdbfile,
-                                                "anom_substructure",hkla,[],"",
-                                                openState="closed" )
+                                                "anom_substructure",hkla,[],"" )
+                                                # openState="hidden" )
                     if anom_structure:
                         anom_structure.setAnomSubstrSubtype() # substructure
                         #anom_structure.setHLLabels()
@@ -337,6 +337,13 @@ class ShelxCD(basic.TaskDriver):
                     ri.register ( self.outputDataBox )
                     have_results = True
 
+                if have_results:
+                    self.generic_parser_summary["shelxcd"] = {
+                        "summary_line" : revision.ASU.ha_type + "<sub>" +\
+                                         str(structure.getNofAtoms()) +\
+                                         "</sub> substructure found"
+                    }
+
             else:
                 self.rvrow = rvrow0
                 self.putTitle ( "Failed to form results" )
@@ -344,6 +351,7 @@ class ShelxCD(basic.TaskDriver):
         else:
             self.putTitle ( "No Substructure Found" )
 
+        self.generic_parser_summary.pop ( "refmac",None )
         self.flush()
 
         # close execution logs and quit

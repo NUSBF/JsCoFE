@@ -146,8 +146,8 @@ class ShelxSubstr(crank2.Crank2):
             self.putMessage ( "&nbsp;" )
 
             anom_structure = self.finaliseAnomSubstructure ( self.xyzout_fpath,
-                                        "anom_substructure",hkls,[],"",
-                                        openState="closed" )
+                                        "anom_substructure",hkls,[],"" )
+                                        # openState="hidden" )
             if anom_structure:
                 anom_structure.setAnomSubstrSubtype() # substructure
                 anom_structure.setHLLabels()
