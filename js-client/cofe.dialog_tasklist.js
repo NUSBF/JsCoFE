@@ -765,6 +765,7 @@ var row      = 0;
     new TaskAuspex  (),
     new TaskSRF     (),
     new TaskCrosSec (),
+    new TaskReindexHKL(),
     'Coordinate data tools',
     new TaskXyzUtils(),
     new TaskGemmi   (),
