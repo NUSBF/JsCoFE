@@ -366,7 +366,10 @@ def run ( body,   # body is reference to the main Import class
                                                 # this point and needs to be forced,
                                                 # or else runApp looks for input script
                         body.setGenericLogParser ( reportPanelId,False,False,False )
-                        body.runApp ( "ctruncate",cmd )
+                        try:
+                            body.runApp ( "ctruncate",cmd )
+                        except:
+                            pass
 
                         body.file_stdout.flush()
 

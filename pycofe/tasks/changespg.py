@@ -74,17 +74,74 @@ class ChangeSpG(basic.TaskDriver):
         cmd = [ "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
                 "hklout",outputMTZFName ]
 
-        # prepare stdin
-        self.open_stdin  ()
-        self.write_stdin ( "SYMM \"" + hkl.new_spg + "\"\n" )
-        self.close_stdin ()
+        sec1 = getattr(self.task.parameters, "sec1", None)
+        if sec1:
+            sec1 = sec1.contains
 
-        # Prepare report parser
-        self.setGenericLogParser ( self.refmac_report(),False )
+            cmd = [
+              "cad",
+              "hklin1",
+              hkl.getFilePath(self.inputDir(), dtype_template.file_key["mtz"]),
+              "hklout", "_tmp1.mtz"
+            ]
+            inp = (
+              "labin file 1 all",
+              "outlim spacegroup 'P 1'",
+              "end",
+              ""
+            )
+            self.open_stdin()
+            self.write_stdin("\n".join(inp))
+            self.close_stdin()
+            self.runApp(cmd[0], cmd[1:], logType="Main")
 
-        # run reindex
-        self.runApp ( "reindex",cmd,logType="Main" )
-        self.unsetLogParser()
+            cmd = [
+              "reindex",
+              "hklin", "_tmp1.mtz",
+              "hklout", "_tmp2.mtz"
+            ]
+            inp = (
+              "reindex hkl '%s'" %self.getParameter(sec1.REINDEX),
+              "symm 'P 1'",
+              "end",
+              ""
+            )
+            self.open_stdin()
+            self.write_stdin("\n".join(inp))
+            self.close_stdin()
+            self.runApp(cmd[0], cmd[1:], logType="Main")
+
+            cmd = [
+              "cad",
+              "hklin1", "_tmp2.mtz",
+              "hklout", outputMTZFName
+            ]
+            inp = (
+              "labin file 1 all",
+              "symmetry '%s'" %self.getParameter(sec1.SYMM),
+              "end",
+              ""
+            )
+            self.open_stdin()
+            self.write_stdin("\n".join(inp))
+            self.close_stdin()
+            self.runApp(cmd[0], cmd[1:], logType="Main")
+
+            hkl.new_spg = self.getParameter(sec1.SYMM)
+            ######### is new_cell needed as well?
+
+        else:
+            # prepare stdin
+            self.open_stdin  ()
+            self.write_stdin ( "SYMM \"" + hkl.new_spg + "\"\n" )
+            self.close_stdin ()
+
+            # Prepare report parser
+            self.setGenericLogParser ( self.refmac_report(),False )
+
+            # run reindex
+            self.runApp ( "reindex",cmd,logType="Main" )
+            self.unsetLogParser()
 
         have_results = False
 
@@ -114,7 +171,14 @@ class ChangeSpG(basic.TaskDriver):
                     #revision = self.makeClass  ( self.input_data.data.revision[0] )
                     revision.setReflectionData ( new_hkl[0] )
                     self.registerRevision      ( revision   )
-                self.generic_parser_summary["z01"] = {'SpaceGroup':hkl.new_spg}
+
+                if sec1:
+                    cell = [str(int(round(x))) for x in new_hkl[0].getCellParameters()]
+                    line = "SpG=%s Cell=%s" %(hkl.new_spg, ' '.join(cell))
+                    self.generic_parser_summary["z01"] = dict(summary_line = line)
+
+                else:
+                    self.generic_parser_summary["z01"] = {'SpaceGroup':hkl.new_spg}
 
         if not have_results:
             self.putTitle ( "No Output Generated" )
