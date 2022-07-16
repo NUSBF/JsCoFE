@@ -337,8 +337,12 @@ function checkSession ( sceneId )  {
               (rdata.status==fe_retcode.notLoggedIn))  {
             __login_token = '';
             logout ( sceneId,1 );
-          } else
+          } else  {
+            if ((rdata.data=='reload_project_list') && __current_page &&
+                (__current_page._type=='ProjectListPage'))
+              __current_page.reloadProjectList();
             makeSessionCheck ( sceneId );
+          }
         }
         return true;
       },

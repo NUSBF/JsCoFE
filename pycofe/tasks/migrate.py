@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    15.02.21   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2022
 #
 # ============================================================================
 #
@@ -36,6 +34,7 @@ import pyrvapi
 from   pycofe.dtypes import dtype_template, dtype_revision
 from   pycofe.tasks  import import_task
 from   proc          import import_merged, import_xyz, import_ligand
+from   pycofe.auto   import auto
 
 
 # ============================================================================
@@ -309,10 +308,25 @@ class Migrate(import_task.Import):
         (revisionSerialNo, revision) = self.makeStructures()
 
         if revisionSerialNo>1:
+
             if revisionSerialNo==2:
                 summary_line = "structure revision created"
             else:
                 summary_line = str(revisionSerialNo-1) + " structure revisions created"
+
+            #  this works only if autoRunId was set in cloudrun.js before sending
+            #  hop-on data to the server
+            if revision and self.task.autoRunId=="auto-REL" and revisionSerialNo>1:
+                self.task.autoRunName = "_root"
+                if auto.makeNextTask ( self, {
+                     "revision" : revision,
+                     "lig"      : [], #self.lib],
+                     "ligdesc"  : []
+                   }):
+                    summary_line += ", refinement workflow started"
+                else:
+                    summary_line += ", workflow start failed"
+
             self.generic_parser_summary["migrate"] = {
                 "summary_line" : summary_line
             }

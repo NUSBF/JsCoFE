@@ -367,7 +367,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
 
     if (errs=='')  {
 
-      if (utils.fileExists(jobDir))  {
+      if (utils.dirExists(jobDir))  {
 
         if (upload_meta.hasOwnProperty('dirpath'))  {
 
@@ -379,6 +379,12 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
             else  {
               log.standard ( 7,'directory contents has been received in ' + jobDir + ' with errors: ' + err );
               log.error    ( 7,'directory contents has been received in ' + jobDir + ' with errors: ' + err );
+              if (utils.dirExists(upload_meta.dirpath))
+                    log.error ( 7,'source directory ' + upload_meta.dirpath + ' exists' );
+              else  log.error ( 7,'source directory ' + upload_meta.dirpath + ' does not exist' );
+              if (utils.dirExists(jobDir))
+                    log.error ( 7,'destination directory ' + jobDir + ' exists' );
+              else  log.error ( 7,'destination directory ' + jobDir + ' does not exist' );
             }
           });
 

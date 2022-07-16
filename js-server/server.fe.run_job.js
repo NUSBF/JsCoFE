@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.06.22   <--  Date of Last Modification.
+ *    15.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1419,24 +1419,27 @@ function cloudRun ( server_request,server_response )  {
 
         // 2. Check that user exists and make loginData structure
 
+        var localSetup = conf.isLocalSetup();
+        if (localSetup)
+          meta.user = ud.__local_user_id;
         var loginData = { login : meta.user, volume : null };
+
         var uData = user.readUserData ( loginData );
         if (!uData)  {
-          log.standard ( 60,'cloudrun request for unknown user ('+meta.user+') -- ignored' );
+
+          log.standard ( 60,'cloudrun request for unknown user (' + meta.user +
+                            ') -- ignored' );
           response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'unknown user',{} );
-        } else if (uData.cloudrun_id!=meta.cloudrun_id)  {
-          log.standard ( 61,'cloudrun request with wrong cloudrun_id (user '+meta.user+') -- ignored' );
+
+        } else if ((!localSetup) && (uData.cloudrun_id!=meta.cloudrun_id))  {
+
+          log.standard ( 61,'cloudrun request with wrong cloudrun_id (user ' +
+                            meta.user + ') -- ignored' );
           response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'wrong CloudRun Id',{} );
+
         } else  {
+
           loginData.volume = uData.volume;
-        // }
-        //
-        //
-        // var loginData = user.getUserLoginData ( meta.user );
-        // if (!loginData)  {
-        //   log.standard ( 60,'cloudrun request for unknown user ('+meta.user+') -- ignored' );
-        //   response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'unknown user',{} );
-        // } else  {
 
           var check_list = ration.checkUserRation ( loginData,true );
           if (check_list.length>0)  {
@@ -1516,6 +1519,8 @@ function cloudRun ( server_request,server_response )  {
                 task.id         = pData.desc.jobCount;
                 task.submitter  = loginData.login;
                 task.start_time = Date.now();
+                task.state      = task_t.job_code.running;
+                task.job_dialog_data.panel = 'output';
 
                 var jobDirPath = prj.getJobDirPath ( loginData,meta.project,task.id );
                 utils.moveDir ( tmpJobDir,jobDirPath,true );

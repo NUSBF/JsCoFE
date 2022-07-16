@@ -137,7 +137,7 @@
       "jobCheckPeriod"   : 2000,
       "sendDataWaitTime" : 1000,
       "maxSendTrials"    : 10,
-      "jobRemoveTimeout" : 10000,
+      "jobRemoveTimeout" : 30000,
       "zombiExpireTimeout" : 2,
       "maxRestarts"      : 100,
       "fileCapSize"      : 500000
@@ -163,7 +163,7 @@
       "jobCheckPeriod"   : 2000,
       "sendDataWaitTime" : 1000,
       "maxSendTrials"    : 10,
-      "jobRemoveTimeout" : 10000,
+      "jobRemoveTimeout" : 30000,
       "zombiExpireTimeout" : 2,
       "maxRestarts"      : 100,
       "fileCapSize"      : 500000

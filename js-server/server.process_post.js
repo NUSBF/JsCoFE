@@ -62,7 +62,7 @@ function processPOSTData ( server_request,server_response,process_data_function,
         if (data_obj)  {
           if (data_obj.hasOwnProperty('_type'))  {
             if (data_obj._type=='Request')  {
-              var loginData = user.getLoginData ( data_obj.token );
+              var loginData = user.getLoginEntry ( data_obj.token );
               if (loginData.login.length<=0)
                 cmd.sendResponse ( server_response, cmd.fe_retcode.notLoggedIn,
                                    'user not logged in','' );

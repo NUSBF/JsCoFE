@@ -40,7 +40,7 @@ from   pycofe.auto   import  auto_api
 
 def makeNextTask ( crTask,data ):
 
-    if crTask._type=="TaskWFlowREL":
+    if crTask._type in ["TaskWFlowREL","TaskMigrate"]:
         if len(data["lig"]) > 0:
             auto_api.addContext("lig", data["lig"][0])
         if len(data["ligdesc"]) > 0:
