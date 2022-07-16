@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    18.06.21   <--  Date of Last Modification.
+#    15.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  VERDICT FUNCTION FOR REFMAC
 #
-#  Copyright (C) Oleg Kovalevskiy, Eugene Krissinel, Andrey Lebedev 2020-2021
+#  Copyright (C) Oleg Kovalevskiy, Eugene Krissinel, Andrey Lebedev 2020-2022
 #
 # ============================================================================
 #
@@ -598,10 +598,10 @@ def calculate ( meta ) :
     meanRdiff = statInResolutionBins[resBin]['meanRdiff']
     if rDiff < 0.0:
         bottomline += "The difference between <i>R<sub>free</sub></i> and <i>R<sub>work</sub></i> is negative; " +\
-                      "something is really wrong with assignment of the free R set.<p>"
+                      "something is really wrong with the assignment of the free R set.<p>"
     elif rDiff <= (meanRdiff - 0.01):
         bottomline += "The difference between <i>R<sub>free</sub></i> and <i>R<sub>work</sub></i> " +\
-                      "is smaller than expected (%0.3f). It could be something wrong with assignment of free R set" % (rDiff) +\
+                      "is smaller than expected (%0.3f). It could be something wrong with the assignment of free R set" % (rDiff) +\
                       "or not enough refinement cycles. Try to run more refinement cycles, rebuild the model and double check free R assignment.<p>"
     elif (rDiff > (meanRdiff + 0.01)) and (rDiffBefore < rDiff):
         bottomline += "The difference between <i>R<sub>free</sub></i> and <i>R<sub>work</sub></i> " +\

@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    13.07.22   <--  Date of Last Modification.
+ *    15.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,7 +37,8 @@
  *    node js-utils/cloudrun.js
  *    node js-utils/cloudrun.js -h
  *
- * where task is one of import, auto-af2, auto-mr, auto-ep, hop-on or dimple.
+ * where task is one of import, auto-af2, auto-mr, auto-ep, hop-on, auto-ref or
+ * dimple.
  *
  * Commands (hash # may be used for comments, anything on the right from # is
  * ignored):
@@ -48,7 +49,8 @@
  *   AUTH_FILE   /path/to/auth.dat           # alternative to USER/CLOUDRUN_ID
  *   PROJECT     project_id                  # mandatory
  *   TITLE       Optional Project Title      # used only if project is created
- *   TASK        [import|auto-af2|auto-mr|auto-ep|hop-on|dimple]  # import if not given
+ *   TASK        [import|auto-af2|auto-mr|auto-ep|hop-on|auto-ref|dimple]  # if not
+ *                                           # given, 'import' is assumed
  *   HA_TYPE     Se                          # used only for auto-ep
  *   FILE        /path/to/file.[mtz|pdb|seq|fasta|pir|cif]  # generic import
  *   HKL         /path/to/file.mtz   # the file should be used as hkl in hop-on
@@ -98,6 +100,7 @@ var cloudrun_code = {
   auto_mr  : 'auto-mr',
   auto_ep  : 'auto-ep',
   hop_on   : 'hop-on',
+  auto_ref : 'auto-ref',
   dimple   : 'dimple'
 }
 
@@ -177,6 +180,7 @@ function printTemplate ( task )  {
           '   "' + cloudrun_code.auto_mr + '"  : auto-MR workflow (uses PDB and AFDB as source of models)',
           '   "' + cloudrun_code.auto_ep + '"  : auto-EP workflow',
           '   "' + cloudrun_code.hop_on + '"   : project initiation from phased structure',
+          '   "' + cloudrun_code.auto_ref + '" : auto_REL workflow (from phased structure)',
           '   "' + cloudrun_code.dimple + '"   : fast phasing with 100% homolog for ligand blob identification'
         ];
         console.log (
@@ -271,6 +275,26 @@ function printTemplate ( task )  {
           '#       given.'
         ]);
       break;
+
+    case cloudrun_code.auto_ref :
+        msg = [
+          '# The task uploads files specified, creates CCP4 Cloud Project (if it',
+          '# does not exist already), runs the "Hop-On Import" task (project',
+          '# initiation from phased structure) followed by the Auto-REL automatic',
+          'refinement workflow.'
+        ].concat(msg);
+        msg = msg.concat([
+          'HKL         /path/to/hkl.mtz         # reflection data (mandatory)',
+          'PHASES      /path/to/phases.mtz      # phases',
+          'XYZ         /path/to/phases.pdb      # model',
+          'LIGAND      /path/to/file.[cif|lib]  # ligand(s) (if present in model)',
+          '#',
+          '# Note: HKL and PHASES may be presented with the same file (e.g. one',
+          '#       produced by Refmac); either XYZ or PHASES, or both, must be',
+          '#       given.'
+        ]);
+      break;
+
 
     case cloudrun_code.dimple :
         msg = [
@@ -613,6 +637,17 @@ if (meta.task=='hop-on')  {
     console.log ( ' *** no phase data or atomic model provided' );
   }
 
+} else if (meta.task=='auto-ref')  {
+
+    if ((files.phases.length<=0) && (files.hkl.length<=0))  {
+      ok = false;
+      console.log ( ' *** no reflection data provided' );
+    }
+    if ((files.phases.length<=0) || (files.xyz.length<=0))  {
+      ok = false;
+      console.log ( ' *** no phase data or atomic model provided' );
+    }
+
 } else if (meta.task=='dimple')  {
 
   if (files.hkl.length<=0)  {
@@ -640,7 +675,6 @@ if (meta.task=='hop-on')  {
     ok = false;
     console.log ( ' *** main anomalous scaterrer is not specified' );
   }
-  // if ((meta.task!='hop-on') && (files.seq.length<=0))  {
   if (files.seq.length<=0)  {
     ok = false;
     console.log ( ' *** sequence data is not provided' );
@@ -739,8 +773,23 @@ switch (meta.task)  {
 
   case cloudrun_code.hop_on :
                     task = new task_hopon.TaskMigrate();
-                    task.inputMode = task_t.input_mode.root;
+                    task.inputMode    = task_t.input_mode.root;
                     task.upload_files = fnames;
+                    if (files.hkl.length>0)
+                      task.file_hkl = path.parse(files.hkl[0]).base;
+                    if (files.phases.length>0)
+                      task.file_mtz = path.parse(files.phases[0]).base;
+                    if (files.xyz.length>0)
+                      task.file_xyz = path.parse(files.xyz[0]).base;
+                    if (files.ligand.length>0)
+                      task.file_lib = path.parse(files.ligand[0]).base;
+                  break;
+
+  case cloudrun_code.auto_ref :
+                    task = new task_hopon.TaskMigrate();
+                    task.inputMode    = task_t.input_mode.root;
+                    task.upload_files = fnames;
+                    task.autoRunId    = 'auto-REL';
                     if (files.hkl.length>0)
                       task.file_hkl = path.parse(files.hkl[0]).base;
                     if (files.phases.length>0)

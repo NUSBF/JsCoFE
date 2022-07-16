@@ -68,7 +68,7 @@ class WFlowREL(basic.TaskDriver):
             ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
 
 
-        ldesc = getattr ( self.task.parameters.sec1,"contains")
+        ldesc = getattr ( self.task.parameters.sec1,"contains" )
         if ldesc.SMILES.value or ldesc.CODE3.value:
             if ldesc.SOURCE_SEL.value == 'S':
                 code = ldesc.CODE.value.strip().upper()
@@ -110,7 +110,7 @@ class WFlowREL(basic.TaskDriver):
              "ligdesc"  : self.ligdesc
            }):
             summary_line += "workflow started"
-            have_results = True
+            have_results  = True
         else:
             summary_line += "workflow start failed"
 

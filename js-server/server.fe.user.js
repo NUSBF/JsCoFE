@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.06.22   <--  Date of Last Modification.
+ *    16.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -333,7 +333,8 @@ function UserLoginHash()  {
   this.loggedUsers = {
     '340cef239bd34b777f3ece094ffb1ec5' : {
       'login'  : 'devel',
-      'volume' : '*storage*'
+      'volume' : '*storage*',
+      'signal' : ''
     }
   };
 }
@@ -354,26 +355,54 @@ UserLoginHash.prototype.read = function()  {
   if (hash)  {
     if (!hash.hasOwnProperty('_type'))  {
       // transformation for backward compatibility
-      var loggedUsers = {};
-      for (var token in hash)
+      let loggedUsers = {};
+      for (let token in hash)  {
         loggedUsers[token] = {
           'login'  : hash[token],
-          'volume' : '***'
+          'volume' : '***',
+          'signal' : ''
         };
+      }
       this.loggedUsers = loggedUsers;
       this.save();
-    } else
+    } else  {
       this.loggedUsers = hash.loggedUsers;
+      for (let token in this.loggedUsers)
+        if (!('signal' in this.loggedUsers[token]))
+          this.loggedUsers[token].signal = '';
+    }
     return true;
   }
   return false;
 }
 
+// UserLoginHash.prototype.read = function()  {
+//   var userHashPath = path.join ( conf.getFEConfig().userDataPath,__userLoginHashFile );
+//   var hash = utils.readObject ( userHashPath);
+//   if (hash)  {
+//     if (!hash.hasOwnProperty('_type'))  {
+//       // transformation for backward compatibility
+//       let loggedUsers = {};
+//       for (let token in hash)  {
+//         loggedUsers[token] = {
+//           'login'  : hash[token],
+//           'volume' : '***'
+//         };
+//       }
+//       this.loggedUsers = loggedUsers;
+//       this.save();
+//     } else
+//       this.loggedUsers = hash.loggedUsers;
+//     return true;
+//   }
+//   return false;
+// }
+
 UserLoginHash.prototype.addUser = function ( token,login_data )  {
 
   var logUsers = {};
 
-  for(var key in this.loggedUsers)
+  for (let key in this.loggedUsers)
     if (this.loggedUsers[key].login!=login_data.login)
       logUsers[key] = this.loggedUsers[key];
 
@@ -394,27 +423,35 @@ UserLoginHash.prototype.removeUser = function ( token )  {
 
 UserLoginHash.prototype.removeUser = function ( login_name )  {
   var loggedUsers = {};
-  for(var key in this.loggedUsers)
+  for (var key in this.loggedUsers)
     if (this.loggedUsers[key].login!=login_name)
       loggedUsers[key] = this.loggedUsers[key];
   this.loggedUsers = loggedUsers;
   this.save();
 }
 
-UserLoginHash.prototype.getLoginData = function ( token )  {
+UserLoginHash.prototype.getLoginEntry = function ( token )  {
   if (token in this.loggedUsers)
     return this.loggedUsers[token];
-  return { 'login':'', 'volume' : '' };
+  return { 'login' : '', 'volume' : '' };
 }
 
 UserLoginHash.prototype.getToken = function ( login_name )  {
-  var token = null;
-  for(var key in this.loggedUsers)
+var token = null;
+  for (let key in this.loggedUsers)
     if (this.loggedUsers[key].login==login_name)  {
       token = key;
       break;
     }
   return token;
+}
+
+UserLoginHash.prototype.putSignal = function ( login_name,signal )  {
+  for (let key in this.loggedUsers)
+    if (this.loggedUsers[key].login==login_name)  {
+      this.loggedUsers[key].signal = signal;
+      break;
+    }
 }
 
 
@@ -474,8 +511,12 @@ var updateHash = false;
 
 }
 
-function getLoginData ( token )  {
-  return __userLoginHash.getLoginData ( token );
+function getLoginEntry ( token )  {
+  return __userLoginHash.getLoginEntry ( token );
+}
+
+function signalUser ( login_name,signal )  {
+  return __userLoginHash.putSignal ( login_name,signal );
 }
 
 
@@ -584,13 +625,16 @@ var fe_server = conf.getFEConfig();
 }
 
 function checkSession ( userData,callback_func )  {  // gets UserData object
-  var retcode = cmd.fe_retcode.wrongSession;
-  var ulogin  = __userLoginHash.getLoginData(userData.login_token).login;
-  if (ulogin)  {
-    anl.logPresence ( ulogin );
+  var retcode   = cmd.fe_retcode.wrongSession;
+  var uLogEntry = __userLoginHash.getLoginEntry(userData.login_token);
+  var signal    = '';
+  if (uLogEntry.login)  {
+    anl.logPresence ( uLogEntry.login );
+    signal  = uLogEntry.signal;
     retcode = cmd.fe_retcode.ok;
+    uLogEntry.signal = '';  // remove signal
   }
-  callback_func ( new cmd.Response(retcode,'','') );
+  callback_func ( new cmd.Response(retcode,'',signal) );
 }
 
 
@@ -1498,7 +1542,7 @@ var fe_server = conf.getFEConfig();
     if ('localuser' in fe_server)  {
       rData.localuser  = fe_server.localuser;
       rData.logintoken = __userLoginHash.getToken ( ud.__local_user_id );
-      var loginData    = __userLoginHash.getLoginData ( rData.logintoken );
+      var loginData    = __userLoginHash.getLoginEntry ( rData.logintoken );
       if (loginData.login)  {
         var userFilePath = getUserDataFName ( loginData );
         if (utils.fileExists(userFilePath))  {
@@ -1579,7 +1623,7 @@ function authResponse ( server_request,server_response )  {
     if (rlist.length>2)  {
       params.reqid  = [rlist[0],rlist.slice(1,rlist.length-1).join('-'),rlist[rlist.length-1]];
       software_key  = params.reqid[1];
-      var loginData = __userLoginHash.getLoginData ( params.reqid[2] );
+      var loginData = __userLoginHash.getLoginEntry ( params.reqid[2] );
       if (loginData.login.length>0)  {
         var userFilePath = getUserDataFName ( loginData );
         var uData  = utils.readObject ( userFilePath );
@@ -1642,7 +1686,8 @@ module.exports.userLogout           = userLogout;
 module.exports.makeNewUser          = makeNewUser;
 module.exports.recoverUserLogin     = recoverUserLogin;
 module.exports.readUserLoginHash    = readUserLoginHash;
-module.exports.getLoginData         = getLoginData;
+module.exports.getLoginEntry         = getLoginEntry;
+module.exports.signalUser           = signalUser;
 module.exports.readUserData         = readUserData;
 module.exports.getUserLoginData     = getUserLoginData;
 module.exports.getUserRation        = getUserRation;

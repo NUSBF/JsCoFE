@@ -92,7 +92,7 @@ var upload_meta = {};
 
       if ('login_token' in upload_meta)  {
 
-        var loginData = user.getLoginData ( upload_meta.login_token );
+        var loginData = user.getLoginEntry ( upload_meta.login_token );
         if (loginData.login)  {
 
           if (('project' in upload_meta) && ('job_id' in upload_meta))  {

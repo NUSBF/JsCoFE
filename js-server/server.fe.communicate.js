@@ -203,7 +203,7 @@ function Communicate ( server_request )  {
     if (ix>=0)  {
 
       var flist     = this.filePath.slice(ix).split('/');
-      var loginData = user.getLoginData ( flist[1] );
+      var loginData = user.getLoginEntry ( flist[1] );
 
       if (loginData.login.length>0)  {  // login is valid
 
