@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    15.07.22   <--  Date of Last Modification.
+ *    17.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -48,6 +48,7 @@
  *   CLOUDRUN_ID aaaa-bbbb-cccc-dddd         # mandatory
  *   AUTH_FILE   /path/to/auth.dat           # alternative to USER/CLOUDRUN_ID
  *   PROJECT     project_id                  # mandatory
+ *   LOAD_PROJECT [yes|no]                   # optional, default "no"
  *   TITLE       Optional Project Title      # used only if project is created
  *   TASK        [import|auto-af2|auto-mr|auto-ep|hop-on|auto-ref|dimple]  # if not
  *                                           # given, 'import' is assumed
@@ -450,13 +451,14 @@ if (!input)
   printInstructions();
 
 var meta = {
-  url         : '',
-  user        : '',
-  cloudrun_id : '',
-  project     : '',
-  title       : '*',
-  task        : 'import',
-  task_name   : '*'
+  url          : '',
+  user         : '',
+  cloudrun_id  : '',
+  project      : '',
+  load_project : 'no',
+  title        : '*',
+  task         : 'import',
+  task_name    : '*'
 };
 
 var options = {

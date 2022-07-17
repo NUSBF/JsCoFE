@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.06.22   <--  Date of Last Modification.
+ *    17.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -133,9 +133,11 @@ function ProjectListPage ( sceneId )  {
   }
 
   // function to save Project List
-  function saveProjectList ( onDone_func )  {
+  function saveProjectList ( onDone_func,crProjectName )  {
     if (self.tablesort_tbl.selectedRow)  {
-      projectList.current = currentProjectName();
+      if (crProjectName)
+            projectList.current = crProjectName;
+      else  projectList.current = currentProjectName();
       for (var i=0;i<projectList.projects.length;i++)  {
         var pDesc = projectList.projects[i];
         if (pDesc.name==projectList.current)  {
@@ -157,7 +159,11 @@ function ProjectListPage ( sceneId )  {
 
   // function to open selected Project
   var openProject = function() {
-    saveProjectList ( function(data){ makeProjectPage(sceneId); });
+    saveProjectList ( function(data){ makeProjectPage(sceneId); },null );
+  }
+
+  this._open_project = function ( prjName )  {
+    saveProjectList ( function(data){ makeProjectPage(sceneId); },prjName );
   }
 
   var addProject = function() {
@@ -174,7 +180,7 @@ function ProjectListPage ( sceneId )  {
             projectList.current = pspecs.id;
             makeProjectListTable   ();
             welcome_lbl.setVisible ( (projectList.projects.length<1) );
-          });
+          },null );
           */
           return true;  // close dialog
         } else  {
@@ -279,7 +285,7 @@ function ProjectListPage ( sceneId )  {
               saveProjectList ( function(data){
                 projectList.current = new_name;
                 makeProjectListTable();
-              });
+              },null );
             } else  {
               new MessageBox ( 'Project renaming rejected',
                 '<h2>Project renaming rejected</h2><i>' + data.code + '</i>.',
@@ -337,11 +343,11 @@ function ProjectListPage ( sceneId )  {
         saveProjectList ( function(rdata){
           // loadProjectList();
           // makeProjectListTable();
-        });
+        },null );
       } else  {
         serverRequest ( fe_reqtype.deleteProject,delName,dlgTitle,
           function(data){
-            loadProjectList1();
+            self.loadProjectList1();
           },null,'persist' );
       }
       return true;  // close dialog
@@ -369,7 +375,7 @@ function ProjectListPage ( sceneId )  {
         if (desc)  {
           projectList.projects[pno] = desc;
           projectList.resetFolders ( __login_id );
-          saveProjectList ( function(data){} );
+          saveProjectList ( function(data){},null );
         }
       });
     } else
@@ -475,7 +481,7 @@ function ProjectListPage ( sceneId )  {
                             'Check Project Clone Status',function(rdata){
               if (rdata.code=='done')  {
                 close_func();
-                loadProjectList1();
+                self.loadProjectList1();
               } else if (rdata.code=='fail')  {
                 close_func();
                 new MessageBox ( 'Project cloning failed',
@@ -554,7 +560,7 @@ function ProjectListPage ( sceneId )  {
       saveProjectList ( function(rdata){
         // loadProjectList();
         makeProjectListTable();
-      });
+      },null );
       return true;  // close dialog
     });
 
@@ -810,7 +816,7 @@ function ProjectListPage ( sceneId )  {
         }
 
       self.tablesort_tbl.createTable ( function(){  // onSorted callback
-        saveProjectList ( null );
+        saveProjectList ( null,null );
       });
       if (projectList.sortList)
         window.setTimeout ( function(){
@@ -868,7 +874,7 @@ function ProjectListPage ( sceneId )  {
     },null,'persist');
   }
 
-  function loadProjectList1()  {
+  this.loadProjectList1 = function()  {
     loadProjectList();
     self.getUserRation();
   }
@@ -905,13 +911,13 @@ function ProjectListPage ( sceneId )  {
                           saveProjectList ( function(rdata){
                             // loadProjectList();
                             makeProjectListTable();
-                          });
+                          },null );
                       break;
           case 'add'    : projectList.resetFolders ( __login_id );
                           saveProjectList ( function(rdata){
                             // loadProjectList();
                             // makeProjectListTable();
-                          });
+                          },null );
                       break;
           case 'move'   : //var pDesc = getCurrentProjectDesc();
                           if (pDesc)  {
@@ -931,7 +937,7 @@ function ProjectListPage ( sceneId )  {
                               saveProjectList ( function(rdata){
                                 // loadProjectList();
                                 makeProjectListTable();
-                              });
+                              },null );
                             }
                           }
                       break;
@@ -957,7 +963,7 @@ function ProjectListPage ( sceneId )  {
                           saveProjectList ( function(rdata){
                             // loadProjectList();
                             makeProjectListTable();
-                          });
+                          },null );
                       break;
           case 'cancel' : projectList.resetFolders ( __login_id );
                       break;
@@ -1007,12 +1013,12 @@ function ProjectListPage ( sceneId )  {
 
   if (!__local_user)
     this.addMenuItem ( 'My Account','settings',function(){
-      saveProjectList ( function(data){ makeAccountPage(sceneId); } );
+      saveProjectList ( function(data){ makeAccountPage(sceneId); },null );
     });
 
   if (__user_role==role_code.admin)
     this.addMenuItem ( 'Admin Page',role_code.admin,function(){
-      saveProjectList ( function(data){ makeAdminPage(sceneId); } );
+      saveProjectList ( function(data){ makeAdminPage(sceneId); },null );
     });
 
   if ((__user_role==role_code.developer) || (__user_role==role_code.admin))  {
@@ -1027,7 +1033,7 @@ function ProjectListPage ( sceneId )  {
   }
 
   this.addLogoutToMenu ( function(){
-    saveProjectList ( function(data){ logout(sceneId,0); } );
+    saveProjectList ( function(data){ logout(sceneId,0); },null );
   });
 
   // var btn_width    = '30pt';
@@ -1182,18 +1188,18 @@ function ProjectListPage ( sceneId )  {
 
   // add a listener to 'import' button
   import_btn.addOnClickListener ( function(){
-    new ImportProjectDialog ( loadProjectList1 );
+    new ImportProjectDialog ( self.loadProjectList1 );
   });
 
   // add a listener to 'import' button
   join_btn.addOnClickListener ( function(){
-    new ImportSharedProjectDialog ( loadProjectList1 );
+    new ImportSharedProjectDialog ( self.loadProjectList1 );
   });
 
   // add a listener to 'demo project' button
   // if (demoprj_btn)
   //   demoprj_btn.addOnClickListener ( function(){
-  //     // new ImportDemoProjectDialog ( loadProjectList1 );
+  //     // new ImportDemoProjectDialog ( self.loadProjectList1 );
   //     (function(self){
   //       self.currentCloudPath = __demo_projects;
   //       new CloudFileBrowser ( null,self,5,[],function(items){
@@ -1201,7 +1207,7 @@ function ProjectListPage ( sceneId )  {
   //                           'cloudpath' : self.currentCloudPath,
   //                           'demoprj'   : items[0]
   //                         },'Demo Project Import',function(data){
-  //                           new ImportDemoProjectDialog ( loadProjectList1 );
+  //                           new ImportDemoProjectDialog ( self.loadProjectList1 );
   //                         });
   //         return 1;  // do close browser window
   //       });
@@ -1217,7 +1223,7 @@ function ProjectListPage ( sceneId )  {
                             'cloudpath' : self.currentCloudPath,
                             'demoprj'   : items[0]
                           },'Tutorial/Demo Project Import',function(data){
-                            new ImportDemoProjectDialog ( loadProjectList1 );
+                            new ImportDemoProjectDialog ( self.loadProjectList1 );
                           });
           return 1;  // do close browser window
         });
@@ -1264,6 +1270,13 @@ ProjectListPage.prototype.onResize = function ( width,height )  {
   }
 }
 
+ProjectListPage.prototype.reloadProjectList = function()  {
+  this.loadProjectList1();
+}
+
+ProjectListPage.prototype.loadProject = function ( prjName )  {
+  this._open_project ( prjName );
+}
 
 function makeProjectListPage ( sceneId )  {
   makePage ( new ProjectListPage(sceneId) );

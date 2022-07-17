@@ -338,9 +338,14 @@ function checkSession ( sceneId )  {
             __login_token = '';
             logout ( sceneId,1 );
           } else  {
-            if ((rdata.data=='reload_project_list') && __current_page &&
-                (__current_page._type=='ProjectListPage'))
-              __current_page.reloadProjectList();
+            if (__current_page && (__current_page._type=='ProjectListPage') &&
+                ($.type(rdata.data) === "string"))  {
+              if (rdata.data=='reload_project_list')
+                __current_page.reloadProjectList();
+              else if (rdata.data.startsWith('switch_to_project:'))
+                __current_page.loadProject (
+                                  rdata.data.replace('switch_to_project:','') );
+            }
             makeSessionCheck ( sceneId );
           }
         }
