@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.07.22   <--  Date of Last Modification.
+ *    16.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1581,6 +1581,10 @@ function cloudRun ( server_request,server_response )  {
 
                   response = new cmd.Response ( cmd.fe_retcode.ok,
                     message + 'files uploaded, ' + meta.task + ' started',{} );
+
+                  if (meta.load_project.toLowerCase()=='yes')
+                       user.signalUser ( loginData.login,'switch_to_project:' + meta.project );
+                  else user.signalUser ( loginData.login,'reload_project_list' );
 
                 }
 
