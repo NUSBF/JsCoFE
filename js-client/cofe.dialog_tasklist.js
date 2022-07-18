@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    18.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,8 +59,10 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   this.dlg_width  = Math.min ( Math.max(700,4*this.dlg_width/9),6*this.dlg_width/8 );
   this.dlg_height = 6*window.innerHeight/8;
 
+  this.listAtoZ     = [];
   this.tabs_basic   = null;
   this.tabs_full    = null;
+  this.tabs_AtoZ    = null;
   this.combobox     = null;
   this.combobox_lbl = null;
   var help_link     = __user_guide_base_url + 'jscofe_tasklist.html';
@@ -216,7 +218,9 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   var btn = grid.setButton  ( '',image_path(task_obj.icon()),row,0,1,1 )
                 .setSize_px ( 54,40 );
   grid.setLabel             ( ' ', row,1,1,1 );
-  var title = task_obj.title.replace ( 'Workflow: ','' );
+  var title = task_obj.title;
+  if (this._setting_wf)
+    title = title.replace ( 'Workflow: ','' );
   if (avail_key[0]!='ok')  {
     // title += '<br><span style="font-size:14px;"><i>** ' + avail_key[1] + '</i></span>';
     // title += '<br><i><font size="-1">** ' + avail_key[1] + '</font></i>';
@@ -311,12 +315,17 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
 
   this.tabs_full = new Tabs();
   this.addWidget ( this.tabs_full );
+  this.tabs_AtoZ = new Tabs();
+  this.addWidget ( this.tabs_AtoZ );
   var tabf_suggested = this.tabs_full.addTab ( 'Suggested tasks',true  );
   var tabf_fulllist  = this.tabs_full.addTab ( 'All tasks',false );
   var tabf_workflows = this.tabs_full.addTab ( 'Workflows',false );
+  var tabf_AtoZ      = this.tabs_full.addTab ( 'A-Z',false );
+  this._setting_wf = false;
   this.makeSuggestedList ( tabf_suggested.grid );
   this.makeFullList      ( tabf_fulllist .grid );
   this.makeWorkflowsList ( tabf_workflows.grid );
+  this.makeAtoZList      ( tabf_AtoZ     .grid );
 
 }
 
@@ -448,6 +457,8 @@ var r = 0;  // grid row
 TaskListDialog.prototype.makeWorkflowsList = function ( grid )  {
 var r = 0;  // grid row
 
+  this._setting_wf = true;
+
   grid.setLabel ( 'Automatic Workflows',r++,0,1,3 )
       .setFontSize('140%').setFontBold(true);
   grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
@@ -489,10 +500,14 @@ var r = 0;  // grid row
     } else {
       if (this.dataBox.isEmpty() && (task_list[i].file_select.length>0))
         task_list[i].inputMode = 'root'; // force 'at root mode' for the task
-      if (this.setTask(task_list[i],grid,r,true))
-      r++;
+      if (this.setTask(task_list[i],grid,r,true))  {
+        r++;
+        this.listAtoZ.push ( task_list[i] );
+      }
     }
   }
+
+  this._setting_wf = false;
 
   return r;  // indicates whether the tab is empty or not
 
@@ -540,7 +555,7 @@ var section0 = null;
 var navail   = 0;
 var row      = 0;
 
-  this.makeSection = function ( title,task_list )  {
+  this.makeSection = function ( title,task_list,addToAtoZ )  {
     var section = grid.setSection ( title,false, row++,0,1,3 );
     var cnt = 0;
     var r   = 0;
@@ -555,10 +570,12 @@ var row      = 0;
         grid1.setCellSize ( '10%','8px',0,0 );
         grid1.setCellSize ( '90%','8px',0,1 );
       } else  {
-        var task = this.setTask ( task_list[n],section.grid,r++,true );
-        if (task)  {
-          if (task.dataSummary.status>0)
+        var btn = this.setTask ( task_list[n],section.grid,r++,true );
+        if (btn)  {
+          if (btn.dataSummary.status>0)
             cnt++;
+          if (addToAtoZ)
+            this.listAtoZ.push ( task_list[n] );
         }
       }
     section.setTitle ( title + ' <b>(' + cnt + ')</b>' );
@@ -576,14 +593,14 @@ var row      = 0;
 //     this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go"</i>',[
 //       'Recommended as first attempt or in easy cases',
 //       ccp4go_task
-//     ]);
+//     ],true);
   var section1 = section0;
 
   if (__user_role==role_code.developer)  {
 
     this.makeSection ( 'Documentation tools',[
       new TaskDocDev()
-    ]);
+    ],false);
 
     // var ccp4go2_task = new TaskCCP4go2();
     // if (this.dataBox.isEmpty())
@@ -594,7 +611,7 @@ var row      = 0;
     //   this.makeSection ( 'Combined Automated Solver <i>"CCP4 Go-2"</i>',[
     //     'Recommended as first attempt or in easy cases',
     //     ccp4go2_task
-    //   ]);
+    //   ],true);
     // */
 
     this.makeSection ( 'Tasks in Development',[
@@ -607,7 +624,7 @@ var row      = 0;
       new TaskFragon       (),
       new TaskMergeData    (),
       new TaskHelloWorld   ()
-    ]);
+    ],false);
 
   }
 
@@ -642,17 +659,17 @@ var row      = 0;
   }
   */
 
-  this.makeSection ( 'Data Import',data_import_tasks );
+  this.makeSection ( 'Data Import',data_import_tasks,true );
   /*
   this.makeSection ( 'Data Import',data_import_tasks.concat([
     'Utilities',
     new TaskXyz2Revision()
-  ]));
+  ]),true);
   */
 
   this.makeSection ( 'Structure Prediction',[
     new TaskStructurePrediction()
-  ]);
+  ],true);
 
 
   this.makeSection ( 'Data Processing',[
@@ -665,7 +682,7 @@ var row      = 0;
     new TaskChangeSpGHKL(),
     new TaskChangeReso  (),
     new TaskFreeRFlag   ()
-  ]);
+  ],true);
 
   this.makeSection ( 'Asymmetric Unit and Structure Revision',[
     new TaskASUDef            (),
@@ -676,7 +693,7 @@ var row      = 0;
     //new TaskEditRevisionASU   (),
     //new TaskEditRevisionStruct(),
     //new TaskEditRevisionSubstr()
-  ]);
+  ],true);
 
   this.makeSection ( 'Automated Molecular Replacement',[
     'Conventional Auto-MR',
@@ -688,7 +705,7 @@ var row      = 0;
     new TaskSimbad() //,
     // 'No-model methods',
     // new TaskAmple ()
-  ]);
+  ],true);
 
   this.makeSection ( 'Molecular Replacement',[
     'MR model preparation',
@@ -705,13 +722,13 @@ var row      = 0;
     'Fundamental MR',
     new TaskPhaserMR(),
     new TaskMolrep  ()
-  ]);
+  ],true);
 
   this.makeSection ( 'Fragment-Based Molecular Replacement',[
     new TaskArcimboldoLite(),
     new TaskArcimboldoBorges(),
     new TaskArcimboldoShredder()
-  ]);
+  ],true);
 
   this.makeSection ( 'Experimental Phasing',[
     'Automated EP',
@@ -721,13 +738,13 @@ var row      = 0;
     new TaskShelxSubstr(),
     new TaskShelxCD    (),
     new TaskPhaserEP   ()
-  ]);
+  ],true);
 
   this.makeSection ( 'Density Modification',[
     new TaskParrot  (),
     new TaskAcorn   (),
     new TaskShelxEMR()
-  ]);
+  ],true);
 
   this.makeSection ( 'Refinement and Model Building',[
     new TaskRefmac    (),
@@ -740,25 +757,25 @@ var row      = 0;
     new TaskNautilus  (),
     new TaskDimple    (),
     new TaskCombStructure()
-  ]);
+  ],true);
 
   this.makeSection ( 'Coot',[
     new TaskCootMB(),
     new TaskCootCE(),
-  ]);
+  ],true);
 
   this.makeSection ( 'Ligands',[
     new TaskMakeLigand(),
     new TaskFitLigand (),
     new TaskFitWaters ()
-  ]);
+  ],true);
 
   this.makeSection ( 'Validation, Analysis and Deposition',[
     new TaskZanuda    (),
     new TaskPrivateer (),
     new TaskPISA      (),
     new TaskDeposition()
-  ]);
+  ],true);
 
   this.makeSection ( 'Toolbox',[
     'Reflection data tools',
@@ -774,12 +791,53 @@ var row      = 0;
     new TaskLsqKab  (),
     new TaskSeqAlign(),
     new TaskSymMatch()
-  ]);
+  ],true);
 
   if (navail==1)
     section0.open();
   else if (section1)
     section1.open();
+
+}
+
+
+TaskListDialog.prototype.makeAtoZList = function ( grid )  {
+var r = 0;  // grid row
+
+  grid.setLabel ( '<b>Filter by keyword(s):&nbsp;</b>',0,0,1,1 )
+      .setNoWrap().setWidth('20%');
+  var kwd_inp = grid.setInputText ( '',0,1,1,1 ).setWidth('350px');
+  grid.setLabel ( ' ',0,2,1,1 );
+  grid.setHLine ( 2,1,0,1,3 );
+  grid.setCellSize ( '10%','',0,0 );
+  grid.setCellSize ( '30%','',0,1 );
+  grid.setCellSize ( '60%','',0,2 );
+
+  var panel = grid.setGrid ( '',2,0,1,3 );
+
+  for (var i=0;i<this.listAtoZ.length;i++)  {
+    for (var j=i+1;j<this.listAtoZ.length;j++)
+      if (this.listAtoZ[j].title<this.listAtoZ[i].title)  {
+        var task = this.listAtoZ[i];
+        this.listAtoZ[i] = this.listAtoZ[j];
+        this.listAtoZ[j] = task;
+      }
+  }
+
+  for (var i=0;i<this.listAtoZ.length;i++)
+    if (this.setTask(this.listAtoZ[i],panel,r,true))
+      r++;
+
+  (function(self){
+    kwd_inp.addOnInputListener ( function(){
+      // console.log ( kwd_inp.getValue() );
+      var keywords = kwd_inp.getValue().replace(/,/g,' ').match(/[^ ]+/g);
+      for (var i=0;i<self.listAtoZ.length;i++)
+        panel.setRowVisible ( i,self.listAtoZ[i].checkKeywords(keywords) );
+    });
+  }(this))
+
+  return r;  // indicates whether the tab is empty or not
 
 }
 

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    18.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -557,6 +557,12 @@ function RefmacHotButton()  {
     'tooltip' : 'Refine results using parameters of last refinement'
   };
 }
+
+TaskRefmac.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['refmac','refinement'] );
+}
+
 
 if (!__template)  {
   //  for client side

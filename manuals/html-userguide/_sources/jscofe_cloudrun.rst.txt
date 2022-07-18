@@ -32,6 +32,7 @@ where ``task`` is one of:
   - ``auto-af2``: create standard project, import data and start `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`_ based on structure prediction with AlphaFold-2
   - ``auto-mr``: create standard project, import data and start `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`_ utilising `MrBump <../html-taskref/doc.task.MrBump.html>`_ and `Simbad <../html-taskref/doc.task.Simbad.html>`_ pipelines
   - ``auto-ep``: create standard project, import data and start `Auto-EP workflow <../html-taskref/doc.task.WFlowAEP.html>`_ based in `Crank-2 <../html-taskref/doc.task.Crank2.html>`_ pipeline
+  - ``auto-ref``: create standard project, import data and start `Auto-REL workflow <../html-taskref/doc.task.WFlowREL.html>`_ , performing automatic structure refinement with optimization of Refmac parameters and fitting water molecules
   - ``dimple``: create standard project, import data and start `Dimple <../html-taskref/doc.task.Dimple.html>`_ workflow for fast ligand blob identification and fitting
 
 Example: ::
@@ -150,7 +151,8 @@ Command file keywords
     
     The task that should be performed after data is uploaded. 
     
-    Can be one of ``import``, ``auto-af2``, ``auto-mr``, ``auto-ep``, ``hop-on`` or ``dimple``, as described above.
+    Can be one of ``import``, ``auto-af2``, ``auto-mr``, ``auto-ep``, ``hop-on``, ``auto-ref`` or ``dimple``,
+    as described above.
     
     Example: ::
 
@@ -250,6 +252,15 @@ Command file keywords
         ``SMILES`` and ``LIG_CODE`` are mutually exclusive and can be used only for describing a single
         ligand that should be fitted in a structure solution workflow. For ``hop-on`` and ``import``
         tasks, use ``LIGAND`` keyword instead.
+
+**LOAD_PROJECT**
+    Instruction to load project, created by CloudRun utility, in browser (by default, ``NO``). For example: ::
+
+        LOAD_PROJECT  YES
+
+    .. note::
+        The project will be loaded in browser only if browser was displaying the *Project List Page* when
+        the CloudRun utility was run.
 
 
 -------

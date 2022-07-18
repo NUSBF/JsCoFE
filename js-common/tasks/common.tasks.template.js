@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.07.22   <--  Date of Last Modification.
+ *    18.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -224,6 +224,19 @@ TaskTemplate.prototype.isSuccessful = function()  {
          );
 }
 
+TaskTemplate.prototype.__check_keywords = function ( keywords,reflist )  {
+// keywords and reflist are supposed to be in low register
+var matches = (!keywords) || (keywords.length==0);
+  for (var i=0;(i<reflist.length) && (!matches);i++)
+    for (var j=0;(j<keywords.length) && (!matches);j++)
+      matches = reflist[i].startsWith(keywords[j]);
+  return matches;
+}
+
+TaskTemplate.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['template'] );
+}
 
 // estimated cpu cost of the job, in hours
 TaskTemplate.prototype.cpu_credit = function()  {
