@@ -355,6 +355,7 @@ eof
 <li><code class="docutils literal notranslate"><span class="pre">auto-af2</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAMR.html" rel="noopener noreferrer" target="_blank">Auto-MR workflow</a> based on structure prediction with AlphaFold-2</li>
 <li><code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAMR.html" rel="noopener noreferrer" target="_blank">Auto-MR workflow</a> utilising <a class="reference external" href="../html-taskref/doc.task.MrBump.html" rel="noopener noreferrer" target="_blank">MrBump</a> and <a class="reference external" href="../html-taskref/doc.task.Simbad.html" rel="noopener noreferrer" target="_blank">Simbad</a> pipelines</li>
 <li><code class="docutils literal notranslate"><span class="pre">auto-ep</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowAEP.html" rel="noopener noreferrer" target="_blank">Auto-EP workflow</a> based in <a class="reference external" href="../html-taskref/doc.task.Crank2.html" rel="noopener noreferrer" target="_blank">Crank-2</a> pipeline</li>
+<li><code class="docutils literal notranslate"><span class="pre">auto-ref</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.WFlowREL.html" rel="noopener noreferrer" target="_blank">Auto-REL workflow</a> , performing automatic structure refinement with optimization of Refmac parameters and fitting water molecules</li>
 <li><code class="docutils literal notranslate"><span class="pre">dimple</span></code>: create standard project, import data and start <a class="reference external" href="../html-taskref/doc.task.Dimple.html" rel="noopener noreferrer" target="_blank">Dimple</a> workflow for fast ligand blob identification and fitting</li>
 </ul>
 </div></blockquote>
@@ -465,7 +466,8 @@ if a collection of cloudrun scripts should be maintained and/or exchanged betwee
 </dd>
 <dt><strong>TASK</strong></dt><dd><p><em>(optional)</em></p>
 <p>The task that should be performed after data is uploaded.</p>
-<p>Can be one of <code class="docutils literal notranslate"><span class="pre">import</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-af2</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-ep</span></code>, <code class="docutils literal notranslate"><span class="pre">hop-on</span></code> or <code class="docutils literal notranslate"><span class="pre">dimple</span></code>, as described above.</p>
+<p>Can be one of <code class="docutils literal notranslate"><span class="pre">import</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-af2</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-mr</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-ep</span></code>, <code class="docutils literal notranslate"><span class="pre">hop-on</span></code>, <code class="docutils literal notranslate"><span class="pre">auto-ref</span></code> or <code class="docutils literal notranslate"><span class="pre">dimple</span></code>,
+as described above.</p>
 <p>Example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TASK</span>  <span class="n">auto</span><span class="o">-</span><span class="n">mr</span>
 </pre></div>
@@ -567,6 +569,16 @@ sequence(s)</p>
 <p class="last"><code class="docutils literal notranslate"><span class="pre">SMILES</span></code> and <code class="docutils literal notranslate"><span class="pre">LIG_CODE</span></code> are mutually exclusive and can be used only for describing a single
 ligand that should be fitted in a structure solution workflow. For <code class="docutils literal notranslate"><span class="pre">hop-on</span></code> and <code class="docutils literal notranslate"><span class="pre">import</span></code>
 tasks, use <code class="docutils literal notranslate"><span class="pre">LIGAND</span></code> keyword instead.</p>
+</div>
+</dd>
+<dt><strong>LOAD_PROJECT</strong></dt><dd><p>Instruction to load project, created by CloudRun utility, in browser (by default, <code class="docutils literal notranslate"><span class="pre">NO</span></code>). For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">LOAD_PROJECT</span>  <span class="n">YES</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The project will be loaded in browser only if browser was displaying the <em>Project List Page</em> when
+the CloudRun utility was run.</p>
 </div>
 </dd>
 </dl>

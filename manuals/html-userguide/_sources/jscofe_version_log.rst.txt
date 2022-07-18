@@ -23,6 +23,8 @@ CCP4 Cloud Version Log
 
     #. Density search protocol is added in ``Molrep`` task
 
+    #. Generic ``Reindex`` task added to the Toolbox
+
 
 **Version 1.7.004**
 
