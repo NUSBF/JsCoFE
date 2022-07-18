@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.05.21   <--  Date of Last Modification.
+ *    18.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Data Dialog (shows data availability for given task)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -128,7 +128,7 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
                            appName() + '.',drow++,0, 1,2 );
     } else  {
 
-      var dataSummary_lbl = this.grid.setLabel ( '',drow++,0, 1,2 );
+      var dataSummary_lbl = this.grid.setLabel ( '',drow++,0, 1,2 ).setWidth('650px');
 
       var table = this.grid.setTable ( drow++,0, 1,2 );
       table.setHeaderText ( 'Input Data', 0,0, 1,1 );
@@ -140,7 +140,9 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
 
       var row   = 1;
       var hints = [];
-      var dataStatus = true;
+      var dataStatus    = true;
+      var n_disallowed  = 0;
+      var n_unavailable = 0;
       for (var key in dataSummary)
         if (key!='status')  {
           table.setLabel ( this.getDataDescription(dataSummary[key]),row,0, 1,1 );
@@ -156,11 +158,17 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
           }
           table.setImage ( icon_uri,'','20px',row,1, 1,1 );
     //      table.setLabel ( dataSummary[key].note,row,2, 1,1 );
-          if (dataSummary[key].n_allowed<=0)
-                table.setLabel ( 'not allowed',               row,2, 1,1 );
-          else if (dataSummary[key].n_required<=0)
-                table.setLabel ( 'optional',                  row,2, 1,1 );
-          else  table.setLabel ( dataSummary[key].n_required, row,2, 1,1 );
+          if (dataSummary[key].n_allowed<=0)  {
+            if (dataSummary[key].n_available>0)
+              n_disallowed++;
+            table.setLabel ( 'not allowed',               row,2, 1,1 );
+          } else if (dataSummary[key].n_required<=0)
+            table.setLabel ( 'optional',                  row,2, 1,1 );
+          else  {
+            if (dataSummary[key].n_available<=0)
+              n_unavailable++;
+            table.setLabel ( dataSummary[key].n_required, row,2, 1,1 );
+          }
           if (dataSummary[key].n_available<=0)
                 table.setLabel ( 'none',                      row,3, 1,1 );
           else  table.setLabel ( dataSummary[key].n_available,row,3, 1,1 );
@@ -181,20 +189,45 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
       }
 
       if (!dataStatus)  {
-        dataSummary_lbl.setText ( '<h3>Insufficient data</h3>' +
-                                  'Full set of data, needed to run this task, ' +
-                                  'was not imported or otherwise generated.<p>' +
-                                  '<h3>Data summary</h3>' );
-        this.grid.setLabel ( '&nbsp;<p>Use <b><i>Import</i></b> task to import ' +
-                             'missing data, or run respective job(s) in order to ' +
-                             'generate them.<br>' +
-                             'Check data types and respective job summary ' +
+        var summary_info = '';
+        var advise_info  = '';
+        if  ((n_disallowed>0) && (n_unavailable<=0))  {
+          summary_info = '<h2>Project workflow restrictions</h2>' +
+                         'This task cannot be run at this point of the project, ' +
+                         'because data type(s), shown below, ' +
+                         'are present but not allowed.';
+          advise_info  = 'Branch your project by adding this task to a node of ' +
+                         'the project tree, where disallowed data do not ' +
+                         'exist (before they were created or imported).';
+        } else if ((n_disallowed>0) && (n_unavailable>0))  {
+          summary_info = '<h2>Missing data and project workflow restrictions</h2>' +
+                         'Full set of data, needed to run this task, was not ' +
+                         'imported or otherwise generated. In addition, this ' +
+                         'task cannot be run at this point of the project, ' +
+                         'because data type(s), shown below, ' +
+                         'are present but not allowed.';
+          advise_info  = 'Use <b><i>Import</i></b> task to import missing data, ' +
+                         'or run respective job(s) in order to generate them.' +
+                         'Also, branch your project by adding this task to a ' +
+                         'node of the project tree, where disallowed data do not ' +
+                         'exist (before they were created or imported).';
+        } else  {
+          summary_info = '<h2>Insufficient data</h2>' +
+                         'Full set of data, needed to run this task, ' +
+                         'was not imported or otherwise generated.';
+          advise_info  = 'Use <b><i>Import</i></b> task to import ' +
+                         'missing data, or run respective job(s) in order to ' +
+                         'generate them.';
+        }
+        dataSummary_lbl.setText ( summary_info + '<p><h3>Data summary</h3>' );
+        this.grid.setLabel ( '&nbsp;<p>' + advise_info +
+                             ' Check data types and respective job summary ' +
                              '<a href="javascript:' +
                                 'launchHelpBox(\'Data Management\',' +
                                 '\'' + __task_reference_base_url +
-                                  'doc.task.Import.html#ccp4-cloud-data-managment\',null,10)"><i>' +
+                                  'doc.task.Import.html#ccp4-cloud-data-management\',null,10)"><i>' +
                                 String('here').fontcolor('blue') + '</i></a>.',
-                             drow++,0, 1,2 );
+                             drow++,0, 1,2 ).setWidth('650px');
       } else
         dataSummary_lbl.setText ( '<h3>Data summary</h3>' );
 
