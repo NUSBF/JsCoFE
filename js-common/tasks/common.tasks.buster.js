@@ -250,6 +250,11 @@ TaskBuster.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskBuster.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['buster','refinement'] );
+}
+
 // TaskBuster.prototype.cleanJobDir = function ( jobDir )  {}
 
 if (__template)  {
