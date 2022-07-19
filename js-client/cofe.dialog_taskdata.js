@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.07.22   <--  Date of Last Modification.
+ *    19.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,8 +38,11 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
 
   var drow = 0;
 
-  //if ((task.input_dtypes.length==1) && (task.input_dtypes[0]==1))  {
-  if (task.getInputMode()==input_mode.root)  {
+  if (avail_key[0]!='ok')  {
+
+    this.grid.setLabel ( avail_key[2],drow++,0, 1,2 );
+
+  } else if (task.getInputMode()==input_mode.root)  {
 
     this.grid.setLabel ( 'This task:<h3>' + task.title +
                          '</h3>can be run only on top of Project.<p><hr/>' +
@@ -49,8 +52,8 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
 
   } else  {
 
-    if (avail_key[0]!='ok')
-      this.grid.setLabel ( avail_key[2],drow++,0, 1,2 );
+    // if (avail_key[0]!='ok')
+    //   this.grid.setLabel ( avail_key[2],drow++,0, 1,2 );
 
     /*
     var msg = '';
