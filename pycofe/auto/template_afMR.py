@@ -66,54 +66,74 @@ def makeNextTask ( crTask,data ):
         return
 
 
-    elif crTask._type=="TaskASUDef":
-        auto_api.addContext("revisionForPhaser", data['revision'])
-        auto_tasks.phaserFirst('phaser', crTask.autoRunName)
-        return
-
-
     elif crTask._type=="TaskStructurePrediction":
         if len(data["xyz"])>0:
             auto_api.addContext ( "xyz",data["xyz"][0] )
-            auto_tasks.modelprepXYZ('modelprepxyz', crTask.autoRunName)
+            # auto_tasks.modelprepXYZ('modelprepxyz', crTask.autoRunName)
+            auto_tasks.asu("asu", crTask.autoRunName)
         return
 
-
-    elif crTask._type=="TaskModelPrepXYZ":
-        auto_api.addContext("modelForPhaser", data['model'])
-        auto_tasks.asu("asu", crTask.autoRunName)
+    elif crTask._type=="TaskASUDef":
+        auto_api.addContext("revisionForSliceNDice", data['revision'])
+        auto_tasks.slicendice('slicendice', crTask.autoRunName)
         return
 
+    #
+    # elif crTask._type=="TaskModelPrepXYZ":
+    #     auto_api.addContext("modelForPhaser", data['model'])
+    #     auto_tasks.asu("asu", crTask.autoRunName)
+    #     return
 
-    elif crTask._type=="TaskPhaserMR":
+    #
+    # elif crTask._type=="TaskASUDef":
+    #     auto_api.addContext("revisionForPhaser", data['revision'])
+    #     auto_tasks.phaserFirst('phaser', crTask.autoRunName)
+    #     return
+
+    elif crTask._type=="TaskSliceNDice":
 
         if data['Rfree'] < 0.35:
             auto_api.addContext("build_parent", crTask.autoRunName)
             auto_api.addContext("build_revision", data["revision"])
-            hasNA = auto_api.getContext("na")
-            if hasNA:
-                auto_tasks.refmac_jelly("jellyAfterNA", data["revision"], crTask.autoRunName)
-            else:
-                auto_tasks.buccaneer("buccAfterPhaser", data["revision"], crTask.autoRunName)
+            #  where to check on missing residues
+            auto_tasks.buccaneer("buccAfterSliceNDice", data["revision"], crTask.autoRunName)
             return
-
-        # "Rfree"
-        # "nfitted0" # number of polymers before run
-        # "nfitted" # number of polymers after run
-        # "nasu"  # number of predicted subunits
-        if data['nfitted'] > data['nfitted0']: # trying to fit more subunits
-            if data['nfitted'] < data['nasu']: # if number of subunits is not exceeding predicted
-                auto_tasks.phaserNext('phaser' + str(data['nfitted']), data['revision'], crTask.autoRunName)
-                return
 
         # no subunits to fit, but high Rfree
         # go into refinement and see what's happened?
-        hasNA = auto_api.getContext("na")
-        if hasNA:
-            auto_tasks.refmac_jelly("jellyAfterNA", data["revision"], crTask.autoRunName)
-        else:
-            auto_tasks.refmac_jelly("jellyAfterPhaser", data["revision"], crTask.autoRunName)
+        auto_tasks.refmac_jelly("jellyAfterSliceNDice", data["revision"], crTask.autoRunName)
         return
+
+    #
+    # elif crTask._type=="TaskPhaserMR":
+    #
+    #     if data['Rfree'] < 0.35:
+    #         auto_api.addContext("build_parent", crTask.autoRunName)
+    #         auto_api.addContext("build_revision", data["revision"])
+    #         hasNA = auto_api.getContext("na")
+    #         if hasNA:
+    #             auto_tasks.refmac_jelly("jellyAfterNA", data["revision"], crTask.autoRunName)
+    #         else:
+    #             auto_tasks.buccaneer("buccAfterPhaser", data["revision"], crTask.autoRunName)
+    #         return
+    #
+    #     # "Rfree"
+    #     # "nfitted0" # number of polymers before run
+    #     # "nfitted" # number of polymers after run
+    #     # "nasu"  # number of predicted subunits
+    #     if data['nfitted'] > data['nfitted0']: # trying to fit more subunits
+    #         if data['nfitted'] < data['nasu']: # if number of subunits is not exceeding predicted
+    #             auto_tasks.phaserNext('phaser' + str(data['nfitted']), data['revision'], crTask.autoRunName)
+    #             return
+    #
+    #     # no subunits to fit, but high Rfree
+    #     # go into refinement and see what's happened?
+    #     hasNA = auto_api.getContext("na")
+    #     if hasNA:
+    #         auto_tasks.refmac_jelly("jellyAfterNA", data["revision"], crTask.autoRunName)
+    #     else:
+    #         auto_tasks.refmac_jelly("jellyAfterPhaser", data["revision"], crTask.autoRunName)
+    #     return
 
 
     elif crTask._type=="TaskBuccaneer":
@@ -209,7 +229,7 @@ def makeNextTask ( crTask,data ):
                 return
 
 
-        elif crTask.autoRunName == 'jellyAfterPhaser':
+        elif crTask.autoRunName == 'jellyAfterSliceNDice':
             if float(data["Rfree"])<0.4:
                 auto_api.addContext("build_parent", crTask.autoRunName)
                 auto_api.addContext("build_revision", data["revision"])
