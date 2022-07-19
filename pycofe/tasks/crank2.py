@@ -726,22 +726,22 @@ class Crank2(basic.TaskDriver):
             if os.path.isfile(self.hklout_fpath):
                 # provide copy of phase columns for using in Coot
                 self.open_stdin()
+                self.write_stdin ([
+                    "LABIN  FILE 1 ALLIN",
+                    "LABIN  FILE 2 E1=REFM_DELFWT E2=REFM_PHDELWT",
+                    "LABOUT FILE 2 E1=DELFWT E2=PHDELWT"
+                ])
                 # self.write_stdin ([
                 #     "LABIN  FILE 1 ALLIN",
                 #     "LABIN  FILE 2 E1=REFM_FWT E2=REFM_PHWT E3=REFM_DELFWT E4=REFM_PHDELWT",
                 #     "LABOUT FILE 2 E1=FWT E2=PHWT E3=DELFWT E4=PHDELWT"
                 # ])
-                self.write_stdin ([
-                    "LABIN  FILE 1 E1=REFM_FWT E2=REFM_PHWT E3=REFM_DELFWT E4=REFM_PHDELWT",
-                    "LABOUT FILE 1 E1=FWT E2=PHWT E3=DELFWT E4=PHDELWT",
-                    "LABIN  FILE 2 ALLIN",
-                    "END"
-                ])
                 tmp_mtz = "__tmp.mtz"
                 os.rename ( self.hklout_fpath,tmp_mtz )
                 cmd = [ "HKLIN1",tmp_mtz,
                         "HKLIN2",tmp_mtz,
-                        "HKLOUT",self.hklout_fpath]
+                        "HKLOUT",self.hklout_fpath
+                      ]
                 self.close_stdin()
                 self.runApp ( "cad",cmd,logType="Service" )
 
