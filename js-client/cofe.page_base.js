@@ -40,12 +40,15 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   clearNetworkIndocators();
 
   // set background image
-  if (getClientCode()==client_code.ccp4)
-    $('#'+sceneId).css({"background-image"    : "url('" + image_path('ccp4_background') + "')",
+  if (getClientCode()==client_code.ccp4)  {
+    var background_image = 'background_remote';
+    if (__local_setup)
+      background_image = 'background_local';
+    $('#'+sceneId).css({"background-image"    : "url('" + image_path(background_image) + "')",
                         "background-repeat"   : "no-repeat",
                         "background-size"     : "cover",
                         "background-position" : "center center"} );
-  else
+  } else
     $('#'+sceneId).css({"background-image"    : "url('" + image_path('ccpem_background') + "')",
                         "background-repeat"   : "no-repeat",
                         "background-size"     : "cover",

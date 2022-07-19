@@ -831,7 +831,7 @@ var r = 0;  // grid row
   (function(self){
     kwd_inp.addOnInputListener ( function(){
       // console.log ( kwd_inp.getValue() );
-      var keywords = kwd_inp.getValue().replace(/,/g,' ').match(/[^ ]+/g);
+      var keywords = kwd_inp.getValue().toLowerCase().replace(/,/g,' ').match(/[^ ]+/g);
       for (var i=0;i<self.listAtoZ.length;i++)
         panel.setRowVisible ( i,self.listAtoZ[i].checkKeywords(keywords) );
     });

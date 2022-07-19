@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    19.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -96,7 +96,7 @@ TaskPISA.prototype.currentVersion = function()  {
 
 TaskPISA.prototype.desc_title = function()  {
   // this appears under task title in the task list
-    return 'performs the calculation of macromolecular surfaces and interfaces and their various properties, and predicts probable macromolecular assemblies';
+    return 'calculates macromolecular surfaces, interfaces and their various properties, and predicts macromolecular assemblies';
   };
 
 
