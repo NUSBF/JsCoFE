@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2022
 #
 # ============================================================================
 #
@@ -39,7 +39,9 @@ import json
 from . import basic
 from   pycofe.proc      import qualrep
 from   pycofe.verdicts  import verdict_refmac
-# from   pycofe.auto   import auto
+from   pycofe.auto      import template_afMR
+
+from   pycofe.auto   import auto
 
 # ============================================================================
 # Model preparation driver
@@ -226,6 +228,11 @@ class SliceNDice(basic.TaskDriver):
         # auto.makeNextTask ( self,{
         #     "model" : models[0]
         # })
+
+        auto.makeNextTask(self, {
+                "revision": revision,
+                "Rfree": float ( self.generic_parser_summary["refmac"]["R_free"] ),
+            }, log=self.file_stderr)
 
 
         self.success ( have_results )
