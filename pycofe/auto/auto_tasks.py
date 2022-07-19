@@ -230,7 +230,6 @@ def modelprepXYZ ( name, parentName ):
 def phaserFirst ( name,parentName ):
     revision = auto_api.getContext("revisionForPhaser")
     model = auto_api.getContext("modelForPhaser")
-
     auto_api.addTask(name, "TaskPhaserMR", parentName)
     auto_api.addTaskData(name, "revision", revision)
     auto_api.addTaskData(name, "model", model)
@@ -246,4 +245,12 @@ def phaserNext ( name,revision,parentName ):
 def afStructurePrediction ( name,seq,parentName ):
     auto_api.addTask     ( name,"TaskStructurePrediction",parentName )
     auto_api.addTaskData ( name,"seq",seq )
+    return
+
+def slicendice ( name,parentName ):
+    revision = auto_api.getContext("revisionForSliceNDice")
+    xyz      = auto_api.getContext("xyz")
+    auto_api.addTask(name, "TaskSliceNDice", parentName)
+    auto_api.addTaskData(name, "revision", revision)
+    auto_api.addTaskData(name, "xyz", xyz)
     return
