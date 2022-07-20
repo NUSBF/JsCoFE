@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Arcimboldo Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021
  *
  *  =================================================================
  *
@@ -255,6 +255,11 @@ TaskArcimboldoLite.prototype.desc_title = function()  {
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
 TaskArcimboldoLite.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+
+TaskArcimboldoLite.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['arcimboldo','arcimboldolite', 'lite', 'molecular', 'replacement', 'mr'] );
+  }
 
 if (__template)  {
   //  for server side

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Arcimboldo-Borges Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021
  *
  *  =================================================================
  *
@@ -154,6 +154,11 @@ TaskArcimboldoBorges.prototype.platforms = function()  { return 'LMU'; }  // UNI
 TaskArcimboldoBorges.prototype.requiredEnvironment = function() {
   return ['CCP4',['$CCP4_MASTER/BORGES_LIBS']];
 }
+
+TaskArcimboldoBorges.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['arcimboldo','arcimboldoborges', 'borges', 'molecular', 'replacement', 'mr'] );
+  }
 
 if (__template)  {
   //  for server side

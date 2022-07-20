@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  jLigand Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2022
  *
  *  =================================================================
  *
@@ -79,6 +79,11 @@ TaskJLigand.prototype.desc_title = function()  {
   // this appears under task title in the task list
     return 'generates new ligand entries';
   };
+
+  TaskJLigand.prototype.checkKeywords = function ( keywords )  {
+    // keywords supposed to be in low register
+      return this.__check_keywords ( keywords,['jligand', 'ligand','ligands'] );
+  }
 
 if (__template)  {
   //  for server side

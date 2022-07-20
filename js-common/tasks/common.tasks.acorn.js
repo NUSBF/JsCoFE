@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ACORN Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2022
  *
  *  =================================================================
  *
@@ -912,6 +912,11 @@ function AcornHotButton()  {
     'tooltip' : 'Phase Refinement and Dynamic Density Modification with ACORN'
   };
 }
+
+TaskAcorn.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['acorn', 'density', 'modification', 'phase refinement'] );
+  }
 
 if (!__template)  {
   //  for client side

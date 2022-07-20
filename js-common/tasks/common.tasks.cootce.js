@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -10,10 +10,10 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Coot Coorinate Editor Task Class (for local server)
+ *  **** Content :  Coot Coordinate Editor Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2022
  *
  *  =================================================================
  *
@@ -103,6 +103,11 @@ TaskCootCE.prototype.currentVersion = function()  {
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
+
+TaskCootCE.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['coot','model', 'building', 'manual-mb', 'mb', 'coordinate', 'editor'] );
+  }
 
 if (__template)  {
   //  for server side

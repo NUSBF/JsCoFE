@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4Build Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2022
  *
  *  ==========================================================================
  *
@@ -429,6 +429,11 @@ function CCP4BuildHotButton()  {
     'tooltip' : 'Automated model building with CCP4Build'
   };
 }
+
+TaskCCP4Build.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['ccp4build','model', 'building', 'auto-mb'] );
+  }
 
 if (!__template)  {
   //  for client side

@@ -81,6 +81,11 @@ TaskAmple.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskAmple.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['ample','molecular', 'replacement', 'mr'] );
+  }
+
 if (__template)  {
   //  for server side
   TaskAmple.prototype.desc_title = function()  {
