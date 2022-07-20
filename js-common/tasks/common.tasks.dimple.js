@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  DimpleMR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -223,6 +223,11 @@ TaskDimple.prototype.currentVersion = function()  {
 }
 
 //TaskDimple.prototype.cleanJobDir = function ( jobDir )  {}
+
+TaskDimple.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['dimple','refinement', 'ligand', 'finding', 'difference', 'map'] );
+  }
 
 if (!__template)  {
   //  for client side

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Gemmi Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -118,6 +118,11 @@ TaskGemmi.prototype.desc_title = function()  {
   // this appears under task title in the task list
     return 'exposes python terminal to user for performing very custom operations on coordinate data';
   };
+
+  TaskGemmi.prototype.checkKeywords = function ( keywords )  {
+    // keywords supposed to be in low register
+      return this.__check_keywords ( keywords,['gemmi', 'comand','line', 'tool','tools', 'utilities'] );
+  }
 
 if (__template)  {
   //  for server side

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.06.21   <--  Date of Last Modification.
+ *    20.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2022
  *
  *  ==========================================================================
  *
@@ -139,6 +139,11 @@ function TaskImportPDB()  {
     */
   };
 
+}
+
+TaskImportPDB.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['import', 'data','pdb'] );
 }
 
 if (__template)

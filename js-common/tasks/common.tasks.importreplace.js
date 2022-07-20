@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.21   <--  Date of Last Modification.
+ *    20.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ImportReplace Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2022
  *
  *  =================================================================
  *
@@ -80,6 +80,11 @@ TaskImportReplace.prototype.currentVersion = function()  {
   if (__migrate)
         return  version + __migrate.TaskMigrate.prototype.currentVersion.call ( this );
   else  return  version + TaskMigrate.prototype.currentVersion.call ( this );
+}
+
+TaskImportReplace.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['import', 'replace','data'] );
 }
 
 // export such that it could be used in both node and a browser

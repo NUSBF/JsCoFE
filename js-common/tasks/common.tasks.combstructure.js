@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CombStructure Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2022
  *
  *  =================================================================
  *
@@ -300,6 +300,11 @@ TaskCombStructure.prototype.currentVersion = function()  {
 }
 
 //TaskCombStructure.prototype.cleanJobDir = function ( jobDir )  {}
+
+TaskCombStructure.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['comb','refinement', 'coot', 'refmac', 'fit'] );
+  }
 
 if (__template)  {
   //  for server side

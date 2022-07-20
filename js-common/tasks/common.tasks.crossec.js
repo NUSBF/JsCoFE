@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CrosSec Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2022
  *
  *  =================================================================
  *
@@ -401,6 +401,11 @@ TaskCrosSec.prototype.collectInput = function ( inputPanel )  {
   return input_msg;
 
 }
+
+TaskCrosSec.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['crossec','x-ray', 'cross', 'section', 'anomalus', 'scattering', 'factors'] );
+  }
 
 
 if (__template)  {

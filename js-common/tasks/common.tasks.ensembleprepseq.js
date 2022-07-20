@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Sequence Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -123,6 +123,16 @@ TaskEnsemblePrepSeq.prototype.currentVersion = function()  {
 }
 
 // export such that it could be used in both node and a browser
+
+TaskEnsemblePrepSeq.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['ensembles','model', 'preporation','mr', 'molecular', 'replacement'] );
+}
+
+TaskEnsemblePrepSeq.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['ensemble','ensembles','model','preparation','mr', 'molecular', 'replacement', 'sequence'] );
+}
 
 if (__template)  {
   //  for server side
