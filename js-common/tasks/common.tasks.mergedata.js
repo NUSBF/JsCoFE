@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Coot Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2022
  *
  *  ==========================================================================
  *
@@ -60,6 +60,11 @@ TaskMergeData.prototype.currentVersion = function()  {
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
+TaskMergeData.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['merge', 'data','mergedata', 'coot'] );
 }
 
 

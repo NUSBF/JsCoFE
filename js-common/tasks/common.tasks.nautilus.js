@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Nautilus Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -173,6 +173,11 @@ TaskNautilus.prototype.desc_title = function()  {
   // this appears under task title in the task list
     return 'performs automated building of RNA/DNA from electron density';
   };
+
+  TaskNautilus.prototype.checkKeywords = function ( keywords )  {
+    // keywords supposed to be in low register
+      return this.__check_keywords ( keywords,['nautilus', 'model','building','mr', 'molecular', 'replacement','rna','dna', 'na'] );
+  }
 
 if (__template)  {
   //  for server side

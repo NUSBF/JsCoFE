@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.08.21   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MrParse Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2022
  *
  *  =================================================================
  *
@@ -123,6 +123,11 @@ TaskMrParse.prototype.currentVersion = function()  {
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
+TaskMrParse.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['mrprase', 'molecular','replacement','mr', 'model','preporation','mp', 'alphafold','alphafold2','af', 'af2'] );
 }
 
 // export such that it could be used in both node and a browser

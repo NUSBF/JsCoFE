@@ -131,7 +131,7 @@ TaskEnsemblePrepSeq.prototype.checkKeywords = function ( keywords )  {
 
 TaskEnsemblePrepSeq.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['ensemble','ensembles','model','preparation','mr', 'molecular', 'replacement', 'sequence'] );
+    return this.__check_keywords ( keywords,['ensemble','ensembles','model','preparation','mr', 'molecular', 'replacement', 'sequence', 'alphafold','alphafold2','af', 'af2'] );
 }
 
 if (__template)  {

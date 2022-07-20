@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.03.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Coordinates Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -166,6 +166,11 @@ function TaskModelPrepXYZ()  {
 
   }
 
+}
+
+TaskModelPrepXYZ.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['model', 'preporation','mr', 'ensemble', 'ensembles'] );
 }
 
 if (__template)

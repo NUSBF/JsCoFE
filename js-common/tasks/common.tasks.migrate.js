@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.06.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Migration Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2022
  *
  *  =================================================================
  *
@@ -476,6 +476,11 @@ if (!__template)  {
 
   TaskMigrate.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.migrate', jobManager, jobDir, this.id];
+  }
+
+  TaskMigrate.prototype.checkKeywords = function ( keywords )  {
+    // keywords supposed to be in low register
+      return this.__check_keywords ( keywords,['hopon', 'hop-on','hop', 'on', 'migrate', 'import'] );
   }
 
   module.exports.TaskMigrate = TaskMigrate;
