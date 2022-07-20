@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.07.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -87,6 +87,11 @@ TaskModelPrepMC.prototype.currentVersion = function()  {
 }
 
 // export such that it could be used in both node and a browser
+
+TaskModelPrepMC.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['model', 'preporation','mr', 'multichain', 'coordinates'] );
+}
 
 if (!__template)  {
   // for client side

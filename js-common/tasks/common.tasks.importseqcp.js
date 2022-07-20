@@ -103,6 +103,7 @@ TaskImportSeqCP.prototype.checkKeywords = function ( keywords )  {
     return this.__check_keywords ( keywords,['import', 'sequence','copy', 'paste'] );
 }
 
+
 if (!__template)  {
 
   //  for client side

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ModelCraft Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2022
  *
  *  ==========================================================================
  *
@@ -172,6 +172,11 @@ function ModelCraftHotButton()  {
     'task'    : 'TaskModelCraft',
     'tooltip' : 'Automated model building with ModelCraft'
   };
+}
+
+TaskModelCraft.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['modelcraft', 'model','building', 'mb', 'auto-mb'] );
 }
 
 if (!__template)  {

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.08.21   <--  Date of Last Modification.
+ *    20.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Alignment Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2022
  *
  *  =================================================================
  *
@@ -81,6 +81,11 @@ TaskModelPrepAlgn.prototype.currentVersion = function()  {
 }
 
 // export such that it could be used in both node and a browser
+
+TaskModelPrepAlgn.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['model', 'preporation','mr', 'alignment'] );
+}
 
 if (!__template)  {
 
