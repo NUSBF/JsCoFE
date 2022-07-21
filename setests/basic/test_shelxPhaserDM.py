@@ -535,7 +535,7 @@ def test_1shelx_phaser(browser,
         sf.importFromCloud_insulin(d.driver, d.waitShort) # 1
         asymmetricUnitContents(d.driver, d.waitShort) # 2
         startSHELXss(d.driver) # 3
-        validateSHELXss(d.driver, 300) # 2 minutes normally, lets give 5
+        # validateSHELXss(d.driver, 300) # 2 minutes normally, lets give 5
         phaserEP(d.driver) # 4
     except:
         d.driver.quit()

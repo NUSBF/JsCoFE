@@ -370,7 +370,7 @@ def test_1SHELXCD(browser,
         sf.importFromCloud_insulin(d.driver, d.waitShort) # 1
         asymmetricUnitContents(d.driver, d.waitShort) # 2
         startSHELXcd(d.driver) # 3
-        validateSHELXcd(d.driver, 1200) # 12-13 minutes normally, lets give 20
+        # validateSHELXcd(d.driver, 1200) # 12-13 minutes normally, lets give 20
     except:
         d.driver.quit()
         raise
