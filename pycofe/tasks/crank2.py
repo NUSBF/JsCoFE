@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.07.22   <--  Date of Last Modification.
+#    21.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -494,7 +494,7 @@ class Crank2(basic.TaskDriver):
                         sub_path = self.subout_fpath
                         if os.path.isfile(sub_path):
                             #self.rvrow += 20
-                            self.putTitle ( "Heavy Atom Substructure Found" )
+                            self.putTitle ( "Heavy Atom Substructure" )
                             substructure = self.finaliseStructure ( sub_path,
                                         self.outputFName,hkls,None,[],1,
                                         leadKey=1, # openState="closed",

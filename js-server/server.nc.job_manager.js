@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1361,6 +1361,7 @@ var response = null;
         log.standard ( 60,'attempt to gracefully end the job ' +
                           post_data_obj.job_token + ' pid=' + jobEntry.pid );
         utils.writeString (  path.join(jobEntry.jobDir,cmd.endJobFName),'end' );
+        utils.writeString (  path.join(jobEntry.jobDir,'report',cmd.endJobFName1),'end' );
         response = new cmd.Response ( cmd.nc_retcode.ok,
           '[00109] Job scheduled for graceful stop, token=' + post_data_obj.job_token,
           {} );

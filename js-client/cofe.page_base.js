@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.11.21   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Base page class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -44,15 +44,19 @@ function BasePage ( sceneId,gridStyle,pageType )  {
     var background_image = 'background_remote';
     if (__local_setup)
       background_image = 'background_local';
-    $('#'+sceneId).css({"background-image"    : "url('" + image_path(background_image) + "')",
-                        "background-repeat"   : "no-repeat",
-                        "background-size"     : "cover",
-                        "background-position" : "center center"} );
+    $('#'+sceneId).css({
+        "background-image"    : "url('" + image_path(background_image) + "')",
+        "background-repeat"   : "no-repeat",
+        "background-size"     : "cover",
+        "background-position" : "center center"
+    });
   } else
-    $('#'+sceneId).css({"background-image"    : "url('" + image_path('ccpem_background') + "')",
-                        "background-repeat"   : "no-repeat",
-                        "background-size"     : "cover",
-                        "background-position" : "center center"} );
+    $('#'+sceneId).css({
+        "background-image"    : "url('" + image_path('ccpem_background') + "')",
+        "background-repeat"   : "no-repeat",
+        "background-size"     : "cover",
+        "background-position" : "center center"
+    });
 
   this.element = document.getElementById ( sceneId );
   this._type   = pageType;
@@ -69,10 +73,57 @@ function BasePage ( sceneId,gridStyle,pageType )  {
 
   this.getUserRation();
 
+  // this.putWatermark (
+  //    appName() + '\'s offline version offers no functionality for syncing or ' +
+  //    'transferring data to remote servers. Export/import projects manually ' +
+  //    'to benefit from computing <a href="http://www.google.com">in-cloud</a>.',{
+  //       'width'   : '500px',
+  //       'left'    : '86px',
+  //       'bottom'  : '66px',
+  //       // 'right'    : '16px',
+  //       // 'top'      : '66px',
+  //       // 'text-align' : 'right',
+  //       'opacity' : '0.3'
+  //    });
+
 }
 
-
 BasePage.prototype.onResize = function ( width,height )  {}
+
+BasePage.prototype.putWatermark = function ( text,options )  {
+
+  this.watermark = new Label(text);
+
+  var css = {
+    //'width'            : '300px',
+    //'height'           : '100px',
+    'position'         : 'absolute',
+    // 'left'             : '86px',
+    // 'bottom'           : '46px',
+    // 'padding-top'      : '4px',
+    // 'padding-left'     : '20px',
+    // 'padding-bottom'   : '4px',
+    // 'padding-right'    : '20px',
+    // 'color'            : 'rgba(0,0,0,0.2)',
+    'background-color' : 'rgba(242,242,242,0.0)', // '#F3F3F3',
+    //'background-color' : '#F3F3F3',
+    'opacity'          : '0.3',
+    // 'border'           : '1px solid gray',
+    // 'border-radius'    : '8px',
+    // 'box-shadow'       : '5px 5px 6px #888888',
+    // 'white-space'      : 'nowrap',
+    'z-index'          : '-1'
+  };
+
+  for (var key in options)
+    css[key] = options[key];
+
+  $(this.watermark.element).css(css);
+
+  $(this.watermark.element).appendTo(document.body);
+
+}
+
 
 BasePage.prototype.makeSetupNamePanel = function()  {
   var setupPanel = new Grid ( '' );
