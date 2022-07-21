@@ -126,7 +126,7 @@ TaskEnsemblePrepSeq.prototype.currentVersion = function()  {
 
 TaskEnsemblePrepSeq.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['ensembles','model', 'preporation','mr', 'molecular', 'replacement'] );
+    return this.__check_keywords ( keywords,['ensembles','model', 'preparation','mr', 'molecular', 'replacement'] );
 }
 
 TaskEnsemblePrepSeq.prototype.checkKeywords = function ( keywords )  {

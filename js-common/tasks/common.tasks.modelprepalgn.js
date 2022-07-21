@@ -84,7 +84,7 @@ TaskModelPrepAlgn.prototype.currentVersion = function()  {
 
 TaskModelPrepAlgn.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['model', 'preporation','mr', 'alignment'] );
+    return this.__check_keywords ( keywords,['model', 'preparation','mr', 'alignment'] );
 }
 
 if (!__template)  {

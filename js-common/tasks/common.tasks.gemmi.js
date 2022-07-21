@@ -121,7 +121,7 @@ TaskGemmi.prototype.desc_title = function()  {
 
   TaskGemmi.prototype.checkKeywords = function ( keywords )  {
     // keywords supposed to be in low register
-      return this.__check_keywords ( keywords,['gemmi', 'comand','line', 'tool','tools', 'utilities'] );
+      return this.__check_keywords ( keywords,['gemmi', 'command','line', 'tool','tools', 'utilities'] );
   }
 
 if (__template)  {

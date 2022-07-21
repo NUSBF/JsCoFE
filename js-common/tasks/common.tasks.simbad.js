@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SIMBAD Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, Oleg Kovalevskyi 2016-2021
+ *  (C) E. Krissinel, A. Lebedev, Oleg Kovalevskyi, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -266,6 +266,12 @@ function TaskSimbad()  {
   };
 
 }
+
+TaskSimbad.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['simbad', 'lattice', 'molecular','replacement','mr', 'model','contaminant','search'] );
+}
+
 
 
 if (__template)
