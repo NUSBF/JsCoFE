@@ -156,7 +156,7 @@ TaskWFlowAFMR.prototype.currentVersion = function()  {
 }
 TaskWFlowAFMR.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['workflow','molecular', 'replacement', 'af-mr','morda','mrbump','asu','refinement','refmac','auto','automation','auto-mr','automatic','automatization','automatisation', 'mr', 'deposition','structure', 'prediction','model','preparation','generation','alphafold','alphafold2','af', 'af2','colabfold','colab', 'fold', 'openfold','open','slicendice'] );
+    return this.__check_keywords ( keywords,['workflow','molecular', 'replacement', 'af-mr','asu','refinement','refmac','refmac5','auto','automation','auto-mr','automatic','automatization','automatisation', 'mr', 'deposition','structure', 'prediction','model','preparation','generation','alphafold','alphafold2','af', 'af2','colabfold','colab', 'fold', 'openfold','open','slicendice'] );
   }
 
 // export such that it could be used in both node and a browser

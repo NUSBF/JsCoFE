@@ -100,7 +100,7 @@ TaskImportSeqCP.prototype.currentVersion = function()  {
 }
 TaskImportSeqCP.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['import', 'sequence','copy', 'paste'] );
+    return this.__check_keywords ( keywords,['import', 'sequence','copy', 'paste','copypaste','copy-paste'] );
 }
 
 

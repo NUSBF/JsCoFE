@@ -854,7 +854,7 @@ function TaskPhaserMR()  {
 
 TaskPhaserMR.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['phaser', 'molecular','replacement','mr', 'model','preparation','mp'] );
+    return this.__check_keywords ( keywords,['phaser', 'molecular','replacement','mr'] );
 }
 
 

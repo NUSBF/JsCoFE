@@ -215,7 +215,7 @@ TaskSRF.prototype.desc_title = function()  {
 
   TaskSRF.prototype.checkKeywords = function ( keywords )  {
     // keywords supposed to be in low register
-      return this.__check_keywords ( keywords,['srf', 'self','rotation','function', 'self-rotation','selfrotation','analysis','calculation','molrep','tools', 'toolbox', 'symmetry'] );
+      return this.__check_keywords ( keywords,['srf', 'self','rotation','function', 'self-rotation','selfrotation','analysis','calculation','tools', 'toolbox', 'symmetry'] );
   }
 
 

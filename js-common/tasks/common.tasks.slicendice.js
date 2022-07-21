@@ -118,7 +118,7 @@ TaskSliceNDice.prototype.currentVersion = function()  {
 
 TaskSliceNDice.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['slice', 'molecular','replacement','mr', 'model','preparation','refinement','auto-mr','alphafold','alphafold2','af', 'af2'] );
+    return this.__check_keywords ( keywords,['slice', 'molecular','replacement','mr', 'model','preparation','refinement','auto-mr'] );
 }
 
 if (!__template)  {
