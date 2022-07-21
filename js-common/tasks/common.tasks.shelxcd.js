@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    21.07.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-CD Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -276,6 +276,11 @@ function TaskShelxCD()  {
               }
 */
 
+}
+
+TaskShelxCD.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['shelx', 'shelxcd','shelx-cd','shelxc','shelxd','experimental', 'phasing', 'auto-ep', 'ep', 'substructure', 'search'] );
 }
 
 

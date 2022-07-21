@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    09.06.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  MrBUMP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2022
  *
  *  =================================================================
  *
@@ -115,6 +115,11 @@ TaskSliceNDice.prototype.currentVersion = function()  {
 
 
 // export such that it could be used in both node and a browser
+
+TaskSliceNDice.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['slice', 'molecular','replacement','mr', 'model','preparation','refinement','auto-mr','alphafold','alphafold2','af', 'af2'] );
+}
 
 if (!__template)  {
   //  for client side

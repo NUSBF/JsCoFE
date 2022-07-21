@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XYZ Utilities Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2022
  *
  *  =================================================================
  *
@@ -210,6 +210,11 @@ TaskXyzUtils.prototype.currentVersion = function()  {
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
+
+TaskXyzUtils.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['xyz','utilities','coordinate','tool', 'toolbox'] );
+  }
 
 
 if (!__template)  {

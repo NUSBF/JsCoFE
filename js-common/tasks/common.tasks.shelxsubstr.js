@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.05.20   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-Auto Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -47,6 +47,11 @@ function TaskShelxSubstr()  {
   this.parameters.sec1.value = 'shelx-substr';
 
 }
+TaskShelxSubstr.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['shelx', 'crank2','crank-2','experimental', 'phasing', 'ep', 'substructure'] );
+}
+
 
 if (__template)
       TaskShelxSubstr.prototype = Object.create ( __template.TaskCrank2.prototype );

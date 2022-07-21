@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  PISA Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2012
  *
  *  =================================================================
  *
@@ -98,6 +98,11 @@ TaskPISA.prototype.desc_title = function()  {
   // this appears under task title in the task list
     return 'calculates macromolecular surfaces, interfaces and their various properties, and predicts macromolecular assemblies';
   };
+
+  TaskPISA.prototype.checkKeywords = function ( keywords )  {
+    // keywords supposed to be in low register
+      return this.__check_keywords ( keywords,['pisa', 'surface','interfaces','assembly', 'analysis','assemblies','complexes', 'toolbox','interaction'] );
+  }
 
 
 if (__template)  {

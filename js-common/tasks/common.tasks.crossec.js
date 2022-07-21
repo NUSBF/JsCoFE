@@ -404,7 +404,7 @@ TaskCrosSec.prototype.collectInput = function ( inputPanel )  {
 
 TaskCrosSec.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['crossec','x-ray', 'cross', 'section', 'anomalus', 'scattering', 'factors'] );
+    return this.__check_keywords ( keywords,['crossec','x-ray', 'cross', 'section', 'anomalous', 'scattering', 'factors'] );
   }
 
 

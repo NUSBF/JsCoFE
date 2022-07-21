@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XDSGUI Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2022
  *
  *  =================================================================
  *
@@ -77,6 +77,12 @@ TaskXDSGUI.prototype.currentVersion = function()  {
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
+
+TaskXDSGUI.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['xds','gui', 'image', 'processing'] );
+  }
+
 
 if (!__template)  {
   //  for client side
