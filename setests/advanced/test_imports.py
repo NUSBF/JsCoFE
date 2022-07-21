@@ -494,7 +494,7 @@ def test_1importFiles(browser,
 
         asymmetricUnitContents(d.driver, d.waitShort) # 2
         startSHELXss(d.driver) # 3
-        validateSHELXss(d.driver, 300) # 2 minutes normally, lets give 5
+        # validateSHELXss(d.driver, 300) # 2 minutes normally, lets give 5
         phaserEP(d.driver) # 4
         runParrot(d.driver, '0005') # 5
         sf.clickTaskInTaskTree(d.driver, '\[0004\]')
