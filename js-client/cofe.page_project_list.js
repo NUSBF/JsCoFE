@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1251,6 +1251,7 @@ function ProjectListPage ( sceneId )  {
   // are initialised
   window.setTimeout ( function(){
     loadProjectList();
+    new offlineGreeting ( function(){} );
     // new MessageBox ( 'Information','<h3>Information</h3>This is information',
     //                  'msg_information' );
   },10);

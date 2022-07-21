@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1698,8 +1698,8 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                       break;
               case job_dialog_reason.end_job :
                         dlg.tree.stopJob ( dlg.nodeId,true,function(key){
-                          if (key)
-                            dlg.end_btn.setDisabled ( true );
+                          // if (key)  // disables "End gracefully" button in job dialog
+                          //   dlg.end_btn.setDisabled ( true );
                         });
                       break;
               case job_dialog_reason.tree_updated :

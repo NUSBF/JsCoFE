@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    20.05.22   <--  Date of Last Modification.
+#    21.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -424,7 +424,7 @@ class Buster(basic.TaskDriver):
                                 hatype = "AX"
                             self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
 
-                            self.putMessage ( "<h3>Structure, substructure and anomolous maps</h3>")
+                            self.putTitle ( "Structure, substructure and anomolous maps")
                             struct_ano = self.registerStructure ( xyz_merged,None,anomtz,
                                         None,None,libin,leadKey=1,
                                         map_labels="FAN,PHAN",

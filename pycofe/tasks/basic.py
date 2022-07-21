@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.06.22   <--  Date of Last Modification.
+#    21.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1850,7 +1850,7 @@ class TaskDriver(object):
         self.addCitation ( "viewhkl" )
         return row + 2
 
-    def putStructureWidget ( self,widgetId,title_str,structure,openState=-1,
+    def putStructureWidget ( self,widgetId,title_str,structure,openState=0, # -1
                                   legend="Assigned name" ):
         self.putStructureWidget1 ( self.report_page_id(),
                                    self.getWidgetId(widgetId),title_str,

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,6 +54,7 @@ function startSession ( sceneId,dev_switch )  {
       if (__local_user)  {
         //__login_token = 'e58e28a556d2b4884cb16ba8a37775f0';
         //__login_user  = 'Local user';
+        __offline_message = true;  // show prompt "working offline"
         login ( '**' + __local_user_id + '**','',sceneId,0 );
         //loadKnowledge ( 'Login' )
         //makeProjectListPage(sceneId);
@@ -318,6 +319,29 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
 }
 
+function offlineGreeting ( callback_func )  {
+  if (__offline_message)  {
+    __offline_message = false;
+    new MessageBoxF (
+      appName() + ' offline',
+      '<div style="width:500px"><h2>' + appName() + ' offline</h2>' +
+      'You are using the offline adaptation of ' + appName() +
+      ' now.' +
+      '<p><b>Note: this offline version of ' + appName() +
+      ' offers no functionality for syncing or transferring data and projects ' +
+      'to remote servers.</b><p>' +
+      'To benefit from in-cloud, online, data storage and computing, export ' +
+      'your project(s) and import them in an online ' + appName() +
+      ' setup manually.<p>' +
+      'Read more details <a href="' + __user_guide_base_url +
+      'jscofe_tips.three_clouds.html" target="_blank">here</a>.',
+      'Understood',function(){ callback_func(); },
+      true,'msg_information'
+    );
+  } else
+    callback_func();
+}
+
 
 var __session_check_timer  = null;
 
@@ -337,16 +361,32 @@ function checkSession ( sceneId )  {
               (rdata.status==fe_retcode.notLoggedIn))  {
             __login_token = '';
             logout ( sceneId,1 );
+        // } else if (__current_page && (__current_page._type=='ProjectListPage'))  {
+        //   offlineGreeting ( function(){
+        //     if ($.type(rdata.data) === "string")  {
+        //       if (rdata.data=='reload_project_list')
+        //         __current_page.reloadProjectList();
+        //       else if (rdata.data.startsWith('switch_to_project:'))
+        //         __current_page.loadProject (
+        //                           rdata.data.replace('switch_to_project:','') );
+        //     }
+        //     makeSessionCheck ( sceneId );
+        //   });
+        // } else  {
+        //   makeSessionCheck ( sceneId );
+        // }
           } else  {
-            if (__current_page && (__current_page._type=='ProjectListPage') &&
-                ($.type(rdata.data) === "string"))  {
-              if (rdata.data=='reload_project_list')
-                __current_page.reloadProjectList();
-              else if (rdata.data.startsWith('switch_to_project:'))
-                __current_page.loadProject (
-                                  rdata.data.replace('switch_to_project:','') );
-            }
-            makeSessionCheck ( sceneId );
+            offlineGreeting ( function(){
+              if (__current_page && (__current_page._type=='ProjectListPage') &&
+                  ($.type(rdata.data) === "string"))  {
+                if (rdata.data=='reload_project_list')
+                  __current_page.reloadProjectList();
+                else if (rdata.data.startsWith('switch_to_project:'))
+                  __current_page.loadProject (
+                                    rdata.data.replace('switch_to_project:','') );
+              }
+              makeSessionCheck ( sceneId );
+            });
           }
         }
         return true;

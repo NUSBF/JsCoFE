@@ -510,7 +510,7 @@ def run ( body,   # body is reference to the main Import class
                                 body.putStructureWidget1 ( subSecId,
                                     body.getWidgetId("ph_data_"+str(body.dataSerialNo)),
                                     "Electron density", structure,
-                                    -1, cou, 1 )
+                                    0, cou, 1 )
                                 if body.summary_row_0<0:
                                     body.putSummaryLine ( body.get_cloud_import_path(f_orig),
                                                           "PHASES",structure.dname )
@@ -614,7 +614,7 @@ def run ( body,   # body is reference to the main Import class
                                 body.putStructureWidget1 (
                                     subSecId, body.getWidgetId("ph_data_"+str(body.dataSerialNo)),
                                     "Electron density", structure,
-                                    -1, cou, 1 )
+                                    0, cou, 1 )
 
                             pyrvapi.rvapi_flush()
 

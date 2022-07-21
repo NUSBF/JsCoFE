@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.7.005 [20.07.2022]';
+var jsCoFE_version = '1.7.005 [21.07.2022]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -63,6 +63,7 @@ function compareVersions ( version1,version2 )  {
 var localhost_name = 'localhost';
 var projectFileExt = '.ccp4cloud';
 var endJobFName    = '__end_job';    // signal file name to end job gracefully
+var endJobFName1   = 'stop_file';    // signal file name to end job gracefully
 
 // ============================================================================
 // Commands for client - FE Server AJAX exchange. Commands are passed as paths
@@ -309,6 +310,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.__special_client_tag = __special_client_tag;
   module.exports.projectFileExt       = projectFileExt;
   module.exports.endJobFName          = endJobFName;
+  module.exports.endJobFName1         = endJobFName1;
   module.exports.Response             = Response;
   module.exports.sendResponse         = sendResponse;
   module.exports.sendResponseMessage  = sendResponseMessage;

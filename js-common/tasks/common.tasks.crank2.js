@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -963,7 +963,7 @@ TaskCrank2.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-//TaskCrank2.prototype.canEndGracefully = function() { return true; }
+TaskCrank2.prototype.canEndGracefully = function() { return true; }
 
 TaskCrank2.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
