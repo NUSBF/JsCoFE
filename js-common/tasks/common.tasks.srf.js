@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    12.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Self-Rotation Function Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2022
+ *  (C) E. Krissinel, A. Lebedev 2019-2020
  *
  *  =================================================================
  *
@@ -212,11 +212,6 @@ TaskSRF.prototype.desc_title = function()  {
   // this appears under task title in the task list
     return 'allows determining the internal symmetry of the native data by comparison the native Patterson function against itself';
   };
-
-  TaskSRF.prototype.checkKeywords = function ( keywords )  {
-    // keywords supposed to be in low register
-      return this.__check_keywords ( keywords,['srf', 'self','rotation','function', 'self-rotation','selfrotation','analysis','calculation','tools', 'toolbox', 'symmetry'] );
-  }
 
 
 if (__template)  {

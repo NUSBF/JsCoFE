@@ -560,7 +560,7 @@ function RefmacHotButton()  {
 
 TaskRefmac.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['refmac','refinement','refmac5'] );
+  return this.__check_keywords ( keywords,['refmac','refinement'] );
 }
 
 

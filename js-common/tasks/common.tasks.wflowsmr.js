@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    30.06.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2022
+ *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev 2021
  *
  *  =================================================================
  *
@@ -137,11 +137,6 @@ function TaskWFlowSMR()  {
   };
 
 }
-
-TaskWFlowSMR.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['workflow','molecular', 'replacement', 'model','simple','asu','refinement','refmac','auto','automation','automatic','automatization','automatisation', 'mr', 'deposition'] );
-  }
 
 if (__template)
       TaskWFlowSMR.prototype = Object.create ( __template.TaskTemplate.prototype );
