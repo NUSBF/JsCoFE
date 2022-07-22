@@ -371,36 +371,36 @@
   
 <h1 id="jscofe-tips-three-clouds--page-root"><span class="section-number">8.6. </span>Working modes of CCP4 Cloud<a class="headerlink" href="#jscofe-tips-three-clouds--page-root" title="Permalink to this headline">¶</a></h1>
 <p>At times you may think that something is wrong and you may be working with at least 3 different CCP4 Clouds. This is partially true, and if you feel confused, read this article.</p>
-<p>Much of this confusion comes from the fact that CCP4 Cloud is designed to run “somewhere” in the Web, and also, completely or partially, on your device that you use for surfing the web, provided that that device:</p>
+<p>Much of the confusion comes from the fact that CCP4 Cloud is designed to run “somewhere” in the Web, but it can also run on your own device, in full or in part, providing that your device:</p>
 <blockquote>
 <div><ul class="simple">
 <li>is not a mobile phone or tablet</li>
 <li>has CCP4 version 7.1 or higher installed</li>
 </ul>
 </div></blockquote>
-<p>Therefore, there are 3 working modes of CCP4 Cloud:</p>
+<p>There are 3 working modes of CCP4 Cloud:</p>
 <blockquote>
 <div><ol class="arabic simple">
 <li>Web-only</li>
-<li>Remote  (partially in the Web and partially on your computer)</li>
-<li>Desktop (only on your computer)</li>
+<li>Remote/online (partly in the Web and partly on your computer)</li>
+<li>Desktop/offline (only on your computer, even without internet connection)</li>
 </ol>
 </div></blockquote>
-<p>Why such a complication and what are the differences between these modes? Two main reasons:</p>
+<p>There are two main reasons for having different working modes:</p>
 <blockquote>
 <div><ol class="loweralpha">
-<li><p class="first">Because not all CCP4 applications can be run on remote server “somewhere” in the Web. While this may, potentially, change in future, but at the time being we have no choice other than to use your own machine for running such applications. Examples include:</p>
+<li><p class="first">Because not all CCP4 applications can be run on remote server. While this may, potentially, change in future, but at the time being we have no choice other than to use your own machine for running such applications. Examples include:</p>
 <blockquote>
 <div><ul class="simple">
 <li>Coot (interactive model building)</li>
 <li>All graphical interfaces to data processing packages: iMosflm, DUI, XDSGui</li>
 <li>CCP4 MG (molecular graphics viewer)</li>
 <li>ViewHKL (reflection data viewer)</li>
-<li>Arp/wArp (automatic model builder)</li>
+<li>Arp/wArp (automatic model builder, does not apply to CCP4 series 8.0 and higher)</li>
 </ul>
 </div></blockquote>
 </li>
-<li><p class="first">Because sending data to the Web may be disapproved by IT security protocols in your organisation, so that you must be sure that all software is running on your machine(s) and data does not leave your place of work.</p>
+<li><p class="first">Because sending data to the Web may be disallowed by IT security protocols acting in your organisation, so that you must be sure that all software is running on your machine(s) and your projects and data do not leave your place of work.</p>
 </li>
 </ol>
 </div></blockquote>
@@ -415,8 +415,8 @@
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Mode</th>
 <th class="head">Web-only</th>
-<th class="head">Remote</th>
-<th class="head">Desktop</th>
+<th class="head">Remote (online)</th>
+<th class="head">Desktop (offline)</th>
 </tr>
 </thead>
 <tbody valign="top">
@@ -442,8 +442,8 @@
 </tr>
 <tr class="row-even"><td>Functionality</td>
 <td>Some programs excluded (Coot and some others)</td>
-<td>Full</td>
-<td>Full</td>
+<td>Full (subject to what is installed on server)</td>
+<td>Full (subject to what is installed on user’s machine)</td>
 </tr>
 <tr class="row-odd"><td>CPU and disk usage</td>
 <td>Rationed</td>
@@ -464,17 +464,17 @@
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last"><em>Web-only</em> and <em>Remote</em> modes share same projects, while the <em>Desktop</em> mode has own set of projects. Desktop projects are not synced with Web-only/Remote projects. The only way to exchange projects between <em>Desktop</em> and <em>Web-only/Remote</em> modes is through the explicit Export/Import procedure.</p>
+<p class="last"><em>Web-only</em> and <em>Remote</em> modes share same projects, while the <em>Desktop</em> mode has own set of projects. Desktop projects are not synced with the Web-only/Remote projects. The only way to exchange projects between <em>Desktop</em> and <em>Web-only/Remote</em> modes is through the explicit Export/Import procedure.</p>
 </div>
 <p><strong>In brief</strong></p>
 <ul class="simple">
-<li>if you work from a tablet or smartphone, your only choice is the <strong>Web-only</strong> mode. You won’t be able to use Coot and interactive data processing</li>
+<li>if you work from a tablet or smartphone, your only choice is the <strong>Web-only</strong> mode. You won’t be able to use Coot and interactive data processing GUIs</li>
 <li>if you work from an ordinary laptop/computer but are not allowed to transmit your data to remote web-sites, your only choice is the <strong>Desktop</strong> mode. All computations will be done on your computer and you may need a decently powerful device.</li>
-<li>in all other cases, the recommended choice is the <strong>Remote</strong> mode. You will need only a budget-category computer to run all CCP4 programs, including the most demanding ones, connecting and disconnecting from CCP4 Cloud as frequently as you wish for doing other tasks.</li>
+<li>in all other cases, the recommended choice is the <strong>Remote</strong> mode. You will need only a budget-category computer to run all CCP4 programs, including the most demanding ones; you may connecting and disconnecting from CCP4 Cloud as frequently as you wish for doing other tasks, which won’t affect your CCP4 jobs running in the cloud.</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <em>Desktop</em> mode may be conveniently used for collecting projects finished in <em>Web-only</em>/<em>Remote</em> modes. After transferring projects to the <em>Desktop</em> mode, they may be deleted in <em>Web-only/Remote</em> area in order to release disk space for new tasks.</p>
+<p class="last">The <em>Desktop</em> mode may be conveniently used for collecting projects finished in <em>Web-only</em>/<em>Remote</em> modes. After transferring projects to the <em>Desktop</em> mode, they may be deleted in the <em>Web-only/Remote</em> area in order to release the online disk space quota for new projects. Exported projects are cross-compatible with all Windows, Linux and Mac OSX systems.</p>
 </div>
 <p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
 
