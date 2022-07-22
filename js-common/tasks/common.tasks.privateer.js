@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    12.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Privateer Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2022
+ *  (C) E. Krissinel, A. Lebedev 2021-2022
  *
  *  =================================================================
  *
@@ -76,11 +76,6 @@ TaskPrivateer.prototype.desc_title = function()  {
   // this appears under task title in the task list
     return 'validates carbohydrate structures';
   };
-
-  TaskPrivateer.prototype.checkKeywords = function ( keywords )  {
-    // keywords supposed to be in low register
-      return this.__check_keywords ( keywords,['privateer', 'validation','carbohydrate','sugar', 'monosaccharide','structure'] );
-  }
 
 
 if (__template)  {

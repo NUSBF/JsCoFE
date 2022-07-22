@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.21   <--  Date of Last Modification.
+ *    04.05.21   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskyi, A. Lebedev, M. Fando 2021-2022
+ *  (C) E. Krissinel, O. Kovalevskyi, A. Lebedev 2021
  *
  *  =================================================================
  *
@@ -162,11 +162,6 @@ TaskWFlowAEP.prototype.currentVersion = function()  {
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
-
-TaskWFlowAEP.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['workflow','experimental', 'phasing', 'crank2','asu','refinement','refmac','auto','automation','auto-ep','automatic','automatization','automatisation', 'ep', 'substructure','deposition'] );
-  }
 
 // export such that it could be used in both node and a browser
 if (!__template)  {

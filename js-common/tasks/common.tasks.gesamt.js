@@ -200,7 +200,7 @@ TaskGesamt.prototype.currentVersion = function()  {
 
 TaskGesamt.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['gesamt', 'structural','alignment','pairwise', 'toolbox','comparison', 'multiple', 'pdb', 'scan'] );
+    return this.__check_keywords ( keywords,['gesamt', 'structural','alignment','paiwise'] );
 }
 
 

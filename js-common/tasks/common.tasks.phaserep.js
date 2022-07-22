@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    16.06.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-EP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -306,10 +306,6 @@ function PhaserEPHotButton()  {
     'task'    : 'TaskPhaserEP',
     'tooltip' : 'Calculate Experimental Phases with Phaser-EP'
   };
-}
-TaskPhaserEP.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['phaser', 'experimental', 'phasing', 'auto-ep', 'ep', 'substructure'] );
 }
 
 if (!__template)  {

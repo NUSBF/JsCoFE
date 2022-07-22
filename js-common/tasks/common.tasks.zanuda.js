@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    12.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Zanuda Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2021
  *
  *  =================================================================
  *
@@ -116,12 +116,6 @@ TaskZanuda.prototype.desc_title = function()  {
   // this appears under task title in the task list
     return 'validates space group in case of the presence of pseudosymmetry and twinning';
   };
-
-  TaskZanuda.prototype.checkKeywords = function ( keywords )  {
-    // keywords supposed to be in low register
-      return this.__check_keywords ( keywords,['zanuda', 'space','group','validation', 'pseudosymmetry','pseudo-symmetry','pseudo','symmetry','analysis','tools'] );
-  }
-
 
 
 

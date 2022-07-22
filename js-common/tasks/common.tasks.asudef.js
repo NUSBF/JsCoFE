@@ -220,7 +220,7 @@ function AsuDefHotButton()  {
 
 TaskASUDef.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['asu','asymmetric', 'unit', 'content', 'definition'] );
+    return this.__check_keywords ( keywords,['asu','asymmetric', 'unit', 'content', 'defenition'] );
   }
 
 if (!__template)  {

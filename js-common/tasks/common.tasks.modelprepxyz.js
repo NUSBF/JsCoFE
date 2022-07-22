@@ -170,7 +170,7 @@ function TaskModelPrepXYZ()  {
 
 TaskModelPrepXYZ.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['model', 'preparation','mr', 'ensemble', 'ensembles'] );
+    return this.__check_keywords ( keywords,['model', 'preporation','mr', 'ensemble', 'ensembles'] );
 }
 
 if (__template)
