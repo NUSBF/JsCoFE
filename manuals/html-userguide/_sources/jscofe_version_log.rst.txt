@@ -11,7 +11,7 @@ CCP4 Cloud Version Log
 
     #. Project can be now organised in custom lists
 
-    #. shared and imported projects maintain their original folder paths, starting from owner's name
+    #. Shared and imported projects maintain their original folder paths, starting from owner's name
 
     #. Fixed bug causing crashes when job was rerun with last used parameters from a lower-version job
 
@@ -24,6 +24,10 @@ CCP4 Cloud Version Log
     #. Density search protocol is added in ``Molrep`` task
 
     #. Generic ``Reindex`` task added to the Toolbox
+
+    #. Added plain A-Z list of task with filtration by keywords
+
+    #. Graceful stop added to ``Crank-2``
 
 
 **Version 1.7.004**
