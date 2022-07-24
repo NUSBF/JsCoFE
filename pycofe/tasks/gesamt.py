@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    05.05.20   <--  Date of Last Modification.
+#    24.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -343,7 +341,7 @@ class Gesamt(basic.TaskDriver):
                     self.putMessage ( "<h3>Overall Alignment</h3>" )
                     self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),
                                              "Superposed ensemble&nbsp;&nbsp;",
-                                             ensemble,-1 )
+                                             ensemble )
                     have_results = True
 
                 for i in range(1,len(outFiles)):
@@ -354,7 +352,7 @@ class Gesamt(basic.TaskDriver):
                         self.putMessage ( "<h3>Domain #" + str(i) + " Alignment</h3>" )
                         self.putEnsembleWidget ( self.getWidgetId("ensemble_"+str(i)+"_btn"),
                                                  "Superposed domain #" + str(i),
-                                                 ensemble,-1 )
+                                                 ensemble )
                         have_results = True
 
             else:

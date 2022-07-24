@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    01.03.21   <--  Date of Last Modification.
+#    24.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  LIGAND DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2022
 #
 # ============================================================================
 #
@@ -132,7 +132,7 @@ def run ( body ):  # body is reference to the main Import class
                             body.putHR1 ( subSecId,ligrow )
                             ligrow += 1
                         body.putLigandWidget1 ( subSecId,"ligand_btn_","Ligand structure",
-                                                ligand,-1,ligrow,1 )
+                                                ligand,0,ligrow,1 )
                         body.putSummaryLine ( body.get_cloud_import_path(f),"LIGAND",ligand.dname )
                         lib_imported.append ( ligand )
                         ligrow += 2

@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    30.07.21   <--  Date of Last Modification.
+#    24.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -237,7 +235,7 @@ class EnsemblePrepSeq(basic.TaskDriver):
 
                                             self.putEnsembleWidget1 ( secId,
                                                 "ensemble_"  + str(ensembleSerNo) + "_btn",
-                                                "Coordinates",ensemble,-1,secrow+5,1 )
+                                                "Coordinates",ensemble,0,secrow+5,1 )
                                             have_results = True
                                             ensNo += 1
 

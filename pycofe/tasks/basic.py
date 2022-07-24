@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.07.22   <--  Date of Last Modification.
+#    24.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1593,8 +1593,7 @@ class TaskDriver(object):
                 if title!="":
                     self.putTitle ( title )
                 ligand.code = code
-                self.putLigandWidget ( "ligand_btn_","Ligand structure",
-                                       ligand )
+                self.putLigandWidget ( "ligand_btn_","Ligand structure",ligand )
         else:
             self.putTitle ( "No Ligand Formed" )
 
@@ -1833,7 +1832,7 @@ class TaskDriver(object):
 
     # ----------------------------------------------------------------------------
 
-    def putHKLWidget ( self,widgetId,title_str,hkl,openState=-1 ):
+    def putHKLWidget ( self,widgetId,title_str,hkl,openState=0 ):
         self.putHKLWidget1 ( self.report_page_id(),widgetId + str(self.widget_no),
                             title_str,hkl,openState,self.rvrow,1 )
         self.rvrow     += 2
@@ -1898,7 +1897,7 @@ class TaskDriver(object):
     # ============================================================================
 
 
-    def putLigandWidget ( self,widgetId,title_str,ligand,openState=-1 ):
+    def putLigandWidget ( self,widgetId,title_str,ligand,openState=0 ):
         self.putLigandWidget1 ( self.report_page_id(),
                                 widgetId + str(self.widget_no),title_str,
                                 ligand,openState,self.rvrow,1 )
@@ -1966,7 +1965,7 @@ class TaskDriver(object):
 
     # ----------------------------------------------------------------------------
 
-    def putXYZWidget ( self,widgetId,title_str,xyz,openState=-1 ):
+    def putXYZWidget ( self,widgetId,title_str,xyz,openState=0 ):
         pyrvapi.rvapi_add_data ( self.getWidgetId(widgetId),title_str,
                     # always relative to job_dir from job_dir/html
                     "/".join(["..",self.outputDir(),xyz.getXYZFileName()]),
@@ -2026,7 +2025,7 @@ class TaskDriver(object):
 
     # ----------------------------------------------------------------------------
 
-    def putModelWidget ( self,widgetId,title_str,model,openState=-1 ):
+    def putModelWidget ( self,widgetId,title_str,model,openState=0 ):
         self.putModelWidget1 ( self.report_page_id(),widgetId,title_str,
                                model,openState,self.rvrow,1 )
         self.rvrow += 2
@@ -2056,7 +2055,7 @@ class TaskDriver(object):
         return row+2
 
 
-    def putEnsembleWidget ( self,widgetId,title_str,ensemble,openState=-1 ):
+    def putEnsembleWidget ( self,widgetId,title_str,ensemble,openState=0 ):
         self.putEnsembleWidget1 ( self.report_page_id(),widgetId,title_str,
                                   ensemble,openState,self.rvrow,1 )
         self.rvrow += 2

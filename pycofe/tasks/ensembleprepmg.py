@@ -165,7 +165,7 @@ class EnsemblePrepMG(basic.TaskDriver):
                     ensemble.seqId = ensemble.meta["seqId"]
                     ensemble.rmsd  = ensemble.meta["rmsd" ]
                     self.putEnsembleWidget ( self.getWidgetId("ensemble"),"Coordinates",
-                                             ensemble,openState=-1 )
+                                             ensemble )
                     have_results = True
                     ensNo += 1
 

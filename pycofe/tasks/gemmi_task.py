@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    17.07.21   <--  Date of Last Modification.
+#    24.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2022
 #
 # ============================================================================
 #
@@ -260,7 +260,7 @@ class Gemmi(basic.TaskDriver):
                     self.putMessage (
                         "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                         oxyz.dname )
-                    self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Edited coordinates",oxyz,-1 )
+                    self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Edited coordinates",oxyz )
                     have_results = True
                 else:
                     # close execution logs and quit
