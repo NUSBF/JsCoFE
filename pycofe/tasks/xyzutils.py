@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    23.05.21   <--  Date of Last Modification.
+#    24.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2022
 #
 # ============================================================================
 #
@@ -186,10 +184,10 @@ class XyzUtils(basic.TaskDriver):
                             if len(st)>1:
                                 self.putXYZWidget ( self.getWidgetId("xyz_btn"),
                                                     "Model "   + model.name +\
-                                                    ", chain " + chain.name,oxyz,-1 )
+                                                    ", chain " + chain.name,oxyz )
                             else:
                                 self.putXYZWidget ( self.getWidgetId("xyz_btn"),
-                                                    "Chain " + chain.name,oxyz,-1 )
+                                                    "Chain " + chain.name,oxyz )
                             have_results = True
                             self.putMessage ( "&nbsp;" )
                         else:
@@ -286,7 +284,7 @@ class XyzUtils(basic.TaskDriver):
                                 "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                                 oxyz.dname )
                             self.putXYZWidget ( self.getWidgetId("xyz_btn"),
-                                                "Edited coordinates",oxyz,-1 )
+                                                "Edited coordinates",oxyz )
                             have_results = True
                         else:
                             # close execution logs and quit

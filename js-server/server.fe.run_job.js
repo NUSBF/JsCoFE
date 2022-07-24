@@ -1444,7 +1444,7 @@ function cloudRun ( server_request,server_response )  {
           var check_list = ration.checkUserRation ( loginData,true );
           if (check_list.length>0)  {
 
-            log.standard ( 62,'cloudrun rejected for user ('+meta.user+'): ' +
+            log.standard ( 62,'cloudrun rejected for user (' + meta.user + '): ' +
                                check_list.join(', ') );
             response = new cmd.Response ( cmd.fe_retcode.errors,
               'cloudrun rejected: ' + check_list.join(', ') + ' quota is up',{} );

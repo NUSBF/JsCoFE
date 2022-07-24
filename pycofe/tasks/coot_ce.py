@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.03.22   <--  Date of Last Modification.
+#    24.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -204,7 +204,7 @@ class CootCE(basic.TaskDriver):
                     self.putMessage (
                         "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                         xyz.dname )
-                    self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Edited coordinates",xyz,-1 )
+                    self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Edited coordinates",xyz )
                     if i<len(mlist)-1:
                         self.putMessage ( "&nbsp;" )
                     have_results = True

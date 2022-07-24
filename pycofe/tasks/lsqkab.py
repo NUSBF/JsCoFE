@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    09.02.20   <--  Date of Last Modification.
+#    24.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2022
 #
 # ============================================================================
 #
@@ -187,7 +185,8 @@ class LsqKab(basic.TaskDriver):
                 self.putMessage   ( "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +\
                                     xyz.dname + "&nbsp;" )
                 self.putXYZWidget ( self.getWidgetId("xyz_btn"),
-                                    "Moved structure&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",xyz,-1 )
+                                    "Moved structure&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+                                    xyz )
 
             # register the superposed ensemble
 
@@ -197,7 +196,7 @@ class LsqKab(basic.TaskDriver):
             if ensemble:
                 self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),
                                          "Superposed ensemble&nbsp;&nbsp;",
-                                         ensemble,-1 )
+                                         ensemble )
                 have_results = True
 
         else:

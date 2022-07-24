@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.06.22   <--  Date of Last Modification.
+#    24.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -201,7 +201,7 @@ class StructurePrediction(basic.TaskDriver):
 
                         # self.add_seqid_remark ( model,[sid] )
 
-                        self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Atomic coordinates",xyz,-1 )
+                        self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Atomic coordinates",xyz )
 
                         xyzs.append ( xyz )
 
