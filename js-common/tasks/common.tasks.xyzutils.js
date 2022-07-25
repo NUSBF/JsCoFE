@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XYZ Utilities Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2021
  *
  *  =================================================================
  *
@@ -211,14 +211,18 @@ TaskXyzUtils.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskXyzUtils.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['xyz','utilities','coordinate','tool', 'toolbox'] );
+}
 
 if (!__template)  {
   // client side
 
   TaskXyzUtils.prototype.desc_title = function()  {
-    // this appears under task title in the task list
-      return 'allows selecting a limited set of atoms in a coordinate file and saving them to new files';
-    };
+  // this appears under task title in the task list
+    return 'allows selecting a limited set of atoms in a coordinate file and saving them to new files';
+  }
 
   TaskXyzUtils.prototype.collectInput = function ( inputPanel )  {
 

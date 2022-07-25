@@ -98,9 +98,10 @@ TaskImportSeqCP.prototype.currentVersion = function()  {
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
+
 TaskImportSeqCP.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['import', 'sequence','copy', 'paste'] );
+  return this.__check_keywords ( keywords,['import', 'sequence','copy', 'paste','copypaste','copy-paste'] );
 }
 
 

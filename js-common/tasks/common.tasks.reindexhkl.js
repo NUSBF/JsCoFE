@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Reindex Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2022
  *
  *  =================================================================
  *
@@ -37,7 +37,6 @@ function TaskReindexHKL()  {
   this.name      = 'reindex dataset';  // short name for job tree
   this.setOName ( 'rndx' );  // default output file name template
   this.title     = 'Reindex Dataset';  // full title
-  //this.helpURL   = './html/jscofe_task_changespghkl.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{    // input data types
@@ -105,6 +104,11 @@ TaskReindexHKL.prototype.currentVersion = function()  {
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
+TaskReindexHKL.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['reindex', 'hkl','dataset', 'toolbox'] );
 }
 
 if (!__template)  {

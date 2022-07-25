@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Self-Rotation Function Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2020
  *
  *  =================================================================
  *
@@ -33,11 +33,10 @@ function TaskSRF()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type   = 'TaskSRF';
-  this.name    = 'srf analysis';  // short name for job tree
-  this.oname   = '*';             // asterisk here means do not use
-  this.title   = 'Self-Rotation Function Analysis with Molrep';  // full title
-  //this.helpURL = './html/jscofe_task_srf.html';
+  this._type = 'TaskSRF';
+  this.name  = 'srf analysis';  // short name for job tree
+  this.oname = '*';             // asterisk here means do not use
+  this.title = 'Self-Rotation Function Analysis with Molrep';  // full title
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataHKL':[]}, // data type(s) and subtype(s)
@@ -209,10 +208,14 @@ TaskSRF.prototype.currentVersion = function()  {
 }
 
 TaskSRF.prototype.desc_title = function()  {
-  // this appears under task title in the task list
-    return 'allows determining the internal symmetry of the native data by comparison the native Patterson function against itself';
-  };
+// this appears under task title in the task list
+  return 'helps to determine the internal symmetry of the reflection data';
+}
 
+TaskSRF.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['srf', 'self','rotation','function', 'self-rotation','selfrotation','analysis','calculation','tools', 'toolbox', 'symmetry'] );
+}
 
 if (__template)  {
   //  for server side

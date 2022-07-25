@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-Auto Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -78,6 +78,11 @@ TaskShelxAuto.prototype.currentVersion = function()  {
 
 TaskShelxAuto.prototype.getHelpURL = function()  {
   return __task_reference_base_url + 'doc.task.SHELX.html';
+}
+
+TaskShelxAuto.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['shelx', 'crank2','crank-2','experimental', 'phasing', 'auto-ep', 'ep', 'substructure'] );
 }
 
 if (__template)  {

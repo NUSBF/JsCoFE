@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Sequence Alignment Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -37,7 +37,6 @@ function TaskSeqAlign()  {
   this.name      = 'seqalign';
   this.setOName ( 'seqalign' );  // default output file name template
   this.title     = 'Sequence Alignment with ClustalW';
-  //this.helpURL   = './html/jscofe_task_seqalign.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{  // input data types
@@ -78,9 +77,14 @@ TaskSeqAlign.prototype.currentVersion = function()  {
 }
 
 TaskSeqAlign.prototype.desc_title = function()  {
-  // this appears under task title in the task list
-    return 'aligns protein sequences';
-  };
+// this appears under task title in the task list
+  return 'aligns protein sequences';
+}
+
+TaskSeqAlign.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['clustalw', 'sequence','alignment','protein', 'toolbox','comparison'] );
+}
 
 if (__template)  {
   //  for server side

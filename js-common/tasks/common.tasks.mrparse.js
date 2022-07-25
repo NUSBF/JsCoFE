@@ -127,7 +127,7 @@ TaskMrParse.prototype.currentVersion = function()  {
 
 TaskMrParse.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['mrprase', 'molecular','replacement','mr', 'model','preporation','mp', 'alphafold','alphafold2','af', 'af2'] );
+    return this.__check_keywords ( keywords,['mrprase', 'molecular','replacement','mr', 'model','preparation','mp', 'alphafold','alphafold2','af', 'af2'] );
 }
 
 // export such that it could be used in both node and a browser

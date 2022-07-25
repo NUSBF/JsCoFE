@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Xia-2 Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -257,6 +257,11 @@ TaskXia2.prototype.currentVersion = function()  {
 // default post-job cleanup to save disk space
 //TaskXia2.prototype.cleanJobDir = function ( jobDir )  {}
 
+TaskXia2.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['xia2','xia-2','xia','2', 'image', 'processing', 'gui'] );
+}
+
 // export such that it could be used in both node and a browser
 if (!__template)  {
   // for client side
@@ -265,7 +270,7 @@ if (!__template)  {
     // this appears under task title in the task list
       return 'performs X-ray diffraction data processing';
     };
-  
+
 
   TaskXia2.prototype.disableDirectoryInput = function ( inputPanel,disable_bool ) {
     for (var i=0;i<inputPanel.dir_input.length;i++)
