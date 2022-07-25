@@ -90,7 +90,7 @@ TaskModelPrepMC.prototype.currentVersion = function()  {
 
 TaskModelPrepMC.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['model', 'preporation','mr', 'multichain', 'coordinates'] );
+    return this.__check_keywords ( keywords,['model', 'preparation','mr', 'multichain', 'coordinates'] );
 }
 
 if (!__template)  {

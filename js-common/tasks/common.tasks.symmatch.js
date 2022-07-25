@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SymMatch Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2020
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2022
  *
  *  =================================================================
  *
@@ -116,9 +116,14 @@ TaskSymMatch.prototype.currentVersion = function()  {
 }
 
 TaskSymMatch.prototype.desc_title = function()  {
-  // this appears under task title in the task list
-    return 'uses symmetry to match chains';
-  };
+// this appears under task title in the task list
+  return 'uses symmetry to match chains';
+}
+
+TaskSymMatch.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['csymmatch', 'symmatch','symmetry','match', 'comparison','analysis','tools', 'toolbox'] );
+}
 
 if (__template)  {
   //  for server side

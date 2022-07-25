@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.06.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev 2021
+ *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2022
  *
  *  =================================================================
  *
@@ -153,6 +153,11 @@ TaskWFlowAFMR.prototype.currentVersion = function()  {
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
+TaskWFlowAFMR.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['workflow','molecular', 'replacement', 'af-mr','asu','refinement','refmac','refmac5','auto','automation','auto-mr','automatic','automatization','automatisation', 'mr', 'deposition','structure', 'prediction','model','preparation','generation','alphafold','alphafold2','af', 'af2','colabfold','colab', 'fold', 'openfold','open','slicendice'] );
 }
 
 // export such that it could be used in both node and a browser

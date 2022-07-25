@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ShelxE-MR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -244,6 +244,11 @@ function ShelxEMRHotButton()  {
     'task'    : 'TaskShelxEMR',
     'tooltip' : 'Density Modificaton and C&alpha;-tracing with ShelxE'
   };
+}
+
+TaskShelxEMR.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['shelx', 'shelxe','density','modification','alpha', 'tracing', 'calpha', 'dm', 'c-alpha'] );
 }
 
 if (!__template)  {

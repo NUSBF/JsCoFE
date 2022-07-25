@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XDSGUI Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2021
  *
  *  =================================================================
  *
@@ -37,7 +37,6 @@ function TaskXDSGUI()  {
   this.name    = 'xds (image processing)';
   this.setOName ( 'xds' );  // default output file name template
   this.title   = 'Interactive Image Processing with XDS';
-  //this.helpURL = './html/jscofe_task_xds.html';
   this.nc_type = 'client';  // job may be run only on client NC
 
   this.input_dtypes = [];   // no input data for this task
@@ -78,13 +77,18 @@ TaskXDSGUI.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskXDSGUI.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['xds','gui', 'image', 'processing'] );
+}
+
 if (!__template)  {
   //  for client side
   TaskXDSGUI.prototype.desc_title = function()  {
     // this appears under task title in the task list
       return '';
     };
-  
+
 
   TaskXDSGUI.prototype.onJobDialogStart = function ( job_dialog )  {
     job_dialog.run_btn.click();  // start automatically
