@@ -78,6 +78,7 @@ class StructurePrediction(basic.TaskDriver):
         engine = ""
 
         try:
+            self.stdoutln ( os.environ["ALPHAFOLD_CFG"] )
             configuration = json.load ( os.environ["ALPHAFOLD_CFG"] )
             self.stdoutln ( str(configuration) )
             engine = configuration["engine"]
