@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.08.21   <--  Date of Last Modification.
+#    26.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful import
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2022
 #
 # ============================================================================
 #
@@ -57,7 +57,8 @@ class EnsemblePrepMG(basic.TaskDriver):
         rvrow0 = self.rvrow
         self.putMessage ( "<h3>This task will launch CCP4 MG now</h3>" +\
                           "Make sure that you save each ensemble prepared in CCP4 MG " +\
-                          "using menu item \"<i>File / Save all visible to CCP4 Cloud</i>\"" )
+                          "using menu item \"<i>File / Save all visible to " +\
+                          self.appName() + " CCP4 Cloud</i>\"" )
         self.flush()
 
         # Check avalability of PDB archive

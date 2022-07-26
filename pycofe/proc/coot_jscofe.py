@@ -12,11 +12,9 @@ info_dialog ( "In order to save the edited structure in your Project,\n" +\
               "end Coot session as usual." )
 
 
-"""
-info_dialog ( "In order to save edited structure in your Project,\n" +\
-              "use \"Save to CCP4 Cloud and Exit\" from Main Menu/Files\n" +\
-              "before closing Coot" )
-"""
+# info_dialog ( "In order to save edited structure in your Project,\n" +\
+#               "use \"Save to CCP4 Cloud and Exit\" from Main Menu/Files\n" +\
+#               "before closing Coot" )
 
 
 if (have_coot_python):

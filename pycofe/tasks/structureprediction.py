@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.07.22   <--  Date of Last Modification.
+#    26.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,6 +27,7 @@
 # from fileinput import filename
 import os
 import stat
+import json
 # import uuid
 
 from pycofe.tasks  import basic
@@ -74,6 +75,33 @@ class StructurePrediction(basic.TaskDriver):
 
         # os.path.join ( os.environ["CCP4"],"bin","af2start" )
 
+        engine = ""
+
+        try:
+            configuration = json.load ( os.environ["ALPHAFOLD_CFG"] )
+            engine = configuration["engine"]
+        except:
+            self.putTitle   ( "Invalid or corrupt configuration" )
+            self.putMessage ( "Task configuration file is either missing or " +\
+                "misformatted. Report this to your " + self.appName() +\
+                " maintainer." )
+            self.generic_parser_summary["structureprediction"] = {
+                "summary_line" : "error: task software misconfigured"
+            }
+            self.success ( False )
+            return
+
+        if engine not in ["colabfold","openfold"]:
+            self.putTitle   ( "Invalid or corrupt configuration" )
+            self.putMessage ( "Task engine not specified in the configuration " +\
+                "file or misspelled. Report this to your " + self.appName() +\
+                " maintainer." )
+            self.generic_parser_summary["structureprediction"] = {
+                "summary_line" : "error: task software misconfigured"
+            }
+            self.success ( False )
+            return
+
         script = "#!/bin/bash\n" +\
                  "af2start"  +\
                  " --seqin " + seqfilename
@@ -84,7 +112,7 @@ class StructurePrediction(basic.TaskDriver):
         if hasattr(sec1,"NSTRUCTS"):
             script += " --num_models " + self.getParameter(sec1.NSTRUCTS)
 
-        script += " --out " + dirName + " --colabfold\n"
+        script += " --out " + dirName + " --" + engine + "\n"
 
         self.stdout (
             "--------------------------------------------------------------------------------\n" +\
@@ -107,7 +135,7 @@ class StructurePrediction(basic.TaskDriver):
                                 "HOME=" + os.environ["HOME"],
                                 "PATH=" + os.environ["PATH"],
                                 "ALPHAFOLD_CFG=" + os.environ["ALPHAFOLD_CFG"],
-                                "/bin/bash","-l","-c","./"+scriptf
+                                "/bin/bash","-l","-c","./" + scriptf
                             ],logType="Main",quitOnError=False )
 
         # import shutil
@@ -123,46 +151,62 @@ class StructurePrediction(basic.TaskDriver):
             fpaths = []   #  create a empty object list
             xyzs   = []   #  output data objects
 
-            coverage_png = ""
-            PAE_png      = ""
-            plddt_png    = ""
+            coverage_png = []
+            PAE_png      = []
+            plddt_png    = []
 
             for file in os.listdir(dirName):
                 if file.lower().endswith(".pdb"): # find all pdb files in folder
                     fpaths.append(os.path.join(dirName,file))
                 elif file.endswith("coverage.png"):
-                    coverage_png = "../" + dirName + "/" + file
+                    coverage_png.append ( "../" + dirName + "/" + file )
                 elif file.endswith("PAE.png"):
-                    PAE_png      = "../" + dirName + "/" + file
+                    PAE_png.append ( "../" + dirName + "/" + file )
                 elif file.endswith("plddt.png"):
-                    plddt_png    = "../" + dirName + "/" + file
+                    plddt_png.append ( "../" + dirName + "/" + file )
+
 
             if len(fpaths)<=0: # Result page in case of no models are found
                 self.putTitle ( "No models generated" )
             else: # if models are found
 
+                fpaths      .sort()
+                coverage_png.sort()
+                PAE_png     .sort()
+                plddt_png   .sort()
+
                 self.addCitations ( ["alphafold","colabfold"] )
 
-                if PAE_png:
+                if len(PAE_png)>0:
                     self.putMessage ( "<h3>PAE matrices</h3>" )
-                    self.putMessage1 ( self.report_page_id(),"<img src=\"" + PAE_png +\
-                                "\" height=\"200px\" style=\"position:relative; left:" +\
-                                str(35*(1-len(fpaths))) + "px;\"/>",
-                                self.rvrow,col=0,rowSpan=1,colSpan=1 )
-                    self.rvrow += 1
-                if plddt_png:
-                    self.putMessage ( "<h3>PLLDT scores</h3>" )
-                    self.putMessage1 ( self.report_page_id(),"<img src=\"" + plddt_png +\
-                                "\" height=\"500px\" style=\"vertical-align: middle;\"/>",
-                                self.rvrow,col=0,rowSpan=1 )
-                    self.rvrow += 1
-                if coverage_png:
-                    self.putMessage ( "<h3>Sequence coverages</h3>" )
-                    self.putMessage1 ( self.report_page_id(),"<img src=\"" + coverage_png +\
-                                "\" height=\"500px\" style=\"vertical-align: middle;\"/>",
-                                self.rvrow,col=0,rowSpan=1 )
+                    gallery = ""
+                    if len(PAE_png)<=1:
+                        gallery = "<img src=\"" + PAE_png[0] +\
+                                  "\" height=\"200px\" style=\"position:relative; left:" +\
+                                  str(35*(1-len(fpaths))) + "px;\"/>"
+                    else:
+                        for i in range(len(PAE_png)):
+                            gallery += "<img src=\"" + PAE_png[i] + "\" height=\"200px\"/>"
+                    self.putMessage1 ( self.report_page_id(),gallery,
+                                       self.rvrow,col=0,rowSpan=1,colSpan=1 )
                     self.rvrow += 1
 
+                if len(plddt_png)>0:
+                    self.putMessage ( "<h3>PLLDT scores</h3>" )
+                    gallery = ""
+                    for i in range(len(plddt_png)):
+                        gallery += "<img src=\"" + plddt_png[i] +\
+                                   "\" height=\"500px\" style=\"vertical-align: middle;\"/>"
+                    self.putMessage1 ( self.report_page_id(),gallery,
+                                       self.rvrow,col=0,rowSpan=1 )
+                    self.rvrow += 1
+
+                if len(coverage_png)>0:
+                    self.putMessage ( "<h3>Sequence coverages</h3>" )
+                    self.putMessage1 ( self.report_page_id(),"<img src=\"" + coverage_png[0] +\
+                                "\" height=\"500px\" style=\"vertical-align: middle;\"/>",
+                                self.rvrow,col=0,rowSpan=1 )
+                    self.rvrow += 1
 
                 self.putTitle ( "Generated models" )
 
@@ -209,14 +253,11 @@ class StructurePrediction(basic.TaskDriver):
 
             if nModels == 1:
                 self.generic_parser_summary["structureprediction"] = {
-
-                        "summary_line" : str(nModels) + " structure predicted"
+                    "summary_line" : str(nModels) + " structure predicted"
                 }
             else:
                 self.generic_parser_summary["structureprediction"] = {
-
-                        "summary_line" : str(nModels) + " structures predicted"
-
+                    "summary_line" : str(nModels) + " structures predicted"
                 }
 
             auto.makeNextTask ( self,{
@@ -224,7 +265,7 @@ class StructurePrediction(basic.TaskDriver):
             }, log=self.file_stderr)
 
 
-        self.success( (nModels>0) )
+        self.success ( (nModels>0) )
         return
 
 

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.09.21   <--  Date of Last Modification.
+#    26.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2022
 #
 # ============================================================================
 #
@@ -421,7 +421,7 @@ class Simbad(asudef.ASUDef):
                         "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                         oxyz.dname )
                     self.putXYZWidget ( self.getWidgetId("xyz_btn"),
-                                        "Atomic coordinates",oxyz,-1 )
+                                        "Atomic coordinates",oxyz )
                     have_results = True
                     self.generic_parser_summary["simbad"] = {
                         "summary_line" : "best model: " + result0["name"]
