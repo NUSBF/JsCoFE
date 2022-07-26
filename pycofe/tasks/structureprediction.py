@@ -204,10 +204,14 @@ class StructurePrediction(basic.TaskDriver):
 
                 if len(plddt_png)>0:
                     self.putMessage ( "<h3>PLLDT scores</h3>" )
+                    height  = 500
+                    if len(plddt_png)>1:
+                        height = 300
                     gallery = ""
                     for i in range(len(plddt_png)):
                         gallery += "<img src=\"" + plddt_png[i] +\
-                                   "\" height=\"500px\" style=\"vertical-align: middle;\"/>"
+                                   "\" style=\"vertical-align: middle;\" height=\"" +\
+                                   height + "px\"/>"
                     self.putMessage1 ( self.report_page_id(),gallery,
                                        self.rvrow,col=0,rowSpan=1 )
                     self.rvrow += 1
