@@ -79,7 +79,9 @@ class StructurePrediction(basic.TaskDriver):
 
         try:
             configuration = json.load ( os.environ["ALPHAFOLD_CFG"] )
+            self.stdoutln ( str(configuration) )
             engine = configuration["engine"]
+            self.stdoutln ( engine )
         except:
             self.putTitle   ( "Invalid or corrupt configuration" )
             self.putMessage ( "Task configuration file is either missing or " +\
