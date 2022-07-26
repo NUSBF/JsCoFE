@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.07.22   <--  Date of Last Modification.
+#    26.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1969,7 +1969,7 @@ class TaskDriver(object):
         pyrvapi.rvapi_add_data ( self.getWidgetId(widgetId),title_str,
                     # always relative to job_dir from job_dir/html
                     "/".join(["..",self.outputDir(),xyz.getXYZFileName()]),
-                    "xyz",self.report_page_id(),self.rvrow,0,1,1,-1 )
+                    "xyz",self.report_page_id(),self.rvrow,0,1,1,openState )
         self.addCitations ( ["uglymol","ccp4mg"] )
         self.rvrow += 1
         return

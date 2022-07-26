@@ -116,9 +116,9 @@ class StructurePrediction(basic.TaskDriver):
         script += " --out " + dirName + " --" + engine + "\n"
 
         if engine=="colabfold":
-            self.puMessage ( "ColabFold setup is used" )
+            self.putMessage ( "ColabFold setup is used" )
         else:
-            self.puMessage ( "OpenFold setup is used" )
+            self.putMessage ( "OpenFold setup is used" )
         self.putMessage ( self.getParameter(sec1.NSTRUCTS) + " models will be generated" )
 
         self.stdout (
