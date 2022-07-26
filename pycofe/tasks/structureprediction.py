@@ -211,7 +211,7 @@ class StructurePrediction(basic.TaskDriver):
                     for i in range(len(plddt_png)):
                         gallery += "<img src=\"" + plddt_png[i] +\
                                    "\" style=\"vertical-align: middle;\" height=\"" +\
-                                   height + "px\"/>"
+                                   str(height) + "px\"/>"
                     self.putMessage1 ( self.report_page_id(),gallery,
                                        self.rvrow,col=0,rowSpan=1 )
                     self.rvrow += 1
