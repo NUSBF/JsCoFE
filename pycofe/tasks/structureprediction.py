@@ -284,18 +284,22 @@ class StructurePrediction(basic.TaskDriver):
                         xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
 
                         if len(fpaths)>1:
-                            self.putMessage ( "<h3>Prediction #" + str(nModels) + "</h3>" )
+                            if i>0:
+                                self.putMessage ( "&nbsp;<br>&nbsp;" )
+                            self.putMessage ( "<h2>Prediction #" + str(nModels) + "</h2>" )
 
                         if engine=="openfold":
                             gridId = self.getWidgetId ( "graphs_grid" )
                             self.putGrid     ( gridId )
                             self.putMessage1 ( gridId,
                                     "<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
-                                    "&nbsp;&nbsp;&nbsp;&nbsp;PAE matrix</h3>",0,col=0 )
+                                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PAE matrix</h3>",
+                                    0,col=0 )
                             self.putMessage1 ( gridId,"<img src=\"" + PAE_png[i] +\
-                                    "\" height=\"280px\"/>",1,col=0 )
+                                    "\" height=\"260px\"/>",1,col=0 )
                             self.putMessage1 ( gridId,"<h3>&nbsp;&nbsp;&nbsp;&nbsp;" +\
-                                    "&nbsp;&nbsp;&nbsp;PLLDT scores</h3>",0,col=1 )
+                                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PLLDT scores</h3>",
+                                    0,col=1 )
                             self.putMessage1 ( gridId,"<img src=\"" + plddt_png[i] +\
                                     "\" height=\"380px\"/>",1,col=1 )
 
@@ -314,6 +318,7 @@ class StructurePrediction(basic.TaskDriver):
                         xyzs.append ( xyz )
 
                         #models.append ( model )
+
 
             if nModels == 1:
                 self.generic_parser_summary["structureprediction"] = {
