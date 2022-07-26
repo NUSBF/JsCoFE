@@ -119,7 +119,7 @@ class StructurePrediction(basic.TaskDriver):
             self.putMessage ( "ColabFold setup is used" )
         else:
             self.putMessage ( "OpenFold setup is used" )
-        self.putMessage ( self.getParameter(sec1.NSTRUCTS) + " models will be generated" )
+        self.putMessage ( self.getParameter(sec1.NSTRUCTS) + " models will be generated<br>&nbsp;" )
 
         self.stdout (
             "--------------------------------------------------------------------------------\n" +\
@@ -163,7 +163,7 @@ class StructurePrediction(basic.TaskDriver):
             plddt_png    = []
 
             for file in os.listdir(dirName):
-                if file.lower().endswith(".pdb"): # find all pdb files in folder
+                if file.endswith(".pdb") and (engine=="colabfold" or "relaxed" in file):
                     fpaths.append(os.path.join(dirName,file))
                 elif file.endswith("coverage.png"):
                     coverage_png.append ( "../" + dirName + "/" + file )
