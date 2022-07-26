@@ -264,7 +264,7 @@ class StructurePrediction(basic.TaskDriver):
                     else:
                         outFName = self.getXYZOFName ( modifier=nModels+1 )
 
-                    os.rename ( fpath[i],outFName )
+                    os.rename ( fpaths[i],outFName )
 
                     # model = self.registerModel ( seq,outFName,checkout=True )
                     xyz = self.registerXYZ ( outFName )
