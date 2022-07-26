@@ -1966,12 +1966,19 @@ class TaskDriver(object):
     # ----------------------------------------------------------------------------
 
     def putXYZWidget ( self,widgetId,title_str,xyz,openState=0 ):
+        self.putXYZWidget1 ( self.report_page_id(),widgetId,title_str,xyz,
+                             self.rvrow,col=0,rowSpan=1,colSpan=1,
+                             openState=openState )
+        self.rvrow += 1
+        return
+
+    def putXYZWidget1 ( self,pageId,widgetId,title_str,xyz,row,col=0,
+                             rowSpan=1,colSpan=1,openState=0 ):
         pyrvapi.rvapi_add_data ( self.getWidgetId(widgetId),title_str,
                     # always relative to job_dir from job_dir/html
                     "/".join(["..",self.outputDir(),xyz.getXYZFileName()]),
-                    "xyz",self.report_page_id(),self.rvrow,0,1,1,openState )
+                    "xyz",pageId,row,col,rowSpan,colSpan,openState )
         self.addCitations ( ["uglymol","ccp4mg"] )
-        self.rvrow += 1
         return
 
 
