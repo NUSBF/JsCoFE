@@ -287,12 +287,15 @@ class StructurePrediction(basic.TaskDriver):
                         if engine=="openfold":
                             gridId = self.getWidgetId ( "graphs_grid" )
                             self.putGrid     ( gridId )
-                            self.putMessage1 ( gridId,"<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PAE matrix</h3>",0,col=0 )
+                            self.putMessage1 ( gridId,
+                                    "<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
+                                    "&nbsp;&nbsp;&nbsp;&nbsp;PAE matrix</h3>",0,col=0 )
                             self.putMessage1 ( gridId,"<img src=\"" + PAE_png[i] +\
-                                               "\" height=\"360px\"/>",1,col=0 )
-                            self.putMessage1 ( gridId,"<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PLLDT scores</h3>",0,col=1 )
+                                    "\" height=\"300px\"/>",1,col=0 )
+                            self.putMessage1 ( gridId,"<h3>&nbsp;&nbsp;&nbsp;&nbsp;" +\
+                                    "&nbsp;&nbsp;&nbsp;PLLDT scores</h3>",0,col=1 )
                             self.putMessage1 ( gridId,"<img src=\"" + plddt_png[i] +\
-                                               "\" height=\"360px\"/>",1,col=1 )
+                                    "\" height=\"360px\"/>",1,col=1 )
 
                         self.putMessage ( "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +\
                                           xyz.dname )
