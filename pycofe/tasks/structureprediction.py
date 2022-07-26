@@ -110,8 +110,10 @@ class StructurePrediction(basic.TaskDriver):
         if hasattr(sec1,"MINSCORE"):
             script += " --stop-at-score " + self.getParameter(sec1.MINSCORE)
 
+        nmodels_str = "1"
         if hasattr(sec1,"NSTRUCTS"):
-            script += " --num_models " + self.getParameter(sec1.NSTRUCTS)
+            nmodels_str = self.getParameter ( sec1.NSTRUCTS )
+        script += " --num_models " + nmodels_str
 
         script += " --out " + dirName + " --" + engine + "\n"
 
@@ -119,7 +121,10 @@ class StructurePrediction(basic.TaskDriver):
             self.putMessage ( "Using ColabFold implementation of AlphaFold" )
         else:
             self.putMessage ( "Using OpenFold implementation of AlphaFold" )
-        self.putMessage ( self.getParameter(sec1.NSTRUCTS) + " models will be generated<br>&nbsp;" )
+        if nmodels_str=="1":
+            self.putMessage ( "1 model will be generated<br>&nbsp;" )
+        else:
+            self.putMessage ( nmodels_str + " models will be generated<br>&nbsp;" )
 
         self.stdout (
             "--------------------------------------------------------------------------------\n" +\
@@ -282,12 +287,12 @@ class StructurePrediction(basic.TaskDriver):
                         if engine=="openfold":
                             gridId = self.getWidgetId ( "graphs_grid" )
                             self.putGrid     ( gridId )
-                            self.putMessage1 ( gridId,"<b>PAE matrix</b>",0,col=0 )
+                            self.putMessage1 ( gridId,"<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PAE matrix</h3>",0,col=0 )
                             self.putMessage1 ( gridId,"<img src=\"" + PAE_png[i] +\
-                                               "\" height=\"300px\"/>",1,col=0 )
-                            self.putMessage1 ( gridId,"<b>PLLDT scores</b>",0,col=1 )
+                                               "\" height=\"360px\"/>",1,col=0 )
+                            self.putMessage1 ( gridId,"<h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PLLDT scores</h3>",0,col=1 )
                             self.putMessage1 ( gridId,"<img src=\"" + plddt_png[i] +\
-                                               "\" height=\"300px\"/>",1,col=1 )
+                                               "\" height=\"360px\"/>",1,col=1 )
 
                         self.putMessage ( "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +\
                                           xyz.dname )
