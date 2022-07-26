@@ -116,9 +116,9 @@ class StructurePrediction(basic.TaskDriver):
         script += " --out " + dirName + " --" + engine + "\n"
 
         if engine=="colabfold":
-            self.putMessage ( "ColabFold setup is used" )
+            self.putMessage ( "Using ColabFold implementation of AlphaFold" )
         else:
-            self.putMessage ( "OpenFold setup is used" )
+            self.putMessage ( "Using OpenFold implementation of AlphaFold" )
         self.putMessage ( self.getParameter(sec1.NSTRUCTS) + " models will be generated<br>&nbsp;" )
 
         self.stdout (
@@ -188,40 +188,68 @@ class StructurePrediction(basic.TaskDriver):
                 else:
                     self.addCitation ( "openfold" )
 
-                if len(PAE_png)>0:
-                    self.putMessage ( "<h3>PAE matrices</h3>" )
-                    gallery = ""
-                    if len(PAE_png)<=1:
-                        gallery = "<img src=\"" + PAE_png[0] +\
-                                  "\" height=\"200px\" style=\"position:relative; left:" +\
-                                  str(35*(1-len(fpaths))) + "px;\"/>"
-                    else:
-                        for i in range(len(PAE_png)):
-                            gallery += "<img src=\"" + PAE_png[i] + "\" height=\"200px\"/>"
-                    self.putMessage1 ( self.report_page_id(),gallery,
-                                       self.rvrow,col=0,rowSpan=1,colSpan=1 )
-                    self.rvrow += 1
+                if engine=="colabfold":
 
-                if len(plddt_png)>0:
-                    self.putMessage ( "<h3>PLLDT scores</h3>" )
-                    height  = 500
-                    if len(plddt_png)>1:
-                        height = 300
-                    gallery = ""
-                    for i in range(len(plddt_png)):
-                        gallery += "<img src=\"" + plddt_png[i] +\
-                                   "\" style=\"vertical-align: middle;\" height=\"" +\
-                                   str(height) + "px\"/>"
-                    self.putMessage1 ( self.report_page_id(),gallery,
-                                       self.rvrow,col=0,rowSpan=1 )
-                    self.rvrow += 1
+                    if len(PAE_png)>0:
+                        self.putMessage  ( "<h3>PAE matrices</h3>" )
+                        self.putMessage1 (
+                            self.report_page_id(),"<img src=\"" + PAE_png[0] +\
+                            "\" height=\"200px\" style=\"position:relative; left:" +\
+                            str(35*(1-len(fpaths))) + "px;\"/>",
+                            self.rvrow,col=0,rowSpan=1,colSpan=1 )
+                        self.rvrow += 1
 
-                if len(coverage_png)>0:
-                    self.putMessage ( "<h3>Sequence coverages</h3>" )
-                    self.putMessage1 ( self.report_page_id(),"<img src=\"" + coverage_png[0] +\
-                                "\" height=\"500px\" style=\"vertical-align: middle;\"/>",
-                                self.rvrow,col=0,rowSpan=1 )
-                    self.rvrow += 1
+                    if len(plddt_png)>0:
+                        self.putMessage  ( "<h3>PLLDT scores</h3>" )
+                        self.putMessage1 (
+                            self.report_page_id(),"<img src=\"" + plddt_png[i] +\
+                            "\" style=\"vertical-align: middle;\" height=\"500px\"/>",
+                            self.rvrow,col=0,rowSpan=1 )
+                        self.rvrow += 1
+
+                    if len(coverage_png)>0:
+                        self.putMessage  ( "<h3>Sequence coverages</h3>" )
+                        self.putMessage1 (
+                            self.report_page_id(),"<img src=\"" + coverage_png[0] +\
+                            "\" height=\"500px\" style=\"vertical-align: middle;\"/>",
+                            self.rvrow,col=0,rowSpan=1 )
+                        self.rvrow += 1
+
+
+                # if len(PAE_png)>0:
+                #     self.putMessage ( "<h3>PAE matrices</h3>" )
+                #     gallery = ""
+                #     if len(PAE_png)<=1:
+                #         gallery = "<img src=\"" + PAE_png[0] +\
+                #                   "\" height=\"200px\" style=\"position:relative; left:" +\
+                #                   str(35*(1-len(fpaths))) + "px;\"/>"
+                #     else:
+                #         for i in range(len(PAE_png)):
+                #             gallery += "<img src=\"" + PAE_png[i] + "\" height=\"200px\"/>"
+                #     self.putMessage1 ( self.report_page_id(),gallery,
+                #                        self.rvrow,col=0,rowSpan=1,colSpan=1 )
+                #     self.rvrow += 1
+                #
+                # if len(plddt_png)>0:
+                #     self.putMessage ( "<h3>PLLDT scores</h3>" )
+                #     height  = 500
+                #     if len(plddt_png)>1:
+                #         height = 300
+                #     gallery = ""
+                #     for i in range(len(plddt_png)):
+                #         gallery += "<img src=\"" + plddt_png[i] +\
+                #                    "\" style=\"vertical-align: middle;\" height=\"" +\
+                #                    str(height) + "px\"/>"
+                #     self.putMessage1 ( self.report_page_id(),gallery,
+                #                        self.rvrow,col=0,rowSpan=1 )
+                #     self.rvrow += 1
+                #
+                # if len(coverage_png)>0:
+                #     self.putMessage ( "<h3>Sequence coverages</h3>" )
+                #     self.putMessage1 ( self.report_page_id(),"<img src=\"" + coverage_png[0] +\
+                #                 "\" height=\"500px\" style=\"vertical-align: middle;\"/>",
+                #                 self.rvrow,col=0,rowSpan=1 )
+                #     self.rvrow += 1
 
                 self.putTitle ( "Generated models" )
 
@@ -229,14 +257,14 @@ class StructurePrediction(basic.TaskDriver):
                                   "with sequence:&nbsp;" + seq.dname +\
                                   "</b></i>&nbsp;<br>&nbsp;" )
 
-                for fpath_out in fpaths:
+                for i in range(len(fpaths)):
 
                     if len(fpaths)<=1:
                         outFName = self.getXYZOFName ( )
                     else:
                         outFName = self.getXYZOFName ( modifier=nModels+1 )
 
-                    os.rename ( fpath_out,outFName )
+                    os.rename ( fpath[i],outFName )
 
                     # model = self.registerModel ( seq,outFName,checkout=True )
                     xyz = self.registerXYZ ( outFName )
@@ -251,7 +279,18 @@ class StructurePrediction(basic.TaskDriver):
                         if len(fpaths)>1:
                             self.putMessage ( "<h3>Prediction #" + str(nModels) + "</h3>" )
 
-                        self.putMessage ( "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + xyz.dname )
+                        if engine=="openfold":
+                            gridId = self.getWidgetId ( "graphs_grid" )
+                            self.putGrid     ( gridId )
+                            self.putMessage1 ( gridId,"<b>PAE matrix</b>",0,col=0 )
+                            self.putMessage1 ( gridId,"<img src=\"" + PAE_png[i] +\
+                                               "\" height=\"300px\"/>",1,col=0 )
+                            self.putMessage1 ( gridId,"<b>PLLDT scores</b>",0,col=1 )
+                            self.putMessage1 ( gridId,"<img src=\"" + plddt_png[i] +\
+                                               "\" height=\"300px\"/>",1,col=1 )
+
+                        self.putMessage ( "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +\
+                                          xyz.dname )
                         xyz.addDataAssociation ( seq.dataId )
                         # sid='100.0'
                         # model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
