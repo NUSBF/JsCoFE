@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    12.06.22   <--  Date of Last Modification.
+#    26.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -248,6 +246,19 @@ citations = {
                             'year'    : '2022',
                             'pages'   : '679–682',
                             'doi'     : '10.1038/s41592-022-01488-1'
+                        }]
+                  },
+
+    'openfold'  : { 'name'     : 'OpenFold',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Ahdritz G., Bouatta N., Kadyan S., Xia Q., Gerecke W., and AlQuraishi M.',
+                            'title'   : 'OpenFold Software',
+                            'journal' : 'https://github.com/aqlaboratory/openfold',
+                            'volume'  : '',
+                            'year'    : '2021',
+                            'pages'   : '',
+                            'doi'     : '10.5281/zenodo.5709539'
                         }]
                   },
 

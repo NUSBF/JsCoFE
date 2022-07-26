@@ -115,6 +115,12 @@ class StructurePrediction(basic.TaskDriver):
 
         script += " --out " + dirName + " --" + engine + "\n"
 
+        if engine=="colabfold":
+            self.puMessage ( "ColabFold setup is used" )
+        else:
+            self.puMessage ( "OpenFold setup is used" )
+        self.putMessage ( self.getParameter(sec1.NSTRUCTS) + " models will be generated" )
+
         self.stdout (
             "--------------------------------------------------------------------------------\n" +\
             "   Processing script:\n\n" +\
@@ -176,7 +182,11 @@ class StructurePrediction(basic.TaskDriver):
                 PAE_png     .sort()
                 plddt_png   .sort()
 
-                self.addCitations ( ["alphafold","colabfold"] )
+                self.addCitation ( "alphafold" )
+                if engine=="colabfold":
+                    self.addCitation ( "colabfold" )
+                else:
+                    self.addCitation ( "openfold" )
 
                 if len(PAE_png)>0:
                     self.putMessage ( "<h3>PAE matrices</h3>" )
@@ -229,7 +239,7 @@ class StructurePrediction(basic.TaskDriver):
 
                     if xyz:
 
-                        nModels = nModels +1
+                        nModels = nModels + 1
 
                         xyz.fixBFactors ( self.outputDir() )
                         xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
