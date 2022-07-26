@@ -296,8 +296,8 @@ class StructurePrediction(basic.TaskDriver):
                                     "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PAE matrix</h3>",
                                     0,col=0 )
                             self.putMessage1 ( gridId,"<img src=\"" + PAE_png[i] +\
-                                    "\" height=\"260px\"/>&nbsp;&nbsp;&nbsp;&nbsp;" +\
-                                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",1,col=0 )
+                                    "\" height=\"260px\"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+                                    1,col=0 )
                             self.putMessage1 ( gridId,"<h3>&nbsp;&nbsp;&nbsp;&nbsp;" +\
                                     "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PLLDT scores</h3>",
                                     0,col=1 )
@@ -307,7 +307,7 @@ class StructurePrediction(basic.TaskDriver):
                                     "&nbsp;<br><b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +\
                                     xyz.dname,2,col=0 )
                             self.putXYZWidget1 ( gridId,self.getWidgetId("xyz_btn"),
-                                                 "Atomic coordinates",xyz,3,col=0 )
+                                                 "Model",xyz,3,col=0 )
                         else:
                             self.putMessage   (
                                     "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +\
