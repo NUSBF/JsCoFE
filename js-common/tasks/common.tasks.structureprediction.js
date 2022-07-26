@@ -82,21 +82,21 @@ function TaskStructurePrediction()  {   // must start with Task...
                                     'additional structures will increase wait times. ' +
                                     'Fewer structures may be produced if score threshold' +
                                     'is met.',
-                         range    : [1,'*'],
+                         range    : [1,5],
                          value    : 1,
                          iwidth   : 40,
                          position : [0,0,1,1]
-                       },
-            MINSCORE : { type     : 'real',
-                         keyword  : 'MINSCORE',
-                         label    : 'Stop at score',
-                         tooltip  : 'Score threshold to stop calculations. Higher ' +
-                                    'thresholds may reduce calculation times, however, ' +
-                                    'solutions may be missed.',
-                         range    : [1,'*'],
-                         value    : 80,
-                         iwidth   : 40,
-                         position : [1,0,1,1]
+            //            },
+            // MINSCORE : { type     : 'real',
+            //              keyword  : 'MINSCORE',
+            //              label    : 'Stop at score',
+            //              tooltip  : 'Score threshold to stop calculations. Higher ' +
+            //                         'thresholds may reduce calculation times, however, ' +
+            //                         'solutions may be missed.',
+            //              range    : [1,'*'],
+            //              value    : 80,
+            //              iwidth   : 40,
+            //              position : [1,0,1,1]
                        }
           }
         }
@@ -125,11 +125,6 @@ TaskStructurePrediction.prototype.desc_title = function()  {
   return 'generate structure model with AlphaFild-2';
 }
 
-// TaskStructurePrediction.prototype.icon_large = function()  {
-//  return './images_png/task_structureprediction_20x20.png';
-//}
-
-
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux
@@ -137,14 +132,21 @@ TaskStructurePrediction.prototype.desc_title = function()  {
 //   'U'  : Unix ( = Linux + Mac)
 TaskStructurePrediction.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
-TaskStructurePrediction.prototype.requiredEnvironment = function() { return ['CCP4','ALPHAFOLD_CFG']; }
+TaskStructurePrediction.prototype.requiredEnvironment = function() {
+  return ['CCP4','ALPHAFOLD_CFG'];
+}
 
 
 // 3. Define task version. Whenever task changes (e.g. receives new input
 //    parameters or data), the version number must be advanced. |jsCoFE| framework
 //    forbids cloning jobs with version numbers lower than specified here.
 
-TaskStructurePrediction.prototype.currentVersion = function()  { return 0; }
+TaskStructurePrediction.prototype.currentVersion = function()  {
+  var version = 1;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
 
 TaskStructurePrediction.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
