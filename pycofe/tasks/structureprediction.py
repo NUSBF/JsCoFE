@@ -178,9 +178,11 @@ class StructurePrediction(basic.TaskDriver):
                     plddt_png.append ( "../" + dirName + "/" + file )
 
 
-            if len(fpaths)<=0: # Result page in case of no models are found
+            if len(fpaths)<=0: # Result page in case of no models are generated
+
                 self.putTitle ( "No models generated" )
-            else: # if models are found
+
+            else: # if models are generated
 
                 fpaths      .sort()
                 coverage_png.sort()
@@ -207,7 +209,7 @@ class StructurePrediction(basic.TaskDriver):
                     if len(plddt_png)>0:
                         self.putMessage  ( "<h3>PLLDT scores</h3>" )
                         self.putMessage1 (
-                            self.report_page_id(),"<img src=\"" + plddt_png[i] +\
+                            self.report_page_id(),"<img src=\"" + plddt_png[0] +\
                             "\" style=\"vertical-align: middle;\" height=\"500px\"/>",
                             self.rvrow,col=0,rowSpan=1 )
                         self.rvrow += 1
