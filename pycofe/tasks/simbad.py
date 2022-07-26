@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    24.07.22   <--  Date of Last Modification.
+#    03.09.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2021
 #
 # ============================================================================
 #
@@ -163,7 +163,10 @@ class Simbad(asudef.ASUDef):
                   ]
 
         if level in ["S","LCS"]:
-            morda_path = os.path.join ( os.environ["CCP4"],"share","simbad","static","morda" )
+            morda_default = os.path.join ( os.environ["CCP4"],"share","simbad","static","morda" )
+            morda_path = os.environ["SIMBAD_DB"]
+            if not os.path.exists(morda_path):
+                morda_path = morda_default
             if not os.path.exists(morda_path):
                 self.fail ( "<h3>No SIMBAD database.</h3>" +\
                     "Structural searches with SIMBAD require SIMBAD database, " +\
@@ -182,6 +185,9 @@ class Simbad(asudef.ASUDef):
         if level in ['L','LC']:
             cmd += [ "-max_penalty_score"  ,maxpenalty,
                      "-max_lattice_results",maxnlatt ]
+
+        if morda_path != morda_default:
+            cmd += [ "-morda_db",morda_path ]
 
         if "PDB_DIR" in os.environ:
             cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
@@ -415,7 +421,7 @@ class Simbad(asudef.ASUDef):
                         "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                         oxyz.dname )
                     self.putXYZWidget ( self.getWidgetId("xyz_btn"),
-                                        "Atomic coordinates",oxyz )
+                                        "Atomic coordinates",oxyz,-1 )
                     have_results = True
                     self.generic_parser_summary["simbad"] = {
                         "summary_line" : "best model: " + result0["name"]
