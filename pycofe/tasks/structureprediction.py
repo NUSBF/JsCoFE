@@ -306,7 +306,7 @@ class StructurePrediction(basic.TaskDriver):
                                     "&nbsp;<br><b>Assigned name&nbsp;:</b>&nbsp;" +\
                                     xyz.dname,2,col=0 )
                             self.putXYZWidget1 ( gridId,self.getWidgetId("xyz_btn"),
-                                                 "Model :",xyz,3,col=0 )
+                                                 "Model",xyz,3,col=0 )
                         else:
                             self.putMessage   (
                                     "<b>Assigned name&nbsp;:</b>&nbsp;" + xyz.dname )
