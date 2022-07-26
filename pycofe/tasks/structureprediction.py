@@ -177,7 +177,6 @@ class StructurePrediction(basic.TaskDriver):
                 elif file.endswith("plddt.png"):
                     plddt_png.append ( "../" + dirName + "/" + file )
 
-
             if len(fpaths)<=0: # Result page in case of no models are generated
 
                 self.putTitle ( "No models generated" )
@@ -289,7 +288,7 @@ class StructurePrediction(basic.TaskDriver):
                                 self.putMessage ( "&nbsp;<br>&nbsp;" )
                             self.putMessage ( "<h2>Prediction #" + str(nModels) + "</h2>" )
 
-                        if engine=="openfold":
+                        if engine=="openfold" and len(PAE_png)==len(fpaths) and len(plddt_png)==len(fpaths):
                             gridId = self.getWidgetId ( "graphs_grid" )
                             self.putGrid     ( gridId )
                             self.putMessage1 ( gridId,
@@ -302,9 +301,9 @@ class StructurePrediction(basic.TaskDriver):
                                     "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PLLDT scores</h3>",
                                     0,col=1 )
                             self.putMessage1 ( gridId,"<img src=\"" + plddt_png[i] +\
-                                    "\" height=\"380px\"/>",1,col=1,rowSpan=3 )
+                                    "\" height=\"400px\"/>",1,col=1,rowSpan=3 )
                             self.putMessage1 ( gridId,
-                                    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +\
+                                    "&nbsp;<br><b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +\
                                     xyz.dname,2,col=0 )
                             self.putXYZWidget1 ( gridId,self.getWidgetId("xyz_btn"),
                                                  "Atomic coordinates",xyz,3,col=0 )
@@ -320,11 +319,9 @@ class StructurePrediction(basic.TaskDriver):
 
                         # self.add_seqid_remark ( model,[sid] )
 
-
                         xyzs.append ( xyz )
 
                         #models.append ( model )
-
 
             if nModels == 1:
                 self.generic_parser_summary["structureprediction"] = {
@@ -338,7 +335,6 @@ class StructurePrediction(basic.TaskDriver):
             auto.makeNextTask ( self,{
                 "xyz" : xyzs,
             }, log=self.file_stderr)
-
 
         self.success ( (nModels>0) )
         return
