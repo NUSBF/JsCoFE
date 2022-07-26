@@ -163,8 +163,7 @@ class StructurePrediction(basic.TaskDriver):
             plddt_png    = []
 
             for file in os.listdir(dirName):
-                if file.endswith(".pdb") and (engine=="colabfold" or "relaxed" in file):
-                    self.stdoutln ( file )
+                if file.endswith(".pdb") and (engine=="colabfold" or file.endswith("_relaxed.pdb")):
                     fpaths.append ( os.path.join(dirName,file) )
                 elif file.endswith("coverage.png"):
                     coverage_png.append ( "../" + dirName + "/" + file )
