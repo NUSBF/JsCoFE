@@ -296,7 +296,7 @@ class StructurePrediction(basic.TaskDriver):
                                     "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PAE matrix</h3>",
                                     0,col=0 )
                             self.putMessage1 ( gridId,"<img src=\"" + PAE_png[i] +\
-                                    "\" height=\"260px\"/>",1,col=0 )
+                                    "\" height=\"260px\"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",1,col=0 )
                             self.putMessage1 ( gridId,"<h3>&nbsp;&nbsp;&nbsp;&nbsp;" +\
                                     "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PLLDT scores</h3>",
                                     0,col=1 )
