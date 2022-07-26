@@ -282,6 +282,7 @@ class StructurePrediction(basic.TaskDriver):
 
                         xyz.fixBFactors ( self.outputDir() )
                         xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                        xyz.addDataAssociation ( seq.dataId )
 
                         if len(fpaths)>1:
                             if i>0:
@@ -301,11 +302,17 @@ class StructurePrediction(basic.TaskDriver):
                                     "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PLLDT scores</h3>",
                                     0,col=1 )
                             self.putMessage1 ( gridId,"<img src=\"" + plddt_png[i] +\
-                                    "\" height=\"380px\"/>",1,col=1 )
-
-                        self.putMessage ( "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +\
-                                          xyz.dname )
-                        xyz.addDataAssociation ( seq.dataId )
+                                    "\" height=\"380px\"/>",1,col=1,rowSpan=3 )
+                            self.putMessage1 ( gridId,
+                                    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +\
+                                    xyz.dname,2,col=0 )
+                            self.putXYZWidget1 ( gridId,self.getWidgetId("xyz_btn"),
+                                                 "Atomic coordinates",xyz,3,col=0 )
+                        else:
+                            self.putMessage   (
+                                    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +\
+                                    xyz.dname )
+                            self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Atomic coordinates",xyz )
                         # sid='100.0'
                         # model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
                         # model.seqId = model.meta["seqId"]
@@ -313,7 +320,6 @@ class StructurePrediction(basic.TaskDriver):
 
                         # self.add_seqid_remark ( model,[sid] )
 
-                        self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Atomic coordinates",xyz )
 
                         xyzs.append ( xyz )
 
