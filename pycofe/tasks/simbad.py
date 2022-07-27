@@ -176,6 +176,9 @@ class Simbad(asudef.ASUDef):
             # sec2 = self.task.parameters.sec2.contains
             # cmd += [ "-rot_program",self.getParameter(sec2.RFPROGRAM_SEL) ]
 
+            if morda_path != morda_default:
+                cmd += [ "-morda_db",morda_path ]
+
         if len(qtype)>0:
             cmd += qtype
 
@@ -185,9 +188,6 @@ class Simbad(asudef.ASUDef):
         if level in ['L','LC']:
             cmd += [ "-max_penalty_score"  ,maxpenalty,
                      "-max_lattice_results",maxnlatt ]
-
-        if morda_path != morda_default:
-            cmd += [ "-morda_db",morda_path ]
 
         if "PDB_DIR" in os.environ:
             cmd += [ "-pdb_db",os.environ["PDB_DIR"] ]
