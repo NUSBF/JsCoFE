@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    17.07.22   <--  Date of Last Modification.
+ *    27.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -268,7 +268,7 @@ function printTemplate ( task )  {
         msg = msg.concat([
           'HKL         /path/to/hkl.mtz         # reflection data (mandatory)',
           'PHASES      /path/to/phases.mtz      # phases',
-          'XYZ         /path/to/phases.pdb      # model',
+          'XYZ         /path/to/model.pdb       # model',
           'LIGAND      /path/to/file.[cif|lib]  # ligand(s) (if present in model)',
           '#',
           '# Note: HKL and PHASES may be presented with the same file (e.g. one',
@@ -286,13 +286,9 @@ function printTemplate ( task )  {
         ].concat(msg);
         msg = msg.concat([
           'HKL         /path/to/hkl.mtz         # reflection data (mandatory)',
-          'PHASES      /path/to/phases.mtz      # phases',
-          'XYZ         /path/to/phases.pdb      # model',
+          'XYZ         /path/to/model.pdb       # model (mandatory)',
           'LIGAND      /path/to/file.[cif|lib]  # ligand(s) (if present in model)',
-          '#',
-          '# Note: HKL and PHASES may be presented with the same file (e.g. one',
-          '#       produced by Refmac); either XYZ or PHASES, or both, must be',
-          '#       given.'
+          '#'
         ]);
       break;
 
@@ -641,14 +637,14 @@ if (meta.task=='hop-on')  {
 
 } else if (meta.task=='auto-ref')  {
 
-    if ((files.phases.length<=0) && (files.hkl.length<=0))  {
-      ok = false;
-      console.log ( ' *** no reflection data provided' );
-    }
-    if ((files.phases.length<=0) || (files.xyz.length<=0))  {
-      ok = false;
-      console.log ( ' *** no phase data or atomic model provided' );
-    }
+  if ((files.phases.length<=0) && (files.hkl.length<=0))  {
+    ok = false;
+    console.log ( ' *** no reflection data provided' );
+  }
+  if (files.xyz.length<=0)  {
+    ok = false;
+    console.log ( ' *** no atomic model provided' );
+  }
 
 } else if (meta.task=='dimple')  {
 
