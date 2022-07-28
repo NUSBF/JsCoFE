@@ -433,8 +433,7 @@ var folder  = this.findFolder ( selNode.dataId );
 
   if (folder)  {
     if ((folder.type!=folder_type.custom_list) &&
-        ((folder.nprojects>0) || (folder.folders.length>0)
-                              || (folder.projects.length>0)))  {
+        ((folder.nprojects>0) || (folder.folders.length>0)))  {
       new MessageBox ( 'Non-empty folder',
             '<h2>Folder ' + folder.name + ' is not empty</h2>' +
             'Delete all projects and any sub-folders in this folder ' +
@@ -561,8 +560,11 @@ var label   = 'Folder';
     folder.name       = newName;
     var newPath       = fpl.join('/');
     self.projectList.renameFolders ( selNode.dataId,newPath );
-    self.onReturn_fnc  ( 'rename',{ folder_path: selNode.dataId, rename: newPath } );
-    self.ftree.setText ( selNode,newName );
+    self.onReturn_fnc  ( 'rename',{
+        folder_path : selNode.dataId,
+        rename_path : newPath
+    });
+    self.ftree.setText ( selNode,newName + '(' + folder.nprojects + ')' );
     selNode.dataId = newPath;
     return true;
   });

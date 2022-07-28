@@ -942,9 +942,9 @@ function ProjectListPage ( sceneId )  {
                           }
                       break;
           case 'rename' : if (data.folder_path==__current_folder.path)  {
-                            setPageTitle ( data.rename );
-                            if (!projectList.setCurrentFolder(
-                                    projectList.findFolder(data.rename)))
+                            var renFolder = projectList.findFolder ( data.rename_path );
+                            setPageTitle ( renFolder );
+                            if (!projectList.setCurrentFolder(renFolder))
                               new MessageBox (
                                   'Error',
                                   '<h2>Error</h2>Selected folder:<p><i>"' +
