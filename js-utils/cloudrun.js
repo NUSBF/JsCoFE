@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    27.07.22   <--  Date of Last Modification.
+ *    28.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -142,7 +142,6 @@ function printInstructions()  {
     ''
   ];
   console.log ( msg.join('\n') );
-  process.exit();
 }
 
 
@@ -176,18 +175,18 @@ function printTemplate ( task )  {
     default :
         msg = [
           'Task code "' + task + '" is invalid. Acceptable tasks include:',
-          '   "' + cloudrun_code.import + '"   : generic data import',
+          '   "' + cloudrun_code.import   + '" : generic data import',
           '   "' + cloudrun_code.auto_af2 + '" : auto-AF2 workflow (uses AlphaFold-2 for model generation)',
-          '   "' + cloudrun_code.auto_mr + '"  : auto-MR workflow (uses PDB and AFDB as source of models)',
-          '   "' + cloudrun_code.auto_ep + '"  : auto-EP workflow',
-          '   "' + cloudrun_code.hop_on + '"   : project initiation from phased structure',
+          '   "' + cloudrun_code.auto_mr  + '" : auto-MR workflow (uses PDB and AFDB as source of models)',
+          '   "' + cloudrun_code.auto_ep  + '" : auto-EP workflow',
+          '   "' + cloudrun_code.hop_on   + '" : project initiation from phased structure',
           '   "' + cloudrun_code.auto_ref + '" : auto_REL workflow (from phased structure)',
-          '   "' + cloudrun_code.dimple + '"   : fast phasing with 100% homolog for ligand blob identification'
+          '   "' + cloudrun_code.dimple   + '" : fast phasing with 100% homolog for ligand blob identification'
         ];
         console.log (
           msg.join('\n')
         );
-        process.exit();
+        process.exit(1);
       break;
 
     case cloudrun_code.import :
@@ -321,7 +320,7 @@ function printTemplate ( task )  {
     '# CloudRun template command file for ' + task + ' task.\n#\n' +
     msg.join('\n')
   );
-  process.exit();
+  process.exit(0);
 
 }
 
@@ -355,6 +354,7 @@ function sendData ( filePath,metaData )  {
   request.post ( post_options, function(err,httpResponse,response){
     if (err) {
       console.log ( ' *** send failed: ' + err );
+      process.exitCode = 1;
     } else  {
       try {
         var resp = JSON.parse ( response );
@@ -364,12 +364,15 @@ function sendData ( filePath,metaData )  {
                         '      in your browser, reload/refresh them manually if required.' );
         } else if (resp.message.indexOf('quota')>=0)  {
           console.log ( ' *** ' + resp.message );
+          process.exitCode = 1;
         } else  {
           console.log ( ' *** cloud run initiation failed, rc=' + resp.status +
                         '\n *** ' + resp.message );
+          process.exitCode = 1;
         }
       } catch(err)  {
         console.log ( ' *** unparseable server reply: ' + response );
+        process.exitCode = 1;
       }
     }
     utils.removeFile ( filePath );
@@ -443,8 +446,10 @@ if (process.argv.length==4)  {
     input = utils.readString(0);  // fs.readFileSync(0); // STDIN_FILENO = 0
 }
 
-if (!input)
+if (!input)  {
   printInstructions();
+  process.exit(1);
+}
 
 var meta = {
   url          : '',
@@ -564,12 +569,12 @@ for (var i=0;i<commands.length;i++)  {
         var auth_line = utils.readString ( val );
         if (!auth_line)  {
           console.log ( '\n  *** STOP: AUTH_FILE is absent or corrupt' );
-          process.exit();
+          process.exit(1);
         }
         auth = auth_line.match ( /\S+/g );
         if (auth.length!=2)  {
           console.log ( '\n  *** STOP: AUTH_FILE must contain only login name and CloudRun Id' );
-          process.exit();
+          process.exit(1);
         }
         meta.user        = auth[0]
         meta.cloudrun_id = auth[1];
@@ -589,6 +594,7 @@ console.log ( ' ============================================================' );
 if (!ok)  {
   console.log ( '\n **** ERRORS IN COMMANDS -- STOP\n\n' );
   printInstructions();
+  process.exit(1);
 }
 
 if (auth_file)
@@ -682,7 +688,7 @@ if (meta.task=='hop-on')  {
 
 if ((!ok) || (fnames.length<=0))  {
   console.log ( '\n *** STOP DUE TO INSUFFICIENT INPUT' );
-  process.exit();
+  process.exit(1);
 }
 
 if (meta.title=='*')
@@ -834,4 +840,5 @@ zl.archiveFolder ( dirPath,archivePath,{ followSymlinks : true } )
   }, function(err) {
     console.log ( ' *** zip packing error: ' + err );
     utils.removeFile ( archivePath );
+    process.exitCode = 1;
   });
