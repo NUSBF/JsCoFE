@@ -348,6 +348,21 @@ var flist = [];
   return flist;
 }
 
+
+ProjectList.prototype._set_folder_paths = function ( folder )  {
+  for (var i=0;i<folder.folders.length;i++)  {
+    folder.folders[i].path = folder.path + '/' + folder.folders[i].name;
+    this._set_folder_paths ( folder.folders[i] );
+  }
+}
+
+
+ProjectList.prototype.setFolderPaths = function()  {
+  for (var i=0;i<this.folders.length;i++)
+    this._set_folder_paths ( this.folders[i] );
+}
+
+
 ProjectList.prototype.sortFolders = function()  {
 var l1 = this._get_folder_list ( folder_type.custom_list );
 var l2 = this._get_folder_list ( folder_type.tutorials   );
@@ -436,6 +451,10 @@ ProjectList.prototype.resetFolders = function ( login )  {
 
   for (var fpath in listPaths)
     this.addFolderPath ( fpath,listPaths[fpath],true );
+
+  // set folder paths; this should not be required, only to repair after
+  // accidental damage in buggy earlier implementations
+  this.setFolderPaths();
 
   this.sortFolders();
 
