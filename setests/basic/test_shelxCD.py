@@ -371,6 +371,7 @@ def test_1SHELXCD(browser,
         asymmetricUnitContents(d.driver, d.waitShort) # 2
         startSHELXcd(d.driver) # 3
         # validateSHELXcd(d.driver, 1200) # 12-13 minutes normally, lets give 20
+        time.sleep(300)
     except:
         d.driver.quit()
         raise
