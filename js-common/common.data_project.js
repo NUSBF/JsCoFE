@@ -526,6 +526,9 @@ ProjectList.prototype.addProject = function ( name_str,title_str,
     var pDesc = new ProjectDesc();
     pDesc.init ( name_str,title_str,startmode,time_str );
     pDesc.folderPath = this.currentFolder.path;
+    if ([folder_path.all_projects,folder_path.shared,folder_path.joined]
+        .indexOf(pDesc.folderPath)>=0)
+      pDesc.folderPath = __login_id + '\'s Projects';  // virtual project folder path
     this.projects.unshift ( pDesc );  // put new project at beginning
     this.current   = name_str;
     this.startmode = startmode;
