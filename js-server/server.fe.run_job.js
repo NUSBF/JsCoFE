@@ -1583,8 +1583,8 @@ function cloudRun ( server_request,server_response )  {
                     message + 'files uploaded, ' + meta.task + ' started',{} );
 
                   if (meta.load_project.toLowerCase()=='yes')
-                       user.signalUser ( loginData.login,'switch_to_project:' + meta.project );
-                  else user.signalUser ( loginData.login,'reload_project_list' );
+                       user.signalUser ( loginData.login,'cloudrun_switch_to_project:'   + meta.project );
+                  else user.signalUser ( loginData.login,'cloudrun_reload_project_list:' + meta.project );
 
                 }
 

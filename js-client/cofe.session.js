@@ -364,11 +364,11 @@ function checkSession ( sceneId )  {
         // } else if (__current_page && (__current_page._type=='ProjectListPage'))  {
         //   offlineGreeting ( function(){
         //     if ($.type(rdata.data) === "string")  {
-        //       if (rdata.data=='reload_project_list')
+        //       if (rdata.data=='cloudrun_reload_project_list')
         //         __current_page.reloadProjectList();
-        //       else if (rdata.data.startsWith('switch_to_project:'))
+        //       else if (rdata.data.startsWith('cloudrun_switch_to_project:'))
         //         __current_page.loadProject (
-        //                           rdata.data.replace('switch_to_project:','') );
+        //                           rdata.data.replace('cloudrun_switch_to_project:','') );
         //     }
         //     makeSessionCheck ( sceneId );
         //   });
@@ -377,13 +377,37 @@ function checkSession ( sceneId )  {
         // }
           } else  {
             offlineGreeting ( function(){
-              if (__current_page && (__current_page._type=='ProjectListPage') &&
-                  ($.type(rdata.data) === "string"))  {
-                if (rdata.data=='reload_project_list')
-                  __current_page.reloadProjectList();
-                else if (rdata.data.startsWith('switch_to_project:'))
-                  __current_page.loadProject (
-                                    rdata.data.replace('switch_to_project:','') );
+              // if (__current_page && (__current_page._type=='ProjectListPage') &&
+              //     ($.type(rdata.data) === "string"))  {
+              //   if (rdata.data.startsWith('cloudrun_reload_project_list:'))
+              //     __current_page.reloadProjectList();
+              //   else if (rdata.data.startsWith('cloudrun_switch_to_project:'))
+              //     __current_page.loadProject (
+              //                       rdata.data.replace('cloudrun_switch_to_project:','') );
+              // }
+              if (__current_page && ($.type(rdata.data) === "string"))  {
+                var signal = rdata.data.split(':');
+                if (signal.length==2)  {
+                  switch (__current_page._type)  {
+                    case 'ProjectListPage' : if (signal[0]=='cloudrun_reload_project_list')
+                                               __current_page.reloadProjectList();
+                                             else if (signal[0]=='cloudrun_switch_to_project')
+                                               __current_page.loadProject ( signal[1] );
+                                           break;
+                    case 'ProjectPage'     : if (__current_page.getProjectName()==signal[1])  {
+                                               __current_page.reloadProject();
+                                               break;
+                                             }
+                    default : if (signal[0]=='cloudrun_switch_to_project')
+                        new MessageBox ( 'CloudRun submitted',
+                          '<div style="width:400px"><h2>CloudRun job submitted</h2>' +
+                          'A CloudRun job was just submitted in your account and ' +
+                          'it now starts in project <b>' + signal[1] +
+                          '</b>.<p>This message is only for your information.</div>',
+                          'msg_information'
+                        );
+                  }
+                }
               }
               makeSessionCheck ( sceneId );
             });
