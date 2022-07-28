@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.06.22   <--  Date of Last Modification.
+ *    28.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -34,7 +34,6 @@ function ProjectPage ( sceneId )  {
     return;
   }
 
-  // this.job_tree      = null;  // for external references
   this.dock          = null;  // dock widget
 
   // ***** development code, dormant
@@ -371,7 +370,6 @@ ProjectPage.prototype.setJobTree = function ( jobTree )  {
   this.tree_div = new Widget ( 'div' );
   this.tree_div.element.setAttribute ( 'class','tree-content' );
   this.jobTree  = jobTree;
-  // this.job_tree = jobTree;  // for external references
   this.tree_div.addWidget ( this.jobTree );
   this.panel.setWidget ( this.tree_div, 0,0,1,1 );
   this.onResize ( window.innerWidth,window.innerHeight );
@@ -1234,6 +1232,16 @@ ProjectPage.prototype.onResize = function ( width,height )  {
 
 ProjectPage.prototype.getJobTree = function()  {
   return this.jobTree;
+}
+
+ProjectPage.prototype.getProjectName = function()  {
+  if (this.jobTree && this.jobTree.projectData)
+    return this.jobTree.projectData.desc.name;
+  return '';
+}
+
+ProjectPage.prototype.reloadProject = function()  {
+  this.refresh_btn.click();
 }
 
 ProjectPage.prototype.cloneJobWithSuggestedParameters = function ( jobId ) {
