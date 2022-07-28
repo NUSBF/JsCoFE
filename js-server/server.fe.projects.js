@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.07.22   <--  Date of Last Modification.
+ *    28.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -275,6 +275,11 @@ function checkProjectDescData ( projectDesc,loginData )  {
   }
   if (projectDesc.folderPath.startsWith('tutorials'))  {
     projectDesc.folderPath = pd.folder_path.tutorials;
+    update = true;
+  }
+  if ([pd.folder_path.all_projects,pd.folder_path.shared,pd.folder_path.joined]
+          .indexOf(projectDesc.folderPath)>=0)  {
+    projectDesc.folderPath = f0name;  // virtual project folder path
     update = true;
   }
   var flist = projectDesc.folderPath.split('/');
