@@ -564,7 +564,7 @@ var label   = 'Folder';
         folder_path : selNode.dataId,
         rename_path : newPath
     });
-    self.ftree.setText ( selNode,newName + '(' + folder.nprojects + ')' );
+    self.ftree.setText ( selNode,newName + ' (' + folder.nprojects + ')' );
     selNode.dataId = newPath;
     return true;
   });
