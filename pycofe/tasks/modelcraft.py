@@ -327,8 +327,18 @@ class ModelCraft(basic.TaskDriver):
                     #     "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
                     # })
 
+                    auto.makeNextTask ( self,{
+                    "revision" : revision,
+                    "summary_line" : "Compl={0:.1f}%".format(Compl) +\
+                                       ", R=" + Rwork +\
+                                       " R<sub>free</sub>="  + Rfree,
+                      "Rfactor"     : Rwork,
+                      "Rfree"       : Rfree
+                    }, log=self.file_stderr)
+
             else:
                 self.putTitle ( "No Output Generated" )
+
 
         # close execution logs and quit
         self.success ( have_results )

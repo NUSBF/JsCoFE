@@ -94,6 +94,11 @@ def buccaneer ( name,revision,parentName ):
     auto_api.addTaskData ( name,"revision",revision )
     return
 
+def modelcraft ( name,revision,parentName ):
+    auto_api.addTask ( name,"TaskModelCraft",parentName  )
+    auto_api.addTaskData ( name,"revision",revision )
+    return
+
 
 def ccp4build ( name,revision,parentName ):
     auto_api.addTask ( name,"TaskCCP4Build",parentName  )

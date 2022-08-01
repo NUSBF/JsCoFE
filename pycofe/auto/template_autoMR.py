@@ -102,7 +102,7 @@ def makeNextTask ( crTask,data ):
                 auto_tasks.remark("rem_sorry4", strTree, 7, strText, crTask.autoRunName)  # 7 - Gold - yellow
                 auto_api.addContext("build_parent", crTask.autoRunName)
                 auto_api.addContext("build_revision", data["revision"])
-                auto_tasks.buccaneer("buccAfterSimbad", data["revision"], crTask.autoRunName)
+                auto_tasks.modelcraft("modelcraftAfterSimbad", data["revision"], crTask.autoRunName)
                 return
             else:
                 # 0.4 < Rfree < 0.5
@@ -117,7 +117,7 @@ def makeNextTask ( crTask,data ):
                     auto_tasks.remark("rem_sorry5", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
                     auto_api.addContext("build_parent", crTask.autoRunName)
                     auto_api.addContext("build_revision", data["revision"])
-                    auto_tasks.buccaneer("buccAfterSimbad", data["revision"], crTask.autoRunName)
+                    auto_tasks.modelcraft("modelcraftAfterSimbad", data["revision"], crTask.autoRunName)
                     return
                 else:
                     strTree = 'Large parts of the structure are likely missing as Rfree is only %0.3f (click for more comments)' % float(
@@ -140,31 +140,53 @@ def makeNextTask ( crTask,data ):
             else:
                 auto_api.addContext("build_parent", crTask.autoRunName)
                 auto_api.addContext("build_revision", data["revision"])
-                auto_tasks.buccaneer ( "buccAfterSimbad",data["revision"],crTask.autoRunName )
+                auto_tasks.modelcraft( "modelcraftAfterSimbad",data["revision"],crTask.autoRunName )
                 return
 
-
-    elif crTask._type=="TaskBuccaneer":
+    elif crTask._type=="TaskModelCraft":
         # save rfree, completness
-        auto_api.addContext("buccaneer_rfree", data["Rfree"])
-        auto_api.addContext("buccaneer_taskName", crTask.autoRunName)
-        auto_api.addContext("buccaneer_revision", data["revision"])
+        auto_api.addContext("modelcraft_rfree", data["Rfree"])
+        auto_api.addContext("modelcraft_taskName", crTask.autoRunName)
+        auto_api.addContext("modelcraft_revision", data["revision"])
         resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
         excludedTasks = auto_api.getContext('excludedTasks')
 
-        if float(data["Rfree"]) < 0.3 : # No other rebuilding if Buccaneer performed well
+        if float(data["Rfree"]) < 0.3 : # No other rebuilding if Modelcraft performed well
             if resHi > 3.0:
                 auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
             else:
                 auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
         else:
-            # Buccaneer performed not very well, Rfree > 0.3
+            # Modelcraft performed not very well, Rfree > 0.3
             # First choice in now ARP/wARP (if resolution permits and if installed), then CCP4Build
             if ("warpbin" in os.environ) and (resHi <= 2.5) and ('TaskArpWarp' not in excludedTasks):
                 auto_tasks.arpwarp("arpwarp", auto_api.getContext("build_revision"),auto_api.getContext("build_parent"))
             else:
                 auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
         return
+
+
+    # elif crTask._type=="TaskBuccaneer":
+    #     # save rfree, completness
+    #     auto_api.addContext("buccaneer_rfree", data["Rfree"])
+    #     auto_api.addContext("buccaneer_taskName", crTask.autoRunName)
+    #     auto_api.addContext("buccaneer_revision", data["revision"])
+    #     resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
+    #     excludedTasks = auto_api.getContext('excludedTasks')
+
+    #     if float(data["Rfree"]) < 0.3 : # No other rebuilding if Buccaneer performed well
+    #         if resHi > 3.0:
+    #             auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
+    #         else:
+    #             auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+    #     else:
+    #         # Buccaneer performed not very well, Rfree > 0.3
+    #         # First choice in now ARP/wARP (if resolution permits and if installed), then CCP4Build
+    #         if ("warpbin" in os.environ) and (resHi <= 2.5) and ('TaskArpWarp' not in excludedTasks):
+    #             auto_tasks.arpwarp("arpwarp", auto_api.getContext("build_revision"),auto_api.getContext("build_parent"))
+    #         else:
+    #             auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
+    #     return
 
 
     elif crTask._type == "TaskArpWarp":
@@ -185,9 +207,9 @@ def makeNextTask ( crTask,data ):
 
 
     elif crTask._type == "TaskCCP4Build":
-        if float(data["Rfree"]) > float(auto_api.getContext("buccaneer_rfree")):
-            parentTask = auto_api.getContext("buccaneer_taskName")
-            revision = auto_api.getContext("buccaneer_revision")
+        if float(data["Rfree"]) > float(auto_api.getContext("modelcraft_rfree")):
+            parentTask = auto_api.getContext("modelcraft_taskName")
+            revision = auto_api.getContext("modelcraft_revision")
         else:
             parentTask = crTask.autoRunName
             revision = data["revision"]
@@ -250,9 +272,9 @@ def makeNextTask ( crTask,data ):
     elif crTask._type=="TaskRefmac":
 
         if crTask.autoRunName == 'refAfterArpwarpHOHremoval':
-            if float(data["Rfree"]) > float(auto_api.getContext("buccaneer_rfree")):
-                parentTask = auto_api.getContext("buccaneer_taskName")
-                revision = auto_api.getContext("buccaneer_revision")
+            if float(data["Rfree"]) > float(auto_api.getContext("modelcraft_rfree")):
+                parentTask = auto_api.getContext("modelcraft_taskName")
+                revision = auto_api.getContext("modelcraft_revision")
             else:
                 parentTask = crTask.autoRunName
                 revision = data["revision"]
@@ -286,7 +308,7 @@ def makeNextTask ( crTask,data ):
                             auto_tasks.remark("rem_sorry1", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
                             auto_api.addContext("build_parent", crTask.autoRunName)
                             auto_api.addContext("build_revision", data["revision"])
-                            auto_tasks.buccaneer("buccAfterMRBUMP_noMorda", data["revision"], crTask.autoRunName)
+                            auto_tasks.modelcraft("modelcraftAfterMRBUMP_noMorda", data["revision"], crTask.autoRunName)
                             return
                         else:
                             strTree = 'Large parts of the structure are likely missing as Rfree is only %0.3f (click for more comments)' % float(
@@ -311,7 +333,7 @@ def makeNextTask ( crTask,data ):
                 # solved nicely by MRBUMP - goes to rebuilding
                 auto_api.addContext("build_parent", crTask.autoRunName)
                 auto_api.addContext("build_revision", data["revision"])
-                auto_tasks.buccaneer("buccAfterMrbump", data["revision"], crTask.autoRunName)
+                auto_tasks.modelcraft("modelcraftAfterMrbump", data["revision"], crTask.autoRunName)
                 return
 
 
@@ -319,7 +341,7 @@ def makeNextTask ( crTask,data ):
             if float(data["Rfree"])<0.4:
                 auto_api.addContext("build_parent", crTask.autoRunName)
                 auto_api.addContext("build_revision", data["revision"])
-                auto_tasks.buccaneer("buccAfterMorda", data["revision"], crTask.autoRunName)
+                auto_tasks.modelcraft("modelcraftAfterMorda", data["revision"], crTask.autoRunName)
                 return
             elif float(data["Rfree"]) > 0.5:
                 # last attempt to solve - full SIMBAD
@@ -344,7 +366,7 @@ def makeNextTask ( crTask,data ):
                     auto_tasks.remark("rem_sorry2", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
                     auto_api.addContext("build_parent", crTask.autoRunName)
                     auto_api.addContext("build_revision", data["revision"])
-                    auto_tasks.buccaneer("buccAfterMorda", data["revision"], crTask.autoRunName)
+                    auto_tasks.modelcraft("modelcraftAfterMorda", data["revision"], crTask.autoRunName)
                     return
                 else:
                     # resolution > 3.0
