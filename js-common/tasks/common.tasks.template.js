@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.07.22   <--  Date of Last Modification.
+ *    03.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1376,8 +1376,10 @@ if (!dbx)  {
               if (dn[n]>=0)
                 associated_data = associated_data.concat ( dt[dn[n]].associated );
               //dropdown[i][n].selectItem ( dn[n] );
-              _select_item ( dropdown[i][n],dn[n] );
-              dropdown[i][n].inspect_btn.setVisible ( true );
+              if (n<dropdown[i].length)  {
+                _select_item ( dropdown[i][n],dn[n] );
+                dropdown[i][n].inspect_btn.setVisible ( true );
+              }
             }
 
           }
