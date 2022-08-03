@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.21   <--  Date of Last Modification.
+ *    03.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User registration page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -181,21 +181,26 @@ function RegisterPage ( sceneId )  {
 
     if ([licence_code.academic,licence_code.commercial]
         .indexOf(licence_btn.getText())<0)
-      msg += '<b>Licence</b> must be chosen.<p>';
+      msg += '<p><b>Licence</b> must be chosen';
 
     if ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]
         .indexOf(feedback_btn.getText())<0)
-      msg += '<b>Feedback agreement</b> must be chosen.<p>';
+      msg += '<p><b>Feedback agreement</b> must be chosen';
+
+    if (login_inp.getValue()==folder_type.tutorials)
+      msg += '<p>Login name <b>' + folder_type.tutorials +
+             '</b> is reserved and cannot be used';
 
     if (msg)  {
 
       new MessageBox ( 'Registration',
-         'Registration of new user cannot be done due to the following:<p>' +
-          msg + 'Please provide all needful data and try again.', 'msg_information' );
+         'Registration of new user cannot be done due to the following:' +
+          msg + '.<p>Please make the necessary corrections and try again.',
+          'msg_information' );
 
     } else  {
 
-      ud          = new UserData();
+      var ud      = new UserData();
       ud.name     = user_inp    .getValue();
       ud.email    = email_inp   .getValue();
       ud.login    = login_inp   .getValue();
