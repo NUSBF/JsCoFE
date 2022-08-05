@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.07.22   <--  Date of Last Modification.
+ *    05.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -50,7 +50,7 @@ var on_login = {
   all_projects : 'all_projects',
   my_projects  : 'my_projects',
   last_folder  : 'last_folder',
-  last_project : 'last-project'
+  last_project : 'last_project'
 }
 
 var __local_user_id = 'localuser';  // local user name
@@ -117,11 +117,12 @@ var msg = '';
 
   if (!uData.hasOwnProperty('settings'))
     uData.settings = { project_prefix : false };
+
   if (!uData.settings.hasOwnProperty('onlogin'))  {
     uData.settings.onlogin      = on_login.all_projects;  // 'project_list', 'last_project'
     uData.settings.viewers_size = [1.40,0.97];     // width, height
     uData.settings.jobdlg_size  = [1.25,0.85];     // width, height
-  } else if (!(uData.settings.onlogin in Object.values(on_login)))
+  } else if (!Object.values(on_login).includes(uData.settings.onlogin))
     uData.settings.onlogin      = on_login.all_projects;
 
   if (!uData.settings.hasOwnProperty('notifications'))  {

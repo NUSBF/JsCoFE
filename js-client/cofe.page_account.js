@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.06.22   <--  Date of Last Modification.
+ *    05.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -189,8 +189,8 @@ function AccountPage ( sceneId )  {
                         __user_settings.onlogin ==on_login.last_folder );
   // onlogin_sel.addItem ( 'list of projects','','project_list',
   //                       __user_settings.onlogin =='project_list' );
-  onlogin_sel.addItem ( 'last opened project','','last_project',
-                        __user_settings.onlogin =='last_project' );
+  onlogin_sel.addItem ( 'last opened project','',on_login.last_project,
+                        __user_settings.onlogin ==on_login.last_project );
   spanel.setWidget ( onlogin_sel, prfrow++,1,1,1 );
   onlogin_sel.make();
 
