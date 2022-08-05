@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    05.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -231,6 +231,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                             makeAccountPage     ( sceneId );
                           else if (__user_settings.onlogin==on_login.last_project)  {
                             serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
+                              __current_folder = data.currentFolder;
                               var found = false;
                               for (var i=0;(i<data.projects.length) && (!found);i++)
                                 found = (data.projects[i].name==data.current);
