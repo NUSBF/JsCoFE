@@ -909,15 +909,25 @@ def importFromPDB_2fx0(driver, waitShort):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
     time.sleep(1)
 
-    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Import from PDB')
-    time.sleep(1)
+    clickByXpath(driver,"//div[starts-with(text(), '%s')]" % 'Import from PDB')
+    time.sleep(3)
+    
+    try:
+        inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB and/or UniProt codes to import data from']")
+        inputPDB.clear()
+        inputPDB.send_keys('2fx0')
+        time.sleep(2)
+    except:
+        inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB']")
+        inputPDB.clear()
+        inputPDB.send_keys('2fx0')
+        time.sleep(2)            
+        
+
 
     # 2FX0
-    time.sleep(2)
-    inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB codes to import data from']")
-    inputPDB.clear()
-    inputPDB.send_keys('2fx0')
-    time.sleep(2)
+
+        
 
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'reflection data')
     time.sleep(2)

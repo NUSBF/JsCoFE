@@ -28,11 +28,22 @@ def importFromPDB(driver, waitShort):
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Import from PDB')
     time.sleep(1)
 
-    time.sleep(2)
-    inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB codes to import data from']")
-    inputPDB.clear()
-    inputPDB.send_keys('1msy')
-    time.sleep(2)
+    try:
+        inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB and/or UniProt codes to import data from']")
+        inputPDB.clear()
+        inputPDB.send_keys('1msy')
+        time.sleep(2)
+    except:
+        inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB']")
+        inputPDB.clear()
+        inputPDB.send_keys('1msy')
+        time.sleep(2)         
+
+    # time.sleep(2)
+    # inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB codes to import data from']")
+    # inputPDB.clear()
+    # inputPDB.send_keys('1msy')
+    # time.sleep(2)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'reflection data')
     time.sleep(2)
