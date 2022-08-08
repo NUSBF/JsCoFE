@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.07.22   <--  Date of Last Modification.
+ *    08.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -250,7 +250,7 @@ var fe_server = conf.getFEConfig();
   log.standard ( 4,'recover user login for ' + userData.email + ' at ' +
                    fe_server.userDataPath );
 
-  files = fs.readdirSync ( fe_server.userDataPath );
+  var files = fs.readdirSync ( fe_server.userDataPath );
 
   var userName = '???';
   var logins   = [];
