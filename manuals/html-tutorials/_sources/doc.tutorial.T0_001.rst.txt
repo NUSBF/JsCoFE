@@ -41,6 +41,8 @@ Autostart mode is designed for starting with one of `automatic workflows <https:
 Once added the Cloud will provide you a choice of the project templates:
 
     #. Automatic Molecular Replacement with MrBump or MoRDa
+
+    #. Molecular Replacement with AlphaFold Model
     
     #. Simple Molecular Replacement with Search Model
 

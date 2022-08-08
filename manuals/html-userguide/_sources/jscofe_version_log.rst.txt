@@ -29,6 +29,10 @@ CCP4 Cloud Version Log
 
     #. Graceful stop added to ``Crank-2``
 
+    #. OpenFold support added to the ``Structure Prediction`` task
+
+    #. Fixed bug in on-login choice of starting with "All projects", "My Projects", "Last folder" and "last project", due to which the only choice was "All projects"
+
 
 **Version 1.7.004**
 

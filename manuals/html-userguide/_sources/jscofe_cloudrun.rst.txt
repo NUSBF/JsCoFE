@@ -2,7 +2,11 @@
 Starting CCP4 Cloud projects from the command line
 ==================================================
 
-CCP4 Cloud projects can be initiated and executed from the command line. Which may be useful for data collection session at a synchrotron beamline may include sending reflection data, sequence, optional structural homolog and ligand descriptions, to a specified CCP4 Cloud account and starting a suitable structure solution workflow in it. Or, large series of structure solution projects can be initiated by a custom script to save time for manipulations with CCP4 Cloud's graphical interface.
+CCP4 Cloud projects can be initiated and executed from the command line, which may be useful in many scenarious. For example, data collection session at a synchrotron beamline may include sending reflection data, sequence, optional structural homolog and ligand descriptions, automatically to the specified CCP4 Cloud account and starting a suitable structure solution workflow in it. Or, large series of structure solution projects can be initiated by custom script to save time for manipulations with CCP4 Cloud's graphical interface.
+
+.. note::
+  Functionality, described in this article, requires local CCP4 setup version 8.0.003 or higher.
+
 
 ----------------
 CloudRun utility

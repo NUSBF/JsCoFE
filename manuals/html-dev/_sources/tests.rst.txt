@@ -2,16 +2,17 @@
 Software testing in CCP4
 ========================
 
-CCP4 comand line tests contains **unix scripts** and **pytest** tests.
+CCP4 command line tests contains **unix scripts** and **pytest** tests.
 
 ------------
 Unix scripts 
 ------------
 
 * $CEXAM/unix/runnable: 
-    unix scripts using the rnase/toxd data which should actually run
+        unix scripts using the rnase/toxd data which should actually run
 
-* $CEXAM/unix/non-runnable: unix scripts without usable input data, e.g. for image processing and data reduction
+* $CEXAM/unix/non-runnable: 
+        unix scripts without usable input data, e.g. for image processing and data reduction
 
 ------
 Pytest
@@ -21,9 +22,11 @@ Pytests are designed using the Arrange-Act-Assert model:
 
 1. **Arrange**, or set up, the conditions for the test
 
-2. **Act** by calling some function or method
+2. **Act** by calling function or method
 
-3. **Assert** that some end condition is true
+3. **Assert** that end condition is true
+
+4. **Cleanup** after itself, so other tests aren’t being accidentally influenced by it
 
 All changes and new tests should be committed to ``http://fg.oisin.rc-harwell.ac.uk/anonscm/bzr/examples/trunk``
 
