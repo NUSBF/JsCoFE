@@ -65,7 +65,7 @@ def asymmetricUnitContents(driver, waitShort):
     return()
 
 
-def startSHELXss(driver):
+def startSHELXss(driver, waitLong):
     print('Starting SHELX_sss for experimental phasing')
 
     # Add button
@@ -96,7 +96,21 @@ def startSHELXss(driver):
             break
     time.sleep(2)
 
-    # presing Close button
+    
+    try:
+        wait = WebDriverWait(driver, waitLong)
+                # Waiting for the text 'completed' in the ui-dialog-title of the task 
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
+    except:
+        print('Apparently tha Substructure Search with SHELX-C/D task has not been completed in time; terminating')
+        sys.exit(1)
+
+    driver.find_elements_by_xpath("//*[contains(text(), '[0003] Substructure Found')]")
+
+    # driver.find_element (By.XPATH, "//div[text() = '[0003] Substructure Found')]")
+
+        # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
     time.sleep(1)
@@ -104,47 +118,47 @@ def startSHELXss(driver):
     return()
 
 
-def validateSHELXss(driver, waitLong):
+# def validateSHELXss(driver, waitLong):
 
-    rWork = 1.0
-    rFree = 1.0
-    targetRwork = 0.65
-    targetRfree = 0.65
+#     rWork = 1.0
+#     rFree = 1.0
+#     targetRwork = 0.65
+#     targetRfree = 0.65
 
-    print ('SHELX CD verification - starting pulling job every 60 seconds')
+#     print ('SHELX CD verification - starting pulling job every 60 seconds')
 
-    time.sleep(1)
-    startTime = time.time()
+#     time.sleep(1)
+#     startTime = time.time()
 
-    while (True):
-        ttts = sf.tasksTreeTexts(driver)
-        for taskText in ttts:
-            # Job number as string
-            match = re.search(r'^\[0003\] shelx substructure search \(SAD\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
-            if match:
-                rWork = float(match.group(1))
-                rFree = float(match.group(2))
-                break
-        if (rWork != 1.0) or (rFree != 1.0):
-            break
-        curTime = time.time()
-        if curTime > startTime + float(waitLong):
-            print('*** Timeout for SHELX results! Waited for %d seconds.' % waitLong)
-            break
-        time.sleep(10)
+#     while (True):
+#         ttts = sf.tasksTreeTexts(driver)
+#         for taskText in ttts:
+#             # Job number as string
+#             match = re.search(r'^\[0003\] shelx substructure search \(SAD\) -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+#             if match:
+#                 rWork = float(match.group(1))
+#                 rFree = float(match.group(2))
+#                 break
+#         if (rWork != 1.0) or (rFree != 1.0):
+#             break
+#         curTime = time.time()
+#         if curTime > startTime + float(waitLong):
+#             print('*** Timeout for SHELX results! Waited for %d seconds.' % waitLong)
+#             break
+#         time.sleep(10)
 
-    if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after SHELX run')
-    else:
-        print('*** Verification: SHELX Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecting <%0.2f)' % (
-            rWork, targetRwork, rFree, targetRfree))
-    assert rWork < targetRwork
-    assert rFree < targetRfree
+#     if (rWork == 1.0) or (rFree == 1.0):
+#         print('*** Verification: could not find Rwork or Rfree value after SHELX run')
+#     else:
+#         print('*** Verification: SHELX Rwork is %0.4f (expecting <%0.2f), Rfree is %0.4f (expecting <%0.2f)' % (
+#             rWork, targetRwork, rFree, targetRfree))
+#     assert rWork < targetRwork
+#     assert rFree < targetRfree
 
-    return ()
+#     return ()
 
 
-def phaserEP(driver):
+def phaserEP(driver, waitLong):
     print('Starting Phaser-EP for experimental phasing')
 
     # Add button
@@ -170,7 +184,7 @@ def phaserEP(driver):
     time.sleep(2)
 
     try:
-        wait = WebDriverWait(driver, 150) # normally takes under a minute
+        wait = WebDriverWait(driver, waitLong) # normally takes under a minute
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0004]')]")))
     except:
@@ -534,10 +548,10 @@ def test_1shelx_phaser(browser,
         sf.enterProject(d.driver, d.testName)
         sf.importFromCloud_insulin(d.driver, d.waitShort) # 1
         asymmetricUnitContents(d.driver, d.waitShort) # 2
-        startSHELXss(d.driver) # 3
+        startSHELXss(d.driver, 1200) # 3
         # validateSHELXss(d.driver, 300) # 2 minutes normally, lets give 5
         time.sleep(300)
-        phaserEP(d.driver) # 4
+        phaserEP(d.driver, 1200) # 4
     except:
         d.driver.quit()
         raise
