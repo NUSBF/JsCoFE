@@ -344,7 +344,7 @@
             
   
 <h1 id="tests--page-root"><span class="section-number">6. </span>Software testing in CCP4<a class="headerlink" href="#tests--page-root" title="Permalink to this headline">¶</a></h1>
-<p>CCP4 comand line tests contains <strong>unix scripts</strong> and <strong>pytest</strong> tests.</p>
+<p>CCP4 command line tests contains <strong>unix scripts</strong> and <strong>pytest</strong> tests.</p>
 
 <h2 id="unix-scripts"><span class="section-number">6.1. </span>Unix scripts<a class="headerlink" href="#unix-scripts" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -352,7 +352,10 @@
 <dt>$CEXAM/unix/runnable:</dt><dd>unix scripts using the rnase/toxd data which should actually run</dd>
 </dl>
 </li>
-<li>$CEXAM/unix/non-runnable: unix scripts without usable input data, e.g. for image processing and data reduction</li>
+<li><dl class="first docutils">
+<dt>$CEXAM/unix/non-runnable:</dt><dd>unix scripts without usable input data, e.g. for image processing and data reduction</dd>
+</dl>
+</li>
 </ul>
 
 
@@ -360,8 +363,9 @@
 <p>Pytests are designed using the Arrange-Act-Assert model:</p>
 <ol class="arabic simple">
 <li><strong>Arrange</strong>, or set up, the conditions for the test</li>
-<li><strong>Act</strong> by calling some function or method</li>
-<li><strong>Assert</strong> that some end condition is true</li>
+<li><strong>Act</strong> by calling function or method</li>
+<li><strong>Assert</strong> that end condition is true</li>
+<li><strong>Cleanup</strong> after itself, so other tests aren’t being accidentally influenced by it</li>
 </ol>
 <p>All changes and new tests should be committed to <code class="docutils literal notranslate"><span class="pre">http://fg.oisin.rc-harwell.ac.uk/anonscm/bzr/examples/trunk</span></code></p>
 <p>The transition from “trunk” to “series” is performed by Charles Ballard and must be requested.</p>

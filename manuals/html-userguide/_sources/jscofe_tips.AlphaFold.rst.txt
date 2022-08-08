@@ -2,7 +2,7 @@
 Using AlphaFold2 and Rosetta models
 ===================================
 
-CCP4 Cloud tasks automatically recognise AlphaFold and RoseTTAFold models and convert their per-residue pLDDT scores (AlphaFold) or rmsd estimates (RoseTTAFold) to B-factors. `Import <http://localhost:56570/manuals/html-taskref/doc.task.Import.html>`_ task puts a notice of conversion in the *Import Summary* table, other tasks, such as `MrBump <http://localhost:56570/manuals/html-taskref/doc.task.MrBump.html>`_ and `MrParse <http://localhost:56570/manuals/html-taskref/doc.task.MrParse.html>`_, do that silently.
+CCP4 Cloud tasks automatically recognise AlphaFold and RoseTTAFold models and convert their per-residue pLDDT scores (AlphaFold) or rmsd estimates (RoseTTAFold) to B-factors. `Import <../html-taskref/doc.task.Import.html>`_ task puts a notice of conversion in the *Import Summary* table, other tasks, such as `MrBump <../html-taskref/doc.task.MrBump.html>`_ and `MrParse <../html-taskref/doc.task.MrParse.html>`_, do that silently.
 
 .. note::
         It is important to convert pLLDT scores and rmsd estimates, placed in B-factor columns of predicted models, into B-factors. Without that, best parts of the model will get the lowest weight in Molecular Replacement, which significantly decreases chances for solution. All is done automatically, you are fully set.

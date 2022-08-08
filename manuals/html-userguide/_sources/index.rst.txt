@@ -16,6 +16,7 @@ User Guide
    jscofe_tasklist
    jscofe_jobdialog
    jscofe_CloudED
+   jscofe_workflow_with_predicted_models
    jscofe_workflows
    jscofe_cloudrun
    jscofe_tips

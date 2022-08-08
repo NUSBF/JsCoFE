@@ -17,6 +17,7 @@ MR Search Model(s) and/or MR Ensemble(s) must be prepared before molecular repla
 .. toctree::
     :maxdepth: 2
 
+    doc.task.StructurePrediction
     doc.task.MrParse
     doc.task.ModelPrepXYZ
     doc.task.ModelPrepAlgn
