@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.07.21   <--  Date of Last Modification.
+ *    08.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -35,9 +35,9 @@ function TaskImportPDB()  {
              else  TaskTemplate.call ( this );
 
   this._type     = 'TaskImportPDB';
-  this.name      = 'import from PDB';
+  this.name      = 'import from PDB/AFDB';
   this.oname     = '*';   // asterisk here means do not use
-  this.title     = 'Import from PDB';
+  this.title     = 'Import from PDB/AFDB';
   //this.helpURL   = './html/jscofe_task_importpdb.html';
   this.fasttrack = true;  // enforces immediate execution
 
@@ -57,8 +57,8 @@ function TaskImportPDB()  {
     CODES : {
           type      : 'string',   // empty string not allowed
           keyword   : 'codes',
-          label     : '<i><b>PDB code(s)</b></i>',
-          tooltip   : 'Comma-separated list of PDB codes to import data from',
+          label     : '<i><b>PDB/UniProt code(s)</b></i>',
+          tooltip   : 'Comma-separated list of PDB and/or UniProt codes to import data from',
           iwidth    : 680,
           value     : '',
           emitting  : true,
@@ -72,6 +72,7 @@ function TaskImportPDB()  {
     IMPORT_LBL : {
           type     : 'label',
           label    : '<i><b>Import data:</b></i>',
+          align    : 'right',
           position : [2,0,1,1],
           hideon   : {CODES:['']}
         },
@@ -116,6 +117,38 @@ function TaskImportPDB()  {
           label     : ' ',
           position  : [3,5,1,1],
           lwidth    : 150
+        },
+    ROW_BREAK1 : {
+          type      : 'label',
+          label     : '&nbsp;',
+          position  : [4,0,1,1]
+        },
+    // ROW_BREAK2 : {
+    //       type      : 'label',
+    //       label     : '&nbsp;',
+    //       position  : [5,0,1,1]
+    //     },
+    PDB_LBL : {
+          type      : 'label',
+          label     : '<i>wwPDB:</i>',
+          align     : 'right',
+          position  : [5,0,1,1]
+        },
+    PDB_LINK : {
+          type      : 'label',
+          label     : '<a href="https://www.wwpdb.org" target="_blank"><span style="color:blue;">https://www.wwpdb.org</span></a>',
+          position  : [5,2,1,1]
+        },
+    UNIPROT_LBL : {
+          type      : 'label',
+          label     : '<i>UniProt:</i>',
+          align     : 'right',
+          position  : [6,0,1,1]
+        },
+    UNIPROT_LINK : {
+          type      : 'label',
+          label     : '<a href="https://www.uniprot.org" target="_blank"><span style="color:blue;">https://www.uniprot.org</span></a>',
+          position  : [6,2,1,1]
         }
     /*
     SPRING_LBL : {
@@ -154,16 +187,16 @@ TaskImportPDB.prototype.constructor = TaskImportPDB;
 
 // ===========================================================================
 
-TaskImportPDB.prototype.icon = function()  { return 'task_importpdb'; }
+TaskImportPDB.prototype.icon = function()  { return 'task_importpdbafdb'; }
 
 TaskImportPDB.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return 'fetch coordinates, sequences and reflection data for given PDB code(s)';
+  return 'fetch coordinates, sequences and reflection data for given PDB/UniProt code(s)';
 }
 
 TaskImportPDB.prototype.taskDescription = function()  {
 // this appears under task title in the Task Dialog
-  return 'Fetch coordinates, sequences and reflection data for given PDB code(s)';
+  return 'Fetch coordinates, sequences and reflection data for given PDB/UniProt code(s)';
 }
 
 TaskImportPDB.prototype.currentVersion = function()  {

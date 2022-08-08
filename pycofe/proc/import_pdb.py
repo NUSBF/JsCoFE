@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.07.22   <--  Date of Last Modification.
+#    08.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,6 +23,7 @@ import requests
 
 #  ccp4-python imports
 #import pyrvapi
+import gemmi
 
 #  application imports
 from pycofe.tasks  import asudef
@@ -52,6 +53,10 @@ def get_hkl_file_url ( ucode ):
 def get_seq_file_url ( ucode ):
     return "https://www.rcsb.org/fasta/entry/" + ucode
 
+def get_afdb_file_url ( ucode ):
+    return "https://alphafold.ebi.ac.uk/files/AF-" + ucode + "-F1-model_v3.pdb"
+
+
 def download_file ( url,fpath,body=None ):
     rc = 0  # return code
     try:
@@ -67,7 +72,7 @@ def download_file ( url,fpath,body=None ):
                     body.stdout ( line )
                 l = line.strip()
                 if len(l)>0:
-                    if l.startswith("<!DOCTYPE"):
+                    if l.startswith("<!DOCTYPE") or "<Error>" in l:
                         rc = -1
                         break;
                 line = f.readline()
@@ -91,34 +96,54 @@ def run ( body,pdb_list,
 
     revisionNo = 1
 
+    imported_codes = []
+    rejected_codes = []
+
     for code in pdb_list:
+
+        rc_xyz    = -1
+        rc_seq    = -1
+        rc_sf     = -1
 
         lcode     = code.lower()
         ucode     = code.upper()
         fname_xyz = lcode + ".pdb"
-        fname_seq = "rcsb_pdb_" + ucode + ".fasta"
-        fname_seq = lcode + ".fasta"
-        fname_sf  = lcode + "-sf.cif"
         fpath_xyz = os.path.join ( body.importDir(),fname_xyz )
-        fpath_seq = os.path.join ( body.importDir(),fname_seq )
-        rc_xyz    = -1
-        rc_seq    = -1
-        rc_sf     = -1
-        if import_coordinates or import_sequences:
+
+        if len(code)==4:
+            fname_seq = "rcsb_pdb_" + ucode + ".fasta"
+            fname_seq = lcode + ".fasta"
+            fname_sf  = lcode + "-sf.cif"
+            fpath_seq = os.path.join ( body.importDir(),fname_seq )
+            if import_coordinates or import_sequences:
+                # coordiinates are used for sequence annotation
+                rc_xyz = download_file ( get_pdb_file_url(ucode),fpath_xyz )
+                if rc_xyz:
+                    fname_xyz = lcode + ".cif"
+                    fpath_xyz = os.path.join ( body.importDir(),fname_xyz )
+                    rc_xyz = download_file ( get_cif_file_url(ucode),fpath_xyz )
+
+            if import_sequences:
+                # these will be the "expected" sequences
+                rc_seq = download_file ( get_seq_file_url(ucode),fpath_seq,body=None )
+
+            if import_reflections:
+                rc_sf  = download_file ( "https://files.rcsb.org/download/" + ucode + "-sf.cif",
+                                        os.path.join(body.importDir(),fname_sf) )
+
+        elif (len(code)>4) and (import_coordinates or import_sequences):
             # coordiinates are used for sequence annotation
-            rc_xyz = download_file ( get_pdb_file_url(ucode),fpath_xyz )
-            if rc_xyz:
-                fname_xyz = lcode + ".cif"
-                fpath_xyz = os.path.join ( body.importDir(),fname_xyz )
-                rc_xyz = download_file ( get_cif_file_url(ucode),fpath_xyz )
-
-        if import_sequences:
-            # these will be the "expected" sequences
-            rc_seq = download_file ( get_seq_file_url(ucode),fpath_seq,body=None )
-
-        if import_reflections:
-            rc_sf  = download_file ( "https://files.rcsb.org/download/" + ucode + "-sf.cif",
-                                    os.path.join(body.importDir(),fname_sf) )
+            rc_xyz = download_file ( get_afdb_file_url(ucode),fpath_xyz )
+            fname_seq = "afdb_" + ucode + ".fasta"
+            fpath_seq = os.path.join ( body.importDir(),fname_seq )
+            st = gemmi.read_structure ( fpath_xyz )
+            st.setup_entities()
+            for model in st:
+                for chain in model:
+                    polymer = chain.get_polymer()
+                    seqline = str(polymer.make_one_letter_sequence())
+                    dtype_sequence.writeSeqFile ( fpath_seq,ucode,seqline )
+                    rc_seq = 0
 
         body.resetFileImport()
         asuComp = None
@@ -128,10 +153,12 @@ def run ( body,pdb_list,
 
         if not rc_xyz:
 
+            imported_codes.append ( lcode )
+
             if import_coordinates:
                 body.addFileImport ( fname_xyz,import_filetype.ftype_XYZ() )
 
-            if import_sequences:
+            if import_sequences and not rc_seq:
 
                 # infer non-redundant sequence composition of ASU
                 asuComp = asucomp.getASUComp1 ( fpath_xyz,fpath_seq,0.9999,body=None )
@@ -157,39 +184,43 @@ def run ( body,pdb_list,
                     if seqdesc[i]["type"]=="protein":  nAA += 1
                     if seqdesc[i]["type"]=="dna"    :  nNA += 1
 
-                seqlist = asuComp["seqlist"]  # sequences from PDB header
-                #body.stdoutln ( str(seqdesc) )
-                for i in range(len(seqlist)):
-                    name  = str(i+1)
-                    stype = "protein"  # ugly fallback
-                    lst   = seqlist[i][0].split("|")
-                    if len(lst)>1:
-                        if lst[1].startswith("Chain"):
-                            chains = lst[1].split(" ")[1].split(",")
-                            name   = "_".join(chains)
-                            for j in range(len(seqdesc)):
-                                if chains[0]==seqdesc[j]["chain_id"]:
-                                    stype = seqdesc[j]["type"]
-                                    break
-                    fname = lcode + "_expected_" + name + ".fasta"
-                    dtype_sequence.writeSeqFile ( os.path.join(body.importDir(),fname),
-                                                  seqlist[i][0],seqlist[i][1] )
-                    body.addFileImport ( fname,import_filetype.ftype_Sequence() )
-                    annot = { "file":fname, "rename":fname, "items":[
-                      { "rename"   : fname,
-                        "contents" : seqlist[i][0] + "\n" + seqlist[i][1],
-                        "type"     : stype
-                      }
-                    ]}
-                    annotation["annotation"].append ( annot )
-                    # if seqdesc[i]["type"]=="protein":  nAA += 1
-                    # if seqdesc[i]["type"]=="dna"    :  nNA += 1
+                if len(code)==4:
+                    seqlist = asuComp["seqlist"]  # sequences from PDB header
+                    #body.stdoutln ( str(seqdesc) )
+                    for i in range(len(seqlist)):
+                        name  = str(i+1)
+                        stype = "protein"  # ugly fallback
+                        lst   = seqlist[i][0].split("|")
+                        if len(lst)>1:
+                            if lst[1].startswith("Chain"):
+                                chains = lst[1].split(" ")[1].split(",")
+                                name   = "_".join(chains)
+                                for j in range(len(seqdesc)):
+                                    if chains[0]==seqdesc[j]["chain_id"]:
+                                        stype = seqdesc[j]["type"]
+                                        break
+                        fname = lcode + "_expected_" + name + ".fasta"
+                        dtype_sequence.writeSeqFile ( os.path.join(body.importDir(),fname),
+                                                      seqlist[i][0],seqlist[i][1] )
+                        body.addFileImport ( fname,import_filetype.ftype_Sequence() )
+                        annot = { "file":fname, "rename":fname, "items":[
+                          { "rename"   : fname,
+                            "contents" : seqlist[i][0] + "\n" + seqlist[i][1],
+                            "type"     : stype
+                          }
+                        ]}
+                        annotation["annotation"].append ( annot )
+                        # if seqdesc[i]["type"]=="protein":  nAA += 1
+                        # if seqdesc[i]["type"]=="dna"    :  nNA += 1
 
                 #body.stdoutln ( str(annotation) )
                 f = open ( "annotation.json","w" )
                 f.write ( json.dumps(annotation) )
                 f.close ()
                 #body.file_stdout.write ( str(asuComp) + "\n" )
+
+        else:
+            rejected_codes.append ( code )
 
         if not rc_sf:
             body.addFileImport ( fname_sf,import_filetype.ftype_CIFMerged() )
@@ -245,10 +276,18 @@ def run ( body,pdb_list,
 
             body.resetReportPage()
 
-        else:
+        elif len(code)==4:
             body.stdoutln ( " ***** PDB entry " + code + " does not exist" )
             body.putSummaryLine_red ( code,"PDB Code","Wrong code, ignored" )
 
+        elif len(code)>4:
+            body.stdoutln ( " ***** UniProt entry " + code + " does not exist" )
+            body.putSummaryLine_red ( code,"UniProt Code","Wrong code, ignored" )
+
+        else:
+            body.stdoutln ( " ***** Invalid " + code )
+            body.putSummaryLine_red ( code,"Invalid code","Wrong code, ignored" )
+
         body.generic_parser_summary = {}  # depress showing R-factors from refmac
 
-    return
+    return [imported_codes,rejected_codes]
