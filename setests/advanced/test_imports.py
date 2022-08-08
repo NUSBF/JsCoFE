@@ -148,7 +148,7 @@ def asymmetricUnitContents(driver, waitShort, task='0002'):
     return()
 
 
-def startSHELXss(driver):
+def startSHELXss(driver, waitLong):
     print('Starting SHELX_sss for experimental phasing')
 
     # Add button
@@ -179,7 +179,20 @@ def startSHELXss(driver):
             break
     time.sleep(2)
 
-    # presing Close button
+    try:
+        wait = WebDriverWait(driver, waitLong)
+        # Waiting for the text 'completed' in the ui-dialog-title of the task 
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
+    except:
+        print('Apparently tha Substructure Search with SHELX-C/D task has not been completed in time; terminating')
+        sys.exit(1)
+
+    driver.find_elements_by_xpath("//*[contains(text(), '[0003] Substructure Found')]")
+
+    # driver.find_element (By.XPATH, "//div[text() = '[0003] Substructure Found')]")
+
+        # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
     time.sleep(1)
@@ -493,7 +506,7 @@ def test_1importFiles(browser,
         time.sleep(1)
 
         asymmetricUnitContents(d.driver, d.waitShort) # 2
-        startSHELXss(d.driver) # 3
+        startSHELXss(d.driver, 1200) # 3
         # validateSHELXss(d.driver, 300) # 2 minutes normally, lets give 5
         time.sleep(300)
         phaserEP(d.driver) # 4
