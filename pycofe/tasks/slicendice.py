@@ -92,7 +92,8 @@ class SliceNDice(basic.TaskDriver):
             "-no_mols"   ,str(revision.getNofASUMonomers()),
             "-min_splits",min_nsplits,
             "-max_splits",max_nsplits,
-            "-xyz_source","alphafold_bfactor"
+            "-xyz_source","alphafold_bfactor",
+            "-sga"       ,"all"
         ]
 
         self.putWaitMessageLF ( "Solution in progress ..." )
