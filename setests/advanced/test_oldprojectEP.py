@@ -44,21 +44,21 @@ def runShelxCloning(driver, waitLong):
     closeButton.click()
     time.sleep(2)
 
-    rWork = 1.0
-    rFree = 1.0
-    ttts = sf.tasksTreeTexts(driver)
-    for taskText in ttts:
-        match = re.search('\[0039\] shelx.*-- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
-        if match:
-            rWork = float(match.group(1))
-            rFree = float(match.group(2))
-            break
-    if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after ShelX run')
-    else:
-        print('*** Verification: ShelX Rwork is %0.4f (expecting <0.58), Rfree is %0.4f (expecing <0.60)' % (rWork, rFree))
-    assert rWork < 0.58
-    assert rFree < 0.60
+    # rWork = 1.0
+    # rFree = 1.0
+    # ttts = sf.tasksTreeTexts(driver)
+    # for taskText in ttts:
+    #     match = re.search('\[0039\] shelx.*-- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+    #     if match:
+    #         rWork = float(match.group(1))
+    #         rFree = float(match.group(2))
+    #         break
+    # if (rWork == 1.0) or (rFree == 1.0):
+    #     print('*** Verification: could not find Rwork or Rfree value after ShelX run')
+    # else:
+    #     print('*** Verification: ShelX Rwork is %0.4f (expecting <0.58), Rfree is %0.4f (expecing <0.60)' % (rWork, rFree))
+    # assert rWork < 0.58
+    # assert rFree < 0.60
 
     return ()
 
