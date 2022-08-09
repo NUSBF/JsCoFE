@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.06.22   <--  Date of Last Modification.
+ *    09.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -52,9 +52,9 @@ function Dialog ( title )  {
     width     : 'auto',
     modal     : true,
     buttons   : {
-      "Ok": function() {
-        $( this ).dialog( "close" );
-      }
+      'Ok' : function() {
+               $(this).dialog ( 'close' );
+             }
     }
   }
 
@@ -124,9 +124,9 @@ function MessageBox ( title,message,icon_name='' )  {
     width     : 'auto',
     modal     : true,
     buttons   : {
-      "Ok": function() {
-        $( this ).dialog( "close" );
-      }
+      'Ok' : function() {
+               $(this).dialog ( 'close' );
+             }
     }
   });
 
@@ -164,10 +164,10 @@ function MessageBoxW ( title,message,width_ratio,icon_name='' )  {
     height    : 'auto',
     width     : w,
     modal     : true,
-    buttons: {
-      "Ok": function() {
-        $( this ).dialog( "close" );
-      }
+    buttons   : {
+      'Ok' : function() {
+               $(this).dialog ( 'close' );
+             }
     }
   });
 
@@ -205,14 +205,14 @@ function MessageBoxF ( title,message,btn_name,onClick_func,uncloseable_bool,
   }
 
   this._options.buttons[btn_name] = function() {
-    $( this ).dialog( "close" );
+    $(this).dialog ( 'close' );
     if (onClick_func)
       window.setTimeout ( onClick_func,0 );
   }
 
   if (uncloseable_bool)  {
     this._options.closeOnEscape = false;
-    this._options.open = function(event, ui) {
+    this._options.open = function(event,ui) {
       //hide close button.
       $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
     }
@@ -297,16 +297,16 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
 
   if (onDoNotShowAgain_func)  {
     this.options.buttons = this.options.buttons.concat ([
-      { text : "Do not show again",
-        click: function() {
-          $( this ).dialog( "close" );
+      { text  : 'Do not show again',
+        click : function() {
+          $(this).dialog ( 'close' );
           onDoNotShowAgain_func ( 1,helpURL );
         }
       },
       { text : "Close",
         // icons: { primary: 'ui-icon-closethick' },
         click: function() {
-          $( this ).dialog( "close" );
+          $(this).dialog ( 'close' );
           onDoNotShowAgain_func ( 2,helpURL );
         }
       }
@@ -317,7 +317,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
         //icon : image_path('close'),
         // icons: { primary: 'ui-icon-closethick' },
         click: function() {
-          $( this ).dialog( "close" );
+          $(this).dialog ( 'close' );
         }
       }
     ]);
@@ -388,7 +388,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
       try {
         url = dlg.display.getDocument().location.href;
       } catch(e) {}
-      $( this ).dialog( "close" );
+      $(this).dialog ( 'close' );
       window.setTimeout ( function(){
         window.open ( url );
       },0 );
@@ -453,7 +453,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
 
     });
 
-    $(dlg.element).on( "dialogclose",function(event,ui){
+    $(dlg.element).on ( 'dialogclose',function(event,ui){
       // $(dlg.element).dialog( "destroy" );
       dlg.delete();
     });
@@ -498,7 +498,7 @@ function WaitDialog ( title,message,process_wait )  {
 
   (function(dlg){
     process_wait ( dlg,function(){
-      $(dlg.element).dialog('close');
+      $(dlg.element).dialog ( 'close' );
     });
   }(this));
 
@@ -536,6 +536,9 @@ function QuestionBox ( title,message,buttons,icon_name='' )  {
   } else
     this.element.innerHTML = message;
 
+  var self = this;
+  this.initiated = false;
+
   this.options = {
     resizable     : false,
     height        : 'auto',
@@ -543,6 +546,7 @@ function QuestionBox ( title,message,buttons,icon_name='' )  {
     modal         : true,
     closeOnEscape : false,
     open          : function(event, ui) {
+                      self.initiated = true;
                       //hide close button.
                       $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
                     },
@@ -552,7 +556,7 @@ function QuestionBox ( title,message,buttons,icon_name='' )  {
   for (var i=0;i<buttons.length;i++)
     (function(self,btn){
       self.options.buttons[btn.name] = function() {
-        $(this).dialog( "close" );
+        $(this).dialog ( 'close' );
         if (('onclick' in btn) && btn.onclick)
           window.setTimeout ( btn.onclick,0 );
       }
@@ -619,7 +623,8 @@ QuestionBox.prototype = Object.create ( Widget.prototype );
 QuestionBox.prototype.constructor = QuestionBox;
 
 QuestionBox.prototype.close = function()  {
-  $(this.element).dialog( "close" );
+  if (this.initiated)
+    $(this.element).dialog ( 'close' );
 }
 
 
@@ -664,11 +669,11 @@ InputBox.prototype.launch = function ( name_btn,add_func )  {
 
   this.options.buttons[name_btn] = function() {
     if (add_func())
-      $(this).dialog( "close" );
+      $(this).dialog ( 'close' );
   }
 
   this.options.buttons['Cancel'] = function() {
-    $(this).dialog( "close" );
+    $(this).dialog ( 'close' );
   }
 
   $(this.element).dialog ( this.options );
