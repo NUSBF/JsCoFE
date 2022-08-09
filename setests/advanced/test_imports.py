@@ -240,7 +240,7 @@ def validateSHELXss(driver, waitLong):
     return ()
 
 
-def phaserEP(driver):
+def phaserEP(driver, waitLong):
     print('Starting Phaser-EP for experimental phasing')
 
     # Add button
@@ -266,7 +266,7 @@ def phaserEP(driver):
     time.sleep(2)
 
     try:
-        wait = WebDriverWait(driver, 150) # normally takes under a minute
+        wait = WebDriverWait(driver, waitLong) # normally takes under a minute
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0004]')]")))
     except:
@@ -508,8 +508,8 @@ def test_1importFiles(browser,
         asymmetricUnitContents(d.driver, d.waitShort) # 2
         startSHELXss(d.driver, 1200) # 3
         # validateSHELXss(d.driver, 300) # 2 minutes normally, lets give 5
-        time.sleep(300)
-        phaserEP(d.driver) # 4
+        sf.clickTaskInTaskTree(d.driver, '\[0003\]')
+        phaserEP(d.driver, 1200) # 4
         runParrot(d.driver, '0005') # 5
         sf.clickTaskInTaskTree(d.driver, '\[0004\]')
         runParrot(d.driver, '0006', inverted=True)  # 6
