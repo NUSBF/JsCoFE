@@ -918,7 +918,7 @@ def importFromPDB_2fx0(driver, waitShort):
         inputPDB.send_keys('2fx0')
         time.sleep(2)
     except:
-        inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB']")
+        inputPDB = driver.find_element_by_xpath("//input[@title='Comma-separated list of PDB codes to import data from']")
         inputPDB.clear()
         inputPDB.send_keys('2fx0')
         time.sleep(2)            
