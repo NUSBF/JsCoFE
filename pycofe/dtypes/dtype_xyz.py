@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    15.07.22   <--  Date of Last Modification.
+#    10.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -123,10 +121,11 @@ class DType(dtype_template.DType):
         fpath = self.getXYZFilePath ( dirPath )
         if fpath and fpath.lower().endswith(".pdb"):
             st = gemmi.read_structure ( fpath )
+            st.setup_entities()
             need_to_fix  = True
             max_bfactor  = 0.0
             min_bfactor  = 1000000.0
-            full_residue = False;
+            full_residue = False
             for model in st:
                 for chain in model:
                     polymer = chain.get_polymer()
@@ -142,7 +141,7 @@ class DType(dtype_template.DType):
                                 else:
                                     bfactor     = atom.b_iso
                                     max_bfactor = max ( max_bfactor,bfactor )
-                                    min_bfactor = max ( min_bfactor,bfactor )
+                                    min_bfactor = min ( min_bfactor,bfactor )
                                 if not need_to_fix:
                                     break
                             if not need_to_fix:
@@ -150,8 +149,8 @@ class DType(dtype_template.DType):
                         if not need_to_fix:
                             break
                     else:  # not a protein structure, cannot be alphafold
-                        need_to_fix = False;
-                        break;
+                        need_to_fix = False
+                        break
                 if not need_to_fix:
                     break
             if need_to_fix and max_bfactor!=min_bfactor and full_residue:
@@ -165,7 +164,7 @@ class DType(dtype_template.DType):
                                     if lddt <= 0.5:
                                         rmsd_est = 5.0
                                     else:
-                                        rmsd_est = (0.6 / (lddt ** 3))
+                                        rmsd_est = (0.6 / (lddt**3))
                                 atom.b_iso = min ( 999.99, 26.318945069571623*rmsd_est**2 )
                 st.write_pdb ( fpath )
                 if max_bfactor>=5.0:
