@@ -71,12 +71,25 @@ def makeNextTask ( crTask,data ):
             auto_api.addContext ( "xyz",data["xyz"][0] )
             # auto_tasks.modelprepXYZ('modelprepxyz', crTask.autoRunName)
             auto_tasks.asu("asu", crTask.autoRunName)
+            return
+
+
+    elif crTask._type=="TaskSlice":
+        auto_api.addContext("modelsForPhaser", data['models'])
+        auto_tasks.phaserAllModels('phaser', crTask.autoRunName)
         return
 
     elif crTask._type=="TaskASUDef":
-        auto_api.addContext("revisionForSliceNDice", data['revision'])
-        auto_tasks.slicendice('slicendice', crTask.autoRunName)
+        auto_api.addContext("revisionForPhaser", data['revision'])
+        auto_tasks.slice('slice', crTask.autoRunName)
+        auto_api.addTaskParameter ('slice','NSPLITS', '1' )
         return
+        
+
+    # elif crTask._type=="TaskASUDef":
+    #     auto_api.addContext("revisionForSliceNDice", data['revision'])
+    #     auto_tasks.slicendice('slicendice', crTask.autoRunName)
+    #     return
 
     #
     # elif crTask._type=="TaskModelPrepXYZ":
@@ -90,50 +103,50 @@ def makeNextTask ( crTask,data ):
     #     auto_tasks.phaserFirst('phaser', crTask.autoRunName)
     #     return
 
-    elif crTask._type=="TaskSliceNDice":
+    # elif crTask._type=="TaskSliceNDice":
 
-        if data['Rfree'] < 0.35:
-            auto_api.addContext("build_parent", crTask.autoRunName)
-            auto_api.addContext("build_revision", data["revision"])
-            #  where to check on missing residues
-            auto_tasks.modelcraft("modelcraftAfterSliceNDice", data["revision"], crTask.autoRunName)
-            return
-
-        # no subunits to fit, but high Rfree
-        # go into refinement and see what's happened?
-        auto_tasks.refmac_jelly("jellyAfterSliceNDice", data["revision"], crTask.autoRunName)
-        return
-
-    #
-    # elif crTask._type=="TaskPhaserMR":
-    #
     #     if data['Rfree'] < 0.35:
     #         auto_api.addContext("build_parent", crTask.autoRunName)
     #         auto_api.addContext("build_revision", data["revision"])
-    #         hasNA = auto_api.getContext("na")
-    #         if hasNA:
-    #             auto_tasks.refmac_jelly("jellyAfterNA", data["revision"], crTask.autoRunName)
-    #         else:
-    #             auto_tasks.buccaneer("buccAfterPhaser", data["revision"], crTask.autoRunName)
+    #         #  where to check on missing residues
+    #         auto_tasks.modelcraft("modelcraftAfterSliceNDice", data["revision"], crTask.autoRunName)
     #         return
-    #
-    #     # "Rfree"
-    #     # "nfitted0" # number of polymers before run
-    #     # "nfitted" # number of polymers after run
-    #     # "nasu"  # number of predicted subunits
-    #     if data['nfitted'] > data['nfitted0']: # trying to fit more subunits
-    #         if data['nfitted'] < data['nasu']: # if number of subunits is not exceeding predicted
-    #             auto_tasks.phaserNext('phaser' + str(data['nfitted']), data['revision'], crTask.autoRunName)
-    #             return
-    #
+
     #     # no subunits to fit, but high Rfree
     #     # go into refinement and see what's happened?
-    #     hasNA = auto_api.getContext("na")
-    #     if hasNA:
-    #         auto_tasks.refmac_jelly("jellyAfterNA", data["revision"], crTask.autoRunName)
-    #     else:
-    #         auto_tasks.refmac_jelly("jellyAfterPhaser", data["revision"], crTask.autoRunName)
+    #     auto_tasks.refmac_jelly("jellyAfterSliceNDice", data["revision"], crTask.autoRunName)
     #     return
+
+    #
+    elif crTask._type=="TaskPhaserMR":
+    
+        if data['Rfree'] < 0.35:
+            auto_api.addContext("build_parent", crTask.autoRunName)
+            auto_api.addContext("build_revision", data["revision"])
+            hasNA = auto_api.getContext("na")
+            if hasNA:
+                auto_tasks.refmac_jelly("jellyAfterNA", data["revision"], crTask.autoRunName)
+            else:
+                auto_tasks.modelcraft("modelcraftAfterPhaser", data["revision"], crTask.autoRunName)
+            return
+    
+        # "Rfree"
+        # "nfitted0" # number of polymers before run
+        # "nfitted" # number of polymers after run
+        # "nasu"  # number of predicted subunits
+        if data['nfitted'] > data['nfitted0']: # trying to fit more subunits
+            if data['nfitted'] < data['nasu']: # if number of subunits is not exceeding predicted
+                auto_tasks.phaserNext('phaser' + str(data['nfitted']), data['revision'], crTask.autoRunName)
+                return
+    
+        # no subunits to fit, but high Rfree
+        # go into refinement and see what's happened?
+        hasNA = auto_api.getContext("na")
+        if hasNA:
+            auto_tasks.refmac_jelly("jellyAfterNA", data["revision"], crTask.autoRunName)
+        else:
+            auto_tasks.refmac_jelly("jellyAfterPhaser", data["revision"], crTask.autoRunName)
+        return
 
     elif crTask._type=="TaskModelCraft":
         # save rfree, completness
@@ -248,6 +261,47 @@ def makeNextTask ( crTask,data ):
                           'or try automated Auto-MR Workflow that will search the homologues for you.\n'
                 auto_tasks.remark("rem_sorry2", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
                 return
+        elif crTask.autoRunName == 'jellyAfterPhaser':
+            if float(data["Rfree"])<0.4:
+                auto_api.addContext("build_parent", crTask.autoRunName)
+                auto_api.addContext("build_revision", data["revision"])
+                auto_tasks.modelcraft("modelcraftAfterMorda", data["revision"], crTask.autoRunName)
+                return
+            elif float(data["Rfree"]) > 0.5:
+                strTree = 'Sorry, simple MR seems to fail (click remark for more comments)'
+                strText = 'Although simple MR seems to fail on your structure, there is chance you can solve the structure with another search model.\n' + \
+                          'You may give a try to the Auto-MR Workflow that shall generate search models automatically basing on the homologues.\n' + \
+                          'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
+                          'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
+                auto_tasks.remark("rem_sorry3", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+                return
+            else:
+                # 0.4 < rFree < 0.5
+                resHi = float(data["revision"].HKL.dataset.RESO[1])
+                if resHi < 3.0:
+                    strTree = 'Large parts of the structure are likely missing as Rfree is only %0.3f (click for more comments)' % float(
+                        data["Rfree"])
+                    strText = 'Although simple MR seems to perform not very well on your structure, we will try to build into the available density.\n' + \
+                              'Probability of success is not high though. \n' + \
+                              'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
+                              'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models ' + \
+                              'or try automated Auto-MR Workflow that will search the homologues for you.\n'
+                    auto_tasks.remark("rem_sorry2", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+                    auto_api.addContext("build_parent", crTask.autoRunName)
+                    auto_api.addContext("build_revision", data["revision"])
+                    auto_tasks.modelcraft("modelcraftAfterMorda", data["revision"], crTask.autoRunName)
+                    return
+                else:
+                    # resolution > 3.0
+                    strTree = 'Large parts of the structure are likely missing as Rfree is only %0.3f (click for more comments)' % float(
+                        data["Rfree"])
+                    strText = 'Simple MR seems to perform not very well on your structure, we will not try to build into ' + \
+                              'the available density as the resolution of your data seems to be lower than 3.0 A.\n' + \
+                              'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
+                              'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models ' + \
+                              'or try automated Auto-MR Workflow that will search the homologues for you.\n'
+                    auto_tasks.remark("rem_sorry2", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+                    return
 
 
         elif crTask.autoRunName == 'jellyAfterSliceNDice':
