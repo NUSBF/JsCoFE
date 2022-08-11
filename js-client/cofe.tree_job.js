@@ -1397,7 +1397,8 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func ) {
 
 JobTree.prototype.closeAllJobDialogs = function()  {
   for (var delId in this.dlg_map)
-    this.dlg_map[delId].close();
+    this.dlg_map[delId].delete();
+    // this.dlg_map[delId].close();
   this.dlg_map = {};
 }
 
