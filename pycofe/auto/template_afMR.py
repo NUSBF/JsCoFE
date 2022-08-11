@@ -134,10 +134,11 @@ def makeNextTask ( crTask,data ):
         # "nfitted0" # number of polymers before run
         # "nfitted" # number of polymers after run
         # "nasu"  # number of predicted subunits
-        if data['nfitted'] > data['nfitted0']: # trying to fit more subunits
-            if data['nfitted'] < data['nasu']: # if number of subunits is not exceeding predicted
-                auto_tasks.phaserNext('phaser' + str(data['nfitted']), data['revision'], crTask.autoRunName)
-                return
+        
+        # if data['nfitted'] > data['nfitted0']: # trying to fit more subunits
+        #     if data['nfitted'] < data['nasu']: # if number of subunits is not exceeding predicted
+        #         auto_tasks.phaserNext('phaser' + str(data['nfitted']), data['revision'], crTask.autoRunName)
+        #         return
     
         # no subunits to fit, but high Rfree
         # go into refinement and see what's happened?
