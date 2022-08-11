@@ -1395,6 +1395,8 @@ var projectName = projectDesc.name;
 
         } else  {
           log.error ( 34,'cannot create job directory at ' + jobDirPath );
+          if (utils.dirExists(jobDirPath))
+            log.error ( 34,'directory ' + jobDirPath + ' already exists' );
           response = new cmd.Response ( cmd.fe_retcode.mkDirError,
                   '[00026] Cannot create Job Directory',
                   emailer.send ( conf.getEmailerConfig().maintainerEmail,
