@@ -232,6 +232,14 @@ def modelprepXYZ ( name, parentName ):
             auto_api.addTaskParameter(name, "MODIFICATION_SEL", "U")
     return
 
+def phaserAllModels ( name,parentName ):
+    revision = auto_api.getContext("revisionForPhaser")
+    models = auto_api.getContext("modelsForPhaser")
+    auto_api.addTask(name, "TaskPhaserMR", parentName)
+    auto_api.addTaskData(name, "revision", revision)
+    auto_api.addTaskData(name, "model", models)
+    return
+
 def phaserFirst ( name,parentName ):
     revision = auto_api.getContext("revisionForPhaser")
     model = auto_api.getContext("modelForPhaser")
@@ -258,4 +266,13 @@ def slicendice ( name,parentName ):
     auto_api.addTask(name, "TaskSliceNDice", parentName)
     auto_api.addTaskData(name, "revision", revision)
     auto_api.addTaskData(name, "xyz", xyz)
+    return
+
+def slice ( name,parentName ):
+    xyz = auto_api.getContext("xyz")
+    seq = auto_api.getContext("seq")
+    if xyz and seq:
+        auto_api.addTask(name, "TaskSlice", parentName)
+        auto_api.addTaskData(name, "seq", seq)
+        auto_api.addTaskData(name, "xyz", xyz)
     return

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    09.06.22   <--  Date of Last Modification.
+#    11.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -37,7 +37,7 @@ import os
 #  application imports
 from . import basic
 # from   pycofe.proc   import seqal
-# from   pycofe.auto   import auto
+from   pycofe.auto   import auto
 
 # ============================================================================
 # Model preparation driver
@@ -65,6 +65,7 @@ class Slice(basic.TaskDriver):
         rc = self.runApp ( "slicendice",cmd,logType="Main",quitOnError=False )
 
         nmodels  = 0
+        models = []
 
         if rc.msg:
             self.putTitle ( "Failure" )
@@ -97,6 +98,7 @@ class Slice(basic.TaskDriver):
                         self.putModelWidget ( self.getWidgetId("model_btn"),
                                               "Coordinates",model )
                         have_results = True
+                        models.append(model)
                     else:
                         self.putMessage ( "<h3>*** Failed to form Model object for " +\
                                           fname + "</h3>" )
@@ -106,9 +108,9 @@ class Slice(basic.TaskDriver):
         }
 
         #
-        # auto.makeNextTask ( self,{
-        #     "model" : models[0]
-        # })
+        auto.makeNextTask ( self,{
+            "models" : models
+        })
 
 
         self.success ( nmodels>0 )
