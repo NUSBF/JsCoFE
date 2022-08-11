@@ -107,7 +107,8 @@ function JobDialog ( params,          // data and task projections up the tree b
             dlg.task.onJobDialogStart ( dlg );
             dlg._created = true;
           },0);
-        }
+        } else
+          dlg._created = true;
       },
       focus     : function() {
                     if (onDlgSignal_func)
@@ -183,7 +184,7 @@ JobDialog.prototype.delete = function()  {
   if (this.outputPanel)
     this.outputPanel.delete();
   if (this._created)
-    $(this.element).dialog( "destroy" );
+    $(this.element).dialog( 'destroy' );
   Widget.prototype.delete.call ( this );
 }
 
@@ -379,8 +380,10 @@ JobDialog.prototype.setDlgSize = function()  {
 }
 
 JobDialog.prototype.close = function()  {
-  if (this._created)
+  if (this._created)  {
     $(this.element).dialog ( 'close' );
+    // $(this.element).dialog( 'destroy' );
+  }
 }
 
 JobDialog.prototype.loadReport = function()  {
