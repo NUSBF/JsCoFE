@@ -478,7 +478,7 @@ var updateHash = false;
   __userLoginHash = new UserLoginHash();
 
   if (!__userLoginHash.read())  {
-    userData = new ud.UserData();
+    var userData = new ud.UserData();
     userData.name    = 'Developer';
     userData.email   = conf.getEmailerConfig().maintainerEmail;
     userData.login   = 'devel';
