@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.07.22   <--  Date of Last Modification.
+#    12.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -362,6 +362,19 @@ citations = {
                              'category' : 'primary',
                              'copy'     : [['simbad',-1]]  # -1 means copy all
                            },
+
+    'slicendice' :    { 'name'     : "Slice’N’Dice",
+                        'category' : 'primary',
+                        'refs'     : [{
+                                'authors' : 'Simpkin, A.J., Elliot, L.G., Stevenson, K., Krissinel, E., Rigden, D.J., and Keegan, R.M.',
+                                'title'   : "Slice’N’Dice: Maximising the value of predicted models for structural biologists",
+                                'journal' : 'bioRxiv',
+                                'volume'  : '2022.06.30.497974',
+                                'year'    : '2022',
+                                'pages'   : '',
+                                'doi'     : '10.1101/2022.06.30.497974'
+                            }]
+                      },
 
     'ample' :     { 'name'     : 'AMPLE',
                     'category' : 'primary',
