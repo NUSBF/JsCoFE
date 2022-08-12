@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    11.08.22   <--  Date of Last Modification.
+#    12.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -97,15 +95,19 @@ class Slice(basic.TaskDriver):
                         self.add_seqid_remark ( model,["100.0"] )
                         self.putModelWidget ( self.getWidgetId("model_btn"),
                                               "Coordinates",model )
-                        have_results = True
                         models.append(model)
                     else:
                         self.putMessage ( "<h3>*** Failed to form Model object for " +\
                                           fname + "</h3>" )
 
-        self.generic_parser_summary["slice"] = {
-          "summary_line" : str(nmodels) + " model(s) generated"
-        }
+        if nmodels==1:
+            self.generic_parser_summary["slice"] = {
+                "summary_line" : " 1 model generated"
+            }
+        else:
+            self.generic_parser_summary["slice"] = {
+                "summary_line" : str(nmodels) + " models generated"
+            }
 
         #
         auto.makeNextTask ( self,{

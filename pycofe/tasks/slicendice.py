@@ -35,9 +35,9 @@ import json
 
 #  application imports
 from . import basic
-from   pycofe.proc      import qualrep
+from   pycofe.proc      import qualrep, xyzmeta
 from   pycofe.verdicts  import verdict_refmac
-from   pycofe.auto      import template_afMR
+# from   pycofe.auto      import template_afMR
 
 from   pycofe.auto   import auto
 
@@ -75,7 +75,7 @@ class SliceNDice(basic.TaskDriver):
 
         labin_fo[2] = hkl.getFreeRColumn()
         input_mtz   = "_input.mtz"
-        labin_ph    = []
+        # labin_ph    = []
         self.sliceMTZ ( hkl.getHKLFilePath(self.inputDir()),labin_fo,input_mtz )
 
         # prepare sequence data
@@ -146,27 +146,27 @@ class SliceNDice(basic.TaskDriver):
                 self.putMessage ( "<i>No solution was produced, although expected</i>" )
             else:
 
+                # solution found; firstly, check whether the space group has changed
+
                 self.putMessage ( "&nbsp;" )
+
+                sol_hkl = hkl
+
+                meta = xyzmeta.getXYZMeta ( refmac_pdb,self.file_stdout,
+                                            self.file_stderr )
+
+                if "cryst" in meta:
+                    sol_spg    = meta["cryst"]["spaceGroup"]
+                    spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,refmac_mtz )
+                    if spg_change:
+                        refmac_mtz = spg_change[0]
+                        sol_hkl    = spg_change[1]
+                        self.putMessage ( "&nbsp;" )
+
+                # note place for verdict
 
                 verdict_row = self.rvrow
                 self.rvrow += 4
-
-                # splitId = None
-                # llg     = None
-                # tfz     = None
-                # r_fact  = None
-                # r_free  = None
-                #
-                # with (open(os.path.join("slicendice_0","slicendice.log"),'r')) as fstd:
-                #     for line in fstd:
-                #         words = line.split()
-                #         if len(words)==5 and words[0].startswith("split_"):
-                #             splitId = words[0]
-                #             llg     = words[1]
-                #             tfz     = words[2]
-                #             r_fact  = words[3]
-                #             r_free  = words[4]
-                #             break
 
                 shutil.copyfile ( refmac_pdb,self.getXYZOFName() )
                 shutil.copyfile ( refmac_mtz,self.getMTZOFName() )
@@ -175,8 +175,8 @@ class SliceNDice(basic.TaskDriver):
                                                      None,None, leadKey=1,
                                                      refiner="refmac" )
                 if structure:
-                    structure.addDataAssociation ( hkl.dataId )
-                    structure.setRefmacLabels    ( hkl )
+                    structure.addDataAssociation ( sol_hkl.dataId )
+                    structure.setRefmacLabels    ( sol_hkl    )
                     structure.addPhasesSubtype   ()
                     self.putTitle ( "Output Structure" +\
                             self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
@@ -185,6 +185,7 @@ class SliceNDice(basic.TaskDriver):
                                               structure )
                     # update structure revision
                     revision.setStructureData  ( structure )
+                    revision.setReflectionData ( sol_hkl   )
                     self.registerRevision      ( revision  )
                     have_results = True
 
@@ -203,10 +204,11 @@ class SliceNDice(basic.TaskDriver):
                             "molprobity" : meta,
                             "xyzmeta"    : structure.xyzmeta
                         }
-                        refmac_log = os.path.join
-                        suggestedParameters = verdict_refmac.putVerdictWidget (
+                        # suggestedParameters = \
+                        verdict_refmac.putVerdictWidget (
                             self,verdict_meta,verdict_row,
-                            refmac_log=os.path.join("slicendice_0",splitId,"refmac",splitId+"_refmac.log") )
+                            refmac_log=os.path.join("slicendice_0",splitId,"refmac",splitId+"_refmac.log")
+                        )
                         # if suggestedParameters:
                         #     self.task.suggestedParameters = suggestedParameters
                         #     self.putCloneJobButton ( "Clone job with suggested parameters",
@@ -232,10 +234,9 @@ class SliceNDice(basic.TaskDriver):
         # })
 
         auto.makeNextTask(self, {
-                "revision": revision,
-                "Rfree": float ( self.generic_parser_summary["refmac"]["R_free"] ),
+                "revision" : revision,
+                "Rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] ),
             }, log=self.file_stderr)
-
 
         self.success ( have_results )
         return
