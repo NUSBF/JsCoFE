@@ -167,8 +167,8 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
     if (!this.auth_dic.hasOwnProperty(key))
       this.auth_dic[key] = { 'auth_date' : '', 'token' : '' };
 
-    row1 = row+1;
-    row2 = row+2;
+    var row1 = row+1;
+    var row2 = row+2;
     this.grid.setLabel ( '<b><i>Software:</i></b>',row,0,1,1 );
     this.grid.setLabel ( '<img src="' + image_path(__auth_software[key].icon_software) +
                          '" height="36pt" style="vertical-align: middle;"/>&nbsp;&nbsp;&nbsp;' +
