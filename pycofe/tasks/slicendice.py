@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    21.06.22   <--  Date of Last Modification.
+#    12.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -100,6 +98,8 @@ class SliceNDice(basic.TaskDriver):
         self.putWaitMessageLF ( "Solution in progress ..." )
 
         rc = self.runApp ( "slicendice",cmd,logType="Main",quitOnError=False )
+
+        self.addCitations ( ['phaser','refmac5'] )
 
         have_results = False
 
