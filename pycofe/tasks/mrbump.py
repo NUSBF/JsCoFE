@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.07.22   <--  Date of Last Modification.
+#    12.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@ import time
 import shutil
 
 #  ccp4-python imports
-import pyrvapi
+# import pyrvapi
 
 #  application imports
 from . import basic
