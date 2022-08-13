@@ -275,6 +275,7 @@ function processServerQueue()  {
       var t0 = Date.now();
       __holdup_timer = window.setTimeout ( function(){
         __holdup_timer = null;
+        console.log ( Date.now() + ':' + t0 );  // debug
         if (Date.now()-t0>10*__holdup_wait)  {
           // assume that machine was sleeping for and extended period, then simply repeat
           processServerQueue();

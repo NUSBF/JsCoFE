@@ -321,18 +321,6 @@ if (!__template)  {
 
   TaskImport.prototype.onJobDialogClose = function ( job_dialog,callback_func )  {
     if ((this.upload_files.length>0) && (this.state==job_code.new))  {
-      // new QuestionBox ( 'Import not finished',
-      //                   '<h3>Import not finished</h3>' +
-      //                   'You have uploaded data files, however the import<br>' +
-      //                   'is not finished yet: the files need to be processed<br>' +
-      //                   'before they can be used in subsequent tasks.',
-      //                   'Finish now',function(){
-      //                     job_dialog.run_btn.click();
-      //                     callback_func ( false );
-      //                   },
-      //                   'Finish later',function(){
-      //                     callback_func ( true );
-      //                   },'msg_question');
       new QuestionBox ( 'Import not finished',
                         '<h3>Import not finished</h3>' +
                         'You have uploaded data files, however the import<br>' +
@@ -370,17 +358,24 @@ if (!__template)  {
     // } else
     //   div.header.uname_inp.setValue ( this.uname.replace(/<(?:.|\n)*?>/gm, '') );
 
+    // var msg = '';
+    // if (__local_service)
+    //       msg = 'Use file selection buttons ';
+    // else  msg = 'Use the file selection button ';
+
     var msg = '';
-    if (__local_service)
-          msg = 'Use file selection buttons ';
-    else  msg = 'Use the file selection button ';
+    if (('void1' in this.input_data.data) && (this.input_data.data['void1'].length>0))
+      msg = '<span style="font-size:16px;">' +
+            '<b>Are you trying to <u>replace</u> data in current structure?</b> ' +
+            'Use <b><i>Import & replace</i></b> task instead or run ' +
+            '<b><i>Edit Structure Revision</i></b> task after import. This task only ' +
+            'adds data to the Project.</span><br>&nbsp;<br>';
 
     var grid_row = div.grid.getNRows();
-    div.grid.setLabel ( msg + 'below to select and upload data files ' +
-                        'to the Project (use multiple file selections and ' +
-                        'repeat uploads if necessary). When done, hit ' +
-                        '<b><i>Import</i></b> button to process ' +
-                        'files uploaded.<br>&nbsp;',
+    div.grid.setLabel ( msg + 'Use the file selection button below to select and upload data ' +
+                        'files to the Project (use multiple file selections and repeat ' +
+                        'uploads if necessary). When done, hit <b><i>Import</i></b> ' +
+                        'button to process files uploaded.<br>&nbsp;',
                         grid_row,0, 1,1 ).setFontSize('80%');
     div.grid.setWidth ( '100%' );
 
