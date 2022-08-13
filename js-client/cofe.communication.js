@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    13.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -272,11 +272,16 @@ function processServerQueue()  {
       __delays_timer = window.setTimeout ( function(){
         __delays_ind.show();
       },__delays_wait);
+      var t0 = Date.now();
       __holdup_timer = window.setTimeout ( function(){
         __holdup_timer = null;
-        if ((__server_queue.length>0) && (__server_queue[0].type=='command') &&
-            (__server_queue[0].request_type==fe_command.checkSession) &&
-            (__check_session_drops<10))  {
+        if (Date.now()-t0>10*__holdup_wait)  {
+          // assume that machine was sleeping for and extended period, then simply repeat
+          processServerQueue();
+          console.log ( ' repeat queue processing' );  // for debugging
+        } else if ((__server_queue.length>0) && (__server_queue[0].type=='command') &&
+                   (__server_queue[0].request_type==fe_command.checkSession) &&
+                   (__check_session_drops<10))  {
           __check_session_drops++;
           __server_queue.shift();
           __process_network_indicators();
