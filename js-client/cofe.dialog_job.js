@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    14.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -179,12 +179,18 @@ JobDialog.prototype.constructor = JobDialog;
 
 
 JobDialog.prototype.delete = function()  {
-  if (this.inputPanel)
+  if (this.inputPanel)  {
     this.inputPanel.delete();
-  if (this.outputPanel)
+    this.inputPanel = null;
+  }
+  if (this.outputPanel)  {
     this.outputPanel.delete();
-  if (this._created)
+    this.outputPanel = null;
+  }
+  if (this._created)  {
+    this._created = false;
     $(this.element).dialog( 'destroy' );
+  }
   Widget.prototype.delete.call ( this );
 }
 
@@ -380,10 +386,12 @@ JobDialog.prototype.setDlgSize = function()  {
 }
 
 JobDialog.prototype.close = function()  {
-  if (this._created)  {
-    $(this.element).dialog ( 'close' );
-    // $(this.element).dialog( 'destroy' );
-  }
+  this.delete();
+  // if (this._created)  {
+  //   // $(this.element).dialog ( 'close' );
+  //   $(this.element).dialog( 'destroy' );
+  //   this._created = false;
+  // }
 }
 
 JobDialog.prototype.loadReport = function()  {
