@@ -43,6 +43,9 @@ function startSession ( sceneId,dev_switch )  {
       var wpath = '/';
       if (lpath.length>0)
         wpath = '/' + lpath[0] + '/';
+      console.log ( 'lpath=' + lpath );
+      console.log ( 'wpath=' + wpath );
+      console.log ( 'title=' + document.title );
       window.history.replaceState ( {},document.title,wpath );
     }
   }
