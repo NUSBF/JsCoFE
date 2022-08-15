@@ -117,20 +117,24 @@ class SliceNDice(basic.TaskDriver):
             r_free     = 2.0
             results    = None
 
-            with open(os.path.join("slicendice_0","results.json")) as json_file:
+            with open(os.path.join("slicendice_0","slicendice_results.json")) as json_file:
                 results = json.load(json_file)
 
             if results:
-                for key in results["final_r_free"]:
-                    rfree = float(results["final_r_free"][key])
-                    if rfree<r_free:
-                        r_free     = rfree
-                        r_fact     = float(results["final_r_fact"][key])
-                        llg        = float(results["phaser_llg"  ][key])
-                        tfz        = float(results["phaser_tfz"  ][key])
-                        splitId    = results["split_id"][key]
-                        refmac_pdb = results["xyzout"  ][key]
-                        refmac_mtz = results["hklout"  ][key]
+                lowest_rfree=1.0
+                best_split=None
+                for split in results['dice'].keys():
+                    if results['dice'][split]['final_r_free'] <= lowest_rfree:
+                        lowest_rfree=results['dice'][split]['final_r_free']
+                        best_split=split
+
+                r_free = float(results["dice"][best_split]["final_r_free"])
+                r_fact = float(results["dice"][best_split]["final_r_fact"])
+                llg = float(results["dice"][best_split]["phaser_llg"])
+                tfz = float(results["dice"][best_split]["phaser_tfz"])
+                splitId = best_split.split()[-1]
+                refmac_pdb = results["dice"][best_split]["xyzout"]
+                refmac_mtz = results["dice"][best_split]["hklout"]
 
             # dirName    = os.path.join ( "slicendice_0","output" )
             # outFiles   = [f for f in os.listdir(dirName)]
