@@ -48,6 +48,12 @@ class SliceNDice(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
+    # the following is for importing the generated HKL dataset(s)
+    def importDir        (self):  return "./"   # import from working directory
+    def import_summary_id(self):  return None   # don't make import summary table
+
+    # ------------------------------------------------------------------------
+
     def run(self):
 
         # Prepare task input
