@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.08.22   <--  Date of Last Modification.
+#    16.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1212,7 +1212,7 @@ def makeCitation ( reference ):
     return refhtml
 
 
-def _get_references ( citation,lists ):
+def _get_references ( citation,appName,lists ):
     refs     = []
     if 'copy' in citation:
         copy = citation['copy']
@@ -1243,7 +1243,7 @@ def get_citation_html_list ( citation,appName,desc_bool,lists ):
 
     if citation['name']:
 
-        refs = _get_references ( citation,lists )
+        refs = _get_references ( citation,appName,lists )
         lst  = []
 
         if len(refs)<=0:
