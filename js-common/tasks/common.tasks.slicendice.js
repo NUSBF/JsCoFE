@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    16.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,7 +36,7 @@ function TaskSliceNDice()  {
   this._type   = 'TaskSliceNDice';
   this.name    = 'slicendice';
   this.setOName ( 'slicendice' ); // default output file name template
-  this.title   = 'MR with model splitting using Slice-n-Dice';
+  this.title   = "MR with model splitting using Slice'N'Dice";
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision':['!protein','!asu','!hkl']}, // data type(s) and subtype(s)
