@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.10.21   <--  Date of Last Modification.
+ *    18.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XYZ Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -339,9 +339,9 @@ if (!__template)  {
       if (labels.length<1)  {
         labels.unshift ( 'No suitable chains found' );
         ids   .unshift ( '(none)' );
-      } else if (labels.length>1)  {
-        labels.unshift ( 'All'   );
-        ids   .unshift ( '(all)' );
+      // } else if (labels.length>1)  {
+      //   labels.unshift ( 'All'   );
+      //   ids   .unshift ( '(all)' );
       }
       for (var j=0;j<labels.length;j++)
         customGrid.chainSel.addItem ( labels[j],'',ids[j],this.chainSel==ids[j] );
