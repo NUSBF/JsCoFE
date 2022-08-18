@@ -423,7 +423,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
               makeCommErrorMessage ( page_title,response );
           }
         } catch(err) {
-          console.log ( ' >>> error catch in __server_command.done: ' + err );
+          console.log ( ' >>> error catch in __server_command.done: ' + err );  
           console.log ( ' >>> rdata = ' + rdata );
         }
         processServerQueue();
