@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    18.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Model Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2021
+ *  (C) E. Krissinel, A. Lebedev 2020-2022
  *
  *  =================================================================
  *
@@ -149,6 +149,7 @@ if (!__template)  {
     function displaySequence ( seq_dname )  {
       customGrid.setLabel ( 'Sequence:',row,0,1,1 ).setFontItalic(true)
                                                    .setWidth  ( '70px' );
+      
       customGrid.setLabel ( '&nbsp;' + seq_dname,row,1,1,3 )
                 .setNoWrap();
       customGrid.setVerticalAlignment ( row,0,'middle' );
@@ -161,24 +162,35 @@ if (!__template)  {
       if (this.sequence)  {
         //row++;
         displaySequence ( this.sequence.dname );
-        customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
+        // customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
       }
+      else  {
+        var nChains = this.getChainList().length;
+        if (nChains<2)  displaySequence ( 'not associated' );
+                  else  displaySequence ( 'complex of ' + nChains + ' chains' );
+      }
+      customGrid.setLabel ( ' ',row,0,1,2 ).setHeight_px ( 8 );
     } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
       DataXYZ.prototype.layCustomDropdownInput.call ( this,dropdown );
     } else if (startsWith(dropdown.layCustom,'phaser-mr'))  {
       if (this.sequence)
         displaySequence ( this.sequence.dname );
-      customGrid.setLabel ( 'Look for',row,0,1,1 ).setFontItalic ( true );
+      else  {
+        var nChains = this.getChainList().length;
+        if (nChains<2)  displaySequence ( 'not associated' );
+                  else  displaySequence ( 'complex of ' + nChains + ' chains' );
+      }
+      customGrid.setLabel ( 'Look for',row,0,1,1 ).setFontItalic ( true ).setNoWrap();
       customGrid.ncopies = customGrid.setInputText ( this.ncopies,row,1,1,1 )
                     .setStyle ( 'text','integer','',
                       'Specify the number of model copies to look for ' +
                       'in asymmetric unit' )
                     .setWidth_px ( 50 );
-      customGrid.setLabel ( 'copies in ASU',row,2,1,1 ).setFontItalic ( true );
+      customGrid.setLabel ( 'copies in ASU',row,2,1,1 ).setFontItalic ( true ).setNoWrap();
       customGrid.setVerticalAlignment ( row  ,0,'middle' );
       customGrid.setVerticalAlignment ( row++,2,'middle' );
 
-      customGrid.setLabel ( 'Similarity to target',row,0,1,2 ).setFontItalic ( true );
+      customGrid.setLabel ( 'Similarity to target',row,0,1,2 ).setFontItalic ( true ).setNoWrap();
       customGrid.simtype = new Dropdown();
       customGrid.simtype.setWidth ( '230px' );
       if (('seqrem' in this) && this.seqrem)
