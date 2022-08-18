@@ -241,7 +241,7 @@ class ShelxCD(basic.TaskDriver):
             for model in st:
                 for chain in model:
                     for residue in chain:
-                        residue.name = atomType
+                        residue.name = atomType.upper()
                         for atom in residue:
                             atom.name    = atomType
                             atom.element = gemmi.Element(atomType)

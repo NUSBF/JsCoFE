@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    18.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,9 +35,9 @@ function TaskModelPrepMC()  {
              else  TaskModelPrepXYZ.call ( this );
 
   this._type   = 'TaskModelPrepMC';
-  this.name    = 'prepare complex MR model';
+  this.name    = 'prepare multi-chain MR model';
   this.setOName ( '*' );  // default output file name template; '*': hide the field
-  this.title   = 'Prepare Complex MR Model';
+  this.title   = 'Prepare Multi-Chain MR Model';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz'],
