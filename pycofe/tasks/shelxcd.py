@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.07.22   <--  Date of Last Modification.
+#    18.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -174,7 +174,7 @@ class ShelxCD(basic.TaskDriver):
         # Prepare data for shelxc and run it
 
         #atomType = self.getParameter ( sec1.SFAC )
-        atomType = revision.ASU.ha_type
+        atomType = revision.ASU.ha_type.upper()
 
         self.open_stdin()
         self.write_stdin ([

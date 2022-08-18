@@ -2,12 +2,10 @@
 
 #  !!!!!   DRAFT DRFAT DRAFT TO BE REMOVED  !!!!!
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    18.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021-2022
 #
 # ============================================================================
 #
@@ -56,7 +54,7 @@ class ImportAutoRun(import_task.Import):
         self.xyz     = None   # coordinates (model/apo)
         self.ligands = []     # not used in this function but must be initialised
         self.hkl_alt = {}     # alternative-space group merged datasets
-        self.ha_type = self.getParameter ( self.task.parameters.HATOM )
+        self.ha_type = self.getParameter ( self.task.parameters.HATOM ).upper()
 
         if "DataUnmerged" in self.outputDataBox.data:
             self.unm = self.outputDataBox.data["DataUnmerged"][0]
@@ -87,7 +85,7 @@ class ImportAutoRun(import_task.Import):
         self.xyz     = None   # coordinates (model/apo)
         self.ligands = []     # list of ligands
         self.hkl_alt = {}     # alternative-space group merged datasets
-        self.ha_type = self.getParameter ( self.task.parameters.HATOM )
+        self.ha_type = self.getParameter ( self.task.parameters.HATOM ).upper()
 
         hkldata = self.makeClass ( self.input_data.data.hkldata[0] )
         if hkldata._type=="DataUnmerged":

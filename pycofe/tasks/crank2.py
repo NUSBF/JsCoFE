@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.07.22   <--  Date of Last Modification.
+#    18.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -114,7 +114,7 @@ class Crank2(basic.TaskDriver):
 
     def add_model ( self ):
 
-        ha_type = self.revision.ASU.ha_type
+        ha_type = self.revision.ASU.ha_type.upper()
 
         substr_spec = ""
         for hkli in self.hkl:
