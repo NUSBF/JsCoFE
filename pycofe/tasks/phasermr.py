@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.07.22   <--  Date of Last Modification.
+#    18.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -472,6 +472,9 @@ class PhaserMR(basic.TaskDriver):
                 "errors, warnings and hints. In particular, check whether packing criteria should " +\
                 "be relaxed or translational NCS switched off."
             )
+            self.generic_parser_summary["phaser"] = {
+                "summary_line" : "solution not found"
+            }
 
         # close execution logs and quit
         self.success ( have_results )
