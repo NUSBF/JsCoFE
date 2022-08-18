@@ -24,7 +24,7 @@
 # ============================================================================
 #
 
-from future import *
+# from future import *
 
 #  python native imports
 import os
@@ -458,11 +458,11 @@ class PhaserMR(basic.TaskDriver):
                 verdict_phasermr.putVerdictWidget ( self,verdict_meta,row0 )
 
                 auto.makeNextTask(self, {
-                    "revision": revision,
-                    "Rfree": float ( self.generic_parser_summary["refmac"]["R_free"] ),
-                    "nfitted0": nfitted0, # number of polymers before run
-                    "nfitted": structure.getNofPolymers(), # number of polymers after run
-                    "nasu": revision.getNofASUMonomers(), # number of predicted subunits
+                    "revision" : revision,
+                    "Rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] ),
+                    "nfitted0" : nfitted0, # number of polymers before run
+                    "nfitted"  : structure.getNofPolymers(), # number of polymers after run
+                    "nasu"     : revision.getNofASUMonomers(), # number of predicted subunits
                 }, log=self.file_stderr)
 
         else:
