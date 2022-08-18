@@ -89,27 +89,26 @@ class ShelxCD(basic.TaskDriver):
                     hkl0 = hkl[i]
                 elif hkl[i].wtype=="inflection" and not hkl0:
                     hkl0 = hkl[i]
-                """
-                hkl[i].cnvfname = os.path.splitext(hkl[i].getHKLFileName())[0] + ".hkl"
-                self.open_stdin()
-                if hkl[i].cols[4]=="F":
-                    self.write_stdin ([
-                        "OUTP shelx",
-                        "LABI F(+)=" + hkl[i].cols[0] + " SIGF(+)=" + hkl[i].cols[1] +\
-                            " F(-)=" + hkl[i].cols[2] + " SIGF(-)=" + hkl[i].cols[3]
-                    ])
-                elif hkl[i].cols[4]=="I":
-                    self.write_stdin ([
-                        "OUTP shelx",
-                        "LABI I(+)=" + hkl[i].cols[0] + " SIGI(+)=" + hkl[i].cols[1] +\
-                            " I(-)=" + hkl[i].cols[2] + " SIGI(-)=" + hkl[i].cols[3]
-                    ])
-                self.close_stdin()
-                self.runApp ( "mtz2various",[
-                    "HKLIN" ,hkl[i].getHKLFilePath(self.inputDir()),
-                    "HKLOUT",hkl[i].cnvfname
-                ],logType="Service")
-                """
+
+                # hkl[i].cnvfname = os.path.splitext(hkl[i].getHKLFileName())[0] + ".hkl"
+                # self.open_stdin()
+                # if hkl[i].cols[4]=="F":
+                #     self.write_stdin ([
+                #         "OUTP shelx",
+                #         "LABI F(+)=" + hkl[i].cols[0] + " SIGF(+)=" + hkl[i].cols[1] +\
+                #             " F(-)=" + hkl[i].cols[2] + " SIGF(-)=" + hkl[i].cols[3]
+                #     ])
+                # elif hkl[i].cols[4]=="I":
+                #     self.write_stdin ([
+                #         "OUTP shelx",
+                #         "LABI I(+)=" + hkl[i].cols[0] + " SIGI(+)=" + hkl[i].cols[1] +\
+                #             " I(-)=" + hkl[i].cols[2] + " SIGI(-)=" + hkl[i].cols[3]
+                #     ])
+                # self.close_stdin()
+                # self.runApp ( "mtz2various",[
+                #     "HKLIN" ,hkl[i].getHKLFilePath(self.inputDir()),
+                #     "HKLOUT",hkl[i].cnvfname
+                # ],logType="Service")
 
                 if hkl[i].cols[4]=="F":
                     hkl[i].cnvfname = os.path.splitext(hkl[i].getHKLFileName())[0] + ".hkl"
