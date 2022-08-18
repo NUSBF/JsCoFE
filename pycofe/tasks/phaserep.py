@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    23.05.21   <--  Date of Last Modification.
+#    18.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -263,7 +261,7 @@ class PhaserEP(basic.TaskDriver):
 
         if hkl.f_use_mode!="NO":
             self.write_stdin (
-                "\nSCATTERING TYPE " + revision.ASU.ha_type +\
+                "\nSCATTERING TYPE " + revision.ASU.ha_type.upper() +\
                             " FP = " + str(hkl.f1) + " FDP = " + str(hkl.f11) +\
                             " FIX "  + hkl.f_use_mode
             )

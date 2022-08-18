@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.08.22   <--  Date of Last Modification.
+ *    02.01.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -306,8 +306,8 @@ if (!__template)  {
     customGrid.setVerticalAlignment ( row,3,'middle' );
 
     function showNDis()  {
-      var ha_type = customGrid.ha_type.getValue().trim().toUpperCase();
-      var showdis = (ha_type=='S');
+      var ha_type = customGrid.ha_type.getValue().trim();
+      var showdis = (ha_type.toLowerCase()=='s');
       customGrid.ndis_lbl.setVisible ( showdis );
       customGrid.ndisulph.setVisible ( showdis );
       customGrid.ha_lbl  .setVisible ( (ha_type.length<=0) );
@@ -643,11 +643,11 @@ if (!__template)  {
     if (customGrid.phasing_sel)
       this.Options.phasing_sel = customGrid.phasing_sel.getValue();
     if (this.ASU)  {
-      this.ASU.ha_type = customGrid.ha_type.getValue().trim().toUpperCase();
+      this.ASU.ha_type = customGrid.ha_type.getValue().trim();
       if (!this.ASU.ha_type)
         msg += '|<b><i>Main anomalous scatterer must be given</i></b>';
       if (customGrid.hasOwnProperty('ndisulph') &&
-          (this.ASU.ha_type=='S'))  {
+          (this.ASU.ha_type.toLowerCase()=='s'))  {
         var ndisulph = customGrid.ndisulph.getValue();
         if (ndisulph.trim().length>0)  {
           if (isInteger(ndisulph))  {
