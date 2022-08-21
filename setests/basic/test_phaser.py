@@ -28,9 +28,9 @@ def prepareMRmodelCOORD(driver, waitShort):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
-    time.sleep(1)
+    time.sleep(3)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Coordinate data')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare Single-Chain MR Model(s) from Coordinate data')
     time.sleep(3)
 
     # There are several forms - active and inactive. We need one displayed.
