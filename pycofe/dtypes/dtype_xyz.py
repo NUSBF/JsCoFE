@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.08.22   <--  Date of Last Modification.
+#    21.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -109,6 +109,22 @@ class DType(dtype_template.DType):
                 if chains[i].seq:
                     n += 1
         return n
+
+    def getChainList ( self ):
+        chain_list = []
+        if type(self.xyzmeta) == dict:
+            if "xyz" in self.xyzmeta:
+                chains = self.xyzmeta["xyz"][0]["chains"]
+                for i in range(len(chains)):
+                    if chains[i]["seq"]:
+                        chain_list.append ( chains[i]["id"] )
+        elif hasattr(self.xyzmeta,"xyz"):
+            chains = self.xyzmeta.xyz[0].chains
+            for i in range(len(chains)):
+                if chains[i].seq:
+                    chain_list.append ( chains[i].id )
+        return chain_list
+
 
     def getNofAtoms ( self ):
         if type(self.xyzmeta) == dict:
