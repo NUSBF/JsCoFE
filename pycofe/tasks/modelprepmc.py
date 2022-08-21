@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.12.21   <--  Date of Last Modification.
+#    21.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2022
 #
 # ============================================================================
 #
@@ -73,7 +73,11 @@ class ModelPrepMC(modelprepxyz.ModelPrepXYZ):
 
         for i in range(len(seq)):
             seq[i] = self.makeClass ( seq[i] )
-            chains = seq[i].chain_list.split(",")
+            chains = []
+            if seq[i].chain_list!="*":
+                chains = seq[i].chain_list.split(",")
+            else:
+                chains = xyz.getChainList()
             # molWeight += len(chains)*seq[i].weight
             for chainId in chains:
                 xyz.chainSel  = chainId
