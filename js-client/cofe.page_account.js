@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.08.22   <--  Date of Last Modification.
+ *    22.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -67,101 +67,145 @@ function AccountPage ( sceneId )  {
   //panel.setWidth      ( '600pt' );
   this.grid.setWidget ( panel,1,1,1,1 );
 
-  var title_lbl    = new Label     ( 'My Account'  ).setNoWrap();
-  var user_lbl     = new Label     ( 'User name:'  ).setNoWrap();
-  var email_lbl    = new Label     ( 'E-mail:'     );
-  var login_lbl    = new Label     ( 'Login name:' ).setNoWrap();
-  var pwd_lbl      = new Label     ( 'Password:'   );
-  var pwd1_lbl     = new Label     ( 'Retype password:'   ).setNoWrap();
+  var full_list = (!__local_user);
+
+  var title_lbl    = new Label ( 'My Account'  ).setNoWrap();
+  title_lbl.setFont ( 'times','300%',true,true );
+
+  var user_lbl     = null;
+  var email_lbl    = null;
+  var login_lbl    = null;
+  var pwd_lbl      = null;
+  var pwd1_lbl     = null;
+  var licence_lbl  = null;
+  var feedback_lbl = null;
+  var user_inp     = null;
+  var email_inp    = null;
+  var login_inp    = null;
+  var pwd_inp      = null;
+  var pwd1_inp     = null;
+
+  if (full_list)  {
+    user_lbl     = new Label     ( 'User name:'  ).setNoWrap();
+    email_lbl    = new Label     ( 'E-mail:'     );
+    login_lbl    = new Label     ( 'Login name:' ).setNoWrap();
+    pwd_lbl      = new Label     ( 'Password:'   );
+    pwd1_lbl     = new Label     ( 'Retype password:'   ).setNoWrap();
+    licence_lbl  = new Label     ( 'Licence agreement:' ).setNoWrap();
+    feedback_lbl = new Label     ( 'Feedback agreement:').setNoWrap();
+    user_inp     = new InputText ( '' );
+    email_inp    = new InputText ( '' );
+    login_inp    = new InputText ( '' );
+    pwd_inp      = new InputText ( '' );
+    pwd1_inp     = new InputText ( '' );
+  }
   var cloudrun_lbl = new Label     ( 'CloudRun Id:'       ).setNoWrap();
-  var licence_lbl  = new Label     ( 'Licence agreement:' ).setNoWrap();
-  var feedback_lbl = new Label     ( 'Feedback agreement:').setNoWrap();
   var authoris_lbl = null;
-  var authorisation_dic = {};
+  // var authorisation_dic = {};
   if (__auth_software)  {
     authoris_lbl = new Label ( 'Software authorisations:' ).setNoWrap();
     authoris_lbl.setFontSize( '112%' );
   }
-  var user_inp     = new InputText ( '' );
-  var email_inp    = new InputText ( '' );
-  var login_inp    = new InputText ( '' );
-  var pwd_inp      = new InputText ( '' );
-  var pwd1_inp     = new InputText ( '' );
   var cloudrun_inp = new InputText ( '' );
 
   //user_inp    .setStyle   ( 'text',"^[A-Za-z\\-\\.\\s]+$",'John Smith',
   //user_inp    .setStyle   ( 'text',"^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$",
   //                          'User name should only contain latin ' +
   //                          'letters, numbers,\n dots, dashes and spaces' );
-  user_inp    .setStyle   ( 'text','','John Smith',
-                            'This name will be used for addressing to you in\n' +
-                            'web-pages and e-mails' );
-  email_inp   .setStyle   ( 'email','','john.smith@university.ac.uk',
-                            'Should be a valid e-mail address, at which ' +
-                            'your\n new password will be sent' );
-  login_inp   .setStyle   ( 'text',"^[A-Za-z0-9\\-\\._]+$",'john.smith',
-                            'Login name cannot be changed' );
-  pwd_inp     .setStyle   ( 'password','','password (old or new)',
-                            'Choose new password' );
-  pwd1_inp    .setStyle   ( 'password','','confirm password',
-                            'Type password again here' );
+
+  if (full_list)  {
+    user_inp    .setStyle   ( 'text','','John Smith',
+                              'This name will be used for addressing to you in\n' +
+                              'web-pages and e-mails' );
+    email_inp   .setStyle   ( 'email','','john.smith@university.ac.uk',
+                              'Should be a valid e-mail address, at which ' +
+                              'your\n new password will be sent' );
+    login_inp   .setStyle   ( 'text',"^[A-Za-z0-9\\-\\._]+$",'john.smith',
+                              'Login name cannot be changed' );
+    pwd_inp     .setStyle   ( 'password','','password (old or new)',
+                              'Choose new password' );
+    pwd1_inp    .setStyle   ( 'password','','confirm password',
+                              'Type password again here' );
+  }
   cloudrun_inp.setTooltip ( 'CloudRun Id is used for starting CCP4 Cloud projects ' +
                             'from command prompt. It should be changed periodically ' +
                             'for security reasons. Press button on the left to ' +
                             'generate new CloudRun Id.' );
-  title_lbl   .setFont    ( 'times','300%',true,true );
-  user_lbl    .setFontSize( '112%' ).setWidth('auto');
-  email_lbl   .setFontSize( '112%' );
-  login_lbl   .setFontSize( '112%' );
-  pwd_lbl     .setFontSize( '112%' );
-  pwd1_lbl    .setFontSize( '112%' );
+
+  if (full_list)  {
+    user_lbl    .setFontSize( '112%' ).setWidth('auto');
+    email_lbl   .setFontSize( '112%' );
+    login_lbl   .setFontSize( '112%' );
+    pwd_lbl     .setFontSize( '112%' );
+    pwd1_lbl    .setFontSize( '112%' );
+    licence_lbl .setFontSize( '112%' );
+    feedback_lbl.setFontSize( '112%' );
+    /* == authoris_lbl.setFontSize( '112%' ); */
+    user_inp    .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
+    email_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
+    login_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt').setReadOnly(true);
+    pwd_inp     .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
+    pwd1_inp    .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
+  }
   cloudrun_lbl.setFontSize( '112%' );
-  licence_lbl .setFontSize( '112%' );
-  feedback_lbl.setFontSize( '112%' );
-  /* == authoris_lbl.setFontSize( '112%' ); */
-  user_inp    .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
-  email_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
-  login_inp   .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt').setReadOnly(true);
-  pwd_inp     .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
-  pwd1_inp    .setFontSize( '112%' ).setFontItalic(true).setWidth('200pt');
-  cloudrun_inp.setFontSize( '94%'  ).setReadOnly  (true).setWidth('110pt').setHeight('26px');
+  cloudrun_inp.setFontSize( '94%'  ).setReadOnly(true).setWidth('110pt').setHeight('26px');
 
   var row = 0;
   panel.setWidget              ( title_lbl   ,row,0,1,4   );
   panel.setHorizontalAlignment ( row++ ,0    ,'center'    );
   panel.setWidget              ( this.makeSetupNamePanel(), row++,0,1,4 );
   panel.setCellSize            ( '','20pt'   ,row++,0     );
-  panel.setWidget              ( user_lbl    ,row  ,0,1,1 );
-  panel.setWidget              ( email_lbl   ,row+1,0,1,1 );
-  panel.setWidget              ( login_lbl   ,row+2,0,1,1 );
-  panel.setWidget              ( pwd_lbl     ,row+3,0,1,1 );
-  panel.setWidget              ( pwd1_lbl    ,row+4,0,1,1 );
-  panel.setWidget              ( cloudrun_lbl,row+5,0,1,1 );
-  panel.setWidget              ( licence_lbl ,row+6,0,1,2 );
-  panel.setWidget              ( feedback_lbl,row+7,0,1,2 );
-  if (__auth_software)
-    panel.setWidget            ( authoris_lbl,row+8,0,1,2 );
-  for (var i=0;i<5;i++)
-    panel.setCellSize  ( '96pt','',row+i,0   );
-  panel.setWidget              ( user_inp    ,row  ,1,1,3 );
-  panel.setWidget              ( email_inp   ,row+1,1,1,3 );
-  panel.setWidget              ( login_inp   ,row+2,1,1,3 );
-  panel.setWidget              ( pwd_inp     ,row+3,1,1,3 );
-  panel.setWidget              ( pwd1_inp    ,row+4,1,1,3 );
+
   var cloudrun_pnl = new Grid('-compact');
-  cloudrun_pnl.setWidget       ( cloudrun_inp,0,0,1,1     );
-  panel.setWidget              ( cloudrun_pnl,row+5,1,1,3 );
+  cloudrun_pnl.setWidget ( cloudrun_inp,0,0,1,1 );
+
+  if (full_list)  {
+
+    panel.setWidget ( user_lbl    ,row  ,0,1,1 );
+    panel.setWidget ( email_lbl   ,row+1,0,1,1 );
+    panel.setWidget ( login_lbl   ,row+2,0,1,1 );
+    panel.setWidget ( pwd_lbl     ,row+3,0,1,1 );
+    panel.setWidget ( pwd1_lbl    ,row+4,0,1,1 );
+    panel.setWidget ( cloudrun_lbl,row+5,0,1,1 );
+    panel.setWidget ( licence_lbl ,row+6,0,1,2 );
+    panel.setWidget ( feedback_lbl,row+7,0,1,2 );
+    if (__auth_software)
+      panel.setWidget ( authoris_lbl,row+8,0,1,2 );
+    for (var i=0;i<5;i++)
+      panel.setCellSize  ( '96pt','',row+i,0   );
+    panel.setWidget ( user_inp    ,row  ,1,1,3 );
+    panel.setWidget ( email_inp   ,row+1,1,1,3 );
+    panel.setWidget ( login_inp   ,row+2,1,1,3 );
+    panel.setWidget ( pwd_inp     ,row+3,1,1,3 );
+    panel.setWidget ( pwd1_inp    ,row+4,1,1,3 );
+    panel.setWidget ( cloudrun_pnl,row+5,1,1,3 );
   /* == for (var i=0;i<7;i++)  { */
-  if (__auth_software)  {
-    for (var i=0;i<9;i++)  {
-      panel.setVerticalAlignment ( row+i,0,'middle' );
-      panel.setVerticalAlignment ( row+i,1,'middle' );
+    if (__auth_software)  {
+      for (var i=0;i<9;i++)  {
+        panel.setVerticalAlignment ( row+i,0,'middle' );
+        panel.setVerticalAlignment ( row+i,1,'middle' );
+      }
+    } else  {
+      for (var i=0;i<7;i++)  {
+        panel.setVerticalAlignment ( row+i,0,'middle' );
+        panel.setVerticalAlignment ( row+i,1,'middle' );
+      }
     }
+
   } else  {
-    for (var i=0;i<7;i++)  {
-      panel.setVerticalAlignment ( row+i,0,'middle' );
-      panel.setVerticalAlignment ( row+i,1,'middle' );
+
+    panel.setWidget ( cloudrun_lbl,row,0,1,1 );
+    panel.setWidget ( cloudrun_pnl,row,1,1,3 );
+    panel.setCellSize  ( '96pt','',row,0   );
+    panel.setVerticalAlignment ( row,0,'middle' );
+    panel.setVerticalAlignment ( row,1,'middle' );
+    if (__auth_software)  {
+      panel.setWidget ( authoris_lbl,row+1,0,1,2 );
+      // panel.setCellSize  ( '96pt','',row+1,0   );
+      panel.setVerticalAlignment ( row+1,0,'middle' );
+      panel.setVerticalAlignment ( row+1,1,'middle' );
     }
+
   }
 
   // make settings panel
@@ -292,31 +336,33 @@ function AccountPage ( sceneId )  {
   });
 
 
-  row += 6;
-  var licence_btn = new Button  ( 'choose',image_path('licence') );
-  licence_btn.setWidth          ( '100%' );
-  licence_btn.setTooltip        ( 'Type of licence must be chosen' );
-  panel.setWidget               ( licence_btn,row,1,1,2 );
-  panel.setVerticalAlignment    ( row,1,'middle'  );
-  licence_btn.setDisabled       ( true );
-  licence_btn.addOnClickListener ( function(){
-    new LicenceDialog(licence_btn.getText(),function(licence){
-      licence_btn.setButton ( licence,image_path('licence') );
+  if (full_list)  {
+    row += 6;
+    var licence_btn = new Button  ( 'choose',image_path('licence') );
+    licence_btn.setWidth          ( '100%' );
+    licence_btn.setTooltip        ( 'Type of licence must be chosen' );
+    panel.setWidget               ( licence_btn,row,1,1,2 );
+    panel.setVerticalAlignment    ( row,1,'middle'  );
+    licence_btn.setDisabled       ( true );
+    licence_btn.addOnClickListener ( function(){
+      new LicenceDialog(licence_btn.getText(),function(licence){
+        licence_btn.setButton ( licence,image_path('licence') );
+      });
     });
-  });
 
-  row++;
-  var feedback_btn = new Button ( 'choose',image_path('feedback') );
-  feedback_btn.setWidth         ( '100%' );
-  feedback_btn.setTooltip       ( 'Terms of feedback agremment must be chosen' );
-  panel.setWidget               ( feedback_btn,row,1,1,2 );
-  panel.setVerticalAlignment    ( row,1,'middle'  );
-  feedback_btn.setDisabled      ( true );
-  feedback_btn.addOnClickListener ( function(){
-    new FeedbackDialog(feedback_btn.getText(),function(feedback){
-      feedback_btn.setButton ( feedback,image_path('feedback') );
+    row++;
+    var feedback_btn = new Button ( 'choose',image_path('feedback') );
+    feedback_btn.setWidth         ( '100%' );
+    feedback_btn.setTooltip       ( 'Terms of feedback agremment must be chosen' );
+    panel.setWidget               ( feedback_btn,row,1,1,2 );
+    panel.setVerticalAlignment    ( row,1,'middle'  );
+    feedback_btn.setDisabled      ( true );
+    feedback_btn.addOnClickListener ( function(){
+      new FeedbackDialog(feedback_btn.getText(),function(feedback){
+        feedback_btn.setButton ( feedback,image_path('feedback') );
+      });
     });
-  });
+  }
 
   var authoris_btn = null;
   if (__auth_software)  {
@@ -338,7 +384,8 @@ function AccountPage ( sceneId )  {
   }
 
   row++;
-  panel.setCellSize  ( '','12pt',row++,0 );
+  if (full_list)  panel.setCellSize  ( '','12pt',row++,0 );
+            else  panel.setCellSize  ( '','142pt',row++,0 );
   //panel.setWidget   ( new HLine('2pt'), row++,0,1,4 );
   panel.setHLine     ( 2, row++,0, 1,4 );
   panel.setCellSize  ( '','12pt',row++,0 );
@@ -348,10 +395,12 @@ function AccountPage ( sceneId )  {
                         .setWidth  ( '100%' )
                         .setDisabled ( true ); // disable button until user data arrives from server
 
-  var delete_btn = panel.setButton ( 'Delete my account',image_path('remove'),
+  var delete_btn = null;
+  if (full_list)
+    delete_btn = panel.setButton ( 'Delete my account',image_path('remove'),
                                      row++,0,1,4 )
-                        .setWidth  ( '100%' )
-                        .setDisabled ( true );
+                      .setWidth  ( '100%' )
+                      .setDisabled ( true );
 
   panel.setCellSize ( '','64pt',row++,0 );
 
@@ -360,22 +409,29 @@ function AccountPage ( sceneId )  {
   update_btn.addOnClickListener ( function(){
 
     // Validate the input
-    var msg = validateUserData ( user_inp,email_inp,login_inp );
 
-    if (pwd_inp.getValue().length<=0)
-      msg += '<b>Password</b> must be provided (old or new).<p>';
-    else if (pwd1_inp.getValue().length<=0)
-      msg += '<b>Password</b> must be retyped for confirmation.<p>';
-    else if (pwd1_inp.getValue()!=pwd_inp.getValue())
-      msg += '<b>Retyped password</b> does not match the original.<p>';
+    var msg = '';
 
-    if ([licence_code.academic,licence_code.commercial]
-        .indexOf(licence_btn.getText())<0)
-      msg += '<b>Licence</b> must be chosen.<p>';
+    if (full_list)  {
 
-    if ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]
-        .indexOf(feedback_btn.getText())<0)
-      msg += '<b>Feedback agreement</b> must be chosen.<p>';
+      msg = validateUserData ( user_inp,email_inp,login_inp );
+
+      if (pwd_inp.getValue().length<=0)
+        msg += '<b>Password</b> must be provided (old or new).<p>';
+      else if (pwd1_inp.getValue().length<=0)
+        msg += '<b>Password</b> must be retyped for confirmation.<p>';
+      else if (pwd1_inp.getValue()!=pwd_inp.getValue())
+        msg += '<b>Retyped password</b> does not match the original.<p>';
+
+      if ([licence_code.academic,licence_code.commercial]
+          .indexOf(licence_btn.getText())<0)
+        msg += '<b>Licence</b> must be chosen.<p>';
+
+      if ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]
+          .indexOf(feedback_btn.getText())<0)
+        msg += '<b>Feedback agreement</b> must be chosen.<p>';
+
+    }
 
     for (var i=0;i<defsize.length;i++)  {
       var text = defsize[i][1].getValue().trim();
@@ -396,13 +452,15 @@ function AccountPage ( sceneId )  {
 
     } else  {
 
-      userData.name        = user_inp    .getValue();
-      userData.email       = email_inp   .getValue();
-      userData.login       = login_inp   .getValue();
-      userData.pwd         = pwd_inp     .getValue();
+      if (full_list)  {
+        userData.name        = user_inp    .getValue();
+        userData.email       = email_inp   .getValue();
+        userData.login       = login_inp   .getValue();
+        userData.pwd         = pwd_inp     .getValue();
+        userData.licence     = licence_btn .getText ();
+        userData.feedback    = feedback_btn.getText ();
+      }  
       userData.cloudrun_id = cloudrun_inp.getValue();
-      userData.licence     = licence_btn .getText ();
-      userData.feedback    = feedback_btn.getText ();
       userData.action      = userdata_action.none;
 
       __user_settings.onlogin        = onlogin_sel.getValue();
@@ -416,92 +474,102 @@ function AccountPage ( sceneId )  {
 
       serverRequest ( fe_reqtype.updateUserData,userData,'My Account',
                       function(response){
-        if (response)
-          new MessageBoxW ( 'My Account',response +
-            '<p>You are logged out now, please login again.',0.5, 'msg_excl');
-        else
-          new MessageBox ( 'My Account',
-            'Dear ' + userData.name +
-            ',<p>Your account has been successfully updated, and ' +
-            'notification<br>sent to your e-mail address:<p><b><i>' +
-            userData.email + '</i></b>.' +
-            '<p>You are logged out now, please login again.', 'msg_information');
-        stopSessionChecks();
-        makeLoginPage ( sceneId );
+        if (full_list)  {
+          if (response)
+            new MessageBoxW ( 'My Account',response +
+              '<p>You are logged out now, please login again.',0.5, 'msg_excl');
+          else
+            new MessageBox ( 'My Account',
+              'Dear ' + userData.name +
+              ',<p>Your account has been successfully updated, and ' +
+              'notification<br>sent to your e-mail address:<p><b><i>' +
+              userData.email + '</i></b>.' +
+              '<p>You are logged out now, please login again.', 'msg_information');
+          stopSessionChecks();
+          makeLoginPage ( sceneId );
+        } else  {
+          makeProjectListPage ( sceneId );
+        }
       },null,'persist' );
     }
 
   });
 
-  delete_btn.addOnClickListener ( function(){
+  if (delete_btn)  {
 
-    var inputBox  = new InputBox  ( 'Delete My Account' );
-    // var ibx_grid  = new Grid      ( '' );
-    var pswd_inp  = new InputText ( '' );
-    pswd_inp.setStyle    ( 'password','','Your password','' );
-    pswd_inp.setFontSize ( '112%' ).setFontItalic(true).setWidth_px(200);
-    inputBox.setText ( '','msg_confirm' );
-    ibx_grid  = inputBox.grid;
-    ibx_grid .setWidget  ( new Label(
-      '<h2>Delete My Account</h2>' +
-      'Your account will be deleted, are you sure?<p>' +
-      'Once deleted, all your data, including registration details,<br>' +
-      'imported files, projects and results will be removed from<br>' +
-      'the server irrevocably.<p>' +
-      'In order to confirm complete deletion of your account and<br>' +
-      'all associated data, in your password and press <b>Confirm</b><br>' +
-      'button.' ),0,2,2,3 );
-    ibx_grid .setWidget ( (new Label('Password:')).setWidth('75px'),2,2,1,1 );
-    ibx_grid .setWidget ( pswd_inp,2,3,1,1 );
-    ibx_grid .setLabel  ( '&nbsp;',2,4,1,1 ).setWidth('80px');
+    delete_btn.addOnClickListener ( function(){
 
-//    ibx_grid .setNoWrap ( 0,0 );
-//    ibx_grid .setNoWrap ( 1,0 );
-//    inputBox .addWidget            ( ibx_grid     );
-    ibx_grid .setVerticalAlignment ( 2,2,'middle' );
-    ibx_grid .setVerticalAlignment ( 2,3,'middle' );
+      var inputBox  = new InputBox  ( 'Delete My Account' );
+      // var ibx_grid  = new Grid      ( '' );
+      var pswd_inp  = new InputText ( '' );
+      pswd_inp.setStyle    ( 'password','','Your password','' );
+      pswd_inp.setFontSize ( '112%' ).setFontItalic(true).setWidth_px(200);
+      inputBox.setText ( '','msg_confirm' );
+      ibx_grid  = inputBox.grid;
+      ibx_grid .setWidget  ( new Label(
+        '<h2>Delete My Account</h2>' +
+        'Your account will be deleted, are you sure?<p>' +
+        'Once deleted, all your data, including registration details,<br>' +
+        'imported files, projects and results will be removed from<br>' +
+        'the server irrevocably.<p>' +
+        'In order to confirm complete deletion of your account and<br>' +
+        'all associated data, in your password and press <b>Confirm</b><br>' +
+        'button.' ),0,2,2,3 );
+      ibx_grid .setWidget ( (new Label('Password:')).setWidth('75px'),2,2,1,1 );
+      ibx_grid .setWidget ( pswd_inp,2,3,1,1 );
+      ibx_grid .setLabel  ( '&nbsp;',2,4,1,1 ).setWidth('80px');
 
-    inputBox.launch ( 'Confirm',function(){
+  //    ibx_grid .setNoWrap ( 0,0 );
+  //    ibx_grid .setNoWrap ( 1,0 );
+  //    inputBox .addWidget            ( ibx_grid     );
+      ibx_grid .setVerticalAlignment ( 2,2,'middle' );
+      ibx_grid .setVerticalAlignment ( 2,3,'middle' );
 
-      if (pswd_inp.getValue().length<=0)  {
-        new MessageBox ( 'Delete My Account',
-                         'Please provide password and try again', 'msg_excl' );
-        return false;  // close dialog
-      } else  {
+      inputBox.launch ( 'Confirm',function(){
 
-        userData.name     = user_inp    .getValue();
-        userData.email    = email_inp   .getValue();
-        userData.login    = login_inp   .getValue();
-        userData.pwd      = pswd_inp    .getValue();
-        userData.licence  = licence_btn .getText();
-        userData.feedback = feedback_btn.getText();
+        if (pswd_inp.getValue().length<=0)  {
+          new MessageBox ( 'Delete My Account',
+                          'Please provide password and try again', 'msg_excl' );
+          return false;  // close dialog
+        } else  {
 
-        serverRequest ( fe_reqtype.deleteUser,userData,'Delete My Account',
-                        function(response){
-          if (response)
-            new MessageBoxW ( 'Delete My Account',response,0.5 );
-          else  {
-            new MessageBox ( 'Delete My Account',
-              'Dear ' + userData.name +
-              ',<p>Your account and all associated data have been<br>successfully ' +
-              'deleted, and notification sent<br>to your e-mail address:<p><b><i>' +
-              userData.email + '</i></b>.' +
-              '<p>You are logged out now.' );
-            stopSessionChecks();
-            makeLoginPage ( sceneId );
-          }
-        },null,'persist' );
+          userData.name     = user_inp    .getValue();
+          userData.email    = email_inp   .getValue();
+          userData.login    = login_inp   .getValue();
+          userData.pwd      = pswd_inp    .getValue();
+          userData.licence  = licence_btn .getText();
+          userData.feedback = feedback_btn.getText();
 
-        return true;  // close dialog
+          serverRequest ( fe_reqtype.deleteUser,userData,'Delete My Account',
+                          function(response){
+            if (response)
+              new MessageBoxW ( 'Delete My Account',response,0.5 );
+            else  {
+              new MessageBox ( 'Delete My Account',
+                'Dear ' + userData.name +
+                ',<p>Your account and all associated data have been<br>successfully ' +
+                'deleted, and notification sent<br>to your e-mail address:<p><b><i>' +
+                userData.email + '</i></b>.' +
+                '<p>You are logged out now.' );
+              stopSessionChecks();
+              makeLoginPage ( sceneId );
+            }
+          },null,'persist' );
 
-      }
+          return true;  // close dialog
+
+        }
+      });
+
     });
 
-  });
+  }
 
   // fetch user data from server
   serverRequest ( fe_reqtype.getUserData,0,'My Account',function(data){
+    
     userData = data;
+    
     var msg  = checkUserData ( userData );
     if (msg.length>0)
       window.setTimeout ( function(){
@@ -509,23 +577,27 @@ function AccountPage ( sceneId )  {
           'Please check your account settings:<ul>' + msg + '</ul>' +
           'To confirm your changes, push <b>Save changes</b> button.', 'msg_excl' );
       },0);
-    user_inp    .setValue  ( userData.name  );
-    email_inp   .setValue  ( userData.email );
-    login_inp   .setValue  ( userData.login );
+    
     cloudrun_inp.setValue  ( userData.cloudrun_id );
-    licence_btn .setButton ( userData.licence,image_path('licence') )
-    if ((userData.feedback.length>0) &&
-        ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]
-            .indexOf(userData.feedback)>=0))
-      feedback_btn.setButton ( userData.feedback,image_path('feedback') )
+    if (full_list)  {
+      user_inp    .setValue  ( userData.name  );
+      email_inp   .setValue  ( userData.email );
+      login_inp   .setValue  ( userData.login );
+      licence_btn .setButton ( userData.licence,image_path('licence') )
+      if ((userData.feedback.length>0) &&
+          ([feedback_code.agree1,feedback_code.agree2,feedback_code.decline]
+              .indexOf(userData.feedback)>=0))
+        feedback_btn.setButton ( userData.feedback,image_path('feedback') )
 
-    // now activate buttons:
-    licence_btn .setDisabled ( false );
-    feedback_btn.setDisabled ( false );
+      // now activate buttons:
+      licence_btn .setDisabled ( false );
+      feedback_btn.setDisabled ( false );
+      delete_btn  .setDisabled ( false );
+    }
+
     if (authoris_btn)
       authoris_btn.setDisabled ( false );
-    update_btn  .setDisabled ( false );
-    delete_btn  .setDisabled ( false );
+    update_btn.setDisabled ( false );
     setDefaultButton ( update_btn,panel );
 
   },null,'persist');
