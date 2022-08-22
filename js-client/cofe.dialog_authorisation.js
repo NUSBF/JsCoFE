@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.04.20   <--  Date of Last Modification.
+ *    22.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Software Authorisation Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2019-2022
  *
  *  =================================================================
  *
@@ -204,8 +204,8 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
       request_btn.addOnClickListener ( function(){
         var ownURL = window.location.protocol + '//' + window.location.host +
                      window.location.pathname;
-alert ( window.location.protocol + ' - // - ' + window.location.host + ' - ' +
-                     window.location.pathname );
+        if (ownURL.endsWith('/'))
+          ownURL = ownURL.slice(0,-1);
         var reqURL = __auth_software[akey].auth_url.replace ( '$reqid',
               'authorisation-' + akey + '-' + __login_token )
               .replace ( '$cburl',ownURL );
