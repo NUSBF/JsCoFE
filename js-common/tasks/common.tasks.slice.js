@@ -96,7 +96,7 @@ TaskSlice.prototype.currentVersion = function()  {
 
 TaskSlice.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['slice', 'model','preparation'] );
+  return this.__check_keywords ( keywords,['slice', 'split', 'model','preparation'] );
 }
 
 // export such that it could be used in both node and a browser
