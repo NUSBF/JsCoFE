@@ -1,7 +1,5 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
@@ -28,15 +26,15 @@
 
 #  python native imports
 import os
-import sys
-import shutil
+# import sys
+# import shutil
 
 #  ccp4-python imports
 import gemmi
 
 #  application imports
 from . import modelprepxyz
-from   pycofe.proc   import seqal
+# from   pycofe.proc   import seqal
 from   pycofe.auto   import auto
 
 # ============================================================================
@@ -164,9 +162,9 @@ class ModelPrepMC(modelprepxyz.ModelPrepXYZ):
                                " chains generated " + protocol
             }
 
-        #     auto.makeNextTask ( self,{
-        #         "model" : model
-        #     })
+            auto.makeNextTask ( self,{
+                "model" : model
+            })
 
         self.success ( model )
         return
