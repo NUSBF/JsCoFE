@@ -15,90 +15,6 @@ import setests_func as sf
 
 d = sf.driverHandler()
 
-def validateStructurePrediction(driver, waitLong):
-
-    print ('Structure Prediction task verification - starting pulling job every minute')
-
-    finished = False
-
-    time.sleep(1)
-    startTime = time.time()
-
-    while (True):
-        ttts = sf.tasksTreeTexts(driver)
-        for taskText in ttts:
-            # Job number as string
-            match = re.search('1 structure predicted', taskText)
-            if match:
-                finished = True
-                break
-        if finished:
-            break
-        curTime = time.time()
-        if curTime > startTime + float(waitLong):
-            print('*** Timeout for validateStructurePrediction results! Waited for long time plus %d seconds.' % waitLong)
-            break
-        time.sleep(60)
-
-    return ()
-
-def addSliceNDice(driver):
-    print('Running Slice-n-Dice task')
-
-    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
-    addButton.click()
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
-    time.sleep(1)
-
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'MR with model splitting using Slice-n-Dice')
-    time.sleep(6)
-    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
-    for buttonRun in buttonsRun:
-        if buttonRun.is_displayed():
-            buttonRun.click()
-            break
-    time.sleep(3)
-
-    print('Slice-n-Dice verification started')
-
-    try:
-        wait = WebDriverWait(driver, 1200) # 20 minutest wait
-        # Waiting for the text 'completed' in the ui-dialog-title of the task 
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'slicendice') and contains(text(), 'completed')]")))
-    except:
-        print('Apparently tha task Slice-n-Dice has not been completed in time; terminating')
-        sys.exit(1)
-
-    rWork = 1.0
-    rFree = 1.0
-    ttts = sf.tasksTreeTexts(driver)
-    for taskText in ttts:
-
-        #LLG=1977.0 TFZ=45.7 R=0.2969 R
-        match = re.search('\[.*\] slicendice -- LLG=(.*) TFZ=(.*) R=(0\.\d*) Rfree=(0\.\d*)', taskText)
-        if match:
-            rWork = float(match.group(3))
-            rFree = float(match.group(4))
-            break
-    if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after Slice-n-Dice run')
-    else:
-        print('*** Verification: Slice-n-Dice Rwork is %0.4f (expecting <0.32), Rfree is %0.4f (expecing <0.34)' % (rWork, rFree))
-    assert rWork < 0.32
-    assert rFree < 0.34  
-
-    # pressing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
-
-    return ()
 
 def addSlice(driver):
     print('Running Slice task')
@@ -113,7 +29,7 @@ def addSlice(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Split MR model with Slice-n-Dice')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Split MR model with')
     time.sleep(6)
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
     for buttonRun in buttonsRun:
@@ -137,13 +53,50 @@ def addSlice(driver):
 
     finished = False
 
-    textEls = driver.find_elements_by_xpath( "//*[normalize-space()='%s']" % '2 model(s) generated')   
+    textEls = driver.find_elements_by_xpath( "//*[normalize-space()='%s']" % '2 models generated')   
     for textEl in reversed(textEls):
         if textEl.is_displayed():
             finished = True 
     time.sleep(3)
 
     assert finished == True
+
+    return ()
+
+def slicendiceVerification(driver):
+    print('Slice-n-Dice verification started')
+
+    # try:
+    #     wait = WebDriverWait(driver, waitLong) # 20 minutest wait
+    #     # Waiting for the text 'completed' in the ui-dialog-title of the task 
+    #     wait.until(EC.presence_of_element_located
+    #                ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'slicendice') and contains(text(), 'completed')]")))
+    # except:
+    #     print('Apparently tha task Slice-n-Dice has not been completed in time; terminating')
+    #     sys.exit(1)
+
+    rWork = 1.0
+    rFree = 1.0
+    ttts = sf.tasksTreeTexts(driver)
+    for taskText in ttts:
+
+        #LLG=1977.0 TFZ=45.7 R=0.2969 R
+        match = re.search('\[.*\] slicendice -- LLG=(.*) TFZ=(.*) R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        if match:
+            rWork = float(match.group(3))
+            rFree = float(match.group(4))
+            break
+    if (rWork == 1.0) or (rFree == 1.0):
+        print('*** Verification: could not find Rwork or Rfree value after Slice-n-Dice run')
+    else:
+        print('*** Verification: Slice-n-Dice Rwork is %0.4f (expecting <0.32), Rfree is %0.4f (expecing <0.34)' % (rWork, rFree))
+    assert rWork < 0.32
+    assert rFree < 0.34  
+
+    # pressing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
 
     return ()
 
@@ -178,10 +131,9 @@ def test_slicenDiceBasic(browser,
         
         sf.enterProject(d.driver, 'structurePrediction')
         sf.clickTaskInTaskTree(d.driver, '\[0003\]')
-        validateStructurePrediction(d.driver, 1000)
-        addSliceNDice(d.driver)
-        sf.clickTaskInTaskTree(d.driver, '\[0003\]')
         addSlice(d.driver)
+        sf.doubleClickTaskInTaskTree(d.driver, '\[0004\]')
+        slicendiceVerification(d.driver)
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
