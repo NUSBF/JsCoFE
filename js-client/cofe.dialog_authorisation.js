@@ -204,6 +204,8 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
       request_btn.addOnClickListener ( function(){
         var ownURL = window.location.protocol + '//' + window.location.host +
                      window.location.pathname;
+alert ( window.location.protocol + ' - // - ' + window.location.host + ' - ' +
+                     window.location.pathname );
         var reqURL = __auth_software[akey].auth_url.replace ( '$reqid',
               'authorisation-' + akey + '-' + __login_token )
               .replace ( '$cburl',ownURL );
