@@ -1069,7 +1069,7 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
               var pnode = pd.getProjectNode ( projectData,pid );
               if (!pnode)  {
-                log.error ( 22,'cannot get project node [' + loginData.login +
+                log.error ( 22,'cannot get project node in workflow [' + loginData.login +
                                ']:' + projectName + ':' + pid );
               } else  {
 
@@ -1133,7 +1133,7 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
           var jobDirPath = prj.getJobDirPath ( loginData,projectName,task.id );
 
           if (!utils.mkDir(jobDirPath)) {
-            log.error ( 23,'cannot create job directory at ' + jobDirPath );
+            log.error ( 23,'cannot create job directory in workflow at ' + jobDirPath );
           } else  {
 
             // handle remarks and other pseudo-jobs here

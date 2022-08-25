@@ -27,7 +27,7 @@ const child_process = require('child_process');
 
 const class_map     = require('./server.class_map');
 const task_t        = require('../js-common/tasks/common.tasks.template');
-const com_utils     = require('../js-common/common.utils');
+// const com_utils     = require('../js-common/common.utils');
 
 //  prepare log
 const log = require('./server.log').newLog(14);
@@ -368,10 +368,12 @@ function mkDir ( dirPath )  {
       fs.mkdirSync ( dirPath );
       return true;
     } catch (e)  {
-      log.error ( 6,'cannot create directory ' + dirPath );
+      log.error ( 6,'cannot create directory ' + dirPath + ' error: ' + JSON.stringify(e) );
       return false;
     }
   }
+  log.error ( 61,'attempt to create directory which exists at ' + dirPath );
+  return false;
 }
 
 
