@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    25.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -166,7 +166,8 @@ function writeString ( path,data_string )  {
     fs.writeFileSync ( path,data_string );
     return true;
   } catch (e)  {
-    log.error ( 1,'cannot write file ' + path );
+    log.error ( 1,'cannot write file ' + path +
+                  ' error: ' + JSON.stringify(e) );
     console.error(e);
     return false;
   }
@@ -178,7 +179,8 @@ function appendString ( path,data_string )  {
     fs.appendFileSync ( path,data_string );
     return true;
   } catch (e)  {
-    log.error ( 2,'cannot write file ' + path );
+    log.error ( 2,'cannot write file ' + path +
+                  ' error: ' + JSON.stringify(e) );
     console.error(e);
     return false;
   }
@@ -237,7 +239,8 @@ function writeObject ( path,dataObject )  {
   try {
     json_str = JSON.stringify ( dataObject,null,2 );
   } catch (e) {
-    log.error ( 31,'attempt to write corrupt data object at ' + path );
+    log.error ( 31,'attempt to write corrupt data object at ' + path +
+                   ' error: ' + JSON.stringify(e) );
     console.error(e);
     return false;
   }
@@ -368,13 +371,23 @@ function mkDir ( dirPath )  {
       fs.mkdirSync ( dirPath );
       return true;
     } catch (e)  {
-      log.error ( 6,'cannot create directory ' + dirPath + ' error: ' + JSON.stringify(e) );
+      log.error ( 6,'cannot create directory ' + dirPath +
+                    ' error: ' + JSON.stringify(e) );
       return false;
     }
   }
-  log.error ( 61,'attempt to create directory which exists at ' + dirPath );
-  return false;
+  return true;
 }
+
+// function mkDir ( dirPath )  {
+//   try {
+//     fs.mkdirSync ( dirPath );
+//     return true;
+//   } catch (e)  {
+//     log.error ( 6,'cannot create directory ' + dirPath + ' error: ' + JSON.stringify(e) );
+//     return false;
+//   }
+// }
 
 
 function mkDir_anchor ( dirPath )  {
@@ -388,7 +401,8 @@ function mkDir_anchor ( dirPath )  {
     fs.writeFileSync ( path.join(dirPath,'__anchor__'),'anchor' );
     return true;
   } catch (e)  {
-    log.error ( 7,'cannot create directory ' + dirPath );
+    log.error ( 7,'cannot create directory or write anchor ' + dirPath +
+                  ' error: ' + JSON.stringify(e) );
     return false;
   }
 }
@@ -411,7 +425,8 @@ var stat = fileExists(dir_path);
         try {
           fs.unlinkSync ( curPath );
         } catch (e)  {
-          log.error ( 82,'cannot remove file ' + curPath );
+          log.error ( 82,'cannot remove file ' + curPath +
+                         ' error: ' + JSON.stringify(e) );
           rc = false;
         }
       }
@@ -419,7 +434,8 @@ var stat = fileExists(dir_path);
     try {
       fs.rmdirSync ( dir_path );
     } catch (e)  {
-      log.error ( 9,'cannot remove directory ' + dir_path );
+      log.error ( 9,'cannot remove directory ' + dir_path +
+                    ' error: ' + JSON.stringify(e) );
       rc = false;
     }
   }
@@ -456,7 +472,8 @@ function cleanDir ( dir_path ) {
         try {
           fs.unlinkSync ( curPath );
         } catch (e)  {
-          log.error ( 81,'cannot remove file ' + curPath );
+          log.error ( 81,'cannot remove file ' + curPath +
+                         ' error: ' + JSON.stringify(e) );
           rc = false;
         }
       }
@@ -479,7 +496,8 @@ function cleanDirExt ( dir_path,fext )  {
         try {
           fs.unlinkSync ( curPath );
         } catch (e)  {
-          log.error ( 82,'cannot remove file ' + curPath );
+          log.error ( 82,'cannot remove file ' + curPath +
+                         ' error: ' + JSON.stringify(e) );
           rc = false;
         }
       }
@@ -502,7 +520,8 @@ function removeSymLinks ( dir_path )  {
         try {
           fs.unlinkSync ( curPath );
         } catch (e)  {
-          log.error ( 88,'cannot remove symlink ' + curPath );
+          log.error ( 88,'cannot remove symlink ' + curPath +
+                         ' error: ' + JSON.stringify(e) );
           rc = false;
         }
     });
@@ -528,7 +547,8 @@ function getDirectorySize ( dir_path )  {
     }
     return size;
   } catch (e)  {
-    log.error ( 10,'error scanning directory ' + dir_path );
+    log.error ( 10,'error scanning directory ' + dir_path +
+                   ' error: ' + JSON.stringify(e) );
     return 0.0;
   }
 }
@@ -554,7 +574,8 @@ function searchTree ( dir_path,filename,matchKey ) {
       });
     }
   } catch (e)  {
-    log.error ( 11,'error scanning directory ' + dir_path );
+    log.error ( 11,'error scanning directory ' + dir_path +
+                   ' error: ' + JSON.stringify(e) );
   }
   return filepaths;
 }
@@ -595,7 +616,8 @@ function removeFiles ( dir_path,extList ) {
           try {
             fs.unlinkSync ( curPath );
           } catch (e)  {
-            log.error ( 12,'cannot remove file ' + curPath );
+            log.error ( 12,'cannot remove file ' + curPath +
+                           ' error: ' + JSON.stringify(e) );
             rc = false;
           }
         }
