@@ -106,7 +106,8 @@ class MrParse(basic.TaskDriver):
         cmd = [ "--seqin",tmp_seq ]
         if hkl:
             cmd += [ "--hklin",reflections_mtz ]
-        cmd += [ "--do_classify","--ccp4cloud" ]
+        # cmd += [ "--do_classify","--ccp4cloud" ]
+        cmd += [ "--ccp4cloud" ]
 
         # -- commented out until the relevnt bug is fixed in MrParse
         # if "PDB_DIR" in os.environ:
