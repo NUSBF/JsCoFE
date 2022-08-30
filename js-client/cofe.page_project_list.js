@@ -1020,10 +1020,12 @@ function ProjectListPage ( sceneId )  {
   });
   // this.addMenuSeparator();
 
-  if (!__local_user)
-    this.addMenuItem ( 'My Account','settings',function(){
-      saveProjectList ( function(data){ makeAccountPage(sceneId); },null );
-    });
+  var accLbl = 'My Account';
+  if (__local_user)
+    accLbl = 'Settings';
+  this.addMenuItem ( accLbl,'settings',function(){
+    saveProjectList ( function(data){ makeAccountPage(sceneId); },null );
+  });
 
   if (__user_role==role_code.admin)
     this.addMenuItem ( 'Admin Page',role_code.admin,function(){

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.08.22   <--  Date of Last Modification.
+ *    30.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -106,15 +106,19 @@ function ProjectPage ( sceneId )  {
         makeProjectListPage ( sceneId );
     });
 
-    if (!__local_user)  {
-      self.addMenuItem ( 'My Account','settings',function(){
-        if (self.jobTree && self.jobTree.projectData)
-          self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-            makeAccountPage ( sceneId );
-          });
-        else
+    var accLbl = 'My Account';
+    if (__local_user)
+      accLbl = 'Settings';
+    self.addMenuItem ( accLbl,'settings',function(){
+      if (self.jobTree && self.jobTree.projectData)
+        self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
           makeAccountPage ( sceneId );
-      });
+        });
+      else
+        makeAccountPage ( sceneId );
+    });
+  
+    if (!__local_user)  {
       if (__user_role==role_code.admin)
         self.addMenuItem ( 'Admin Page',role_code.admin,function(){
           if (self.jobTree && self.jobTree.projectData)
