@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    30.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -652,10 +652,16 @@ function ProjectListPage ( sceneId )  {
     if (__current_folder.type==folder_type.joined)
       projectList.folders[2].nprojects = nrows;
 
+    var moveLbl  = '';
+    var moveIcon = image_path('folder_projects');
     if ([folder_type.custom_list,folder_type.shared,folder_type.joined,
-         folder_type.all_projects].includes(__current_folder.type))
-          move_btn.setButton ( 'Unlist',image_path('folder_list_custom_unlist') );
-    else  move_btn.setButton ( 'Move'  ,image_path('folder_projects') );
+          folder_type.all_projects].includes(__current_folder.type))  {
+      if (!tightScreen)
+        moveLbl = 'Unlist';
+      moveIcon = image_path('folder_list_custom_unlist');
+    } else if (!tightScreen)
+      moveLbl = 'Move';
+    move_btn.setButton ( moveLbl,moveIcon );
 
     if (nrows<=0)  {
 
@@ -727,9 +733,12 @@ function ProjectListPage ( sceneId )  {
           var contextMenu;
           (function(shared_prj){
 
-            var del_label = 'Delete';
-            if (shared_prj)
-              del_label = 'Unjoin';
+            var del_label = '';
+            if (!tightScreen)  {
+              del_label = 'Delete';
+              if (shared_prj)
+                del_label = 'Unjoin';
+            }
 
             $(trow.element).click(function(){
               del_btn.setText(del_label);
@@ -1044,7 +1053,8 @@ function ProjectListPage ( sceneId )  {
 
   //alert ( window.screen.width + '  ' + window.devicePixelRatio );
 
-  if (Math.max(window.screen.width,window.screen.height)<720*4/3)  {  // 720 pt to px
+  var tightScreen = (Math.max(window.screen.width,window.screen.height)<720*4/3);
+  if (tightScreen)  {  // 720 pt to px
     // tight screen (smartphone)
 
     left_margin  = '2pt';
@@ -1066,6 +1076,7 @@ function ProjectListPage ( sceneId )  {
     // }
     demoprj_btn = new Button ( '',image_path('demoprj') );
     help_btn    = new Button ( '',image_path('help') ); //.setTooltip('Documentation' );
+
 
     // for (var i=0;i<9;i++)
     for (var i=0;i<11;i++)
