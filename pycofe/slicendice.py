@@ -46,11 +46,11 @@ from   pycofe.auto   import auto
 
 class SliceNDice(basic.TaskDriver):
 
-    # ------------------------------------------------------------------------
-
     # the following is for importing the generated HKL dataset(s)
     def importDir        (self):  return "./"   # import from working directory
     def import_summary_id(self):  return None   # don't make import summary table
+
+    def cad_mtz(self): return "cad.mtz"
 
     # ------------------------------------------------------------------------
 
@@ -167,7 +167,7 @@ class SliceNDice(basic.TaskDriver):
 
                 if "cryst" in meta:
                     sol_spg    = meta["cryst"]["spaceGroup"]
-                    spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,refmac_mtz )
+                    spg_change = self.checkSpaceGroupChanged ( sol_spg, hkl, refmac_mtz )
                     if spg_change:
                         refmac_mtz = spg_change[0]
                         sol_hkl    = spg_change[1]

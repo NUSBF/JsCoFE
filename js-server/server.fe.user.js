@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.08.22   <--  Date of Last Modification.
+ *    22.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -790,8 +790,11 @@ var response = null;  // must become a cmd.Response object to return
 
   log.standard ( 8,'update user data, login ' + loginData.login );
 
-  var pwd = userData.pwd;
-  userData.pwd = hashPassword ( pwd );
+  if (userData.login!=ud.__local_user_id)  {
+  // if (userData.login!='devel')  {
+    var pwd = userData.pwd;
+    userData.pwd = hashPassword ( pwd );
+  }
 
   var userFilePath = getUserDataFName ( loginData );
 

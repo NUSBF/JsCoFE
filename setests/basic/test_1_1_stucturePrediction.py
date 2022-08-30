@@ -53,6 +53,66 @@ def startStructurePrediction (driver):
 
     return ()
 
+def validateStructurePrediction(driver, waitLong):
+
+    print ('Structure Prediction task verification - starting pulling job every minute')
+
+    finished = False
+
+    time.sleep(1)
+    startTime = time.time()
+
+    while (True):
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
+            # Job number as string
+            match = re.search('1 structure predicted', taskText)
+            if match:
+                finished = True
+                break
+        if finished:
+            break
+        curTime = time.time()
+        if curTime > startTime + float(waitLong):
+            print('*** Timeout for validateStructurePrediction results! Waited for long time plus %d seconds.' % waitLong)
+            break
+        time.sleep(60)
+
+    return ()
+
+def addSliceNDice(driver):
+    print('Running Slice-n-Dice task')
+
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'MR with model splitting using')
+    time.sleep(6)
+
+    # Shall return list of two elements for project creation
+    tasksInputs = driver.find_elements_by_xpath("//input[contains(@title, 'Maximum number of splits to try.')]")
+
+    tasksInputs[-1].click()
+    tasksInputs[-1].clear()
+    tasksInputs[-1].send_keys('1')
+    
+
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+    time.sleep(3)
+
+    return ()
+
 
 def test_structurePredictionBasic(browser,
                      cloud,
@@ -86,6 +146,9 @@ def test_structurePredictionBasic(browser,
         sf.importFromCloud_rnase(d.driver, d.waitShort)
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort)
         startStructurePrediction(d.driver)
+        # sf.clickTaskInTaskTree(d.driver, '\[0003\]')
+        validateStructurePrediction(d.driver, 1000)
+        addSliceNDice(d.driver)
 
 
         d.driver.quit()

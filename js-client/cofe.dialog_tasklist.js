@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.07.22   <--  Date of Last Modification.
+ *    18.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -671,7 +671,6 @@ var row      = 0;
     new TaskStructurePrediction()
   ],true);
 
-
   this.makeSection ( 'Data Processing',[
     new TaskXia2        (),
     new TaskXDSGUI      (),
@@ -697,12 +696,12 @@ var row      = 0;
 
   this.makeSection ( 'Automated Molecular Replacement',[
     'Conventional Auto-MR',
-    new TaskMorda (),
-    new TaskMrBump(),
-    new TaskBalbes(),
+    new TaskMorda     (),
+    new TaskMrBump    (),
+    new TaskBalbes    (),
     new TaskSliceNDice(),
     'No-sequence methods',
-    new TaskSimbad() //,
+    new TaskSimbad    () //,
     // 'No-model methods',
     // new TaskAmple ()
   ],true);
@@ -711,17 +710,17 @@ var row      = 0;
     'MR model preparation',
     new TaskMrParse        (),
     new TaskModelPrepXYZ   (),
-    new TaskModelPrepAlgn  (),
     new TaskModelPrepMC    (),
     new TaskSlice          (),
+    new TaskModelPrepAlgn  (),
     'MR ensemble preparation',
     new TaskEnsembler      (),
     new TaskEnsemblePrepSeq(),
     new TaskEnsemblePrepXYZ(),
     new TaskEnsemblePrepMG (),
     'Fundamental MR',
-    new TaskPhaserMR(),
-    new TaskMolrep  ()
+    new TaskPhaserMR       (),
+    new TaskMolrep         ()
   ],true);
 
   this.makeSection ( 'Fragment-Based Molecular Replacement',[
@@ -747,15 +746,17 @@ var row      = 0;
   ],true);
 
   this.makeSection ( 'Refinement and Model Building',[
+    'Refinement',
     new TaskRefmac    (),
     new TaskBuster    (),
     new TaskLorestr   (),
+    new TaskDimple    (),
+    'Model building',
+    new TaskModelCraft(),
     new TaskCCP4Build (),
     new TaskBuccaneer (),
     new TaskArpWarp   (),
-    new TaskModelCraft(),
     new TaskNautilus  (),
-    new TaskDimple    (),
     new TaskCombStructure()
   ],true);
 
@@ -779,18 +780,18 @@ var row      = 0;
 
   this.makeSection ( 'Toolbox',[
     'Reflection data tools',
-    new TaskAuspex  (),
-    new TaskSRF     (),
-    new TaskCrosSec (),
+    new TaskAuspex    (),
+    new TaskSRF       (),
+    new TaskCrosSec   (),
     new TaskReindexHKL(),
     'Coordinate data tools',
-    new TaskXyzUtils(),
-    new TaskGemmi   (),
+    new TaskXyzUtils  (),
+    new TaskGemmi     (),
     'Alignment and comparison tools',
-    new TaskGesamt  (),
-    new TaskLsqKab  (),
-    new TaskSeqAlign(),
-    new TaskSymMatch()
+    new TaskGesamt    (),
+    new TaskLsqKab    (),
+    new TaskSeqAlign  (),
+    new TaskSymMatch  ()
   ],true);
 
   if (navail==1)

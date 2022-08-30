@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    18.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,9 +35,9 @@ function TaskModelPrepXYZ()  {
              else  TaskTemplate.call ( this );
 
   this._type   = 'TaskModelPrepXYZ';
-  this.name    = 'prepare MR model(s) from xyz';
+  this.name    = 'prepare single-chain MR model(s) from xyz';
   this.setOName ( '*' );  // default output file name template; '*': hide the field
-  this.title   = 'Prepare MR Model(s) from Coordinate data';
+  this.title   = 'Prepare Single-Chain MR Model(s) from Coordinate data';
   //this.helpURL = './html/jscofe_task_modelprepxyz.html';
 
   this.input_dtypes = [{  // input data types
@@ -187,7 +187,7 @@ TaskModelPrepXYZ.prototype.icon = function()  { return 'task_modelprepxyz'; }
 
 TaskModelPrepXYZ.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return 'prepare MR search model(s) from atomic coordinates and sequence';
+  return 'prepare single-chain MR search model(s) from atomic coordinates and sequence';
 }
 
 

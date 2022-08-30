@@ -28,9 +28,20 @@ def prepareMRmodelCOORD(driver, waitShort):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
-    time.sleep(1)
+    time.sleep(3)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Coordinate data')
+    try:
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Coordinate data')
+        
+    except:
+        pass
+    
+    try:
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare Single-Chain MR')
+        
+    except:
+        print ('Seems like the task was renamed')
+
     time.sleep(3)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -230,6 +241,54 @@ def prepareMRensembleCOORD(driver, waitShort):
 
     return ()
 
+def prepareComplexModel(driver, waitShort):
+    print('Prepare Multi-Chain MR Model')
+
+    # Add button
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare Multi-Chain MR Model')
+    time.sleep(1)
+
+    tasksInputs = driver.find_elements_by_xpath("//input[contains(@title, 'Comma-separated list of chains from template structure corresponding to given sequence; put * for all chains in the model (homomeric complexes only')]")
+
+    tasksInputs[-1].click()
+    tasksInputs[-1].clear()
+    tasksInputs[-1].send_keys('*')
+
+    # There are several forms - active and inactive. We need one displayed.
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+
+    try:
+        wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
+        # Waiting for the text 'completed' in the ui-dialog-title of the task [0013]
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0013]')]")))
+    except:
+        print('Apparently tha task Prepare Multi-Chain MR Model has not been completed in time; terminating')
+        sys.exit(1)
+
+    time.sleep(5)
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
+    return ()
+
 
 def startPhaser(driver):
     print('Running PHASER')
@@ -270,6 +329,38 @@ def startPhaser(driver):
 
     return ()
 
+def startPhaser1(driver):
+            print('Running PHASER')
+
+            addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+            addButton.click()
+            time.sleep(1)
+
+            sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+            time.sleep(1)
+
+            sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
+            time.sleep(1)
+
+            sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Molecular Replacement with Phaser')
+            time.sleep(1)
+
+            # There are several forms - active and inactive. We need one displayed.
+            buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+            for buttonRun in buttonsRun:
+                if buttonRun.is_displayed():
+                    buttonRun.click()
+                    break
+
+            time.sleep(2)
+
+            # pressing Close button
+            closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+            closeButton.click()
+            time.sleep(1)
+
+            return ()
+
 
 def verifyPhaser(driver, waitLong, jobNumber):
     rWork = 1.0
@@ -309,7 +400,7 @@ def verifyPhaser(driver, waitLong, jobNumber):
               'Rwork is %0.4f (expecting <0.375), ' \
               'Rfree is %0.4f (expecing <0.385)' % (llg, tfz, rWork, rFree))
     assert llg > 3600
-    assert tfz > 50.0
+    assert tfz > 30.0
     assert rWork < 0.375
     assert rFree < 0.385
 
@@ -394,14 +485,26 @@ def test_5EnsembleCOORD():
         d.driver.quit()
         raise
 
+def test_6ComplexModels():
 
-def test_6verifyPhasers():
+    try:
+
+        sf.clickTaskInTaskTree(d.driver, '\[0002\]')
+        prepareComplexModel(d.driver, 300) # 13
+        startPhaser1(d.driver)        
+    except:
+        d.driver.quit()
+        raise
+
+
+def test_7verifyPhasers():
     try:
         verifyPhaser(d.driver, d.waitLong, '0004')
         verifyPhaser(d.driver, d.waitLong, '0006')
         verifyPhaser(d.driver, d.waitLong, '0008')
         verifyPhaser(d.driver, d.waitLong, '0010')
         verifyPhaser(d.driver, d.waitLong, '0012')
+        verifyPhaser(d.driver, d.waitLong, '0014')
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
@@ -435,4 +538,5 @@ if __name__ == "__main__":
     test_3EnsembleModels()
     test_4EnsembleSEQ()
     test_5EnsembleCOORD()
-    test_6verifyPhasers()
+    test_6ComplexModels()
+    test_7verifyPhasers()

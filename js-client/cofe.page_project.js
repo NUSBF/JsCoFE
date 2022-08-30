@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    28.07.22   <--  Date of Last Modification.
+ *    22.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -76,12 +76,13 @@ function ProjectPage ( sceneId )  {
 
   this.makeHeader0 ( 3 );
   (function(self){
-    self.logout_btn.addOnClickListener ( function(){
-      self.jobTree.stopTaskLoop    ();
-      self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-        logout ( self.element.id,0 );
+    if (self.logout_btn)
+      self.logout_btn.addOnClickListener ( function(){
+        self.jobTree.stopTaskLoop    ();
+        self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
+          logout ( self.element.id,0 );
+        });
       });
-    });
   }(this));
 
   title_lbl = this.headerPanel.setLabel ( '',0,2,1,1 );
