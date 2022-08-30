@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    30.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -309,7 +309,7 @@ function doNotShowAgain ( key,url )  {
       __doNotShowList.push ( topic );
       var userData = {};
       userData.helpTopics = __doNotShowList;
-      serverRequest ( fe_reqtype.saveHelpTopics,userData,'My Account',null,null,
+      serverRequest ( fe_reqtype.saveHelpTopics,userData,'Do not show again',null,null,
                       'persist' );
     }
 

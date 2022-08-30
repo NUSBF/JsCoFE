@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.08.22   <--  Date of Last Modification.
+ *    30.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -69,8 +69,11 @@ function AccountPage ( sceneId )  {
 
   var full_list = (!__local_user);
 
-  var title_lbl    = new Label ( 'My Account'  ).setNoWrap();
-  title_lbl.setFont ( 'times','300%',true,true );
+  var accLbl = 'My Account';
+  if (__local_user)
+    accLbl = 'Settings';
+
+  var title_lbl = new Label(accLbl).setNoWrap().setFont('times','300%',true,true);
 
   var user_lbl     = null;
   var email_lbl    = null;
@@ -446,9 +449,10 @@ function AccountPage ( sceneId )  {
 
     if (msg)  {
 
-      new MessageBox ( 'My Account Update',
-         'Account Update cannot be done due to the following:<p>' +
-          msg + 'Please provide all needful data and try again', 'msg_information');
+      new MessageBox ( accLbl + ' Update',
+          accLbl + ' Update cannot be done due to the following:<p>' +
+          msg + 'Please provide all needful data and try again',
+          'msg_information');
 
     } else  {
 
@@ -472,14 +476,14 @@ function AccountPage ( sceneId )  {
       __user_settings.notifications.end_of_job.lapse = jntime.getValue();
       userData.settings = __user_settings;
 
-      serverRequest ( fe_reqtype.updateUserData,userData,'My Account',
+      serverRequest ( fe_reqtype.updateUserData,userData,accLbl,
                       function(response){
         if (full_list)  {
           if (response)
-            new MessageBoxW ( 'My Account',response +
+            new MessageBoxW ( accLbl,response +
               '<p>You are logged out now, please login again.',0.5, 'msg_excl');
           else
-            new MessageBox ( 'My Account',
+            new MessageBox ( accLbl,
               'Dear ' + userData.name +
               ',<p>Your account has been successfully updated, and ' +
               'notification<br>sent to your e-mail address:<p><b><i>' +
@@ -566,7 +570,7 @@ function AccountPage ( sceneId )  {
   }
 
   // fetch user data from server
-  serverRequest ( fe_reqtype.getUserData,0,'My Account',function(data){
+  serverRequest ( fe_reqtype.getUserData,0,accLbl,function(data){
     
     userData = data;
     

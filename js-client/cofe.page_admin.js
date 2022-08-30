@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.05.22   <--  Date of Last Modification.
+ *    30.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,16 +47,10 @@ function AdminPage ( sceneId )  {
   refresh_btn.setSize('30px','30px').setTooltip('Refresh');
 
   // Make Main Menu
-  /*
-  this.addMenuItem ( 'Add New User'     ,'user'    ,function(){ makeRegisterPage(sceneId); })
-      .addMenuItem ( 'Dormant accounts' ,'dormant' ,function(){ new DormantUsersDialog();  })
-      .addMenuItem ( 'Make announcement','announce',function(){ new AnnounceDialog();      })
-      .addMenuSeparator()
-      .addMenuItem ( 'My Account','settings',function(){ makeAccountPage(sceneId); })
-      .addMenuItem ( 'Project folder','list',function(){ makeProjectListPage(sceneId); })
-      .addLogoutToMenu ( function(){ logout(sceneId,0); });
-  */
-  this.addMenuItem ( 'My Account','settings',function(){ makeAccountPage(sceneId); })
+  var accLbl = 'My Account';
+  if (__local_user)
+    accLbl = 'Settings';
+  this.addMenuItem ( accLbl,'settings',function(){ makeAccountPage(sceneId); })
       .addMenuItem ( 'Project folder','list',function(){ makeProjectListPage(sceneId); })
       .addLogoutToMenu ( function(){ logout(sceneId,0); });
 
