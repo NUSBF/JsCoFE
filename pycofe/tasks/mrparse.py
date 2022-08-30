@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    18.11.21   <--  Date of Last Modification.
+#    30.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2022
 #
 # ============================================================================
 #
@@ -43,7 +41,6 @@ from   pycofe.varut   import rvapi_utils
 
 # ============================================================================
 # Make MrParse driver
-
 
 class MrParse(basic.TaskDriver):
 
