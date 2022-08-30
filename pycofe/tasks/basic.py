@@ -1109,7 +1109,7 @@ class TaskDriver(object):
     # ============================================================================
 
     def putVerdict ( self, score,message,secId="" ):
-        gridId = self.putVerdict1 ( self.report_page_id(),code,message,self.rvrow,
+        gridId = self.putVerdict1 ( self.report_page_id(),score,message,self.rvrow,
                                     col=0,secId=secId )
         self.rvrow += 1
         return gridId
@@ -1558,7 +1558,7 @@ class TaskDriver(object):
             anom_structure.setRefmacLabels    ( hkl )
             for i in range(len(associated_data_list)):
                 if associated_data_list[i]:
-                    structure.addDataAssociation ( associated_data_list[i].dataId )
+                    anom_structure.addDataAssociation ( associated_data_list[i].dataId )
             anom_structure.setAnomSubstrSubtype() # anomalous maps
             self.putMessage1 ( pageId,"&nbsp;",row1 )
             row1 += 1

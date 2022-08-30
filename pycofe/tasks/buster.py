@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    21.07.22   <--  Date of Last Modification.
+#    18.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -419,7 +419,7 @@ class Buster(basic.TaskDriver):
                             os.remove ( mapfile )
 
                             xyz_merged = "refine_merged.pdb"
-                            hatype     = revision.ASU.ha_type
+                            hatype     = revision.ASU.ha_type.upper()
                             if not hatype:
                                 hatype = "AX"
                             self.merge_sites ( xyzout,subfile,hatype,xyz_merged )

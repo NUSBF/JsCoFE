@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.07.22   <--  Date of Last Modification.
+#    18.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -24,7 +24,7 @@
 # ============================================================================
 #
 
-from future import *
+# from future import *
 
 #  python native imports
 import os
@@ -361,11 +361,15 @@ class PhaserMR(basic.TaskDriver):
         self.unsetLogParser()
 
         # check solution and register data
+
         phaser_meta  = None
         have_results = False
         sol_hkl      = hkl
         sol_file     = self.outputFName + ".sol"
-        if os.path.isfile(sol_file):
+        mtzfile      = self.outputFName + ".1.mtz"
+        pdbfile      = self.outputFName + ".1.pdb"
+
+        if os.path.isfile(sol_file) and os.path.isfile(mtzfile) and os.path.isfile(pdbfile):
 
             phaser_meta = { "ensembles" : {} }
             ens_meta    = phaser_meta["ensembles"]
@@ -405,8 +409,6 @@ class PhaserMR(basic.TaskDriver):
             if not llg: llg = "0"
             if not tfz: tfz = "0"
 
-            mtzfile = self.outputFName + ".1.mtz"
-
             if "phaser" not in self.generic_parser_summary:
                 self.generic_parser_summary["phaser"] = {}
             self.generic_parser_summary["phaser"]["count"] = nsol
@@ -420,48 +422,59 @@ class PhaserMR(basic.TaskDriver):
                 sol_hkl = spg_change[1]
                 revision.setReflectionData ( sol_hkl )
 
-        row0 = self.rvrow + 1
-        structure = self.finaliseStructure ( self.outputFName+".1.pdb",
-                                    self.outputFName,sol_hkl,None,seq,0,
-                                    leadKey=1, # openState="closed",
-                                    reserveRows=3 )
-        if structure:
-            # update structure revision
-            revision.setStructureData ( structure )
-            self.registerRevision     ( revision  )
-            have_results = True
-            if phaser_meta:
-                # set sol file
-                solData = dtype_template.DType ( self.job_id )
-                self.dataSerialNo += 1
-                solData.makeDName ( self.dataSerialNo )
-                solData.add_file ( sol_file,self.outputDir(),"sol" )
-                phaser_meta["sol"] = solData
-                for i in range(len(ens0)):
-                    ensname = ens0[i].ensembleName()
-                    if ensname in ens_meta:
-                        ens_meta[ensname]["data"] = ens0[i]
-                revision.phaser_meta = phaser_meta
+            row0 = self.rvrow + 1
+            structure = self.finaliseStructure ( pdbfile,
+                                        self.outputFName,sol_hkl,None,seq,0,
+                                        leadKey=1, # openState="closed",
+                                        reserveRows=3 )
+            if structure:
+                # update structure revision
+                revision.setStructureData ( structure )
+                self.registerRevision     ( revision  )
+                have_results = True
+                if phaser_meta:
+                    # set sol file
+                    solData = dtype_template.DType ( self.job_id )
+                    self.dataSerialNo += 1
+                    solData.makeDName ( self.dataSerialNo )
+                    solData.add_file ( sol_file,self.outputDir(),"sol" )
+                    phaser_meta["sol"] = solData
+                    for i in range(len(ens0)):
+                        ensname = ens0[i].ensembleName()
+                        if ensname in ens_meta:
+                            ens_meta[ensname]["data"] = ens0[i]
+                    revision.phaser_meta = phaser_meta
 
-            # Verdict section
+                # Verdict section
 
-            verdict_meta = {
-                "nfitted0" : nfitted0,
-                "nfitted"  : structure.getNofPolymers(),
-                "nasu"     : revision.getNofASUMonomers(),
-                "fllg"     : float ( llg ),
-                "ftfz"     : float ( tfz ),
-                "rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] )
+                verdict_meta = {
+                    "nfitted0" : nfitted0,
+                    "nfitted"  : structure.getNofPolymers(),
+                    "nasu"     : revision.getNofASUMonomers(),
+                    "fllg"     : float ( llg ),
+                    "ftfz"     : float ( tfz ),
+                    "rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] )
+                }
+                verdict_phasermr.putVerdictWidget ( self,verdict_meta,row0 )
+
+                auto.makeNextTask(self, {
+                    "revision" : revision,
+                    "Rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] ),
+                    "nfitted0" : nfitted0, # number of polymers before run
+                    "nfitted"  : structure.getNofPolymers(), # number of polymers after run
+                    "nasu"     : revision.getNofASUMonomers(), # number of predicted subunits
+                }, log=self.file_stderr)
+
+        else:
+            self.putTitle ( "No solution was obtained" )
+            self.putMessage ( 
+                "No suitable results have been produced. Inspect Main Log for possible problems, " +\
+                "errors, warnings and hints. In particular, check whether packing criteria should " +\
+                "be relaxed or translational NCS switched off."
+            )
+            self.generic_parser_summary["phaser"] = {
+                "summary_line" : "solution not found"
             }
-            verdict_phasermr.putVerdictWidget ( self,verdict_meta,row0 )
-
-            auto.makeNextTask(self, {
-                "revision": revision,
-                "Rfree": float ( self.generic_parser_summary["refmac"]["R_free"] ),
-                "nfitted0": nfitted0, # number of polymers before run
-                "nfitted": structure.getNofPolymers(), # number of polymers after run
-                "nasu": revision.getNofASUMonomers(), # number of predicted subunits
-            }, log=self.file_stderr)
 
         # close execution logs and quit
         self.success ( have_results )

@@ -237,6 +237,9 @@ class FreeRFlag(basic.TaskDriver):
                     for i in range(len(outhkl)):
                         outhkl[i].freeRds = freer
 
+                for i in range(len(outhkl)):
+                    outhkl[i].aimless_meta = hkl[i].aimless_meta
+
                 have_results = True
 
             else:

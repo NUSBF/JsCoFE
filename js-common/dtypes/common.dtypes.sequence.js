@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    21.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Sequence Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -172,7 +172,8 @@ if (!__template)  {
       customGrid.chain_list_inp = grid.setInputText ( this.chain_list,0,1,1,1 )
                     .setStyle ( 'text','','A,B,C,...',
                       'Comma-separated list of chains from template structure ' +
-                      'corresponding to given sequence' )
+                      'corresponding to given sequence; put * for all chains in the model ' +
+                      '(homomeric complexes only)' )
                     .setWidth_px ( 200 );
       grid.setVerticalAlignment ( 0,0,'middle' );
 

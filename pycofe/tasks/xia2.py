@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.06.22   <--  Date of Last Modification.
+#    18.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -126,7 +126,7 @@ class Xia2(basic.TaskDriver):
             if self.getParameter(sec2.PLUGIN)!="none":
                 cmd.append ( "plugin=" + os.environ["Xia2_durin"] )
 
-        if hatom      :  cmd.append ( "atom="          + hatom   )
+        if hatom      :  cmd.append ( "atom="          + hatom.upper()   )
         if space_group:  cmd.append ( "space_group=\"" + space_group + "\"" )
         if unit_cell  :  cmd.append ( "unit_cell=\""   + unit_cell   + "\"" )
         if d_min      :  cmd.append ( "d_min="         + d_min   )

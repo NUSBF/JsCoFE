@@ -1,11 +1,9 @@
 ##!/usr/bin/python#
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    21.07.22   <--  Date of Last Modification.
+#    18.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -363,7 +361,7 @@ class Refmac(basic.TaskDriver):
 
                     mapfname = self.calcCCP4Maps ( self.getMTZOFName(),
                                         "refmac_ano",source_key="refmac_anom" )
-                    hatype   = revision.ASU.ha_type
+                    hatype   = revision.ASU.ha_type.upper()
                     if not hatype:
                         hatype = "AX"
 

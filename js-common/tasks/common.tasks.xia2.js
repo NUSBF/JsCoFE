@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    22.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -329,9 +329,9 @@ if (!__template)  {
 
     dir_input.browse_btn = inputPanel.grid1.setButton (
                                 'Browse',image_path('open_file'), row,1,1,1 )
-                                          .setWidth ( '120px' );
+                                           .setWidth ( '120px' );
     dir_input.dir_path = inputPanel.grid1.setInputText ( dirpath,row,2,1,1 )
-                            .setWidth('100%').setReadOnly(true).setNoWrap();
+                                   .setWidth('100%').setReadOnly(true).setNoWrap();
 
     if ((dirNo>0) && (dirNo>=inputPanel.imageDirMeta.length))
       dir_input.dir_path.setStyle ( '','','not used',
@@ -609,10 +609,12 @@ if (!__template)  {
 
     if (__local_service && __cloud_storage)  {
 
+      var tooltip = 'Choose "local" if diffraction images are found in ' +
+                    'your computer, and choose "cloud" if images are ' +
+                    'stored in cloud.';
+
       div.grid2.setLabel ( 'in&nbsp;&nbsp;',0,2,1,1 )
-               .setTooltip('Choose "local" if diffraction images are found in ' +
-                           'your computer, and choose "cloud" if images are ' +
-                           'stored in cloud.' )
+               .setTooltip(tooltip)
                .setFontItalic(true).setFontBold(true).setNoWrap();
       div.source_select_ddn = new Dropdown();
       div.grid2.addWidget ( div.source_select_ddn,0,3,1,1 );
@@ -626,17 +628,50 @@ if (!__template)  {
         div.task.layDirectoryInput ( div );
       });
       div.source_select_ddn.setWidth ( '180px' );
+      div.source_select_ddn.setTooltip ( tooltip );
 
       div.grid2.setVerticalAlignment ( 0,2,'middle' );
       div.grid2.setVerticalAlignment ( 0,3,'middle' );
 
     } else  {
+
       div.source_select_ddn = null;
       if (__local_service)  div.file_system = 'local';
                       else  div.file_system = 'cloud';
       this.file_system = div.file_system;
-      if (this.file_system=='local')  this.nc_type = 'client';
-                                else  this.nc_type = 'ordinary';
+      var tooltip = '';
+      if (this.file_system=='local')  {
+        this.nc_type = 'client';
+        tooltip = 'Only images in local file system are available.';
+      } else  {
+        this.nc_type = 'ordinary';
+        tooltip = 'Only images in cloud storage are available. To browse your local ' +
+                  'file system, connect to CCP4 Cloud using CCP4 Cloud icon launcher ' +
+                  'found in CCP4 setup.';
+      }
+
+      div.grid2.setLabel ( 'in&nbsp;&nbsp;',0,2,1,1 )
+               .setTooltip ( tooltip )
+               .setFontItalic(true).setFontBold(true).setNoWrap();
+      var source_select_ddn = new Dropdown();
+      div.grid2.addWidget ( source_select_ddn,0,3,1,1 );
+      if (div.file_system=='local')
+            source_select_ddn.addItem ( 'local file system','','local',true );
+      else  source_select_ddn.addItem ( 'cloud storage'    ,'','cloud',true );
+      source_select_ddn.make();
+      source_select_ddn.setTooltip ( tooltip );
+
+      // div.source_select_ddn.addOnChangeListener ( function(text,value){
+      //   div.imageDirMeta = [];    // paths displayed in task dialog
+      //   div.dir_path     = [];
+      //   div.file_system  = value;
+      //   div.task.layDirectoryInput ( div );
+      // });
+      source_select_ddn.setWidth ( '180px' );
+
+      div.grid2.setVerticalAlignment ( 0,2,'middle' );
+      div.grid2.setVerticalAlignment ( 0,3,'middle' );
+
     }
 
     div.grid1.setLabel ( '&nbsp;',row+1,0,1,1 )

@@ -371,12 +371,15 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
     this._setModeIcon ( 18 );
   }
 
-  this.logout_btn = new ImageButton ( image_path('logout'),'24px','24px' );
-  this.headerPanel.setWidget ( this.logout_btn,0,22,1,1 );
-  this.headerPanel.setHorizontalAlignment ( 0,22,'right' );
-  this.headerPanel.setVerticalAlignment   ( 0,22,'top'   );
-  this.headerPanel.setCellSize ( '32px','32px',0,22 );
-  this.logout_btn .setTooltip  ( 'Logout' );
+  if (!__local_user)  {
+    this.logout_btn = new ImageButton ( image_path('logout'),'24px','24px' );
+    this.headerPanel.setWidget ( this.logout_btn,0,22,1,1 );
+    this.headerPanel.setHorizontalAlignment ( 0,22,'right' );
+    this.headerPanel.setVerticalAlignment   ( 0,22,'top'   );
+    this.headerPanel.setCellSize ( '32px','32px',0,22 );
+    this.logout_btn .setTooltip  ( 'Logout' );
+   } else
+    this.logout_btn = null;
 
   this.headerPanel.setLabel( '&nbsp;',0,23,1,1 ).setWidth('10px');
 
@@ -388,12 +391,13 @@ BasePage.prototype.makeHeader = function ( colSpan,on_logout_function )  {
   this.makeHeader0 ( colSpan );
 
   (function(page){
-    page.logout_btn.addOnClickListener ( function(){
-      if (on_logout_function)
-        on_logout_function ( function(){ logout(page.element.id,0); } );
-      else
-        logout ( page.element.id,0 );
-    });
+    if (page.logout_btn)
+      page.logout_btn.addOnClickListener ( function(){
+        if (on_logout_function)
+          on_logout_function ( function(){ logout(page.element.id,0); } );
+        else
+          logout ( page.element.id,0 );
+      });
   }(this));
 
 }
@@ -422,8 +426,9 @@ BasePage.prototype.addFullscreenToMenu = function()  {
 
 BasePage.prototype.addLogoutToMenu = function ( logout_func )  {
   this.addFullscreenToMenu();
-  this.headerPanel.menu.addItem('Log out',image_path('logout'))
-                       .addOnClickListener ( logout_func );
+  if (!__local_user) 
+    this.headerPanel.menu.addItem('Log out',image_path('logout'))
+                         .addOnClickListener ( logout_func );
   return this;
 }
 

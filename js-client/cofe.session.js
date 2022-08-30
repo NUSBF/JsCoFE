@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.08.22   <--  Date of Last Modification.
+ *    15.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,7 @@ function startSession ( sceneId,dev_switch )  {
     if (window.location.href.indexOf('localhost')<0)  {
       var lpath = window.location.pathname.substr(1).split('/');  // skip first slash
       var wpath = '/';
-      if (lpath.length>0)
+      if ((lpath.length>0) && lpath[0])
         wpath = '/' + lpath[0] + '/';
       window.history.replaceState ( {},document.title,wpath );
     }
