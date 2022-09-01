@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.07.22   <--  Date of Last Modification.
+ *    01.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -507,17 +507,35 @@ function TaskRefmac()  {
               position : [1,3,1,1]
            },
            */
+         //   KEYWORDS: {
+         //      type        : 'textarea_',  // can be also 'textarea'
+         //      keyword     : 'none',       // optional
+         //      tooltip     : 'Advanced keywords',  // mandatory
+         //      placeholder : 'Type additional keywords here', // optional
+         //      nrows       : 5,         // optional
+         //      ncols       : 90,        // optional
+         //      iwidth      : 500,       // optional
+         //      value       : '',        // mandatory
+         //      position    : [2,0,1,6]  // mandatory
+         //   }
+           KEYWORDS_LBL : {
+             type     : 'label',
+             keyword  : 'none',
+             label    : '<div style="font-size:14px;">' +
+                        '<i>Type additional keywords here</i></div>',
+             position : [2,0,1,6]
+           },
            KEYWORDS: {
-              type        : 'textarea_',  // can be also 'textarea'
-              keyword     : 'none',       // optional
-              tooltip     : 'Advanced keywords',  // mandatory
-              placeholder : 'Type additional keywords here', // optional
-              nrows       : 5,         // optional
-              ncols       : 90,        // optional
-              iwidth      : 500,       // optional
-              value       : '',        // mandatory
-              position    : [2,0,1,6]  // mandatory
-           }
+            type        : 'aceditor_',
+            //keyword     : 'keyword',
+            tooltip     : '',
+            reportas    : 'Keywords',
+            value       : '',
+            iwidth      : 500,
+            iheight     : 160,
+            position    : [3,0,1,6]
+          }  
+  
         }
      }
   };

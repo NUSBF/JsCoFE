@@ -64,7 +64,8 @@ class StructurePrediction(basic.TaskDriver):
     def run(self):
 
         scriptf = "process.sh"
-        dirName = os.path.join ( self.job_dir,"af2_output" )
+        dirName = "af2_output"
+        dirPath = os.path.join ( self.job_dir,dirName )
 
         # close execution logs and quit
 
@@ -115,10 +116,10 @@ class StructurePrediction(basic.TaskDriver):
             nmodels_str = self.getParameter ( sec1.NSTRUCTS )
         script += " --num_models " + nmodels_str
 
-        script += " --out " + dirName
+        script += " --out " + dirPath
         
         if engine=="alphafold":
-            script += " -relax\n"
+            script += "\n"  # " -relax\n"
         else:
             script += " --" + engine + "\n"
 
@@ -128,6 +129,7 @@ class StructurePrediction(basic.TaskDriver):
             self.putMessage ( "Using ColabFold implementation of AlphaFold" )
         else:
             self.putMessage ( "Using OpenFold implementation of AlphaFold" )
+
         if nmodels_str=="1":
             self.putMessage ( "1 model will be generated<br>&nbsp;" )
         else:
@@ -174,15 +176,28 @@ class StructurePrediction(basic.TaskDriver):
             PAE_png      = []
             plddt_png    = []
 
-            for file in os.listdir(dirName):
-                if file.endswith(".pdb") and (engine=="colabfold" or file.endswith("_relaxed.pdb")):
-                    fpaths.append ( os.path.join(dirName,file) )
-                elif file.endswith("coverage.png"):
-                    coverage_png.append ( "../" + dirName + "/" + file )
-                elif file.endswith("PAE.png"):
-                    PAE_png.append ( "../" + dirName + "/" + file )
-                elif file.endswith("plddt.png"):
-                    plddt_png.append ( "../" + dirName + "/" + file )
+            if engine=="alphafold":
+                coverage_png.append ( "../" + dirName + "/report/medfia/plot_msa.png"   )
+                PAE_png     .append ( "../" + dirName + "/report/medfia/plot_pae.png"   )
+                plddt_png   .append ( "../" + dirName + "/report/medfia/plot_plddt.png" )
+                try:
+                    with open(os.path.join(dirName,"results.json"),"r") as f:
+                        results = json.load ( f )
+                        if results["status"]=="Ok":
+                            fpaths = results["structures"]
+                except:
+                    self.putMessage ( "<i>Results not found</i>" )
+
+            else:
+                for file in os.listdir(dirName):
+                    if file.endswith(".pdb") and (engine=="colabfold" or file.endswith("_relaxed.pdb")):
+                        fpaths.append ( os.path.join(dirName,file) )
+                    elif file.endswith("coverage.png"):
+                        coverage_png.append ( "../" + dirName + "/" + file )
+                    elif file.endswith("PAE.png"):
+                        PAE_png.append ( "../" + dirName + "/" + file )
+                    elif file.endswith("plddt.png"):
+                        plddt_png.append ( "../" + dirName + "/" + file )
 
             if len(fpaths)<=0: # Result page in case of no models are generated
 
@@ -201,7 +216,7 @@ class StructurePrediction(basic.TaskDriver):
                 else:
                     self.addCitation ( "openfold" )
 
-                if engine=="colabfold":
+                if engine!="openfold":
 
                     if len(PAE_png)>0:
                         self.putMessage  ( "<h3>PAE matrices</h3>" )

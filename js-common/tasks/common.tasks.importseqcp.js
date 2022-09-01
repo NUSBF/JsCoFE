@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    01.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -56,25 +56,42 @@ function TaskImportSeqCP()  {
           position : [0,0,1,1]
         },
 
+    // SEQUENCE_TA: {
+    //       type        : 'textarea_',
+    //       //keyword     : 'keyword',
+    //       tooltip     : '',
+    //       reportas    : 'Sequence(s)',
+    //       placeholder : 'Copy-paste your sequence(s) here, including title line(s).\n\n' +
+    //                     'More than one sequences of the same type (protein/dna/na)\n' +
+    //                     'can be given one after another. Example:\n\n' +
+    //                     '>rnase_A\n' +
+    //                     'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGE\n' +
+    //                     'ATQEDYYTGDHYATFSLIDQTC\n\n' +
+    //                     '>1dtx_A\n' +
+    //                     'QPRRKLCILHRNPGRCYDKIPAFYYNQKKKQCERFDWSGCGGNSNRFKTIEECRRTCIG',
+    //       nrows       : 15,
+    //       ncols       : 160,
+    //       iwidth      : 800,
+    //       value       : '',
+    //       position    : [1,0,1,6]
+    //     },
+
     SEQUENCE_TA: {
-          type        : 'textarea_',
-          //keyword     : 'keyword',
+          type        : 'aceditor_',
           tooltip     : '',
           reportas    : 'Sequence(s)',
-          placeholder : 'Copy-paste your sequence(s) here, including title line(s).\n\n' +
-                        'More than one sequences of the same type (protein/dna/na)\n' +
-                        'can be given one after another. Example:\n\n' +
+          value       : '# Copy-paste your sequence(s) here, including title line(s).\n\n' +
+                        '# Several sequences of the same type (protein/dna/na) can be\n' +
+                        '# given one after another. Example:\n\n' +
                         '>rnase_A\n' +
                         'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGE\n' +
                         'ATQEDYYTGDHYATFSLIDQTC\n\n' +
                         '>1dtx_A\n' +
                         'QPRRKLCILHRNPGRCYDKIPAFYYNQKKKQCERFDWSGCGGNSNRFKTIEECRRTCIG',
-          nrows       : 15,
-          ncols       : 160,
-          iwidth      : 800,
-          value       : '',
+          iwidth      : 700,
+          iheight     : 240,
           position    : [1,0,1,6]
-        }
+        }  
 
   };
 
@@ -127,7 +144,16 @@ if (!__template)  {
     if (this.parameters.SEQTYPE_SEL.value=='none')
       msg.push ( 'Sequence type must be chosen' );
 
-    var s = this.parameters.SEQUENCE_TA.value.trim()
+    var s = this.parameters.SEQUENCE_TA.value.trim();
+    var slst = s.split(/\r?\n/);
+    s = '';
+    for (var i=0;i<slst.length;i++)  {
+      var p = slst[i].indexOf('#');
+      if (p>=0)  s += slst[i].substring(0,p);
+           else  s += '\n' + slst[i];
+    }
+    s = s.trim();
+
     if (!s)
       msg.push ( 'Sequence data is not given' );
     else if (!startsWith(s,'>'))
