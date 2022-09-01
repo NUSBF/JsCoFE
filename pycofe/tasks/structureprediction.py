@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.07.22   <--  Date of Last Modification.
+#    01.09.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -92,10 +92,10 @@ class StructurePrediction(basic.TaskDriver):
             self.success ( False )
             return
 
-        if engine not in ["colabfold","openfold"]:
+        if engine not in ["colabfold","openfold","alphafold"]:
             self.putTitle   ( "Invalid or corrupt configuration" )
-            self.putMessage ( "Task engine not specified in the configuration " +\
-                "file or misspelled. Report this to your " + self.appName() +\
+            self.putMessage ( "Task engine is not specified in the configuration " +\
+                "file or is misspelled. Report this to your " + self.appName() +\
                 " maintainer." )
             self.generic_parser_summary["structureprediction"] = {
                 "summary_line" : "error: task software misconfigured"
@@ -115,9 +115,16 @@ class StructurePrediction(basic.TaskDriver):
             nmodels_str = self.getParameter ( sec1.NSTRUCTS )
         script += " --num_models " + nmodels_str
 
-        script += " --out " + dirName + " --" + engine + "\n"
+        script += " --out " + dirName
+        
+        if engine=="alphafold":
+            script += " --relax"
+        else:
+            script += " --" + engine + "\n"
 
-        if engine=="colabfold":
+        if engine=="alphafold":
+            self.putMessage ( "Using vanilla implementation of AlphaFold" )
+        elif engine=="colabfold":
             self.putMessage ( "Using ColabFold implementation of AlphaFold" )
         else:
             self.putMessage ( "Using OpenFold implementation of AlphaFold" )
