@@ -408,7 +408,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
       async    : true,
       type     : 'POST',
       data     : json,
-      // timeout  : 100,   // milliseconds
+      timeout  : 10000,   // milliseconds
       dataType : 'text'
     })
     .done ( function(rdata) {
@@ -467,7 +467,7 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
       async    : true,
       type     : 'POST',
       data     : json,
-      // timeout  : 100,   // milliseconds
+      timeout  : 10000,   // milliseconds
       dataType : 'text'
     })
     .done ( function(rdata) {
