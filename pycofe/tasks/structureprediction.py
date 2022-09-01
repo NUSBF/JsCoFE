@@ -118,7 +118,7 @@ class StructurePrediction(basic.TaskDriver):
         script += " --out " + dirName
         
         if engine=="alphafold":
-            script += " --relax"
+            script += " -relax\n"
         else:
             script += " --" + engine + "\n"
 
