@@ -64,7 +64,7 @@ class StructurePrediction(basic.TaskDriver):
     def run(self):
 
         scriptf = "process.sh"
-        dirName = "af2_output"
+        dirName = os.path.join ( self.job_dir,"af2_output" )
 
         # close execution logs and quit
 
