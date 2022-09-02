@@ -76,22 +76,26 @@ class StructurePrediction(basic.TaskDriver):
 
         # os.path.join ( os.environ["CCP4"],"bin","af2start" )
 
-        engine = ""
+        simulation = False
 
-        try:
-            with open(os.environ["ALPHAFOLD_CFG"],"r") as f:
-                configuration = json.load ( f )
-                engine = configuration["engine"]
-        except:
-            self.putTitle   ( "Invalid or corrupt configuration" )
-            self.putMessage ( "Task configuration file is either missing or " +\
-                "misformatted. Report this to your " + self.appName() +\
-                " maintainer." )
-            self.generic_parser_summary["structureprediction"] = {
-                "summary_line" : "error: task software misconfigured"
-            }
-            self.success ( False )
-            return
+        if simulation:
+            engine = "alphafold"
+        else:
+            engine = ""
+            try:
+                with open(os.environ["ALPHAFOLD_CFG"],"r") as f:
+                    configuration = json.load ( f )
+                    engine = configuration["engine"]
+            except:
+                self.putTitle   ( "Invalid or corrupt configuration" )
+                self.putMessage ( "Task configuration file is either missing or " +\
+                    "misformatted. Report this to your " + self.appName() +\
+                    " maintainer." )
+                self.generic_parser_summary["structureprediction"] = {
+                    "summary_line" : "error: task software misconfigured"
+                }
+                self.success ( False )
+                return
 
         if engine not in ["colabfold","openfold","alphafold"]:
             self.putTitle   ( "Invalid or corrupt configuration" )
@@ -151,20 +155,22 @@ class StructurePrediction(basic.TaskDriver):
         self.putWaitMessageLF ( "Prediction in progress ..." )
         # self.rvrow -= 1
 
-        rc = self.runApp ( "env",[
-                                "-i",
-                                "HOME=" + os.environ["HOME"],
-                                "PATH=" + os.environ["PATH"],
-                                "ALPHAFOLD_CFG=" + os.environ["ALPHAFOLD_CFG"],
-                                "/bin/bash","-l","-c","./" + scriptf
-                            ],logType="Main",quitOnError=False )
+        if simulation:
+            import shutil
+            shutil.copytree ( "C:/Users/ezg07123/Projects/CCP4Cloud/AF2/af2_output", dirName )
 
-        # import shutil
-        # shutil.copytree ( "/Users/eugene.krissinel/Downloads/af2-job_20/af2_output", dirName )
+        else:
+            rc = self.runApp ( "env",[
+                                    "-i",
+                                    "HOME=" + os.environ["HOME"],
+                                    "PATH=" + os.environ["PATH"],
+                                    "ALPHAFOLD_CFG=" + os.environ["ALPHAFOLD_CFG"],
+                                    "/bin/bash","-l","-c","./" + scriptf
+                                ],logType="Main",quitOnError=False )
 
         nModels = 0
 
-        if rc.msg:
+        if not simulation and rc.msg:
             self.putTitle ( "Failed to make models" )
             self.putMessage ( "<b>Execution errors</b>" )
         else:
@@ -177,13 +183,13 @@ class StructurePrediction(basic.TaskDriver):
             plddt_png    = []
 
             if engine=="alphafold":
-                coverage_png.append ( "../" + dirName + "/report/medfia/plot_msa.png"   )
-                PAE_png     .append ( "../" + dirName + "/report/medfia/plot_pae.png"   )
-                plddt_png   .append ( "../" + dirName + "/report/medfia/plot_plddt.png" )
+                coverage_png.append ( "../" + dirName + "/report/media/plot_msa.png"   )
+                PAE_png     .append ( "../" + dirName + "/report/media/plot_pae.png"   )
+                plddt_png   .append ( "../" + dirName + "/report/media/plot_plddt.png" )
                 try:
                     with open(os.path.join(dirName,"results.json"),"r") as f:
                         results = json.load ( f )
-                        if results["status"]=="Ok":
+                        if results["status"].lower()=="ok":
                             fpaths = results["structures"]
                 except:
                     self.putMessage ( "<i>Results not found</i>" )
@@ -220,10 +226,13 @@ class StructurePrediction(basic.TaskDriver):
 
                     if len(PAE_png)>0:
                         self.putMessage  ( "<h3>PAE matrices</h3>" )
+                        shift = 35
+                        if engine=="alphafold":
+                            shift = 0
                         self.putMessage1 (
                             self.report_page_id(),"<img src=\"" + PAE_png[0] +\
                             "\" height=\"200px\" style=\"position:relative; left:" +\
-                            str(35*(1-len(fpaths))) + "px;\"/>",
+                            str(shift*(1-len(fpaths))) + "px;\"/>",
                             self.rvrow,col=0,rowSpan=1,colSpan=1 )
                         self.rvrow += 1
 
@@ -286,6 +295,10 @@ class StructurePrediction(basic.TaskDriver):
                                   "</b></i>&nbsp;<br>&nbsp;" )
 
                 for i in range(len(fpaths)):
+
+                    if simulation:
+                        fpaths[i] = fpaths[i][fpaths[i].find(dirName):]
+                        self.stdoutln ( fpaths[i] )
 
                     if len(fpaths)<=1:
                         outFName = self.getXYZOFName ( )
