@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    16.08.22   <--  Date of Last Modification.
+ *    02.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -115,7 +115,9 @@ TaskSliceNDice.prototype.currentVersion = function()  {
 
 TaskSliceNDice.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['slice', 'molecular','replacement','mr', 'model','preparation','refinement','auto-mr'] );
+  return this.__check_keywords ( keywords,[
+                'slicendice', 'molecular','replacement','mr', 'model','preparation',
+                'auto','auto-mr'] );
 }
 
 // export such that it could be used in both node and a browser

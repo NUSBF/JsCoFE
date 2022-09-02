@@ -119,7 +119,9 @@ TaskZanuda.prototype.desc_title = function()  {
 
 TaskZanuda.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['zanuda', 'space','group','validation', 'pseudosymmetry','pseudo-symmetry','pseudo','symmetry','analysis','tools'] );
+  return this.__check_keywords ( keywords,[
+                'zanuda', 'space','group','validation', 'pseudosymmetry','pseudo-symmetry','pseudo',
+                'symmetry','analysis'] );
 }
 
 if (__template)  {

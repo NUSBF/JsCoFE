@@ -1,7 +1,7 @@
 /*
  *  ====================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    02.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------
  *
@@ -150,7 +150,10 @@ TaskStructurePrediction.prototype.currentVersion = function()  {
 
 TaskStructurePrediction.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['structure', 'prediction','molecular','replacement','mr', 'model','preparation','generation','alphafold','alphafold2','af', 'af2','colabfold','colab', 'fold', 'openfold','open'] );
+  return this.__check_keywords ( keywords,[
+                  'structure', 'prediction','molecular','replacement','mr', 'model','preparation',
+                  'generation','alphafold','alphafold2','af', 'af2','colabfold','colab', 'fold',
+                  'openfold'] );
 }
 
 // ===========================================================================

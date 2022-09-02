@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    02.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -96,7 +96,9 @@ TaskSlice.prototype.currentVersion = function()  {
 
 TaskSlice.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['slice', 'split', 'model','preparation'] );
+  return this.__check_keywords ( keywords,[
+                'slice', 'split', 'mr','molecular','replacement','model','preparation'
+              ] );
 }
 
 // export such that it could be used in both node and a browser

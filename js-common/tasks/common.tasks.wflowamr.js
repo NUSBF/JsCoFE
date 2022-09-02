@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    02.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -155,7 +155,10 @@ TaskWFlowAMR.prototype.currentVersion = function()  {
 
 TaskWFlowAMR.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['workflow','molecular', 'replacement', 'simbad','morda','mrbump','asu','refinement','refmac','auto','automation','auto-mr','automatic','automatization','automatisation', 'mr', 'deposition'] );
+  return this.__check_keywords ( keywords,[
+                'workflow','molecular', 'replacement', 'simbad','morda','mrbump','auto','automation',
+                'auto-mr','automatic','automatization','automatisation', 'mr'
+              ] );
 }
 
 // export such that it could be used in both node and a browser

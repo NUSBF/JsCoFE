@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    02.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,7 +77,9 @@ TaskShelxSubstr.prototype.requiredEnvironment = function() {
 
 TaskShelxSubstr.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['shelx', 'crank2','crank-2','experimental', 'phasing', 'ep', 'substructure'] );
+  return this.__check_keywords ( keywords,[
+                'shelx', 'crank2','crank-2','experimental', 'phasing', 'ep', 'substructure'
+              ] );
 }
 
 if (!__template)  {

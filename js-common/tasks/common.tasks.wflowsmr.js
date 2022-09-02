@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    02.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -169,7 +169,9 @@ TaskWFlowSMR.prototype.currentVersion = function()  {
 
 TaskWFlowSMR.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['workflow','molecular', 'replacement', 'model','simple','asu','refinement','refmac','auto','automation','automatic','automatization','automatisation', 'mr', 'deposition'] );
+  return this.__check_keywords ( keywords,[
+                'workflow','molecular', 'replacement', 'model','simple','refinement','auto',
+                'automation','automatic','automatization','automatisation', 'mr'] );
 }
 
 // export such that it could be used in both node and a browser
