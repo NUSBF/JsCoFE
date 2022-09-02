@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    02.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -165,7 +165,10 @@ TaskWFlowAEP.prototype.currentVersion = function()  {
 
 TaskWFlowAEP.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['workflow','experimental', 'phasing', 'crank2','asu','refinement','refmac','auto','automation','auto-ep','automatic','automatization','automatisation', 'ep', 'substructure','deposition'] );
+  return this.__check_keywords ( keywords,[
+          'workflow','experimental', 'phasing', 'crank2','asu','refinement','auto','automation',
+          'auto-ep','automatic','automatization','automatisation', 'ep', 'substructure','deposition'
+        ] );
 }
 
 // export such that it could be used in both node and a browser

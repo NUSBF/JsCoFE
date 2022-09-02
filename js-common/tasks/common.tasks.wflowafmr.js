@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    02.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -157,7 +157,11 @@ TaskWFlowAFMR.prototype.currentVersion = function()  {
 
 TaskWFlowAFMR.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['workflow','molecular', 'replacement', 'af-mr','asu','refinement','refmac','refmac5','auto','automation','auto-mr','automatic','automatization','automatisation', 'mr', 'deposition','structure', 'prediction','model','preparation','generation','alphafold','alphafold2','af', 'af2','colabfold','colab', 'fold', 'openfold','open','slicendice'] );
+  return this.__check_keywords ( keywords,[
+              'workflow','molecular', 'replacement', 'af-mr','asu','auto','automation','auto-mr',
+              'automatic','automatization','automatisation', 'mr', 'structure', 'prediction',
+              'alphafold','alphafold2','af', 'af2','colabfold','colab', 'fold', 'openfold'
+            ] );
 }
 
 // export such that it could be used in both node and a browser

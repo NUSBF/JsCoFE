@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.08.22   <--  Date of Last Modification.
+ *    02.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -259,7 +259,7 @@ TaskXia2.prototype.currentVersion = function()  {
 
 TaskXia2.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['xia2','xia-2','xia','2', 'image', 'processing', 'gui'] );
+  return this.__check_keywords ( keywords,['xia2','xia-2','xia','2', 'image', 'processing'] );
 }
 
 // export such that it could be used in both node and a browser

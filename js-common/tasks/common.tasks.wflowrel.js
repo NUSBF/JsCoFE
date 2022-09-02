@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    02.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -179,7 +179,10 @@ TaskWFlowREL.prototype.currentVersion = function()  {
 
 TaskWFlowREL.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['workflow','refmac','refmac5', 'asu','refinement','auto','automation','automatic','automatization','automatisation', 'deposition'] );
+  return this.__check_keywords ( keywords,[
+              'workflow','refmac','refmac5','refinement','auto','automation','automatic',
+              'automatization','automatisation'
+            ] );
 }
 
 // export such that it could be used in both node and a browser

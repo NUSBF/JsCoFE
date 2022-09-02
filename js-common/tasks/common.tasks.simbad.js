@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    02.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -293,7 +293,10 @@ TaskSimbad.prototype.currentVersion = function()  {
 
 TaskSimbad.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['simbad', 'lattice', 'molecular','replacement','mr', 'model','contaminant','search'] );
+  return this.__check_keywords ( keywords,[
+                'simbad', 'lattice', 'molecular','replacement','mr','auto','auto-mr',
+                'model','contaminant','search'
+              ] );
 }
 
 if (!__template)  {
