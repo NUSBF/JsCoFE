@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.08.22   <--  Date of Last Modification.
+ *    07.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,6 +62,9 @@ function ProjectListPage ( sceneId )  {
   var table_row      = 0;                  // project list position in panel
   var self           = this;               // for reference to Base class
   var pageTitle_lbl  = null;
+
+  var owners_folder  = __login_id + '\'s Projects';
+
 
   function currentProjectName()  {
     if (__current_folder.nprojects>0)
@@ -166,11 +169,11 @@ function ProjectListPage ( sceneId )  {
     saveProjectList ( function(data){ makeProjectPage(sceneId); },prjName );
   }
 
-  var addProject = function() {
+  var _add_project = function() {
     new AddProjectDialog ( projectList,function(pspecs){
       if (pspecs)  {
         if (projectList.addProject(pspecs.id,pspecs.title,
-                                   pspecs.startmode,getDateString()))  {
+                                  pspecs.startmode,getDateString()))  {
           projectList.current   = pspecs.id;
           projectList.startmode = pspecs.startmode;
           makeProjectListTable();
@@ -192,6 +195,30 @@ function ProjectListPage ( sceneId )  {
         }
       }
     });
+  }
+
+  var addProject = function() {
+    if (__current_folder.path.startsWith(owners_folder) ||
+        (__current_folder.type==folder_type.all_projects))  {
+      _add_project();
+    } else  {
+      new QuestionBox (
+        'Cannot create project in this folder',
+        '<h2>Cannot create Project in this folder</h2>' +
+        'Projects can be created only in <i>My Projects</i> area.' +
+        '<p>Create new Project in <i>My Projects</i> and switch there?',[
+        { name    : 'Yes',
+          onclick : function(){
+                      projectList.setCurrentFolder ( projectList.folders[0] )
+                      __current_folder = projectList.currentFolder;
+                      // setPageTitle ( __current_folder );
+                      _add_project();
+                    }
+        },{
+          name    : 'Cancel',
+          onclick : function(){}
+        }],'msg_question' );
+      }      
   }
 
   // function to rename selected Project
@@ -611,7 +638,7 @@ function ProjectListPage ( sceneId )  {
 
     if (__current_folder.nprojects>=0)  // works first time after login
       __current_folder = projectList.currentFolder;
-    var owners_folder = __login_id + '\'s Projects';
+    // var owners_folder = __login_id + '\'s Projects';
 
     setPageTitle ( __current_folder );
 
