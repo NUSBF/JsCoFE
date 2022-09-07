@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.07.22   <--  Date of Last Modification.
+ *    07.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1770,6 +1770,9 @@ var pData    = readProjectData ( loginData,data.name );
             if (!('author' in pData.desc.owner))
               pData.desc.owner.author = pData.desc.owner.login;
             pData.desc.owner.login = loginData.login;
+            var f0path = loginData.login + '\'s Projects';
+            if (!pData.desc.folderPath.startsWith(f0path))
+              pData.desc.folderPath = f0path;
             writeProjectData ( loginData,pData,true );
             var pList = readProjectList ( loginData );
             if (pList)  {
