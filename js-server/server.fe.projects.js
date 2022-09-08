@@ -1767,12 +1767,14 @@ var pData    = readProjectData ( loginData,data.name );
             pData.desc.name  = data.new_name;
             pData.desc.title = data.new_title;
             pData.desc.share = {};  // no initial sharing on the cloned project
-            if (!('author' in pData.desc.owner))
+            if (!('author' in pData.desc.owner))  {
               pData.desc.owner.author = pData.desc.owner.login;
+              pData.desc.folderPath   = loginData.login + '\'s Projects';
+            }
             pData.desc.owner.login = loginData.login;
-            var f0path = loginData.login + '\'s Projects';
-            if (!pData.desc.folderPath.startsWith(f0path))
-              pData.desc.folderPath = f0path;
+            // var f0path = loginData.login + '\'s Projects';
+            // if (!pData.desc.folderPath.startsWith(f0path))
+            //   pData.desc.folderPath = f0path;
             writeProjectData ( loginData,pData,true );
             var pList = readProjectList ( loginData );
             if (pList)  {
