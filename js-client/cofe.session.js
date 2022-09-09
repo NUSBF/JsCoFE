@@ -56,7 +56,7 @@ function startSession ( sceneId,dev_switch )  {
         //__login_user  = 'Local user';
         __offline_message = true;  // show prompt "working offline"
         login ( '**' + __local_user_id + '**','',sceneId,0 );
-        //loadKnowledge ( 'Login' )
+        //loadKnowledge ( 'Login' );
         //makeProjectListPage(sceneId);
       } else  {
 
