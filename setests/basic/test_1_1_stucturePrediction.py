@@ -96,7 +96,6 @@ def addSliceNDice(driver):
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'MR with model splitting using')
     time.sleep(6)
 
-    # Shall return list of two elements for project creation
     tasksInputs = driver.find_elements_by_xpath("//input[contains(@title, 'Maximum number of splits to try.')]")
 
     tasksInputs[-1].click()
