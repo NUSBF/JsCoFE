@@ -191,10 +191,11 @@ def verifyBuccaneer(driver, waitLong, jobNumber, targetRwork, targetRfree):
         ttts = sf.tasksTreeTexts(driver)
         for taskText in ttts:
             # Job number as string
-            match = re.search('\[' + jobNumber + '\].*R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+            match = re.search('\[' + jobNumber + '\] buccaneer -- Compl=(.*)% R=(0\.\d*) Rfree=(0\.\d*)', taskText)
             if match:
-                rWork = float(match.group(1))
-                rFree = float(match.group(2))
+                compl = float(match.group(1))
+                rWork = float(match.group(2))
+                rFree = float(match.group(3))
                 break
         if (rWork != 1.0) or (rFree != 1.0):
             break
@@ -340,14 +341,14 @@ def test_1RefmacBasic(browser,
 
 def test_2buccaneer():
     try:
-        verifyBuccaneer(d.driver, 1000, '0005', 0.29, 0.32) # run takes 3 minutes, giving 5
+        verifyBuccaneer(d.driver, 1000, '0005', 0.29, 0.32) # run takes 3 minutes
     except:
         d.driver.quit()
         raise
 
 def test_3ccp4build():
     try:
-        verifyCCP4Build(d.driver, 1500, '0006', 0.31, 0.33) # run takes long
+        verifyCCP4Build(d.driver, 1500, '0006', 0.32, 0.35) # run takes long
     except:
         d.driver.quit()
         raise
