@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    14.08.22   <--  Date of Last Modification.
+ *    13.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1093,11 +1093,18 @@ function ACEditor ( width,height,options )  {
 ACEditor.prototype = Object.create ( Widget.prototype );
 ACEditor.prototype.constructor = ACEditor;
 
-ACEditor.prototype.init = function ( text )  {
+ACEditor.prototype.init = function ( text,placeholder )  {
   if (!this.editor)  {
     this.editor = ace.edit ( this.panel.element.id );
-    this.editor.setTheme ( 'ace/theme/' + this.editor_theme );
-    this.editor.session.setMode ( 'ace/mode/' + this.editor_mode );
+    // this.editor.setTheme ( 'ace/theme/' + this.editor_theme );
+    // this.editor.session.setMode ( 'ace/mode/' + this.editor_mode );
+    var options =  {
+      mode        : 'ace/mode/' + this.editor_mode,
+      theme       : 'ace/theme/' + this.editor_theme,
+    };
+    if (placeholder)
+      options.placeholder = placeholder;
+    this.editor.setOptions ( options );
     if (text)
       this.setText ( text );
   }
