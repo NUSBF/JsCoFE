@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.08.22   <--  Date of Last Modification.
+ *    13.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2205,20 +2205,23 @@ if (!dbx)  {
                                 iwidth = item.iwidth;
                               if (item.hasOwnProperty('iheight'))
                                 iheight = item.iheight;
+                              var pholder = '';
+                              if (item.hasOwnProperty('placeholder'))
+                                pholder = item.placeholder;
                               var aceditor = new ACEditor ( iwidth,iheight,{
-                                'box-shadow' : '6px 6px lightgray',
-                                'theme'      : 'chrome',
-                                'mode'       : 'python'
+                                'box-shadow'  : '6px 6px lightgray',
+                                'theme'       : 'chrome',
+                                'mode'        : 'python'
                               });
                               grid.setWidget ( aceditor,r,c,rs,cs );
                               aceditor.setTooltip ( item.tooltip );
                               //$(aceditor.element).css ( {'resize':'none'} );
                               inpParamRef.parameters[key].input = aceditor;
-                              (function(acedt,text){
+                              (function(acedt,text,placeholder){
                                 window.setTimeout ( function(){
-                                  acedt.init ( text );
+                                  acedt.init ( text,placeholder );
                                 },0);
-                              }(aceditor,item.value));
+                              }(aceditor,item.value,pholder));
                           break;
 
 

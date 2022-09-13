@@ -92,13 +92,13 @@ function ServerConfig ( type )  {
 ServerConfig.prototype.url = function()  {
   if (this.port>0)  {
     // this works on FE side
-    return this.protocol + '://' + this.host + ':' + this.port
+    return this.protocol + '://' + this.host + ':' + this.port;
   } else  {
     // this may be used on NC side if FE uses redirection from
     // its main server, e.g.  http://fe.apache.com/jscofe ->
     // http://localhost:8081 . In this case, set 'host' to
     // 'apache.com' and use port=0
-   return this.protocol + '://' + this.host
+   return this.protocol + '://' + this.host;
   }
 }
 

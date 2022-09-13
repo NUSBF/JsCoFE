@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.09.22   <--  Date of Last Modification.
+ *    13.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -80,7 +80,8 @@ function TaskImportSeqCP()  {
           type        : 'aceditor_',
           tooltip     : '',
           reportas    : 'Sequence(s)',
-          value       : '# Copy-paste your sequence(s) here, including title line(s).\n\n' +
+          value       : '',
+          placeholder : '# Copy-paste your sequence(s) here, including title line(s).\n\n' +
                         '# Several sequences of the same type (protein/dna/na) can be\n' +
                         '# given one after another. Example:\n\n' +
                         '>rnase_A\n' +

@@ -1072,11 +1072,16 @@ ACEditor.prototype.constructor = ACEditor;
 ACEditor.prototype.init = function ( text )  {
   if (!this.editor)  {
     this.editor = ace.edit ( this.panel.element.id );
-    this.editor.setTheme ( 'ace/theme/' + this.editor_theme );
-    this.editor.session.setMode ( 'ace/mode/' + this.editor_mode );
+    // this.editor.setTheme ( 'ace/theme/' + this.editor_theme );
+    // this.editor.session.setMode ( 'ace/mode/' + this.editor_mode );
+    this.editor.setOptions({
+      mode        : 'ace/mode/' + this.editor_mode,
+      theme       : 'ace/theme/' + this.editor_theme
+    });
     if (text)
       this.setText ( text );
   }
+
 }
 
 ACEditor.prototype.setText = function ( text )  {
