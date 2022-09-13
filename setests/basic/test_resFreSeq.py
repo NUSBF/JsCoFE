@@ -1,4 +1,6 @@
 # coding=utf-8
+from sre_constants import IN
+from tkinter import ACTIVE
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
@@ -42,12 +44,29 @@ GPLGSSQIPASEQETLVRPKPLLLKLLKSVGAQKDTYTMKEVLFYLGQYIMTKRLYDAAQQHIVYCSNDLLGDLFGVPSF
 
     sf.clickByXpath(driver, "//div[contains(text(), '%s')]" % ('Protein'))
     time.sleep(1)
+    
+    try:
+        inputASU = driver.find_element_by_xpath("//textarea[contains(@placeholder,'Copy-paste your sequence(s) here, including title line(s)')]")
+        inputASU.click()
+        inputASU.clear()
+        inputASU.send_keys(seq)
+        time.sleep(2)
+    except:
+        pass
 
-    inputASU = driver.find_element_by_xpath("//textarea[contains(@placeholder,'Copy-paste your sequence(s) here, including title line(s)')]")
-    inputASU.click()
-    inputASU.clear()
-    inputASU.send_keys(seq)
-    time.sleep(2)
+    try:
+        inputASU = driver.find_element_by_class_name("ace_scroller")
+        # inputASU.click()
+        actions = ActionChains(driver)
+        actions.move_to_element(inputASU)
+        actions.click(inputASU)
+        # actions.send_keys((Keys.COMMAND, "a"), seq)
+        actions.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).send_keys(seq).perform()
+        # actions.key_down(Keys.COMMAND).send_keys('a').key_up(Keys.COMMAND).send_keys(seq).perform()
+
+        time.sleep(2)
+    except:
+        pass
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
