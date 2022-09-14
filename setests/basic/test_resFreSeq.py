@@ -56,6 +56,7 @@ GPLGSSQIPASEQETLVRPKPLLLKLLKSVGAQKDTYTMKEVLFYLGQYIMTKRLYDAAQQHIVYCSNDLLGDLFGVPSF
 
     try:
         inputASU = driver.find_element_by_class_name("ace_scroller")
+        # inputASU = driver.find_element_by_class_name("ace_placeholder")
         # inputASU.click()
         actions = ActionChains(driver)
         actions.move_to_element(inputASU)
