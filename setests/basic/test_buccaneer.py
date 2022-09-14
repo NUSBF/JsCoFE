@@ -95,7 +95,7 @@ def startBuccaneer(driver):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(1)
+    time.sleep(4)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")

@@ -49,6 +49,8 @@ def prepareMRmodelAfterASU(driver, waitShort):
             buttonRun.click()
             break
 
+    time.sleep(3)
+
     try:
         wait = WebDriverWait(driver, waitShort) # allowing 15 seconds to the task to finish
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
