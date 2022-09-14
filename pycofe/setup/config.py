@@ -1,4 +1,7 @@
 
+
+#  14.09.2022
+
 import os
 import collections
 import json
@@ -27,7 +30,7 @@ def main():
     json_obj['Emailer'] = dict(type = 'desktop')
 
     json_fe = json_obj['FrontEnd']
-    if json_fe['host'] == 'localhost':
+    if json_fe['host'] == 'localhost' or json_fe['host'] == '127.0.0.1':
       json_fe['ration']['storage'] = 0
       json_fe['externalURL'] = ''
       json_fe['stoppable'] = True
