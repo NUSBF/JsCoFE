@@ -288,6 +288,10 @@ ServerConfig.prototype.checkNCStatus = function ( callback_func )  {
 }
 
 ServerConfig.prototype._checkLocalStatus = function()  {
+
+  this.isLocalHost = (this.host.toLowerCase()=='localhost') ||
+                     (this.host=='127.0.0.1');
+
   if (!('localSetup' in this))  {
     if (this.externalURL.length>0)
           this.localSetup = (this.externalURL.indexOf('localhost') >= 0) ||
@@ -774,6 +778,7 @@ function readConfiguration ( confFilePath,serverType )  {
       fe_proxy[key] = confObj.FEProxy[key];
     if (!fe_proxy.externalURL)
       fe_proxy.externalURL = fe_proxy.url();
+    fe_proxy._checkLocalStatus();
   } else if (serverType=='FE-PROXY')
     return 'front-end proxy configuration is missing in file ' + confFilePath;
 
@@ -838,9 +843,6 @@ function readConfiguration ( confFilePath,serverType )  {
     }
   } else
     return 'emailer configuration is missing in file ' + confFilePath;
-
-  this.isLocalHost = (this.host.toLowerCase()=='localhost') ||
-                     (this.host=='127.0.0.1');
 
   return '';  // empty return is Ok
 
