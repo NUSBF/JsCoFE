@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    14.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -72,6 +72,7 @@ function ServerConfig ( type )  {
   this.type           = type;
   this.protocol       = 'http';
   this.host           = 'localhost';
+  this.isLocalHost    = true;
   this.port           = 'port';
   this.externalURL    = '';
   this.exclude_tasks  = [];   // tasks that should not run on given FE or NC server
@@ -289,8 +290,9 @@ ServerConfig.prototype.checkNCStatus = function ( callback_func )  {
 ServerConfig.prototype._checkLocalStatus = function()  {
   if (!('localSetup' in this))  {
     if (this.externalURL.length>0)
-          this.localSetup = (this.externalURL.indexOf('localhost') >= 0);
-    else  this.localSetup = (this.host == 'localhost');
+          this.localSetup = (this.externalURL.indexOf('localhost') >= 0) ||
+                            (this.externalURL.indexOf('127.0.0.1') >= 0);
+    else  this.localSetup = this.isLocalHost;
   }
 }
 
@@ -837,6 +839,9 @@ function readConfiguration ( confFilePath,serverType )  {
   } else
     return 'emailer configuration is missing in file ' + confFilePath;
 
+  this.isLocalHost = (this.host.toLowerCase()=='localhost') ||
+                     (this.host=='127.0.0.1');
+
   return '';  // empty return is Ok
 
 }
@@ -879,40 +884,40 @@ function assignPorts ( assigned_callback )  {
 
     switch (key)  {
 
-      case 0: if ((fe_server.host=='localhost') && (fe_server.port>0))
+      case 0: if (fe_server.isLocalHost && (fe_server.port>0))
                     set_server ( fe_server,function(){ setServer(1,0); } );
               else  setServer(1,0);
             break;
 
       case 1: if (!fe_proxy)
                     setServer(2,0);
-              else if ((fe_proxy.host=='localhost') && (fe_proxy.port>0))
+              else if (fe_proxy.isLocalHost && (fe_proxy.port>0))
                     set_server ( fe_proxy,function(){ setServer(2,0); } );
               else  setServer(2,0);
             break;
 
       case 2: if (n<nc_servers.length)  {
-                if ((nc_servers[n].host=='localhost') && (nc_servers[n].port>0))
+                if (nc_servers[n].isLocalHost && (nc_servers[n].port>0))
                       set_server ( nc_servers[n],function(){ setServer(2,n+1); } );
                 else  setServer(2,n+1);
               } else
                 setServer ( 3,0 );
             break;
 
-      case 3: if ((fe_server.host=='localhost') && (fe_server.port<=0))
+      case 3: if (fe_server.isLocalHost && (fe_server.port<=0))
                     set_server ( fe_server,function(){ setServer(4,0); } );
               else  setServer(4,0);
             break;
 
       case 4: if (!fe_proxy)
                     setServer(5,0);
-              else if ((fe_proxy.host=='localhost') && (fe_proxy.port<=0))
+              else if (fe_proxy.host.isLocalHost && (fe_proxy.port<=0))
                     set_server ( fe_proxy,function(){ setServer(5,0); } );
               else  setServer(5,0);
             break;
 
       case 5: if (n<nc_servers.length)  {
-                if ((nc_servers[n].host=='localhost') && (nc_servers[n].port<=0))
+                if (nc_servers[n].isLocalHost && (nc_servers[n].port<=0))
                       set_server ( nc_servers[n],function(){ setServer(5,n+1); } );
                 else  setServer(5,n+1);
               } else
@@ -931,11 +936,11 @@ function assignPorts ( assigned_callback )  {
   // ===========================================================================
 
   function checkServers ( callback )  {
-    var b = (fe_server.host!='localhost') || (fe_server.port>0);
+    var b = (!fe_server.isLocalHost) || (fe_server.port>0);
     if (fe_proxy)
-      b = b && ((fe_proxy.host!='localhost') || (fe_proxy.port>0));
+      b = b && ((!fe_proxy.isLocalHost) || (fe_proxy.port>0));
     nc_servers.forEach ( function(config){
-      b = b && ((config.host!='localhost') || (config.port>0));
+      b = b && ((!config.isLocalHost) || (config.port>0));
     });
     if (b)
       callback();
@@ -1042,25 +1047,6 @@ var isClient   = false;
 }
 
 
-/*
-function isLocalSetup()  {
-// Returns true if all servers are running on localhost.
-var isLocal = true;
-
-  if (fe_server.externalURL.length>0)
-        isLocal = (fe_server.externalURL.indexOf('localhost') >= 0);
-  else  isLocal = (fe_server.host == 'localhost');
-
-  for (var i=0;(i<nc_servers.length) && isLocal;i++)
-    if (nc_servers[i].externalURL.length>0)
-          isLocal = (nc_servers[i].externalURL.indexOf('localhost') >= 0);
-    else  isLocal = (nc_servers[i].host == 'localhost');
-
-  return isLocal;
-
-}
-*/
-
 function isLocalSetup()  {
 // Returns true if all servers are running on localhost.
 var isLocal = fe_server.localSetup;
@@ -1083,16 +1069,6 @@ function getRegMode()  {
   }
   return mode;
 }
-
-
-/*
-function isLocalFE()  {
-// returns true if FE is on local machine
-  if (fe_server.externalURL.length>0)
-    return (fe_server.externalURL.indexOf('localhost') >= 0);
-  return (fe_server.host == 'localhost');
-}
-*/
 
 function isLocalFE()  {
 // returns true if FE is on local machine

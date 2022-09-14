@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    14.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -116,7 +116,7 @@ var forceStart = false;  // debugging option forcing start of servers with fixed
                          // port numbers
 
 // the following two lines should be commented out in production environment
-//if ((feConfig.host=='localhost') && (feConfig.port<=0))
+//if (feConfig.isLocalHost && (feConfig.port<=0))
 //  forceStart = true;
 
 var startFE      = false;  // whether to start FE server
@@ -127,16 +127,15 @@ if (forceStart)  {
   startFE = true;
   startNC = [true,true];
 } else  {
-  startFE = (feConfig.host=='localhost');
+  startFE = feConfig.isLocalHost;
   startNC = [];
   for (var i=0;i<ncConfigs.length;i++)
-    startNC.push ( (ncConfigs[i].exeType=='CLIENT') ||
-                   (ncConfigs[i].host=='localhost') );
+    startNC.push ( (ncConfigs[i].exeType=='CLIENT') || ncConfigs[i].isLocalHost );
 }
 
 if (feProxyConfig)  {
   feProxyConfig.killPrevious();
-  startFEProxy = (feProxyConfig.host=='localhost');
+  startFEProxy = feProxyConfig.isLocalHost;
   if (!startFEProxy)
     feProxyConfig = null;
 }
@@ -197,8 +196,7 @@ function start_client_application()  {
     if (clientConfig)  {
       if (clientConfig.protocol=='http')  clientURL  = 'lsp=';
                                     else  clientURL  = 'lsps=';
-      if ((clientConfig.host=='localhost') || (clientConfig.host=='127.0.0.1'))
-                                          clientURL += clientConfig.port;
+      if (clientConfig.isLocalHost)       clientURL += clientConfig.port;
                                     else  clientURL += clientConfig.url();
     }
     if (clientURL)

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.08.22   <--  Date of Last Modification.
+ *    14.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,7 +38,8 @@ function startSession ( sceneId,dev_switch )  {
       __url_parameters[p[0]] = p[1];
     }
     // alert ( JSON.stringify(__url_parameters) );
-    if (window.location.href.indexOf('localhost')<0)  {
+    if ((window.location.href.indexOf('localhost')<0) ||
+        (window.location.href.indexOf('127.0.0.1')<0))  {
       var lpath = window.location.pathname.substr(1).split('/');  // skip first slash
       var wpath = '/';
       if ((lpath.length>0) && lpath[0])
