@@ -495,11 +495,13 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
                 function_ok ( response.data );
             } else
               makeCommErrorMessage ( page_title,response );
+            /*
             // we put this function here and in the fail section because we
             // do not want to have it executed multiple times due to multiple
             // retries
             if (function_always)
               function_always(0,response.data);
+            */
           }
         } catch(err) {
           console.log ( ' >>> error catch in __server_request.done: ' + err );
@@ -511,6 +513,12 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
       } else  {
         console.log ( ' >>> return on skipped operation in __server_request.done' );
       }
+
+      // we put this function here and in the fail section because we
+      // do not want to have it executed multiple times due to multiple
+      // retries
+      if (function_always)
+        function_always(0,response.data);
 
     })
 
