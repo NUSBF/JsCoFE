@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    16.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -525,7 +525,8 @@ JobTree.prototype.__checkTaskLoop = function()  {
                   tree.dlg_map[key].task = task;
                   tree.dlg_map[key].setDlgState();
                   if (task.state==job_code.failed)
-                    tree.dlg_map[key].outputPanel.reload();
+                    tree.dlg_map[key].reloadReport();
+                    // tree.dlg_map[key].outputPanel.reload();
                   else if (task.nc_type=='client')
                     tree.dlg_map[key].loadReport();
                 }
