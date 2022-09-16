@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.08.22   <--  Date of Last Modification.
+ *    16.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -349,7 +349,8 @@ function processServerQueue()  {
                         );
                         makeSessionCheck ( __current_page.sceneId );
                       } else  {  // should never come to here
-                        window.location = window.location;  // complete refresh
+                        reloadBrowser();
+                        // window.location = window.location;  // complete refresh
                         // less safe version:
                         // __server_queue.shift();
                         // __process_network_indicators();
@@ -360,7 +361,8 @@ function processServerQueue()  {
               },{
                 name    : 'Start new working session',
                 onclick : function(){
-                    window.location = window.location;  // complete refresh
+                    reloadBrowser();
+                    // window.location = window.location;  // complete refresh
                   }
               }
             ],'msg_system'
@@ -504,8 +506,10 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
             */
           }
         } catch(err) {
-          console.log ( ' >>> error catch in __server_request.done: ' + err );
-          console.log ( ' >>> rdata = ' + rdata );
+          console.log ( ' >>> error catch in __server_request.done:' +
+                        '\n --- ' + err +
+                        '\n --- request type: ' + request_type +
+                        '\n --- rdata = ' + rdata );
         }
 
         processServerQueue();

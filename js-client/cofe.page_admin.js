@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.08.22   <--  Date of Last Modification.
+ *    16.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -149,7 +149,8 @@ function AdminPage ( sceneId )  {
       serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
                       function(data){
         window.setTimeout ( function(){
-          window.location = window.location; // reload
+          reloadBrowser();
+          // window.location = window.location; // reload
         },60000 );
         logout ( self.element.id,10 );
       },null,function(){} );

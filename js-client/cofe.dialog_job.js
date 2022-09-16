@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.08.22   <--  Date of Last Modification.
+ *    16.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -395,21 +395,27 @@ JobDialog.prototype.close = function()  {
 }
 
 JobDialog.prototype.loadReport = function()  {
-  var reportURL;
-  if ((this.task.nc_type=='client') && (this.task.state==job_code.running) &&
-      __local_service && this.task.job_dialog_data.job_token)  {
-    reportURL = __special_url_tag + '/' +
-                this.task.job_dialog_data.job_token + '/' +
-                this.task.getLocalReportPath();
-    reportURL = __local_service + '/' + reportURL;
-    //reportURL = __special_client_tag + '/' + reportURL;
-  } else
-    reportURL = this.task.getReportURL();
-  if (__local_service)
-    reportURL += '?local_service';
-  this.outputPanel.loadPage ( reportURL );
+  if (this.outputPanel)  {  // check because the function may be called from outside
+    var reportURL;
+    if ((this.task.nc_type=='client') && (this.task.state==job_code.running) &&
+        __local_service && this.task.job_dialog_data.job_token)  {
+      reportURL = __special_url_tag + '/' +
+                  this.task.job_dialog_data.job_token + '/' +
+                  this.task.getLocalReportPath();
+      reportURL = __local_service + '/' + reportURL;
+      //reportURL = __special_client_tag + '/' + reportURL;
+    } else
+      reportURL = this.task.getReportURL();
+    if (__local_service)
+      reportURL += '?local_service';
+    this.outputPanel.loadPage ( reportURL );
+  }
 }
 
+JobDialog.prototype.reloadReport = function()  {
+  if (this.outputPanel)  // check because the function may be called from outside
+    this.outputPanel.reload();
+}
 
 JobDialog.prototype.collectTaskData = function ( ignore_bool )  {
   this.getDlgSize ();
