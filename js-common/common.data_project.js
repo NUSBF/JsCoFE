@@ -459,7 +459,7 @@ ProjectList.prototype.resetFolders = function ( login )  {
   this.sortFolders();
 
   if (('currentFolder' in this) && this.currentFolder)
-    // do this because folder may have changed
+    // do this because folders may have changed
         this.setCurrentFolder ( this.findFolder(this.currentFolder.path) );
   else  this.setCurrentFolder ( this.folders[0] );
 

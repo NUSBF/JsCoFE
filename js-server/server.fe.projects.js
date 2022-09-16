@@ -1859,16 +1859,16 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
         projectDesc.owner = prj_meta.desc.owner;
         if (!prjDir)  {  // this means that the project is imported, not shared
           switch (chown_key)  {
-            case 'user'      : projectDesc.owner.author   = loginData.login;
+            case 'user'     : projectDesc.owner.author   = loginData.login;
                           break;
-            case '*'         : projectDesc.owner.author   = '';
+            case '*'        : projectDesc.owner.author   = '';
                           break;
-            case 'tutorials' : projectDesc.owner.author   = pd.folder_type.tutorials;
-                               projectDesc.folderPath     = pd.folder_type.tutorials;
-                               prj_meta.desc.owner.author = pd.folder_type.tutorials;
-                               prj_meta.desc.folderPath   = pd.folder_path.tutorials;
+            case 'tutorial' : projectDesc.owner.author   = pd.folder_type.tutorials;
+                              projectDesc.folderPath     = pd.folder_path.tutorials;
+                              prj_meta.desc.owner.author = pd.folder_type.tutorials;
+                              prj_meta.desc.folderPath   = pd.folder_path.tutorials;
                           break;
-            default          : projectDesc.owner.author   = prj_meta.desc.owner.login;
+            default         : projectDesc.owner.author   = prj_meta.desc.owner.login;
           }
           projectDesc.owner.login = loginData.login;
           projectDesc.share = {};  // no initial sharing on imported project
@@ -1881,29 +1881,6 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
       prj_meta.desc.share = projectDesc.share;
       utils.writeObject ( prj_meta_path,prj_meta    );
       utils.writeObject ( prj_desc_path,projectDesc );
-
-      // if ('owner' in prj_meta.desc)  {
-      //   projectDesc.owner = prj_meta.desc.owner;
-      //   if (!prjDir)  {  // this means that the project is imported, not shared
-      //     switch (chown_key)  {
-      //       case 'user' : projectDesc.owner.author = loginData.login;  break;
-      //       case '*'    : projectDesc.owner.author = '';               break;
-      //       default     : projectDesc.owner.author = prj_meta.desc.owner.login;
-      //     }
-      //     // if (chown_bool)  projectDesc.owner.author = loginData.login;
-      //     //            else  projectDesc.owner.author = prj_meta.desc.owner.login;
-      //     projectDesc.owner.login = loginData.login;
-      //     projectDesc.owner.share = [];
-      //   }
-      // }
-      // if (!projectDesc.owner.login)
-      //   projectDesc.owner.login = loginData.login;
-      // prj_meta.desc.owner      = projectDesc.owner;
-      // prj_meta.desc.folderPath = projectDesc.folderPath;
-      // prj_meta.desc.labels     = projectDesc.labels;
-      // utils.writeObject ( prj_meta_path,prj_meta    );
-      // utils.writeObject ( prj_desc_path,projectDesc );
-
 
     } else
       prj_meta = null;
