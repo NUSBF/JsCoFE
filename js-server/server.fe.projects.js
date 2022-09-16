@@ -268,13 +268,13 @@ function checkProjectDescData ( projectDesc,loginData )  {
   }
   var f0name = pd.getProjectAuthor ( projectDesc );
   if (f0name==pd.folder_type.tutorials)
-        f0name += pd.folder_type.tutorials;
+        f0name += pd.folder_path.tutorials;
   else  f0name += '\'s Projects';
   if ((!('folderPath' in projectDesc)) || (!(projectDesc.folderPath)))  {
     projectDesc.folderPath = f0name;  // virtual project folder path
     update = true;
   }
-  if (projectDesc.folderPath.startsWith('tutorials'))  {
+  if (projectDesc.folderPath.toLowerCase().startsWith('tutorials'))  {
     projectDesc.folderPath = pd.folder_path.tutorials;
     update = true;
   }
