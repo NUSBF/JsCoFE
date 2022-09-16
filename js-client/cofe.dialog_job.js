@@ -90,8 +90,9 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.initialWidth  = size[0];
   this.initialHeight = size[1];
 
-  var taskId = this.task.id;
-  (function(dlg){
+  // var taskId = this.task.id;
+  // (function(dlg){
+  var dlg = this;
     dlg.dialog_options = {
       resizable : true,
       //height    : 'auto',
@@ -116,7 +117,7 @@ function JobDialog ( params,          // data and task projections up the tree b
                       //onDlgSignal_func ( taskId,job_dialog_reason.select_node,null );
                   }
     };
-  }(this))
+  // }(this))
 
   if (__any_mobile_device)
     this.dialog_options.position =  { my : 'left top',   // job dialog position reference
@@ -133,7 +134,8 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.setDlgState();
   this.setDlgSize ();
 
-  (function(dlg){
+  // (function(dlg){
+  var dlg = this;
 
     $(dlg.element).on( "dialogclose",function(event,ui){
       //if (dlg.close_btn && (!dlg.task.job_dialog_data.viewed))
@@ -156,7 +158,7 @@ function JobDialog ( params,          // data and task projections up the tree b
       },false );
     }
 
-  }(this))
+  // }(this))
 
   /*
   // Listen for input event, emitted when input data changes
@@ -271,13 +273,14 @@ JobDialog.prototype.setDlgState = function()  {
     window.clearTimeout ( this.ind_timer );
 
   if (isRunning && (!this.stop_btn.isVisible()))  {
-    (function(dlg){
+    // (function(dlg){
+    var dlg = this;
       dlg.ind_timer = window.setTimeout ( function(){
         if (dlg.run_image) dlg.run_image.setVisible ( true );
         if (dlg.stop_btn)  dlg.stop_btn .setVisible ( true );
         if (dlg.end_btn)   dlg.end_btn  .setVisible ( true );
       },1000 );
-    }(this));
+    // }(this));
   } else  {
     if (this.run_image) this.run_image.setVisible ( isRunning );
     if (this.stop_btn)  this.stop_btn .setVisible ( isRunning );
@@ -474,11 +477,13 @@ JobDialog.prototype.makeToolBar = function()  {
 
   this.col = 2;
 
+  var dlg = this;
+
   if (this.task.runButtonName())  {
     this.radioSet = this.toolBar.setRadioSet(0,0,1,1)
             .addButton('Input' ,'input' ,'',this.task.job_dialog_data.panel=='input' )
             .addButton('Output','output','',this.task.job_dialog_data.panel=='output');
-    (function(dlg){
+    // (function(dlg){
       $(dlg.outputPanel.element).on ( 'load',function(){
         dlg.onDlgResize();
         //dlg.outputPanel.getDocument().__url_path_prefix = dlg.task.getURL('');
@@ -495,7 +500,7 @@ JobDialog.prototype.makeToolBar = function()  {
         if (dlg.outputPanel.element.src.length<=0)
           dlg.loadReport();
       });
-    }(this));
+    // }(this));
     this.radioSet.setSize ( '220px','' );
 
     if (!this.inputPanel.fullVersionMismatch)  {
@@ -509,7 +514,7 @@ JobDialog.prototype.makeToolBar = function()  {
                                     (this.task.autoRunId.length>0),0,this.col++, 1,1 )
                                .setTooltip  ( 'Check to start an automatic workflow' )
                                .setDisabled ( __dormant   );
-        (function(dlg){
+        // (function(dlg){
           dlg.autorun_cbx.addOnClickListener ( function(){
             if (dlg.autorun_cbx.getValue())
                   dlg.task.autoRunId = dlg.task.autoRunId0;
@@ -517,7 +522,7 @@ JobDialog.prototype.makeToolBar = function()  {
             dlg.inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
                                         job_dialog_reason.rename_node );
           });
-        }(this));
+        // }(this));
       }
     }
 
@@ -543,7 +548,7 @@ JobDialog.prototype.makeToolBar = function()  {
                                           'results will be kept for inspection ' +
                                           'but unavailable for subsequent jobs.');
 
-  (function(dlg){
+  // (function(dlg){
     var hot_list = dlg.task.hotButtons();
     var gap      = false;
     var dBox     = null;
@@ -580,7 +585,7 @@ JobDialog.prototype.makeToolBar = function()  {
                                                  null );
                           return false;  // preent default
                         });
-  }(this))
+  // }(this))
 
   if (this.task.getHelpURL())
     this.ref_btn = this.addToolBarButton  ( true,'reference','Task Documentation'   );
@@ -602,6 +607,8 @@ JobDialog.prototype.makeToolBar = function()  {
 
 
 JobDialog.prototype.makeLayout = function ( onRun_func )  {
+
+  var dlg = this;
 
   this.outputPanel = new IFrame ( '' );  // always initially empty
   //this.outputPanel.setWidth ( '100%' );
@@ -643,11 +650,11 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     this.close_btn   = null;
 
     this.addWidget ( this.outputPanel );
-    (function(dlg){
+    // (function(dlg){
       $(dlg.outputPanel.element).on ( 'load',function(){
         dlg.onDlgResize();
       });
-    }(this));
+    // }(this));
 
   }
 
@@ -659,7 +666,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     this.inputPanel.setVisible ( this.task.job_dialog_data.panel=='input' );
   this.outputPanel.setVisible ( this.task.job_dialog_data.panel=='output' );
 
-  (function(dlg){
+  // (function(dlg){
 
     // Listen for input event, emitted when input data changes
     if (dlg.run_btn && dlg.inputPanel)
@@ -919,6 +926,6 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
         */
       });
 
-  }(this));
+  // }(this));
 
 }
