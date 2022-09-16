@@ -489,7 +489,7 @@ JobDialog.prototype.makeToolBar = function()  {
         //dlg.outputPanel.getDocument().__url_path_prefix = dlg.task.getURL('');
       });
       dlg.radioSet.make ( function(btnId){
-        dlg.inputPanel .setVisible ( (btnId=='input' ) );
+        dlg.inputPanel.setVisible ( (btnId=='input' ) );
         dlg.outputPanel.setVisible ( (btnId=='output') );
         dlg.task.job_dialog_data.panel = btnId;
         dlg.onDlgResize();  // this is needed for getting all elements in
