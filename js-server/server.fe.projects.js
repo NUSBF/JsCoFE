@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.09.22   <--  Date of Last Modification.
+ *    16.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1858,16 +1858,16 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
         projectDesc.owner = prj_meta.desc.owner;
         if (!prjDir)  {  // this means that the project is imported, not shared
           switch (chown_key)  {
-            case 'user'     : projectDesc.owner.author   = loginData.login;
+            case 'user'      : projectDesc.owner.author   = loginData.login;
                           break;
-            case '*'        : projectDesc.owner.author   = '';
+            case '*'         : projectDesc.owner.author   = '';
                           break;
-            case 'tutorial' : projectDesc.owner.author   = pd.folder_type.tutorials;
-                              projectDesc.folderPath     = pd.folder_type.tutorials;
-                              prj_meta.desc.owner.author = pd.folder_type.tutorials;
-                              prj_meta.desc.folderPath   = pd.folder_path.tutorials;
+            case 'tutorials' : projectDesc.owner.author   = pd.folder_type.tutorials;
+                               projectDesc.folderPath     = pd.folder_type.tutorials;
+                               prj_meta.desc.owner.author = pd.folder_type.tutorials;
+                               prj_meta.desc.folderPath   = pd.folder_path.tutorials;
                           break;
-            default         : projectDesc.owner.author   = prj_meta.desc.owner.login;
+            default          : projectDesc.owner.author   = prj_meta.desc.owner.login;
           }
           projectDesc.owner.login = loginData.login;
           projectDesc.share = {};  // no initial sharing on imported project
