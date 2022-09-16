@@ -719,6 +719,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
         } else  {
 
+          dlg.close_btn.setDisabled ( true );
           serverRequest ( fe_reqtype.getUserRation,{},'User Ration',
             function(ration){
 
@@ -742,6 +743,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       '<i><b>Recommended action:</b></i> export an old project and then<br>' +
                       'delete it from the list. You will be able to re-import that<br>' +
                       'project later using the file exported.', 'msg_excl');
+                  dlg.close_btn.setDisabled ( false );
                   return;
                 }
                 if ((ration.cpu_day>0.0) && (ration.cpu_day_used>=ration.cpu_day))  {
@@ -755,6 +757,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       'may need to push "Reload" button in the toolbar after<br>' +
                       'periods of inactivity to get updated readings.<p>' +
                       '<i><b>Recommended action:</b></i> run the job later.', 'msg_excl' );
+                  dlg.close_btn.setDisabled ( false );
                   return;
                 }
                 if ((ration.cpu_month>0.0) && (ration.cpu_month_used>=ration.cpu_month))  {
@@ -768,6 +771,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       'may need to push "Reload" button in the toolbar after<br>' +
                       'periods of inactivity to get updated readings.<p>' +
                       '<i><b>Recommended action:</b></i> run the job later.', 'msg_excl');
+                  dlg.close_btn.setDisabled ( false );
                   return;
                 }
               }
@@ -798,8 +802,10 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       data_obj.dnlURL    = dlg.task.getURL ( rdata.jobballName );
                       localCommand ( nc_command.runClientJob,data_obj,'Run Client Job',
                         function(response){
-                          if (!response)
+                          if (!response)  {
+                            dlg.close_btn.setDisabled ( false );
                             return false;  // issue standard AJAX failure message
+                          }
                           if (response.status!=nc_retcode.ok)  {
                             new MessageBox ( 'Run Client Job',
                               '<p>Launching local application ' + dlg.task.name +
@@ -811,6 +817,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                             dlg.loadReport();
                             dlg.radioSet.selectButton ( 'output' );
                           }
+                          dlg.close_btn.setDisabled ( false );
                           return true;
                         });
 
@@ -822,6 +829,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                     //onRun_func ( dlg.task.id );
                     onRun_func ( dlg );
 
+                    dlg.close_btn.setDisabled ( false );
+
                     if (dlg.task.autoRunId)
                       window.setTimeout ( function(){
                         dlg.close_btn.click();
@@ -831,9 +840,12 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
                 });
 
-              }
+              } else
+                dlg.close_btn.setDisabled ( false );
 
-            },null,'persist');
+            },null,function(){
+              dlg.close_btn.setDisabled ( false );
+            });
 
         }
 
