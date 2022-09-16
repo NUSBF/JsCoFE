@@ -13,6 +13,7 @@ Developer's Reference
    setup
    launchers
    configuration
+   af_setup
    interface_desc
    dev_hello_world
    tests

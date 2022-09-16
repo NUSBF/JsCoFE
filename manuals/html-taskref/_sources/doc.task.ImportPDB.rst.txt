@@ -1,9 +1,11 @@
-===============
-Import from PDB
-===============
+====================
+Import from PDB/AFDB 
+====================
 
-This task allows importing coordinats, sequence and reflection files from `Protein Data Bank <https://www.rcsb.org/>`_. Improt from PDB task can create `Structure Revision <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_qna.structure_revision.html>`_ if the **Structure revision** box was checked. 
+This task allows importing coordinats, sequence and reflection files from `Protein Data Bank <https://www.rcsb.org/>`_ and `AFDB <https://alphafold.ebi.ac.uk/>`_ databases.
+ 	
+Import from PDB/AFDB task can create `Structure Revision <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_qna.structure_revision.html>`_ if the **Structure revision** box was checked. 
 
-.. warning:: Check the **Structure revision** box only if you are going to use the PDB data as `Structure Revision <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_qna.structure_revision.html>`_ for the following tasks
+.. warning:: Check the **Structure revision** box only if you are going to use the PDB/AFDB data as `Structure Revision <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_qna.structure_revision.html>`_ for the following tasks
 
 .. note:: The tasks in the Cloud use the last created Structure revision in the branch of the project tree. If structure revision was created in a middle of a project tree it replaces the previous Structure revision. The newly created Structure revision will be used as input for the following task. Please, make sure that the relevant data was selected in the Structure revision section for the following task.

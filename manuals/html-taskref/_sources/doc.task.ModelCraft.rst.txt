@@ -16,7 +16,7 @@ ModelCraft is an automated model-building pipeline for X-ray crystallography. It
 
 - Running for an increased number of cycles with automatic stopping criteria.
 
-- Selection of the output model from the cycle with the lowest R-free.
+- Selecting the best output model from all cycles.
 
 - Final rebuilding of side chains using `COOT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html>`_.
 
@@ -50,7 +50,7 @@ A **single cycle of ModelCraft** consists of the following seven steps:
 
       As in the third step, the model with waters is only accepted if it has a better R-free than the model without waters.
 
-**The model from the cycle with lowest R-free is chosen as the output**. If the resolution is better than 2.5 Å and R-work is better than 30% ModelCraft **rebuilds side chains** using `COOT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html>`_ followed by 5 cycles of `REFMAC <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html>`_. This side chain rebuilding step is performed once at the end of the pipeline to fix side chains that are either missing or predicted to be in incorrect conformations.
+**The model from the cycle with lowest R-work is chosen as the output**. If the resolution is better than 2.5 Å and R-work is better than 30% ModelCraft **rebuilds side chains** using `COOT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html>`_ followed by 5 cycles of `REFMAC <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html>`_. This side chain rebuilding step is performed once at the end of the pipeline to fix side chains that are either missing or predicted to be in incorrect conformations.
 
 -----
 Input
@@ -58,7 +58,7 @@ Input
 
 Two **build modes** are available. In **basic mode** ModelCraft uses only `BUCCANEER <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html>`_, `NAUTILUS <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Nautilus.html>`_ and `REFMAC <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html>`_. `PARROT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html>`_ density modification is only used on the first cycle.
 
-**The pipeline will stop if the model does not improve** for 4 cycles by default (setting this value to less than 1 makes ModelCraft run to the maximum number of cycles). A cycle must improve on the previous best value to be marked as an improvement. **Improvement is measured by R-free**. 
+**The pipeline will stop if the model does not improve** for 4 cycles by default (setting this value to less than 1 makes ModelCraft run to the maximum number of cycles). A cycle must improve on the previous best value to be marked as an improvement. **Improvement is measured by R-work**. 
 
 **Before running ModelCraft:**
 
@@ -98,6 +98,6 @@ This article uses materials kindly provided by **Paul Bond**, whose help is grea
 References
 ----------
 
-`P Bond. Next generation software for placing atoms into electron density maps. PhD thesis, University of York (2021) <https://etheses.whiterose.ac.uk/29044/>`_
+`Bond, P. & Cowtan, K. ModelCraft: an advanced automated model-building pipeline using Buccaneer. Acta Crystallographica Section D 78 (2022) <https://doi.org/10.1107/S2059798322007732>`_
 
 `Cowtan, K., Metcalfe, S. & Bond, P. Shift-field refinement of macromolecular atomic models. Acta Crystallographica Section D 76, 1192–1200 (2020) <https://doi.org/10.1107/S2059798320013170>`_

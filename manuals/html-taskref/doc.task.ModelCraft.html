@@ -468,7 +468,7 @@
 <li>Density modification using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html" rel="noopener noreferrer" target="_blank">PARROT</a> and dummy-atom addition.</li>
 <li>Addition of water molecules using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a>.</li>
 <li>Running for an increased number of cycles with automatic stopping criteria.</li>
-<li>Selection of the output model from the cycle with the lowest R-free.</li>
+<li>Selecting the best output model from all cycles.</li>
 <li>Final rebuilding of side chains using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a>.</li>
 </ul>
 
@@ -503,12 +503,12 @@
 </div></blockquote>
 </li>
 </ol>
-<p><strong>The model from the cycle with lowest R-free is chosen as the output</strong>. If the resolution is better than 2.5 Å and R-work is better than 30% ModelCraft <strong>rebuilds side chains</strong> using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a> followed by 5 cycles of <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a>. This side chain rebuilding step is performed once at the end of the pipeline to fix side chains that are either missing or predicted to be in incorrect conformations.</p>
+<p><strong>The model from the cycle with lowest R-work is chosen as the output</strong>. If the resolution is better than 2.5 Å and R-work is better than 30% ModelCraft <strong>rebuilds side chains</strong> using <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html" rel="noopener noreferrer" target="_blank">COOT</a> followed by 5 cycles of <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a>. This side chain rebuilding step is performed once at the end of the pipeline to fix side chains that are either missing or predicted to be in incorrect conformations.</p>
 
 
 <h2 id="input"><span class="section-number">11.7.2. </span>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
 <p>Two <strong>build modes</strong> are available. In <strong>basic mode</strong> ModelCraft uses only <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">BUCCANEER</a>, <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Nautilus.html" rel="noopener noreferrer" target="_blank">NAUTILUS</a> and <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html" rel="noopener noreferrer" target="_blank">REFMAC</a>. <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Parrot.html" rel="noopener noreferrer" target="_blank">PARROT</a> density modification is only used on the first cycle.</p>
-<p><strong>The pipeline will stop if the model does not improve</strong> for 4 cycles by default (setting this value to less than 1 makes ModelCraft run to the maximum number of cycles). A cycle must improve on the previous best value to be marked as an improvement. <strong>Improvement is measured by R-free</strong>.</p>
+<p><strong>The pipeline will stop if the model does not improve</strong> for 4 cycles by default (setting this value to less than 1 makes ModelCraft run to the maximum number of cycles). A cycle must improve on the previous best value to be marked as an improvement. <strong>Improvement is measured by R-work</strong>.</p>
 <p><strong>Before running ModelCraft:</strong></p>
 <blockquote>
 <div><ul class="simple">
@@ -539,7 +539,7 @@
 
 
 <h2 id="references"><span class="section-number">11.7.6. </span>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://etheses.whiterose.ac.uk/29044/" rel="noopener noreferrer" target="_blank">P Bond. Next generation software for placing atoms into electron density maps. PhD thesis, University of York (2021)</a></p>
+<p><a class="reference external" href="https://doi.org/10.1107/S2059798322007732" rel="noopener noreferrer" target="_blank">Bond, P. &amp; Cowtan, K. ModelCraft: an advanced automated model-building pipeline using Buccaneer. Acta Crystallographica Section D 78 (2022)</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S2059798320013170" rel="noopener noreferrer" target="_blank">Cowtan, K., Metcalfe, S. &amp; Bond, P. Shift-field refinement of macromolecular atomic models. Acta Crystallographica Section D 76, 1192–1200 (2020)</a></p>
 
 
