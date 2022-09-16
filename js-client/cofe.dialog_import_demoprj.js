@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.03.20   <--  Date of Last Modification.
+ *    16.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Demo Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -194,11 +194,27 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
         progressBar.hide();
         $( "#cancel_btn" ).button ( "option","label","Close" );
         if (data.signal=='Success')  {
-          msgLabel.setText ( 'Demo Project "' + data.name + '" is imported, ' +
-                             'you may close this dialog now.' );
+          if (__current_folder.type==folder_type.all_projects)
+            msgLabel.setText (
+                  'Demo Project "' + data.name + '" is imported, ' +
+                  'you may close this dialog now.' );
+          else
+            msgLabel.setText (
+                  'Demo Project "' + data.name + '" is imported.' +
+                  '<p><b>Note that are now in the Tutorials project\'s '+
+                  'folder.<br>To navigate back to your folder(s), click on the ' +
+                  '<br>page title or use Main Menu.</b>' +
+                  '<p>You may close this dialog now.' );
           if (onSuccess_func)
             onSuccess_func();
-        } else
+
+        // if (data.signal=='Success')  {
+        //   msgLabel.setText ( 'Demo Project "' + data.name + '" is imported, ' +
+        //                      'you may close this dialog now.' );
+        //   if (onSuccess_func)
+        //     onSuccess_func();
+
+      } else
           msgLabel.setText ( 'Demo Project "' + data.name + '" failed to import, ' +
                              'the reason being:<p><b><i>' + data.signal +
                              '</i></b>.' );
