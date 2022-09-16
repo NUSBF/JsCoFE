@@ -267,8 +267,9 @@ function checkProjectDescData ( projectDesc,loginData )  {
     update = true;
   }
   var f0name = pd.getProjectAuthor ( projectDesc );
-  if (f0name!=pd.folder_type.tutorials)
-    f0name += '\'s Projects';
+  if (f0name==pd.folder_type.tutorials)
+        f0name += pd.folder_type.tutorials;
+  else  f0name += '\'s Projects';
   if ((!('folderPath' in projectDesc)) || (!(projectDesc.folderPath)))  {
     projectDesc.folderPath = f0name;  // virtual project folder path
     update = true;
