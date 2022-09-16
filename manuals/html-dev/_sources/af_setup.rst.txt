@@ -1,0 +1,334 @@
+=======================================
+Linking AlphaFold setup with CCP4 Cloud
+=======================================
+
+----------------------------------
+Structure prediction in CCP4 Cloud
+----------------------------------
+
+In CCP4 Cloud, working with *AlphaFold* database (AFDB) is completely
+streamlined and does not require any additional configuration or adjustments.
+Individual AFDB entries may be fetched by UniProt ID in the same way as 
+PDB entries are obtained by PDB ID. All automatic pipelines that download 
+structural homologs from the PDB, acquire them also from AFDB, seamlessly 
+for users. If AFDB entry does not exist for particular UniProt code or if
+sequence data cannot be sent to remote servers, the structure may be predicted 
+locally using the *Structure Prediction* task in CCP4 Cloud.
+
+----------------------------------
+Linking AlphaFold setup in outline
+----------------------------------
+
+For the *Structure Prediction* task to work, a local *AlphaFold* (or *OpenFold*,
+or *ColabFold*) setup must be available on CCP4 Cloud number cruncher(s) and
+linked with them. The following describes the 4-step procedure of linking
+*AlphaFold* setup with CCP4 Cloud. 
+
+**1. Have one of *AlphaFold*, *OpenFold* or *ColabFold* installed**
+
+For *AlphaFold*, see :ref:`Appendix A <appendix_a>`. 
+
+For *ColabFold*, see :ref:`Appendix B <appendix_b>`.
+
+For *OpenFold*, see :ref:`Appendix C <appendix_c>`. 
+
+**2. Prepare JSON-formatted configuration file**
+
+See :ref:`Appendix D <appendix_d>`
+
+**3. Modify CCP4 Cloud start scripts**
+
+In the start script for the Front-End server (usually named ``start-fe.sh``), 
+put the following line somewhere before calling ``node`` (*e.g.,* after the last
+``export`` statements in the script): ::
+
+   export ALPHAFOLD_CFG=1
+
+In start script(s) for Number-Cruncher servers (usually named ``start-nc.sh``),
+put the following line after the last ``source`` statement in the script: ::
+
+   source /path/to/miniconda3/bin/activate alphafold
+
+where ``/path/to`` depends on details of your *AlphaFold* / *OpenFold* / *ColabFold*
+setup. In addition, put the following line after the last ``export`` statement in 
+the script: ::
+
+   export ALPHAFOLD_CFG=/path/to/af2.conf
+
+where ``/path/to`` depends on where the JSON-formatted AlphaFold configuration file
+was placed.
+
+**4. Restart CCP4 Cloud servers.**
+
+**The End**
+
+
+.. _appendix_a:
+
+---------------------------
+Appendix A. AlphaFold setup
+---------------------------
+
+A.1. Install miniconda3
+
+First, install `miniconda3`_.
+Download the installation script for your platform (Linux or macOS) and run it.
+For example, on Linux: ::
+
+   sh ./Miniconda3-latest-Linux-x86_64.sh
+
+Follow the instructions that appear on the terminal and install miniconda3 under
+some directory convenient for you. Close and re-open your current shell. This
+will activate conda's base environment.
+
+Now create an environment for AlphaFold: ::
+
+   conda create -n alphafold python=3
+
+Activate the environment: ::
+
+   conda activate alphafold
+
+.. _miniconda3: https://docs.conda.io/en/latest/miniconda.html
+
+A.2. Install af2wrapper
+
+Clone the Git repository: ::
+
+   git clone --recursive https://gitlab.com/gchojnowski/af2wrapper.git
+
+Set it up in the 'alphafold' conda environment that was activated above. ::
+
+   cd af2wrapper
+
+   python setup.py install
+
+Install matplotlib: ::
+
+   conda install -c conda-forge matplotlib
+
+A.3. Install AlphaFold
+
+Download and unpack the `AlphaFold Github repository`_. Follow the setup instructions in the
+README file for the GPU support (recommended), databases and Docker
+(recommended). Install the Python requirements in the same 'alphafold' conda
+environment where af2wrapper is run. 
+
+The full databases take about 2.4 TB disk space, whereas the reduced databases
+(with the small_bfd database) take about 600 GB.
+
+AlphaFold can optionally be run without Docker, using the run_alphafold.py
+script. To use this script, install the Python dependencies in the
+requirements.txt file (the one in the parent installation directory). ::
+
+   pip install -r requirements.txt
+
+You will also need to install kalign, the `HH-suite`_ and jackhmmer. If you use Docker, these
+needn't be installed separately.
+
+.. _AlphaFold Github repository: https://github.com/deepmind/alphafold
+.. _HH-suite: https://github.com/soedinglab/hh-suite
+
+.. _appendix_b:
+
+---------------------------
+Appendix B. ColabFold setup
+---------------------------
+
+First install miniconda3 and af2wrapper as instructed for the
+AlphaFold setup in sections A.1 and A.2.
+
+The full instructions for running ColabFold on Linux or macOS are available on the
+`LocalColabFold`_ repository. On Linux (or WSL),
+install the NVIDIA CUDA Toolkit first, if using a GPU (recommended). For macOS,
+the CUDA driver is currently not available, so ColabFold can only be run on the CPU.
+
+Then run the installation script.  Set up the PATH variable to include the
+``bin`` directory under the ``colabfold_batch`` directory that was just
+installed. For example: ::
+
+   export PATH="/home/ccp4/Desktop/colabfold_batch/bin:$PATH"
+
+ColabFold doesn't require installation of local databases, as it obtains the MSA
+and template files from the MMseqs2 server.
+
+.. _LocalColabFold: https://github.com/YoshitakaMo/localcolabfold
+
+.. _appendix_c:
+
+---------------------------
+Appendix C. OpenFold setup
+---------------------------
+
+
+.. _appendix_d:
+
+---------------------------------------------
+Appendix D. JSON-formatted configuration file
+---------------------------------------------
+
+Create file, *e.g.,* ``af2.conf`` with the following content (use copy-paste): :: 
+
+  {
+      "engine"                   : "alphafold",
+      "path_to_run_alphafold_py" : "/home/ccp4/alphafold/run_alphafold.py",
+      "path_to_run_docker"       : "/home/ccp4/alphafold/docker/run_docker.py",
+      "path_to_colabfold_batch"  : "colabfold_batch",
+      "path_to_run_openfold"     : "/home/ccp4/openfold/run_openfold.sh",
+      "max_template_date"        : "2020-05-14",
+      "data_dir"                 : "/data/alphafold/db",
+      "db_preset"                : "full_dbs",
+      "pdb70_database_path"      : "/data/alphafold/db/pdb70/pdb70",
+      "uniref90_database_path"   : "/data/alphafold/db/uniref90/uniref90.fasta",
+      "mgnify_database_path"     : "/data/alphafold/db/mgnify/mgy_clusters_2018_12.fa",
+      "template_mmcif_dir"       : "/data/alphafold/db/pdb_mmcif/mmcif_files/",
+      "obsolete_pdbs_path"       : "/data/alphafold/db/pdb_mmcif/obsolete.dat",
+      "bfd_database_path"        : "/data/alphafold/db/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt",
+      "uniclust30_database_path" : "/data/alphafold/db/uniclust30/uniclust30_2018_08/uniclust30_2018_08",
+      "pdb_seqres_database_path" : "/data/alphafold/db/pdb_seqres/pdb_seqres.txt",
+      "uniprot_database_path"    : "/data/alphafold/db/uniprot/uniprot.fasta",
+      "use_gpu_relax"            : "1",
+      "colabfold_use_cpu"        : "0",
+      "openfold_device"          : "cuda:0",
+      "hhblits_binary_path"      : "hhblits",
+      "hhsearch_binary_path"     : "hhsearch",
+      "hmmbuild_binary_path"     : "hmmbuild",
+      "hmmsearch_binary_path"    : "hmmsearch",
+      "jackhmmer_binary_path"    : "jackhmmer",
+      "kalign_binary_path"       : "kalign",
+      "run_this_cmd_before_af2"  : "",
+      "run_this_cmd_before_cf"   : "",
+      "run_this_cmd_before_of"   : ""
+   }
+
+and put values of all parameters that correspond to your installation, as
+described below.  For the paths to executable scripts, the full paths are not
+required if the PATH variable includes them.
+
+**engine**
+   *AlphaFold* implementation, one of ``alphafold``, ``colabfold`` or ``openfold``. Example: ::
+
+      "engine" : "alphafold"
+
+**path_to_run_alphafold_py**
+   Path to the script to run AlphaFold without Docker. Example: ::
+
+      "path_to_run_alphafold_py" : "/home/ccp4/alphafold/run_alphafold.py"
+
+**path_to_run_docker**
+   Path to the script to run AlphaFold in a Docker container. Example: ::
+
+      "path_to_run_docker" : "/home/ccp4/alphafold/docker/run_docker.py"
+
+**path_to_colabfold_batch**
+   (*ColabFold* implementation only) Path to the script to run the local
+   ColabFold. Example: ::
+
+      "path_to_colabfold_batch" : "/home/ccp4/colabfold_batch/bin/colabfold_batch"
+
+**path_to_run_openfold**
+   (*OpenFold* implementation only) Path to the wrapper script to run OpenFold. Example: ::
+
+      "path_to_run_openfold" : "/home/ccp4/openfold/run_openfold.sh"
+
+**max_template_date**
+Restricts templates only to structures that were available in PDB before this
+date.  This is useful if you are predicting the structure of a protein that is
+already in PDB, and want to prevent the previously predicted structure from
+being used as a template. Example: ::
+
+      "max_template_date" : "2020-05-14"
+
+**data_dir**
+   Directory where the protein databases are stored. Example: ::
+
+      "data_dir" : "/data/alphafold/db"
+
+**db_preset**
+   (*AlphaFold* implementation only) Whether to use the full or reduced BFD databases. Example: ::
+
+      "db_preset" : "full_dbs"
+
+**pdb70_database_path**
+   (*AlphaFold* implementation only) Path to the PDB70 database for use with HHsearch. Example: ::
+
+      "pdb70_database_path" : "/data/alphafold/db/pdb70/pdb70"
+
+**uniref90_database_path**
+   (*AlphaFold* implementation only) Path to the Uniref90 database for use with JackHMMER. 
+   Example: ::
+
+      "uniref90_database_path" : "/data/alphafold/db/uniref90/uniref90.fasta"
+
+**mgnify_database_path**
+   (*AlphaFold* implementation only) Path to the MGnify database for use with JackHMMER. 
+   Example: ::
+
+      "mgnify_database_path"   : "/data/alphafold/db/mgnify/mgy_clusters_2018_12.fa"
+
+**template_mmcif_dir**
+   (*AlphaFold* implementation only) Path to a directory with template mmCIF structures, each 
+   named <pdb_id>.cif. Example: ::
+
+      "mgnify_database_path"   : "/data/alphafold/db/mgnify/mgy_clusters_2018_12.fa"
+
+**obsolete_pdbs_path**
+   (*AlphaFold* implementation only) Path to file containing a mapping from obsolete PDB IDs 
+   to the PDB IDs of their replacements. Example: ::
+
+      "obsolete_pdbs_path"     : "/data/alphafold/db/pdb_mmcif/obsolete.dat",
+
+**bfd_database_path**
+   (*AlphaFold* implementation only) Path to the BFD database for use by HHblits. Example: ::
+
+      "bfd_database_path"      : "/data/alphafold/db/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt",
+
+**uniclust30_database_path**
+   (*AlphaFold* implementation only) Path to the Uniclust30 database for use by HHblits. Example: ::
+
+      "uniclust30_database_path" : "/data/alphafold/db/uniclust30/uniclust30_2018_08/uniclust30_2018_08",
+
+**pdb_seqres_database_path**
+   (*AlphaFold* implementation only) Path to the PDB seqres database for use by hmmsearch. Example: ::
+
+      "pdb_seqres_database_path" : "/data/alphafold/db/pdb_seqres/pdb_seqres.txt"
+
+**uniprot_database_path**
+   (*AlphaFold* implementation only) Path to the Uniprot database for use by JackHMMer. Example: ::
+
+      "uniprot_database_path" : "/data/alphafold/db/uniprot/uniprot.fasta"
+
+**use_gpu_relax**
+   (*AlphaFold* implementation only) Whether to enable NVIDIA runtime to run
+   with GPUs. NB: This option affects both the inference and the (optional)
+   relaxation step. Example: ::
+
+      "use_gpu_relax" : "false"
+
+**colabfold_use_cpu**
+   (*ColabFold* implementation only) If equal to 1, run the inference on the CPU
+   instead of the GPU.  Example: ::
+
+      "colabfold_use_cpu" : "0"
+
+**openfold_device**
+   (*OpenFold* implementation only) Device option for PyTorch. If equal to
+   'cpu', use the CPU for the inference and relaxation. To use the GPU, the
+   option should include the device number.  Example: ::
+
+      "openfold_device" : "cuda:0"
+
+**run_this_cmd_before_af2**
+   (*AlphaFold* implementation only) Any shell command to run before AlphaFold2. Example: ::
+
+      "run_this_cmd_before_af2"  : ""
+
+**run_this_cmd_before_cf**
+   (*ColabFold* implementation only) Any shell command to run before ColabFold. Example: ::
+
+      "run_this_cmd_before_cf"   : "",
+
+**run_this_cmd_before_of**
+   (*OpenFold* implementation only) Any shell command to run before OpenFold. Example: ::
+
+      "run_this_cmd_before_of"   : ""

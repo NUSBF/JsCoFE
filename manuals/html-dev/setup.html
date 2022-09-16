@@ -330,49 +330,56 @@
     <li class="md-nav__item">
     
     
-      <a href="interface_desc.html" class="md-nav__link">4. Task Interface Description</a>
+      <a href="af_setup.html" class="md-nav__link">4. Linking AlphaFold setup with CCP4 Cloud</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="dev_hello_world.html" class="md-nav__link">5. CCP4 Cloud Task Development: Hello World!</a>
+      <a href="interface_desc.html" class="md-nav__link">5. Task Interface Description</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="tests.html" class="md-nav__link">6. Software testing in CCP4</a>
+      <a href="dev_hello_world.html" class="md-nav__link">6. CCP4 Cloud Task Development: Hello World!</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="tests.html#ccp4-cloud-tests" class="md-nav__link">7. CCP4 Cloud tests</a>
+      <a href="tests.html" class="md-nav__link">7. Software testing in CCP4</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="clientsetup.html" class="md-nav__link">8. CCP4 Cloud Client Setup</a>
+      <a href="tests.html#ccp4-cloud-tests" class="md-nav__link">8. CCP4 Cloud tests</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="clientwhatfor.html" class="md-nav__link">9. What is CCP4 Cloud Client Software</a>
+      <a href="clientsetup.html" class="md-nav__link">9. CCP4 Cloud Client Setup</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="documentation.html" class="md-nav__link">10. How to add a new Sphinx theme</a>
+      <a href="clientwhatfor.html" class="md-nav__link">10. What is CCP4 Cloud Client Software</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="documentation.html" class="md-nav__link">11. How to add a new Sphinx theme</a>
       
     
     </li>
@@ -885,7 +892,7 @@ exit
 </li>
 </ol>
 <p>For example, for port number and <strong>FE</strong> URL path used in this document, <code class="docutils literal notranslate"><span class="pre">apache_site_dir</span></code> should receive file <code class="docutils literal notranslate"><span class="pre">ccp4cloud.conf</span></code> with the following content:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Proxy</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">8085</span><span class="o">/*&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Proxy</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">8085</span><span class="o">/*&gt;</span>
   <span class="n">Allow</span> <span class="kn">from</span> <span class="nn">all</span>
 <span class="o">&lt;/</span><span class="n">Proxy</span><span class="o">&gt;</span>
 
@@ -932,7 +939,7 @@ exit
 </pre></div>
 </div>
 <p>anything else indicates a problem. A message similar to</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Error</span><span class="p">:</span> <span class="n">listen</span> <span class="n">EADDRINUSE</span> <span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">8085</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Error</span><span class="p">:</span> <span class="n">listen</span> <span class="n">EADDRINUSE</span> <span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">8085</span>
 </pre></div>
 </div>
 <p>may mean that the selected <em>localhost</em> port is used by another process running on the host machine. Messages similar to</p>
@@ -988,11 +995,11 @@ exit
 </li>
 </ol>
 <p>For the Front-End, the answer should be something like</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CCP4</span> <span class="n">Cloud</span> <span class="n">FE</span> <span class="mf">1.6.016</span> <span class="p">[</span><span class="mf">26.10.2020</span><span class="p">]</span> <span class="n">CCP4</span><span class="o">-</span><span class="mf">7.1.006</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CCP4</span> <span class="n">Cloud</span> <span class="n">FE</span> <span class="mf">1.6</span><span class="o">.</span><span class="mi">016</span> <span class="p">[</span><span class="mf">26.10</span><span class="o">.</span><span class="mi">2020</span><span class="p">]</span> <span class="n">CCP4</span><span class="o">-</span><span class="mf">7.1</span><span class="o">.</span><span class="mi">006</span>
 </pre></div>
 </div>
 <p>and Number Crunchers should reply</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CCP4</span> <span class="n">Cloud</span> <span class="n">NC</span><span class="o">-</span><span class="mi">0</span> <span class="p">(</span><span class="n">local</span><span class="o">-</span><span class="n">nc</span><span class="p">)</span> <span class="mf">1.6.016</span> <span class="p">[</span><span class="mf">26.10.2020</span><span class="p">]</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CCP4</span> <span class="n">Cloud</span> <span class="n">NC</span><span class="o">-</span><span class="mi">0</span> <span class="p">(</span><span class="n">local</span><span class="o">-</span><span class="n">nc</span><span class="p">)</span> <span class="mf">1.6</span><span class="o">.</span><span class="mi">016</span> <span class="p">[</span><span class="mf">26.10</span><span class="o">.</span><span class="mi">2020</span><span class="p">]</span> <span class="mi">0</span>
 </pre></div>
 </div>
 <ol class="arabic" start="3">

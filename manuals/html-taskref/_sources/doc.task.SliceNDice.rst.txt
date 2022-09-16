@@ -33,6 +33,8 @@ This article uses materials kindly provided by Dr. Adam Simpkin and Dr. Ronan Ke
 
 **References**
 
+`Simpkin, A. J., Elliott, L. G., Stevenson, K., Krissinel, E., Rigden, D. J., Keegan, R. M. (2022) Slice’N’Dice: Maximising the value of predicted models for structural biologists, bioRxiv 2022.06.30.497974; <https://doi.org/10.1101/2022.06.30.497974>`_
+
 `Vagin, A. & Teplyakov, A. (2010). Molecular replacement with MOLREP, pp. 22-25, Acta Cryst. D66 <http://journals.iucr.org/d/issues/2010/01/00/dz5175/>`_
 
 `Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A. (2011)  Acta Cryst. D67: 355-367; <https://doi.org/10.1107/S0907444911001314>`_

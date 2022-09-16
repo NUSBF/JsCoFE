@@ -38,9 +38,9 @@ The main purpose of task documentation is to gain knowledge of CCP4 task capabil
 .. tip::
         Please read another CCP4 Cloud task documentation by pressing on **Contents** on your upright corner of the window. The content page contains all available list task documentation 
 
--------------------------
++++++++++++++++++++++++++
 Questions and suggestions
--------------------------
++++++++++++++++++++++++++
 
 At the very end of both User Guide and Task documentation contents pages, you can find a `CCP4 Cloud Reception`_. By clicking it you will redirect to a mail form in which you can write your question and suggestion about work in CCP4 cloud or/and quality and preferences you have about task documentation content.
 
