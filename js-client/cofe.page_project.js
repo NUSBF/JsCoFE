@@ -87,12 +87,14 @@ function ProjectPage ( sceneId )  {
 
   title_lbl = this.headerPanel.setLabel ( '',0,2,1,1 );
   title_lbl.setFont  ( 'times','150%',true,true )
-           .setNoWrap()
+          //  .setNoWrap()
            .setHorizontalAlignment ( 'left' );
 
+  this.headerPanel.setCellSize ( '0px','',0,12 );
+
   // $(title_lbl.element).css ( {
-  //    'width' : window.width-500 + 'px',
-  //    'overflow' : 'hidden',
+  //   // 'width' : window.width-500 + 'px',
+  //   'overflow' : 'hidden',
   //    'text-overflow' :'ellipsis' } );
 
   this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
