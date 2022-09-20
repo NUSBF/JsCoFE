@@ -89,6 +89,12 @@ function ProjectPage ( sceneId )  {
   title_lbl.setFont  ( 'times','150%',true,true )
            .setNoWrap()
            .setHorizontalAlignment ( 'left' );
+
+  // $(title_lbl.element).css ( {
+  //    'width' : window.width-500 + 'px',
+  //    'overflow' : 'hidden',
+  //    'text-overflow' :'ellipsis' } );
+
   this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
 
   this.makeDock();
