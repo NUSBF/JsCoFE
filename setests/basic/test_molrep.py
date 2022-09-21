@@ -42,6 +42,8 @@ def prepareMRmodelAfterASU(driver, waitShort):
     except:
         print ('Seems like the task was renamed')
 
+    time.sleep(3)
+
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
     for buttonRun in buttonsRun:
