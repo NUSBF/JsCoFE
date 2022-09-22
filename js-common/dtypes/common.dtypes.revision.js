@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.01.22   <--  Date of Last Modification.
+ *    22.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -430,7 +430,7 @@ if (!__template)  {
   var customGrid = dropdown.customGrid;
   var row        = customGrid.getNRows();
   var row0       = row;
-  var struct_sel_list = null;
+  // var struct_sel_list = null;
 
     if (this.hasOwnProperty('phaser_meta'))  {
 
@@ -441,8 +441,21 @@ if (!__template)  {
                    this.phaser_meta['ensembles'][ensname]['ncopies'] +
                    'x ' + ensname + ' :',row,0,1,1 )
                   .setFontItalic(true).setNoWrap();
-        customGrid.setLabel ( this.phaser_meta['ensembles'][ensname]['data'].files[file_key.xyz],
-                              row++,1,1,4 ).setNoWrap();
+        if ('data' in this.phaser_meta['ensembles'][ensname])  {
+          // this 'if' is only because of pre-existing bug which is now fixed but may remain 
+          // in users projects forever; the bug showed only for complex model, where phaser adds
+          // '[1]' to ensemble names in SOL files
+          customGrid.setLabel ( this.phaser_meta['ensembles'][ensname]['data'].files[file_key.xyz],
+                                row++,1,1,4 ).setNoWrap();
+        } else if (this.phaser_meta['sol'].files.hasOwnProperty(file_key.sol))  {
+          // a hack due to the old bug as above
+          customGrid.setLabel ( this.phaser_meta['sol'].files[file_key.sol]
+                                    .replace('-02_','-01_')
+                                    .replace('.sol','.pdb'),
+                                row++,1,1,4 ).setNoWrap();
+        } else
+          customGrid.setLabel ( '<b>absent (can be in error)</b>',row++,1,1,4 )
+                    .setFontItalic(true).setNoWrap();
       }
 
       customGrid.setLabel ( '<b>Phaser solution metadata:</b>',row,0,1,1 )
