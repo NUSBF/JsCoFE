@@ -57,7 +57,7 @@
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="5. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms" href="doc.tutorial.T3_004.html" />
+    <link rel="next" title="5. Structure prediction for Molecular Replacement" href="doc.tutorial.T2_003.html" />
     <link rel="prev" title="3. Creating MR Search Ensembles with CCP4MG/MrBUMP" href="doc.tutorial.T2_001.html" />
   
    
@@ -215,35 +215,42 @@
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T3_004.html" class="md-nav__link">5. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</a>
+      <a href="doc.tutorial.T2_003.html" class="md-nav__link">5. Structure prediction for Molecular Replacement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_001.html" class="md-nav__link">6. Refinement using REFMAC5 - Part 1: Simple Refinement</a>
+      <a href="doc.tutorial.T3_004.html" class="md-nav__link">6. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_002.html" class="md-nav__link">7. Refinement using REFMAC5 - Part 2: Twin Refinement</a>
+      <a href="doc.tutorial.T4_001.html" class="md-nav__link">7. Refinement using REFMAC5 - Part 1: Simple Refinement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_003.html" class="md-nav__link">8. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</a>
+      <a href="doc.tutorial.T4_002.html" class="md-nav__link">8. Refinement using REFMAC5 - Part 2: Twin Refinement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.demo.PISA_start.html" class="md-nav__link">9. Using PISA in CCP4 Cloud</a>
+      <a href="doc.tutorial.T4_003.html" class="md-nav__link">9. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.demo.PISA_start.html" class="md-nav__link">10. Using PISA in CCP4 Cloud</a>
       
     
     </li>
@@ -271,22 +278,22 @@
             
   
 <h1 id="doc-tutorial-t2-002--page-root"><span class="section-number">4. </span>The multi-domain Molecular Replacement<a class="headerlink" href="#doc-tutorial-t2-002--page-root" title="Permalink to this headline">¶</a></h1>
-<p>This tutorial explains how to use separate domains as a search model fro Molecular Replacement (MR). For this tutorial, we’ll use Sucrose-Phosphatase (SPP) from Synechocystis sp. PCC6803 in a closed conformation (PDB Entry - 1TJ3).</p>
-<p><code class="docutils literal notranslate"><span class="pre">1.</span></code>   All data required for this tutorial were already imported into the project. Please look ad the import’s task output.</p>
-<p><code class="docutils literal notranslate"><span class="pre">2.</span></code>  The next step is to define the <strong>Asymmetric Unit content</strong>: click <strong>add task =&gt; go to All task =&gt; Asymmetric Unit and Structure revision =&gt; Asymmetric Unit Contents.</strong> Run the task or type <em>Asymmetric Unit Contents</em> in the search bar in <strong>A-Z tab</strong>.</p>
-<p>After the task is finished, please, investigate the output it created.Every task in CCP4 Cloud produces a report. Here we can see that Matthew’s coefficient suggests that there is one molecule in the asymmetric unit and solvent % is within the usual range for macromolecular crystals, diffracting at a similar resolution.</p>
+<p>This tutorial explains how to use separate domains as a search model for Molecular Replacement (MR). For this tutorial, we’ll use Sucrose-Phosphatase (SPP) from Synechocystis sp. PCC6803 in a closed conformation (PDB Entry - 1TJ3).</p>
+<p><code class="docutils literal notranslate"><span class="pre">1.</span></code>   All data required for this tutorial were already imported into the project. Please look at the import’s task output.</p>
+<p><code class="docutils literal notranslate"><span class="pre">2.</span></code>  The next step is to define the <strong>Asymmetric Unit content</strong>: click <strong>add task =&gt; go to All tasks =&gt; Asymmetric Unit and Structure revision =&gt; Asymmetric Unit Contents.</strong> Run the task or type <em>Asymmetric Unit Contents</em> in the search bar in the <strong>A-Z tab</strong>.</p>
+<p>After the task is finished, please, investigate the output it created. Every task in CCP4 Cloud produces a report. Here we can see that Matthew’s coefficient suggests that there is one molecule in the asymmetric unit and solvent % is within the usual range for macromolecular crystals, diffracting at a similar resolution.</p>
 <div class="admonition tip">
 <p class="first admonition-title">Tip</p>
 <p class="last">Please read the verdicts carefully, it helps assess the obtained results.</p>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">3.</span></code>  Once <strong>Asymmetric Unit Contents</strong> is defined with acceptable scores (solvent content, Matthews probability and expected stoichiometry), start the <strong>Prepare Single-Chain MR Model(s) from Coordinate data</strong> task: <strong>add next job =&gt; All task =&gt; Molecular Replacement =&gt; Prepare Single-Chain MR Model(s) from Coordinate data</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">3.</span></code>  Once <strong>Asymmetric Unit Contents</strong> is defined with acceptable scores (solvent content, Matthews probability and expected stoichiometry), start the <strong>Prepare Single-Chain MR Model(s) from Coordinate data</strong> task: <strong>add next job =&gt; All tasks =&gt; Molecular Replacement =&gt; Prepare Single-Chain MR Model(s) from Coordinate data</strong></p>
 <p>Choose <code class="docutils literal notranslate"><span class="pre">[0001-02]</span> <span class="pre">1s2oA_dom1</span></code> as <strong>Coordinates (1)</strong> and <code class="docutils literal notranslate"><span class="pre">[0001-03]</span> <span class="pre">1s2oA_dom2</span></code> as <strong>Coordinates (2)</strong> and run the task. And two Single-Chain MR models will be prepared.</p>
 <a class="reference internal image-reference" href="_images/T2_002_1.png"><img alt="_images/T2_002_1.png" class="align-center" src="_images/T2_002_1.png" style="width: 777.6px; height: 329.6px;"/></a>
 <p><code class="docutils literal notranslate"><span class="pre">4.</span></code> Created models can be further used in both <a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser</a> and <a class="reference external" href="../html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a> tasks.</p>
-<p><code class="docutils literal notranslate"><span class="pre">4a.</span></code> Use Phaser for Molecular replacement in this tutorial: <strong>add next job =&gt; All task =&gt; Molecular Replacement =&gt; Molecular Replacement with Phaser</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">4a.</span></code> Use Phaser for Molecular replacement in this tutorial: <strong>add next job =&gt; All tasks =&gt; Molecular Replacement =&gt; Molecular Replacement with Phaser</strong></p>
 <p>Select <code class="docutils literal notranslate"><span class="pre">[0003-01]</span> <span class="pre">1s2oA_dom1_A.mrep</span></code> as <strong>Model ensemble (1)</strong> and <code class="docutils literal notranslate"><span class="pre">[0003-02]</span> <span class="pre">1s2oA_dom2_A.mrep</span></code> as <strong>Model ensemble (2)</strong> and click run. Phaser will search ensemble 1 first and then ensemble 2.</p>
 <a class="reference internal image-reference" href="_images/T2_002_2.png"><img alt="_images/T2_002_2.png" class="align-center" src="_images/T2_002_2.png" style="width: 651.2px; height: 382.40000000000003px;"/></a>
-<p><code class="docutils literal notranslate"><span class="pre">4b.</span></code> Use Molrep for Molecular replacement in this tutorial: <strong>add next job =&gt; All task =&gt; Molecular Replacement =&gt; Molecular Replacement with Molrep</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">4b.</span></code> Use Molrep for Molecular replacement in this tutorial: <strong>add next job =&gt; All tasks =&gt; Molecular Replacement =&gt; Molecular Replacement with Molrep</strong></p>
 <p>Run Molrep with <code class="docutils literal notranslate"><span class="pre">[0003-01]</span> <span class="pre">1s2oA_dom1_A.mrep</span></code> as <strong>Model ensemble</strong> first.</p>
 <a class="reference internal image-reference" href="_images/T2_002_3.png"><img alt="_images/T2_002_3.png" class="align-center" src="_images/T2_002_3.png" style="width: 610.4px; height: 164.0px;"/></a>
 <p>After it finished append another Molrep task with <code class="docutils literal notranslate"><span class="pre">[0003-02]</span> <span class="pre">1s2oA_dom2_A.mrep</span></code> as <strong>Model ensemble</strong>.</p>
@@ -294,7 +301,7 @@
 <p><code class="docutils literal notranslate"><span class="pre">5.</span></code>  After MR solution was found, the positioned model should be rebuilt in order to match the target sequence more closely. This can be conveniently done using one of CCP4’s automatic model builders (<a class="reference external" href="../html-taskref/doc.task.ModelCraft.html" rel="noopener noreferrer" target="_blank">ModelCraft</a> , <a class="reference external" href="../html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">Buccaneer</a>, <a class="reference external" href="../html-taskref/doc.task.ArpWarp.html" rel="noopener noreferrer" target="_blank">Arp/wArp</a> , <a class="reference external" href="../html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">CCP4Build</a>). Let’s run the <a class="reference external" href="../html-taskref/doc.task.ModelCraft.html" rel="noopener noreferrer" target="_blank">ModelCraft</a> task. The built model can be visually inspected with <strong>UglyMol</strong> (the corresponding launch button can be found on the task report page).</p>
 <p><code class="docutils literal notranslate"><span class="pre">6.</span></code> Compare Modelcraft outputs after Phaser and Molrep with <a class="reference external" href="../html-taskref/doc.task.Gesamt.html" rel="noopener noreferrer" target="_blank">Gesamt</a> (use multiple selections to access the data from different branches):</p>
 <a class="reference internal image-reference" href="_images/demo.multiple_selection.jpg"><img alt="_images/demo.multiple_selection.jpg" class="align-center" src="_images/demo.multiple_selection.jpg" style="width: 222.0px; height: 405.0px;"/></a>
-<p><strong>Select both models =&gt; add next job =&gt; All task =&gt;  Toolbox =&gt; Pairwise Structural Alignment with GESAMT</strong></p>
+<p><strong>Select both models =&gt; add next job =&gt; All tasks =&gt;  Toolbox =&gt; Pairwise Structural Alignment with GESAMT</strong></p>
 <p><code class="docutils literal notranslate"><span class="pre">7.</span></code> Further refinement can be conveniently done with the <strong>Automated refinement and ligand fitting workflow</strong></p>
 <a class="reference internal image-reference" href="_images/Demo.CCP4MG_workflow.png"><img alt="_images/Demo.CCP4MG_workflow.png" class="align-center" src="_images/Demo.CCP4MG_workflow.png" style="width: 696.8000000000001px; height: 436.8px;"/></a>
 <p><strong>References</strong></p>
@@ -325,12 +332,12 @@
             </a>
           
           
-            <a href="doc.tutorial.T3_004.html" title="5. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms"
+            <a href="doc.tutorial.T2_003.html" title="5. Structure prediction for Molecular Replacement"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> <span class="section-number">5. </span>Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms </span>
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">5. </span>Structure prediction for Molecular Replacement </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

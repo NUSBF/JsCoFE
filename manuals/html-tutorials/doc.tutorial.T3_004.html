@@ -46,7 +46,7 @@
   
   
   
-    <title>5. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms &#8212; CCP4 Cloud 1.8 documentation</title>
+    <title>6. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms &#8212; CCP4 Cloud 1.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -57,8 +57,8 @@
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="6. Refinement using REFMAC5 - Part 1: Simple Refinement" href="doc.tutorial.T4_001.html" />
-    <link rel="prev" title="4. The multi-domain Molecular Replacement" href="doc.tutorial.T2_002.html" />
+    <link rel="next" title="7. Refinement using REFMAC5 - Part 1: Simple Refinement" href="doc.tutorial.T4_001.html" />
+    <link rel="prev" title="5. Structure prediction for Molecular Replacement" href="doc.tutorial.T2_003.html" />
   
    
 
@@ -95,7 +95,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
-          <span class="md-header-nav__topic"> 5. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms </span>
+          <span class="md-header-nav__topic"> 6. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -206,10 +206,17 @@
     <li class="md-nav__item">
     
     
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> 5. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms </label>
+      <a href="doc.tutorial.T2_003.html" class="md-nav__link">5. Structure prediction for Molecular Replacement</a>
+      
     
-      <a href="#" class="md-nav__link md-nav__link--active">5. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</a>
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> 6. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">6. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</a>
       
         
 <nav class="md-nav md-nav--secondary">
@@ -222,28 +229,28 @@
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_001.html" class="md-nav__link">6. Refinement using REFMAC5 - Part 1: Simple Refinement</a>
+      <a href="doc.tutorial.T4_001.html" class="md-nav__link">7. Refinement using REFMAC5 - Part 1: Simple Refinement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_002.html" class="md-nav__link">7. Refinement using REFMAC5 - Part 2: Twin Refinement</a>
+      <a href="doc.tutorial.T4_002.html" class="md-nav__link">8. Refinement using REFMAC5 - Part 2: Twin Refinement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_003.html" class="md-nav__link">8. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</a>
+      <a href="doc.tutorial.T4_003.html" class="md-nav__link">9. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.demo.PISA_start.html" class="md-nav__link">9. Using PISA in CCP4 Cloud</a>
+      <a href="doc.demo.PISA_start.html" class="md-nav__link">10. Using PISA in CCP4 Cloud</a>
       
     
     </li>
@@ -270,7 +277,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="doc-tutorial-t3-004--page-root"><span class="section-number">5. </span>Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms<a class="headerlink" href="#doc-tutorial-t3-004--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="doc-tutorial-t3-004--page-root"><span class="section-number">6. </span>Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms<a class="headerlink" href="#doc-tutorial-t3-004--page-root" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial we shall learn the basics of Experimental Phasing in CCP4 Cloud, using both automatic and staged (manual) approaches. The tutorial uses data collected from crystallised Beta-Lactamase structure.</p>
 <p><code class="docutils literal notranslate"><span class="pre">1.</span></code> The sequence data and reflection data are already imported in the project.</p>
 <p><code class="docutils literal notranslate"><span class="pre">2.</span></code>  The easiest (but not necessarily the fastest and most reliable) way to solve a structure in CCP4 Cloud is a suitable automatic workflow: <strong>Click on the last file import task =&gt; add job =&gt; Workflows =&gt; Automated Experimental Phasing with Crank-2</strong></p>
@@ -293,7 +300,7 @@
 <p><code class="docutils literal notranslate"><span class="pre">4.</span></code> Experimental Phasing works in two main steps. In first step, anomalous signal, found in the reflection dataset, is used for locating anomalous scatterers in the ASU (the heavy-atom substructure). The substructure is found with ShelxCD software, which may be used as part of Crank-2 automatic pipeline (see task <strong>Substructure Search with SHELX via Crank-2</strong> in the Experimental Phasing section of the Task List), or with the dedicated ShelxCD task (<strong>Substructure Search with SHELX-C/D</strong>). Let’s choose the latter. Focus on the ASU definition task, then: <strong>add next job =&gt; All tasks =&gt; Experimental phasing =&gt; Substructure Search with SHELX-C/D (SAD)</strong>.</p>
 <p>For speed, limit number of trials to 100 (<em>not recommended unless you are working with data that you are familiar with</em>).</p>
 <p>Make sure that the substructure is likely to be found: <strong>CC</strong> <sub>All</sub> in ShelxCD’s Main Log tab should be <strong>above 25%</strong> (<em>scroll till the end of the main log</em>)</p>
-<p><code class="docutils literal notranslate"><span class="pre">5.</span></code> In second step, macromolecular phases are calculated using substructure phases and reflection data using <strong>Phaser-EP</strong> software. The Phaser-EP task calculates protein phases for the “original” and “inverted” hands, corresponding to mutually-inversed heavy-atom substructures. If crystallised, both substructures would give the same diffraction pattern, therefore, it is not possible to choose between them using only the anomalous signal, and both of them should be attempted for calculating protein phases. Run Phaser-EP task: <strong>add next job =&gt; All task =&gt; Experimental phasing =&gt; Experimental Phasing with Phaser-EP</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">5.</span></code> In second step, macromolecular phases are calculated using substructure phases and reflection data using <strong>Phaser-EP</strong> software. The Phaser-EP task calculates protein phases for the “original” and “inverted” hands, corresponding to mutually-inversed heavy-atom substructures. If crystallised, both substructures would give the same diffraction pattern, therefore, it is not possible to choose between them using only the anomalous signal, and both of them should be attempted for calculating protein phases. Run Phaser-EP task: <strong>add next job =&gt; All tasks =&gt; Experimental phasing =&gt; Experimental Phasing with Phaser-EP</strong></p>
 <p>Phaser-EP will improve the substructure, calculate inverted substructure and estimate macromolecular phases for both substructures.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -327,7 +334,7 @@ to define initial values of NCS operations. Start the task.</p>
 <p><code class="docutils literal notranslate"><span class="pre">9.</span></code> The difference between the builds is not so significant in this particular case. This suggests that the hands may be very close to each other, which implies the presence of inversion centre in the substructures. Can you find it (use <strong>UglyMol</strong> viewer)?</p>
 <p><code class="docutils literal notranslate"><span class="pre">10.</span></code> Perform structure comparison with <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Gesamt.html" rel="noopener noreferrer" target="_blank">Gesamt</a> (use multiple selection from the “Original” and “Inverted” branches):</p>
 <a class="reference internal image-reference" href="_images/demo.multiple_selection.jpg"><img alt="_images/demo.multiple_selection.jpg" class="align-center" src="_images/demo.multiple_selection.jpg" style="width: 222.0px; height: 405.0px;"/></a>
-<p><strong>Select both models =&gt; add next job =&gt; All task =&gt;  Toolbox =&gt; Pairwise Structural Alignment with GESAMT</strong></p>
+<p><strong>Select both models =&gt; add next job =&gt; All tasks =&gt;  Toolbox =&gt; Pairwise Structural Alignment with GESAMT</strong></p>
 <p><code class="docutils literal notranslate"><span class="pre">11.</span></code> Further refinement can be conveniently done with the <strong>Automated refinement and ligand fitting workflow</strong></p>
 <a class="reference internal image-reference" href="_images/Demo.CCP4MG_workflow.png"><img alt="_images/Demo.CCP4MG_workflow.png" class="align-center" src="_images/Demo.CCP4MG_workflow.png" style="width: 696.8000000000001px; height: 436.8px;"/></a>
 <p><strong>Additional work:</strong></p>
@@ -354,7 +361,7 @@ to define initial values of NCS operations. Start the task.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="doc.tutorial.T2_002.html" title="4. The multi-domain Molecular Replacement"
+            <a href="doc.tutorial.T2_003.html" title="5. Structure prediction for Molecular Replacement"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -363,17 +370,17 @@ to define initial values of NCS operations. Start the task.</p>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">4. </span>The multi-domain Molecular Replacement </span>
+                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">5. </span>Structure prediction for Molecular Replacement </span>
               </div>
             </a>
           
           
-            <a href="doc.tutorial.T4_001.html" title="6. Refinement using REFMAC5 - Part 1: Simple Refinement"
+            <a href="doc.tutorial.T4_001.html" title="7. Refinement using REFMAC5 - Part 1: Simple Refinement"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> <span class="section-number">6. </span>Refinement using REFMAC5 - Part 1: Simple Refinement </span>
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">7. </span>Refinement using REFMAC5 - Part 1: Simple Refinement </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

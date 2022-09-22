@@ -36,7 +36,7 @@ For speed, limit number of trials to 100 (*not recommended unless you are workin
 
 Make sure that the substructure is likely to be found: **CC** :subscript:`All` in ShelxCD's Main Log tab should be **above 25%** (*scroll till the end of the main log*)
 
-``5.`` In second step, macromolecular phases are calculated using substructure phases and reflection data using **Phaser-EP** software. The Phaser-EP task calculates protein phases for the "original" and "inverted" hands, corresponding to mutually-inversed heavy-atom substructures. If crystallised, both substructures would give the same diffraction pattern, therefore, it is not possible to choose between them using only the anomalous signal, and both of them should be attempted for calculating protein phases. Run Phaser-EP task: **add next job => All task => Experimental phasing => Experimental Phasing with Phaser-EP**
+``5.`` In second step, macromolecular phases are calculated using substructure phases and reflection data using **Phaser-EP** software. The Phaser-EP task calculates protein phases for the "original" and "inverted" hands, corresponding to mutually-inversed heavy-atom substructures. If crystallised, both substructures would give the same diffraction pattern, therefore, it is not possible to choose between them using only the anomalous signal, and both of them should be attempted for calculating protein phases. Run Phaser-EP task: **add next job => All tasks => Experimental phasing => Experimental Phasing with Phaser-EP**
 
 Phaser-EP will improve the substructure, calculate inverted substructure and estimate macromolecular phases for both substructures.
 
@@ -85,7 +85,7 @@ Could more cycles of model building be useful?
         :align: center
         :scale: 30 %
 
-**Select both models => add next job => All task =>  Toolbox => Pairwise Structural Alignment with GESAMT**
+**Select both models => add next job => All tasks =>  Toolbox => Pairwise Structural Alignment with GESAMT**
 
 ``11.`` Further refinement can be conveniently done with the **Automated refinement and ligand fitting workflow**
 
