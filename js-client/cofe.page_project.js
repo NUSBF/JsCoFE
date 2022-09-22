@@ -90,6 +90,7 @@ function ProjectPage ( sceneId )  {
           //  .setNoWrap()
            .setHorizontalAlignment ( 'left' );
 
+  this.headerPanel.setCellSize ( '99%','',0,2 );
   this.headerPanel.setCellSize ( '0px','',0,12 );
 
   // $(title_lbl.element).css ( {
