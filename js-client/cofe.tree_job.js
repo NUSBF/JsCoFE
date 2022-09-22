@@ -285,7 +285,7 @@ JobTree.prototype.readProjectData = function ( page_title,
         var root_title =
                 '<b style="color:blue;">' + author +
                 '[' + tree.projectData.desc.name  + ']</b> ' +
-                '<i>' + tree.projectData.desc.title + '</i>'
+                '</i>'
 
         if (tree.projectData.tree.length<=0)  {
 
