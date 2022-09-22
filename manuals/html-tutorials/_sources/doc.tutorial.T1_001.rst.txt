@@ -7,7 +7,7 @@ This tutorial is based on a set of diffraction images collected from a crystal o
 
 ``1.`` The protein sequence has been already imported and can be found in the output of the **Cloud Import** task.
 
-``2.`` The next step is to process diffraction images to obtain merged reflection dataset. This can be automatically with the `Automatic Image Processing with Xia2 <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Xia2.html>`_ task: **add next job => All task => Data Processing => Automatic Image Processing with Xia-2**.
+``2.`` The next step is to process diffraction images to obtain merged reflection dataset. This can be automatically with the `Automatic Image Processing with Xia2 <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Xia2.html>`_ task: **add next job => All tasks => Data Processing => Automatic Image Processing with Xia-2**.
 
 **Image directory**
 
@@ -30,11 +30,11 @@ Specify **Se** as **Heavy atom type** in the task input.
                   **Look for the plot of Rmerge vs Batch for all images** (it is found in the **Dataset SAD** => **Analysis by batch** section). **Rmerge** shows how well multiple observations of equivalent reflections agree with each other, with a low value indicating better agreement. Note that this value is stable throughout much of the dataset, but starts to drift upwards towards the end of data collection, indicating a possible radiation damage to the crystal. It is often benefitial to remove these compromised data from furgher processing, for as long as we can leave ourselves with the acceptable degree of completeness. **For this tutorial's dataset, removing images starting from 121 on represents a reasonable compromise**.
 
 
-``3.`` While it is possible to use the merged reflection dataset, produced by Xia-2, straight away, manual data reduction and merging gives more control and may result in better data quality. Let's do that with `Aimless <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Aimless.html>`_: **add next job => All task => Data Processing => Merging and Scaling with Aimless**
+``3.`` While it is possible to use the merged reflection dataset, produced by Xia-2, straight away, manual data reduction and merging gives more control and may result in better data quality. Let's do that with `Aimless <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Aimless.html>`_: **add next job => All tasks => Data Processing => Merging and Scaling with Aimless**
 
 In Aimless input parameters, exclude the most radiation damaged images from processing. Choose **xia2_unmerged_scaled** data in **Unmerged reflections** section. **Limit number batches to 120** (type 1-120 in the **Batches**). Set a **high resolution cut-off** at **1.8 Å**.
 
-``4.`` After all needful data (sequence and merged reflection dataset with anomalous signal in SAD case), first approximation to structure factors phases must be obtained. In CCP4 Cloud, phasing procedure starts with making a hypothesis on crystal composition, that is, guessing the correct number of protein chains in the Asymmetric Unit. Good guess is important for making correct estimation of solvent fraction; grossly incorrect estimate may have a significant negative impact on the success of Experimental Phasing. In order to specify the expected crystal composition, run the `Asymmetric Unit definition <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ASUDef.html>`_ task, which will also calculate the corresponding solvent content. **add next job => All task => Asymmetric Unit and Structure Revision => Asymmetric Unit Contents**
+``4.`` After all needful data (sequence and merged reflection dataset with anomalous signal in SAD case), first approximation to structure factors phases must be obtained. In CCP4 Cloud, phasing procedure starts with making a hypothesis on crystal composition, that is, guessing the correct number of protein chains in the Asymmetric Unit. Good guess is important for making correct estimation of solvent fraction; grossly incorrect estimate may have a significant negative impact on the success of Experimental Phasing. In order to specify the expected crystal composition, run the `Asymmetric Unit definition <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ASUDef.html>`_ task, which will also calculate the corresponding solvent content. **add next job => All tasks => Asymmetric Unit and Structure Revision => Asymmetric Unit Contents**
 
 When preparing the task for run, specify **Se** as **Main anomalous scatterer**.
 
@@ -46,7 +46,7 @@ On output, the task creates the initial **structure revision**, containing only 
 
 ``5.`` Once the Asymmetric Unit is defined and the initial structure revision is created, first approximation to phases may be computed. Finding initial phases in Experimental Phasing is a two-step procedure. In first step, anomalous signal in the reflection dataset is used to find the location of anomalous scatterers (the heavy-atom substructure). In second step, the reflection dataset and substructure found are used to estimate protein phases.
 
-The substructure is found with ShelxCD software, which may be used as part of Crank-2 automatic pipeline (see task **Substructure Search with SHELX via Crank-2** in the Experimental Phasing section of the Task List), or with the dedicated ShelxCD task (**Substructure Search with SHELX-C/D**). Let’s choose the first one: **add next job => All task => Experimental phasing => Substructure Search with SHELX via Crank-2**.
+The substructure is found with ShelxCD software, which may be used as part of Crank-2 automatic pipeline (see task **Substructure Search with SHELX via Crank-2** in the Experimental Phasing section of the Task List), or with the dedicated ShelxCD task (**Substructure Search with SHELX-C/D**). Let’s choose the first one: **add next job => All tasks => Experimental phasing => Substructure Search with SHELX via Crank-2**.
 
 .. toggle-header::
           :header:  **Output**
@@ -78,7 +78,7 @@ The substructure is found with ShelxCD software, which may be used as part of Cr
             **Estimated atom occupancies** shows estimated atom occupancies in the substructure found, as given by the best trial. An atom is considered as more or less reliably located if **Estimated occupancy is higher than 0.25**.
 
 
-``6.`` Macromolecular phases are calculated using substructure phases and reflection data with **Phaser-EP** software. The Phaser-EP task calculates protein phases for the original and inverted hands, corresponding to mutually-inversed heavy-atom substructures. Run the task: **add next job => All task => Experimental phasing => Experimental Phasing with Phaser-EP**
+``6.`` Macromolecular phases are calculated using substructure phases and reflection data with **Phaser-EP** software. The Phaser-EP task calculates protein phases for the original and inverted hands, corresponding to mutually-inversed heavy-atom substructures. Run the task: **add next job => All tasks => Experimental phasing => Experimental Phasing with Phaser-EP**
 
 The task will improve the substructure, calculate inverted substructure and estimate their macromolecular phases.
 
@@ -93,7 +93,7 @@ The average **FOM** (Figure Of Merit) is the phase quality indicator: FOM values
 
 .. note:: the density modification jobs should both descend from Phaser-EP job, because they need structure revisions created by it. This means that project tree will branch at this point. To make your project easily interpretable, annotate the branches by starting them with appropriate remarks: first, place remark “Original hand”, then clone it and rename as “Inverted hand”.
 
-``8.``	Append Parrot task to the “Original hand” remark (**add next job => All task => Density Modification => Density Modification with Parrot**) and make sure that the “original hand” revision from Phaser-EP (**phaser-ep-original_hand**) is selected in **Structure revision**. State **heavy-athom(Zn) substructure** as **model for NCS detection**. Parrot uses substructure to define initial values of NCS operations. Start the task.
+``8.``	Append Parrot task to the “Original hand” remark (**add next job => All tasks => Density Modification => Density Modification with Parrot**) and make sure that the “original hand” revision from Phaser-EP (**phaser-ep-original_hand**) is selected in **Structure revision**. State **heavy-athom(Zn) substructure** as **model for NCS detection**. Parrot uses substructure to define initial values of NCS operations. Start the task.
 
 ``9.``	Append Parrot task to the “Inverted hand” remark (**add next job => All task => Density Modification => Density Modification with Parrot**) and make sure that the “inverted hand” revision from Phaser-EP **phaser-ep-inverted_hand** is selected in **Structure revision**. State **heavy-athom(Zn) substructure** as **model for NCS detection**. Start the task.
 
@@ -101,7 +101,7 @@ The average **FOM** (Figure Of Merit) is the phase quality indicator: FOM values
 
 Inspect electron density generated by the two Parrot runs in **UglyMol** viewer (the corresponding launch button is found in *task output*).
 
-``10.`` Are resulting maps from Parrot jobs good enough for deciding on the hand? *Probably not*. Therefore, continue each project branch with the `Automatic Model Building with CCP4Build <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html>`_ task: **add next job => All task => Refinement and Model Building => Automatic Model Building with CCP4Build**
+``10.`` Are resulting maps from Parrot jobs good enough for deciding on the hand? *Probably not*. Therefore, continue each project branch with the `Automatic Model Building with CCP4Build <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html>`_ task: **add next job => All tasks => Refinement and Model Building => Automatic Model Building with CCP4Build**
 
 Now the correct hand can be identified with certainty.
 

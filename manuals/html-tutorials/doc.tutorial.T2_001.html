@@ -215,35 +215,42 @@
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T3_004.html" class="md-nav__link">5. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</a>
+      <a href="doc.tutorial.T2_003.html" class="md-nav__link">5. Structure prediction for Molecular Replacement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_001.html" class="md-nav__link">6. Refinement using REFMAC5 - Part 1: Simple Refinement</a>
+      <a href="doc.tutorial.T3_004.html" class="md-nav__link">6. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_002.html" class="md-nav__link">7. Refinement using REFMAC5 - Part 2: Twin Refinement</a>
+      <a href="doc.tutorial.T4_001.html" class="md-nav__link">7. Refinement using REFMAC5 - Part 1: Simple Refinement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_003.html" class="md-nav__link">8. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</a>
+      <a href="doc.tutorial.T4_002.html" class="md-nav__link">8. Refinement using REFMAC5 - Part 2: Twin Refinement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.demo.PISA_start.html" class="md-nav__link">9. Using PISA in CCP4 Cloud</a>
+      <a href="doc.tutorial.T4_003.html" class="md-nav__link">9. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.demo.PISA_start.html" class="md-nav__link">10. Using PISA in CCP4 Cloud</a>
       
     
     </li>
@@ -280,7 +287,7 @@
 </div>
 </div></blockquote>
 <p><code class="docutils literal notranslate"><span class="pre">1.</span></code>   The sequence and reflection data were already imported in the “Creating MR Search Ensembles with CCP4MG/MrBUMP” project (<em>import from the Cloud storage</em> task).</p>
-<p><code class="docutils literal notranslate"><span class="pre">2.</span></code>  The next step is to define the <strong>Asymmetric Unit content</strong>: click <strong>add task =&gt; go to All task =&gt; Asymmetric Unit and Structure revision =&gt; Asymmetric Unit Contents.</strong> Run the task.</p>
+<p><code class="docutils literal notranslate"><span class="pre">2.</span></code>  The next step is to define the <strong>Asymmetric Unit content</strong>: click <strong>add task =&gt; go to All tasks =&gt; Asymmetric Unit and Structure revision =&gt; Asymmetric Unit Contents.</strong> Run the task.</p>
 <a class="reference internal image-reference" href="_images/Demo.CCP4MG_ASU.png"><img alt="_images/Demo.CCP4MG_ASU.png" class="align-center" src="_images/Demo.CCP4MG_ASU.png" style="width: 565.6px; height: 392.0px;"/></a>
 <p>Every task in CCP4 Cloud produces a report. Some reports come with the verdict.</p>
 <a class="reference internal image-reference" href="_images/Demo.CCP4MG_ASU2.jpg"><img alt="_images/Demo.CCP4MG_ASU2.jpg" class="align-center" src="_images/Demo.CCP4MG_ASU2.jpg" style="width: 624.0px; height: 380.4px;"/></a>
@@ -288,7 +295,7 @@
 <p class="first admonition-title">Tip</p>
 <p class="last">Please read verdict carefully, it helps assessing the obtained results.</p>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">3.</span></code>  Once <strong>Asymmetric Unit Contents</strong> is defined with acceptable scores (solvent content, Matthews probability and expected stoichiometry), start the <strong>Prepare MR Ensemble with CCP4mg</strong> task: <strong>add next job =&gt; All task =&gt; Molecular Replacement =&gt; Prepare MR Ensemble with CCP4mg</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">3.</span></code>  Once <strong>Asymmetric Unit Contents</strong> is defined with acceptable scores (solvent content, Matthews probability and expected stoichiometry), start the <strong>Prepare MR Ensemble with CCP4mg</strong> task: <strong>add next job =&gt; All tasks =&gt; Molecular Replacement =&gt; Prepare MR Ensemble with CCP4mg</strong></p>
 <a class="reference internal image-reference" href="_images/Demo.CCP4MG_MG1.png"><img alt="_images/Demo.CCP4MG_MG1.png" class="align-center" src="_images/Demo.CCP4MG_MG1.png" style="width: 604.8000000000001px; height: 392.0px;"/></a>
 <p><code class="docutils literal notranslate"><span class="pre">4.</span></code> <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.EnsemblePrepMG.html" rel="noopener noreferrer" target="_blank">Prepare MR Ensemble with CCP4mg</a> task will identify structure homologs from the <a class="reference external" href="https://www.rcsb.org/" rel="noopener noreferrer" target="_blank">PDB</a> and the <a class="reference external" href="https://alphafold.ebi.ac.uk" rel="noopener noreferrer" target="_blank">EBI-AFDB</a> and display them in CCP4mg (<code class="docutils literal notranslate"><span class="pre">takes</span> <span class="pre">a</span> <span class="pre">couple</span> <span class="pre">of</span> <span class="pre">minutes</span></code>).</p>
 <p>For <abbr title="AlphaFold DataBase">AFDB</abbr> models, you can adjust the pLDDT cut-off</p>
@@ -347,11 +354,11 @@
 <a class="reference internal image-reference" href="_images/Demo.CCP4MG_MG4.png"><img alt="_images/Demo.CCP4MG_MG4.png" class="align-center" src="_images/Demo.CCP4MG_MG4.png" style="width: 633.6px; height: 430.40000000000003px;"/></a>
 <p><code class="docutils literal notranslate"><span class="pre">8.</span></code>  Created ensembles can be further used in both <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser</a> and <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a> tasks.</p>
 <blockquote>
-<div><p>We will use Phaser for Molecular replacement in this tutorial: <strong>add next job =&gt; All task =&gt; Molecular Replacement =&gt; Molecular Replacement with Phaser</strong></p>
+<div><p>We will use Phaser for Molecular replacement in this tutorial: <strong>add next job =&gt; All tasks =&gt; Molecular Replacement =&gt; Molecular Replacement with Phaser</strong></p>
 <p>For predicted (AFDB) models, we recommend setting <strong>Similarity to target by rms differences (Å) to 1.2</strong></p>
 </div></blockquote>
 <a class="reference internal image-reference" href="_images/Demo.CCP4MG_Phaser.jpg"><img alt="_images/Demo.CCP4MG_Phaser.jpg" class="align-center" src="_images/Demo.CCP4MG_Phaser.jpg" style="width: 508.2px; height: 375.59999999999997px;"/></a>
-<p><code class="docutils literal notranslate"><span class="pre">9.</span></code>  After Phaser, the positioned model should be rebuilt in order to match the target sequence more closely. This can be conveniently done using one of CCP4’s automatic model builders (<a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">Buccaneer</a>, <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ArpWarp.html" rel="noopener noreferrer" target="_blank">Arp/wArp</a> , <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">CCP4Build</a>). Let’s run the <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">CCP4Build</a> task in this tutorial. The built model can be visually inspected with <strong>UglyMol</strong> (the corresponding launch button can be found in task report page).</p>
+<p><code class="docutils literal notranslate"><span class="pre">9.</span></code>  After Phaser, the positioned model should be rebuilt in order to match the target sequence more closely. This can be conveniently done using one of CCP4’s automatic model builders (<a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">Buccaneer</a>, <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ArpWarp.html" rel="noopener noreferrer" target="_blank">Arp/wArp</a> , <a class="reference external" href="https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">CCP4Build</a>). Let’s run the <a class="reference external" href="../html-taskref/doc.task.ModelCraft.html" rel="noopener noreferrer" target="_blank">ModelCraft</a> task. The built model can be visually inspected with <strong>UglyMol</strong> (the corresponding launch button can be found in task report page).</p>
 <p><code class="docutils literal notranslate"><span class="pre">10.</span></code>  Further refinement can be done with the <strong>Automated refinement and ligand fitting workflow</strong></p>
 <a class="reference internal image-reference" href="_images/Demo.CCP4MG_workflow.png"><img alt="_images/Demo.CCP4MG_workflow.png" class="align-center" src="_images/Demo.CCP4MG_workflow.png" style="width: 696.8000000000001px; height: 436.8px;"/></a>
 

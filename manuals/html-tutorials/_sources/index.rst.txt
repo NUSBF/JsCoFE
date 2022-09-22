@@ -15,6 +15,7 @@ Tutorials
    doc.tutorial.T1_001
    doc.tutorial.T2_001
    doc.tutorial.T2_002
+   doc.tutorial.T2_003
    doc.tutorial.T3_004
    doc.tutorial.T4_001
    doc.tutorial.T4_002

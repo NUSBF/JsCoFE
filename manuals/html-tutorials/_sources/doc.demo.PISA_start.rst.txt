@@ -7,7 +7,7 @@ Maria Fando
 PISA requires only atomic coordinates of sufficiently well refined structures. If they are obtained in course of crystallographic project,
 use structure revision just before the ``Deposition`` task. Alternatively, PISA may be used on any data in just two steps: 
 
-``1.`` Import coordinate data; any valid PDB or mmCIF-formatted file may be used. In order to import the file, click **add task** => **All task** => **Data import** => the job chosen from the list of tasks will open automatically
+``1.`` Import coordinate data; any valid PDB or mmCIF-formatted file may be used. In order to import the file, click **add task** => **All tasks** => **Data import** => the job chosen from the list of tasks will open automatically
 
 .. image:: images/Demo.Import.png
          :scale: 40 %
@@ -23,7 +23,7 @@ From the above list, suitable import tasks include ``File(s) Upload and Import``
 .. Warning::
             Do not use PISA if your structure is not yet complete and ready for PDB deposition, because even a small imperfectness in crystal contacts may make the difference between identifying an interface as binding or not.
 
-``2.`` Start PISA, as the next (child) job, by clicking **add task** => **All task** => **Validation, Analysis and Deposition** => **Surface, Interfaces and Assembly Analysis with PISA**
+``2.`` Start PISA, as the next (child) job, by clicking **add task** => **All tasks** => **Validation, Analysis and Deposition** => **Surface, Interfaces and Assembly Analysis with PISA**
 
 .. image:: images/Demo_PISA.png 
          :scale: 40 %

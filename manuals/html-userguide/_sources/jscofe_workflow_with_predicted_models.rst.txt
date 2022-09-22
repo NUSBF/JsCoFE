@@ -30,7 +30,7 @@ In addition to importing predicted models as files obtained from AlphaFold and R
          :scale: 50 %
          :align: center
 
-The task produces coordinate data, which should be prepared (trimmed) as MR model before using in MR programs such as `Phaser <../html-taskref/doc.task.Phaser.html>`_ or `Molrep <../html-taskref/doc.task.Molrep.html>`_. As an exception, predicted coordinates can be used in `Slice <../html-taskref/doc.task.Slice.html>`_ and `Slice-n-Dice <../html-taskref/doc.task.SliceNDice.html>`_ directly, without a preliminary model preparation step. These tasks are useful in case when noticeable conformations in MR models are expected (for example, predicted models cannot provide an exact hinge state or a twist between domains). Both Slice and Slice-n-Dice attempt to split the given model into a predefined number of conservative domains, and, in addition, Slice-n-Dice attempts to molecular replace them separately with `Phaser <../html-taskref/doc.task.Phaser.html>`_.
+The task produces coordinate data, which should be prepared (trimmed) as MR model before using in MR programs such as `Phaser <../html-taskref/doc.task.Phaser.html>`_ or `Molrep <../html-taskref/doc.task.Molrep.html>`_. As an exception, predicted coordinates can be used in `Slice <../html-taskref/doc.task.Slice.html>`_ and `Slice-n-Dice <../html-taskref/doc.task.SliceNDice.html>`_ directly, without a preliminary model preparation step. These tasks are useful in cases when noticeable conformations in MR models are expected (for example, predicted models cannot provide an exact hinge state or a twist between domains). Both Slice and Slice-n-Dice attempt to split the given model into a predefined number of conservative domains, and, in addition, Slice-n-Dice attempts to molecular replace them separately with `Phaser <../html-taskref/doc.task.Phaser.html>`_.
 
 
 .. note::
@@ -66,7 +66,7 @@ Tutorials
 ---------
 
 
-CCP4 Cloud goes with set of tutorials, the `Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP <../demo_project.html?cmount=Tutorials&project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud>`_ tutorial can be nice practice on how to create the ensembles for Molecular Replacement with `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ molecular viewer.
+CCP4 Cloud goes with set of tutorials, the `Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP <../demo_project.html?cmount=Tutorials&project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud>`_ and `Structure prediction for Molecular Replacement <../demo_project.html?cmount=Tutorials&project=T2_003.%20Structure%20prediction%20for%20Molecular%20Replacement.ccp4cloud>`_ tutorials can be nice practice on how to create the ensembles for Molecular Replacement with `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ molecular viewer.
 
 
 **ACKNOWLEDGEMENTS**

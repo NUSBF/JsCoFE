@@ -13,7 +13,7 @@ This tutorial explains how to create the ensembles for Molecular Replacement (MR
 
 ``1.``	 The sequence and reflection data were already imported in the “Creating MR Search Ensembles with CCP4MG/MrBUMP” project (*import from the Cloud storage* task).
 
-``2.``	The next step is to define the **Asymmetric Unit content**: click **add task => go to All task => Asymmetric Unit and Structure revision => Asymmetric Unit Contents.** Run the task.
+``2.``	The next step is to define the **Asymmetric Unit content**: click **add task => go to All tasks => Asymmetric Unit and Structure revision => Asymmetric Unit Contents.** Run the task.
 
 .. image:: images/Demo.CCP4MG_ASU.png
    :align: center
@@ -28,7 +28,7 @@ Every task in CCP4 Cloud produces a report. Some reports come with the verdict.
 .. tip::
         Please read verdict carefully, it helps assessing the obtained results. 
 
-``3.``	Once **Asymmetric Unit Contents** is defined with acceptable scores (solvent content, Matthews probability and expected stoichiometry), start the **Prepare MR Ensemble with CCP4mg** task: **add next job => All task => Molecular Replacement => Prepare MR Ensemble with CCP4mg**
+``3.``	Once **Asymmetric Unit Contents** is defined with acceptable scores (solvent content, Matthews probability and expected stoichiometry), start the **Prepare MR Ensemble with CCP4mg** task: **add next job => All tasks => Molecular Replacement => Prepare MR Ensemble with CCP4mg**
 
 .. image:: images/Demo.CCP4MG_MG1.png
    :align: center
@@ -108,7 +108,7 @@ For this tutorial, make sure that:
 
 ``8.``	Created ensembles can be further used in both `Phaser <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Phaser.html>`_ and `Molrep <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Molrep.html>`_ tasks.
 
-    We will use Phaser for Molecular replacement in this tutorial: **add next job => All task => Molecular Replacement => Molecular Replacement with Phaser**
+    We will use Phaser for Molecular replacement in this tutorial: **add next job => All tasks => Molecular Replacement => Molecular Replacement with Phaser**
 
     For predicted (AFDB) models, we recommend setting **Similarity to target by rms differences (Å) to 1.2**
 
@@ -116,7 +116,7 @@ For this tutorial, make sure that:
         :align: center
         :scale: 30 %
 
-``9.``  After Phaser, the positioned model should be rebuilt in order to match the target sequence more closely. This can be conveniently done using one of CCP4's automatic model builders (`Buccaneer <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html>`_, `Arp/wArp <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ArpWarp.html>`_ , `CCP4Build <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html>`_). Let's run the `CCP4Build <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html>`_ task in this tutorial. The built model can be visually inspected with **UglyMol** (the corresponding launch button can be found in task report page).
+``9.``  After Phaser, the positioned model should be rebuilt in order to match the target sequence more closely. This can be conveniently done using one of CCP4's automatic model builders (`Buccaneer <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html>`_, `Arp/wArp <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.ArpWarp.html>`_ , `CCP4Build <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CCP4Build.html>`_). Let's run the `ModelCraft <../html-taskref/doc.task.ModelCraft.html>`_ task. The built model can be visually inspected with **UglyMol** (the corresponding launch button can be found in task report page).
 
 ``10.``	 Further refinement can be done with the **Automated refinement and ligand fitting workflow**
 
