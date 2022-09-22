@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.08.22   <--  Date of Last Modification.
+#    22.09.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -104,7 +104,7 @@ class PhaserMR(basic.TaskDriver):
                 ens0.append ( ens[i] )
 
         if phases:
-            phases_mtz = phases.getMTZFilePath(self.inputDir())
+            # phases_mtz = phases.getMTZFilePath(self.inputDir())
             phases_labels = ( phases.FWT, phases.PHWT )
             self.open_stdin()
             self.write_stdin ( "LABIN FILE 1 E1=%s E2=%s\n" %phases_labels )
@@ -386,7 +386,7 @@ class PhaserMR(basic.TaskDriver):
                     if nsol<=1:
                         lnsplit = line.split()
                         if len(lnsplit)>3:
-                            ensname = line.split()[3]
+                            ensname = line.split()[3].split("[")[0]
                             if ensname in ens_meta:
                                 ens_meta[ensname]["ncopies"] += 1
                             else:
