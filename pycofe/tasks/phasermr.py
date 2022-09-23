@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.09.22   <--  Date of Last Modification.
+#    23.09.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,6 +28,7 @@
 
 #  python native imports
 import os
+import re
 
 #  application imports
 from . import basic
@@ -357,7 +358,7 @@ class PhaserMR(basic.TaskDriver):
         self.setGenericLogParser ( self.phaser_report(),True )
 
         # Start phaser
-        self.runApp ( "phaser",cmd,logType="Main" )
+        self.runApp ( "phaser",cmd,logType="Main",quitOnError=False )
         self.unsetLogParser()
 
         # check solution and register data
@@ -374,9 +375,20 @@ class PhaserMR(basic.TaskDriver):
             phaser_meta = { "ensembles" : {} }
             ens_meta    = phaser_meta["ensembles"]
 
-            solf = open ( sol_file,"r" )
-            soll = solf.readlines()
-            solf.close()
+            with open(sol_file,"r") as solf:
+                sol = solf.read()
+
+            sol1 = re.sub ( "[\[].*?[\]]", "",sol )
+            if sol1 != sol:
+                with open(sol_file,"w") as solf:
+                    solf.write ( sol1 )
+
+            soll = sol1.splitlines(False)
+
+            # solf = open ( sol_file,"r" )
+            # soll = solf.readlines()
+            # solf.close()
+
             sol_spg = None
             nsol    = 0
             llg     = None
@@ -386,7 +398,8 @@ class PhaserMR(basic.TaskDriver):
                     if nsol<=1:
                         lnsplit = line.split()
                         if len(lnsplit)>3:
-                            ensname = line.split()[3].split("[")[0]
+                            # ensname = line.split()[3].split("[")[0]
+                            ensname = line.split()[3]
                             if ensname in ens_meta:
                                 ens_meta[ensname]["ncopies"] += 1
                             else:
