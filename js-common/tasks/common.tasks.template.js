@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.09.22   <--  Date of Last Modification.
+ *    24.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2588,6 +2588,8 @@ if (!dbx)  {
 
   }
 
+  // This function is called when Job Dialog is resized
+  TaskTemplate.prototype.inputPanelResize = function ( inputPanel,panelWidth,panelHeight )  {}
 
   //  This function is called just before the task is finally sent to FE to run.
   // It should execute function given as argument, or issue an error message if
