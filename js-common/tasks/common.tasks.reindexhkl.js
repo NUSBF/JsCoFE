@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    23.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -106,6 +106,11 @@ TaskReindexHKL.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskReindexHKL.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'change space group and indexing';
+}
+  
 TaskReindexHKL.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
   return this.__check_keywords ( keywords,['reindex', 'hkl','dataset', 'toolbox'] );

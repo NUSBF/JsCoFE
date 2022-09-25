@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.09.22   <--  Date of Last Modification.
+ *    25.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -108,8 +108,13 @@ function JobDialog ( params,          // data and task projections up the tree b
             dlg.task.onJobDialogStart ( dlg );
             dlg._created = true;
           },0);
-        } else
+        } else  {
           dlg._created = true;
+        }
+        window.setTimeout ( function(){
+          dlg.setDlgSize();  
+          // dlg.task.inputPanelResize ( dlg.inputPanel,size[0]-30,size[1]-190 );
+        },100);
       },
       focus     : function() {
                     if (onDlgSignal_func)
@@ -127,12 +132,12 @@ function JobDialog ( params,          // data and task projections up the tree b
 
   this.makeLayout ( onRun_func );
 
-  var dialog = $(this.element).dialog ( this.dialog_options );
+  $(this.element).dialog ( this.dialog_options );
   //if (__any_mobile_device)
   //  dialog.siblings('.ui-dialog-titlebar').remove();
 
   this.setDlgState();
-  this.setDlgSize ();
+  // this.setDlgSize ();
 
   // (function(dlg){
   var dlg = this;
@@ -293,7 +298,7 @@ JobDialog.prototype.setDlgState = function()  {
   this.changeTitle ( title );
 
   var show_hot_buttons   = (!__dormant) && this.task.isComplete();
-  var enable_hot_buttons = (!__dormant) && (this.task.state==job_code.finished);
+  // var enable_hot_buttons = (!__dormant) && (this.task.state==job_code.finished);
   //this.done_sign .setVisible ( (this.task.state==job_code.finished)  );
   //this.nores_sign.setVisible ( (this.task.state==job_code.noresults) );
   for (var i=0;i<this.hot_btn.length;i++)  {
@@ -368,6 +373,7 @@ JobDialog.prototype.onDlgResize = function ()  {
         panelHeight -= this.inputPanel.header.height_px();
       this.inputPanel.panel.setSize_px ( panelWidth,panelHeight );
     }
+    this.task.inputPanelResize ( this.inputPanel,panelWidth,panelHeight );
   }
 
   this.outputPanel.setSize_px ( panelWidth,panelHeight );

@@ -245,6 +245,11 @@ Widget.prototype.height_px = function ()  {
   return $(this.element).outerHeight();
 }
 
+
+Widget.prototype.getBoundingRect = function ()  {
+  return this.element.getBoundingClientRect();
+}
+
 Widget.prototype.setFontSize = function ( size )  {
   $(this.element).css ({"font-size":size});
   return this;
@@ -1249,6 +1254,7 @@ Button.prototype.setSize = function ( width,height )  {
                        'background-position' : lm + 'px' });
   return Widget.prototype.setSize.call ( this,width,height );
 }
+
 
 Button.prototype.setSize_px = function ( width,height )  {
   $(this.element).css({'background-size':(height-4)+'px'});

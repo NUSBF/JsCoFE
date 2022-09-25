@@ -562,9 +562,9 @@ TaskRefmac.prototype.currentVersion = function()  {
 }
 
 TaskRefmac.prototype.desc_title = function()  {
-   // this appears under task title in the task list
-     return 'refines of macromolecular structures';
-   };
+// this appears under task title in the task list
+   return 'refine macromolecular structures';
+};
 
 //TaskRefmac.prototype.cleanJobDir = function ( jobDir )  {}
 

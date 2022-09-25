@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.04.22   <--  Date of Last Modification.
+ *    23.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -81,7 +81,6 @@ TaskRemark.prototype.constructor = TaskRemark;
 
 
 // ===========================================================================
-// export such that it could be used in both node and a browser
 
 var __remark_icon = [
   ['task_remark_black'   ,'Black'    ],
@@ -347,16 +346,18 @@ TaskRemark.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+// ===========================================================================
+// export such that it could be used in both node and a browser
 
 if (__template)  {
   //  for server side
 
-  TaskRemark.prototype.icon = function()  {
-    // *** sticky feature
-    // if (this.state==__template.job_code.remark)
-    //   return __remark_icon[this.theme_no][0] + '_s';
-    return __remark_icon[this.theme_no][0];
-  }
+  // TaskRemark.prototype.icon = function()  {
+  //   // *** sticky feature
+  //   // if (this.state==__template.job_code.remark)
+  //   //   return __remark_icon[this.theme_no][0] + '_s';
+  //   return __remark_icon[this.theme_no][0];
+  // }
 
   TaskRemark.prototype.getCommandLine = function ( jobManager,jobDir )  { return null; }
 
