@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.09.22   <--  Date of Last Modification.
+ *    27.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -192,11 +192,14 @@ TaskTextEditor.prototype.collectInput = function ( inputPanel )  {
   var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
   // send to server fspec and aceditor
-  this.getSelectedFile ( inpParamRef.grid )
+  this.getSelectedFile ( inputPanel.grid )
 
   return input_msg;
 
 }
+
+// make warning that unsaved data will be lost and remove aceditor fields from task
+// dlg.task.onJobDialogClose(dlg,function(close_bool){
 
 
 // ===========================================================================
