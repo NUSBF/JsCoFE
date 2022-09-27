@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.08.22   <--  Date of Last Modification.
+ *    27.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -229,7 +229,12 @@ MessageBoxF.prototype.constructor = MessageBoxF;
 // -------------------------------------------------------------------------
 // HelpBox class
 
-function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
+function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
+// params = {  // all optional
+//   width      : width,
+//   height     : height,
+//   navigation : true
+// }
 
   if (onDoNotShowAgain_func)  {
     if (!onDoNotShowAgain_func(0,helpURL))
@@ -255,7 +260,10 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
 
   var w0 = 1000;
   var h0 = 600;
-  if (__any_mobile_device)  {
+  if (params)  {
+    if ('width'  in params)  w0 = params.width;
+    if ('height' in params)  h0 = params.height;
+  } else if (__any_mobile_device)  {
     w0 = $(window).width () - 24;
     h0 = $(window).height() - 158;
     if (__mobile_device)
@@ -272,8 +280,15 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
   this.options = {
     width   : w0,
     height  : h0,
-    modal   : false,
-    buttons : [
+    modal   : false
+  };
+
+  this.navigation = true;
+  if (params && ('navigation' in params))
+    this.navigation = params.navigation;
+
+  if (this.navigation)  {
+    this.options.buttons = [
       { text : 'Back',
         id   : 'back_' + tstamp
         //icons: { primary: 'ui-icon-home' },
@@ -290,8 +305,9 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
         id   : 'detach_' + tstamp
         //icons: { primary: 'ui-icon-home' },
       }
-    ]
-  };
+    ];
+  } else
+    this.options.buttons = [];
 
   this.options.resizable = !__any_mobile_device;
 
@@ -335,64 +351,68 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
 
   (function(dlg){
 
-    dlg.options.buttons[0].click = function() {
-      // var history = dlg.display.getDocument().history;
-      // alert ( ' >>> ' + history.length );
-      // if (history.length>0)
-      //   history.back();
-      if (dlg.history_position>0)  {
-        dlg.history_position--;
-        dlg.history_control = -1;
-        try {
-          dlg.display.getDocument().history.back();
-        } catch(e) {
-          dlg.history_length   = -1;
-          dlg.history_position = -1;
-          dlg.display.loadPage ( helpURL );
-          // dlg.history_position++;
-          // $('#' + dlg.options.buttons[0].id).button ( 'disable' );
-          // $('#' + dlg.options.buttons[1].id).button ( 'disable' );
+    if (dlg.navigation)  {
+
+        dlg.options.buttons[0].click = function() {
+        // var history = dlg.display.getDocument().history;
+        // alert ( ' >>> ' + history.length );
+        // if (history.length>0)
+        //   history.back();
+        if (dlg.history_position>0)  {
+          dlg.history_position--;
+          dlg.history_control = -1;
+          try {
+            dlg.display.getDocument().history.back();
+          } catch(e) {
+            dlg.history_length   = -1;
+            dlg.history_position = -1;
+            dlg.display.loadPage ( helpURL );
+            // dlg.history_position++;
+            // $('#' + dlg.options.buttons[0].id).button ( 'disable' );
+            // $('#' + dlg.options.buttons[1].id).button ( 'disable' );
+          }
+          // window.setTimeout ( function(){
+          //   dlg.display.loadPage ( dlg.history[dlg.history_position] );
+          // },100 );
         }
-        // window.setTimeout ( function(){
-        //   dlg.display.loadPage ( dlg.history[dlg.history_position] );
-        // },100 );
-      }
-    };
+      };
 
-    dlg.options.buttons[1].click = function() {
-      if (dlg.history_position<dlg.history_length)  {
-        dlg.history_position++;
-        dlg.history_control = 1;
-        try {
-          dlg.display.getDocument().history.forward();
-        } catch(e) {
-          dlg.history_length   = -1;
-          dlg.history_position = -1;
-          dlg.display.loadPage ( helpURL );
-          // dlg.history_position--;
-          // $('#' + dlg.options.buttons[0].id).button ( 'disable' );
-          // $('#' + dlg.options.buttons[1].id).button ( 'disable' );
+      dlg.options.buttons[1].click = function() {
+        if (dlg.history_position<dlg.history_length)  {
+          dlg.history_position++;
+          dlg.history_control = 1;
+          try {
+            dlg.display.getDocument().history.forward();
+          } catch(e) {
+            dlg.history_length   = -1;
+            dlg.history_position = -1;
+            dlg.display.loadPage ( helpURL );
+            // dlg.history_position--;
+            // $('#' + dlg.options.buttons[0].id).button ( 'disable' );
+            // $('#' + dlg.options.buttons[1].id).button ( 'disable' );
+          }
+          // dlg.display.loadPage ( dlg.history[dlg.history_position-1] );
         }
-        // dlg.display.loadPage ( dlg.history[dlg.history_position-1] );
-      }
-    };
+      };
 
-    dlg.options.buttons[2].click = function() {
-      dlg.history_length   = -1;
-      dlg.history_position = -1;
-      dlg.display.loadPage ( helpURL );
-    };
+      dlg.options.buttons[2].click = function() {
+        dlg.history_length   = -1;
+        dlg.history_position = -1;
+        dlg.display.loadPage ( helpURL );
+      };
 
-    dlg.options.buttons[3].click = function() {
-      var url = helpURL;
-      try {
-        url = dlg.display.getDocument().location.href;
-      } catch(e) {}
-      $(this).dialog ( 'close' );
-      window.setTimeout ( function(){
-        window.open ( url );
-      },0 );
-    };
+      dlg.options.buttons[3].click = function() {
+        var url = helpURL;
+        try {
+          url = dlg.display.getDocument().location.href;
+        } catch(e) {}
+        $(this).dialog ( 'close' );
+        window.setTimeout ( function(){
+          window.open ( url );
+        },0 );
+      };
+
+    }
 
     dlg.options.create = function(event,ui) {
       dlg.display.setHTML ( loading_msg );
@@ -437,17 +457,21 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
       }
       dlg.history_control = 0;
 
-      if (dlg.history_position>0)  {
-        $('#' + dlg.options.buttons[0].id).button ( 'enable'  );
-        $('#' + dlg.options.buttons[2].id).button ( 'enable'  );
-      } else  {
-        $('#' + dlg.options.buttons[0].id).button ( 'disable' );
-        $('#' + dlg.options.buttons[2].id).button ( 'disable' );
-      }
+      if (dlg.navigation)  {
 
-      if (dlg.history_position<dlg.history_length)
-            $('#' + dlg.options.buttons[1].id).button ( 'enable'  );
-      else  $('#' + dlg.options.buttons[1].id).button ( 'disable' );
+        if (dlg.history_position>0)  {
+          $('#' + dlg.options.buttons[0].id).button ( 'enable'  );
+          $('#' + dlg.options.buttons[2].id).button ( 'enable'  );
+        } else  {
+          $('#' + dlg.options.buttons[0].id).button ( 'disable' );
+          $('#' + dlg.options.buttons[2].id).button ( 'disable' );
+        }
+
+        if (dlg.history_position<dlg.history_length)
+              $('#' + dlg.options.buttons[1].id).button ( 'enable'  );
+        else  $('#' + dlg.options.buttons[1].id).button ( 'disable' );
+
+      }
 
       dlg.resizeDisplay ( w0,h0 );
 
@@ -471,9 +495,9 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func )  {
 HelpBox.prototype = Object.create ( Widget.prototype );
 HelpBox.prototype.constructor = HelpBox;
 
-function launchHelpBox ( title,helpURL,onDoNotShowAgain_func,delay_msec )  {
+function launchHelpBox ( title,helpURL,onDoNotShowAgain_func,delay_msec,params=null )  {
   window.setTimeout ( function(){
-    new HelpBox ( title,helpURL,onDoNotShowAgain_func );
+    new HelpBox ( title,helpURL,onDoNotShowAgain_func,params );
   },delay_msec);
 }
 

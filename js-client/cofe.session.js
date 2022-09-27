@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.09.22   <--  Date of Last Modification.
+ *    27.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -322,24 +322,29 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 }
 
 function offlineGreeting ( callback_func )  {
-  if (__offline_message)  {
+  if (!__offline_message)  {
     __offline_message = false;
-    new MessageBoxF (
-      appName() + ' offline',
-      '<div style="width:500px"><h2>' + appName() + ' offline</h2>' +
-      'You are using the offline adaptation of ' + appName() +
-      ' now.' +
-      '<p><b>Note: this offline version of ' + appName() +
-      ' offers no functionality for syncing or transferring data and projects ' +
-      'to remote servers.</b><p>' +
-      'To benefit from in-cloud, online, data storage and computing, export ' +
-      'your project(s) and import them in an online ' + appName() +
-      ' setup manually.<p>' +
-      'Read more details <a href="' + __user_guide_base_url +
-      'jscofe_tips.three_clouds.html" target="_blank">here</a>.',
-      'Understood',function(){ callback_func(); },
-      true,'msg_information'
-    );
+    launchHelpBox ( appName()+' offline','./html/offline_greeting.html',doNotShowAgain,0,{
+                        width      : 600,
+                        height     : 300,
+                        navigation : false
+                  });
+    // new MessageBoxF (
+    //   appName() + ' offline',
+    //   '<div style="width:500px"><h2>' + appName() + ' offline</h2>' +
+    //   'You are using the offline adaptation of ' + appName() +
+    //   ' now.' +
+    //   '<p><b>Note: this offline version of ' + appName() +
+    //   ' offers no functionality for syncing or transferring data and projects ' +
+    //   'to remote servers.</b><p>' +
+    //   'To benefit from in-cloud, online, data storage and computing, export ' +
+    //   'your project(s) and import them in an online ' + appName() +
+    //   ' setup manually.<p>' +
+    //   'Read more details <a href="' + __user_guide_base_url +
+    //   'jscofe_tips.three_clouds.html" target="_blank">here</a>.',
+    //   'Understood',function(){ callback_func(); },
+    //   true,'msg_information'
+    // );
   } else
     callback_func();
 }
