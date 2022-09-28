@@ -122,7 +122,7 @@ TaskStructurePrediction.prototype.icon = function()  { return 'task_structurepre
 
 TaskStructurePrediction.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return 'generate structure model with AlphaFild-2';
+  return 'generate structure model with AlphaFold2';
 }
 
 // task.platforms() identifies suitable platforms:
