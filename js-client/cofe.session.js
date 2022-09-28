@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.09.22   <--  Date of Last Modification.
+ *    28.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -322,7 +322,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 }
 
 function offlineGreeting ( callback_func )  {
-  if (!__offline_message)  {
+  if (__offline_message)  {
     __offline_message = false;
     launchHelpBox ( appName()+' offline','./html/offline_greeting.html',doNotShowAgain,0,{
                         width      : 600,
