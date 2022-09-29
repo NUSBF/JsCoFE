@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.09.22   <--  Date of Last Modification.
+ *    29.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -50,11 +50,12 @@ function TaskTextEditor()  {
                     // 'DataLigand'   : []
                     // 'DataLibrary'  : []
                   },
+    unchosen_label : '[Select data]',
     label       : 'Data object',  // label for input dialog
     inputId     : 'object',       // input Id for referencing input fields
     customInput : 'texteditor',   // lay custom fields below the dropdown
     version     : 1,              // minimum data version allowed
-    min         : 1,              // minimum acceptable number of data instances
+    min         : 0,              // minimum acceptable number of data instances
     max         : 1               // maximum acceptable number of data instances
   }];
 
@@ -73,6 +74,8 @@ TaskTextEditor.prototype.constructor = TaskTextEditor;
 
 //TaskTextEditor.prototype.cleanJobDir   = function ( jobDir )  {}
 
+TaskTextEditor.prototype.icon = function()  { return 'task_texteditor';  }
+
 TaskTextEditor.prototype.desc_title = function()  {
 // this appears under task title in the task list
   return 'edit text data in data objects and revisions';
@@ -82,102 +85,6 @@ TaskTextEditor.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
   return this.__check_keywords ( keywords,['text','editor'] );
 }
-        
-if (!__template)  {
-  // only on client
-
-  TaskTextEditor.prototype.icon = function()  { return 'task_texteditor';  }
-
-  // This function is called at cloning jobs and should do copying of all
-  // custom class fields not found in the Template class
-//   TaskTextEditor.prototype.customDataClone = function ( cloneMode,task )  {
-//     return;
-//   }
-
-
-  // reserved function name
-  TaskTextEditor.prototype.runButtonName = function()  { return 'Save'; }
-
-
-  // reserved function name
-  TaskTextEditor.prototype.makeInputPanel = function ( dataBox )  {
-
-    var div = TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
-
-    var row = div.grid.getNRows();
-
-    div.aceditor = new ACEditor ( 80,40,{
-        'box-shadow'  : '6px 6px lightgray',
-        'theme'       : 'chrome',
-        'mode'        : 'python'
-      });
-    div.grid.setWidget ( div.aceditor,row,0,1,5 );
-    div.aceinit = false;
-
-    return div;
-
-  }
-
-}
-
-TaskTextEditor.prototype.getSelectedFile = function ( inputPanel_grid )  {
-var object = this.getInputData ( inputPanel_grid.inpDataRef,'object' )[0];
-var files  = object.files;
-
-  var fspec  = {
-    name  : '',
-    ftype : '',
-    otype : object._type,
-    stype : ''
-  };
-
-  switch (fspec.otype)  {
-    case 'DataXYZ'      :
-    case 'DataModel'    :
-    case 'DataEnsmeble' : if (file_key.xyz in files)  {
-                            fspec.name  = files[file_key.xyz];
-                            fspec.ftype = file_key.xyz
-                          }
-                          break;
-    case 'DataSequence' : if (file_key.seq in files)  {
-                            fspec.name  = files[file_key.seq];
-                            fspec.ftype = file_key.seq
-                          }
-                          break;
-    default : ;
-  }
-
-  return fspec;
-
-  // if ('xyz' in files)         return files.xyz;
-  // else if ('mmcif' in files)  return files.mmcif;
-  // else if ('sol'   in files)  return files.sol;
-  // else if ('sub'   in files)  return files.sub;
-  // else if ('seq'   in files)  return files.seq;
-  // else if ('lib'   in files)  return files.lib;
-  // return files;
-
-}
-
-TaskTextEditor.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
-  TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
-  console.log ( ' >>>>> file = ' + this.getSelectedFile(inpParamRef.grid).name );
-  // here call server and load file into aceditor
-}
-
-TaskTextEditor.prototype.inputPanelResize = function ( inputPanel,panelWidth,panelHeight )  {
-  if (inputPanel.job_dialog._created)  {
-    var rect  = inputPanel.aceditor.getBoundingRect();
-    var rect1 = inputPanel.job_dialog.getBoundingRect();
-    if (!inputPanel.aceinit)  {
-      inputPanel.aceditor.init ( '','' );
-      inputPanel.aceinit = true;
-      console.log ( this.getInputData ( inputPanel.grid.inpDataRef,'object' ) );
-    }
-    inputPanel.aceditor.setSize_px ( panelWidth-12,panelHeight - (rect.top-rect1.top-170) );
-  }
-}
-
 
 TaskTextEditor.prototype.currentVersion = function()  {
   var version = 0;
@@ -187,20 +94,137 @@ TaskTextEditor.prototype.currentVersion = function()  {
 }
 
 
-TaskTextEditor.prototype.collectInput = function ( inputPanel )  {
+if (!__template)  {
+  // only on client
 
-  var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+  // This function is called at cloning jobs and should do copying of all
+  // custom class fields not found in the Template class
+//   TaskTextEditor.prototype.customDataClone = function ( cloneMode,task )  {
+//     return;
+//   }
 
-  // send to server fspec and aceditor
-  this.getSelectedFile ( inputPanel.grid )
+  // reserved function name
+  TaskTextEditor.prototype.runButtonName = function()  { return 'Save'; }
 
-  return input_msg;
+  TaskTextEditor.prototype.loadFile = function ( inputPanel_grid )  {
+    var fname = this.getSelectedFile(inputPanel_grid).name;
+    if (fname)  {
+      fetchJobOutputFile ( this,fname,function(ftext){
+        inputPanel_grid.aceditor.setText ( ftext );
+      },null,function(errdesc){
+        new MessageBox ( 'Cannot load file',
+          '<h2>Cannot load file from server</h2><i>Error: ' + errdesc + '</i>.',
+          'msg_error'
+        );
+      });
+    }
+  }
 
+
+  TaskTextEditor.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
+    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+    this.loadFile ( inpParamRef.grid );
+  }
+
+
+  TaskTextEditor.prototype.getSelectedFile = function ( inputPanel_grid )  {
+    
+    var object = this.getInputData ( inputPanel_grid.inpDataRef,'object' )[0];
+    
+    var fspec  = {
+      name  : '',
+      ftype : '',
+      otype : '',
+      stype : ''
+    };
+
+    if (object)  {
+
+      var files   = object.files;
+      fspec.otype = object._type;
+
+      switch (fspec.otype)  {
+        case 'DataXYZ'      :
+        case 'DataModel'    :
+        case 'DataEnsmeble' : if (file_key.xyz in files)  {
+                                fspec.name  = files[file_key.xyz];
+                                fspec.ftype = file_key.xyz
+                              }
+                              break;
+        case 'DataSequence' : if (file_key.seq in files)  {
+                                fspec.name  = files[file_key.seq];
+                                fspec.ftype = file_key.seq
+                              }
+                              break;
+        default : ;
+      }
+
+    }
+
+    return fspec;
+
+    // if ('xyz' in files)         return files.xyz;
+    // else if ('mmcif' in files)  return files.mmcif;
+    // else if ('sol'   in files)  return files.sol;
+    // else if ('sub'   in files)  return files.sub;
+    // else if ('seq'   in files)  return files.seq;
+    // else if ('lib'   in files)  return files.lib;
+    // return files;
+
+  }
+
+
+  // reserved function name
+  TaskTextEditor.prototype.makeInputPanel = function ( dataBox )  {
+
+    var div = TaskTemplate.prototype.makeInputPanel.call ( this,dataBox );
+
+    var row = div.grid.getNRows();
+
+    div.grid.aceditor = new ACEditor ( 80,40,{
+        'box-shadow'  : '6px 6px lightgray',
+        'theme'       : 'chrome',
+        'mode'        : 'python'
+      });
+    div.grid.setWidget ( div.grid.aceditor,row,0,1,5 );
+    div.grid.aceinit = false;
+
+    // this.loadFile ( div.grid );
+
+    return div;
+
+  }
+
+  TaskTextEditor.prototype.inputPanelResize = function ( inputPanel,panelWidth,panelHeight )  {
+    if (inputPanel.job_dialog._created)  {
+      var rect  = inputPanel.grid.aceditor.getBoundingRect();
+      var rect1 = inputPanel.job_dialog.getBoundingRect();
+      if (!inputPanel.grid.aceinit)  {
+        inputPanel.grid.aceditor.init ( '','' );
+        inputPanel.grid.aceinit = true;
+        // console.log ( this.getInputData ( inputPanel.grid.inpDataRef,'object' ) );
+      }
+      inputPanel.grid.aceditor.setSize_px ( panelWidth-12,panelHeight - (rect.top-rect1.top-170) );
+    }
+  }
+  
+  
+  TaskTextEditor.prototype.collectInput = function ( inputPanel )  {
+  
+    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+  
+    // send to server fspec and aceditor
+    this.getSelectedFile ( inputPanel.grid );
+  
+    return input_msg;
+  
+  }
+  
 }
+
 
 // make warning that unsaved data will be lost and remove aceditor fields from task
 // dlg.task.onJobDialogClose(dlg,function(close_bool){
-
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
