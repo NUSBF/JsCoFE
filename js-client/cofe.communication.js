@@ -685,6 +685,51 @@ var alink = document.getElementById(hiddenALinkID);
 }
 
 
+// function calculateJobFileURL ( fileName )  {
+//   // var url = __special_url_tag + '/';
+//   // if (__login_token)
+//   //       url += __login_token;
+//   // else  url += '404';
+//   // return url + '/' + __current_project + '/' + jobId + '/' + filePath;
+// }
+
+
+function fetchJobOutputFile ( task,fname,function_success,function_always,function_fail )  {
+// task may be any task from the project; the actual task number is obtained from 'fname'
+
+  var furl = task.getProjectURL(parseInt(fname.split('-')[0],10),'output/'+fname);
+
+  var oReq = new XMLHttpRequest();
+
+  oReq.onload = function(oEvent) {
+    function_success ( oReq.responseText );
+    if (function_always)
+      function_always();
+  };
+
+  oReq.onerror = function()  {
+    if (function_fail)
+      function_fail ( 'communication errors' );
+    if (function_always)
+      function_always();
+  }
+
+  oReq.overrideMimeType ( "text/plain; charset=x-user-defined" );
+  // oReq.responseType = 'arraybuffer';
+  oReq.timeout      = 9999999;
+  oReq.open ( 'POST',furl,true );
+
+  try {
+    oReq.send(null);
+  } catch (e) {
+    if (function_fail)
+      function_fail ( 'general error' );
+    // alert ( 'loading ' + self.url + ' failed:\n' + e );
+  }
+
+}
+
+
 function getJobFileURL ( jobId,filePath )  {
   var url = __special_url_tag + '/';
   if (__login_token)
