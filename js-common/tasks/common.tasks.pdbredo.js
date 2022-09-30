@@ -34,80 +34,35 @@ __template = require ( './common.tasks.template' );
 
 function TaskPDBREDO()  {   // must start with Task...
 
-// invoke the template class constructor:
-if (__template)  __template.TaskTemplate.call ( this );
-else  TaskTemplate.call ( this );
+  // invoke the template class constructor:
+  if (__template)  __template.TaskTemplate.call ( this );
+  else  TaskTemplate.call ( this );
 
-// define fields important for jsCoFE framework
+  // define fields important for jsCoFE framework
 
-this._type   = 'TaskPDBREDO';  // must give name of the class
-this.name    = 'PDB-REDO';    // default name to be shown in Job Tree
-this.oname   = '*';               // default output file name template;
-           // asterisk means do not use
-this.title   = 'PDB-REDO';         // title for job dialog
+  this._type   = 'TaskPDBREDO';  // must give name of the class
+  this.name    = 'PDB-REDO';     // default name to be shown in Job Tree
+  this.setOName ( 'pdbredo' );   // default output file name template
+  this.title   = 'PDB-REDO';     // title for job dialog
 
 
-this.input_dtypes = [{  // input data types
-  data_type : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
-  label     : 'Structure revision',     // label for input dialog
-  inputId   : 'revision', // input Id for referencing input fields
-  version   : 4,          // minimum data version allowed
-  min       : 1,          // minimum acceptable number of data instances
-  max       : 1           // maximum acceptable number of data instances
+  this.input_dtypes = [{  // input data types
+    data_type : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
+    label     : 'Structure revision',     // label for input dialog
+    inputId   : 'revision', // input Id for referencing input fields
+    version   : 4,          // minimum data version allowed
+    min       : 1,          // minimum acceptable number of data instances
+    max       : 1           // maximum acceptable number of data instances
+  }];
+
+  this.parameters = {};
+
 }
-];
-
-this.parameters = {
-  _label : {
-        type        : 'label',
-        label       : '<b><i>Target sequence(s):<br>&nbsp;<br>&nbsp;<br>&nbsp;' +
-                      '<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;' +
-                      '<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;<br>&nbsp;',
-        position    : [0,0,1,1],
-        showon      : {'revision.subtype:seq':[0,-1]} // from this and input data section
-      },
-  SEQUENCE_TA: {
-        type        : 'textarea_',
-        //keyword     : 'keyword',
-        tooltip     : '',
-        reportas    : 'Sequence(s)',
-        placeholder : 'Copy-paste your sequence(s) here, including title line(s).\n\n' +
-                      'More than one sequences of the same type (protein/dna/na)\n' +
-                      'can be given one after another. Example:\n\n' +
-                      '>rnase_A\n' +
-                      'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGE\n' +
-                      'ATQEDYYTGDHYATFSLIDQTC\n\n' +
-                      '>1dtx_A\n' +
-                      'QPRRKLCILHRNPGRCYDKIPAFYYNQKKKQCERFDWSGCGGNSNRFKTIEECRRTCIG',
-        nrows       : 15,
-        ncols       : 160,
-        iwidth      : 700,
-        value       : '',
-        position    : [0,2,1,3],
-        showon      : {'revision.subtype:seq':[0,-1]} // from this and input data section
-      },
-  _label_2 : {
-        type        : 'label',
-        label       : '&nbsp;',
-        position    : [1,0,1,1]
-      },
-  DEL0HYDR_CBX : {
-        type     : 'checkbox',
-        label    : 'Remove hydrogens with zero occupancy',
-        tooltip  : 'Check to remove hydrogens with zero occupancy',
-        value    : false,
-        iwidth   : 340,
-        position : [2,0,1,4]
-      }
-}
-};
-
-
 
 // finish constructor definition
 
 if (__template)
-TaskPDBREDO.prototype = Object.create ( __template.TaskTemplate.prototype );
+      TaskPDBREDO.prototype = Object.create ( __template.TaskTemplate.prototype );
 else  TaskPDBREDO.prototype = Object.create ( TaskTemplate.prototype );
 TaskPDBREDO.prototype.constructor = TaskPDBREDO;
 
@@ -123,9 +78,9 @@ TaskPDBREDO.prototype.icon = function()  { return 'task_pdbredo'; }
 
 TaskPDBREDO.prototype.currentVersion = function()  {
 var version = 1;
-if (__template)
-return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
-else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
 // ===========================================================================
@@ -134,26 +89,41 @@ else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 
 if (__template)  {  //  will run only on server side
 
-// acquire configuration module
-var conf = require('../../js-server/server.configuration');
+  // acquire configuration module
+  var conf = require('../../js-server/server.configuration');
 
-// form command line for server's node js to start task's python driver;
-// note that last 3 parameters are optional and task driver will not use
-// them in most cases.
+  TaskPDBREDO.prototype.makeInputData = function ( loginData,jobDir )  {
 
-TaskPDBREDO.prototype.getCommandLine = function ( jobManager,jobDir )  {
-return [ conf.pythonName(),         // will use python from configuration
-'-m',                      // will run task as a python module
-'pycofe.tasks.pdbredo', // path to python driver
-jobManager,                  // framework's type of run: 'SHELL', 'SGE' or 'SCRIPT'
-jobDir,                   // path to job directory given by framework
-this.id                   // task id (assigned by the framework)
-];
-}
+    // put hkl and structure data in input databox for copying their files in
+    // job's 'input' directory
 
-// -------------------------------------------------------------------------
-// export such that it could be used in server's node js
+    if ('revision' in this.input_data.data)  {
+      var revision = this.input_data.data['revision'][0];
+      this.input_data.data['hkl']     = [revision.HKL];
+      this.input_data.data['istruct'] = [revision.Structure];
+    }
 
-module.exports.TaskPDBREDO = TaskPDBREDO;
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
+
+  }
+
+  // form command line for server's node js to start task's python driver;
+  // note that last 3 parameters are optional and task driver will not use
+  // them in most cases.
+
+  TaskPDBREDO.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [  conf.pythonName(),         // will use python from configuration
+              '-m',                      // will run task as a python module
+              'pycofe.tasks.pdbredo', // path to python driver
+              jobManager,                  // framework's type of run: 'SHELL', 'SGE' or 'SCRIPT'
+              jobDir,                   // path to job directory given by framework
+              this.id                   // task id (assigned by the framework)
+          ];
+  }
+
+  // -------------------------------------------------------------------------
+  // export such that it could be used in server's node js
+
+  module.exports.TaskPDBREDO = TaskPDBREDO;
 
 }
