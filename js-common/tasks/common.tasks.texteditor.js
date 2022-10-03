@@ -33,13 +33,12 @@ function TaskTextEditor()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type       = 'TaskTextEditor';
-  this.name        = 'text editor';
-  this.oname       = 'text_editor';   // asterisk here means do not use
-  this.title       = 'Text editor';
-//   if (__template)
-//         this.state = __template.job_code.remark;
-//   else  this.state = job_code.remark;
+  this._type  = 'TaskTextEditor';
+  this.name   = 'text editor';
+  this.oname  = 'text_editor';   // asterisk here means do not use
+  this.title  = 'Text editor';
+
+  this.upload = null;
 
   this.input_dtypes = [{  // input data types
     data_type   : { 'DataRevision' : [],    // data type(s) and subtype(s)
@@ -99,32 +98,13 @@ if (!__template)  {
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
-//   TaskTextEditor.prototype.customDataClone = function ( cloneMode,task )  {
-//     return;
-//   }
+  TaskTextEditor.prototype.customDataClone = function ( cloneMode,task )  {
+    this.upload = null;
+    return;
+  }
 
   // reserved function name
   TaskTextEditor.prototype.runButtonName = function()  { return 'Save'; }
-
-  TaskTextEditor.prototype.loadFile = function ( inputPanel_grid )  {
-    var fname = this.getSelectedFile(inputPanel_grid).name;
-    if (fname)  {
-      fetchJobOutputFile ( this,fname,function(ftext){
-        inputPanel_grid.aceditor.setText ( ftext );
-      },null,function(errdesc){
-        new MessageBox ( 'Cannot load file',
-          '<h2>Cannot load file from server</h2><i>Error: ' + errdesc + '</i>.',
-          'msg_error'
-        );
-      });
-    }
-  }
-
-
-  TaskTextEditor.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
-    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
-    this.loadFile ( inpParamRef.grid );
-  }
 
 
   TaskTextEditor.prototype.getSelectedFile = function ( inputPanel_grid )  {
@@ -174,6 +154,36 @@ if (!__template)  {
   }
 
 
+  TaskTextEditor.prototype.loadFile = function ( inputPanel_grid )  {
+    var fname = this.getSelectedFile(inputPanel_grid).name;
+    if (fname)  {
+      fetchJobOutputFile ( this,fname,function(ftext){
+        inputPanel_grid.file_loaded = fname;
+        inputPanel_grid.aceditor.setText ( ftext );
+        inputPanel_grid.content_changed = false;
+      },null,function(errdesc){
+        inputPanel_grid.file_loaded = null;
+        inputPanel_grid.aceditor.setText ( '' );
+        new MessageBox ( 'Cannot load file',
+          '<h2>Cannot load file from server</h2><i>Error: ' + errdesc + '</i>.',
+          'msg_error'
+        );
+        inputPanel_grid.content_changed = false;
+      });
+    } else  {
+      inputPanel_grid.file_loaded = null;
+      inputPanel_grid.aceditor.setText ( '' );
+      inputPanel_grid.content_changed = false;
+    }
+  }
+
+
+  TaskTextEditor.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
+    TaskTemplate.prototype.inputChanged.call ( this,inpParamRef,emitterId,emitterValue );
+    this.loadFile ( inpParamRef.grid );
+  }
+
+
   // reserved function name
   TaskTextEditor.prototype.makeInputPanel = function ( dataBox )  {
 
@@ -187,9 +197,9 @@ if (!__template)  {
         'mode'        : 'python'
       });
     div.grid.setWidget ( div.grid.aceditor,row,0,1,5 );
-    div.grid.aceinit = false;
-
-    // this.loadFile ( div.grid );
+    div.grid.aceinit         = false;
+    div.grid.file_loaded     = null;
+    div.grid.content_changed = false;
 
     return div;
 
@@ -201,30 +211,78 @@ if (!__template)  {
       var rect1 = inputPanel.job_dialog.getBoundingRect();
       if (!inputPanel.grid.aceinit)  {
         inputPanel.grid.aceditor.init ( '','' );
-        inputPanel.grid.aceinit = true;
-        // console.log ( this.getInputData ( inputPanel.grid.inpDataRef,'object' ) );
+        inputPanel.grid.aceditor.addOnChangeListener ( function(){
+          inputPanel.grid.content_changed = true;
+        });
+        inputPanel.grid.aceinit         = true;
+        inputPanel.grid.content_changed = false;
+        this.loadFile ( inputPanel.grid );
       }
       inputPanel.grid.aceditor.setSize_px ( panelWidth-12,panelHeight - (rect.top-rect1.top-170) );
     }
   }
   
+  // TaskTextEditor.prototype.collectInput = function ( inputPanel )  {
   
-  TaskTextEditor.prototype.collectInput = function ( inputPanel )  {
+  //   var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
   
-    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+  //   // send to server fspec and aceditor
+  //   this.getSelectedFile ( inputPanel.grid );
   
-    // send to server fspec and aceditor
-    this.getSelectedFile ( inputPanel.grid );
+  //   return input_msg;
   
-    return input_msg;
+  // }
+  
+  TaskTextEditor.prototype.doRun = function ( inputPanel,run_func )  {
+
+    if (!inputPanel.grid.file_loaded)  {
+      new MessageBox ( 'No data selected',
+          '<h2>No data selected</h2><i>Nothing to do.</i>',
+          'msg_stop' );
+    } else if (!inputPanel.grid.content_changed)  {
+      new MessageBox ( 'No changes',
+          '<h2>Data not changed</h2><i>Nothing to do.</i>',
+          'msg_stop' );
+    } else  {
+      var data = inputPanel.grid.aceditor.getText();
+      if (!(data.trim()))  {
+        new MessageBox ( 'No data',
+            '<h2>Empty data</h2><i>Cannot process empty data.</i>',
+            'msg_stop' );
+      } else  {
+        this.upload = {
+          fspec : this.getSelectedFile ( inputPanel.grid ),
+          data  : data
+        };
+        TaskTemplate.prototype.doRun.call ( this,inputPanel,run_func );
+      }
+    }
   
   }
-  
+
+  TaskTextEditor.prototype.postSubmit = function()  {
+    this.upload.data = null;  // save space to optimize project logistics
+  }
+
+  TaskTextEditor.prototype.onJobDialogClose = function ( job_dialog,callback_func )  {
+    if ((this.state==job_code.new) && job_dialog.inputPanel.grid.file_loaded && 
+                                      job_dialog.inputPanel.grid.content_changed)  {
+      new QuestionBox ( 'Close Job Dialog',
+        '<h2>Warning</h2>' +
+        '<i>Changes will be lost if job dialog is closed without saving data.</i>',[
+            { name    : 'Close anyway',
+              onclick : function(){ callback_func ( true ); }
+            },{
+              name    : 'Cancel',
+              onclick : function(){}
+            }],'msg_confirm' );
+    } else  {
+      callback_func ( true );
+    }
+  }
+
+
 }
-
-
-// make warning that unsaved data will be lost and remove aceditor fields from task
-// dlg.task.onJobDialogClose(dlg,function(close_bool){
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
@@ -232,7 +290,27 @@ if (!__template)  {
 if (__template)  {
   //  for server side
 
-  TaskTextEditor.prototype.getCommandLine = function ( jobManager,jobDir )  { return null; }
+  var conf = require('../../js-server/server.configuration');
+
+  // TaskTextEditor.prototype.makeInputData = function ( loginData,jobDir )  {
+
+  //   // put hkl and structure data in input databox for copying their files in
+  //   // job's 'input' directory
+
+  //   if ('revision' in this.input_data.data)  {
+  //     var revision = this.input_data.data['revision'][0];
+  //     this.input_data.data['hkl']     = [revision.HKL];
+  //     this.input_data.data['istruct'] = [revision.Structure];
+  //   }
+
+  //   __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
+
+  // }
+
+  TaskTextEditor.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.texteditor', jobManager, jobDir, this.id];
+  }
+
 
   // -------------------------------------------------------------------------
 

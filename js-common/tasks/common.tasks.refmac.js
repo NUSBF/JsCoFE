@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.09.22   <--  Date of Last Modification.
+ *    01.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -563,7 +563,7 @@ TaskRefmac.prototype.currentVersion = function()  {
 
 TaskRefmac.prototype.desc_title = function()  {
 // this appears under task title in the task list
-   return 'refine macromolecular structures';
+  return 'refine macromolecular structure';
 };
 
 //TaskRefmac.prototype.cleanJobDir = function ( jobDir )  {}

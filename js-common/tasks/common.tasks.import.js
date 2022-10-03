@@ -418,16 +418,6 @@ if (!__template)  {
               files_ignored = '<h3>Files ignored:</h3><ul><li>' +
                               panel.upload.ignored_list.join('</li><li>') +
                               '</li></ul>';
-            // new QuestionBox ( 'Files uploaded',
-            //                   '<h3>Files uploaded:</h3><ul><li>' +
-            //                   panel.upload.new_files.join('</li><li>') +
-            //                   '</li></ul>' + files_ignored,
-            //                   'Upload more files',function(){
-            //                     panel.upload.button.click();
-            //                   },
-            //                   'Finish import',function(){
-            //                     panel.job_dialog.run_btn.click();
-            //                   },'msg_question');
             new QuestionBox ( 'Files uploaded',
                               '<h3>Files uploaded:</h3><ul><li>' +
                               panel.upload.new_files.join('</li><li>') +

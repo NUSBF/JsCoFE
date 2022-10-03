@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    24.09.22   <--  Date of Last Modification.
+ *    01.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2615,6 +2615,10 @@ if (!dbx)  {
       run_func();
 
   }
+
+  // This function is called just after the task was submitted to FE to run,
+  // in response to the submission request.
+  TaskTemplate.prototype.postSubmit = function() {}
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class

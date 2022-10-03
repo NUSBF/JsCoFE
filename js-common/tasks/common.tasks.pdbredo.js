@@ -83,6 +83,19 @@ var version = 1;
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskPDBREDO.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'automatically optimise, rebuild, refine and validate structure model';
+};
+
+TaskPDBREDO.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['pdbredo','pdb-redo','refinement','rebuild',
+                                           'rebuilding','optimise','optimisation',
+                                           'validate','validation'] );
+}
+
+
 // ===========================================================================
 
 //  4. Add server-side code

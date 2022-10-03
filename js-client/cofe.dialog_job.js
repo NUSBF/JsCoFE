@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.09.22   <--  Date of Last Modification.
+ *    30.09.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -788,8 +788,10 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                   dlg.tree.projectData.desc.autorun = true;
                   // dlg.parent_page.job_tree.projectData.desc.autorun = true;
 
+                dlg.close_btn.setDisabled ( false );
                 dlg.task.doRun ( dlg.inputPanel,function(){
 
+                  dlg.close_btn.setDisabled ( true );
                   dlg.task.job_dialog_data.panel = 'output';
                   dlg.task.state = job_code.running;
                   dlg.outputPanel.clear();
@@ -808,6 +810,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       data_obj.dnlURL    = dlg.task.getURL ( rdata.jobballName );
                       localCommand ( nc_command.runClientJob,data_obj,'Run Client Job',
                         function(response){
+                          dlg.task.postSubmit();
                           if (!response)  {
                             dlg.close_btn.setDisabled ( false );
                             return false;  // issue standard AJAX failure message
@@ -822,25 +825,27 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                           } else  {
                             dlg.loadReport();
                             dlg.radioSet.selectButton ( 'output' );
+                            onRun_func ( dlg );
+                            dlg.close_btn.setDisabled ( false );
+                            if (dlg.task.autoRunId)
+                              window.setTimeout ( function(){
+                                dlg.close_btn.click();
+                              },0);
                           }
-                          dlg.close_btn.setDisabled ( false );
                           return true;
                         });
 
                     } else  {
+                      dlg.task.postSubmit();
                       dlg.loadReport();
                       dlg.radioSet.selectButton ( 'output' );
+                      onRun_func ( dlg );
+                      dlg.close_btn.setDisabled ( false );
+                      if (dlg.task.autoRunId)
+                        window.setTimeout ( function(){
+                          dlg.close_btn.click();
+                        },0);
                     }
-
-                    //onRun_func ( dlg.task.id );
-                    onRun_func ( dlg );
-
-                    dlg.close_btn.setDisabled ( false );
-
-                    if (dlg.task.autoRunId)
-                      window.setTimeout ( function(){
-                        dlg.close_btn.click();
-                      },0);
 
                   });
 

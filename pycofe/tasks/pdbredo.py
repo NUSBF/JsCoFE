@@ -36,6 +36,7 @@ import shutil
 from . import basic
 # from   pycofe.dtypes    import dtype_template
 from   pycofe.proc      import qualrep
+from   pycofe.verdicts  import verdict_refmac
 
 # ============================================================================
 # Make PDB-REDO driver
@@ -98,6 +99,8 @@ class Pdbredo(basic.TaskDriver):
         # check solution and register data
         have_results = False
         if os.path.isfile(xyzout):
+
+            verdict_row = self.rvrow
 
             self.rvrow += 5
 
@@ -191,6 +194,16 @@ class Pdbredo(basic.TaskDriver):
                     meta = None
                     self.stderr ( " *** validation tools or molprobity failure" )
                     self.rvrow = rvrow0 + 4
+
+                # if meta:
+                #     verdict_meta = {
+                #         "data"   : { "resolution" : hkl.getHighResolution(raw=True) },
+                #         "params" : {},
+                #         "molprobity" : meta,
+                #         "xyzmeta" : structure.xyzmeta
+                #     }
+                #     suggestedParameters = verdict_refmac.putVerdictWidget (
+                #                                 self,verdict_meta,verdict_row )
 
         else:
             self.putTitle ( "No Output Generated" )

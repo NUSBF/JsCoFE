@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.07.22   <--  Date of Last Modification.
+#    01.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,8 +33,7 @@ import gemmi
 #  application imports
 from  pycofe.tasks  import basic
 from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble
-from  pycofe.dtypes import dtype_structure,dtype_revision
-from  pycofe.dtypes import dtype_sequence
+from  pycofe.dtypes import dtype_sequence, dtype_revision
 from  pycofe.proc   import import_sequence,import_filetype
 from  pycofe.auto   import auto
 
