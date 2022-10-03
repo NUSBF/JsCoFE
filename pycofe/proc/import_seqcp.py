@@ -60,7 +60,7 @@ def run ( body,seqType,fnTemplate,seqData ):  # body is reference to the main Im
 
     seq = []
     if len(body.files_all)>0:
-        seq = import_sequence.run ( body )
+        seq = import_sequence.run ( body,openSection=True )
 
     body.generic_parser_summary = {}  # depress showing R-factors from refmac
 

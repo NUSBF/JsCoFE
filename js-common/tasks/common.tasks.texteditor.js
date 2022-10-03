@@ -155,7 +155,10 @@ if (!__template)  {
 
 
   TaskTextEditor.prototype.loadFile = function ( inputPanel_grid )  {
-    var fname = this.getSelectedFile(inputPanel_grid).name;
+    var fname = null;
+    if (this.upload)
+          fname = this.upload.fspec.name;
+    else  fname = this.getSelectedFile(inputPanel_grid).name;
     if (fname)  {
       fetchJobOutputFile ( this,fname,function(ftext){
         inputPanel_grid.file_loaded = fname;
@@ -200,6 +203,7 @@ if (!__template)  {
     div.grid.aceinit         = false;
     div.grid.file_loaded     = null;
     div.grid.content_changed = false;
+    div.grid.ace_disable     = false;
 
     return div;
 
@@ -217,10 +221,19 @@ if (!__template)  {
         inputPanel.grid.aceinit         = true;
         inputPanel.grid.content_changed = false;
         this.loadFile ( inputPanel.grid );
+        inputPanel.grid.aceditor.setReadOnly ( inputPanel.grid.ace_disable );
       }
       inputPanel.grid.aceditor.setSize_px ( panelWidth-12,panelHeight - (rect.top-rect1.top-170) );
     }
   }
+
+  TaskTextEditor.prototype.disableInputWidgets = function ( inputPanel,disable_bool )  {
+    TaskTemplate.prototype.disableInputWidgets.call ( this,inputPanel,disable_bool );
+    inputPanel.grid.ace_disable = disable_bool;
+    if (inputPanel.grid.aceinit)
+      inputPanel.grid.aceditor.setReadOnly ( disable_bool );
+  }
+
   
   // TaskTextEditor.prototype.collectInput = function ( inputPanel )  {
   

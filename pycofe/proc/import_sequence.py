@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    04.10.20   <--  Date of Last Modification.
+#    03.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SEQUENCE DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -81,7 +81,8 @@ naWeight = {
 # ============================================================================
 # Sequence import function
 
-def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference to the main Import class
+def run ( body,sectionTitle="Macromolecular sequences",
+               openSection=False ):  # body is reference to the main Import class
 
     seq_imported = []
 
@@ -122,7 +123,7 @@ def run ( body,sectionTitle="Macromolecular sequences" ):  # body is reference t
     seqSecId = body.getWidgetId ( "seq_sec_" )
 
     pyrvapi.rvapi_add_section ( seqSecId,sectionTitle,
-                                body.report_page_id(),body.rvrow,0,1,1,False )
+                                body.report_page_id(),body.rvrow,0,1,1,openSection )
     k = 0
     for f, f_orig in files_seq:
 
