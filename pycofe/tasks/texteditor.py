@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.10.22   <--  Date of Last Modification.
+#    03.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -57,21 +57,42 @@ class TextEditor(basic.TaskDriver):
 
         have_results = False
 
+        # write out uploaded file
+        ifname, ifext = os.path.splitext ( self.task.upload.fspec.name )
+        ufname = self.getOFName ( ifext )
+        with open(ufname,"w") as file:
+            file.write ( self.task.upload.data )
+
         if object._type==dtype_sequence.dtype():
             # import modified sequence
+            self.putMessage ( "<b>Edited data:</b> sequence(s)" )
+            self.putTitle ( "Edited sequence(s)" )
             import_seqcp.run ( self,
                 object.getType(),
                 self.outputFName,
                 self.task.upload.data )
-            have_results = True
+            nseq = self.outputDataBox.nData ( object._type )
+            if nseq>0:
+                self.generic_parser_summary["TextEditor"] = {
+                  "summary_line" : str(nseq) + " sequence(s) edited"
+                }
+            else:
+                self.putMessage ( "<h3>No sequence(s) could be imported after editing</h3>" +
+                                  "<i>Check that sequence data was edited correctly.</i>" )
+                self.generic_parser_summary["TextEditor"] = {
+                  "summary_line" : "sequence editing failed"
+                }
 
-        else:
-            # write out uploaded file
-            ifname, ifext = os.path.splitext ( self.task.upload.fspec.name )
-            ufname = self.getOFName ( ifext )
-            with open(ufname,"w") as file:
-                file.write ( self.task.upload.data )
+            have_results = (nseq>0)
 
+        # else:
+
+        # retain a copy of edited file for displaying in Job Dialog's Input Panel
+        self.task.upload.fspec.name = dtype_template.makeFileName (
+                                                self.job_id,99,self.getOFName(ifext) )
+
+        with open(os.path.join(self.outputDir(),self.task.upload.fspec.name),"w") as file:
+            file.write ( self.task.upload.data )
 
         self.task.upload.data = None
 
@@ -81,6 +102,8 @@ class TextEditor(basic.TaskDriver):
         #     self.generic_parser_summary["TextEditor"] = {
         #       "summary_line" : ", ".join(log)
         #     }
+
+        self.addCitation ( "default" )
 
         # close execution logs and quit
         self.success ( have_results )

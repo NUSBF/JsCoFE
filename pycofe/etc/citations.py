@@ -958,7 +958,7 @@ citations = {
                             'journal' : 'Acta Cryst.',
                             'volume'  : 'D78',
                             'year'    : '2022',
-                            'pages'   : 'xxx-yyy',
+                            'pages'   : '1079-1089',
                             'doi'     : '10.1107/S2059798322007987'
                   }]
                 },

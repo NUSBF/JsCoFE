@@ -1,17 +1,15 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    13.02.20   <--  Date of Last Modification.
+#    03.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  THE DATABOX
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -65,6 +63,12 @@ class DataBox(jsonut.jObject):
         for dtype in self.data:
             n += 1
         return n
+
+
+    def nData ( self,dtype ):
+        if dtype in self.data:
+            return len(self.data[dtype])
+        return 0
 
 
     def delete_data ( self,dataId ):

@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    01.10.22   <--  Date of Last Modification.
+ *    03.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1113,6 +1113,12 @@ ACEditor.prototype.init = function ( text,placeholder )  {
     if (text)
       this.setText ( text );
   }
+}
+
+ACEditor.prototype.setReadOnly = function ( readonly_bool )  {
+  if (this.editor)
+    this.editor.setReadOnly ( readonly_bool );
+  return this;
 }
 
 ACEditor.prototype.addOnChangeListener = function ( listener_func )  {
