@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    01.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -392,7 +392,8 @@ if (!__template)  {
           run_func();
         else
           new MessageBox ( 'Stop run','Task cannot be run due to upload ' +
-                                'errors:<p><b><i>' + returnCode + '</i></b>' );
+                                'errors:<p><b><i>' + returnCode + '</i></b>',
+                                msg_error );
       });
     } else
       run_func();
