@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    20.03.20   <--  Date of Last Modification.
+#    04.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  MR MODEL DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2022
 #
 # ============================================================================
 #
@@ -103,4 +103,4 @@ def register ( sequence,modelFilePath,dataSerialNo,job_id,outDataBox,outputDir )
         os.rename ( modelFilePath, os.path.join(outputDir,newFileName) )
         return model
     else:
-        return None;
+        return None
