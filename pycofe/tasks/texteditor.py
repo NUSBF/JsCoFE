@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    03.10.22   <--  Date of Last Modification.
+#    04.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,8 +32,8 @@ import gemmi
 
 #  application imports
 from  pycofe.tasks  import basic
-from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble
-from  pycofe.dtypes import dtype_structure,dtype_revision
+from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_model,dtype_ensemble
+# from  pycofe.dtypes import dtype_structure,dtype_revision
 from  pycofe.dtypes import dtype_sequence
 # from  pycofe.proc   import import_sequence,import_filetype
 from  pycofe.proc   import import_seqcp
@@ -82,10 +82,72 @@ class TextEditor(basic.TaskDriver):
                 self.generic_parser_summary["TextEditor"] = {
                   "summary_line" : "sequence editing failed"
                 }
-
             have_results = (nseq>0)
 
-        # else:
+        elif object._type==dtype_xyz.dtype():
+            self.putMessage ( "<b>Edited data:</b> atomic coordinates (XYZ)" )
+            self.putTitle   ( "Edited coordinates" )
+            oxyz = self.registerXYZ ( ufname,checkout=True )
+            if oxyz:
+                oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                self.putMessage (
+                    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                    oxyz.dname )
+                self.putXYZWidget ( self.getWidgetId("xyz_btn"),"Edited coordinates",oxyz )
+                self.generic_parser_summary["TextEditor"] = {
+                  "summary_line" : "atomic coordinates edited"
+                }
+                have_results = True
+            else:
+                # close execution logs and quit
+                self.generic_parser_summary["TextEditor"] = {
+                  "summary_line" : "atomic coordinates editing failed"
+                }
+                self.putMessage ( "<h3>XYZ Data was not formed after edited</h3>" +
+                                  "<i>Check that coordinate data was edited correctly.</i>" )
+            
+        elif object._type==dtype_model.dtype():
+            self.putMessage ( "<b>Edited data:</b> MR Model" )
+            self.putTitle   ( "Edited MR Model" )
+            seq = object.getSubtypes()
+            if object.sequence:
+                seq = self.makeClass ( object.sequence )
+            oxyz = self.registerModel ( seq,ufname,checkout=True )
+            if oxyz:
+                self.putModelWidget ( self.getWidgetId("model_btn"),"Coordinates",oxyz )
+                self.generic_parser_summary["TextEditor"] = {
+                  "summary_line" : "MR model coordinates edited"
+                }
+                have_results = True
+            else:
+                # close execution logs and quit
+                self.generic_parser_summary["TextEditor"] = {
+                  "summary_line" : "MR model editing failed"
+                }
+                self.putMessage ( "<h3>MR Model was not formed after edited</h3>" +
+                                  "<i>Check that coordinate data was edited correctly.</i>" )
+
+        elif object._type==dtype_ensemble.dtype():
+            self.putMessage ( "<b>Edited data:</b> MR Ensemble" )
+            self.putTitle   ( "Edited MR Ensemble" )
+            seq = object.getSubtypes()
+            if object.sequence:
+                seq = self.makeClass ( object.sequence )
+            oxyz = self.registerEnsemble ( seq,ufname,checkout=True )
+            if oxyz:
+                self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),"Coordinates",oxyz )
+                self.generic_parser_summary["TextEditor"] = {
+                  "summary_line" : "MR ensemble coordinates edited"
+                }
+                have_results = True
+            else:
+                # close execution logs and quit
+                self.generic_parser_summary["TextEditor"] = {
+                  "summary_line" : "MR ensemble editing failed"
+                }
+                self.putMessage ( "<h3>MR Ensemble was not formed after edited</h3>" +
+                                  "<i>Check that coordinate data was edited correctly.</i>" )
+
 
         # retain a copy of edited file for displaying in Job Dialog's Input Panel
         self.task.upload.fspec.name = dtype_template.makeFileName (

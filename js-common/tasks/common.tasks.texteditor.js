@@ -126,7 +126,7 @@ if (!__template)  {
       switch (fspec.otype)  {
         case 'DataXYZ'      :
         case 'DataModel'    :
-        case 'DataEnsmeble' : if (file_key.xyz in files)  {
+        case 'DataEnsemble' : if (file_key.xyz in files)  {
                                 fspec.name  = files[file_key.xyz];
                                 fspec.ftype = file_key.xyz
                               }
@@ -294,8 +294,8 @@ if (!__template)  {
     }
   }
 
-
 }
+
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
