@@ -574,30 +574,52 @@ if (!__template)  {
 
 
   DataRevision.prototype._layCDI_TextEditor = function ( dropdown )  {
-    if (this.Structure || this.Substructure)  {
-      var customGrid = dropdown.customGrid;
-      var row        = customGrid.getNRows();
+    var flist = [];
 
-      customGrid.setLabel ( 'Select file:',row,0,1,1 ).setFontItalic(true).setNoWrap();
-      customGrid.setVerticalAlignment ( row,0,'middle' );
-      customGrid.file_sel = new Dropdown();
-      if (this.Structure)  {
-        customGrid.ncsmodel_sel.addItem (
-          'heavy-atom substructure (' + this.ASU.ha_type + ')',
-          '','substructure' ,this.Options.ncsmodel_sel=='substructure' );
-      }
-      customGrid.file_sel.addItem ( 'do not use',
-              '','do-not-use' ,this.Options.ncsmodel_sel=='do-not-use' );
-    if (this.Substructure)
-      customGrid.ncsmodel_sel.addItem (
-                'heavy-atom substructure (' + this.ASU.ha_type + ')',
-                '','substructure' ,this.Options.ncsmodel_sel=='substructure' );
-    if (this.Structure)
-      customGrid.ncsmodel_sel.addItem ( 'macromolecular model',
-                '','model' ,this.Options.ncsmodel_sel=='model' );
+    for (var i=0;i<this.ASU.seq.length;i++)  {
+      var files = this.ASU.seq[i].files;
+      if (file_key.seq in files)
+        flist.push ([ 'sequence',files[file_key.seq] ]);
+    }
 
-    customGrid.setWidget ( customGrid.ncsmodel_sel, row,1,1,5 );
-    customGrid.ncsmodel_sel.make();
+    if (this.Structure)  {
+      if (file_key.xyz in this.Structure.files) 
+        flist.push ([ 'xyz (pdb)',files[file_key.xyz] ]);
+      if (file_key.mmcif in this.Structure.files) 
+        flist.push ([ 'xyz (mmcif)',files[file_key.mmcif] ]);
+    }
+
+    // if (this.Substructure)  {
+    //   if (file_key.xyz in this.Structure.files) 
+    //     flist.push ([ 'xyz (pdb)',files[file_key.xyz] ]);
+    //   if (file_key.mmcif in this.Structure.files) 
+    //     flist.push ([ 'xyz (mmcif)',files[file_key.mmcif] ]);
+    // }
+
+    // if (this.Structure || this.Substructure)  {
+    //   var customGrid = dropdown.customGrid;
+    //   var row        = customGrid.getNRows();
+
+    //   customGrid.setLabel ( 'Select file:',row,0,1,1 ).setFontItalic(true).setNoWrap();
+    //   customGrid.setVerticalAlignment ( row,0,'middle' );
+    //   customGrid.file_sel = new Dropdown();
+    //   if (this.Structure)  {
+    //     customGrid.file_sel.addItem (
+    //       'heavy-atom substructure (' + this.ASU.ha_type + ')',
+    //       '','substructure' ,this.Options.ncsmodel_sel=='substructure' );
+    //   }
+    //   customGrid.file_sel.addItem ( 'do not use',
+    //           '','do-not-use' ,this.Options.ncsmodel_sel=='do-not-use' );
+    // if (this.Substructure)
+    //   customGrid.ncsmodel_sel.addItem (
+    //             'heavy-atom substructure (' + this.ASU.ha_type + ')',
+    //             '','substructure' ,this.Options.ncsmodel_sel=='substructure' );
+    // if (this.Structure)
+    //   customGrid.ncsmodel_sel.addItem ( 'macromolecular model',
+    //             '','model' ,this.Options.ncsmodel_sel=='model' );
+
+    // customGrid.setWidget ( customGrid.ncsmodel_sel, row,1,1,5 );
+    // customGrid.ncsmodel_sel.make();
 
   }
   
@@ -672,7 +694,7 @@ if (!__template)  {
       case 'coot-mb'    :
             this._layCDI_CootMB ( dropdown );
           break;
-      case 'coot-mb'    :
+      case 'texteditor'    :
             this._layCDI_TextEditor ( dropdown );
           break;
       default : ;
