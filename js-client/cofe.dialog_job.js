@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.10.22   <--  Date of Last Modification.
+ *    06.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,13 +47,14 @@ function JobDialog ( params,          // data and task projections up the tree b
                      onDlgSignal_func // function(taskId,reason) called on custom events
                    ) {
 
-  this.tree        = params.tree;
-  this.nodeId      = params.nodeId;
-  this.task        = params.ancestors[0];
-  this.dataBox     = params.dataBox;
-  this.ancestors   = params.ancestors;
-  this.parent_page = parent_page;
-  this.job_edited  = false;
+  this.tree         = params.tree;
+  this.nodeId       = params.nodeId;
+  this.task         = params.ancestors[0];
+  this.dataBox      = params.dataBox;
+  this.ancestors    = params.ancestors;
+  this.parent_page  = parent_page;
+  this.job_edited   = false;
+  this.onClose_func = onClose_func;
 
   this._created    = false;
 
@@ -107,14 +108,16 @@ function JobDialog ( params,          // data and task projections up the tree b
           window.setTimeout ( function(){
             dlg.task.onJobDialogStart ( dlg );
             dlg._created = true;
+            dlg.setDlgSize();  
           },0);
         } else  {
           dlg._created = true;
-        }
-        window.setTimeout ( function(){
           dlg.setDlgSize();  
-          // dlg.task.inputPanelResize ( dlg.inputPanel,size[0]-30,size[1]-190 );
-        },100);
+        }
+        // window.setTimeout ( function(){
+          // dlg.setDlgSize();  
+        //   // dlg.task.inputPanelResize ( dlg.inputPanel,size[0]-30,size[1]-190 );
+        // },100);
       },
       focus     : function() {
                     if (onDlgSignal_func)
@@ -143,17 +146,19 @@ function JobDialog ( params,          // data and task projections up the tree b
   var dlg = this;
 
     $(dlg.element).on( "dialogclose",function(event,ui){
-      //if (dlg.close_btn && (!dlg.task.job_dialog_data.viewed))
-      //  dlg.close_btn.click();
-      //else  {
-        dlg.outputPanel.clear();
-        //onClose_func(dlg.task.id);
-        window.setTimeout ( function(){
-          // $(dlg.element).dialog( "destroy" );
-          dlg.delete();
-        },10 );
-      //}
-      onClose_func ( dlg );
+      dlg.delete();
+      // //if (dlg.close_btn && (!dlg.task.job_dialog_data.viewed))
+      // //  dlg.close_btn.click();
+      // //else  {
+      //   dlg.outputPanel.clear();
+      //   //onClose_func(dlg.task.id);
+      //   window.setTimeout ( function(){
+      //     // $(dlg.element).dialog( "destroy" );
+      //     dlg.delete();
+      //   },10 );
+      // //}
+      // console.log ( '>>>> on close ' + dlg.task._type );
+      // onClose_func ( dlg );
     });
 
     // Listen for input event, emitted when input data changes
@@ -186,19 +191,27 @@ JobDialog.prototype.constructor = JobDialog;
 
 
 JobDialog.prototype.delete = function()  {
+
   if (this.inputPanel)  {
     this.inputPanel.delete();
     this.inputPanel = null;
   }
+
   if (this.outputPanel)  {
     this.outputPanel.delete();
     this.outputPanel = null;
   }
+
   if (this._created)  {
     this._created = false;
     $(this.element).dialog( 'destroy' );
   }
+
+  if (this.onClose_func)
+    this.onClose_func ( this );
+
   Widget.prototype.delete.call ( this );
+
 }
 
 
@@ -936,7 +949,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
         }
         dlg.task.onJobDialogClose(dlg,function(close_bool){
           if (close_bool)
-            $(dlg.element).dialog ( "close" );
+            dlg.close();
+            // $(dlg.element).dialog ( "close" );
         });
         /*  strict version with input validation ( does not close if error)
         if (dlg.task.state!=job_code.exiting)  {
