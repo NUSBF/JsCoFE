@@ -584,9 +584,34 @@ if (!__template)  {
 
     if (this.Structure)  {
       if (file_key.xyz in this.Structure.files) 
-        flist.push ([ 'xyz (pdb)',files[file_key.xyz] ]);
+        flist.push ([ 'structure (pdb)',this.Structure.files[file_key.xyz] ]);
       if (file_key.mmcif in this.Structure.files) 
-        flist.push ([ 'xyz (mmcif)',files[file_key.mmcif] ]);
+        flist.push ([ 'structure (mmcif)',this.Structure.files[file_key.mmcif] ]);
+    }
+
+    if (this.Substructure)  {
+      if (file_key.sub in this.Substructure.files) 
+        flist.push ([ 'substructure (pdb)',this.Substructure.files[file_key.sub] ]);
+    }
+
+    if (flist.length>0)  {
+      var customGrid = dropdown.customGrid;
+      var row        = customGrid.getNRows();
+      customGrid.setLabel ( 'Select file:',row,0,1,1 ).setFontItalic(true).setNoWrap();
+      customGrid.setVerticalAlignment ( row,0,'middle' );
+      customGrid.textedit_sel = new Dropdown();
+      if (!('texteditor' in this.Options))
+        this.Options.texteditor = {
+          fname : '',
+          stype : ''
+        };
+      for (var i=0;i<flist.length;i++)  {
+        flist[i].push ( 'fid_'+i );
+        customGrid.textedit_sel.addItem ( flist[i][1] + ' : ' + flist[i][0],
+                              '',i,this.Options.texteditor.fname==flist[i][1] );
+      }
+      customGrid.setWidget ( customGrid.textedit_sel, row,1,1,5 );
+      customGrid.textedit_sel.make();
     }
 
     // if (this.Substructure)  {
@@ -733,7 +758,7 @@ if (!__template)  {
     return msg;
   }
 
-  DataRevision.prototype.collectCustomDropdownInput = function ( dropdown ) {
+  DataRevision.prototype.collectCustomDropdownInput = function ( dropdown )  {
   var msg = '';
 
     switch (dropdown.layCustom)  {
@@ -837,6 +862,16 @@ if (!__template)  {
       case 'coot-mb' :
           if ('load_all_cbx' in dropdown.customGrid)
             this.Options.load_all = dropdown.customGrid.load_all_cbx.getValue();
+        break;
+
+      case 'texteditor' :
+          if ('textedit_sel' in dropdown.customGrid)  {
+            var value = dropdown.customGrid.textedit_sel.getText().split(':');
+            this.Options.texteditor = {
+              fname : value[0].trim(),
+              stype : value[1].trim().split(' ')[0].trim()
+            };
+          }
         break;
 
       case 'cell-info' :

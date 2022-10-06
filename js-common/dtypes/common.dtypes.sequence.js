@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.08.22   <--  Date of Last Modification.
+ *    06.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -177,6 +177,10 @@ if (!__template)  {
                     .setWidth_px ( 200 );
       grid.setVerticalAlignment ( 0,0,'middle' );
 
+    } else if (dropdown.layCustom=='texteditor')  {
+      // just a place hoilder for keeping row height
+      customGrid.setLabel ( '&nbsp;',0,0,1,1 )   
+                .setFontItalic(true).setNoWrap().setHeight_px(30);
     }
 
   }

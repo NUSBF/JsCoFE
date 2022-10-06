@@ -108,16 +108,16 @@ function JobDialog ( params,          // data and task projections up the tree b
           window.setTimeout ( function(){
             dlg.task.onJobDialogStart ( dlg );
             dlg._created = true;
-            dlg.setDlgSize();  
+            // dlg.setDlgSize();  
           },0);
         } else  {
           dlg._created = true;
-          dlg.setDlgSize();  
-        }
-        // window.setTimeout ( function(){
           // dlg.setDlgSize();  
-        //   // dlg.task.inputPanelResize ( dlg.inputPanel,size[0]-30,size[1]-190 );
-        // },100);
+        }
+        window.setTimeout ( function(){
+          dlg.setDlgSize();  
+          // dlg.task.inputPanelResize ( dlg.inputPanel,size[0]-30,size[1]-190 );
+        },100);
       },
       focus     : function() {
                     if (onDlgSignal_func)

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.09.22   <--  Date of Last Modification.
+ *    06.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -124,22 +124,43 @@ if (!__template)  {
       fspec.otype = object._type;
 
       switch (fspec.otype)  {
+
         case 'DataXYZ'      :
         case 'DataModel'    :
         case 'DataEnsemble' : if (file_key.xyz in files)  {
                                 fspec.name  = files[file_key.xyz];
                                 fspec.ftype = file_key.xyz
                               }
-                              break;
+                            break;
+
         case 'DataSequence' : if (file_key.seq in files)  {
                                 fspec.name  = files[file_key.seq];
                                 fspec.ftype = file_key.seq
                               }
-                              break;
+                            break;
+
+        case 'DataRevision' : fspec.name  = object.Options.texteditor.fname;
+                              fspec.stype = object.Options.texteditor.stype;
+
+                              // set listener on customGrid selector
+                              var item     = this.getInputItem ( inputPanel_grid.inpDataRef,'object' );
+                              var dropdown = item.dropdown[0];
+                              if (!('listener' in dropdown))  {
+                                dropdown.listener = true;
+                                (function(task){
+                                  dropdown.customGrid.textedit_sel.addOnChangeListener (
+                                    function(text,value){
+                                      task.loadFile ( inputPanel_grid );
+                                    },false );
+                                }(this))
+                              }
+                            break;
         default : ;
       }
 
     }
+    
+    inputPanel_grid.aceditor.setVisible ( (fspec.name.length>0) );
 
     return fspec;
 
@@ -155,28 +176,30 @@ if (!__template)  {
 
 
   TaskTextEditor.prototype.loadFile = function ( inputPanel_grid )  {
-    var fname = null;
-    if (this.upload)
-          fname = this.upload.fspec.name;
-    else  fname = this.getSelectedFile(inputPanel_grid).name;
-    if (fname)  {
-      fetchJobOutputFile ( this,fname,function(ftext){
-        inputPanel_grid.file_loaded = fname;
-        inputPanel_grid.aceditor.setText ( ftext );
-        inputPanel_grid.content_changed = false;
-      },null,function(errdesc){
+    if (inputPanel_grid.aceinit)  {
+      var fname = null;
+      if (this.upload)  fname = this.upload.fspec.name;
+                  else  fname = this.getSelectedFile(inputPanel_grid).name;
+      // var fname = this.getSelectedFile(inputPanel_grid).name;
+      if (fname)  {
+        fetchJobOutputFile ( this,fname,function(ftext){
+          inputPanel_grid.file_loaded = fname;
+          inputPanel_grid.aceditor.setText ( ftext );
+          inputPanel_grid.content_changed = false;
+        },null,function(errdesc){
+          inputPanel_grid.file_loaded = null;
+          inputPanel_grid.aceditor.setText ( '' );
+          new MessageBox ( 'Cannot load file',
+            '<h2>Cannot load file from server</h2><i>Error: ' + errdesc + '</i>.',
+            'msg_error'
+          );
+          inputPanel_grid.content_changed = false;
+        });
+      } else  {
         inputPanel_grid.file_loaded = null;
         inputPanel_grid.aceditor.setText ( '' );
-        new MessageBox ( 'Cannot load file',
-          '<h2>Cannot load file from server</h2><i>Error: ' + errdesc + '</i>.',
-          'msg_error'
-        );
         inputPanel_grid.content_changed = false;
-      });
-    } else  {
-      inputPanel_grid.file_loaded = null;
-      inputPanel_grid.aceditor.setText ( '' );
-      inputPanel_grid.content_changed = false;
+      }
     }
   }
 
