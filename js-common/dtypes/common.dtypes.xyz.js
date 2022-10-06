@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.08.22   <--  Date of Last Modification.
+ *    06.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -351,6 +351,10 @@ if (!__template)  {
 
       customGrid.setLabel ( ' ',1,0,1,2 ).setHeight_px ( 8 );
 
+    } else if (dropdown.layCustom=='texteditor')  {
+      // just a place hoilder for keeping row height
+      customGrid.setLabel ( '&nbsp;',0,0,1,1 )   
+                .setFontItalic(true).setNoWrap().setHeight_px(30);
     }
 
   }
