@@ -108,7 +108,7 @@ class Deposition(basic.TaskDriver):
 
         # Prepare deposition input
         # fetch input data
-        revision = self.makeClass ( self.input_data.data.revision[0] )
+        # revision = self.makeClass ( self.input_data.data.revision[0] )
         hkl      = self.makeClass ( self.input_data.data.hkl     [0] )
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
         seq      = self.input_data.data.seq

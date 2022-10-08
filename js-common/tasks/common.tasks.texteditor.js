@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.10.22   <--  Date of Last Modification.
+ *    08.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,9 +45,9 @@ function TaskTextEditor()  {
                     'DataSequence' : [],
                     'DataXYZ'      : [],
                     'DataModel'    : [],
-                    'DataEnsemble' : []
-                    // 'DataLigand'   : []
-                    // 'DataLibrary'  : []
+                    'DataEnsemble' : [],
+                    'DataLigand'   : [],
+                    'DataLibrary'  : []
                   },
     unchosen_label : '[Select data]',
     label       : 'Data object',  // label for input dialog
@@ -139,9 +139,15 @@ if (!__template)  {
                               }
                             break;
 
+        case 'DataLigand'   :
+        case 'DataLibrary'  : if (file_key.lib in files)  {
+                                fspec.name  = files[file_key.lib];
+                                fspec.ftype = file_key.lib
+                              }
+                          break;
+
         case 'DataRevision' : fspec.name  = object.Options.texteditor.fname;
                               fspec.stype = object.Options.texteditor.stype;
-
                               // set listener on customGrid selector
                               var item     = this.getInputItem ( inputPanel_grid.inpDataRef,'object' );
                               var dropdown = item.dropdown[0];
@@ -163,14 +169,6 @@ if (!__template)  {
     inputPanel_grid.aceditor.setVisible ( (fspec.name.length>0) );
 
     return fspec;
-
-    // if ('xyz' in files)         return files.xyz;
-    // else if ('mmcif' in files)  return files.mmcif;
-    // else if ('sol'   in files)  return files.sol;
-    // else if ('sub'   in files)  return files.sub;
-    // else if ('seq'   in files)  return files.seq;
-    // else if ('lib'   in files)  return files.lib;
-    // return files;
 
   }
 
@@ -234,8 +232,9 @@ if (!__template)  {
 
   TaskTextEditor.prototype.inputPanelResize = function ( inputPanel,panelWidth,panelHeight )  {
     if (inputPanel.job_dialog._created)  {
-      var rect  = inputPanel.grid.aceditor.getBoundingRect();
-      var rect1 = inputPanel.job_dialog.getBoundingRect();
+      // var rect  = inputPanel.grid.aceditor.getBoundingRect();
+      // var rect  = inputPanel.grid.getBoundingRect();
+      // var rect1 = inputPanel.job_dialog.getBoundingRect();
       if (!inputPanel.grid.aceinit)  {
         inputPanel.grid.aceditor.init ( '','' );
         inputPanel.grid.aceditor.addOnChangeListener ( function(){
@@ -246,7 +245,9 @@ if (!__template)  {
         this.loadFile ( inputPanel.grid );
         inputPanel.grid.aceditor.setReadOnly ( inputPanel.grid.ace_disable );
       }
-      inputPanel.grid.aceditor.setSize_px ( panelWidth-12,panelHeight - (rect.top-rect1.top-170) );
+      // console.log ( ' >>>> ' + (panelHeight - (rect.top-rect1.top-170)) )
+      // inputPanel.grid.aceditor.setSize_px ( panelWidth-12,panelHeight - (rect.top-rect1.top-170) );
+      inputPanel.grid.aceditor.setSize_px ( panelWidth-12,panelHeight-86 );
     }
   }
 
@@ -328,20 +329,25 @@ if (__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  // TaskTextEditor.prototype.makeInputData = function ( loginData,jobDir )  {
+  TaskTextEditor.prototype.makeInputData = function ( loginData,jobDir )  {
 
-  //   // put hkl and structure data in input databox for copying their files in
-  //   // job's 'input' directory
+    // put hkl and structure data in input databox for copying their files in
+    // job's 'input' directory
 
-  //   if ('revision' in this.input_data.data)  {
-  //     var revision = this.input_data.data['revision'][0];
-  //     this.input_data.data['hkl']     = [revision.HKL];
-  //     this.input_data.data['istruct'] = [revision.Structure];
-  //   }
+    if ('object' in this.input_data.data)  {
+      var object = this.input_data.data['object'][0];
+      if (object._type=='DataRevision')  {
+        // this.input_data.data['hkl']     = [revision.HKL];
+        if (object.Structure && (this.upload.fspec.stype=='structure'))
+          this.input_data.data['ixyz'] = [object.Structure];
+        if (object.Substructure && (this.upload.fspec.stype=='substructure'))
+          this.input_data.data['ixyz'] = [object.Substructure];
+      }
+    }
 
-  //   __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
+    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
-  // }
+  }
 
   TaskTextEditor.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.texteditor', jobManager, jobDir, this.id];

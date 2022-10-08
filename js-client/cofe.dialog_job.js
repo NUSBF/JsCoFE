@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.10.22   <--  Date of Last Modification.
+ *    08.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -108,16 +108,16 @@ function JobDialog ( params,          // data and task projections up the tree b
           window.setTimeout ( function(){
             dlg.task.onJobDialogStart ( dlg );
             dlg._created = true;
-            // dlg.setDlgSize();  
-          },0);
+            dlg.setDlgSize();  
+          },100);
         } else  {
           dlg._created = true;
-          // dlg.setDlgSize();  
-        }
-        window.setTimeout ( function(){
           dlg.setDlgSize();  
-          // dlg.task.inputPanelResize ( dlg.inputPanel,size[0]-30,size[1]-190 );
-        },100);
+        }
+        // window.setTimeout ( function(){
+        //   dlg.setDlgSize();  
+        //   // dlg.task.inputPanelResize ( dlg.inputPanel,size[0]-30,size[1]-190 );
+        // },100);
       },
       focus     : function() {
                     if (onDlgSignal_func)

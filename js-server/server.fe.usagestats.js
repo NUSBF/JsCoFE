@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    07.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -267,7 +267,7 @@ var generate_report = false;
     if (emailer_conf.type!='desktop')  {
       conf.checkOnUpdate ( function(code){
         if ((code>0) && (code<255))  {
-          userData = new ud.UserData();
+          var userData   = new ud.UserData();
           userData.name  = cmd.appName() + ' Mainteiner';
           userData.email = emailer_conf.maintainerEmail;
           if (code==254)  {

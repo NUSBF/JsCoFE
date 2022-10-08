@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.10.22   <--  Date of Last Modification.
+#    08.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -326,7 +326,7 @@ class XyzUtils(basic.TaskDriver):
                             #self.putMessage (
                             #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
                             #    oxyz.dname )
-                            self.putStructureWidget ( "structure_btn",
+                            self.putStructureWidget ( self.getWidgetId("structure_btn"),
                                                       "Structure and electron density",
                                                       oxyz )
                             # update structure revision

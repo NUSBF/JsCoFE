@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.06.22   <--  Date of Last Modification.
+#    08.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -622,12 +622,12 @@ def register ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libF
         structure.setFile ( os.path.basename(fname0),dtype_template.file_key["xyz"] )
         structure.makeDName ( dataSerialNo )
         structure.removeFiles()
-        structure.add_file ( xyzFilePath ,outputDir,"xyz" ,copy_files )
-        structure.add_file ( subFilePath ,outputDir,"sub" ,copy_files )
-        structure.add_file ( mtzFilePath ,outputDir,"mtz" ,copy_files )
-        structure.add_file ( mapFilePath ,outputDir,"map" ,copy_files )
-        structure.add_file ( dmapFilePath,outputDir,"dmap",copy_files )
-        structure.add_file ( libFilePath ,outputDir,"lib" ,copy_files )
+        structure.add_file ( xyzFilePath ,outputDir,dtype_template.file_key["xyz" ],copy_files )
+        structure.add_file ( subFilePath ,outputDir,dtype_template.file_key["sub" ],copy_files )
+        structure.add_file ( mtzFilePath ,outputDir,dtype_template.file_key["mtz" ],copy_files )
+        structure.add_file ( mapFilePath ,outputDir,dtype_template.file_key["map" ],copy_files )
+        structure.add_file ( dmapFilePath,outputDir,dtype_template.file_key["dmap"],copy_files )
+        structure.add_file ( libFilePath ,outputDir,dtype_template.file_key["lib" ],copy_files )
         if xyzFilePath:
             structure.addSubtype ( dtype_template.subtypeXYZ() )
         if subFilePath:

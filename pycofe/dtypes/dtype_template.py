@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    04.05.21   <--  Date of Last Modification.
+#    08.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  BASE (TEMPLATE) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -72,6 +72,10 @@ def makeDataId ( jobId,serialNo ):
 
 def makeFileName ( jobId,serialNo,name ):
     return makeDataId(jobId,serialNo) + "_" + name
+
+def hasDataId ( fname ):
+    return len(fname)>=9 and fname[0:4].isdigit() and\
+           fname[5:7].isdigit() and fname[4]=="-" and fname[7]=="_"
 
 class DType(jsonut.jObject):
 

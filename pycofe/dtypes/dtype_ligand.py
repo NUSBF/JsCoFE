@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    31.10.18   <--  Date of Last Modification.
+#    08.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  LIGAND DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -63,7 +63,10 @@ def register ( xyzFilePath,cifFilePath,dataSerialNo,job_id,outDataBox,
         # of jsCoFE
         for f in [xyzFilePath,cifFilePath]:
             if f and os.path.isfile(f):
-                fname = ligand.dataId + "_" + os.path.basename(f);
+                # fname = ligand.dataId + "_" + os.path.basename(f)
+                fname = os.path.basename(f)
+                if not dtype_template.hasDataId(fname):
+                    fname = ligand.dataId + "_" + fname
                 if f==xyzFilePath:
                     ligand.setFile ( fname,dtype_template.file_key["xyz"] )
                 else:

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.09.22   <--  Date of Last Modification.
+ *    08.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -587,6 +587,8 @@ if (!__template)  {
         flist.push ([ 'structure (pdb)',this.Structure.files[file_key.xyz] ]);
       if (file_key.mmcif in this.Structure.files) 
         flist.push ([ 'structure (mmcif)',this.Structure.files[file_key.mmcif] ]);
+      if (file_key.lib in this.Structure.files) 
+        flist.push ([ 'ligand(s)',this.Structure.files[file_key.lib] ]);
     }
 
     if (this.Substructure)  {
