@@ -78,7 +78,7 @@ TaskTextEditor.prototype.icon = function()  { return 'task_texteditor';  }
 TaskTextEditor.prototype.desc_title = function()  {
 // this appears under task title in the task list
   return 'edit text data in data objects and revisions';
-};
+}
 
 TaskTextEditor.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
