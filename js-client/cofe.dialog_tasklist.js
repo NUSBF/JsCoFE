@@ -615,7 +615,6 @@ var row      = 0;
     // */
 
     this.makeSection ( 'Tasks in Development',[
-      new TaskTextEditor  (),
       // new TaskCootUtils    (),
       // ccp4go2_task,
       // new TaskStructurePrediction(),
@@ -789,6 +788,7 @@ var row      = 0;
     'Coordinate data tools',
     new TaskXyzUtils  (),
     new TaskGemmi     (),
+    new TaskTextEditor(),
     'Alignment and comparison tools',
     new TaskGesamt    (),
     new TaskLsqKab    (),
