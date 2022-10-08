@@ -37,7 +37,7 @@ Spot-finding, like most of the other processing steps in DUI, presents user para
        .. toggle-header::
             :header: **more about reciprocal lattice viewer**
 
-                    This viewer displays the strong spots in 3D, after mapping them from their detector positions to reciprocal space. In a favourable case you should be able to see the crystal’s reciprocal lattice by eye in the strong spot positions. Some practice may be needed in rotating the lattice to an orientation that shows off the periodicity in reciprocal lattice positions.``
+                    This viewer displays the strong spots in 3D, after mapping them from their detector positions to reciprocal space. In a favourable case you should be able to see the crystal’s reciprocal lattice by eye in the strong spot positions. Some practice may be needed in rotating the lattice to an orientation that shows off the periodicity in reciprocal lattice positions.
 
 
 -----

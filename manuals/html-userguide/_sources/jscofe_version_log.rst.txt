@@ -3,9 +3,35 @@ CCP4 Cloud Version Log
 ======================
 
 
+**Version 1.7.007**
+
+    *Released on --.00.2022 with CCP4 8.0.004*
+
+    **Changes and new features**
+
+    #. Fixed bug in ``Phaser-MR`` which did not let fitting models sequentially
+
+    #. Fixed bug in ``Edit Structure Revision`` which did not let replacing phases in certain circumstances
+
+    #. Fixed bug in choosing destination folder at cloning projects, importing projects and loading tutorials
+
+    #. Cosmetic improvements, documentation and tutorials extended
+
+    #. Fixed a bug which could cause in-browser client crash at closing Job Dialogs in certain circumstances
+
+    #. Fixed bug causing Front-End crash at CCP4 update notifications
+
+    #. Added task for editing text data objects online
+
+    #. Stability fixes
+
+    #. Cosmetic improvements, documentation and tutorial extensions
+
+
+
 **Version 1.7.006**
 
-    *Released on --.--.2022 with CCP4 8.0.004*
+    *Released on 16.08.2022 with CCP4 8.0.004*
 
     **Changes and new features**
 
