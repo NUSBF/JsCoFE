@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.06.22   <--  Date of Last Modification.
+ *    09.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -71,9 +71,10 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
             } else
               dlg.userData.dormant = 0;
             var volume  = dlg.diskNames[dlg.volume.getValue()];
-            dlg.userData.ration.storage      = dlg.storage.getValue();
-            dlg.userData.ration.cpu_day      = dlg.cpu_day.getValue();
-            dlg.userData.ration.cpu_month    = dlg.cpu_month.getValue();
+            dlg.userData.ration.storage      = dlg.storage     .getValue();
+            dlg.userData.ration.storage_max  = dlg.storage_max .getValue();
+            dlg.userData.ration.cpu_day      = dlg.cpu_day     .getValue();
+            dlg.userData.ration.cpu_month    = dlg.cpu_month   .getValue();
             dlg.userData.ration.cloudrun_day = dlg.cloudrun_day.getValue();
 
             var msgv = '';
@@ -96,30 +97,6 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                 'suspended until the change is complete. After that, the ' +
                 'account will be released automatically.<p>' +
                 '<i><u>This operation can take considerable time</u></i>.';
-
-            // new QuestionBox ( 'Modify User Account',
-            //     '<div style="width:600px;"><h2>Modify User Account</h2>' +
-            //     'Current account settings of user "<i>' + dlg.userData.name +
-            //     '</i>" will be replaced with ones shown in the dialog, ' +
-            //     'and the user will be informed of the change via e-mail. ' +
-            //     msgv + '<p>Please confirm this action.</div>',
-            //     'Yes, modify',function(){
-            //       dlg.userData.volume = volume;
-            //       serverRequest ( fe_reqtype.updateUData_admin,dlg.userData,
-            //                       'Manage User Data', function(response){
-            //         if (response)
-            //           new MessageBoxW ( 'Manage User Data',response,0.5 );
-            //         else
-            //           new MessageBox ( 'Manage User Data',
-            //             'Account of <i>' + dlg.userData.name +
-            //             '</i> has been successfully updated, and ' +
-            //             'notification<br>sent to e-mail address:<p><b><i>' +
-            //             dlg.userData.email + '</i></b>.', 'msg_confirm' );
-            //         onExit_func();
-            //         $(dlg.element).dialog("close");
-            //       },null,'persist' );
-            //     },
-            //     'Cancel',function(){},'msg_confirm');
 
             new QuestionBox ( 'Modify User Account',
                 '<div style="width:600px;"><h2>Modify User Account</h2>' +
@@ -155,30 +132,6 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
           id   : "resetpwd_btn",
           text : "Reset password",
           click: function() {
-
-            // new QuestionBox ( 'Reset User Password',
-            //     '<h2>Reset User Password</h2>' +
-            //     'Password of <i>' + dlg.userData.name +
-            //     '</i> will be replaced with a randomly<br>generated one, ' +
-            //     'and sent to the user via e-mail.' +
-            //     '<p>Are you sure?',
-            //     'Yes, reset',function(){
-            //       serverRequest ( fe_reqtype.resetUser_admin,dlg.userData,
-            //                       'Reset User Password', function(response){
-            //         if (response)
-            //           new MessageBoxW ( 'Reset User Password',response,0.5 );
-            //         else
-            //           new MessageBox ( 'Reset User Password',
-            //             'Password of <i>' + dlg.userData.name +
-            //             '</i> has been successfully reset, and ' +
-            //             'notification<br>sent to e-mail address:<p><b><i>' +
-            //             dlg.userData.email + '</i></b>.', 'msg_ok' );
-            //         onExit_func();
-            //         $(dlg.element).dialog("close");
-            //       },null,'persist' );
-            //     },
-            //     'Cancel',function(){},'msg_confirm');
-
             new QuestionBox ( 'Reset User Password',
                 '<h2>Reset User Password</h2>' +
                 'Password of <i>' + dlg.userData.name +
@@ -205,38 +158,12 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                   name    : 'Cancel',
                   onclick : function(){}
                 }], 'msg_confirm' );
-
           }
 
         }, {
           id   : "delete_btn",
           text : "Delete User",
           click: function() {
-
-            // new QuestionBox ( 'Delete User Account',
-            //     '<div style="width:450px;"><h2>Delete User Account "' +
-            //     dlg.userData.login + '"</h2>Account "<i>' + dlg.userData.login +
-            //     '</i>" will be deleted.<p>Once deleted, all user data, ' +
-            //     'including registration details, imported files, projects ' +
-            //     'and results will be removed from the server irrevocably.' +
-            //     '<p>Are you sure?</div>',
-            //     'Yes, delete',function(){
-            //       serverRequest ( fe_reqtype.deleteUser_admin,dlg.userData,
-            //                       'Delete User', function(response){
-            //         if (response)
-            //           new MessageBoxW ( 'Delete User',response,0.5 );
-            //         else
-            //           new MessageBox ( 'Delete User',
-            //             'Account of <i>' + dlg.userData.name +
-            //             '</i> has been successfully deleted, and ' +
-            //             'notification<br>sent to e-mail address:<p><b><i>' +
-            //             dlg.userData.email + '</i></b>.' );
-            //         onExit_func();
-            //         $(dlg.element).dialog("close");
-            //       },null,'persist' );
-            //     },
-            //     'Cancel',function(){},'msg_question');
-
             new QuestionBox ( 'Delete User Account',
                 '<div style="width:450px;"><h2>Delete User Account "' +
                 dlg.userData.login + '"</h2>Account "<i>' + dlg.userData.login +
@@ -373,6 +300,7 @@ ManageUserDialog.prototype.constructor = ManageUserDialog;
   "lastSeen"  : 1544654575967,
   "ration"    : { "_type"          : "UserRation",
                   "storage"        : 30000,
+                  "storage_max"    : 60000,
                   "cpu_day"        : 24,
                   "cpu_month"      : 240,
                   "cloudrun_day"   : 100,
@@ -389,8 +317,11 @@ ManageUserDialog.prototype.constructor = ManageUserDialog;
 
 ManageUserDialog.prototype.putLine = function ( label,value,maxvalue,row,key )  {
 
-  this.grid.setLabel ( label,row,0,1,1 ).setWidth_px(200).setFontBold(true).setNoWrap();
-  var w = null;
+  if (key==7)
+        this.grid.setLabel ( label,row,0,1,3 ).setWidth_px(300).setFontBold(true).setNoWrap();
+  else  this.grid.setLabel ( label,row,0,1,1 ).setWidth_px(200).setFontBold(true).setNoWrap();
+  var w  = null;
+  var lw = '&nbsp;allocated';
 
   switch (key)  {
 
@@ -412,11 +343,11 @@ ManageUserDialog.prototype.putLine = function ( label,value,maxvalue,row,key )  
                                        row,1,1,1 ).setFontItalic(true).setNoWrap();
             break;
 
-    //case 4 :  this.grid.setInputText(value,row,1,1,1).setReadOnly(true).setWidth_px(80);
+    case 6 :  lw = '&nbsp;committed';
     case 4 :  this.grid.setLabel ( ''+value,row,1,1,1 ).setFontItalic(true).setWidth_px(80);
               this.grid.setLabel ( '&nbsp;of&nbsp;',row,2,1,1 ).setWidth_px(30);
               w = this.grid.setInputText(maxvalue,row,3,1,1).setWidth_px(80);
-              this.grid.setLabel ( '&nbsp;allocated',row,4,1,1 ).setWidth_px(60);
+              this.grid.setLabel ( lw,row,4,1,1 ).setWidth_px(60);
               this.grid.setLabel ( '',row,5,1,1 );
               this.grid.setVerticalAlignment ( row,2,'middle' );
               this.grid.setVerticalAlignment ( row,3,'middle' );
@@ -431,6 +362,21 @@ ManageUserDialog.prototype.putLine = function ( label,value,maxvalue,row,key )  
 
     case 5 :  w = this.grid.setLabel ( value,row,1,1,1 ).setFontItalic(true);
             break;
+
+    case 7 :  w = this.grid.setInputText(maxvalue,row,1,1,1).setWidth_px(80);
+              // this.grid.setLabel ( '',row,2,1,1 ).setWidth_px(60);
+              // this.grid.setLabel ( '',row,3,1,1 );
+              this.grid.setVerticalAlignment ( row,0,'middle' );
+              this.grid.setVerticalAlignment ( row,1,'middle' );
+              // this.grid.setVerticalAlignment ( row,2,'middle' );
+            //   this.grid.setCellSize ( '80px' ,'',row,1 );
+            // this.grid.setCellSize ( '30px' ,'',row,2 );
+            // this.grid.setCellSize ( '80px' ,'',row,3 );
+            // this.grid.setCellSize ( '60px' ,'',row,4 );
+            // this.grid.setCellSize ( 'auto' ,'',row,5 );
+            //this.grid.setCellSize ( '20%'  ,'',9,6 );
+            break;
+
 
     default : ;
 
@@ -484,18 +430,21 @@ ManageUserDialog.prototype.makeLayout = function()  {
                                this.diskNames.concat(this.userData.volume),
                                0,row++,2 );
 
-  this.storage = this.putLine ( 'Storage used (MB):',
-                                round(this.userData.ration.storage_used,1),
-                                this.userData.ration.storage,row++,4 );
-  this.cpu_day = this.putLine ( 'CPU-hours used (day):',
-                                round(this.userData.ration.cpu_day_used,2),
-                                this.userData.ration.cpu_day,row++,4 );
-  this.cpu_month = this.putLine ( 'CPU-hours used (month):',
-                                  round(this.userData.ration.cpu_month_used,2),
-                                  this.userData.ration.cpu_month,row++,4 );
+  this.storage      = this.putLine ( 'Storage used (MBytes):',
+                                     round(this.userData.ration.storage_used,1),
+                                     this.userData.ration.storage,row++,6 );
+  this.storage_max  = this.putLine ( 'Maximum storage allocation (MBytes):',0,
+                                     round(this.userData.ration.storage_max,1),
+                                     row++,7 );
+  this.cpu_day      = this.putLine ( 'CPU-hours used (day):',
+                                     round(this.userData.ration.cpu_day_used,2),
+                                     this.userData.ration.cpu_day,row++,4 );
+  this.cpu_month    = this.putLine ( 'CPU-hours used (month):',
+                                     round(this.userData.ration.cpu_month_used,2),
+                                     this.userData.ration.cpu_month,row++,4 );
   this.cloudrun_day = this.putLine ( 'CloudRun tasks (day):',
-                                round(this.userData.ration.cloudrun_day_used,2),
-                                this.userData.ration.cloudrun_day,row++,4 );
+                                     round(this.userData.ration.cloudrun_day_used,2),
+                                     this.userData.ration.cloudrun_day,row++,4 );
   this.putLine ( 'Total jobs run:'      ,this.userData.ration.jobs_total,0,row++,5 );
   this.putLine ( 'Total CPU-hours used:',round(this.userData.ration.cpu_total_used,2),
                                          0,row,5 );

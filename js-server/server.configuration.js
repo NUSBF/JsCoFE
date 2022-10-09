@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.09.22   <--  Date of Last Modification.
+ *    09.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -483,10 +483,12 @@ function CCP4DirName()  {
                                    // 'admin': all users are registration by admin
     "sessionCheckPeriod" : 2000,
     "ration"           : {
-        "storage"     : 3000,
-        "cpu_day"     : 24,
-        "cpu_month"   : 240,
-        "cloudrun_day" : 100   // number of cloudruns/day, 0 for unlimited
+        "storage"      : 5000,     // currently comitted storage
+        "storage_max   : 20000,    // maximum possible allocation
+        "storage_step" : 5000,     // storage allocation step for auto top-up
+        "cpu_day"      : 24,
+        "cpu_month"    : 240,
+        "cloudrun_day" : 100       // number of cloudruns/day, 0 for unlimited
     },
     "cloud_mounts"     : {  // optional item
       "My Computer"    : "/",
@@ -741,15 +743,23 @@ function readConfiguration ( confFilePath,serverType )  {
           fe_server.storage = _make_path ( fe_server.storage,null );
     else  fe_server.storage = storagePath;
 
-    if (!('ration' in fe_server))  {
+    if (!('ration' in fe_server))
       fe_server.ration = {  // 0: unlimited
-        'storage'     : 0.0,
-        'cpu_day'     : 0.0,
-        'cpu_month'   : 0.0,
+        'storage'      : 0.0,
+        'storage_max'  : 0.0,
+        'storage_step' : 5000.0,
+        'cpu_day'      : 0.0,
+        'cpu_month'    : 0.0,
         'cloudrun_day' : 100
       };
-    } else if (!('cloudrun_day' in fe_server.ration))
+    if (!('cloudrun_day' in fe_server.ration))
       fe_server.ration.cloudrun_day = 100;
+    if (!('storage_max' in fe_server.ration))  {
+      fe_server.ration.storage_max = 0.0;
+      if (fe_server.ration.storage>0.0)
+        fe_server.ration.storage_max = Math.max(15000.0,fe_server.ration.storage);
+      fe_server.ration.storage_step = 5000.0;
+    }
 
     if (isWindows())
       listWindowsDrives ( function(){
