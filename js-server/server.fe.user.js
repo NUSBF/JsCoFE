@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.08.22   <--  Date of Last Modification.
+ *    09.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -846,6 +846,7 @@ var userFilePath = getUserDataFName ( loginData );
         if (uData && uRation)  {
 
           var storage      = Number(userData.ration.storage);
+          var storage_max  = Number(userData.ration.storage_max);
           var cpu_day      = Number(userData.ration.cpu_day);
           var cpu_month    = Number(userData.ration.cpu_month);
           var cloudrun_day = Number(userData.ration.cloudrun_day);
@@ -855,6 +856,7 @@ var userFilePath = getUserDataFName ( loginData );
               feedback = userData.feedback;
 
           if ((uRation.storage      != storage      )    ||
+              (uRation.storage_max  != storage_max  )    ||
               (uRation.cpu_day      != cpu_day      )    ||
               (uRation.cpu_month    != cpu_month    )    ||
               (uRation.cloudrun_day != cloudrun_day )    ||
@@ -864,6 +866,7 @@ var userFilePath = getUserDataFName ( loginData );
               (uData.feedback       != feedback ))  {
 
             uRation.storage      = storage;
+            uRation.storage_max  = storage_max;
             uRation.cpu_day      = cpu_day;
             uRation.cpu_month    = cpu_month;
             uRation.cloudrun_day = cloudrun_day;
@@ -882,6 +885,7 @@ var userFilePath = getUserDataFName ( loginData );
                           'account_updated_admin',{
                             'userProfile'  : uData.role,
                             'userStorage'  : uRation.storage,
+                            'userDiskMax'  : uRation.storage_max,
                             'userCPUDay'   : uRation.cpu_day,
                             'userCPUMonth' : uRation.cpu_month,
                             'userCRunDay'  : uRation.cloudrun_day

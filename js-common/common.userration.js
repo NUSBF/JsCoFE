@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.06.21   <--  Date of Last Modification.
+ *    09.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ration Data Classes
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -46,17 +46,19 @@ function RationJobDesc_toString ( ration_job_desc )  {
 }
 
 
-function UserRation ( cfg_ration )  {
+function UserRation ( cfg_ration=null )  {
 
   this._type = 'UserRation';
 
   // limits
-  this.storage      = 0.0;  // MBytes (0: unlimited)
+  this.storage      = 0.0;  // committed MBytes (0: unlimited)
+  this.storage_max  = 0.0;  // maximum allocatable MBytes (0: unlimited)
   this.cpu_day      = 0.0;  // hours  (0: unlimited)
   this.cpu_month    = 0.0;  // hours  (0: unlimited)
   this.cloudrun_day = 100;  // cloudruns (0: unlimited)
   if (cfg_ration)  {
     this.storage      = cfg_ration.storage;
+    this.storage_max  = cfg_ration.storage_max;
     this.cpu_day      = cfg_ration.cpu_day;
     this.cpu_month    = cfg_ration.cpu_month;
     this.cloudrun_day = cfg_ration.cloudrun_day;
