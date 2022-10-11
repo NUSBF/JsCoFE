@@ -74,15 +74,11 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 
   if (__use_ziplib)  {
 
-console.log(' >>>>> 1 start packing');
     zl.archiveFolder ( dirPath,tmpFile,{ followSymlinks : true } )
       .then(function() {
-console.log ( ' >>>>> 2 start moving dest_path=' + dest_path );
-console.log ( ' >>>>> 2 start moving jobballPath=' + jobballPath );
         if (dest_path)
               utils.moveFile ( tmpFile,dest_path   );
         else  utils.moveFile ( tmpFile,jobballPath );
-console.log(' >>>>> 3 moved');
         onReady_func ( 0,utils.fileSize(jobballPath) );
       }, function(err) {
         log.error ( 11,'zip packing error: ' + err + ', encountered in ' + dirPath );
