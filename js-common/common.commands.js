@@ -153,7 +153,8 @@ var fe_reqtype = {
   getUserKnowledge  : '-getUserKnowledge',  // request to send user knowledge data
   getCloudFileTree  : '-getCloudFileTree',  // request for cloud file tree metadata
   updateFacility    : '-updateFacility',    // request to update facility metadata
-  checkFclUpdate    : '-checkFclUpdate'     // request to check facility update
+  checkFclUpdate    : '-checkFclUpdate',    // request to check facility update
+  topupUserRation   : '-topupUserRation'    // request to topup user disk quota
 };
 
 

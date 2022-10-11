@@ -961,10 +961,15 @@ var userFilePath = getUserDataFName ( loginData );
 
 }
 
-function topupUserRation ( loginData )  {
+function topupUserRation ( loginData,callback_func )  {
   var uRation = ration.getUserRation ( loginData );
-  if (uRation)  {
-    var feconf   = conf.getFEConfig();
+  var rData   = { code : 'ok', message : '' };
+  var uData   = null;
+  var userFilePath = getUserDataFName ( loginData );
+  if (utils.fileExists(userFilePath))
+    uData = utils.readObject ( userFilePath );
+  if (uRation && uData)  {
+    var feconf = conf.getFEConfig();
     // find new storage and topup requirement
     var storage1 = uRation.storage;
     if (uRation.storage_max>0)  {
@@ -979,16 +984,41 @@ function topupUserRation ( loginData )  {
       var vconf = feconf.projectsPath;  // volumes configuration
       var fspath = path.resolve ( vconf[loginData.volume].path );
       checkDiskSpace(fspath).then((diskSpace) => {
-          vdata[n].free = diskSpace.free/(1024.0*1024.0);
-          vdata[n].size = diskSpace.size/(1024.0*1024.0);
+          var free = diskSpace.free/(1024.0*1024.0) - diskReserve;
+          if (free<storage1-uRation.storage)  {
+            rData.code      = 'no_disk';
+            rData.message   = 'not enough disk space';
+          } else  {
+            uRation.storage = storage1;
+            ration.saveUserRation ( loginData,uRation );
+            rData.message   = emailer.sendTemplateMessage ( uData,
+              cmd.appName() + ' Disk Space Auto-Topup',
+              'auto_topup',{
+                'new_allocation' : storage1
+              });
+          }
+          callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rData) );
         }
       );
-      ration.saveUserRation ( loginData,uRation );
     } else  {
-      // already at maximum allowed allocation 
+      // already at maximum allowed allocation
+      rData.code    = 'limit_reached';
+      rData.message = 'allocation limit reached';
+      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rData) );
     }
   } else  {
     // ration file is not found
+    rData.code = 'errors';
+    if (!uRation)
+      rData.message = 'user ration file not found';
+    if (!uData)  {
+      if (rData.message)
+        rData.message += '; ';
+      rData.message = 'user data file not found';
+    }
+    callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rData) );
+    log.error ( 80,'User ration file not found, login ' + loginData.login +
+                   ', volume ' + loginData.volume );
   }
 }
 
@@ -1735,6 +1765,7 @@ module.exports.getUserData          = getUserData;
 module.exports.saveHelpTopics       = saveHelpTopics;
 module.exports.updateUserData       = updateUserData;
 module.exports.updateUserData_admin = updateUserData_admin;
+module.exports.topupUserRation      = topupUserRation;
 module.exports.deleteUser           = deleteUser;
 module.exports.deleteUser_admin     = deleteUser_admin;
 module.exports.retireUser_admin     = retireUser_admin;
