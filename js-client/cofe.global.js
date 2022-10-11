@@ -34,7 +34,7 @@ var __login_id        = '';
 var __login_user      = '';
 var __user_settings   = {};
 var __user_role       = role_code.user;
-//var __admin           = false;
+var __user_licence    = '';
 var __dormant         = 0;
 var __ccp4_version    = '';     // undefined
 
