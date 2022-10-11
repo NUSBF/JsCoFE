@@ -469,7 +469,7 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
       async    : true,
       type     : 'POST',
       data     : json,
-      timeout  : 10000,   // milliseconds
+      timeout  : 1000000,   // milliseconds
       dataType : 'text'
     })
     .done ( function(rdata) {
