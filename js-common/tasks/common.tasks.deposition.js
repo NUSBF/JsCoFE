@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    10.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,7 +59,7 @@ function TaskDeposition()  {
           showon      : {'revision.subtype:seq':[0,-1]} // from this and input data section
         },
     SEQUENCE_TA: {
-          type        : 'textarea_',
+          type        : 'aceditor_',
           //keyword     : 'keyword',
           tooltip     : '',
           reportas    : 'Sequence(s)',
@@ -71,13 +71,32 @@ function TaskDeposition()  {
                         'ATQEDYYTGDHYATFSLIDQTC\n\n' +
                         '>1dtx_A\n' +
                         'QPRRKLCILHRNPGRCYDKIPAFYYNQKKKQCERFDWSGCGGNSNRFKTIEECRRTCIG',
-          nrows       : 15,
-          ncols       : 160,
           iwidth      : 700,
+          iheight     : 300,
           value       : '',
           position    : [0,2,1,3],
           showon      : {'revision.subtype:seq':[0,-1]} // from this and input data section
         },
+        // SEQUENCE_TA: {
+        //       type        : 'textarea_',
+        //       //keyword     : 'keyword',
+        //       tooltip     : '',
+        //       reportas    : 'Sequence(s)',
+        //       placeholder : 'Copy-paste your sequence(s) here, including title line(s).\n\n' +
+        //                     'More than one sequences of the same type (protein/dna/na)\n' +
+        //                     'can be given one after another. Example:\n\n' +
+        //                     '>rnase_A\n' +
+        //                     'DVSGTVCLSALPPEATDTLNLIASDGPFPYSQDGVVFQNRESVLPTQSYGYYHEYTVITPGARTRGTRRIICGE\n' +
+        //                     'ATQEDYYTGDHYATFSLIDQTC\n\n' +
+        //                     '>1dtx_A\n' +
+        //                     'QPRRKLCILHRNPGRCYDKIPAFYYNQKKKQCERFDWSGCGGNSNRFKTIEECRRTCIG',
+        //       nrows       : 15,
+        //       ncols       : 160,
+        //       iwidth      : 700,
+        //       value       : '',
+        //       position    : [0,2,1,3],
+        //       showon      : {'revision.subtype:seq':[0,-1]} // from this and input data section
+        //     },
     _label_2 : {
           type        : 'label',
           label       : '&nbsp;',
@@ -90,19 +109,21 @@ function TaskDeposition()  {
           value    : false,
           iwidth   : 340,
           position : [2,0,1,4]
+        },
+    PDBREPORT_CBX : {
+          type     : 'checkbox',
+          label    : 'Obtain the PDB Validation Report',
+          tooltip  : 'Check to obtain the PDB Validation Report',
+          value    : true,
+          iwidth   : 340,
+          position : [3,0,1,4]
         }
-
-    // SEQUENCE : {
-    //     type        : 'aceditor_',  // can be also 'textarea'
-    //     keyword     : 'none',       // optional
-    //     tooltip     : '',           // mandatory
-    //     iwidth      : 800,          // optional
-    //     iheight     : 320,          // optional
-    //     value       : '',           // mandatory
-    //     position    : [1,0,1,5],    // mandatory
-    //     showon      : {'revision.subtype:seq':[0,-1]} // from this and input data section
-    // }
   };
+
+  if ((!__template) && (this.state==job_code.new))  {
+    if (__user_licence=='commercial')  // do not send data to the PDB by default
+      this.parameters.PDBREPORT_CBX.value = false;
+  }
 
 }
 

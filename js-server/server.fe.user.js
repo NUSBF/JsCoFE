@@ -961,6 +961,37 @@ var userFilePath = getUserDataFName ( loginData );
 
 }
 
+function topupUserRation ( loginData )  {
+  var uRation = ration.getUserRation ( loginData );
+  if (uRation)  {
+    var feconf   = conf.getFEConfig();
+    // find new storage and topup requirement
+    var storage1 = uRation.storage;
+    if (uRation.storage_max>0)  {
+      while ((storage1<uRation.storage_used) && (storage1<uRation.storage_max))
+        storage1 += feconf.ration.storage_step;
+      storage1 = Math.min(storage1,uRation.storage_max);
+    } else  {
+      while (storage1<uRation.storage_used)
+        storage1 += feconf.ration.storage_step;
+    }
+    if (storage1>uRation.storage_used)  {
+      var vconf = feconf.projectsPath;  // volumes configuration
+      var fspath = path.resolve ( vconf[loginData.volume].path );
+      checkDiskSpace(fspath).then((diskSpace) => {
+          vdata[n].free = diskSpace.free/(1024.0*1024.0);
+          vdata[n].size = diskSpace.size/(1024.0*1024.0);
+        }
+      );
+      ration.saveUserRation ( loginData,uRation );
+    } else  {
+      // already at maximum allowed allocation 
+    }
+  } else  {
+    // ration file is not found
+  }
+}
+
 
 // ===========================================================================
 

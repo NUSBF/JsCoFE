@@ -176,6 +176,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __login_user         = userData.name;
               __user_settings      = userData.settings;
               __user_role          = userData.role;
+              __user_licence       = userData.licence;
               __dormant            = userData.dormant;
               __user_authorisation = userData.authorisation;
 

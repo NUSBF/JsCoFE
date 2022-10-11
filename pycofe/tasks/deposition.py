@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    29.03.22   <--  Date of Last Modification.
+#    10.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,7 +28,7 @@
 
 #  python native imports
 import os
-import sys
+# import sys
 import uuid
 #import json
 import time
@@ -379,7 +379,28 @@ class Deposition(basic.TaskDriver):
         self.file_stdout.write (
             " =============================================================\n\n" )
 
-        # 4. Put download widgets
+        # 4. Make PDB-formatted file for special use
+
+        deposition_pdb = os.path.join ( self.outputDir(),self.task.project + "_" +\
+                    dtype_template.makeFileName ( self.job_id,self.dataSerialNo,
+                                                  self.getOFName("_xyz.pdb") ) )
+        try:
+            doc = gemmi.cif.read ( deposition_cif )
+            st  = gemmi.make_structure_from_block ( doc[0] )
+            xyzout_pdb = istruct.getXYZFilePath ( self.inputDir() )
+            with open(xyzout_pdb,"r") as f:
+                lines = f.readlines()
+                for i in range(len(lines)):
+                    if lines[i].startswith("REMARK"):
+                        st.raw_remarks += [lines[i]]
+            st.setup_entities()
+            st.write_pdb ( deposition_pdb )
+        except:
+            deposition_pdb = None
+            self.file_stdout.write ( " ... conversion to PDB failed" )
+            self.file_stderr.write ( " ... conversion to PDB failed" )
+
+        # 5. Put download widgets
 
         self.putMessage ( "<h3><i>" + str(header_cnt) + ". PDB Deposition</i></h3>" )
         header_cnt = header_cnt + 1
@@ -425,76 +446,101 @@ class Deposition(basic.TaskDriver):
 
         line_summary = ["package prepared","pdb report not obtained"]
 
+        if deposition_pdb:
+            grid_id1 = self.getWidgetId ( self.dep_grid()+"_1" )
+            self.putGrid ( grid_id1 )
+            self.putMessage1 ( grid_id1,
+                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+                0,0 )
+            self.putMessage1 ( grid_id1,
+                "&nbsp;<hr/><b>Legacy output.</b>" +\
+                "<u> Do NOT deposit this file to the PDB, special use only</u><br>&nbsp;",
+                0,col=1,rowSpan=1,colSpan=3 )
+            self.putMessage1 ( grid_id1,
+                "<i>Final atomic coordinates in PDB format:</i>&nbsp;",
+                1,1 )
+            self.putDownloadButton ( deposition_pdb,"download",grid_id1,1,2 )
+            self.putMessage1 ( grid_id1,
+                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
+                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;",
+                1,3 )
+            self.putMessage1 ( grid_id1,
+                "<hr/>",
+                2,col=1,rowSpan=1,colSpan=3 )
 
-        # 5. Obtain validation report from the PDB
+        # 6. Obtain validation report from the PDB
 
-        self.putMessage ( "&nbsp;<p><h3><i>" + str(header_cnt) +
-                          ". Validation Report</i></h3>" )
-        self.flush()
+        if self.getParameter(self.task.parameters.PDBREPORT_CBX)=="True":
 
-        if not self.have_internet():
-            self.putMessage ( "<b><i>No internet connection.</i></b>" )
+            self.putMessage ( "&nbsp;<p><h3><i>" + str(header_cnt) +
+                              ". Validation Report</i></h3>" )
+            self.flush()
 
+            if not self.have_internet():
+                self.putMessage ( "<b><i>No internet connection.</i></b>" )
+
+            else:
+
+                try:
+
+                    repFilePath = os.path.splitext(self.getXYZOFName())[0] + ".pdf"
+
+                    self.file_stdout.write ( "modelFilePath=" + deposition_cif + "\n" )
+                    self.file_stdout.write ( "sfCIF=" + sfCIF + "\n" )
+                    self.file_stdout.write ( "repFilePath=" + repFilePath + "\n" )
+
+                    #modelFilePath = "/Users/eugene/Projects/jsCoFE/tmp/valrep/1sar.cif"
+                    #sfCIF = "/Users/eugene/Projects/jsCoFE/tmp/valrep/1sar-sf.cif"
+
+                    self.putWaitMessageLF ( "Validation Report is being acquired from wwPDB, please wait ..." )
+
+                    msg  = "."
+                    ntry = 0
+                    nattempts = 1
+                    # while msg and (ntry<25):
+                    while msg and (ntry<nattempts):
+                        self.file_stdout.write ( "\n -- attempt " + str(ntry+1) + "\n" )
+                        self.file_stdout.flush ()
+                        msg = valrep.getValidationReport ( deposition_cif,sfCIF,repFilePath,self.file_stdout )
+                        if msg and (ntry<nattempts):
+                            self.file_stdout.write ( "\n -- server replied: " + msg + "\n" )
+                            ntry += 1
+                            time.sleep ( 10 )
+
+                    # remove wait message
+                    self.putMessage1 ( self.report_page_id(),"",self.rvrow,0,1,1 )
+
+                    if msg:
+                        self.putMessage ( "Failed: <b><i>" + str(msg) + "</i></b>" )
+
+                    elif os.path.isfile(repFilePath):
+
+                        repFilePath1 = os.path.join ( self.reportDir(),repFilePath )
+                        os.rename ( repFilePath,repFilePath1 )
+
+                        self.putSection ( self.report_id(),"wwPDB Validation Report",False )
+                        self.putMessage1 ( self.report_id(),
+                                "<object data=\"" + repFilePath +\
+                                "\" type=\"application/pdf\" " +\
+                                "style=\"border:none;width:100%;height:1000px;\"></object>",
+                                0,0,1,1 )
+
+                        grid_id1 = self.getWidgetId ( self.dep_grid() )
+                        self.putMessage ( "&nbsp;<p><hr/>" )
+                        self.putGrid ( grid_id1 )
+                        self.putMessage1 ( grid_id1,"<i>PDB Validation Report in PDF format</i>&nbsp;",0,0 )
+                        self.putDownloadButton ( repFilePath1,"download",grid_id1,0,1 )
+                        self.putMessage ( "<hr/>" )
+
+                        line_summary[1] = "pdb report obtained"
+
+                    else:
+                        self.putMessage ( "&nbsp;<p><b><i> -- failed to download</i></b>" )
+
+                except:
+                    self.putMessage ( "&nbsp;<p><b><i> -- errors in obtaining the PDB Validation Report</i></b>" )
         else:
-
-            try:
-
-                repFilePath = os.path.splitext(self.getXYZOFName())[0] + ".pdf"
-
-                self.file_stdout.write ( "modelFilePath=" + deposition_cif + "\n" )
-                self.file_stdout.write ( "sfCIF=" + sfCIF + "\n" )
-                self.file_stdout.write ( "repFilePath=" + repFilePath + "\n" )
-
-                #modelFilePath = "/Users/eugene/Projects/jsCoFE/tmp/valrep/1sar.cif"
-                #sfCIF = "/Users/eugene/Projects/jsCoFE/tmp/valrep/1sar-sf.cif"
-
-                self.putWaitMessageLF ( "Validation Report is being acquired from wwPDB, please wait ..." )
-
-                msg  = "."
-                ntry = 0
-                nattempts = 1
-                # while msg and (ntry<25):
-                while msg and (ntry<nattempts):
-                    self.file_stdout.write ( "\n -- attempt " + str(ntry+1) + "\n" )
-                    self.file_stdout.flush ()
-                    msg = valrep.getValidationReport ( deposition_cif,sfCIF,repFilePath,self.file_stdout )
-                    if msg and (ntry<nattempts):
-                        self.file_stdout.write ( "\n -- server replied: " + msg + "\n" )
-                        ntry += 1
-                        time.sleep ( 10 )
-
-                # remove wait message
-                self.putMessage1 ( self.report_page_id(),"",self.rvrow,0,1,1 )
-
-                if msg:
-                    self.putMessage ( "Failed: <b><i>" + str(msg) + "</i></b>" )
-
-                elif os.path.isfile(repFilePath):
-
-                    repFilePath1 = os.path.join ( self.reportDir(),repFilePath )
-                    os.rename ( repFilePath,repFilePath1 )
-
-                    self.putSection ( self.report_id(),"wwPDB Validation Report",False )
-                    self.putMessage1 ( self.report_id(),
-                            "<object data=\"" + repFilePath +\
-                            "\" type=\"application/pdf\" " +\
-                            "style=\"border:none;width:100%;height:1000px;\"></object>",
-                            0,0,1,1 )
-
-                    grid_id1 = self.getWidgetId ( self.dep_grid() )
-                    self.putMessage ( "&nbsp;<p><hr/>" )
-                    self.putGrid ( grid_id1 )
-                    self.putMessage1 ( grid_id1,"<i>PDB Validation Report in PDF format</i>&nbsp;",0,0 )
-                    self.putDownloadButton ( repFilePath1,"download",grid_id1,0,1 )
-                    self.putMessage ( "<hr/>" )
-
-                    line_summary[1] = "pdb report obtained"
-
-                else:
-                    self.putMessage ( "&nbsp;<p><b><i> -- failed to download</i></b>" )
-
-            except:
-                self.putMessage ( "&nbsp;<p><b><i> -- errors in obtaining the PDB Validation Report</i></b>" )
+            line_summary[1] = "pdb report not requested"
 
         self._add_citations ( citations.citation_list )
         if self.citation_list:
