@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.10.22   <--  Date of Last Modification.
+ *    12.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -728,8 +728,89 @@ var response = 0;  // must become a cmd.Response object to return
 }
 
 
-function getUserRation ( loginData )  {
-  return new cmd.Response ( cmd.fe_retcode.ok,'',ration.getUserRation(loginData) );
+function topupUserRation ( loginData,callback_func )  {
+  var uRation = ration.getUserRation ( loginData );
+  var rData   = { code : 'ok', message : '', ration : uRation };
+  if (!uRation)  {
+    rData.code    = 'errors';
+    rData.message = 'user ration file not found';
+    log.error ( 80,'User ration file not found, login ' + loginData.login );
+  } else if (uRation.storage_used>=uRation.storage)  {
+    var uData = null;
+    var userFilePath = getUserDataFName ( loginData );
+    if (utils.fileExists(userFilePath))
+      uData = utils.readObject ( userFilePath );
+    if (!uData)  {
+      rData.code    = 'errors';
+      rData.message = 'user data file not found';
+      log.error ( 81,'User data file not found, login ' + loginData.login );
+    } else  {
+      var feconf = conf.getFEConfig();
+      // find new storage and topup requirement
+      var storage1 = uRation.storage;
+      if (uRation.storage_max>0)  {
+        while ((storage1<uRation.storage_used) && (storage1<uRation.storage_max))
+          storage1 += feconf.ration.storage_step;
+        storage1 = Math.min(storage1,uRation.storage_max);
+      } else  {
+        while (storage1<uRation.storage_used)
+          storage1 += feconf.ration.storage_step;
+      }
+      if (storage1>uRation.storage_used)  {
+        var vconf  = feconf.projectsPath[uData.volume];  // volumes configuration
+        var fspath = path.resolve ( vconf.path );
+        rData.code = 'requesting';
+        checkDiskSpace(fspath).then((diskSpace) => {
+            var free = diskSpace.free/(1024.0*1024.0) - vconf.diskReserve;
+            if (free<storage1-uRation.storage)  {
+              rData.code    = 'no_disk';
+              rData.message = 'not enough disk space';
+              log.error    ( 82,'Not enough disk space for auto-topup, volume ' + uData.volume );
+              log.error    ( 82,'Free space ' + free + ' MBytes, volume=' + uData.volume );
+              log.standard ( 82,'Not enough disk space for auto-topup, volume ' + uData.volume );
+              log.standard ( 82,'Free space ' + free + ' MBytes, volume=' + uData.volume );
+            } else  {
+              // console.log ( ' >>>> free     = ' + free     );
+              // console.log ( ' >>>> storage  = ' + uRation.storage );
+              // console.log ( ' >>>> storage1 = ' + storage1 );
+              uRation.storage = storage1;
+              ration.saveUserRation ( loginData,uRation );
+              rData.code    = 'topup';
+              rData.message = emailer.sendTemplateMessage ( uData,
+                cmd.appName() + ' Disk Space Auto-Topup',
+                'auto_topup',{
+                  'new_allocation' : storage1
+                });
+              log.standard ( 83,'Auto-top successful login ' + loginData.login +
+                                ', committed ' + storage1 + ' MBytes, free space ' +
+                                Math.round(free) + ' MBytes, volume ' + uData.volume );
+            }
+            callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rData) );
+          }
+        );
+      } else  {
+        // already at maximum allowed allocation
+        rData.code    = 'limit_reached';
+        rData.message = 'allocation limit reached';
+      }  
+    }
+  }
+  if (rData.code!='requesting')
+    callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rData) );
+}
+
+
+function getUserRation ( loginData,data,callback_func )  {
+  if (data.topup)  {
+    topupUserRation ( loginData,callback_func );
+  } else  {
+    callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',{
+        code    : 'ok',
+        message : '',
+        ration : ration.getUserRation(loginData)
+      })
+    );
+  }
 }
 
 
@@ -959,67 +1040,6 @@ var userFilePath = getUserDataFName ( loginData );
 
   return response;
 
-}
-
-function topupUserRation ( loginData,callback_func )  {
-  var uRation = ration.getUserRation ( loginData );
-  var rData   = { code : 'ok', message : '' };
-  var uData   = null;
-  var userFilePath = getUserDataFName ( loginData );
-  if (utils.fileExists(userFilePath))
-    uData = utils.readObject ( userFilePath );
-  if (uRation && uData)  {
-    var feconf = conf.getFEConfig();
-    // find new storage and topup requirement
-    var storage1 = uRation.storage;
-    if (uRation.storage_max>0)  {
-      while ((storage1<uRation.storage_used) && (storage1<uRation.storage_max))
-        storage1 += feconf.ration.storage_step;
-      storage1 = Math.min(storage1,uRation.storage_max);
-    } else  {
-      while (storage1<uRation.storage_used)
-        storage1 += feconf.ration.storage_step;
-    }
-    if (storage1>uRation.storage_used)  {
-      var vconf = feconf.projectsPath;  // volumes configuration
-      var fspath = path.resolve ( vconf[loginData.volume].path );
-      checkDiskSpace(fspath).then((diskSpace) => {
-          var free = diskSpace.free/(1024.0*1024.0) - diskReserve;
-          if (free<storage1-uRation.storage)  {
-            rData.code      = 'no_disk';
-            rData.message   = 'not enough disk space';
-          } else  {
-            uRation.storage = storage1;
-            ration.saveUserRation ( loginData,uRation );
-            rData.message   = emailer.sendTemplateMessage ( uData,
-              cmd.appName() + ' Disk Space Auto-Topup',
-              'auto_topup',{
-                'new_allocation' : storage1
-              });
-          }
-          callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rData) );
-        }
-      );
-    } else  {
-      // already at maximum allowed allocation
-      rData.code    = 'limit_reached';
-      rData.message = 'allocation limit reached';
-      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rData) );
-    }
-  } else  {
-    // ration file is not found
-    rData.code = 'errors';
-    if (!uRation)
-      rData.message = 'user ration file not found';
-    if (!uData)  {
-      if (rData.message)
-        rData.message += '; ';
-      rData.message = 'user data file not found';
-    }
-    callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rData) );
-    log.error ( 80,'User ration file not found, login ' + loginData.login +
-                   ', volume ' + loginData.volume );
-  }
 }
 
 

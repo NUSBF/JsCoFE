@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    12.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -242,9 +242,9 @@ BasePage.prototype.getUserRation = function()  {
 
   if (__login_user)  {
     (function(page){
-      serverRequest ( fe_reqtype.getUserRation,{},'User Ration',
+      serverRequest ( fe_reqtype.getUserRation,{ topup : false },'User Ration',
         function(data){
-          page.ration = data;
+          page.ration = data.ration;
           page.makeUserRationIndicator();
         },null,function(){
           page.ration = null;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.22   <--  Date of Last Modification.
+ *    12.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -739,12 +739,14 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
         } else  {
 
           dlg.close_btn.setDisabled ( true );
-          serverRequest ( fe_reqtype.getUserRation,{},'User Ration',
-            function(ration){
+          serverRequest ( fe_reqtype.getUserRation,{ topup : true },'User Ration',
+            function(rdata){
 
-              var pdesc = dlg.parent_page.ration.pdesc;
+              var pdesc  = dlg.parent_page.ration.pdesc;
+              var ration = rdata.ration;
               dlg.parent_page.ration = ration;
               dlg.parent_page.displayUserRation ( pdesc );
+              console.log ( ration.storage );
 
               // dlg.parent_page.ration = ration;
               // dlg.parent_page.displayUserRation ( dlg.tree.projectData.desc );
@@ -761,7 +763,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       'CPU widgets in the top-right corner of the screen.<p>' +
                       '<i><b>Recommended action:</b></i> export an old project and then<br>' +
                       'delete it from the list. You will be able to re-import that<br>' +
-                      'project later using the file exported.', 'msg_excl');
+                      'project later using the file exported.', 'msg_excl' );
                   dlg.close_btn.setDisabled ( false );
                   return;
                 }
@@ -793,6 +795,18 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                   dlg.close_btn.setDisabled ( false );
                   return;
                 }
+              }
+
+              if (rdata.code=='topup')  {
+                dlg.parent_page.ration = ration;
+                dlg.parent_page.makeUserRationIndicator();        
+                window.setTimeout ( function(){
+                  new MessageBox ( 'Disk Quota Increased',
+                      'Your disk quota was automatically increased<br>to ' +
+                      '<b>' + round(ration.storage,1) +
+                      '</b> MBytes. Enjoy!<p>Just push "Ok" to proceed.',
+                      'msg_information' );  
+                },500);
               }
 
               if (dlg.collectTaskData(false))  {
@@ -859,7 +873,6 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                           dlg.close_btn.click();
                         },0);
                     }
-
                   });
 
                 });

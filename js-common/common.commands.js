@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    11.10.22   <--  Date of Last Modification.
+ *    12.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.7.007 [11.10.2022]';
+var jsCoFE_version = '1.7.007 [12.10.2022]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -153,8 +153,7 @@ var fe_reqtype = {
   getUserKnowledge  : '-getUserKnowledge',  // request to send user knowledge data
   getCloudFileTree  : '-getCloudFileTree',  // request for cloud file tree metadata
   updateFacility    : '-updateFacility',    // request to update facility metadata
-  checkFclUpdate    : '-checkFclUpdate',    // request to check facility update
-  topupUserRation   : '-topupUserRation'    // request to topup user disk quota
+  checkFclUpdate    : '-checkFclUpdate'     // request to check facility update
 };
 
 
