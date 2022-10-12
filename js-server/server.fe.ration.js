@@ -25,11 +25,12 @@
 const path  = require('path');
 
 //  load application modules
-const conf  = require('./server.configuration');
+const conf      = require('./server.configuration');
+const class_map = require('./server.class_map');
 // const user  = require('./server.fe.user');
-const prj   = require('./server.fe.projects');
-const utils = require('./server.utils');
-const urat  = require('../js-common/common.userration');
+const prj       = require('./server.fe.projects');
+const utils     = require('./server.utils');
+const urat      = require('../js-common/common.userration');
 
 //  prepare log
 const log = require('./server.log').newLog(19);
@@ -46,7 +47,7 @@ function getUserRationFPath ( loginData )  {
 
 function getUserRation ( loginData )  {
 var fpath = getUserRationFPath ( loginData );
-var r     = utils.readClass ( fpath );
+var r     = utils.readObject ( fpath );
   if (!r)  {
     var cfg = conf.getFEConfig();
     var cfg_ration = null;
@@ -68,6 +69,7 @@ var r     = utils.readClass ( fpath );
       if (r.storage>0.0)
         r.storage_max = cfg.ration.storage_max;
     }
+    r = class_map.makeClass ( r );
     if (r.calculateTimeRation())
       utils.writeObject ( fpath,r );
   }
