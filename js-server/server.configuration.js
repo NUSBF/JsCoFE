@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.10.22   <--  Date of Last Modification.
+ *    12.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -720,13 +720,15 @@ function readConfiguration ( confFilePath,serverType )  {
     if (!('reportURL' in fe_server))
       fe_server.reportURL = fe_server.externalURL;
 
-    if (Object.prototype.toString.call(fe_server.projectsPath) === '[object String]')
+    if (Object.prototype.toString.call(fe_server.projectsPath) === '[object String]')  {
+      // old config file is used; convert to new style automatically
       fe_server.projectsPath = {
         '***' : { 'path'        : fe_server.projectsPath,
                   'type'        : 'volume',
                   'diskReserve' : 10000 // MBytes
                 }
       };
+    }
 
     var storagePath = '';
     for (var fsname in fe_server.projectsPath)  {

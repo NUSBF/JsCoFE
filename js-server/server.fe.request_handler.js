@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    12.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -48,7 +48,7 @@ var response = null;
         break;
 
     case cmd.fe_reqtype.getUserRation :
-          response = user.getUserRation ( loginData );
+          user.getUserRation ( loginData,data,callback_func );
         break;
 
     case cmd.fe_reqtype.updateUserData :
@@ -257,10 +257,11 @@ var response = null;
     callback_func ( response );
   else  {
     switch (request_cmd)  {
-      case cmd.fe_reqtype.runJob :
+      case cmd.fe_reqtype.runJob           :
       case cmd.fe_reqtype.getCloudFileTree :
-      case cmd.fe_reqtype.getAdminData :
-        break;
+      case cmd.fe_reqtype.getAdminData     :
+      case cmd.fe_reqtype.getUserRation    :
+            break;
       default:  console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
     }
   }

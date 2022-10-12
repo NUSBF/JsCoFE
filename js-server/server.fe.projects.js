@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.09.22   <--  Date of Last Modification.
+ *    12.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -628,7 +628,6 @@ var pData          = readProjectData ( loginData,projectName );
 
     rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
     // clearJobs() only to decrease the amount of transmitted data
-    //rdata.ration = ration.getUserRation(loginData).clearJobs();
 
   }
 
@@ -679,7 +678,6 @@ var pData          = readProjectData ( loginData,projectName );
     //
     // rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
     // // clearJobs() only to decrease the amount of transmitted data
-    // //rdata.ration = ration.getUserRation(loginData).clearJobs();
 
   } else if (pData && (pData.desc.owner.login!=loginData.login))  {
 
@@ -763,7 +761,6 @@ var response = null;  // must become a cmd.Response object to return
         //   // comments above
         //   rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
         //   // clearJobs() only to decrease the amount of transmitted data
-        //   //rdata.ration = ration.getUserRation(loginData).clearJobs();
         // }
         response = new cmd.Response ( cmd.fe_retcode.ok,'',{} );
       } else
