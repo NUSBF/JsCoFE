@@ -56,21 +56,24 @@ var r     = utils.readObject ( fpath );
     r = new urat.UserRation(cfg_ration);
     utils.writeObject ( fpath,r );
   } else  {
+    var modified = false;
     if (!('cloudrun_day' in r))  {
       var cfg = conf.getFEConfig();
       if (cfg.hasOwnProperty('ration'))
             r.cloudrun_day = cfg.ration.cloudrun_day;
       else  r.cloudrun_day = 100;
       r.cloudrun_day_used = 0;
+      modified = true;
     }
     if (!('storage_max' in r))  {
       var cfg = conf.getFEConfig();
       r.storage_max = 0.0;
       if (r.storage>0.0)
         r.storage_max = cfg.ration.storage_max;
+      modified = true;
     }
     r = class_map.makeClass ( r );
-    if (r.calculateTimeRation())
+    if (r.calculateTimeRation() || modified)
       utils.writeObject ( fpath,r );
   }
   return r;
