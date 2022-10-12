@@ -377,7 +377,6 @@ ManageUserDialog.prototype.putLine = function ( label,value,maxvalue,row,key )  
             //this.grid.setCellSize ( '20%'  ,'',9,6 );
             break;
 
-
     default : ;
 
   }

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    12.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@ const path  = require('path');
 
 //  load application modules
 const conf  = require('./server.configuration');
-const user  = require('./server.fe.user');
+// const user  = require('./server.fe.user');
 const prj   = require('./server.fe.projects');
 const utils = require('./server.utils');
 const urat  = require('../js-common/common.userration');
@@ -61,6 +61,12 @@ var r     = utils.readClass ( fpath );
             r.cloudrun_day = cfg.ration.cloudrun_day;
       else  r.cloudrun_day = 100;
       r.cloudrun_day_used = 0;
+    }
+    if (!('storage_max' in r))  {
+      var cfg = conf.getFEConfig();
+      r.storage_max = 0.0;
+      if (r.storage>0.0)
+        r.storage_max = cfg.ration.storage_max;
     }
     if (r.calculateTimeRation())
       utils.writeObject ( fpath,r );
