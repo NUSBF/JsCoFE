@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.10.22   <--  Date of Last Modification.
+#    13.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -342,8 +342,10 @@ class Deposition(basic.TaskDriver):
                 )
 
                 self.flush()
-                shutil.copy2 ( xyzout_cif,xyzout_cif + ".sav" )
-                shutil.copy2 ( sfCIF,sfCIF + ".sav" )
+                # save this just in case for post-mortem examination
+                shutil.copy2 ( xyzout_cif      ,"xyzout.mmcif.sav"     )
+                shutil.copy2 ( sfCIF           ,"sfCIF.cif.sav"        )
+                shutil.copy2 ( deposition_fasta,"deposition.fasta.sav" )
 
                 worked = run_process ( input_mmcif  = xyzout_cif,
                                        output_mmcif = deposition_cif,
@@ -357,17 +359,17 @@ class Deposition(basic.TaskDriver):
             if deposition_fasta:
                 self.putMessage (
                     "<hr/><h3>Note:</h3>" +\
-                    "<i>Coordinate model was not added with sequence data due to " +\
-                    "a technical issue.<br>Provide target sequence(s) at depositon "  +\
-                    "when asked.</i>" +\
-                    "<hr/>" )
+                    "<i>Coordinate data was not added with sequence data due to "    +\
+                    "a technical issue.</i><p>Unmodified coordinate data will be "   +\
+                    "used for deposition; provide target sequence(s) at deposition " +\
+                    "when asked.<hr/>" )
             else:
                 self.putMessage (
                     "<hr/><h3>Note:</h3>" +\
-                    "<i>Coordinate model was not added with sequence data because " +\
-                    "it was not found in project and was not given on input.<br>" +\
-                    "Provide target sequence(s) at depositon when asked.</i>" +\
-                    "<hr/>" )
+                    "<i>Coordinate data was not added with sequence data because " +\
+                    "the latter was not found in project and was not given on "    +\
+                    "task's input.</i><p>Provide target sequence(s) at depositon " +\
+                    "when asked.<hr/>" )
             self.stderr ( " *** EBI deposition script failed" )
             shutil.copy2 ( xyzout_cif,deposition_cif )
             # self.fail ( "<b><i>Failed to create coordinate model file for deposition</i></b>",

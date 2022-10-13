@@ -44,8 +44,8 @@ function processPOSTData ( server_request,server_response,process_data_function,
     var data = '';
     server_request.on ( 'data', function(d) {
       data += d;
-      // 1MB is too much POST data, kill the connection!
-      if (data.length>1e6)  {
+      // Allow maximum 30MB (used in TextEditor, large mmCIfs), otherwise kill the connection
+      if (data.length>3e7)  {
         log.warning ( 1,'long data in post (' + data.length + '), connection killed' );
         server_request.connection.destroy();
         cmd.sendResponse ( server_response, cmd.fe_retcode.largeData,

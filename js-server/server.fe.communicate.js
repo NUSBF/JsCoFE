@@ -71,7 +71,7 @@ function __count_malicious_ip ( ip,count )  {
 
 var __malicious_ip_register = {};
 
-var __ccp4_lib = conf.CCP4DirName() + '/lib/';
+const __ccp4_lib = conf.CCP4DirName() + '/lib/';
 
 function Communicate ( server_request )  {
 
