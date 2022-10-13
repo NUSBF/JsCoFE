@@ -374,6 +374,17 @@ class Deposition(basic.TaskDriver):
             #             "Failed to create coordinate model file for deposition" )
         #     return
 
+        # check on experimental method category, which may be missed for
+        # unclear reasons, then PDB systems are confused
+        doc = gemmi.cif.read ( deposition_cif )
+        block = doc[0]
+        if not block.find_mmcif_category('_exptl.'):
+            block.set_mmcif_category ( '_exptl.',
+                    dict(entry_id=['XXXX'], method=['X-RAY DIFFRACTION']) )
+            self.stdoutln ( " .... experimental method record added" )
+            doc.write_file ( deposition_cif )
+
+
         self.file_stdout.write (
             " =============================================================\n\n" )
 

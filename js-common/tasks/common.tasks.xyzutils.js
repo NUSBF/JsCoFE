@@ -63,13 +63,20 @@ function TaskXyzUtils()  {
                         tooltip  : '',
                         range    : ['T|Transform structure',
                                     'S|Split structure in chains',
-                                    'E|Extract sequences'
+                                    'E|Extract sequences',
+                                    'P|Run PDBSET'
                                    ],
                         value    : 'T',
                         iwidth   : 260,
                         position : [0,0,1,1]
                       },
-
+                SPACER_LBL : {
+                        type     : 'label',
+                        keyword  : 'none',
+                        lwidth   : '80%',
+                        label    : ' ',
+                        position : [0,3,1,2]
+                      },
                 SOLLIG_SEL : {
                         type     : 'combobox',
                         label    : 'Solvent and ligands:',
@@ -80,7 +87,8 @@ function TaskXyzUtils()  {
                                    ],
                         value    : 'U',
                         iwidth   : 260,
-                        position : [1,0,1,1]
+                        position : [1,0,1,1],
+                        hideon   : {ACTION_SEL:['P']}
                       },
                 CHAINS_SEL : {
                         type     : 'combobox',
@@ -93,7 +101,8 @@ function TaskXyzUtils()  {
                                    ],
                         value    : 'U',
                         iwidth   : 260,
-                        position : [2,0,1,1]
+                        position : [2,0,1,1],
+                        hideon   : {ACTION_SEL:['P']}
                       },
                 CHAIN_LIST : {
                         type      : 'string',
@@ -105,6 +114,33 @@ function TaskXyzUtils()  {
                         position  : [2,4,1,1],
                         showon    : {CHAINS_SEL:['S']}
                       },
+                PDBSET_LBL : {
+                        type     : 'label',
+                        keyword  : 'none',
+                        lwidth   : 800,
+                        label    : '<div style="font-size:14px;">' +
+                                    'Set PDBSET keywords and values ' +
+                                    'in the input field below (consult ' +
+                                    '<a href="https://www.ccp4.ac.uk/html/pdbset.html?highlight=pdbset" ' +
+                                    'target="_blank"><i>PDBSET reference</i></a> for more details).' +
+                                    '<sub>&nbsp;</sub></div>',
+                        position : [3,0,1,5],
+                        showon   : {ACTION_SEL:['P']}
+                      },
+                PDBSET_INPUT : {
+                        type     : 'aceditor_',  // can be also 'textarea'
+                        keyword  : 'none',       // optional
+                        tooltip  : '',           // mandatory
+                        iwidth   : 800,          // optional
+                        iheight  : 320,          // optional
+                        placeholder : '# For example:\n' + 
+                                      'SYMGEN -X,Y,-Z\n' +
+                                      'SYMGEN 1/2+X,1/2+Y,Z',
+                        value    : '',           // mandatory
+                        position : [4,0,1,5],    // mandatory
+                        showon   : {ACTION_SEL:['P']}
+                      }       
+
                 /*
                 SEP_LBL : {
                         type      : 'label',  // just a separator

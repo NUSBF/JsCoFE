@@ -746,7 +746,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
               var ration = rdata.ration;
               dlg.parent_page.ration = ration;
               dlg.parent_page.displayUserRation ( pdesc );
-              console.log ( ration.storage );
+              // console.log ( ration.storage );
 
               // dlg.parent_page.ration = ration;
               // dlg.parent_page.displayUserRation ( dlg.tree.projectData.desc );
