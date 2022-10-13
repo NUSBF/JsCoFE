@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    12.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -192,7 +192,7 @@ function TaskBuster()  {
                LABEL : {
                  type     : 'label',
                  keyword  : 'none',
-                 width    : 800,
+                 lwidth   : 800,
                  label    : '<div style="font-size:14px;">' +
                             'Set Gelly options (or copy-paste the content of .gelly file) ' +
                             'in the input field below (consult ' +
