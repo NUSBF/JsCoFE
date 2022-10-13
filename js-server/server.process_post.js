@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    13.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,6 +32,8 @@ const log = require('./server.log').newLog(12);
 
 // ==========================================================================
 
+const __max_post_length = 1e8;  // 100 MBytes limit
+
 function processPOSTData ( server_request,server_response,process_data_function,
                            server_state ) {
 
@@ -44,8 +46,8 @@ function processPOSTData ( server_request,server_response,process_data_function,
     var data = '';
     server_request.on ( 'data', function(d) {
       data += d;
-      // Allow maximum 30MB (used in TextEditor, large mmCIfs), otherwise kill the connection
-      if (data.length>3e7)  {
+      // Allow maximum 1MB, otherwise kill the connection
+      if (data.length>__max_post_length)  {
         log.warning ( 1,'long data in post (' + data.length + '), connection killed' );
         server_request.connection.destroy();
         cmd.sendResponse ( server_response, cmd.fe_retcode.largeData,
@@ -55,7 +57,7 @@ function processPOSTData ( server_request,server_response,process_data_function,
 
     server_request.on ( 'end', function(){
 
-      if (data.length<=1e6)  {
+      if (data.length<=__max_post_length)  {
 
         var data_obj = class_map.getClassInstance ( data );
 
