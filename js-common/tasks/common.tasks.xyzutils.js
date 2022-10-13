@@ -249,7 +249,7 @@ TaskXyzUtils.prototype.currentVersion = function()  {
 
 TaskXyzUtils.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['xyz','utilities','coordinate','tool', 'toolbox'] );
+  return this.__check_keywords ( keywords,['xyz','utilities','coordinate','tool', 'toolbox', 'pdbset'] );
 }
 
 if (!__template)  {
@@ -257,7 +257,7 @@ if (!__template)  {
 
   TaskXyzUtils.prototype.desc_title = function()  {
   // this appears under task title in the task list
-    return 'allows selecting a limited set of atoms in a coordinate file and saving them to new files';
+    return 'various coordinate transformations, including PDBSET functions';
   }
 
   TaskXyzUtils.prototype.collectInput = function ( inputPanel )  {
@@ -268,6 +268,9 @@ if (!__template)  {
         (this.parameters.sec1.contains.CHAINS_SEL.value=='U') &&
         (this.parameters.sec1.contains.ACTION_SEL.value=='T'))
       msg += '|<b><i>at least one transformation must be specified</i></b>';
+    else if ((this.parameters.sec1.contains.ACTION_SEL.value=='T') &&
+             (!this.parameters.sec1.contains.PDBSET_INPUT.value.trim()))
+      msg += '|<b><i>atnp PDBSET instructions -- nothing to do</i></b>';
 
     return msg;
 

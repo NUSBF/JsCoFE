@@ -833,7 +833,7 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
             },
             { "header": { "label"  : "Ramachandran<br>outliers",
                           "tooltip": "Ramachandran outliers" },
-              "data"  : [ str(int(verdictInfo['ramaOutliers'])),"" ]
+              "data"  : [ str(verdictInfo['ramaOutliers']),"" ]
             }
         ]
     },verdictInfo['score'], verdictInfo['message'], verdictInfo['bottomLine'],row=verdict_row+1 )
