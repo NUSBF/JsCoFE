@@ -465,12 +465,13 @@ function __server_request ( request_type,data_obj,page_title,function_ok,
   function execute_ajax ( attemptNo )  {
 
     $.ajax ({
-      url      : fe_command.request,
-      async    : true,
-      type     : 'POST',
-      data     : json,
-      timeout  : 1000000,   // milliseconds
-      dataType : 'text'
+      url         : fe_command.request,
+      async       : true,
+      type        : 'POST',
+      data        : json,
+      processData : false,
+      timeout     : 1000000,   // milliseconds
+      dataType    : 'text'
     })
     .done ( function(rdata) {
 
