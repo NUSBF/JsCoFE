@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.07.22   <--  Date of Last Modification.
+#    14.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -312,20 +312,25 @@ class Gesamt(basic.TaskDriver):
 
         else: # pairwise or multiple alignment
 
+            outFiles = []
+
             self.rvrow += 1
-            meta = json.loads ( self.restoreReportDocument().replace("'",'"') )
-            self.generic_parser_summary["gesamt"] = {
-                "summary_line" : "Q=" + str(round(meta["qscore"],2)) +\
-                                 ", r.m.s.d.=" + str(round(meta["rmsd"],3)) + "&Aring;" +\
-                                 ", N<sub>align</sub>=" + str(meta["nalign"])
-            }
-            if nXYZ==2:
-                self.generic_parser_summary["gesamt"]["summary_line"] += \
-                                ", seqId=" + str(int(meta["seqid"]*100)) + "%"
-                outFiles = sorted([f for f in os.listdir(".") if f.endswith(".pdb")])
-                outFiles.insert ( 0,outFiles.pop() )
-            elif nXYZ>2:
-                outFiles = [self.gesamt_xyz()]
+            try:
+                meta = json.loads ( self.restoreReportDocument().replace("'",'"') )
+                self.generic_parser_summary["gesamt"] = {
+                    "summary_line" : "Q=" + str(round(meta["qscore"],2)) +\
+                                    ", r.m.s.d.=" + str(round(meta["rmsd"],3)) + "&Aring;" +\
+                                    ", N<sub>align</sub>=" + str(meta["nalign"])
+                }
+                if nXYZ==2:
+                    self.generic_parser_summary["gesamt"]["summary_line"] += \
+                                    ", seqId=" + str(int(meta["seqid"]*100)) + "%"
+                    outFiles = sorted([f for f in os.listdir(".") if f.endswith(".pdb")])
+                    outFiles.insert ( 0,outFiles.pop() )
+                elif nXYZ>2:
+                    outFiles = [self.gesamt_xyz()]
+            except:
+                outFiles = []
 
             #self.stderrln ( "outFiles=" + str(outFiles))
 
@@ -336,23 +341,23 @@ class Gesamt(basic.TaskDriver):
                 # register output data from temporary location (files will be moved
                 # to output directory by the registration procedure)
                 ensemble = self.registerEnsemble ( dtype_template.subtypeProtein(),
-                                                   outFiles[0] )
+                                                outFiles[0] )
                 if ensemble:
                     self.putMessage ( "<h3>Overall Alignment</h3>" )
                     self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),
-                                             "Superposed ensemble&nbsp;&nbsp;",
-                                             ensemble )
+                                            "Superposed ensemble&nbsp;&nbsp;",
+                                            ensemble )
                     have_results = True
 
                 for i in range(1,len(outFiles)):
                     ensemble = self.registerEnsemble ( dtype_template.subtypeProtein(),
-                                                       outFiles[i] )
+                                                    outFiles[i] )
                     if ensemble:
                         self.putMessage ( "&nbsp;" )
                         self.putMessage ( "<h3>Domain #" + str(i) + " Alignment</h3>" )
                         self.putEnsembleWidget ( self.getWidgetId("ensemble_"+str(i)+"_btn"),
-                                                 "Superposed domain #" + str(i),
-                                                 ensemble )
+                                                "Superposed domain #" + str(i),
+                                                ensemble )
                         have_results = True
 
             else:

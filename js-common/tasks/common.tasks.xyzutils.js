@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    14.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -268,7 +268,7 @@ if (!__template)  {
         (this.parameters.sec1.contains.CHAINS_SEL.value=='U') &&
         (this.parameters.sec1.contains.ACTION_SEL.value=='T'))
       msg += '|<b><i>at least one transformation must be specified</i></b>';
-    else if ((this.parameters.sec1.contains.ACTION_SEL.value=='T') &&
+    else if ((this.parameters.sec1.contains.ACTION_SEL.value=='P') &&
              (!this.parameters.sec1.contains.PDBSET_INPUT.value.trim()))
       msg += '|<b><i>atnp PDBSET instructions -- nothing to do</i></b>';
 
