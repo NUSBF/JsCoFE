@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.10.22   <--  Date of Last Modification.
+#    14.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@ import gemmi
 
 #  application imports
 from  pycofe.tasks  import basic
-from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble
+from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble,dtype_model
 from  pycofe.dtypes import dtype_sequence, dtype_revision
 from  pycofe.proc   import import_sequence,import_filetype
 from  pycofe.auto   import auto
@@ -62,6 +62,96 @@ class XyzUtils(basic.TaskDriver):
         return type
 
 
+    def makeXYZOutput ( self,istruct,ixyz,xyzout ):
+
+        results = False
+
+        if istruct._type==dtype_xyz.dtype():
+            self.putTitle ( "Modified coordinate data" )
+            oxyz = self.registerXYZ ( xyzout,checkout=True )
+            if oxyz:
+                oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                self.putMessage (
+                    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                    oxyz.dname )
+                self.putXYZWidget ( self.getWidgetId("xyz_btn"),
+                                    "Edited coordinates",oxyz )
+                results = True
+            else:
+                # close execution logs and quit
+                self.fail ( "<h3>XYZ Data was not formed (error)</h3>",
+                            "XYZ Data was not formed" )
+
+        elif istruct._type==dtype_model.dtype():
+            self.putTitle ( "Modified MR model" )
+            seq  = None
+            if ixyz.sequence:
+                seq = self.makeClass ( ixyz.sequence )
+            oxyz = self.registerModel ( seq,xyzout,checkout=True )
+            if oxyz:
+                self.putModelWidget ( self.getWidgetId("model_btn"),"Coordinates",oxyz )
+                results = True
+            else:
+                # close execution logs and quit
+                self.fail ( "<h3>MR Model was not formed (error)</h3>",
+                            "MR Model was not formed" )
+
+        elif istruct._type==dtype_ensemble.dtype():
+            self.putTitle ( "Modified MR ensemble" )
+            seq  = None
+            if ixyz.sequence:
+                seq = self.makeClass ( ixyz.sequence )
+            oxyz = self.registerEnsemble ( seq,xyzout,checkout=True )
+            if oxyz:
+                self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),"Coordinates",oxyz )
+                results = True
+            else:
+                # close execution logs and quit
+                self.fail ( "<h3>MR Ensemble was not formed (error)</h3>",
+                            "MR Ensemble was not formed" )
+
+        elif istruct._type==dtype_revision.dtype():
+            self.putTitle ( "Modified Structure" )
+            oxyz = self.registerStructure ( xyzout,
+                                    ixyz.getSubFilePath(self.inputDir()),
+                                    ixyz.getMTZFilePath(self.inputDir()),
+                                    ixyz.getMapFilePath(self.inputDir()),
+                                    ixyz.getDMapFilePath(self.inputDir()),
+                                    libPath=ixyz.getLibFilePath(self.inputDir()),
+                                    leadKey=ixyz.leadKey,copy_files=False,
+                                    map_labels=ixyz.mapLabels,
+                                    refiner=ixyz.refiner )
+            if oxyz:
+                oxyz.copyAssociations   ( ixyz )
+                oxyz.addDataAssociation ( ixyz.dataId )  # ???
+                oxyz.copySubtype        ( ixyz )
+                oxyz.copyLigands        ( ixyz )
+                if not xyzout:
+                    oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
+                #self.putMessage (
+                #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                #    oxyz.dname )
+                self.putStructureWidget ( self.getWidgetId("structure_btn"),
+                                            "Structure and electron density",
+                                            oxyz )
+                # update structure revision
+                revision = self.makeClass ( istruct  )
+                revision.setStructureData ( oxyz     )
+                self.registerRevision     ( revision )
+                results = True
+
+                auto.makeNextTask(self, {
+                        "revision": revision 
+                    }, log=self.file_stderr)
+
+            else:
+                # close execution logs and quit
+                self.fail ( "<h3>Structure was not formed (error)</h3>",
+                            "Structure was not formed" )
+
+        return results
+
+
     def run(self):
 
         # fetch input data
@@ -74,82 +164,102 @@ class XyzUtils(basic.TaskDriver):
 
         # --------------------------------------------------------------------
 
-        st = gemmi.read_structure ( xyzpath )
-
         log = []
-        action_sel = self.getParameter ( sec1.ACTION_SEL )
-        sollig_sel = self.getParameter ( sec1.SOLLIG_SEL )
-        chains_sel = self.getParameter ( sec1.CHAINS_SEL )
-
-        if sollig_sel=="W":
-            log.append ( "waters removed" )
-            st.remove_waters()
-
-        elif sollig_sel=="WL":
-            log.append ( "waters and ligands removed" )
-            st.remove_ligands_and_waters()
-
-        if chains_sel=="P":
-            clist = []
-            for model in st:
-                cnames = []
-                for chain in model:
-                    if self.chainType(ixyz,model,chain)=="Protein":
-                        cnames.append ( chain.name )
-                for name in cnames:
-                    if name not in clist:
-                        clist.append ( name )
-                    model.remove_chain ( name )
-            if len(clist)>0:
-                log.append ( "protein chain(s) " + ",".join(clist) + " removed" )
-            else:
-                self.putMessage ( "** protein chains not found" )
-
-        elif chains_sel=="D":
-            clist = []
-            for model in st:
-                cnames = []
-                for chain in model:
-                    if self.chainType(ixyz,model,chain) in ["DNA","RNA"]:
-                        cnames.append ( chain.name )
-                for name in cnames:
-                    if name not in clist:
-                        clist.append ( name )
-                    model.remove_chain ( name )
-            if len(clist)>0:
-                log.append ( "dna/rna chain(s) " + ",".join(clist) + " removed" )
-            else:
-                self.putMessage ( "** dna/rna chains not found" )
-
-        elif chains_sel=="S":
-            slist = [x.strip() for x in self.getParameter(sec1.CHAIN_LIST).split(",")]
-            clist = []
-            for model in st:
-                chain_list = [ch.name for ch in model if ch.name in slist]
-                for name in slist:
-                    if name in chain_list:
-                        if name not in clist:
-                            clist.append ( name )
-                        model.remove_chain ( name )
-            if len(clist)<len(slist):
-                self.putMessage ( "** chain(s) " +\
-                                  ",".join([x for x in slist if x not in clist]) +\
-                                  " not found" )
-            if len(clist)>0:
-                log.append ( "chain(s) " + ",".join(clist) + " removed" )
-
-        if action_sel=="E":
-            st.remove_ligands_and_waters()
-        st.remove_empty_chains()
-
-        nchains = 0
-        for model in st:
-            nchains += len(model)
-
-        have_results = False
 
         xyzout = ixyz.lessDataId ( ixyz.getXYZFileName() )
         self.outputFName = os.path.splitext(xyzout)[0]
+
+        action_sel = self.getParameter ( sec1.ACTION_SEL )
+
+        if action_sel=="P":
+            # run PDBSET
+
+            log.append ( "PDBSET" )
+
+            self.open_stdin()
+            self.write_stdin ( self.getParameter(sec1.PDBSET_INPUT) )
+            self.close_stdin()
+
+            # Run PDBSET
+            self.runApp (
+                "pdbset",["XYZIN",xyzpath,"XYZOUT",xyzout],
+                logType="Main"
+            )
+
+        else:
+            # make model transformations
+
+            st = gemmi.read_structure ( xyzpath )
+
+            sollig_sel = self.getParameter ( sec1.SOLLIG_SEL )
+            chains_sel = self.getParameter ( sec1.CHAINS_SEL )
+
+            if sollig_sel=="W":
+                log.append ( "waters removed" )
+                st.remove_waters()
+
+            elif sollig_sel=="WL":
+                log.append ( "waters and ligands removed" )
+                st.remove_ligands_and_waters()
+
+            if chains_sel=="P":
+                clist = []
+                for model in st:
+                    cnames = []
+                    for chain in model:
+                        if self.chainType(ixyz,model,chain)=="Protein":
+                            cnames.append ( chain.name )
+                    for name in cnames:
+                        if name not in clist:
+                            clist.append ( name )
+                        model.remove_chain ( name )
+                if len(clist)>0:
+                    log.append ( "protein chain(s) " + ",".join(clist) + " removed" )
+                else:
+                    self.putMessage ( "** protein chains not found" )
+
+            elif chains_sel=="D":
+                clist = []
+                for model in st:
+                    cnames = []
+                    for chain in model:
+                        if self.chainType(ixyz,model,chain) in ["DNA","RNA"]:
+                            cnames.append ( chain.name )
+                    for name in cnames:
+                        if name not in clist:
+                            clist.append ( name )
+                        model.remove_chain ( name )
+                if len(clist)>0:
+                    log.append ( "dna/rna chain(s) " + ",".join(clist) + " removed" )
+                else:
+                    self.putMessage ( "** dna/rna chains not found" )
+
+            elif chains_sel=="S":
+                slist = [x.strip() for x in self.getParameter(sec1.CHAIN_LIST).split(",")]
+                clist = []
+                for model in st:
+                    chain_list = [ch.name for ch in model if ch.name in slist]
+                    for name in slist:
+                        if name in chain_list:
+                            if name not in clist:
+                                clist.append ( name )
+                            model.remove_chain ( name )
+                if len(clist)<len(slist):
+                    self.putMessage ( "** chain(s) " +\
+                                    ",".join([x for x in slist if x not in clist]) +\
+                                    " not found" )
+                if len(clist)>0:
+                    log.append ( "chain(s) " + ",".join(clist) + " removed" )
+
+            if action_sel=="E":
+                st.remove_ligands_and_waters()
+            st.remove_empty_chains()
+
+            nchains = 0
+            for model in st:
+                nchains += len(model)
+
+        have_results = False
 
         #if self.getParameter(sec1.SPLITTOCHAINS_CBX)=="True":
         if action_sel=="S":
@@ -273,79 +383,91 @@ class XyzUtils(basic.TaskDriver):
 
                 else:
 
-                    self.putTitle ( "Results" )
+                    if istruct._type==dtype_revision.dtype() and nchains<=0:
+                        xyzout = None
+                        log    = ["all coordinates removed"]
 
-                    if istruct._type==dtype_xyz.dtype():
-                        oxyz = self.registerXYZ ( xyzout,checkout=True )
-                        if oxyz:
-                            oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
-                            self.putMessage (
-                                "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
-                                oxyz.dname )
-                            self.putXYZWidget ( self.getWidgetId("xyz_btn"),
-                                                "Edited coordinates",oxyz )
-                            have_results = True
-                        else:
-                            # close execution logs and quit
-                            self.fail ( "<h3>XYZ Data was not formed (error)</h3>",
-                                        "XYZ Data was not formed" )
+                    have_results = self.makeXYZOutput ( istruct,ixyz,xyzout )
 
-                    elif istruct._type==dtype_ensemble.dtype():
-                        seq  = None
-                        if ixyz.sequence:
-                            seq = self.makeClass ( ixyz.sequence )
-                        oxyz = self.registerEnsemble ( seq,xyzout,checkout=True )
-                        if oxyz:
-                            self.putEnsembleWidget ( "ensemble_btn","Coordinates",oxyz )
-                            have_results = True
-                        else:
-                            # close execution logs and quit
-                            self.fail ( "<h3>Ensemble was not formed (error)</h3>",
-                                        "Ensemble was not formed" )
+                    # self.putTitle ( "Results" )
 
-                    elif istruct._type==dtype_revision.dtype():
-                        if nchains<=0:
-                            xyzout = None
-                            log    = ["all coordinates removed"]
-                        oxyz = self.registerStructure ( xyzout,
-                                             ixyz.getSubFilePath(self.inputDir()),
-                                             ixyz.getMTZFilePath(self.inputDir()),
-                                             ixyz.getMapFilePath(self.inputDir()),
-                                             ixyz.getDMapFilePath(self.inputDir()),
-                                             libPath=ixyz.getLibFilePath(self.inputDir()),
-                                             leadKey=ixyz.leadKey,copy_files=False,
-                                             map_labels=ixyz.mapLabels,
-                                             refiner=ixyz.refiner )
-                        if oxyz:
-                            oxyz.copyAssociations   ( ixyz )
-                            oxyz.addDataAssociation ( ixyz.dataId )  # ???
-                            oxyz.copySubtype        ( ixyz )
-                            oxyz.copyLigands        ( ixyz )
-                            if not xyzout:
-                                oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
-                            #self.putMessage (
-                            #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
-                            #    oxyz.dname )
-                            self.putStructureWidget ( self.getWidgetId("structure_btn"),
-                                                      "Structure and electron density",
-                                                      oxyz )
-                            # update structure revision
-                            revision = self.makeClass ( istruct  )
-                            revision.setStructureData ( oxyz     )
-                            self.registerRevision     ( revision )
-                            have_results = True
+                    # if istruct._type==dtype_xyz.dtype():
+                    #     oxyz = self.registerXYZ ( xyzout,checkout=True )
+                    #     if oxyz:
+                    #         oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
+                    #         self.putMessage (
+                    #             "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                    #             oxyz.dname )
+                    #         self.putXYZWidget ( self.getWidgetId("xyz_btn"),
+                    #                             "Edited coordinates",oxyz )
+                    #         have_results = True
+                    #     else:
+                    #         # close execution logs and quit
+                    #         self.fail ( "<h3>XYZ Data was not formed (error)</h3>",
+                    #                     "XYZ Data was not formed" )
 
-                            auto.makeNextTask(self, {
-                                "revision": revision }, log=self.file_stderr)
+                    # elif istruct._type==dtype_ensemble.dtype():
+                    #     seq  = None
+                    #     if ixyz.sequence:
+                    #         seq = self.makeClass ( ixyz.sequence )
+                    #     oxyz = self.registerEnsemble ( seq,xyzout,checkout=True )
+                    #     if oxyz:
+                    #         self.putEnsembleWidget ( "ensemble_btn","Coordinates",oxyz )
+                    #         have_results = True
+                    #     else:
+                    #         # close execution logs and quit
+                    #         self.fail ( "<h3>Ensemble was not formed (error)</h3>",
+                    #                     "Ensemble was not formed" )
 
-                        else:
-                            # close execution logs and quit
-                            self.fail ( "<h3>Structure was not formed (error)</h3>",
-                                        "Structure was not formed" )
+                    # elif istruct._type==dtype_revision.dtype():
+                    #     if nchains<=0:
+                    #         xyzout = None
+                    #         log    = ["all coordinates removed"]
+                    #     oxyz = self.registerStructure ( xyzout,
+                    #                          ixyz.getSubFilePath(self.inputDir()),
+                    #                          ixyz.getMTZFilePath(self.inputDir()),
+                    #                          ixyz.getMapFilePath(self.inputDir()),
+                    #                          ixyz.getDMapFilePath(self.inputDir()),
+                    #                          libPath=ixyz.getLibFilePath(self.inputDir()),
+                    #                          leadKey=ixyz.leadKey,copy_files=False,
+                    #                          map_labels=ixyz.mapLabels,
+                    #                          refiner=ixyz.refiner )
+                    #     if oxyz:
+                    #         oxyz.copyAssociations   ( ixyz )
+                    #         oxyz.addDataAssociation ( ixyz.dataId )  # ???
+                    #         oxyz.copySubtype        ( ixyz )
+                    #         oxyz.copyLigands        ( ixyz )
+                    #         if not xyzout:
+                    #             oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
+                    #         #self.putMessage (
+                    #         #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                    #         #    oxyz.dname )
+                    #         self.putStructureWidget ( self.getWidgetId("structure_btn"),
+                    #                                   "Structure and electron density",
+                    #                                   oxyz )
+                    #         # update structure revision
+                    #         revision = self.makeClass ( istruct  )
+                    #         revision.setStructureData ( oxyz     )
+                    #         self.registerRevision     ( revision )
+                    #         have_results = True
+
+                    #         auto.makeNextTask(self, {
+                    #             "revision": revision }, log=self.file_stderr)
+
+                    #     else:
+                    #         # close execution logs and quit
+                    #         self.fail ( "<h3>Structure was not formed (error)</h3>",
+                    #                     "Structure was not formed" )
 
             else:
                 self.putMessage ( "&nbsp;<br><b>Data object <i>" + ixyz.dname +\
                                   "</i> was not modified -- no output produced</b>" )
+
+        elif action_sel=="P":
+            self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
+                              "</i> transformed with PDBSET</b><p>PDBSET script:<pre>" +\
+                              self.getParameter(sec1.PDBSET_INPUT) + "</pre>" )
+            have_results = self.makeXYZOutput ( istruct,ixyz,xyzout )
 
         # this will go in the project tree line
         if len(log)>0:
