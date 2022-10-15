@@ -925,7 +925,7 @@ function assignPorts ( assigned_callback )  {
 
       case 4: if (!fe_proxy)
                     setServer(5,0);
-              else if (fe_proxy.host.isLocalHost && (fe_proxy.port<=0))
+              else if (fe_proxy.isLocalHost && (fe_proxy.port<=0))
                     set_server ( fe_proxy,function(){ setServer(5,0); } );
               else  setServer(5,0);
             break;
