@@ -24,6 +24,8 @@
 
 'use strict';
 
+// const { folder_path } = require("../js-common/common.data_project");
+
  // ===========================================================================
 // Folders dialog class
 
@@ -225,11 +227,13 @@ FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
     var icon = 'folder_projects_user';
     var nprj = ' <i>(' + folders[i].nprojects + ')</i>';
     switch (folders[i].type)  {
-      case folder_type.shared       :
-      case folder_type.joined       :
-      case folder_type.all_projects : icon = 'folder_list';         break
-      case folder_type.custom_list  : icon = 'folder_list_custom';  break;
-      case folder_type.tutorials    : icon = 'folder_tutorials';    break;
+      case folder_type.shared        :
+      case folder_type.joined        :
+      case folder_type.all_projects  : icon = 'folder_list';           break
+      case folder_type.custom_list   : icon = 'folder_list_custom';    break;
+      case folder_type.archived      : icon = 'folder_my_archive';     break;
+      case folder_type.cloud_archive : icon = 'folder_cloud_archive';  break;
+      case folder_type.tutorials     : icon = 'folder_tutorials';      break;
       default :     var nprj = ' (' + folders[i].nprojects + ')';
     }
     var node = ftree.addRootNode ( this.projectList.getRootFolderName(i,__login_id) +
@@ -278,8 +282,18 @@ var selNode = this.ftree.getSelectedNode();
 FoldersBrowser.prototype.onSelectBtn = function()  {
 var selNode = this.ftree.getSelectedNode();
   if (selNode)  {
-    $(this.element).dialog ( 'close' );
-    this.onReturn_fnc ( 'select',{ folder_path : selNode.dataId } );
+    if ((__user_role!=role_code.developer) && 
+        ((selNode.dataId==folder_path.archived) || 
+         (selNode.dataId==folder_path.cloud_archive)))  {
+      new MessageBox ( 'Feature not available',
+          '<h2>Folder is not available</h3>' +
+          'Archive folders and their functionality are currently ' +
+          'under<br>development. Please come back later.',
+          'msg_stop' );
+    } else  {
+      $(this.element).dialog ( 'close' );
+      this.onReturn_fnc ( 'select',{ folder_path : selNode.dataId } );
+    }
   } else
     new MessageBox ( 'No selection in tree',
            '<h2>No folder is selected</h3>' +
