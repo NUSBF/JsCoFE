@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.09.22   <--  Date of Last Modification.
+ *    16.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -121,13 +121,15 @@ function ProjectListPage ( sceneId )  {
     if (folder_btn)  {
       var icon = 'folder_projects';
       switch (folder.type)  {
-        case folder_type.custom_list  : icon = 'folder_list_custom';    break;
-        case folder_type.list         :
-        case folder_type.shared       :
-        case folder_type.joined       :
-        case folder_type.all_projects : icon = 'folder_list';           break;
-        case folder_type.tutorials    : icon = 'folder_tutorials';      break;
-        case folder_type.user         : icon = 'folder_projects_user';  break;
+        case folder_type.custom_list   : icon = 'folder_list_custom';    break;
+        case folder_type.list          :
+        case folder_type.shared        :
+        case folder_type.joined        :
+        case folder_type.all_projects  : icon = 'folder_list';           break;
+        case folder_type.archived      : icon = 'folder_my_archive';     break;
+        case folder_type.cloud_archive : icon = 'folder_cloud_archive';  break;
+        case folder_type.tutorials     : icon = 'folder_tutorials';      break;
+        case folder_type.user          : icon = 'folder_projects_user';  break;
         default : ;
       }
       folder_btn.setImage ( image_path(icon) );
