@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.10.22   <--  Date of Last Modification.
+ *    17.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -121,7 +121,7 @@ function TaskXyzUtils()  {
                         label    : '<div style="font-size:14px;">' +
                                     'Set PDBSET keywords and values ' +
                                     'in the input field below (consult ' +
-                                    '<a href="https://www.ccp4.ac.uk/html/pdbset.html?highlight=pdbset" ' +
+                                    '<a href="https://www.ccp4.ac.uk/html/pdbset.html" ' +
                                     'target="_blank"><i>PDBSET reference</i></a> for more details).' +
                                     '<sub>&nbsp;</sub></div>',
                         position : [3,0,1,5],
@@ -270,7 +270,7 @@ if (!__template)  {
       msg += '|<b><i>at least one transformation must be specified</i></b>';
     else if ((this.parameters.sec1.contains.ACTION_SEL.value=='P') &&
              (!this.parameters.sec1.contains.PDBSET_INPUT.value.trim()))
-      msg += '|<b><i>atnp PDBSET instructions -- nothing to do</i></b>';
+      msg += '|<b><i>no PDBSET instructions -- nothing to do</i></b>';
 
     return msg;
 
