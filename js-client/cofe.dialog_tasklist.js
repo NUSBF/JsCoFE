@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.09.22   <--  Date of Last Modification.
+ *    17.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -776,7 +776,8 @@ var row      = 0;
     new TaskZanuda    (),
     new TaskPrivateer (),
     new TaskPISA      (),
-    new TaskDeposition()
+    new TaskDeposition(),
+    new TaskContact   ()
   ],true);
 
   this.makeSection ( 'Toolbox',[
