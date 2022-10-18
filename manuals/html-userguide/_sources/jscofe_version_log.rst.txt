@@ -21,7 +21,15 @@ CCP4 Cloud Version Log
 
     #. Fixed bug causing Front-End crash at CCP4 update notifications
 
-    #. Added task for editing text data objects online
+    #. Fixed bug causing failure in acquisition PDB Validation report at certain circumstances
+
+    #. Added task ``Text Editor`` for editing text data objects online
+
+    #. Added task ``Contact`` for calculating intermolecular contacts
+
+    #. Added option for running ``PDBSET`` as part of ``XYZ Utiols
+
+    #. Introfuced auto-topup of disk space
 
     #. Stability fixes
 
