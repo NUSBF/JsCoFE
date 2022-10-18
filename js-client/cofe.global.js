@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    30.08.22   <--  Date of Last Modification.
+ *    18.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -47,6 +47,7 @@ var __current_folder  = { name      : 'My Projects',
                           folders   : []
                         };
 var __local_setup     = false;
+var __is_archive      = false;
 var __offline_message = false;  // true for showing "working offline" once at the beginning
 var __cloud_storage   = false;  // true if user has cloud storage allocated
 var __demo_projects   = false;  // true if demo projects are configured

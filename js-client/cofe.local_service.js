@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.11.20   <--  Date of Last Modification.
+ *    18.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Functions for communication with local (on-client)
  *       ~~~~~~~~~  number cruncher
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -104,6 +104,7 @@ function checkLocalService ( callback_func )  {
         __demo_projects   = rData.demo_projects;
         __auth_software   = rData.auth_software;
         __local_setup     = rData.localSetup;
+        __is_archive      = rData.isArchive;
         __regMode         = rData.regMode;
         __setup_desc      = rData.setup_desc;
         __ccp4_version    = rData.ccp4_version;

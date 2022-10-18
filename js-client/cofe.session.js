@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.09.22   <--  Date of Last Modification.
+ *    18.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -206,6 +206,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                     __doNotShowList = userData.helpTopics;
               else  __doNotShowList = [];
               __local_setup = response.data.localSetup;
+              __is_archive  = response.data.isArchive;
 
               loadKnowledge ( 'Login' );
 

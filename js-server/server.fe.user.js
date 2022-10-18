@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.10.22   <--  Date of Last Modification.
+ *    18.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -582,6 +582,7 @@ var fe_server = conf.getFEConfig();
         var rData   = {};
         rData.userData      = uData;
         rData.localSetup    = conf.isLocalSetup();
+        rData.isArchive     = conf.isArchive();
         rData.cloud_storage = (fcl.getUserCloudMounts(uData).length>0);
         rData.jobs_safe     = (fe_server.getJobsSafePath().length>0);
         rData.demo_projects = fe_server.getDemoProjectsMount();
@@ -1644,6 +1645,7 @@ var fe_server = conf.getFEConfig();
       rData.cloud_storage = (fcl.getUserCloudMounts(loginData).length>0);
     }
     rData.localSetup = conf.isLocalSetup();
+    rData.isArchive  = conf.isArchive();
     rData.regMode    = conf.getRegMode  ();
     if (fe_server.hasOwnProperty('description'))
           rData.setup_desc = fe_server.description;
