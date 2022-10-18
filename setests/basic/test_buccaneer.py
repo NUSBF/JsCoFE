@@ -348,7 +348,7 @@ def test_2buccaneer():
 
 def test_3ccp4build():
     try:
-        verifyCCP4Build(d.driver, 1500, '0006', 0.32, 0.35) # run takes long
+        verifyCCP4Build(d.driver, 1500, '0006', 0.32, 0.37) # run takes long
     except:
         d.driver.quit()
         raise
