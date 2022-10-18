@@ -318,6 +318,11 @@ ServerConfig.prototype.checkLogChunks = function ( nNewJobs,logNo )  {
   return false;
 }
 
+ServerConfig.prototype.isArchive = function()  {
+// returns true if CCP4 Cloud Archive is configured
+  return ('archivePath' in fe_server) && fe_server.archivePath;
+}
+  
 
 // ===========================================================================
 // Config service functions
@@ -418,7 +423,6 @@ function CCP4DirName()  {
     "update_rcode"     : 212, // optional
     "update_notifications" : false,  // optional notification on CCP4 updates
     "userDataPath"     : "./cofe-users",
-    "archivistDataPath" : "./cofe-archivists",  // only if archive is used
     "storage"          : "./cofe-projects",  // for logs, stats, pids, tmp etc.
     "projectsPath"     : "./cofe-projects",  // old version; in this case, "storage" may be
                                              // omitted. Although functional, do not use
@@ -432,12 +436,6 @@ function CCP4DirName()  {
                         // type "volume"  : an ordinary file system for users projects;
                         //                  can be as many volumes as necessary, at
                         //                  least one must be given
-                        // type "archive" : file system for CCP4 Cloud Archive;
-                        //                  can be as many archive volumes as needed
-                        //                  or none, in which case archive features 
-                        //                  are disabled; both archive volume and
-                        //                  archivistDataPath must be configurated 
-                        //                  for CCP4 Cloud Archive to function
                         // type "home"    : same as "volume" but places user projects in
                         //                  path/login/[dirName]
                         //                  if path/login already exists and is writable
@@ -456,19 +454,19 @@ function CCP4DirName()  {
         "path"     : "./cofe-nc-storage/jobs_safe",
         "capacity" : 10
     },
-    // ====== OLD IDEAS SHOULD BE DELETED ONCE CCP4 CLOUD ARCHIVE IS DEVELOPED  =======
-    // "archivePath"     : {  // optional CCP4 Archive storage configuration
-    //     "aname1" : { "path" : "./cofe-archive-1",  // any disk name and path name
-    //                 "type"  : "volume",            // must be "volume-name"
-    //                 "diskReserve" : 10000  // spare capacity, in MBytes, to accomodate
-    //                                        // project versions
-    //               },
-    //     "anameN" : { "path" : "pathN",     // any number of any disk and path names
-    //                 "type"  : "volume",    // must be just "volumes"
-    //                 "diskReserve" : 10000
-    //               }
-    // },
-    // ================================================================================
+    "archivePath" : {  // optional CCP4 Cloud Archive storage configuration;
+                       // can be absent or set null if no Archive is used;
+                       // otherwise must not be empty
+        "aname1" : { "path" : "./cofe-archive-1",  // any disk name and path name
+                     "type" : "volume",            // must be "volume-name"
+                     "diskReserve" : 10000  // spare capacity, in MBytes, to accomodate
+                                           // project versions
+                   },
+        "anameN" : { "path" : "pathN",     // any number of any disk and path names
+                     "type" : "volume",    // must be just "volumes"
+                     "diskReserve" : 10000
+                   }
+    },
     "facilitiesPath"   : "./cofe-facilities",
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
     "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
@@ -689,8 +687,7 @@ function readConfiguration ( confFilePath,serverType )  {
     fe_server.auth_software          = null;
     fe_server.malicious_attempts_max = -1;    // around 100; <0 means do not use
     fe_server.update_notifications   = false; // optional notification on CCP4 updates
-    // fe_server.archivePath            = null;  // no archive by default
-    fe_server.archivistDataPath      = null;  // no archive by default
+    fe_server.archivePath            = null;  // no archive by default
 
     // read configuration file
     for (var key in confObj.FrontEnd)
@@ -743,7 +740,10 @@ function readConfiguration ( confFilePath,serverType )  {
       };
     }
 
+    // check disk volumes configuration
+
     var storagePath = '';
+
     for (var fsname in fe_server.projectsPath)  {
       fe_server.projectsPath[fsname].path =
                         _make_path ( fe_server.projectsPath[fsname].path,null );
@@ -754,6 +754,7 @@ function readConfiguration ( confFilePath,serverType )  {
       if (!('dirName' in fe_server.projectsPath[fsname]))
         fe_server.dirName = 'ccp4cloud_projects';  // for "home" volumes
     }
+
     if (fe_server.storage)
           fe_server.storage = _make_path ( fe_server.storage,null );
     else  fe_server.storage = storagePath;
@@ -1102,6 +1103,11 @@ function isLocalFE()  {
   return fe_server.localSetup;
 }
 
+function isArchive()  {
+// returns true if CCP4 Cloud Archive is configured
+  return fe_server.isArchive();
+}
+  
 function getFETmpDir()  {
   return path.join ( getFEConfig().storage,'tmp' );
 }
