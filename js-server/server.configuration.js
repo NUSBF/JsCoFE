@@ -1241,6 +1241,7 @@ module.exports.pythonVersion      = pythonVersion;
 module.exports.setPythonVersion   = setPythonVersion;
 module.exports.isSharedFileSystem = isSharedFileSystem;
 module.exports.isLocalSetup       = isLocalSetup;
+module.exports.isArchive          = isArchive;
 module.exports.getClientInfo      = getClientInfo;
 module.exports.getFEProxyInfo     = getFEProxyInfo;
 module.exports.getRegMode         = getRegMode;
