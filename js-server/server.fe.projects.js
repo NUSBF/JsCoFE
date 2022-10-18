@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.10.22   <--  Date of Last Modification.
+ *    18.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -802,9 +802,9 @@ function prepareProjectExport ( loginData,projectList )  {
                    '", login ' + loginData.login );
 
   var projectDirPath = getProjectDirPath ( loginData,projectList.current );
-  var archivePath    = path.join ( projectDirPath,
+  var exportFilePath = path.join ( projectDirPath,
                                    projectList.current + cmd.projectFileExt );
-  utils.removeFile ( archivePath );  // just in case
+  utils.removeFile ( exportFilePath );  // just in case
 
   // nasty patch, remove coot backups because they use .gz files -- and they
   // make projects not importable on Windows
@@ -817,7 +817,7 @@ function prepareProjectExport ( loginData,projectList )  {
       utils.removeFile ( jobballPath );  // export will never get ready!
     } else  {
       log.standard ( 10,'packed' );
-      utils.moveFile   ( jobballPath,archivePath );
+      utils.moveFile   ( jobballPath,exportFilePath );
     }
   });
 
@@ -827,21 +827,21 @@ function prepareProjectExport ( loginData,projectList )  {
 
 function checkProjectExport ( loginData,projectList )  {
   var projectDirPath = getProjectDirPath ( loginData,projectList.current );
-  var archivePath    = path.join ( projectDirPath,
+  var exportFilePath = path.join ( projectDirPath,
                                    projectList.current + cmd.projectFileExt );
   var rdata = {};
-  if (utils.fileExists(archivePath))
-        rdata.size = utils.fileSize(archivePath);
+  if (utils.fileExists(exportFilePath))
+        rdata.size = utils.fileSize(exportFilePath);
   else  rdata.size = -1;
   return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 }
 
 function finishProjectExport ( loginData,projectList )  {
   var projectDirPath = getProjectDirPath ( loginData,projectList.current );
-  var archivePath    = path.join ( projectDirPath,
+  var exportFilePath = path.join ( projectDirPath,
                                    projectList.current + cmd.projectFileExt );
   //var tarballPath2   = path.join ( projectDirPath,'__' + projectList.current+'.tar.gz' );
-  utils.removeFile ( archivePath );
+  utils.removeFile ( exportFilePath );
   //utils.removeFile ( tarballPath2 );
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
 }
@@ -850,10 +850,10 @@ function finishProjectExport ( loginData,projectList )  {
 // ===========================================================================
 
 function getJobExportNames ( loginData,task )  {
-  var exportName  = task.project + '-job_' + task.id + '.zip';
-  var jobDirPath  = getJobDirPath ( loginData,task.project,task.id );
-  var archivePath = path.join     ( jobDirPath,exportName );
-  return [ exportName,jobDirPath,archivePath ];
+  var exportName     = task.project + '-job_' + task.id + '.zip';
+  var jobDirPath     = getJobDirPath ( loginData,task.project,task.id );
+  var exportFilePath = path.join     ( jobDirPath,exportName );
+  return [ exportName,jobDirPath,exportFilePath ];
 }
 
 function prepareJobExport ( loginData,task )  {
@@ -861,11 +861,11 @@ function prepareJobExport ( loginData,task )  {
   log.standard ( 19,'export job "' + task.project + '-job_' + task.id +
                     '", login ' + loginData.login );
 
-  var exp_names   = getJobExportNames ( loginData,task );
-  var exportName  = exp_names[0];
-  var jobDirPath  = exp_names[1];
-  var archivePath = exp_names[2];
-  utils.removeFile ( archivePath );  // just in case
+  var exp_names      = getJobExportNames ( loginData,task );
+  // var exportName  = exp_names[0];
+  var jobDirPath     = exp_names[1];
+  var exportFilePath = exp_names[2];
+  utils.removeFile ( exportFilePath );  // just in case
 
   send_dir.packDir ( jobDirPath,'*',null,function(code,jobballSize){
     var jobballPath = send_dir.getJobballPath ( jobDirPath );
@@ -874,7 +874,7 @@ function prepareJobExport ( loginData,task )  {
       utils.removeFile ( jobballPath );  // export will never get ready!
     } else  {
       log.standard ( 20,'packed' );
-      utils.moveFile   ( jobballPath,archivePath );
+      utils.moveFile   ( jobballPath,exportFilePath );
     }
   });
 
@@ -884,17 +884,17 @@ function prepareJobExport ( loginData,task )  {
 
 
 function checkJobExport ( loginData,task )  {
-  var archivePath = getJobExportNames(loginData,task)[2];
+  var exportFilePath = getJobExportNames(loginData,task)[2];
   var rdata = {};
-  if (utils.fileExists(archivePath))
-        rdata.size = utils.fileSize(archivePath);
+  if (utils.fileExists(exportFilePath))
+        rdata.size = utils.fileSize(exportFilePath);
   else  rdata.size = -1;
   return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 }
 
 function finishJobExport ( loginData,task )  {
-  var archivePath = getJobExportNames(loginData,task)[2];
-  utils.removeFile ( archivePath );
+  var exportFilePath = getJobExportNames(loginData,task)[2];
+  utils.removeFile ( exportFilePath );
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
 }
 
@@ -910,9 +910,9 @@ function getFailedJobExportNames ( fjdata )  {
     var jobDirPath  = conf.getFEConfig().getJobsSafePath();
     for (var i=1;i<path_list.length;i++)
       jobDirPath  = path.join ( jobDirPath,path_list[i] );
-    var archivePath = path.join ( conf.getFEConfig().getJobsSafePath(),exportName );
-    var url         = cmd.__special_fjsafe_tag + '/' + exportName;
-    return [ exportName,jobDirPath,archivePath,url ];
+    var exportFilePath = path.join ( conf.getFEConfig().getJobsSafePath(),exportName );
+    var url            = cmd.__special_fjsafe_tag + '/' + exportName;
+    return [ exportName,jobDirPath,exportFilePath,url ];
   } else
     return [ '','','','' ];
 }
@@ -924,15 +924,15 @@ function prepareFailedJobExport ( loginData,fjdata )  {
     log.standard ( 19,'export failed job "' + fjdata.path + '", login ' + loginData.login );
 
     var exp_names   = getFailedJobExportNames ( fjdata );
-    var exportName  = exp_names[0];
+    // var exportName  = exp_names[0];
     var jobDirPath  = exp_names[1];
-    var archivePath = exp_names[2];
-    utils.removeFile ( archivePath );  // just in case
+    var exportFilePath = exp_names[2];
+    utils.removeFile ( exportFilePath );  // just in case
 
-    send_dir.packDir ( jobDirPath,'*',archivePath,function(code,jobballSize){
+    send_dir.packDir ( jobDirPath,'*',exportFilePath,function(code,jobballSize){
       if (code)  {
         log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
-        utils.removeFile ( archivePath );  // export will never get ready!
+        utils.removeFile ( exportFilePath );  // export will never get ready!
       }
     });
 
@@ -944,18 +944,18 @@ function prepareFailedJobExport ( loginData,fjdata )  {
 }
 
 function checkFailedJobExport ( loginData,fjdata )  {
-  var archivePath = getFailedJobExportNames(fjdata)[2];
+  var exportFilePath = getFailedJobExportNames(fjdata)[2];
   var rdata = {};
-  if (archivePath && utils.fileExists(archivePath))
-        rdata.size = utils.fileSize(archivePath);
+  if (exportFilePath && utils.fileExists(exportFilePath))
+        rdata.size = utils.fileSize(exportFilePath);
   else  rdata.size = -1;
   return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 }
 
 function finishFailedJobExport ( loginData,fjdata )  {
-  var archivePath = getFailedJobExportNames(fjdata)[2];
-  if (archivePath)
-    utils.removeFile ( archivePath );
+  var exportFilePath = getFailedJobExportNames(fjdata)[2];
+  if (exportFilePath)
+    utils.removeFile ( exportFilePath );
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
 }
 
