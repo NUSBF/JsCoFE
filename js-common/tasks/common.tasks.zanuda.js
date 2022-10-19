@@ -37,7 +37,6 @@ function TaskZanuda()  {
   this.name    = 'zanuda';
   this.setOName ( 'zanuda' );  // default output file name template
   this.title   = 'Space Group Validation with Zanuda';
-  //this.helpURL = './html/jscofe_task_zanuda.html';
 
   this.input_dtypes = [{      // input data types
       data_type : {'DataRevision':['xyz']}, // data type(s) and subtype(s)

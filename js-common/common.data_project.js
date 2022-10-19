@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.10.22   <--  Date of Last Modification.
+ *    19.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -24,6 +24,16 @@
  */
 
 'use strict';
+
+
+var __conf = null;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  __conf = require('../js-server/server.configuration');
+
+function __isArchive()  {
+  if (__conf)  return __conf.isArchive();
+  return __is_archive;  // client side
+}
 
 // ===========================================================================
 
@@ -253,21 +263,24 @@ ProjectList.prototype.seedFolders = function ( loginName )  {
       nprojects : 0,
       type      : folder_type.all_projects,
       folders   : []
-    // == NOARCHIVE
-    },{
+    }
+  ];
+  if (__isArchive())  {
+    this.folders.push ({
       name      : folder_name.archived, // project folders tree basic element
       path      : folder_path.archived,
       nprojects : 0,
       type      : folder_type.archived,
       folders   : []
-    },{
+    });
+    this.folders.push ({
       name      : folder_name.cloud_archive, // project folders tree basic element
       path      : folder_path.cloud_archive,
       nprojects : 0,
       type      : folder_type.cloud_archive,
       folders   : []
-    }
-  ];
+    });
+  }
   this.setCurrentFolder ( this.folders[0] );
 }
 
@@ -356,7 +369,10 @@ ProjectList.prototype._reset_folders = function ( folders )  {
 
 ProjectList.prototype._get_folder_list = function ( ftype )  {
 var flist = [];
-  for (var i=6;i<this.folders.length;i++)
+var i0    = 4;
+  if (__isArchive())
+    i0 = 6;
+  for (var i=i0;i<this.folders.length;i++)
     if (this.folders[i].type==ftype)
       flist.push ( this.folders[i] );
   for (var i=0;i<flist.length;i++)
@@ -404,7 +420,9 @@ ProjectList.prototype.sortFolders = function()  {
 var l1 = this._get_folder_list ( folder_type.custom_list );
 var l2 = this._get_folder_list ( folder_type.tutorials   );
 var l3 = this._get_folder_list ( folder_type.user        );
-var i  = 6;
+var i  = 4;
+  if (__isArchive())
+    i = 6;
   for (var j=0;j<l1.length;j++)
     this.folders[i++] = l1[j];
   for (var j=0;j<l2.length;j++)
@@ -447,6 +465,9 @@ function printFolders ( projectList )  {
 
 
 ProjectList.prototype.resetFolders = function ( login )  {
+var i0 = 4;
+  if (__isArchive())
+    i0 = 6;
 
   // check if the pre-defined folde structure is non-existent or corrupt
   // and make a deep reset in such case
@@ -456,16 +477,23 @@ ProjectList.prototype.resetFolders = function ( login )  {
        (this.folders[1].type!=folder_type.shared)       ||
        (this.folders[2].type!=folder_type.joined)       ||
        (this.folders[3].type!=folder_type.all_projects) ||
-       (this.folders[4].type!=folder_type.archived)     ||
-       (this.folders[5].type!=folder_type.cloud_archive))
+       ((i0==6) && (
+          (this.folders[4].type!=folder_type.archived)  ||
+          (this.folders[5].type!=folder_type.cloud_archive))
+       ) ||
+       ((i0!=6) && (this.folders.length>=6) && 
+        (this.folders[4].type==folder_type.archived) &&
+        (this.folders[5].type==folder_type.cloud_archive)
+       )
+     )
     this.seedFolders ( login );
 
   // leave six predefined leading folders
   var folders  = this.folders;
-  this.folders = this.folders.slice(0,6);
+  this.folders = this.folders.slice(0,i0);
 
   // complement with all custom lists
-  for (var i=6;i<folders.length;i++)
+  for (var i=i0;i<folders.length;i++)
     if (folders[i].type==folder_type.custom_list)
       this.folders.push ( folders[i] );
 
