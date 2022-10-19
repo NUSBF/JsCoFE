@@ -282,17 +282,22 @@ var selNode = this.ftree.getSelectedNode();
 FoldersBrowser.prototype.onSelectBtn = function()  {
 var selNode = this.ftree.getSelectedNode();
   if (selNode)  {
-    if ((__user_role!=role_code.developer) && 
-        ((selNode.dataId==folder_path.archived) || 
-         (selNode.dataId==folder_path.cloud_archive)))  {
+    if (((selNode.dataId!=folder_path.archived) && 
+         (selNode.dataId!=folder_path.cloud_archive)) ||
+         (__user_role==role_code.developer))  {
+      $(this.element).dialog ( 'close' );
+      this.onReturn_fnc ( 'select',{ folder_path : selNode.dataId } );
+    } else if (!__is_archive)  {
+      new MessageBox ( 'Feature not available',
+          '<h2>Archive is not available</h3>' +
+          'CCP4 Cloud Archive is not configured.',
+          'msg_stop' );
+    } else  {
       new MessageBox ( 'Feature not available',
           '<h2>Folder is not available</h3>' +
           'Archive folders and their functionality are currently ' +
           'under<br>development. Please come back later.',
           'msg_stop' );
-    } else  {
-      $(this.element).dialog ( 'close' );
-      this.onReturn_fnc ( 'select',{ folder_path : selNode.dataId } );
     }
   } else
     new MessageBox ( 'No selection in tree',
