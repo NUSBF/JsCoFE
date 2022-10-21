@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    28.07.22   <--  Date of Last Modification.
+ *    20.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -24,9 +24,7 @@
 
 'use strict';
 
-// const { folder_path } = require("../js-common/common.data_project");
-
- // ===========================================================================
+// ===========================================================================
 // Folders dialog class
 
 function FoldersBrowser ( title,projectList,currentFolder,currentPDesc,funcKey,
@@ -214,7 +212,8 @@ FoldersBrowser.prototype.setFolders = function ( pnode,folders,ftree )  {
     var node = ftree.addNode ( pnode,folders[i].name + ' (' + folders[i].nprojects + ')',
                                image_path('folder_projects'),
                                null );
-    node.dataId = folders[i].path;
+    node.dataId     = folders[i].path;
+    node.folderType = folders[i].type;
     if (node.dataId==this.currentFolder.path)
       ftree.selectNode ( node,true );
     this.setFolders ( node,folders[i].folders,ftree );
@@ -240,7 +239,8 @@ FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
                                    nprj,image_path(icon),null );
     if (i==0)
       this.node0_id = node.id;
-    node.dataId = folders[i].path;
+    node.dataId     = folders[i].path;
+    node.folderType = folders[i].type;
     if (node.dataId==this.currentFolder.path)
       ftree.selectNode ( node,true );
     this.setFolders ( node,folders[i].folders,ftree );
@@ -275,11 +275,15 @@ var selNode = this.ftree.getSelectedNode();
     this.delete_btn.setEnabled ( enable_rd );
     if (this.funcKey=='move')
       this.disableButton ( 'select',
-            (!myprojects) && (selNode.icon.indexOf('folder_list_custom')<0) );
+        (!myprojects) && 
+        ([folder_type.custom_list,folder_type.archived,folder_type.cloud_archive]
+          .indexOf(selNode.folderType)<0)
+      );
   }
 }
 
 FoldersBrowser.prototype.onSelectBtn = function()  {
+// Select button switches to the selected folder
 var selNode = this.ftree.getSelectedNode();
   if (selNode)  {
     if (((selNode.dataId!=folder_path.archived) && 
@@ -505,17 +509,25 @@ var label   = 'Folder';
     label = 'List';
   var label_l = label.toLowerCase();
 
+  // sanity check
   if ((!selNode.dataId.startsWith(__login_id+'\'s ')) &&
-      (selNode.icon.indexOf('folder_list_custom')<0))
+      ([folder_type.custom_list,folder_type.archived,folder_type.cloud_archive]
+        .indexOf(selNode.folderType)<0))
     return;
 
-  if (selNode.dataId==this.currentFolder.path)
+  if (selNode.dataId==this.currentFolder.path)  {
     new MessageBox ( 'Already in the ' + label_l,
           '<h2>Already in the ' + label + '</h2>' +
           'Project <i>"' + this.currentPDesc.name + '"</i> is already in ' + label_l +
           '<p><i>"' + fldPath + '"</i>',
           'msg_stop' );
-  else  {
+  } else if ((selNode.folderType==folder_type.archived) ||
+             (selNode.folderType==folder_type.cloud_archive)) { 
+    new ProjectArchiveDialog ( this.currentPDesc,function(){
+      $(self.element).dialog ( 'close' );
+      self.onReturn_fnc ( 'move',{ folder_path : selNode.dataId });
+    } );
+  } else  {
     var self = this;
     new QuestionBox ( 'Move project to ' + label_l,
                       '<h2>Move project to ' + label + '</h2>' +
