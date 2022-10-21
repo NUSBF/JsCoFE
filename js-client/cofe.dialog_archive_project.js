@@ -1,0 +1,274 @@
+
+/*
+ *  =================================================================
+ *
+ *    21.10.22   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  js-client/cofe.dialog_archive_project.js
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  Project Archive Dialog (archives given project)
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel, A. Lebedev 2022
+ *
+ *  =================================================================
+ *
+ *  Requires: 	jquery.js
+ *              gui.widgets.js
+ *
+ */
+
+'use strict';
+
+// -------------------------------------------------------------------------
+// ProjectSettingsDialog class
+
+function ProjectArchiveDialog ( projectDesc,callback_func )  {
+
+  Widget.call ( this,'div' );
+  this.element.setAttribute ( 'title','Project archiving' );
+  document.body.appendChild ( this.element );
+
+  this.projectDesc = projectDesc;
+
+  this.makeLayout();
+
+  var self = this;
+  $(this.element).dialog({
+    resizable : false,
+    height    : 'auto',
+    maxHeight : 600,
+    width     : 820,
+    modal     : true,
+    buttons   : {
+      "Archive": function() {
+        if (self.validateData())  {
+          new QuestionBox ( 'Confirm archiving',
+            '<h2>Confirm archiving</h2>' +
+            'You are about to archive project "' + projectDesc.name +
+            '".<br>This operation cannot be undone.<p>Please confirm.',[
+              { name    : 'Yes, archive',
+                onclick : function(){}
+              },{
+                name    : 'Cancel',
+                onclick : function(){}
+              }],'msg_confirm' );
+        }
+        // window.setTimeout ( function(){ callback_func(); },0 );
+        // $( this ).dialog( "close" );
+      },
+      "Cancel": function() {
+        $( this ).dialog( "close" );
+      }
+    }
+  });
+
+}
+
+ProjectArchiveDialog.prototype = Object.create ( Widget.prototype );
+ProjectArchiveDialog.prototype.constructor = ProjectArchiveDialog;
+
+// ProjectArchiveDialog.prototype.putConfirmQ = function ( row,text )  {
+//   this.grid.setLabel ( text,row,2,1,1 );
+//   return null;
+// }
+
+ProjectArchiveDialog.prototype.makeLayout = function()  {
+
+  this.grid = new Grid('');
+  this.addWidget ( this.grid );
+
+  var doclink = '<a href="javascript:launchHelpBox(\'CCP4 Cloud Archive\',' +
+                '\'' + __user_guide_base_url + 'jscofe_archiving.html\',null,10)">' +
+                '<span style="color:blue">';
+
+  this.grid.setLabel    ( ' ',0,0,1,1 );
+  this.grid.setCellSize ( '','6px', 0,0 );
+  this.grid.setImage    ( image_path('folder_cloud_archive'),'48px','48px', 1,0,1,1 );
+  this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
+
+  this.grid.setLabel    ( '<h2>Archive Project "' + 
+      this.projectDesc.name + '"</h2>' + doclink + 'Read what ' + appName() + 
+      ' archiving means before proceeding</span></a> and fill in the form ' +
+      'below (make sure to scroll the form down to the end)',
+      0,2,2,1 );        
+
+  this.grid.setVerticalAlignment ( 0,2,'middle' );
+
+  this.grid.setHLine ( 2, 2,2, 1,1 );
+
+  var panel = this.grid.setPanel ( 3,2,1,1 );
+  $(panel.element).css({
+    'width'      : 700,
+    'height'     : 300,
+    'overflow-y' : 'scroll'
+  });
+
+  var pgrid = new Grid ( '-compact' );
+  panel.addWidget ( pgrid );
+  var row = 0;
+
+  // declaration
+
+  pgrid.setLabel ( '<b>1. Declaration.</b><i> ' +
+    'I archive project </i><b>"' + this.projectDesc.name + 
+    '"</b><i>, developed by myself and my co-authors listed below in Section 2, '   +
+    'who all have consented to this archiving, for the benefit of research ' +
+    'community, as scientific evidence of my/our results, for citing in ' +
+    'publications, and for educational purposes. '      +
+    'I/we understand and agree that the archived project will be accessible to '     +
+    'all other users of ' + appName() + ', who will be able to inspect it, '     +
+    'clone, export and make additions in thus cloned or exported copies, where ' +
+    'my/our original archived work will remain unchanged, and the whole project '    +
+    'will retain my/our authorship. '  +
+    'I/we further understand that there is no obligation to archive my/our work ' +
+    'and do so in good faith for reasons listed in the beginning of this Declaration. '  +
+    'I have read and understood terms of project archiving in ' + appName()   +
+    ', given ' + doclink + 'here</span></a>, and informed my co-authors ' +
+    'of archiving</i>.',
+    row++,2,1,1
+  );
+
+  var d = new Date();
+  var date_str = [ d.getDate().toString(),
+                   (d.getMonth()+1).toString(),
+                   d.getFullYear().toString() ].join('/');
+
+  var sgrid = pgrid.setGrid ( '-compact', row++,2,1,1 );
+
+  sgrid.setLabel ( __login_user + ':&nbsp;', 0,0,1,1 );
+
+  this.signed_sel = new Dropdown();
+  this.signed_sel.addItem ( ' ','','no_choice',true );
+  this.signed_sel.addItem ( 'Agreed and signed','','signed',false );
+  this.signed_sel.setWidth ( '200px' );
+  sgrid.setWidget ( this.signed_sel, 0,1,1,1 );
+  this.signed_sel.make();
+
+  sgrid.setLabel ( date_str, 0,2,1,1 );
+
+  sgrid.setVerticalAlignment ( 0,0,'middle' );
+  sgrid.setVerticalAlignment ( 0,2,'middle' );
+
+
+  // co-authors
+
+  pgrid.setLabel ( '&nbsp;<br><b>2. Co-authors.</b> ' +
+    'Put list of your co-authors here, one per line, or ' +
+    '<b>"None" for no co-authors</b>',
+    row++,2,1,1
+  );
+
+  this.coauthors_edt = new ACEditor ( 650,100,{
+       'border'     : '1px solid black',
+       'box-shadow' : '6px 6px lightgray',
+       'font-size'  : '16px',
+       'theme'      : 'chrome',
+       'mode'       : 'python'
+     }
+  );
+  pgrid.setWidget ( this.coauthors_edt,row++,2,1,1 );
+  this.coauthors_edt.init ( '',
+    'John R. Smith, University of Nowhere, jrsmith@uninowhere.edu\n' +
+    'Mary A. Berry, Nocorporation Ltd., m.a.Berry@nocorp.com'
+  );
+
+  // annotation
+
+  pgrid.setLabel ( '&nbsp;<br><b>3. Annotation.</b> ' +
+    'Provide as much annotation details as possible below; they will be used ' +
+    'in archive searches. <b>Put asterisk (*)</b> where annotation details are not ' +
+    'currently available -- you will be able to add them later.',
+    row++,2,1,1
+  );
+
+  var agrid = pgrid.setGrid ( '-compact', row++,2,1,1 );
+
+  agrid.setLabel ( 'Associated PDB code(s):&nbsp;', 0,0,1,1 ).setNoWrap()
+       .setFontItalic(true).setHorizontalAlignment('right');
+  this.pdb_inp = agrid.setInputText ( '',0,1,1 ).setWidth ( '440px' )
+                     .setStyle ( 'text','','1XYZ, 2XYZ, 3XYZ, ...',
+                                 'Comma-separated list of PDB codes associated ' +
+                                 'with this project. Typically, specify PDB codes ' +
+                                 'of deposited structures' );
+
+  agrid.setLabel ( 'Publication DOI(s):&nbsp;', 1,0,1,1 ).setNoWrap()
+       .setFontItalic(true).setHorizontalAlignment('right');
+  this.doi_inp = agrid.setInputText ( '',1,1,1 ).setWidth ( '440px' )
+                    .setStyle ( 'text','','10.1107/S2059798322007987, ...',
+                                'Comma-separated list of DOI of relevant ' +
+                                'publications.' );
+
+  agrid.setLabel ( 'Keywords:&nbsp;', 2,0,1,1 ).setNoWrap()
+       .setFontItalic(true).setHorizontalAlignment('right');
+  this.kwd_inp = agrid.setInputText ( '',2,1,1 ).setWidth ( '440px' )
+                    .setStyle ( 'text','','hydrolase, carboxypeptidase, ...',
+                                'Comma-separated list of keywords suitable for ' +
+                                'archive searches.' );
+                   
+  for (var r=0;r<3;r++)
+    agrid.setVerticalAlignment ( r,0,'middle' );
+
+}
+
+
+ProjectArchiveDialog.prototype.getInputList = function ( inp )  {
+  var line = inp.getValue().trim();
+  var lst  = [];
+  if (line && ((line=='*') || (line.indexOf('*')<0)))  {
+    lst = line.split(',').filter(Boolean);
+    for (var i=0;i<lst.length;i++)
+      lst[i] = lst[i].trim();
+  }
+  return lst;
+}
+
+
+ProjectArchiveDialog.prototype.validateData = function()  {
+
+  var msg_list = [];
+
+  if (this.signed_sel.getValue()!='signed')
+    msg_list.push ( 'sign declaration' );
+
+  this.coauthors = this.coauthors_edt.getText().trim();
+  if ((!this.coauthors) || (this.coauthors.length<4) ||
+      ((this.coauthors.length==4) && (this.coauthors.toLowerCase()!='none')))
+    msg_list.push ( 'specify co-authors or put "None"' );
+
+  this.pdbs = this.getInputList ( this.pdb_inp );
+  if (this.pdbs.length<=0)
+    msg_list.push ( 'provide valid non-empty PDB code(s) annotation' );
+  else if (this.pdbs[0]!='*')  {
+    var pdbok = true;
+    for (var i=0;(i<this.pdbs.length) && pdbok;i++)
+      pdbok = (this.pdbs[i].length==4);// && /^[0-9]$/.test(this.pdbs[i].charAt(0));
+    if (!pdbok)
+      msg_list.push ( 'provide valid PDB code(s)' );
+  }
+
+  this.dois = this.getInputList ( this.doi_inp );
+  if (this.dois.length<=0)
+    msg_list.push ( 'provide valid non-empty publication DOI(s) annotation' );
+
+  this.kwds = this.getInputList ( this.kwd_inp );
+  if (this.kwds.length<=0)
+    msg_list.push ( 'provide valid non-empty keyword(s) annotation' );
+
+  if (msg_list.length>0)  {
+    new MessageBox ( 'Invalid input',
+        '<h2>Invalid input</h2>Please correct your input:<ul><li>' +
+        msg_list.join('</li><li>') + '</li></ul>',
+        'msg_stop'
+    );
+    // strangely enough, MessageBox behaves as non-modal here; suspect
+    // library bug
+  }
+
+  return (msg_list.length<=0);
+
+}

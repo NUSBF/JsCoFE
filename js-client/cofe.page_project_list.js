@@ -934,8 +934,11 @@ function ProjectListPage ( sceneId )  {
     }
     var pDesc = getCurrentProjectDesc();
     new FoldersBrowser ( title,projectList,__current_folder,pDesc,funcKey,
+
       function ( key,data ){
+      
         switch (key)  {
+      
           case 'delete' :
           case 'select' : if (!projectList.setCurrentFolder(
                                   projectList.findFolder(data.folder_path)))
@@ -951,14 +954,15 @@ function ProjectListPage ( sceneId )  {
                             makeProjectListTable();
                           },null );
                       break;
+      
           case 'add'    : projectList.resetFolders ( __login_id );
                           saveProjectList ( function(rdata){
                             // loadProjectList();
                             // makeProjectListTable();
                           },null );
                       break;
-          case 'move'   : //var pDesc = getCurrentProjectDesc();
-                          if (pDesc)  {
+
+          case 'move'   : if (pDesc)  {
                             if (!projectList.setCurrentFolder(
                                     projectList.findFolder(data.folder_path)))  {
                               new MessageBox (
@@ -967,6 +971,9 @@ function ProjectListPage ( sceneId )  {
                                   data.folder_path + '</i>"<p>not found (2).',
                                   'msg_error'
                                 );
+                            // } else if ((data.folder_path==folder_path.archived) ||
+                            //            (data.folder_path==folder_path.cloud_archive))  { 
+                            //   new ProjectArchiveDialog ( pDesc,function(){} );
                             } else  {
                               if (projectList.currentFolder.type==folder_type.custom_list)
                                     addProjectLabel ( __login_id,pDesc,data.folder_path );
@@ -979,6 +986,7 @@ function ProjectListPage ( sceneId )  {
                             }
                           }
                       break;
+
           case 'rename' : if (data.folder_path==__current_folder.path)  {
                             var renFolder = projectList.findFolder ( data.rename_path );
                             setPageTitle ( renFolder );
@@ -1003,15 +1011,20 @@ function ProjectListPage ( sceneId )  {
                             makeProjectListTable();
                           },null );
                       break;
+          
           case 'cancel' : projectList.resetFolders ( __login_id );
                       break;
+          
           default       : new MessageBox ( 'Unknown action key',
                               '<h2>Unknown action key</h2>' +
                               'This is likely to be a program error. ' +
                               'Please report code PPL-BF-001 to developers.',
                               'msg_error' );
+        
         }
+
       });
+
   }
 
   this.makeHeader ( 3,null );

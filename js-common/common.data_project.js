@@ -115,18 +115,18 @@ function ProjectDesc()  {
   //   pdbCode : ''    // associated PDB code
   // };
 
-  this.jobCount     = 0;      // job count
-  this.timestamp    = 0;      // Date.now()
-  this.autorun      = false;  // true if a task in autorun mode is runnng
+  this.jobCount     = 0;     // job count
+  this.timestamp    = 0;     // Date.now()
+  this.autorun      = false; // true if a task in autorun mode is runnng
   this.startmode    = start_mode.standard;  // will be overwritten when
                                             // project is created
   this.tasklistmode = tasklist_mode.full;
-  this.disk_space   = 0.0;  // in MBs, corresponds to current project state
-  this.cpu_time     = 0.0;  // in hours, accumulated over all project history
-  this.njobs        = 0;    // over all project history
-  this.dateCreated  = '';   // year/mm/dd
-  this.dateLastUsed = '';   // year/mm/dd
-  this.metrics      = {};   // for statistics and searches
+  this.disk_space   = 0.0;   // in MBs, corresponds to current project state
+  this.cpu_time     = 0.0;   // in hours, accumulated over all project history
+  this.njobs        = 0;     // over all project history
+  this.dateCreated  = '';    // year/mm/dd
+  this.dateLastUsed = '';    // year/mm/dd
+  this.metrics      = {};    // for statistics and searches
 
 }
 
@@ -385,23 +385,6 @@ var i0    = 4;
   return flist;
 }
 
-/* == NOARCHIVE
-ProjectList.prototype._get_folder_list = function ( ftype )  {
-  var flist = [];
-    for (var i=4;i<this.folders.length;i++)
-      if (this.folders[i].type==ftype)
-        flist.push ( this.folders[i] );
-    for (var i=0;i<flist.length;i++)
-      for (var j=i+1;j<flist.length;j++)
-        if (flist[j].name<flist[i].name)  {
-          var fi   = flist[i];
-          flist[i] = flist[j];
-          flist[j] = fi;
-        }
-    return flist;
-  }
- */ 
-
 ProjectList.prototype._set_folder_paths = function ( folder )  {
   for (var i=0;i<folder.folders.length;i++)  {
     folder.folders[i].path = folder.path + '/' + folder.folders[i].name;
@@ -431,20 +414,6 @@ var i  = 4;
     this.folders[i++] = l3[j];
 }
 
-/* == NOARCHIVE
-ProjectList.prototype.sortFolders = function()  {
-  var l1 = this._get_folder_list ( folder_type.custom_list );
-  var l2 = this._get_folder_list ( folder_type.tutorials   );
-  var l3 = this._get_folder_list ( folder_type.user        );
-  var i  = 4;
-    for (var j=0;j<l1.length;j++)
-      this.folders[i++] = l1[j];
-    for (var j=0;j<l2.length;j++)
-      this.folders[i++] = l2[j];
-    for (var j=0;j<l3.length;j++)
-      this.folders[i++] = l3[j];
-  }
-*/
 
 function _print_folder ( folder )  {
   console.log ( ' - ' + folder.path + '(' + folder.nprojects + ')' );
@@ -548,84 +517,6 @@ var i0 = 4;
   // printFolders ( this );
 
 }
-
-
-/* == NOARCHIVE
-
-ProjectList.prototype.resetFolders = function ( login )  {
-
-  // check if the pre-defined folde structure is non-existent or corrupt
-  // and make a deep reset in such case
-  if ((!('folders' in this)) || (this.folders.length<4) ||
-      (!this.folders[0].name.startsWith(login+'\'s '))  ||
-       (this.folders[0].type!=folder_type.user)   ||
-       (this.folders[1].type!=folder_type.shared) ||
-       (this.folders[2].type!=folder_type.joined) ||
-       (this.folders[3].type!=folder_type.all_projects))
-    this.seedFolders ( login );
-
-  // leave four predefined leading folders
-  var folders  = this.folders;
-  this.folders = this.folders.slice(0,4);
-
-  // complement with all custom lists
-  for (var i=4;i<folders.length;i++)
-    if (folders[i].type==folder_type.custom_list)
-      this.folders.push ( folders[i] );
-
-  // set zero number of projects in all copied folders recursively
-  this._reset_folders ( this.folders );
-  this.folders[3].nprojects = this.projects.length;  // "All folders" length
-
-  // reconstruct other folders from project descriptions
-
-  var folderPaths = {};
-  var listPaths   = {};
-  var nshared = 0;
-  var njoined = 0;
-
-  for (var i=0;i<this.projects.length;i++)  {
-    var folder_path = this.projects[i].folderPath;
-    if (folder_path in folderPaths)
-          folderPaths[folder_path]++;  // folder population
-    else  folderPaths[folder_path] = 1;
-    // special cases
-    if (isProjectJoined(login,this.projects[i]))  njoined++;
-    if (isProjectShared(login,this.projects[i]))  nshared++;
-    var labels = {};
-    if (this.projects[i].owner.login==login)
-      labels = this.projects[i].owner.labels;
-    else if (login in this.projects[i].share)
-      labels = this.projects[i].share[login].labels;
-    for (var label in labels)
-      if (label in listPaths)  listPaths[label]++;
-                         else  listPaths[label] = 1;
-  }
-  this.folders[1].nprojects = nshared;  // "shared by me"
-  this.folders[2].nprojects = njoined;  // "joined by me"
-
-  for (var fpath in folderPaths)
-    this.addFolderPath ( fpath,folderPaths[fpath],false );
-
-  for (var fpath in listPaths)
-    this.addFolderPath ( fpath,listPaths[fpath],true );
-
-  // set folder paths; this should not be required, only to repair after
-  // accidental damage in buggy earlier implementations
-  this.setFolderPaths();
-
-  this.sortFolders();
-
-  if (('currentFolder' in this) && this.currentFolder)
-    // do this because folders may have changed
-        this.setCurrentFolder ( this.findFolder(this.currentFolder.path) );
-  else  this.setCurrentFolder ( this.folders[0] );
-
-  // printFolders ( this );
-
-}
-
-*/
 
 
 ProjectList.prototype.setCurrentFolder = function ( folder )  {

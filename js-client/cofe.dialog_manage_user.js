@@ -34,7 +34,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
   document.body.appendChild ( this.element );
 
   this.grid = new Grid('');
-  this.addWidget  ( this.grid );
+  this.addWidget ( this.grid );
   this.userData = userData;
 
   this.diskNames = [];
@@ -44,7 +44,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
   if (this.diskNames.indexOf(userData.volume)<0)
     this.diskNames.push ( userData.volume );
 
-  this.makeLayout ();
+  this.makeLayout();
 
   //w = 3*$(window).width()/5 + 'px';
 

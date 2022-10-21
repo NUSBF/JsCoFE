@@ -458,12 +458,12 @@ function CCP4DirName()  {
                        // can be absent or set null if no Archive is used;
                        // otherwise must not be empty
         "aname1" : { "path" : "./cofe-archive-1",  // any disk name and path name
-                     "type" : "volume",            // must be "volume-name"
+                     "type" : "prime-volume",      // one volume must be prime
                      "diskReserve" : 10000  // spare capacity, in MBytes, to accomodate
-                                           // project versions
+                                            // project versions
                    },
-        "anameN" : { "path" : "pathN",     // any number of any disk and path names
-                     "type" : "volume",    // must be just "volumes"
+        "anameN" : { "path" : "pathN",      // any number of any disk and path names
+                     "type" : "volume",     // must be just "volumes"
                      "diskReserve" : 10000
                    }
     },
@@ -688,6 +688,7 @@ function readConfiguration ( confFilePath,serverType )  {
     fe_server.malicious_attempts_max = -1;    // around 100; <0 means do not use
     fe_server.update_notifications   = false; // optional notification on CCP4 updates
     fe_server.archivePath            = null;  // no archive by default
+    fe_server.archivePrimePath       = null;  // one archive volume must be prime
 
     // read configuration file
     for (var key in confObj.FrontEnd)
@@ -758,6 +759,18 @@ function readConfiguration ( confFilePath,serverType )  {
     if (fe_server.storage)
           fe_server.storage = _make_path ( fe_server.storage,null );
     else  fe_server.storage = storagePath;
+
+    if (this.isArchive())  {
+      for (var fsname in fe_server.archivePath)
+        if (fe_server.archivePath[fsname].type=='prime-volume')
+          this.archivePrimePath = fe_server.archivePath[fsname].path;
+      if (!this.archivePrimePath)  {
+        // log.error ( 40,'prime volume for CCP4 Cloud Archive not specified -- stop' );
+        return 'prime volume for CCP4 Cloud Archive not specified';
+      }
+      log.standard ( 41,'CCP4 Cloud Archive configured' );
+    } else
+      log.standard ( 42,'CCP4 Cloud Archive not configured' );
 
     if (!('ration' in fe_server))
       fe_server.ration = {  // 0: unlimited
