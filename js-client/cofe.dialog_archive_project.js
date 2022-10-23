@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.10.22   <--  Date of Last Modification.
+ *    23.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,6 +34,7 @@ function ProjectArchiveDialog ( projectDesc,callback_func )  {
   document.body.appendChild ( this.element );
 
   this.projectDesc = projectDesc;
+  this.archiving_started = false;
 
   this.makeLayout();
 
@@ -44,27 +45,43 @@ function ProjectArchiveDialog ( projectDesc,callback_func )  {
     maxHeight : 600,
     width     : 820,
     modal     : true,
-    buttons   : {
-      "Archive": function() {
-        if (self.validateData())  {
-          new QuestionBox ( 'Confirm archiving',
-            '<h2>Confirm archiving</h2>' +
-            'You are about to archive project "' + projectDesc.name +
-            '".<br>This operation cannot be undone.<p>Please confirm.',[
-              { name    : 'Yes, archive',
-                onclick : function(){}
-              },{
-                name    : 'Cancel',
-                onclick : function(){}
-              }],'msg_confirm' );
-        }
-        // window.setTimeout ( function(){ callback_func(); },0 );
-        // $( this ).dialog( "close" );
-      },
-      "Cancel": function() {
-        $( this ).dialog( "close" );
+    closeOnEscape : false,
+    open      : function(event,ui) {
+                  //hide close button.
+                  $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+                },
+    buttons   : [
+      { id    : 'archdlg_archive_btn',
+        text  : 'Archive',
+        click : function() {
+                  if (self.validateData())  {
+                    new QuestionBox ( 'Confirm archiving',
+                      '<h2>Confirm archiving</h2>' +
+                      'You are about to archive project "' + projectDesc.name +
+                      '".<br>This operation cannot be undone.<p>Please confirm.',[
+                        { name    : 'Yes, archive',
+                          onclick : function(){
+                            self.archiveProject();
+                          }
+                        },{
+                          name    : 'Cancel',
+                          onclick : function(){}
+                        }],'msg_confirm' );
+                  }
+                  // window.setTimeout ( function(){ callback_func(); },0 );
+                  // $( this ).dialog( "close" );
+                }
+      }, {
+        id    : 'archdlg_cancel_btn',
+        text  : 'Cancel', 
+        click : function() {
+                  if (self.archiving_started)
+                        logout ( __current_page.element.id,3 );
+                  else  $( this ).dialog( "close" );
+                }
       }
-    }
+    ]
+
   });
 
 }
@@ -259,6 +276,8 @@ ProjectArchiveDialog.prototype.validateData = function()  {
   if (this.kwds.length<=0)
     msg_list.push ( 'provide valid non-empty keyword(s) annotation' );
 
+  return true;
+
   if (msg_list.length>0)  {
     new MessageBox ( 'Invalid input',
         '<h2>Invalid input</h2>Please correct your input:<ul><li>' +
@@ -270,5 +289,74 @@ ProjectArchiveDialog.prototype.validateData = function()  {
   }
 
   return (msg_list.length<=0);
+
+}
+
+
+ProjectArchiveDialog.prototype.archiveProject = function()  {
+
+  stopSessionChecks();
+
+  $('#archdlg_archive_btn').button().hide();
+  $('#archdlg_cancel_btn' ).button('disable');
+
+  var self = this;
+
+  serverRequest ( fe_reqtype.archiveProject,{
+    pdesc      : this.projectDesc,
+    annotation : {
+      coauthors : this.coauthors,
+      pdbs      : this.pdbs,
+      dois      : this.dois,
+      kwds      : this.kwds
+    }
+  },'Start Project Archiving', function(response){
+
+    self.archiving_started = true;
+
+    $('#archdlg_cancel_btn' ).button().text('Log out');
+    $('#archdlg_cancel_btn' ).button('enable');
+
+    self.grid.setLabel    ( '<h2>Project "' + 
+        self.projectDesc.name + '" is being archived</h2>' +  
+        'Archiving is currently in progress. The following Archive ID was ' +
+        'issued for your project:<p><center><b>' + response.archiveID +
+        '</b></center><p>please take a note of it. Archive ID is used for referencing ' +
+        'archived projects in publication and general access.' +
+        '<p>For the process to complete uninterrupted, your ' + appName() + 
+        ' account is now locked. ' +
+        '<p>Please log out now. Your account will be released automatically ' +
+        'when archiving ends.<br>Contact ' + 
+        report_problem ( 
+          appName() + ' archiving problem',
+          'Archiving project ' + self.projectDesc.name + ' seems to be stuck',
+          ''
+        ) + ' if your account is not released after 2 hours.',
+        0,2,2,1 );
+
+    self.grid.truncateRows ( 1 );
+
+
+    // var stop_reason = '';
+    // switch (response.code)  {
+    //   case 'duplicate_users': stop_reason = 'Unsuitable successor name';
+    //                 break;
+    //   case 'no_privileges'  : stop_reason = 'No privileges';
+    //                 break;
+    //   case 'duplicate_ids'  : stop_reason = 'Duplicate project IDs';
+    //                 break;
+    //   case 'started'        : break;
+    //   default : alert ( 'Unknown stop code.\nresponse=' +
+    //           JSON.stringify(response) );
+    //   }
+    //   if (stop_reason)  {
+    //   new MessageBox ( stop_reason,'<div style="width:400px"><h2>' +
+    //             stop_reason + '</h2>' + response.message +
+    //             '.</div>','msg_stop' );
+    //   } else  {
+    //   onExit_func();
+    //   $(dlg.element).dialog("close");
+    //   }
+  },null,'persist' );
 
 }

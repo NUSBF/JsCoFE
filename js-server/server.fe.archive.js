@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    23.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -28,8 +28,9 @@ const crypto    = require('crypto');
 
 //  load application modules
 const conf      = require('./server.configuration');
+const utils     = require('./server.utils');
+const cmd       = require('../js-common/common.commands');
 // var emailer   = require('./server.emailer');
-// var utils     = require('./server.utils');
 // var send_dir  = require('./server.send_dir');
 // var ration    = require('./server.fe.ration');
 // var fcl       = require('./server.fe.facilities');
@@ -37,7 +38,6 @@ const conf      = require('./server.configuration');
 // var class_map = require('./server.class_map');
 // var rj        = require('./server.fe.run_job');
 // var pd        = require('../js-common/common.data_project');
-// var cmd       = require('../js-common/common.commands');
 // var com_utils = require('../js-common/common.utils');
 // var task_t    = require('../js-common/tasks/common.tasks.template');
 
@@ -45,7 +45,7 @@ const conf      = require('./server.configuration');
 const log = require('./server.log').newLog(26);
 
 // ==========================================================================
-
+/*
 const archiveIndexFile = 'archive.meta';
 
 var archive_index = null;
@@ -139,14 +139,68 @@ var sid = conf.getFEConfig().description.id;
   return aid;
 
 }
+*/
+
+
+function randomString ( length, chars ) {
+  const randomBytes = crypto.randomBytes(length);
+  let result = new Array(length);
+  let cursor = 0;
+  for (let i = 0; i < length; i++) {
+    cursor += randomBytes[i];
+    result[i] = chars[cursor % chars.length];
+  }
+  return result.join('');
+}
+
+
+function makeArchiveID()  {
+// generates unique archive ids CCP4-XXX.YYYY, where 'ccp4' is setup id from
+// FE configuration file, 'XXX' and 'YYYY' are random strings of letters and
+// numbers.
+var aid     = null;
+var fe_conf = conf.getFEConfig();
+var sid     = fe_conf.description.id.toUpperCase();
+var aconf   = fe_conf.archivePath;
+
+  while (!aid) {
+    aid = randomString ( 7,'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' );
+    aid = sid + '-' + aid.slice(0, 3) + '.' + aid.slice(3);
+    for (var fsn in aconf)  {
+      var archPrjPath = path.join ( aconf[fsn].path,aid );
+      if (utils.dirExists(archPrjPath))  {
+        aid = null;
+        break;
+      }
+    }
+  }
+
+  return aid;
+
+}
 
 
 // --------------------------------------------------------------------------
 
-function archiveProject ( loginData,projectName )  {
+function archiveProject ( loginData,data )  {
+var projectDesc       = data.pdesc;
+var projectAnnotation = data.annotation;
+      // coauthors : this.coauthors,
+      // pdbs      : this.pdbs,
+      // dois      : this.dois,
+      // kwds      : this.kwds
+var archiveID = makeArchiveID();
+
+  log.standard ( 1,'archive project ' + projectDesc.name +
+                    ', archive ID ' + archiveID + ', login ' + loginData.login );
+
+  return new cmd.Response ( cmd.fe_retcode.ok,'',{
+    code      : cmd.fe_retcode.ok,
+    archiveID : archiveID,
+    message   : 'Attempt to retire a user without having privileges'
+  });
+
 }
-
-
 
 // ==========================================================================
 // export for use in node

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.10.22   <--  Date of Last Modification.
+ *    22.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,6 +26,7 @@ const prj  = require('./server.fe.projects');
 const fcl  = require('./server.fe.facilities');
 const rj   = require('./server.fe.run_job');
 const adm  = require('./server.fe.admin');
+const arch = require('./server.fe.archive');
 const cmd  = require('../js-common/common.commands');
 
 //  prepare log
@@ -165,6 +166,10 @@ var response = null;
 
     case cmd.fe_reqtype.startSharedImport :
            response = prj.startSharedImport ( loginData,data );
+       break;
+
+    case cmd.fe_reqtype.archiveProject :
+           response = arch.archiveProject ( loginData,data );
        break;
 
     case cmd.fe_reqtype.checkPrjImport :
