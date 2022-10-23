@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.09.21   <--  Date of Last Modification.
+ *    23.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Logout page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -57,6 +57,16 @@ function LogoutPage ( sceneId,reason_key )  {
             break;
     case 2  :  msg = 'Your session in this window was terminated because local ' +
                      appName() + ' service has stopped or was restared.';
+            break;
+    case 3  :  msg = 'Your session in this window was terminated in order to keep ' +
+                     appName() + ' archiving process uninterrupted. Your account ' +
+                     'is temporarily locked and will be made available automatically ' +
+                     'once archiving process is complete<p>Please try to login ' +
+                     'after 10-20 minutes. Contact ' + report_problem ( 
+                       appName() + ' archiving problem',
+                       'Archiving a project seems to be stuck',
+                       ''
+                     ) + ' if you are not able to login after 2 hours.'
             break;
     case 10 :  msg = appName() + ' is now restarting. Please wait, the page will ' +
                      'reload automatically.';

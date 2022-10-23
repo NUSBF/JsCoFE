@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.22   <--  Date of Last Modification.
+ *    23.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -396,7 +396,10 @@ function CCP4DirName()  {
     "description"      : {
       "id"   : "ccp4",  // must be unique for each setup with external access;
                         // "ccp4" is reserved for central setup at CCP4;
-                        // the id is used for maintenance of CCP4 archives
+                        // the id is also used for making CCP4 Archive IDs of
+                        // form CCP4-XXX.YYYY (if id=="ccp4", upper case forced),
+                        // so that archive request can be associated with 
+                        // CCP4 Cloud instance
       "name" : "CCP4-Harwell",
       "icon" : "images_com/setup-harwell.png",
       "partners" : [  // custom logos only

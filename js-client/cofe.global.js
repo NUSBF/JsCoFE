@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    18.10.22   <--  Date of Last Modification.
+ *    23.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -110,6 +110,7 @@ $(window).resize ( function(){
     __current_page.onResize ( window.innerWidth,window.innerHeight );
 });
 
+
 function report_problem ( subject,message,label )  {
 
   var body = encodeURIComponent (
@@ -127,8 +128,8 @@ function report_problem ( subject,message,label )  {
     text = appName() + ' maintainer';
 
   return '<a href="mailto:' + __maintainerEmail +
-         '?subject=' + encodeURIComponent(subject) + '&body=' + body + '"><i>' +
-         text + '</i></a>';
+         '?subject=' + encodeURIComponent(subject) + '&body=' + body + 
+         '"><span style="color:blue">' + text + '</span></a>';
 
 }
 

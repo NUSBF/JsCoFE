@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.09.22   <--  Date of Last Modification.
+ *    23.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -123,11 +123,13 @@ function MessageBox ( title,message,icon_name='' )  {
     height    : 'auto',
     width     : 'auto',
     modal     : true,
-    buttons   : {
-      'Ok' : function() {
-               $(this).dialog ( 'close' );
-             }
-    }
+    buttons   : [{
+      id    : 'ok_btn_' + __id_cnt++,
+      text  : 'Ok',
+      click : function() {
+                $(this).dialog ( 'close' );
+              }
+    }]
   });
 
 }

@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    21.10.22   <--  Date of Last Modification.
+ *    23.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
-var jsCoFE_version = '1.7.007 [21.10.2022]';
+var jsCoFE_version = '1.7.007 [23.10.2022]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -126,6 +126,7 @@ var fe_reqtype = {
   finishPrjExport   : '-finishPrjExport',   // request to finish project export
   startDemoImport   : '-startDemoImport',   // request to start demo project import
   startSharedImport : '-startSharedImport', // request to start shared project import
+  archiveProject    : '-archiveProject',    // request to archive project
   checkPrjImport    : '-checkPrjImport',    // request to check project import state
   finishPrjImport   : '-finishPrjImport',   // request to finish project import
   prepareJobExport  : '-prepareJobExport',  // request to prepare job for export
