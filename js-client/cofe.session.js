@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.22   <--  Date of Last Modification.
+ *    23.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -300,13 +300,13 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                 new MessageBox ( 'Suspended Login',
                   '<div style="width:500px;">' +
                   '<h2>Your account is suspended.</h2><p>' +
-                  'Your account is suspended due to the maintenance or data ' +
-                  'reorganisation work on ' + appName() + ' taking place at this ' +
-                  'moment. This should not last longer than a minute per ' +
-                  'gigabyte of your project data, after which your account ' +
-                  'will be released automatically. Please contact ' + appName() +
+                  'Your account is suspended due to sensitive data operations ' +
+                  'on your project(s), taking place at this moment. This should ' +
+                  'not last longer than a minute per gigabyte of your project(s) ' +
+                  'data, after which your account will be released automatically. ' +
+                  'Please contact ' + appName() +
                   ' maintainer at <a href="mailto:' + __maintainerEmail +
-                    '?Subject=License%20enquiry">' + __maintainerEmail +
+                    '?Subject=Account%20suspended">' + __maintainerEmail +
                     '</a> if your account remains suspended for ' +
                   'unreasonably long time.<p>Sincere apologies for any ' +
                   'inconvenience this may be causing to you.</div>',

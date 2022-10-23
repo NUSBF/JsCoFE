@@ -169,7 +169,7 @@ var response = null;
        break;
 
     case cmd.fe_reqtype.archiveProject :
-           response = arch.archiveProject ( loginData,data );
+           arch.archiveProject ( loginData,data,callback_func );
        break;
 
     case cmd.fe_reqtype.checkPrjImport :
@@ -266,6 +266,7 @@ var response = null;
       case cmd.fe_reqtype.getCloudFileTree :
       case cmd.fe_reqtype.getAdminData     :
       case cmd.fe_reqtype.getUserRation    :
+      case cmd.fe_reqtype.archiveProject   :
             break;
       default:  console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
     }

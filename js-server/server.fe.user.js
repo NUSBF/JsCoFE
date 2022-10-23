@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.22   <--  Date of Last Modification.
+ *    23.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -566,15 +566,13 @@ var fe_server = conf.getFEConfig();
         // console.log ( rep );
 
         var token = '';
-        if (uData.login=='devel')  {
-          token = '340cef239bd34b777f3ece094ffb1ec5';
-        } else  {
-          token = crypto.randomBytes(20).toString('hex');
-          __userLoginHash.addUser ( token,{
-            'login'  : uData.login,
-            'volume' : uData.volume
-          });
-        }
+        if (uData.login=='devel')
+              token = '340cef239bd34b777f3ece094ffb1ec5';
+        else  token = crypto.randomBytes(20).toString('hex');
+        __userLoginHash.addUser ( token,{
+          'login'  : uData.login,
+          'volume' : uData.volume
+        });
 
         // remove personal information just in case
         uData.pwd   = '';
@@ -624,6 +622,7 @@ var fe_server = conf.getFEConfig();
     callback_func ( response );
 
 }
+
 
 function checkSession ( userData,callback_func )  {  // gets UserData object
   var retcode   = cmd.fe_retcode.wrongSession;
@@ -1176,6 +1175,22 @@ var userFilePath = getUserDataFName ( loginData );
 
   return response;
 
+}
+
+
+function suspendUser ( loginData,suspend_bool )  {
+var uDataFile = getUserDataFName ( loginData );
+var uData     = readUserData ( loginData );
+  if (uData)  {
+    var ulogin = uData.login;
+    if (suspend_bool)  {
+      __userLoginHash.removeUser ( ulogin );     // logout
+      uData.login = __suspend_prefix + uData.login;   // suspend
+    } else if (uData.login.startsWith(__suspend_prefix)) // remove suspend flag
+      uData.login = uData.login.replace ( __suspend_prefix,'' );
+    utils.writeObject ( uDataFile,uData );  // commit
+  }
+  return uData;
 }
 
 
@@ -1788,6 +1803,7 @@ module.exports.saveHelpTopics       = saveHelpTopics;
 module.exports.updateUserData       = updateUserData;
 module.exports.updateUserData_admin = updateUserData_admin;
 module.exports.topupUserRation      = topupUserRation;
+module.exports.suspendUser          = suspendUser;
 module.exports.deleteUser           = deleteUser;
 module.exports.deleteUser_admin     = deleteUser_admin;
 module.exports.retireUser_admin     = retireUser_admin;
