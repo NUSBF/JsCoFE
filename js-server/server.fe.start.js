@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    23.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -131,8 +131,6 @@ function start ( callback_func )  {
     try {
 
       var c = new comm.Communicate ( server_request,server_response );
-
-// console.log ( ' >>>>  command=' + c.command );
 
       switch (c.command)  {
 

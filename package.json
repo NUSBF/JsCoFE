@@ -1,6 +1,6 @@
 {
     "name": "CCP4_Cloud",
-    "version": "1.7.007",
+    "version": "1.7.008",
     "dependencies": {
         "check-disk-space": "^3.0.1",
         "child_process": "*",

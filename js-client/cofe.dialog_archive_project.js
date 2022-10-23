@@ -56,9 +56,12 @@ function ProjectArchiveDialog ( projectDesc,callback_func )  {
         click : function() {
                   if (self.validateData())  {
                     new QuestionBox ( 'Confirm archiving',
-                      '<h2>Confirm archiving</h2>' +
-                      'You are about to archive project "' + projectDesc.name +
-                      '".<br>This operation cannot be undone.<p>Please confirm.',[
+                      '<div style="width:400px"><h2>Confirm archiving</h2>' +
+                      'You are about to archive project <b>"' + projectDesc.name +
+                      '"</b>.<p>This operation cannot be undone and will take ' +
+                      '10-20 minutes for average-size projects, during which ' +
+                      'time your ' + appName() + ' account will be suspended.' +
+                      '<p>Please confirm.',[
                         { name    : 'Yes, archive',
                           onclick : function(){
                             self.archiveProject();
@@ -76,6 +79,7 @@ function ProjectArchiveDialog ( projectDesc,callback_func )  {
         text  : 'Cancel', 
         click : function() {
                   if (self.archiving_started)
+                        // makeLoginPage ( __current_page.sceneId );
                         logout ( __current_page.element.id,3 );
                   else  $( this ).dialog( "close" );
                 }
@@ -150,10 +154,10 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
     row++,2,1,1
   );
 
-  var d = new Date();
-  var date_str = [ d.getDate().toString(),
-                   (d.getMonth()+1).toString(),
-                   d.getFullYear().toString() ].join('/');
+  // var d = new Date();
+  // var date_str = [ d.getDate().toString(),
+  //                  (d.getMonth()+1).toString(),
+  //                  d.getFullYear().toString() ].join('/');
 
   var sgrid = pgrid.setGrid ( '-compact', row++,2,1,1 );
 
@@ -166,7 +170,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   sgrid.setWidget ( this.signed_sel, 0,1,1,1 );
   this.signed_sel.make();
 
-  sgrid.setLabel ( date_str, 0,2,1,1 );
+  sgrid.setLabel ( getDateString(), 0,2,1,1 );
 
   sgrid.setVerticalAlignment ( 0,0,'middle' );
   sgrid.setVerticalAlignment ( 0,2,'middle' );
@@ -312,28 +316,47 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
     }
   },'Start Project Archiving', function(response){
 
-    self.archiving_started = true;
-
-    $('#archdlg_cancel_btn' ).button().text('Log out');
     $('#archdlg_cancel_btn' ).button('enable');
 
-    self.grid.setLabel    ( '<h2>Project "' + 
-        self.projectDesc.name + '" is being archived</h2>' +  
-        'Archiving is currently in progress. The following Archive ID was ' +
-        'issued for your project:<p><center><b>' + response.archiveID +
-        '</b></center><p>please take a note of it. Archive ID is used for referencing ' +
-        'archived projects in publication and general access.' +
-        '<p>For the process to complete uninterrupted, your ' + appName() + 
-        ' account is now locked. ' +
-        '<p>Please log out now. Your account will be released automatically ' +
-        'when archiving ends.<br>Contact ' + 
-        report_problem ( 
-          appName() + ' archiving problem',
-          'Archiving project ' + self.projectDesc.name + ' seems to be stuck',
-          ''
-        ) + ' if your account is not released after 2 hours.',
-        0,2,2,1 );
+    var message = '';
+    switch (response.code)  {
 
+      case 'no_space'  : message = '<h2>No space left in Archive</h2>' +
+                           'Your project cannot be archived because there is ' +
+                           'no space left<br>in the Archive. Please inform ' +
+                           report_problem ( 
+                             appName() + ' archiving problem',
+                              'No space left in the Archive, please increase',
+                              ''
+                           ) + '.<p>Sincere apologies for any inconvenience ' +
+                           'this may have caused.';
+                      break;
+
+      case 'ok'        : self.archiving_started = true;
+                         message = '<h2>Project "' + self.projectDesc.name + 
+                           '" is being archived</h2>Archiving is currently in ' +
+                           'progress. The following Archive ID was issued for ' +
+                           'your project:<p><center><b>' + response.archiveID +
+                           '</b></center><p>please take a note of it. Archive ID ' +
+                           'is used for accessing archived projects and referencing ' +
+                           'them in publication and elsewhere.' +
+                           '<p>For the process to complete uninterrupted, your ' + 
+                           appName() + ' account is now suspended. ' +
+                           '<p>Please log out now. Your account will be released ' +
+                           'automatically when archiving ends.<br>Contact ' + 
+                           report_problem ( 
+                             appName() + ' archiving problem',
+                              'Archiving project ' + self.projectDesc.name + 
+                              ' seems to be stuck',
+                              ''
+                           ) + ' if your account is not released after 2 hours.';
+                      break;
+
+      default :  message = '<h2>Unknown return code ' + response.code + 
+                           '</h2><i>Please report as a bug</h2>';
+    }
+    
+    self.grid.setLabel ( message,0,2,2,1 );
     self.grid.truncateRows ( 1 );
 
 

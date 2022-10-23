@@ -46,7 +46,7 @@ function LogoutPage ( sceneId,reason_key )  {
 
   // make login panel
   var panel = new Grid('');
-  panel.setWidth      ( '300pt' );
+  panel.setWidth      ( '500pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
   var thank_lbl = new Label ( 'Thank you for using ' + appName() );
@@ -60,11 +60,11 @@ function LogoutPage ( sceneId,reason_key )  {
             break;
     case 3  :  msg = 'Your session in this window was terminated in order to keep ' +
                      appName() + ' archiving process uninterrupted. Your account ' +
-                     'is temporarily locked and will be made available automatically ' +
-                     'once archiving process is complete<p>Please try to login ' +
+                     'is temporarily suspended and will be made available automatically ' +
+                     'once archiving is completed.<p>Please try to login ' +
                      'after 10-20 minutes. Contact ' + report_problem ( 
                        appName() + ' archiving problem',
-                       'Archiving a project seems to be stuck',
+                       'Account remains suspended after archiving for long time.',
                        ''
                      ) + ' if you are not able to login after 2 hours.'
             break;
@@ -91,7 +91,7 @@ function LogoutPage ( sceneId,reason_key )  {
   if ((!__local_user) && (reason_key!=10))  {
     var back_btn = new Button   ( 'Back to User Login',image_path('login') );
     panel.setWidget             ( back_btn ,row++,0,1,1 );
-    back_btn  .setWidth         ( '100%' );
+    back_btn  .setWidth         ( '300px' );
     // back_btn.addOnClickListener ( function(){ makeLoginPage(sceneId); });
     back_btn.addOnClickListener ( function(){ reloadBrowser(); });
     setDefaultButton            ( back_btn,this.grid );
@@ -110,7 +110,7 @@ function logout ( sceneId,reason_key )  {
   if (__current_page && (__current_page._type=='ProjectPage'))
     __current_page.getJobTree().stopTaskLoop();
 
-  if (__login_token && (reason_key!=10))  {
+  if (__login_token && (reason_key!=3) && (reason_key!=10))  {
 
     serverRequest ( fe_reqtype.logout,0,'Logout',function(data){
       makePage ( new LogoutPage(sceneId,reason_key) );
