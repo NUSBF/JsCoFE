@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.10.22   <--  Date of Last Modification.
+ *    24.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task List Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -777,7 +777,9 @@ var row      = 0;
     new TaskPrivateer (),
     new TaskPISA      (),
     new TaskDeposition(),
-    new TaskContact   ()
+    new TaskContact   (),
+    new TaskRotamer   (),
+    new TaskAreaimol  ()
   ],true);
 
   this.makeSection ( 'Toolbox',[

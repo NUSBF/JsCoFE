@@ -61,6 +61,8 @@ citations = {
     'baverage'        : { 'name' : 'BAverage'     , 'category' : 'primary', 'refs' : [] },
     'pdbset'          : { 'name' : 'PDBSET'       , 'category' : 'primary', 'refs' : [] },
     'contact'         : { 'name' : 'CONTACT'      , 'category' : 'primary', 'refs' : [] },
+    'rotamer'         : { 'name' : 'ROTAMER'      , 'category' : 'primary', 'refs' : [] },
+    'areaimol'         : { 'name' : 'AREAIMOL'    , 'category' : 'primary', 'refs' : [] },
 
     'ps2pdf'          : { 'name' : '', 'category' : 'system' , 'refs' : [] },  # empty name means "Ignore"
     'ccp4-python'     : { 'name' : '', 'category' : 'system' , 'refs' : [] },
