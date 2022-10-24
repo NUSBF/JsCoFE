@@ -37,8 +37,7 @@ var feedback_code = {
 var userdata_action = {
   none    : 'none',
   chpwd   : 'chpwd',
-  revise  : 'revise',
-  message : 'message'
+  revise  : 'revise'
 };
 
 var role_code = {
@@ -85,6 +84,7 @@ function UserData()  {
     }
   };
   this.action        = userdata_action.none;
+  this.onlogin_message = '';  // shown only once at login
 }
 
 function getRandomToken()  {
@@ -104,12 +104,9 @@ var msg = '';
     msg = '<li>choose suitable <b>feedback agreement</b></li>';
   }
   if ((uData.action!=userdata_action.none) && (msg.length<=0))  {
-    if (uData.action.startsWith(userdata_action.message))
-      msg = uData.action.replace ( userdata_action.message,'' );
-    else if (uData.action==userdata_action.chpwd)
-      msg = '<li>change your <b>password</b></li>';
-    else
-      msg = '<li>confirm your account details</li>';
+    if (uData.action==userdata_action.chpwd)
+          msg = '<li>change your <b>password</b></li>';
+    else  msg = '<li>confirm your account details</li>';
   }
 
   if (!uData.hasOwnProperty('authorisation'))
@@ -137,9 +134,9 @@ var msg = '';
   if (!uData.settings.hasOwnProperty('guided_import'))
     uData.settings.guided_import = true;
 
-  if (!uData.hasOwnProperty('volume'))   uData.volume  = '***';
-
-  if (!uData.hasOwnProperty('dormant'))  uData.dormant = 0;
+  if (!uData.hasOwnProperty('volume'))          uData.volume  = '***';
+  if (!uData.hasOwnProperty('dormant'))         uData.dormant = 0;
+  if (!uData.hasOwnProperty('onlogin_message')) uData.onlogin_message = '';
 
   if (uData.hasOwnProperty('admin'))  {
     if (!uData.hasOwnProperty('role'))  {

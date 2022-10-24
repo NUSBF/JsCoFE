@@ -558,6 +558,12 @@ var fe_server = conf.getFEConfig();
 
       } else if ((uData.login==ulogin) && (uData.pwd==pwd))  {
 
+        var rData = { // return data object
+          onlogin_message : uData.onlogin_message
+        };
+
+        uData.onlogin_message = '';  // clear up
+
         uData.lastSeen = Date.now();
         utils.writeObject ( userFilePath,uData );
 
@@ -577,7 +583,6 @@ var fe_server = conf.getFEConfig();
         // remove personal information just in case
         uData.pwd   = '';
         uData.email = '';
-        var rData   = {};
         rData.userData      = uData;
         rData.localSetup    = conf.isLocalSetup();
         rData.isArchive     = conf.isArchive();
@@ -1189,7 +1194,7 @@ var uData     = readUserData ( loginData );
     } else if (uData.login.startsWith(__suspend_prefix)) // remove suspend flag
       uData.login = uData.login.replace ( __suspend_prefix,'' );
     if (message)
-      uData.action = ud.userdata_action.message + message;
+      uData.onlogin_message = message;
     utils.writeObject ( uDataFile,uData );  // commit
   }
   return uData;

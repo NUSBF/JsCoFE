@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.22   <--  Date of Last Modification.
+ *    24.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -180,6 +180,13 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __dormant            = userData.dormant;
               __user_authorisation = userData.authorisation;
 
+              if (response.data.onlogin_message)  {
+                window.setTimeout ( function(){
+                  new MessageBox ( 'Information',response.data.onlogin_message,
+                                   'msg_information' );
+                },1000);
+              }
+
               if (!__local_service)  {
                 __environ_client = [];
               } else  {
@@ -229,9 +236,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                 //case 0 : if (__admin && (userData.login=='admin'))
                 case 0 :  if ((__user_role==role_code.admin) && (userData.login=='admin'))
                             makeAdminPage ( sceneId );
-                          else if ((!__local_setup) && 
-                                   (userData.action!=userdata_action.none) &&
-                                   (!userData.action.startsWith(userdata_action.message)))
+                          else if ((!__local_setup) && (userData.action!=userdata_action.none))
                             makeAccountPage ( sceneId );
                           else if (__user_settings.onlogin==on_login.last_project)  {
                             serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
