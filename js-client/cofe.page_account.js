@@ -533,7 +533,7 @@ function AccountPage ( sceneId )  {
 
         if (pswd_inp.getValue().length<=0)  {
           new MessageBox ( 'Delete My Account',
-                          'Please provide password and try again', 'msg_excl' );
+                           'Please provide password and try again', 'msg_excl' );
           return false;  // close dialog
         } else  {
 
