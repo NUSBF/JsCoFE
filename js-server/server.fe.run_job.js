@@ -1518,7 +1518,7 @@ function cloudRun ( server_request,server_response )  {
                 var task = utils.readClass ( path.join(tmpJobDir,task_t.jobDataFName) );
                 if (!task)  {
                   log.error ( 13,'error reading task meta in cloudRun: login ' +
-                                loginData.login + ', project ' + meta.project );
+                                 loginData.login + ', project ' + meta.project );
                   response = new cmd.Response ( cmd.fe_retcode.noProjectData,
                                                 'error creating new project',{} );
                 } else  {
@@ -1593,7 +1593,7 @@ function cloudRun ( server_request,server_response )  {
                       message + 'files uploaded, ' + meta.task + ' started',{} );
 
                     if (meta.load_project.toLowerCase()=='yes')
-                        user.signalUser ( loginData.login,'cloudrun_switch_to_project:'   + meta.project );
+                         user.signalUser ( loginData.login,'cloudrun_switch_to_project:'   + meta.project );
                     else user.signalUser ( loginData.login,'cloudrun_reload_project_list:' + meta.project );
 
                   }

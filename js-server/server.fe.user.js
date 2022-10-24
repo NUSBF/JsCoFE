@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.22   <--  Date of Last Modification.
+ *    24.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1178,7 +1178,7 @@ var userFilePath = getUserDataFName ( loginData );
 }
 
 
-function suspendUser ( loginData,suspend_bool )  {
+function suspendUser ( loginData,suspend_bool,message )  {
 var uDataFile = getUserDataFName ( loginData );
 var uData     = readUserData ( loginData );
   if (uData)  {
@@ -1188,6 +1188,8 @@ var uData     = readUserData ( loginData );
       uData.login = __suspend_prefix + uData.login;   // suspend
     } else if (uData.login.startsWith(__suspend_prefix)) // remove suspend flag
       uData.login = uData.login.replace ( __suspend_prefix,'' );
+    if (message)
+      uData.action = ud.userdata_action.message + message;
     utils.writeObject ( uDataFile,uData );  // commit
   }
   return uData;

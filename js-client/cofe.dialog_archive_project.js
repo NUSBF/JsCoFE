@@ -333,6 +333,7 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
                       break;
 
       case 'ok'        : self.archiving_started = true;
+                         $('#archdlg_cancel_btn' ).button().text('Log out');
                          message = '<h2>Project "' + self.projectDesc.name + 
                            '" is being archived</h2>Archiving is currently in ' +
                            'progress. The following Archive ID was issued for ' +

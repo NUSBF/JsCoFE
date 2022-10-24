@@ -86,6 +86,10 @@ function readArchiveIndex()  {
 
 */
 
+function getArchiveDirPath ( archDiskName,archiveID )  {
+  return path.join ( conf.getFEConfig().archivePath[archDiskName].path,archiveID );
+}
+
 function selectArchiveDisk ( req_size,callback_func )  {
 // var fe_conf = conf.getFEConfig();
 var adisks  = Object.entries ( conf.getFEConfig().archivePath );
@@ -160,7 +164,7 @@ var aconf   = fe_conf.archivePath;
 function archiveProject ( loginData,data,callback_func )  {
 var pDesc       = data.pdesc;
 var pAnnotation = data.annotation;
-var uData       = user.suspendUser ( loginData,true );
+var uData       = user.suspendUser ( loginData,true,'' );
 
       // coauthors : this.coauthors,
       // pdbs      : this.pdbs,
@@ -179,15 +183,38 @@ var uData       = user.suspendUser ( loginData,true );
                    archiveID + ', login ' + loginData.login );
 
   selectArchiveDisk ( pDesc.disk_space,function(adname){
-    console.log ( ' >>>>> ' + adname );
-    user.suspendUser ( loginData,false );
     if (!adname)  {
+      user.suspendUser ( loginData,false,'' );
       callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
         code      : 'no_space',
         archiveID : archiveID,
         message   : ''
       }));
     } else  {
+      var projectDirPath = prj.getProjectDirPath ( loginData,pDesc.name );
+      var archiveDirPath = getArchiveDirPath ( adname,archiveID );
+      utils.copyDirAsync ( projectDirPath,archiveDirPath,false,function(err){
+        if (!err)  {
+//        } else  {
+//          utils.removePath ( projectDirPath );
+          user.suspendUser ( loginData,false,
+            '<div style="width:400px"><h2>Archiving completed</h2>Project <b>"' + 
+            pDesc.name +  '"</b> was archived successfully. It is now accessible via ' +
+            'Archive ID <b>' + archiveID + 
+            '</b>, and you may see it in folder <i>"Projects archived by me"</i>.</div>'
+          );
+          // add e-mail to user
+        } else  {
+          user.suspendUser ( loginData,false,
+            '<div style="width:400px"><h2>Archiving failed</h2>Project <b>"' + 
+            pDesc.name +  '"</b> was not archived due to errors. This is likely ' +
+            'to be a consequence of intermittent system failures or a bug.' +
+            '<p>Apologies for any inconvenience this may have caused.</div>'
+          );
+          // add e-mail to user and mainteiner
+        }
+      });
+      // reply "archiving started"
       callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
         code      : 'ok',
         archiveID : archiveID,

@@ -228,10 +228,11 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
                 //case 0 : if (__admin && (userData.login=='admin'))
                 case 0 :  if ((__user_role==role_code.admin) && (userData.login=='admin'))
-                            makeAdminPage       ( sceneId );
-                          else if ((!__local_setup) && (userData.action!=userdata_action.none))
-                          //else if (userData.action!=userdata_action.none)
-                            makeAccountPage     ( sceneId );
+                            makeAdminPage ( sceneId );
+                          else if ((!__local_setup) && 
+                                   (userData.action!=userdata_action.none) &&
+                                   (!userData.action.startsWith(userdata_action.message)))
+                            makeAccountPage ( sceneId );
                           else if (__user_settings.onlogin==on_login.last_project)  {
                             serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
                               __current_folder = data.currentFolder;

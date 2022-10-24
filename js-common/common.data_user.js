@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.08.22   <--  Date of Last Modification.
+ *    24.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,32 +26,33 @@
 var licence_code = {
   academic   : 'academic',
   commercial : 'commercial'
-}
+};
 
 var feedback_code = {
   agree1  : 'accepted (1)',
   agree2  : 'accepted (2)',
   decline : 'declined'
-}
+};
 
 var userdata_action = {
-  none   : 'none',
-  chpwd  : 'chpwd',
-  revise : 'revise'
-}
+  none    : 'none',
+  chpwd   : 'chpwd',
+  revise  : 'revise',
+  message : 'message'
+};
 
 var role_code = {
   user      : 'user',
   admin     : 'admin',
   developer : 'developer'
-}
+};
 
 var on_login = {
   all_projects : 'all_projects',
   my_projects  : 'my_projects',
   last_folder  : 'last_folder',
   last_project : 'last_project'
-}
+};
 
 var __local_user_id = 'localuser';  // local user name
 
@@ -103,7 +104,9 @@ var msg = '';
     msg = '<li>choose suitable <b>feedback agreement</b></li>';
   }
   if ((uData.action!=userdata_action.none) && (msg.length<=0))  {
-    if (uData.action==userdata_action.chpwd)
+    if (uData.action.startsWith(userdata_action.message))
+      msg = uData.action.replace ( userdata_action.message,'' );
+    else if (uData.action==userdata_action.chpwd)
       msg = '<li>change your <b>password</b></li>';
     else
       msg = '<li>confirm your account details</li>';
