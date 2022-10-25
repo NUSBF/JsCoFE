@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.10.22   <--  Date of Last Modification.
+ *    25.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -78,6 +78,7 @@ function TaskTemplate()  {
 
   this._type        = 'TaskTemplate';        // must be class name
   this.version      = this.currentVersion(); // actual version of task class
+  // this.archive_version = 0;  // appears only on archiving, hence commented out
 
   this.project      = '';   // project name (stable)
   this.id           = 0;    // job Id (stable)

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.10.22   <--  Date of Last Modification.
+ *    25.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -449,8 +449,8 @@ function checkSession ( sceneId )  {
 
 function stopSessionChecks()  {
   if (__session_check_timer)  {
-    __session_check_timer = null;
     clearTimeout ( __session_check_timer );
+    __session_check_timer = null;
   }
 }
 

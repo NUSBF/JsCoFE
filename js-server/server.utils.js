@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.08.22   <--  Date of Last Modification.
+ *    25.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -95,9 +95,11 @@ function readString ( path )  {
 }
 
 
-function makeSymLink ( pathToLink,pathToLinked )  {
+function makeSymLink ( pathToTarget,pathToOrigin )  {
   try {
-    fs.symlinkSync ( pathToLinked,pathToLink );
+    if (_is_windows)
+          fs.symlinkSync ( pathToOrigin,pathToTarget,'junction' );
+    else  fs.symlinkSync ( pathToOrigin,pathToTarget );
   } catch (e)  {
     return null;
   }

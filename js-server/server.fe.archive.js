@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.22   <--  Date of Last Modification.
+ *    25.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,7 +22,7 @@
 'use strict';
 
 //  load system modules
-// var fs        = require('fs-extra');
+const fs        = require('fs-extra');
 const path      = require('path');
 const crypto    = require('crypto');
 const checkDiskSpace = require('check-disk-space').default;
@@ -33,6 +33,7 @@ const utils     = require('./server.utils');
 const cmd       = require('../js-common/common.commands');
 const user      = require('./server.fe.user');
 const prj       = require('./server.fe.projects');
+const task_t    = require('../js-common/tasks/common.tasks.template');
 // const com_utils = require('../js-common/common.utils');
 // var emailer   = require('./server.emailer');
 // var send_dir  = require('./server.send_dir');
@@ -41,7 +42,6 @@ const prj       = require('./server.fe.projects');
 // var class_map = require('./server.class_map');
 // var rj        = require('./server.fe.run_job');
 // var pd        = require('../js-common/common.data_project');
-// var task_t    = require('../js-common/tasks/common.tasks.template');
 
 //  prepare log
 const log = require('./server.log').newLog(26);
@@ -101,7 +101,8 @@ var ffree   = 0.0;
       var fspath = path.resolve ( adisks[n][1].path );
       checkDiskSpace(fspath).then((diskSpace) => {
           var dfree = diskSpace.free/(1024.0*1024.0);  // MBytes
-          dfree -= Math.random();  // for choosing different disks in tests
+          var dnoise = Math.random();
+          dfree -= dnoise;  // for choosing different disks in tests
           var dsize = diskSpace.size/(1024.0*1024.0);  // MBytes
           var rf = (dfree - adisks[n][1].diskReserve) /
                    (dsize - adisks[n][1].diskReserve);
@@ -168,15 +169,28 @@ var pData = utils.readObject ( projectDataPath );
   if ((!pDesc) || (!pData))
     return 'project meta files are missing';
 
-  pAnnotation.version = 1;
-  if ('archive' in pDesc)  {
+  if (pDesc.archive)  {
     if (pDesc.archive.id!=pAnnotation.id)
       return 'archive IDs do not match';
     pAnnotation.version = pDesc.archive.version + 1;
-  }
+  } else
+    pAnnotation.version = 1;
 
   pDesc.archive = pAnnotation;
-  pData.pdesc   = pDesc; 
+  pData.pdesc   = pDesc;
+
+  // lock job directories by archive versioning
+
+  var dirlist = fs.readdirSync ( archiveDirPath );
+  for (var i=0;i<dirlist.length;i++)
+    if (dirlist[i].startsWith(prj.jobDirPrefix))  {
+      var jobMetaFPath = path.join ( archiveDirPath,dirlist[i],task_t.jobDataFName );
+      var job_meta     = utils.readObject ( jobMetaFPath );
+      if (job_meta && (!('archive_version' in job_meta)))  {
+        job_meta.archive_version = pDesc.archive.version;
+        utils.writeObject ( jobMetaFPath,job_meta );
+      }
+    }
 
   return '';  // Ok
 
@@ -203,7 +217,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
 
   var archiveID = makeArchiveID();
 
-  log.standard ( 2,'archive project ' + pDesc.name + ', archive ID ' + 
+  log.standard ( 1,'archive project ' + pDesc.name + ', archive ID ' + 
                    archiveID + ', login ' + loginData.login );
 
   chooseArchiveDisk ( pDesc.disk_space,function(adname){
@@ -220,43 +234,63 @@ var uData       = user.suspendUser ( loginData,true,'' );
     } else  {  // archive disk was chosen successfully, disk space checked
       // *copy* project directory to chosen archive disk asynchronously
 
-      var projectDirPath = prj.getProjectDirPath ( loginData,pDesc.name );
-      var archiveDirPath = getArchiveDirPath ( adname,archiveID );
+      setTimeout ( function(){
 
-      utils.copyDirAsync ( projectDirPath,archiveDirPath,false,function(err){
+        var projectDirPath = prj.getProjectDirPath ( loginData,pDesc.name );
+        var archiveDirPath = getArchiveDirPath ( adname,archiveID );
 
-        if (!err)  {
-          // put archive metadata in project description, lock jobs for deletion
-          pAnnotation.id = archiveID;
-          annotateProject ( archiveDirPath,pAnnotation );
-          // make project link in user's projects directory
-          // update archive tables
-          // remove original job directory
-//          utils.removePath ( projectDirPath );
-          // unlock user's account and inform user through Cloud message and via e-mail
-          user.suspendUser ( loginData,false,
-            '<div style="width:400px"><h2>Archiving completed</h2>Project <b>"' + 
-            pDesc.name +  '"</b> was archived successfully. It is now accessible via ' +
-            'Archive ID <b>' + archiveID + 
-            '</b>, and you may see it in folder <i>"Projects archived by me"</i>.</div>'
-          );
-          // add e-mail to user
-        
-        } else  {
+        utils.copyDirAsync ( projectDirPath,archiveDirPath,false,function(err){
 
-          user.suspendUser ( loginData,false,
-            '<div style="width:400px"><h2>Archiving failed</h2>Project <b>"' + 
-            pDesc.name +  '"</b> was not archived due to errors. This is likely '  +
-            'to be a consequence of intermittent system failures or program bugs.' +
-            '<p>Apologies for any inconvenience this may have caused.</div>'
-          );
-          // add e-mail to user and mainteiner
-        
-        }
+          var failcode = 0;
+          if (!err)  {
+            // put archive metadata in project description, lock jobs for deletion
+            pAnnotation.id = archiveID;
+            annotateProject ( archiveDirPath,pAnnotation );
+            // make project link in user's projects directory
+            var linkDir = path.resolve(prj.getProjectDirPath(loginData,archiveID));
+            var linkedDir = path.resolve(archiveDirPath);
+            if (utils.makeSymLink(linkDir,linkedDir))  {
+              // update archive tables
+              // remove original job directory
+    //          utils.removePath ( projectDirPath );
+              // unlock user's account and inform user through Cloud message and via e-mail
+              user.suspendUser ( loginData,false,
+                '<div style="width:400px"><h2>Archiving completed</h2>Project <b>"' + 
+                pDesc.name +  '"</b> was archived successfully. It is now accessible ' +
+                'via Archive ID <b>' + archiveID + 
+                '</b>, and you may see it in folder <i>"Projects archived by me"</i>.</div>'
+              );
+              log.standard ( 2,'project ' + pDesc.name + ' archived with ID ' + 
+                   archiveID + '; login ' + loginData.login + ', archive disk ' +
+                   adname );
+              // add e-mail to user
+            } else
+              failcode = 1;
+          
+          } else
+            failcode = 2;
 
-      });
+          if (failcode)  {
+            utils.removePath ( archiveDirPath );
+            user.suspendUser ( loginData,false,
+              '<div style="width:400px"><h2>Archiving failed</h2>Project <b>"' + 
+              pDesc.name +  '"</b> was not archived due to errors (fail code ' +
+              failcode +'). This is likely to be a consequence of intermittent ' +
+              'system failures or program bugs.' +
+              '<p>Apologies for any inconvenience this may have caused.</div>'
+            );
+            log.error ( 3,'project archiving failed, failcode=' + failcode +
+                          '; login=' + loginData.login + ', project ' + 
+                          pDesc.name + ', archive disk ' + adname );
+            // add e-mail to user and mainteiner
+          }
+
+        });
+
+      },2000);
 
       // reply "archiving started" to client (copying goes in separate thread )
+
       callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
         code      : 'ok',
         archiveID : archiveID,
