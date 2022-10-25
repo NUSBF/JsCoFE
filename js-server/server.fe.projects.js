@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.22   <--  Date of Last Modification.
+ *    25.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -55,7 +55,7 @@ const projectDataFName   = 'project.meta';
 const projectDescFName   = 'project.desc';
 const jobDirPrefix       = 'job_';
 const replayDir          = 'replay';
-const treeNodeFName      = 'tree.node'
+// const treeNodeFName      = 'tree.node'
 
 // ===========================================================================
 
@@ -2283,6 +2283,9 @@ function getJobFile ( loginData,data )  {
 
 // ==========================================================================
 // export for use in node
+
+module.exports.projectDataFName       = projectDataFName;
+module.exports.projectDescFName       = projectDescFName;
 module.exports.jobDirPrefix           = jobDirPrefix;
 module.exports.makeNewUserProjectsDir = makeNewUserProjectsDir;
 module.exports.getProjectList         = getProjectList;

@@ -160,6 +160,25 @@ var aconf   = fe_conf.archivePath;
 
 
 function annotateProject ( archiveDirPath,pAnnotation )  {
+var projectDescPath = path.join ( archiveDirPath,prj.projectDescFName );
+var projectDataPath = path.join ( archiveDirPath,prj.projectDataFName );
+var pDesc = utils.readObject ( projectDescPath );
+var pData = utils.readObject ( projectDataPath );
+
+  if ((!pDesc) || (!pData))
+    return 'project meta files are missing';
+
+  pAnnotation.version = 1;
+  if ('archive' in pDesc)  {
+    if (pDesc.archive.id!=pAnnotation.id)
+      return 'archive IDs do not match';
+    pAnnotation.version = pDesc.archive.version + 1;
+  }
+
+  pDesc.archive = pAnnotation;
+  pData.pdesc   = pDesc; 
+
+  return '';  // Ok
 
 }
 
