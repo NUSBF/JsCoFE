@@ -147,6 +147,9 @@ var _taskIndex = {
 
   // suggest PISA after Refmac and Lorestr
   'b'  : { type: 'TaskPISA'               , after: ['V','W','X'] },
+  'b1' : { type: 'TaskContact'            , after: ['V','W','X'] },
+  'b2' : { type: 'TaskRotamer'            , after: ['V','W','X'] },
+  'b3' : { type: 'TaskAreaimol'           , after: ['V','W','X'] },
 
   // suggest ChangeSpG after dataprocessing tasks
   //'c'  : { type: 'TaskChangeSpG'      , after: ['h','t','u'] },

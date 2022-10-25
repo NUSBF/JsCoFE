@@ -29,6 +29,7 @@ import os
 # import sys
 # import uuid
 import shutil
+import json
 
 # import gemmi
 
@@ -36,6 +37,7 @@ import shutil
 from . import basic
 # from   pycofe.dtypes    import dtype_template
 from   pycofe.proc      import qualrep
+from   pycofe.proc      import PDBRedoAPIAuth
 from   pycofe.verdicts  import verdict_refmac
 
 # ============================================================================
@@ -69,6 +71,49 @@ class Pdbredo(basic.TaskDriver):
         return structure
 
 
+    PDBREDO_URI = 'https://services.pdb-redo.eu:443'
+
+    def do_submit(self,xyzin,hklin,restrains,sequence):
+        # The token id and secret for a session at PDB-REDO    
+        token_id     = 204
+        token_secret = "_xGLbe2pVhF2POfNB0oqrw"
+
+        # The authentication object, used by the requests module
+        auth = PDBRedoAPIAuth.PDBRedoAPIAuth(token_id, token_secret)
+
+        # The files to submit
+        # xyzin = args.xyzin
+        # hklin = args.hklin
+        # paired = args.paired
+        paired = True  # just a guess, to find out what is this!
+
+        files = {
+            'pdb-file': open(xyzin, 'rb'),
+            'mtz-file': open(hklin, 'rb')
+        }
+        
+        if (restrains != None):
+            files['restraints-file'] = open(restrains, 'rb')
+        
+        if (sequence != None):
+            files['sequence-file'] = open(sequence, 'rb')
+
+        # Optional parameters, currently there's only one:
+        params = {
+            'paired': paired
+        }
+            
+        # Create a new job/run
+        # r = requests.post(args.url + "/api/session/{token_id}/run".format(token_id = token_id), auth = auth, files = files, data = {'parameters': json.dumps(params)})
+        r = requests.post(PDBREDO_URI + "/api/session/{token_id}/run".format(token_id = token_id), auth = auth, files = files, data = {'parameters': json.dumps(params)})
+        r.raise_for_status()
+
+        run_id = r.json()['id']
+        self.stdoutln ( "Job submitted with id", run_id )
+
+        return 
+
+
     # ------------------------------------------------------------------------
 
     def run(self):
@@ -91,9 +136,19 @@ class Pdbredo(basic.TaskDriver):
         mtzout = self.getMTZOFName()
 
         # imitate PDBREDO
-
+        #  ==================================
         shutil.copyfile ( xyzin,xyzout )
         shutil.copyfile ( istruct.getMTZFilePath(self.inputDir()),mtzout )
+        #  ==================================
+
+        do_submit()
+        while ():
+           do_check()
+           time.sleep(20)
+        do_fetch()
+
+
+        # unzip output.zip
 
 
         # check solution and register data

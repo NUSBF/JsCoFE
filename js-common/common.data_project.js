@@ -109,10 +109,15 @@ function ProjectDesc()  {
   };
 
   this.folderPath   = '';   // virtual project folder path
+
+  this.archive      = null;  // changes to object as below if project is archived
   // this.archive = {
-  //   id      : '',   // archive ID
-  //   version : 0,    // archived project version
-  //   pdbCode : ''    // associated PDB code
+  //   id        : '',   // archive ID
+  //   version   : 0,    // archived project version
+  //   coauthors : []    // list of co-authors
+  //   pdbs      : []    // associated PDB codes
+  //   dois      : []    // associated publication dois
+  //   kwds      : []    // keywords
   // };
 
   this.jobCount     = 0;     // job count
