@@ -203,7 +203,8 @@ function writeProjectData ( loginData,projectData,putTimeStamp )  {
 }
 
 function checkProjectDescData ( projectDesc,loginData )  {
-  var update = false;
+var update = false;
+
   if ((!('owner' in projectDesc)) || (!projectDesc.owner.login))  {
     // backward compatibility on 11.01.2020
     var uData = user.readUserData ( loginData );
@@ -215,10 +216,12 @@ function checkProjectDescData ( projectDesc,loginData )  {
     };
     update = true;  // update project metadata
   }
+
   if ((!('timestamp' in projectDesc)) || (!projectDesc.timestamp))  {
     projectDesc.timestamp = Date.now();
     update = true;
   }
+
   if ((!('share' in projectDesc)) ||
       (Object.prototype.toString.call(projectDesc.share)!=='[object Object]')) {
     projectDesc.share = {};
@@ -240,33 +243,41 @@ function checkProjectDescData ( projectDesc,loginData )  {
     }
     update = true;
   }
+  
   for (var login in projectDesc.share)
     if (projectDesc.share[login].labels.constructor===Array)  {
       projectDesc.share[login].labels = {};
       update = true;
     }
+  
   if ((!('labels' in projectDesc.owner)) ||
       (projectDesc.owner.labels.constructor===Array))  {
     projectDesc.owner.labels = {};  // was not used before writing this, so empty
     update = true;
   }
+  
   if ('labels' in projectDesc)  {
     delete projectDesc.labels;
     update = true;
   }
+  
   if ('keeper' in projectDesc.owner)  {
     delete projectDesc.owner.keeper;
     update = true;
   }
+  
   if ('is_shared' in projectDesc.owner)  {
     delete projectDesc.owner.is_shared;
     update = true;
   }
+  
   if (!('autorun' in projectDesc))  {
     projectDesc.autorun = false;
     update = true;
   }
+  
   var f0name = pd.getProjectAuthor ( projectDesc );
+  
   if (f0name==pd.folder_type.tutorials)
         f0name += pd.folder_path.tutorials;
   else  f0name += '\'s Projects';
@@ -274,16 +285,20 @@ function checkProjectDescData ( projectDesc,loginData )  {
     projectDesc.folderPath = f0name;  // virtual project folder path
     update = true;
   }
+  
   if (projectDesc.folderPath.toLowerCase().startsWith('tutorials'))  {
     projectDesc.folderPath = pd.folder_path.tutorials;
     update = true;
   }
+  
   if ([pd.folder_path.all_projects,pd.folder_path.shared,pd.folder_path.joined]
           .indexOf(projectDesc.folderPath)>=0)  {
     projectDesc.folderPath = f0name;  // virtual project folder path
     update = true;
   }
+  
   var flist = projectDesc.folderPath.split('/');
+  
   if (flist.length<=0)  {
     flist.push ( f0name );
     update   = true;
@@ -291,40 +306,56 @@ function checkProjectDescData ( projectDesc,loginData )  {
     flist[0] = f0name;
     update   = true;
   }
+
   projectDesc.folderPath = flist.join('/');
+  
   if (!projectDesc.hasOwnProperty('startmode'))
     projectDesc.startmode = pd.start_mode.standard; // too petty to save/update
   if (!projectDesc.hasOwnProperty('tasklistmode'))
     projectDesc.tasklistmode = pd.tasklist_mode.full; // too petty to save/update
   if (!projectDesc.hasOwnProperty('metrics'))
     projectDesc.metrics = {};  // too petty to save/update
+  
+  if (!('archive' in projectDesc))  {
+    projectDesc.archive = null;
+    update = true;
+  }
+  
   return update;  // no changes
+
 }
 
 
 function checkProjectData ( projectData,loginData )  {
-  var update = false;
+var update = false;
+
   if ('jobCount' in projectData)  {
     projectData.desc.jobCount = projectData.jobCount;
     delete projectData.jobCount;
     update = true;
   }
+
   if ('timestamp' in projectData)  {
     delete projectData.timestamp;
     update = true;
   }
+
   if (!projectData.settings)  {
     projectData.settings = {};
     update = true;
   }
+
   if (!projectData.settings.hasOwnProperty('prefix_key'))  {
     projectData.settings.prefix_key = 0;   // 0: default; 1: custom
     projectData.settings.prefix     = '';  // custom
     update = true;
   }
+
   if (checkProjectDescData(projectData.desc,loginData))
     update = true;
+
   return update;  // no changes
+
 }
 
 
@@ -338,6 +369,7 @@ function readProjectData ( loginData,projectName )  {
   }
   return projectData;
 }
+
 
 function readProjectDesc ( loginData,projectName )  {
   var projectDescPath = getProjectDescPath ( loginData,projectName );
@@ -363,6 +395,7 @@ function writeProjectList ( loginData,projectList )  {
   var userProjectsListPath = getUserProjectListPath ( loginData );
   return utils.writeObject ( userProjectsListPath,projectList );
 }
+
 
 function readProjectList ( loginData )  {
   var userProjectsListPath = getUserProjectListPath ( loginData );
@@ -411,6 +444,7 @@ function readProjectList ( loginData )  {
   return pList;
 }
 
+
 function writeDockData ( loginData,dockData )  {
   var userDockDataPath = getUserDockDataPath ( loginData );
   return utils.writeObject ( userDockDataPath,dockData );
@@ -430,7 +464,6 @@ function readDockData ( loginData )  {
   }
   return dockData;
 }
-
 
 
 // ===========================================================================

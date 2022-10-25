@@ -90,7 +90,7 @@ function getArchiveDirPath ( archDiskName,archiveID )  {
   return path.join ( conf.getFEConfig().archivePath[archDiskName].path,archiveID );
 }
 
-function selectArchiveDisk ( req_size,callback_func )  {
+function chooseArchiveDisk ( req_size,callback_func )  {
 // var fe_conf = conf.getFEConfig();
 var adisks  = Object.entries ( conf.getFEConfig().archivePath );
 var fsname0 = null;
@@ -159,6 +159,11 @@ var aconf   = fe_conf.archivePath;
 }
 
 
+function annotateProject ( archiveDirPath,pAnnotation )  {
+
+}
+
+
 // --------------------------------------------------------------------------
 
 function archiveProject ( loginData,data,callback_func )  {
@@ -182,21 +187,34 @@ var uData       = user.suspendUser ( loginData,true,'' );
   log.standard ( 2,'archive project ' + pDesc.name + ', archive ID ' + 
                    archiveID + ', login ' + loginData.login );
 
-  selectArchiveDisk ( pDesc.disk_space,function(adname){
-    if (!adname)  {
+  chooseArchiveDisk ( pDesc.disk_space,function(adname){
+
+    if (!adname)  {  // disk name null -- no space or misconfiguration
+
       user.suspendUser ( loginData,false,'' );
       callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
         code      : 'no_space',
         archiveID : archiveID,
         message   : ''
       }));
-    } else  {
+    
+    } else  {  // archive disk was chosen successfully, disk space checked
+      // *copy* project directory to chosen archive disk asynchronously
+
       var projectDirPath = prj.getProjectDirPath ( loginData,pDesc.name );
       var archiveDirPath = getArchiveDirPath ( adname,archiveID );
+
       utils.copyDirAsync ( projectDirPath,archiveDirPath,false,function(err){
+
         if (!err)  {
-//        } else  {
+          // put archive metadata in project description, lock jobs for deletion
+          pAnnotation.id = archiveID;
+          annotateProject ( archiveDirPath,pAnnotation );
+          // make project link in user's projects directory
+          // update archive tables
+          // remove original job directory
 //          utils.removePath ( projectDirPath );
+          // unlock user's account and inform user through Cloud message and via e-mail
           user.suspendUser ( loginData,false,
             '<div style="width:400px"><h2>Archiving completed</h2>Project <b>"' + 
             pDesc.name +  '"</b> was archived successfully. It is now accessible via ' +
@@ -204,23 +222,30 @@ var uData       = user.suspendUser ( loginData,true,'' );
             '</b>, and you may see it in folder <i>"Projects archived by me"</i>.</div>'
           );
           // add e-mail to user
+        
         } else  {
+
           user.suspendUser ( loginData,false,
             '<div style="width:400px"><h2>Archiving failed</h2>Project <b>"' + 
-            pDesc.name +  '"</b> was not archived due to errors. This is likely ' +
-            'to be a consequence of intermittent system failures or a bug.' +
+            pDesc.name +  '"</b> was not archived due to errors. This is likely '  +
+            'to be a consequence of intermittent system failures or program bugs.' +
             '<p>Apologies for any inconvenience this may have caused.</div>'
           );
           // add e-mail to user and mainteiner
+        
         }
+
       });
-      // reply "archiving started"
+
+      // reply "archiving started" to client (copying goes in separate thread )
       callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
         code      : 'ok',
         archiveID : archiveID,
         message   : ''
       }));
+
     }
+
   });
 
 
