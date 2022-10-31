@@ -225,112 +225,125 @@ function ProjectListPage ( sceneId )  {
 
   // function to rename selected Project
   var renameProject = function() {
-    panel.click();  // get rid of context menu
 
-    if (isCurrentProjectShared())  {
-      var msg = '<div style="width:450px"><h2>Rename Project</h2>';
-      if (isCurrentProjectAuthored(true))
-            msg += 'You cannot rename this project because you shared it with other ' +
-                   'users.<p>Shared projects cannot be renamed until they are unshared.';
-      else  msg += 'You cannot rename this project because it was shared with you.' +
-                   '<p>Joined projects cannot be renamed.';
-      new MessageBox ( 'Rename Project',msg,'msg_stop' );
-      return;
-    }
+    if ((__current_folder.type==folder_type.archived) ||
+        (__current_folder.type==folder_type.cloud_archive))  {
 
-    var pDesc = getCurrentProjectDesc();
-    if (!pDesc)  {
-      new MessageBox ( 'Current project not identified',
-          '<h2>Current project is not identified</h2>' +
-          '<i>This is a bug please report to developers.</i>',
-          'msg_error'
-      );
-      return;
-    }
+      new MessageBox ( 'Rename Project',
+        '<div style="width:400px"><h2>Projects in this folder cannot be renamed</h2>' +
+        'You may rename only your own projects, which were not shared with ' +
+        'other users and were not archived.</div>','msg_stop' );
 
-    var prjName   = pDesc.name;
-    var inputBox  = new InputBox ( 'Rename Project' );
-    inputBox.setText ( '','renameprj' );
-    var ibx_grid = inputBox.grid;
-    ibx_grid.setLabel    ( '<h2>Rename Project "' + prjName + '"</h2>',0,2,2,3 );
-    ibx_grid.setLabel    ( 'New ID:',2,3,1,1 );
-    var name_inp  = ibx_grid.setInputText ( prjName,2,4,1,1 )
-          .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
-          .setFontItalic ( true )
-          .setWidth      ( '120px' );
-    ibx_grid.setLabel    ( 'New Name:&nbsp;',3,3,1,1 );
-    var title_inp = ibx_grid.setInputText
-                         ( self.tablesort_tbl.selectedRow.child[1].text,3,4,1,1 )
-          .setStyle      ( 'text','','Put a descriptive title here','' )
-          .setFontItalic ( true )
-          .setWidth      ( '520px' );
-    ibx_grid.setNoWrap   ( 2,2 );
-    ibx_grid.setNoWrap   ( 3,2 );
-    ibx_grid.setVerticalAlignment ( 2,3,'middle' );
-    ibx_grid.setVerticalAlignment ( 3,3,'middle' );
-    inputBox.addWidget   ( ibx_grid );
+    } else  {
 
-    inputBox.launch ( 'Rename',function(){
-      if (name_inp.getValue().length<=0)  {
-        new MessageBox ( 'No Project ID',
-                 '<b>Project ID is not given</b>.<p>' +
-                 'Project cannot be renamed with empty ID.',
-                 'msg_error' );
-        return false;
-      } else if (name_inp.element.validity.patternMismatch)  {
-        new MessageBox ( 'Invalid Project ID',
-              '<div style="width:400px"><h2>Invalid project ID</h2>' +
-              '<b>Project ID</b> should contain only latin letters, ' +
-              'numbers, undescores, dashes and dots, and must start ' +
-              'with a letter.</div>','msg_stop' );
-        return false;
+      panel.click();  // get rid of context menu
+
+      if (isCurrentProjectShared())  {
+        var msg = '<div style="width:450px"><h2>Rename Project</h2>';
+        if (isCurrentProjectAuthored(true))
+              msg += 'You cannot rename this project because you shared it with other ' +
+                     'users.<p>Shared projects cannot be renamed until they are unshared.';
+        else  msg += 'You cannot rename this project because it was shared with you.' +
+                     '<p>Joined projects cannot be renamed.';
+        new MessageBox ( 'Rename Project',msg,'msg_stop' );
+        return;
       }
 
-      if (title_inp.getValue().length<=0)  {
-        new MessageBox ( 'No Project Name',
-                 '<b>Project Name is not given</b>.<p>' +
-                 'Project cannot be renamed with empty name.',
-                 'msg_error' );
-        return false;
+      var pDesc = getCurrentProjectDesc();
+      if (!pDesc)  {
+        new MessageBox ( 'Current project not identified',
+            '<h2>Current project is not identified</h2>' +
+            '<i>This is a bug please report to developers.</i>',
+            'msg_error'
+        );
+        return;
       }
-      pDesc = projectList.renameProject ( prjName,title_inp.getValue(),getDateString() );
-      if (pDesc)  {
-        var new_name = name_inp.getValue();
-        if ((new_name!=pDesc.name) && projectList.getProject(new_name))  {
-          new MessageBox ( 'Duplicate Project ID',
-                   '<div style="width:400px;"><h2>Duplicate Project ID</h2>' +
-                   'Project with ID <b>"' + new_name +
-                   '"</b> already exists (check all folders).</div>',
-                   'msg_excl_yellow' );
+
+      var prjName   = pDesc.name;
+      var inputBox  = new InputBox ( 'Rename Project' );
+      inputBox.setText ( '','renameprj' );
+      var ibx_grid = inputBox.grid;
+      ibx_grid.setLabel    ( '<h2>Rename Project "' + prjName + '"</h2>',0,2,2,3 );
+      ibx_grid.setLabel    ( 'New ID:',2,3,1,1 );
+      var name_inp  = ibx_grid.setInputText ( prjName,2,4,1,1 )
+            .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
+            .setFontItalic ( true )
+            .setWidth      ( '120px' );
+      ibx_grid.setLabel    ( 'New Name:&nbsp;',3,3,1,1 );
+      var title_inp = ibx_grid.setInputText
+                          ( self.tablesort_tbl.selectedRow.child[1].text,3,4,1,1 )
+            .setStyle      ( 'text','','Put a descriptive title here','' )
+            .setFontItalic ( true )
+            .setWidth      ( '520px' );
+      ibx_grid.setNoWrap   ( 2,2 );
+      ibx_grid.setNoWrap   ( 3,2 );
+      ibx_grid.setVerticalAlignment ( 2,3,'middle' );
+      ibx_grid.setVerticalAlignment ( 3,3,'middle' );
+      inputBox.addWidget   ( ibx_grid );
+
+      inputBox.launch ( 'Rename',function(){
+        if (name_inp.getValue().length<=0)  {
+          new MessageBox ( 'No Project ID',
+                  '<b>Project ID is not given</b>.<p>' +
+                  'Project cannot be renamed with empty ID.',
+                  'msg_error' );
+          return false;
+        } else if (name_inp.element.validity.patternMismatch)  {
+          new MessageBox ( 'Invalid Project ID',
+                '<div style="width:400px"><h2>Invalid project ID</h2>' +
+                '<b>Project ID</b> should contain only latin letters, ' +
+                'numbers, undescores, dashes and dots, and must start ' +
+                'with a letter.</div>','msg_stop' );
           return false;
         }
-        pDesc.new_name      = new_name;
-        projectList.current = prjName;
-        serverRequest ( fe_reqtype.renameProject,pDesc,'Rename Project',
-          function(data){
-            if (data.code=='ok')  {
-              pDesc.name = new_name;
-              delete pDesc.new_name;
-              saveProjectList ( function(data){
-                projectList.current = new_name;
+
+        if (title_inp.getValue().length<=0)  {
+          new MessageBox ( 'No Project Name',
+                  '<b>Project Name is not given</b>.<p>' +
+                  'Project cannot be renamed with empty name.',
+                  'msg_error' );
+          return false;
+        }
+        pDesc = projectList.renameProject ( prjName,title_inp.getValue(),getDateString() );
+        if (pDesc)  {
+          var new_name = name_inp.getValue();
+          if ((new_name!=pDesc.name) && projectList.getProject(new_name))  {
+            new MessageBox ( 'Duplicate Project ID',
+                    '<div style="width:400px;"><h2>Duplicate Project ID</h2>' +
+                    'Project with ID <b>"' + new_name +
+                    '"</b> already exists (check all folders).</div>',
+                    'msg_excl_yellow' );
+            return false;
+          }
+          pDesc.new_name      = new_name;
+          projectList.current = prjName;
+          serverRequest ( fe_reqtype.renameProject,pDesc,'Rename Project',
+            function(data){
+              if (data.code=='ok')  {
+                pDesc.name = new_name;
+                delete pDesc.new_name;
+                saveProjectList ( function(data){
+                  projectList.current = new_name;
+                  makeProjectListTable();
+                },null );
+              } else  {
+                new MessageBox ( 'Project renaming rejected',
+                  '<h2>Project renaming rejected</h2><i>' + data.code + '</i>.',
+                  'msg_error'
+                );
                 makeProjectListTable();
-              },null );
-            } else  {
-              new MessageBox ( 'Project renaming rejected',
-                '<h2>Project renaming rejected</h2><i>' + data.code + '</i>.',
-                'msg_error'
-              );
-              makeProjectListTable();
-            }
-          },null,'persist' );
-        return true;  // close dialog
-      } else  {
-        new MessageBox ( 'Project ID not found',
-            'The Project ID <b>'+prjName+'</b> is not found in the list.<p>' +
-            'This is program error, please report as a bug.','msg_error' );
-        return false;
-      }
-    });
+              }
+            },null,'persist' );
+          return true;  // close dialog
+        } else  {
+          new MessageBox ( 'Project ID not found',
+              'The Project ID <b>'+prjName+'</b> is not found in the list.<p>' +
+              'This is program error, please report as a bug.','msg_error' );
+          return false;
+        }
+      });
+
+    }
 
   }
 
@@ -605,11 +618,11 @@ function ProjectListPage ( sceneId )  {
       return (
         (projectDesc.folderPath==__current_folder.path) ||
         ((__current_folder.type==folder_type.joined) &&
-        isProjectJoined(__login_id,projectDesc)) ||
+          isProjectJoined(__login_id,projectDesc)) ||
         ((__current_folder.type==folder_type.shared) &&
-        isProjectShared(__login_id,projectDesc)) ||
+          isProjectShared(__login_id,projectDesc)) ||
         ((__current_folder.type==folder_type.custom_list) &&
-        checkProjectLabel(__login_id,projectDesc,__current_folder.path)) ||
+          checkProjectLabel(__login_id,projectDesc,__current_folder.path)) ||
         (__current_folder.type==folder_type.all_projects) 
       );
     }
@@ -766,7 +779,8 @@ function ProjectListPage ( sceneId )  {
               del_btn.setText ( del_label );
             });
             contextMenu.addItem('Open'   ,image_path('go')       ).addOnClickListener(openProject  );
-            contextMenu.addItem('Rename' ,image_path('renameprj')).addOnClickListener(renameProject);
+            if (!archive_folder)
+              contextMenu.addItem('Rename' ,image_path('renameprj')).addOnClickListener(renameProject);
             contextMenu.addItem(del_label,image_path('remove')   ).addOnClickListener(deleteProject);
             contextMenu.addItem('Export' ,image_path('export')   ).addOnClickListener(exportProject);
             contextMenu.addItem('Share'  ,image_path('share')    ).addOnClickListener(sharePrj     );
@@ -856,7 +870,7 @@ function ProjectListPage ( sceneId )  {
       selectedRow.click();  // just sets the Delete/Unjoin button label
       open_btn  .setDisabled ( false );
       add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
-      rename_btn.setDisabled ( false );
+      rename_btn.setDisabled ( archive_folder );
       clone_btn .setDisabled ( false );
       // move_btn  .setDisabled ( false );
       move_btn  .setEnabled  ( __current_folder.path.startsWith(owners_folder) ||

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.10.22   <--  Date of Last Modification.
+#    31.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -519,8 +519,9 @@ class TaskDriver(object):
     def putWaitMessageLF ( self,message_str ):
         gridId = "wait_message_" + str(self.widget_no)
         pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),self.rvrow,0,1,1 )
-        pyrvapi.rvapi_set_text ( "<font style='font-size:120%;'>" + message_str +
-                                 "</font>",gridId,0,0,1,1 )
+        # pyrvapi.rvapi_set_text ( "<font style='font-size:120%;'>" + message_str +
+        #                          "</font>",gridId,0,0,1,1 )
+        pyrvapi.rvapi_set_text ( "<i>" + message_str + "</i>" ,gridId,0,0,1,1 )
         pyrvapi.rvapi_set_text ( "<div class='activity_bar'/>",gridId,0,1,1,1 )
         self.widget_no += 1
         pyrvapi.rvapi_flush ()
