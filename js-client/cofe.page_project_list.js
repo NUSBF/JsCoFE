@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.10.22   <--  Date of Last Modification.
+ *    30.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -597,16 +597,22 @@ function ProjectListPage ( sceneId )  {
 
 
   function listProject ( projectDesc )  {
-    return (
-      (projectDesc.folderPath==__current_folder.path) ||
-      ((__current_folder.type==folder_type.joined) &&
-       isProjectJoined(__login_id,projectDesc)) ||
-      ((__current_folder.type==folder_type.shared) &&
-       isProjectShared(__login_id,projectDesc)) ||
-      ((__current_folder.type==folder_type.custom_list) &&
-       checkProjectLabel(__login_id,projectDesc,__current_folder.path)) ||
-      (__current_folder.type==folder_type.all_projects)
-    );
+    if (projectDesc.archive && projectDesc.archive.in_archive)  {
+      if (projectDesc.owner.login==__login_id)
+            return (__current_folder.type==folder_type.archived);
+      else  return (__current_folder.type==folder_type.cloud_archive);
+    } else  {
+      return (
+        (projectDesc.folderPath==__current_folder.path) ||
+        ((__current_folder.type==folder_type.joined) &&
+        isProjectJoined(__login_id,projectDesc)) ||
+        ((__current_folder.type==folder_type.shared) &&
+        isProjectShared(__login_id,projectDesc)) ||
+        ((__current_folder.type==folder_type.custom_list) &&
+        checkProjectLabel(__login_id,projectDesc,__current_folder.path)) ||
+        (__current_folder.type==folder_type.all_projects) 
+      );
+    }
   }
 
   // function to create project list table and fill it with data
@@ -617,34 +623,46 @@ function ProjectListPage ( sceneId )  {
     else if (!('sortList' in projectList))
       projectList.sortList = [[5,1]];
 
-    self.tablesort_tbl = new TableSort();
-    self.tablesort_tbl.setHeaders ([
-        'ID','Name',
-        '<center>R<sub>free</sub></center>',
-        '<center>Disk<br>(MBytes)</center>',
-        '<center>CPU<br>(hours)</center>',
-        '<center>Date<br>Created</center>',
-        '<center>Last<br>Opened</center>'
-    ]);
-    /*
-    self.tablesort_tbl.setHeaderNoWrap   ( -1      );
-    self.tablesort_tbl.setHeaderColWidth ( 0,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( 1,'75%' );
-    self.tablesort_tbl.setHeaderColWidth ( 2,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( 3,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( 4,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( 5,'5%'  );
-    */
-
-    panel.setWidget ( self.tablesort_tbl,table_row,0,1,nCols );
-
     if (__current_folder.nprojects>=0)  // works first time after login
       __current_folder = projectList.currentFolder;
     // var owners_folder = __login_id + '\'s Projects';
 
+    var nrows = 0;
+    for (var i=0;i<projectList.projects.length;i++)
+      if (listProject(projectList.projects[i]))
+        nrows++;
+
+    __current_folder.nprojects = nrows;
+    switch (__current_folder.type)  {
+      case folder_type.shared        : projectList.folders[1].nprojects = nrows;  break;
+      case folder_type.joined        : projectList.folders[2].nprojects = nrows;  break;
+      case folder_type.all_projects  : projectList.folders[3].nprojects = nrows;  break;
+      case folder_type.archived      : projectList.folders[4].nprojects = nrows;  break;
+      case folder_type.cloud_archive : projectList.folders[5].nprojects = nrows;  break;
+      default : ;
+    }
+
     setPageTitle ( __current_folder );
 
-    var message = '<div style="width:100%;">&nbsp;<p>&nbsp;<p><h3>' +
+    var archive_folder = (__current_folder.type==folder_type.archived) ||
+                         (__current_folder.type==folder_type.cloud_archive);
+
+    self.tablesort_tbl = new TableSort();
+    var tbs_headers = [];
+    if (archive_folder)
+      tbs_headers = ['Archive ID'];
+    self.tablesort_tbl.setHeaders ( tbs_headers.concat([
+      'ID','Name',
+      '<center>R<sub>free</sub></center>',
+      '<center>Disk<br>(MBytes)</center>',
+      '<center>CPU<br>(hours)</center>',
+      '<center>Date<br>Created</center>',
+      '<center>Last<br>Opened</center>'
+    ]));
+
+    panel.setWidget ( self.tablesort_tbl,table_row,0,1,nCols );
+
+    var message = '<div style="width:100%;color:darkgrey">&nbsp;<p>&nbsp;<p><h3>' +
                   'There are no projects in folder "' +
                   folderPathTitle(__current_folder,__login_id,1000) + '".' +
                   '<p>Use "Add" button to create a new Project' +
@@ -654,32 +672,11 @@ function ProjectListPage ( sceneId )  {
                   'another user;<br>or "Tutorials" button for loading ' +
                   'tutorial/demo projects;<br>or click on page title or folder ' +
                   'icon in it to change the folder.</h3></div>';
-    self.welcome_lbl = panel.setLabel ( message.fontcolor('darkgrey'),
+    self.welcome_lbl = panel.setLabel ( message, //.fontcolor('darkgrey'),
                                    table_row+1,0,1,nCols )
                        .setFontItalic ( true )
                        .setNoWrap();
     panel.setHorizontalAlignment ( table_row+1,0,"center" );
-
-    var nrows = 0;
-    for (var i=0;i<projectList.projects.length;i++)
-      if (listProject(projectList.projects[i]))
-        nrows++;
-      // if ((projectList.projects[i].folderPath==__current_folder.path) ||
-      //     ((__current_folder.type==folder_type.joined) &&
-      //       isProjectJoined(__login_id,projectList.projects[i])) ||
-      //     ((__current_folder.type==folder_type.shared) &&
-      //       isProjectShared(__login_id,projectList.projects[i])) ||
-      //     ((__current_folder.type==folder_type.custom_list) &&
-      //       checkProjectLabel(__login_id,projectList.projects[i],
-      //                                    __current_folder.path)) ||
-      //      (__current_folder.type==folder_type.all_projects))
-      //   nrows++;
-
-    __current_folder.nprojects = nrows;
-    if (__current_folder.type==folder_type.shared)
-      projectList.folders[1].nprojects = nrows;
-    if (__current_folder.type==folder_type.joined)
-      projectList.folders[2].nprojects = nrows;
 
     var moveLbl  = '';
     var moveIcon = image_path('folder_projects');
@@ -697,6 +694,8 @@ function ProjectListPage ( sceneId )  {
       __current_project = null;
 
       var trow = self.tablesort_tbl.addRow();
+      if (archive_folder)
+        trow.addCell ( '' );
       trow.addCell ( '' );
       trow.addCell ( '' );
       trow.addCell ( '' );
@@ -722,15 +721,6 @@ function ProjectListPage ( sceneId )  {
       // alert ( __current_folder );
       for (var i=0;i<projectList.projects.length;i++)
         if (listProject(projectList.projects[i]))  {
-        // if ((projectList.projects[i].folderPath==__current_folder.path) ||
-        //     ((__current_folder.type==folder_type.joined) &&
-        //       isProjectJoined(__login_id,projectList.projects[i])) ||
-        //     ((__current_folder.type==folder_type.shared) &&
-        //       isProjectShared(__login_id,projectList.projects[i])) ||
-        //     ((__current_folder.type==folder_type.custom_list) &&
-        //       checkProjectLabel(__login_id,projectList.projects[i],
-        //                                    __current_folder.path)) ||
-        //      (__current_folder.type==folder_type.all_projects))  {
 
           var trow = self.tablesort_tbl.addRow();
 
@@ -793,6 +783,8 @@ function ProjectListPage ( sceneId )  {
 
           }(shared_project))
 
+          if (archive_folder)
+            trow.addCell ( pDesc.archive.id  ).setNoWrap();
           trow.addCell ( pName  ).setNoWrap();
           trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
           if (('metrics' in pDesc) && ('R_free' in pDesc.metrics)
@@ -879,13 +871,16 @@ function ProjectListPage ( sceneId )  {
     }
 
     self.tablesort_tbl.setHeaderNoWrap   ( -1      );
-    self.tablesort_tbl.setHeaderColWidth ( 0,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( 1,'70%' );
-    self.tablesort_tbl.setHeaderColWidth ( 2,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( 3,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( 4,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( 5,'5%'  );
-    self.tablesort_tbl.setHeaderColWidth ( 6,'5%'  );
+    var colNo = 0;
+    if (archive_folder)
+      self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( colNo++,'70%' );
+    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
+    self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
 
     self.tablesort_tbl.setHeaderFontSize ( '100%' );
     self.onResize ( window.innerWidth,window.innerHeight );
@@ -897,8 +892,6 @@ function ProjectListPage ( sceneId )  {
     // self.tablesort_tbl.addSignalHandler ( 'row_click',function(trow){
     //   __close_all_menus();
     // });
-
-    // setPageTitle ( __current_folder );
 
   }
 

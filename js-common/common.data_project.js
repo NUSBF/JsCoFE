@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.10.22   <--  Date of Last Modification.
+ *    30.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -112,12 +112,13 @@ function ProjectDesc()  {
 
   this.archive      = null;  // changes to object as below if project is archived
   // this.archive = {
-  //   id        : '',   // archive ID
-  //   version   : 0,    // archived project version
-  //   coauthors : []    // list of co-authors
-  //   pdbs      : []    // associated PDB codes
-  //   dois      : []    // associated publication dois
-  //   kwds      : []    // keywords
+  //   id         : '',   // archive ID
+  //   version    : 0,    // archived project version
+  //   in_archive : true, // false if project is cloned and revised in My Projects
+  //   coauthors  : []    // list of co-authors
+  //   pdbs       : []    // associated PDB codes
+  //   dois       : []    // associated publication dois
+  //   kwds       : []    // keywords
   // };
 
   this.jobCount     = 0;     // job count
@@ -175,6 +176,10 @@ var author = projectDesc.owner.login;
   if (('author' in projectDesc.owner) && projectDesc.owner.author)
     author = projectDesc.owner.author;
   return author;
+}
+
+function inArchive ( projectDesc )  {
+  return (projectDesc.archive && projectDesc.archive.in_archive);
 }
 
 function addProjectLabel ( loginName,projectDesc,label )  {
@@ -473,34 +478,48 @@ var i0 = 4;
 
   // set zero number of projects in all copied folders recursively
   this._reset_folders ( this.folders );
-  this.folders[3].nprojects = this.projects.length;  // "All folders" length
 
   // reconstruct other folders from project descriptions
 
   var folderPaths = {};
   var listPaths   = {};
-  var nshared = 0;
-  var njoined = 0;
+  var nshared     = 0;
+  var njoined     = 0;
+  var nall        = 0;  // counts all that is not archived
+  var narchived   = 0;
+  var nfetched    = 0;
 
   for (var i=0;i<this.projects.length;i++)  {
-    var folder_path = this.projects[i].folderPath;
-    if (folder_path in folderPaths)
-          folderPaths[folder_path]++;  // folder population
-    else  folderPaths[folder_path] = 1;
-    // special cases
-    if (isProjectJoined(login,this.projects[i]))  njoined++;
-    if (isProjectShared(login,this.projects[i]))  nshared++;
-    var labels = {};
-    if (this.projects[i].owner.login==login)
-      labels = this.projects[i].owner.labels;
-    else if (login in this.projects[i].share)
-      labels = this.projects[i].share[login].labels;
-    for (var label in labels)
-      if (label in listPaths)  listPaths[label]++;
-                         else  listPaths[label] = 1;
+    var pDesc = this.projects[i];
+    if (pDesc.archive && pDesc.archive.in_archive)  {
+      if (login==pDesc.owner.login)  narchived++;
+                               else  nfetched++;
+    } else  {
+      nall++;
+      var folder_path = pDesc.folderPath;
+      if (folder_path in folderPaths)
+            folderPaths[folder_path]++;  // folder population
+      else  folderPaths[folder_path] = 1;
+      // special cases
+      if (isProjectJoined(login,pDesc))  njoined++;
+      if (isProjectShared(login,pDesc))  nshared++;
+      var labels = {};
+      if (pDesc.owner.login==login)
+        labels = pDesc.owner.labels;
+      else if (login in pDesc.share)
+        labels = pDesc.share[login].labels;
+      for (var label in labels)
+        if (label in listPaths)  listPaths[label]++;
+                           else  listPaths[label] = 1;
+    }
   }
   this.folders[1].nprojects = nshared;  // "shared by me"
   this.folders[2].nprojects = njoined;  // "joined by me"
+  this.folders[3].nprojects = nall;     // "All folders" length
+  if (i0>4)  {
+    this.folders[4].nprojects = narchived;  // "archived by me"
+    this.folders[5].nprojects = nfetched;   // "cloud archive"
+  }
 
   for (var fpath in folderPaths)
     this.addFolderPath ( fpath,folderPaths[fpath],false );

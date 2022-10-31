@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.10.22   <--  Date of Last Modification.
+ *    30.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -78,7 +78,8 @@ function TaskTemplate()  {
 
   this._type        = 'TaskTemplate';        // must be class name
   this.version      = this.currentVersion(); // actual version of task class
-  // this.archive_version = 0;  // appears only on archiving, hence commented out
+  // this.archive_version = 0;  // appears only on archiving, hence commented out;
+                                // see function isArchived()
 
   this.project      = '';   // project name (stable)
   this.id           = 0;    // job Id (stable)
@@ -483,7 +484,7 @@ if (!dbx)  {
   }
 
   TaskTemplate.prototype.canClone = function ( node,jobTree )  {
-    return (this.isTaskAvailable()[0]=='ok');
+    return (this.isTaskAvailable()[0]=='ok') && (!jobTree.in_archive);
     /*
     if ((this.nc_type=='client') && (!__local_service))
       return false;
@@ -491,9 +492,15 @@ if (!dbx)  {
     */
   }
 
+  TaskTemplate.prototype.isArchived = function()  {
+    return ('archive_version' in this) && (this.archive_version>0);
+  }
+
   TaskTemplate.prototype.canMove = function ( node,jobTree )  {
   var parent_task = jobTree.getTaskByNodeId(node.parentId);
   var can_move    = false;
+
+    if (this.isArchived())  return false;
 
     //if (parent_task && (this.state!=job_code.new) &&
     if ((this.state!=job_code.new) &&

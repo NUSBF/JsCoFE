@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.09.22   <--  Date of Last Modification.
+ *    30.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -91,6 +91,7 @@ function JobTree()  {
   this.checkTimeout = null;  // timeout timer Id
 
   this.mode         = 'project';  //  'replay', 'select'
+  this.in_archive   = false;
 //  this.replay_mode  = false;  // works with the replay project if true
 
 }
@@ -271,6 +272,8 @@ JobTree.prototype.readProjectData = function ( page_title,
         tree.projectData.desc.dateLastUsed = getDateString();
         tree.projectData.desc.autorun = false;
 
+        tree.in_archive = inArchive ( tree.projectData.desc );
+
         if (startmode)
           tree.projectData.desc.startmode = startmode;
 
@@ -282,8 +285,11 @@ JobTree.prototype.readProjectData = function ( page_title,
         var author = getProjectAuthor ( tree.projectData.desc );
         if (author==__login_id)  author  = '';
         if (author)  author += ':';
+        var archiveID  = '';
+        if (tree.in_archive)
+          archiveID = '&lt;' + tree.projectData.desc.archive.id + '&gt;';
         var root_title =
-                '<b style="color:blue;">' + author +
+                '<b style="color:blue;">' + archiveID + author +
                 '[' + tree.projectData.desc.name  + ']</b> ' +
                 '</i>'
 
@@ -753,7 +759,10 @@ JobTree.prototype.missingProject = function()  {
 
 JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
                                                callback_func )  {
-  if (this.projectData)  {
+  if (this.in_archive)  {
+    if (callback_func)
+      callback_func ( this,{ reload : 0 } );
+  } else if (this.projectData)  {
     this.projectData.desc.dateLastUsed = getDateString();
     this.projectData.tree = this.root_nodes;
     var data       = {};
@@ -2235,7 +2244,7 @@ JobTree.prototype.replayTree = function ( ref_tree )  {
   this.clear();  // this removes also all root nodes
   this.projectData.desc.jobCount = 0;
   // (function(tree){
-    tree.saveProjectData ( [],task_del_list,true, function(tree,rdata){
+    tree.  ( [],task_del_list,true, function(tree,rdata){
       if (rdata.reload<=0)  {
         var replay_node_list = [];
         for (var i=0;i<ref_tree.root_nodes.length;i++)  {

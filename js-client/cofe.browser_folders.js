@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    20.10.22   <--  Date of Last Modification.
+ *    30.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -297,6 +297,7 @@ var selNode = this.ftree.getSelectedNode();
           'CCP4 Cloud Archive is not configured.',
           'msg_stop' );
     } else  {
+      console.log ( '"' + selNode.dataId + '"' ); 
       new MessageBox ( 'Feature not available',
           '<h2>Folder is not available</h3>' +
           'Archive folders and their functionality are currently ' +

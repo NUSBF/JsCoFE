@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.09.22   <--  Date of Last Modification.
+ *    30.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -181,12 +181,12 @@ function ProjectPage ( sceneId )  {
 
   // make the toolbar
   var cnt = 0;
-  this.add_btn     = toolbar.setButton ( '',image_path('add')     ,cnt++,0,1,1 );
+  this.add_btn     = toolbar.setButton ( '',image_path('add'),cnt++,0,1,1 );
   // temporary switch off
-  //this.moveup_btn   = toolbar.setButton ( '',image_path('moveup')   ,cnt++,0,1,1 );
+  //this.moveup_btn   = toolbar.setButton ( '',image_path('moveup'),cnt++,0,1,1 );
   this.clone_btn   = toolbar.setButton ( '',image_path('clonejob'),cnt++,0,1,1 );
   this.del_btn     = toolbar.setButton ( '',image_path('remove')  ,cnt++,0,1,1 );
-  this.stack_btn   = toolbar.setButton ( '',image_path('job_stack')   ,cnt++,0,1,1 );
+  this.stack_btn   = toolbar.setButton ( '',image_path('job_stack'),cnt++,0,1,1 );
   toolbar.setLabel ( '<hr style="border:1px dotted;"/>',cnt++,0,1,1 );
   this.add_rem_btn = toolbar.setButton ( '',image_path('task_remark'     ),cnt++,0,1,1 );
   this.thlight_btn = toolbar.setButton ( '',image_path('highlight_branch'),cnt++,0,1,1 );
@@ -667,6 +667,7 @@ ProjectPage.prototype._set_button_state = function() {
   var dsel = false;
   var task = this.jobTree.getSelectedTask();
   var node = this.jobTree.getSelectedNode();
+  var not_in_archive = (!this.jobTree.in_archive);
 
   var child_tasks = this.jobTree.getChildTasks ( node );
   var has_remark  = false;
@@ -675,9 +676,9 @@ ProjectPage.prototype._set_button_state = function() {
 
   if (node)
     dsel = (node.parentId!=null);
-  this.open_btn   .setEnabled ( dsel );
-  this.del_btn    .setEnabled ( dsel );
-  this.stack_btn  .setEnabled ( (this.jobTree.selectStackJobs()[0]>0) );
+  this.open_btn .setEnabled ( dsel );
+  this.del_btn  .setEnabled ( dsel && not_in_archive );
+  this.stack_btn.setEnabled ( (this.jobTree.selectStackJobs()[0]>0) );
 
   if (task)  {
     var is_remark   = task.isRemark();
@@ -687,8 +688,8 @@ ProjectPage.prototype._set_button_state = function() {
       if (tparent)
         add_enabled = (tparent.state==job_code.finished);
     }
-    var can_add = (!__dormant) && ((task.state==job_code.finished)  ||
-                                   (is_remark && add_enabled));
+    var can_add = (!__dormant) && not_in_archive &&
+                  ((task.state==job_code.finished) || (is_remark && add_enabled));
     this.add_btn  .setEnabled ( can_add );
     this.dock     .setEnabled ( can_add );
     this.clone_btn.setEnabled ( (!__dormant) && dsel &&
@@ -697,18 +698,19 @@ ProjectPage.prototype._set_button_state = function() {
       this.moveup_btn.setEnabled ( (!__dormant) && task.canMove(node,this.jobTree) );
     this.stop_btn .setEnabled ( dsel && ((task.state==job_code.running) ||
                                          (task.state==job_code.ending)) );
-    this.add_rem_btn.setEnabled ( (!__dormant) && (!has_remark) && (!is_remark) );
+    this.add_rem_btn.setEnabled ( (!__dormant) && (!has_remark) && (!is_remark) &&
+                                  not_in_archive );
     if (is_remark)
           this.del_btn.setTooltip ( 'Delete remark' );
     else  this.del_btn.setTooltip ( 'Delete job' );
   } else  {  // root
-    this.add_btn  .setEnabled ( !__dormant );
-    this.dock     .setEnabled ( !__dormant );
+    this.add_btn  .setEnabled ( (!__dormant) && not_in_archive );
+    this.dock     .setEnabled ( (!__dormant) && not_in_archive );
     this.clone_btn.setEnabled ( false );  // dsel ???
     if (this.moveup_btn)
       this.moveup_btn.setEnabled ( false );
     this.stop_btn    .setEnabled ( false );
-    this.add_rem_btn .setEnabled ( (!__dormant) && (!has_remark) );
+    this.add_rem_btn .setEnabled ( (!__dormant) && (!has_remark) && not_in_archive );
   }
   this.thlight_btn.setEnabled ( true );
 
@@ -888,7 +890,7 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
 
   // these go first in all cases
   this.refresh_btn.setDisabled ( false );
-  this.selmode_btn.setDisabled ( false );
+  this.selmode_btn.setDisabled ( job_tree.in_archive );
 
   if ((!job_tree) || (!job_tree.projectData))  {
     if (stayInProject)  {
