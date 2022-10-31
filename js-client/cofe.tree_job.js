@@ -2244,7 +2244,7 @@ JobTree.prototype.replayTree = function ( ref_tree )  {
   this.clear();  // this removes also all root nodes
   this.projectData.desc.jobCount = 0;
   // (function(tree){
-    tree.  ( [],task_del_list,true, function(tree,rdata){
+    tree.saveProjectData  ( [],task_del_list,true, function(tree,rdata){
       if (rdata.reload<=0)  {
         var replay_node_list = [];
         for (var i=0;i<ref_tree.root_nodes.length;i++)  {
