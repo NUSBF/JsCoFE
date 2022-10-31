@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.10.22   <--  Date of Last Modification.
+ *    30.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1005,14 +1005,23 @@ function getProjectData ( loginData,data )  {
                     '), login ' + loginData.login );
 
   // Get users' projects list file name
-  var projectList = response.data;
-  var projectName = projectList.current;
+  var projectList    = response.data;
+  var projectName    = projectList.current;  // projectID or archiveID
+  var archive_folder = (projectList.currentFolder.type==pd.folder_type.archived) ||
+                       (projectList.currentFolder.type==pd.folder_type.cloud_archive);
 
   // check that current project exists
   var pdesc = null;
-  for (var i=0;(i<projectList.projects.length) && (!pdesc);i++)
-    if (projectList.projects[i].name==projectName)
-      pdesc = projectList.projects[i];
+  if (archive_folder)  {
+    for (var i=0;(i<projectList.projects.length) && (!pdesc);i++)
+      if (projectList.projects[i].archive && 
+          (projectList.projects[i].archive.id==projectName))
+        pdesc = projectList.projects[i];
+  } else  {
+    for (var i=0;(i<projectList.projects.length) && (!pdesc);i++)
+      if (projectList.projects[i].name==projectName)
+        pdesc = projectList.projects[i];
+  }
   if (!pdesc)
     return new cmd.Response ( cmd.fe_retcode.ok,'','missing' );
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.10.22   <--  Date of Last Modification.
+ *    30.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,8 +34,8 @@ const cmd       = require('../js-common/common.commands');
 const user      = require('./server.fe.user');
 const prj       = require('./server.fe.projects');
 const task_t    = require('../js-common/tasks/common.tasks.template');
+const emailer   = require('./server.emailer');
 // const com_utils = require('../js-common/common.utils');
-// var emailer   = require('./server.emailer');
 // var send_dir  = require('./server.send_dir');
 // var ration    = require('./server.fe.ration');
 // var fcl       = require('./server.fe.facilities');
@@ -177,7 +177,10 @@ var pData = utils.readObject ( projectDataPath );
     pAnnotation.version = 1;
 
   pDesc.archive = pAnnotation;
-  pData.pdesc   = pDesc;
+  pData.desc    = pDesc;
+
+  utils.writeObject ( projectDataPath,pData );
+  utils.writeObject ( projectDescPath,pDesc );
 
   // lock job directories by archive versioning
 
@@ -244,15 +247,17 @@ var uData       = user.suspendUser ( loginData,true,'' );
           var failcode = 0;
           if (!err)  {
             // put archive metadata in project description, lock jobs for deletion
-            pAnnotation.id = archiveID;
+            pAnnotation.id    = archiveID;
+            pAnnotation.in_archive = true;
             annotateProject ( archiveDirPath,pAnnotation );
             // make project link in user's projects directory
-            var linkDir = path.resolve(prj.getProjectDirPath(loginData,archiveID));
+            var linkDir   = path.resolve(prj.getProjectDirPath(loginData,archiveID));
             var linkedDir = path.resolve(archiveDirPath);
             if (utils.makeSymLink(linkDir,linkedDir))  {
               // update archive tables
               // remove original job directory
     //          utils.removePath ( projectDirPath );
+              // subtract project space from user ration
               // unlock user's account and inform user through Cloud message and via e-mail
               user.suspendUser ( loginData,false,
                 '<div style="width:400px"><h2>Archiving completed</h2>Project <b>"' + 
@@ -264,6 +269,15 @@ var uData       = user.suspendUser ( loginData,true,'' );
                    archiveID + '; login ' + loginData.login + ', archive disk ' +
                    adname );
               // add e-mail to user
+
+              emailer.sendTemplateMessage ( uData,
+                        cmd.appName() + ' Project Archived',
+                        'project_archived',{
+                            archiveID    : archiveID,
+                            projectName  : pDesc.name,
+                            projectTitle : pDesc.title
+                        });
+
             } else
               failcode = 1;
           
@@ -282,6 +296,15 @@ var uData       = user.suspendUser ( loginData,true,'' );
             log.error ( 3,'project archiving failed, failcode=' + failcode +
                           '; login=' + loginData.login + ', project ' + 
                           pDesc.name + ', archive disk ' + adname );
+            emailer.sendTemplateMessage ( uData,
+                        cmd.appName() + ' Project Archived',
+                        'project_arching_failed',{
+                            archiveID    : archiveID,
+                            projectName  : pDesc.name,
+                            projectTitle : pDesc.title,
+                            failcode     : '' + failcode
+                        });
+
             // add e-mail to user and mainteiner
           }
 
