@@ -1,40 +1,42 @@
-
 /*
  *  =================================================================
  *
- *    24.10.22   <--  Date of Last Modification.
+ *    31.10.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/cofe.tasks.rotamer.js
+ *  **** Module  :  js-common/tasks/common.tasks.rotamer.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  XYZ Utilities Task Class
+ *  **** Content :  ROTAMER Task Class
  *       ~~~~~~~~~
  *
- *  (C) M. Fando, E. Krissinel, A. Lebedev 2022
+ *  (C) M. Fando, E. Krissinel, A. Lebedev  2022
  *
  *  =================================================================
  *
  */
 
+'use strict';
 
 var __template = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
   __template = require ( './common.tasks.template' );
 
+
 // ===========================================================================
+
 function TaskRotamer()  {
 
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type  = 'TaskRotamer';
-  this.name   = 'rotamer';
-  this.oname  = '*'; // asterisk means do not use (XYZ name will be used)
-  this.title  = 'Rotamer';
+  this._type   = 'TaskRotamer';
+  this.name    = 'rotamer';
+  this.setOName ( 'rotamer' ); // default output file name template
+  this.title   = 'Rotamer';
 
   this.input_dtypes = [{      // input data types
     data_type   : { 'DataRevision' : ['xyz'],
@@ -48,34 +50,32 @@ function TaskRotamer()  {
     max         : 1            // maximum acceptable number of data instances
   }];
 
-  this.parameters = { // no input parameters
-    ROTAMER_LBL : {
-            type     : 'label',
-            keyword  : 'none',
-            lwidth   : 800,
-            label    : '&nbsp;<br><div style="font-size:14px;">' +
-                        'Set ROTAMER keywords and values ' +
-                        'in the input field below (consult ' +
-                        '<a href="https://www.ccp4.ac.uk/html/rotamer.html" ' +
-                        'target="_blank"><i>ROTAMER reference</i></a> for more details).' +
-                        '<sub>&nbsp;</sub></div>',
-            position : [0,0,1,5]
-          },
-    ROTAMER_INPUT : {
-            type     : 'aceditor_',  // can be also 'textarea'
-            keyword  : 'none',       // optional
-            tooltip  : '',           // mandatory
-            iwidth   : 800,          // optional
-            iheight  : 320,          // optional
-            placeholder : '# For example:\n' + 
-                          'delt 40\n',
-            value    : '',           // mandatory
-            position : [1,0,1,5]     // mandatory
-          }
+  this.parameters = { // input parameters
+    SEP_LBL : {
+              type     : 'label',
+              label    : '&nbsp;',
+              position : [0,0,1,5]
+            },
+    sec1 :  { type     : 'section',
+              title    : 'Parameters',
+              open     : true,  // true for the section to be initially open
+              position : [1,0,1,5],
+              contains : {
+                DELT : { type     : 'integer',
+                            keyword  : 'DELT',
+                            label    : 'Number of splits',
+                            tooltip  : 'threshold from the equivalent one of the nearest rotamer',
+                            range    : [1,'*'],
+                            value    : 30,
+                            iwidth   : 40,
+                            position : [0,0,1,1]
+                          }
+              }
+            }
   };
 
-}
 
+}
 
 if (__template)
       TaskRotamer.prototype = Object.create ( __template.TaskTemplate.prototype );
@@ -84,43 +84,33 @@ TaskRotamer.prototype.constructor = TaskRotamer;
 
 
 // ===========================================================================
-// export such that it could be used in both node and a browser
 
 TaskRotamer.prototype.icon = function()  { return 'task_rotamer'; }
 
 TaskRotamer.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
 TaskRotamer.prototype.checkKeywords = function ( keywords )  {
-// keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['xyz','analysis','coordinates','toolbox','rotamer'] );
-}
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['xyz','analysis','coordinates','toolbox','rotamer'] );
+  }
+
+// export such that it could be used in both node and a browser
 
 if (!__template)  {
-  // client side
+  //  for client side
 
   TaskRotamer.prototype.desc_title = function()  {
   // this appears under task title in the task list
     return 'lists amino acids whose side chain torsion angles deviate from the “Penultimate Rotamer Library”';
   }
 
-  TaskRotamer.prototype.collectInput = function ( inputPanel )  {
-
-    var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-
-    if (!this.parameters.ROTAMER_INPUT.value.trim())
-      msg += '|<b><i>no ROTAMER instructions -- nothing to do</i></b>';
-
-    return msg;
-
-  }
-
 } else  {
-  // server side
+  //  for server side
 
   var conf = require('../../js-server/server.configuration');
 
