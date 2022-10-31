@@ -63,7 +63,7 @@ function TaskRotamer()  {
               contains : {
                 DELT : { type     : 'integer',
                             keyword  : 'DELT',
-                            label    : 'Number of splits',
+                            label    : 'Delta-Chi threshold',
                             tooltip  : 'threshold from the equivalent one of the nearest rotamer',
                             range    : [1,'*'],
                             value    : 30,
