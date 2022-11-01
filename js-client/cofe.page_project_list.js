@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.10.22   <--  Date of Last Modification.
+ *    01.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -65,6 +65,7 @@ function ProjectListPage ( sceneId )  {
 
   var owners_folder  = __login_id + '\'s Projects';
 
+  var tightScreen = (Math.max(window.screen.width,window.screen.height)<720*4/3);
 
   function currentProjectName()  {
     if (__current_folder.nprojects>0)
@@ -691,16 +692,28 @@ function ProjectListPage ( sceneId )  {
                        .setNoWrap();
     panel.setHorizontalAlignment ( table_row+1,0,"center" );
 
+    var addLbl   = 'Add';
+    var addIcon  = 'add';
+    var addWidth = '60pt';
+    if (__current_folder.type==folder_type.cloud_archive)  {
+      addLbl   = 'Access';
+      addIcon  = 'folder_cloud_archive';
+      addWidth = '75pt';
+    }
+    if (tightScreen)
+      addWidth = '30pt';
+    add_btn.setButton ( addLbl,image_path(addIcon) ).setWidth(addWidth);
+
     var moveLbl  = '';
-    var moveIcon = image_path('folder_projects');
+    var moveIcon = 'folder_projects';
     if ([folder_type.custom_list,folder_type.shared,folder_type.joined,
           folder_type.all_projects].includes(__current_folder.type))  {
       if (!tightScreen)
         moveLbl = 'Unlist';
-      moveIcon = image_path('folder_list_custom_unlist');
+      moveIcon = 'folder_list_custom_unlist';
     } else if (!tightScreen)
       moveLbl = 'Move';
-    move_btn.setButton ( moveLbl,moveIcon );
+    move_btn.setButton ( moveLbl,image_path(moveIcon) );
 
     if (nrows<=0)  {
 
@@ -778,13 +791,15 @@ function ProjectListPage ( sceneId )  {
             contextMenu = new ContextMenu ( trow,function(){
               del_btn.setText ( del_label );
             });
-            contextMenu.addItem('Open'   ,image_path('go')       ).addOnClickListener(openProject  );
+            contextMenu.addItem('Open',image_path('go')).addOnClickListener(openProject  );
             if (!archive_folder)
               contextMenu.addItem('Rename' ,image_path('renameprj')).addOnClickListener(renameProject);
-            contextMenu.addItem(del_label,image_path('remove')   ).addOnClickListener(deleteProject);
-            contextMenu.addItem('Export' ,image_path('export')   ).addOnClickListener(exportProject);
-            contextMenu.addItem('Share'  ,image_path('share')    ).addOnClickListener(sharePrj     );
-            contextMenu.addItem('Clone'  ,image_path('cloneprj') ).addOnClickListener(cloneProject );
+            if (__current_folder.type!=folder_type.archived)
+              contextMenu.addItem(del_label,image_path('remove')).addOnClickListener(deleteProject);
+            contextMenu.addItem('Export' ,image_path('export')  ).addOnClickListener(exportProject);
+            if ((!archive_folder) && (__current_folder.type!=folder_type.joined))
+              contextMenu.addItem('Share',image_path('share')).addOnClickListener(sharePrj);
+            contextMenu.addItem('Clone'  ,image_path('cloneprj')).addOnClickListener(cloneProject );
             if (((__current_folder.type==folder_type.user) &&
                  __current_folder.path.startsWith(owners_folder)) ||
                 (__current_folder.type==folder_type.tutorials))
@@ -792,6 +807,9 @@ function ProjectListPage ( sceneId )  {
                          .addOnClickListener(function(){ browseFolders('move') });
             else if (__current_folder.type==folder_type.custom_list)
               contextMenu.addItem('Unlist',image_path('folder_list_custom_unlist') )
+                         .addOnClickListener(function(){ unlistProject });
+            else if (__current_folder.type==folder_type.cloud_archive)
+              contextMenu.addItem('Unlist',image_path('folder_cloud_archive_unlist') )
                          .addOnClickListener(function(){ unlistProject });
             // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
 
@@ -875,7 +893,7 @@ function ProjectListPage ( sceneId )  {
       // move_btn  .setDisabled ( false );
       move_btn  .setEnabled  ( __current_folder.path.startsWith(owners_folder) ||
           [folder_type.tutorials,folder_type.custom_list].includes(__current_folder.type) );
-      del_btn   .setDisabled ( false );
+      del_btn   .setDisabled ( (__current_folder.type==folder_type.archived) );
       import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       export_btn.setDisabled ( false );
       join_btn  .setDisabled ( (__dormant!=0) );
@@ -1104,7 +1122,6 @@ function ProjectListPage ( sceneId )  {
 
   //alert ( window.screen.width + '  ' + window.devicePixelRatio );
 
-  var tightScreen = (Math.max(window.screen.width,window.screen.height)<720*4/3);
   if (tightScreen)  {  // 720 pt to px
     // tight screen (smartphone)
 
