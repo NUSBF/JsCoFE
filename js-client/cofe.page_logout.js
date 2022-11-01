@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.22   <--  Date of Last Modification.
+ *    01.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -82,19 +82,21 @@ function LogoutPage ( sceneId,reason_key )  {
 
   var row = 0;
   panel.setWidget               ( thank_lbl,row,0,1,1 );
-  panel.setHorizontalAlignment  ( row++ ,0,'center' );
+  panel.setHorizontalAlignment  ( row++,0,'center' );
   panel.setCellSize             ( '','20pt',row++,0 );
   panel.setWidget               ( logout_lbl,row,0,1,1 );
-  panel.setHorizontalAlignment  ( row++ ,0,'center' );
+  panel.setHorizontalAlignment  ( row++,0,'center' );
   panel.setCellSize             ( '','20pt',row++,0 );
 
   if ((!__local_user) && (reason_key!=10))  {
-    var back_btn = new Button   ( 'Back to User Login',image_path('login') );
-    panel.setWidget             ( back_btn ,row++,0,1,1 );
-    back_btn  .setWidth         ( '300px' );
+    var back_btn = new Button    ( 'Back to User Login',image_path('login') );
+    panel.setWidget              ( back_btn,row,0,1,1 );
+    panel.setHorizontalAlignment ( row++,0,'center' );
+    back_btn  .setWidth          ( '300px' );
     // back_btn.addOnClickListener ( function(){ makeLoginPage(sceneId); });
-    back_btn.addOnClickListener ( function(){ reloadBrowser(); });
-    setDefaultButton            ( back_btn,this.grid );
+    back_btn.addOnClickListener  ( function(){ reloadBrowser(); });
+    // setDefaultButton             ( back_btn,this.grid );
+    setDefaultButton             ( back_btn,panel );
   }
 
 }
