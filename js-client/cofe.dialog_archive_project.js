@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.22   <--  Date of Last Modification.
+ *    02.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 'use strict';
 
 // -------------------------------------------------------------------------
-// ProjectSettingsDialog class
+// ProjectArchiveDialog class
 
 function ProjectArchiveDialog ( projectDesc,callback_func )  {
 
@@ -211,7 +211,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
 
   agrid.setLabel ( 'Associated PDB code(s):&nbsp;', 0,0,1,1 ).setNoWrap()
        .setFontItalic(true).setHorizontalAlignment('right');
-  this.pdb_inp = agrid.setInputText ( '',0,1,1 ).setWidth ( '440px' )
+  this.pdb_inp = agrid.setInputText ( '',0,1,1,1 ).setWidth ( '440px' )
                      .setStyle ( 'text','','1XYZ, 2XYZ, 3XYZ, ...',
                                  'Comma-separated list of PDB codes associated ' +
                                  'with this project. Typically, specify PDB codes ' +
@@ -219,14 +219,14 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
 
   agrid.setLabel ( 'Publication DOI(s):&nbsp;', 1,0,1,1 ).setNoWrap()
        .setFontItalic(true).setHorizontalAlignment('right');
-  this.doi_inp = agrid.setInputText ( '',1,1,1 ).setWidth ( '440px' )
+  this.doi_inp = agrid.setInputText ( '',1,1,1,1 ).setWidth ( '440px' )
                     .setStyle ( 'text','','10.1107/S2059798322007987, ...',
                                 'Comma-separated list of DOI of relevant ' +
                                 'publications.' );
 
   agrid.setLabel ( 'Keywords:&nbsp;', 2,0,1,1 ).setNoWrap()
        .setFontItalic(true).setHorizontalAlignment('right');
-  this.kwd_inp = agrid.setInputText ( '',2,1,1 ).setWidth ( '440px' )
+  this.kwd_inp = agrid.setInputText ( '',2,1,1,1 ).setWidth ( '440px' )
                     .setStyle ( 'text','','hydrolase, carboxypeptidase, ...',
                                 'Comma-separated list of keywords suitable for ' +
                                 'archive searches.' );
