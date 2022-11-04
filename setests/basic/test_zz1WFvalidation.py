@@ -76,10 +76,10 @@ def validate1AMR(driver, waitLong):
     assert match
     assert float(match.group(2)) < 0.42
 
-    print('Verifying buccaneer Rfree < 0.36... ')
+    print('Verifying modelcraft Rfree < 0.36... ')
     match = False
     for t in ttts:
-        match = re.search('buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        match = re.search('modelcraft --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
         if match:
             break
     assert match
@@ -184,10 +184,10 @@ def validate12AMR(driver, waitLong):
     assert match
     assert float(match.group(2)) < 0.35
 
-    print('Verifying buccaneer Rfree < 0.36... ')
+    print('Verifying modelcraft Rfree < 0.36... ')
     match = False
     for t in ttts:
-        match = re.search('buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        match = re.search('modelcraft --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
         if match:
             break
     assert match
