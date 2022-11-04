@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.11.22   <--  Date of Last Modification.
+ *    02.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -30,7 +30,7 @@
 function AccessArchiveDialog ( callback_func )  {
 
   Widget.call ( this,'div' );
-  this.element.setAttribute ( 'title','Access archive' );
+  this.element.setAttribute ( 'title','Access ' + appName() + ' archive' );
   document.body.appendChild ( this.element );
 
   this.aID_inp = null;
@@ -91,16 +91,16 @@ AccessArchiveDialog.prototype.makeLayout = function()  {
   $(panel.element).css({
     'width'      : 700,
     'height'     : 300,
-    'overflow-y' : 'scroll'
+    'overflow-y' : 'auto'
   });
 
   var pgrid = new Grid ( '-compact' );
   panel.addWidget ( pgrid );
 
-  pgrid.setLabel ( 'Archive ID:',0,0,1,1 ).setNoWrap();
-  this.aID_inp = pgrid.setInputText ( '',0,1,1,1 ).setWidth ( '440px' )
+  pgrid.setLabel ( 'Access project with Archive ID:',0,0,1,1 ).setNoWrap();
+  this.aID_inp = pgrid.setInputText ( '',0,1,1,1 ).setWidth ( '200px' )
                      .setStyle ( 'text','','CCP4-XXX.YYYY',
-                                 appName() + ' Archve ID of project to access' );
+                                 appName() + ' Archive ID of project to access' );
 
   pgrid.setVerticalAlignment ( 0,0,'middle' );
   pgrid.setVerticalAlignment ( 0,1,'middle' );
@@ -108,92 +108,86 @@ AccessArchiveDialog.prototype.makeLayout = function()  {
 }
 
 
-AccessArchiveDialog.prototype.accessProject = function()  {
+AccessArchiveDialog.prototype.accessProject = function ( callback_func )  {
 
-  var 
+  var archiveID = this.aID_inp.getValue().trim().toUpperCase();
+  
+  if (!archiveID)  {
+    new MessageBox ( 'Archive ID not given',
+        '<div style="width:300px"><h2>Archive ID not given</h2>' +
+        '<i>Please provide a valid ' + appName() + ' Archive ID.</i></div>',
+        'msg_stop' );
+    callback_func ( false );
+    return;
+  }
 
-  stopSessionChecks();
+  var lst = archiveID.split('-');
+  if (lst.length!=2)
+    archiveID = '';
+  else  {
+    lst = lst[1].split('.');
+    if ((lst.length!=2) || (lst[0].length!=3) || (lst[1].length!=4))
+      archiveID = '';
+  }
+  if (!archiveID)  {
+    new MessageBox ( 'Invalid Archive ID',
+        '<div style="width:300px"><h2>Invalid Archive ID</h2>' +
+        '<i>Please provide a valid ' + appName() + ' Archive ID, which '+
+        'follows the following pattern: "ABCD-XXX.YYY".</i></div>',
+        'msg_stop' );
+    callback_func ( false );
+    return;
+  }
 
-  // $('#archdlg_archive_btn').button().hide();
-  // $('#archdlg_cancel_btn' ).button('disable');
+  $( '#archdlg_access_btn' ).button('disable');
+  $( '#archdlg_cancel_btn' ).button('disable');
 
-  var self = this;
+  serverRequest ( fe_reqtype.accessArchivedPrj,{
+    archiveID : archiveID
+  },'Access Archived Project', function(response){
 
-  serverRequest ( fe_reqtype.archiveProject,{
-    pdesc      : this.projectDesc,
-    annotation : {
-      coauthors : this.coauthors,
-      pdbs      : this.pdbs,
-      dois      : this.dois,
-      kwds      : this.kwds
-    }
-  },'Start Project Archiving', function(response){
+    $( '#archdlg_access_btn' ).button('enable');
+    $( '#archdlg_cancel_btn' ).button('enable');
 
-    $('#archdlg_cancel_btn' ).button('enable');
-
-    var message = '';
-    switch (response.code)  {
-
-      case 'no_space'  : message = '<h2>No space left in Archive</h2>' +
-                           'Your project cannot be archived because there is ' +
-                           'no space left<br>in the Archive. Please inform ' +
-                           report_problem ( 
-                             appName() + ' archiving problem',
-                              'No space left in the Archive, please increase',
-                              ''
-                           ) + '.<p>Sincere apologies for any inconvenience ' +
-                           'this may have caused.';
-                      break;
-
-      case 'ok'        : self.archiving_started = true;
-                         $('#archdlg_cancel_btn' ).button().text('Log out');
-                         message = '<h2>Project "' + self.projectDesc.name + 
-                           '" is being archived</h2>Archiving is currently in ' +
-                           'progress. The following Archive ID was issued for ' +
-                           'your project:<p><center><b>' + response.archiveID +
-                           '</b></center><p>please take a note of it. Archive ID ' +
-                           'is used for accessing archived projects and referencing ' +
-                           'them in publication and elsewhere.' +
-                           '<p>For the process to complete uninterrupted, your ' + 
-                           appName() + ' account is now suspended. ' +
-                           '<p>Please log out now. Your account will be released ' +
-                           'automatically when archiving ends.<br>Contact ' + 
-                           report_problem ( 
-                             appName() + ' archiving problem',
-                              'Archiving project ' + self.projectDesc.name + 
-                              ' seems to be stuck',
-                              ''
-                           ) + ' if your account is not released after 2 hours.';
-                      break;
-
-      default :  message = '<h2>Unknown return code ' + response.code + 
-                           '</h2><i>Please report as a bug</h2>';
-    }
-    
-    self.grid.setLabel ( message,0,2,2,1 );
-    self.grid.truncateRows ( 1 );
-
-
-    // var stop_reason = '';
+    // var message = '';
     // switch (response.code)  {
-    //   case 'duplicate_users': stop_reason = 'Unsuitable successor name';
-    //                 break;
-    //   case 'no_privileges'  : stop_reason = 'No privileges';
-    //                 break;
-    //   case 'duplicate_ids'  : stop_reason = 'Duplicate project IDs';
-    //                 break;
-    //   case 'started'        : break;
-    //   default : alert ( 'Unknown stop code.\nresponse=' +
-    //           JSON.stringify(response) );
-    //   }
-    //   if (stop_reason)  {
-    //   new MessageBox ( stop_reason,'<div style="width:400px"><h2>' +
-    //             stop_reason + '</h2>' + response.message +
-    //             '.</div>','msg_stop' );
-    //   } else  {
-    //   onExit_func();
-    //   $(dlg.element).dialog("close");
-    //   }
+
+    //   case 'no_space'  : message = '<h2>No space left in Archive</h2>' +
+    //                        'Your project cannot be archived because there is ' +
+    //                        'no space left<br>in the Archive. Please inform ' +
+    //                        report_problem ( 
+    //                          appName() + ' archiving problem',
+    //                           'No space left in the Archive, please increase',
+    //                           ''
+    //                        ) + '.<p>Sincere apologies for any inconvenience ' +
+    //                        'this may have caused.';
+    //                   break;
+
+    //   case 'ok'        : self.archiving_started = true;
+    //                      $('#archdlg_cancel_btn' ).button().text('Log out');
+    //                      message = '<h2>Project "' + self.projectDesc.name + 
+    //                        '" is being archived</h2>Archiving is currently in ' +
+    //                        'progress. The following Archive ID was issued for ' +
+    //                        'your project:<p><center><b>' + response.archiveID +
+    //                        '</b></center><p>please take a note of it. Archive ID ' +
+    //                        'is used for accessing archived projects and referencing ' +
+    //                        'them in publication and elsewhere.' +
+    //                        '<p>For the process to complete uninterrupted, your ' + 
+    //                        appName() + ' account is now suspended. ' +
+    //                        '<p>Please log out now. Your account will be released ' +
+    //                        'automatically when archiving ends.<br>Contact ' + 
+    //                        report_problem ( 
+    //                          appName() + ' archiving problem',
+    //                           'Archiving project ' + self.projectDesc.name + 
+    //                           ' seems to be stuck',
+    //                           ''
+    //                        ) + ' if your account is not released after 2 hours.';
+    //                   break;
+
+    //   default :  message = '<h2>Unknown return code ' + response.code + 
+    //                        '</h2><i>Please report as a bug</h2>';
+    // }
+    
   },null,'persist' );
 
 }
