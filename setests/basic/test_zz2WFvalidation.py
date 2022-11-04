@@ -75,10 +75,10 @@ def validate2SMR(driver, waitLong):
     assert int(match.group(1)) > 1300
     assert float(match.group(3)) < 0.48
 
-    print('Verifying buccaneer  Rfree < 0.31... ')
+    print('Verifying modelcraft  Rfree < 0.31... ')
     match = False
     for t in ttts:
-        match = re.search('buccaneer --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+        match = re.search('modelcraft --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
         if match:
             break
     assert match
