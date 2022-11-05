@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    28.03.21   <--  Date of Last Modification.
+#    05.11.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -13,7 +13,7 @@
 #
 #  Auto-MR workflow template
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2022
 #
 # ============================================================================
 #
@@ -149,20 +149,22 @@ def makeNextTask ( crTask,data ):
         auto_api.addContext("modelcraft_taskName", crTask.autoRunName)
         auto_api.addContext("modelcraft_revision", data["revision"])
         resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
-        excludedTasks = auto_api.getContext('excludedTasks')
+        # excludedTasks = auto_api.getContext('excludedTasks')
 
-        if float(data["Rfree"]) < 0.3 : # No other rebuilding if Modelcraft performed well
+        if float(data["Rfree"]) < 0.4 : # No other rebuilding if Modelcraft performed well
             if resHi > 3.0:
                 auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
             else:
                 auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
         else:
-            # Modelcraft performed not very well, Rfree > 0.3
-            # First choice in now ARP/wARP (if resolution permits and if installed), then CCP4Build
-            if ("warpbin" in os.environ) and (resHi <= 2.5) and ('TaskArpWarp' not in excludedTasks):
-                auto_tasks.arpwarp("arpwarp", auto_api.getContext("build_revision"),auto_api.getContext("build_parent"))
-            else:
-                auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
+            # # Modelcraft performed not very well, Rfree > 0.3
+            # # First choice in now ARP/wARP (if resolution permits and if installed), then CCP4Build
+            # if ("warpbin" in os.environ) and (resHi <= 2.5) and ('TaskArpWarp' not in excludedTasks):
+            #     auto_tasks.arpwarp("arpwarp", auto_api.getContext("build_revision"),auto_api.getContext("build_parent"))
+            # else:
+            #     auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
+            auto_tasks.ccp4build ( "ccp4Build", auto_api.getContext("build_revision"), auto_api.getContext("build_parent") )
+        
         return
 
 
