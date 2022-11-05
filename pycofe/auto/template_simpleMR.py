@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    30.06.21   <--  Date of Last Modification.
+#    05.11.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -13,7 +13,7 @@
 #
 #  Auto-MR workflow template
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2022
 #
 # ============================================================================
 #
@@ -81,6 +81,7 @@ def makeNextTask ( crTask,data ):
         if data['Rfree'] < 0.35:
             auto_api.addContext("build_parent", crTask.autoRunName)
             auto_api.addContext("build_revision", data["revision"])
+            auto_api.addContext("phaser_rfree", data["Rfree"])
             hasNA = auto_api.getContext("na")
             if hasNA:
                 auto_tasks.refmac_jelly("jellyAfterNA", data["revision"], crTask.autoRunName)
@@ -96,6 +97,7 @@ def makeNextTask ( crTask,data ):
             if data['nfitted'] < data['nasu']: # if number of subunits is not exceeding predicted
                 auto_tasks.phaserNext('phaser' + str(data['nfitted']), data['revision'], crTask.autoRunName)
                 return
+                
 
         # no subunits to fit, but high Rfree
         # go into refinement and see what's happened?
@@ -108,49 +110,28 @@ def makeNextTask ( crTask,data ):
     
     elif crTask._type=="TaskModelCraft":
         # save rfree, completness
+        prevRfree = auto_api.getContext("phaser_rfree")
         auto_api.addContext("modelcraft_rfree", data["Rfree"])
         auto_api.addContext("modelcraft_taskName", crTask.autoRunName)
         auto_api.addContext("modelcraft_revision", data["revision"])
         resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
-        excludedTasks = auto_api.getContext('excludedTasks')
+        # excludedTasks = auto_api.getContext('excludedTasks')
 
-        if float(data["Rfree"]) < 0.3 : # No other rebuilding if Modelcraft performed well
+        if float(data["Rfree"]) < float(prevRfree) : # No other rebuilding if Modelcraft performed well
             if resHi > 3.0:
                 auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
             else:
                 auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
         else:
-            # Modelcraft performed not very well, Rfree > 0.3
-            # First choice in now ARP/wARP (if resolution permits and if installed), then CCP4Build
-            if ("warpbin" in os.environ) and (resHi <= 2.5) and ('TaskArpWarp' not in excludedTasks):
-                auto_tasks.arpwarp("arpwarp", auto_api.getContext("build_revision"),auto_api.getContext("build_parent"))
-            else:
-                auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
+            # # Modelcraft performed not very well, Rfree > 0.3
+            # # First choice in now ARP/wARP (if resolution permits and if installed), then CCP4Build
+            # if ("warpbin" in os.environ) and (resHi <= 2.5) and ('TaskArpWarp' not in excludedTasks):
+            #     auto_tasks.arpwarp("arpwarp", auto_api.getContext("build_revision"),auto_api.getContext("build_parent"))
+            # else:
+            #     auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
+            auto_tasks.ccp4build ( "ccp4Build", auto_api.getContext("build_revision"), auto_api.getContext("build_parent") )
+
         return
-
-
-    # elif crTask._type=="TaskBuccaneer":
-    #     # save rfree, completness
-    #     auto_api.addContext("buccaneer_rfree", data["Rfree"])
-    #     auto_api.addContext("buccaneer_taskName", crTask.autoRunName)
-    #     auto_api.addContext("buccaneer_revision", data["revision"])
-    #     resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
-    #     excludedTasks = auto_api.getContext('excludedTasks')
-
-    #     if float(data["Rfree"]) < 0.3 : # No other rebuilding if Buccaneer performed well
-    #         if resHi > 3.0:
-    #             auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
-    #         else:
-    #             auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
-    #     else:
-    #         # Buccaneer performed not very well, Rfree > 0.3
-    #         # First choice in now ARP/wARP (if resolution permits and if installed), then CCP4Build
-    #         if ("warpbin" in os.environ) and (resHi <= 2.5) and ('TaskArpWarp' not in excludedTasks):
-    #             auto_tasks.arpwarp("arpwarp", auto_api.getContext("build_revision"),auto_api.getContext("build_parent"))
-    #         else:
-    #             auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
-    #     return
-
 
     # elif crTask._type == "TaskArpWarp":
     #     auto_api.addContext("arpWarp_rfree", data["Rfree"])
