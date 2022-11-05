@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.11.22   <--  Date of Last Modification.
+ *    02.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -201,7 +201,9 @@ function ProjectListPage ( sceneId )  {
   }
 
   var addProject = function() {
-    if (__current_folder.path.startsWith(owners_folder) ||
+    if (__current_folder.type==folder_type.cloud_archive)  {
+      new AccessArchiveDialog ( function(){});
+    } else if (__current_folder.path.startsWith(owners_folder) ||
         (__current_folder.type==folder_type.all_projects))  {
       _add_project();
     } else  {

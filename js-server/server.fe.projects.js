@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.10.22   <--  Date of Last Modification.
+ *    04.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1255,7 +1255,7 @@ var projectName = projectDesc.name;
             pnode.children.push ( node_lst[0] );
           } else
             rdata.reload = 2;
-        } else if (node_lst.length>1)  {
+        } else if ((pData.tree.length>0) && (node_lst.length>1))  {
           // task to be added at root, always allow, may be a problem with remarks
           pData.tree[0].children.push ( node_lst[0] );
         } else // have to update, something's wrong -- should never be here
