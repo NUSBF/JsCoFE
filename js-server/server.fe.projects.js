@@ -402,6 +402,7 @@ function readProjectList ( loginData )  {
   var pList = utils.readClass ( userProjectsListPath );
   if (pList)  {
     // read all project descriptions anew
+    // think how to make this more smart in future
     pList.projects = [];
     if (!('startmode' in pList))
       pList.startmode = pd.start_mode.auto;
@@ -1987,13 +1988,26 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
         // the project's content was moved to user's area, now
         // make the corresponding entry in project list
 
-        var projects = pList.projects;
-        pList.projects = [projectDesc];
-        for (var i=0;i<projects.length;i++)
-          if (projects[i].name!=projectDesc.name)
-            pList.projects.push ( projects[i] );
+        // var projects = pList.projects;
+        // pList.projects = [projectDesc];
+        // if (pd.inArchive(projectDesc))  {
+        //   for (var i=0;i<projects.length;i++)
+        //     if ((!pd.inArchive(projects[i])) || 
+        //         (projects[i].archive.id!=projectDesc.archive.id))
+        //       pList.projects.push ( projects[i] );
+        // } else  {
+        //   for (var i=0;i<projects.length;i++)
+        //     if ((projects[i].name!=projectDesc.name) || pd.inArchive(projects[i]))
+        //       pList.projects.push ( projects[i] );
+        // }
 
-        //pList.projects.unshift ( projectDesc );  // put it first
+        // //pList.projects.unshift ( projectDesc );  // put it first
+
+        // re-read project list because a new project was added
+        var pList = readProjectList ( loginData );
+        if (!pList)
+          pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
+
         pList.current = projectDesc.name;        // make it current
         if (((!prjDir) || (pList.currentFolder.type!=pd.folder_type.joined)) &&
             (pList.currentFolder.type!=pd.folder_type.all_projects))  {
@@ -2265,13 +2279,10 @@ var jobId       = data.meta.id;
 // ===========================================================================
 
 function getJobFile ( loginData,data )  {
-  var response = null;
-
-  var projectName = data.meta.project;
-  var jobId       = data.meta.id;
-
-  var jobDirPath  = getJobDirPath ( loginData,projectName,jobId );
-  var pfile       = data.meta.file.split('/');
+var response    = null;
+var projectName = data.meta.project;
+var jobId       = data.meta.id;
+var pfile       = data.meta.file.split('/');
 
   var fpath = getJobDirPath ( loginData,projectName,jobId );
   for (var i=0;i<pfile.length;i++)

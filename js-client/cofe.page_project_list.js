@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.11.22   <--  Date of Last Modification.
+ *    07.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -202,7 +202,10 @@ function ProjectListPage ( sceneId )  {
 
   var addProject = function() {
     if (__current_folder.type==folder_type.cloud_archive)  {
-      new AccessArchiveDialog ( function(){});
+      new AccessArchiveDialog ( function(done){
+        if (done)
+          self.loadProjectList1();
+      });
     } else if (__current_folder.path.startsWith(owners_folder) ||
         (__current_folder.type==folder_type.all_projects))  {
       _add_project();
@@ -758,7 +761,9 @@ function ProjectListPage ( sceneId )  {
 
           var pDesc = projectList.projects[i];
           var pName = pDesc.name;
-
+          if (archive_folder)
+            pName = pDesc.project_name;
+            
           // when list of projects is served from FE, shared record is removed
           // in case of owner's login
           var joined = ['','',''];

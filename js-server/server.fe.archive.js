@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.10.22   <--  Date of Last Modification.
+ *    06.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,7 +44,7 @@ const emailer   = require('./server.emailer');
 // var pd        = require('../js-common/common.data_project');
 
 //  prepare log
-const log = require('./server.log').newLog(26);
+const log = require('./server.log').newLog(27);
 
 // ==========================================================================
 /*
@@ -91,7 +91,6 @@ function getArchiveDirPath ( archDiskName,archiveID )  {
 }
 
 function chooseArchiveDisk ( req_size,callback_func )  {
-// var fe_conf = conf.getFEConfig();
 var adisks  = Object.entries ( conf.getFEConfig().archivePath );
 var fsname0 = null;
 var ffree   = 0.0;
@@ -99,7 +98,7 @@ var ffree   = 0.0;
   function _check_disks ( n )  {
     if (n<adisks.length)  {
       var fspath = path.resolve ( adisks[n][1].path );
-      checkDiskSpace(fspath).then((diskSpace) => {
+      checkDiskSpace(fspath).then ( (diskSpace) => {
           var dfree = diskSpace.free/(1024.0*1024.0);  // MBytes
           var dnoise = Math.random();
           dfree -= dnoise;  // for choosing different disks in tests
@@ -123,14 +122,31 @@ var ffree   = 0.0;
 
 
 function randomString ( length, chars ) {
-  const randomBytes = crypto.randomBytes(length);
-  let result = new Array(length);
-  let cursor = 0;
+const randomBytes = crypto.randomBytes(length);
+let   result = new Array(length);
+let   cursor = 0;
   for (let i = 0; i < length; i++) {
     cursor += randomBytes[i];
     result[i] = chars[cursor % chars.length];
   }
   return result.join('');
+}
+
+
+function findArchivedProject ( archiveID )  {
+var aconf = conf.getFEConfig().archivePath;
+var archPrjPath = null;
+
+  for (var fsn in aconf)  {
+    var apath = path.join ( aconf[fsn].path,archiveID );
+    if (utils.dirExists(apath))  {
+      archPrjPath = apath;
+      break;
+    }
+  }
+
+  return archPrjPath;
+
 }
 
 
@@ -141,18 +157,12 @@ function makeArchiveID()  {
 var aid     = null;
 var fe_conf = conf.getFEConfig();
 var sid     = fe_conf.description.id.toUpperCase();
-var aconf   = fe_conf.archivePath;
 
   while (!aid) {
     aid = randomString ( 7,'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' );
-    aid = sid + '-' + aid.slice(0, 3) + '.' + aid.slice(3);
-    for (var fsn in aconf)  {
-      var archPrjPath = path.join ( aconf[fsn].path,aid );
-      if (utils.dirExists(archPrjPath))  {
-        aid = null;
-        break;
-      }
-    }
+    aid = sid + '-' + aid.slice(0,3) + '.' + aid.slice(3);
+    if (findArchivedProject(aid))
+      aid = null;
   }
 
   return aid;
@@ -177,6 +187,7 @@ var pData = utils.readObject ( projectDataPath );
     pAnnotation.version = 1;
 
   pDesc.archive = pAnnotation;
+  pDesc.name    = pDesc.archive.id;
   pData.desc    = pDesc;
 
   utils.writeObject ( projectDataPath,pData );
@@ -191,6 +202,7 @@ var pData = utils.readObject ( projectDataPath );
       var job_meta     = utils.readObject ( jobMetaFPath );
       if (job_meta && (!('archive_version' in job_meta)))  {
         job_meta.archive_version = pDesc.archive.version;
+        job_meta.project = pDesc.name;
         utils.writeObject ( jobMetaFPath,job_meta );
       }
     }
@@ -213,7 +225,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
       // kwds      : this.kwds
 
   if (!uData)  {
-    var msg = 'User data cannot be read, login=' + uData.login;
+    var msg = 'User data cannot be read, login=' + loginData.login;
     log.error ( 1,msg );
     callback_func ( new cmd.Response(cmd.fe_retcode.readError,msg,'') );
   }
@@ -247,8 +259,14 @@ var uData       = user.suspendUser ( loginData,true,'' );
           var failcode = 0;
           if (!err)  {
             // put archive metadata in project description, lock jobs for deletion
-            pAnnotation.id    = archiveID;
+            pAnnotation.id = archiveID;
             pAnnotation.in_archive = true;
+            pAnnotation.depositor = {
+              login : loginData.login,  // login name of depositor
+              name  : uData.name,       // depositor's name
+              email : uData.email       // depositor's email
+            };
+            pAnnotation.project_name = pDesc.name;
             annotateProject ( archiveDirPath,pAnnotation );
             // make project link in user's projects directory
             var linkDir   = path.resolve(prj.getProjectDirPath(loginData,archiveID));
@@ -256,8 +274,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
             if (utils.makeSymLink(linkDir,linkedDir))  {
               // update archive tables
               // remove original job directory
-    //          utils.removePath ( projectDirPath );
-              // subtract project space from user ration
+              // prj.deleteProject ( loginData,pDesc.name );
               // unlock user's account and inform user through Cloud message and via e-mail
               user.suspendUser ( loginData,false,
                 '<div style="width:400px"><h2>Archiving completed</h2>Project <b>"' + 
@@ -434,6 +451,74 @@ var uData       = user.suspendUser ( loginData,true,'' );
 
 }
 
+
+// --------------------------------------------------------------------------
+
+function accessArchivedProject ( loginData,data )  {
+var archiveID   = data.archiveID;
+var archPrjPath = findArchivedProject(archiveID);
+
+  // 1. Check that requested project exists in the archive
+
+  if (!archPrjPath)
+    return new cmd.Response ( cmd.fe_retcode.ok,'',{
+      code    : 'project_not_found'
+    });
+
+  // 2. Check that the project is not already in users' account
+
+  var projectDir = prj.getProjectDirPath ( loginData,archiveID );
+  if (utils.dirExists(projectDir))  {
+    var pDesc = prj.readProjectDesc ( loginData,archiveID );
+    var code  = 'already_accessed';
+    if (!pDesc)  code = 'error_read_project';
+    else if (!pDesc.archive)  code = 'duplicate_name';
+    else if (pDesc.owner.login==loginData.login)  code = 'author_archive';
+    return new cmd.Response ( cmd.fe_retcode.ok,'',{ code : code });
+  }
+
+  // 3. Link to the archive
+
+  if (!utils.makeSymLink(projectDir,path.resolve(archPrjPath)))  {
+    log.error ( 10,'failed to symplink archive project ' + archiveID + 
+                   ', login ' + loginData.login );
+    return new cmd.Response ( cmd.fe_retcode.ok,'',{
+      code : 'error_access_project'
+    });
+  }
+
+  // 4. Add project to user's list of projects
+
+  try {
+
+    var pList = prj.readProjectList ( loginData );  // this reads new project in
+    var pDesc = prj.readProjectDesc ( loginData,archiveID );
+    // pList.projects.push ( pDesc );  // should be no need for this
+    pList.current = pDesc.name;        // make it current
+    if (!prj.writeProjectList(loginData,pList))  {
+      log.error ( 11,'cannot write project list, login ' + loginData.login );
+      return new cmd.Response ( cmd.fe_retcode.ok,'',{
+        code : 'error_write_plist'
+      });
+    }
+
+  } catch(e)  {
+
+    log.error ( 12,'update project list errors, login ' + loginData.login );
+    return new cmd.Response ( cmd.fe_retcode.ok,'',{
+      code : 'error_update_plist'
+    });
+
+  }
+
+  log.standard ( 10,'accessed archive project ' + archiveID );
+  return new cmd.Response ( cmd.fe_retcode.ok,'',{
+    code : 'ok'
+  });
+
+}
+
 // ==========================================================================
 // export for use in node
-module.exports.archiveProject  = archiveProject;
+module.exports.archiveProject        = archiveProject;
+module.exports.accessArchivedProject = accessArchivedProject;

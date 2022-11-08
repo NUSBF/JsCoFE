@@ -360,27 +360,6 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
     self.grid.setLabel ( message,0,2,2,1 );
     self.grid.truncateRows ( 1 );
 
-
-    // var stop_reason = '';
-    // switch (response.code)  {
-    //   case 'duplicate_users': stop_reason = 'Unsuitable successor name';
-    //                 break;
-    //   case 'no_privileges'  : stop_reason = 'No privileges';
-    //                 break;
-    //   case 'duplicate_ids'  : stop_reason = 'Duplicate project IDs';
-    //                 break;
-    //   case 'started'        : break;
-    //   default : alert ( 'Unknown stop code.\nresponse=' +
-    //           JSON.stringify(response) );
-    //   }
-    //   if (stop_reason)  {
-    //   new MessageBox ( stop_reason,'<div style="width:400px"><h2>' +
-    //             stop_reason + '</h2>' + response.message +
-    //             '.</div>','msg_stop' );
-    //   } else  {
-    //   onExit_func();
-    //   $(dlg.element).dialog("close");
-    //   }
   },null,'persist' );
 
 }

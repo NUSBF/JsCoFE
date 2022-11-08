@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    31.10.22   <--  Date of Last Modification.
+ *    07.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -285,13 +285,17 @@ JobTree.prototype.readProjectData = function ( page_title,
         var author = getProjectAuthor ( tree.projectData.desc );
         if (author==__login_id)  author  = '';
         if (author)  author += ':';
-        var archiveID  = '';
-        if (tree.in_archive)
-          archiveID = '&lt;' + tree.projectData.desc.archive.id + '&gt;';
+        var archiveID = '';
+        var pName     = tree.projectData.desc.name;
+        if (tree.in_archive)  {
+          archiveID = ', <i>arch.ID:</i> ' + 
+                      tree.projectData.desc.archive.id;
+          pName = tree.projectData.desc.archive.project_name;
+        }
         var root_title =
-                '<b style="color:blue;">' + archiveID + author +
-                '[' + tree.projectData.desc.name  + ']</b> ' +
-                '</i>'
+                '<span style="color:blue;"><b>' + author +
+                '[' + pName  + ']' + archiveID +
+                '</b></span>';
 
         if (tree.projectData.tree.length<=0)  {
 
