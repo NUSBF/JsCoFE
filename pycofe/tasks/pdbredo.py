@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.09.22   <--  Date of Last Modification.
+#    08.11.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) M. Fando, Eugene Krissinel, Andrey Lebedev 2022
+#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022
 #
 # ============================================================================
 #
@@ -30,6 +30,7 @@ import os
 # import uuid
 import shutil
 import json
+# from typing_extensions import Self
 
 # import gemmi
 
@@ -45,7 +46,9 @@ from   pycofe.verdicts  import verdict_refmac
 
 class Pdbredo(basic.TaskDriver):
 
+
     # redefine name of input script file
+
     #def file_stdin_path(self):  return "pdbredo.script"
 
     # ------------------------------------------------------------------------
@@ -71,20 +74,24 @@ class Pdbredo(basic.TaskDriver):
         return structure
 
 
+        # Prepare  input
+
+
+
+
     PDBREDO_URI = 'https://services.pdb-redo.eu:443'
 
     def do_submit(self,xyzin,hklin,restrains,sequence):
         # The token id and secret for a session at PDB-REDO    
-        token_id     = 204
-        token_secret = "_xGLbe2pVhF2POfNB0oqrw"
+        token_id     = 220
+        token_secret = "IPXqH5e5gWX10jIhvJcpHg"
 
         # The authentication object, used by the requests module
         auth = PDBRedoAPIAuth.PDBRedoAPIAuth(token_id, token_secret)
 
         # The files to submit
-        # xyzin = args.xyzin
-        # hklin = args.hklin
-        # paired = args.paired
+        xyzin = self.makeClass ( self.input_data.data.ixyz[0] )
+        hklin = self.makeClass ( self.input_data.data.hkl     [0] )
         paired = True  # just a guess, to find out what is this!
 
         files = {
@@ -141,11 +148,11 @@ class Pdbredo(basic.TaskDriver):
         shutil.copyfile ( istruct.getMTZFilePath(self.inputDir()),mtzout )
         #  ==================================
 
-        do_submit()
-        while ():
-           do_check()
-           time.sleep(20)
-        do_fetch()
+        
+        # while ():
+        #     do_check()
+        #     time.sleep(20)
+        #     do_fetch()
 
 
         # unzip output.zip
