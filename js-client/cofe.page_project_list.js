@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.11.22   <--  Date of Last Modification.
+ *    08.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -365,15 +365,15 @@ function ProjectListPage ( sceneId )  {
                    '"</b> will be deleted. All project ' +
                    'structure and data will be lost.'    +
                    '<p>Please confirm your choice.';
-    } else if (__current_folder.type==folder_type.custom_list)  {
-      delMessage = '<h2>Unlist Project</h2>' +
-                   'Project <b>"' + delName  +
-                   '"</b> will be removed from list <i>"'   +
-                   __current_folder.path     + '"</i>. The project will ' +
-                   'remain intact in its folder.' +
-                   '<p>Please confirm.';
-      btnName    = 'Please unlist';
-      dlgTitle   = 'Unlist Project';
+    // } else if (__current_folder.type==folder_type.custom_list)  {
+    //   delMessage = '<h2>Delist Project</h2>' +
+    //                'Project <b>"' + delName  +
+    //                '"</b> will be removed from list <i>"'   +
+    //                __current_folder.path     + '"</i>. The project will ' +
+    //                'remain intact in its folder.' +
+    //                '<p>Please confirm.';
+    //   btnName    = 'Please delist';
+    //   dlgTitle   = 'Delist Project';
     } else  {
       delMessage = '<h2>Unjoin Project</h2>' +
                    'Project <b>"' + delName  + '"</b>, shared with you, ' +
@@ -387,17 +387,17 @@ function ProjectListPage ( sceneId )  {
     inputBox.setText ( '<div style="width:400px;">' + delMessage + '</div>',
                        'msg_confirm' );
     inputBox.launch  ( btnName,function(){
-      if (__current_folder.type==folder_type.custom_list)  {
-        saveProjectList ( function(rdata){
-          // loadProjectList();
-          // makeProjectListTable();
-        },null );
-      } else  {
+      // if (__current_folder.type==folder_type.custom_list)  {
+      //   saveProjectList ( function(rdata){
+      //     // loadProjectList();
+      //     // makeProjectListTable();
+      //   },null );
+      // } else  {
         serverRequest ( fe_reqtype.deleteProject,delName,dlgTitle,
           function(data){
             self.loadProjectList1();
           },null,'persist' );
-      }
+      // }
       return true;  // close dialog
     });
   }
@@ -581,7 +581,7 @@ function ProjectListPage ( sceneId )  {
 
   }
 
-  var unlistProject = function()  {
+  var delistProject = function()  {
     panel.click();  // get rid of context menu
 
     var pDesc = getCurrentProjectDesc();
@@ -594,23 +594,45 @@ function ProjectListPage ( sceneId )  {
       return false;
     }
 
-    var inputBox = new InputBox ( 'Unlist project' );
-    inputBox.setText (
-        '<div style="width:400px;">' +
-        '<h2>Unlist Project</h2>Project <b>"'  + pDesc.name  +
-        '"</b> will be removed from list <i>"' + __current_folder.path +
-        '"</i>. This is not a deletion; the project will remain intact ' +
-        'in its folder.<p>Please confirm.</div>',
-        'folder_list_custom_unlist' );
-    inputBox.launch  ( 'Unlist',function(){
-      removeProjectLabel ( __login_id,pDesc,__current_folder.path );
-      projectList.resetFolders ( __login_id );
-      saveProjectList ( function(rdata){
-        // loadProjectList();
-        makeProjectListTable();
-      },null );
-      return true;  // close dialog
-    });
+    var inputBox = new InputBox ( 'Delist project' );
+    
+    if (__current_folder.type==folder_type.cloud_archive)  {
+
+      inputBox.setText (
+          '<div style="width:400px;">' +
+          '<h2>Delist Project</h2>Project <b>"'  + pDesc.name  +
+          '"</b> will be removed from the list of accessed projects of the ' + 
+          appName() + ' Archive.<p>Please confirm.</div>',
+          'folder_list_cloud_archive_delist' );
+
+      inputBox.launch  ( 'Delist',function(){
+        serverRequest ( fe_reqtype.deleteProject,pDesc.name,'Delist project',
+          function(data){
+            self.loadProjectList1();
+          },null,'persist' );
+        return true;  // close dialog
+      });
+
+    } else  {
+
+      inputBox.setText (
+          '<div style="width:400px;">' +
+          '<h2>Delist Project</h2>Project <b>"'  + pDesc.name  +
+          '"</b> will be removed from list <i>"' + __current_folder.path +
+          '"</i>. This is not a deletion; the project will remain intact ' +
+          'in its folder.<p>Please confirm.</div>',
+          'folder_list_custom_delist' );
+      inputBox.launch  ( 'Delist',function(){
+        removeProjectLabel ( __login_id,pDesc,__current_folder.path );
+        projectList.resetFolders ( __login_id );
+        saveProjectList ( function(rdata){
+          // loadProjectList();
+          makeProjectListTable();
+        },null );
+        return true;  // close dialog
+      });
+
+    }
 
   }
 
@@ -714,8 +736,12 @@ function ProjectListPage ( sceneId )  {
     if ([folder_type.custom_list,folder_type.shared,folder_type.joined,
           folder_type.all_projects].includes(__current_folder.type))  {
       if (!tightScreen)
-        moveLbl = 'Unlist';
-      moveIcon = 'folder_list_custom_unlist';
+        moveLbl = 'Delist';
+      moveIcon = 'folder_list_custom_delist';
+    } else if (__current_folder.type==folder_type.cloud_archive)  {
+      if (!tightScreen)
+        moveLbl = 'Delist';
+      moveIcon = 'folder_cloud_archive_delist';
     } else if (!tightScreen)
       moveLbl = 'Move';
     move_btn.setButton ( moveLbl,image_path(moveIcon) );
@@ -801,7 +827,7 @@ function ProjectListPage ( sceneId )  {
             contextMenu.addItem('Open',image_path('go')).addOnClickListener(openProject  );
             if (!archive_folder)
               contextMenu.addItem('Rename' ,image_path('renameprj')).addOnClickListener(renameProject);
-            if (__current_folder.type!=folder_type.archived)
+            if (!archive_folder)
               contextMenu.addItem(del_label,image_path('remove')).addOnClickListener(deleteProject);
             contextMenu.addItem('Export' ,image_path('export')  ).addOnClickListener(exportProject);
             if ((!archive_folder) && (__current_folder.type!=folder_type.joined))
@@ -813,11 +839,11 @@ function ProjectListPage ( sceneId )  {
               contextMenu.addItem('Move',image_path('folder_projects') )
                          .addOnClickListener(function(){ browseFolders('move') });
             else if (__current_folder.type==folder_type.custom_list)
-              contextMenu.addItem('Unlist',image_path('folder_list_custom_unlist') )
-                         .addOnClickListener(function(){ unlistProject });
+              contextMenu.addItem('Delist',image_path('folder_list_custom_delist') )
+                         .addOnClickListener(function(){ delistProject });
             else if (__current_folder.type==folder_type.cloud_archive)
-              contextMenu.addItem('Unlist',image_path('folder_cloud_archive_unlist') )
-                         .addOnClickListener(function(){ unlistProject });
+              contextMenu.addItem('Delist',image_path('folder_cloud_archive_delist') )
+                         .addOnClickListener(function(){ delistProject });
             // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
 
           }(shared_project))
@@ -897,10 +923,11 @@ function ProjectListPage ( sceneId )  {
       add_btn   .setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       rename_btn.setDisabled ( archive_folder );
       clone_btn .setDisabled ( false );
-      // move_btn  .setDisabled ( false );
       move_btn  .setEnabled  ( __current_folder.path.startsWith(owners_folder) ||
-          [folder_type.tutorials,folder_type.custom_list].includes(__current_folder.type) );
-      del_btn   .setDisabled ( (__current_folder.type==folder_type.archived) );
+          [folder_type.tutorials,folder_type.custom_list,folder_type.cloud_archive]
+          .includes(__current_folder.type) );
+      // del_btn   .setDisabled ( (__current_folder.type==folder_type.archived)  );
+      del_btn   .setDisabled ( archive_folder  );
       import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       export_btn.setDisabled ( false );
       join_btn  .setDisabled ( (__dormant!=0) );
@@ -1265,8 +1292,9 @@ function ProjectListPage ( sceneId )  {
   rename_btn.addOnClickListener ( renameProject );
   clone_btn .addOnClickListener ( cloneProject  );
   move_btn  .addOnClickListener ( function(){
-    if (__current_folder.type==folder_type.custom_list)
-          unlistProject();
+    if ((__current_folder.type==folder_type.custom_list) ||
+        (__current_folder.type==folder_type.cloud_archive))
+          delistProject();
     else  browseFolders('move');
   });
   del_btn   .addOnClickListener ( deleteProject );
