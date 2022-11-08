@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    30.10.22   <--  Date of Last Modification.
+ *    07.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -112,13 +112,19 @@ function ProjectDesc()  {
 
   this.archive      = null;  // changes to object as below if project is archived
   // this.archive = {
-  //   id         : '',   // archive ID
-  //   version    : 0,    // archived project version
-  //   in_archive : true, // false if project is cloned and revised in My Projects
-  //   coauthors  : []    // list of co-authors
-  //   pdbs       : []    // associated PDB codes
-  //   dois       : []    // associated publication dois
-  //   kwds       : []    // keywords
+  //   id           : '',   // archive ID
+  //   version      : 0,    // archived project version
+  //   in_archive   : true, // false if project is cloned and revised in My Projects
+  //   depositor    : {
+  //     login : '',  // login name of depositor
+  //     name  : '',  // depositor's name
+  //     email : ''   // depositor's email
+  //   },
+  //   project_name : '',   // original project name
+  //   coauthors    : []    // list of co-authors
+  //   pdbs         : []    // associated PDB codes
+  //   dois         : []    // associated publication dois
+  //   kwds         : []    // keywords
   // };
 
   this.jobCount     = 0;     // job count
@@ -154,6 +160,7 @@ function isProjectAccessible ( login,projectDesc )  {
   if (!projectDesc.owner.login)         return true;
   if (projectDesc.owner.login==login)   return true;
   if (projectDesc.owner.login=='localuser') return true;
+  if (projectDesc.archive && projectDesc.archive.in_archive) return true;
   return (login in projectDesc.share);
   // var found = false;
   // for (var i=0;(i<projectDesc.owner.share.length) && (!found);i++)
@@ -807,4 +814,5 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   module.exports.isProjectShared      = isProjectShared;
   module.exports.getProjectAuthor     = getProjectAuthor;
   module.exports.compareProjectLabels = compareProjectLabels;
+  module.exports.inArchive            = inArchive;
 }

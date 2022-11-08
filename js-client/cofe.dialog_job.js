@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.10.22   <--  Date of Last Modification.
+ *    07.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -162,7 +162,8 @@ function JobDialog ( params,          // data and task projections up the tree b
     });
 
     // Listen for input event, emitted when input data changes
-    if ((dlg.task.state!=job_code.running) && dlg.inputPanel)  {
+    if ((dlg.task.state!=job_code.running) && dlg.inputPanel && 
+        (!dlg.tree.in_archive))  {
       dlg.inputPanel.element.addEventListener(cofe_signals.jobDlgSignal,function(e){
         onDlgSignal_func ( dlg,e.detail,null );
       },false );
@@ -945,7 +946,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
       dlg.close_btn.addOnClickListener ( function(){
         if ((dlg.task.state!=job_code.running) &&
             (dlg.task.state!=job_code.ending)  &&
-            (dlg.task.state!=job_code.exiting))  {
+            (dlg.task.state!=job_code.exiting) &&
+            (!dlg.tree.in_archive))  {
           dlg.collectTaskData ( true );
           dlg.requestServer   ( fe_reqtype.saveJobData,function(rdata){
             if (rdata.project_missing)  {

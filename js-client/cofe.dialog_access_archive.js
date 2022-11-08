@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.11.22   <--  Date of Last Modification.
+ *    07.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -53,14 +53,19 @@ function AccessArchiveDialog ( callback_func )  {
         text  : 'Access',
         click : function() { 
                   self.accessProject ( function(done){
-                    if (done)
+                    if (done)  {
                       $(this).dialog('close');
+                      callback_func ( true );
+                    }
                   });
                 }
       }, {
         id    : 'archdlg_cancel_btn',
         text  : 'Cancel', 
-        click : function() { $(this).dialog('close'); }
+        click : function() { 
+                  $(this).dialog('close'); 
+                  callback_func ( false );
+                }
       }
     ]
 
@@ -108,6 +113,16 @@ AccessArchiveDialog.prototype.makeLayout = function()  {
 }
 
 
+function isValidArchiveID ( archiveID )  {
+var lst = archiveID.split('-');
+  if (lst.length==2)  {
+    lst = lst[1].split('.');
+    return ((lst.length==2) && (lst[0].length==3) && (lst[1].length==4));
+  }
+  return false;
+}
+
+
 AccessArchiveDialog.prototype.accessProject = function ( callback_func )  {
 
   var archiveID = this.aID_inp.getValue().trim().toUpperCase();
@@ -120,16 +135,8 @@ AccessArchiveDialog.prototype.accessProject = function ( callback_func )  {
     callback_func ( false );
     return;
   }
-
-  var lst = archiveID.split('-');
-  if (lst.length!=2)
-    archiveID = '';
-  else  {
-    lst = lst[1].split('.');
-    if ((lst.length!=2) || (lst[0].length!=3) || (lst[1].length!=4))
-      archiveID = '';
-  }
-  if (!archiveID)  {
+  
+  if (!isValidArchiveID(archiveID))  {
     new MessageBox ( 'Invalid Archive ID',
         '<div style="width:300px"><h2>Invalid Archive ID</h2>' +
         '<i>Please provide a valid ' + appName() + ' Archive ID, which '+
@@ -149,45 +156,93 @@ AccessArchiveDialog.prototype.accessProject = function ( callback_func )  {
     $( '#archdlg_access_btn' ).button('enable');
     $( '#archdlg_cancel_btn' ).button('enable');
 
-    // var message = '';
-    // switch (response.code)  {
+    var message  = '';
+    var aid      = '<b>' + archiveID + '</b>';
+    var archive  = appName() + ' Archive';
+    var done     = false;
+    var msg_icon = 'msg_system';
+    switch (response.code)  {
+      case 'project_not_found'    :  message = '<h2>Project not found</h2>' +
+                                     'Project ' + aid + ' is not found in ' +
+                                     archive;
+                                     msg_icon = 'msg_excl_yellow';
+                                  break;
+      case 'already_accessed'     :  message = '<h2>Project already accessed</h2>' +
+                                     'Project ' + aid + ' is in your <i>"' + 
+                                     archive    + '"</i> folder already.';
+                                     msg_icon = 'msg_information'; 
+                                  break;
+      case 'error_read_project'   :  message = '<h2>Project cannot be accessed</h2>' +
+                                     'There are read errors when accessing project ' +
+                                     aid + '. This project cannot be accessed ' +
+                                     'without repairs. Please inform ' +
+                                     report_problem(
+                                       'Errors reading archived projwect ' + archiveID,
+                                       'Read errors encountered at accessing archived ' +
+                                       'project ' + archiveID,'' );
+                                  break;
+      case 'duplicate_name'       :  message = '<h2>Duplicate project name</h2>' +
+                                     'Project ' + aid + ' cannot be accessed in ' +
+                                     archive + ' because a project with this ' +
+                                     'name is found in your work folder(s). Rename or ' +
+                                     'delete your project before accessing it in ' +
+                                     archive;
+                                     msg_icon = 'msg_stop'; 
+                                  break;
+      case 'author_archive'       :  message = '<h2>Project archived by you</h2>' +
+                                     'Project ' + aid + ' was archived by you ' +
+                                     'and can be found in your ' +
+                                     '<i>"Projects archived by me"</i> folder.';
+                                     msg_icon = 'msg_information'; 
+                                  break;
+      case 'error_access_project' :  message = '<h2>Access errors (1)</h2>' +
+                                     'There are link errors when accessing project ' +
+                                     aid + '. This project cannot be accessed ' +
+                                     'without repairs. Please inform ' +
+                                     report_problem(
+                                       'Errors accessing archived project ' + archiveID,
+                                       'Link errors encountered at accessing archived ' +
+                                       'project ' + archiveID,'' );
+                                  break;
+      case 'error_write_plist'    :  message = '<h2>Access errors (2)</h2>' +
+                                     'There are write errors when accessing project ' +
+                                     aid + '. This project cannot be accessed ' +
+                                     'without repairs. Please inform ' +
+                                     report_problem(
+                                       'Errors accessing archived project ' + archiveID,
+                                       'Project list write errors encountered at ' +
+                                       'accessing archived project ' + archiveID,'' );
+                                  break;
+      case 'error_update_plist'   :  message = '<h2>Access errors (3)</h2>' +
+                                     'There are general errors when accessing project ' +
+                                     aid + '. This project cannot be accessed ' +
+                                     'without repairs. Please inform ' +
+                                     report_problem(
+                                       'Errors accessing archived project ' + archiveID,
+                                       'Project list update errors encountered at ' +
+                                       'accessing archived project ' + archiveID,'' );
+                                  break;
+      case 'ok'                   :  message = '<h2>Access acquired</h2>' +
+                                     'Project ' + aid + ' is now accessible to you ' +
+                                     'via your "' + archive + '" folder.';
+                                     msg_icon = 'msg_ok'; 
+                                     done = true;
+                                  break;
+      default                     :  message = '<h2>Access errors (4)</h2>' +
+                                     'Unknown return code encountered when accessing project ' +
+                                     aid + '. Please inform ' +
+                                     report_problem(
+                                       'Errors accessing archived project '  + archiveID,
+                                       'Unknown return code encountered at accessing ' +
+                                       'archived project ' + archiveID,'' );
+                                  break;
+    }
 
-    //   case 'no_space'  : message = '<h2>No space left in Archive</h2>' +
-    //                        'Your project cannot be archived because there is ' +
-    //                        'no space left<br>in the Archive. Please inform ' +
-    //                        report_problem ( 
-    //                          appName() + ' archiving problem',
-    //                           'No space left in the Archive, please increase',
-    //                           ''
-    //                        ) + '.<p>Sincere apologies for any inconvenience ' +
-    //                        'this may have caused.';
-    //                   break;
-
-    //   case 'ok'        : self.archiving_started = true;
-    //                      $('#archdlg_cancel_btn' ).button().text('Log out');
-    //                      message = '<h2>Project "' + self.projectDesc.name + 
-    //                        '" is being archived</h2>Archiving is currently in ' +
-    //                        'progress. The following Archive ID was issued for ' +
-    //                        'your project:<p><center><b>' + response.archiveID +
-    //                        '</b></center><p>please take a note of it. Archive ID ' +
-    //                        'is used for accessing archived projects and referencing ' +
-    //                        'them in publication and elsewhere.' +
-    //                        '<p>For the process to complete uninterrupted, your ' + 
-    //                        appName() + ' account is now suspended. ' +
-    //                        '<p>Please log out now. Your account will be released ' +
-    //                        'automatically when archiving ends.<br>Contact ' + 
-    //                        report_problem ( 
-    //                          appName() + ' archiving problem',
-    //                           'Archiving project ' + self.projectDesc.name + 
-    //                           ' seems to be stuck',
-    //                           ''
-    //                        ) + ' if your account is not released after 2 hours.';
-    //                   break;
-
-    //   default :  message = '<h2>Unknown return code ' + response.code + 
-    //                        '</h2><i>Please report as a bug</h2>';
-    // }
-    
+    new MessageBox ( 'Accessing project ' + archiveID,
+                     '<div style="width:350px">' + message + '</div>',
+                     msg_icon );
+    callback_func ( done );
+   
   },null,'persist' );
 
 }

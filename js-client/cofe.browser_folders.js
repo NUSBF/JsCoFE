@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    30.10.22   <--  Date of Last Modification.
+ *    07.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -282,6 +282,7 @@ var selNode = this.ftree.getSelectedNode();
   }
 }
 
+/*
 FoldersBrowser.prototype.onSelectBtn = function()  {
 // Select button switches to the selected folder
 var selNode = this.ftree.getSelectedNode();
@@ -289,8 +290,8 @@ var selNode = this.ftree.getSelectedNode();
     if (((selNode.dataId!=folder_path.archived) && 
          (selNode.dataId!=folder_path.cloud_archive)) ||
          (__user_role==role_code.developer))  {
-      $(this.element).dialog ( 'close' );
       this.onReturn_fnc ( 'select',{ folder_path : selNode.dataId } );
+      $(this.element).dialog ( 'close' );
     } else if (!__is_archive)  {
       new MessageBox ( 'Feature not available',
           '<h2>Archive is not available</h3>' +
@@ -310,6 +311,31 @@ var selNode = this.ftree.getSelectedNode();
            'This likely to be a program error. Select folder and try again.',
            'msg_error' );
 }
+*/
+
+FoldersBrowser.prototype.onSelectBtn = function()  {
+// Select button switches to the selected folder
+var selNode = this.ftree.getSelectedNode();
+  if (selNode)  {
+    if (((selNode.dataId==folder_path.archived) || 
+         (selNode.dataId==folder_path.cloud_archive)) &&
+        (!__is_archive))  {
+      new MessageBox ( 'Feature not available',
+          '<h2>' + appName() + ' Archive is not available</h3>' +
+          'Archive facility is not configured on this instance of ' +
+          appName() + '.',
+          'msg_stop' );
+    } else  {
+      this.onReturn_fnc ( 'select',{ folder_path : selNode.dataId } );
+      $(this.element).dialog ( 'close' );
+    }
+  } else
+    new MessageBox ( 'No selection in tree',
+           '<h2>No folder is selected</h3>' +
+           'This likely to be a program error. Select folder and try again.',
+           'msg_error' );
+}
+
 
 FoldersBrowser.prototype._find_folder = function ( fpath,folders )  {
 var folder = null;
@@ -563,7 +589,7 @@ var label   = 'Folder';
   ibx_grid.setLabel    ( '<h2>Rename ' + label_l + ' "' + selNode.dataId.split('/').pop() +
                          '"</h2>',0,2,2,3 ).setWidth ( '400px' );
   ibx_grid.setLabel    ( 'New name:',2,3,1,1 ).setNoWrap();
-  var name_inp  = ibx_grid.setInputText ( '',2,4,1,1 )
+  var name_inp = ibx_grid.setInputText ( '',2,4,1,1 )
         .setStyle      ( 'text','','','' )
         .setFontItalic ( true   )
         .setWidth      ( '300px' );
