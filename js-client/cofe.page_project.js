@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    30.10.22   <--  Date of Last Modification.
+ *    08.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -658,8 +658,15 @@ ProjectPage.prototype.addToDock = function() {
 ProjectPage.prototype._set_del_button_state = function() {
   var dsel = false;
   var node = this.jobTree.getSelectedNode();
-  if (node)
+  if (node)  {
     dsel = (node.parentId!=null);
+    if (dsel && this.jobTree.projectData.desc.archive)  {
+      // var task = this.jobTree.getTaskByNodeId ( node.id );
+      var task = this.jobTree.getSelectedTask();
+      if (task)
+        dsel = !('archive_version' in task);
+    }
+  }
   this.del_btn.setEnabled ( dsel );
 }
 

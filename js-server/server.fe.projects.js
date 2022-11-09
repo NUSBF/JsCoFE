@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.11.22   <--  Date of Last Modification.
+ *    08.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1805,17 +1805,19 @@ var pData    = readProjectData ( loginData,data.name );
               jmeta[i][1].project = data.new_name;
               utils.writeObject ( jmeta[i][0],jmeta[i][1] );
             }
-            pData.desc.name  = data.new_name;
-            pData.desc.title = data.new_title;
-            pData.desc.share = {};  // no initial sharing on the cloned project
-            if (!('author' in pData.desc.owner))  {
-              pData.desc.owner.author = pData.desc.owner.login;
-              pData.desc.folderPath   = loginData.login + '\'s Projects';
+            var pDesc = pData.desc;
+            pDesc.name  = data.new_name;
+            pDesc.title = data.new_title;
+            pDesc.share = {};  // no initial sharing on the cloned project
+            if (!('author' in pDesc.owner))  {
+              pDesc.owner.author = pDesc.owner.login;
+              pDesc.folderPath   = loginData.login + '\'s Projects';
             }
-            pData.desc.owner.login = loginData.login;
-            // var f0path = loginData.login + '\'s Projects';
-            // if (!pData.desc.folderPath.startsWith(f0path))
-            //   pData.desc.folderPath = f0path;
+            pDesc.owner.login = loginData.login;
+            if (pDesc.archive && pDesc.archive.in_archive)  { 
+              pDesc.archive.in_archive = false;
+              pDesc.archive.version++;
+            }
             writeProjectData ( loginData,pData,true );
             var pList = readProjectList ( loginData );
             if (pList)  {
