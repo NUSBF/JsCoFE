@@ -121,6 +121,12 @@ class Pdbredo(basic.TaskDriver):
         return 
 
 
+    def do_check():
+        return True
+
+    def do_fetch():
+        return
+
     # ------------------------------------------------------------------------
 
     def run(self):
@@ -142,20 +148,28 @@ class Pdbredo(basic.TaskDriver):
         xyzout = self.getXYZOFName()
         mtzout = self.getMTZOFName()
 
+        # self.pdbredo_token_id
+        # self.pdbredo_token_secret
+
         # imitate PDBREDO
         #  ==================================
         shutil.copyfile ( xyzin,xyzout )
         shutil.copyfile ( istruct.getMTZFilePath(self.inputDir()),mtzout )
         #  ==================================
 
-        
-        # while ():
-        #     do_check()
-        #     time.sleep(20)
-        #     do_fetch()
-
-
-        # unzip output.zip
+        # result = do_submit()
+        # if result is good:
+          # done = False
+          # t0 = time.now()
+          # t1 = t0
+          # while not done and (t1-t0)>3600*24:
+          #     time.sleep(20)
+          #     done = do_check()
+          # if done:
+          #     do_fetch()
+          #     unzip output.zip
+        # else:
+        #   self.putTitle ( "NOT GOOD" )
 
 
         # check solution and register data
