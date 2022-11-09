@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.11.22   <--  Date of Last Modification.
+ *    09.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -57,6 +57,8 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.onClose_func = onClose_func;
 
   this._created    = false;
+
+  this.dlg_active  = (!__dormant) && (!this.tree.in_archive);
 
   if ((this.task.state==job_code.remark) && (this.task.openWebLink()))  {
     onClose_func ( this );
@@ -275,17 +277,18 @@ JobDialog.prototype.setDlgState = function()  {
 
   if (this.inputPanel)  {
     this.inputPanel.setDisabledAll ( !isNew );
-    this.task.disableInputWidgets  ( this.inputPanel,!isNew );
+    if (!this.tree.in_archive)
+      this.task.disableInputWidgets ( this.inputPanel,!isNew );
   }
   if (this.radioSet)
     this.radioSet.setDisabled ( isNew  );
   if (this.run_btn)  {
     this.run_btn.setVisible  ( isNew     );
-    this.run_btn.setDisabled ( __dormant );
+    this.run_btn.setDisabled ( !this.dlg_active );
   }
   if (this.autorun_cbx)  {
     this.autorun_cbx.setVisible  ( isNew     );
-    this.autorun_cbx.setDisabled ( __dormant );
+    this.autorun_cbx.setDisabled ( !this.dlg_active );
   }
 
   if (this.ind_timer)
@@ -311,18 +314,19 @@ JobDialog.prototype.setDlgState = function()  {
                            else  title += this.task.name;
   this.changeTitle ( title );
 
-  var show_hot_buttons   = (!__dormant) && this.task.isComplete();
+  var show_hot_buttons = this.dlg_active && this.task.isComplete();
   // var enable_hot_buttons = (!__dormant) && (this.task.state==job_code.finished);
   //this.done_sign .setVisible ( (this.task.state==job_code.finished)  );
   //this.nores_sign.setVisible ( (this.task.state==job_code.noresults) );
   for (var i=0;i<this.hot_btn.length;i++)  {
     this.hot_btn[i].setVisible ( show_hot_buttons );
-    this.hot_btn[i].setEnabled ( (!__dormant) && (this.task.state==job_code.finished) );
+    this.hot_btn[i].setEnabled ( this.dlg_active && 
+                                 (this.task.state==job_code.finished) );
   }
 
   if (this.addjob_btn)  {
     this.addjob_btn.setVisible ( show_hot_buttons );
-    this.addjob_btn.setEnabled ( (!__dormant) && (
+    this.addjob_btn.setEnabled ( this.dlg_active && (
                                      (this.task.state==job_code.finished) ||
                                      this.task.isRemark()
                                    )
@@ -330,8 +334,8 @@ JobDialog.prototype.setDlgState = function()  {
   }
 
   if (this.clone_btn)
-    this.clone_btn.setVisible ( (!__dormant) && (this.task.state!=job_code.new) &&
-                                (!isRunning) );
+    this.clone_btn.setVisible ( this.dlg_active && 
+                                (this.task.state!=job_code.new) && (!isRunning) );
 
   if (this.export_btn)
     this.export_btn.setVisible ( !this.task.isRemark() );
@@ -527,13 +531,13 @@ JobDialog.prototype.makeToolBar = function()  {
       this.run_btn  = this.toolBar.setButton ( this.task.runButtonName(),
                                                image_path('runjob'), 0,this.col++, 1,1 )
                                   .setTooltip  ( 'Start job' )
-                                  .setDisabled ( __dormant   );
+                                  .setDisabled ( !this.dlg_active );
       // if (this.task.canRunInAutoMode())
       if (('autoRunId0' in this.task) && (this.task.autoRunId0.length>0))  {
         this.autorun_cbx = this.toolBar.setCheckbox ( 'Keep auto',
                                     (this.task.autoRunId.length>0),0,this.col++, 1,1 )
                                .setTooltip  ( 'Check to start an automatic workflow' )
-                               .setDisabled ( __dormant   );
+                               .setDisabled ( !this.dlg_active );
         // (function(dlg){
           dlg.autorun_cbx.addOnClickListener ( function(){
             if (dlg.autorun_cbx.getValue())
@@ -693,9 +697,9 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
       dlg.inputPanel.element.addEventListener(cofe_signals.taskReady,function(e){
         //alert ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
         if (e.detail.length<=0)  {
-          dlg.run_btn.setEnabled ( !__dormant );
+          dlg.run_btn.setEnabled ( this.dlg_active );
           if (dlg.autorun_cbx)
-            dlg.autorun_cbx.setEnabled ( !__dormant );
+            dlg.autorun_cbx.setEnabled ( this.dlg_active );
           dlg.close_btn.setEnabled ( true );
         } else if (e.detail=='hide_run_button')  {
           dlg.run_btn.setEnabled ( false );
@@ -708,9 +712,9 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
             dlg.autorun_cbx.setEnabled ( false );
           dlg.close_btn.setEnabled ( false );
         } else if (e.detail=='upload_finished')  {
-          dlg.run_btn.setEnabled ( !__dormant );
+          dlg.run_btn.setEnabled ( this.dlg_active );
           if (dlg.autorun_cbx)
-            dlg.autorun_cbx.setEnabled ( !__dormant );
+            dlg.autorun_cbx.setEnabled ( this.dlg_active );
           dlg.close_btn.setEnabled ( true );
         } else  {
           dlg.run_btn.setEnabled ( false );
