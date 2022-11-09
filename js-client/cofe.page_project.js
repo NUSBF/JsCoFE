@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.11.22   <--  Date of Last Modification.
+ *    09.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -768,7 +768,9 @@ ProjectPage.prototype.onTreeContextMenu = function() {
 
   __close_all_menus();
 
-  (function(self){
+  var self = this;
+
+  // (function(self){
 
     var crTask = self.jobTree.task_map[node.id];
 
@@ -876,7 +878,7 @@ ProjectPage.prototype.onTreeContextMenu = function() {
       };
     }
 
-    if (node.parentId)  {
+    if (node.parentId && (!self.jobTree.in_archive))  {
       var crTask = self.jobTree.task_map[node.id];
       if (crTask && (crTask.state!=job_code.remark))
         items.addToDockItem = {
@@ -886,7 +888,7 @@ ProjectPage.prototype.onTreeContextMenu = function() {
         };
     }
 
-  }(this))
+  // }(this))
 
   return items;
 
@@ -1055,7 +1057,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
             case 'clone_job'        : self.cloneJob    ();  break;
             case 'delete_job'       : self.deleteJob   ();  break;
             case 'move_job_up'      : self.moveJobUp   ();  break;
-            case 'stack_jobs'     : self.stackJobs ();  break;
+            case 'stack_jobs'       : self.stackJobs   ();  break;
             case 'set_button_state' :
             default:  self.jobTree.startTaskLoop();
           }
