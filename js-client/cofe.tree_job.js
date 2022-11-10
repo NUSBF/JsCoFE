@@ -1786,6 +1786,9 @@ JobTree.prototype.isShared = function()  {
 
 JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
 
+  if (this.in_archive)
+    return;
+
   if (this.selected_node_id)  {
 
     this.forceSingleSelection();

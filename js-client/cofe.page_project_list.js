@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.11.22   <--  Date of Last Modification.
+ *    09.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -603,7 +603,7 @@ function ProjectListPage ( sceneId )  {
           '<h2>Delist Project</h2>Project <b>"'  + pDesc.name  +
           '"</b> will be removed from the list of accessed projects of the ' + 
           appName() + ' Archive.<p>Please confirm.</div>',
-          'folder_list_cloud_archive_delist' );
+          'folder_cloud_archive_delist' );
 
       inputBox.launch  ( 'Delist',function(){
         serverRequest ( fe_reqtype.deleteProject,pDesc.name,'Delist project',
@@ -788,8 +788,7 @@ function ProjectListPage ( sceneId )  {
           var pDesc = projectList.projects[i];
           var pName = pDesc.name;
           if (archive_folder)
-            pName = pDesc.project_name;
-            
+            pName = pDesc.archive.project_name;
           // when list of projects is served from FE, shared record is removed
           // in case of owner's login
           var joined = ['','',''];
@@ -840,10 +839,10 @@ function ProjectListPage ( sceneId )  {
                          .addOnClickListener(function(){ browseFolders('move') });
             else if (__current_folder.type==folder_type.custom_list)
               contextMenu.addItem('Delist',image_path('folder_list_custom_delist') )
-                         .addOnClickListener(function(){ delistProject });
+                         .addOnClickListener(function(){ delistProject(); });
             else if (__current_folder.type==folder_type.cloud_archive)
               contextMenu.addItem('Delist',image_path('folder_cloud_archive_delist') )
-                         .addOnClickListener(function(){ delistProject });
+                         .addOnClickListener(function(){ delistProject(); });
             // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
 
           }(shared_project))

@@ -671,13 +671,13 @@ ProjectPage.prototype._set_del_button_state = function() {
 }
 
 ProjectPage.prototype._set_button_state = function() {
-  var dsel = false;
-  var task = this.jobTree.getSelectedTask();
-  var node = this.jobTree.getSelectedNode();
-  var not_in_archive = (!this.jobTree.in_archive);
+var dsel = false;
+var task = this.jobTree.getSelectedTask();
+var node = this.jobTree.getSelectedNode();
+var not_in_archive = (!this.jobTree.in_archive);
+var child_tasks = this.jobTree.getChildTasks ( node );
+var has_remark  = false;
 
-  var child_tasks = this.jobTree.getChildTasks ( node );
-  var has_remark  = false;
   if (child_tasks.length==1)
     has_remark = (child_tasks[0].state==job_code.remark);
 
