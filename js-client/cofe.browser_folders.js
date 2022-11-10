@@ -544,16 +544,16 @@ var label   = 'Folder';
 
   if (selNode.dataId==this.currentFolder.path)  {
     new MessageBox ( 'Already in the ' + label_l,
-          '<h2>Already in the ' + label + '</h2>' +
-          'Project <i>"' + this.currentPDesc.name + '"</i> is already in ' + label_l +
+          '<h2>Already in the ' + label + '</h2>Project <i>"' + 
+          this.currentPDesc.name + '"</i> is already in ' + label_l +
           '<p><i>"' + fldPath + '"</i>',
           'msg_stop' );
   } else if ((selNode.folderType==folder_type.archived) ||
-             (selNode.folderType==folder_type.cloud_archive)) { 
+             (selNode.folderType==folder_type.cloud_archive)) {
     new ProjectArchiveDialog ( this.currentPDesc,function(){
       $(self.element).dialog ( 'close' );
       self.onReturn_fnc ( 'move',{ folder_path : selNode.dataId });
-    } );
+    });
   } else  {
     var self = this;
     new QuestionBox ( 'Move project to ' + label_l,
