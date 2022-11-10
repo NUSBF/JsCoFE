@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.11.22   <--  Date of Last Modification.
+ *    09.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,20 +51,22 @@ function AccessArchiveDialog ( callback_func )  {
     buttons   : [
       { id    : 'archdlg_access_btn',
         text  : 'Access',
-        click : function() { 
-                  self.accessProject ( function(done){
-                    if (done)  {
-                      $(this).dialog('close');
-                      callback_func ( true );
-                    }
-                  });
+        click : function() {
+                  (function(dlg){
+                    self.accessProject ( function(done){
+                      if (done)  {
+                        callback_func ( true );
+                        $(dlg).dialog('close');
+                      }
+                    });
+                  }(this))
                 }
       }, {
         id    : 'archdlg_cancel_btn',
         text  : 'Cancel', 
         click : function() { 
-                  $(this).dialog('close'); 
                   callback_func ( false );
+                  $(this).dialog('close'); 
                 }
       }
     ]
