@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.22   <--  Date of Last Modification.
+ *    10.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -200,7 +200,20 @@ function ProjectListPage ( sceneId )  {
     });
   }
 
-  var addProject = function() {
+  var archiveProject = function()  {
+    var pDesc = getCurrentProjectDesc();
+    if (!pDesc)  {
+      new MessageBox ( 'Current project not identified',
+          '<h2>Current project is not identified</h2>' +
+          '<i>This is a bug please report to developers.</i>',
+          'msg_error'
+      );
+      return;
+    }
+    new ProjectArchiveDialog ( pDesc,function(){} );
+  }
+
+  var addProject = function()  {
     if (__current_folder.type==folder_type.cloud_archive)  {
       new AccessArchiveDialog ( function(done){
         if (done)
@@ -225,8 +238,9 @@ function ProjectListPage ( sceneId )  {
         },{
           name    : 'Cancel',
           onclick : function(){}
-        }],'msg_question' );
-      }      
+        }],'msg_question'
+      );
+    }      
   }
 
   // function to rename selected Project
@@ -820,20 +834,32 @@ function ProjectListPage ( sceneId )  {
             $(trow.element).click(function(){
               del_btn.setText(del_label);
             });
+
+            /*
+            var can_move = ((__current_folder.type==folder_type.user) &&
+                             __current_folder.path.startsWith(owners_folder)) ||
+                           (__current_folder.type==folder_type.tutorials);
+
+            var can_move = ((__current_folder.type==folder_type.user) &&
+                            //  __current_folder.path.startsWith(owners_folder)) ||
+                             pDesc.folderPath.startsWith(owners_folder)) ||
+                           (__current_folder.type==folder_type.tutorials);
+            */
+
             contextMenu = new ContextMenu ( trow,function(){
               del_btn.setText ( del_label );
             });
             contextMenu.addItem('Open',image_path('go')).addOnClickListener(openProject  );
             if (!archive_folder)
-              contextMenu.addItem('Rename' ,image_path('renameprj')).addOnClickListener(renameProject);
+              contextMenu.addItem('Rename',image_path('renameprj')).addOnClickListener(renameProject);
             if (!archive_folder)
               contextMenu.addItem(del_label,image_path('remove')).addOnClickListener(deleteProject);
-            contextMenu.addItem('Export' ,image_path('export')  ).addOnClickListener(exportProject);
+            contextMenu.addItem('Export',image_path('export')  ).addOnClickListener(exportProject);
             if ((!archive_folder) && (__current_folder.type!=folder_type.joined))
               contextMenu.addItem('Share',image_path('share')).addOnClickListener(sharePrj);
-            contextMenu.addItem('Clone'  ,image_path('cloneprj')).addOnClickListener(cloneProject );
+            contextMenu.addItem('Clone',image_path('cloneprj')).addOnClickListener(cloneProject );
             if (((__current_folder.type==folder_type.user) &&
-                 __current_folder.path.startsWith(owners_folder)) ||
+                  __current_folder.path.startsWith(owners_folder)) ||
                 (__current_folder.type==folder_type.tutorials))
               contextMenu.addItem('Move',image_path('folder_projects') )
                          .addOnClickListener(function(){ browseFolders('move') });
@@ -843,6 +869,8 @@ function ProjectListPage ( sceneId )  {
             else if (__current_folder.type==folder_type.cloud_archive)
               contextMenu.addItem('Delist',image_path('folder_cloud_archive_delist') )
                          .addOnClickListener(function(){ delistProject(); });
+            if (__is_archive && pDesc.folderPath.startsWith(owners_folder))
+              contextMenu.addItem('Archive',image_path('archive')).addOnClickListener(archiveProject);
             // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
 
           }(shared_project))

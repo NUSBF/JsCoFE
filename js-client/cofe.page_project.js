@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.11.22   <--  Date of Last Modification.
+ *    10.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -684,8 +684,7 @@ var has_remark  = false;
   if (node)
     dsel = (node.parentId!=null);
   this.open_btn .setEnabled ( dsel );
-  this.del_btn  .setEnabled ( dsel && not_in_archive );
-  this.stack_btn.setEnabled ( (this.jobTree.selectStackJobs()[0]>0) );
+  this.stack_btn.setEnabled ( (this.jobTree.selectStackJobs()[0]>0)  );
 
   if (task)  {
     var is_remark   = task.isRemark();
@@ -698,6 +697,7 @@ var has_remark  = false;
     var can_add = (!__dormant) && not_in_archive &&
                   ((task.state==job_code.finished) || (is_remark && add_enabled));
     this.add_btn  .setEnabled ( can_add );
+    this.del_btn  .setEnabled ( (!__dormant) && dsel && (!('archive_version' in task)) );
     this.dock     .setEnabled ( can_add );
     this.clone_btn.setEnabled ( (!__dormant) && dsel &&
                                 task.canClone(node,this.jobTree) );
@@ -712,6 +712,7 @@ var has_remark  = false;
     else  this.del_btn.setTooltip ( 'Delete job' );
   } else  {  // root
     this.add_btn  .setEnabled ( (!__dormant) && not_in_archive );
+    this.del_btn  .setEnabled ( (!__dormant) && not_in_archive && dsel );
     this.dock     .setEnabled ( (!__dormant) && not_in_archive );
     this.clone_btn.setEnabled ( false );  // dsel ???
     if (this.moveup_btn)
