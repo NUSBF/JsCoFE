@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.11.22   <--  Date of Last Modification.
+ *    12.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -112,8 +112,11 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   this.grid.setImage    ( image_path('folder_cloud_archive'),'48px','48px', 1,0,1,1 );
   this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
 
-  this.grid.setLabel    ( '<h2>Archive Project "' + 
-      this.projectDesc.name + '"</h2>' + doclink + 'Read what ' + appName() + 
+  var title = '<h2>Archive Project "' + this.projectDesc.name + '"</h2>';
+  if (this.projectDesc.archive)
+    title = '<h2>Update Archived Project ' + this.projectDesc.archive.id + '</h2>';
+
+  this.grid.setLabel ( title + doclink + 'Read what ' + appName() + 
       ' archiving means before proceeding</span></a> and fill in the form ' +
       'below (make sure to scroll the form down to the end)',
       0,2,2,1 );        
@@ -137,7 +140,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
 
   pgrid.setLabel ( '<b>1. Declaration.</b><i> ' +
     'I archive project </i><b>"' + this.projectDesc.name + 
-    '"</b><i>, developed by myself and my co-authors listed below in Section 2, '   +
+    '"</b><i>, developed by myself and my co-authors listed below in Section 3, '   +
     'who all have consented to this archiving, for the benefit of research ' +
     'community, as scientific evidence of my/our results, for citing in ' +
     'publications, and for educational purposes. '      +
@@ -176,9 +179,28 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   sgrid.setVerticalAlignment ( 0,2,'middle' );
 
 
+  // archive ID
+
+  pgrid.setLabel ( '&nbsp;<br><b>2. Archive ID.</b> ' +
+    'You may choose your own up to 8-character long Archive ID for your ' +
+    'project. It will be declined if already found in the archive. Leave ' +
+    'the field blank for automatic choice.',
+    row++,2,1,1
+  );
+
+  var igrid = pgrid.setGrid ( '-compact', row++,2,1,1 );
+
+  igrid.setLabel ( 'Archive ID:&nbsp;', 0,0,1,1 ).setNoWrap()
+       .setFontItalic(true).setHorizontalAlignment('right');
+  this.aid_inp = igrid.setInputText ( '',0,1,1,1 ).setWidth ( '140px' )
+                      .setMaxInputLength(8)
+                      .setStyle ( 'text','^[A-Za-z0-9.]','MYOWN.ID',
+                                  'Archive ID may contain letters, digits and ' +
+                                  'periods. It will be capitalised.' );
+
   // co-authors
 
-  pgrid.setLabel ( '&nbsp;<br><b>2. Co-authors.</b> ' +
+  pgrid.setLabel ( '&nbsp;<br><b>3. Co-authors.</b> ' +
     'Put list of your co-authors here, one per line, or ' +
     '<b>"None" for no co-authors</b>',
     row++,2,1,1
@@ -200,7 +222,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
 
   // annotation
 
-  pgrid.setLabel ( '&nbsp;<br><b>3. Annotation.</b> ' +
+  pgrid.setLabel ( '&nbsp;<br><b>4. Annotation.</b> ' +
     'Provide as much annotation details as possible below; they will be used ' +
     'in archive searches. <b>Put asterisk (*)</b> where annotation details are not ' +
     'currently available -- you will be able to add them later.',
@@ -256,6 +278,11 @@ ProjectArchiveDialog.prototype.validateData = function()  {
   if (this.signed_sel.getValue()!='signed')
     msg_list.push ( 'sign declaration' );
 
+  this.aid = this.aid_inp.getValue().trim().toUpperCase();
+  if ((this.aid.length>0) && this.aid_inp.element.validity.patternMismatch)
+    msg_list.push ( 'provide up to 8-character long Archive ID made of letters, ' +
+                    'digits and periods, or leave blank for automatic choice' );
+
   this.coauthors = this.coauthors_edt.getText().trim();
   if ((!this.coauthors) || (this.coauthors.length<4) ||
       ((this.coauthors.length==4) && (this.coauthors.toLowerCase()!='none')))
@@ -309,6 +336,7 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
   serverRequest ( fe_reqtype.archiveProject,{
     pdesc      : this.projectDesc,
     annotation : {
+      id        : this.aid,
       coauthors : this.coauthors,
       pdbs      : this.pdbs,
       dois      : this.dois,
@@ -320,6 +348,39 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
 
     var message = '';
     switch (response.code)  {
+
+      case 'not_owner' : message = '<h2>No privileges</h2>' +
+                           'Projects can be archived only by their owners, ' +
+                           'who created them in first place.';
+                      break;
+
+      case 'shared'    : message = '<h2>Shared Project</h2>' +
+                           'Project <b>' + self.projectDesc.name + '</b> ' +
+                           'is shared with other users. Please unshare the ' +
+                           'project with all other users before archiving ' +
+                           'and share Archive ID with your collaborators after ' +
+                           'archiving instead.';
+                      break;
+
+      case 'duplicate_project_name' :
+                         message = '<h2>Duplicate Project Name</h2>' +
+                           'Chosen Archive ID:<p><center><b>' + 
+                           response.archiveID +
+                           '</b></center><p>coincides with project name found ' +
+                           'in your account. You can resolve this conflict by ' +
+                           'renaming or deleting/unjoining the same-named ' +
+                           'project; by choosing another Archive ID; or leaving ' +
+                           'Archive ID blank for automatic choice.';
+                      break;
+
+      case 'duplicate_archive_id' :
+                         message = '<h2>Duplicate Archive ID</h2>' +
+                           'Chosen Archive ID:<p><center><b>' + 
+                           response.archiveID +
+                           '</b></center><p>is already found in ' + appName() +
+                           'Archive. Please choose another Archive ID or leave ' +
+                           'blank for automatic choice.';
+                      break;
 
       case 'no_space'  : message = '<h2>No space left in Archive</h2>' +
                            'Your project cannot be archived because there is ' +

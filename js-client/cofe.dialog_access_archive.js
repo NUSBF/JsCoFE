@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.22   <--  Date of Last Modification.
+ *    12.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -118,8 +118,9 @@ AccessArchiveDialog.prototype.makeLayout = function()  {
 function isValidArchiveID ( archiveID )  {
 var lst = archiveID.split('-');
   if (lst.length==2)  {
-    lst = lst[1].split('.');
-    return ((lst.length==2) && (lst[0].length==3) && (lst[1].length==4));
+    // lst = lst[1].split('.');
+    // return ((lst.length==2) && (lst[0].length==3) && (lst[1].length==4));
+    return (lst[1].length>0) && (lst[1].length<=8);
   }
   return false;
 }
