@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.11.22   <--  Date of Last Modification.
+ *    12.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -150,19 +150,19 @@ var archPrjPath = null;
 }
 
 
-function makeArchiveID()  {
+function makeArchiveID ( loginData )  {
 // generates unique archive ids CCP4-XXX.YYYY, where 'ccp4' is setup id from
 // FE configuration file, 'XXX' and 'YYYY' are random strings of letters and
 // numbers.
-var aid     = null;
-var fe_conf = conf.getFEConfig();
-var sid     = fe_conf.description.id.toUpperCase();
+var aid = null;
+var sid = conf.getFEConfig().description.id.toUpperCase();
 
   while (!aid) {
     aid = randomString ( 7,'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' );
     aid = sid + '-' + aid.slice(0,3) + '.' + aid.slice(3);
-    if (findArchivedProject(aid))
-      aid = null;
+    if (findArchivedProject(aid) || 
+        utils.dirExists(prj.getProjectDirPath(loginData,aid)))
+      aid = null
   }
 
   return aid;
@@ -217,8 +217,10 @@ var pData = utils.readObject ( projectDataPath );
 function archiveProject ( loginData,data,callback_func )  {
 var pDesc       = data.pdesc;
 var pAnnotation = data.annotation;
+var archiveID   = pAnnotation.id.toUpperCase();
 var uData       = user.suspendUser ( loginData,true,'' );
 
+      // id        : this.aid,
       // coauthors : this.coauthors,
       // pdbs      : this.pdbs,
       // dois      : this.dois,
@@ -230,7 +232,44 @@ var uData       = user.suspendUser ( loginData,true,'' );
     callback_func ( new cmd.Response(cmd.fe_retcode.readError,msg,'') );
   }
 
-  var archiveID = makeArchiveID();
+  if (pDesc.owner.login!=loginData.login)  {
+    callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
+      code      : 'not_owner',
+      archiveID : archiveID,
+      message   : ''
+    }));
+    return;
+  }
+
+  if ((Object.keys(pDesc.share).length>0) || pDesc.autorun)  {
+    callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
+      code      : 'shared',
+      archiveID : archiveID,
+      message   : ''
+    }));
+    return;
+  }
+
+  if (archiveID)  {
+    archiveID = conf.getFEConfig().description.id.toUpperCase() + '-' + archiveID;
+    if (findArchivedProject(archiveID))  {
+      callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
+        code      : 'duplicate_archive_id',
+        archiveID : archiveID,
+        message   : ''
+      }));
+      return;
+    }
+    if (utils.dirExists(prj.getProjectDirPath(loginData,archiveID)))  {
+      callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
+        code      : 'duplicate_project_name',
+        archiveID : archiveID,
+        message   : ''
+      }));
+      return;
+    }
+  } else
+    archiveID = makeArchiveID ( loginData );
 
   log.standard ( 1,'archive project ' + pDesc.name + ', archive ID ' + 
                    archiveID + ', login ' + loginData.login );
@@ -268,13 +307,25 @@ var uData       = user.suspendUser ( loginData,true,'' );
             };
             pAnnotation.project_name = pDesc.name;
             annotateProject ( archiveDirPath,pAnnotation );
-            // make project link in user's projects directory
+            /*
+            // move original project before linking; this is necessary in cases 
+            // when user choses Archive ID coinciding with project name
+            var projectDirPath_tmp = projectDirPath + '.tmp';
+            utils.moveDir ( projectDirPath,projectDirPath_tmp,true );
+            */
+            // make archived project link in user's projects directory
             var linkDir   = path.resolve(prj.getProjectDirPath(loginData,archiveID));
             var linkedDir = path.resolve(archiveDirPath);
             if (utils.makeSymLink(linkDir,linkedDir))  {
+              /*
+              // remove backup job directory
+              prj.delete_project ( loginData,pDesc.name,pDesc.disk_space,
+                                   projectDirPath_tmp );
+              */
+              // remove project from user's account
+              prj.delete_project ( loginData,pDesc.name,pDesc.disk_space,
+                                   projectDirPath );
               // update archive tables
-              // remove original job directory
-              // prj.deleteProject ( loginData,pDesc.name );
               // unlock user's account and inform user through Cloud message and via e-mail
               user.suspendUser ( loginData,false,
                 '<div style="width:400px"><h2>Archiving completed</h2>Project <b>"' + 
@@ -295,11 +346,18 @@ var uData       = user.suspendUser ( loginData,true,'' );
                             projectTitle : pDesc.title
                         });
 
-            } else
+            } else  {
+              /*
+              // restore from backup
+              utils.moveDir ( projectDirPath_tmp,projectDirPath,true );
+              */
               failcode = 1;
-          
-          } else
+            }
+
+          } else  {
+            // utils.removePath ( archiveDirPath );
             failcode = 2;
+          }
 
           if (failcode)  {
             utils.removePath ( archiveDirPath );
@@ -340,114 +398,6 @@ var uData       = user.suspendUser ( loginData,true,'' );
     }
 
   });
-
-
-/*
-  // start archiving thread
-
-  setTimeout ( function(){
-
-    var projectDirPath = prj.getProjectDirPath ( loginData,pDesc.name );
-    var projectDirPath = getProjectDirPath ( loginData,projectName );
-
-    if (utils.moveDir(uProjectDir,sProjectDir,false))  {
-      var pData = prj.readProjectData ( sData,pName );
-      if (!('author' in pData.desc.owner))
-        pData.desc.owner.author = pData.desc.owner.login;
-      pData.desc.owner.login = sData.login;
-      // pData.desc.folderPath  = pData.desc.folderPath.replace (
-      //                                         'My Projects',folder_name );
-      prj.writeProjectData ( sData,pData,true );
-    } else
-      failed_move.push ( pName );
-
-
-
-
-    // log out user and successor and suspend their accounts
-
-    var uDataFile = getUserDataFName ( uData );
-    var sDataFile = getUserDataFName ( sData );
-
-    var ulogin = uData.login;
-    __userLoginHash.removeUser ( ulogin );     // logout
-    uData.login = __suspend_prefix + uData.login;   // suspend
-    utils.writeObject ( uDataFile,uData );  // commit
-    uData.login = ulogin;
-
-    var slogin = sData.login;
-    __userLoginHash.removeUser ( slogin );     // logout
-    sData.login = __suspend_prefix + sData.login;   // suspend
-    utils.writeObject ( sDataFile,sData );  // commit
-    sData.login = slogin;
-
-    // loop and move
-    // var folder_name = ulogin + '\'s projects';
-    var failed_move = [];
-    var were_shared = [];
-    for (var i=0;i<userPrjList.projects.length;i++)  {
-      var pName = userPrjList.projects[i].name;
-      var uProjectDir = prj.getProjectDirPath ( uData,pName );
-      if (!utils.isSymbolicLink(uProjectDir))  {
-        var sProjectDir = prj.getProjectDirPath ( sData,pName );
-        if (utils.moveDir(uProjectDir,sProjectDir,false))  {
-          var pData = prj.readProjectData ( sData,pName );
-          if (!('author' in pData.desc.owner))
-            pData.desc.owner.author = pData.desc.owner.login;
-          pData.desc.owner.login = sData.login;
-          // pData.desc.folderPath  = pData.desc.folderPath.replace (
-          //                                         'My Projects',folder_name );
-          prj.writeProjectData ( sData,pData,true );
-        } else
-          failed_move.push ( pName );
-      } else
-        were_shared.push ( pName );
-    }
-
-    // update rations and activate user and successor accounts
-
-    var uRation = ration.getUserRation ( uData );
-    var sRation = ration.getUserRation ( sData );
-
-    sRation.storage      += uRation.storage;
-    sRation.storage_used += uRation.storage_used;
-    uRation.storage       = 0.1;  // block user by outquoting
-    sRation.storage_used  = 1.0;
-
-    ration.saveUserRation ( sData,sRation );
-    ration.saveUserRation ( uData,uRation );
-
-    utils.writeObject ( uDataFile,uData );  // commit
-    utils.writeObject ( sDataFile,sData );  // commit
-
-    var msg = '';
-    if (failed_move.length>0)
-      msg = 'The following project(s) could not be moved due to errors:<p>' +
-            failed_move.join(', ');
-    if (were_shared.length>0)  {
-      if (msg)  msg += '<p>';
-      msg += 'The following project(s) were not moved because they are ' +
-             'shared with the user:<p>' +
-             were_shared.join(', ');
-    }
-    if (!msg)
-      msg = 'Operation finished successfully.';
-
-    emailer.sendTemplateMessage ( uData,
-              cmd.appName() + ' User Retired',
-              'user_retired_admin',{
-                  message : msg
-              });
-    emailer.sendTemplateMessage ( sData,
-              cmd.appName() + ' User Retired',
-              'succ_retired_admin',{
-                  retLogin    : uData.login,
-                  message     : msg,
-                  folder_name : folder_name
-              });
-
-  },2000);
-*/
 
 }
 

@@ -99,7 +99,6 @@ function ProjectListPage ( sceneId )  {
     var pdesc = getCurrentProjectDesc();
     if (pdesc)
       return (Object.keys(pdesc.share).length>0);
-      //return (pdesc.owner.share.length>0);
     return false;
   }
 

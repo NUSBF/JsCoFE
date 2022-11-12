@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.11.22   <--  Date of Last Modification.
+ *    12.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -511,10 +511,13 @@ function getProjectList ( loginData )  {
 var response = null;  // must become a cmd.Response object to return
   log.detailed ( 3,'get project list, login ' + loginData.login );
   var pList = readProjectList ( loginData );
-  if (pList)
-        response = new cmd.Response ( cmd.fe_retcode.ok,'',pList );
-  else  response = new cmd.Response ( cmd.fe_retcode.readError,
-                                      '[00015] Project list cannot be read.','' );
+  if (pList)  {
+    ration.calculate_user_disk_space ( loginData,pList );
+    // ration.calculateUserDiskSpace ( loginData );
+    response = new cmd.Response ( cmd.fe_retcode.ok,'',pList );
+  } else
+    response = new cmd.Response ( cmd.fe_retcode.readError,
+                                  '[00015] Project list cannot be read.','' );
   return response;
 }
 
@@ -637,6 +640,29 @@ var response = null;  // must become a cmd.Response object to return
 
 // ===========================================================================
 
+
+function delete_project ( loginData,projectName,disk_space,projectDirPath )  {
+
+  // subtract project disck space from user's ration
+  ration.updateProjectStats ( loginData,projectName,0.0,-disk_space,0,true );
+
+  utils.removePath ( projectDirPath );
+
+  ration.maskProject ( loginData,projectName );
+
+  if (utils.fileExists(projectDirPath))
+    erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
+              'CCP4 Clooud Remove Project Directory Fails',
+              'Detected removePath failure at deleting project directory, ' +
+              'please investigate.' );
+
+  // clearJobs() only to decrease the amount of transmitted data
+  return ration.calculateUserDiskSpace(loginData).clearJobs();
+
+}
+
+
+
 function deleteProject ( loginData,projectName )  {
 var response       = null;  // must become a cmd.Response object to return
 var rdata          = {};    // response data
@@ -644,26 +670,26 @@ var erc            = '';
 var projectDirPath = getProjectDirPath ( loginData,projectName );
 var pData          = readProjectData ( loginData,projectName );
 
-  function _delete_project()  {
+  // function _delete_project()  {
 
-    // subtract project disck space from user's ration
-    ration.updateProjectStats ( loginData,projectName,0.0,
-                                -pData.desc.disk_space,0,true );
+  //   // subtract project disck space from user's ration
+  //   ration.updateProjectStats ( loginData,projectName,0.0,
+  //                               -pData.desc.disk_space,0,true );
 
-    utils.removePath ( projectDirPath );
+  //   utils.removePath ( projectDirPath );
 
-    ration.maskProject ( loginData,projectName );
+  //   ration.maskProject ( loginData,projectName );
 
-    if (utils.fileExists(projectDirPath))
-      erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
-                'CCP4 Remove Project Directory Fails',
-                'Detected removePath failure at deleting project directory, ' +
-                'please investigate.' );
+  //   if (utils.fileExists(projectDirPath))
+  //     erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
+  //               'CCP4 Remove Project Directory Fails',
+  //               'Detected removePath failure at deleting project directory, ' +
+  //               'please investigate.' );
 
-    rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
-    // clearJobs() only to decrease the amount of transmitted data
+  //   rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
+  //   // clearJobs() only to decrease the amount of transmitted data
 
-  }
+  // }
 
   // maintain share lists
   if (pData && (pData.desc.owner.login==loginData.login))  {
@@ -681,37 +707,10 @@ var pData          = readProjectData ( loginData,projectName );
         writeProjectShare  ( uLoginData,pShare );
       }
     }
-    // var share = pData.desc.owner.share;
-    // for (var i=0;i<share.length;i++)  {
-    //   var uLoginData = user.getUserLoginData ( share[i].login );
-    //   if (uLoginData)  {
-    //     var pShare = readProjectShare ( uLoginData );
-    //     pShare.removeShare ( pData.desc );
-    //     writeProjectShare  ( uLoginData,pShare );
-    //   }
-    // }
 
-    _delete_project();
-
-    // // subtract project disck space from user's ration
-    // ration.updateProjectStats ( loginData,projectName,0.0,
-    //                             -pData.desc.disk_space,0,true );
-    //
-    // // Get users' projects directory name
-    // var projectDirPath = getProjectDirPath ( loginData,projectName );
-    //
-    // utils.removePath ( projectDirPath );
-    //
-    // ration.maskProject ( loginData,projectName );
-    //
-    // if (utils.fileExists(projectDirPath))
-    //   erc = emailer.send ( conf.getEmailerConfig().maintainerEmail,
-    //             'CCP4 Remove Project Directory Fails',
-    //             'Detected removePath failure at deleting project directory, ' +
-    //             'please investigate.' );
-    //
-    // rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
-    // // clearJobs() only to decrease the amount of transmitted data
+    // _delete_project();
+    rdata.ration = delete_project ( loginData,projectName,pData.desc.disk_space,
+                                    projectDirPath);
 
   } else if (pData && (pData.desc.owner.login!=loginData.login))  {
 
@@ -724,7 +723,9 @@ var pData          = readProjectData ( loginData,projectName );
       // old shares were copied, this is the case
       log.warning ( 7,'delete project ' + pData.desc.owner.login + ':' +
                       projectName + ', by non-owner ' + loginData.login );
-      _delete_project();
+      // _delete_project();
+      rdata.ration = delete_project ( loginData,projectName,pData.desc.disk_space,
+                                      projectDirPath);
     }
 
   } else  {
@@ -2323,6 +2324,7 @@ module.exports.readProjectDesc        = readProjectDesc;
 module.exports.readProjectList        = readProjectList;
 module.exports.writeProjectList       = writeProjectList;
 module.exports.saveProjectList        = saveProjectList;
+module.exports.delete_project         = delete_project;
 module.exports.deleteProject          = deleteProject;
 module.exports.saveDockData           = saveDockData;
 module.exports.prepareProjectExport   = prepareProjectExport;
