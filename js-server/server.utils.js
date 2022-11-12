@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.10.22   <--  Date of Last Modification.
+ *    12.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -532,7 +532,6 @@ function removeSymLinks ( dir_path )  {
 }
 
 
-
 function getDirectorySize ( dir_path )  {
   try {
     var size = 0.0;
@@ -540,10 +539,12 @@ function getDirectorySize ( dir_path )  {
       fs.readdirSync(dir_path).forEach(function(file,index){
         var curPath = path.join ( dir_path,file );
         var lstat   = fs.lstatSync(curPath);
-        if (lstat.isDirectory()) { // recurse
-          size += getDirectorySize ( curPath );
-        } else {
-          size += lstat['size'];
+        if (lstat)  {
+          if (lstat.isDirectory())  { // recurse
+            size += getDirectorySize ( curPath );
+          } else if (!lstat.isSymbolicLink())  {
+            size += lstat['size'];
+          }
         }
       });
     }
