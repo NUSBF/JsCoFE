@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.11.22   <--  Date of Last Modification.
+ *    13.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -661,6 +661,19 @@ function delete_project ( loginData,projectName,disk_space,projectDirPath )  {
 
 }
 
+function unshare_project ( pDesc )  {
+  var unshared = [];
+  for (var shareLogin in pDesc.share)  {
+    var uLoginData = user.getUserLoginData ( shareLogin );
+    if (uLoginData)  {
+      unshared.push ( uLoginData );
+      var pShare = readProjectShare ( uLoginData );
+      pShare.removeShare ( pDesc );
+      writeProjectShare  ( uLoginData,pShare );
+    }
+  }
+  return unshared;
+}
 
 
 function deleteProject ( loginData,projectName )  {
@@ -699,14 +712,15 @@ var pData          = readProjectData ( loginData,projectName );
     log.standard ( 7,'delete project ' + projectName + ', login ' + loginData.login );
 
     // remove it from all shares
-    for (var shareLogin in pData.desc.share)  {
-      var uLoginData = user.getUserLoginData ( shareLogin );
-      if (uLoginData)  {
-        var pShare = readProjectShare ( uLoginData );
-        pShare.removeShare ( pData.desc );
-        writeProjectShare  ( uLoginData,pShare );
-      }
-    }
+    unshare_project ( pData.desc.share );
+    // for (var shareLogin in pData.desc.share)  {
+    //   var uLoginData = user.getUserLoginData ( shareLogin );
+    //   if (uLoginData)  {
+    //     var pShare = readProjectShare ( uLoginData );
+    //     pShare.removeShare ( pData.desc );
+    //     writeProjectShare  ( uLoginData,pShare );
+    //   }
+    // }
 
     // _delete_project();
     rdata.ration = delete_project ( loginData,projectName,pData.desc.disk_space,
@@ -2325,6 +2339,7 @@ module.exports.readProjectList        = readProjectList;
 module.exports.writeProjectList       = writeProjectList;
 module.exports.saveProjectList        = saveProjectList;
 module.exports.delete_project         = delete_project;
+module.exports.unshare_project        = unshare_project;
 module.exports.deleteProject          = deleteProject;
 module.exports.saveDockData           = saveDockData;
 module.exports.prepareProjectExport   = prepareProjectExport;

@@ -174,7 +174,7 @@ function isProjectJoined ( login,projectDesc )  {
 }
 
 function isProjectShared ( login,projectDesc )  {
-  return (projectDesc.owner.login==login) &&
+  return ((projectDesc.owner.login==login) || (!login)) &&
          (Object.keys(projectDesc.share).length>0);
 }
 
