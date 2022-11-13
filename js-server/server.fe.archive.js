@@ -241,14 +241,14 @@ var uData       = user.suspendUser ( loginData,true,'' );
     return;
   }
 
-  if ((Object.keys(pDesc.share).length>0) || pDesc.autorun)  {
-    callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
-      code      : 'shared',
-      archiveID : archiveID,
-      message   : ''
-    }));
-    return;
-  }
+  // if ((Object.keys(pDesc.share).length>0) || pDesc.autorun)  {
+  //   callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
+  //     code      : 'shared',
+  //     archiveID : archiveID,
+  //     message   : ''
+  //   }));
+  //   return;
+  // }
 
   if (archiveID)  {
     archiveID = conf.getFEConfig().description.id.toUpperCase() + '-' + archiveID;
@@ -290,6 +290,9 @@ var uData       = user.suspendUser ( loginData,true,'' );
 
       setTimeout ( function(){
 
+        // remove project from user's account
+        var unshared_users = prj.unshare_project ( pDesc );
+
         var projectDirPath = prj.getProjectDirPath ( loginData,pDesc.name );
         var archiveDirPath = getArchiveDirPath ( adname,archiveID );
 
@@ -307,21 +310,10 @@ var uData       = user.suspendUser ( loginData,true,'' );
             };
             pAnnotation.project_name = pDesc.name;
             annotateProject ( archiveDirPath,pAnnotation );
-            /*
-            // move original project before linking; this is necessary in cases 
-            // when user choses Archive ID coinciding with project name
-            var projectDirPath_tmp = projectDirPath + '.tmp';
-            utils.moveDir ( projectDirPath,projectDirPath_tmp,true );
-            */
             // make archived project link in user's projects directory
             var linkDir   = path.resolve(prj.getProjectDirPath(loginData,archiveID));
             var linkedDir = path.resolve(archiveDirPath);
             if (utils.makeSymLink(linkDir,linkedDir))  {
-              /*
-              // remove backup job directory
-              prj.delete_project ( loginData,pDesc.name,pDesc.disk_space,
-                                   projectDirPath_tmp );
-              */
               // remove project from user's account
               prj.delete_project ( loginData,pDesc.name,pDesc.disk_space,
                                    projectDirPath );
@@ -346,16 +338,20 @@ var uData       = user.suspendUser ( loginData,true,'' );
                             projectTitle : pDesc.title
                         });
 
+              for (var i=0;i<unshared_users.length;i++)
+                emailer.sendTemplateMessage ( unshared_users[i],
+                          cmd.appName() + ' Project Archived',
+                          'shared_project_archived',{
+                              archiveID    : archiveID,
+                              projectName  : pDesc.name,
+                              projectTitle : pDesc.title
+                          });
+
             } else  {
-              /*
-              // restore from backup
-              utils.moveDir ( projectDirPath_tmp,projectDirPath,true );
-              */
               failcode = 1;
             }
 
           } else  {
-            // utils.removePath ( archiveDirPath );
             failcode = 2;
           }
 

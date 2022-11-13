@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.11.22   <--  Date of Last Modification.
+ *    13.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,57 +36,80 @@ function ProjectArchiveDialog ( projectDesc,callback_func )  {
   this.projectDesc = projectDesc;
   this.archiving_started = false;
 
-  this.makeLayout();
-
   var self = this;
-  $(this.element).dialog({
-    resizable : false,
-    height    : 'auto',
-    maxHeight : 600,
-    width     : 820,
-    modal     : true,
-    closeOnEscape : false,
-    open      : function(event,ui) {
-                  //hide close button.
-                  $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
-                },
-    buttons   : [
-      { id    : 'archdlg_archive_btn',
-        text  : 'Archive',
-        click : function() {
-                  if (self.validateData())  {
-                    new QuestionBox ( 'Confirm archiving',
-                      '<div style="width:400px"><h2>Confirm archiving</h2>' +
-                      'You are about to archive project <b>"' + projectDesc.name +
-                      '"</b>.<p>This operation cannot be undone and will take ' +
-                      '10-20 minutes for average-size projects, during which ' +
-                      'time your ' + appName() + ' account will be suspended.' +
-                      '<p>Please confirm.',[
-                        { name    : 'Yes, archive',
-                          onclick : function(){
-                            self.archiveProject();
-                          }
-                        },{
-                          name    : 'Cancel',
-                          onclick : function(){}
-                        }],'msg_confirm' );
-                  }
-                  // window.setTimeout ( function(){ callback_func(); },0 );
-                  // $( this ).dialog( "close" );
-                }
-      }, {
-        id    : 'archdlg_cancel_btn',
-        text  : 'Cancel', 
-        click : function() {
-                  if (self.archiving_started)
-                        // makeLoginPage ( __current_page.sceneId );
-                        logout ( __current_page.element.id,3 );
-                  else  $( this ).dialog( "close" );
-                }
-      }
-    ]
 
-  });
+  if (this.makeLayout())  {
+
+    $(this.element).dialog({
+      resizable : false,
+      height    : 'auto',
+      maxHeight : 600,
+      width     : 820,
+      modal     : true,
+      closeOnEscape : false,
+      open      : function(event,ui) {
+                    //hide close button.
+                    $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+                  },
+      buttons   : [
+        { id    : 'archdlg_archive_btn',
+          text  : 'Archive',
+          click : function() {
+                    if (self.validateData())  {
+                      new QuestionBox ( 'Confirm archiving',
+                        '<div style="width:400px"><h2>Confirm archiving</h2>' +
+                        'You are about to archive project <b>"' + projectDesc.name +
+                        '"</b>.<p>This operation cannot be undone and will take ' +
+                        '10-20 minutes for average-size projects, during which ' +
+                        'time your ' + appName() + ' account will be suspended.' +
+                        '<p>Please confirm.',[
+                          { name    : 'Yes, archive',
+                            onclick : function(){
+                              self.archiveProject();
+                            }
+                          },{
+                            name    : 'Cancel',
+                            onclick : function(){}
+                          }],'msg_confirm' );
+                    }
+                    // window.setTimeout ( function(){ callback_func(); },0 );
+                    // $( this ).dialog( "close" );
+                  }
+        }, {
+          id    : 'archdlg_cancel_btn',
+          text  : 'Cancel', 
+          click : function() {
+                    if (self.archiving_started)
+                          // makeLoginPage ( __current_page.sceneId );
+                          logout ( __current_page.element.id,3 );
+                    else  $( this ).dialog( "close" );
+                  }
+        }
+      ]
+
+    });
+
+  } else  {
+
+    $(this.element).dialog({
+      resizable : false,
+      height    : 'auto',
+      width     : 600,
+      modal     : true,
+      buttons   : [{
+          id    : 'archdlg_cancel_btn',
+          text  : 'Close', 
+          click : function() {
+                    if (self.archiving_started)
+                          // makeLoginPage ( __current_page.sceneId );
+                          logout ( __current_page.element.id,3 );
+                    else  $( this ).dialog( "close" );
+                  }
+      }]
+
+    });
+
+  }
 
 }
 
@@ -112,10 +135,45 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   this.grid.setImage    ( image_path('folder_cloud_archive'),'48px','48px', 1,0,1,1 );
   this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
 
-  var title = '<h2>Archive Project "' + this.projectDesc.name + '"</h2>';
-  if (this.projectDesc.archive)
-    title = '<h2>Update Archived Project ' + this.projectDesc.archive.id + '</h2>';
+  var author = getProjectAuthor ( this.projectDesc );
 
+  var title     = '<h2>Archive Project "' + this.projectDesc.name + '"</h2>';
+  var archiveID = '';
+  var coauthors = '';
+  var pdbs      = '';
+  var dois      = '';
+  var kwds      = '';
+  if (this.projectDesc.archive)  {
+    title     = '<h2>Update Archived Project ' + this.projectDesc.archive.id + '</h2>';
+    archiveID = this.projectDesc.archive.id;
+    coauthors = this.projectDesc.archive.coauthors;
+    pdbs      = this.projectDesc.archive.pdbs.join(',');
+    dois      = this.projectDesc.archive.dois.join(',');
+    kwds      = this.projectDesc.archive.kwds.join(',');
+  }
+
+  if (author!=__login_id)  {
+    this.grid.setImage ( image_path('msg_stop'),'48px','48px', 1,0,1,1 );
+    this.grid.setLabel ( title + 
+        'Projects can be archived only by their first authors. Please delegate this ' +
+        'action to your collaborator, who originally created the project.<p>' + 
+        'Read all details about ' + appName() + ' archiving ' + doclink + 
+        'here</span></a>.',
+        0,2,2,1 );        
+    return false;
+  }
+
+  if (isProjectJoined(__login_id,this.projectDesc))  {
+    this.grid.setImage ( image_path('msg_stop'),'48px','48px', 1,0,1,1 );
+    this.grid.setLabel ( title + 
+        'Projects can be archived only by their owners. Please delegate this ' +
+        'action to your collaborator, who shared this project with you.<p>' + 
+        'Read all details about ' + appName() + ' archiving ' + doclink + 
+        'here</span></a>.',
+        0,2,2,1 );        
+    return false;
+  }
+    
   this.grid.setLabel ( title + doclink + 'Read what ' + appName() + 
       ' archiving means before proceeding</span></a> and fill in the form ' +
       'below (make sure to scroll the form down to the end)',
@@ -157,11 +215,6 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
     row++,2,1,1
   );
 
-  // var d = new Date();
-  // var date_str = [ d.getDate().toString(),
-  //                  (d.getMonth()+1).toString(),
-  //                  d.getFullYear().toString() ].join('/');
-
   var sgrid = pgrid.setGrid ( '-compact', row++,2,1,1 );
 
   sgrid.setLabel ( __login_user + ':&nbsp;', 0,0,1,1 );
@@ -178,25 +231,37 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   sgrid.setVerticalAlignment ( 0,0,'middle' );
   sgrid.setVerticalAlignment ( 0,2,'middle' );
 
-
   // archive ID
 
-  pgrid.setLabel ( '&nbsp;<br><b>2. Archive ID.</b> ' +
-    'You may choose your own up to 8-character long Archive ID for your ' +
-    'project. It will be declined if already found in the archive. Leave ' +
-    'the field blank for automatic choice.',
-    row++,2,1,1
-  );
+  if (this.projectDesc.archive)
+    pgrid.setLabel ( '&nbsp;<br><b>2. Archive ID.</b> ' +
+      'Archive ID will be reused as shown below.',
+      row++,2,1,1
+    );
+  else 
+    pgrid.setLabel ( '&nbsp;<br><b>2. Archive ID.</b> ' +
+      'You may choose your own up to 8-character long Archive ID for your ' +
+      'project. It will be declined if already found in the archive. Leave ' +
+      'the field blank for automatic choice.',
+      row++,2,1,1
+    );
 
   var igrid = pgrid.setGrid ( '-compact', row++,2,1,1 );
 
   igrid.setLabel ( 'Archive ID:&nbsp;', 0,0,1,1 ).setNoWrap()
        .setFontItalic(true).setHorizontalAlignment('right');
-  this.aid_inp = igrid.setInputText ( '',0,1,1,1 ).setWidth ( '140px' )
+  this.aid_inp = igrid.setInputText ( archiveID,0,1,1,1 ).setWidth ( '140px' )
                       .setMaxInputLength(8)
-                      .setStyle ( 'text','^[A-Za-z0-9.]','MYOWN.ID',
+                      .setStyle ( 'text','','MYOWN.ID',
                                   'Archive ID may contain letters, digits and ' +
-                                  'periods. It will be capitalised.' );
+                                  'periods. It will be capitalised.' )
+                      .setReadOnly ( (archiveID.length>0) )
+                      .addOnInputListener(function(){
+                        var s = this.value.trim().toUpperCase();
+                        if (s && (!s.match(/^[0-9A-Z.]+$/)))
+                          s = s.slice(0,-1);
+                        this.value = s;
+                      });
 
   // co-authors
 
@@ -215,7 +280,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
      }
   );
   pgrid.setWidget ( this.coauthors_edt,row++,2,1,1 );
-  this.coauthors_edt.init ( '',
+  this.coauthors_edt.init ( coauthors,
     'John R. Smith, University of Nowhere, jrsmith@uninowhere.edu\n' +
     'Mary A. Berry, Nocorporation Ltd., m.a.Berry@nocorp.com'
   );
@@ -233,7 +298,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
 
   agrid.setLabel ( 'Associated PDB code(s):&nbsp;', 0,0,1,1 ).setNoWrap()
        .setFontItalic(true).setHorizontalAlignment('right');
-  this.pdb_inp = agrid.setInputText ( '',0,1,1,1 ).setWidth ( '440px' )
+  this.pdb_inp = agrid.setInputText ( pdbs,0,1,1,1 ).setWidth ( '440px' )
                      .setStyle ( 'text','','1XYZ, 2XYZ, 3XYZ, ...',
                                  'Comma-separated list of PDB codes associated ' +
                                  'with this project. Typically, specify PDB codes ' +
@@ -241,20 +306,22 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
 
   agrid.setLabel ( 'Publication DOI(s):&nbsp;', 1,0,1,1 ).setNoWrap()
        .setFontItalic(true).setHorizontalAlignment('right');
-  this.doi_inp = agrid.setInputText ( '',1,1,1,1 ).setWidth ( '440px' )
+  this.doi_inp = agrid.setInputText ( dois,1,1,1,1 ).setWidth ( '440px' )
                     .setStyle ( 'text','','10.1107/S2059798322007987, ...',
                                 'Comma-separated list of DOI of relevant ' +
                                 'publications.' );
 
   agrid.setLabel ( 'Keywords:&nbsp;', 2,0,1,1 ).setNoWrap()
        .setFontItalic(true).setHorizontalAlignment('right');
-  this.kwd_inp = agrid.setInputText ( '',2,1,1,1 ).setWidth ( '440px' )
+  this.kwd_inp = agrid.setInputText ( kwds,2,1,1,1 ).setWidth ( '440px' )
                     .setStyle ( 'text','','hydrolase, carboxypeptidase, ...',
                                 'Comma-separated list of keywords suitable for ' +
                                 'archive searches.' );
                    
   for (var r=0;r<3;r++)
     agrid.setVerticalAlignment ( r,0,'middle' );
+
+  return true;
 
 }
 
@@ -279,9 +346,9 @@ ProjectArchiveDialog.prototype.validateData = function()  {
     msg_list.push ( 'sign declaration' );
 
   this.aid = this.aid_inp.getValue().trim().toUpperCase();
-  if ((this.aid.length>0) && this.aid_inp.element.validity.patternMismatch)
-    msg_list.push ( 'provide up to 8-character long Archive ID made of letters, ' +
-                    'digits and periods, or leave blank for automatic choice' );
+  // if ((this.aid.length>0) && this.aid_inp.element.validity.patternMismatch)
+  //   msg_list.push ( 'provide up to 8-character long Archive ID made of letters, ' +
+  //                   'digits and periods, or leave blank for automatic choice' );
 
   this.coauthors = this.coauthors_edt.getText().trim();
   if ((!this.coauthors) || (this.coauthors.length<4) ||
@@ -354,13 +421,13 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
                            'who created them in first place.';
                       break;
 
-      case 'shared'    : message = '<h2>Shared Project</h2>' +
-                           'Project <b>' + self.projectDesc.name + '</b> ' +
-                           'is shared with other users. Please unshare the ' +
-                           'project with all other users before archiving ' +
-                           'and share Archive ID with your collaborators after ' +
-                           'archiving instead.';
-                      break;
+      // case 'shared'    : message = '<h2>Shared Project</h2>' +
+      //                      'Project <b>' + self.projectDesc.name + '</b> ' +
+      //                      'is shared with other users. Please unshare the ' +
+      //                      'project with all other users before archiving ' +
+      //                      'and share Archive ID with your collaborators after ' +
+      //                      'archiving instead.';
+      //                 break;
 
       case 'duplicate_project_name' :
                          message = '<h2>Duplicate Project Name</h2>' +
