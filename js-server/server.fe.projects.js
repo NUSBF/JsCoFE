@@ -512,8 +512,8 @@ var response = null;  // must become a cmd.Response object to return
   log.detailed ( 3,'get project list, login ' + loginData.login );
   var pList = readProjectList ( loginData );
   if (pList)  {
-    ration.calculate_user_disk_space ( loginData,pList );
-    // ration.calculateUserDiskSpace ( loginData );
+    // ration.calculate_user_disk_space ( loginData,pList );
+    // // ration.calculateUserDiskSpace ( loginData );
     response = new cmd.Response ( cmd.fe_retcode.ok,'',pList );
   } else
     response = new cmd.Response ( cmd.fe_retcode.readError,
@@ -1836,7 +1836,9 @@ var pData    = readProjectData ( loginData,data.name );
             writeProjectData ( loginData,pData,true );
             var pList = readProjectList ( loginData );
             if (pList)  {
+              pList.resetFolders ( loginData.login );
               pList.current = data.new_name;
+              pList.setCurrentFolder ( pList.findFolder(pDesc.folderPath) );
               writeProjectList ( loginData,pList );
             }
           }

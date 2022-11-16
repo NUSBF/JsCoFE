@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.06.22   <--  Date of Last Modification.
+ *    15.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,6 +37,20 @@ function shareProject ( projectDesc,callback_func )  {
                      'Only Project owner (<b>' + author +
                      '</b>) can share this Project.',
                      'msg_information');
+    callback_func ( null );
+    return;
+  }
+
+  if (projectDesc.archive && projectDesc.archive.in_archive)  {
+    new MessageBox ( 'Archived Project',
+      '<div style="width:450px"><h2>Archived Project</h2>Projects in ' + 
+      appName() + ' Archive cannot be shared. Instead, your collaborators ' +
+      'can access this project directly from Archive by project\'s ' +
+      'Archive ID.<p>' +
+      'If you intend to develop this project further, clone it and work on ' +
+      'the clone, which may be also shared with others. Note that you won\'t ' +
+      'be able to update project in ' + appName() + ' Archive from that clone ' +
+      'unless you are the original depositor.', 'msg_stop' );
     callback_func ( null );
     return;
   }

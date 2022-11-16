@@ -28,7 +28,14 @@ function startSession ( sceneId,dev_switch )  {
   // set jsrview path, which is used in jsrview iframes
   _jsrview_uri = 'js-lib/jsrview/';
 
-  // check whether session was started to load a demo project
+  // check whether session was started to load a demo project or archived project
+  //
+  // Example of URL with specification of a demo project:
+  // https://cloud.ccp4.ac.uk/manuals/demo_project.html?cmount=Tutorials&project=D01.%20Simple%20Auto-MR%20with%20MORDA
+  //
+  // Example of URL with specification of archive project:
+  // https://cloud.ccp4.ac.uk/manuals/archive.html?id=CCP4-XXX.YYYY
+  //
   var url_search = window.location.search;
   if (url_search)  {
     var url_plist    = decodeURI(url_search).split('?').pop().split('&');
@@ -255,6 +262,12 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                 case 2 :  makeAccountPage     ( sceneId );  break;
 
                 case 101: new HopOnDemoProjectDialog ( function(){
+                            makeProjectPage ( sceneId );
+                          });
+                        break;
+
+                case 102: // load archived project, archiveID=__url_parameters.id
+                          new HopOnDemoProjectDialog ( function(){
                             makeProjectPage ( sceneId );
                           });
                         break;

@@ -256,8 +256,10 @@ function LoginPage ( sceneId )  {
     } else  {
 
       var page_switch = 0;
-      if (__url_parameters)
-        page_switch = 101;
+      if (__url_parameters)  {
+        if ('id' in __url_parameters)  page_switch = 102;
+                                 else  page_switch = 101;
+      }
       login ( login_inp.getValue(),pwd_inp.getValue(),sceneId,page_switch );
 
     }
