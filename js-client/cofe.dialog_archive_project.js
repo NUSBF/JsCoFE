@@ -173,6 +173,20 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
         0,2,2,1 );        
     return false;
   }
+
+  if (this.projectDesc.archive && 
+      (this.projectDesc.archive.depositor.login!=__login_id))  {
+    this.grid.setImage ( image_path('msg_stop'),'48px','48px', 1,0,1,1 );
+    this.grid.setLabel ( title + 
+        'Projects can be updated in ' + appName() + ' Archive only by their ' +
+        'original depositors. Please delegate this action to your collaborator, ' +
+        'who archived first version of this project.<p>' + 
+        'Read all details about ' + appName() + ' archiving ' + doclink + 
+        'here</span></a>.',
+        0,2,2,1 );        
+    return false;
+  }
+
     
   this.grid.setLabel ( title + doclink + 'Read what ' + appName() + 
       ' archiving means before proceeding</span></a> and fill in the form ' +
@@ -251,17 +265,20 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   igrid.setLabel ( 'Archive ID:&nbsp;', 0,0,1,1 ).setNoWrap()
        .setFontItalic(true).setHorizontalAlignment('right');
   this.aid_inp = igrid.setInputText ( archiveID,0,1,1,1 ).setWidth ( '140px' )
-                      .setMaxInputLength(8)
                       .setStyle ( 'text','','MYOWN.ID',
                                   'Archive ID may contain letters, digits and ' +
                                   'periods. It will be capitalised.' )
-                      .setReadOnly ( (archiveID.length>0) )
                       .addOnInputListener(function(){
                         var s = this.value.trim().toUpperCase();
                         if (s && (!s.match(/^[0-9A-Z.]+$/)))
                           s = s.slice(0,-1);
                         this.value = s;
                       });
+  if (this.projectDesc.archive)
+        this.aid_inp.setReadOnly(true);
+  else  this.aid_inp.setMaxInputLength(8);
+
+
 
   // co-authors
 
@@ -419,6 +436,12 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
       case 'not_owner' : message = '<h2>No privileges</h2>' +
                            'Projects can be archived only by their owners, ' +
                            'who created them in first place.';
+                      break;
+
+      case 'not_depositor' : 
+                         message = '<h2>No privileges</h2>' +
+                           'Projects can be updated in ' + appName() + 
+                           ' Archive only by their original depositors.';
                       break;
 
       // case 'shared'    : message = '<h2>Shared Project</h2>' +

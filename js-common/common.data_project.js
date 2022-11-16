@@ -114,6 +114,7 @@ function ProjectDesc()  {
   // this.archive = {
   //   id           : '',   // archive ID
   //   version      : 0,    // archived project version
+  // . date         : [version dates in ms],
   //   in_archive   : true, // false if project is cloned and revised in My Projects
   //   depositor    : {
   //     login : '',  // login name of depositor

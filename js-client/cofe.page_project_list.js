@@ -219,7 +219,7 @@ function ProjectListPage ( sceneId )  {
           self.loadProjectList1();
       });
     } else if (__current_folder.path.startsWith(owners_folder) ||
-        (__current_folder.type==folder_type.all_projects))  {
+               (__current_folder.type==folder_type.all_projects))  {
       _add_project();
     } else  {
       new QuestionBox (

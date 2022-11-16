@@ -183,8 +183,12 @@ var pData = utils.readObject ( projectDataPath );
     if (pDesc.archive.id!=pAnnotation.id)
       return 'archive IDs do not match';
     pAnnotation.version = pDesc.archive.version + 1;
-  } else
+    pAnnotation.date    = pDesc.archive.date;
+  } else {
     pAnnotation.version = 1;
+    pAnnotation.date    = [];
+  }
+  pAnnotation.date.push ( Date.now() );
 
   pDesc.archive = pAnnotation;
   pDesc.name    = pDesc.archive.id;
@@ -241,6 +245,15 @@ var uData       = user.suspendUser ( loginData,true,'' );
     return;
   }
 
+  if (pDesc.archive && (pDesc.archive.depositor.login!=loginData.login))  {
+    callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
+      code      : 'not_depositor',
+      archiveID : archiveID,
+      message   : ''
+    }));
+    return;
+  }
+
   // if ((Object.keys(pDesc.share).length>0) || pDesc.autorun)  {
   //   callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
   //     code      : 'shared',
@@ -251,7 +264,9 @@ var uData       = user.suspendUser ( loginData,true,'' );
   // }
 
   if (archiveID)  {
-    archiveID = conf.getFEConfig().description.id.toUpperCase() + '-' + archiveID;
+    var instanceID = conf.getFEConfig().description.id.toUpperCase();
+    if (!archiveID.startsWith(instanceID))
+      archiveID = instanceID + '-' + archiveID;
     if (findArchivedProject(archiveID))  {
       callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
         code      : 'duplicate_archive_id',
@@ -301,9 +316,9 @@ var uData       = user.suspendUser ( loginData,true,'' );
           var failcode = 0;
           if (!err)  {
             // put archive metadata in project description, lock jobs for deletion
-            pAnnotation.id = archiveID;
+            pAnnotation.id         = archiveID;
             pAnnotation.in_archive = true;
-            pAnnotation.depositor = {
+            pAnnotation.depositor  = {
               login : loginData.login,  // login name of depositor
               name  : uData.name,       // depositor's name
               email : uData.email       // depositor's email

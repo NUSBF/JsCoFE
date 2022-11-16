@@ -143,6 +143,7 @@ class Pdbredo(basic.TaskDriver):
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
         xyzin = istruct.getXYZFilePath ( self.inputDir() )
+        hklin = hkl    .getHKLFilePath ( self.inputDir() )
         libin = istruct.getLibFilePath ( self.inputDir() )
 
         xyzout = self.getXYZOFName()
