@@ -391,7 +391,7 @@ ProjectArchiveDialog.prototype.validateData = function()  {
   if (this.kwds.length<=0)
     msg_list.push ( 'provide valid non-empty keyword(s) annotation' );
 
-  return true;
+  // return true;
 
   if (msg_list.length>0)  {
     new MessageBox ( 'Invalid input',
