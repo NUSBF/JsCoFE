@@ -1184,8 +1184,7 @@ var userFilePath = getUserDataFName ( loginData );
 
 
 function suspendUser ( loginData,suspend_bool,message )  {
-var uDataFile = getUserDataFName ( loginData );
-var uData     = readUserData ( loginData );
+var uData = readUserData ( loginData );
   if (uData)  {
     var ulogin = uData.login;
     if (suspend_bool)  {
@@ -1195,7 +1194,7 @@ var uData     = readUserData ( loginData );
       uData.login = uData.login.replace ( __suspend_prefix,'' );
     if (message)
       uData.onlogin_message = message;
-    utils.writeObject ( uDataFile,uData );  // commit
+    utils.writeObject ( getUserDataFName(loginData),uData );  // commit
   }
   return uData;
 }
