@@ -518,6 +518,7 @@ class TaskDriver(object):
 
     def putWaitMessageLF ( self,message_str ):
         gridId = "wait_message_" + str(self.widget_no)
+        pyrvapi.rvapi_set_text ( "&nbsp;",self.report_page_id(),self.rvrow,0,1,1 )
         pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),self.rvrow,0,1,1 )
         # pyrvapi.rvapi_set_text ( "<font style='font-size:120%;'>" + message_str +
         #                          "</font>",gridId,0,0,1,1 )
