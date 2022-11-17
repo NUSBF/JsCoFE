@@ -265,18 +265,24 @@ var uData       = user.suspendUser ( loginData,true,'' );
   //   return;
   // }
 
+  var archLocation = [null,null];
   if (archiveID)  {
     var instanceID = conf.getFEConfig().description.id.toUpperCase();
     if (!archiveID.startsWith(instanceID))
       archiveID = instanceID + '-' + archiveID;
-    if (findArchivedProject(archiveID)[0])  {
-      user.suspendUser ( loginData,false,'' );
-      callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
-        code      : 'duplicate_archive_id',
-        archiveID : archiveID,
-        message   : ''
-      }));
-      return;
+    archLocation = findArchivedProject ( archiveID );
+    if (archLocation[0])  { 
+      // project with given archiveID already exists; is this a clash or update?
+      if (!pDesc.archive)  {
+        // 
+        user.suspendUser ( loginData,false,'' );
+        callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
+          code      : 'duplicate_archive_id',
+          archiveID : archiveID,
+          message   : ''
+        }));
+        return;
+        }
     }
     if (utils.dirExists(prj.getProjectDirPath(loginData,archiveID)))  {
       user.suspendUser ( loginData,false,'' );
