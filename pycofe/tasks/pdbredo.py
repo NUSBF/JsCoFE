@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.11.22   <--  Date of Last Modification.
+#    17.11.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,13 +30,15 @@ import os
 # import uuid
 import shutil
 import json
+import time
+import requests
 # from typing_extensions import Self
 
 # import gemmi
 
 #  application imports
 from . import basic
-# from   pycofe.dtypes    import dtype_template
+from   pycofe.dtypes    import dtype_template
 from   pycofe.proc      import qualrep
 from   pycofe.proc      import PDBRedoAPIAuth
 from   pycofe.verdicts  import verdict_refmac
@@ -50,6 +52,8 @@ class Pdbredo(basic.TaskDriver):
     # redefine name of input script file
 
     #def file_stdin_path(self):  return "pdbredo.script"
+
+    row0 = 0
 
     # ------------------------------------------------------------------------
 
@@ -77,55 +81,145 @@ class Pdbredo(basic.TaskDriver):
         # Prepare  input
 
 
-
-
     PDBREDO_URI = 'https://services.pdb-redo.eu:443'
+    token_id     = 204
+    token_secret = "xGLbe2pVhF2POfNB0oqrw"
 
-    def do_submit(self,xyzin,hklin,restrains,sequence):
+    def do_submit(self,xyzin,hklin,token_id,token_secret, PDBREDO_URI):
+        
         # The token id and secret for a session at PDB-REDO    
-        token_id     = 220
-        token_secret = "IPXqH5e5gWX10jIhvJcpHg"
+        
 
         # The authentication object, used by the requests module
         auth = PDBRedoAPIAuth.PDBRedoAPIAuth(token_id, token_secret)
 
         # The files to submit
-        xyzin = self.makeClass ( self.input_data.data.ixyz[0] )
-        hklin = self.makeClass ( self.input_data.data.hkl     [0] )
-        paired = True  # just a guess, to find out what is this!
+        # xyzin = self.makeClass ( self.input_data.data.ixyz[0] )
+        # hklin = self.makeClass ( self.input_data.data.hkl     [0] )
+        # paired = True  # just a guess, to find out what is this!
 
         files = {
             'pdb-file': open(xyzin, 'rb'),
             'mtz-file': open(hklin, 'rb')
         }
         
-        if (restrains != None):
-            files['restraints-file'] = open(restrains, 'rb')
+        # if (restrains != None):
+        #     files['restraints-file'] = open(restrains, 'rb')
         
-        if (sequence != None):
-            files['sequence-file'] = open(sequence, 'rb')
+        # if (sequence != None):
+        #     files['sequence-file'] = open(sequence, 'rb')
 
         # Optional parameters, currently there's only one:
-        params = {
-            'paired': paired
-        }
+        # params = {
+        #     'paired': paired
+        # }
             
         # Create a new job/run
         # r = requests.post(args.url + "/api/session/{token_id}/run".format(token_id = token_id), auth = auth, files = files, data = {'parameters': json.dumps(params)})
-        r = requests.post(PDBREDO_URI + "/api/session/{token_id}/run".format(token_id = token_id), auth = auth, files = files, data = {'parameters': json.dumps(params)})
+        r = requests.post(PDBREDO_URI + "/api/session/{token_id}/run".format(token_id = token_id), auth = auth, files = files)
         r.raise_for_status()
 
         run_id = r.json()['id']
-        self.stdoutln ( "Job submitted with id", run_id )
+        self.rvrow = self.row0
+        self.putWaitMessageLF( "Job submitted with id " + str(run_id) )
 
-        return 
+        return str(run_id)
+
+    # def do_check():
+    #     return True
+
+    def do_status ( self, token_id, token_secret, PDBREDO_URI, run_id):
+    # The token id and secret for a session at PDB-REDO  
+        # self.stdoutln ( "test how it transfered " + str(run_id) )      
+        # token_id = args.token_id
+        # token_secret = args.token_secret
+
+        # The authentication object, used by the requests module
+        auth = PDBRedoAPIAuth.PDBRedoAPIAuth(token_id, token_secret)
+
+        # The job ID
+        # run_id = args.job_id
+
+        done = False
 
 
-    def do_check():
-        return True
+        while done == False: 
 
-    def do_fetch():
+            time.sleep ( 60 )
+
+            r = requests.get(PDBREDO_URI + "/api/session/{token_id}/run/{run_id}".format(token_id = token_id, run_id = run_id), auth = auth)
+            r.raise_for_status()
+
+            status = r.json()['status']
+            self.rvrow = self.row0
+            self.putWaitMessageLF ("Job status is "+ str(status))
+
+            if status == 'stopped':
+                # self.rvrow = self.row0
+                # self.putWaitMessageLF ("Job status is "+ str(status))
+                done == True
+                # raise ValueError('The job somehow failed after submitting')
+            
+            if status == 'ended':
+                # self.rvrow = self.row0
+                # self.putWaitMessageLF ("Job status is "+ str(status))
+                done == True
+
+                
+        # status = r.json()['status']
+        time.sleep(5)
+
+        return status
+
+        
+
+    def do_fetch(self, token_id, token_secret,run_id, PDBREDO_URI):
+    # The token id and secret for a session at PDB-REDO    
+        token_id = token_id
+        token_secret = token_secret
+
+        self.putWaitMessageLF ('do_fetch')
+
+
+        # The authentication object, used by the requests module
+        auth = PDBRedoAPIAuth.PDBRedoAPIAuth(token_id, token_secret)
+        
+        # The job ID
+        # run_id = args.job_id
+
+        r = requests.get(PDBREDO_URI + "/api/session/{token_id}/run/{run_id}/output".format(token_id = token_id, run_id = run_id), auth = auth)
+
+        if (not r.ok):
+            raise ValueError("Failed to receive the output file list")
+
+        for file in r.json():
+            self.stdoutln (str(file))
+
+        # Retrieve a single result file. Here you would probably like to retrieve more files
+        r = requests.get(PDBREDO_URI + "/api/session/{token_id}/run/{run_id}/output/process.log".format(token_id = token_id, run_id = run_id), auth = auth)
+
+        if (not r.ok):
+            raise ValueError("Failed to receive the process log")
+
+        self.stdoutln (str(r.text))
+
         return
+
+        # Retrieve zip
+        # r = requests.get(PDBREDO_URI + "/api/session/{token_id}/run/{run_id}/output/zipped".format(token_id = token_id, run_id = run_id), auth = auth)
+        # r.raise_for_status()
+
+        # output = output
+        # if (output== None):
+        #     output = '/tmp/result.zip'
+
+        # with open(output, 'wb') as f:
+        #     f.write(r.content)
+
+        # xyzout = self.getXYZOFName()
+        # mtzout = self.getMTZOFName()
+
+        # return xyzout, mtzout
 
     # ------------------------------------------------------------------------
 
@@ -141,9 +235,10 @@ class Pdbredo(basic.TaskDriver):
         revision = self.makeClass ( self.input_data.data.revision[0] )
         hkl      = self.makeClass ( self.input_data.data.hkl     [0] )
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
+        
 
         xyzin = istruct.getXYZFilePath ( self.inputDir() )
-        hklin = hkl    .getHKLFilePath ( self.inputDir() )
+        hklin = hkl.getHKLFilePath ( self.inputDir() )
         libin = istruct.getLibFilePath ( self.inputDir() )
 
         xyzout = self.getXYZOFName()
@@ -152,11 +247,31 @@ class Pdbredo(basic.TaskDriver):
         # self.pdbredo_token_id
         # self.pdbredo_token_secret
 
-        # imitate PDBREDO
-        #  ==================================
-        shutil.copyfile ( xyzin,xyzout )
-        shutil.copyfile ( istruct.getMTZFilePath(self.inputDir()),mtzout )
-        #  ==================================
+        token_id     = 221
+        token_secret = "wD5sfnuBpU9iDJ1BetPn3w"
+
+        PDBREDO_URI = 'https://services.pdb-redo.eu:443'
+
+        # # imitate PDBREDO
+        # #  ==================================
+        # shutil.copyfile ( xyzin,xyzout )
+        # shutil.copyfile ( istruct.getMTZFilePath(self.inputDir()),mtzout )
+        # #  ==================================
+
+        self.row0 = self.rvrow
+        self.putWaitMessageLF ( "submitting to PDB REDO server " )
+
+        run_id = self.do_submit(xyzin,hklin,token_id,token_secret, PDBREDO_URI)
+
+        end_status = self.do_status(token_id, token_secret, PDBREDO_URI, run_id)
+        #if status ended or stopped
+
+        self.putWaitMessageLF ("after do_satus finished "+ str(end_status))
+
+        self.do_fetch(token_id, token_secret,run_id, PDBREDO_URI)
+        
+        self.putWaitMessageLF ('do_fetch eneded')
+
 
         # result = do_submit()
         # if result is good:
