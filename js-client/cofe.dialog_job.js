@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.22   <--  Date of Last Modification.
+ *    17.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -705,6 +705,11 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
           dlg.run_btn.setEnabled ( false );
           if (dlg.autorun_cbx)
             dlg.autorun_cbx.setEnabled ( false );
+          dlg.close_btn.setEnabled ( true  );
+        } else if (e.detail=='show_run_button')  {
+          dlg.run_btn.setEnabled ( true );
+          if (dlg.autorun_cbx)
+            dlg.autorun_cbx.setEnabled ( true );
           dlg.close_btn.setEnabled ( true  );
         } else if (e.detail=='upload_started')  {
           dlg.run_btn.setEnabled ( false );

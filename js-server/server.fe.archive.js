@@ -135,12 +135,12 @@ let   cursor = 0;
 
 function findArchivedProject ( archiveID )  {
 var aconf = conf.getFEConfig().archivePath;
-var archPrjPath = null;
+var archPrjPath = [null,null];
 
   for (var fsn in aconf)  {
     var apath = path.join ( aconf[fsn].path,archiveID );
     if (utils.dirExists(apath))  {
-      archPrjPath = apath;
+      archPrjPath = [apath,fsn];
       break;
     }
   }
@@ -160,7 +160,7 @@ var sid = conf.getFEConfig().description.id.toUpperCase();
   while (!aid) {
     aid = randomString ( 7,'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789' );
     aid = sid + '-' + aid.slice(0,3) + '.' + aid.slice(3);
-    if (findArchivedProject(aid) || 
+    if (findArchivedProject(aid)[0] || 
         utils.dirExists(prj.getProjectDirPath(loginData,aid)))
       aid = null
   }
@@ -237,6 +237,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
   }
 
   if (pDesc.owner.login!=loginData.login)  {
+    user.suspendUser ( loginData,false,'' );
     callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
       code      : 'not_owner',
       archiveID : archiveID,
@@ -246,6 +247,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
   }
 
   if (pDesc.archive && (pDesc.archive.depositor.login!=loginData.login))  {
+    user.suspendUser ( loginData,false,'' );
     callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
       code      : 'not_depositor',
       archiveID : archiveID,
@@ -267,7 +269,8 @@ var uData       = user.suspendUser ( loginData,true,'' );
     var instanceID = conf.getFEConfig().description.id.toUpperCase();
     if (!archiveID.startsWith(instanceID))
       archiveID = instanceID + '-' + archiveID;
-    if (findArchivedProject(archiveID))  {
+    if (findArchivedProject(archiveID)[0])  {
+      user.suspendUser ( loginData,false,'' );
       callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
         code      : 'duplicate_archive_id',
         archiveID : archiveID,
@@ -276,6 +279,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
       return;
     }
     if (utils.dirExists(prj.getProjectDirPath(loginData,archiveID)))  {
+      user.suspendUser ( loginData,false,'' );
       callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
         code      : 'duplicate_project_name',
         archiveID : archiveID,
@@ -417,7 +421,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
 
 function accessArchivedProject ( loginData,data )  {
 var archiveID   = data.archiveID;
-var archPrjPath = findArchivedProject(archiveID);
+var archPrjPath = findArchivedProject(archiveID)[0];
 
   // 1. Check that requested project exists in the archive
 
