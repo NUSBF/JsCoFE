@@ -90,33 +90,41 @@ function getArchiveDirPath ( archDiskName,archiveID )  {
   return path.join ( conf.getFEConfig().archivePath[archDiskName].path,archiveID );
 }
 
-function chooseArchiveDisk ( req_size,callback_func )  {
-var adisks  = Object.entries ( conf.getFEConfig().archivePath );
-var fsname0 = null;
-var ffree   = 0.0;
+function chooseArchiveDisk ( archLocation,req_size,callback_func )  {
 
-  function _check_disks ( n )  {
-    if (n<adisks.length)  {
-      var fspath = path.resolve ( adisks[n][1].path );
-      checkDiskSpace(fspath).then ( (diskSpace) => {
-          var dfree = diskSpace.free/(1024.0*1024.0);  // MBytes
-          var dnoise = Math.random();
-          dfree -= dnoise;  // for choosing different disks in tests
-          var dsize = diskSpace.size/(1024.0*1024.0);  // MBytes
-          var rf = (dfree - adisks[n][1].diskReserve) /
-                   (dsize - adisks[n][1].diskReserve);
-          if ((rf>ffree) && (dfree>req_size))  {
-            ffree   = rf;
-            fsname0 = adisks[n][0];
+  if (archLocation[1])  {
+
+    callback_func ( archLocation[1] );
+
+  } else  {
+    var adisks  = Object.entries ( conf.getFEConfig().archivePath );
+    var fsname0 = null;
+    var ffree   = 0.0;
+
+    function _check_disks ( n )  {
+      if (n<adisks.length)  {
+        var fspath = path.resolve ( adisks[n][1].path );
+        checkDiskSpace(fspath).then ( (diskSpace) => {
+            var dfree = diskSpace.free/(1024.0*1024.0);  // MBytes
+            var dnoise = Math.random();
+            dfree -= dnoise;  // for choosing different disks in tests
+            var dsize = diskSpace.size/(1024.0*1024.0);  // MBytes
+            var rf = (dfree - adisks[n][1].diskReserve) /
+                    (dsize - adisks[n][1].diskReserve);
+            if ((rf>ffree) && (dfree>req_size))  {
+              ffree   = rf;
+              fsname0 = adisks[n][0];
+            }
+            _check_disks ( n+1 );
           }
-          _check_disks ( n+1 );
-        }
-      );
-    } else
-      callback_func ( fsname0 );
-  }
+        );
+      } else
+        callback_func ( fsname0 );
+    }
 
-  _check_disks(0);
+    _check_disks(0);
+  
+  }
 
 }
 
@@ -274,7 +282,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
     if (archLocation[0])  { 
       // project with given archiveID already exists; is this a clash or update?
       if (!pDesc.archive)  {
-        // 
+        // project was not archived before, so this is a clash
         user.suspendUser ( loginData,false,'' );
         callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
           code      : 'duplicate_archive_id',
@@ -282,8 +290,18 @@ var uData       = user.suspendUser ( loginData,true,'' );
           message   : ''
         }));
         return;
-        }
+      } else if (pDesc.archive.id!=archiveID)  {
+        // project was previously archived, but id does not match -- error
+        user.suspendUser ( loginData,false,'' );
+        callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
+          code      : 'unmatched_archive_id',
+          archiveID : archiveID,
+          message   : ''
+        }));
+        return;
+      }
     }
+    // check whether archive ID clashes with one of user's project name
     if (utils.dirExists(prj.getProjectDirPath(loginData,archiveID)))  {
       user.suspendUser ( loginData,false,'' );
       callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
@@ -299,7 +317,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
   log.standard ( 1,'archive project ' + pDesc.name + ', archive ID ' + 
                    archiveID + ', login ' + loginData.login );
 
-  chooseArchiveDisk ( pDesc.disk_space,function(adname){
+  chooseArchiveDisk ( archLocation,pDesc.disk_space,function(adname){
 
     if (!adname)  {  // disk name null -- no space or misconfiguration
 
