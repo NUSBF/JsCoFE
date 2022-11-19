@@ -240,10 +240,10 @@ def runParrot(driver):
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Density Modification with Parrot')
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.01:')
+    # sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.01:')
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.02:')
-    time.sleep(1)
+    # sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.02:')
+    # time.sleep(1)
 
 
     # There are several forms - active and inactive. We need one displayed.
