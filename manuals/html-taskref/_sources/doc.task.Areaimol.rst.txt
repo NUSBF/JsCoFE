@@ -1,0 +1,15 @@
+========
+AREAIMOL
+========
+
+AREAIMOL calculates the solvent-accessible surface area by generating surface points on an extended sphere about each atom (at a distance from the atom centre equal to the sum of the atom and probe radii) and eliminating those that lie within equivalent spheres associated with neighbouring atoms.
+
+AREAIMOL finds the solvent-accessible area of atoms in a PDB coordinate file and summarises the accessible area by residue, by chain and for the whole molecule. It will also calculate the contact area (the area in square angstroms on the Van der Waals surface of an atom that can be contacted by a sphere of the given probe radius). It will attempt to identify isolated areas of the surface (which could be cavities either within the molecule or formed as a result of intermolecular contacts).
+
+It is capable of excluding specified residues from the calculations, and of generating symmetry-related molecules. It can also be used to compare accessible areas and analyse area differences.
+
+Read more `here <https://www.ccp4.ac.uk/html/areaimol.html>`_ 
+
+.. note::
+        The task uses XYZ data from the chosen input object and does not create any output data objects. All output is found in the *Main Log* tab and may be downloaded as a text file using 
+        the *Download* button provided in the main *Report* tab.
