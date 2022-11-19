@@ -302,7 +302,8 @@ var uData       = user.suspendUser ( loginData,true,'' );
       }
     }
     // check whether archive ID clashes with one of user's project name
-    if (utils.dirExists(prj.getProjectDirPath(loginData,archiveID)))  {
+    var checkPath = prj.getProjectDirPath ( loginData,archiveID );
+    if (utils.dirExists(checkPath) && (!utils.isSymbolicLink(checkPath)))  {
       user.suspendUser ( loginData,false,'' );
       callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
         code      : 'duplicate_project_name',
@@ -356,6 +357,8 @@ var uData       = user.suspendUser ( loginData,true,'' );
             // make archived project link in user's projects directory
             var linkDir   = path.resolve(prj.getProjectDirPath(loginData,archiveID));
             var linkedDir = path.resolve(archiveDirPath);
+            if (utils.isSymbolicLink(linkDir))
+              utils.removeFile ( linkDir );
             if (utils.makeSymLink(linkDir,linkedDir))  {
               // remove project from user's account
               prj.delete_project ( loginData,pDesc.name,pDesc.disk_space,
@@ -390,13 +393,11 @@ var uData       = user.suspendUser ( loginData,true,'' );
                               projectTitle : pDesc.title
                           });
 
-            } else  {
+            } else
               failcode = 1;
-            }
 
-          } else  {
+          } else
             failcode = 2;
-          }
 
           if (failcode)  {
             utils.removePath ( archiveDirPath );
