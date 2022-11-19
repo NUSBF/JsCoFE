@@ -8,7 +8,6 @@ Task Reference
 ==============
 
 .. toctree::
-   :numbered:
    :maxdepth: 2
 
    Workflows
