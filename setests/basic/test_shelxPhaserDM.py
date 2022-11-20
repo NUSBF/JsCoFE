@@ -310,10 +310,10 @@ def runAcorn(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Phase Refinement and Dynamic Density Modification')
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.01:')
+    # sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.01:')
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.02:')
-    time.sleep(1)
+    # sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.02:')
+    # time.sleep(1)
 
 
     # There are several forms - active and inactive. We need one displayed.
@@ -378,10 +378,10 @@ def startShelxDM(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification and')
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.01:')
+    # sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.01:')
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.02:')
-    time.sleep(1)
+    # sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.02:')
+    # time.sleep(1)
 
     inputScaterer = driver.find_elements_by_xpath("//input[@title='The total number of density modification cycles']")
     inputScaterer[-1].click()
