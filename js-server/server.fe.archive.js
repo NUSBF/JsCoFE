@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.11.22   <--  Date of Last Modification.
+ *    20.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,10 +34,10 @@ const cmd       = require('../js-common/common.commands');
 const user      = require('./server.fe.user');
 const prj       = require('./server.fe.projects');
 const task_t    = require('../js-common/tasks/common.tasks.template');
+const ration    = require('./server.fe.ration');
 const emailer   = require('./server.emailer');
 // const com_utils = require('../js-common/common.utils');
 // var send_dir  = require('./server.send_dir');
-// var ration    = require('./server.fe.ration');
 // var fcl       = require('./server.fe.facilities');
 // var class_map = require('./server.class_map');
 // var rj        = require('./server.fe.run_job');
@@ -47,44 +47,6 @@ const emailer   = require('./server.emailer');
 const log = require('./server.log').newLog(27);
 
 // ==========================================================================
-/*
-const archiveIndexFile = 'archive.meta';
-
-var archive_index = null;
-
-
-// ==========================================================================
-
-function writeArchiveIndex()  {
-  if (archive_index)
-    for (var fsname in archive_index)
-      utils.writeObject (
-          path.join ( archive_index[fsname].path,archiveIndexFile ),
-          archive_index[fsname].index
-      );
-}
-
-function readArchiveIndex()  {
-  if (!archive_index)  {
-    var archivePath = conf.getFEConfig().archivePath;
-    if (archivePath)  {
-      for (var fsname in archivePath)  {
-        archive_index[fsname] = {};
-        archive_index[fsname].path = archivePath[fsname].path;
-        archive_index[fsname].type = archivePath[fsname].type;
-        archive_index[fsname].diskReserve = archivePath[fsname].diskReserve;
-        archive_index[fsname].index = utils.readObject (
-            path.join ( archive_index[fsname].path,archiveIndexFile )
-        );
-        if (!archive_index[fsname].index)
-          archive_index[fsname].index = {};
-      }
-      writeArchiveIndex();
-    }
-  }
-}
-
-*/
 
 function getArchiveDirPath ( archDiskName,archiveID )  {
   return path.join ( conf.getFEConfig().archivePath[archDiskName].path,archiveID );
@@ -227,6 +189,7 @@ var pData = utils.readObject ( projectDataPath );
 // --------------------------------------------------------------------------
 
 function archiveProject ( loginData,data,callback_func )  {
+var uRation     = ration.getUserRation ( loginData );
 var pDesc       = data.pdesc;
 var pAnnotation = data.annotation;
 var archiveID   = pAnnotation.id.toUpperCase();
@@ -274,6 +237,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
   // }
 
   var archLocation = [null,null];
+  var update = false;
   if (archiveID)  {
     var instanceID = conf.getFEConfig().description.id.toUpperCase();
     if (!archiveID.startsWith(instanceID))
@@ -290,15 +254,19 @@ var uData       = user.suspendUser ( loginData,true,'' );
           message   : ''
         }));
         return;
-      } else if (pDesc.archive.id!=archiveID)  {
-        // project was previously archived, but id does not match -- error
-        user.suspendUser ( loginData,false,'' );
-        callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
-          code      : 'unmatched_archive_id',
-          archiveID : archiveID,
-          message   : ''
-        }));
-        return;
+      } else   {
+        // project was previously archived, this is updates
+        update = true;
+        if (pDesc.archive.id!=archiveID)  {
+          // project was previously archived, but id does not match -- error
+          user.suspendUser ( loginData,false,'' );
+          callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
+            code      : 'unmatched_archive_id',
+            archiveID : archiveID,
+            message   : ''
+          }));
+          return;
+        }
       }
     }
     // check whether archive ID clashes with one of user's project name
@@ -314,6 +282,18 @@ var uData       = user.suspendUser ( loginData,true,'' );
     }
   } else
     archiveID = makeArchiveID ( loginData );
+
+
+  if ((!update) && (!uRation.checkArchiveQuota()))  {
+    user.suspendUser ( loginData,false,'' );
+    callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',{
+      code      : 'no_quota',
+      archiveID : archiveID,
+      message   : ''
+    }));
+    return;
+  }
+
 
   log.standard ( 1,'archive project ' + pDesc.name + ', archive ID ' + 
                    archiveID + ', login ' + loginData.login );
@@ -357,10 +337,12 @@ var uData       = user.suspendUser ( loginData,true,'' );
             // make archived project link in user's projects directory
             var linkDir   = path.resolve(prj.getProjectDirPath(loginData,archiveID));
             var linkedDir = path.resolve(archiveDirPath);
-            if (utils.isSymbolicLink(linkDir))
+            if (update && utils.isSymbolicLink(linkDir))
               utils.removeFile ( linkDir );
             if (utils.makeSymLink(linkDir,linkedDir))  {
               // remove project from user's account
+              uRation.bookArchive();
+              ration.saveUserRation ( loginData,uRation );
               prj.delete_project ( loginData,pDesc.name,pDesc.disk_space,
                                    projectDirPath );
               // update archive tables

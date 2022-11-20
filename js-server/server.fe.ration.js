@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.10.22   <--  Date of Last Modification.
+ *    20.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -57,12 +57,12 @@ var r     = utils.readObject ( fpath );
     utils.writeObject ( fpath,r );
   } else  {
     var modified = false;
-    if (!('archive_year' in r))  {
+    if (!('archives' in r))  {
       var cfg = conf.getFEConfig();
       if (cfg.hasOwnProperty('ration'))
             r.archive_year = cfg.ration.archive_year;
       else  r.archive_year = 5;
-      r.archive_year_used = 0;
+      r.archives = [];
       modified = true;
     }
     if (!('cloudrun_day' in r))  {
@@ -81,6 +81,7 @@ var r     = utils.readObject ( fpath );
       modified = true;
     }
     r = class_map.makeClass ( r );
+    r.checkArchiveQuota();
     if (r.calculateTimeRation() || modified)
       utils.writeObject ( fpath,r );
   }

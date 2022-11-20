@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    19.11.22   <--  Date of Last Modification.
+ *    20.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -66,7 +66,8 @@ function UserRation ( cfg_ration=null )  {
     this.archive_year = cfg_ration.archive_year;
   }
 
-  this.jobs = [];
+  this.jobs     = [];
+  this.archives = [];
 
   // usage
   this.storage_used      = 0.0;  // MBytes, actually used
@@ -74,7 +75,6 @@ function UserRation ( cfg_ration=null )  {
   this.cpu_month_used    = 0.0;  // hours, actually used
   this.cpu_total_used    = 0.0;  // hours, actually used
   this.cloudrun_day_used = 0;    // total number of scripts submitted
-  this.archive_year_used = 0;    // total number of archived projects
   this.jobs_total        = 0;    // total number of jobs done
 
 }
@@ -174,6 +174,31 @@ UserRation.prototype.bookJob = function ( job_class,cloudrun_bool )  {
 
 }
 
+
+const _ms_in_year = 31536000000;
+
+UserRation.prototype.checkArchiveQuota = function()  {
+  if (this.archive_year>0)  {
+    var t0 = Date.now() - _ms_in_year;
+    if ((this.archives.length>0) && (t0<this.archives[0])) {
+      var a1 = this.archives;
+      this.archives = [];
+      for (var i=0;i<a1.length;i++)
+        if (a1[i]>=t0)
+          this.archives.push ( a1[i] );
+    }
+    return (this.archives.length<this.archive_year);
+  } else  {
+    this.archives = [];
+    return true;
+  }
+}
+
+UserRation.prototype.bookArchive = function()  {
+  this.checkArchiveQuota();
+  if (this.archive_year>0)
+    this.archives.push ( Date.now() );
+}
 
 // ===========================================================================
 
