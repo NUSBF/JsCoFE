@@ -10,4 +10,6 @@ Validation, Analysis and Deposition
     doc.task.PISA
     doc.task.Deposition
     doc.task.Contact
+    doc.task.Rotamer
+    doc.task.Areaimol
     
