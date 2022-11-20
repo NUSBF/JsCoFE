@@ -307,12 +307,12 @@ ManageUserDialog.prototype.constructor = ManageUserDialog;
                   "cloudrun_day"   : 100,
                   "archive_year"   : 5,
                   "jobs"           : [],
+                  "archives"       : [],
                   "storage_used"   : 7194.2757387161255,
                   "cpu_day_used"   : 2.9339583080555554,
                   "cpu_month_used" : 27.34012433444445,
                   "cpu_total_used" : 75.92459110972308,
-                  "cloudrun_day_used" : 0,
-                  "archive_year_used" : 0,
+                  "cloudrun_day_used" : 0
                   "jobs_total"     : 2264
                 }
   }
@@ -445,10 +445,10 @@ ManageUserDialog.prototype.makeLayout = function()  {
                                      round(this.userData.ration.cpu_month_used,2),
                                      this.userData.ration.cpu_month,row++,4 );
   this.cloudrun_day = this.putLine ( 'CloudRun tasks (day):',
-                                     round(this.userData.ration.cloudrun_day_used,2),
+                                     this.userData.ration.cloudrun_day_used,
                                      this.userData.ration.cloudrun_day,row++,4 );
   this.archive_year = this.putLine ( 'Archived projects (year):',
-                                     round(this.userData.ration.archive_year_used,2),
+                                     this.userData.ration.archives.length,
                                      this.userData.ration.archive_year,row++,4 );
   this.putLine ( 'Total jobs run:'      ,this.userData.ration.jobs_total,0,row++,5 );
   this.putLine ( 'Total CPU-hours used:',round(this.userData.ration.cpu_total_used,2),

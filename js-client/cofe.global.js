@@ -40,12 +40,13 @@ var __ccp4_version    = '';     // undefined
 
 var __current_page    = null;
 var __current_project = null;
-var __current_folder  = { name      : 'My Projects',
-                          path      : 'My Projects',
-                          nprojects : 0,
-                          type      : folder_type.user,
-                          folders   : []
-                        };
+var __current_folder  = {
+  name      : 'My Projects',
+  path      : 'My Projects',
+  nprojects : 0,
+  type      : folder_type.user,
+  folders   : []
+};
 var __local_setup     = false;
 var __is_archive      = false;
 var __offline_message = false;  // true for showing "working offline" once at the beginning

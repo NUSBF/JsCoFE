@@ -734,8 +734,8 @@ var response = 0;  // must become a cmd.Response object to return
 
 
 function topupUserRation ( loginData,callback_func )  {
-  var uRation = ration.getUserRation ( loginData );
-  var rData   = { code : 'ok', message : '', ration : uRation };
+var uRation = ration.getUserRation ( loginData );
+var rData   = { code : 'ok', message : '', ration : uRation };
   if (!uRation)  {
     rData.code    = 'errors';
     rData.message = 'user ration file not found';

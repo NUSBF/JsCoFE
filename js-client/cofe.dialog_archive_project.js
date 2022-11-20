@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.11.22   <--  Date of Last Modification.
+ *    20.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -35,6 +35,10 @@ function ProjectArchiveDialog ( projectDesc,callback_func )  {
 
   this.projectDesc = projectDesc;
   this.archiving_started = false;
+
+  this.ration = null;
+  if (__current_page)
+    this.ration = __current_page.ration;
 
   var self = this;
 
@@ -187,6 +191,18 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
     return false;
   }
 
+  if ((!this.projectDesc.archive) && this.ration && 
+      (this.ration.archives.length>=this.ration.archive_year))  {
+    this.grid.setImage ( image_path('msg_stop'),'48px','48px', 1,0,1,1 );
+    this.grid.setLabel ( title + 
+        'Your Archive quota (' + this.ration.archive_year + 
+        ' archived projects per year) is used up. Please contact your ' + 
+        appName() + ' maintainer to increase your quota.<p>' + 
+        'Read all details about ' + appName() + ' archiving ' + doclink + 
+        'here</span></a>.',
+        0,2,2,1 );        
+    return false;
+  }
     
   this.grid.setLabel ( title + doclink + 'Read what ' + appName() + 
       ' archiving means before proceeding</span></a> and fill in the form ' +
@@ -474,12 +490,24 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
 
       case 'no_space'  : message = '<h2>No space left in Archive</h2>' +
                            'Your project cannot be archived because there is ' +
-                           'no space left<br>in the Archive. Please inform ' +
+                           'no space left in the Archive. Please inform ' +
                            report_problem ( 
                              appName() + ' archiving problem',
                               'No space left in the Archive, please increase',
                               ''
                            ) + '.<p>Sincere apologies for any inconvenience ' +
+                           'this may have caused.';
+                      break;
+
+      case 'no_quota'  : var q = '';
+                         if (self.ration)
+                           q = '(' + self.ration.archive_year + 
+                               ' archived projects per year) ';
+                         message = '<h2>No Archive Quota</h2>' +
+                           'Your Archive quota ' + q + 
+                           'is used up. Please contact your ' + appName() + 
+                           ' mainteiner to increase your quota.' +
+                           '<p>Sincere apologies for any inconvenience ' +
                            'this may have caused.';
                       break;
 
