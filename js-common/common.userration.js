@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.10.22   <--  Date of Last Modification.
+ *    19.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -56,12 +56,14 @@ function UserRation ( cfg_ration=null )  {
   this.cpu_day      = 0.0;  // hours  (0: unlimited)
   this.cpu_month    = 0.0;  // hours  (0: unlimited)
   this.cloudrun_day = 100;  // cloudruns (0: unlimited)
+  this.archive_year = 5;    // maximum number of project archived (0: unlimited)
   if (cfg_ration)  {
     this.storage      = cfg_ration.storage;
     this.storage_max  = cfg_ration.storage_max;
     this.cpu_day      = cfg_ration.cpu_day;
     this.cpu_month    = cfg_ration.cpu_month;
     this.cloudrun_day = cfg_ration.cloudrun_day;
+    this.archive_year = cfg_ration.archive_year;
   }
 
   this.jobs = [];
@@ -72,6 +74,7 @@ function UserRation ( cfg_ration=null )  {
   this.cpu_month_used    = 0.0;  // hours, actually used
   this.cpu_total_used    = 0.0;  // hours, actually used
   this.cloudrun_day_used = 0;    // total number of scripts submitted
+  this.archive_year_used = 0;    // total number of archived projects
   this.jobs_total        = 0;    // total number of jobs done
 
 }
