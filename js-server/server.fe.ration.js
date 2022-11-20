@@ -57,6 +57,14 @@ var r     = utils.readObject ( fpath );
     utils.writeObject ( fpath,r );
   } else  {
     var modified = false;
+    if (!('archive_year' in r))  {
+      var cfg = conf.getFEConfig();
+      if (cfg.hasOwnProperty('ration'))
+            r.archive_year = cfg.ration.archive_year;
+      else  r.archive_year = 5;
+      r.archive_year_used = 0;
+      modified = true;
+    }
     if (!('cloudrun_day' in r))  {
       var cfg = conf.getFEConfig();
       if (cfg.hasOwnProperty('ration'))
