@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.10.22   <--  Date of Last Modification.
+ *    19.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,6 +76,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
             dlg.userData.ration.cpu_day      = dlg.cpu_day     .getValue();
             dlg.userData.ration.cpu_month    = dlg.cpu_month   .getValue();
             dlg.userData.ration.cloudrun_day = dlg.cloudrun_day.getValue();
+            dlg.userData.ration.archive_year = dlg.archive_year.getValue();
 
             var msgv = '';
             if (volume!=dlg.userData.volume)
@@ -304,12 +305,14 @@ ManageUserDialog.prototype.constructor = ManageUserDialog;
                   "cpu_day"        : 24,
                   "cpu_month"      : 240,
                   "cloudrun_day"   : 100,
+                  "archive_year"   : 5,
                   "jobs"           : [],
                   "storage_used"   : 7194.2757387161255,
                   "cpu_day_used"   : 2.9339583080555554,
                   "cpu_month_used" : 27.34012433444445,
                   "cpu_total_used" : 75.92459110972308,
                   "cloudrun_day_used" : 0,
+                  "archive_year_used" : 0,
                   "jobs_total"     : 2264
                 }
   }
@@ -444,6 +447,9 @@ ManageUserDialog.prototype.makeLayout = function()  {
   this.cloudrun_day = this.putLine ( 'CloudRun tasks (day):',
                                      round(this.userData.ration.cloudrun_day_used,2),
                                      this.userData.ration.cloudrun_day,row++,4 );
+  this.archive_year = this.putLine ( 'Archived projects (year):',
+                                     round(this.userData.ration.archive_year_used,2),
+                                     this.userData.ration.archive_year,row++,4 );
   this.putLine ( 'Total jobs run:'      ,this.userData.ration.jobs_total,0,row++,5 );
   this.putLine ( 'Total CPU-hours used:',round(this.userData.ration.cpu_total_used,2),
                                          0,row,5 );

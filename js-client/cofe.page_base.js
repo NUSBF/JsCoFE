@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.10.22   <--  Date of Last Modification.
+ *    19.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -498,6 +498,15 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
           '<tr><td>CloudRun 24h (jobs)</td><td>&nbsp;' + this.ration.cloudrun_day_used +
                   '&nbsp;</td><td>&nbsp;' + this.ration.cloudrun_day +
                   '&nbsp;</td><td>&nbsp;' + cloudrun_day_pp + '</td></tr>';
+      }
+
+      if ((this.ration.archive_year>0) && (this.ration.archive_year_used>0))  {
+        var archive_year_pp = getPercentLine ( this.ration.archive_year_used,
+                                               this.ration.archive_year );
+        stats +=
+          '<tr><td>Archive 1yr (projects)</td><td>&nbsp;' + this.ration.archive_year_used +
+                  '&nbsp;</td><td>&nbsp;' + this.ration.archive_year +
+                  '&nbsp;</td><td>&nbsp;' + archive_year_pp + '</td></tr>';
       }
 
       stats += '<tr><td colspan="4"><hr/></td></tr>';

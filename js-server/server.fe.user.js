@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.10.22   <--  Date of Last Modification.
+ *    19.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -936,6 +936,7 @@ var userFilePath = getUserDataFName ( loginData );
           var cpu_day      = Number(userData.ration.cpu_day);
           var cpu_month    = Number(userData.ration.cpu_month);
           var cloudrun_day = Number(userData.ration.cloudrun_day);
+          var archive_year = Number(userData.ration.archive_year);
 
           var feedback  = '';
           if (userData.hasOwnProperty('feedback'))
@@ -946,6 +947,7 @@ var userFilePath = getUserDataFName ( loginData );
               (uRation.cpu_day      != cpu_day      )    ||
               (uRation.cpu_month    != cpu_month    )    ||
               (uRation.cloudrun_day != cloudrun_day )    ||
+              (uRation.archive_year != archive_year )    ||
               (uData.role           != userData.role   ) ||
               (uData.licence        != userData.licence) ||
               (uData.dormant        != userData.dormant) ||
@@ -956,6 +958,7 @@ var userFilePath = getUserDataFName ( loginData );
             uRation.cpu_day      = cpu_day;
             uRation.cpu_month    = cpu_month;
             uRation.cloudrun_day = cloudrun_day;
+            uRation.archive_year = archive_year;
 
             ration.saveUserRation ( userData,uRation );
 
@@ -974,7 +977,8 @@ var userFilePath = getUserDataFName ( loginData );
                             'userDiskMax'  : uRation.storage_max,
                             'userCPUDay'   : uRation.cpu_day,
                             'userCPUMonth' : uRation.cpu_month,
-                            'userCRunDay'  : uRation.cloudrun_day
+                            'userCRunDay'  : uRation.cloudrun_day,
+                            'archiveYear'  : uRation.archive_year
                           })
               );
             } else  {

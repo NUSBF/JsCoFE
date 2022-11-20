@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    20.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -56,12 +56,12 @@ function TaskArcimboldoLite()  {
 
   this.parameters = { // input parameters
 
-    WARNING_LBL : { type     : 'label',
-                    label    : '&nbsp;<br><i><b>Note:</b> this task may take ' +
-                               'significant computational resources and ' +
-                               'put you outside your monthly quota.</i>',
-                    position : [0,0,1,5]
-                  },
+    // WARNING_LBL : { type     : 'label',
+    //                 label    : '&nbsp;<br><i><b>Note:</b> this task may take ' +
+    //                            'significant computational resources and ' +
+    //                            'put you outside your monthly quota.</i>',
+    //                 position : [0,0,1,5]
+    //               },
     sec1 :  { type     : 'section',
               title    : 'Parameters',
               open     : true,  // true for the section to be initially open

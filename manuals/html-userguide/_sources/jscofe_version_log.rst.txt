@@ -3,9 +3,41 @@ CCP4 Cloud Version Log
 ======================
 
 
+
+**Version 1.7.008**
+
+    *Released on --.--.2022 with CCP4 8.0.006*
+
+    **Changes and new features**
+
+    #. Fixed bug causing Front-End crash at CCP4 update notifications
+
+    #. Fixed bug causing failure in acquisition PDB Validation report at certain circumstances
+
+    #. Added task ``Text Editor`` for editing text data objects online
+
+    #. Added task ``Contact`` for calculating intermolecular contacts
+
+    #. Added option for running ``PDBSET`` as part of ``XYZ Utils``
+
+    #. Introfuced auto-topup of disk space
+
+    #. Stability fixes
+
+    #. Cosmetic improvements, documentation and tutorial extensions
+
+    #. Added ``ROTAMER`` and ``AREAIMOL`` tasks
+
+    #. Added documentation for ``Contact``, ``Rotamer``, ``Areaimol`` tasks
+
+
+
+
+
+
 **Version 1.7.007**
 
-    *Released on --.00.2022 with CCP4 8.0.004*
+    *Released on 05.10.2022 with CCP4 8.0.005*
 
     **Changes and new features**
 
@@ -18,22 +50,6 @@ CCP4 Cloud Version Log
     #. Cosmetic improvements, documentation and tutorials extended
 
     #. Fixed a bug which could cause in-browser client crash at closing Job Dialogs in certain circumstances
-
-    #. Fixed bug causing Front-End crash at CCP4 update notifications
-
-    #. Fixed bug causing failure in acquisition PDB Validation report at certain circumstances
-
-    #. Added task ``Text Editor`` for editing text data objects online
-
-    #. Added task ``Contact`` for calculating intermolecular contacts
-
-    #. Added option for running ``PDBSET`` as part of ``XYZ Utiols
-
-    #. Introfuced auto-topup of disk space
-
-    #. Stability fixes
-
-    #. Cosmetic improvements, documentation and tutorial extensions
 
 
 
