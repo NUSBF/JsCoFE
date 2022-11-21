@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.09.22   <--  Date of Last Modification.
+ *    21.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -81,7 +81,7 @@ function TaskWFlowAEP()  {
       force       : 10,            // meaning choose, by default, n<=1 sequences if
                                    // available; otherwise, 0 (== do not use) will
                                    // be selected
-      min         : 0,             // minimum acceptable number of data instances
+      min         : 1,             // minimum acceptable number of data instances
       max         : 10             // maximum acceptable number of data instances
     },{
       data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
