@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.09.22   <--  Date of Last Modification.
+ *    21.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -44,7 +44,7 @@ function TaskWFlowDPL()  {
       file_types  : '.mtz,.sca', // data type(s) and subtype(s)
       label       : 'Reflection Data', // label for input dialog
       tooltip     : '[Mandatory] Provide a path to MTZ file with merged or unmerged ' +
-                    'reflections. Anomalous data should be present.',
+                    'reflections.',
       inputId     : 'fhkldata',  // input Id for referencing input fields
       annotate    : false,
       path        : '',
@@ -78,7 +78,7 @@ function TaskWFlowDPL()  {
   this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'' }];
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataUnmerged':[],'DataHKL':['anomalous']}, // data type(s) and subtype(s)
+      data_type   : {'DataUnmerged':[],'DataHKL':['']}, // data type(s) and subtype(s)
       label       : 'Reflection Data', // label for input dialog
       inputId     : 'hkldata',  // input Id for referencing input fields
       version     : 0,          // minimum data version allowed
