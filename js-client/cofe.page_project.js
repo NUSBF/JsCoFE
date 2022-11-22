@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.11.22   <--  Date of Last Modification.
+ *    22.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -183,9 +183,9 @@ function ProjectPage ( sceneId )  {
   var cnt = 0;
   this.add_btn     = toolbar.setButton ( '',image_path('add'),cnt++,0,1,1 );
   // temporary switch off
-  //this.moveup_btn   = toolbar.setButton ( '',image_path('moveup'),cnt++,0,1,1 );
-  this.clone_btn   = toolbar.setButton ( '',image_path('clonejob'),cnt++,0,1,1 );
-  this.del_btn     = toolbar.setButton ( '',image_path('remove')  ,cnt++,0,1,1 );
+  this.moveup_btn  = toolbar.setButton ( '',image_path('moveup')   ,cnt++,0,1,1 );
+  this.clone_btn   = toolbar.setButton ( '',image_path('clonejob') ,cnt++,0,1,1 );
+  this.del_btn     = toolbar.setButton ( '',image_path('remove')   ,cnt++,0,1,1 );
   this.stack_btn   = toolbar.setButton ( '',image_path('job_stack'),cnt++,0,1,1 );
   toolbar.setLabel ( '<hr style="border:1px dotted;"/>',cnt++,0,1,1 );
   this.add_rem_btn = toolbar.setButton ( '',image_path('task_remark'     ),cnt++,0,1,1 );
@@ -516,7 +516,7 @@ ProjectPage.prototype.deleteJob = function() {
 ProjectPage.prototype.moveJobUp = function()  {
   if (this.start_action('move_job_up'))
     (function(self){
-      self.jobTree.moveJobUp ( true,function(){
+      self.jobTree.moveJobUp ( function(){
         self.end_action();
         self._set_button_state();
         // self.setButtonState();
@@ -1060,7 +1060,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
             case 'move_job_up'      : self.moveJobUp   ();  break;
             case 'stack_jobs'       : self.stackJobs   ();  break;
             case 'set_button_state' :
-            default:  self.jobTree.startTaskLoop();
+            default                 : self.jobTree.startTaskLoop();
           }
           self._set_button_state();
         },function(node){

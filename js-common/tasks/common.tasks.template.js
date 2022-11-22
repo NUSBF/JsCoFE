@@ -496,6 +496,27 @@ if (!dbx)  {
     return ('archive_version' in this) && (this.archive_version>0);
   }
 
+
+  TaskTemplate.prototype.canMove = function ( node,jobTree )  {
+  // Version for moving only sibling jobs
+  // var parent_task = jobTree.getTaskByNodeId(node.parentId);
+    if (this.isArchived())  return false;
+    if ((this.state!=job_code.new) &&
+        (this.state!=job_code.running) && (this.state!=job_code.exiting))  {
+      var p = jobTree.getNodePosition(node);
+      // p[0] is sibling position (<=0 means "leading sibling")
+      return (p[0]>0); 
+      // var pos   = p[0];  // sibling position (<=0 means "leading sibling")
+      // var pnode = p[1];
+      // var pid   = p[2];
+      // var clen  = p[3];  // number of siblings
+    }
+    return false;
+  }
+
+
+  /* =================== Version based on the data flow logics
+
   TaskTemplate.prototype.canMove = function ( node,jobTree )  {
   var parent_task = jobTree.getTaskByNodeId(node.parentId);
   var can_move    = false;
@@ -536,6 +557,9 @@ if (!dbx)  {
     return can_move;
 
   }
+
+  =========================================== */
+
 
   TaskTemplate.prototype.addDataDialogHints = function ( inp_item,summary )  {
     // This function may be used for adding or modifying hints in summary.hints

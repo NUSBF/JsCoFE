@@ -1193,7 +1193,7 @@ JobTree.prototype.toggleBranchHighlight = function()  {
 }
 
 
-JobTree.prototype.moveJobUp = function()  {
+JobTree.prototype.moveJobUp = function ( onMoveUp_func )  {
   if (this.selected_node_id)  {
     this.moveSelectedNodeUp();
     // (function(tree,node0){
@@ -1202,15 +1202,20 @@ JobTree.prototype.moveJobUp = function()  {
           tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
           tree.projectData.desc.jobCount  = rdata.pdesc.jobCount;
           var node0 = tree.getLastHighlightedNode();
-          if (node0)
+          if (node0)  {
             window.setTimeout ( function(){
               tree._highlight_to_root ( node0,true );
+              onMoveUp_func();
             },100);
-        }
+          } else
+            onMoveUp_func();
+        } else
+          onMoveUp_func();
       });
     // }(this,this.getLastHighlightedNode()))
   } else  {
     console.log ( 'no selection in the tree:moveJobUp' );
+    onMoveUp_func();
     // alert ( ' no selection in the tree! ' );
   }
 }
