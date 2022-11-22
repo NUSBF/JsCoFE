@@ -160,12 +160,20 @@ class MrParse(basic.TaskDriver):
 
 
             try:
-                with open(os.path.join(mrparse_dir,"models.json"),"r") as json_file:
+                with open(os.path.join(mrparse_dir,"af_models.json"),"r") as json_file:
                     afmodels = json.load ( json_file )
             except:
                 afmodels = []
 
             nafmodels = 0
+
+            try:
+                with open(os.path.join(mrparse_dir,"esm_models.json"),"r") as json_file:
+                    esmmodels = json.load ( json_file )
+            except:
+                esmmodels = []
+
+            nesmmodels = 0
 
             if len(homologs)>0:
 
@@ -236,17 +244,54 @@ class MrParse(basic.TaskDriver):
                             self.putMessage ( "<h3>*** Failed to form Model object for " +\
                                               afmodels[i]["path"] + "</h3>" )
 
-            if len(homologs)<1 and len(afmodels)<1:
+            if len(esmmodels)>0:
+
+                for i in range(len(esmmodels)):
+                    if esmmodels[i]["pdb_file"]:
+                        fpath = os.path.join ( mrparse_dir,esmmodels[i]["pdb_file"] )
+                        model = self.registerModel ( seq,fpath,checkout=True )
+                        if model:
+                            if nesmmodels<1:
+                                if nhomologs<1:
+                                    if nafmodels<1:
+                                        self.putMessage ( "<i><b>Prepared models are associated " +\
+                                                         "with sequence:&nbsp;" + seq.dname + "</b></i>" )
+                                self.putTitle ( "MR models prepared from ESMFold structures" )
+                            else:
+                                self.putMessage ( "&nbsp;" )
+                            nesmmodels += 1
+                            self.putMessage ( "<h3>Model #" + str(nhomologs+nafmodels+nesmmodels) + ": " +\
+                                              model.dname + "</h3>" )
+                            model.addDataAssociation ( seq.dataId )
+                            if not esmmodels[i]["seq_ident"]:
+                                esmmodels[i]["seq_ident"] = "0.0"
+                            model.meta  = {
+                                "rmsd"    : esmmodels[i]["rmsd"],
+                                "seqId"   : str(100.0*float(afmodels[i]["seq_ident"])),
+                                "h_score" : esmmodels[i]["h_score"]
+                            }
+                            model.seqId = model.meta["seqId"]
+                            model.rmsd  = model.meta["rmsd" ]
+                            self.add_seqid_remark ( model )
+                            self.putModelWidget ( self.getWidgetId("model_btn"),
+                                                  "Coordinates",model )
+                            have_results = True
+                        else:
+                            self.putMessage ( "<h3>*** Failed to form Model object for " +\
+                                              esmmodels[i]["path"] + "</h3>" )
+
+            if len(homologs)<1 and len(afmodels)<1 and len(esmmodels)<1:
                 self.putTitle ( "No MR models were prepared" )
                 self.generic_parser_summary["mrparse"] = {
-                  "summary_line" : " no suitable PDB or AFDB homologs found"
+                  "summary_line" : " no suitable PDB, AFDB or ESMFold homologs found"
                 }
 
-            if nhomologs+nafmodels>0:
+            if nhomologs+nafmodels+nesmmodels>0:
                 self.generic_parser_summary["mrparse"] = {
                   "summary_line" : str(nhomologs+nafmodels) +\
                                    " MR model(s) prepared (PDB:" + str(nhomologs) +\
-                                   ", AFDB:" + str(nafmodels) + ")"
+                                   ", AFDB:" + str(nafmodels) +\
+                                   ", ESMFold:" + str(nesmmodels) + ")"
                 }
             else:
                 self.generic_parser_summary["mrparse"] = {
