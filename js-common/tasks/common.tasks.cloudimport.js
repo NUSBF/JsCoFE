@@ -116,19 +116,6 @@ if (!__template)  {
 
   TaskCloudImport.prototype.onJobDialogClose = function ( job_dialog,callback_func )  {
     if ((this.selected_items.length>0) && (this.state==job_code.new))  {
-      // new QuestionBox ( 'Import not finished',
-      //                   '<h3>Import not finished</h3>' +
-      //                   'You have selected data files, however the import<br>' +
-      //                   'is not finished yet: the files need to be processed<br>' +
-      //                   'before they can be used in subsequent tasks.',
-      //                   'Finish now',function(){
-      //                     callback_func ( false );
-      //                     job_dialog.run_btn.click();
-      //                   },
-      //                   'Finish later',function(){
-      //                     callback_func ( true );
-      //                   },'msg_question');
-
       new QuestionBox ( 'Import not finished',
                         '<h3>Import not finished</h3>' +
                         'You have selected data files, however the import<br>' +
@@ -145,7 +132,6 @@ if (!__template)  {
                         callback_func ( true );
                       }
           }],'msg_question' );
-
     } else
       callback_func ( true );
   }
@@ -192,17 +178,6 @@ if (!__template)  {
           task.setSelectedCloudFiles ( div,items,function(new_items){
             if (new_items.length>0)  {
               div.select_btn.setText ( 'Upload more files' );
-              // new QuestionBox ( 'Files selected',
-              //                   '<h3>Files selected:</h3><ul><li>' +
-              //                   new_items.join('</li><li>') +
-              //                   '</li></ul?',
-              //                   'Select more files',function(){
-              //                     div.select_btn.click();
-              //                   },
-              //                   'Finish import',function(){
-              //                     div.job_dialog.run_btn.click();
-              //                   },'msg_question');
-
               new QuestionBox ( 'Files selected',
                                 '<h3>Files selected:</h3><ul><li>' +
                                 new_items.join('</li><li>') +
@@ -215,7 +190,6 @@ if (!__template)  {
                   },{
                     name    : 'Close'
                   }],'msg_question' );
-
             }
           });
           return 1;  // close browser window
