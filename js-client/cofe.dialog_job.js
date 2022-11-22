@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.11.22   <--  Date of Last Modification.
+ *    22.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -696,10 +696,11 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
     if (dlg.run_btn && dlg.inputPanel)
       dlg.inputPanel.element.addEventListener(cofe_signals.taskReady,function(e){
         //alert ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
+// console.log ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
         if (e.detail.length<=0)  {
-          dlg.run_btn.setEnabled ( this.dlg_active );
+          dlg.run_btn.setEnabled ( dlg.dlg_active );
           if (dlg.autorun_cbx)
-            dlg.autorun_cbx.setEnabled ( this.dlg_active );
+            dlg.autorun_cbx.setEnabled ( dlg.dlg_active );
           dlg.close_btn.setEnabled ( true );
         } else if (e.detail=='hide_run_button')  {
           dlg.run_btn.setEnabled ( false );
@@ -717,9 +718,10 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
             dlg.autorun_cbx.setEnabled ( false );
           dlg.close_btn.setEnabled ( false );
         } else if (e.detail=='upload_finished')  {
-          dlg.run_btn.setEnabled ( this.dlg_active );
+// console.log ( dlg.dlg_active );
+          dlg.run_btn.setEnabled ( dlg.dlg_active );
           if (dlg.autorun_cbx)
-            dlg.autorun_cbx.setEnabled ( this.dlg_active );
+            dlg.autorun_cbx.setEnabled ( dlg.dlg_active );
           dlg.close_btn.setEnabled ( true );
         } else  {
           dlg.run_btn.setEnabled ( false );
