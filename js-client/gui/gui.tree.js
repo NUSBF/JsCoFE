@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.06.22   <--  Date of Last Modification.
+ *    25.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -437,9 +437,10 @@ var parentId    = null;
 var clen        = 0;
 var pos         = -2;
 
-  if (node.parentId)  {
+  if (node.parentId && (node.parentId in this.node_map))  {
     parent_node = this.node_map[node.parentId];
     if (parent_node)  {
+
       parentId = parent_node.parentId;
 
       var parent_children = parent_node.children;
@@ -461,7 +462,7 @@ var pos         = -2;
 
 Tree.prototype.moveNodeUp = function ( node )  {
 
-  if (node.parentId)  {
+  if (node.parentId && (node.parentId in this.node_map))  {
 
     var parent_node     = this.node_map[node.parentId];
     var parent_children = parent_node.children;
@@ -479,7 +480,7 @@ Tree.prototype.moveNodeUp = function ( node )  {
         $(this.root.element).jstree(true).move_node(node,parent_node,pos-1,false,false);
 
       // reflect changes in internal list of children
-      var snode = parent_children[pos-1];
+      var snode = parent_children[pos-1];   // selected node
       parent_children[pos-1] = parent_children[pos];
       parent_children[pos]   = snode;
 
@@ -544,12 +545,13 @@ Tree.prototype.moveNodeUp = function ( node )  {
 
     }
 
+    // APPARENTLY HARMFUL AFTER JSTREE/JSQUERY UPDATE
     // force selection and refresh the tree
-    if (this.created)  {
-      this.selectSingle ( node );  // force selection of the node if tree is displayed
-      this.refresh();
-      this.confirmCustomIconsVisibility();
-    }
+    // if (this.created)  {
+    //   this.selectSingle ( node );  // force selection of the node if tree is displayed
+    //   this.refresh();
+    //   this.confirmCustomIconsVisibility();
+    // }
 
   }
 
