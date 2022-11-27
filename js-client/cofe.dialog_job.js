@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.11.22   <--  Date of Last Modification.
+ *    27.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -56,9 +56,10 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.job_edited   = false;
   this.onClose_func = onClose_func;
 
-  this._created    = false;
+  this._created     = false;
 
-  this.dlg_active  = (!__dormant) && (!this.tree.in_archive);
+  this.dlg_active   = (!__dormant) && (!this.tree.in_archive) && 
+                      (!('archive_version' in this.task));
 
   if ((this.task.state==job_code.remark) && (this.task.openWebLink()))  {
     onClose_func ( this );
@@ -697,7 +698,11 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
       dlg.inputPanel.element.addEventListener(cofe_signals.taskReady,function(e){
         //alert ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
 // console.log ( ' run_btn=' + e.detail + ' l=' + e.detail.length );
-        if (e.detail.length<=0)  {
+          
+        if (!dlg.dlg_active)  {
+          dlg.run_btn  .setEnabled ( false );
+          dlg.close_btn.setEnabled ( true  );
+        } else if (e.detail.length<=0)  {
           dlg.run_btn.setEnabled ( dlg.dlg_active );
           if (dlg.autorun_cbx)
             dlg.autorun_cbx.setEnabled ( dlg.dlg_active );
