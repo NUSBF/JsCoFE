@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.11.22   <--  Date of Last Modification.
+ *    27.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -60,16 +60,29 @@ function ProjectArchiveDialog ( projectDesc,callback_func )  {
           text  : 'Archive',
           click : function() {
                     if (self.validateData())  {
-                      new QuestionBox ( 'Confirm archiving',
-                        '<div style="width:400px"><h2>Confirm archiving</h2>' +
-                        'You are about to archive project <b>"' + projectDesc.name +
-                        '"</b>.<p>This operation cannot be undone and will take ' +
+                      var title = 'Confirm archiving';
+                      var msg   = '<h2>Confirm archiving</h2>' +
+                                  'You are about to archive project <b>"' +
+                                  projectDesc.name + '"</b>.';
+                      var btext = 'Yes, archive';
+                      if (self.projectDesc.archive)  {
+                        title = 'Confirm archive updating';
+                        msg   = '<h2>Confirm archive updating</h2>' +
+                                'You are about to update archived project <b>"' +
+                                projectDesc.name + '"</b>.';
+                        btext = 'Yes, update';
+                      }
+                      new QuestionBox ( title,
+                        '<div style="width:400px">' +
+                        msg + '<p>This operation cannot be undone and will take ' +
                         '10-20 minutes for average-size projects, during which ' +
                         'time your ' + appName() + ' account will be suspended.' +
                         '<p>Please confirm.',[
-                          { name    : 'Yes, archive',
+                          { name    : btext,
                             onclick : function(){
-                              self.archiveProject();
+                              window.setTimeout ( function(){
+                                self.archiveProject();
+                              },100);
                             }
                           },{
                             name    : 'Cancel',
@@ -426,10 +439,10 @@ ProjectArchiveDialog.prototype.validateData = function()  {
 
 ProjectArchiveDialog.prototype.archiveProject = function()  {
 
-  stopSessionChecks();
-
   $('#archdlg_archive_btn').button().hide();
   $('#archdlg_cancel_btn' ).button('disable');
+
+  stopSessionChecks();
 
   var self = this;
 
@@ -513,10 +526,17 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
 
       case 'ok'        : self.archiving_started = true;
                          $('#archdlg_cancel_btn' ).button().text('Log out');
-                         message = '<h2>Project "' + self.projectDesc.name + 
-                           '" is being archived</h2>Archiving is currently in ' +
-                           'progress. The following Archive ID was issued for ' +
-                           'your project:<p><center><b>' + response.archiveID +
+                         if (self.projectDesc.archive)
+                            message = '<h2>Archived Project "' + self.projectDesc.name + 
+                              '" is being updated</h2>Updating is currently in ' +
+                              'progress. Updated project will be referenced by ' +
+                              'the same Archive ID as the original version:'; 
+                         else
+                            message = '<h2>Project "' + self.projectDesc.name + 
+                              '" is being archived</h2>Archiving is currently in ' +
+                              'progress. The following Archive ID was issued for ' +
+                              'your project:'; 
+                         message += '<p><center><b>' + response.archiveID +
                            '</b></center><p>please take a note of it. Archive ID ' +
                            'is used for accessing archived projects and referencing ' +
                            'them in publication and elsewhere.' +

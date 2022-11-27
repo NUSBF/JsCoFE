@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.11.22   <--  Date of Last Modification.
+ *    27.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -278,6 +278,15 @@ function ProjectListPage ( sceneId )  {
         return;
       }
 
+      if (pDesc.archive)  {
+        new MessageBox ( 'Rename Project',
+          '<div style="width:400px"><h2>Projects from Archive cannot be renamed</h2>' +
+          'Projects which were obtained by cloning from ' + appName() + 
+          ' Archive cannot be renamed.</div>',
+          'msg_stop' );
+        return;
+      }
+
       var prjName   = pDesc.name;
       var inputBox  = new InputBox ( 'Rename Project' );
       inputBox.setText ( '','renameprj' );
@@ -287,7 +296,7 @@ function ProjectListPage ( sceneId )  {
       var name_inp  = ibx_grid.setInputText ( prjName,2,4,1,1 )
             .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
             .setFontItalic ( true )
-            .setWidth      ( '120px' );
+            .setWidth      ( '240px' );
       ibx_grid.setLabel    ( 'New Name:&nbsp;',3,3,1,1 );
       var title_inp = ibx_grid.setInputText
                           ( self.tablesort_tbl.selectedRow.child[1].text,3,4,1,1 )
@@ -481,19 +490,27 @@ function ProjectListPage ( sceneId )  {
     var inputBox = new InputBox ( 'Clone Project' );
     inputBox.setText ( '','cloneprj' );
     var ibx_grid = inputBox.grid;
-    ibx_grid.setLabel    ( '<h2>Clone Project "' + prjName + '"</h2>',0,2,2,3 );
-    ibx_grid.setLabel    ( 'Cloned Project ID:',2,3,1,1 );
-    var name_inp  = ibx_grid.setInputText ( prjName + '-clone',2,4,1,1 )
+    ibx_grid.setLabel ( '<h2>Clone Project "' + prjName + '"</h2>',0,2,2,3 );
+    ibx_grid.setLabel ( 'Cloned Project ID:',2,3,1,1 );
+    var name_sugg  = prjName + '-clone';
+    var title_sugg = self.tablesort_tbl.selectedRow.child[1].text.trim();
+    if (pDesc.archive)  {
+      name_sugg  = prjName + '-rev' + pDesc.archive.version;
+      title_sugg = title_sugg.split(': Revision #')[0] + ': Revision #' +
+                   pDesc.archive.version;
+    } else
+      title_sugg += ' (cloned)';
+    var name_inp  = ibx_grid.setInputText ( name_sugg,2,4,1,1 )
           .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
           .setFontItalic ( true )
-          .setWidth      ( '120px' );
+          .setWidth      ( '240px' )
+          .setReadOnly   ( (pDesc.archive!=null) );
     ibx_grid.setLabel    ( 'Cloned Project Name:&nbsp;',3,3,1,1 );
-    var title_inp = ibx_grid.setInputText
-                         ( self.tablesort_tbl.selectedRow.child[1].text +
-                           ' (cloned)',3,4,1,1 )
+    var title_inp = ibx_grid.setInputText ( title_sugg,3,4,1,1 )
           .setStyle      ( 'text','','Put a descriptive title here','' )
           .setFontItalic ( true )
-          .setWidth      ( '520px' );
+          .setWidth      ( '520px' )
+          .setReadOnly   ( (pDesc.archive!=null) );
     ibx_grid.setNoWrap   ( 2,3 );
     ibx_grid.setNoWrap   ( 3,3 );
     ibx_grid.setVerticalAlignment ( 2,3,'middle' );
