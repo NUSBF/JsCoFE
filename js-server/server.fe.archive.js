@@ -347,23 +347,37 @@ var uData       = user.suspendUser ( loginData,true,'' );
               utils.removeFile ( linkDir );
             if (utils.makeSymLink(linkDir,linkedDir))  {
               // remove project from user's account
-              uRation.bookArchive();
-              ration.saveUserRation ( loginData,uRation );
               prj.delete_project ( loginData,pDesc.name,pDesc.disk_space,
                                    projectDirPath );
-              if (archiveBackupPath)
-                utils.removePath ( archiveBackupPath );
               // update archive tables
               // unlock user's account and inform user through Cloud message and via e-mail
-              user.suspendUser ( loginData,false,
-                '<div style="width:400px"><h2>Archiving completed</h2>Project <b>"' + 
-                pDesc.name +  '"</b> was archived successfully. It is now accessible ' +
-                'via Archive ID <b>' + archiveID + 
-                '</b>, and you may see it in folder <i>"Projects archived by me"</i>.</div>'
-              );
-              log.standard ( 2,'project ' + pDesc.name + ' archived with ID ' + 
-                   archiveID + '; login ' + loginData.login + ', archive disk ' +
-                   adname );
+              if (archiveBackupPath)  {
+                // the project was updated in archive
+                utils.removePath ( archiveBackupPath );
+                user.suspendUser ( loginData,false,
+                  '<div style="width:400px"><h2>Archive updating completed</h2>' +
+                  'Archived Project <b>"' + pDesc.name +  
+                  '"</b> was updated successfully. It is now accessible ' +
+                  'via Archive ID <b>' + archiveID + 
+                  '</b>, and you may see it in folder <i>"Projects archived by me"</i>.</div>'
+                );
+                log.standard ( 2,'project ' + pDesc.name + ' updated in archive; ' +
+                    ' archiveID=' + archiveID + ', login ' + loginData.login + 
+                    ', archive disk ' + adname );
+              } else  {
+                // the project was archived for 1st time
+                uRation.bookArchive();
+                ration.saveUserRation ( loginData,uRation );
+                user.suspendUser ( loginData,false,
+                  '<div style="width:400px"><h2>Archiving completed</h2>Project <b>"' + 
+                  pDesc.name +  '"</b> was archived successfully. It is now accessible ' +
+                  'via Archive ID <b>' + archiveID + 
+                  '</b>, and you may see it in folder <i>"Projects archived by me"</i>.</div>'
+                );
+                log.standard ( 3,'project ' + pDesc.name + ' archived with ID ' + 
+                    archiveID + '; login ' + loginData.login + ', archive disk ' +
+                    adname );
+              }
               // add e-mail to user
 
               emailer.sendTemplateMessage ( uData,
@@ -400,7 +414,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
               'system failures or program bugs.' +
               '<p>Apologies for any inconvenience this may have caused.</div>'
             );
-            log.error ( 3,'project archiving failed, failcode=' + failcode +
+            log.error ( 4,'project archiving failed, failcode=' + failcode +
                           '; login=' + loginData.login + ', project ' + 
                           pDesc.name + ', archive disk ' + adname );
             emailer.sendTemplateMessage ( uData,

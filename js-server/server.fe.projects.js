@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.11.22   <--  Date of Last Modification.
+ *    27.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1829,10 +1829,8 @@ var pData    = readProjectData ( loginData,data.name );
               pDesc.folderPath   = loginData.login + '\'s Projects';
             }
             pDesc.owner.login = loginData.login;
-            if (pDesc.archive && pDesc.archive.in_archive)  { 
+            if (pDesc.archive && pDesc.archive.in_archive) 
               pDesc.archive.in_archive = false;
-              pDesc.archive.version++;
-            }
             writeProjectData ( loginData,pData,true );
             var pList = readProjectList ( loginData );
             if (pList)  {
