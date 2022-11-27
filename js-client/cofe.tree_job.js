@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.11.22   <--  Date of Last Modification.
+ *    27.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -181,6 +181,10 @@ var __linkStyle       = 'color:#0000FF;font-style:italic;text-decoration:underli
 var __highlightStyle  = 'background-color:yellow;padding:4px 16px 4px 0px;';
 var __highlightStyleL = 'background-color:lime;padding:4px 16px 4px 0px;';
 
+function __projectStyle ( text )  {
+  return '<span style="color:blue;"><b>' + text  + '</b></span>';
+}
+
 
 JobTree.prototype.__compare_node = function ( node0,node1 )  {
   if ((node1.dataId!=node2.dataId) ||
@@ -292,10 +296,7 @@ JobTree.prototype.readProjectData = function ( page_title,
                       tree.projectData.desc.archive.id;
           pName = tree.projectData.desc.archive.project_name;
         }
-        var root_title =
-                '<span style="color:blue;"><b>' + author +
-                '[' + pName  + ']' + archiveID +
-                '</b></span>';
+        var root_title = __projectStyle ( author + '[' + pName  + ']' + archiveID );
 
         if (tree.projectData.tree.length<=0)  {
 
@@ -887,6 +888,15 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
     // after adding new node to the tree, therefore, parent should be identified
     // now
     var ptask = this.getSelectedTask();
+    var node;
+
+    if (ptask && ('archive_version' in ptask) && (ptask.archive_version>0))  {
+      node = this.addNodeToSelected ( 
+        __projectStyle('revision #'+this.projectData.desc.archive.version),
+        image_path('project'),this.customIcon() 
+      );
+      this.selectNode ( node,true );
+    }
 
     // prepare task metadata
     task.project          = this.projectData.desc.name;
@@ -895,7 +905,6 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
     task.submitter        = __login_id;
 
     // make tree node
-    var node;
     // do not give node name at this stage, because, in case of data merging
     // across branches, calculation of node name includes tree searches,
     // which are not possible before node is placed in the tree
@@ -911,45 +920,37 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
     // now set the new node name
     this.setText ( node,this.makeNodeName(task) );
 
-    if (task.isRemark())  {
+    if (task.isRemark())
       this.setRemarkStyle ( node,task );
-      // if (task.isLink())
-      //       this.setStyle ( node,__linkStyle,0 );
-      // else  this.setStyle ( node,__remarkStyle,0 );
-    }
 
     if (ptask)
       task.parentId = ptask.id;
 
-    // (function(tree){
-
-      this.saveProjectData ( [task],[],true, function(tree,rdata){
-        if (tree.checkReload(tree,rdata,'add the job'))  {
-          task.id     = rdata.jobIds[0];
-          node.dataId = task.id;
-          tree.projectData.desc.jobCount = task.id;
-          if (onAdd_func)  {
-            onAdd_func ( Math.min(node.children.length,1) );
-            // if (insert_bool)  onAdd_func ( 1 );
-            //             else  onAdd_func ( 0 );
-          }
-          tree.openJob ( dataBox,parent_page );
-          // if (insert_bool)
-          //   window.setTimeout ( function(){
-          //     tree.emitSignal ( cofe_signals.reloadTree,rdata );
-          //   },1000 );
-          // if (insert_bool)
-          //   window.setTimeout ( function(){
-          //     for (var key in tree.node_map)  {
-          //       var tnode = tree.node_map[key];
-          //       if (tnode)
-          //         tree.resetNodeName ( tnode.id );
-          //     }
-          //   },100 );
+    this.saveProjectData ( [task],[],true, function(tree,rdata){
+      if (tree.checkReload(tree,rdata,'add the job'))  {
+        task.id     = rdata.jobIds[0];
+        node.dataId = task.id;
+        tree.projectData.desc.jobCount = task.id;
+        if (onAdd_func)  {
+          onAdd_func ( Math.min(node.children.length,1) );
+          // if (insert_bool)  onAdd_func ( 1 );
+          //             else  onAdd_func ( 0 );
         }
-      });
-
-    // }(this,node))
+        tree.openJob ( dataBox,parent_page );
+        // if (insert_bool)
+        //   window.setTimeout ( function(){
+        //     tree.emitSignal ( cofe_signals.reloadTree,rdata );
+        //   },1000 );
+        // if (insert_bool)
+        //   window.setTimeout ( function(){
+        //     for (var key in tree.node_map)  {
+        //       var tnode = tree.node_map[key];
+        //       if (tnode)
+        //         tree.resetNodeName ( tnode.id );
+        //     }
+        //   },100 );
+      }
+    });
 
   } else  {
     console.log ( 'no selection in the tree:_add_job' );
@@ -958,7 +959,6 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
     // alert ( ' no selection in the tree! ' );
   }
 }
-
 
 JobTree.prototype._copy_task_parameters = function ( task,branch_task_list )  {
 var reftask = null;
@@ -1852,10 +1852,24 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
       task.customDataClone ( cloneMode,task0 );
       task.project    = this.projectData.desc.name;
       task.id         = this.projectData.desc.jobCount + 1;
+      task.parentId   = task0.parentId;
       task.submitter  = __login_id;
 
-      var node = this.addSiblingToSelected ( '',image_path(task.icon()),
-                                                this.customIcon() );
+      var node;
+      if (('archive_version' in task0) && (task0.archive_version>0))  {
+        // cloning from archived task, put a marker
+        node = this.addSiblingToSelected ( 
+          __projectStyle('revision #'+this.projectData.desc.archive.version),
+          image_path('project'),this.customIcon() 
+        );
+        this.selectNode ( node,true );
+        node = this.addNodeToSelected ( '',image_path(task.icon()),this.customIcon() );
+      } else
+        node = this.addSiblingToSelected ( '',image_path(task.icon()),
+                                              this.customIcon() );
+
+      if (task.isRemark())
+        this.setRemarkStyle ( node,task );
 
       this.task_map[node.id] = task;
       task.treeItemId        = node.id;
@@ -1863,22 +1877,20 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
       // now set the new node name
       this.setText ( node,this.makeNodeName(task) );
 
-      // (function(tree){
-        this.saveProjectData ( [task],[],true, function(tree,rdata){
-          if (tree.checkReload(tree,rdata,'add the job'))  {
-            task.id     = rdata.jobIds[0];
-            node.dataId = task.id;
-            tree.projectData.desc.jobCount = task.id;
-            tree.setText ( node,tree.makeNodeName(task) );
-            if (onAdd_func)
-              onAdd_func(0);
-            tree.openJob ( null,parent_page );
-            if (task.isRemark())
-              tree.setRemarkStyle ( node,task );
-              //   tree.setStyle ( node,__remarkStyle,0 );
-          }
-        });
-      // }(this));
+      this.saveProjectData ( [task],[],true, function(tree,rdata){
+        if (tree.checkReload(tree,rdata,'add the job'))  {
+          task.id     = rdata.jobIds[0];
+          node.dataId = task.id;
+          tree.projectData.desc.jobCount = task.id;
+          tree.setText ( node,tree.makeNodeName(task) );
+          if (onAdd_func)
+            onAdd_func(0);
+          tree.openJob ( null,parent_page );
+          if (task.isRemark())
+            tree.setRemarkStyle ( node,task );
+            //   tree.setStyle ( node,__remarkStyle,0 );
+        }
+      });
 
     }
 
