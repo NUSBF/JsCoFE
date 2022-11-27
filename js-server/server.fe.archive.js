@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.11.22   <--  Date of Last Modification.
+ *    27.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -320,7 +320,13 @@ var uData       = user.suspendUser ( loginData,true,'' );
         var projectDirPath = prj.getProjectDirPath ( loginData,pDesc.name );
         var archiveDirPath = getArchiveDirPath ( adname,archiveID );
 
-        utils.copyDirAsync ( projectDirPath,archiveDirPath,false,function(err){
+        var archiveBackupPath = null;
+        if (utils.dirExists(archiveDirPath))  {
+          archiveBackupPath += '.bak';
+          utils.moveDir ( archiveDirPath,archiveBackupPath,true );
+        }
+
+        utils.copyDirAsync ( projectDirPath,archiveDirPath,true,function(err){
 
           var failcode = 0;
           if (!err)  {
@@ -345,6 +351,8 @@ var uData       = user.suspendUser ( loginData,true,'' );
               ration.saveUserRation ( loginData,uRation );
               prj.delete_project ( loginData,pDesc.name,pDesc.disk_space,
                                    projectDirPath );
+              if (archiveBackupPath)
+                utils.removePath ( archiveBackupPath );
               // update archive tables
               // unlock user's account and inform user through Cloud message and via e-mail
               user.suspendUser ( loginData,false,
@@ -383,6 +391,8 @@ var uData       = user.suspendUser ( loginData,true,'' );
 
           if (failcode)  {
             utils.removePath ( archiveDirPath );
+            if (archiveBackupPath)
+              utils.moveDir ( archiveBackupPath,archiveDirPath,true );
             user.suspendUser ( loginData,false,
               '<div style="width:400px"><h2>Archiving failed</h2>Project <b>"' + 
               pDesc.name +  '"</b> was not archived due to errors (fail code ' +

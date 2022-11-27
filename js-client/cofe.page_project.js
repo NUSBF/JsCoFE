@@ -479,9 +479,6 @@ ProjectPage.prototype.addRemark = function()  {
     (function(self){
       self.can_reload = true;
       self.jobTree.addTask ( new TaskRemark(),true,false,self,function(key){
-        // self.del_btn.setDisabled ( false );
-        // self._set_del_button_state();
-        // self.end_action();
         if (key!=1)  // remark was added or failed
           self._set_del_button_state();
         self.end_action();
@@ -491,11 +488,26 @@ ProjectPage.prototype.addRemark = function()  {
     }(this))
 }
 
+/*
+ProjectPage.prototype.addRevisionRemark = function ( callback_func )  {
+  if (this.start_action('add_remark'))
+    (function(self){
+      self.can_reload = true;
+      self.jobTree.addTask ( new TaskRemark(),true,false,self,function(key){
+        if (key!=1)  // remark was added or failed
+          self._set_del_button_state();
+        self.end_action();
+        if (key==1)  // remark was inserted
+          self.reloadTree ( false,true,null );
+      });
+    }(this))
+}
+*/
+
 ProjectPage.prototype.cloneJob = function() {
   if (this.start_action('clone_job'))
     (function(self){
       self.jobTree.cloneJob ( 'clone',self,function(){
-        // self.del_btn.setDisabled ( false );
         self._set_del_button_state();
         self.end_action();
       });
