@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    23.05.21   <--  Date of Last Modification.
+#    28.11.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CALCULATION OF ED MAPS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -111,10 +111,18 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
     # prepare refmac input script
     scr_file = open ( refmac_script(),"w" )
 
+    # labin = "LABIN  "
+    # if hasattr(hkl_dataset,"Fmean"):
+    #     labin += "FP="  + hkl_dataset.Fmean.value + " SIGFP=" + hkl_dataset.Fmean.sigma
+    # else:
+    #     labin += "IP="  + hkl_dataset.Imean.value + " SIGIP=" + hkl_dataset.Imean.sigma
+    # labin += " FREE="  + hkl_dataset.FREE
+
     scr_file.write (
         "LABIN  FP="  + hkl_dataset.Fmean.value +\
             " SIGFP=" + hkl_dataset.Fmean.sigma +\
             " FREE="  + hkl_dataset.FREE + "\n" +\
+        # labin + "\n" +\
         "LABOUT FC=FC FWT=FWT PHIC=PHIC PHWT=PHWT DELFWT=DELFWT PHDELWT=PHDELWT FOM=FOM\n" +\
         "NCYC 0\n" +\
         "WEIGHT AUTO\n" +\
@@ -137,7 +145,7 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
             "XYZOUT",xyzout,
             "HKLIN" ,hklin,
             "HKLOUT",mtzout,
-            "LIBOUT",output_file_prefix + file_lib(),
+            "LIBOUT",output_file_prefix + file_lib()
           ]
     if libin:
         cmd += ["LIBIN",libin]
