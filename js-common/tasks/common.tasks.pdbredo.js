@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.10.22   <--  Date of Last Modification.
+ *    29.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -109,16 +109,20 @@ if (__template)  {  //  will run only on server side
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
+      
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['istruct'] = [revision.Structure];
+
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
+
+
 
   // form command line for server's node js to start task's python driver;
   // note that last 3 parameters are optional and task driver will not use

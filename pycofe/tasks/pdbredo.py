@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.11.22   <--  Date of Last Modification.
+#    29.11.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -140,10 +140,10 @@ class Pdbredo(basic.TaskDriver):
         # The job ID
         # run_id = args.job_id
 
-        done = False
+        # done = False
 
 
-        while done == False: 
+        while True: 
 
             time.sleep ( 60 )
 
@@ -157,13 +157,15 @@ class Pdbredo(basic.TaskDriver):
             if status == 'stopped':
                 # self.rvrow = self.row0
                 # self.putWaitMessageLF ("Job status is "+ str(status))
-                done == True
+                # done == True
                 # raise ValueError('The job somehow failed after submitting')
+                break
             
             if status == 'ended':
                 # self.rvrow = self.row0
                 # self.putWaitMessageLF ("Job status is "+ str(status))
-                done == True
+                # done == True
+                break
 
                 
         # status = r.json()['status']
@@ -203,23 +205,20 @@ class Pdbredo(basic.TaskDriver):
 
         self.stdoutln (str(r.text))
 
-        return
+        #Retrieve zip
+        r = requests.get(PDBREDO_URI + "/api/session/{token_id}/run/{run_id}/output/zipped".format(token_id = token_id, run_id = run_id), auth = auth)
+        r.raise_for_status()
 
-        # Retrieve zip
-        # r = requests.get(PDBREDO_URI + "/api/session/{token_id}/run/{run_id}/output/zipped".format(token_id = token_id, run_id = run_id), auth = auth)
-        # r.raise_for_status()
+        output = '/tmp/result.zip'
 
-        # output = output
-        # if (output== None):
-        #     output = '/tmp/result.zip'
+        with open(output, 'wb') as f:
+            f.write(r.content)
 
-        # with open(output, 'wb') as f:
-        #     f.write(r.content)
 
-        # xyzout = self.getXYZOFName()
-        # mtzout = self.getMTZOFName()
+        xyzout = self.getXYZOFName('_final.pdb')
+        mtzout = self.getMTZOFName('_final.mtz')
 
-        # return xyzout, mtzout
+        return xyzout, mtzout
 
     # ------------------------------------------------------------------------
 
