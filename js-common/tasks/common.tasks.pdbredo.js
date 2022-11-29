@@ -47,7 +47,7 @@ function TaskPDBREDO()  {   // must start with Task...
 
 
   this.input_dtypes = [{  // input data types
-    data_type : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
+    data_type : {'DataRevision':['!xyz','!protein']}, // data type(s) and subtype(s)
     label     : 'Structure revision',     // label for input dialog
     inputId   : 'revision', // input Id for referencing input fields
     version   : 4,          // minimum data version allowed
