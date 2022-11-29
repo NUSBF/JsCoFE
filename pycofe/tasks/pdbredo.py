@@ -32,6 +32,7 @@ import shutil
 import json
 import time
 import requests
+from   zipfile import ZipFile
 # from typing_extensions import Self
 
 # import gemmi
@@ -53,6 +54,8 @@ class Pdbredo(basic.TaskDriver):
 
     #def file_stdin_path(self):  return "pdbredo.script"
 
+    resultDir = "result"
+
     row0 = 0
 
     # ------------------------------------------------------------------------
@@ -72,8 +75,8 @@ class Pdbredo(basic.TaskDriver):
                 mmcifout = self.getMMCIFOFName()
                 if os.path.isfile(mmcifout):
                     structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
-                structure.copySubtype        ( istruct )
-                structure.copyLigands        ( istruct )
+                structure.copySubtype    ( istruct )
+                structure.copyLigands    ( istruct )
             structure.addPhasesSubtype   ()
         return structure
 
@@ -201,6 +204,7 @@ class Pdbredo(basic.TaskDriver):
         r = requests.get(PDBREDO_URI + "/api/session/{token_id}/run/{run_id}/output/process.log".format(token_id = token_id, run_id = run_id), auth = auth)
 
         if (not r.ok):
+            # self.stderrln (str(r.text))
             raise ValueError("Failed to receive the process log")
 
         self.stdoutln (str(r.text))
@@ -209,16 +213,36 @@ class Pdbredo(basic.TaskDriver):
         r = requests.get(PDBREDO_URI + "/api/session/{token_id}/run/{run_id}/output/zipped".format(token_id = token_id, run_id = run_id), auth = auth)
         r.raise_for_status()
 
-        output = '/tmp/result.zip'
+        output    = 'result.zip'
 
         with open(output, 'wb') as f:
             f.write(r.content)
 
+        with ZipFile(output,'r') as zipObj:
+            # Extract all the contents of zip file in different directory
+            zipObj.extractall ( self.resultDir )
 
-        xyzout = self.getXYZOFName('_final.pdb')
-        mtzout = self.getMTZOFName('_final.mtz')
+        final_pdb = None
+        final_mtz = None
+        # final_lig = None
 
-        return xyzout, mtzout
+        self.stdoutln ( " 1. final_pdb = " + str(final_pdb) )
+        self.stdoutln ( " 1. final_mtz = " + str(final_mtz) )
+
+        for root, dirs, files in os.walk(self.resultDir, topdown=False):
+            self.stdoutln ( " root = " + str(root) )
+            self.stdoutln ( " files = " + str(files) )
+            for fname in files:
+                if fname.endswith('_final.pdb'):  
+                    final_pdb = os.path.join(root,fname)
+                if fname.endswith('_final.mtz'):  
+                    final_mtz = os.path.join(root,fname)
+
+        os.rename ( final_pdb,self.getXYZOFName() )
+        os.rename ( final_mtz,self.getMTZOFName() )
+
+
+        return [final_pdb,final_mtz]
 
     # ------------------------------------------------------------------------
 
@@ -240,8 +264,8 @@ class Pdbredo(basic.TaskDriver):
         hklin = hkl.getHKLFilePath ( self.inputDir() )
         libin = istruct.getLibFilePath ( self.inputDir() )
 
-        xyzout = self.getXYZOFName()
-        mtzout = self.getMTZOFName()
+        # xyzout = self.getXYZOFName()
+        # mtzout = self.getMTZOFName()
 
         # self.pdbredo_token_id
         # self.pdbredo_token_secret
@@ -267,7 +291,10 @@ class Pdbredo(basic.TaskDriver):
 
         self.putWaitMessageLF ("after do_satus finished "+ str(end_status))
 
-        self.do_fetch(token_id, token_secret,run_id, PDBREDO_URI)
+        final_pdb, final_mtz = self.do_fetch(token_id, token_secret,run_id, PDBREDO_URI)
+
+        self.stdoutln ( " final_pdb = " + str(final_pdb) )
+        self.stdoutln ( " final_mtz = " + str(final_mtz) )
         
         self.putWaitMessageLF ('do_fetch eneded')
 
@@ -289,7 +316,8 @@ class Pdbredo(basic.TaskDriver):
 
         # check solution and register data
         have_results = False
-        if os.path.isfile(xyzout):
+        if final_pdb:
+        # if os.path.isfile(final_pdb):
 
             verdict_row = self.rvrow
 
@@ -301,9 +329,7 @@ class Pdbredo(basic.TaskDriver):
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
-            substructure = None
-
-            structure = self.formStructure ( xyzout,None,mtzout,
+            structure = self.formStructure ( final_pdb,None,final_mtz,
                                              libin,hkl,istruct,
                                              "FWT,PHWT,DELFWT,PHDELWT",True )
             if structure:
@@ -311,67 +337,7 @@ class Pdbredo(basic.TaskDriver):
                                           "Structure and electron density",
                                           structure )
 
-                # make anomolous ED map widget
-                if hkl.isAnomalous() and str(hkl.useHKLSet)!="TI":
-
-                    mapfname = self.calcCCP4Maps ( mtzout,
-                                        "pdbredo_ano",source_key="pdbredo_anom" )
-                    hatype   = revision.ASU.ha_type.upper()
-                    if not hatype:
-                        hatype = "AX"
-
-                    self.open_stdin()
-                    self.write_stdin ([
-                        "residue " + hatype,
-                        "atname " + hatype,
-                        "numpeaks 100",
-                        "threshold rms 4",
-                        "output pdb",
-                        "end"
-                    ])
-                    self.close_stdin()
-                    subfile = "substructure.pdb"
-                    try:
-                        self.runApp ( "peakmax",[
-                            "mapin" ,mapfname[0],
-                            "xyzout",subfile
-                        ],logType="Service" )
-                        for fname in mapfname:
-                            if os.path.exists(fname):
-                                os.remove ( fname )
-
-                        xyz_merged = self.getOFName ( "_ha.pdb" )
-                        is_substr  = self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
-
-                        self.putTitle ( "Structure, substructure and anomolous maps" )
-                        struct_ano = self.formStructure ( xyz_merged,None,mtzout,
-                                                          libin,hkl,istruct,
-                                                          "FAN,PHAN,DELFAN,PHDELAN",
-                                                          False )
-                        if struct_ano:
-                            nlst = struct_ano.dname.split ( " /" )
-                            nlst[0] += " (anom maps)"
-                            struct_ano.dname = " /".join(nlst)
-                            self.putStructureWidget ( "struct_ano_btn",
-                                        "Structure, substructure and anomalous maps",struct_ano )
-                            if is_substr:
-                                substructure = self.formStructure ( None,subfile,
-                                        structure.getMTZFilePath(self.outputDir()),
-                                        libin,hkl,istruct,"FWT,PHWT,DELFWT,PHDELWT",
-                                        False )
-                                if not substructure:
-                                    self.putMessage ( "<i>Substructure could not be " +\
-                                                      "formed (possible bug)</i>" )
-                        else:
-                            self.putMessage ( "<i>Structure with anomalous maps " +\
-                                              "could not be formed (possible bug)</i>" )
-                    except:
-                        self.putMessage ( "<i>Structure with anomalous maps " +\
-                                          "could not be formed due to exception " +\
-                                          " (possible bug)</i>" )
-
                 # update structure revision
-                revision.setStructureData ( substructure )
                 revision.setStructureData ( structure    )
                 self.registerRevision     ( revision     )
                 have_results = True
@@ -398,6 +364,8 @@ class Pdbredo(basic.TaskDriver):
 
         else:
             self.putTitle ( "No Output Generated" )
+
+        # shutil.rmtree ( self.resultDir )
 
         # close execution logs and quit
         self.success ( have_results )
