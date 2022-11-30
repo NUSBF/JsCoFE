@@ -238,11 +238,12 @@ class Pdbredo(basic.TaskDriver):
                 if fname.endswith('_final.mtz'):  
                     final_mtz = os.path.join(root,fname)
 
-        os.rename ( final_pdb,self.getXYZOFName() )
-        os.rename ( final_mtz,self.getMTZOFName() )
+        xyzout = self.getXYZOFName()
+        mtzout = self.getMTZOFName()
+        os.rename ( final_pdb,xyzout )
+        os.rename ( final_mtz,mtzout )
 
-
-        return [final_pdb,final_mtz]
+        return [xyzout,mtzout]
 
     # ------------------------------------------------------------------------
 
