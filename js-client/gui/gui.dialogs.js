@@ -351,7 +351,9 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 
   var loading_msg = '<!DOCTYPE html>\n<html><body><h2>Loading ...</h2></body></html>';
 
-  (function(dlg){
+  dlg = this;
+
+  // (function(dlg){
 
     if (dlg.navigation)  {
 
@@ -423,13 +425,13 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
       dlg.history_position = -2;
     }
 
-  }(this))
+  // }(this))
 
   var dialog = $(this.element).dialog ( this.options );
   if (__any_mobile_device)
     dialog.siblings('.ui-dialog-titlebar').remove();
 
-  (function(dlg){
+  // (function(dlg){
 
     $(dlg.element).on ( 'dialogresize', function(event,ui){
       dlg.resizeDisplay ( dlg.width_px(),dlg.height_px() );
@@ -484,13 +486,13 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
       dlg.delete();
     });
 
-    window.setTimeout ( function(){
-      dlg.display.loadPage ( helpURL );
-    },10);
+    // window.setTimeout ( function(){
+    //   dlg.display.loadPage ( helpURL );
+    // },100);
 
-  }(this))
+  // }(this))
 
-  // this.display.loadPage ( helpURL );
+  this.display.loadPage ( helpURL );
 
 }
 

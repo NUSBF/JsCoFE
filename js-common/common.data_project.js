@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.11.22   <--  Date of Last Modification.
+ *    30.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -458,14 +458,14 @@ var i0 = 4;
 
   // check if the pre-defined folde structure is non-existent or corrupt
   // and make a deep reset in such case
-  if ((!('folders' in this)) || (this.folders.length<6) ||
-      (!this.folders[0].name.startsWith(login+'\'s '))  ||
-       (this.folders[0].type!=folder_type.user)         ||
-       (this.folders[1].type!=folder_type.shared)       ||
-       (this.folders[2].type!=folder_type.joined)       ||
-       (this.folders[3].type!=folder_type.all_projects) ||
+  if ((!('folders' in this)) || (this.folders.length<i0) ||
+      (!this.folders[0].name.startsWith(login+'\'s '))   ||
+       (this.folders[0].type!=folder_type.user)          ||
+       (this.folders[1].type!=folder_type.shared)        ||
+       (this.folders[2].type!=folder_type.joined)        ||
+       (this.folders[3].type!=folder_type.all_projects)  ||
        ((i0==6) && (
-          (this.folders[4].type!=folder_type.archived)  ||
+          (this.folders[4].type!=folder_type.archived)   ||
           (this.folders[5].type!=folder_type.cloud_archive))
        ) ||
        ((i0!=6) && (this.folders.length>=6) && 
