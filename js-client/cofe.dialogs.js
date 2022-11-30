@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.05.22   <--  Date of Last Modification.
+ *    30.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -82,29 +82,37 @@ function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
 
 function MessageAJAXFailure ( title,jqXHR,exception )  {
 
-  var msg = '<h2>Communication errors</h2><p><i>';
+  var msg = '<h2>Communication errors</h2>';
   if (!jqXHR)  {
-    msg += 'Unknown error.';
-  } else if (jqXHR.status === 0) {
-    msg += 'Not connected.<br>Please verify your network connection.';
-  } else if (jqXHR.status == 404) {
-    msg += 'The requested page not found. [404]';
-  } else if (jqXHR.status == 500) {
-    msg += 'Internal Server Error [500].';
-  } else if (exception === 'parsererror') {
-    msg += 'Requested JSON parse failed.';
-  } else if (exception === 'timeout') {
-    msg += 'Time out error.';
-  } else if (exception === 'abort') {
-    msg += 'Ajax request aborted.';
+    msg += '<b><i>Unknown error.</i></b>';
   } else {
-    msg += 'Uncaught Error.<br>' + jqXHR.responseText;
+    if (jqXHR.status === 0) {
+      msg += 'Not connected. Please check your network connection.';
+    } else if (jqXHR.status == 404) {
+      msg += 'The requested page not found. [404]';
+    } else if (jqXHR.status == 500) {
+      msg += 'Internal Server Error [500].';
+    } else if (exception === 'parsererror') {
+      msg += 'Requested JSON parse failed.';
+    } else if (exception === 'timeout') {
+      msg += 'Time out error.';
+    } else if (exception === 'abort') {
+      msg += 'Ajax request aborted.';
+    } else {
+      msg += 'Uncaught Error.<br>' + jqXHR.responseText;
+    }
+    msg = '<b><i>' + msg + 
+          '</i></b><p><b>Status:</b><i> '     + jqXHR.status +
+          '</i><br><b>Description:</b><i> '   + jqXHR.statusText +
+          '</i><br><b>Response text:</b><i> ' + jqXHR.responseText +
+          '</i><br><b>Error:</b><i> '         + exception +
+          '</i>';
   }
 
-  new MessageBox ( title,msg + '</i><p>' +
-    'This may be an intermittent error due to a poor internet connection,<br>' +
-    'however, persistent appearance of this message is likely to indicate<br>' +
-    appName() + ' failure or temporary shutdown.','msg_error' );
+  new MessageBox ( title,'<div style="width:450px">' + msg +
+    '<p>This may be an intermittent error due to a poor internet connection, ' +
+    'however, persistent appearance of this message is likely to indicate ' +
+    appName() + ' failure or temporary shutdown.</div>','msg_error' );
 
 }
 

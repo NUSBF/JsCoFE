@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.11.22   <--  Date of Last Modification.
+ *    30.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,7 +37,7 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   // $('#'+sceneId).empty();
   //  unsetDefaultButton ( null );
 
-  clearNetworkIndocators();
+  clearNetworkIndicators();
 
   // set background image
   if (getClientCode()==client_code.ccp4)  {
