@@ -220,7 +220,7 @@ var __holdup_timer = null;
 var __holdup_wait  = 20000;  //msec
 var __communication_ind = null;
 
-function clearNetworkIndocators()  {
+function clearNetworkIndicators()  {
   if (__delays_timer)
     window.clearTimeout ( __delays_timer );
   __delays_ind   = null;  // communication delays indicator
