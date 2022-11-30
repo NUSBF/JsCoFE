@@ -435,6 +435,7 @@ BasePage.prototype.addLogoutToMenu = function ( logout_func )  {
 
 BasePage.prototype.makeUserRationIndicator = function()  {
   if (this.rationPanel)  {
+    this.rationPanel.disk_usage = null;
     if (this.ration)  {
       if (this.ration.storage>0.0)  {
         this.rationPanel.disk_icon  = this.rationPanel.setImageButton (
@@ -473,7 +474,7 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
 
     this.ration.pdesc = pdesc;
 
-    if (this.ration.storage>0.0)  {
+    if ((this.ration.storage>0.0) && this.rationPanel.disk_usage)  {
 
       var storage_pp   = getPercentLine ( this.ration.storage_used,this.ration.storage );
       var cpu_day_pp   = getPercentLine ( this.ration.cpu_day_used,this.ration.cpu_day );

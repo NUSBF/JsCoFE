@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.08.22   <--  Date of Last Modification.
+#    30.11.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -267,7 +267,7 @@ class MrParse(basic.TaskDriver):
                                 esmmodels[i]["seq_ident"] = "0.0"
                             model.meta  = {
                                 "rmsd"    : esmmodels[i]["rmsd"],
-                                "seqId"   : str(100.0*float(afmodels[i]["seq_ident"])),
+                                "seqId"   : str(100.0*float(esmmodels[i]["seq_ident"])),
                                 "h_score" : esmmodels[i]["h_score"]
                             }
                             model.seqId = model.meta["seqId"]
