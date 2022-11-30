@@ -345,11 +345,12 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 function offlineGreeting ( callback_func )  {
   if (__offline_message)  {
     __offline_message = false;
-    launchHelpBox ( appName()+' offline','./html/offline_greeting.html',doNotShowAgain,0,{
-                        width      : 600,
-                        height     : 300,
-                        navigation : false
-                  });
+    launchHelpBox ( appName()+' offline',
+      './html/offline_greeting.html',doNotShowAgain,0,{
+        width      : 600,
+        height     : 300,
+        navigation : false
+      });
     // new MessageBoxF (
     //   appName() + ' offline',
     //   '<div style="width:500px"><h2>' + appName() + ' offline</h2>' +
