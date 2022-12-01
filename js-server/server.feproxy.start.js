@@ -152,7 +152,8 @@ function start ( callback_func )  {
     //cmd.sendResponse ( server_response, cmd.fe_retcode.proxyError,'Proxy error #2',{} );
     //log.warning ( 3,'failed proxy fetch ' + url.parse(server_request.url).pathname.substr(1) );
     //log.warning ( 3,'             error ' + err );
-    log.warning ( 3,err + ' fetching ' + url.parse(server_request.url).pathname.substr(1) );
+    log.warning ( 3,'Proxy-server' + err + ' fetching ' + 
+                    url.parse(server_request.url).pathname.substr(1) );
     setTimeout ( function(){
       proxy.web ( server_request,server_response,options_web );
     },10);
@@ -184,7 +185,8 @@ function start ( callback_func )  {
     proxy_client = httpProxy.createProxyServer ( options_proxy_client );
 
     proxy_client.on ( 'error', function(err,server_request,server_response){
-      log.warning ( 4,err + ' fetching ' + url.parse(server_request.url).pathname.substr(1) );
+      log.warning ( 4,'Proxy-client ' + err + ' fetching ' + 
+                       url.parse(server_request.url).pathname.substr(1) );
       setTimeout ( function(){
         proxy_client.web ( server_request,server_response,options_web );
       },10);
