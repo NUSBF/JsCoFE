@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    12.01.22   <--  Date of Last Modification.
+#    01.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -286,17 +286,17 @@ class Arcimboldo(basic.TaskDriver):
 
 
         if borges_library ==  'CUSTOM':
-        	f_bor.write('library_path = %s\n' % (custom_library))
+            f_bor.write('library_path = %s\n' % (custom_library))
         else:
-        	ccp4_master_home = os.environ.get ( 'CCP4_MASTER', 'not_set' )
-        	lib_path = os.path.join(ccp4_master_home,'BORGES_LIBS',borges_library.__str__())
-        	f_bor.write('library_path = %s\n' % (lib_path))
+            ccp4_master_home = os.environ.get ( 'CCP4_MASTER', 'not_set' )
+            lib_path = os.path.join(ccp4_master_home,'BORGES_LIBS',borges_library.__str__())
+            f_bor.write('library_path = %s\n' % (lib_path))
 
         if rotation_model_refinement != "auto":
         	f_bor.write('rotation_model_refinement = %s\n' % ("both" if rotation_model_refinement == "On" else "no_gyre"))
 
         if gimble != "auto":
-        	f_bor.write('gimble = %s\n' % ("True" if gimble == "On" else "False"))
+            f_bor.write ( 'gimble = %s\n' % ("True" if gimble == "On" else "False") )
 
         f_bor.write('[LOCAL]\n')
         f_bor.write('path_local_phaser = %s/bin/phaser\n' % (self.ccp4_home))
@@ -415,7 +415,6 @@ class Arcimboldo(basic.TaskDriver):
         self.sec1 = self.task.parameters.sec1.contains
 
         self.putMessage (
-            "<h3>The job is likely to take very long time</h3>" +\
             "<i>You may close this window and check later. Logout and " +\
             "subsequent login will not affect the job running." )
         self.rvrow -= 1

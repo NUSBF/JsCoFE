@@ -81,7 +81,7 @@ class Ample(basic.TaskDriver):
                 "-rvapi_document",self.reportDocumentName() ]
 
         self.putMessage (
-            "<h3>The job is likely to take very long time</h3>" +\
+            "<h3>The job is likely to take some time</h3>" +\
             "<i>You may close this window and check later. Logout and " +\
             "subsequent login will not affect the job running." )
         self.rvrow -= 1
