@@ -81,8 +81,6 @@ class Pdbredo(basic.TaskDriver):
         return structure
 
 
-        # Prepare  input
-
 
     PDBREDO_URI = 'https://services.pdb-redo.eu:443'
     token_id     = 204
@@ -90,35 +88,16 @@ class Pdbredo(basic.TaskDriver):
 
     def do_submit(self,xyzin,hklin,token_id,token_secret, PDBREDO_URI):
         
-        # The token id and secret for a session at PDB-REDO    
-        
 
         # The authentication object, used by the requests module
         auth = PDBRedoAPIAuth.PDBRedoAPIAuth(token_id, token_secret)
 
-        # The files to submit
-        # xyzin = self.makeClass ( self.input_data.data.ixyz[0] )
-        # hklin = self.makeClass ( self.input_data.data.hkl     [0] )
-        # paired = True  # just a guess, to find out what is this!
 
         files = {
             'pdb-file': open(xyzin, 'rb'),
             'mtz-file': open(hklin, 'rb')
         }
         
-        # if (restrains != None):
-        #     files['restraints-file'] = open(restrains, 'rb')
-        
-        # if (sequence != None):
-        #     files['sequence-file'] = open(sequence, 'rb')
-
-        # Optional parameters, currently there's only one:
-        # params = {
-        #     'paired': paired
-        # }
-            
-        # Create a new job/run
-        # r = requests.post(args.url + "/api/session/{token_id}/run".format(token_id = token_id), auth = auth, files = files, data = {'parameters': json.dumps(params)})
         r = requests.post(PDBREDO_URI + "/api/session/{token_id}/run".format(token_id = token_id), auth = auth, files = files)
         r.raise_for_status()
 
@@ -128,25 +107,17 @@ class Pdbredo(basic.TaskDriver):
 
         return str(run_id)
 
-    # def do_check():
-    #     return True
-
     def do_status ( self, token_id, token_secret, PDBREDO_URI, run_id):
-    # The token id and secret for a session at PDB-REDO  
-        # self.stdoutln ( "test how it transfered " + str(run_id) )      
-        # token_id = args.token_id
-        # token_secret = args.token_secret
+
 
         # The authentication object, used by the requests module
         auth = PDBRedoAPIAuth.PDBRedoAPIAuth(token_id, token_secret)
 
-        # The job ID
-        # run_id = args.job_id
+        t0 = time.time()
+        t1 = time.time() + 3600*24
+        
 
-        # done = False
-
-
-        while True: 
+        while True and (t0 < t1):
 
             time.sleep ( 60 )
 
@@ -154,20 +125,12 @@ class Pdbredo(basic.TaskDriver):
             r.raise_for_status()
 
             status = r.json()['status']
-            self.rvrow = self.row0
-            self.putWaitMessageLF ("Job status is "+ str(status))
 
             if status == 'stopped':
-                # self.rvrow = self.row0
-                # self.putWaitMessageLF ("Job status is "+ str(status))
-                # done == True
-                # raise ValueError('The job somehow failed after submitting')
+                self.stderrln('The job failed after submitting')
                 break
             
             if status == 'ended':
-                # self.rvrow = self.row0
-                # self.putWaitMessageLF ("Job status is "+ str(status))
-                # done == True
                 break
 
                 
@@ -183,9 +146,6 @@ class Pdbredo(basic.TaskDriver):
         token_id = token_id
         token_secret = token_secret
 
-        self.putWaitMessageLF ('do_fetch')
-
-
         # The authentication object, used by the requests module
         auth = PDBRedoAPIAuth.PDBRedoAPIAuth(token_id, token_secret)
         
@@ -195,17 +155,17 @@ class Pdbredo(basic.TaskDriver):
         r = requests.get(PDBREDO_URI + "/api/session/{token_id}/run/{run_id}/output".format(token_id = token_id, run_id = run_id), auth = auth)
 
         if (not r.ok):
-            raise ValueError("Failed to receive the output file list")
+            self.stderrln ("Failed to receive the output file list")
 
-        for file in r.json():
-            self.stdoutln (str(file))
+        # for file in r.json():
+        #     self.stdoutln (str(file))
 
         # Retrieve a single result file. Here you would probably like to retrieve more files
         r = requests.get(PDBREDO_URI + "/api/session/{token_id}/run/{run_id}/output/process.log".format(token_id = token_id, run_id = run_id), auth = auth)
 
         if (not r.ok):
             # self.stderrln (str(r.text))
-            raise ValueError("Failed to receive the process log")
+            self.stderrln ("Failed to receive the process log")
 
         self.stdoutln (str(r.text))
 
@@ -226,12 +186,7 @@ class Pdbredo(basic.TaskDriver):
         final_mtz = None
         # final_lig = None
 
-        self.stdoutln ( " 1. final_pdb = " + str(final_pdb) )
-        self.stdoutln ( " 1. final_mtz = " + str(final_mtz) )
-
-        for root, dirs, files in os.walk(self.resultDir, topdown=False):
-            self.stdoutln ( " root = " + str(root) )
-            self.stdoutln ( " files = " + str(files) )
+        for root, dir, files in os.walk(self.resultDir, topdown=False):
             for fname in files:
                 if fname.endswith('_final.pdb'):  
                     final_pdb = os.path.join(root,fname)
@@ -239,9 +194,14 @@ class Pdbredo(basic.TaskDriver):
                     final_mtz = os.path.join(root,fname)
 
         xyzout = self.getXYZOFName()
+
         mtzout = self.getMTZOFName()
+
         os.rename ( final_pdb,xyzout )
+
         os.rename ( final_mtz,mtzout )
+
+
 
         return [xyzout,mtzout]
 
@@ -287,37 +247,21 @@ class Pdbredo(basic.TaskDriver):
 
         run_id = self.do_submit(xyzin,hklin,token_id,token_secret, PDBREDO_URI)
 
-        end_status = self.do_status(token_id, token_secret, PDBREDO_URI, run_id)
-        #if status ended or stopped
+        self.do_status(token_id, token_secret, PDBREDO_URI, run_id)
 
-        self.putWaitMessageLF ("after do_satus finished "+ str(end_status))
+        xyzout, mtzout = self.do_fetch(token_id, token_secret,run_id, PDBREDO_URI)
 
-        final_pdb, final_mtz = self.do_fetch(token_id, token_secret,run_id, PDBREDO_URI)
-
-        self.stdoutln ( " final_pdb = " + str(final_pdb) )
-        self.stdoutln ( " final_mtz = " + str(final_mtz) )
+        self.stdoutln ( " final_pdb = " + str(xyzout) )
+        self.stdoutln ( " final_mtz = " + str(mtzout) )
         
-        self.putWaitMessageLF ('do_fetch eneded')
+        self.row0 = self.rvrow
+        self.putMessage ("")
 
-
-        # result = do_submit()
-        # if result is good:
-          # done = False
-          # t0 = time.now()
-          # t1 = t0
-          # while not done and (t1-t0)>3600*24:
-          #     time.sleep(20)
-          #     done = do_check()
-          # if done:
-          #     do_fetch()
-          #     unzip output.zip
-        # else:
-        #   self.putTitle ( "NOT GOOD" )
 
 
         # check solution and register data
         have_results = False
-        if final_pdb:
+        if xyzout:
         # if os.path.isfile(final_pdb):
 
             verdict_row = self.rvrow
@@ -330,7 +274,7 @@ class Pdbredo(basic.TaskDriver):
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
-            structure = self.formStructure ( final_pdb,None,final_mtz,
+            structure = self.formStructure ( xyzout,None,mtzout,
                                              libin,hkl,istruct,
                                              "FWT,PHWT,DELFWT,PHDELWT",True )
             if structure:
@@ -353,20 +297,22 @@ class Pdbredo(basic.TaskDriver):
                     self.stderr ( " *** validation tools or molprobity failure" )
                     self.rvrow = rvrow0 + 4
 
-                # if meta:
-                #     verdict_meta = {
-                #         "data"   : { "resolution" : hkl.getHighResolution(raw=True) },
-                #         "params" : {},
-                #         "molprobity" : meta,
-                #         "xyzmeta" : structure.xyzmeta
-                #     }
-                #     suggestedParameters = verdict_refmac.putVerdictWidget (
-                #                                 self,verdict_meta,verdict_row )
+                if meta:
+                    verdict_meta = {
+                        "data"   : { "resolution" : hkl.getHighResolution(raw=True) },
+                        "params" : {},
+                        "molprobity" : meta,
+                        "xyzmeta" : structure.xyzmeta
+                    }
+                    suggestedParameters = verdict_refmac.putVerdictWidget (
+                                                self,verdict_meta,verdict_row )
 
         else:
             self.putTitle ( "No Output Generated" )
 
-        # shutil.rmtree ( self.resultDir )
+        shutil.rmtree ( self.resultDir )
+        os.remove ("result.zip")
+
 
         # close execution logs and quit
         self.success ( have_results )
