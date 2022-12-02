@@ -54,6 +54,10 @@ if (msg)  {
   process.exit();
 }
 
+process.on('uncaughtException', function (err) {
+  console.log ( 'FE-Proxy caught exception: ' + err );
+});
+
 conf.setServerConfig ( conf.getFEProxyConfig() );
 
 feproxy_start.start ( null );

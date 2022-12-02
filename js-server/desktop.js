@@ -331,10 +331,14 @@ if (!startFE)  {
   launch();
 */
 
-launch();
-
 
 process.on ( 'SIGINT',function() {
   log.standard ( 7,'terminated from console by user' );
   process.exit();
 });
+
+process.on('uncaughtException', function (err) {
+  console.log('Caught exception: ' + err);
+});
+
+launch();
