@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.08.22   <--  Date of Last Modification.
+#    02.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -247,20 +247,27 @@ class ShelxCD(basic.TaskDriver):
                             atom.element = gemmi.Element(atomType)
             st.write_pdb ( pdbfile )
 
-            rvrow0 = self.rvrow
-            self.putTitle ( "Substructure Found" )
+            self.rvrow -=3
+
             structure = self.finaliseStructure ( pdbfile,self.outputFName,
                                                  hkl0,None,[],1,
                                                  leadKey=1,
-                                                 # openState="closed",
-                                                 title="" )
+                                                 openState="hidden",
+                                                 title= None,
+                                                 inpDir=None,
+                                                 stitle= None,
+                                                 reserveRows=0 )
+
+            rvrow0 = self.rvrow
+            self.putTitle ( "Substructure Found" )
+            
             if structure:
 
                 if hkla:
-                    self.putMessage ( "&nbsp;" )
+                    # self.putMessage ( "&nbsp;" )
                     anom_structure = self.finaliseAnomSubstructure ( pdbfile,
-                                                "anom_substructure",hkla,[],"" )
-                                                # openState="hidden" )
+                                                "anom_substructure",hkla,[],"",
+                                                openState="hidden" )
                     if anom_structure:
                         anom_structure.setAnomSubstrSubtype() # substructure
                         #anom_structure.setHLLabels()
