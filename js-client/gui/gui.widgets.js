@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    03.10.22   <--  Date of Last Modification.
+ *    02.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1197,6 +1197,7 @@ Image.prototype.setImage = function ( image_source )  {
 
 function Button ( text,icon_uri )  {
   Widget.call ( this,'button' );
+  this.element.setAttribute ( 'type','button' );
   this.div = document.createElement ( 'div' );
   this.element.appendChild ( this.div );
   this._set_button ( text,icon_uri );
@@ -1212,11 +1213,14 @@ Button.prototype._set_button = function ( text,icon_uri )  {
   //      else  this.div.innerHTML = ' ';  // Safari 14 fix
   if (icon_uri.length>0)  {
     $(this.div).css({'text-align':'center',
+                    //  'vertical-align' : 'middle',
                      'margin-left':'1.2em'});
     $(this.element).css(
       {'background-image'   :'url("'+icon_uri+'")',
        'background-repeat'  :'no-repeat',
        'background-size'    :'22px',
+      //  'vertical-align'     : 'middle',
+      //  'margin' : '0px 0px 0px 0px',
        'background-position':'0.5em center'});
   }
   $(this.element).button();
