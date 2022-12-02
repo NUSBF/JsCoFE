@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    27.05.22   <--  Date of Last Modification.
+ *    02.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -107,7 +107,7 @@ var _taskIndex = {
   'R'  : { type: 'TaskShelxSubstr'        , after: ['H','J','K','L','M','N'] },
 
   // suggest Phaser-EP after ShelxSubstr; do not suggest it after itself
-  'S'  : { type: 'TaskPhaserEP'           , after: ['R'] },
+  'S'  : { type: 'TaskPhaserEP'           , after: ['R','p'] },
 
   // suggest Parrot after both MR and Phaser-EP; do not suggest it after itself
   'T'  : { type: 'TaskParrot'             , after: ['J','K','L','M','N','O','R','S'] },

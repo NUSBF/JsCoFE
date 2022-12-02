@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    17.12.18   <--  Date of Last Modification.
+#    02.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CALCULATION OF ED MAPS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2018
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -170,9 +170,9 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
         file_stdout.write ( "Error calling refmac5: " + rc.msg )
         file_stderr.write ( "Error calling refmac5: " + rc.msg )
 
-    else: # Generate maps
-        calcCCP4Maps ( output_file_prefix+file_mtz(),output_file_prefix,
-                       job_dir,file_stdout,file_stderr,"refmac",log_parser )
+    # else: # Generate maps
+    #     calcCCP4Maps ( output_file_prefix+file_mtz(),output_file_prefix,
+    #                    job_dir,file_stdout,file_stderr,"refmac",log_parser )
 
     return
 
@@ -218,9 +218,9 @@ def calcAnomEDMap ( xyzin,hklin,hkl_dataset,anom_form,output_file_prefix,job_dir
         file_stdout.write ( "Error calling refmac5: " + rc.msg )
         file_stderr.write ( "Error calling refmac5: " + rc.msg )
 
-    else:
-        # Generate maps
-        calcCCP4Maps ( output_file_prefix+file_mtz(),output_file_prefix,
-                       job_dir,file_stdout,file_stderr,"refmac_anom",log_parser )
+    # else:
+    #     # Generate maps
+    #     calcCCP4Maps ( output_file_prefix+file_mtz(),output_file_prefix,
+    #                    job_dir,file_stdout,file_stderr,"refmac_anom",log_parser )
 
     return

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.05.21   <--  Date of Last Modification.
+ *    02.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -114,6 +114,10 @@ DataStructure.prototype.isSubstructure = function()  {
   return (this.subtype.indexOf(structure_subtype.SUBSTRUCTURE)>=0);
 }
 
+DataStructure.prototype.arePhases = function()  {
+  return (this.subtype.indexOf(structure_subtype.PHASES)>=0);
+}
+
 DataStructure.prototype.phaseType = function()  {
   switch (this.leadKey)  {
     case 1 : if (this.isSubstructure())
@@ -163,7 +167,8 @@ if (!__template)  {
     if (this.links.length>0)
       dsp.makeRow ( 'Links without description',this.links.join(', '),
         'Formulas (Residue1.Atom1-Atom2.Residue2) for covalent links without descripton (LINK)' );
-    dsp.makeRow ( 'Phases\' type',this.phaseType(),'Type of phasing method used to calculate phases' );
+    if (this.arePhases())
+      dsp.makeRow ( 'Phases\' type',this.phaseType(),'Type of phasing method used to calculate phases' );
 
     dsp.addViewHKLButton ( task );
 
