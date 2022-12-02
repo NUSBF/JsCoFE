@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.12.22   <--  Date of Last Modification.
+#    18.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -247,111 +247,105 @@ class ShelxCD(basic.TaskDriver):
                             atom.element = gemmi.Element(atomType)
             st.write_pdb ( pdbfile )
 
-            # rvrow0 = self.rvrow
-            # self.putTitle ( "Substructure Found" )
-            # structure = self.finaliseStructure ( pdbfile,self.outputFName,
-            #                                      hkl0,None,[],1,
-            #                                      leadKey=1,
-            #                                      # openState="closed",
-            #                                      title="" )
-            # if structure:
-            # if True:
+            rvrow0 = self.rvrow
+            self.putTitle ( "Substructure Found" )
+            structure = self.finaliseStructure ( pdbfile,self.outputFName,
+                                                 hkl0,None,[],1,
+                                                 leadKey=1,
+                                                 # openState="closed",
+                                                 title="" )
+            if structure:
 
-            # if hkla:
-            # self.putMessage ( "&nbsp;" )
-            # self.putTitle ( "Substructure found" )
-            anom_structure = self.finaliseAnomSubstructure ( pdbfile,
-                                        self.outputFName,hkla,[],"",
-                                        openState="hidden",
-                                        title="Substructure found" )
-            if anom_structure:
-                anom_structure.setAnomSubstrSubtype() # substructure
-                #anom_structure.setHLLabels()
-            else:
-                self.putMessage ( "Anomalous substructure calculations failed." )
+                if hkla:
+                    self.putMessage ( "&nbsp;" )
+                    anom_structure = self.finaliseAnomSubstructure ( pdbfile,
+                                                "anom_substructure",hkla,[],"" )
+                                                # openState="hidden" )
+                    if anom_structure:
+                        anom_structure.setAnomSubstrSubtype() # substructure
+                        #anom_structure.setHLLabels()
+                    else:
+                        self.putMessage ( "Anomalous substructure calculations failed." )
 
-            # finalise output revision(s)
-            # remove Refmac results from structure:
-            # shutil.copy2 ( hkl0.getHKLFilePath(self.inputDir()),self.outputDir() )
-            # xyz_file = structure.getSubFileName()
-            # structure.removeFiles()
-            # structure.setSubFile ( xyz_file )
-            # structure.setMTZFile ( hkls.getHKLFileName() )
-            # structure.removeSubtype ( dtype_template.subtypePhases() )
-            # super ( ShelxSubstr,self ).finalise ( structure )
+                # finalise output revision(s)
+                # remove Refmac results from structure:
+                """
+                shutil.copy2 ( hkl0.getHKLFilePath(self.inputDir()),self.outputDir() )
+                xyz_file = structure.getSubFileName()
+                structure.removeFiles()
+                structure.setSubFile ( xyz_file )
+                structure.setMTZFile ( hkls.getHKLFileName() )
+                structure.removeSubtype ( dtype_template.subtypePhases() )
+                super ( ShelxSubstr,self ).finalise ( structure )
+                """
 
-            #  Make output revisions
+                #  Make output revisions
 
-            #  make a list of all used datasets, each one will be used
-            #  for making an individual revision; sort the list such that
-            #  the most probable revision for taking downstream is on
-            #  top of the list
-            hkl_all_0  = []
-            hkl_all_0 += hkl
-            sort_order = ["choose-one","peak","inflection","native","low-remote","high-remote"]
-            if native:
-                native.wtype = "native"
-                hkl_all_0.append ( native )
-                if native.useForPhasing:
-                    sort_order = ["native","choose-one","peak","inflection","low-remote","high-remote"]
-            hkl_all = []
-            for wtype in sort_order:
-                for i in range(len(hkl_all_0)):
-                    if hkl_all_0[i].wtype==wtype:
-                        hkl_all.append ( hkl_all_0[i] )
-                        break
-
-            if len(hkl_all)==1:
-                self.putTitle ( "Structure Revision" )
-            else:
-                self.putTitle ( "Structure Revisions" )
-
-            self.putMessage ( "&nbsp;" )
-            if len(hkl_all)>1:
-                self.putMessage (
-                    "<b><i>New structure revision name for:<br>&nbsp;</i></b>" )
-
-            gridId = self.getWidgetId ( "revision" )
-            pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),
-                                    self.rvrow,0,1,1 )
-            self.rvrow += 1
-
-            xyz_file = anom_structure.getSubFileName()
-            anom_structure.removeFiles()
-            anom_structure.setSubFile ( xyz_file )
-            anom_structure.removeSubtype ( dtype_template.subtypePhases() )
-
-            for i in range(len(hkl_all)):
-
-                # make structure revision
-                ri = dtype_revision.DType ( -1 )
-                ri.copy ( revision )
-                ri.setStructureData  ( anom_structure  )
-                ri.setReflectionData ( hkl_all[i]      )
+                #  make a list of all used datasets, each one will be used
+                #  for making an individual revision; sort the list such that
+                #  the most probable revision for taking downstream is on
+                #  top of the list
+                hkl_all_0  = []
+                hkl_all_0 += hkl
+                sort_order = ["choose-one","peak","inflection","native","low-remote","high-remote"]
+                if native:
+                    native.wtype = "native"
+                    hkl_all_0.append ( native )
+                    if native.useForPhasing:
+                        sort_order = ["native","choose-one","peak","inflection","low-remote","high-remote"]
+                hkl_all = []
+                for wtype in sort_order:
+                    for i in range(len(hkl_all_0)):
+                        if hkl_all_0[i].wtype==wtype:
+                            hkl_all.append ( hkl_all_0[i] )
+                            break
 
                 if len(hkl_all)==1:
-                    ri.makeRevDName  ( self.job_id,i+1,self.outputFName )
-                    self.putRevisionWidget ( gridId,i,
-                        "New structure revision name:",ri )
+                    self.putTitle ( "Structure Revision" )
                 else:
-                    ri.makeRevDName ( self.job_id,i+1,
-                        self.outputFName + " (" + hkl_all[i].wtype + ")" )
-                    self.putRevisionWidget ( gridId,i,hkl_all[i].wtype +\
-                        " dataset:",ri )
+                    self.putTitle ( "Structure Revisions" )
 
-                ri.register ( self.outputDataBox )
-                have_results = True
+                self.putMessage ( "&nbsp;" )
+                if len(hkl_all)>1:
+                    self.putMessage (
+                        "<b><i>New structure revision name for:<br>&nbsp;</i></b>" )
 
-            if have_results:
-                self.generic_parser_summary["shelxcd"] = {
-                    "summary_line" : revision.ASU.ha_type + "<sub>" +\
-                                    str(anom_structure.getNofAtoms()) +\
-                                    "</sub> substructure found"
-                }
+                gridId = self.getWidgetId ( "revision" )
+                pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),
+                                         self.rvrow,0,1,1 )
+                self.rvrow += 1
 
-            # else:
-            #     self.rvrow = rvrow0
-            #     self.putTitle ( "Failed to form results" )
+                for i in range(len(hkl_all)):
+
+                    # make structure revision
+                    ri = dtype_revision.DType ( -1 )
+                    ri.copy ( revision )
+                    ri.setStructureData  ( structure  )
+                    ri.setReflectionData ( hkl_all[i] )
+
+                    if len(hkl_all)==1:
+                        ri.makeRevDName  ( self.job_id,i+1,self.outputFName )
+                        self.putRevisionWidget ( gridId,i,
+                            "New structure revision name:",ri )
+                    else:
+                        ri.makeRevDName ( self.job_id,i+1,
+                            self.outputFName + " (" + hkl_all[i].wtype + ")" )
+                        self.putRevisionWidget ( gridId,i,hkl_all[i].wtype +\
+                            " dataset:",ri )
+
+                    ri.register ( self.outputDataBox )
+                    have_results = True
+
+                if have_results:
+                    self.generic_parser_summary["shelxcd"] = {
+                        "summary_line" : revision.ASU.ha_type + "<sub>" +\
+                                         str(structure.getNofAtoms()) +\
+                                         "</sub> substructure found"
+                    }
+
+            else:
+                self.rvrow = rvrow0
+                self.putTitle ( "Failed to form results" )
 
         else:
             self.putTitle ( "No Substructure Found" )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.10.22   <--  Date of Last Modification.
+#    02.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1266,9 +1266,9 @@ class TaskDriver(object):
             self.file_stdout1 = open ( self.file_stdout1_path(),"a" )
 
         return [ filePrefix + edmap.file_pdb (),
-                 filePrefix + edmap.file_mtz (),
-                 filePrefix + edmap.file_map (),
-                 filePrefix + edmap.file_dmap() ]
+                 filePrefix + edmap.file_mtz () ]
+                #  filePrefix + edmap.file_map (),
+                #  filePrefix + edmap.file_dmap() ]
 
 
     def calcCCP4Maps ( self,mtzPath,filePrefix,source_key="refmac" ):
@@ -1514,7 +1514,7 @@ class TaskDriver(object):
 
     def finaliseAnomSubstructure ( self,xyzPath,name_pattern,hkl,
                                         associated_data_list,
-                                        anom_form,openState="hidden",
+                                        anom_form,openState="open",
                                         title="" ):
 
         anom_structure = self.finaliseAnomSubstructure1 ( xyzPath,name_pattern,
@@ -1532,7 +1532,7 @@ class TaskDriver(object):
 
     def finaliseAnomSubstructure1 ( self,xyzPath,name_pattern,hkl,
                                          associated_data_list,anom_form,pageId,
-                                         row,openState="hidden",title="" ):
+                                         row,openState="open",title="" ):
 
         row1 = row
         if openState!="hidden":
@@ -1553,7 +1553,7 @@ class TaskDriver(object):
         fnames = self.calcAnomEDMap ( xyzPath,hkl,anom_form,name_pattern )
 
         anom_structure = self.registerStructure (
-                            None,fnames[0],fnames[1],fnames[2],fnames[3],None,
+                            None,fnames[0],fnames[1],None,None,None,
                             refiner="refmac" )
         if anom_structure:
             anom_structure.addDataAssociation ( hkl.dataId )
@@ -1567,12 +1567,12 @@ class TaskDriver(object):
             if title!="":
                 self.putTitle1 ( pageId,title,row1,1 )
                 row1 += 1
-            open_state = -1
-            if openState=="open":
-                open_state = 1
+            # open_state = -1
+            # if openState=="open":
+            #     open_state = 1
             self.putStructureWidget1 ( pageId,"anom_structure_btn_",
-                                        "Anomalous substructure and electron density",
-                                        anom_structure,open_state,row1,1 )
+                                        "Anomalous scatterers and electron density",
+                                        anom_structure,0,row1,1 )
             return anom_structure
 
         else:

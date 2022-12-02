@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.10.22   <--  Date of Last Modification.
+ *    02.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -196,7 +196,8 @@ if (!__template)  {
     if (this.Structure && this.Substructure)
       dataSummaryPage.makeRow ( 'Revision\'s phases from',phases_source,
                      'Dataset containing phases for using in subsequent tasks' );
-    if (this.Structure || this.Substructure)
+    if ((this.Structure && this.Structure.arePhases()) ||
+        (this.Substructure && this.Substructure.arePhases()))
       dataSummaryPage.makeRow ( 'Phases\' type',phases_type,
                      'Type of phasing method used to calculate revision\'s phases' );
     tab1.grid.setWidget ( dataSummaryPage, 1,0,1,1 );
