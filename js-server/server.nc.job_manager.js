@@ -124,6 +124,7 @@ NCJobRegister.prototype.getJobEntry = function ( job_token )  {
 NCJobRegister.prototype.wakeZombi = function ( job_token )  {
   if (job_token in this.job_map)  {
     var jobEntry = this.job_map[job_token];
+    // console.log ( ' >> awaken ' + JSON.stringify(jobEntry) );
     if (jobEntry && (jobEntry.jobStatus==task_t.job_code.exiting) &&
         (jobEntry.sendTrials<=0))  {
       jobEntry.jobStatus  = task_t.job_code.running;
@@ -1414,30 +1415,44 @@ var response = null;
 
 }
 
+function ncWakeAllZombiJobs()  {
+  var nzombies = 0;
+  for (var token in ncJobRegister.job_map)
+    if (ncJobRegister.wakeZombi(token))
+      nzombies++;
+  return nzombies;
+}
+
 function ncWakeZombiJobs ( post_data_obj,callback_func )  {
-  var job_tokens = post_data_obj.job_tokens;
+var job_tokens = post_data_obj.job_tokens;
 
 // *** for debugging
 //__use_fake_fe_url = false;
 
+  // console.log ( ' >>>>>> tokens = ' + JSON.stringify(job_tokens) );
   var nzombies = 0;
   if (job_tokens[0]=='*')  {  // take all
-    for (var token in ncJobRegister.job_map)
-      if (ncJobRegister.wakeZombi(token))
-        nzombies++;
+    nzombies = ncWakeAllZombiJobs();
+    // for (var token in ncJobRegister.job_map)
+    //   if (ncJobRegister.wakeZombi(token))
+    //     nzombies++;
   } else  {  // take from the list given
     for (var i=0;i<job_tokens.length;i++)
       if (ncJobRegister.wakeZombi(job_tokens[i]))
         nzombies++;
   }
+
   log.standard ( 30,nzombies + ' zombi job(s) awaken on request' );
+
   if (nzombies>0)  {
     writeNCJobRegister();
     startJobCheckTimer();
   }
+
   callback_func ( new cmd.Response ( cmd.nc_retcode.ok,
                            '[00130] ' + nzombies + ' zombi job(s) awaken',
                            {nzombies:nzombies} ) );
+
 }
 
 // ===========================================================================

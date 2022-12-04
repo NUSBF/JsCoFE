@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.11.22   <--  Date of Last Modification.
+ *    03.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -68,14 +68,14 @@ function ProjectPage ( sceneId )  {
   //var replay_mode    = false;
   // *******************************
 
-  // var self           = this;  // for referencing class's properties
+  var self            = this;  // for referencing class's properties
 
   // var setButtonState_timer = null;
 
   // -------------------------------------------------------------------------
 
   this.makeHeader0 ( 3 );
-  (function(self){
+  // (function(self){
     if (self.logout_btn)
       self.logout_btn.addOnClickListener ( function(){
         self.jobTree.stopTaskLoop    ();
@@ -83,7 +83,7 @@ function ProjectPage ( sceneId )  {
           logout ( self.element.id,0 );
         });
       });
-  }(this));
+  // }(this));
 
   title_lbl = this.headerPanel.setLabel ( '',0,2,1,1 );
   title_lbl.setFont  ( 'times','150%',true,true )
@@ -104,7 +104,7 @@ function ProjectPage ( sceneId )  {
 
   // Make Main Menu
 
-  (function(self){
+  // (function(self){
 
     self.addMenuItem ( 'Project folder','list',function(){
       if (self.jobTree && self.jobTree.projectData)
@@ -162,7 +162,7 @@ function ProjectPage ( sceneId )  {
         logout ( sceneId,0 );
     });
 
-  }(this))
+  // }(this))
 
   // make central panel and the toolbar
   this.toolbar_div = new Widget('div');
@@ -245,7 +245,7 @@ function ProjectPage ( sceneId )  {
     window.open ( 'html/tutorials.html' );
   });
 
-  (function(self){
+  // (function(self){
     self.selmode_btn.addOnClickListener ( function(){
       self.setSelMode ( 0 );  // toggle
     });
@@ -253,10 +253,11 @@ function ProjectPage ( sceneId )  {
       self.setDisabled  ( true );
       self.can_reload  = true;  // force in order to avoid locking
       self.pending_act = '';    // drop pending actions
-      self.wakeZombiJobs();     // must go before reloadTree
-      self.reloadTree   ( true,true,null );  // multiple = false?
+      self.wakeZombiJobs( function(){  // must go before reloadTree
+        self.reloadTree   ( true,true,null );  // multiple = false?
+      });
     });
-  }(this))
+  // }(this))
 
   //launchHelpBox ( '','./html/jscofe_project.html',doNotShowAgain,1000 );
 
@@ -322,7 +323,7 @@ function ProjectPage ( sceneId )  {
   // this.onResize ( window.innerWidth,window.innerHeight );
 
   //  Read project data from server
-  (function(self){
+  // (function(self){
     self.jobTree.readProjectData ( 'Project',true,-1,
       function(){
         if (self.onTreeLoaded(false,self.jobTree))  {
@@ -340,6 +341,8 @@ function ProjectPage ( sceneId )  {
           title_lbl       .setText ( self.jobTree.projectData.desc.title );
           self.can_reload  = true;
           self.pending_act = '';
+          if (self.jobTree.hasRunningJobs(0))
+            self.wakeZombiJobs(null);
         }
       },function(node){
         return self.onTreeContextMenu();
@@ -348,7 +351,7 @@ function ProjectPage ( sceneId )  {
       },function(){
         self.onTreeItemSelect();
       });
-  }(this))
+  // }(this))
 
 }
 
@@ -437,32 +440,35 @@ ProjectPage.prototype.end_action = function()  {
 
 ProjectPage.prototype.addJob = function()  {
   this.selectRemark();
+  var self = this;
   if (this.start_action('add_job'))
-    (function(self){
+    // (function(self){
       self.jobTree.addJob ( false,false,self,function(key){
         // self.del_btn.setDisabled ( false );
         self._set_del_button_state();
         self.end_action();
       });
-    }(this))
+    // }(this))
 }
 
 ProjectPage.prototype.addJobRepeat = function()  {
   this.selectRemark();
+  var self = this;
   if (this.start_action('add_job_repeat'))
-    (function(self){
+    // (function(self){
       self.jobTree.addJob ( false,true,self,function(key){
         // self.del_btn.setDisabled ( false );
         self._set_del_button_state();
         self.end_action();
       });
-    }(this))
+    // }(this))
 }
 
 ProjectPage.prototype.insertJob = function()  {
   this.selectRemark();
+  var self = this;
   if (this.start_action('insert_job'))
-    (function(self){
+    // (function(self){
       self.jobTree.addJob ( true,false,self,function(key){
         // self.del_btn.setDisabled ( false );
         if (key!=1) // job was added or failed
@@ -471,12 +477,13 @@ ProjectPage.prototype.insertJob = function()  {
         if (key==1)  // job was inserted
           self.reloadTree ( false,true,null );
       });
-    }(this))
+    // }(this))
 }
 
 ProjectPage.prototype.addRemark = function()  {
-  if (this.start_action('add_remark'))
-    (function(self){
+  if (this.start_action('add_remark'))  {
+    var self = this;
+    // (function(self){
       self.can_reload = true;
       self.jobTree.addTask ( new TaskRemark(),true,false,self,function(key){
         if (key!=1)  // remark was added or failed
@@ -485,7 +492,8 @@ ProjectPage.prototype.addRemark = function()  {
         if (key==1)  // remark was inserted
           self.reloadTree ( false,true,null );
       });
-    }(this))
+    // }(this))
+  }
 }
 
 /*
@@ -505,35 +513,41 @@ ProjectPage.prototype.addRevisionRemark = function ( callback_func )  {
 */
 
 ProjectPage.prototype.cloneJob = function() {
-  if (this.start_action('clone_job'))
-    (function(self){
+  if (this.start_action('clone_job'))  {
+    var self = this;
+    // (function(self){
       self.jobTree.cloneJob ( 'clone',self,function(){
         self._set_del_button_state();
         self.end_action();
       });
-    }(this))
+    // }(this))
+  }
 }
 
 ProjectPage.prototype.deleteJob = function() {
-  if (this.start_action('delete_job'))
-    (function(self){
+  if (this.start_action('delete_job'))  {
+    var self = this;
+    // (function(self){
       self.jobTree.deleteJob ( false,function(was_deleted_bool){
         self.end_action();
         self._set_button_state();
         // self.setButtonState();
       });
-    }(this))
+    // }(this))
+  }
 }
 
 ProjectPage.prototype.moveJobUp = function()  {
-  if (this.start_action('move_job_up'))
-    (function(self){
+  if (this.start_action('move_job_up'))  {
+    var self = this;
+    // (function(self){
       self.jobTree.moveJobUp ( function(){
         self.end_action();
         self._set_button_state();
         // self.setButtonState();
       });
-    }(this))
+    // }(this))
+  }
 }
 
 ProjectPage.prototype.toggleBranchHighlight = function()  {
@@ -544,6 +558,7 @@ ProjectPage.prototype.stackJobs = function() {
   if (this.start_action('stack_jobs'))  {
     var adata = this.jobTree.selectStackJobs();
     var save  = false;
+    var self  = this;
     if (adata[0]==1)  {
       if (adata[1].length<=0)  {
         this.jobTree.makeStack1 ( adata[2],'',image_path('job_stack') );
@@ -562,7 +577,7 @@ ProjectPage.prototype.stackJobs = function() {
         var below_cbx = grid.setCheckbox ( 'below the currently selected job',true, 2,1,1,1 );
         grid.setLabel ( '&nbsp;<br>Make your choice and click <b><i>Stack</i></b> ' +
                         'button.',3,0,1,3 );
-        (function(self){
+        // (function(self){
           qdlg._options.buttons = {
             "Stack"   : function() {
                           var nodelist = [];
@@ -606,7 +621,7 @@ ProjectPage.prototype.stackJobs = function() {
                           self.end_action();
                         }
           };
-        }(this))
+        // }(this))
         qdlg.launch();
       }
     } else if (adata[0]==2)  {
@@ -614,7 +629,7 @@ ProjectPage.prototype.stackJobs = function() {
       save = true;
     }
     if (save)  {
-      (function(self){
+      // (function(self){
         self.jobTree.saveProjectData ( [],[],true, function(tree,rdata){
           self.setSelMode ( 1 );
           self.end_action();
@@ -629,17 +644,19 @@ ProjectPage.prototype.stackJobs = function() {
             self.reloadTree ( false,true,rdata );
           }
         });
-      }(this))
+      // }(this))
     }
   }
 }
 
 ProjectPage.prototype.setButtonState = function() {
-  if (this.start_action('set_button_state'))
-    (function(self){
+  if (this.start_action('set_button_state'))  {
+    var self = this;
+    // (function(self){
       self._set_button_state();
       self.end_action();
-    }(this))
+    // }(this))
+  }
 }
 
 ProjectPage.prototype.openJob = function() {
@@ -756,7 +773,8 @@ var has_remark  = false;
 
 ProjectPage.prototype.share_project = function()  {
   if (this.jobTree)  {
-    (function(self){
+    var self = this;
+    // (function(self){
       shareProject ( self.jobTree.projectData.desc,function(desc){
         if (desc)  {
           self.jobTree.projectData.desc = desc;
@@ -768,7 +786,7 @@ ProjectPage.prototype.share_project = function()  {
           //   self.jobTree.startTaskLoop();
         }
       });
-    }(this))
+    // }(this))
   } else
     new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
 }
@@ -943,7 +961,8 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
   __current_project = job_tree.projectData.desc.name;
   // __current_folder  = findFolder ( job_tree.projectData.desc.folderPath );
 
-  (function(self){
+  var self = this;
+  // (function(self){
     job_tree.addSignalHandler ( cofe_signals.jobDialogOpened,function(data){
       self.setSelMode ( 1 );
     });
@@ -984,7 +1003,7 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
       }
     }
 
-  }(this))
+  // }(this))
 
   this.updateUserRationDisplay ( job_tree.projectData.desc );
 
@@ -1086,15 +1105,26 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
   }
 }
 
-ProjectPage.prototype.wakeZombiJobs = function()  {
+ProjectPage.prototype.wakeZombiJobs = function ( callback_func )  {
   if (this.jobTree.projectData)  {
     var request_data = {};
     request_data.project = this.jobTree.projectData.desc.name;
     serverRequest ( fe_reqtype.wakeZombiJobs,request_data,'Project Page',
-                    function(data){},function(key,data){},function(){} );
-    localCommand  ( nc_command.wakeZombiJobs,{job_tokens:['*']},
-                    'Wake Zombi Jobs',function(response){ return true; } );
-  }
+      function(data){},
+      function(key,data){
+        if (__local_service)  {
+          localCommand  ( nc_command.wakeZombiJobs,{job_tokens:['*']},
+                          'Wake Zombi Jobs',function(response){
+            if (callback_func)
+              callback_func();
+            return true; 
+          });
+        } else if (callback_func)
+          callback_func();
+      },
+      function(){});
+  } else if (callback_func)
+    callback_func();
 }
 
 
@@ -1105,13 +1135,14 @@ ProjectPage.prototype.makeJobTree = function()  {
   jobTree.element.style.paddingBottom = '25px';
   jobTree.element.style.paddingRight  = '40px';
   // this.job_tree = jobTree;  // for external references
-  (function(self){
+  var self = this;
+  // (function(self){
     jobTree.addSignalHandler ( cofe_signals.rationUpdated,function(data){
       //alert ( 'ration updated ' + JSON.stringify(data));
       self.updateUserRationDisplay ( data );
       //self.getUserRation();
     });
-  }(this))
+  // }(this))
   return jobTree;
 }
 
@@ -1162,7 +1193,9 @@ ProjectPage.prototype.makeDock = function()  {
                      .setFontSize    ( '90%' )
                      .setVerticalAlignment ( 'middle' );
 
-  (function(self){
+  var self = this;
+
+  // (function(self){
 
     self.dock = new Dock ( self,
 
@@ -1244,7 +1277,7 @@ ProjectPage.prototype.makeDock = function()  {
       self.dock.toggle();
     });
 
-  }(this))
+  // }(this))
 
 }
 
@@ -1283,14 +1316,15 @@ ProjectPage.prototype.reloadProject = function()  {
 }
 
 ProjectPage.prototype.cloneJobWithSuggestedParameters = function ( jobId ) {
-  (function(self){
+  var self = this;
+  // (function(self){
     self.jobTree.cloneJob ( 'copy_suggested',self,function(){
       // self.del_btn.setDisabled ( false );
       self._set_del_button_state();
       if (jobId in self.jobTree.dlg_map)
         self.jobTree.dlg_map[jobId].close();
     });
-  }(this))
+  // }(this))
 }
 
 

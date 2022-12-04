@@ -351,7 +351,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 
   var loading_msg = '<!DOCTYPE html>\n<html><body><h2>Loading ...</h2></body></html>';
 
-  dlg = this;
+  var dlg = this;
 
   // (function(dlg){
 

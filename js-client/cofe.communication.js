@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.10.22   <--  Date of Last Modification.
+ *    03.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -659,14 +659,17 @@ function serverRequest ( request_type,data_obj,page_title,function_ok,
 }
 
 function localCommand ( cmd,data_obj,command_title,function_response )  {
-  __local_queue.push ({
-    status            : 'waiting',
-    cmd               : cmd,
-    data_obj          : data_obj,
-    command_title     : command_title,
-    function_response : function_response
-  });
-  processLocalQueue();
+  if (__local_service)  {
+    __local_queue.push ({
+      status            : 'waiting',
+      cmd               : cmd,
+      data_obj          : data_obj,
+      command_title     : command_title,
+      function_response : function_response
+    });
+    processLocalQueue();
+  } else if (function_response)
+    function_response(null);
 }
 
 

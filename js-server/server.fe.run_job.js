@@ -1360,6 +1360,8 @@ var nc_servers = conf.getNCConfigs();
   // numeration can change if cloud was reconfigured after job was run;
   // zombi jobs on client NCs are awakened directly from browsers
 
+  // console.log ( ' >>>> tokend = ' + JSON.stringify(tokens) );
+
   if (tokens.length>0)  {
 
     for (var i=0;i<nc_servers.length;i++)
