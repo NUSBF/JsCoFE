@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.11.22   <--  Date of Last Modification.
+ *    03.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -799,6 +799,9 @@ JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
 
 
 JobTree.prototype.hasRunningJobs = function ( nodeId )  {
+
+  if (!nodeId)
+    return (Object.keys(this.run_map).length>0);
 
   function hrj ( tree,node_id )  {
     var areRunningJobs = false;
@@ -2263,7 +2266,7 @@ JobTree.prototype.replayTree = function ( ref_tree )  {
   for (var nodeId in this.task_map)
     task_del_list.push ( [this.task_map[nodeId].id,this.task_map[nodeId].disk_space] );
   this.task_map = {};  // map[nodeId]==task of all tasks in the tree
-    this.run_map  = {};  // map[taskId]==nodeId of all running tasks
+  this.run_map  = {};  // map[taskId]==nodeId of all running tasks
   this.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
   this.clear();  // this removes also all root nodes
   this.projectData.desc.jobCount = 0;
