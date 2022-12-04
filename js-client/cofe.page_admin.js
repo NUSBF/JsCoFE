@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.09.22   <--  Date of Last Modification.
+ *    04.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -122,6 +122,9 @@ function AdminPage ( sceneId )  {
   this.naPanel.setCellSize ( '95%','32px',0,0 );
 
   col = 1;
+  var zombie_btn = this.naPanel.setButton ( '',image_path('ghost'),0,col++,1,1 )
+                               .setSize('30px','30px')
+                               .setTooltip('Wake up zombies');
   var update_btn = this.naPanel.setButton ( '',image_path('update'),0,col++,1,1 )
                                .setSize('30px','30px')
                                .setTooltip('Update and restart');
@@ -130,7 +133,8 @@ function AdminPage ( sceneId )  {
 
   this.onResize ( window.innerWidth,window.innerHeight );
 
-  (function(self){
+  var self = this;
+  // (function(self){
 
     self.tabs.setTabChangeListener ( function(ui){
       self.loadUsageStats();
@@ -144,16 +148,50 @@ function AdminPage ( sceneId )  {
       new DormantUsersDialog ( function(){ refresh_btn.click(); });
     });
 
-    update_btn.addOnClickListener ( function(){
-      stopSessionChecks();
-      serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
+    zombie_btn.addOnClickListener ( function(){
+      // stopSessionChecks();
+      serverRequest ( fe_reqtype.wakeZombieJobs,{project:'*'},'Admin Page',
                       function(data){
-        window.setTimeout ( function(){
-          reloadBrowser();
-          // window.location = window.location; // reload
-        },60000 );
-        logout ( self.element.id,10 );
-      },null,function(){} );
+                        new MessageBox ( 'Wake Zombie jobs',
+                             '<h2>Wake Zombie jobs</h2>Total ' + data.nzombies + 
+                             ' zombie jobs found and awaken.<p>' +
+                             'Reload page after a minute or so.',
+                             'msg_information' );
+                      },null,function(){
+                        new MessageBox ( 'Wake Zombie jobs',
+                             '<h2>Communication errors</h2>' +
+                             'Communication errors with Number Crunchers.',
+                             'msg_error' );
+                      }
+                    );
+    });
+
+    update_btn.addOnClickListener ( function(){
+
+      new QuestionBox ( appName() + ' update',
+        '<div style="width:400px"><h2>' + appName() + ' update</h2>' +
+        appName() + ' will be shut down, updated and restarted. This is ' +
+        'administrative action, which will work only if ' + appName() + 
+        'is appropriately configured. Use this only if you know what you ' +
+        'are doing.' +
+        '<p>Are you sure?',[
+        { name    : 'Yes, update and restart',
+          onclick : function(){
+                      stopSessionChecks();
+                      serverRequest ( fe_reqtype.updateAndRestart,'','Admin Page',
+                                      function(data){
+                        window.setTimeout ( function(){
+                          reloadBrowser();
+                          // window.location = window.location; // reload
+                        },60000 );
+                        logout ( self.element.id,10 );
+                      },null,function(){} );
+                    }
+        },{
+          name    : 'No, cancel',
+          onclick : function(){}
+        }],'msg_confirm' );
+
     });
 
     announce_btn.addOnClickListener ( function(){
@@ -164,7 +202,7 @@ function AdminPage ( sceneId )  {
       self.refresh();
     });
 
-  }(this))
+  // }(this))
 
   refresh_btn.click();
 

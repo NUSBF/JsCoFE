@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.12.22   <--  Date of Last Modification.
+ *    04.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -253,7 +253,7 @@ function ProjectPage ( sceneId )  {
       self.setDisabled  ( true );
       self.can_reload  = true;  // force in order to avoid locking
       self.pending_act = '';    // drop pending actions
-      self.wakeZombiJobs( function(){  // must go before reloadTree
+      self.wakeZombieJobs( function(){  // must go before reloadTree
         self.reloadTree   ( true,true,null );  // multiple = false?
       });
     });
@@ -342,7 +342,7 @@ function ProjectPage ( sceneId )  {
           self.can_reload  = true;
           self.pending_act = '';
           if (self.jobTree.hasRunningJobs(0))
-            self.wakeZombiJobs(null);
+            self.wakeZombieJobs(null);
         }
       },function(node){
         return self.onTreeContextMenu();
@@ -1105,15 +1105,15 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
   }
 }
 
-ProjectPage.prototype.wakeZombiJobs = function ( callback_func )  {
+ProjectPage.prototype.wakeZombieJobs = function ( callback_func )  {
   if (this.jobTree.projectData)  {
     var request_data = {};
     request_data.project = this.jobTree.projectData.desc.name;
-    serverRequest ( fe_reqtype.wakeZombiJobs,request_data,'Project Page',
+    serverRequest ( fe_reqtype.wakeZombieJobs,request_data,'Project Page',
       function(data){},
       function(key,data){
         if (__local_service)  {
-          localCommand  ( nc_command.wakeZombiJobs,{job_tokens:['*']},
+          localCommand  ( nc_command.wakeZombieJobs,{job_tokens:['*']},
                           'Wake Zombi Jobs',function(response){
             if (callback_func)
               callback_func();

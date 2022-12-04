@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    12.10.22   <--  Date of Last Modification.
+ *    04.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -42,7 +42,7 @@
  *     addJobAuto           ( jobEntry,jobClass )
  *     getJobResults        ( job_token,server_request,server_response )
  *     checkJobs            ( loginData,data )
- *     wakeZombiJobs        ( loginData,data )
+ *     wakeZombieJobs        ( loginData,data )
  *     cloudRun             ( server_request,server_response )
  *
  *  ==========================================================================
@@ -1343,17 +1343,21 @@ function checkJobs ( loginData,data )  {
 }
 
 
-function wakeZombiJobs ( loginData,data )  {
+function wakeZombieJobs ( loginData,data,callback_func )  {
 var nc_servers = conf.getNCConfigs();
 
   var projectName = data.project;
   var tokens = [];
-  for (var token in feJobRegister.job_map)  {
-    var jobEntry = feJobRegister.job_map[token];
-    // here to check for job expiration date (to be defined for FE)
-    if ((jobEntry.loginData.login==loginData.login) &&
-        (jobEntry.project==projectName))
-      tokens.push ( token );
+  if (projectName=='*')  {
+    tokens = ['*'];
+  } else  {
+    for (var token in feJobRegister.job_map)  {
+      var jobEntry = feJobRegister.job_map[token];
+      // here to check for job expiration date (to be defined for FE)
+      if ((jobEntry.loginData.login==loginData.login) &&
+          (jobEntry.project==projectName))
+        tokens.push ( token );
+    }
   }
 
   // we send all tokens to all ordinary (non-client NCs, because their
@@ -1367,21 +1371,30 @@ var nc_servers = conf.getNCConfigs();
     for (var i=0;i<nc_servers.length;i++)
       if (nc_servers[i].exeType!='CLIENT')  {
         request ({
-          uri     : cmd.nc_command.wakeZombiJobs,
+          uri     : cmd.nc_command.wakeZombieJobs,
           baseUrl : nc_servers[i].externalURL,
           method  : 'POST',
           body    : {job_tokens:tokens},
           json    : true,
           rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
         },function(error,response,body){
-            if (error)
+            if (error)  {
               log.error ( 17,'errors communicating with NC' + i + ': ' + error );
+              callback_func ( new cmd.Response(cmd.fe_retcode.ok,
+                              '',{nzombies:-1}) );
+            } else  {
+              log.standard ( 17,response.body.data.nzombies + ' zombies awaken on request' );
+              callback_func ( new cmd.Response(cmd.fe_retcode.ok,
+                              '',{nzombies:response.body.data.nzombies}) );
+            }
         });
      }
 
+  } else  {
+    callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',{nzombies:0}) );
   }
 
-  return  new cmd.Response ( cmd.fe_retcode.ok,'',{} );
+  // return  new cmd.Response ( cmd.fe_retcode.ok,'',{} );
 
 }
 
@@ -1642,5 +1655,5 @@ module.exports.stopJob            = stopJob;
 module.exports.killJob            = killJob;
 module.exports.getJobResults      = getJobResults;
 module.exports.checkJobs          = checkJobs;
-module.exports.wakeZombiJobs      = wakeZombiJobs;
+module.exports.wakeZombieJobs      = wakeZombieJobs;
 module.exports.cloudRun           = cloudRun;
