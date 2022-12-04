@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.22   <--  Date of Last Modification.
+ *    04.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -314,7 +314,7 @@ function cleanNC ( cleanDeadJobs_bool )  {
     var nzombies = 0;
     for (var job_token in ncJobRegister.job_map)  {
       var jobEntry = ncJobRegister.job_map[job_token];
-      var endTime  = ncJobRegister.job_map[job_token];
+      var endTime  = ncJobRegister.job_map[job_token].endTime;
       if (endTime)  {
         endTime /= __day_ms;
         nzombies++;
@@ -1415,15 +1415,15 @@ var response = null;
 
 }
 
-function ncWakeAllZombiJobs()  {
-  var nzombies = 0;
-  for (var token in ncJobRegister.job_map)
-    if (ncJobRegister.wakeZombi(token))
-      nzombies++;
-  return nzombies;
-}
+// function ncWakeAllZombiJobs()  {
+//   var nzombies = 0;
+//   for (var token in ncJobRegister.job_map)
+//     if (ncJobRegister.wakeZombi(token))
+//       nzombies++;
+//   return nzombies;
+// }
 
-function ncWakeZombiJobs ( post_data_obj,callback_func )  {
+function ncwakeZombieJobs ( post_data_obj,callback_func )  {
 var job_tokens = post_data_obj.job_tokens;
 
 // *** for debugging
@@ -1432,10 +1432,10 @@ var job_tokens = post_data_obj.job_tokens;
   // console.log ( ' >>>>>> tokens = ' + JSON.stringify(job_tokens) );
   var nzombies = 0;
   if (job_tokens[0]=='*')  {  // take all
-    nzombies = ncWakeAllZombiJobs();
-    // for (var token in ncJobRegister.job_map)
-    //   if (ncJobRegister.wakeZombi(token))
-    //     nzombies++;
+    // nzombies = ncWakeAllZombiJobs();
+    for (var token in ncJobRegister.job_map)
+      if (ncJobRegister.wakeZombi(token))
+        nzombies++;
   } else  {  // take from the list given
     for (var i=0;i<job_tokens.length;i++)
       if (ncJobRegister.wakeZombi(job_tokens[i]))
@@ -1698,7 +1698,7 @@ module.exports.cleanNC            = cleanNC;
 module.exports.ncSendFile         = ncSendFile;
 module.exports.ncMakeJob          = ncMakeJob;
 module.exports.ncStopJob          = ncStopJob;
-module.exports.ncWakeZombiJobs    = ncWakeZombiJobs;
+module.exports.ncwakeZombieJobs    = ncwakeZombieJobs;
 module.exports.ncRunRVAPIApp      = ncRunRVAPIApp;
 module.exports.ncRunClientJob     = ncRunClientJob;
 module.exports.ncGetJobsDir       = ncGetJobsDir;

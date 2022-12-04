@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    04.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -222,8 +222,8 @@ function start()  {
               pp.processPOSTData ( server_request,server_response,jm.ncStopJob,'active' );
             break;
 
-          case cmd.nc_command.wakeZombiJobs :
-              pp.processPOSTData ( server_request,server_response,jm.ncWakeZombiJobs,'active' );
+          case cmd.nc_command.wakeZombieJobs :
+              pp.processPOSTData ( server_request,server_response,jm.ncwakeZombieJobs,'active' );
             break;
 
           case cmd.nc_command.selectDir :

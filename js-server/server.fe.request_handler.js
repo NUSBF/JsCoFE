@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.11.22   <--  Date of Last Modification.
+ *    04.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -228,8 +228,8 @@ var response = null;
           response = rj.checkJobs ( loginData,data );
        break;
 
-    case cmd.fe_reqtype.wakeZombiJobs :
-          response = rj.wakeZombiJobs ( loginData,data );
+    case cmd.fe_reqtype.wakeZombieJobs :
+          rj.wakeZombieJobs ( loginData,data,callback_func );
        break;
 
     case cmd.fe_reqtype.stopJob :
@@ -270,6 +270,7 @@ var response = null;
       case cmd.fe_reqtype.getCloudFileTree :
       case cmd.fe_reqtype.getAdminData     :
       case cmd.fe_reqtype.getUserRation    :
+      case cmd.fe_reqtype.wakeZombieJobs   :
       case cmd.fe_reqtype.archiveProject   :
             break;
       default:  console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
