@@ -620,6 +620,7 @@ var row      = 0;
       // new TaskStructurePrediction(),
       // new TaskWFlowAFMR    (),
       new TaskPDBREDO      (),
+      new TaskFindMySequence(),
       new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
       new TaskFragon       (),

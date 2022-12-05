@@ -71,7 +71,8 @@ class PISA(basic.TaskDriver):
         if len(xyz.exclLigs)>0:
             cmd.append ( "--lig-exclude='" + ",".join(xyz.exclLigs) + "'" )
 
-        cmd += [ "--lig=" + self.getParameter(self.task.parameters.sec1.contains.LIGANDKEY_SEL),
+        cmd += [ "--lig=" + 
+                 self.getParameter(self.task.parameters.sec1.contains.LIGANDMODE_SEL),
                  os.path.join(os.environ["CCP4"],"share","pisa","jspisa.cfg") ]
         #        os.environ["JSPISA_CFG"] ]
 

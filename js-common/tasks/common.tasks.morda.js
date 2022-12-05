@@ -37,7 +37,7 @@ function TaskMorda()  {
   this.name    = 'morda';
   this.setOName ( 'morda' );  // default output file name template
   this.title   = 'Auto-MR with MoRDa';
-  this.helpURL = './html/jscofe_task_morda.html';
+  // this.helpURL = './html/jscofe_task_morda.html';
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataRevision':['!protein','!asu','~xyz']}, // data type(s) and subtype(s)
@@ -129,17 +129,17 @@ TaskMorda.prototype.currentVersion = function()  {
 
 TaskMorda.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['morda', 'molecular','replacement','mr', 'auto-mr', 'alphafold','alphafold2','af', 'af2'] );
+    return this.__check_keywords ( keywords,['morda', 'molecular','replacement','mr', 'auto-mr'] );
 }
 
 
 if (!__template)  {
   //  for client side
 
-  TaskMorda.prototype.desc_title = function()  {
-  // this appears under task title in the task list
-    return 'finds sequence homologs, prepares search models and performs MR';
-  }
+  // TaskMorda.prototype.desc_title = function()  {
+  // // this appears under task title in the task list
+  //   return 'finds sequence homologs, prepares search models and performs MR';
+  // }
 
   TaskMorda.prototype.taskDescription = function()  {
   // this appears under task title in the Task Dialog
