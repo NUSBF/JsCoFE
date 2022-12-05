@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.11.22   <--  Date of Last Modification.
+#    02.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -115,7 +115,7 @@ class Pdbredo(basic.TaskDriver):
 
         run_id = r.json()["id"]
         self.rvrow = self.row0
-        self.putWaitMessageLF("Job submitted with id " + str(run_id))
+        self.putWaitMessageLF("Job submitted to PDB REDO server with id " + str(run_id))
 
         return str(run_id)
 
@@ -275,7 +275,20 @@ class Pdbredo(basic.TaskDriver):
 
         run_id = self.do_submit(xyzin, hklin, token_id, token_secret, PDBREDO_URI)
 
-        self.do_status(token_id, token_secret, PDBREDO_URI, run_id)
+        while True:
+            try :
+                status = self.do_status(token_id, token_secret, PDBREDO_URI, run_id)
+                if status == "ended":
+                    break
+                if status == "stopped":
+                    break
+
+            except:
+                pass
+                
+                
+
+        
 
         xyzout, mtzout = self.do_fetch(token_id, token_secret, run_id, PDBREDO_URI)
 
