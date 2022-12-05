@@ -56,9 +56,22 @@ function TaskPISA()  {
              open     : false,  // true for the section to be initially open
              position : [0,0,1,5],
              contains : {
-                LIGANDKEY_SEL : {
+                // LIGANDKEY_SEL : {
+                //      type     : 'combobox',
+                //      keyword  : 'ligand_key',
+                //      label    : 'ligand processing mode',
+                //      tooltip  : 'These options are for testing and development. ' +
+                //                 'For routine use, always choose "Auto".',
+                //      range    : ['auto|Auto',
+                //                  'fixed|Fixed',
+                //                  'free|Free'
+                //                 ],
+                //      value    : 'auto',
+                //      position : [0,0,1,1]
+                //    },
+                LIGANDMODE_SEL : {
                      type     : 'combobox',
-                     keyword  : 'ligand_key',
+                     keyword  : 'ligand_mode',
                      label    : 'ligand processing mode',
                      tooltip  : 'These options are for testing and development. ' +
                                 'For routine use, always choose "Auto".',
