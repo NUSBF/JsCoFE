@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    06.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Aimless Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -1233,8 +1233,8 @@ if (!__template)  {
     for (var i=0;i<unmerged.length;i++)  {
       for (var j=i+1;j<unmerged.length;j++)
         if (unmerged[i].dataId==unmerged[j].dataId)
-          addMessage ( 'Reflection data','dataset ' + unmerged[i].dname + '<br>is ' +
-                       'used in more than one input positions, which is not ' +
+          addMessage ( 'Reflection data','dataset ' + unmerged[i].dname +
+                       ' is used in more than one input positions, which is not ' +
                        'allowed' );
     }
 

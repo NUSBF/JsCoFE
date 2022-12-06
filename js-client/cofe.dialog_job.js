@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.11.22   <--  Date of Last Modification.
+ *    06.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -241,7 +241,8 @@ JobDialog.prototype.statusLine = function()  {
 JobDialog.prototype.displayInputErrors = function ( input_msg )  {
 //  if (input_msg.startsWith('#'))  {
   if (input_msg[0]=='#')  {
-    new MessageBox ( 'Input errors',input_msg.substring(1), 'msg_error' );
+    new MessageBox ( 'Input errors','<div style="width:450px;">' +
+                     input_msg.substring(1) + '</div>', 'msg_error' );
   } else  {
     // alert ( input_msg );
     var errlst  = input_msg.split('|');
@@ -253,9 +254,11 @@ JobDialog.prototype.displayInputErrors = function ( input_msg )  {
     }
     if (errlst1.length>0)
       new MessageBox ( 'Input errors',
+        '<div style="width:550px;"><h2>Input errors</h2>' +
         'The following errors occurred while processing task input:' +
         '<p><ul><li>' + errlst1.join('</li><li>') +
-        '</li></ul><p>Please correct the task input.', 'msg_error' );
+        '</li></ul><p>Please correct the task input as appropriate.</h2>',
+        'msg_error' );
   }
 }
 

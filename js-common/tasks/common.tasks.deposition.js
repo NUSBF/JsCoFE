@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.10.22   <--  Date of Last Modification.
+ *    06.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -176,7 +176,7 @@ if (!__template)  {
     var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
     var msg = [];
-    var s   = this.parameters.SEQUENCE_TA.value.trim()
+    var s   = this.parameters.SEQUENCE_TA.value.trim();
     // if (!s)
     //   msg.push ( 'Sequence data is not given' );
     // else
