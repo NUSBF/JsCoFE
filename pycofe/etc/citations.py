@@ -1136,7 +1136,21 @@ citations = {
                             'pages'   : '729-737',
                             'doi'     : '10.1107/S205979831700969X'
                   }]
-                }
+                },
+
+    'findmysequence' : { 'name'     : 'findMySequence',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Chojnowski, G., Simpkin, A. J., Leonardo, D. A., Seifert-Davila, W., Vivas-Ruiz, D. E., Keegan, R. M. & Rigden, D. J.',
+                            'title'   : 'findMySequence: a neural-network-based approach for identification of unknown proteins in X-ray crystallography and cryo-EM',
+                            'journal' : 'IUCrJ',
+                            'volume'  : '9',
+                            'year'    : '2022',
+                            'pages'   : '86-97',
+                            'doi'     : '10.1107/S2052252521011088'
+                        }]
+                  },
+
 
 }
 

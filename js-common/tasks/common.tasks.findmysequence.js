@@ -34,8 +34,8 @@ function TaskFindMySequence()  {
              else  TaskTemplate.call ( this );
 
   this._type   = 'TaskFindMySequence';
-  this.name    = 'morda';
-  this.setOName ( 'findmysequence' );  // default output file name template
+  this.name    = 'findmysequence';
+  this.setOName ( 'findmysequence' );  // default 
   this.title   = 'FindMySequence';
 
   this.input_dtypes = [{    // input data types
@@ -54,16 +54,42 @@ function TaskFindMySequence()  {
              open     : true,  // true for the section to be initially open
              position : [0,0,1,5],
              contains : {
-                TAXONOMIC_ID : {
-                      type      : 'string',   // empty string not allowed
-                      keyword   : 'codes',
-                      label     : '<i><b>PDB/UniProt code(s)</b></i>',
-                      tooltip   : 'Comma-separated list of PDB and/or UniProt codes to import data from',
-                      iwidth    : 680,
+                SELSTR : {
+                      type      : 'string_',   // empty string allowed
+                      keyword   : 'selstr',
+                      label     : '<i><b>Model fragment selection</b></i>',
+                      tooltip   : 'Atom selection string in a format: chain X and resi 10:100',
+                      default   : 'all',
+                      iwidth    : 400,
                       value     : '',
                       emitting  : true,
-                      position  : [0,0,1,4]
+                      position  : [0,0,1,1]
+                    },
+                UPID : {
+                      type      : 'string_',   // empty string allowed
+                      keyword   : 'codes',
+                      label     : '<i><b>UniProt proteome identifier</b></i>',
+                      tooltip   : 'UPID of a proteome for querying sequences, which will be downloaded automatically from UniProt. By defaulkt program will use a database of PDB sequences.',
+                      iwidth    : 200,
+                      value     : '',
+                      emitting  : true,
+                      position  : [1,0,1,1]
+                    },
+                TOPHITS : {
+                      type      : 'integer_',   // empty string allowed
+                      keyword   : 'tophits',
+                      default   : 3,
+                      range     : [1, '*'],
+                      label     : '<i><b>Number of best sequence hits to show</b></i>',
+                      tooltip   : 'Number of top hits',
+                      iwidth    : 20,
+                      value     : '',
+                      emitting  : true,
+                      position  : [2,0,1,1]
                     }
+
+
+
              }
            }
   };
@@ -80,7 +106,7 @@ TaskFindMySequence.prototype.constructor = TaskFindMySequence;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskFindMySequence.prototype.icon = function()  { return 'task_morda'; }
+TaskFindMySequence.prototype.icon = function()  { return 'task_findmysequencea'; }
 
 TaskFindMySequence.prototype.desc_title = function()  {
 // this appears under task title in the task list
@@ -117,7 +143,7 @@ if (!__template)  {
 
   TaskFindMySequence.prototype.taskDescription = function()  {
   // this appears under task title in the Task Dialog
-    return 'You will write it';
+    return 'Protein sequence identification based on a map and backbone model';
   }
 
 

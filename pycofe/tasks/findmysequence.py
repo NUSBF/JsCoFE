@@ -30,6 +30,7 @@
 import os
 import sys
 import json
+import html
 
 #  application imports
 from . import basic
@@ -38,8 +39,21 @@ from   varut          import signal
 from   pycofe.verdicts  import verdict_lorestr
 from   pycofe.auto   import auto
 
+import requests
 from proc import import_seqcp
 
+
+def download_proteome_from_unbiprot(uid="UP000005206", datadir='input'):
+
+    ofile = os.path.join(datadir, f"{uid}.fasta.gz")
+    url = f"https://rest.uniprot.org/uniprotkb/stream?format=fasta&query=%28%28proteome%3A{uid}%29%29"
+    url = f"https://rest.uniprot.org/uniprotkb/stream?compressed=true&format=fasta&query=%28%28proteome%3A{uid}%29%29"
+    request = requests.get(url, stream=True)# as request:
+    request.raise_for_status()
+    with open(ofile, 'wb') as f:
+        for chunk in request.iter_content(chunk_size=1024):
+            f.write(chunk)
+    return ofile
 
 
 # ============================================================================
@@ -68,23 +82,50 @@ class FindMySequence(basic.TaskDriver):
         #self.setGenericLogParser ( self.lorestr_report(),False )
 
         mtzin = istruct.getMTZFilePath ( self.inputDir() )
-        codes = self.getParameter(self.task.parameters.sec1.contains.TAXONOMIC_ID)
+        modelin = istruct.getMMCIFFilePath ( self.inputDir() )
+        uid = self.getParameter(self.task.parameters.sec1.contains.UPID)
+        tophits = self.getParameter(self.task.parameters.sec1.contains.TOPHITS)
+        selstr = self.getParameter(self.task.parameters.sec1.contains.SELSTR)
+
         labin_ph = [istruct.PHI,istruct.FOM,istruct.FWT,istruct.PHWT]
 
-        cmd = [ "-p1",mtzin,"-f" ,hkl.getHKLFilePath(self.inputDir()) ]
+        jsonout = os.path.join(self.outputDir(), 'results.json')
+
+
+        cmd=["--mtzin", mtzin, "--labin", f"{istruct.FWT},{istruct.PHWT}",
+                "--modelin", modelin, '--jsonout', jsonout, '--tophits', tophits, "--select", selstr]
+
+        if uid:
+            self.putMessage ( f"<h3> Downloading protoeomic sequences for {uid} </h3>" )
+            self.flush()
+            fasta_file = download_proteome_from_unbiprot(uid=uid, datadir=self.outputDir())
+            cmd.extend(['--db', fasta_file])
+
+
+        self.putMessage ( "<h3> Querying sequence database </h3>" )
+        self.flush()
 
         rc = self.runApp ( "findmysequence",cmd,logType="Main" )
 
-        # self.addCitations ( ['buccaneer','refmac5'] )
+        self.addCitations ( ['findmysequence'] )
 
         have_results = False
 
         if rc.msg:
             self.putTitle ( "Results" )
-            self.putMessage ( "<h3>Buccaneer failure</h3>" )
+            self.putMessage ( "<h3>findMySequence failure</h3>" )
             raise signal.JobFailure ( rc.msg )
 
         # fetch sequence as a string
+
+        with open(jsonout, 'r') as ifile:
+            results=json.loads(ifile.read())
+
+        if results:
+            for k,v in results.items():
+                self.putMessage ( f"<b>#{k}</b> E-value={v['evalue']}</br>>{v['sequence_id']}</br>{v['sequence']}<\br>" )
+        else:
+            self.putMessage ( "<h3> No plausible sequence matches found </h3>" )
 
         # sequence = myfunction() 
 
