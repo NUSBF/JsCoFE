@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    06.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -427,12 +427,12 @@ if (!__template)  {
     for (var i=0;i<hkl.length;i++)  {
       for (var j=i+1;j<hkl.length;j++)
         if (hkl[i].dataId==hkl[j].dataId)
-          addMessage ( 'Reflection data','dataset ' + hkl[i].dname + '<br>is ' +
-                       'used in more than one input positions, which is not ' +
+          addMessage ( 'Reflection data','dataset ' + hkl[i].dname +
+                       ' is used in more than one input positions, which is not ' +
                        'allowed' );
       if (native.length>0)  {
         if (hkl[i].dataId==native[0].dataId)
-          addMessage ( 'Native dataset','dataset ' + hkl[i].dname + '<br>is used ' +
+          addMessage ( 'Native dataset','dataset ' + hkl[i].dname + ' is used ' +
                        'as both anomalous data and native dataset, which is ' +
                        'not allowed.' );
       }

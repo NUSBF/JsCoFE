@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    06.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -397,7 +397,7 @@ if (!__template)  {
         (!sec1.LLG_ANOM_CBX.value)  && (sec1.LLG_ATYPE.value.trim()==''))
           addMessage ( sec1.LLG_SEL.label,
                'Value of ' + sec1.LLG_SEL.label +
-               ' in "<i>' + this.parameters.sec1.title + '</i>"<br>does not ' +
+               ' in "<i>' + this.parameters.sec1.title + '</i>" does not ' +
                'specify any atom types to complete the map, which is not ' +
                'allowed' );
 
