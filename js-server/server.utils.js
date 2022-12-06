@@ -239,7 +239,8 @@ function writeObject ( path,dataObject )  {
 
   var json_str = '';
   try {
-    json_str = JSON.stringify ( dataObject,null,2 );
+    json_str = JSON.stringify ( dataObject );
+    // json_str = JSON.stringify ( dataObject,null,2 );
   } catch (e) {
     log.error ( 31,'attempt to write corrupt data object at ' + path +
                    ' error: ' + JSON.stringify(e) );
