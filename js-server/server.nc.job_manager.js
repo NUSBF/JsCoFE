@@ -126,7 +126,8 @@ NCJobRegister.prototype.wakeZombi = function ( job_token )  {
     var jobEntry = this.job_map[job_token];
     // console.log ( ' >> awaken ' + JSON.stringify(jobEntry) );
     if (jobEntry && (jobEntry.jobStatus==task_t.job_code.exiting) &&
-        (jobEntry.sendTrials<=0))  {
+        jobEntry.endTime)  {
+        // (jobEntry.sendTrials<=0))  {
       jobEntry.jobStatus  = task_t.job_code.running;
       jobEntry.sendTrials = conf.getServerConfig().maxSendTrials;
       return true;
@@ -1423,7 +1424,7 @@ var response = null;
 //   return nzombies;
 // }
 
-function ncwakeZombieJobs ( post_data_obj,callback_func )  {
+function ncWakeZombieJobs ( post_data_obj,callback_func )  {
 var job_tokens = post_data_obj.job_tokens;
 
 // *** for debugging
@@ -1698,7 +1699,7 @@ module.exports.cleanNC            = cleanNC;
 module.exports.ncSendFile         = ncSendFile;
 module.exports.ncMakeJob          = ncMakeJob;
 module.exports.ncStopJob          = ncStopJob;
-module.exports.ncwakeZombieJobs    = ncwakeZombieJobs;
+module.exports.ncWakeZombieJobs   = ncWakeZombieJobs;
 module.exports.ncRunRVAPIApp      = ncRunRVAPIApp;
 module.exports.ncRunClientJob     = ncRunClientJob;
 module.exports.ncGetJobsDir       = ncGetJobsDir;

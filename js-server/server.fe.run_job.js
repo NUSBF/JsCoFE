@@ -1383,6 +1383,8 @@ var nc_servers = conf.getNCConfigs();
               callback_func ( new cmd.Response(cmd.fe_retcode.ok,
                               '',{nzombies:-1}) );
             } else  {
+              console.log ( JSON.stringify(response));
+              console.log ( JSON.stringify(body));
               log.standard ( 17,response.body.data.nzombies + ' zombies awaken on request' );
               callback_func ( new cmd.Response(cmd.fe_retcode.ok,
                               '',{nzombies:response.body.data.nzombies}) );
