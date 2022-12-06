@@ -223,7 +223,7 @@ function start()  {
             break;
 
           case cmd.nc_command.wakeZombieJobs :
-              pp.processPOSTData ( server_request,server_response,jm.ncwakeZombieJobs,'active' );
+              pp.processPOSTData ( server_request,server_response,jm.ncWakeZombieJobs,'active' );
             break;
 
           case cmd.nc_command.selectDir :
