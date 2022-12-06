@@ -1369,7 +1369,7 @@ var nc_servers = conf.getNCConfigs();
   if (tokens.length>0)  {
 
     for (var i=0;i<nc_servers.length;i++)
-      if (nc_servers[i].exeType!='CLIENT')  {
+      if ((nc_servers[i].exeType!='CLIENT') && nc_servers[i].in_use)  {
         request ({
           uri     : cmd.nc_command.wakeZombieJobs,
           baseUrl : nc_servers[i].externalURL,
