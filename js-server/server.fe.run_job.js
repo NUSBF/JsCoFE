@@ -1368,29 +1368,38 @@ var nc_servers = conf.getNCConfigs();
 
   if (tokens.length>0)  {
 
-    for (var i=0;i<nc_servers.length;i++)
-      if ((nc_servers[i].exeType!='CLIENT') && nc_servers[i].in_use)  {
+    var nzombies = 0;
+
+    function nc_wake_zombie ( n )  {
+
+      if (n>=nc_servers.length)  {
+
+        log.standard ( 17,nzombies + ' zombies awaken on request' );
+        callback_func ( new cmd.Response(cmd.fe_retcode.ok,
+                        '',{nzombies:nzombies}) );
+      
+      } else if ((nc_servers[n].exeType!='CLIENT') && nc_servers[n].in_use)  {
+      
         request ({
           uri     : cmd.nc_command.wakeZombieJobs,
-          baseUrl : nc_servers[i].externalURL,
+          baseUrl : nc_servers[n].externalURL,
           method  : 'POST',
           body    : {job_tokens:tokens},
           json    : true,
           rejectUnauthorized : conf.getFEConfig().rejectUnauthorized
         },function(error,response,body){
-            if (error)  {
-              log.error ( 17,'errors communicating with NC' + i + ': ' + error );
-              callback_func ( new cmd.Response(cmd.fe_retcode.ok,
-                              '',{nzombies:-1}) );
-            } else  {
-              console.log ( JSON.stringify(response));
-              console.log ( JSON.stringify(body));
-              log.standard ( 17,response.body.data.nzombies + ' zombies awaken on request' );
-              callback_func ( new cmd.Response(cmd.fe_retcode.ok,
-                              '',{nzombies:response.body.data.nzombies}) );
-            }
+          if (error)
+                log.error ( 17,'errors communicating with NC' + n + ': ' + error );
+          else  nzombies += response.body.data.nzombies;
+          nc_wake_zombie ( n+1 );
         });
-     }
+      
+      } else
+        nc_wake_zombie ( n+1 );
+    
+    }
+
+    nc_wake_zombie ( 0 );
 
   } else  {
     callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',{nzombies:0}) );
