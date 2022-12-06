@@ -124,7 +124,7 @@ NCJobRegister.prototype.getJobEntry = function ( job_token )  {
 NCJobRegister.prototype.wakeZombi = function ( job_token )  {
   if (job_token in this.job_map)  {
     var jobEntry = this.job_map[job_token];
-    console.log ( ' >> awaken ' + JSON.stringify(jobEntry) );
+    // console.log ( ' >> awaken ' + JSON.stringify(jobEntry) );
     if (jobEntry && (jobEntry.jobStatus==task_t.job_code.exiting) &&
         jobEntry.endTime)  {
         // (jobEntry.sendTrials<=0))  {
