@@ -124,7 +124,7 @@ NCJobRegister.prototype.getJobEntry = function ( job_token )  {
 NCJobRegister.prototype.wakeZombi = function ( job_token )  {
   if (job_token in this.job_map)  {
     var jobEntry = this.job_map[job_token];
-    // console.log ( ' >> awaken ' + JSON.stringify(jobEntry) );
+    console.log ( ' >> awaken ' + JSON.stringify(jobEntry) );
     if (jobEntry && (jobEntry.jobStatus==task_t.job_code.exiting) &&
         jobEntry.endTime)  {
         // (jobEntry.sendTrials<=0))  {
@@ -1430,7 +1430,7 @@ var job_tokens = post_data_obj.job_tokens;
 // *** for debugging
 //__use_fake_fe_url = false;
 
-  // console.log ( ' >>>>>> tokens = ' + JSON.stringify(job_tokens) );
+  console.log ( ' >>>>>> tokens = ' + JSON.stringify(job_tokens) );
   var nzombies = 0;
   if (job_tokens[0]=='*')  {  // take all
     // nzombies = ncWakeAllZombiJobs();
