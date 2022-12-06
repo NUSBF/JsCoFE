@@ -37,7 +37,7 @@ Authors and Contributors
 ========================
 
 Task Reference for CCP4 Cloud was prepared by
-    - *Maria Fando (Translational and Clinical Research Institute, Newcastle University, Newcastle Upon Tyne, UK)*
+    - *Maria Fando (CCP4, STFC, Harwell, UK)*
     - *Eugene Krissinel (CCP4, STFC, Harwell, UK)*
     
 with help and contributions from
@@ -49,6 +49,7 @@ with help and contributions from
 
 Please send documentation-related questions and suggestions to: `CCP4 Cloud Reception`_ .
 
-.. _CCP4 Cloud Reception: mariya.fando@gmail.com?Subject=CCP4%20Cloud%20question
+.. _CCP4 Cloud Reception: maria.fando@stfc.ac.uk?Subject=CCP4%20Cloud%20question
+
 
 
