@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    06.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Auspex Plots Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2022
  *
  *  =================================================================
  *
@@ -146,12 +146,11 @@ if (!__template)  {
     var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
     var hkl = this.input_data.getData('hkl')[0];
 
-    if (!hkl.isImean())  {
+    if (!hkl.isImean())
       input_msg += '|<b>Reflection data:</b> Auspex can work only with ' +
-                   'reflection datasets that include<br>mean intensities, ' +
-                   'and they are not found in the dataset from the selected<br>' +
+                   'reflection datasets that include mean intensities, ' +
+                   'and they are not found in the dataset from the selected ' +
                    'structure revision';
-    }
 
     return input_msg;
 

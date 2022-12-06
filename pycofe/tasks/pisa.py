@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.02.20   <--  Date of Last Modification.
+#    06.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -60,7 +60,8 @@ class PISA(basic.TaskDriver):
 
         # Prepare pisa input
         # fetch input data
-        xyz = self.makeClass ( self.input_data.data.xyz[0] )
+        xyz  = self.makeClass ( self.input_data.data.xyz[0] )
+        sec1 = self.task.parameters.sec1.contains
 
         xyzPath   = xyz.getXYZFilePath ( self.inputDir() )
         reportDir = os.path.join ( os.getcwd(),self.reportDir() )
@@ -68,20 +69,42 @@ class PISA(basic.TaskDriver):
 
         cmd = [ "-process-all",xyzPath,reportDir,
                 "--rvapi-doc",self.reportDocumentName() ]
-        if len(xyz.exclLigs)>0:
-            cmd.append ( "--lig-exclude='" + ",".join(xyz.exclLigs) + "'" )
+        # if len(xyz.exclLigs)>0:
+        #     cmd.append ( "--lig-exclude='" + ",".join(xyz.exclLigs) + "'" )
 
+        exclLigKey = self.getParameter(sec1.LIGANDKEY_SEL)
+        if exclLigKey!="none":
+            ligList = None
+            if exclLigKey=="list":
+                llist = self.getParameter(sec1.LIGAND_LIST)
+                llist = [x.strip() for x in llist.split(',') if x.strip()!='']
+                if len(llist)>0:
+                    ligList = ",".join(llist)
+            else:
+                ligList = exclLigKey
+            if ligList:
+                cmd.append ( "--lig-exclude='" + ligList + "'" )
+            
         cmd += [ "--lig=" + 
-                 self.getParameter(self.task.parameters.sec1.contains.LIGANDMODE_SEL),
+                 self.getParameter(sec1.LIGANDMODE_SEL),
                  os.path.join(os.environ["CCP4"],"share","pisa","jspisa.cfg") ]
         #        os.environ["JSPISA_CFG"] ]
 
         self.storeReportDocument ( self.outputDir() )
 
         # Start pisa
-        self.runApp ( "jspisa",cmd,logType="Main" )
+        rc = self.runApp ( "jspisa",cmd,logType="Main" )
 
         self.restoreReportDocument()
+
+        if rc.msg:
+            self.generic_parser_summary["pisa"] = {
+                "summary_line" : "errors occured"
+            }
+        else:
+            self.generic_parser_summary["pisa"] = {
+                "summary_line" : "interface and assembly analysis done"
+            }
 
         # close execution logs and quit
         self.success ( False )

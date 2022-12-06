@@ -6,7 +6,7 @@ CCP4 Cloud Version Log
 
 **Version 1.7.008**
 
-    *Released on --.--.2022 with CCP4 8.0.006*
+    *Released on --.--.2022 with CCP4 8.0.008*
 
     **Changes and new features**
 
@@ -29,6 +29,10 @@ CCP4 Cloud Version Log
     #. Added ``ROTAMER`` and ``AREAIMOL`` tasks
 
     #. Added documentation for ``Contact``, ``Rotamer``, ``Areaimol`` tasks
+
+    #. Added ligand exclusion control in PISA
+
+    #. Added project archiving facility
 
 
 
