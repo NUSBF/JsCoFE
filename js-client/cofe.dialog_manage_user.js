@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.11.22   <--  Date of Last Modification.
+ *    07.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -305,7 +305,7 @@ ManageUserDialog.prototype.constructor = ManageUserDialog;
                   "cpu_day"        : 24,
                   "cpu_month"      : 240,
                   "cloudrun_day"   : 100,
-                  "archive_year"   : 5,
+                  "archive_year"   : 2,
                   "jobs"           : [],
                   "archives"       : [],
                   "storage_used"   : 7194.2757387161255,

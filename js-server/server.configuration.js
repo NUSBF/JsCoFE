@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.11.22   <--  Date of Last Modification.
+ *    07.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -502,7 +502,7 @@ function CCP4DirName()  {
         "cpu_day"      : 24,
         "cpu_month"    : 240,
         "cloudrun_day" : 100,      // number of cloudruns/day, 0 for unlimited
-        "archive_year" ; 5         // number of archivings/year, 0 for unlimited
+        "archive_year" ; 2         // number of archivings/year, 0 for unlimited
     },
     "cloud_mounts"     : {  // optional item
       "My Computer"    : "/",
@@ -784,10 +784,10 @@ function readConfiguration ( confFilePath,serverType )  {
         'cpu_day'      : 0.0,
         'cpu_month'    : 0.0,
         'cloudrun_day' : 100,
-        'archive_year' : 5
+        'archive_year' : 2
       };
     if (!('archive_year' in fe_server.ration))
-      fe_server.ration.archive_year = 5;
+      fe_server.ration.archive_year = 2;
     if (!('cloudrun_day' in fe_server.ration))
       fe_server.ration.cloudrun_day = 100;
     if (!('storage_max' in fe_server.ration))  {
