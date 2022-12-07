@@ -37,7 +37,7 @@ function TaskMrParse()  {
   this._type = 'TaskMrParse';
   this.name  = 'mrparse';
   this.setOName ( '*' );  // default output file name template
-  this.title = 'Find and prepare MR models with MrParse';
+  this.title = 'Find and prepare MR models with MrParse!';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataSequence':['protein']}, // data type(s) and subtype(s)
@@ -57,44 +57,47 @@ function TaskMrParse()  {
     }
   ];
 
-  // this.parameters = { // input parameters
-  //   sec1 : { type     : 'section',
-  //            title    : 'Parameters',
-  //            open     : true,  // true for the section to be initially open
-  //            position : [0,0,1,5],
-  //            contains : {
-  //               AFDB_CBX : {
-  //                      type     : 'checkbox',
-  //                      label    : 'Include structures from AFDB',
-  //                      tooltip  : 'Check to include structures from AlphaFold-2 database',
-  //                      value    : false,
-  //                      position : [0,0,1,3]
-  //                    },
-  //               RLEVEL_SEL : {
-  //                     type     : 'combobox',
-  //                     keyword  : 'RLEVEL',
-  //                     label    : 'Redundancy level',
-  //                     tooltip  : 'Choose appropriate redundancy level for ' +
-  //                                'keeping hits in the list of matches. ',
-  //                     range    : ['ALL|All','100|100%','95|95%','90|90%','70|70%','50|50%'],
-  //                     value    : 'ALL',
-  //                     position : [1,0,1,1],
-  //                     hideon   : {AFDB_CBX:[true]}
-  //                    },
-  //               MRNUM : {
-  //                     type     : 'integer',
-  //                     keyword  : 'MRNUM',
-  //                     label    : 'Number of ensembles',
-  //                     tooltip  : 'Specify the number of ensemblies to generate ' +
-  //                                '(from 1 to 20).',
-  //                     range    : [1,20],
-  //                     value    : 5,
-  //                     position : [2,0,1,1]
-  //                   }
-  //          }
-  //        }
-  //
-  // };
+  this.parameters = { // input parameters
+     sec1 : { type     : 'section',
+              title    : 'Parameters',
+              open     : true,  // true for the section to be initially open
+              position : [0,0,1,5],
+              contains : {
+                MAX_HITS : {
+                       type     : 'integer',
+                       keyword  : 'max_hits',
+                       label    : 'Maximum number of models to take from each database searched',
+                       tooltip  : 'Specify the number of models to generate from each database searched' +
+                                  '(from 1 to 40).',
+                       range    : [1,40],
+                       value    : 5,
+                       position : [1,0,1,1]
+                     },
+                 DATABASE : {
+                        type     : 'combobox',
+                        keyword  : 'database',
+                        label    : 'Databases to search',
+                        tooltip  : 'Choose from PDB, AlphaFold DB or All' +
+                                   'keeping hits in the list of matches. ',
+                        range    : ['all|ALL', 'pdb|PDB', 'esmfold|ESMFold', 'afdb|AFDB'],
+                        value    : 'all',
+                        iwidth   : 100,
+                        position : [2,0,1,1]
+                      },
+                 PLDDT_CUTOFF : {
+                       type     : 'combobox',
+                       keyword  : 'plddt_cutoff',
+                       label    : 'pLDDT cutoff for residue truncation',
+                       tooltip  : 'Specify the pLDDT threshold to remove low confidence residues',
+                       range    : ['50|50', '70|70','90|90'],
+                       value    : 70,
+                       iwidth   : 100,
+                       position : [3,0,1,1]
+                     }
+            }
+          }
+  
+  };
 
 }
 

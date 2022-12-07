@@ -90,6 +90,13 @@ class MrParse(basic.TaskDriver):
             self.sliceMTZ ( hklin,colin,reflections_mtz,
                             ["F","SIGF",FreeRColumn] )
 
+        # fetch input data
+
+        sec1         = self.task.parameters.sec1.contains
+        max_hits     = self.getParameter ( sec1.MAX_HITS )
+        database     = self.getParameter ( sec1.DATABASE )
+        plddt_cutoff = self.getParameter ( sec1.PLDDT_CUTOFF )
+
         # make command-line parameters for mrparse
 
         tmp_seq = "__sequence.fasta"  #  for mrparse likes .fasta
@@ -107,8 +114,18 @@ class MrParse(basic.TaskDriver):
         cmd += [ "--ccp4cloud" ]
 
         # -- commented out until the relevnt bug is fixed in MrParse
-        # if "PDB_DIR" in os.environ:
-        #     cmd += [ "--pdb_dir",os.environ["PDB_DIR"] ]
+        if "PDB_DIR" in os.environ:
+            cmd += [ "--pdb_local",os.environ["PDB_DIR"] ]
+        if "PDB_SEQDB" in os.environ:
+            if os.path.isfile(os.environ["PDB_SEQDB"]):
+                cmd += [ "--pdb_seqdb",os.environ["PDB_SEQDB"] ]
+        if "AFDB_SEQDB" in os.environ:
+            if os.path.isfile(os.environ["AFDB_SEQDB"]):
+                cmd += [ "--afdb_seqdb",os.environ["AFDB_SEQDB"] ]
+
+        cmd += [ "--max_hits", max_hits ]
+        cmd += [ "--database", database ]
+        cmd += [ "--plddt_cutoff", plddt_cutoff ]
 
         # run mrparse
         if sys.platform.startswith("win"):
