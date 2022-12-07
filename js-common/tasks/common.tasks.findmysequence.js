@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    07.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  FindMySequence Task Class
  *       ~~~~~~~~~
  *
- *  (C) G. Chojnowski, E. Krissinel, A. Lebedev 2016-2022
+ *  (C) G. Chojnowski, E. Krissinel, A. Lebedev 2022
  *
  *  =================================================================
  *
@@ -33,10 +33,10 @@ function TaskFindMySequence()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type   = 'TaskFindMySequence';
-  this.name    = 'findmysequence';
+  this._type = 'TaskFindMySequence';
+  this.name  = 'findmysequence';
   this.setOName ( 'findmysequence' );  // default 
-  this.title   = 'FindMySequence';
+  this.title = 'FindMySequence';
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataRevision':['!protein','!asu','!phases']}, // data type(s) and subtype(s)
@@ -57,7 +57,7 @@ function TaskFindMySequence()  {
                 SELSTR : {
                       type      : 'string_',   // empty string allowed
                       keyword   : 'selstr',
-                      label     : '<i><b>Model fragment selection</b></i>',
+                      label     : 'Model fragment selection',
                       tooltip   : 'Atom selection string in a format: chain X and resi 10:100',
                       default   : 'all',
                       iwidth    : 400,
@@ -68,7 +68,7 @@ function TaskFindMySequence()  {
                 UPID : {
                       type      : 'string_',   // empty string allowed
                       keyword   : 'codes',
-                      label     : '<i><b>UniProt proteome identifier</b></i>',
+                      label     : 'UniProt proteome identifier',
                       tooltip   : 'UPID of a proteome for querying sequences, which will be downloaded automatically from UniProt. By defaulkt program will use a database of PDB sequences.',
                       iwidth    : 200,
                       value     : '',
@@ -80,16 +80,13 @@ function TaskFindMySequence()  {
                       keyword   : 'tophits',
                       default   : 3,
                       range     : [1, '*'],
-                      label     : '<i><b>Number of best sequence hits to show</b></i>',
+                      label     : 'Number of best sequence hits to show',
                       tooltip   : 'Number of top hits',
                       iwidth    : 20,
                       value     : '',
                       emitting  : true,
                       position  : [2,0,1,1]
                     }
-
-
-
              }
            }
   };
