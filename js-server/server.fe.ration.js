@@ -86,7 +86,7 @@ var cfg   = conf.getFEConfig();
     var msg_list = [];
     function checkQuota ( name,quota,cfg_quota )  {
       if (quota<cfg_quota)  {
-        msg_list.push ( name,quota,cfg_quota );
+        msg_list.push ( [name,quota,cfg_quota] );
         quota = cfg_quota;
       }
       return quota;
