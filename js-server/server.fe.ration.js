@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.11.22   <--  Date of Last Modification.
+ *    07.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -31,6 +31,7 @@ const class_map = require('./server.class_map');
 const prj       = require('./server.fe.projects');
 const utils     = require('./server.utils');
 const urat      = require('../js-common/common.userration');
+const emailer   = require('./server.emailer');
 
 //  prepare log
 const log = require('./server.log').newLog(19);
@@ -48,8 +49,8 @@ function getUserRationFPath ( loginData )  {
 function getUserRation ( loginData )  {
 var fpath = getUserRationFPath ( loginData );
 var r     = utils.readObject ( fpath );
+var cfg   = conf.getFEConfig();
   if (!r)  {
-    var cfg = conf.getFEConfig();
     var cfg_ration = null;
     if (cfg.hasOwnProperty('ration'))
       cfg_ration = cfg.ration;
@@ -61,7 +62,7 @@ var r     = utils.readObject ( fpath );
       var cfg = conf.getFEConfig();
       if (cfg.hasOwnProperty('ration'))
             r.archive_year = cfg.ration.archive_year;
-      else  r.archive_year = 5;
+      else  r.archive_year = 2;
       r.archives = [];
       modified = true;
     }
@@ -80,12 +81,48 @@ var r     = utils.readObject ( fpath );
         r.storage_max = cfg.ration.storage_max;
       modified = true;
     }
+  
+    var msg_list = [];
+    function checkQuota ( name,quota,cfg_quota )  {
+      if (quota<cfg_quota)  {
+        msg_list.push ( name,quota,cfg_quota );
+        quota = cfg_quota;
+      }
+      return quota;
+    }
+
+    r.storage      = checkQuota ( 'Storage (MBytes)'      ,r.storage,cfg.ration.storage     );
+    r.storage_max  = checkQuota ( 'Storage top-up limit (MBytes)',r.storage_max,cfg.ration.storage_max );
+    r.cpu_day      = checkQuota ( 'CPU 24h (hours)'       ,r.cpu_day,cfg.ration.cpu_day     );
+    r.cpu_month    = checkQuota ( 'CPU 30d (hours)'       ,r.cpu_month,cfg.ration.cpu_month );
+    r.cloudrun_day = checkQuota ( 'CloudRun 24h (jobs)'   ,r.cloudrun_day,cfg.ration.cloudrun_day );
+    r.archive_year = checkQuota ( 'Archive 1yr (projects)',r.archive_year,cfg.ration.archive_year );
+
+    if (msg_list.length>0)  {
+      modified = true;
+      var message = '<table><tr><td><i>Quota</i></td>' +
+                               '<td><i>Old value</i></td>' +
+                               '<td><i>New value</i></td></tr>';
+      for (var i=0;i<msg_list.length;i++)
+        message += '<tr><td><b>' + msg_list[i][0] + '</b></td><td>'    
+                                 + msg_list[i][1] + '</td><td><b>' 
+                                 + msg_list[i][2] + '</b></td></tr>'; 
+      message += '</table>';
+      emailer.sendTemplateMessage ( uData,
+        cmd.appName() + ' Job Finished',
+        'quota_updated',{
+          'quotas' : message
+        });
+    }
+
     r = class_map.makeClass ( r );
     r.checkArchiveQuota();
     if (r.calculateTimeRation() || modified)
       utils.writeObject ( fpath,r );
   }
+
   return r;
+
 }
 
 

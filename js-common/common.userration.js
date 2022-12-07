@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.11.22   <--  Date of Last Modification.
+ *    07.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -56,7 +56,7 @@ function UserRation ( cfg_ration=null )  {
   this.cpu_day      = 0.0;  // hours  (0: unlimited)
   this.cpu_month    = 0.0;  // hours  (0: unlimited)
   this.cloudrun_day = 100;  // cloudruns (0: unlimited)
-  this.archive_year = 5;    // maximum number of project archived (0: unlimited)
+  this.archive_year = 2;    // maximum number of project archived (0: unlimited)
   if (cfg_ration)  {
     this.storage      = cfg_ration.storage;
     this.storage_max  = cfg_ration.storage_max;
