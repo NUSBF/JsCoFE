@@ -25,13 +25,14 @@
 const path  = require('path');
 
 //  load application modules
-const urat      = require('../js-common/common.userration');
 const conf      = require('./server.configuration');
 const class_map = require('./server.class_map');
 const user      = require('./server.fe.user');
 const prj       = require('./server.fe.projects');
 const utils     = require('./server.utils');
 const emailer   = require('./server.emailer');
+const urat      = require('../js-common/common.userration');
+const cmd       = require('../js-common/common.commands');
 
 //  prepare log
 const log = require('./server.log').newLog(19);
