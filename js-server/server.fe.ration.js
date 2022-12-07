@@ -25,12 +25,12 @@
 const path  = require('path');
 
 //  load application modules
+const urat      = require('../js-common/common.userration');
 const conf      = require('./server.configuration');
 const class_map = require('./server.class_map');
-// const user  = require('./server.fe.user');
+const user      = require('./server.fe.user');
 const prj       = require('./server.fe.projects');
 const utils     = require('./server.utils');
-const urat      = require('../js-common/common.userration');
 const emailer   = require('./server.emailer');
 
 //  prepare log
@@ -108,7 +108,7 @@ var cfg   = conf.getFEConfig();
                                  + msg_list[i][1] + '</td><td><b>' 
                                  + msg_list[i][2] + '</b></td></tr>'; 
       message += '</table>';
-      emailer.sendTemplateMessage ( uData,
+      emailer.sendTemplateMessage ( user.readUserData(loginData),
         cmd.appName() + ' Job Finished',
         'quota_updated',{
           'quotas' : message
