@@ -57,44 +57,44 @@ function TaskMrParse()  {
     }
   ];
 
-  this.parameters = { // input parameters
-    sec1 : { type     : 'section',
-             title    : 'Parameters',
-             open     : true,  // true for the section to be initially open
-             position : [0,0,1,5],
-             contains : {
-                AFDB_CBX : {
-                       type     : 'checkbox',
-                       label    : 'Include structures from AFDB',
-                       tooltip  : 'Check to include structures from AlphaFold-2 database',
-                       value    : false,
-                       position : [0,0,1,3]
-                     },
-                RLEVEL_SEL : {
-                      type     : 'combobox',
-                      keyword  : 'RLEVEL',
-                      label    : 'Redundancy level',
-                      tooltip  : 'Choose appropriate redundancy level for ' +
-                                 'keeping hits in the list of matches. ',
-                      range    : ['ALL|All','100|100%','95|95%','90|90%','70|70%','50|50%'],
-                      value    : 'ALL',
-                      position : [1,0,1,1],
-                      hideon   : {AFDB_CBX:[true]}
-                     },
-                MRNUM : {
-                      type     : 'integer',
-                      keyword  : 'MRNUM',
-                      label    : 'Number of ensembles',
-                      tooltip  : 'Specify the number of ensemblies to generate ' +
-                                 '(from 1 to 20).',
-                      range    : [1,20],
-                      value    : 5,
-                      position : [2,0,1,1]
-                    }
-           }
-         }
-  
-  };
+  // this.parameters = { // input parameters
+  //   sec1 : { type     : 'section',
+  //            title    : 'Parameters',
+  //            open     : true,  // true for the section to be initially open
+  //            position : [0,0,1,5],
+  //            contains : {
+  //               AFDB_CBX : {
+  //                      type     : 'checkbox',
+  //                      label    : 'Include structures from AFDB',
+  //                      tooltip  : 'Check to include structures from AlphaFold-2 database',
+  //                      value    : false,
+  //                      position : [0,0,1,3]
+  //                    },
+  //               RLEVEL_SEL : {
+  //                     type     : 'combobox',
+  //                     keyword  : 'RLEVEL',
+  //                     label    : 'Redundancy level',
+  //                     tooltip  : 'Choose appropriate redundancy level for ' +
+  //                                'keeping hits in the list of matches. ',
+  //                     range    : ['ALL|All','100|100%','95|95%','90|90%','70|70%','50|50%'],
+  //                     value    : 'ALL',
+  //                     position : [1,0,1,1],
+  //                     hideon   : {AFDB_CBX:[true]}
+  //                    },
+  //               MRNUM : {
+  //                     type     : 'integer',
+  //                     keyword  : 'MRNUM',
+  //                     label    : 'Number of ensembles',
+  //                     tooltip  : 'Specify the number of ensemblies to generate ' +
+  //                                '(from 1 to 20).',
+  //                     range    : [1,20],
+  //                     value    : 5,
+  //                     position : [2,0,1,1]
+  //                   }
+  //          }
+  //        }
+  //
+  // };
 
 }
 
