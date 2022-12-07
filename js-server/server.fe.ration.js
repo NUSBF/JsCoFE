@@ -110,7 +110,7 @@ var cfg   = conf.getFEConfig();
                                  + msg_list[i][2] + '</b></td></tr>'; 
       message += '</table>';
       emailer.sendTemplateMessage ( user.readUserData(loginData),
-        cmd.appName() + ' Job Finished',
+        cmd.appName() + ' Quota updated',
         'quota_updated',{
           'quotas' : message
         });
