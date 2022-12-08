@@ -307,6 +307,8 @@ class Pdbredo(basic.TaskDriver):
         self.row0 = self.rvrow
         self.putMessage("")
 
+        self.addCitations ( ['pdbredo'] )
+
         # check solution and register data
         have_results = False
         if xyzout:
@@ -373,7 +375,6 @@ class Pdbredo(basic.TaskDriver):
 
         # close execution logs and quit
         self.success(have_results)
-        self.addCitations ( ['pdbredo'] )
         return
 
 

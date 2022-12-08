@@ -1137,6 +1137,7 @@ citations = {
                             'doi'     : '10.1107/S205979831700969X'
                   }]
                 },
+
     'pdbredo' :   { 'name'     : 'PDB-REDO',
                     'category' : 'primary',
                     'refs'     : [{
