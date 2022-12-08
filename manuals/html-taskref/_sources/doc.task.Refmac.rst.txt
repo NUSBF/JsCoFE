@@ -2,7 +2,7 @@
 REFMAC5
 =======
 
-`REFMAC5 <https://journals.iucr.org/d/issues/2011/04/00/ba5152/index.html>`_ is a program designed for REFinement of MACromolecular structures. It’s final step in the process of solving a macromolecular crystal (MX) structure, refinement is carried out to maximize the agreement between the model and the X-ray data. Model parameters that are optimized in the refinement process include atomic coordinates, atomic displacement parameters (ADPs), scale factors and, in the presence of twinning, twin fraction(s).  It uses Maximum likelihood and some elements of Bayesian Statististics.
+`REFMAC5 <https://journals.iucr.org/d/issues/2011/04/00/ba5152/index.html>`__ is a program designed for REFinement of MACromolecular structures. It’s final step in the process of solving a macromolecular crystal (MX) structure, refinement is carried out to maximize the agreement between the model and the X-ray data. Model parameters that are optimized in the refinement process include atomic coordinates, atomic displacement parameters (ADPs), scale factors and, in the presence of twinning, twin fraction(s).  It uses Maximum likelihood and some elements of Bayesian Statististics.
 
 *Although refinement procedures are typically designed for the final stages of MX analysis, they are also often used to improve partial models and to calculate the `best' electron-density maps for further model (re)building.*
 
