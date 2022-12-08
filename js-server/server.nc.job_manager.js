@@ -893,6 +893,8 @@ var cfg = conf.getServerConfig();
 
       },function(stageNo,errcode){  // send failed
 
+      console.log ( ' >>>>> ' + errcode );
+
         if (((stageNo>=2) && (jobEntry.sendTrials>0)) ||
             ((stageNo==1) && (jobEntry.sendTrials==cfg.maxSendTrials) &&
              (errcode.indexOf('ENOENT')>=0)))  {  // try to send again
