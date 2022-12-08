@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.12.22   <--  Date of Last Modification.
+#    08.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -636,9 +636,13 @@ class Arcimboldo(basic.TaskDriver):
         # it to be sent back to FE.
         dlist = os.listdir(self.arcimboldoDir())
         for dname in dlist:
-            fpath = os.path.join(self.arcimboldoDir(), dname)
+            fpath = os.path.join ( self.arcimboldoDir(),dname )
             if os.path.isdir(fpath):
                 shutil.rmtree(fpath)
+            elif os.path.islink(fpath):
+                lfpath = os.readlink(fpath)
+                os.unlink(fpath)
+                shutil.copy2(lfpath,fpath)
 
         # shutil.rmtree ( self.arcimboldoDir() )
 
