@@ -79,7 +79,7 @@ function TaskFindMySequence()  {
                       type      : 'integer_',   // empty string allowed
                       keyword   : 'tophits',
                       default   : 3,
-                      range     : [1, '*'],
+                      range     : [1,'*'],
                       label     : 'Number of best sequence hits to show',
                       tooltip   : 'Number of top hits',
                       iwidth    : 20,
@@ -110,17 +110,12 @@ TaskFindMySequence.prototype.desc_title = function()  {
   return 'reconstructs sequence from phases';
 };
 
-
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
 TaskFindMySequence.prototype.platforms = function()  { return 'LMUW'; }
-
-// TaskFindMySequence.prototype.requiredEnvironment = function() {
-//   return ['CCP4',['$CCP4/share/mrd_data/VERSION','$CCP4/lib/py2/morda/LINKED']];
-// }
 
 TaskFindMySequence.prototype.currentVersion = function()  {
   var version = 1;
@@ -131,7 +126,7 @@ TaskFindMySequence.prototype.currentVersion = function()  {
 
 TaskFindMySequence.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['findmysequence', 'sequence'] );
+  return this.__check_keywords ( keywords,['findmysequence', 'sequence'] );
 }
 
 
@@ -143,26 +138,17 @@ if (!__template)  {
     return 'Protein sequence identification based on a map and backbone model';
   }
 
-
 } else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');
 
   TaskFindMySequence.prototype.makeInputData = function ( loginData,jobDir )  {
-
-    // put hkl and seq data in input databox for copying their files in
-    // job's 'input' directory
-
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      // this.input_data.data['hkl'] = [revision.HKL];
-      // this.input_data.data['seq'] = revision.ASU.seq;
       this.input_data.data['istruct'] = [revision.Structure];
     }
-
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
-
   }
 
   TaskFindMySequence.prototype.getCommandLine = function ( jobManager,jobDir )  {
