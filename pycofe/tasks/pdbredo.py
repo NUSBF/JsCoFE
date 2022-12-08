@@ -272,8 +272,15 @@ class Pdbredo(basic.TaskDriver):
 
         self.row0 = self.rvrow
         self.putWaitMessageLF("submitting to PDB REDO server ")
+        if not self.have_internet():
+            self.fail ( "<h3>No internet connection.</h3>" +\
+                    "This task requires access to PDB REDO server, which is not " +\
+                    "possible due to missing internet connection.",
+                    "No internet connection" )
 
         run_id = self.do_submit(xyzin, hklin, token_id, token_secret, PDBREDO_URI)
+
+        number_of_try = 0
 
         while True:
             try :
@@ -284,11 +291,13 @@ class Pdbredo(basic.TaskDriver):
                     break
 
             except:
-                pass
-                
-                
-
-        
+                if number_of_try < 100:
+                    number_of_try +=1
+                    time.sleep(120)
+                    pass
+                else:
+                    self.stderrln ('Possible internet connection issues ' + '\n' , status)
+                    break
 
         xyzout, mtzout = self.do_fetch(token_id, token_secret, run_id, PDBREDO_URI)
 
@@ -364,6 +373,7 @@ class Pdbredo(basic.TaskDriver):
 
         # close execution logs and quit
         self.success(have_results)
+        self.addCitations ( ['pdbredo'] )
         return
 
 
