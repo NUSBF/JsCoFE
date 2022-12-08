@@ -894,6 +894,7 @@ var cfg = conf.getServerConfig();
       },function(stageNo,errcode){  // send failed
 
       console.log ( ' >>>>> ' + errcode );
+      console.log ( ' >>>>> ' + errcode.indexOf('ENOENT') );
 
         if (((stageNo>=2) && (jobEntry.sendTrials>0)) ||
             ((stageNo==1) && (jobEntry.sendTrials==cfg.maxSendTrials) &&
