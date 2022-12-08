@@ -210,7 +210,7 @@ var sender_cfg = conf.getServerConfig();
       } else if (onErr_func)  {
         log.error ( 7,'errors encountered ("' + code + '") at making jobbal in ' +
                       dirPath );
-        onErr_func ( 1,code );  // '1' means an error from packing stage
+        onErr_func ( 1,'zip_packing_error' );  // '1' means an error from packing stage
       }
 
     });
