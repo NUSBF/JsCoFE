@@ -46,7 +46,7 @@
   
   
   
-    <title>1.5.5. Login in Project or List of Projects &#8212; CCP4 Cloud 1.8 documentation</title>
+    <title>1.5.13. CCP4 Cloud Archive &#8212; CCP4 Cloud 1.8 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -57,8 +57,8 @@
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="1.5.6. Working modes of CCP4 Cloud" href="jscofe_tips.three_clouds.html" />
-    <link rel="prev" title="1.5.4. Project Sharing" href="jscofe_tips.sharing.html" />
+    <link rel="next" title="2. Structure solution with CCP4 Cloud" href="jscofe_workflows.html" />
+    <link rel="prev" title="1.5.12. Project folders" href="jscofe_tips.folders.html" />
   
    
 
@@ -77,7 +77,7 @@
   <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
   <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
   <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#jscofe_tips.login_project" tabindex="1" class="md-skip"> Skip to content </a>
+  <a href="#jscofe_tips.archive" tabindex="1" class="md-skip"> Skip to content </a>
   <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
@@ -95,7 +95,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
-          <span class="md-header-nav__topic"> 1.5.5. Login in Project or List of Projects </span>
+          <span class="md-header-nav__topic"> 1.5.13. CCP4 Cloud Archive </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -246,16 +246,7 @@
     <li class="md-nav__item">
     
     
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> 1.5.5. Login in Project or List of Projects </label>
-    
-      <a href="#" class="md-nav__link md-nav__link--active">1.5.5. Login in Project or List of Projects</a>
-      
-        
-<nav class="md-nav md-nav--secondary">
-  <ul class="md-nav__list" data-md-scrollfix="">
-  </ul>
-</nav>
+      <a href="jscofe_tips.login_project.html" class="md-nav__link">1.5.5. Login in Project or List of Projects</a>
       
     
     </li>
@@ -311,7 +302,16 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_tips.archive.html" class="md-nav__link">1.5.13. CCP4 Cloud Archive</a>
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> 1.5.13. CCP4 Cloud Archive </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">1.5.13. CCP4 Cloud Archive</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+  </ul>
+</nav>
       
     
     </li></ul>
@@ -391,15 +391,30 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="jscofe-tips-login-project--page-root"><span class="section-number">1.5.5. </span>Login in Project or List of Projects<a class="headerlink" href="#jscofe-tips-login-project--page-root" title="Permalink to this headline">¶</a></h1>
-<p>By default, after login procedure you find yourself in your List of Projects (“My Projects”), from where you’d typically go to the Project that you were developing the day before.</p>
-<p>Instead, you may configure CCP4 Cloud such that it brings you to your last Project upon login automatically:</p>
-<ul class="simple">
-<li>go to “My Account” (using Main Menu button in the top-left corner of the screen)</li>
-<li>choose “last project” in the “Preferences/On login”</li>
-<li>type your password in “My Account” settings and push button “Save changes”</li>
-</ul>
-<p>You can restore the default behaviour at any time using the same procedure.</p>
+<h1 id="jscofe-tips-archive--page-root"><span class="section-number">1.5.13. </span>CCP4 Cloud Archive<a class="headerlink" href="#jscofe-tips-archive--page-root" title="Permalink to this headline">¶</a></h1>
+<p>When a structure is solved, it is usually deposited in the Protein Data Bank and
+gets associated with PDB code, which is good for referencing in publications.</p>
+<p>Quite similarly, you can archive your project in CCP4 Cloud Archive, associate
+it with Archive ID, and use it for referencing anywhere. Archived projects can
+be accessed online by Archive ID by anybody having CCP4 Cloud Account. Once
+archived, no inormation can be removed from project; however, extensions are
+possible and project owner can amend archived projects.</p>
+<p>Why would you want to archive your work? Actually, for many reasons. Archived
+project will be kept for you safe – which is easier than to make and organise
+personal backup copies. Once archived, the project’s disk space will be returned
+back to your disk quota. You will use fewer words to describe how your structure
+was solved by exposing your project to readers and referrees. Archived projects
+can be conveniently used for education. You may use CCP4 Archive simply to
+organise completed projects within your group. But ultimately, structure solution
+projects represent the link between experimental observation and obtained atomic
+coordinates as one possible representation of them, which makes them equally
+important. Therefore, an ideal case is when you archive your project using the
+corresponding PDB code as Archive ID.</p>
+<p>Archiving projects is super-easy: just move your project to the <em>CCP4 Cloud Archive</em>
+<a class="reference internal" href="jscofe_tips.folders.html"><span class="doc">folder</span></a> and follow instructions.</p>
+<p>To access archived projects, go to the <em>CCP4 Cloud Archive</em> folder, click button
+<em>Access</em> and type Archive ID.</p>
+<p>Read more about CCP4 Cloud Archive <a class="reference internal" href="jscofe_archive.html"><span class="doc">here</span></a>.</p>
 <p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
 
 
@@ -413,7 +428,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="jscofe_tips.sharing.html" title="1.5.4. Project Sharing"
+            <a href="jscofe_tips.folders.html" title="1.5.12. Project folders"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -422,17 +437,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">1.5.4. </span>Project Sharing </span>
+                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">1.5.12. </span>Project folders </span>
               </div>
             </a>
           
           
-            <a href="jscofe_tips.three_clouds.html" title="1.5.6. Working modes of CCP4 Cloud"
+            <a href="jscofe_workflows.html" title="2. Structure solution with CCP4 Cloud"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> <span class="section-number">1.5.6. </span>Working modes of CCP4 Cloud </span>
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">2. </span>Structure solution with CCP4 Cloud </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
