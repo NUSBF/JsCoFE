@@ -45,9 +45,8 @@ from proc  import import_seqcp
 def download_proteome_from_unbiprot(uid="UP000005206", datadir='input'):
 
     ofile = os.path.join(datadir, f"{uid}.fasta.gz")
-    # url = f"https://rest.uniprot.org/uniprotkb/stream?format=fasta&query=%28%28proteome%3A{uid}%29%29"
     url = f"https://rest.uniprot.org/uniprotkb/stream?compressed=true&format=fasta&query=%28%28proteome%3A{uid}%29%29"
-    request = requests.get(url, stream=True)# as request:
+    request = requests.get(url, stream=True)
     request.raise_for_status()
     with open(ofile, 'wb') as f:
         for chunk in request.iter_content(chunk_size=1024):

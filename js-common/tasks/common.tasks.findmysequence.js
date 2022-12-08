@@ -103,7 +103,7 @@ TaskFindMySequence.prototype.constructor = TaskFindMySequence;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskFindMySequence.prototype.icon = function()  { return 'task_findmysequencea'; }
+TaskFindMySequence.prototype.icon = function()  { return 'task_findmysequence'; }
 
 TaskFindMySequence.prototype.desc_title = function()  {
 // this appears under task title in the task list
