@@ -640,7 +640,7 @@ class Arcimboldo(basic.TaskDriver):
             if os.path.isdir(fpath):
                 shutil.rmtree(fpath)
 
-        # shutil.rmtree ( self.arcimboldoDir() )
+        shutil.rmtree ( self.arcimboldoDir() )
 
         # close execution logs and quit
         self.success(have_results)
