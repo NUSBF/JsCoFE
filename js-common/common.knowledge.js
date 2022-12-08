@@ -231,7 +231,10 @@ var _taskIndex = {
   'w'  : { type: 'TaskEnsemblePrepMG'     , after: ['B','B1','D','m'] },
 
   // suggest XDSGUI after root
-  'x'  : { type: 'TaskXDSGUI'             , after: ['0'] }
+  'x'  : { type: 'TaskXDSGUI'             , after: ['0'] },
+
+  // suggest FindMySequence after Simbad
+  'f1'  : { type: 'TaskFindMySequence'     , after: ['G'] }
 
 };
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.10.22   <--  Date of Last Modification.
+ *    08.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -620,7 +620,7 @@ var row      = 0;
       // new TaskStructurePrediction(),
       // new TaskWFlowAFMR    (),
       new TaskPDBREDO      (),
-      new TaskFindMySequence(),
+      // new TaskFindMySequence(),
       new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
       new TaskFragon       (),
@@ -703,9 +703,11 @@ var row      = 0;
     new TaskBalbes    (),
     new TaskSliceNDice(),
     'No-sequence methods',
-    new TaskSimbad    () //,
+    new TaskSimbad    (),
     // 'No-model methods',
     // new TaskAmple ()
+    'Sequence reconstruction',
+    new TaskFindMySequence (),
   ],true);
 
   this.makeSection ( 'Molecular Replacement',[
