@@ -33,4 +33,5 @@ In case you have **NOT** a homologous protein structure you can use: automated m
     doc.task.SliceNDice
     doc.task.Simbad
     doc.task.Ample
+    doc.task.FindMySequence
     
