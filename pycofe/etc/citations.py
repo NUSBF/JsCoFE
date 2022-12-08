@@ -1137,6 +1137,18 @@ citations = {
                             'doi'     : '10.1107/S205979831700969X'
                   }]
                 },
+    'pdbredo' :   { 'name'     : 'PDB-REDO',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Robbie P. Joosten, Fei Long, Garib N. Murshudov and Anastassis Perrakis',
+                            'title'   : 'The PDB_REDO server for macromolecular structure model optimization',
+                            'journal' : 'IUCrJ',
+                            'volume'  : '1',
+                            'year'    : '2014',
+                            'pages'   : '213-220',
+                            'doi'     : 'https://doi.org/10.1107/S2052252514009324'
+                        }]
+                  },
 
     'findmysequence' : { 'name'     : 'findMySequence',
                     'category' : 'primary',
