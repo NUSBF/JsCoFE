@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    02.12.22   <--  Date of Last Modification.
+ *    08.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  Knowledge routines and data
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2018-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2022
  *
  *  ========================================================================
  *
@@ -172,6 +172,9 @@ var _taskIndex = {
   // suggest SeqAlign after Import
   'f'  : { type: 'TaskSeqAlign'           , after: ['B','B1','m'] },
 
+  // suggest FindMySequence after Simbad
+  'f1'  : { type: 'TaskFindMySequence'     , after: ['G'] },
+
   // do not suggest FacilityImport
   'g'  : { type: 'TaskFacilityImport'     , after: [] },
 
@@ -231,10 +234,7 @@ var _taskIndex = {
   'w'  : { type: 'TaskEnsemblePrepMG'     , after: ['B','B1','D','m'] },
 
   // suggest XDSGUI after root
-  'x'  : { type: 'TaskXDSGUI'             , after: ['0'] },
-
-  // suggest FindMySequence after Simbad
-  'f1'  : { type: 'TaskFindMySequence'     , after: ['G'] }
+  'x'  : { type: 'TaskXDSGUI'             , after: ['0'] }
 
 };
 

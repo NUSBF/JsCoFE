@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.12.22   <--  Date of Last Modification.
+ *    08.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -738,6 +738,7 @@ function copyToSafe ( task,jobEntry )  {
 
 
 function ncJobFinished ( job_token,code )  {
+var cfg = conf.getServerConfig();
 
   log.debug2 ( 100,'term code=' + code );
 
@@ -807,7 +808,7 @@ function ncJobFinished ( job_token,code )  {
   // may fail
   task.cleanJobDir ( jobEntry.jobDir );
 
-  if (jobEntry.sendTrials==conf.getServerConfig().maxSendTrials) {
+  if (jobEntry.sendTrials==cfg.maxSendTrials) {
 
     log.debug2 ( 101,'put status' );
 
@@ -870,6 +871,7 @@ function ncJobFinished ( job_token,code )  {
     // if (code==1001)  {
     if (code)  {
       // console.log ( '  >>> was stopped ');
+      log.standard ( 101,'removing symlinks after stopped task, job_token=' + job_token );
       utils.removeSymLinks ( jobEntry.jobDir );
     }
 
@@ -891,7 +893,16 @@ function ncJobFinished ( job_token,code )  {
 
       },function(stageNo,errcode){  // send failed
 
-        if ((stageNo>=2) && (jobEntry.sendTrials>0))  {  // try to send again
+        if (((stageNo>=2) && (jobEntry.sendTrials>0)) ||
+            ((stageNo==1) && (jobEntry.sendTrials==cfg.maxSendTrials) &&
+             (errcode.indexOf('ENOENT')>=0)))  {  // try to send again
+
+          if (stageNo==1)  {
+            // hypothesize that the failure is because of symlinks and try 
+            // replace them with files
+            log.standard ( 102,'removing symlinks after packing errors, job_token=' + job_token );
+            utils.removeSymLinks ( jobEntry.jobDir );
+          }
 
           jobEntry.sendTrials--;
           log.warning ( 4,'repeat (' + jobEntry.sendTrials + ') sending job ' +
