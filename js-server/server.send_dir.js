@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    08.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -64,7 +64,7 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
 
   var tmpFile = conf.getTmpFile();
   if (!tmpFile)  {
-    log.error ( 11,'temporary directory not found, encountered at zipping ' + dirPath );
+    log.error ( 1,'temporary directory not found, encountered at zipping ' + dirPath );
     onReady_func ( -2,-1 );
     return;
   }
@@ -81,7 +81,7 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
         else  utils.moveFile ( tmpFile,jobballPath );
         onReady_func ( 0,utils.fileSize(jobballPath) );
       }, function(err) {
-        log.error ( 11,'zip packing error: ' + err + ', encountered in ' + dirPath );
+        log.error ( 2,'zip packing error: ' + err + ', encountered in ' + dirPath );
         utils.removeFile ( tmpFile );
         onReady_func ( err,0 );
       });
@@ -94,14 +94,14 @@ function packDir ( dirPath, fileSelection, dest_path, onReady_func )  {
     });
 
     zip.stderr.on ( 'data',function(data){
-      log.error ( 10,'zip errors: "' + data + '"; encountered in ' + dirPath );
+      log.error ( 3,'zip errors: "' + data + '"; encountered in ' + dirPath );
     });
 
     zip.on ( 'close', function(code){
       //if (code!=0)  {
       var jobballSize = -1;
       if (code)  {
-        log.error ( 11,'zip packing code: ' + code + ', encountered in ' + dirPath );
+        log.error ( 4,'zip packing code: ' + code + ', encountered in ' + dirPath );
         utils.removeFile ( tmpFile );
       } else  if (dest_path) {
         utils.moveFile ( tmpFile,dest_path );
@@ -144,13 +144,13 @@ var sender_cfg = conf.getServerConfig();
 
       if (jobballPath)  {
         if (!utils.removeFile(jobballPath))
-          log.error ( 31,'cannot remove jobball at ' + jobballPath );
+          log.error ( 5,'cannot remove jobball at ' + jobballPath );
       }
 
       if (err) {
         if (onErr_func)
           onErr_func ( 2,err );  // '2' means an error from upload stage
-        log.error ( 3,'upload failed: ' + err );
+        log.error ( 6,'upload failed: ' + err );
       } else  {
         try {
           var resp = JSON.parse ( response );
@@ -208,9 +208,9 @@ var sender_cfg = conf.getServerConfig();
                          ' has been packed and is being sent to ' + serverURL );
 
       } else if (onErr_func)  {
-        log.error ( 4,'errors encountered ("' + code + '") at making jobbal in ' +
+        log.error ( 7,'errors encountered ("' + code + '") at making jobbal in ' +
                       dirPath );
-        onErr_func ( 1,code );  // '1' means an error from packing stage
+        onErr_func ( 1,'zip_packing_error' );  // '1' means an error from packing stage
       }
 
     });
@@ -235,7 +235,7 @@ function __after_unzip ( unpack_dir,dirPath,tmpDir,jobballPath,
       utils.moveDirAsync ( unpack_dir,dirPath,true,callback_func );
       utils.removePath   ( tmpDir );
     } else  {
-      log.error ( 25,'expected directory "' + dirPath + '" not found' );
+      log.error ( 8,'expected directory "' + dirPath + '" not found' );
       callback_func ( 1111 );
     }
   } else
@@ -285,7 +285,7 @@ function unpackDir1 ( dirPath,jobballPath,cleanTmpDir,remove_jobball_bool,onRead
     });
 
     zip.stderr.on ( 'data',function(data){
-      log.error ( 15,'zip/unpackDir errors: "' + data + '"; encountered in ' + dirPath );
+      log.error ( 9,'zip/unpackDir errors: "' + data + '"; encountered in ' + dirPath );
       errs = 'data_unpacking_errors';
     });
 
@@ -334,7 +334,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
     if (!utils.mkDir(tmpDir))  {
       if (onFinish_func)
         onFinish_func ( 'err_dirnoexist',errs,upload_meta );  // file renaming errors
-      log.error ( 8,'upload directory ' + tmpDir + ' cannot be created' );
+      log.error ( 10,'upload directory ' + tmpDir + ' cannot be created' );
       return;
     }
   }
@@ -357,9 +357,9 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
   // log any errors that occur
   var errs = '';
   form.on('error', function(err) {
-    log.error ( 5,'receive directory error:' );
-    log.error ( 5,err );
-    log.error ( 5,'in ' + jobDir );
+    log.error ( 11,'receive directory error:' );
+    log.error ( 11,err );
+    log.error ( 11,'in ' + jobDir );
     errs += err + '\n<br>';
   });
 
@@ -377,14 +377,14 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
             if (!err)
               log.detailed ( 7,'directory contents has been received in ' + jobDir );
             else  {
-              log.standard ( 7,'directory contents has been received in ' + jobDir + ' with errors: ' + err );
-              log.error    ( 7,'directory contents has been received in ' + jobDir + ' with errors: ' + err );
+              log.standard (  1,'directory contents has been received in ' + jobDir + ' with errors: ' + err );
+              log.error    ( 12,'directory contents has been received in ' + jobDir + ' with errors: ' + err );
               if (utils.dirExists(upload_meta.dirpath))
-                    log.error ( 7,'source directory ' + upload_meta.dirpath + ' exists' );
-              else  log.error ( 7,'source directory ' + upload_meta.dirpath + ' does not exist' );
+                    log.error ( 13,'source directory ' + upload_meta.dirpath + ' exists' );
+              else  log.error ( 14,'source directory ' + upload_meta.dirpath + ' does not exist' );
               if (utils.dirExists(jobDir))
-                    log.error ( 7,'destination directory ' + jobDir + ' exists' );
-              else  log.error ( 7,'destination directory ' + jobDir + ' does not exist' );
+                    log.error ( 15,'destination directory ' + jobDir + ' exists' );
+              else  log.error ( 16,'destination directory ' + jobDir + ' does not exist' );
             }
           });
 
@@ -406,12 +406,12 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
               if (!code)
                 log.detailed ( 6,'directory contents has been received in ' + jobDir );
               else  {
-                log.standard ( 6,'directory contents has been received in ' + jobDir +
-                                 ' with errors: ' + code +
-                                 ', filesize=' + jobballSize );
-                log.error    ( 6,'directory contents has been received in ' + jobDir +
-                                 ' with errors: ' + code +
-                                 ', filesize=' + jobballSize );
+                log.standard (  2,'directory contents has been received in ' + jobDir +
+                                  ' with errors: ' + code +
+                                  ', filesize=' + jobballSize );
+                log.error    ( 17,'directory contents has been received in ' + jobDir +
+                                  ' with errors: ' + code +
+                                  ', filesize=' + jobballSize );
               }
             });
 
@@ -423,7 +423,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
       } else  {
         if (onFinish_func)
           onFinish_func ( 'err_dirnoexist',errs,upload_meta );  // file renaming errors
-        log.error ( 8,'target directory ' + jobDir + ' does not exist' );
+        log.error ( 18,'target directory ' + jobDir + ' does not exist' );
       }
 
     } else if (onFinish_func)
@@ -436,7 +436,7 @@ function receiveDir ( jobDir,tmpDir,server_request,onFinish_func )  {
     form.parse ( server_request );
   } catch(err) {
     errs += 'error: ' + err.name + '\nmessage: ' + err.message + '\n';
-    log.error ( 9,'receive directory parse errors: ' + err );
+    log.error ( 19,'receive directory parse errors: ' + err );
     if (onFinish_func)
       onFinish_func ( 'err_parsing',errs,upload_meta );  // file renaming errors
   }

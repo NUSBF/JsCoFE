@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.11.22   <--  Date of Last Modification.
+ *    08.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -521,7 +521,9 @@ function removeSymLinks ( dir_path )  {
         removeSymLinks ( curPath );
       } else if (stat && stat.isSymbolicLink())
         try {
+          var fpath = fs.readlinkSync( curPath );
           fs.unlinkSync ( curPath );
+          fs.copyFileSync ( fpath, curPath );
         } catch (e)  {
           log.error ( 88,'cannot remove symlink ' + curPath +
                          ' error: ' + JSON.stringify(e) );
