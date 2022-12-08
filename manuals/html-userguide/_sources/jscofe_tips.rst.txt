@@ -17,4 +17,5 @@ Tips and Tricks
     jscofe_tips.AlphaFold
     jscofe_tips.Work_with_diffraction_images
     jscofe_tips.folders
+    jscofe_tips.archive
 

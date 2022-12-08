@@ -18,7 +18,6 @@ Starting a Project
 
 In CCP4 Cloud, work is arranged in `Projects <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_myprojects.html>`_. 
 
-
 .. |addjob| image:: images/add.png
     :width: 16
     :height: 16

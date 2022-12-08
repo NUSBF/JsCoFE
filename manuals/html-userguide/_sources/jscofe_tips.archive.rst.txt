@@ -1,0 +1,36 @@
+==================
+CCP4 Cloud Archive
+==================
+
+When a structure is solved, it is usually deposited in the Protein Data Bank and
+gets associated with PDB code, which is good for referencing in publications.
+
+Quite similarly, you can archive your project in CCP4 Cloud Archive, associate
+it with Archive ID, and use it for referencing anywhere. Archived projects can 
+be accessed online by Archive ID by anybody having CCP4 Cloud Account. Once 
+archived, no inormation can be removed from project; however, extensions are
+possible and project owner can amend archived projects.
+
+Why would you want to archive your work? Actually, for many reasons. Archived 
+project will be kept for you safe -- which is easier than to make and organise 
+personal backup copies. Once archived, the project's disk space will be returned 
+back to your disk quota. You will use fewer words to describe how your structure 
+was solved by exposing your project to readers and referrees. Archived projects
+can be conveniently used for education. You may use CCP4 Archive simply to
+organise completed projects within your group. But ultimately, structure solution 
+projects represent the link between experimental observation and obtained atomic 
+coordinates as one possible representation of them, which makes them equally 
+important. Therefore, an ideal case is when you archive your project using the
+corresponding PDB code as Archive ID.
+
+Archiving projects is super-easy: just move your project to the *CCP4 Cloud Archive* 
+:doc:`folder <jscofe_tips.folders>` and follow instructions.
+
+To access archived projects, go to the *CCP4 Cloud Archive* folder, click button
+*Access* and type Archive ID.
+
+Read more about CCP4 Cloud Archive :doc:`here <jscofe_archive>`.
+
+:doc:`All CCP4 Cloud tips <jscofe_tips>` 
+
+

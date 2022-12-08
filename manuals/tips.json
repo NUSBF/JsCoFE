@@ -50,6 +50,11 @@
       "title"   : "Processing Diffraction Images",
       "doc"     : "manuals/html-userguide",
       "link"    : "jscofe_tips.Work_with_diffraction_images.html"
+    },{
+      "summary" : "Did you know that projects can be archived and referenced in publications? Check out <a>here</a>.",
+      "title"   : "CCP4 Cloud Archive",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.archive.html"
     }
   ]
 }
