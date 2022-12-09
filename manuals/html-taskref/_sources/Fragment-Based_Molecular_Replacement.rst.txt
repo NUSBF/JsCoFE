@@ -5,6 +5,6 @@ Fragment-Based Molecular Replacement
 .. toctree::
     :maxdepth: 2
     
-    doc.task.Arcimboldo
+    doc.task.ArcimboldoLite
     doc.task.ArcimboldoBorges
     doc.task.ArcimboldoShredder
