@@ -55,6 +55,11 @@
       "title"   : "CCP4 Cloud Archive",
       "doc"     : "manuals/html-userguide",
       "link"    : "jscofe_tips.archive.html"
+    },{
+      "summary" : "Have you got too many projects to manage? Organise them in Folders, learn <a>here</a>.",
+      "title"   : "Project Folders",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.folders.html"
     }
   ]
 }

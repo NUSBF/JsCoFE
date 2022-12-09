@@ -4,21 +4,6 @@ Project folders
 
 :ref:`Project<myprojects>` in CCP4 Cloud can be organised in folders.
 
-To move the project:
-
-1. **select the project** to be moved (1), 
-2. click move |move| button in the button line above
-3. select a target folder
-4. press select button
-
-.. image:: images/tips_folders2.png
-   :align: center
-
-
-.. |move| image:: images/folder_jobtree.png
-        :width: 16
-        :height: 16
-
 In order to display Project folders availible click on the |move| name of the folder you are currently in (1) or look for the Menu icon: |menu| in the top-left corner of the page and then press the Change project folder button in drop-down menu (2).
 
 .. |menu| image:: images/menu.png
@@ -29,3 +14,65 @@ In order to display Project folders availible click on the |move| name of the fo
 .. image:: images/tips_folders1.png
    :align: center
    :scale: 40 % 
+
+By doing so The Project folders menu appears:
+
+.. image:: images/tips_folders2.png
+   :align: center
+   :scale: 50 % 
+
+At the Project folders menu, you can create a new folder |new| (1) or a list |newlist| (2), read the user guide (3).
+
+.. image:: images/tips_folders3.png
+   :align: center
+   :scale: 50 % 
+
+Here you can rename |rename| (1) or |remove| remove (2) |move| folder or |list| list.
+
+Project lists |list| designed for better organisation of projects. They can combine projects from different folders and lists. There are the default project lists coloured blue. Those lists cannot be removed.
+
+To move the project in the new |move| folder or |list| list:
+
+1. **select the project** to be moved (1), 
+2. click move |move| button in the button line above
+3. select a target folder
+4. press select button
+
+.. image:: images/tips_folders4.png
+   :align: center
+
+
+.. note:: The project can be moved only from its folder. It can't be moved from lists.
+
+It's possible to remove project from the list by pressing Delist button |delist|. Project will be removed from the selected list only.
+
+
+.. |move| image:: images/folder_jobtree.png
+        :width: 16
+        :height: 16
+
+.. |new| image:: images/folder_projects_new.png
+        :width: 16
+        :height: 16
+
+
+.. |delist| image:: images/folder_list_custom_delist.png
+        :width: 16
+        :height: 16
+
+.. |newlist| image:: images/folder_list_custom_new.png
+        :width: 16
+        :height: 16
+
+.. |list| image:: images/folder_list_custom.png
+        :width: 16
+        :height: 16
+
+
+.. |rename| image:: images/renameprj.png
+        :width: 16
+        :height: 16
+        
+.. |remove| image:: images/remove.png
+        :width: 16
+        :height: 16

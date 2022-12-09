@@ -448,7 +448,11 @@ Replace paths in the following lines of the provided **NC** start script (``/pat
     ccp4_dir=/path/to/CCP4/ccp4-7.1
     nc_dir=/path/to/NC
     export PDB_DIR=/path/to/pdb
+    export PDB_SEQDB=/path/to/pdb/derived_data/pdb_seqres.txt
+    export AFDB_SEQDB=/path/to/afdb/sequences.fasta
 
+
+**PDB_DIR** is the local location of a pdb mirror, **PDB_SEQDB** is the sequence listings for the full set of pdb entries (available to download from the PDB `ftp area <https://files.wwpdb.org/pub/pdb/derived_data/>`_) and **AFDB_SEQDB** is the sequence listings for the full set of entries in the EBI AlphaFold Database (also available to download from the EBI-AFDB `ftp area <https://ftp.ebi.ac.uk/pub/databases/alphafold/>`_)
 
 .. _appendix-e:
 
@@ -461,6 +465,8 @@ Replace paths in the following lines of the provided **FE** start script (``/pat
     ccp4_dir=/path/to/CCP4/ccp4-7.1
     fe_dir=/path/to/
     export PDB_DIR=/path/to/pdb
+    export PDB_SEQDB=/data1/opt/db/pdb_derived_data/pdb_seqres.txt
+    export AFDB_SEQDB=/data1/opt/db/afdb/sequences.fasta
 
 
 .. _appendix-f:
