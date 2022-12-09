@@ -46,7 +46,7 @@
   
   
   
-    <title>1. Setup &#8212; CCP4 Cloud 1.8 documentation</title>
+    <title>1. Setup &#8212; CCP4 Cloud 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -82,7 +82,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="CCP4 Cloud 1.8 documentation"
+        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
            class="md-header-nav__button md-logo">
           
             <i class="md-icon">cloud</i>
@@ -94,7 +94,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">CCP4 Cloud 1.8 documentation</span>
+          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
           <span class="md-header-nav__topic"> 1. Setup </span>
         </div>
       </div>
@@ -151,7 +151,7 @@
   <nav class="md-tabs" data-md-component="tabs">
     <div class="md-tabs__inner md-grid">
       <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.8 documentation</a></li>
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
       </ul>
     </div>
   </nav>
@@ -163,13 +163,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="CCP4 Cloud 1.8 documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
       
         <i class="md-icon">cloud</i>
       
     </a>
     <a href="index.html"
-       title="CCP4 Cloud 1.8 documentation">CCP4 Cloud 1.8 documentation</a>
+       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
   </label>
   
 
@@ -860,8 +860,11 @@ exit
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ccp4_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">CCP4</span><span class="o">/</span><span class="n">ccp4</span><span class="o">-</span><span class="mf">7.1</span>
 <span class="n">nc_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC</span>
 <span class="n">export</span> <span class="n">PDB_DIR</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pdb</span>
+<span class="n">export</span> <span class="n">PDB_SEQDB</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pdb</span><span class="o">/</span><span class="n">derived_data</span><span class="o">/</span><span class="n">pdb_seqres</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">export</span> <span class="n">AFDB_SEQDB</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">afdb</span><span class="o">/</span><span class="n">sequences</span><span class="o">.</span><span class="n">fasta</span>
 </pre></div>
 </div>
+<p><strong>PDB_DIR</strong> is the local location of a pdb mirror, <strong>PDB_SEQDB</strong> is the sequence listings for the full set of pdb entries (available to download from the PDB <a class="reference external" href="https://files.wwpdb.org/pub/pdb/derived_data/" rel="noopener noreferrer" target="_blank">ftp area</a>) and <strong>AFDB_SEQDB</strong> is the sequence listings for the full set of entries in the EBI AlphaFold Database (also available to download from the EBI-AFDB <a class="reference external" href="https://ftp.ebi.ac.uk/pub/databases/alphafold/" rel="noopener noreferrer" target="_blank">ftp area</a>)</p>
 
 
 <span id="appendix-e"></span><h2 id="appendix-e-adjusting-start-script-for-the-front-end-server"><span class="section-number">1.10. </span>Appendix E. Adjusting start script for the Front-End Server<a class="headerlink" href="#appendix-e-adjusting-start-script-for-the-front-end-server" title="Permalink to this headline">¶</a></h2>
@@ -869,6 +872,8 @@ exit
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ccp4_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">CCP4</span><span class="o">/</span><span class="n">ccp4</span><span class="o">-</span><span class="mf">7.1</span>
 <span class="n">fe_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span>
 <span class="n">export</span> <span class="n">PDB_DIR</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">pdb</span>
+<span class="n">export</span> <span class="n">PDB_SEQDB</span><span class="o">=/</span><span class="n">data1</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">db</span><span class="o">/</span><span class="n">pdb_derived_data</span><span class="o">/</span><span class="n">pdb_seqres</span><span class="o">.</span><span class="n">txt</span>
+<span class="n">export</span> <span class="n">AFDB_SEQDB</span><span class="o">=/</span><span class="n">data1</span><span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">db</span><span class="o">/</span><span class="n">afdb</span><span class="o">/</span><span class="n">sequences</span><span class="o">.</span><span class="n">fasta</span>
 </pre></div>
 </div>
 
