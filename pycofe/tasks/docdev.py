@@ -59,7 +59,8 @@ class DocDev(basic.TaskDriver):
             self.putMessage ( "<h3>Generating Developer's Reference</h3>" )
         elif doctype=="taskref":
             self.putMessage ( "<h3>Generating Task Reference</h3>" )
-            copytasks = "\nmv tasks/* .\nrm -rf tasks"
+            copytasks = "\nmv tasks/* .\nrm -rf tasks" +\
+                        "\nmv atlas/* .\nrm -rf atlas"
         elif doctype=="tutorials":
             self.putMessage ( "<h3>Generating Tutorials</h3>" )
             # copytasks = "\nmv tutorials/* .\nrm -rf tutorials"
