@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.12.22   <--  Date of Last Modification.
+ *    11.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -619,6 +619,7 @@ var row      = 0;
       // ccp4go2_task,
       // new TaskStructurePrediction(),
       // new TaskWFlowAFMR    (),
+      new TaskRabdam       (),
       new TaskPDBREDO      (),
       // new TaskFindMySequence(),
       new TaskSheetbend    (),  // excluded also from the bootstrap html
