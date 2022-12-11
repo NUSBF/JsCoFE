@@ -1,0 +1,78 @@
+================
+CCP4 Cloud Atlas
+================
+
+This atlas presents different ways of solving structures in CCP4 Cloud
+depending on available data. Only schematic structure solution projects
+are shown, which only demonstrate general senarios, and the list is not
+complete.
+
+For solving a structure, you need at least experimental observations
+(reflections) either merged or unmerged. Unmerged reflections must be
+scaled and merged prior use with *Aimless* task. Further actions will
+vary -- choose your case from the following list.
+
+.. contents:: **Table of contents**
+   :local:
+   :backlinks: none
+   :depth: 3
+
+.. _A1.1:
+-------------------------------------------------------------------
+Molecular Replacement with known sequence and structural homolog(s)
+-------------------------------------------------------------------
+
+**A1.1.1 Single-chain model, solution with Phaser**
+
+*Starts from importing unmerged MTZ, sequence and PDB files, finishes
+with phased and rebuilt model*
+
+.. image:: images_atlas/A1.1.1.png
+        :scale: 50 %
+        :align: left
+
+**A1.1.2 Single-chain model, solution with Molrep**
+
+*Starts from importing merged MTZ, sequence and PDB files, finishes
+with phased and rebuilt model*
+
+.. image:: images_atlas/A1.1.2.png
+        :scale: 50 %
+        :align: left
+
+**A1.1.3 Multiple models, solution with Phaser**
+
+*Starts from importing merged MTZ, sequence and PDB files, finishes
+with phased and rebuilt model*
+
+.. image:: images_atlas/A1.1.3.png
+        :scale: 50 %
+        :align: left
+
+**A1.1.4 Multiple models, solution with Molrep**
+
+*Starts from importing merged MTZ, sequence and PDB files, finishes
+with phased and rebuilt model*
+
+.. image:: images_atlas/A1.1.4.png
+        :scale: 50 %
+        :align: left
+
+   
+.. _A1.2:
+---------------------------------------------------------------------------
+Molecular Replacement with known sequence and unknown structural homolog(s)
+---------------------------------------------------------------------------
+
+
+**A1.2.5 MR using structure prediction**
+
+*Starts from importing merged MTZ and sequence and PDB files, finishes
+with phased and rebuilt model. Note that "Slice" is used to cope with
+configurational variations, and one domain could not be fit. Nevertheless,
+"Modelcraft" was able to built structure using phases from fitting only
+one domain.*
+
+.. image:: images_atlas/A1.2.5.png
+        :scale: 50 %
+        :align: left
