@@ -674,6 +674,7 @@ ProjectList.prototype.removeProjectLabel = function ( loginName,label )  {
   // this.resetFolders ( loginName );
 }
 
+
 // ===========================================================================
 
 function ProjectData()  {
