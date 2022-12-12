@@ -1010,12 +1010,21 @@ def asymmetricUnitContents_2fx0(driver, waitShort):
     return()
 
 def exitProject(driver):
-    print('cloning test project')
+    print('exiting test project')
     menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
     menuButton.click()
     time.sleep(1)
 
-    clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+    try:
+        clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+
+    except:
+        print ('check if the name of the home directory changed')
+    try:
+        clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder/list') 
+    except:
+        print ('check if the name of the home directory changed')
+
     if not clickResult:
         clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
     time.sleep(3)

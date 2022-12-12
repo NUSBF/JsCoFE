@@ -1,6 +1,6 @@
 from lib2to3.pgen2 import driver
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -15,61 +15,267 @@ import setests_func as sf
 
 d = sf.driverHandler()
 
-def movingProject(driver):
+def enterMyProjectsFolder (driver):
+
+    try:
+        sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_list.png')
+        sf.doubleClickByXpath(driver, "//i[contains(@style,'%s')]" % 'images_png/folder_projects_user.png')
+
+    except:
+        pass
+        
+    try: 
+        sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_projects_user.png')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Select')
+        time.sleep(3)
+
+    except:
+        pass 
+
+    try:
+        sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_list_custom.png')
+        sf.doubleClickByXpath(driver, "//i[contains(@style,'%s')]" % 'images_png/folder_projects_user.png')
+
+    except:
+        pass
+
+
+    return ()
+
+
+    
+def movingProject(driver, testName):
     print('moving project project and creating new folder')
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % d.testName)
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
     time.sleep(1)
+
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Move')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Add folder')
+    sf.clickByXpath(driver, "//i[contains(@style,'%s')]" % 'images_png/folder_projects_user.png')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//button[contains(@style, 'images_png/folder_new.png')]")
     time.sleep(1)
 
     nameInput = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
     nameInput[-1].click()
     nameInput[-1].clear()
-    nameInput[-1].send_keys('test')
+    nameInput[-1].send_keys(testName)
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Add')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Move')
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Please move')
     time.sleep(1)
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % d.testName)
+    # sf.clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
+    # time.sleep(3)
+
+    # sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Move')
+    # time.sleep(1)
+    # # sf.clickByXpath(driver, "//i[normalize-space()='%s']" % 'My Projects (39)')
+
+ 
+    
+    # folder = driver.find_element(By.XPATH, "//i[contains(@style, 'images_png/folder_projects_user.png')]")
+    # folder.click()
+    # time.sleep(1)
+    # sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Move')
+    # time.sleep(1)
+    # sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Please move')
+    # time.sleep(1)
+
+# def addFolder (driver):
+#     folder = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/folder_projects_user.png')]")
+#     folder.click()
+    return()
+
+def addList(driver, testName):
+
+    try:
+        # sf.doubleClickByXpath(driver,"//*[normalize-space()='%s']" % 'My Projects/test')
+        # sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_projects.png')
+        sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_list.png')
+        time.sleep(3)
+    except:
+        pass 
+        
+    try: 
+        sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_projects_user.png') 
+        time.sleep(3)
+    except:
+        pass
+    
+
+    if driver.find_elements_by_xpath( "//i[contains(@style,'%s')]" % 'images_png/folder_projects_user.png'):
+        print ("in folders list")
+
+    else:
+        print ("Not on the folders list")
+    # time.sleep(3)
+
+    sf.clickByXpath(driver, "//button[contains(@style, 'images_png/folder_list_custom_new.png')]")
+    time.sleep(3)
+
+    nameInput = driver.find_elements_by_xpath("//input[contains(@type,'text')]")
+    nameInput[-1].click()
+    nameInput[-1].clear()
+    nameInput[-1].send_keys('testList')
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Add')
+    time.sleep(3)
+    # sf.clickByXpath(driver,  "//i[contains(@style,'%s')]" % 'images_png/folder_projects_user.png')
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Close')
+
+
+    #moving to the list
+
+    print("moving to list")
+
+
+    # sf.clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
+    time.sleep(3)
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Move')
     time.sleep(1)
 
+    try:
+        sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_list.png')
+        sf.clickByXpath(driver, "//i[contains(@style,'%s')]" % 'images_png/folder_projects_user.png')
+        time.sleep(1)
+        
+    except: 
+        sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_projects_user.png') 
+        time.sleep(3)
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'testList')
+    time.sleep(3)
+
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Move')
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Please add')
+
+    #removing from list
+
+    print("removing from list")
+
+    sf.clickByXpath(driver, "//button[contains(@style,'%s')]" % 'images_png/folder_list_custom_delist.png')
     time.sleep(1)
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delist')
+   
     time.sleep(1)
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Move')
-    time.sleep(1)
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Please move')
-    time.sleep(1)
-    
-def delelingFolder(driver):
+
+    return ()
+
+
+def deletingList(driver):
 
     print('deleting test folder')
 
-    sf.clickByXpath(driver, "//button[contains(@style, '/images_png/folder_projects.png')]")
+    try:
+        sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_list.png')
+        # sf.clickByXpath(driver, "//i[contains(@style,'%s')]" % 'images_png/folder_projects_user.png')
+        time.sleep(1)
+    except:
+        pass
+        
+    try: 
+        sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_projects_user.png') 
+        time.sleep(3)
+    except:
+        pass
+
+    try:
+        sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_list_custom.png')
+        
+
+    except:
+        pass
+
+
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'testList')
     time.sleep(3)
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'test')
+    # sf.clickByXpath(driver, "//button[contains(@style,'%s')]" % 'images_png/remove.png')
+    sf.clickByXpath(driver, "//button[contains(@title,'%s')]" % 'Remove')
     time.sleep(3)
-    driver.find_elements_by_xpath("//input[contains(@value,'%s')]" % "project folders")
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Yes, delete')
     time.sleep(1)
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Select')
+    time.sleep(1)
+    return ()
+
+   
+    
+    
+def delelingFolder(driver,testName):
+
+    print('deleting test folder')
+
+    try:
+        sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_list.png')
+        # sf.doubleClickByXpath(driver, "//i[contains(@style,'%s')]" % 'images_png/folder_projects.png')
+        
+    except: 
+        pass
+
+    try:
+        sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_projects_user.png') 
+        time.sleep(3)
+    except:
+        pass
+
+    sf.clickByXpath(driver, "//i[contains(@style,'%s')]" % 'images_png/folder_projects.png')
+    time.sleep(3)
+    # sf.clickByXpath(driver, "//button[contains(@style,'%s')]" % 'images_png/remove.png')
+    sf.clickByXpath(driver, "//button[contains(@title,'%s')]" % 'Remove')
+    time.sleep(3)
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Yes, delete')
     time.sleep(1)
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Close')
     time.sleep(1)
+    return ()
 
-def renameProject(driver, testName):
-    print('Renaming succesfull test project')
+def renameFolder(driver, testName):
+    print('Renaming project folder')
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
+    # try: 
+    #     sf.doubleClickByXpath(driver, "//id[contains(@src,'%s')]" % 'My Projects/foldersTest')
+    #     time.sleep(3)
+
+    # except:
+    #     pass 
+
+    # try:
+    #     sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_list.png')
+    # except:
+    #     pass
+        
+    # try: 
+    #     sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_projects_user.png')
+    #     time.sleep(3)
+
+    # except:
+    #     pass 
+
+    # try:
+    #     sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_list_custom.png')
+    # except:
+    #     pass
+
+    print('opening folders menu')
+    sf.clickByXpath(driver, "//div[contains(@style, 'images_png/menu.png')]")
+    time.sleep(1)
+
+    sf.clickByXpath(driver,  "//*[normalize-space()='%s']" % 'Change project folder/list')
     time.sleep(3)
+
+
+    # sf.doubleClickByXpath(driver, "//id[contains(@title,'%s')]" % "Browse project folders")
+    # time.sleep(3)
+
+    sf.clickByXpath(driver,  "//*[normalize-space()='%s']" % 'foldersTest (0)')
+    time.sleep(3)
+
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Rename')
     time.sleep(6)
@@ -79,7 +285,7 @@ def renameProject(driver, testName):
     projectInput[-1].click()
     projectInput[-1].clear()
     projectInput[-1].send_keys('Successfull - %s' % testName)
-
+ 
 
     textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Rename')
     textEls[-1].click()
@@ -87,7 +293,7 @@ def renameProject(driver, testName):
 
     return ()
 
-def test_cloneBasic(browser,
+def test_folderBasic(browser,
                      cloud,
                      nologin,
                      login,
@@ -114,14 +320,32 @@ def test_cloneBasic(browser,
             sf.loginToCloud(d.driver, login, password)
 
         sf.removeProject(d.driver, d.testName)
+        enterMyProjectsFolder (d.driver)
+
+        try:
+            delelingFolder(d.driver, d.testName)
+        except:
+            print ("No folders from previous test")
+        
+        try:
+            deletingList(d.driver)
+        except:
+            print ("No lists from previous test")
+            
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
         sf.importFromPDB_2fx0(d.driver, d.waitShort)
         sf.exitProject (d.driver)
+        # enterMyProjectsFolder (d.driver)
+        addList(d.driver, d.testName)
+        deletingList(d.driver)
+        # sf.enterProject(d.driver, d.testName)
+        # enterMyProjectsFolder (d.driver)
+        movingProject(d.driver, d.testName)
 
-        movingProject(d.driver)
-        delelingFolder(d.driver)
-        renameProject(d.driver, d.testName)
+        sf.removeProject(d.driver, d.testName)
+        renameFolder(driver, d.testName) 
+        delelingFolder(d.driver, d.testName)
 
         d.driver.quit()
 
@@ -144,7 +368,7 @@ if __name__ == "__main__":
 
     parameters = parser.parse_args(sys.argv[1:])
 
-    test_cloneBasic(browser=parameters.browser,  # or 'Chrome'
+    test_folderBasic(browser=parameters.browser,  # or 'Chrome'
                      cloud=parameters.cloud,
                      nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
                      login=parameters.login,  # Used to login into remote Cloud
