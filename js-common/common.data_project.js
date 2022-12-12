@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    30.11.22   <--  Date of Last Modification.
+ *    12.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -667,6 +667,12 @@ var new_projects = [];
   this.projects = new_projects;
 }
 
+ProjectList.prototype.removeProjectLabel = function ( loginName,label )  {
+  for (var i=0;i<this.projects.length;i++)
+    removeProjectLabel ( loginName,this.projects[i],label );
+  // this.folders = [];
+  // this.resetFolders ( loginName );
+}
 
 // ===========================================================================
 

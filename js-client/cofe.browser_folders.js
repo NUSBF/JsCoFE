@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    07.11.22   <--  Date of Last Modification.
+ *    12.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -494,7 +494,7 @@ var folder  = this.findFolder ( selNode.dataId );
       var label = 'Folder';
       if (folder.type==folder_type.custom_list)
         label = 'List';
-      var label_l = name.toLowerCase();
+      var label_l = folder.name.toLowerCase();
 
       new QuestionBox ( 'Delete ' + label_l,
                         '<h2>' + label + ' ' + folder.name + ' will be deleted</h2>' +
@@ -512,7 +512,11 @@ var folder  = this.findFolder ( selNode.dataId );
                           self.ftree.deleteRootNode ( selNode );
                           self.ftree.selectNodeById ( self.node0_id );
                         }
-                        self.onReturn_fnc ( 'delete',{ folder_path : fpath } );
+                        self.onReturn_fnc ( 'delete',{ 
+                          folder_path : fpath,
+                          folder_name : folder.name,
+                          folder_type : folder.type
+                        });
                       }
           },{
             name    : 'Cancel',
@@ -542,7 +546,10 @@ var label   = 'Folder';
         .indexOf(selNode.folderType)<0))
     return;
 
-  if (selNode.dataId==this.currentFolder.path)  {
+  if (((selNode.folderType!=folder_type.custom_list) && 
+       (selNode.dataId==this.currentFolder.path)) ||
+      ((selNode.folderType==folder_type.custom_list) && 
+        checkProjectLabel(__login_id,this.currentPDesc,selNode.dataId)))  {
     new MessageBox ( 'Already in the ' + label_l,
           '<h2>Already in the ' + label + '</h2>Project <i>"' + 
           this.currentPDesc.name + '"</i> is already in ' + label_l +
@@ -555,13 +562,23 @@ var label   = 'Folder';
       self.onReturn_fnc ( 'move',{ folder_path : selNode.dataId });
     });
   } else  {
-    var self = this;
-    new QuestionBox ( 'Move project to ' + label_l,
-                      '<h2>Move project to ' + label + '</h2>' +
-                      'Project <i>"'  + this.currentPDesc.name + '"</i> will be moved to ' +
-                      label_l + '<p><i>"' + fldPath +
-                      '"</i><p>Please confirm.',[
-        { name    : 'Please move',
+    var self     = this;
+    var title    = 'Move project to ' + label_l;
+    var message  = '<h2>Move project to ' + label + '</h2>' + 'Project <i><b>"' +
+                   this.currentPDesc.name + '"</b></i> will be moved to ' +
+                   label_l + ' <i><b>"' + fldPath + '"</b></i>';
+    var btn_name = 'Please move';
+    if (folder.type==folder_type.custom_list)  {
+      title    = 'Add project to ' + label_l;
+      message  = '<h2>Add project to ' + label + '</h2>' + 'Project <i><b>"' +
+                 this.currentPDesc.name + '"</b></i> will be added to ' +
+                 label_l + ' <i><b>"' + fldPath + '"</b></i>';
+      btn_name = 'Please add';
+    }
+    new QuestionBox ( title,
+                      '<div style="width:400px">' + message + 
+                      '<p>Please confirm.</div>',[
+        { name    : btn_name,
           onclick : function(){
                       $(self.element).dialog ( 'close' );
                       self.onReturn_fnc ( 'move',{ folder_path : selNode.dataId });
