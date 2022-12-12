@@ -172,7 +172,7 @@ class Crank2(basic.TaskDriver):
             self.config.append ( "sequence" +\
                 " monomers_asym=1"  +\
                 " solvent_content=" + str(solvent_content) +\
-                " residues_mon="    + self.revision.ASU.nRes
+                " residues_mon="    + str(self.revision.ASU.nRes)
             )
 
         return
