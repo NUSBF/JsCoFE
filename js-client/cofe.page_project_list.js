@@ -1067,7 +1067,7 @@ function ProjectListPage ( sceneId )  {
                                 'msg_error'
                             );
                           } else if (data.folder_type==folder_type.custom_list)  {
-                            projectList.removeProjectLabel ( __login_id,data.folder_name );
+                            projectList.removeProjectLabels ( __login_id,data.folder_name );
                           }
                           // projectList.resetFolders ( __login_id );
                           saveProjectList ( function(rdata){
@@ -1109,6 +1109,7 @@ function ProjectListPage ( sceneId )  {
                       break;
 
           case 'rename' : if (data.folder_path==__current_folder.path)  {
+                            // projectList.renameFolders ( data.folder_path,data.rename_path );
                             var renFolder = projectList.findFolder ( data.rename_path );
                             setPageTitle ( renFolder );
                             if (!projectList.setCurrentFolder(renFolder))
@@ -1119,7 +1120,16 @@ function ProjectListPage ( sceneId )  {
                                   'msg_error'
                                 );
                             __current_folder = projectList.currentFolder;
-                          }
+                          } 
+                          // else
+                          //   projectList.renameFolders ( data.folder_path,data.rename_path );
+                          if (isCurrentFolderList())
+                            projectList.renameProjectLabels (
+                                __login_id, data.folder_name,data.rename_name );
+                          else
+                            projectList.renameProjectPaths ( 
+                                __login_id,  data.folder_path,data.rename_path );
+
                           // projectList.renameFolders ( data.folder_path,data.rename_path );
                           // for (var i=0;i<projectList.projects.length;i++)
                           //   if (startsWith(projectList.projects[i].folderPath,data.folder_path))

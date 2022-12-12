@@ -204,6 +204,18 @@ function removeProjectLabel ( loginName,projectDesc,label )  {
     delete projectDesc.share[loginName].labels[label];
 }
 
+function renameProjectLabel ( loginName,projectDesc,oldlabel,newlabel )  {
+  if ((loginName==projectDesc.owner.login) && 
+      (oldlabel in projectDesc.owner.labels))  {
+    delete projectDesc.owner.labels[oldlabel];
+    projectDesc.owner.labels[newlabel] = 1;
+  } else if ((loginName in projectDesc.share) && 
+             (oldlabel in projectDesc.share[loginName].labels))  {
+    delete projectDesc.share[loginName].labels[oldlabel];
+    projectDesc.share[loginName].labels[newlabel] = 1;
+  }
+}
+
 function checkProjectLabel ( loginName,projectDesc,label )  {
   if (loginName==projectDesc.owner.login)
     return (label in projectDesc.owner.labels);
@@ -584,6 +596,13 @@ ProjectList.prototype.renameFolders = function ( oldpath,newpath )  {
   this._rename_folders ( this.folders,oldpath,newpath );
 }
 
+ProjectList.prototype.renameProjectPaths = function ( loginName,oldpath,newpath )  {
+  for (var i=0;i<this.projects.length;i++)
+    if (this.projects[i].folderPath.startsWith(oldpath))
+      this.projects[i].folderPath = 
+        this.projects[i].folderPath.replace ( oldpath,newpath );
+}
+
 ProjectList.prototype._find_folder = function ( folders,fpath )  {
 var folder = null;
   for (var i=0;(i<folders.length) && (!folder);i++)  {
@@ -667,11 +686,14 @@ var new_projects = [];
   this.projects = new_projects;
 }
 
-ProjectList.prototype.removeProjectLabel = function ( loginName,label )  {
+ProjectList.prototype.removeProjectLabels = function ( loginName,label )  {
   for (var i=0;i<this.projects.length;i++)
     removeProjectLabel ( loginName,this.projects[i],label );
-  // this.folders = [];
-  // this.resetFolders ( loginName );
+}
+
+ProjectList.prototype.renameProjectLabels = function ( loginName,oldlabel,newlabel )  {
+  for (var i=0;i<this.projects.length;i++)
+    renameProjectLabel ( loginName,this.projects[i],oldlabel,newlabel );
 }
 
 
