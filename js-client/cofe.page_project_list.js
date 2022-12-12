@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.11.22   <--  Date of Last Modification.
+ *    12.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1043,13 +1043,16 @@ function ProjectListPage ( sceneId )  {
       
           case 'delete' :
           case 'select' : if (!projectList.setCurrentFolder(
-                                  projectList.findFolder(data.folder_path)))
+                                  projectList.findFolder(data.folder_path)))  {
                             new MessageBox (
                                 'Error',
                                 '<h2>Error</h2>Selected folder:<p><i>"' +
                                 data.folder_path + '</i>"<p>not found (1).',
                                 'msg_error'
-                              );
+                            );
+                          } else if (data.folder_type==folder_type.custom_list)  {
+                            projectList.removeProjectLabel ( __login_id,data.folder_name );
+                          }
                           // projectList.resetFolders ( __login_id );
                           saveProjectList ( function(rdata){
                             // loadProjectList();
