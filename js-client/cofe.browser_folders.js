@@ -629,15 +629,19 @@ var label   = 'Folder';
             'msg_stop' );
       return false;
     }
-    var fpl           = selNode.dataId.split('/');
+    var oldPath       = selNode.dataId;
+    var fpl           = oldPath.split('/');
     fpl[fpl.length-1] = newName;
     var folder        = self.findFolder ( selNode.dataId );
+    var oldName       = folder.name;
     folder.name       = newName;
     var newPath       = fpl.join('/');
     self.projectList.renameFolders ( selNode.dataId,newPath );
     self.onReturn_fnc  ( 'rename',{
-        folder_path : selNode.dataId,
-        rename_path : newPath
+        folder_path : oldPath,
+        rename_path : newPath,
+        folder_name : oldName,
+        rename_name : newName
     });
     self.ftree.setText ( selNode,newName + ' (' + folder.nprojects + ')' );
     selNode.dataId = newPath;
