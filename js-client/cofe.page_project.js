@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.12.22   <--  Date of Last Modification.
+ *    12.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -106,7 +106,7 @@ function ProjectPage ( sceneId )  {
 
   // (function(self){
 
-    self.addMenuItem ( 'Project folder','list',function(){
+    self.addMenuItem ( 'Project folder/list','list',function(){
       if (self.jobTree && self.jobTree.projectData)
         self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
           makeProjectListPage ( sceneId );
