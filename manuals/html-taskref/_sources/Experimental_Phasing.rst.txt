@@ -26,6 +26,8 @@ In principle, five techniques exist for solving the phase problem in protein X-r
 
 The multiple- and single-wavelength diffraction methods do not necessarily depend on the attachment of a heavy-atom-containing reagent to the protein, but they do require the presence of an anomalously scattering atom and this can be a heavy atom inherent to the protein. 
 
+Use `fprime <https://www.ccp4.ac.uk/fprime/>`_ to calculates anomalous scattering factors (f' and f") using the `Cromer-Liberman <https://scripts.iucr.org/cgi-bin/paper?S0567739481000600>`_ algorithm with corrections from `Kissel and Pratt <https://scripts.iucr.org/cgi-bin/paper?S0108767389010718>`_. 
+
 In case you have anomalous diffraction dataset use:
 
 .. toctree::

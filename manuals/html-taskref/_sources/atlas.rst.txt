@@ -140,3 +140,69 @@ rebuilt model. Note that jobs 0006 was formed with multiple-selecting jobs
         :scale: 50 %
         :align: left
 
+
+.. _A2.1:
+----------------------------------------
+Experimental Phasing with known sequence
+----------------------------------------
+
+**A2.1.1 EP with known sequence using Shelx-C/D and Phaser**
+
+*Starts from importing merged MTZ and sequence files, finishes with phased and
+built model. The final result is given in job 0009 (reverse hand), model 
+building in job 0010 (original hand) was done only for verification.*
+
+.. image:: images_atlas/A2.1.1.png
+        :scale: 50 %
+        :align: left
+
+**A2.1.2 EP with known sequence using Crank-2 and Phaser**
+
+*Starts from importing merged MTZ and sequence files, finishes with phased and
+built model. Crank-2 is used only for calculating the heavy-atom substructure
+(which is a task separate from the "full" Crank-2). The final result is given
+in job 0010 (original hand), model building in job 0011 (reverse hand) was
+done only for verification.*
+
+.. image:: images_atlas/A2.1.2.png
+        :scale: 50 %
+        :align: left
+
+
+.. _A2.2:
+--------------------------------------------------
+Automatic Experimental Phasing with known sequence
+--------------------------------------------------
+
+**A2.2.1 Auto-EP with known sequence using Crank-2**
+
+*Starts from importing merged MTZ and sequence files, finishes with phased and
+built model.*
+
+.. image:: images_atlas/A2.2.1.png
+        :scale: 50 %
+        :align: left
+
+**A2.2.2 Auto-EP with known sequence using Shelx-C/D/E**
+
+*Starts from importing merged MTZ and sequence files, finishes with phased and
+built model. Model building was repeated with Modelcraft for achieving higher
+completeness.*
+
+.. image:: images_atlas/A2.2.2.png
+        :scale: 50 %
+        :align: left
+
+.. _A2.3:
+------------------------------------------
+Experimental Phasing with unknown sequence
+------------------------------------------
+
+**A2.2.1 EP with unknown sequence using Crank-2**
+
+*Starts from importing merged MTZ and sequence files, finishes with phased and
+built model. In job 0006, found sequence is substituted in structure revision.*
+
+.. image:: images_atlas/A2.2.1.png
+        :scale: 50 %
+        :align: left

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.22   <--  Date of Last Modification.
+ *    13.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1189,7 +1189,7 @@ function ProjectListPage ( sceneId )  {
   });
 
   // Make Main Menu
-  this.addMenuItem ( 'Change project folder/list','folder_projects',function(){
+  this.addMenuItem ( 'Change project folder','folder_projects',function(){
     browseFolders ( 'select' );
   });
   // this.addMenuSeparator();
