@@ -15,11 +15,18 @@ The task requires the atomic symbol as an input (case-insensitive).
   In this mode, the task output provides the **Anomalous scattering factors plot for atom type** and a **Selected anomalous scattering factors for atom type** table.
 
 
+**Alternatives**
+
+`fprime <https://www.ccp4.ac.uk/fprime/>`_ Calculates anomalous scattering factors (f' and f") using the `Cromer-Liberman <https://scripts.iucr.org/cgi-bin/paper?S0567739481000600>`_ algorithm with corrections from `Kissel and Pratt <https://scripts.iucr.org/cgi-bin/paper?S0108767389010718>`_. Uses the implementation in `Gemmi <https://gemmi.readthedocs.io/en/latest/hkl.html#anomalous>`_ compiled to WebAssembly using `Emscripten <https://emscripten.org/>`_.
+
+
 **Useful links**
 
 `The anomalous dispersion <https://www.xtal.iqfr.csic.es/Cristalografia/parte_07_4-en.html>`_
 
 `X-ray Anomalous Scattering <http://www.bmsc.washington.edu/scatter/>`_
+
+
 
 **References**
 

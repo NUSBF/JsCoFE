@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.22   <--  Date of Last Modification.
+ *    13.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,7 +41,7 @@ function AccountPage ( sceneId )  {
     this.addMenuItem ( 'Current project','project',function(){
       makeProjectPage ( sceneId );
     });
-  this.addMenuItem ( 'Project folder/list','list',function(){
+  this.addMenuItem ( 'Project folder','list',function(){
     makeProjectListPage ( sceneId );
   });
 //  if (__admin)

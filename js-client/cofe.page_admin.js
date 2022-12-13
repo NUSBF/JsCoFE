@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.22   <--  Date of Last Modification.
+ *    13.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,7 +51,7 @@ function AdminPage ( sceneId )  {
   if (__local_user)
     accLbl = 'Settings';
   this.addMenuItem ( accLbl,'settings',function(){ makeAccountPage(sceneId); })
-      .addMenuItem ( 'Project folder/list','list',function(){ makeProjectListPage(sceneId); })
+      .addMenuItem ( 'Project folder','list',function(){ makeProjectListPage(sceneId); })
       .addLogoutToMenu ( function(){ logout(sceneId,0); });
 
   // make tabs

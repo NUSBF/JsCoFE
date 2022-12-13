@@ -299,6 +299,12 @@
         <li class="md-nav__item"><a href="#molecular-replacement-with-known-sequence-and-unknown-structural-homolog-s" class="md-nav__link">Molecular Replacement with known sequence and unknown structural homolog(s)</a>
         </li>
         <li class="md-nav__item"><a href="#molecular-replacement-with-unknown-sequence" class="md-nav__link">Molecular Replacement with unknown sequence</a>
+        </li>
+        <li class="md-nav__item"><a href="#experimental-phasing-with-known-sequence" class="md-nav__link">Experimental Phasing with known sequence</a>
+        </li>
+        <li class="md-nav__item"><a href="#automatic-experimental-phasing-with-known-sequence" class="md-nav__link">Automatic Experimental Phasing with known sequence</a>
+        </li>
+        <li class="md-nav__item"><a href="#experimental-phasing-with-unknown-sequence" class="md-nav__link">Experimental Phasing with unknown sequence</a>
         </li></ul>
             </nav>
         </li>
@@ -327,6 +333,9 @@ vary – choose your case from the following list.</p>
 <li><a class="reference internal" href="#molecular-replacement-with-known-sequence-and-structural-homolog-s" id="id1">Molecular Replacement with known sequence and structural homolog(s)</a></li>
 <li><a class="reference internal" href="#molecular-replacement-with-known-sequence-and-unknown-structural-homolog-s" id="id2">Molecular Replacement with known sequence and unknown structural homolog(s)</a></li>
 <li><a class="reference internal" href="#molecular-replacement-with-unknown-sequence" id="id3">Molecular Replacement with unknown sequence</a></li>
+<li><a class="reference internal" href="#experimental-phasing-with-known-sequence" id="id4">Experimental Phasing with known sequence</a></li>
+<li><a class="reference internal" href="#automatic-experimental-phasing-with-known-sequence" id="id5">Automatic Experimental Phasing with known sequence</a></li>
+<li><a class="reference internal" href="#experimental-phasing-with-unknown-sequence" id="id6">Experimental Phasing with unknown sequence</a></li>
 </ul>
 </div>
 
@@ -388,6 +397,40 @@ rebuilt model. Note that jobs 0006 was formed with multiple-selecting jobs
 rebuilt model. Note that jobs 0006 was formed with multiple-selecting jobs
 0001 and 0004, and job 0007 – with multiple-selecting jobs 0006 and 0005.</em></p>
 <a class="reference internal image-reference" href="_images/A1.3.2.png"><img alt="_images/A1.3.2.png" class="align-left" src="_images/A1.3.2.png" style="width: 789.0px; height: 238.0px;"/></a>
+
+
+<h2 id="experimental-phasing-with-known-sequence">Experimental Phasing with known sequence<a class="headerlink" href="#experimental-phasing-with-known-sequence" title="Permalink to this headline">¶</a></h2>
+<p><strong>A2.1.1 EP with known sequence using Shelx-C/D and Phaser</strong></p>
+<p><em>Starts from importing merged MTZ and sequence files, finishes with phased and
+built model. The final result is given in job 0009 (reverse hand), model
+building in job 0010 (original hand) was done only for verification.</em></p>
+<a class="reference internal image-reference" href="_images/A2.1.1.png"><img alt="_images/A2.1.1.png" class="align-left" src="_images/A2.1.1.png" style="width: 789.0px; height: 285.0px;"/></a>
+<p><strong>A2.1.2 EP with known sequence using Crank-2 and Phaser</strong></p>
+<p><em>Starts from importing merged MTZ and sequence files, finishes with phased and
+built model. Crank-2 is used only for calculating the heavy-atom substructure
+(which is a task separate from the “full” Crank-2). The final result is given
+in job 0010 (original hand), model building in job 0011 (reverse hand) was
+done only for verification.</em></p>
+<a class="reference internal image-reference" href="_images/A2.1.2.png"><img alt="_images/A2.1.2.png" class="align-left" src="_images/A2.1.2.png" style="width: 789.0px; height: 285.0px;"/></a>
+
+
+<h2 id="automatic-experimental-phasing-with-known-sequence">Automatic Experimental Phasing with known sequence<a class="headerlink" href="#automatic-experimental-phasing-with-known-sequence" title="Permalink to this headline">¶</a></h2>
+<p><strong>A2.2.1 Auto-EP with known sequence using Crank-2</strong></p>
+<p><em>Starts from importing merged MTZ and sequence files, finishes with phased and
+built model.</em></p>
+<a class="reference internal image-reference" href="_images/A2.2.1.png"><img alt="_images/A2.2.1.png" class="align-left" src="_images/A2.2.1.png" style="width: 789.0px; height: 115.0px;"/></a>
+<p><strong>A2.2.2 Auto-EP with known sequence using Shelx-C/D/E</strong></p>
+<p><em>Starts from importing merged MTZ and sequence files, finishes with phased and
+built model. Model building was repeated with Modelcraft for achieving higher
+completeness.</em></p>
+<a class="reference internal image-reference" href="_images/A2.2.2.png"><img alt="_images/A2.2.2.png" class="align-left" src="_images/A2.2.2.png" style="width: 789.0px; height: 138.0px;"/></a>
+
+
+<h2 id="experimental-phasing-with-unknown-sequence">Experimental Phasing with unknown sequence<a class="headerlink" href="#experimental-phasing-with-unknown-sequence" title="Permalink to this headline">¶</a></h2>
+<p><strong>A2.2.1 EP with unknown sequence using Crank-2</strong></p>
+<p><em>Starts from importing merged MTZ and sequence files, finishes with phased and
+built model. In job 0006, found sequence is substituted in structure revision.</em></p>
+<a class="reference internal image-reference" href="_images/A2.2.1.png"><img alt="_images/A2.2.1.png" class="align-left" src="_images/A2.2.1.png" style="width: 789.0px; height: 115.0px;"/></a>
 
 
 
