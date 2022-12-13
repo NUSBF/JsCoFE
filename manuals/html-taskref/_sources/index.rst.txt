@@ -25,6 +25,7 @@ Task Reference
    Ligands
    Validation_Analysis_and_Deposition
    Toolbox
+   Atlas
 
 ======
 Search

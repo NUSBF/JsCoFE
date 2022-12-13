@@ -198,11 +198,11 @@ completeness.*
 Experimental Phasing with unknown sequence
 ------------------------------------------
 
-**A2.2.1 EP with unknown sequence using Crank-2**
+**A2.3.1 EP with unknown sequence using Crank-2**
 
 *Starts from importing merged MTZ and sequence files, finishes with phased and
 built model. In job 0006, found sequence is substituted in structure revision.*
 
-.. image:: images_atlas/A2.2.1.png
+.. image:: images_atlas/A2.3.1.png
         :scale: 50 %
         :align: left
