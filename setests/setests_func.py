@@ -1015,18 +1015,9 @@ def exitProject(driver):
     menuButton.click()
     time.sleep(1)
 
-    try:
-        clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
 
-    except:
-        print ('check if the name of the home directory changed')
-    try:
-        clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder/list') 
-    except:
-        print ('check if the name of the home directory changed')
 
-    if not clickResult:
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
     time.sleep(3)
 
 
@@ -1037,9 +1028,8 @@ def cloneProject(driver, testName):
     menuButton.click()
     time.sleep(1)
 
-    clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
-    if not clickResult:
-        clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
+    clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
+
     time.sleep(1)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % testName)

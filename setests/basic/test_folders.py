@@ -71,26 +71,17 @@ def movingProject(driver, testName):
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Move')
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Please move')
     time.sleep(1)
-    # sf.clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
-    # time.sleep(3)
+    print ("Moving back to My Projects folder")
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Move')
+    time.sleep(1)
 
-    # sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Move')
-    # time.sleep(1)
-    # # sf.clickByXpath(driver, "//i[normalize-space()='%s']" % 'My Projects (39)')
+    sf.clickByXpath(driver, "//i[contains(@style,'%s')]" % 'images_png/folder_projects_user.png')
+    time.sleep(1)
 
- 
-    
-    # folder = driver.find_element(By.XPATH, "//i[contains(@style, 'images_png/folder_projects_user.png')]")
-    # folder.click()
-    # time.sleep(1)
-    # sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Move')
-    # time.sleep(1)
-    # sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Please move')
-    # time.sleep(1)
 
-# def addFolder (driver):
-#     folder = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/folder_projects_user.png')]")
-#     folder.click()
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Move')
+    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Please move')
+    time.sleep(1)
     return()
 
 def addList(driver, testName):
@@ -224,8 +215,30 @@ def delelingFolder(driver,testName):
     except:
         pass
 
-    sf.clickByXpath(driver, "//i[contains(@style,'%s')]" % 'images_png/folder_projects.png')
+    print('Renaming project folder')
+
+    sf.clickByXpath(driver,  "//*[normalize-space()='%s']" % 'foldersTest (0)')
     time.sleep(3)
+
+
+    sf.clickByXpath(driver, "//button[contains(@title,'%s')]" % 'Rename')
+    time.sleep(6)
+   
+
+     # Shall return list of two elements for project creation
+    projectInput = driver.find_elements_by_xpath("//input[contains(@type,'%s')]" % 'text')
+    projectInput[-1].click()
+    projectInput[-1].clear()
+    projectInput[-1].send_keys('Successfull - %s' % testName)
+ 
+
+    textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Rename')
+    textEls[-1].click()
+    time.sleep(1)
+
+
+    # sf.clickByXpath(driver, "//i[contains(@style,'%s')]" % 'images_png/folder_projects.png')
+    # time.sleep(3)
     # sf.clickByXpath(driver, "//button[contains(@style,'%s')]" % 'images_png/remove.png')
     sf.clickByXpath(driver, "//button[contains(@title,'%s')]" % 'Remove')
     time.sleep(3)
@@ -238,40 +251,11 @@ def delelingFolder(driver,testName):
 def renameFolder(driver, testName):
     print('Renaming project folder')
 
-    # try: 
-    #     sf.doubleClickByXpath(driver, "//id[contains(@src,'%s')]" % 'My Projects/foldersTest')
-    #     time.sleep(3)
-
-    # except:
-    #     pass 
-
-    # try:
-    #     sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_list.png')
-    # except:
-    #     pass
-        
-    # try: 
-    #     sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_projects_user.png')
-    #     time.sleep(3)
-
-    # except:
-    #     pass 
-
-    # try:
-    #     sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_list_custom.png')
-    # except:
-    #     pass
-
     print('opening folders menu')
-    sf.clickByXpath(driver, "//div[contains(@style, 'images_png/menu.png')]")
-    time.sleep(1)
 
-    sf.clickByXpath(driver,  "//*[normalize-space()='%s']" % 'Change project folder/list')
+    sf.doubleClickByXpath(driver, "//img[contains(@src,'%s')]" % 'images_png/folder_projects_user.png') 
     time.sleep(3)
-
-
-    # sf.doubleClickByXpath(driver, "//id[contains(@title,'%s')]" % "Browse project folders")
-    # time.sleep(3)
+  
 
     sf.clickByXpath(driver,  "//*[normalize-space()='%s']" % 'foldersTest (0)')
     time.sleep(3)
@@ -344,7 +328,7 @@ def test_folderBasic(browser,
         movingProject(d.driver, d.testName)
 
         sf.removeProject(d.driver, d.testName)
-        renameFolder(driver, d.testName) 
+        # renameFolder(driver, d.testName) 
         delelingFolder(d.driver, d.testName)
 
         d.driver.quit()
