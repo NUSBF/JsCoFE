@@ -60,6 +60,11 @@
       "title"   : "Project Folders",
       "doc"     : "manuals/html-userguide",
       "link"    : "jscofe_tips.folders.html"
+    },{
+      "summary" : "Have you noticed the Project Tree Marker? Read <a>here</a>.",
+      "title"   : "Project Tree Marker",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.tree_marker.html"
     }
   ]
 }

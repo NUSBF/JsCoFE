@@ -497,7 +497,7 @@ function CCP4DirName()  {
     "sessionCheckPeriod" : 2000,
     "ration"           : {
         "storage"      : 5000,     // currently comitted storage
-        "storage_max   : 20000,    // maximum possible allocation
+        "storage_max"  : 20000,    // maximum possible allocation
         "storage_step" : 5000,     // storage allocation step for auto top-up
         "cpu_day"      : 24,
         "cpu_month"    : 240,

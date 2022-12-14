@@ -34,6 +34,8 @@ CCP4 Cloud Version Log
 
     #. Added project archiving facility
 
+    #. Added ``FindMySequence`` task
+
 
 
 
