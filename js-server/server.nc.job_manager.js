@@ -1440,7 +1440,7 @@ var job_tokens = post_data_obj.job_tokens;
 // *** for debugging
 //__use_fake_fe_url = false;
 
-  console.log ( ' >>>>>> tokens = ' + JSON.stringify(job_tokens) );
+  // console.log ( ' >>>>>> tokens = ' + JSON.stringify(job_tokens) );
   var nzombies = 0;
   if (job_tokens[0]=='*')  {  // take all
     // nzombies = ncWakeAllZombiJobs();
