@@ -90,6 +90,14 @@ FoldersBrowser.prototype.constructor = FoldersBrowser;
 
 // ---------------------------------------------------------------------------
 
+FoldersBrowser.prototype.setProjectList = function ( projectList,currentFolder,currentPDesc )  {
+  this.projectList   = projectList;
+  this.folders       = projectList.folders;
+  this.currentFolder = currentFolder;
+  this.currentPDesc  = currentPDesc;
+  this.nprojects     = currentFolder.nprojects;
+}
+
 FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
 
   this.ftree    = this.makeFolderTree ( this.folders );
@@ -357,9 +365,7 @@ var k = -1;
           k = i;
     else  k = this._delete_folder ( fpath,folders[i].folders );
   if (k>=0)  {
-    for (var i=k;i<folders.length-1;i++)
-      folders[i] = folders[i+1];
-    folders.pop();
+    folders.splice(k,1);
     k = -2;  // terminate the recursion
   }
   return k;
@@ -427,6 +433,7 @@ var inputBox = new InputBox ( 'Add folder' );
 FoldersBrowser.prototype.onAddList = function()  {
 var self = this;
 var inputBox = new InputBox ( 'Add list' );
+
   inputBox.setText ( '','folder_list_custom_new' );
   var ibx_grid = inputBox.grid;
   ibx_grid.setLabel    ( '<h2>Add new list</h2>',0,2,2,3 );
@@ -514,7 +521,7 @@ var folder  = this.findFolder ( selNode.dataId );
                         }
                         self.onReturn_fnc ( 'delete',{ 
                           folder_path : fpath,
-                          folder_name : folder.name,
+                          folder_name : folder.name,  
                           folder_type : folder.type
                         });
                       }

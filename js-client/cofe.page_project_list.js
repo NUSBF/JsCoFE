@@ -1023,9 +1023,7 @@ function ProjectListPage ( sceneId )  {
   function loadProjectList()  {
     //  Read list of projects from server
     serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
-// printFolders ( data );
       projectList = jQuery.extend ( true, new ProjectList(__login_id),data );
-// printFolders ( projectList );
       makeProjectListTable();
     },null,'persist');
   }
@@ -1051,13 +1049,15 @@ function ProjectListPage ( sceneId )  {
       title = 'Move project to folder';
     }
     var pDesc = getCurrentProjectDesc();
-    new FoldersBrowser ( title,projectList,__current_folder,pDesc,funcKey,
+    var folderBrowser = new FoldersBrowser ( title,projectList,__current_folder,pDesc,funcKey,
 
       function ( key,data ){
       
         switch (key)  {
       
-          case 'delete' :
+          case 'delete' : if (data.folder_type==folder_type.custom_list)  {
+                            projectList.removeProjectLabels ( __login_id,data.folder_name );
+                          }
           case 'select' : if (!projectList.setCurrentFolder(
                                   projectList.findFolder(data.folder_path)))  {
                             new MessageBox (
@@ -1066,21 +1066,14 @@ function ProjectListPage ( sceneId )  {
                                 data.folder_path + '</i>"<p>not found (1).',
                                 'msg_error'
                             );
-                          } else if (data.folder_type==folder_type.custom_list)  {
-                            projectList.removeProjectLabels ( __login_id,data.folder_name );
                           }
-                          // projectList.resetFolders ( __login_id );
                           saveProjectList ( function(rdata){
-                            // loadProjectList();
                             makeProjectListTable();
                           },null );
                       break;
       
-          case 'add'    : projectList.resetFolders ( __login_id );
-                          saveProjectList ( function(rdata){
-                            // loadProjectList();
-                            // makeProjectListTable();
-                          },null );
+          case 'add'    : //projectList.resetFolders ( __login_id );
+                          saveProjectList ( function(rdata){},null );
                       break;
 
           case 'move'   : if (pDesc)  {
@@ -1092,16 +1085,12 @@ function ProjectListPage ( sceneId )  {
                                   data.folder_path + '</i>"<p>not found (2).',
                                   'msg_error'
                                 );
-                            // } else if ((data.folder_path==folder_path.archived) ||
-                            //            (data.folder_path==folder_path.cloud_archive))  { 
-                            //   new ProjectArchiveDialog ( pDesc,function(){} );
                             } else  {
                               if (projectList.currentFolder.type==folder_type.custom_list)
                                     addProjectLabel ( __login_id,pDesc,data.folder_path );
                               else  pDesc.folderPath = data.folder_path;
                               projectList.resetFolders ( __login_id );
                               saveProjectList ( function(rdata){
-                                // loadProjectList();
                                 makeProjectListTable();
                               },null );
                             }
@@ -1109,7 +1098,6 @@ function ProjectListPage ( sceneId )  {
                       break;
 
           case 'rename' : if (data.folder_path==__current_folder.path)  {
-                            // projectList.renameFolders ( data.folder_path,data.rename_path );
                             var renFolder = projectList.findFolder ( data.rename_path );
                             setPageTitle ( renFolder );
                             if (!projectList.setCurrentFolder(renFolder))
@@ -1121,25 +1109,13 @@ function ProjectListPage ( sceneId )  {
                                 );
                             __current_folder = projectList.currentFolder;
                           } 
-                          // else
-                          //   projectList.renameFolders ( data.folder_path,data.rename_path );
                           if (isCurrentFolderList())
                             projectList.renameProjectLabels (
                                 __login_id, data.folder_name,data.rename_name );
                           else
                             projectList.renameProjectPaths ( 
                                 __login_id,  data.folder_path,data.rename_path );
-
-                          // projectList.renameFolders ( data.folder_path,data.rename_path );
-                          // for (var i=0;i<projectList.projects.length;i++)
-                          //   if (startsWith(projectList.projects[i].folderPath,data.folder_path))
-                          //     projectList.projects[i].folderPath =
-                          //       projectList.projects[i].folderPath.replace (
-                          //         data.folder_path,data.rename_path
-                          //       );
-                          // projectList.resetFolders ( __login_id );
                           saveProjectList ( function(rdata){
-                            // loadProjectList();
                             makeProjectListTable();
                           },null );
                       break;
