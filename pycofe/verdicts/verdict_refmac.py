@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.07.22   <--  Date of Last Modification.
+#    16.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -828,12 +828,16 @@ def putVerdictWidget ( base,verdict_meta,verdict_row,refmac_log=None ):
               "data"  : [ rms_str,"<span style=\"white-space:nowrap;\">0.01-0.02</span>" ]
             },
             { "header": { "label"  : "Clash score",
-                          "tooltip": "Molprobity clash score" },
+                          "tooltip": "MolProbity clash score" },
               "data"  : [ clash_str,"< %0.1f" % verdictInfo['medianClash'] ]
             },
             { "header": { "label"  : "Ramachandran<br>outliers",
                           "tooltip": "Ramachandran outliers" },
               "data"  : [ str(verdictInfo['ramaOutliers']),"" ]
+            },
+            { "header": { "label"  : "MolProbity<br>score",
+                          "tooltip": "Combined MolProbity score" },
+              "data"  : [ str(verdict_meta["molprobity"]["molp_score"]),"" ]
             }
         ]
     },verdictInfo['score'], verdictInfo['message'], verdictInfo['bottomLine'],row=verdict_row+1 )

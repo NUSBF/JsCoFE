@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.11.22   <--  Date of Last Modification.
+ *    17.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1165,7 +1165,8 @@ if (!dbx)  {
                 dn.push ( k++ );
             } else  {
               for (var j=0;j<dt1.length;j++)  {
-                if (dataBox.compareSubtypes(inp_item.data_type[dtype],dt1[j].subtype))
+                // if (dataBox.compareSubtypes(inp_item.data_type[dtype],dt1[j].subtype))
+                if (dataBox.compareSubtypes(inp_item.data_type[dtype],dt1[j]))
                   dn.push ( k );
                 k++;
               }
@@ -2686,6 +2687,8 @@ if (!dbx)  {
             case 'lorestr'  :
             case 'refmac'   : S += 'R=' + d.R_factor + ' R<sub>free</sub>=' +
                                           d.R_free   + ' ';
+                              if ('molp_score' in d)
+                                S += 'MolProbity=' + d.molp_score + ' ';
                         break;
             case 'z01'      : S += '<u>SpG=' + d.SpaceGroup  + '</u> ';
                         break;

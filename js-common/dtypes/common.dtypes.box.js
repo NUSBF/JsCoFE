@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    17.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -252,7 +252,67 @@ DataBox.prototype.getData = function ( data_type )  {
 }
 
 
-DataBox.prototype.compareSubtypes = function ( task_subtypes,data_subtypes )  {
+DataBox.prototype.compareSubtypes = function ( task_subtypes,data_object )  {
+// Returns true if
+//  a) task_subtypes is empty [] or
+//  b) all enforced items from task_subtypes are found in data_subtypes or
+//  c) if no enforced items are found in task_subtypes, then at least one
+//     item from task_subtypes is found in data_subtypes _and_ no data subtype
+//     is marked with negative sign (~) in list of task subtypes.
+// Enforced items in task_subtypes are marked with exclamation mark, e.g.,
+// ['!MR','!Protein'] enforces both subtypes 'MR' and 'Protein', so that
+// both of them need to be matched. A special case of enforcement is to group
+// alternative subtypes. E.g., ['!MR','Protein',['xyz','substructure']] will
+// force selection of data where either 'xyz' or 'substructure', in addition to
+// 'MR' and 'Protein', are found in subtypes. If subtypes are not enforced, e.g.,
+// ['MR','Protein'] then comparison will return true if any of them are found
+// in data_subtypes.
+var rc = false;
+var nt = task_subtypes.length;
+
+  if (nt<=0)  {
+    rc = true;
+  } else  { //if (data_subtypes.length>0)  {
+    var data_subtypes = data_object.subtype;
+    var leadKey = -1;
+    if ('leadKey' in data_object)
+      leadKey = data_object.leadKey;
+    for (var i=0;i<nt;i++)
+      if (task_subtypes[i].constructor===Array)  {
+        rc = false;
+        for (var j=0;(j<task_subtypes[i].length) && (!rc);j++)
+          rc = (data_subtypes.indexOf(task_subtypes[i][j])>=0) ||
+               ((task_subtypes[i][j]=='EP') && (leadKey==2))   ||
+               ((task_subtypes[i][j]=='MR') && (leadKey==1));
+        if (!rc)
+          break;
+      } else if (startsWith(task_subtypes[i],'!'))  {
+        let stype = task_subtypes[i].substr(1);
+        rc = (data_subtypes.indexOf(stype)>=0) ||
+             ((stype=='EP') && (leadKey==2))   ||
+             ((stype=='MR') && (leadKey==1));
+        if (!rc)
+          break;
+      } else if (startsWith(task_subtypes[i],'~'))  {
+        let stype = task_subtypes[i].substr(1);
+        rc = (data_subtypes.indexOf(stype)<0) &&
+             ((stype!='EP') || (leadKey!=2))  &&
+             ((stype!='MR') || (leadKey!=1));
+        if (!rc)
+          break;
+      } else if ((data_subtypes.indexOf(task_subtypes[i])>=0) ||
+                 ((task_subtypes[i]=='EP') && (leadKey==2))   ||
+                 ((task_subtypes[i]=='MR') && (leadKey==1)))
+        rc = true;
+  }
+
+  return rc;
+
+}
+
+
+/*
+// DataBox.prototype.compareSubtypes = function ( task_subtypes,data_subtypes )  {
 // Returns true if
 //  a) task_subtypes is empty [] or
 //  b) all enforced items from task_subtypes are found in data_subtypes or
@@ -297,6 +357,7 @@ var nt = task_subtypes.length;
   return rc;
 
 }
+*/
 
 
 DataBox.prototype.getDataSummary = function ( task )  {
@@ -341,7 +402,8 @@ DataBox.prototype.getDataSummary = function ( task )  {
           nDTypes += tdata.length;
         } else  {  // count datasets with suitable subtypes
           for (var j=0;j<tdata.length;j++)  {
-            if (this.compareSubtypes(idata,tdata[j].subtype))
+            // if (this.compareSubtypes(idata,tdata[j].subtype))
+            if (this.compareSubtypes(idata,tdata[j]))
               nDTypes++;
           }
         }
