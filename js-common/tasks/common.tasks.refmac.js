@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.10.22   <--  Date of Last Modification.
+ *    17.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -53,6 +53,15 @@ function TaskRefmac()  {
       //customInput : 'chain-sel', // lay custom fields next to the selection
       min         : 0,           // minimum acceptable number of data instances
       max         : 10           // maximum acceptable number of data instances
+    },{
+      data_type   : { 'DataStructure' : ['!phases','!EP'] }, // data type(s) and subtype(s)
+      label       : 'External phases',       // label for input dialog
+      cast        : 'phases',
+      tooltip     : 'External phases',
+      inputId     : 'phases',       // input Id for referencing input fields
+      version     : 0,              // minimum data version allowed
+      min         : 0,              // minimum acceptable number of data instances
+      max         : 1               // maximum acceptable number of data instances
     }
   ];
 
@@ -137,14 +146,16 @@ function TaskRefmac()  {
         open     : false,
         position : [1,0,1,5],
         contains : {
-           BFAC : { type   : 'combobox',
+           BFAC : { 
+              type     : 'combobox',
               keyword  : 'none',
               label    : 'Atomic B-factors',
               range    : ['ISOT|Isotropic','ANIS|Anisotropic','OVER|Overall','MIXED|Mixed'],
               value    : 'ISOT',
               position : [0,0,1,1]
            },
-           TLS : { type   : 'combobox',
+           TLS : { 
+              type     : 'combobox',
               keyword  : 'none',
               label    : 'TLS groups',
               tooltip  : 'Translation-Libration-Screw parameterisation',
@@ -153,7 +164,9 @@ function TaskRefmac()  {
               showon   : {'BFAC':['ISOT']},
               position : [1,0,1,1]
            },
-           TLS_CYCLES : { type   : 'integer',
+
+           TLS_CYCLES : { 
+              type     : 'integer',
               keyword  : 'none',
               label    : '&nbsp;&nbsp;&nbsp;&nbsp;Number of TLS cycles',
               tooltip  : 'Number of TLS refinement cycles',
@@ -162,46 +175,71 @@ function TaskRefmac()  {
               showon   : {'TLS':['auto']},
               position : [2,2,1,1]
            },
-           RESET_B : { type   : 'combobox',
-              keyword  : 'none',
-              label    : '&nbsp;&nbsp;&nbsp;&nbsp;Reset all B-factors at start',
-              tooltip  : 'Reset all B-factors at start',
-              range    : ['yes|Yes','no|No'],
-              value    : 'yes',
-              showon   : {'TLS':['auto']},
-              position : [3,2,1,1]
-           },
-           RESET_B_VAL : { type   : 'real',
-              keyword  : 'none',
-              label    : 'to fixed value',
-              tooltip  : 'to fixed value',
-              range    : [0,'*'],
-              value    : '30.0',
-              showon   : {'TLS':['auto'],'RESET_B':['yes']},
-              position : [3,5,1,1]
-           },
-           TLSOUT_ADDU : { type   : 'combobox',
+
+           TLSOUT_ADDU : { 
+              type     : 'combobox',
               keyword  : 'none',
               label    : '&nbsp;&nbsp;&nbsp;&nbsp;Add TLS contribution to B-factors',
               tooltip  : 'Add TLS contribution to output B-factors (only for analysis and deposition)',
               range    : ['yes|Yes','no|No'],
               value    : 'no',
               showon   : {'TLS':['auto']},
-              position : [4,2,1,1]
+              position : [3,2,1,1]
            },
            TLSOUT_ADDU_1 : { type   : 'label',
               keyword  : 'none',
               label    : '(only for analysis and deposition)',
               showon   : {'TLS':['auto']},
-              position : [4,5,1,3]
+              position : [3,5,1,3]
            },
+
+           RESET_B : { 
+              type     : 'combobox',
+              keyword  : 'none',
+              label    : 'Reset all B-factors at start',
+              tooltip  : 'Reset all B-factors at start',
+              range    : ['yes|Yes','no|No'],
+              value    : 'no',
+              showon   : {'TLS':['none']},
+              position : [4,0,1,1]
+           },
+           RESET_B_VAL : { 
+              type     : 'real',
+              keyword  : 'none',
+              label    : '&nbsp;&nbsp;&nbsp;&nbsp;to fixed value',
+              tooltip  : 'to fixed value',
+              range    : [0,'*'],
+              value    : '30.0',
+              showon   : {'TLS':['none'],'RESET_B':['yes']},
+              position : [5,2,1,1]
+           },
+
+           RESET_B_TLS : { type   : 'combobox',
+              keyword  : 'none',
+              label    : 'Reset all B-factors at start',
+              tooltip  : 'Reset all B-factors at start',
+              range    : ['yes|Yes','no|No'],
+              value    : 'yes',
+              showon   : {'TLS':['auto']},
+              position : [6,0,1,1]
+           },
+           RESET_B_TLS_VAL : { type   : 'real',
+              keyword  : 'none',
+              label    : '&nbsp;&nbsp;&nbsp;&nbsp;to fixed value',
+              tooltip  : 'to fixed value',
+              range    : [0,'*'],
+              value    : '30.0',
+              showon   : {'TLS':['auto'],'RESET_B_TLS':['yes']},
+              position : [7,2,1,1]
+           },
+
            SCALING : { type   : 'combobox',
               keyword  : 'none',
               label    : 'Solvent model type',
               tooltip  : 'Solvent model type',
               range    : ['SIMPLE|Simple','BULK|Bulk'],
               value    : 'SIMPLE',
-              position : [5,0,1,1]
+              position : [8,0,1,1]
            },
            SOLVENT_MASK : { type   : 'combobox',
               keyword  : 'none',
@@ -209,7 +247,7 @@ function TaskRefmac()  {
               tooltip  : 'Specify whether to use an explicit solvent mask',
               range    : ['explicit|Yes','no|No'],
               value    : 'explicit',
-              position : [6,0,1,1]
+              position : [9,0,1,1]
            },
            SOLVENT_CUSTOM : { type   : 'combobox',
               keyword  : 'none',
@@ -218,36 +256,36 @@ function TaskRefmac()  {
               range    : ['no|No','yes|Yes'],
               value    : 'no',
               showon   : {'SOLVENT_MASK':['explicit']},
-              position : [7,2,1,1]
+              position : [10,2,1,1]
            },
            SOLVENT_CUSTOM_VDW : { type   : 'real',
               keyword  : 'none',
-              label    : 'Increase non-ion VDW radius by',
+              label    : '&nbsp;&nbsp;&nbsp;&nbsp;Increase non-ion VDW radius by',
               tooltip  : 'Increase VDW radius of non-ion atoms',
               range    : [0,'*'],
               value    : '1.4',
               showon   : {'SOLVENT_MASK':['explicit'],'SOLVENT_CUSTOM':['yes']},
-              position : [7,5,1,1]
+              position : [11,4,1,1]
            },
            SOLVENT_CUSTOM_ION : { type   : 'real',
               keyword  : 'none',
-              label    : 'Increase radius of ions by',
+              label    : '&nbsp;&nbsp;&nbsp;&nbsp;Increase radius of ions by',
               tooltip  : 'Increase ionic radius of potential ion atoms',
               range    : [0,'*'],
               value    : '0.8',
               showon   : {'SOLVENT_MASK':['explicit'],'SOLVENT_CUSTOM':['yes']},
-              position : [8,5,1,1]
+              position : [12,4,1,1]
            },
            SOLVENT_CUSTOM_SHRINK : { type   : 'real',
               keyword  : 'none',
-              label    : 'Shrink the mask area by',
+              label    : '&nbsp;&nbsp;&nbsp;&nbsp;Shrink the mask area by',
               tooltip  : 'Shrink the mask area after calculation',
               range    : [0,'*'],
               value    : '0.8',
               showon   : {'SOLVENT_MASK':['explicit'],'SOLVENT_CUSTOM':['yes']},
-              position : [9,5,1,1]
-           },
-             }
+              position : [13,4,1,1]
+           }
+         }
     },
     sec3 : {
         type     : 'section',
@@ -316,7 +354,8 @@ function TaskRefmac()  {
               value    : 'no',
               position : [3,0,1,1]
            },
-           EXTE_GEN : { type   : 'label',
+           EXTE_GEN : { 
+              type     : 'label',
               keyword  : 'none',
               label    : 'Generate external restraints<br>with following ProSMART parameters:',
               hideon   : {hmodel:[0,-1]},
@@ -555,7 +594,7 @@ TaskRefmac.prototype.constructor = TaskRefmac;
 TaskRefmac.prototype.icon = function()  { return 'task_refmac'; }
 
 TaskRefmac.prototype.currentVersion = function()  {
-  var version = 4;
+  var version = 5;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -584,6 +623,22 @@ TaskRefmac.prototype.checkKeywords = function ( keywords )  {
 
 if (!__template)  {
   //  for client side
+
+  TaskRefmac.prototype.collectInput = function ( inputPanel )  {
+
+    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+
+    var phases = this.input_data.getData('phases');
+    if (phases.length>0)  {
+      var hkl = this.input_data.getData('revision')[0].HKL;
+      if (hkl.useHKLSet!='F')
+        input_msg = '<b><i>external phases cannot be used with twin or SAD refinement</i></b>';
+    }
+
+    return input_msg;
+
+  }
+
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskRefmac.prototype.hotButtons = function() {

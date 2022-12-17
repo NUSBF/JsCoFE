@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.08.22   <--  Date of Last Modification.
+#    17.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -112,6 +112,10 @@ class Refmac(basic.TaskDriver):
             for i in range(len(hmodel) ):
                 hmodel[i] = self.makeClass ( hmodel[i] )
 
+        phases = None
+        if hasattr(self.input_data.data,"phases"):
+            phases  = self.makeClass ( self.input_data.data.phases[0] )
+
         sec1 = self.task.parameters.sec1.contains
         sec2 = self.task.parameters.sec2.contains
         sec3 = self.task.parameters.sec3.contains
@@ -177,24 +181,55 @@ class Refmac(basic.TaskDriver):
 
         stdin = []
 
+        hkl_labels = []
         if (str(hkl.useHKLSet) == 'F') or (str(hkl.useHKLSet) == 'TF'):
-            hkl_labels = ( hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma )
-            hkl_labin  =  "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
-            if hkl.isAnomalous() and (str(hkl.useHKLSet)!='TF'):
+            hkl_labels = [ hkl.dataset.Fmean.value, hkl.dataset.Fmean.sigma ]
+            hkl_labin  = "LABIN FP=" + hkl_labels[0] + " SIGFP=" + hkl_labels[1]
+            if hkl.isAnomalous() and (str(hkl.useHKLSet)!='TF') and (not phases):
                 hkl_labin += " F+="    + hkl.dataset.Fpm.plus.value  +\
                              " SIGF+=" + hkl.dataset.Fpm.plus.sigma  +\
                              " F-="    + hkl.dataset.Fpm.minus.value +\
                              " SIGF-=" + hkl.dataset.Fpm.minus.sigma
+                hkl_labels += [ 
+                    hkl.dataset.Fpm.plus.value,  hkl.dataset.Fpm.plus.sigma,
+                    hkl.dataset.Fpm.minus.value, hkl.dataset.Fpm.minus.sigma
+                ]
                 stdin.append ( "ANOM MAPONLY" )
         elif str(hkl.useHKLSet) == 'Fpm':
-            hkl_labels = ( hkl.dataset.Fpm.plus.value, hkl.dataset.Fpm.plus.sigma,
-                           hkl.dataset.Fpm.minus.value, hkl.dataset.Fpm.minus.sigma )
-            hkl_labin  =  "LABIN F+=" + hkl_labels[0] + " SIGF+=" + hkl_labels[1] +\
-                          " F-=" + hkl_labels[2] + " SIGF-=" + hkl_labels[3]
+            hkl_labels = [ 
+                hkl.dataset.Fpm.plus.value,  hkl.dataset.Fpm.plus.sigma,
+                hkl.dataset.Fpm.minus.value, hkl.dataset.Fpm.minus.sigma 
+            ]
+            hkl_labin  = "LABIN F+=" + hkl_labels[0] + " SIGF+=" + hkl_labels[1] +\
+                              " F-=" + hkl_labels[2] + " SIGF-=" + hkl_labels[3]
             stdin.append ( "ANOM" )
         else: # if str(hkl.useHKLSet) == 'TI':
-            hkl_labels = ( hkl.dataset.Imean.value, hkl.dataset.Imean.sigma )
+            hkl_labels = [ hkl.dataset.Imean.value, hkl.dataset.Imean.sigma ]
             hkl_labin  =  "LABIN IP=" + hkl_labels[0] + " SIGIP=" + hkl_labels[1]
+
+        hklin = hkl.getHKLFilePath ( self.inputDir() )
+
+        if phases and (str(hkl.useHKLSet) != 'F'):
+            self.putMessage ( "<b><i>Using external phases is incompatible with " +\
+                              "twin and SAD refinement. External phases will be " +\
+                              "ignored.</i></b>" )
+            phases = None
+
+        if phases:
+            hkl_labels += [ hkl.dataset.FREE ]
+            input_mtz   = "__hklin.mtz"
+            labin_ph    = []
+            if phases.HLA:
+                labin_ph   = [ phases.HLA,phases.HLB,phases.HLC,phases.HLD ]
+                hkl_labin += " HLA=" + phases.HLA + " HLB=" + phases.HLB +\
+                             " HLC=" + phases.HLC + " HLD=" + phases.HLD
+            else:
+                labin_ph   = [ phases.PHI,phases.FOM ]
+                hkl_labin += " PHIB=" + phases.PHI + " FOM=" + phases.FOM
+            self.makePhasesMTZ ( hklin,hkl_labels,
+                                 phases.getMTZFilePath(self.inputDir()),labin_ph,
+                                 input_mtz )
+            hklin = input_mtz
 
         stdin.append ( hkl_labin + " FREE=" + hkl.dataset.FREE )
 
@@ -229,10 +264,12 @@ class Refmac(basic.TaskDriver):
 
         if str(sec2.TLS.value) != 'none':
             stdin.append ( 'REFI TLSC ' + str(sec2.TLS_CYCLES.value) )
-            if str(sec2.RESET_B.value) == 'yes':
-                stdin.append ( 'BFAC SET ' + str(sec2.RESET_B_VAL.value) )
+            if str(sec2.RESET_B_TLS.value) == 'yes':
+                stdin.append ( 'BFAC SET ' + str(sec2.RESET_B_TLS_VAL.value) )
             if str(sec2.TLSOUT_ADDU.value) == 'yes':
                stdin.append ( 'TLSOUT ADDU' )
+        elif str(sec2.RESET_B.value) == 'yes':
+            stdin.append ( 'BFAC SET ' + str(sec2.RESET_B_VAL.value) )
 
         stdin.append ('SCALE TYPE ' + str(sec2.SCALING.value) )
         if str(sec2.SCALING.value) == 'no':
@@ -303,7 +340,7 @@ class Refmac(basic.TaskDriver):
         xyzin  = istruct.getXYZFilePath ( self.inputDir() )
         xyzout = self.getXYZOFName()
         xmlOutRefmac = self.getOFName (".xml")
-        cmd = [ "hklin" ,hkl.getHKLFilePath(self.inputDir()),
+        cmd = [ "hklin" ,hklin,
                 "xyzin" ,xyzin,
                 "hklout",self.getMTZOFName(),
                 "xyzout",xyzout,
@@ -428,6 +465,10 @@ class Refmac(basic.TaskDriver):
                 # meta = qualrep.quality_report ( self,revision )
                 try:
                     meta = qualrep.quality_report ( self,revision, refmacXML = xmlOutRefmac )
+                    # self.stderr ( " META=" + str(meta) )
+                    if "molp_score" in meta:
+                        self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
+
                 except:
                     meta = None
                     self.stderr ( " *** validation tools or molprobity failure" )
@@ -449,7 +490,7 @@ class Refmac(basic.TaskDriver):
                             }
                         },
                         "molprobity" : meta,
-                        "xyzmeta" : structure.xyzmeta
+                        "xyzmeta"    : structure.xyzmeta
                     }
                     suggestedParameters = verdict_refmac.putVerdictWidget (
                                                 self,verdict_meta,verdict_row )

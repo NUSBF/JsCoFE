@@ -542,6 +542,10 @@ def put_Tab1_section ( body, revision, meta, refmacResults ):
             tableDict['rows'].append({'header': {'label': 'Clash score', 'tooltip': ''},
                                       'data': ['%0.1f' % meta['clashscore']]})
 
+        if ('molp_score' in meta.keys()):
+            tableDict['rows'].append({'header': {'label': 'MolProbity score', 'tooltip': ''},
+                                      'data': [str(meta['molp_score'])]})
+
         if ('natoms_overall' in meta.keys()):
             tableDict['rows'].append({'header': {'label': 'Overall number of atoms (non-H)', 'tooltip': ''},
                                       'data': ['%d' % meta['natoms_overall']]})
@@ -629,6 +633,8 @@ def quality_report ( body,revision,title="Quality Assessment",refmacXML=None ):
         edmeta = put_edstats_section    ( body,revision )
         meta   = put_molprobity_section ( body,revision )
         put_ramaplot_section ( body,revision.Structure )
+
+        # body.stderrln ( " XXXXX " + str(meta) )
 
         if refmacXML:
             if os.path.exists(refmacXML):
