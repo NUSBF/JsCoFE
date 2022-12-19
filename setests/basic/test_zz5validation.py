@@ -63,17 +63,17 @@ def addSlice(driver):
 
     return ()
 
-def slicendiceVerification(driver):
+def slicendiceVerification(driver, waitLong):
     print('Slice-n-Dice verification started')
 
-    # try:
-    #     wait = WebDriverWait(driver, waitLong) # 20 minutest wait
-    #     # Waiting for the text 'completed' in the ui-dialog-title of the task 
-    #     wait.until(EC.presence_of_element_located
-    #                ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'slicendice') and contains(text(), 'completed')]")))
-    # except:
-    #     print('Apparently tha task Slice-n-Dice has not been completed in time; terminating')
-    #     sys.exit(1)
+    try:
+        wait = WebDriverWait(driver, waitLong) # 20 minutest wait
+        # Waiting for the text 'completed' in the ui-dialog-title of the task 
+        wait.until(EC.presence_of_element_located
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'slicendice') and contains(text(), 'completed')]")))
+    except:
+        print('Apparently tha task Slice-n-Dice has not been completed in time; terminating')
+        sys.exit(1)
 
     rWork = 1.0
     rFree = 1.0
@@ -100,6 +100,64 @@ def slicendiceVerification(driver):
 
     return ()
 
+def validateStructurePrediction(driver, waitLong):
+
+    print ('Structure Prediction task verification - starting pulling job every minute')
+
+    finished = False
+
+    time.sleep(1)
+    startTime = time.time()
+
+    while (True):
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
+            # Job number as string
+            match = re.search('predicted', taskText)
+            if match:
+                finished = True
+                break
+        if finished:
+            break
+        curTime = time.time()
+        if curTime > startTime + float(waitLong):
+            print('*** Timeout for validateStructurePrediction results! Waited for long time plus %d seconds.' % waitLong)
+            break
+        time.sleep(60)
+
+    return ()
+
+def addSliceNDice(driver):
+    print('Running Slice-n-Dice task')
+
+    addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
+    addButton.click()
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+    time.sleep(1)
+
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'MR with model splitting using')
+    time.sleep(6)
+
+    tasksInputs = driver.find_elements_by_xpath("//input[contains(@title, 'Maximum number of splits to try.')]")
+
+    tasksInputs[-1].click()
+    tasksInputs[-1].clear()
+    tasksInputs[-1].send_keys('1')
+    
+
+    buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
+    for buttonRun in buttonsRun:
+        if buttonRun.is_displayed():
+            buttonRun.click()
+            break
+    time.sleep(3)
+
+    return ()
 
 
 def test_slicenDiceBasic(browser,
@@ -131,9 +189,12 @@ def test_slicenDiceBasic(browser,
         
         sf.enterProject(d.driver, 'structurePrediction')
         sf.clickTaskInTaskTree(d.driver, '\[0003\]')
+        validateStructurePrediction(d.driver, 1000)
+        addSliceNDice(d.driver)
+        sf.clickTaskInTaskTree(d.driver, '\[0003\]')
         addSlice(d.driver)
         sf.doubleClickTaskInTaskTree(d.driver, '\[0004\]')
-        slicendiceVerification(d.driver)
+        slicendiceVerification(d.driver, 1300)
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
