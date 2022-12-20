@@ -154,7 +154,7 @@ class refmac_parser(object):
     self.weight_label = None
     self.vpos += 1
     try:
-      self.weight_label = API.label(self.sect, '' , self.vpos, 1, 1, 1)
+      self.weight_label = API.label(self.sect, '' , self.vpos, 0, 1, 1)
     except:
       self.vpos -= 1
 
@@ -165,7 +165,7 @@ class refmac_parser(object):
 
     # we want to guarantee creation of widgets before log file is actually parsed, so before .add_action
     self.vpos += 1
-    self.widget = API.loggraph(self.sect, self.vpos, 1, 1, 2)
+    self.widget = API.loggraph(self.sect, self.vpos, 0, 1, 1)
     self.liveGraph = API.graph_data(self.widget, 'Statistics per cycle')
 
     self.liveColumnRfact = API.graph_dataset(self.liveGraph, 'R-factor', '', False)
