@@ -80,8 +80,10 @@ class DType(dtype_template.DType):
             self.Options        = jsonut.jObject()  # input options used in interfaces
             self.Options.seqNo             = 0              # selected sequence number
             self.Options.leading_structure = ""             # substructure or structure
+            self.Options.mr_type           = "refl",        # {refl|sph|subsph} mr type for molrep/phaser-mr
+            self.Options.ds_protocol       = "N",           # density search protocol for molrep
             self.Options.phasing_sel       = "substructure" # for phaser-ep
-            self.Options.structure_sel     = "fixed-model"  # for mr-phases
+            self.Options.structure_sel     = "fixed-model"  # for mr-phases -- to delete
             self.Options.ncsmodel_sel      = "do-not-use"   # for parrot
             self.Options.load_all          = False          # for Coot-MB
         return

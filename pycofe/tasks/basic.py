@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.12.22   <--  Date of Last Modification.
+#    18.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1514,7 +1514,7 @@ class TaskDriver(object):
 
     def finaliseAnomSubstructure ( self,xyzPath,name_pattern,hkl,
                                         associated_data_list,
-                                        anom_form,openState="open",
+                                        anom_form,openState="closed",
                                         title="" ):
 
         anom_structure = self.finaliseAnomSubstructure1 ( xyzPath,name_pattern,
@@ -1532,7 +1532,7 @@ class TaskDriver(object):
 
     def finaliseAnomSubstructure1 ( self,xyzPath,name_pattern,hkl,
                                          associated_data_list,anom_form,pageId,
-                                         row,openState="open",title="" ):
+                                         row,openState="closed",title="" ):
 
         row1 = row
         if openState!="hidden":
