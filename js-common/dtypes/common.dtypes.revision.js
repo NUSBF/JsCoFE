@@ -390,15 +390,14 @@ if (!__template)  {
   }
 
 
-  DataRevision.prototype._layCDI_Molrep1 = function ( dropdown )  {
+  DataRevision.prototype._layMROptions1 = function ( dropdown,row0 )  {
   var customGrid = dropdown.customGrid;
-  var row0       = customGrid.getNRows();
   var row        = row0;
   var xyz        = this.Structure    && this.Structure.hasXYZ();
   var sphases    = this.Structure    && this.Structure.hasPhases();
   var subsphases = this.Substructure && this.Substructure.hasPhases();
   var subslead   = (this.Options.leading_structure=='substructure');
-    
+
     if (xyz)
       customGrid.setLabel ( 'Currently fitted model will not be changed',row++,0,1,4 )
                 .setFontItalic(true).setNoWrap();
@@ -427,6 +426,53 @@ if (!__template)  {
         row++;
       }
     }
+
+//{refl|sph|subsph}
+
+  }
+
+
+  DataRevision.prototype._layCDI_Molrep1 = function ( dropdown )  {
+  var customGrid = dropdown.customGrid;
+  var row0       = customGrid.getNRows();
+  // var xyz        = this.Structure    && this.Structure.hasXYZ();
+  var sphases    = this.Structure    && this.Structure.hasPhases();
+  var subsphases = this.Substructure && this.Substructure.hasPhases();
+  var subslead   = (this.Options.leading_structure=='substructure');
+
+    this._layMROptions1 ( dropdown,row0 );
+    var row = customGrid.getNRows();
+
+    /*
+    if (xyz)
+      customGrid.setLabel ( 'Currently fitted model will not be changed',row++,0,1,4 )
+                .setFontItalic(true).setNoWrap();
+    if (subsphases && subslead)  {
+      customGrid.setLabel ( 'MR model will be fit using EP phases',row++,0,1,4 )
+                .setFontItalic(true).setNoWrap();
+      this.Options.mr_type = 'subsph';
+    } else  {
+      var mrt_lst = [ ['reflection data' ,'refl'] ];
+      if (sphases)  
+        mrt_lst.push ( ['structure phases','sph'] );
+      if (subsphases)  
+        mrt_lst.push ( ['substructure phases','subsph'] );
+      if (mrt_lst.length>1) {
+        customGrid.setLabel ( 'Fit MR model using:',row,0,1,1 )
+                  .setFontItalic(true).setNoWrap();
+        customGrid.setVerticalAlignment ( row,0,'middle' );
+        customGrid.mr_type_sel = new Dropdown();
+        customGrid.setWidget ( customGrid.mr_type_sel,row,1,1,4 );
+        for (var i=0;i<mrt_lst.length;i++)
+          customGrid.mr_type_sel.addItem ( mrt_lst[i][0],'',mrt_lst[i][1],
+                                      this.Options.mr_type==mrt_lst[i][1] );
+        customGrid.mr_type_sel.make();
+        customGrid.setCellSize ( '5%' ,'',row,0 );
+        customGrid.setCellSize ( '95%','',row,1 );
+        row++;
+      }
+    }
+    */
 
 //{refl|sph|subsph}
 
@@ -503,7 +549,6 @@ if (!__template)  {
   var customGrid = dropdown.customGrid;
   var row        = customGrid.getNRows();
   var row0       = row;
-  // var struct_sel_list = null;
 
     if (this.hasOwnProperty('phaser_meta'))  {
 
@@ -556,6 +601,65 @@ if (!__template)  {
     this.HKL.layCustomDropdownInput ( dropdown );
 
   }
+
+
+  DataRevision.prototype._layCDI_PhaserMR1 = function ( dropdown )  {
+  var customGrid = dropdown.customGrid;
+  var row        = customGrid.getNRows();
+  var row0       = row;
+
+    if (this.hasOwnProperty('phaser_meta'))  {
+
+      customGrid.setLabel ( '<b>Prefitted models</b>:',row++,0,1,1 )
+                .setFontItalic(true).setNoWrap();
+      for (var ensname in this.phaser_meta['ensembles'])  {
+        customGrid.setLabel ( '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                   this.phaser_meta['ensembles'][ensname]['ncopies'] +
+                   'x ' + ensname + ' :',row,0,1,1 )
+                  .setFontItalic(true).setNoWrap();
+        if ('data' in this.phaser_meta['ensembles'][ensname])  {
+          // this 'if' is only because of pre-existing bug which is now fixed but may remain 
+          // in users projects forever; the bug showed only for complex model, where phaser adds
+          // '[1]' to ensemble names in SOL files
+          customGrid.setLabel ( this.phaser_meta['ensembles'][ensname]['data'].files[file_key.xyz],
+                                row++,1,1,4 ).setNoWrap();
+        } else if (this.phaser_meta['sol'].files.hasOwnProperty(file_key.sol))  {
+          // a hack due to the old bug as above
+          customGrid.setLabel ( this.phaser_meta['sol'].files[file_key.sol]
+                                    .replace('-02_','-01_')
+                                    .replace('.sol','.pdb'),
+                                row++,1,1,4 ).setNoWrap();
+        } else
+          customGrid.setLabel ( '<b>absent (can be in error)</b>',row++,1,1,4 )
+                    .setFontItalic(true).setNoWrap();
+      }
+
+      customGrid.setLabel ( '<b>Phaser solution metadata:</b>',row,0,1,1 )
+                .setFontItalic(true).setNoWrap();
+      if (this.phaser_meta['sol'].files.hasOwnProperty(file_key.sol))
+        customGrid.setLabel ( this.phaser_meta['sol'].files[file_key.sol],row++,1,1,4 )
+                  .setNoWrap();
+      else
+        customGrid.setLabel ( '<b>absent (can be in error)</b>',row++,1,1,4 )
+                  .setFontItalic(true).setNoWrap();
+    }
+
+    for (var i=row0;i<row;i++)  {
+      customGrid.setCellSize ( '','12pt',i,0 );
+      customGrid.setVerticalAlignment ( i,0,'middle' );
+      customGrid.setCellSize ( '','12pt',i,1 );
+      customGrid.setVerticalAlignment ( i,1,'middle' );
+    }
+
+    this._layMROptions1 ( dropdown,row );
+
+    if (this.Structure || this.Substructure)
+      dropdown.layCustom = 'phaser-mr-fixed1';
+
+    this.HKL.layCustomDropdownInput ( dropdown );
+
+  }
+
 
   DataRevision.prototype._layCDI_Parrot = function ( dropdown )  {
   var customGrid = dropdown.customGrid;
@@ -779,6 +883,9 @@ if (!__template)  {
       case 'phaser-mr'  :   case 'phaser-mr-fixed' :
             this._layCDI_PhaserMR ( dropdown );
           break;
+      case 'phaser-mr1' :   case 'phaser-mr-fixed1' :
+            this._layCDI_PhaserMR1 ( dropdown );
+          break;
       case 'crank2'     :
             this._layCDI_Crank2 ( dropdown,'crank2' );
           break;
@@ -860,6 +967,14 @@ if (!__template)  {
       case 'phaser-mr'  :  case 'phaser-mr-fixed' :
           if ('structure_sel' in dropdown.customGrid)
             this.Options.structure_sel = dropdown.customGrid.structure_sel.getValue();
+          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+        break;
+
+      case 'phaser-mr1' :  case 'phaser-mr-fixed1' :
+          if ('mr_type_sel' in dropdown.customGrid)
+            this.Options.mr_type = dropdown.customGrid.mr_type_sel.getValue();
+          if ('ds_protocol_sel' in dropdown.customGrid)
+            this.Options.ds_protocol = dropdown.customGrid.ds_protocol_sel.getValue();
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
 

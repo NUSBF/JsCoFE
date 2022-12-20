@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.06.22   <--  Date of Last Modification.
+ *    20.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -571,26 +571,28 @@ if (!__template)  {
     }
 
     switch (dropdown.layCustom)  {
-      case 'crank2'          :
-      case 'anomData'        :  this.anomDataLayout   ();  break;
-      case 'shelx-auto'      :
-      case 'shelx-substr'    :
-      case 'anomData-Shelx'  :  this.setWType         ();  break;
-      case 'native'          :  this.nativeLayout     ();  break;
-      case 'unmerged-ref'    :  this.unmergedRefLayout();  break;
-      case 'simbad'          :  this.simbadLayout     ();  break;
-      case 'cell-info'       :  this.cellInfoLayout   ();  break;
-      case 'reindex'         :  this.reindexLayout    ();  break;
-      case 'changereso'      :  this.makeResolutionLimits ( '' );     break;
-      case 'nautilus'        :  this.makeHighResolutionLimit();       break;
-      case 'buster'          :  this.makeResolutionLimits ( 'auto' ); break;
-      case 'phaser-mr'       :  this.spgLayout        (); // should be no break here!
-      case 'phaser-mr-fixed' :  this.phaserMRLayout   ();  break;
-      case 'phaser-ep'       :  this.phaserEPLayout   ();  break;
-      case 'arpwarp'         :
-      case 'refmac'          :  this.refmacLayout     ();  break;
-      case 'ccp4build'       :  this.ccp4buildLayout  ();  break;
-      case 'modelcraft'      :  this.modelcraftLayout ();  break;
+      case 'crank2'           :
+      case 'anomData'         :  this.anomDataLayout   ();  break;
+      case 'shelx-auto'       :
+      case 'shelx-substr'     :
+      case 'anomData-Shelx'   :  this.setWType         ();  break;
+      case 'native'           :  this.nativeLayout     ();  break;
+      case 'unmerged-ref'     :  this.unmergedRefLayout();  break;
+      case 'simbad'           :  this.simbadLayout     ();  break;
+      case 'cell-info'        :  this.cellInfoLayout   ();  break;
+      case 'reindex'          :  this.reindexLayout    ();  break;
+      case 'changereso'       :  this.makeResolutionLimits ( '' );     break;
+      case 'nautilus'         :  this.makeHighResolutionLimit();       break;
+      case 'buster'           :  this.makeResolutionLimits ( 'auto' ); break;
+      case 'phaser-mr'        :
+      case 'phaser-mr1'       :  this.spgLayout        (); // should be no break here!
+      case 'phaser-mr-fixed'  :
+      case 'phaser-mr-fixed1' :  this.phaserMRLayout   ();  break;
+      case 'phaser-ep'        :  this.phaserEPLayout   ();  break;
+      case 'arpwarp'          :
+      case 'refmac'           :  this.refmacLayout     ();  break;
+      case 'ccp4build'        :  this.ccp4buildLayout  ();  break;
+      case 'modelcraft'       :  this.modelcraftLayout ();  break;
       default : ;
     }
 
@@ -739,24 +741,26 @@ if (!__template)  {
     }
 
     switch (dropdown.layCustom)  {
-      case 'crank2'          :
-      case 'anomData'        : this.collectAnom      ();  break;
-      case 'shelx-auto'      :
-      case 'shelx-substr'    :
-      case 'anomData-Shelx'  : this.collectAnomShelx ();  break;
-      case 'native'          : this.collectNative    ();  break;
-      case 'reindex'         : this.collectReindex   ();  break;
-      case 'changereso'      : this.collectChangeReso();  break;
-      case 'nautilus'        : this.collectResoLimits();  break;
-      case 'buster'          : this.collectResoLimits();  break;
-      case 'simbad'          : this.collectSpG       ();  break;
-      case 'phaser-mr'       : this.collectSpG       (); // should be no break here!
-      case 'phaser-mr-fixed' : this.collectPhaserMR  ();  break;
-      case 'phaser-ep'       : this.collectPhaserEP  ();  break;
-      case 'arpwarp'         :
-      case 'refmac'          : this.collectRefmac    ();  break;
-      case 'ccp4build'       : this.collectCCP4build ();  break;
-      case 'modelcraft'      : this.collectModelcraft();  break;
+      case 'crank2'           :
+      case 'anomData'         : this.collectAnom      ();  break;
+      case 'shelx-auto'       :
+      case 'shelx-substr'     :
+      case 'anomData-Shelx'   : this.collectAnomShelx ();  break;
+      case 'native'           : this.collectNative    ();  break;
+      case 'reindex'          : this.collectReindex   ();  break;
+      case 'changereso'       : this.collectChangeReso();  break;
+      case 'nautilus'         : this.collectResoLimits();  break;
+      case 'buster'           : this.collectResoLimits();  break;
+      case 'simbad'           : this.collectSpG       ();  break;
+      case 'phasser-mr'       :
+      case 'phaser-mr1'       : this.collectSpG       (); // should be no break here!
+      case 'phaser-mr-fixed'  :
+      case 'phaser-mr-fixed1' : this.collectPhaserMR  ();  break;
+      case 'phaser-ep'        : this.collectPhaserEP  ();  break;
+      case 'arpwarp'          :
+      case 'refmac'           : this.collectRefmac    ();  break;
+      case 'ccp4build'        : this.collectCCP4build ();  break;
+      case 'modelcraft'       : this.collectModelcraft();  break;
       default : ;
     }
 

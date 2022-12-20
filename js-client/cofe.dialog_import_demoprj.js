@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.09.22   <--  Date of Last Modification.
+ *    20.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -201,7 +201,7 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
           else
             msgLabel.setText (
                   'Demo Project "' + data.name + '" is imported.' +
-                  '<p><b>Note that are now in the Tutorials project\'s '+
+                  '<p><b>Note that you are now in the Tutorials project\'s '+
                   'folder.<br>To navigate back to your folder(s), click on the ' +
                   '<br>page title or use Main Menu.</b>' +
                   '<p>You may close this dialog now.' );
