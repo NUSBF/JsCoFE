@@ -141,7 +141,7 @@ class refmac_parser(object):
     self.item_kind = None
     self.graph_kind = None
     self.grid = rvapi_grid
-    self.vpos = 2
+    self.vpos = 0
     self.sect = rvapi_grid
     self.text_panel = None
     self.widget = None
@@ -151,13 +151,21 @@ class refmac_parser(object):
 
     self.table_weight_panel = None
     self.table_weight = None
+    self.weight_label = None
+    self.vpos += 1
+    try:
+      self.weight_label = API.label(self.sect, '' , self.vpos, 1, 1, 1)
+    except:
+      self.vpos -= 1
+
     self.liveN = -1
     self.liveYmax = None
     self.liveYmin = None
     self.ncyc = 0
 
     # we want to guarantee creation of widgets before log file is actually parsed, so before .add_action
-    self.widget = API.loggraph(self.sect, 1, 0, 1, 1)
+    self.vpos += 1
+    self.widget = API.loggraph(self.sect, self.vpos, 1, 1, 2)
     self.liveGraph = API.graph_data(self.widget, 'Statistics per cycle')
 
     self.liveColumnRfact = API.graph_dataset(self.liveGraph, 'R-factor', '', False)
@@ -325,8 +333,19 @@ class refmac_parser(object):
 
 
   def displayWeight(self, groups):
+    if self.weight_label:
+      msg = 'Weight used for refinement: ' + groups[0]
+      msg = '<font size="-1">' + msg + '</font>'
+      self.weight_label.set_text(msg)
+      self.flush()
+    else:
+      self.displayWeight2(groups)
+
+
+  def displayWeight2(self, groups):
     if (self.table_weight_panel is None) or (self.table_weight is None):
-      self.table_weight_panel = API.panel(self.sect, 2, 0, 1, 1)
+      self.vpos += 1
+      self.table_weight_panel = API.panel(self.sect, self.vpos, 0, 1, 1)
       self.table_weight = API.pyrvapi_table(self.table_weight_panel, 2, 0, 1, 1, 'Data-geometry weight', 1)
       self.table_weight.body_cell(0, 0, 'Weight used for refinement ')
     self.table_weight.body_cell(0, 1, groups[0])
@@ -349,7 +368,7 @@ class refmac_parser(object):
       elif not self.rec_refs.match(title):
         assert self.item_kind in ('TEXT', 'SUMMARY')
         assert not (graphs or header)
-        self.show_text(title, message, body)
+#       self.show_text(title, message, body)
         try:
           self.evaluation_data(title, message, body)
 
@@ -546,6 +565,14 @@ class refmac_parser(object):
 
     if self.prog_name.lower().startswith('refmac'):
       if ' '.join(message.split()).lower() == "final results":
+        data = re.findall('\s*(.*?)\s+([0-9.+-]+)\s+([0-9.+-]+)\s+', body)
+        if data:
+          lko, lvi, lvo = list(zip(*data))
+          lko = [k.replace(' ', '_') for k in lko]
+          lki = [k + '_ini' for k in lko]
+          self.summary['refmac'] = dict(zip(lki + lko, lvi + lvo))
+
+        '''
         re_fmt = '%s\s+[0-9.+-]+\s+([0-9.+-]+)\s+'
         re_extract = '\s+Initial\s+Final\s+'
         re_extract += re_fmt %'R +factor'
@@ -554,6 +581,7 @@ class refmac_parser(object):
         if data:
           self.summary['refmac'] = dict()
           self.summary['refmac']['R_factor'], self.summary['refmac']['R_free'] = data.groups()
+        '''
 
 
 
