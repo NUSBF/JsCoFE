@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    20.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,11 +42,11 @@ function TaskPhaserMR()  {
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision':['hkl']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
-      inputId     : 'revision',  // input Id for referencing input fields
-      customInput : 'phaser-mr', // lay custom fields below the dropdown
-      version     : 0,           // minimum data version allowed
-      min         : 1,           // minimum acceptable number of data instances
-      max         : 1            // maximum acceptable number of data instances
+      inputId     : 'revision',   // input Id for referencing input fields
+      customInput : 'phaser-mr1', // lay custom fields below the dropdown
+      version     : 0,            // minimum data version allowed
+      min         : 1,            // minimum acceptable number of data instances
+      max         : 1             // maximum acceptable number of data instances
     /*
     },{
       data_type   : {'DataStructure':['phases']}, // data type(s) and subtype(s)
@@ -60,11 +60,11 @@ function TaskPhaserMR()  {
     },{
       data_type   : {'DataEnsemble':[],'DataModel':[]}, // data type(s) and subtype(s)
       label       : 'Model ensemble', // label for input dialog
-      inputId     : 'model',     // input Id for referencing input fields
-      customInput : 'phaser-mr', // lay custom fields below the dropdown (Ncopies, R.m.s.d.)
+      inputId     : 'model',      // input Id for referencing input fields
+      customInput : 'phaser-mr',  // lay custom fields below the dropdown (Ncopies, R.m.s.d.)
 //**      castTo      : 'DataEnsemble', // all input types will be casted to the specified
-      min         : 1,           // minimum acceptable number of data instances
-      max         : 1000         // maximum acceptable number of data instances
+      min         : 1,            // minimum acceptable number of data instances
+      max         : 1000          // maximum acceptable number of data instances
     }
   ];
 
@@ -871,7 +871,7 @@ TaskPhaserMR.prototype.desc_title = function()  {
 
 
 TaskPhaserMR.prototype.currentVersion = function()  {
-  var version = 1;
+  var version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -952,14 +952,16 @@ if (!__template)  {
       }// else if (revision.subtype.indexOf('xyz')>=0)
        // this.input_data.data['xmodel'] = [revision.Structure];
 
-      if (revision.Options.leading_structure=='substructure')
-        this.input_data.data['phases'] = [revision.Substructure];
       if (revision.Structure)  {
-        if (revision.Options.structure_sel.indexOf('fixed-model')>=0)
-          this.input_data.data['xmodel'] = [revision.Structure];
-        if (revision.Options.structure_sel.indexOf('edfit')>=0)
+        if (revision.Options.mr_type=='sph')
           this.input_data.data['phases'] = [revision.Structure];
+        if (revision.Structure.hasXYZ())
+          this.input_data.data['xmodel'] = [revision.Structure];
       }
+      if (revision.Substructure && 
+          ((revision.Options.leading_structure=='substructure') ||
+           (revision.Options.mr_type=='subph')))
+        this.input_data.data['phases'] = [revision.Substructure];
 
     }
 

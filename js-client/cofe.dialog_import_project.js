@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.06.20   <--  Date of Last Modification.
+ *    20.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  =================================================================
  *
@@ -78,7 +78,7 @@ function ImportProjectDialog ( onSuccess_func )  {
               else
                 msgLabel.setText (
                       'Project "' + data.name + '" is imported.' +
-                      '<p><b>Note that are now in the original project\'s '+
+                      '<p><b>Note that you are now in the original project\'s '+
                       'folder.<br>To navigate back to your folder(s), click on the ' +
                       '<br>page title or use Main Menu.</b>' +
                       '<p>You may close this dialog now.' );
