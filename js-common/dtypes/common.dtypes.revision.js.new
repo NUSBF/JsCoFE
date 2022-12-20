@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.12.22   <--  Date of Last Modification.
+ *    18.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -68,7 +68,9 @@ function DataRevision()  {
   this.Options        = {       // input options used in interfaces
     'leading_structure' : '',   // substructure or structure
     'phasing_sel'       : 'substructure', // for phaser-ep
-    'structure_sel'     : 'fixed-model',  // for mr-phases
+    'mr_type'           : 'refl',         // {refl|sph|subsph} mr type for molrep/phaser-mr
+    'ds_protocol'       : 'N',            // density search protocol for molrep
+    'structure_sel'     : 'fixed-model',  // for mr-phases  -- to delete
     //'fixedmodel_cbx'    : true,           // for mr-phases
     //'fitindensity_cbx'  : false,          // for mr-phases
     'ncsmodel_sel'      : 'do-not-use',   // for parrot
@@ -95,7 +97,7 @@ DataRevision.prototype.icon  = function()  { return 'data_xrayimages';    }
 // when data class version is changed here, change it also in python
 // constructors
 DataRevision.prototype.currentVersion = function()  {
-  var version = 5;  // advanced on Substructure inclusion
+  var version = 6;  // advanced on Substructure inclusion
   if (__template)
         return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
@@ -196,8 +198,8 @@ if (!__template)  {
     if (this.Structure && this.Substructure)
       dataSummaryPage.makeRow ( 'Revision\'s phases from',phases_source,
                      'Dataset containing phases for using in subsequent tasks' );
-    if ((this.Structure && this.Structure.arePhases()) ||
-        (this.Substructure && this.Substructure.arePhases()))
+    if ((this.Structure && this.Structure.hasPhases()) ||
+        (this.Substructure && this.Substructure.hasPhases()))
       dataSummaryPage.makeRow ( 'Phases\' type',phases_type,
                      'Type of phasing method used to calculate revision\'s phases' );
     tab1.grid.setWidget ( dataSummaryPage, 1,0,1,1 );
@@ -334,6 +336,19 @@ if (!__template)  {
 
   }
 
+  // DataRevision.prototype._layMROptions1 = function ( dropdown,row )  {
+  // var customGrid = dropdown.customGrid;
+  // var r = row;
+  //   if (this.Structure && (this.Structure.subtype.indexOf(structure_subtype.XYZ)>=0))
+  //     customGrid.setLabel ( 'Currently fitted model will remain unchanged',r++,0,1,4 )
+  //               .setFontItalic(true).setNoWrap();
+  //   if (this.Options.leading_structure=='substructure')
+  //     customGrid.setLabel ( 'MR model will be fit in electron density of ' +
+  //                           'heavy atom substructure',r++,0,1,4 )
+  //               .setFontItalic(true).setNoWrap();
+  //   return r;
+  // }
+
   DataRevision.prototype._layMROptions = function ( dropdown,row,sep_bool )  {
   var struct_sel_list = null;
   var customGrid = dropdown.customGrid;
@@ -381,16 +396,7 @@ if (!__template)  {
 
   }
 
-
   DataRevision.prototype._layCDI_Molrep = function ( dropdown )  {
-  // must be kept here to support correct appearance of Input Panels in old jobs
-  var customGrid = dropdown.customGrid;
-  var row        = customGrid.getNRows();
-    this._layMROptions ( dropdown,row,true );
-  }
-
-
-  DataRevision.prototype._layCDI_Molrep1 = function ( dropdown )  {
   var customGrid = dropdown.customGrid;
   var row0       = customGrid.getNRows();
   var row        = row0;
@@ -420,7 +426,7 @@ if (!__template)  {
         customGrid.setWidget ( customGrid.mr_type_sel,row,1,1,4 );
         for (var i=0;i<mrt_lst.length;i++)
           customGrid.mr_type_sel.addItem ( mrt_lst[i][0],'',mrt_lst[i][1],
-                                      this.Options.mr_type==mrt_lst[i][1] );
+                                      this.Options.ds_protocol==mrt_lst[i][1] );
         customGrid.mr_type_sel.make();
         customGrid.setCellSize ( '5%' ,'',row,0 );
         customGrid.setCellSize ( '95%','',row,1 );
@@ -445,20 +451,38 @@ if (!__template)  {
       customGrid.ds_protocol_sel.make();
       customGrid.setCellSize ( '5%' ,'',row,0 );
       customGrid.setCellSize ( '95%','',row,1 );
-      customGrid.ds_row = row;
-      if ('mr_type_sel' in customGrid)  {
-        customGrid.mr_type_sel.addOnChangeListener ( function(text,value){
-          customGrid.setRowVisible ( customGrid.ds_row,value!='refl' );
-        });
-        customGrid.setRowVisible ( customGrid.ds_row,customGrid.mr_type_sel.getValue()!='refl' );
-      }
     }
 
     if (row>row0)
       customGrid.setLabel ( ' ',++row,0,1,1 ).setHeight_px ( 8 );
 
+    // // if ((this.Structure && (this.Structure.subtype.indexOf(structure_subtype.PHASES)>=0)) ||
+    // if ((this.Structure && this.Structure.hasPhases()) ||
+    //     (this.Options.leading_structure=='substructure'))  {
+    //   customGrid.setLabel ( 'Fit MR model using:',row,0,1,1 )
+    //             .setFontItalic(true).setNoWrap();
+    //   customGrid.setVerticalAlignment ( row,0,'middle' );
+    //   customGrid.ds_protocol_sel = new Dropdown();
+    //   customGrid.setWidget ( customGrid.ds_protocol_sel,row,1,1,4 );
+    //   customGrid.ds_protocol_sel.addItem ( 'Reflection data','','XR',
+    //                                        this.Options.ds_protocol=='XR' );
+    //   if ()
+    //   customGrid.ds_protocol_sel.addItem ( 'Density search (RF + Phased TF)','','N',
+    //                                        this.Options.ds_protocol=='N' );
+    //   customGrid.ds_protocol_sel.addItem ( 'Density search (SAPTF + Local Phased RF + Phased TF)','','Y',
+    //                                        this.Options.ds_protocol=='Y' );
+    //   customGrid.ds_protocol_sel.addItem ( 'Density search (SAPTF + Local RF + Phased TF)','','S',
+    //                                        this.Options.ds_protocol=='S' );
+    //   customGrid.ds_protocol_sel.make();
+    //   customGrid.setCellSize ( '5%' ,'',row,0 );
+    //   customGrid.setCellSize ( '95%','',row,1 );
+    //   customGrid.setLabel ( ' ',++row,0,1,1 ).setHeight_px ( 8 );
+    //                   //  range    : ['N|Density Search (RF + Phased TF)',
+    //                   //              'Y|Density Search (SAPTF + Local Phased RF + Phased TF)',
+    //                   //              'S|Density Search (SAPTF + Local RF + Phased TF)'
+    //                   //             ],
+    // }
   }
-
 
   DataRevision.prototype._layCDI_AsuMod = function ( dropdown )  {
     if (this.HKL.hasAnomalousSignal())  {
@@ -770,11 +794,8 @@ if (!__template)  {
             //dropdown.Structure = this.Structure;  // this will add phase options for refmac
             this.HKL.layCustomDropdownInput ( dropdown );
           break;
-      case 'molrep'     :  // must be kept for legacy to support old jobs
+      case 'molrep'     :
             this._layCDI_Molrep ( dropdown );
-          break;
-      case 'molrep1'    :  // new version 
-            this._layCDI_Molrep1 ( dropdown );
           break;
       case 'phaser-mr'  :   case 'phaser-mr-fixed' :
             this._layCDI_PhaserMR ( dropdown );
@@ -911,16 +932,9 @@ if (!__template)  {
                 this.HKL.collectCustomDropdownInput ( dropdown );
         break;
 
-      case 'molrep'     :  // may go but keep for legacy
+      case 'molrep'     :
           if ('structure_sel' in dropdown.customGrid)
             this.Options.structure_sel = dropdown.customGrid.structure_sel.getValue();
-          break;
-
-      case 'molrep1'    :
-          if ('mr_type_sel' in dropdown.customGrid)
-            this.Options.mr_type = dropdown.customGrid.mr_type_sel.getValue();
-          if ('ds_protocol_sel' in dropdown.customGrid)
-            this.Options.ds_protocol = dropdown.customGrid.ds_protocol_sel.getValue();
           break;
 
       case 'crank2'     :

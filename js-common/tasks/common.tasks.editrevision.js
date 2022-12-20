@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.11.22   <--  Date of Last Modification.
+ *    18.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -91,7 +91,7 @@ function TaskEditRevision()  {
       min         : 0,              // minimum acceptable number of data instances
       max         : 1               // maximum acceptable number of data instances
     },{
-      data_type   : { 'DataStructure' : ['!phases'], // data type(s) and subtype(s)
+      data_type   : { 'DataStructure' : ['!phases','substructure'], // data type(s) and subtype(s)
                       'DataRemove'    : []           // just the menu item
                     },
       label       : 'Phases',       // label for input dialog

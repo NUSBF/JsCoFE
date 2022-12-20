@@ -42,7 +42,7 @@ function TaskMolrep()  {
       data_type   : {'DataRevision':['hkl']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
-      customInput : 'molrep',   // lay custom fields below the dropdown
+      customInput : 'molrep1',  // lay custom fields below the dropdown
       version     : 7,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
@@ -138,19 +138,20 @@ function TaskMolrep()  {
                        range    : ['A|Auto','N|Do not use'],
                        value    : 'A',
                        position : [4,0,1,1]
-                     },
-              PRF :  { type     : 'combobox',
-                       keyword  : 'PRF',
-                       label    : 'Density search protocol',
-                       tooltip  : 'Density search protocol',
-                       range    : ['N|Density Search (RF + Phased TF)',
-                                   'Y|Density Search (SAPTF + Local Phased RF + Phased TF)',
-                                   'S|Density Search (SAPTF + Local RF + Phased TF)'
-                                  ],
-                       value    : 'N',
-                       position : [5,0,1,7],
-                       hideon   : {'revision.subtype:phases':[0,-1]} // from input data section
                      }
+              //        },
+              // PRF :  { type     : 'combobox',
+              //          keyword  : 'PRF',
+              //          label    : 'Density search protocol',
+              //          tooltip  : 'Density search protocol',
+              //          range    : ['N|Density Search (RF + Phased TF)',
+              //                      'Y|Density Search (SAPTF + Local Phased RF + Phased TF)',
+              //                      'S|Density Search (SAPTF + Local RF + Phased TF)'
+              //                     ],
+              //          value    : 'N',
+              //          position : [5,0,1,7],
+              //          hideon   : {'revision.subtype:phases':[0,-1]} // from input data section
+              //        }
              }
            },
     sec2 : { type     : 'section',
@@ -431,7 +432,7 @@ TaskMolrep.prototype.desc_title = function()  {
 }
 
 TaskMolrep.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -454,7 +455,8 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf   = require('../../js-server/server.configuration');
+  // const sdtype = require('../../js-common/dtypes/common.dtypes.structure');
 
   TaskMolrep.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -464,14 +466,23 @@ if (!__template)  {
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl'] = [revision.HKL];
-      if (revision.Options.leading_structure=='substructure')
-        this.input_data.data['phases'] = [revision.Substructure];
       if (revision.Structure)  {
-        if (revision.Options.structure_sel.indexOf('fixed-model')>=0)
-          this.input_data.data['xmodel'] = [revision.Structure];
-        if (revision.Options.structure_sel.indexOf('edfit')>=0)
+        if (revision.Options.mr_type=='sph')
           this.input_data.data['phases'] = [revision.Structure];
+        // if (revision.Structure.subtype.indexOf(sdtype.structure_subtype.XYZ)>=0)
+        if (revision.Structure.hasXYZ())
+          this.input_data.data['xmodel'] = [revision.Structure];
       }
+      if (revision.Substructure && 
+          ((revision.Options.leading_structure=='substructure') ||
+           (revision.Options.mr_type=='subph')))
+        this.input_data.data['phases'] = [revision.Substructure];
+      // if (revision.Structure)  {
+      //   if (revision.Options.structure_sel.indexOf('fixed-model')>=0)
+      //     this.input_data.data['xmodel'] = [revision.Structure];
+      //   if (revision.Options.structure_sel.indexOf('edfit')>=0)
+      //     this.input_data.data['phases'] = [revision.Structure];
+      // }
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );

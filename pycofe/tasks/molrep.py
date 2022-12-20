@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.07.22   <--  Date of Last Modification.
+#    20.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -63,7 +63,7 @@ class Molrep(basic.TaskDriver):
         hkl      = self.makeClass ( revision.HKL )   # note that 'hkl' was added
                                   # to input databox by TaskMolrep.makeInputData(),
                                   # therefore, hkl=self.input_data.data.hkl[0]
-                                  # would also work
+                                  # will also work
         #seq      = None
         #if model.sequence:
         #    seq = self.makeClass ( model.sequence )  # may work for DataEnsemble
@@ -92,7 +92,8 @@ class Molrep(basic.TaskDriver):
 
         if hasattr(self.input_data.data, "phases"):
             phases = self.makeClass ( self.input_data.data.phases[0] )
-            prf    = self.getParameter ( self.task.parameters.sec1.contains.PRF )
+            # prf    = self.getParameter ( self.task.parameters.sec1.contains.PRF )
+            prf    = revision.Options.ds_protocol
             self.write_stdin (
                 "file_f "  + phases.getMTZFilePath(self.inputDir()) + "\n" + \
                 "labin F=" + phases.FWT + " PH=" + phases.PHWT + \
