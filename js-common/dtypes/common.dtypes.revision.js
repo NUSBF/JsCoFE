@@ -442,37 +442,6 @@ if (!__template)  {
     this._layMROptions1 ( dropdown,row0 );
     var row = customGrid.getNRows();
 
-    /*
-    if (xyz)
-      customGrid.setLabel ( 'Currently fitted model will not be changed',row++,0,1,4 )
-                .setFontItalic(true).setNoWrap();
-    if (subsphases && subslead)  {
-      customGrid.setLabel ( 'MR model will be fit using EP phases',row++,0,1,4 )
-                .setFontItalic(true).setNoWrap();
-      this.Options.mr_type = 'subsph';
-    } else  {
-      var mrt_lst = [ ['reflection data' ,'refl'] ];
-      if (sphases)  
-        mrt_lst.push ( ['structure phases','sph'] );
-      if (subsphases)  
-        mrt_lst.push ( ['substructure phases','subsph'] );
-      if (mrt_lst.length>1) {
-        customGrid.setLabel ( 'Fit MR model using:',row,0,1,1 )
-                  .setFontItalic(true).setNoWrap();
-        customGrid.setVerticalAlignment ( row,0,'middle' );
-        customGrid.mr_type_sel = new Dropdown();
-        customGrid.setWidget ( customGrid.mr_type_sel,row,1,1,4 );
-        for (var i=0;i<mrt_lst.length;i++)
-          customGrid.mr_type_sel.addItem ( mrt_lst[i][0],'',mrt_lst[i][1],
-                                      this.Options.mr_type==mrt_lst[i][1] );
-        customGrid.mr_type_sel.make();
-        customGrid.setCellSize ( '5%' ,'',row,0 );
-        customGrid.setCellSize ( '95%','',row,1 );
-        row++;
-      }
-    }
-    */
-
 //{refl|sph|subsph}
 
     if (sphases || subsphases)  {
@@ -493,13 +462,14 @@ if (!__template)  {
       customGrid.ds_row = row;
       if ('mr_type_sel' in customGrid)  {
         customGrid.mr_type_sel.addOnChangeListener ( function(text,value){
-          customGrid.setRowVisible ( customGrid.ds_row,value!='refl' );
+          customGrid.setRowVisible    ( customGrid.ds_row,value!='refl' );
           dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,value );
         });
         var crtype = customGrid.mr_type_sel.getValue();
         customGrid.setRowVisible    ( customGrid.ds_row,crtype!='refl' );
         dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,crtype );
-      }
+      } else if (subslead)
+        dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,'subsph' );
     }
 
     if (row>row0)
@@ -666,7 +636,8 @@ if (!__template)  {
       });
       dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,
                                     customGrid.mr_type_sel.getValue() );
-    }
+    } else if (this.Options.leading_structure == 'substructure')
+      dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,'subsph' );
 
   }
 
