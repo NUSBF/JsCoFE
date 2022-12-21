@@ -3,21 +3,18 @@ CCP4 Cloud Atlas
 ================
 
 This atlas presents different ways of solving structures in CCP4 Cloud
-depending on available data. Only schematic structure solution projects
-are shown, which only demonstrate general senarios, and the list is not
-complete.
+depending on available data. Only schematic structure solution projects are shown, which only demonstrate general scenarios.
 
 For solving a structure, you need at least experimental observations
-(reflections) either merged or unmerged. Unmerged reflections must be
-scaled and merged prior use with *Aimless* task. Further actions will
-vary -- choose your case from the following list.
+(reflections) either merged or unmerged. Unmerged reflections must be scaled and merged prior use with *Aimless* task. 
 
-.. contents:: **Table of contents**
-   :local:
-   :backlinks: none
-   :depth: 3
+.. note:: Further actions will vary
 
-.. _A1.1:
+.. .. contents:: **Table of contents**
+..    :local:
+..    :backlinks: none
+..    :depth: 3
+
 -------------------------------------------------------------------
 Molecular Replacement with known sequence and structural homolog(s)
 -------------------------------------------------------------------
@@ -52,15 +49,16 @@ with phased and rebuilt model.*
 **A1.1.4 Multiple models, solution with Molrep**
 
 *Starts from importing merged MTZ, sequence and PDB files, finishes
-with phased and rebuilt model. Note difference from A.1.3 by using
-"Refmac" between fitting domains.*
+with phased and rebuilt model.*
 
 .. image:: images_atlas/A1.1.4.png
         :scale: 50 %
         :align: left
 
    
-.. _A1.2:
+.. note :: difference from A.1.3 by using "Refmac" between fitting domains.
+
+
 ---------------------------------------------------------------------------
 Molecular Replacement with known sequence and unknown structural homolog(s)
 ---------------------------------------------------------------------------
@@ -95,27 +93,28 @@ rebuilt model.*
 **A1.2.5 MR using structure prediction**
 
 *Starts from importing merged MTZ and sequence files, finishes with phased and
-rebuilt model. Note that "Slice" is used to cope with unsuitable configurational
-variations in found model, and two domains are fit sequentially.*
+rebuilt model.*
 
 .. image:: images_atlas/A1.2.5.png
         :scale: 50 %
         :align: left
+
+
+.. note:: "Slice" is used to cope with unsuitable configurational variations in found model, and two domains are fit sequentially.
 
 **A1.2.5 MR using structure prediction**
 
 *Starts from importing merged MTZ and sequence files, finishes with phased and
-rebuilt model. Note that "Slice" is used to cope with unsuitable configurational
-variations in predicted model, and that second domain could not be fit.
-Nevertheless, "Modelcraft" was able to built structure using phases from
-fitting only one domain.*
+rebuilt model.*
 
 .. image:: images_atlas/A1.2.5.png
         :scale: 50 %
         :align: left
 
-   
-.. _A1.3:
+.. note:: "Slice" is used to cope with unsuitable configurational variations in predicted model, and that second domain could not be fit. Nevertheless, "Modelcraft" was able to built structure using phases from fitting only one domain.
+
+
+
 -------------------------------------------
 Molecular Replacement with unknown sequence
 -------------------------------------------
@@ -123,25 +122,27 @@ Molecular Replacement with unknown sequence
 **A1.3.1 MR with unknown sequence using Simbad**
 
 *Starts from importing merged MTZ, finishes with suggested sequence, phased and
-rebuilt model. Note that jobs 0006 was formed with multiple-selecting jobs
-0001 and 0004, and job 0007 -- with multiple-selecting jobs 0006 and 0005.*
+rebuilt model.*
 
 .. image:: images_atlas/A1.3.1.png
         :scale: 50 %
         :align: left
 
+.. note:: job 0006 was formed with multiple-selecting jobs 0001 and 0004, and job 0007 -- with multiple-selecting jobs 0006 and 0005.
+
+
 **A1.3.2 MR with unknown sequence using Arcimboldo**
 
 *Starts from importing merged MTZ, finishes with suggested sequence, phased and
-rebuilt model. Note that jobs 0006 was formed with multiple-selecting jobs
-0001 and 0004, and job 0007 -- with multiple-selecting jobs 0006 and 0005.*
+rebuilt model.*
 
 .. image:: images_atlas/A1.3.2.png
         :scale: 50 %
         :align: left
 
+.. note:: job 0006 was formed with multiple-selecting jobs 0001 and 0004, and job 0007 -- with multiple-selecting jobs 0006 and 0005.
 
-.. _A2.1:
+
 ----------------------------------------
 Experimental Phasing with known sequence
 ----------------------------------------
@@ -156,6 +157,7 @@ building in job 0010 (original hand) was done only for verification.*
         :scale: 50 %
         :align: left
 
+
 **A2.1.2 EP with known sequence using Crank-2 and Phaser**
 
 *Starts from importing merged MTZ and sequence files, finishes with phased and
@@ -169,7 +171,8 @@ done only for verification.*
         :align: left
 
 
-.. _A2.2:
+
+
 --------------------------------------------------
 Automatic Experimental Phasing with known sequence
 --------------------------------------------------
@@ -193,7 +196,7 @@ completeness.*
         :scale: 50 %
         :align: left
 
-.. _A2.3:
+
 ------------------------------------------
 Experimental Phasing with unknown sequence
 ------------------------------------------
@@ -206,3 +209,4 @@ built model. In job 0006, found sequence is substituted in structure revision.*
 .. image:: images_atlas/A2.3.1.png
         :scale: 50 %
         :align: left
+

@@ -28,7 +28,6 @@ Parameters
 
 **Number of best sequence hits to show** By default 3 most plausible sequece hits are selected. This number can be increased if more hits are expected.
 
-.. Note::
     
 **REFERENCES**
 

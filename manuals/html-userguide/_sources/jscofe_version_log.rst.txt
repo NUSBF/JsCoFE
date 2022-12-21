@@ -4,9 +4,27 @@ CCP4 Cloud Version Log
 
 
 
-**Version 1.7.008**
+**Version 1.7.009**
 
     *Released on --.--.2022 with CCP4 8.0.008*
+
+    **Changes and new features**
+
+    #. Fixed bugs in renaming and removing project folders and lists
+
+    #. Added zombie awakening button in administrative page
+
+    #. Project atlas added to documentation
+
+    #. External phases added to ``Refmac`` task
+
+    #. Density fit modes in ``Molrep`` and ``Phaser-MR`` optimised
+
+
+
+**Version 1.7.008**
+
+    *Released on 12.12.2022 with CCP4 8.0.007*
 
     **Changes and new features**
 
