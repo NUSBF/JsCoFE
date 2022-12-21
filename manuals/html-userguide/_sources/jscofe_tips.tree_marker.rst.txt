@@ -18,8 +18,8 @@ Main use cases include the following:
 - inferring on the pre-history of the currently selected job, which also suggests 
   what data from upstream jobs is available
 
-- trimming the *Project tree*, *e.g.,* before archiving, by removal branches not leading
-  to final result
+- trimming the *Project tree*, *e.g.,* before archiving, by removing branches not
+  leading to final result
 
 - finding the last job: just select the root node and click on the marker tool
   button.
