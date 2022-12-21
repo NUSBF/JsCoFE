@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    21.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -450,6 +450,26 @@ if (!__template)  {
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskMolrep.prototype.hotButtons = function() {
     return [RefmacHotButton()];
+  }
+
+  TaskMolrep.prototype.MRTypeChanged = function ( inpParamRef,value )  {
+  // reacts on changing mr_type in revision's belly
+
+    this.title = this.title.split(' (')[0];
+    this.name = this.name.split(' (')[0];
+    if (value!='refl')   {
+      this.title += ' (density fit)';
+      this.name  += ' (density fit)';
+    }
+
+    var inputPanel = inpParamRef.grid.parent.parent;
+    inputPanel.header.title.setText('<b>' + this.title + '</b>');
+    var new_title = this.name.replace(/<(?:.|\n)*?>/gm,'');
+    inputPanel.header.uname_inp.setStyle ( 'text','',new_title );
+    inputPanel.job_dialog.changeTitle ( new_title );
+    inputPanel.emitSignal ( cofe_signals.jobDlgSignal,
+                            job_dialog_reason.rename_node );
+
   }
 
 } else  {
