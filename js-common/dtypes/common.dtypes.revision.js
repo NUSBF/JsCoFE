@@ -475,7 +475,7 @@ if (!__template)  {
 
 //{refl|sph|subsph}
 
-    if (sphases || (subsphases && (!subslead)))  {
+    if (sphases || subsphases)  {
       customGrid.setLabel ( 'Density search protocol:',row,0,1,1 )
                 .setFontItalic(true).setNoWrap();
       customGrid.setVerticalAlignment ( row,0,'middle' );
