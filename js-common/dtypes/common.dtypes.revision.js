@@ -449,11 +449,11 @@ if (!__template)  {
       customGrid.setVerticalAlignment ( row,0,'middle' );
       customGrid.ds_protocol_sel = new Dropdown();
       customGrid.setWidget ( customGrid.ds_protocol_sel,row,1,1,4 );
-      customGrid.ds_protocol_sel.addItem ( 'Density search (RF + Phased TF)','','N',
+      customGrid.ds_protocol_sel.addItem ( 'RF + Phased TF','','N',
                                             this.Options.ds_protocol=='N' );
-      customGrid.ds_protocol_sel.addItem ( 'Density search (SAPTF + Local Phased RF + Phased TF)','','Y',
+      customGrid.ds_protocol_sel.addItem ( 'SAPTF + Local Phased RF + Phased TF','','Y',
                                             this.Options.ds_protocol=='Y' );
-      customGrid.ds_protocol_sel.addItem ( 'Density search (SAPTF + Local RF + Phased TF)','','S',
+      customGrid.ds_protocol_sel.addItem ( 'SAPTF + Local RF + Phased TF','','S',
                                             this.Options.ds_protocol=='S' );
       customGrid.ds_protocol_sel.make();
       customGrid.setCellSize ( '5%' ,'',row,0 );
