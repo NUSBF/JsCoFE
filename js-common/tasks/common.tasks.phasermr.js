@@ -869,6 +869,7 @@ TaskPhaserMR.prototype.desc_title = function()  {
   return 'perform MR using a defined ASU and prepared MR models and/or ensembles';
 }
 
+// TaskPhaserMR.prototype.cleanJobDir = function ( jobDir ) {}
 
 TaskPhaserMR.prototype.currentVersion = function()  {
   var version = 2;

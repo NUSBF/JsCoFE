@@ -273,7 +273,7 @@ class PhaserMR(basic.TaskDriver):
 
 
         if phases:
-            self.write_stdin ( "HKLOUT OFF\n" )  # bypassing a bug in phaser 2.8.2(ccp4)
+            # self.write_stdin ( "HKLOUT OFF\n" )  # bypassing a bug in phaser 2.8.2(ccp4)
             self.write_stdin ( "TARGET TRA PHASED\n" )
 
         elif sec0.TF_TARGET_SEL.value != "FAST":
