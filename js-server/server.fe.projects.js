@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.11.22   <--  Date of Last Modification.
+ *    21.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1826,8 +1826,11 @@ var pData    = readProjectData ( loginData,data.name );
             pDesc.share = {};  // no initial sharing on the cloned project
             if (!('author' in pDesc.owner))  {
               pDesc.owner.author = pDesc.owner.login;
-              pDesc.folderPath   = loginData.login + '\'s Projects';
+              // pDesc.folderPath   = loginData.login + '\'s Projects';
             }
+            var rootFPath = loginData.login + '\'s Projects';
+            if (!pDesc.folderPath.startsWith(rootFPath))
+              pDesc.folderPath = rootFPath;
             pDesc.owner.login = loginData.login;
             if (pDesc.archive && pDesc.archive.in_archive) 
               pDesc.archive.in_archive = false;
