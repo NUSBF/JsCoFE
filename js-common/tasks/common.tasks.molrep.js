@@ -463,8 +463,8 @@ if (!__template)  {
     }
 
     var inputPanel = inpParamRef.grid.parent.parent;
-    inputPanel.header.title.setText('<b>' + this.title + '</b>');
-    var new_title = this.name.replace(/<(?:.|\n)*?>/gm,'');
+    inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
+    var new_title = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
     inputPanel.header.uname_inp.setStyle ( 'text','',new_title );
     inputPanel.job_dialog.changeTitle ( new_title );
     inputPanel.emitSignal ( cofe_signals.jobDlgSignal,

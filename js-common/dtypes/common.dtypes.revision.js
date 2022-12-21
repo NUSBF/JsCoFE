@@ -437,7 +437,6 @@ if (!__template)  {
   // var xyz        = this.Structure    && this.Structure.hasXYZ();
   var sphases    = this.Structure    && this.Structure.hasPhases();
   var subsphases = this.Substructure && this.Substructure.hasPhases();
-  var subslead   = (this.Options.leading_structure=='substructure');
 
     this._layMROptions1 ( dropdown,row0 );
     var row = customGrid.getNRows();
@@ -459,17 +458,22 @@ if (!__template)  {
       customGrid.ds_protocol_sel.make();
       customGrid.setCellSize ( '5%' ,'',row,0 );
       customGrid.setCellSize ( '95%','',row,1 );
-      customGrid.ds_row = row;
+      var crtype = null;
       if ('mr_type_sel' in customGrid)  {
+        customGrid.ds_row = row;
         customGrid.mr_type_sel.addOnChangeListener ( function(text,value){
           customGrid.setRowVisible    ( customGrid.ds_row,value!='refl' );
           dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,value );
         });
-        var crtype = customGrid.mr_type_sel.getValue();
+        crtype = customGrid.mr_type_sel.getValue();
         customGrid.setRowVisible    ( customGrid.ds_row,crtype!='refl' );
-        dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,crtype );
-      } else if (subslead)
-        dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,'subsph' );
+        // dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,crtype );
+      } else if (this.Options.leading_structure == 'substructure')
+        crtype = 'subsph';
+      if (crtype)
+        window.setTimeout ( function(){
+          dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,crtype );
+        },100);
     }
 
     if (row>row0)
@@ -630,14 +634,18 @@ if (!__template)  {
 
     this.HKL.layCustomDropdownInput ( dropdown );
 
+    var crtype = null;
     if ('mr_type_sel' in customGrid)  {
       customGrid.mr_type_sel.addOnChangeListener(function (text,value) {
-        dropdown.task.MRTypeChanged(dropdown.grid.inpParamRef,value);
+        dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,value );
       });
-      dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,
-                                    customGrid.mr_type_sel.getValue() );
+      crtype = customGrid.mr_type_sel.getValue();
     } else if (this.Options.leading_structure == 'substructure')
-      dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,'subsph' );
+      crtype = 'subsph';
+    if (crtype)
+      window.setTimeout ( function(){
+        dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,crtype );
+      },100);
 
   }
 
