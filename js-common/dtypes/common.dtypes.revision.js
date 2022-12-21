@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.12.22   <--  Date of Last Modification.
+ *    21.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -426,7 +426,6 @@ if (!__template)  {
         row++;
       }
     }
-
 //{refl|sph|subsph}
 
   }
@@ -495,6 +494,7 @@ if (!__template)  {
       if ('mr_type_sel' in customGrid)  {
         customGrid.mr_type_sel.addOnChangeListener ( function(text,value){
           customGrid.setRowVisible ( customGrid.ds_row,value!='refl' );
+          dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,value );
         });
         customGrid.setRowVisible ( customGrid.ds_row,customGrid.mr_type_sel.getValue()!='refl' );
       }
@@ -657,6 +657,11 @@ if (!__template)  {
       dropdown.layCustom = 'phaser-mr-fixed1';
 
     this.HKL.layCustomDropdownInput ( dropdown );
+
+    if ('mr_type_sel' in customGrid)
+      customGrid.mr_type_sel.addOnChangeListener(function (text,value) {
+        dropdown.task.MRTypeChanged(dropdown.grid.inpParamRef,value);
+      });
 
   }
 
