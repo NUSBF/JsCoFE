@@ -496,7 +496,9 @@ if (!__template)  {
           customGrid.setRowVisible ( customGrid.ds_row,value!='refl' );
           dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,value );
         });
-        customGrid.setRowVisible ( customGrid.ds_row,customGrid.mr_type_sel.getValue()!='refl' );
+        var crtype = customGrid.mr_type_sel.getValue();
+        customGrid.setRowVisible    ( customGrid.ds_row,crtype!='refl' );
+        dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,crtype );
       }
     }
 
@@ -658,10 +660,13 @@ if (!__template)  {
 
     this.HKL.layCustomDropdownInput ( dropdown );
 
-    if ('mr_type_sel' in customGrid)
+    if ('mr_type_sel' in customGrid)  {
       customGrid.mr_type_sel.addOnChangeListener(function (text,value) {
         dropdown.task.MRTypeChanged(dropdown.grid.inpParamRef,value);
       });
+      dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,
+                                    customGrid.mr_type_sel.getValue() );
+    }
 
   }
 
