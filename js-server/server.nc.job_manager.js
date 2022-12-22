@@ -579,7 +579,20 @@ var cap   = false;
 // ===========================================================================
 
 function calcCapacity ( onFinish_func )  {
-// calculates residual capacity and calls onFinish_func(capacity)
+//
+//   Calculates residual capacity and calls onFinish_func(capacity).
+//
+//   For CLIENT and SHELL, this returns NC assigned capacity (i.e. capacity
+// specified in NC's configiuration) minus the number of currently running jobs. 
+//
+//   For queuing systems, this returns assigned capacity if there is no jobs
+// waiting in the queue, and minus number of queueing jobs otherwise.
+//
+//   This scheme makes more even distribution of jobs over NCs, rather than 
+// over available cores. Return if actual residual capacity (rather than 
+// assigned capacity) would result in almost always sending jobs to a cluster 
+// with maximal number of cores.
+//
 var ncConfig = conf.getServerConfig();
 var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
                                    // can accept without stretching
