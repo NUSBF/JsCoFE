@@ -274,16 +274,20 @@ ServerConfig.prototype.getJobsSafe = function()  {
 
 ServerConfig.prototype.checkNCStatus = function ( callback_func )  {
 
-  request({
-    uri     : cmd.nc_command.getNCInfo,
-    baseUrl : this.externalURL,
-    method  : 'POST',
-    body    : '',
-    json    : true,
-    rejectUnauthorized : this.rejectUnauthorized
-  },function(error,response,body){
-    callback_func ( error,response,body,this );
-  });
+  if (this.in_use)  {
+    request({
+      uri     : cmd.nc_command.getNCInfo,
+      baseUrl : this.externalURL,
+      method  : 'POST',
+      body    : '',
+      json    : true,
+      rejectUnauthorized : this.rejectUnauthorized
+    },function(error,response,body){
+      callback_func ( error,response,body,this );
+    });
+  } else  {
+    callback_func ( 'not-in-use',response,body,this );
+  }
 
 }
 
