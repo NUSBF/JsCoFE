@@ -582,16 +582,18 @@ function calcCapacity ( onFinish_func )  {
 //
 //   Calculates residual capacity and calls onFinish_func(capacity).
 //
-//   For CLIENT and SHELL, this returns NC assigned capacity (i.e. capacity
-// specified in NC's configiuration) minus the number of currently running jobs. 
+//   For CLIENT and SHELL, this function returns NC assigned capacity (i.e. 
+// capacity specified in NC's configiuration) minus the number of currently 
+// running jobs. 
 //
-//   For queuing systems, this returns assigned capacity if there is no jobs
-// waiting in the queue, and minus number of queueing jobs otherwise.
+//   For queuing systems, the return is the same unless there are waiting jobs 
+// in the queue, in which case this function returns minus the number of 
+// waiting jobs.
 //
-//   This scheme makes more even distribution of jobs over NCs, rather than 
-// over available cores. Return if actual residual capacity (rather than 
-// assigned capacity) would result in almost always sending jobs to a cluster 
-// with maximal number of cores.
+//   Negative capacity means that NC is overloaded and is deprioritised for 
+// sending jobs to it. The job despatch mechansim sends jobs evenly to NCs 
+// with positive capacity, or to NC with least negat=ive capacity if all NCs 
+// are overloaded.
 //
 var ncConfig = conf.getServerConfig();
 var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
