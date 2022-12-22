@@ -373,6 +373,8 @@ function ncSelectAndCheck ( nc_counter,task,callback_func )  {
       cfg.checkNCStatus ( function(error,response,body,config){
         if ((!error) && (response.statusCode==200))  {
           callback_func ( nc_number );
+        } else if ((error=='not-in-use') && (nc_counter>0))  {
+          ncSelectAndCheck ( nc_counter-1,task,callback_func );
         } else  {
           log.standard ( 1,'NC-' + nc_number + ' does not answer' );
           log.error    ( 1,'NC-' + nc_number + ' does not answer' );
