@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.12.22   <--  Date of Last Modification.
+ *    22.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -773,8 +773,10 @@ function ProjectListPage ( sceneId )  {
       addIcon  = 'folder_cloud_archive';
       addWidth = '75pt';
     }
-    if (tightScreen)
+    if (tightScreen)  {
+      addLbl   = '';
       addWidth = '30pt';
+    }
     add_btn.setButton ( addLbl,image_path(addIcon) ).setWidth(addWidth);
 
     var moveLbl  = '';
