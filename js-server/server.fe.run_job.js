@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.12.22   <--  Date of Last Modification.
+ *    22.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -331,29 +331,29 @@ var n0         = -1;
       return nc_number;
     }
 
-    // if no suitable servers found, choose one as for a not fast-track request
+    // if no suitable servers found, choose one as per a not fast-track request
     // below
 
   }
 
-  // look for next free server, starting from the last used one
+  // look for next free server, starting from the last used one (#n)
   for (var i=0;(i<nc_servers.length) && (nc_number<0);i++)  {
-    n++;
-    if (n>=nc_servers.length)  n = 0;
+    n++;  // this ensures that NCs are cycled, as initially n = last_number_cruncher
+    if (n>=nc_servers.length)  n = 0;  // wrap around
     if (nc_servers[n].in_use  &&
          (nc_servers[n].exeType!='CLIENT')  &&
          (nc_servers[n].exclude_tasks.indexOf(task._type)<0)  &&
          ( (nc_servers[n].only_tasks.length<=0) ||
            (nc_servers[n].only_tasks.indexOf(task._type)>=0) ) )  {
       if (nc_servers[n].current_capacity>0)  {
-        nc_number = n;
+        nc_number = n;  // just take the first one with positive capacity
       } else if (nc_servers[n].current_capacity>maxcap0)  {
+        // or choose one with least negative capacity
         maxcap0 = nc_servers[n].current_capacity;
         n0      = n;
       }
     }
   }
-
 
   if (nc_number<0)  // all NCs are busy with negative current capacity,
     nc_number = n0;  // choose the least busy one
@@ -1243,8 +1243,10 @@ function getJobResults ( job_token,server_request,server_response )  {
             var nc_servers = conf.getNCConfigs();
             if (jobEntry.nc_number<nc_servers.length)  {
               nc_servers[jobEntry.nc_number].current_capacity = meta.capacity;
-              //console.log ( ' >>>>> capacity = ' + meta.capacity + ' ' + jobEntry.nc_number );
-            }
+              log.standard ( 19,'NC' + jobEntry.nc_number + ' capacity=' + meta.capacity );
+            } else
+              log.error ( 19,'wrong NC number (' + jobEntry.nc_number + ') capacity=' + 
+                             meta.capacity );
           }
           feJobRegister.removeJob ( job_token );
           feJobRegister.n_jobs++;

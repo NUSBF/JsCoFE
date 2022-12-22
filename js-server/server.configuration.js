@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.12.22   <--  Date of Last Modification.
+ *    22.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -835,7 +835,7 @@ function readConfiguration ( confFilePath,serverType )  {
       var nc_server = new ServerConfig('NC'+i);
       for (var key in confObj.NumberCrunchers[i])
         nc_server[key] = confObj.NumberCrunchers[i][key];
-      nc_server.current_capacity = nc_server.capacity;
+      nc_server.current_capacity = nc_server.capacity;  // initially, assume full capacity
       if (!nc_server.externalURL)
         nc_server.externalURL = nc_server.url();
       nc_server.storage = _make_path ( nc_server.storage,null );

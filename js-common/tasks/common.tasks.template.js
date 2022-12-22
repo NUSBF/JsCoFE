@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.12.22   <--  Date of Last Modification.
+ *    22.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 // ./js-common/tasks/common.tasks.something.js . This convention is used
 // for class reconstruction from json strings
 
-var job_code = {
+const job_code = {
   new       : 'new',       // new job_code
   running   : 'running',   // job is running
   ending    : 'ending',    // job is in gracefull ending phase
@@ -41,7 +41,7 @@ var job_code = {
   retired   : 'retired'    // indicates that the task should not appear in task list
 };
 
-var input_mode = {
+const input_mode = {
   standard  : 'standard',  // standard input panel mode
   root      : 'root'       // root input panel mode
 };
@@ -50,19 +50,19 @@ var input_mode = {
 // ---------------------------------------------------------------------------
 // variables to be exported
 
-var jobDataFName      = 'job.meta';
-var jobReportDirName  = 'report';
-var jobInputDirName   = 'input';
-var jobOutputDirName  = 'output';
-var jobReportHTMLName = 'index.html';
-var jobReportTaskName = 'task.tsk';
+const jobDataFName      = 'job.meta';
+const jobReportDirName  = 'report';
+const jobInputDirName   = 'input';
+const jobOutputDirName  = 'output';
+const jobReportHTMLName = 'index.html';
+const jobReportTaskName = 'task.tsk';
 
-var keyEnvironment = ['CCP4','BALBES_ROOT','ROSETTA_DIR','warpbin','BDG_home',
-                      'XDS_home','XDSGUI_home','DOCREPO','ALPHAFOLD_CFG',
-                      '$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe',
-                      '$CCP4/share/mrd_data/VERSION','$CCP4/lib/py2/morda/LINKED',
-                      'Xia2_durin','$CCP4_MASTER/BORGES_LIBS'
-                     ];
+const keyEnvironment = ['CCP4','BALBES_ROOT','ROSETTA_DIR','warpbin','BDG_home',
+                        'XDS_home','XDSGUI_home','DOCREPO','ALPHAFOLD_CFG',
+                        '$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe',
+                        '$CCP4/share/mrd_data/VERSION','$CCP4/lib/py2/morda/LINKED',
+                        'Xia2_durin','$CCP4_MASTER/BORGES_LIBS'
+                       ];
 
 var dbx   = null;
 var comut = null;
