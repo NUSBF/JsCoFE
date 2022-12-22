@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.12.22   <--  Date of Last Modification.
+ *    22.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -951,7 +951,8 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf    = require('../../js-server/server.configuration');
+  const dstruct = require('../../js-common/dtypes/common.dtypes.structure');
 
   TaskPhaserMR.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -976,7 +977,8 @@ if (!__template)  {
       if (revision.Structure)  {
         if (revision.Options.mr_type=='sph')
           this.input_data.data['phases'] = [revision.Structure];
-        if (revision.Structure.hasXYZ())
+        // if (revision.Structure.hasXYZ())
+        if (revision.Structure.subtype.indexOf(dstruct.structure_subtype.XYZ)>=0)
           this.input_data.data['xmodel'] = [revision.Structure];
       }
       if (revision.Substructure && 
