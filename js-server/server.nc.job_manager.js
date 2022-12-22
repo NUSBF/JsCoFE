@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.12.22   <--  Date of Last Modification.
+ *    22.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -586,7 +586,8 @@ var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
 var nRegJobs = 0;  // number of jobs listed as active in registry
 
   for (var item in ncJobRegister.job_map)
-    if (!ncJobRegister.job_map[item].endTime)
+    // if (!ncJobRegister.job_map[item].endTime)
+    if (ncJobRegister.job_map[item].jobStatus==task_t.job_code.running)
       nRegJobs++;
 
   switch (ncConfig.exeType)  {
@@ -603,7 +604,7 @@ var nRegJobs = 0;  // number of jobs listed as active in registry
                     job.stdout.on('data', function(data) {
                       qstat_output += data.toString();
                     });
-                    job.on('close', function(code) {
+                    job.on ( 'close', function(code) {
                       var regExp = new RegExp('  qw  ','gi');
                       var n = (qstat_output.match(regExp) || []).length;
                       if (n>0)  capacity  = -n;
@@ -623,18 +624,20 @@ var nRegJobs = 0;  // number of jobs listed as active in registry
                       var n = 0;
                       try {
                         var lines = slurm_output.trim().split(/\s*[\r\n]+\s*/g);
+                        // count lines indicating waiting jobs
                         for (var i=1;i<lines.length;i++)  {
                           var llist = lines[i].match(/[^ ]+/g);
-                          if ((llist.length>5) && (llist[4].toLowerCase()!='r'))
+                          if ((llist.length>5) && (comut.isInteger(llist[0])) &&
+                                                  (llist[4].toLowerCase()!='r'))
                             n++;
                         }
                       } catch(err)  {
+                        n = 0;
                         log.error ( 31,'error parsing NC capacity: "' +
                                        slurm_output + '"' );
                       }
-                      if (n>0)  capacity  = -n;
+                      if (n>0)  capacity  = -n; // negative capacity if jobs are waiting
                           else  capacity -= nRegJobs;
-                      //    else  capacity -= Object.keys(ncJobRegister.job_map).length;
                       onFinish_func ( capacity );
                     });
                 break;
@@ -652,12 +655,12 @@ var nRegJobs = 0;  // number of jobs listed as active in registry
                       try {
                         n = parseInt(job_output);
                       } catch(err)  {
+                        n = 0;
                         log.error ( 31,'error parsing NC capacity: "' +
                                        job_output + '"' );
                       }
                       if (n>0)  capacity  = -n;
                           else  capacity -= nRegJobs;
-                      //    else  capacity -= Object.keys(ncJobRegister.job_map).length;
                       onFinish_func ( capacity );
                     });
                 break;
@@ -853,6 +856,8 @@ var cfg = conf.getServerConfig();
   // which are calculated differently in SHELL and SGE modes
 
   calcCapacity ( function(capacity){
+
+    log.standard ( 104,'NC capacity=' + capacity );
 
     // get original front-end url
     var feURL = jobEntry.feURL;
