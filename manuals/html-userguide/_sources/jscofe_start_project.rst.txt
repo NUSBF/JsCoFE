@@ -109,7 +109,7 @@ CCP4 Cloud tutorials
 
 Tutorials include examples designed to demonstrate structure solution techniques in CCP4 Cloud. Tutorials are presented as seed projects with pre-loaded data, which can be imported into the account. Each tutorial has instructions that will guide you through the required project development stages. 
 
-Tutorials can be added by links below:
+Tutorials can be added by following the links below:
 
 `Data processing and SAD phasing <../demo_project.html?cmount=Tutorials&project=T1_001.%20Data%20processing%20and%20SAD%20phasing.ccp4cloud>`_
 
