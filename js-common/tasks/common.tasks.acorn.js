@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    23.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -927,7 +927,7 @@ if (!__template)  {
     };
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskAcorn.prototype.hotButtons = function() {
-    return [ArpWarpHotButton(),BuccaneerHotButton()];
+    return [ArpWarpHotButton(),ModelCraftHotButton(),BuccaneerHotButton()];
   }
 
 } else  {

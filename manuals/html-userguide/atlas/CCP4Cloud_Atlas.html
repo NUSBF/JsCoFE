@@ -234,6 +234,8 @@
         <li class="md-nav__item"><a href="#automatic-experimental-phasing-with-known-sequence" class="md-nav__link">2.4.5. Automatic Experimental Phasing with known sequence</a>
         </li>
         <li class="md-nav__item"><a href="#experimental-phasing-with-unknown-sequence" class="md-nav__link">2.4.6. Experimental Phasing with unknown sequence</a>
+        </li>
+        <li class="md-nav__item"><a href="#molecular-replacement-in-electron-density-and-hybrid-approaches" class="md-nav__link">2.4.7. Molecular Replacement in electron density and hybrid approaches</a>
         </li></ul>
             </nav>
         </li>
@@ -279,6 +281,13 @@
     
     
       <a href="#experimental-phasing-with-unknown-sequence" class="md-nav__link">2.4.6. Experimental Phasing with unknown sequence</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#molecular-replacement-in-electron-density-and-hybrid-approaches" class="md-nav__link">2.4.7. Molecular Replacement in electron density and hybrid approaches</a>
       
     
     </li></ul>
@@ -355,6 +364,8 @@
         <li class="md-nav__item"><a href="#automatic-experimental-phasing-with-known-sequence" class="md-nav__link">2.4.5. Automatic Experimental Phasing with known sequence</a>
         </li>
         <li class="md-nav__item"><a href="#experimental-phasing-with-unknown-sequence" class="md-nav__link">2.4.6. Experimental Phasing with unknown sequence</a>
+        </li>
+        <li class="md-nav__item"><a href="#molecular-replacement-in-electron-density-and-hybrid-approaches" class="md-nav__link">2.4.7. Molecular Replacement in electron density and hybrid approaches</a>
         </li></ul>
             </nav>
         </li>
@@ -370,12 +381,18 @@
   
 <h1 id="atlas-ccp4cloud-atlas--page-root"><span class="section-number">2.4. </span>CCP4 Cloud Atlas<a class="headerlink" href="#atlas-ccp4cloud-atlas--page-root" title="Permalink to this headline">¶</a></h1>
 <p>This atlas presents different ways of solving structures in CCP4 Cloud
-depending on available data. Only schematic structure solution projects are shown, which only demonstrate general scenarios.</p>
+depending on available data. Only schematic structure solution projects
+are shown, which only demonstrate general scenarios.</p>
 <p>For solving a structure, you need at least experimental observations
-(reflections) either merged or unmerged. Unmerged reflections must be scaled and merged prior use with <em>Aimless</em> task.</p>
+(reflections) either merged or unmerged. Unmerged reflections must be
+scaled and merged with <em>Aimless</em> task before use in other programs.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Further actions will vary</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Atlas projects are available from the <em>Tutorials</em> directory</p>
 </div>
 
 <h2 id="molecular-replacement-with-known-sequence-and-structural-homolog-s"><span class="section-number">2.4.1. </span>Molecular Replacement with known sequence and structural homolog(s)<a class="headerlink" href="#molecular-replacement-with-known-sequence-and-structural-homolog-s" title="Permalink to this headline">¶</a></h2>
@@ -452,7 +469,7 @@ rebuilt model.</em></p>
 
 
 <h2 id="experimental-phasing-with-known-sequence"><span class="section-number">2.4.4. </span>Experimental Phasing with known sequence<a class="headerlink" href="#experimental-phasing-with-known-sequence" title="Permalink to this headline">¶</a></h2>
-<p><strong>A2.1.1 EP with known sequence using Shelx-C/D and Phaser</strong></p>
+<p id="a2-1-1"><strong>A2.1.1 EP with known sequence using Shelx-C/D and Phaser</strong></p>
 <p><em>Starts from importing merged MTZ and sequence files, finishes with phased and
 built model. The final result is given in job 0009 (reverse hand), model
 building in job 0010 (original hand) was done only for verification.</em></p>
@@ -483,6 +500,20 @@ completeness.</em></p>
 <p><em>Starts from importing merged MTZ and sequence files, finishes with phased and
 built model. In job 0006, found sequence is substituted in structure revision.</em></p>
 <a class="reference internal image-reference" href="../_images/A2.3.1.png"><img alt="../_images/A2.3.1.png" class="align-left" src="../_images/A2.3.1.png" style="width: 789.0px; height: 186.0px;"/></a>
+
+
+<h2 id="molecular-replacement-in-electron-density-and-hybrid-approaches"><span class="section-number">2.4.7. </span>Molecular Replacement in electron density and hybrid approaches<a class="headerlink" href="#molecular-replacement-in-electron-density-and-hybrid-approaches" title="Permalink to this headline">¶</a></h2>
+<p><strong>A3.1.1 MR fitting 2nd domain in electron density</strong></p>
+<p><em>Starts from importing merged MTZ, single-chain molecular model and sequence
+files, finishes with phased and built 2-chain model. Second domain is fit in
+electron density obtained from fitting first domain in reflection data.</em></p>
+<a class="reference internal image-reference" href="../_images/A3.1.1.png"><img alt="../_images/A3.1.1.png" class="align-left" src="../_images/A3.1.1.png" style="width: 789.0px; height: 187.0px;"/></a>
+<p><strong>A3.1.2 MR in experimental density</strong></p>
+<p><em>Starts from importing merged MTZ, single-chain molecular model and sequence
+files, finishes with phased and built model. Experimemtal phases are obtained
+as in</em> <a class="reference internal" href="#a2-1-1"><span class="std std-ref">A2.1.1</span></a> <em>and model is fit in phases corresponding to the
+original hand.</em></p>
+<a class="reference internal image-reference" href="../_images/A3.1.2.png"><img alt="../_images/A3.1.2.png" class="align-left" src="../_images/A3.1.2.png" style="width: 789.0px; height: 310.0px;"/></a>
 
 
 
