@@ -783,7 +783,8 @@ var row      = 0;
     new TaskDeposition(),
     new TaskContact   (),
     new TaskRotamer   (),
-    new TaskAreaimol  ()
+    new TaskAreaimol  (),
+    new TaskRampage   ()
   ],true);
 
   this.makeSection ( 'Toolbox',[
