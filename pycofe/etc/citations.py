@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.10.22   <--  Date of Last Modification.
+#    24.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1152,8 +1152,8 @@ citations = {
                   },
 
     'findmysequence' : { 'name'     : 'findMySequence',
-                    'category' : 'primary',
-                    'refs'     : [{
+                         'category' : 'primary',
+                         'refs'     : [{
                             'authors' : 'Chojnowski, G., Simpkin, A. J., Leonardo, D. A., Seifert-Davila, W., Vivas-Ruiz, D. E., Keegan, R. M. & Rigden, D. J.',
                             'title'   : 'findMySequence: a neural-network-based approach for identification of unknown proteins in X-ray crystallography and cryo-EM',
                             'journal' : 'IUCrJ',
@@ -1164,6 +1164,26 @@ citations = {
                         }]
                   },
 
+    'rapper'         : { 'name'     : 'Rapper',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Nicholas Furnham, Paul de Bakker, Mark DePristo, Reshma Shetty, Swanand Gore and Tom Blundell',
+                            'title'   : 'RAPPER Program',
+                            'journal' : 'CCP4 Software Suite',
+                            'volume'  : '',
+                            'year'    : '',
+                            'pages'   : '',
+                            'doi'     : ''
+                          },{
+                            'authors' : 'Lovell, S.C., Davis, I.W., Arendall III, W.B., de Bakker, P.I.W., Word, J.M., Prisant, M.G., Richardson, J.S., and Richardson, D.C.',
+                            'title'   : 'Structure validation by Calpha geometry: phi,psi and Cbeta deviation',
+                            'journal' : 'Proteins: Struct. Funct. Genet.',
+                            'volume'  : '50',
+                            'year'    : '2003',
+                            'pages'   : '437-450',
+                            'doi'     : '10.1002/prot.10286'
+                        }]
+                  },
 
 }
 
@@ -1241,7 +1261,10 @@ def clearCitations():
 
 
 def makeCitation ( reference ):
-    refhtml = reference["authors"] + " (" + reference["year"] + ") <i>" +\
+    year = ","
+    if reference["year"]:
+        year = " (" + reference["year"] + ")"
+    refhtml = reference["authors"] + year  + " <i>" +\
               reference["title"] + ".</i> " + reference["journal"] + " <b>" +\
               reference["volume"] + "</b>"
     if reference['pages']:
