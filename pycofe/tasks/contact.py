@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.10.22   <--  Date of Last Modification.
+#    24.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -48,9 +48,13 @@ class Contact(basic.TaskDriver):
 
         xyzin = ixyz.getXYZFilePath ( self.inputDir() )
 
-        self.open_stdin()
-        self.write_stdin ( self.getParameter(self.task.parameters.CONTACT_INPUT) )
-        self.close_stdin()
+        keywords = self.getParameter(self.task.parameters.CONTACT_INPUT).strip()
+        if keywords=="":
+            keywords = "END"
+
+        self.open_stdin  ()
+        self.write_stdin ( keywords )
+        self.close_stdin ()
 
         # run CONTACT
         self.runApp (
