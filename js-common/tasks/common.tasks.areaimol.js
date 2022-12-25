@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.10.22   <--  Date of Last Modification.
+ *    24.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -111,16 +111,16 @@ if (!__template)  {
     return 'calculates the solvent accessible surface area';
   }
 
-  TaskAreaimol.prototype.collectInput = function ( inputPanel )  {
+  // TaskAreaimol.prototype.collectInput = function ( inputPanel )  {
 
-    var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+  //   var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
-    if (!this.parameters.AREAIMOL_INPUT.value.trim())
-      msg += '|<b><i>no AREAIMOL instructions -- nothing to do</i></b>';
+  //   if (!this.parameters.AREAIMOL_INPUT.value.trim())
+  //     msg += '|<b><i>no AREAIMOL instructions -- nothing to do</i></b>';
 
-    return msg;
+  //   return msg;
 
-  }
+  // }
 
 } else  {
   // server side

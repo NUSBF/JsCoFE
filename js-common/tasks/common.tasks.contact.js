@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.10.22   <--  Date of Last Modification.
+ *    25.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -113,16 +113,16 @@ if (!__template)  {
     return 'computes various types of contacts in protein structures';
   }
 
-  TaskContact.prototype.collectInput = function ( inputPanel )  {
+  // TaskContact.prototype.collectInput = function ( inputPanel )  {
 
-    var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+  //   var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
-    if (!this.parameters.CONTACT_INPUT.value.trim())
-      msg += '|<b><i>no CONTACT instructions -- nothing to do</i></b>';
+  //   if (!this.parameters.CONTACT_INPUT.value.trim())
+  //     msg += '|<b><i>no CONTACT instructions -- nothing to do</i></b>';
 
-    return msg;
+  //   return msg;
 
-  }
+  // }
 
 } else  {
   // server side

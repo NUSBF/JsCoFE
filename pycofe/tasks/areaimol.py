@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.11.22   <--  Date of Last Modification.
+#    25.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -51,9 +51,13 @@ class Areaimol(basic.TaskDriver):
         # Prepare report parser
         self.setGenericLogParser ( "areaimol_report",False )
 
-        self.open_stdin()
-        self.write_stdin ( self.getParameter(self.task.parameters.AREAIMOL_INPUT) )
-        self.close_stdin()
+        keywords = self.getParameter(self.task.parameters.AREAIMOL_INPUT).strip()
+        if keywords=="":
+            keywords = "END"
+
+        self.open_stdin  ()
+        self.write_stdin ( keywords )
+        self.close_stdin ()
 
         # run AREAIMOL
         self.runApp (
@@ -70,8 +74,8 @@ class Areaimol(basic.TaskDriver):
         self.putDownloadButton ( self.file_stdout_path(),"download",grid_id,0,1 )
 
         # this will go in the project tree line
-        self.generic_parser_summary["Areaimol"] = {
-            "summary_line" : "finished"
+        self.generic_parser_summary["areaimol"] = {
+            "summary_line" : "SAS areas calculated"
         }
 
         # close execution logs and quit
