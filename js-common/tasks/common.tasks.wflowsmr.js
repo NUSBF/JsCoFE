@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.09.22   <--  Date of Last Modification.
+ *    25.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -53,7 +53,7 @@ function TaskWFlowSMR()  {
       min         : 1           // minimum acceptable number of data instances
     },{
       file_types  : '.pdb,.mmcif', // data type(s) and subtype(s)
-      label       : 'PDB structure', // label for input dialog
+      label       : 'Template structure', // label for input dialog
       tooltip     : '[Mandatory] Provide a path to PDB file with a search model',
       inputId     : 'fpdb',   // input Id for referencing input fields
       path        : '',
@@ -101,7 +101,7 @@ function TaskWFlowSMR()  {
       max         : this.input_ligands.length // maximum acceptable number of data instances
     },{
       data_type   : {'DataXYZ':['protein','dna','rna'] },  // data type(s) and subtype(s)
-      label       : 'PDB structure',    // label for input dialog
+      label       : 'Template structure',    // label for input dialog
       inputId     : 'xyz',    // input Id for referencing input fields
       //customInput : 'chain-sel', // lay custom fields next to the selection
       min         : 1,            // minimum acceptable number of data instances

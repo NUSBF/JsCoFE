@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.09.22   <--  Date of Last Modification.
+ *    25.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -337,8 +337,8 @@ process.on ( 'SIGINT',function() {
   process.exit();
 });
 
-process.on('uncaughtException', function (err) {
-  console.log('Caught exception: ' + err);
-});
+// process.on('uncaughtException', function (err) {
+//   console.log('Caught exception: ' + err);
+// });
 
 launch();

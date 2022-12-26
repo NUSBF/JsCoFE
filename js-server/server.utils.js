@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.12.22   <--  Date of Last Modification.
+ *    25.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -368,29 +368,46 @@ function copyDirAsync ( old_path,new_path,overwrite_bool,callback_func )  {
 }
 
 
+// function mkDir ( dirPath )  {
+//   if (!dirExists(dirPath))  {
+//     try {
+//       fs.mkdirSync ( dirPath );
+//       return true;
+//     } catch (e)  {
+//       log.error ( 6,'cannot create directory ' + dirPath +
+//                     ' error: ' + JSON.stringify(e) );
+//       return false;
+//     }
+//   }
+//   return true;
+// }
+
 function mkDir ( dirPath )  {
-  if (!dirExists(dirPath))  {
-    try {
-      fs.mkdirSync ( dirPath );
-      return true;
-    } catch (e)  {
-      log.error ( 6,'cannot create directory ' + dirPath +
-                    ' error: ' + JSON.stringify(e) );
-      return false;
-    }
+  try {
+    fs.mkdirSync ( dirPath );
+    return true;
+  } catch (e)  {
+    log.error ( 6,'cannot create directory ' + dirPath + ' error: ' + JSON.stringify(e) );
+    return false;
   }
-  return true;
 }
 
-// function mkDir ( dirPath )  {
-//   try {
-//     fs.mkdirSync ( dirPath );
-//     return true;
-//   } catch (e)  {
-//     log.error ( 6,'cannot create directory ' + dirPath + ' error: ' + JSON.stringify(e) );
-//     return false;
-//   }
-// }
+function mkDir_check ( dirPath )  {
+// attempts to create directory and returns:
+//     0 : if directory was created 
+//     1 : if directory already existed
+//    -1 : in case of error 
+  try {
+    // this goes first in order to fix the result in concurrent contexts
+    fs.mkdirSync ( dirPath );
+    return 0;
+  } catch (e)  {
+    if (dirExists(dirPath))
+      return 1;
+    log.error ( 6,'cannot create directory ' + dirPath + ' error: ' + JSON.stringify(e) );
+    return -1;
+  }
+}
 
 
 function mkDir_anchor ( dirPath )  {
@@ -951,6 +968,7 @@ module.exports.moveDir               = moveDir;
 module.exports.moveDirAsync          = moveDirAsync;
 module.exports.copyDirAsync          = copyDirAsync;
 module.exports.mkDir                 = mkDir;
+module.exports.mkDir_check           = mkDir_check;
 module.exports.mkDir_anchor          = mkDir_anchor;
 module.exports.cleanDir              = cleanDir;
 module.exports.cleanDirExt           = cleanDirExt;
