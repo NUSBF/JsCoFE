@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.12.22   <--  Date of Last Modification.
+#    26.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -113,7 +113,7 @@ class Rampage(basic.TaskDriver):
             }
 
         # close execution logs and quit
-        self.success ( have_results )
+        self.success ( False )
 
         return
 

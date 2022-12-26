@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#   31.10.22   <--  Date of Last Modification.
+#   26.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -73,7 +73,7 @@ class Rotamer (basic.TaskDriver):
             
             # this will go in the project tree line
             self.generic_parser_summary["Rotamer"] = {
-                "summary_line" : "Rotamer list was produced"
+                "summary_line" : "rotamer analysis done"
             }
 
         # close execution logs and quit
