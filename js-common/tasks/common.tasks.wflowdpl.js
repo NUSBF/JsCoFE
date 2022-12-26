@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.11.22   <--  Date of Last Modification.
+ *    25.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,7 +51,7 @@ function TaskWFlowDPL()  {
       min         : 1           // minimum acceptable number of data instances
     },{
       file_types  : '.pdb,.mmcif', // data type(s) and subtype(s)
-      label       : 'PDB structure', // label for input dialog
+      label       : 'Template structure', // label for input dialog
       tooltip     : '[Mandatory] Provide a path to PDB file with corresponding structure ',
       inputId     : 'fpdb',   // input Id for referencing input fields
       path        : '',

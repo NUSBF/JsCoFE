@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.12.22   <--  Date of Last Modification.
+ *    25.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1048,7 +1048,7 @@ function getProjectData ( loginData,data )  {
   if (pData)  {
     if (!pd.isProjectAccessible(loginData.login,pData.desc))
       return new cmd.Response ( cmd.fe_retcode.projectAccess,
-                                 '[00034] Project access denied.','' );
+                                 '[00035] Project access denied.','' );
     var d = {};
     d.meta      = pData;
     d.tasks_add = [];
@@ -1179,6 +1179,316 @@ var text = '[';
   return text;
 }
 
+
+function make_job_directory ( loginData,projectName,id0 )  {
+var id    = id0-1;
+var rc    = 1;
+var dpath = null;
+  while (rc>0)  {
+    id++;
+    dpath = getJobDirPath ( loginData,projectName,id );
+    rc    = utils.mkDir_check ( dpath );
+  }
+  return [rc,dpath,id];
+}
+
+
+function saveProjectData ( loginData,data )  {
+var response    = null;
+var projectData = data.meta;
+var projectDesc = projectData.desc;
+var projectName = projectDesc.name;
+
+  var rdata    = {}; // response data object
+  rdata.reload = 0;  // project reload codes for client:
+                     //  0: no reload is needed
+                     //  1: reload is needed but current operation may continue
+                     //  2: reload is mandatory, current operation must terminate
+  rdata.pdesc  = null;
+  rdata.jobIds = [];
+  var jobDirs  = [];
+
+  for (var i=0;i<data.tasks_add.length;i++)  {
+    rdata.jobIds.push ( data.tasks_add[i].id );  // this will be returned to
+                                                 // client modified or not
+    jobDirs.push ( [ null,null ] );  //  [dirpath,jobId]
+  }
+
+  rdata.pdesc = readProjectDesc ( loginData,projectName );
+  if (rdata.pdesc)  {
+  
+    if (rdata.pdesc.timestamp>projectDesc.timestamp)  {
+      // client timestamp is behind server project timestamp;
+      rdata.reload = 1;  // client should reload the project anyway
+    }
+
+    var pData = readProjectData ( loginData,projectName );
+
+    if (data.tasks_add.length>0)  {
+      // there are new tasks -- check that trees are compatible
+  
+      for (var i=0;(i<data.tasks_add.length) && (rdata.reload<=1);i++)  {
+        // simply check that all needful jobs are retained in the actual project
+        // check that all harvested tasks are there in pData
+        var hids = data.tasks_add[i].harvestedTaskIds;
+        for (var j=0;(j<hids.length) && (rdata.reload==1);j++)
+          if (!pd.getProjectNode(pData,hids[j]))
+            rdata.reload = 2;
+
+        if (rdata.reload<=1)  {
+
+          // Check that suggested new task id does not clash with what is
+          // already there in the project. Simply try to creat job directory and
+          // see if it already exists.
+          
+          var mjd = make_job_directory ( loginData,projectName,data.tasks_add[i].id );
+          
+          if (mjd[0]<0)  {
+          
+            log.error ( 30,'cannot create job directory at ' + mjd[1] );
+            data.reload = 2;
+            response    = new cmd.Response ( cmd.fe_retcode.mkDirError,
+                                    '[00026] Cannot create Job Directory',rdata );
+            emailer.send ( conf.getEmailerConfig().maintainerEmail,
+                'CCP4 Cloud Create Job Dir Fails',
+                '[00026] Detected mkdir failure at making new job directory at<p>' +
+                mjd[1] + '<p>please investigate.' );
+          
+          } else  {
+            // job directory was created, log name and id
+
+            jobDirs[i]   = [ mjd[1],mjd[2] ];
+            rdata.reload = 1;
+            
+            if (mjd[2]!=data.tasks_add[i].id)  {
+              // there was a clash, job id was changed, update metadata and tree node
+              var node = pd.getProjectNode ( projectData,data.tasks_add[i].id );
+              if (node)  { // must be always so, but put "if" for server stability
+                pData.desc.jobCount  = Math.max ( pData.desc.jobCount,mjd[2] );
+                rdata.jobIds[i]      = mjd[2];
+                data.tasks_add[i].id = mjd[2];
+                node.dataId = data.tasks_add[i].id;
+                node.text   = makeNodeName (
+                                data.tasks_add[i],
+                                node.text.substr(Math.max(0,node.text.indexOf(']')))
+                              );
+                node.text0  = node.text;
+              } else
+                log.error ( 31,'no tree node found ' + loginData.login + ':' +
+                              projectName + ':' + data.tasks_add[i].id );
+            }
+
+          }
+
+          // Check that the parent node for added task is there in pData;
+          // if found than projects can be merged without general reload of
+          // the client.
+          // Find the whole branch in the submitted project
+          var node_lst = pd.getProjectNodeBranch ( projectData,data.tasks_add[i].id );
+
+          // and find parent task id (skip remarks and folders)
+          var pDataId = '';
+          for (var j=1;(j<node_lst.length) && (!pDataId);j++)
+            pDataId = node_lst[j].dataId;
+
+          if (pDataId)  {
+            var pnode = pd.getProjectNode ( pData,pDataId );
+            if (pnode)  {  // node found, copy the added node over
+              // before copying, remove branches, coming with the added node,
+              // from the destination (if node was inserted rather than added)
+              var childIds = [];
+              for (var j=0;j<node_lst[0].children.length;j++)
+                childIds.push ( node_lst[0].children[j].dataId );
+              if (childIds.length>0)  {
+                var pchildren  = pnode.children;
+                pnode.children = [];
+                for (var j=0;j<pchildren.length;j++)
+                  if (childIds.indexOf(pchildren[j].dataId)<0)
+                    pnode.children.push ( pchildren[j] );
+              }
+              pnode.children.push ( node_lst[0] );
+            } else
+              rdata.reload = 2;
+          } else if ((pData.tree.length>0) && (node_lst.length>1))  {
+            // task to be added at root, always allow, may be a problem with remarks
+            pData.tree[0].children.push ( node_lst[0] );
+          } else // have to update, something's wrong -- should never be here
+            rdata.reload = 2;
+
+        }
+
+      }
+
+    }
+
+    if (rdata.reload>1)  {  // no way, client must update the project
+      for (var i=0;i<jobDirs.length;i++)
+        if (jobDirs[i][0])
+          utils.removePath ( jobDirs[i][0] );
+      if (response)
+        return response;
+      return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+    }
+
+    // further on, will work on the actual Project, but mind that the tree
+    // may return deleted nodes, see below
+    projectData = pData;
+    projectDesc = projectData.desc;
+
+  } else  {
+    log.error ( 32,'cannot read project description ' + loginData.login + ':' +
+                   projectName  );
+    emailer.send ( conf.getEmailerConfig().maintainerEmail,
+        'CCP4 Cloud Read Project Description Fails',
+        '[00027] Detected project description read failure for <b>' + 
+        loginData.login + ':' + projectName + '</b><p>Please investigate.' );
+    rdata.reload = 2;
+    return  new cmd.Response ( cmd.fe_retcode.readError,
+                               '[00027] Cannot read projecty description',rdata );
+  }
+
+  // Get users' projects list file name
+  var projectDataPath = getProjectDataPath ( loginData,projectName );
+
+  if (utils.fileExists(projectDataPath))  {
+
+    var disk_space_change = 0.0;
+    if ('disk_space' in projectDesc)  {  // backward compatibility on 05.06.2018
+      for (var i=0;i<data.tasks_del.length;i++)
+        disk_space_change -= data.tasks_del[i][1]
+      projectDesc.disk_space += disk_space_change;
+      projectDesc.disk_space  = Math.max ( 0,projectDesc.disk_space );
+    } else  {
+      projectDesc.disk_space  = 0.0;   // should be eventually removed
+      projectDesc.cpu_time    = 0.0;   // should be eventually removed
+    }
+
+    // checkProjectData ( projectData,loginData );   21.05.2021
+
+    if (disk_space_change!=0.0)  {
+      // disk space change is booked to project owner inside this function
+      //ration.changeProjectDiskSpace ( loginData,projectName,disk_space_change,false );
+      var ownerLoginData = loginData;
+      if (loginData.login!=projectDesc.owner.login)
+        ownerLoginData = user.getUserLoginData ( projectDesc.owner.login );
+      ration.updateProjectStats ( ownerLoginData,projectName,
+                                  0.0,disk_space_change,0,true );
+    }
+
+    for (var i=0;i<data.tasks_add.length;i++)
+      projectDesc.jobCount = Math.max ( projectDesc.jobCount,data.tasks_add[i].id );
+
+    if (data.tasks_del.length>0)  // save on reading files ration does not change
+      rdata.ration = ration.getUserRation(loginData).clearJobs();
+    rdata.pdesc = projectData.desc;
+
+    // this loop is here in order to minimise time for writing project tree in file
+    if (rdata.reload>0) // in case reload==1, project tree contains non-deleted nodes
+      for (var i=0;i<data.tasks_del.length;i++)
+        pd.deleteProjectNode ( projectData,data.tasks_del[i][0] );
+
+    var update_time_stamp = data.update || (rdata.reload>0) ||
+                                           (data.tasks_del.length>0) ||
+                                           (data.tasks_add.length>0);
+
+    if (writeProjectData(loginData,projectData,update_time_stamp))  {
+
+      // remove job directories from the 'delete' list
+      for (var i=0;i<data.tasks_del.length;i++)  {
+        rj.killJob ( loginData,projectName,data.tasks_del[i][0] );
+        utils.removePath ( getJobDirPath(loginData,projectName,data.tasks_del[i][0]) );
+      }
+
+      response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+
+      // add job directories from the 'add' list
+      for (var i=0;i<data.tasks_add.length;i++)
+        if (jobDirs[i][0])  {
+
+          var jobDirPath  = jobDirs[i][0];
+          var jobDataPath = getJobDataPath ( loginData,projectName,data.tasks_add[i].id );
+
+          if (!utils.writeObject(jobDataPath,data.tasks_add[i])) {
+            log.error ( 32,'cannot write job meta at ' + jobDataPath );
+            response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                '[00025] Job metadata cannot be written.','' );
+          }
+
+          if (('cloned_id' in data.tasks_add[i]) && data.tasks_add[i].cloned_id)  {
+            var taski      = class_map.makeClass ( data.tasks_add[i] );
+            var cloneItems = taski.cloneItems();
+            cloneItems.push ( 'auto.context' );
+            cloneItems.push ( 'auto.meta'    );
+            if (cloneItems.length>0)  {
+              // We copy items into cloned directory asynchronously without
+              // making sure that copy completes before response is sent back
+              // to client. This is a potential trouble, however, we assume
+              // no massive copying here, so that it should work.
+              var jobDirPath0 = getJobDirPath ( loginData,projectName,taski.cloned_id );
+              for (var j=0;j<cloneItems.length;j++)  {
+                var item_src  = path.join ( jobDirPath0,cloneItems[j] );
+                if (utils.fileExists(item_src))  {
+                  var item_dest = path.join ( jobDirPath ,cloneItems[j] );
+                  if (cloneItems[j]=='auto.context')  {
+                    var context = utils.readObject ( item_src );
+                    if (context)  {
+                      for (var key in context.job_register)
+                        if (context.job_register[key]==data.tasks_add[i].cloned_id)
+                          context.job_register[key] = taski.id;
+                      utils.writeObject ( item_dest,context );
+                    }
+                  } else  {
+                    fs.copy ( item_src,item_dest,function(err)  {
+                      if (err)  {
+                        log.error ( 33,'error copying item ' + item_src  );
+                        log.error ( 33,'                to ' + item_dest );
+                        log.error ( 33,'error: ' + err );
+                      }
+                    });
+                  }
+                }
+              }
+            }
+          }
+
+          // create report directory
+          utils.mkDir_anchor ( getJobReportDirPath(loginData,projectName,data.tasks_add[i].id) );
+
+          // create input directory (used only for sending data to NC)
+          utils.mkDir_anchor ( getJobInputDirPath(loginData,projectName,data.tasks_add[i].id) );
+
+          // create output directory (used for hosting output data)
+          utils.mkDir_anchor ( getJobOutputDirPath(loginData,projectName,data.tasks_add[i].id) );
+
+          // write out the self-updating html starting page, which will last
+          // only until it gets replaced by real report's bootstrap
+          utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
+
+        }
+// pd.printProjectTree ( ' >>>saveProjectData--addJob',projectData );
+
+    } else  {
+      log.error ( 35,'project metadata cannot be written at ' + projectDataPath );
+      response = new cmd.Response ( cmd.fe_retcode.writeError,
+                            '[00028] Project metadata cannot be written.','' );
+    }
+
+  } else if ((Object.keys(projectDesc.share).length>0) || projectDesc.autorun)  {
+    log.error ( 36,'shared project metadata does not exist at ' + projectDataPath );
+    rdata.reload = -11111;
+    response = new cmd.Response ( cmd.fe_retcode.ok,
+                               '[00029] Project metadata does not exist.',rdata );
+  } else  {
+    log.error ( 37,'project metadata does not exist at ' + projectDataPath );
+    response = new cmd.Response ( cmd.fe_retcode.noProjectData,
+                               '[00030] Project metadata does not exist.','' );
+  }
+
+  return response;
+
+}
+
+/*
 function saveProjectData ( loginData,data )  {
 var response    = null;
 var projectData = data.meta;
@@ -1486,7 +1796,7 @@ var projectName = projectDesc.name;
   return response;
 
 }
-
+*/
 
 // ===========================================================================
 
@@ -1745,7 +2055,7 @@ var pData    = readProjectData ( loginData,data.name );
             if (!writeProjectData(loginData,pData,true))  {
               utils.moveDir ( newPrjDirPath,projectDirPath,false );
               response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                   '[00031] Project metadata cannot be written (1).','' );
+                                   '[00032] Project metadata cannot be written (1).','' );
             } else  {
               rdata.meta = pData;
               response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
@@ -1760,7 +2070,7 @@ var pData    = readProjectData ( loginData,data.name );
     } else  {
       if (!writeProjectData(loginData,pData,true))  {
         response = new cmd.Response ( cmd.fe_retcode.writeError,
-                             '[00031] Project metadata cannot be written (2).','' );
+                             '[00032] Project metadata cannot be written (2).','' );
       } else  {
         rdata.meta = pData;
         response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
@@ -1769,7 +2079,7 @@ var pData    = readProjectData ( loginData,data.name );
 
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.readError,
-                             '[00032] Project metadata cannot be read.','' );
+                             '[00033] Project metadata cannot be read.','' );
   }
 
   return response;
@@ -1851,7 +2161,7 @@ var pData    = readProjectData ( loginData,data.name );
 
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.readError,
-                             '[00032] Project metadata cannot be read.','' );
+                             '[00036] Project metadata cannot be read.','' );
   }
 
   return response;
@@ -2287,7 +2597,7 @@ var jobId       = data.meta.id;
                                     { 'project_missing':true } );
     if (!response)
       response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                    '[00030] Job metadata cannot be written.',
+                                    '[00031] Job metadata cannot be written.',
                                     { 'project_missing':null } );
   }
 
@@ -2360,6 +2670,7 @@ module.exports.getProjectData         = getProjectData;
 // module.exports.advanceJobCounter      = advanceJobCounter;
 module.exports.makeNewProject         = makeNewProject;
 module.exports.makeNodeName           = makeNodeName;
+module.exports.make_job_directory     = make_job_directory;
 module.exports.saveProjectData        = saveProjectData;
 module.exports.shareProject           = shareProject;
 module.exports.renameProject          = renameProject;
