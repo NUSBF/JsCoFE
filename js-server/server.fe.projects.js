@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.12.22   <--  Date of Last Modification.
+ *    21.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1330,10 +1330,12 @@ var projectName = projectDesc.name;
       return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
     }
 
-    // further on, will work on the actual Project, but mind that the tree
-    // may return deleted nodes, see below
-    projectData = pData;
-    projectDesc = projectData.desc;
+    if (rdata.pdesc.timestamp>projectDesc.timestamp)  {
+      // further on, will work on the actual Project, but mind that the tree
+      // may return deleted nodes, see below
+      projectData = pData;
+      projectDesc = projectData.desc;
+    }
 
   } else  {
     log.error ( 32,'cannot read project description ' + loginData.login + ':' +

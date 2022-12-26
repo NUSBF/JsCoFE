@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.02.21   <--  Date of Last Modification.
+ *    26.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Dock panel
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2021
+ *  (C) E. Krissinel, A. Lebedev 2020-2022
  *
  *  ==========================================================================
  *
@@ -55,7 +55,9 @@ function Dock ( parent,onClick_func,onRightClick_func,addTask_func )  {
     self.sortable = new Sortable ( 26,24,
       function(itemId,tooltip,icon_uri){
         //alert ( itemId + ' selected' );
-        onClick_func ( itemId,tooltip,icon_uri );
+        window.setTimeout ( function(){
+          onClick_func ( itemId,tooltip,icon_uri );
+        },100);
       },
       function(itemId,tooltip,icon_uri){
         //alert ( itemId + ' right clicked' );
