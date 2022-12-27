@@ -1232,8 +1232,9 @@ var projectName = projectDesc.name;
         // check that all harvested tasks are there in pData
         var hids = data.tasks_add[i].harvestedTaskIds;
         for (var j=0;(j<hids.length) && (rdata.reload==1);j++)
-          if (!pd.getProjectNode(pData,hids[j]))
+          if (!pd.getProjectNode(pData,hids[j]))  {
             rdata.reload = 2;
+          }
 
         if (rdata.reload<=1)  {
 
@@ -1257,8 +1258,8 @@ var projectName = projectDesc.name;
           } else  {
             // job directory was created, log name and id
 
-            jobDirs[i]   = [ mjd[1],mjd[2] ];
-            rdata.reload = 1;
+            jobDirs[i] = [ mjd[1],mjd[2] ];
+            // rdata.reload = 1;
             
             if (mjd[2]!=data.tasks_add[i].id)  {
               // there was a clash, job id was changed, update metadata and tree node
@@ -1280,40 +1281,45 @@ var projectName = projectDesc.name;
 
           }
 
-          // Check that the parent node for added task is there in pData;
-          // if found than projects can be merged without general reload of
-          // the client.
-          // Find the whole branch in the submitted project
-          var node_lst = pd.getProjectNodeBranch ( projectData,data.tasks_add[i].id );
+          if (data.reload==1)  { // Given tree is behind the actual project state.
 
-          // and find parent task id (skip remarks and folders)
-          var pDataId = '';
-          for (var j=1;(j<node_lst.length) && (!pDataId);j++)
-            pDataId = node_lst[j].dataId;
+            // Check that the parent node for added task is there in pData;
+            // if found than projects can be merged without general reload of
+            // the client.
+            // Find the whole branch in the submitted project
+            var node_lst = pd.getProjectNodeBranch ( projectData,data.tasks_add[i].id );
 
-          if (pDataId)  {
-            var pnode = pd.getProjectNode ( pData,pDataId );
-            if (pnode)  {  // node found, copy the added node over
-              // before copying, remove branches, coming with the added node,
-              // from the destination (if node was inserted rather than added)
-              var childIds = [];
-              for (var j=0;j<node_lst[0].children.length;j++)
-                childIds.push ( node_lst[0].children[j].dataId );
-              if (childIds.length>0)  {
-                var pchildren  = pnode.children;
-                pnode.children = [];
-                for (var j=0;j<pchildren.length;j++)
-                  if (childIds.indexOf(pchildren[j].dataId)<0)
-                    pnode.children.push ( pchildren[j] );
+            // and find parent task id (skip remarks and folders)
+            var pDataId = '';
+            for (var j=1;(j<node_lst.length) && (!pDataId);j++)
+              pDataId = node_lst[j].dataId;
+
+            if (pDataId)  {
+              var pnode = pd.getProjectNode ( pData,pDataId );
+              if (pnode)  {  // node found, copy the added node over
+                // before copying, remove branches, coming with the added node,
+                // from the destination (if node was inserted rather than added)
+                var childIds = [];
+                for (var j=0;j<node_lst[0].children.length;j++)
+                  childIds.push ( node_lst[0].children[j].dataId );
+                if (childIds.length>0)  {
+                  var pchildren  = pnode.children;
+                  pnode.children = [];
+                  for (var j=0;j<pchildren.length;j++)
+                    if (childIds.indexOf(pchildren[j].dataId)<0)
+                      pnode.children.push ( pchildren[j] );
+                }
+                pnode.children.push ( node_lst[0] );
+              } else  {
+                rdata.reload = 2;
               }
-              pnode.children.push ( node_lst[0] );
-            } else
+            } else if ((pData.tree.length>0) && (node_lst.length>1))  {
+              // task to be added at root, always allow, may be a problem with remarks
+              pData.tree[0].children.push ( node_lst[0] );
+            } else   {  // have to update, something's wrong -- should never be here
               rdata.reload = 2;
-          } else if ((pData.tree.length>0) && (node_lst.length>1))  {
-            // task to be added at root, always allow, may be a problem with remarks
-            pData.tree[0].children.push ( node_lst[0] );
-          } else // have to update, something's wrong -- should never be here
-            rdata.reload = 2;
+            }
+          }
 
         }
 
@@ -1337,17 +1343,18 @@ var projectName = projectDesc.name;
       projectDesc = projectData.desc;
     }
 
-  } else  {
-    log.error ( 32,'cannot read project description ' + loginData.login + ':' +
-                   projectName  );
-    emailer.send ( conf.getEmailerConfig().maintainerEmail,
-        'CCP4 Cloud Read Project Description Fails',
-        '[00027] Detected project description read failure for <b>' + 
-        loginData.login + ':' + projectName + '</b><p>Please investigate.' );
-    rdata.reload = 2;
-    return  new cmd.Response ( cmd.fe_retcode.readError,
-                               '[00027] Cannot read projecty description',rdata );
   }
+  //  else  {
+  //   log.error ( 32,'cannot read project description ' + loginData.login + ':' +
+  //                  projectName  );
+  //   emailer.send ( conf.getEmailerConfig().maintainerEmail,
+  //       'CCP4 Cloud Read Project Description Fails',
+  //       '[00027] Detected project description read failure for <b>' + 
+  //       loginData.login + ':' + projectName + '</b><p>Please investigate.' );
+  //   rdata.reload = 2;
+  //   return  new cmd.Response ( cmd.fe_retcode.readError,
+  //                              '[00027] Cannot read projecty description',rdata );
+  // }
 
   // Get users' projects list file name
   var projectDataPath = getProjectDataPath ( loginData,projectName );

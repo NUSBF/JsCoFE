@@ -991,11 +991,19 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
                 self.addJob();
               break;
         case start_mode.migrate :
-                job_tree.addTask ( new TaskMigrate(),false,false,self,
-                  function(key){
-                    self._set_del_button_state();
-                    //self.del_btn.setDisabled ( false );
+                if (self.start_action('add_job'))  {
+                  self.can_reload = true;
+                  self.jobTree.addTask ( new TaskMigrate(),false,false,self,
+                    function(key){
+                      self._set_del_button_state();
+                      self.end_action();
                   });
+                }
+                // job_tree.addTask ( new TaskMigrate(),false,false,self,
+                //   function(key){
+                //     self._set_del_button_state();
+                //     //self.del_btn.setDisabled ( false );
+                //   });
               break;
         case start_mode.standard :
         case start_mode.expert   :  // legacy
