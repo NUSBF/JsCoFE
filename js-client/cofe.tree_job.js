@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.12.22   <--  Date of Last Modification.
+ *    27.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -703,7 +703,7 @@ JobTree.prototype.updateRation = function ( data )  {
   }
 }
 
-JobTree.prototype.checkReload = function ( self,rdata,details )  {
+JobTree.prototype.checkReload = function ( rdata,details )  {
   if (rdata.reload>1)  {
     var msg =
       '<div style="width:400px;"><h2>Project Update Required</h2>' +
@@ -717,14 +717,13 @@ JobTree.prototype.checkReload = function ( self,rdata,details )  {
       msg += 'by user, with whom this Project is shared.';
     else
       msg += 'by automatic workflow running.';
-    (function(self){
-      new MessageBoxF ( 'Project update required',
-          msg + '<p>Click "Update" button and try to ' + details + ' again.</div>',
-          'Update',function(){
-            rdata.force_reload = true;
-            self.emitSignal ( cofe_signals.reloadTree,rdata );
-          },true );
-    }(this))
+    var self = this;
+    new MessageBoxF ( 'Project update required',
+        msg + '<p>Click "Update" button and try to ' + details + ' again.</div>',
+        'Update',function(){
+          rdata.force_reload = true;
+          self.emitSignal ( cofe_signals.reloadTree,rdata );
+        },true );
     return false;  // do not proceed
   }
   return true;  // proceed
@@ -930,7 +929,7 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
       task.parentId = ptask.id;
 
     this.saveProjectData ( [task],[],true, function(tree,rdata){
-      if (tree.checkReload(tree,rdata,'add the job'))  {
+      if (tree.checkReload(rdata,'add the job'))  {
         task.id     = rdata.jobIds[0];
         node.dataId = task.id;
         tree.projectData.desc.jobCount = task.id;
@@ -1201,7 +1200,7 @@ JobTree.prototype.moveJobUp = function ( onMoveUp_func )  {
     this.moveSelectedNodeUp();
     // (function(tree,node0){
       this.saveProjectData ( [],[],true, function(tree,rdata){
-        if (tree.checkReload(tree,rdata,'move the job up'))  {
+        if (tree.checkReload(rdata,'move the job up'))  {
           tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
           tree.projectData.desc.jobCount  = rdata.pdesc.jobCount;
           var node0 = tree.getLastHighlightedNode();
@@ -1367,7 +1366,7 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func ) {
         tree.calcMetrics();
 
         tree.saveProjectData ( [],tasks_del,true, function(tree1,rdata){
-          if (tree1.checkReload(tree1,rdata,'delete the job(s)<br>'))  {
+          if (tree1.checkReload(rdata,'delete the job(s)<br>'))  {
             if (onDelete_func)
               onDelete_func(true);
           }
@@ -1881,7 +1880,7 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
       this.setText ( node,this.makeNodeName(task) );
 
       this.saveProjectData ( [task],[],true, function(tree,rdata){
-        if (tree.checkReload(tree,rdata,'add the job'))  {
+        if (tree.checkReload(rdata,'add the job'))  {
           task.id     = rdata.jobIds[0];
           node.dataId = task.id;
           tree.projectData.desc.jobCount = task.id;
