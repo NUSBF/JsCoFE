@@ -242,3 +242,19 @@ original hand.*
 .. image:: images_atlas/A3.1.2.png
         :scale: 50 %
         :align: left
+
+
+-------------------------------------
+Various structure solution techniques 
+-------------------------------------
+
+**A4.1.1 Solving protein-nucleotide complex with Phaser and Arp/wArp (NUCE)**
+
+*Starts from importing merged MTZ, single-chain molecular model and sequence
+files, finishes with phased and built protein-nucleotide complex. Note the  
+iterative approach to building nucleotide chains by using triads of
+Density Modification, Model Building and Refinement.*
+
+.. image:: images_atlas/A4.1.1.png
+        :scale: 50 %
+        :align: left

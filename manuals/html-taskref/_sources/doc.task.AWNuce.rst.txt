@@ -1,0 +1,35 @@
+===============================================
+Automatic RNA/DNA Building with Arp/wArp (NUCE)
+===============================================
+
+**NUCE** is a shortcut to **Arp/wArp**'s nucleotide building functionality.
+Giving approximation to phases in *Structure Revision*, **NUCE** identifies
+candidate phosphate positions in electron density, which is then used for
+building the nucleotide backbone and, finally, nucleic acid bases. The 
+resulting polynucleotides *replace* any existing nucleic acid chains 
+in *Structure Revision*.
+
+**NUCE** performs a single act of building as described above, and does not 
+refine the resulting structure or improve phases. These operations should be 
+performed by appropriate programs. Good results are obtained when **NUCE** uses
+modified phases (*e.g.,* after **Parrot**) and results are refined using 
+**Refmac** (*e.g.,* 10 iterations with jelly-body restraints). Usually, a 
+few iterations **Parrpt** -- **NUCE** -- **Refmac** are required. This
+approach is exemplified in Atlas entry A4.1.1.
+
+-------
+Options
+-------
+
+**NUCE** works completely automatically and has no options or parameters to 
+manioulate with.
+
+.. note::
+   **NUCE** can built nucleotide chains in arbitrary location; in such case,
+   they should be brought in the proxinity of protein chains by suitable
+   symmetry transformation, *e.g.,* by using **Coot**.
+
+
+**REFERENCES**
+
+`Hattne J., Lamzin V.S. (2008) Pattern recognition-based detection of planar objects in 3D electron density maps. Acta Cryst. D64: 834-842; <https://scripts.iucr.org/cgi-bin/paper?S0907444908014327>`_

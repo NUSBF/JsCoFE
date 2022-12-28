@@ -121,7 +121,7 @@ class AWNuce(basic.TaskDriver):
                 t       = polymer.check_polymer_type()
                 if t in (gemmi.PolymerType.Rna, gemmi.PolymerType.Dna):
                     st[0].remove_chain ( chain.name )
-                    self.stdoutln ( " >>>> chain " + chain.name + " excluded from repeat (" + str(t) + ")" )
+                    # self.stdoutln ( " >>>> chain " + chain.name + " excluded from repeat (" + str(t) + ")" )
                 else:
                     chain_ids = chain_ids.replace ( chain.name,"" )
 

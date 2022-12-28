@@ -46,7 +46,7 @@
   
   
   
-    <title>Dimple &#8212; CCP4 Cloud 1.7 documentation</title>
+    <title>Automatic RNA/DNA Building with Arp/wArp (NUCE) &#8212; CCP4 Cloud 1.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
@@ -57,8 +57,8 @@
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Comb Structure with Coot/Refmac" href="doc.task.CombStructure.html" />
-    <link rel="prev" title="Automatic Model Building of RNA/DNA with Nautilus" href="doc.task.Nautilus.html" />
+    <link rel="next" title="Automatic Model Building with Buccaneer" href="doc.task.Buccaneer.html" />
+    <link rel="prev" title="Automated Model Building with Arp/wArp" href="doc.task.ArpWarp.html" />
   
    
 
@@ -77,7 +77,7 @@
   <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
   <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
   <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#doc.task.Dimple" tabindex="1" class="md-skip"> Skip to content </a>
+  <a href="#doc.task.AWNuce" tabindex="1" class="md-skip"> Skip to content </a>
   <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
@@ -95,7 +95,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
-          <span class="md-header-nav__topic"> Dimple </span>
+          <span class="md-header-nav__topic"> Automatic RNA/DNA Building with Arp/wArp (NUCE) </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -296,8 +296,31 @@
     <li class="md-nav__item">
     
     
-      <a href="doc.task.AWNuce.html" class="md-nav__link">Automatic RNA/DNA Building with Arp/wArp (NUCE)</a>
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Automatic RNA/DNA Building with Arp/wArp (NUCE) </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">Automatic RNA/DNA Building with Arp/wArp (NUCE)</a>
       
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#doc-task-awnuce--page-root" class="md-nav__link">Automatic RNA/DNA Building with Arp/wArp (NUCE)</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#options" class="md-nav__link">Options</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="#options" class="md-nav__link">Options</a>
+      
+    
+    </li></ul>
     
     </li>
     <li class="md-nav__item">
@@ -317,31 +340,8 @@
     <li class="md-nav__item">
     
     
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> Dimple </label>
-    
-      <a href="#" class="md-nav__link md-nav__link--active">Dimple</a>
+      <a href="doc.task.Dimple.html" class="md-nav__link">Dimple</a>
       
-        
-<nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
-  <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#doc-task-dimple--page-root" class="md-nav__link">Dimple</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#options" class="md-nav__link">Options</a>
-        </li></ul>
-            </nav>
-        </li>
-  </ul>
-</nav>
-      <ul class="md-nav__list"> 
-    <li class="md-nav__item">
-    
-    
-      <a href="#options" class="md-nav__link">Options</a>
-      
-    
-    </li></ul>
     
     </li>
     <li class="md-nav__item">
@@ -395,7 +395,7 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#doc-task-dimple--page-root" class="md-nav__link">Dimple</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#doc-task-awnuce--page-root" class="md-nav__link">Automatic RNA/DNA Building with Arp/wArp (NUCE)</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#options" class="md-nav__link">Options</a>
         </li></ul>
@@ -411,27 +411,32 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="doc-task-dimple--page-root">Dimple<a class="headerlink" href="#doc-task-dimple--page-root" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://journals.iucr.org/a/issues/2013/a1/00/a50958/a50958.pdf" rel="noopener noreferrer" target="_blank">DIMPLE</a> (DIfference Map PipeLinE)Automated difference map generation pipeline to allow for quick assessment of crystal data to see if a ligand has bound to the structure. It is a joint development by the CCP4 software group and the Diamond light source. It is an automated software pipeline for rapidly processing crystals that contain a known protein and possibly a ligand bound to this protein.</p>
-<p><strong>DIMPLE</strong> takes the already known “apo” structure for the target protein and compares it with the electron density map for the same, crystallised structure (and possibly bound ligand) interpreted from the X-ray diffraction images. It then presents the user with a set of snapshot images illustrating the regions where there are large areas of electron density unaccounted for by the protein structure model. Within a few seconds, an experienced user can decipher from these images if any of this unaccounted for density indicates a bound ligand. A positive result can mean that the rest of the batch of crystals for this particular ligand can be discarded allowing for a more efficient use of the beam time and saving the user from lots of potentially unnecessary processing.</p>
-<p>The main goal is to present a user with a quick answer to the question of whether or not they have a bound ligand or drug candidate in their crystal.</p>
-<blockquote>
-<div><strong>DIMPLE</strong> can work only with reflection datasets that include mean intensities.</div></blockquote>
+<h1 id="doc-task-awnuce--page-root">Automatic RNA/DNA Building with Arp/wArp (NUCE)<a class="headerlink" href="#doc-task-awnuce--page-root" title="Permalink to this headline">¶</a></h1>
+<p><strong>NUCE</strong> is a shortcut to <strong>Arp/wArp</strong>’s nucleotide building functionality.
+Giving approximation to phases in <em>Structure Revision</em>, <strong>NUCE</strong> identifies
+candidate phosphate positions in electron density, which is then used for
+building the nucleotide backbone and, finally, nucleic acid bases. The
+resulting polynucleotides <em>replace</em> any existing nucleic acid chains
+in <em>Structure Revision</em>.</p>
+<p><strong>NUCE</strong> performs a single act of building as described above, and does not
+refine the resulting structure or improve phases. These operations should be
+performed by appropriate programs. Good results are obtained when <strong>NUCE</strong> uses
+modified phases (<em>e.g.,</em> after <strong>Parrot</strong>) and results are refined using
+<strong>Refmac</strong> (<em>e.g.,</em> 10 iterations with jelly-body restraints). Usually, a
+few iterations <strong>Parrpt</strong> – <strong>NUCE</strong> – <strong>Refmac</strong> are required. This
+approach is exemplified in Atlas entry A4.1.1.</p>
 
 <h2 id="options">Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><p><strong>Refinement levels:</strong></p>
-<blockquote>
-<div><ul class="simple">
-<li><strong>Normal level:</strong>  DIMPLE runs only 12 cycles of refinement.</li>
-<li><strong>Enhanced level:</strong>  DIMPLE runs 20 refinement cycles together with jelly-body refinement.</li>
-<li><strong>Highest level:</strong> DIMPLE runs additionally 100 cycles of Refmac with jelly-body refinement.</li>
-</ul>
-</div></blockquote>
-</div></blockquote>
-<p><strong>References</strong></p>
-<p><a class="reference external" href="https://doi.org/10.1107/S0108767313097419" rel="noopener noreferrer" target="_blank">Wojdyr, M., Keegan, R., Winter, G., Ashton, A. (2013) DIMPLE - a pipeline for the rapid generation of difference maps from protein crystals with putatively bound ligands. Acta Cryst. A69: s299</a></p>
-<p>Please visit the <a class="reference external" href="http://ccp4.github.io/dimple/" rel="noopener noreferrer" target="_blank">official site</a> to get more information.</p>
+<p><strong>NUCE</strong> works completely automatically and has no options or parameters to
+manioulate with.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>NUCE</strong> can built nucleotide chains in arbitrary location; in such case,
+they should be brought in the proxinity of protein chains by suitable
+symmetry transformation, <em>e.g.,</em> by using <strong>Coot</strong>.</p>
+</div>
+<p><strong>REFERENCES</strong></p>
+<p><a class="reference external" href="https://scripts.iucr.org/cgi-bin/paper?S0907444908014327" rel="noopener noreferrer" target="_blank">Hattne J., Lamzin V.S. (2008) Pattern recognition-based detection of planar objects in 3D electron density maps. Acta Cryst. D64: 834-842;</a></p>
 
 
 
@@ -445,7 +450,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="doc.task.Nautilus.html" title="Automatic Model Building of RNA/DNA with Nautilus"
+            <a href="doc.task.ArpWarp.html" title="Automated Model Building with Arp/wArp"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -454,17 +459,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Automatic Model Building of RNA/DNA with Nautilus </span>
+                      class="md-footer-nav__direction"> Previous </span> Automated Model Building with Arp/wArp </span>
               </div>
             </a>
           
           
-            <a href="doc.task.CombStructure.html" title="Comb Structure with Coot/Refmac"
+            <a href="doc.task.Buccaneer.html" title="Automatic Model Building with Buccaneer"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Comb Structure with Coot/Refmac </span>
+                class="md-footer-nav__direction"> Next </span> Automatic Model Building with Buccaneer </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
