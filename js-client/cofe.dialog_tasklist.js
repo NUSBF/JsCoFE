@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.22   <--  Date of Last Modification.
+ *    28.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -756,13 +756,15 @@ var row      = 0;
     new TaskBuster    (),
     new TaskLorestr   (),
     new TaskDimple    (),
-    'Model building',
+    new TaskCombStructure(),
+    'Model building -- polypeptides',
     new TaskModelCraft(),
     new TaskCCP4Build (),
     new TaskBuccaneer (),
     new TaskArpWarp   (),
-    new TaskNautilus  (),
-    new TaskCombStructure()
+    'Model building -- polynucleotides',
+    new TaskAWNuce    (),
+    new TaskNautilus  ()
   ],true);
 
   this.makeSection ( 'Coot',[

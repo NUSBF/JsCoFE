@@ -170,14 +170,19 @@ TaskNautilus.prototype.currentVersion = function()  {
 }
 
 TaskNautilus.prototype.desc_title = function()  {
-  // this appears under task title in the task list
-    return 'performs automated building of RNA/DNA from electron density';
-  };
+// this appears under task title in the task list
+  return 'performs automated building of RNA/DNA from phases';
+};
 
-  TaskNautilus.prototype.checkKeywords = function ( keywords )  {
-    // keywords supposed to be in low register
-      return this.__check_keywords ( keywords,['nautilus', 'model','building','mr', 'molecular', 'replacement','rna','dna', 'na'] );
-  }
+TaskNautilus.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['nautilus', 'model','building','mr', 'molecular', 'replacement','rna','dna', 'na'] );
+}
+
+// hotButtons return list of buttons added in JobDialog's toolBar.
+TaskNautilus.prototype.hotButtons = function() {
+  return [CootMBHotButton()];
+}
 
 if (__template)  {
   //  for server side

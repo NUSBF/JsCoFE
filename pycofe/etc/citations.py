@@ -665,11 +665,23 @@ citations = {
                         }]
                   },
 
+    'auto_nuce' : { 'name'     : 'NUCE',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Hattne J., Lamzin V.S.',
+                            'title'   : 'Pattern recognition-based detection of planar objects in 3D electron density maps',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D64',
+                            'year'    : '2008',
+                            'pages'   : '834-842',
+                            'doi'     : '10.1107/S0907444908014327'
+                        }]
+                  },
+
     'bp3' :       { 'name'     : 'BP3',
                     'category' : 'primary',
                     'copy'     : [['afro',-1]]  # -1 means copy all
                   },
-
 
     'prasa' :     { 'name'     : 'PRASA',
                     'category' : 'primary',

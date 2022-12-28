@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.12.22   <--  Date of Last Modification.
+ *    28.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -73,7 +73,7 @@ function DataStructure()  {
 
   this.removeNonAnom  = false; // for use in Crank-2
 
-  this.useModelSel    = 'N';   // for use in Buccaneer
+  this.useModelSel    = '';    // for use in Buccaneer and Nautilus
   this.initPhaseSel   = structure_subtype.XYZ;  // for use in Acorn and ArpWarp
   this.BFthresh       = 3.0;
   this.phaseBlur      = 1.0;   // used in arpwarp
@@ -236,7 +236,10 @@ if (!__template)  {
         setLabel ( 'Use model to place and name chains, and&nbsp;',row,0 );
         customGrid.useModelSel = new Dropdown();
         customGrid.useModelSel.setWidth ( '120%' );
-        customGrid.useModelSel.addItem ( 'nothing else','','N',this.useModelSel=='N' );
+        customGrid.useModelSel.addItem ( 'nothing else','','N',
+                                         (!this.useModelSel) || 
+                                         this.useModelSel=='mr-model-fixed' ||
+                                         this.useModelSel=='N' );
         customGrid.useModelSel.addItem ( 'seed chain growing','','mr-model-seed',
                                           this.useModelSel=='mr-model-seed' );
         customGrid.useModelSel.addItem ( 'provide initial model','','mr-model-filter',
@@ -266,7 +269,7 @@ if (!__template)  {
         customGrid.useModelSel.setWidth ( '120%' );
         customGrid.useModelSel.addItem ( 'ignore','','N',this.useModelSel=='N' );
         customGrid.useModelSel.addItem ( 'consider fixed','','mr-model-fixed',
-                                          this.useModelSel=='mr-model-fixed' );
+                 (this.useModelSel!='N') || this.useModelSel=='mr-model-fixed' );
         customGrid.setWidget ( customGrid.useModelSel, row,1,1,2 );
         customGrid.useModelSel.make();
       }

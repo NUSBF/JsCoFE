@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    27.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
 #
 # ============================================================================
 #
@@ -33,7 +31,6 @@ import sys
 #  application imports
 from . import basic
 from   pycofe.proc   import coor
-from   pycofe.dtypes import dtype_revision
 from   pycofe.auto   import auto
 
 # ============================================================================
