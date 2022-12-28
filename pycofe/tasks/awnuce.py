@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.12.22   <--  Date of Last Modification.
+#    28.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -77,13 +77,13 @@ class AWNuce(basic.TaskDriver):
                       "fom"     , istruct.FOM
                     ]
 
-        asu_comp = revision.getResComposition()
-        if asu_comp["nchains"]>0:
-            if asu_comp["protein"]>0:
-                cmd += [ "residues",str(asu_comp["protein"]) ]
-            nas = asu_comp["rna"] + asu_comp["dna"]
-            if nas>0:
-                cmd += [ "nucleotides",str(nas) ]
+        # asu_comp = revision.getResComposition()
+        # if asu_comp["nchains"]>0:
+        #     if asu_comp["protein"]>0:
+        #         cmd += [ "residues",str(asu_comp["protein"]) ]
+        #     nas = asu_comp["rna"] + asu_comp["dna"]
+        #     if nas>0:
+        #         cmd += [ "nucleotides",str(nas) ]
 
         self.putWaitMessageLF ( "Building in progress ..." )
         self.rvrow -= 1
