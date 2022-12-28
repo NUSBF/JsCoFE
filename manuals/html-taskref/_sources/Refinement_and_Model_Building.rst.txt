@@ -9,9 +9,10 @@ Refinement and Model Building
     doc.task.Buster.rst
     doc.task.Lorestr
     doc.task.CCP4Build
-    doc.task.Buccaneer
-    doc.task.ArpWarp
     doc.task.ModelCraft
+    doc.task.ArpWarp
+    doc.task.AWNuce
+    doc.task.Buccaneer
     doc.task.Nautilus
     doc.task.Dimple
     doc.task.CombStructure

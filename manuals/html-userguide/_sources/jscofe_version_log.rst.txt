@@ -20,7 +20,9 @@ CCP4 Cloud Version Log
 
     #. Density fit modes in ``Molrep`` and ``Phaser-MR`` optimised
 
-    #. Fixed bu on cloning projects, which made them to always clone into ``My Projects``
+    #. Fixed bug in cloning projects, which made them to always clone into ``My Projects``
+
+    #. Added task ``AWNuce`` for building polynucleotides with Arp/wArp
 
 
 
