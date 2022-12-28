@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    08.10.22   <--  Date of Last Modification.
+#    28.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -69,7 +67,7 @@ class DType(dtype_xyz.DType):
             self.removeNonAnom  = False; # for use in Crank-2
 
             #self.useForNCS      = True  # for use in Parrot
-            self.useModelSel    = "N"    # for use in Buccaneer
+            self.useModelSel    = ""     # for use in Buccaneer and Nautilus
             self.BFthresh       = 3.0
             self.phaseBlur      = 1.0    # used in arpwarp
             self.mapSel         = "diffmap" # map selection ('diffmap','directmap') for coot tasks
@@ -397,6 +395,14 @@ class DType(dtype_xyz.DType):
 
     def addWaterSubtype ( self ):
         self.addSubtype ( dtype_template.subtypeWaters() )
+        return
+
+    def addDNASubtype ( self ):
+        self.addSubtype ( dtype_template.subtypeDNA() )
+        return
+
+    def addRNASubtype ( self ):
+        self.addSubtype ( dtype_template.subtypeRNA() )
         return
 
     def hasWaterSubtype ( self ):

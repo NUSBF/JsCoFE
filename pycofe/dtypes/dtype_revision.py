@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    25.07.21   <--  Date of Last Modification.
+#    28.12.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -124,36 +122,6 @@ class DType(dtype_template.DType):
         self.dataId = str(self.jobId).zfill(4) + "." + str(serialNo).zfill(2)
         return
 
-    # def makeRevDName(self,jobId,serialNo,title):
-    #     self.jobId = jobId
-    #     self.makeDataId ( serialNo )
-    #     self.dname = "R" + self.dataId + ": " + title + " "
-    #     f = False
-    #     if dtype_template.subtypeHKL() in self.subtype:
-    #         if self.HKL.new_spg:
-    #             self.dname += self.HKL.new_spg + " "
-    #         self.dname += "hkl"
-    #         f = True
-    #         if dtype_template.subtypeAnomalous() in self.subtype:
-    #             self.dname += "(anomalous)"
-    #     incl = [dtype_template.subtypeProtein(),dtype_template.subtypeDNA(),
-    #             dtype_template.subtypeRNA()]
-    #     asutype = ""
-    #     for st in self.subtype:
-    #         if st in incl:
-    #             if asutype:  asutype += ","
-    #             asutype += st
-    #     excl = [dtype_template.subtypeHKL(),dtype_template.subtypeAnomalous(),
-    #             dtype_template.subtypeSequence()] + incl
-    #     for st in self.subtype:
-    #         if not st in excl:
-    #             if f:  self.dname += ","
-    #             self.dname += st
-    #             if st==dtype_template.subtypeASU():
-    #                 self.dname += "(" + asutype + ")"
-    #             f = True
-    #     return
-
     def makeRevDName ( self,jobId,serialNo,title ):
 
         self.jobId = jobId
@@ -233,6 +201,39 @@ class DType(dtype_template.DType):
                 n += self.ASU.seq[i].ncopies
             n = max(1,n)
         return n
+
+    def getResComposition ( self ):
+
+        composition = {
+            "nchains" : 0,
+            "total"   : 0,
+            "protein" : 0,
+            "rna"     : 0,
+            "dna"     : 0,
+            "ligands" : 0,
+            "waters"  : 0
+        }
+
+        if self.ASU:
+            composition["nchains"] = len(self.ASU.seq)
+            if len(self.ASU.seq)>0:
+                for i in range(len(self.ASU.seq)):
+                    nr = self.ASU.seq[i].ncopies*self.ASU.seq[i].size
+                    composition["total"] += nr
+                    if dtype_template.subtypeProtein() in self.ASU.seq[i].subtype:
+                        composition["protein"] += nr
+                    elif dtype_template.subtypeRNA() in self.ASU.seq[i].subtype:
+                        composition["rna"] += nr
+                    elif dtype_template.subtypeDNA() in self.ASU.seq[i].subtype:
+                        composition["dna"] += nr
+                    elif dtype_template.subtypeLigands() in self.ASU.seq[i].subtype:
+                        composition["ligands"] += nr
+                    elif dtype_template.subtypeWaters() in self.ASU.seq[i].subtype:
+                        composition["waters"] += nr
+            else:
+                composition["total"] = self.ASU.nRes
+            
+        return composition
 
     def setStructureData ( self,structure ):
         if structure:

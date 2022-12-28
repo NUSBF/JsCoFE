@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    08.12.22   <--  Date of Last Modification.
+ *    28.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -120,6 +120,9 @@ var _taskIndex = {
 
   // suggest Modelcraft after Simbad, Parrot, Acorn, MR and EP; do not suggest it after itself
   'U2' : { type: 'TaskModelCraft'         , after: ['J','K','L','M','N','O','S','T','n'] },
+
+  // suggest AWNuce after Simbad, Parrot, Acorn, MR and EP; do not suggest it after itself
+  'U3' : { type: 'TaskAWNuce'             , after: ['J','K','L','M','N','O','S','T','n'] },
 
   // suggest Refmac after both elementary MR, auto-EP, Buccaneer
   'V'  : { type: 'TaskRefmac'             , after: ['M','N','O','P','Q','U','U1','j','r'] },
