@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.12.22   <--  Date of Last Modification.
+ *    29.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -859,10 +859,27 @@ function prepareProjectExport ( loginData,projectList )  {
   // make projects not importable on Windows
   utils.cleanDirExt ( projectDirPath,'.gz' );
 
+  // remove all customisation from the project: shares, labels and folder paths
+
+  var projectData = readProjectData ( loginData,projectList.current );
+  // var folderPath = projectData.desc.folderPath;
+  // var labels     = projectData.desc.owner.labels;
+  var share = projectData.desc.share;
+  projectData.desc.share = {};
+  if (!writeProjectData(loginData,projectData,false))  {
+    log.error ( 10,'errors before packing at ' + projectDirPath + ' for export' );
+    return new cmd.Response ( cmd.fe_retcode.writeError,
+                          '[00034] Project metadata cannot be written.','' );
+  }
+
   send_dir.packDir ( projectDirPath,'*',null,function(code,jobballSize){
+    var pData = readProjectData ( loginData,projectList.current );
+    pData.desc.share = share;
+    if (!writeProjectData(loginData,pData,false))
+      log.error ( 11,'errors after packing at ' + projectDirPath + ' for export' );
     var jobballPath = send_dir.getJobballPath ( projectDirPath );
     if (code)  {
-      log.error ( 10,'errors at packing ' + projectDirPath + ' for export' );
+      log.error ( 12,'errors at packing ' + projectDirPath + ' for export' );
       utils.removeFile ( jobballPath );  // export will never get ready!
     } else  {
       log.standard ( 10,'packed' );
