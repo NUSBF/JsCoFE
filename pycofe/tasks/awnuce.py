@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.12.22   <--  Date of Last Modification.
+#    31.12.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,7 +30,8 @@ import os
 import gemmi
 
 #  application imports
-from . import basic
+from .           import basic
+from pycofe.proc import optimize_xyz
 # from   pycofe.auto   import auto
 
 # ============================================================================
@@ -141,6 +142,8 @@ class AWNuce(basic.TaskDriver):
             if nRNAbuilt>0 or nDNAbuilt>0:
 
                 pdbout = self.getXYZOFName()
+
+                optimize_xyz.optimizeXYZ ( st )
                 st.write_pdb ( pdbout )
 
                 structure = self.registerStructure ( pdbout,None,mtzin,
