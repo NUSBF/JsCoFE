@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.12.22   <--  Date of Last Modification.
+ *    02.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task List Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -620,6 +620,7 @@ var row      = 0;
       // new TaskStructurePrediction(),
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
+      new TaskOptimiseASU  (),
       new TaskPDBREDO      (),
       // new TaskFindMySequence(),
       new TaskSheetbend    (),  // excluded also from the bootstrap html

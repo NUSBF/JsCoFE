@@ -10,7 +10,7 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Find Ligand Task Class
+ *  **** Content :  Arp/wArp NUCE Task Class
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, A. Lebedev, M. Fando 2022
@@ -39,7 +39,7 @@ function TaskAWNuce()  {
   this.title   = 'NUCE: Trace Nucleic Acid Chains with Arp/wArp';
 
   this.input_dtypes = [{  // input data types
-      data_type : {'DataRevision':['phases']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':['!phases']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       version   : 4,          // minimum data version allowed
@@ -49,6 +49,15 @@ function TaskAWNuce()  {
   ];
 
 }
+
+
+if (__template)
+      TaskAWNuce.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskAWNuce.prototype = Object.create ( TaskTemplate.prototype );
+TaskAWNuce.prototype.constructor = TaskAWNuce;
+
+
+// ===========================================================================
 
 TaskAWNuce.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
@@ -68,15 +77,6 @@ TaskAWNuce.prototype.authorisationID = function() {
   return '';
 }
 
-if (__template)
-      TaskAWNuce.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskAWNuce.prototype = Object.create ( TaskTemplate.prototype );
-TaskAWNuce.prototype.constructor = TaskAWNuce;
-
-
-// ===========================================================================
-// export such that it could be used in both node and a browser
-
 TaskAWNuce.prototype.icon = function()  { return 'task_arpwarp'; }
 
 TaskAWNuce.prototype.desc_title = function()  {
@@ -91,15 +91,16 @@ TaskAWNuce.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-if (!__template)  {
-  // for client side
+// hotButtons return list of buttons added in JobDialog's toolBar.
+TaskAWNuce.prototype.hotButtons = function() {
+  return [RefmacHotButton(),CootMBHotButton()];
+}
 
-  // hotButtons return list of buttons added in JobDialog's toolBar.
-  TaskAWNuce.prototype.hotButtons = function() {
-    return [RefmacHotButton(),CootMBHotButton()];
-  }
 
-} else  {
+// ===========================================================================
+// export such that it could be used in both node and a browser
+
+if (__template)  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

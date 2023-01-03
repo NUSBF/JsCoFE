@@ -15,6 +15,7 @@
 
 #  python native imports
 import math
+
 import gemmi
 
 def optimizeXYZ ( gemmi_st ):
@@ -22,6 +23,8 @@ def optimizeXYZ ( gemmi_st ):
     ops   = gemmi.SpaceGroup ( gemmi_st.spacegroup_hm ).operations()
     model = gemmi_st[0]
     p0    = model[0].calculate_center_of_mass()
+
+    log   = []
 
     for n in range(len(model)):
         chain = model[n]
@@ -44,15 +47,45 @@ def optimizeXYZ ( gemmi_st ):
                             opmin = op
                             dmin  = d1
                             for i in range(3):
-                                df[i] = f1[i] - fp[i]
+                                df[i] = round ( f1[i]-fp[i] )
+        tran = [ 0,0,0 ]
+        for i in range(3):
+            tran[i] = opmin.tran[i] + gemmi.Op.DEN*df[i]
+        opmin.tran = tran
+
+        water_chain = True
         for res in chain:
+            if res.name not in ["HOH","WAT"]:
+                water_chain = False
             for atom in res:
                 fxyz  = opmin.apply_to_xyz ( gemmi_st.cell.fractionalize(atom.pos).tolist() )
-                for i in range(3):
-                    fxyz[i] += df[i]
+                # for i in range(3):
+                #     fxyz[i] += df[i]
                 atom.pos = gemmi_st.cell.orthogonalize ( gemmi.Fractional(fxyz[0],fxyz[1],fxyz[2]) )
 
-    return
+        polymer = chain.get_polymer()
+        t = polymer.check_polymer_type()
+        ctype = "unknown"
+        if t in (gemmi.PolymerType.PeptideL,gemmi.PolymerType.PeptideD):
+            ctype = "Protein"
+        elif t==gemmi.PolymerType.Dna:
+            ctype = "DNA"
+        elif t==gemmi.PolymerType.Rna:
+            ctype = "RNA"
+        elif t==gemmi.PolymerType.DnaRnaHybrid:
+            ctype = "DNA-RNA Hybrid"
+        elif water_chain:
+            ctype = "Water"
+        else:
+            ctype = str(t)
+
+        log.append({
+            "name" : chain.name,
+            "type" : ctype,
+            "op"   : opmin.triplet()
+        })
+
+    return log
 
 
 # ============================================================================
