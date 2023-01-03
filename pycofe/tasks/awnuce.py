@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.12.22   <--  Date of Last Modification.
+#    02.01.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022-2023
 #
 # ============================================================================
 #
@@ -120,7 +120,7 @@ class AWNuce(basic.TaskDriver):
             for chain in st[0]:
                 polymer = chain.get_polymer()
                 t       = polymer.check_polymer_type()
-                if t in (gemmi.PolymerType.Rna, gemmi.PolymerType.Dna):
+                if t in (gemmi.PolymerType.Rna,gemmi.PolymerType.Dna,gemmi.PolymerType.DnaRnaHybrid):
                     st[0].remove_chain ( chain.name )
                     # self.stdoutln ( " >>>> chain " + chain.name + " excluded from repeat (" + str(t) + ")" )
                 else:

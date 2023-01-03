@@ -442,7 +442,7 @@ class Arcimboldo(basic.TaskDriver):
         self.hkl = self.makeClass(self.input_data.data.hkl[0])
 
         self.xyz = []
-        if hasattr(self.input_data.data, "xyz"):
+        if hasattr(self.input_data.data,"xyz"):
             for i in range(len(self.input_data.data.xyz)):
                 if self.input_data.data.xyz[i]:
                     self.xyz.append(self.makeClass(self.input_data.data.xyz[i]))

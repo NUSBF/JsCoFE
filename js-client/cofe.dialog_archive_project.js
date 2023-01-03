@@ -144,7 +144,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   this.addWidget ( this.grid );
 
   var doclink = '<a href="javascript:launchHelpBox(\'CCP4 Cloud Archive\',' +
-                '\'' + __user_guide_base_url + 'jscofe_archiving.html\',null,10)">' +
+                '\'' + __user_guide_base_url + 'jscofe_archive.html\',null,10)">' +
                 '<span style="color:blue">';
 
   this.grid.setLabel    ( ' ',0,0,1,1 );
