@@ -86,17 +86,22 @@ class OptimiseASU(basic.TaskDriver):
                 "rows" : []
             }
 
-            optimised = False
+            optimised  = False
+            reconsider = False
+            water      = False
             for i in range(len(log)):
                 tdict["rows"].append ({
                     "header" : { "label"   : "Chain " + log[i]["name"],
                                  "tooltip" : "Chain Id"
                                },
                     "data"   : [ log[i]["type"],log[i]["op"] ]
-
                 })
                 if log[i]["op"]!="x,y,z":
-                    optimised = True
+                    optimised  = True
+                if log[i]["type"].endswith("(*)"):
+                    reconsider = True
+                if log[i]["type"]=="Water":
+                    water      = True
 
             if optimised:
 
@@ -109,6 +114,15 @@ class OptimiseASU(basic.TaskDriver):
                                         self.report_page_id(),
                                         self.rvrow,0,1,1 )
                 self.rvrow += 1
+
+                if water or reconsider:
+                    self.putMessage ( "&nbsp;" )
+
+                if water:
+                    self.putMessage ( "Water molecules were moved individually; you may " +\
+                                      "need to check whether it was done well." )
+                if reconsider:
+                    self.putMessage ( "(*) these chains may need manual correction, please check" )
 
 
                 if idata._type==dtype_xyz.dtype():
