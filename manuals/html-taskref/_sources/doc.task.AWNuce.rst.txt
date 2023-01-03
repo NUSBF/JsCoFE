@@ -14,7 +14,7 @@ refine the resulting structure or improve phases. These operations should be
 performed by appropriate programs. Good results are obtained when **NUCE** uses
 modified phases (*e.g.,* after **Parrot**) and results are refined using 
 **Refmac** (*e.g.,* 10 iterations with jelly-body restraints). Usually, a 
-few iterations **Parrpt** -- **NUCE** -- **Refmac** are required. This
+few iterations **Parrot** -- **NUCE** -- **Refmac** are required. This
 approach is exemplified in Atlas entry A4.1.1.
 
 -------
