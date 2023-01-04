@@ -60,15 +60,16 @@ class OptimiseASU(basic.TaskDriver):
 
         xyzout = self.getXYZOFName()
 
-        st  = gemmi.read_structure     ( xyzin )
+        st  = gemmi.read_structure  ( xyzin )
         st.setup_entities()
-        log = optimize_xyz.optimizeXYZ ( st    ) 
-        st.write_pdb ( xyzout )
+        log = optimize_xyz.optimizeXYZ ( st )
 
         summary_line = ""
         have_results = False
 
         if len(log)>0:
+
+            st.write_pdb ( xyzout )
 
             tdict = {
                 "title" : "Chain move summary",
@@ -180,6 +181,8 @@ class OptimiseASU(basic.TaskDriver):
                 summary_line = "ASU already in optimal state"
 
         else:
+            if not st.spacegroup_hm:
+                self.putMessage ( "<h3>No symmetry information found in input</h3>" )
             self.putTitle ( "No transformations have been done" )
             summary_line = "ASU not optimised"
 
