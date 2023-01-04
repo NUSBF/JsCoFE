@@ -20,6 +20,9 @@ import gemmi
 
 def optimizeXYZ ( gemmi_st ):
 
+    if not gemmi_st.spacegroup_hm:
+        return []
+
     ops   = gemmi.SpaceGroup ( gemmi_st.spacegroup_hm ).operations()
     model = gemmi_st[0]
     p0    = model[0].calculate_center_of_mass()

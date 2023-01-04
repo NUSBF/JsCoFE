@@ -39,7 +39,7 @@ function TaskFindMySequence()  {
   this.title = 'FindMySequence';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!protein','!asu','!phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!phases']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       version     : 0,          // minimum data version allowed
