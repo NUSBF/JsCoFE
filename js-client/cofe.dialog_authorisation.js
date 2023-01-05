@@ -197,28 +197,31 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
     this.auth_dic[key].auth_lbl =
                       this.grid.setLabel ( auth_msg + '&nbsp;&nbsp;&nbsp;',row2,1,1,1 )
                                .setFontColor(auth_color).setNoWrap();
-    var request_btn = this.grid.setButton ( 'request authorisation',
-                                            image_path('authorisation'),
-                                            row2,2,1,1 ).setNoWrap();
-    (function(self,akey){
-      request_btn.addOnClickListener ( function(){
-        var ownURL = window.location.protocol + '//' + window.location.host +
-                     window.location.pathname;
-        if (ownURL.endsWith('/'))
-          ownURL = ownURL.slice(0,-1);
-        var reqURL = __auth_software[akey].auth_url.replace ( '$reqid',
-              'authorisation-' + akey + '-' + __login_token )
-              .replace ( '$cburl',ownURL );
-        window.open ( reqURL );
-        //self.auth_dic[akey].auth_date0 = self.auth_dic[akey].auth_date;
-        //self.auth_dic[akey].token0     = self.auth_dic[akey].token;
-        self.auth_dic[akey].auth_lbl.setText ( '<b><i>requested</i></b>' +
-                                               '&nbsp;&nbsp;&nbsp;' )
-                                    .setFontColor('#FFBF00');
-        self.timerCount++;
-        self.startTimer();
-      });
-    }(this,key))
+
+    if ('auth_url' in __auth_software[key])  {
+      var request_btn = this.grid.setButton ( 'request authorisation',
+                                              image_path('authorisation'),
+                                              row2,2,1,1 ).setNoWrap();
+      (function(self,akey){
+        request_btn.addOnClickListener ( function(){
+          var ownURL = window.location.protocol + '//' + window.location.host +
+                      window.location.pathname;
+          if (ownURL.endsWith('/'))
+            ownURL = ownURL.slice(0,-1);
+          var reqURL = __auth_software[akey].auth_url.replace ( '$reqid',
+                'authorisation-' + akey + '-' + __login_token )
+                .replace ( '$cburl',ownURL );
+          window.open ( reqURL );
+          //self.auth_dic[akey].auth_date0 = self.auth_dic[akey].auth_date;
+          //self.auth_dic[akey].token0     = self.auth_dic[akey].token;
+          self.auth_dic[akey].auth_lbl.setText ( '<b><i>requested</i></b>' +
+                                                '&nbsp;&nbsp;&nbsp;' )
+                                      .setFontColor('#FFBF00');
+          self.timerCount++;
+          self.startTimer();
+        });
+      }(this,key))
+    }
 
     for (var j=0;j<2;j++)  {
       this.grid.setVerticalAlignment ( row ,j,'middle' );

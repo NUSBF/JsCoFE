@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.11.22   <--  Date of Last Modification.
+ *    05.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  PDB-REDO
  *       ~~~~~~~~~
  *
- *  (C) M. Fando, E. Krissinel, A. Lebedev  2022
+ *  (C) M. Fando, E. Krissinel, A. Lebedev  2022-2023
  *
  *  =================================================================
  *
@@ -71,6 +71,9 @@ TaskPDBREDO.prototype.constructor = TaskPDBREDO;
 // Define task icons. 
 
 TaskPDBREDO.prototype.icon = function()  { return 'task_pdbredo'; }
+
+// request authorisation checks
+TaskPDBREDO.prototype.authorisationID = function() { return 'pdb-redo'; }
 
 //  Define task version. Whenever task changes (e.g. receives new input
 //    parameters or data), the version number must be advanced. jsCoFE framework
