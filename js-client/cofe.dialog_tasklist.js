@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.01.23   <--  Date of Last Modification.
+ *    05.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -620,7 +620,6 @@ var row      = 0;
       // new TaskStructurePrediction(),
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
-      new TaskOptimiseASU  (),
       new TaskPDBREDO      (),
       // new TaskFindMySequence(),
       new TaskSheetbend    (),  // excluded also from the bootstrap html
@@ -693,6 +692,7 @@ var row      = 0;
     //new TaskASUDefStruct(),
     //new TaskASUMod      ()
     new TaskEditRevision      (),
+    new TaskOptimiseASU       ()
     //new TaskEditRevisionASU   (),
     //new TaskEditRevisionStruct(),
     //new TaskEditRevisionSubstr()
