@@ -331,36 +331,37 @@ class Simbad(asudef.ASUDef):
                     verdict_row = self.rvrow
                     self.rvrow += 5
 
-                    if idata:
-                        # update structure revision given on input
-                        revision = idata
+                    make_asu = False  # hardcoded switch
+                    if not idata and make_asu:
+                        # Import sequences from the structure and create an
+                        # ASU-containing structure revision.
+                        #    secId="0" activates drawing of the GaugeWidget on the
+                        #    activation of 0th (the leftmost) tab
+                        revision = asudef.revisionFromStructure ( self,sol_hkl,structure,
+                                                                  result0["name"],secId="0",
+                                                                  make_verdict=False )
                     else:
-                        # there was no revision on input; create one with structure
-                        # found and empty asymmetric unit
-                        revision = dtype_revision.DType ( -1 )
 
-                    # Old version with importing sequences from structure and
-                    # creating "full" structure revision. Keep as template.
+                        if idata:
+                            # update structure revision given on input, keep any ASU
+                            # that may have been in there
+                            revision = idata
+                        else:
+                            # create structure revision with empty asymmetric unit
+                            revision = dtype_revision.DType ( -1 )
 
-                    #    secId="0" activates drawing of the GaugeWidget on the
-                    #    activation of 0th (the leftmost) tab
-                    #    revision = asudef.revisionFromStructure ( self,sol_hkl,structure,
-                    #                                              result0["name"],secId="0",
-                    #                                              make_verdict=False )
+                        # set revision data and register
+                        revision.setStructureData  ( structure )
+                        revision.setReflectionData ( sol_hkl )
+                        self.registerRevision      ( revision  )
 
-                    # if revision:
-
-                    revision.setStructureData  ( structure )
-                    revision.setReflectionData ( sol_hkl )
-                    self.registerRevision      ( revision  )
-
-                    if not idata:
-                        self.putMessage (
-                            "&nbsp;<br><span style='color:maroon'>" +\
-                            "<b>Note:</b> Structure Revision has empty ASU, not suitable " +\
-                            "for model building. Use SIMBAD after <i>ASU definition</i> " +\
-                            "task, or run <i>Edit Structure Revision</i> to get ASU " +\
-                            "complete.</span>" )
+                        if not idata:  # make a warning of empty ASU
+                            self.putMessage (
+                                "&nbsp;<br><span style='color:maroon'>" +\
+                                "<b>Note:</b> Structure Revision has empty ASU, not suitable " +\
+                                "for model building. Use SIMBAD after <i>ASU definition</i> " +\
+                                "task, or run <i>Edit Structure Revision</i> to get ASU " +\
+                                "complete.</span>" )
 
                     have_results = True  # may be continued manually
 
