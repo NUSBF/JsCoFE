@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    23.05.21   <--  Date of Last Modification.
+#    05.01.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls,
-#                Oleg Kovalevskyi 2017-2021
+#                Oleg Kovalevskyi 2017-2023
 #
 # ============================================================================
 #
@@ -67,11 +65,13 @@ class Sheetbend(basic.TaskDriver):
             "colin-free /*/*/[" + istruct.FreeR_flag + "]",
             "coord",
             "cycles " + str(sec1.NCYCLES.value),
-            "refine-regularize-cycles 1",
+            "postrefine-u-iso",
+            "pseudo-regularize",
+            "refine-regularize-cycles 3",
             #"resolution-by-cycle 6.0, 6.0, 3.0",
-            "resolution-by-cycle 3.0, 2.5, 2.0",
-            #"radius-scale 4.0"
-            "radius-scale 2.5"
+            "resolution-by-cycle 6.0, 3.0",
+            "radius-scale 4.0"
+            # "radius-scale 2.5"
         ])
         self.close_stdin ()
 

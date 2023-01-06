@@ -177,6 +177,31 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
     this.grid.setLabel ( '<img src="' + image_path(__auth_software[key].icon_provider) +
                          '" height="36pt" style="vertical-align: middle;"/>&nbsp;&nbsp;&nbsp;' +
                          __auth_software[key].desc_provider,row1,1,1,3 ).setNoWrap();
+
+    var auth_inp = null;
+    if ('auth_data' in __auth_software[key])  {
+      this.grid.setLabel ( '&nbsp;',row2++,0,1,1 );
+      if ('help_page' in __auth_software[key])
+        this.grid.setLabel ( 
+            '<a href="javascript:launchHelpBox(\'Autorization instructions\',' +
+                '\'' + __user_guide_base_url + __auth_software[key].help_page +
+                '.html\',null,10)"><span style="color:blue">Autorization instructions</span></a>',
+            row2++,1,1,2 );
+      auth_inp = {};
+      for (var auth_item in __auth_software[key].auth_data)  {
+        this.grid.setLabel ( '<i>' + __auth_software[key].auth_data[auth_item].label + ':</i>&nbsp;',
+                             row2,0,1,1 ).setHorizontalAlignment('right');
+        var val0 = '';
+        if ('auth_item' in this.auth_dic[key])
+          val0 = this.auth_dic[key][auth_item];
+        auth_inp[auth_item] = this.grid.setInputText ( val0,row2,1,1,1 )
+                                       .setWidth_px(350);
+        this.grid.setVerticalAlignment ( row2,0,'middle' );
+        row2++;
+      }
+      this.grid.setLabel ( '&nbsp;',row2++,0,1,1 );
+    }
+
     this.grid.setLabel ( '<b><i>Authorisation:&nbsp;&nbsp;</i></b>',row2,0,1,1 );
 
     var auth_msg   = '';
@@ -198,14 +223,22 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
                       this.grid.setLabel ( auth_msg + '&nbsp;&nbsp;&nbsp;',row2,1,1,1 )
                                .setFontColor(auth_color).setNoWrap();
 
-    if ('auth_url' in __auth_software[key])  {
-      var request_btn = this.grid.setButton ( 'request authorisation',
-                                              image_path('authorisation'),
-                                              row2,2,1,1 ).setNoWrap();
+    var request_btn = this.grid.setButton ( 'request authorisation',
+                                            image_path('authorisation'),
+                                            row2,2,1,1 ).setNoWrap();
+
+    if (auth_inp)  {
+
+      (function(self,auth_input){
+        request_btn.addOnClickListener ( function(){
+        });
+      }(this,auth_inp))
+
+    } else if ('auth_url' in __auth_software[key])  {
       (function(self,akey){
         request_btn.addOnClickListener ( function(){
           var ownURL = window.location.protocol + '//' + window.location.host +
-                      window.location.pathname;
+                       window.location.pathname;
           if (ownURL.endsWith('/'))
             ownURL = ownURL.slice(0,-1);
           var reqURL = __auth_software[akey].auth_url.replace ( '$reqid',
