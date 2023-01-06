@@ -24,6 +24,8 @@ CCP4 Cloud Version Log
 
     #. Added task ``AWNuce`` for building polynucleotides with Arp/wArp
 
+    #. Added task ``Optimise ASU`` for making compact ASUs
+
 
 
 **Version 1.7.008**

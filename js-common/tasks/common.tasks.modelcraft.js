@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    05.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ModelCraft Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2022-2023
  *
  *  ==========================================================================
  *
@@ -40,7 +40,7 @@ function TaskModelCraft()  {
   this.title   = 'Automatic Model Building with ModelCraft';
 ``
   this.input_dtypes = [{      // input data types
-      data_type   : {'DataRevision':['!protein','!seq','!phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!seq',['phases','xyz']]}, // data type(s) and subtype(s)
       label       : 'Structure revision',   // label for input dialog
       inputId     : 'revision',   // input Id for referencing input fields
       customInput : 'modelcraft', // lay custom fields below the dropdown
