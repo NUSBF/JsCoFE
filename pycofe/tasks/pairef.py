@@ -86,7 +86,7 @@ class PaiRef(basic.TaskDriver):
             #"-m"     , "pairef",
             "--XYZIN", xyzin,
             "--HKLIN", hklin,
-            # "-i"     , str(hkl.getHighResolution(raw=True)+0.01),
+            "-i"     , str(hkl.getHighResolution(raw=True)+0.01),
             "--refmac"
         ]
 
