@@ -350,7 +350,9 @@ class ArpWarp(basic.TaskDriver):
 
                 rvrow0 = self.rvrow
                 try:
-                    qualrep.quality_report ( self,revision )
+                    meta = qualrep.quality_report ( self,revision )
+                    if "molp_score" in meta:
+                        self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
                 except:
                     self.stderr ( " *** molprobity failure" )
                     self.rvrow = rvrow0

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.12.22   <--  Date of Last Modification.
+ *    08.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User account settings page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -380,8 +380,8 @@ function AccountPage ( sceneId )  {
       new AuthorisationDialog ( function(dlg){
         userData.authorisation = dlg.auth_dic;
         // eleminate circular dependency in userData
-        for (var key in userData.authorisation)
-          userData.authorisation[key].auth_lbl = null;
+        // for (var key in userData.authorisation)
+        //   userData.authorisation[key].auth_lbl = null;
       });
     });
   }

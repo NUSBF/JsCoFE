@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.11.22   <--  Date of Last Modification.
+ *    08.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- User Support Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -876,20 +876,34 @@ var response = null;  // must become a cmd.Response object to return
 
   log.standard ( 8,'update user data, login ' + loginData.login );
 
+  var uData = userData;
   if (userData.login!=ud.__local_user_id)  {
   // if (userData.login!='devel')  {
     var pwd = userData.pwd;
-    userData.pwd = hashPassword ( pwd );
+    if (pwd)  {
+      userData.pwd = hashPassword ( pwd );
+    } else  {
+      // can only change some records without password
+      var uData = readUserData ( loginData );
+      if (uData)  {
+        uData.helpTopics    = userData.helpTopics;
+        uData.authorisation = userData.authorisation;
+        uData.settings      = userData.settings;
+      } else  {
+        response = new cmd.Response ( cmd.fe_retcode.readError,
+                                      'User file cannot be read.','' );
+      }
+    }
   }
 
   var userFilePath = getUserDataFName ( loginData );
 
   if (utils.fileExists(userFilePath))  {
 
-    if (utils.writeObject(userFilePath,userData))  {
+    if (utils.writeObject(userFilePath,uData))  {
 
       response = new cmd.Response ( cmd.fe_retcode.ok,'',
-        emailer.sendTemplateMessage ( userData,
+        emailer.sendTemplateMessage ( uData,
                   cmd.appName() + ' Account Update',
                   'account_updated_user',{} )
       );
