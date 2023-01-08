@@ -3,14 +3,14 @@
 #
 # ============================================================================
 #
-#    05.01.23   <--  Date of Last Modification.
+#    08.01.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  SHEETBEND EXECUTABLE MODULE
+#  PAIREF EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.sheetbend jobManager jobDir jobId
+#     ccp4-python -m pycofe.tasks.pairef jobManager jobDir jobId
 #
 #  where:
 #    jobManager  is either SHELL or SGE
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2023
 #
 # ============================================================================
 #
@@ -31,53 +31,76 @@ import os
 from . import basic
 
 # ============================================================================
-# Make Sheetbend driver
+# Make PaiRef driver
 
-class Sheetbend(basic.TaskDriver):
+class PaiRef(basic.TaskDriver):
 
     # redefine name of input script file
-    def file_stdin_path(self):  return "sheetbend.script"
+    # def file_stdin_path(self):  return "pairef.script"
 
     # ------------------------------------------------------------------------
 
     def run(self):
 
-        # Just in case (of repeated run) remove the output xyz file. When sheetbend
+        # Just in case (of repeated run) remove the output xyz file. When pairef
         # succeeds, this file is created.
         xyzout = self.getXYZOFName()
         if os.path.isfile(xyzout):
             os.remove(xyzout)
 
-        # Prepare sheetbend input
+        # Prepare pairef input
         # fetch input data
         hkl     = self.makeClass ( self.input_data.data.hkl    [0] )
         istruct = self.makeClass ( self.input_data.data.istruct[0] )
 
-        sec1 = self.task.parameters.sec1.contains
+        # sec1 = self.task.parameters.sec1.contains
 
-        self.open_stdin  ()
-        self.write_stdin ([
-            "mtzin  " + hkl.getHKLFilePath(self.inputDir()),
-            "pdbin  " + istruct.getXYZFilePath(self.inputDir()),
-            "pdbout " + xyzout,
-            "colin-fo   /*/*/[" + istruct.FP + "," + istruct.SigFP + "]",
-            "colin-free /*/*/[" + istruct.FreeR_flag + "]",
-            "coord",
-            "cycles " + str(sec1.NCYCLES.value),
-            "postrefine-u-iso",
-            "pseudo-regularize",
-            "refine-regularize-cycles 3",
-            #"resolution-by-cycle 6.0, 6.0, 3.0",
-            "resolution-by-cycle 6.0, 3.0",
-            "radius-scale 4.0"
-            # "radius-scale 2.5"
-        ])
-        self.close_stdin ()
+        # self.open_stdin  ()
+        # self.write_stdin ([
+        #     "mtzin  " + hkl.getHKLFilePath(self.inputDir()),
+        #     "pdbin  " + istruct.getXYZFilePath(self.inputDir()),
+        #     "pdbout " + xyzout,
+        #     "colin-fo   /*/*/[" + istruct.FP + "," + istruct.SigFP + "]",
+        #     "colin-free /*/*/[" + istruct.FreeR_flag + "]",
+        #     "coord",
+        #     "cycles " + str(sec1.NCYCLES.value),
+        #     "postrefine-u-iso",
+        #     "pseudo-regularize",
+        #     "refine-regularize-cycles 3",
+        #     #"resolution-by-cycle 6.0, 6.0, 3.0",
+        #     "resolution-by-cycle 6.0, 3.0",
+        #     "radius-scale 4.0"
+        #     # "radius-scale 2.5"
+        # ])
+        # self.close_stdin ()
 
-        self.runApp ( "csheetbend",['-stdin'],logType="Main" )
+        xyzin = istruct.getXYZFilePath ( self.inputDir() )
+        libin = istruct.getLibFilePath ( self.inputDir() )
+        hklin = hkl    .getHKLFilePath ( self.inputDir() )
+
+        hklin_unmerged = None
+        if hasattr(hkl.aimless_meta,"file_unm") and hkl.aimless_meta.file_unm:
+            hklin_unmerged = os.path.join ( self.inputDir(),hkl.aimless_meta.file_unm )
+
+        cmd = [
+            #"-m"     , "pairef",
+            "--XYZIN", xyzin,
+            "--HKLIN", hklin,
+            # "-i"     , str(hkl.getHighResolution(raw=True)+0.01),
+            "--refmac"
+        ]
+
+        if hklin_unmerged:
+            cmd += [ "-u",hklin_unmerged ]
+
+        if libin:
+            cmd += [ "--LIBIN",libin ]
+
+        self.runApp ( "pairef",cmd,logType="Main" )
 
         # check solution and register data
         have_results = False
+        """
         if os.path.isfile(xyzout):
 
             #verdict_row = self.rvrow
@@ -126,6 +149,7 @@ class Sheetbend(basic.TaskDriver):
 
         else:
             self.putTitle ( "No Output Generated" )
+        """
 
         # close execution logs and quit
         self.success ( have_results )
@@ -136,5 +160,5 @@ class Sheetbend(basic.TaskDriver):
 
 if __name__ == "__main__":
 
-    drv = Sheetbend ( "",os.path.basename(__file__) )
+    drv = PaiRef ( "",os.path.basename(__file__) )
     drv.start()

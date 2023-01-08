@@ -6,14 +6,14 @@
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/tasks/common.tasks.pdbredo.js
+ *  **** Module  :  js-common/tasks/common.tasks.pairef.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
  *  **** Content :  PDB-REDO
  *       ~~~~~~~~~
  *
- *  (C) M. Fando, E. Krissinel, A. Lebedev  2022-2023
+ *  (C) M. Fando, E. Krissinel, A. Lebedev  2023
  *
  *  =================================================================
  *
@@ -32,7 +32,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 // 1. Define task constructor
 
-function TaskPDBREDO()  {   // must start with Task...
+function TaskPaiRef()  {   // must start with Task...
 
   // invoke the template class constructor:
   if (__template)  __template.TaskTemplate.call ( this );
@@ -40,10 +40,10 @@ function TaskPDBREDO()  {   // must start with Task...
 
   // define fields important for jsCoFE framework
 
-  this._type   = 'TaskPDBREDO';  // must give name of the class
-  this.name    = 'PDB-REDO';     // default name to be shown in Job Tree
-  this.setOName ( 'pdbredo' );   // default output file name template
-  this.title   = 'PDB-REDO: optimise, rebuild, refine and validate';  // title for job dialog
+  this._type   = 'TaskPaiRef';  // must give name of the class
+  this.name    = 'pairef';      // default name to be shown in Job Tree
+  this.setOName ( 'pairef' );   // default output file name template
+  this.title   = 'Paired refinement with PAIREF'; // title for job dialog
 
 
   this.input_dtypes = [{  // input data types
@@ -62,40 +62,36 @@ function TaskPDBREDO()  {   // must start with Task...
 // finish constructor definition
 
 if (__template)
-      TaskPDBREDO.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskPDBREDO.prototype = Object.create ( TaskTemplate.prototype );
-TaskPDBREDO.prototype.constructor = TaskPDBREDO;
+      TaskPaiRef.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskPaiRef.prototype = Object.create ( TaskTemplate.prototype );
+TaskPaiRef.prototype.constructor = TaskPaiRef;
 
 // ===========================================================================
 
 // Define task icons. 
 
-TaskPDBREDO.prototype.icon = function()  { return 'task_pdbredo'; }
-
-// request authorisation checks
-TaskPDBREDO.prototype.authorisationID = function() { return 'pdb-redo'; }
+TaskPaiRef.prototype.icon = function()  { return 'task_pairef'; }
 
 //  Define task version. Whenever task changes (e.g. receives new input
 //    parameters or data), the version number must be advanced. jsCoFE framework
 //    forbids cloning jobs with version numbers lower than specified here.
 
-TaskPDBREDO.prototype.currentVersion = function()  {
+TaskPaiRef.prototype.currentVersion = function()  {
 var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-TaskPDBREDO.prototype.desc_title = function()  {
+TaskPaiRef.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return 'automatically optimise, rebuild, refine and validate structure model';
+  return 'estimates the optimal high-resolution cut-off';
 };
 
-TaskPDBREDO.prototype.checkKeywords = function ( keywords )  {
+TaskPaiRef.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['pdbredo','pdb-redo','refinement','rebuild',
-                                           'rebuilding','optimise','optimisation',
-                                           'validate','validation'] );
+  return this.__check_keywords ( keywords,['pairef','paired','refinement',
+                                           'resolution','cut-off'] );
 }
 
 
@@ -105,12 +101,9 @@ TaskPDBREDO.prototype.checkKeywords = function ( keywords )  {
 
 if (__template)  {  //  will run only on server side
 
-  const path  = require('path');
   const conf  = require('../../js-server/server.configuration');
-  const user  = require('../../js-server/server.fe.user');
-  const utils = require('../../js-server/server.utils');
 
-  TaskPDBREDO.prototype.makeInputData = function ( loginData,jobDir )  {
+  TaskPaiRef.prototype.makeInputData = function ( loginData,jobDir )  {
 
     // put hkl and structure data in input databox for copying their files in
     // job's 'input' directory
@@ -119,22 +112,9 @@ if (__template)  {  //  will run only on server side
       var revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['istruct'] = [revision.Structure];
+      if (('file_unm' in revision.HKL.aimless_meta) && revision.HKL.aimless_meta.file_unm)
+        this.addInputFile ( revision.HKL.aimless_meta.jobId,revision.HKL.aimless_meta.file_unm,jobDir );
     }
-
-    var uData = user.readUserData ( loginData );
-    var auth_json = { status : 'ok' };
-    if (uData)  {
-      if (('authorisation' in uData) && ('pdb-redo' in uData.authorisation))  {
-        auth_json.auth_data = uData.authorisation['pdb-redo'];
-        var d1 = new Date(auth_json.auth_data.expiry_date);
-        if (d1.getTime()<Date.now())
-          auth_json.status = 'expired';
-      } else
-        auth_json.status = 'no authorisation data';
-    } else
-      auth_json.status = 'no user data';
-
-    utils.writeObject ( path.join(jobDir,'input','authorisation.json'),auth_json );
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
@@ -145,10 +125,10 @@ if (__template)  {  //  will run only on server side
   // note that last 3 parameters are optional and task driver will not use
   // them in most cases.
 
-  TaskPDBREDO.prototype.getCommandLine = function ( jobManager,jobDir )  {
+  TaskPaiRef.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [  conf.pythonName(),         // will use python from configuration
               '-m',                      // will run task as a python module
-              'pycofe.tasks.pdbredo', // path to python driver
+              'pycofe.tasks.pairef', // path to python driver
               jobManager,                  // framework's type of run: 'SHELL', 'SGE' or 'SCRIPT'
               jobDir,                   // path to job directory given by framework
               this.id                   // task id (assigned by the framework)
@@ -158,6 +138,6 @@ if (__template)  {  //  will run only on server side
   // -------------------------------------------------------------------------
   // export such that it could be used in server's node js
 
-  module.exports.TaskPDBREDO = TaskPDBREDO;
+  module.exports.TaskPaiRef = TaskPaiRef;
 
 }
