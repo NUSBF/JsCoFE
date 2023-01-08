@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.08.22   <--  Date of Last Modification.
+ *    08.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,6 +34,7 @@ function AuthorisationDialog ( callback_func )  {
   document.body.appendChild ( this.element );
 
   this.auth_dic = {};  // will need to be obtained by request
+  this.auth_lbl = {};
   this.timer    = null;
 
   this.grid = new Grid('-compact');
@@ -52,42 +53,43 @@ function AuthorisationDialog ( callback_func )  {
   this.grid.setHLine ( 1, 2,0,1,5 );
 
   // fetch user data from server
-  (function(self){
-    serverRequest ( fe_reqtype.getUserData,0,'My Account',function(data){
+  var self      = this;
+  this.userData = null;
+  serverRequest ( fe_reqtype.getUserData,0,'My Account',function(data){
 
-        if (data.hasOwnProperty('authorisation'))
-          self.auth_dic = data.authorisation;
+    self.userData = data;
 
-        self.layAuthorisationEntries();
+    if (data.hasOwnProperty('authorisation'))
+      self.auth_dic = data.authorisation;
 
-        var w = 3*$(window).width()/5 + 'px';
+    self.layAuthorisationEntries();
 
-        $(self.element).dialog({
-          resizable : true,
-          height    : 'auto',
-          maxHeight : 500,
-          width     : w,
-          modal     : true,
-          buttons   : [
-            {
-              id    : "close_btn",
-              text  : "Close",
-              click : function() {
-                $(this).dialog("close");
-              }
-            }
-          ]
-        });
+    var w = 3*$(window).width()/5 + 'px';
 
-        $(self.element).on( "dialogclose",function(event,ui){
-          self.stopTimer();
-          if (callback_func)
-            callback_func ( self );
-        });
+    $(self.element).dialog({
+      resizable : true,
+      height    : 'auto',
+      maxHeight : 500,
+      width     : w,
+      modal     : true,
+      buttons   : [
+        {
+          id    : "close_btn",
+          text  : "Close",
+          click : function() {
+            $(this).dialog("close");
+          }
+        }
+      ]
+    });
 
-    },null,'persist');
+    $(self.element).on( "dialogclose",function(event,ui){
+      self.stopTimer();
+      if (callback_func)
+        callback_func ( self );
+    });
 
-  }(this))
+  },null,'persist');
 
 }
 
@@ -103,8 +105,9 @@ AuthorisationDialog.prototype.startTimer = function()  {
 }
 
 AuthorisationDialog.prototype.updateOnTimer = function()  {
-  (function(self){
-    if (self.timerCount>0)  {
+  // (function(self){
+    if (this.timerCount>0)  {
+      var self = this;
       serverRequest ( fe_reqtype.getUserData,0,'My Account',function(data){
         if (data.hasOwnProperty('authorisation'))  {
           for (var key in self.auth_dic)  {
@@ -128,8 +131,10 @@ AuthorisationDialog.prototype.updateOnTimer = function()  {
                   auth_msg   = '<b><i>authorised since ' + adate + '</i></b>';
                   auth_color = 'green';
                 }
-                self.auth_dic[key].auth_lbl.setText(auth_msg)
-                                           .setFontColor(auth_color).setNoWrap();
+                // self.auth_dic[key].auth_lbl.setText(auth_msg)
+                //                            .setFontColor(auth_color).setNoWrap();
+                self.auth_lbl[key].setText(auth_msg)
+                                  .setFontColor(auth_color).setNoWrap();
               }
             }
           }
@@ -140,7 +145,7 @@ AuthorisationDialog.prototype.updateOnTimer = function()  {
           self.stopTimer();
       });
     }
-  }(this))
+  // }(this))
 }
 
 AuthorisationDialog.prototype.stopTimer = function()  {
@@ -185,14 +190,14 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
         this.grid.setLabel ( 
             '<a href="javascript:launchHelpBox(\'Autorization instructions\',' +
                 '\'' + __user_guide_base_url + __auth_software[key].help_page +
-                '.html\',null,10)"><span style="color:blue">Autorization instructions</span></a>',
+                '.html\',null,10)"><span style="color:blue">Authorisation instructions</span></a>',
             row2++,1,1,2 );
       auth_inp = {};
       for (var auth_item in __auth_software[key].auth_data)  {
         this.grid.setLabel ( '<i>' + __auth_software[key].auth_data[auth_item].label + ':</i>&nbsp;',
                              row2,0,1,1 ).setHorizontalAlignment('right');
         var val0 = '';
-        if ('auth_item' in this.auth_dic[key])
+        if (auth_item in this.auth_dic[key])
           val0 = this.auth_dic[key][auth_item];
         auth_inp[auth_item] = this.grid.setInputText ( val0,row2,1,1,1 )
                                        .setWidth_px(350);
@@ -215,13 +220,27 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
       auth_msg   = '<b><i>requested</i></b>';
       auth_color = '#FFBF00';
     } else  {
-      auth_msg   = '<b><i>authorised since ' + this.auth_dic[key].auth_date + '</i></b>';
-      auth_color = 'green';
+      if ('expiry_date' in this.auth_dic[key])  {
+        var d1 = new Date(this.auth_dic[key].expiry_date);
+        if (d1!='Invalid Date')  {
+          var d2 = new Date(this.auth_dic[key].auth_date);
+          if (d1.getTime()<d2.getTime())  {
+            auth_msg   = '<b><i>authorisation expired on ' + 
+                         this.auth_dic[key].expiry_date + '</i></b>';
+            auth_color = 'darkred';
+          }
+        }
+      }
+      if (!auth_msg)  {
+        auth_msg   = '<b><i>authorised since ' + this.auth_dic[key].auth_date + 
+                     '</i></b>';
+        auth_color = 'green';
+      }
     }
 //console.log ( ' ---------- ' + key );
-    this.auth_dic[key].auth_lbl =
-                      this.grid.setLabel ( auth_msg + '&nbsp;&nbsp;&nbsp;',row2,1,1,1 )
-                               .setFontColor(auth_color).setNoWrap();
+    // this.auth_dic[key].auth_lbl =
+    this.auth_lbl[key] = this.grid.setLabel ( auth_msg + '&nbsp;&nbsp;&nbsp;',row2,1,1,1 )
+                                  .setFontColor(auth_color).setNoWrap();
 
     var request_btn = this.grid.setButton ( 'request authorisation',
                                             image_path('authorisation'),
@@ -231,6 +250,78 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
 
       (function(self,auth_input){
         request_btn.addOnClickListener ( function(){
+          var provided = true;
+          var vallog   = '';
+          for (var item in auth_input)  {
+            var v = auth_input[item].getValue().trim();
+            self.auth_dic[key][item] = v;
+            if (v)
+              switch (__auth_software[key].auth_data[item].type)  {
+                case 'integer' :  if (!isInteger(v))  {
+                                    v = '';
+                                    vallog += '<li>' + 
+                                      __auth_software[key].auth_data[item].label +
+                                      ' must be a valid integer</li>';
+                                  }
+                                break;
+                case 'date'    :  var d = new Date(v);
+                                  if (d=='Invalid Date')  {
+                                    v = '';
+                                    vallog += '<li>' + 
+                                      __auth_software[key].auth_data[item].label +
+                                      ' must be a valid date</li>';
+                                  } else if (d.getTime()<Date.now())  {
+                                    v = '';
+                                    vallog += '<li>' + 
+                                      __auth_software[key].auth_data[item].label +
+                                      ' must be a date in future</li>';
+
+                                  }
+                                break; 
+                case 'string'  :
+                default : ;
+              } 
+            if (!v)  {
+              provided = false;
+              self.auth_dic[key].auth_date = '';
+              self.userData.authorisation  = self.auth_dic;
+              self.userData.pwd = '';  // can save only some records without password
+              serverRequest ( fe_reqtype.updateUserData,self.userData,
+                              'Authorisation data update',
+                              function(response){
+                self.timerCount++;
+                self.startTimer();
+              });
+            }
+          }
+          if (vallog)
+            new MessageBox ( 'Misformatted input',
+                '<div style="width:400px"><h2>Misformatted input</h2>' +
+                'The following items are given wrong values:<ul>' + vallog +
+                '</ul>Please provide data in correct format.</div>',
+                'msg_error' );
+          else if (!provided)
+            new MessageBox ( 'Insufficient data',
+                '<h2>Insufficient data</h2>Please provide all requested data.',
+                'msg_excl_yellow' );
+          else  {
+            self.auth_dic[key].auth_date = new Date().toUTCString();
+            self.userData.authorisation  = self.auth_dic;
+            self.userData.pwd = '';  // can save only some records without password
+            serverRequest ( fe_reqtype.updateUserData,self.userData,
+                            'Authorisation data update',
+                            function(response){
+              self.timerCount++;
+              self.startTimer();
+              new MessageBox ( 'Authorisation',
+                  '<div style="width:400px"><h2>Conditonal authorisation</h2>' +
+                  'Your data was accepted but is not verified at this point. ' +
+                  'You can now start tasks from this software provider, which ' +
+                  'will run if authorisation data is correct. If tasks are ' +
+                  'rejected, assume typo and repeat authorisation.</div>',
+                  'msg_information' );
+            });
+          }
         });
       }(this,auth_inp))
 
@@ -247,9 +338,8 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
           window.open ( reqURL );
           //self.auth_dic[akey].auth_date0 = self.auth_dic[akey].auth_date;
           //self.auth_dic[akey].token0     = self.auth_dic[akey].token;
-          self.auth_dic[akey].auth_lbl.setText ( '<b><i>requested</i></b>' +
-                                                '&nbsp;&nbsp;&nbsp;' )
-                                      .setFontColor('#FFBF00');
+          self.auth_lbl[akey].setText ( '<b><i>requested</i></b>&nbsp;&nbsp;&nbsp;' )
+                             .setFontColor('#FFBF00');
           self.timerCount++;
           self.startTimer();
         });

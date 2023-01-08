@@ -1,9 +1,10 @@
-##!/usr/bin/python#
+##!/usr/bin/python
+
 
 #
 # ============================================================================
 #
-#    02.12.22   <--  Date of Last Modification.
+#    08.01.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +20,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022
+#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2023
 #
 # ============================================================================
 #
@@ -33,7 +34,7 @@ import shutil
 import json
 import time
 import requests
-from zipfile import ZipFile
+from   zipfile import ZipFile
 
 # from typing_extensions import Self
 
@@ -192,7 +193,9 @@ class Pdbredo(basic.TaskDriver):
             # self.stderrln (str(r.text))
             self.stderrln("Failed to receive the process log")
 
-        self.stdoutln(str(r.text))
+        pdbredo_log = str(r.text)
+
+        self.stdoutln ( pdbredo_log )
 
         # Retrieve zip
         r = requests.get(
@@ -232,7 +235,7 @@ class Pdbredo(basic.TaskDriver):
 
         os.rename(final_mtz, mtzout)
 
-        return [xyzout, mtzout]
+        return [xyzout, mtzout, pdbredo_log]
 
     # ------------------------------------------------------------------------
 
@@ -246,8 +249,8 @@ class Pdbredo(basic.TaskDriver):
         # Prepare input
         # fetch input data
         revision = self.makeClass(self.input_data.data.revision[0])
-        hkl = self.makeClass(self.input_data.data.hkl[0])
-        istruct = self.makeClass(self.input_data.data.istruct[0])
+        hkl      = self.makeClass(self.input_data.data.hkl[0])
+        istruct  = self.makeClass(self.input_data.data.istruct[0])
 
         xyzin = istruct.getXYZFilePath(self.inputDir())
         hklin = hkl.getHKLFilePath(self.inputDir())
@@ -259,9 +262,46 @@ class Pdbredo(basic.TaskDriver):
         # self.pdbredo_token_id
         # self.pdbredo_token_secret
 
-        token_id = 221
-        token_secret = "wD5sfnuBpU9iDJ1BetPn3w"
+        auth_fpath = os.path.join ( self.inputDir(),"authorisation.json" )
+        if not os.path.isfile(auth_fpath):
+            self.fail ( "<h3>No authorisation data.</h3>" +\
+                "This task requires authorisation with PDB-REDO software provider, " +\
+                "which was not found. Check CCP4 Cloud configuration.",
+                "No authorisation data." )
+            return
 
+        token_id     = None
+        token_secret = None
+        # token_id = 221
+        # token_secret = "wD5sfnuBpU9iDJ1BetPn3w"
+        
+        try:
+            with open(auth_fpath) as f:
+                auth_meta = json.loads ( f.read() )
+                if auth_meta["status"]=="ok":
+                    token_id     = auth_meta["auth_data"]["user_id"]
+                    token_secret = auth_meta["auth_data"]["user_token"]
+                elif auth_meta["status"]=="expired":
+                    # self.putMessage ( "<h2>PDB-REDO authorisation expired</h2>" +\
+                    #     "Please authorise with PDB-REDO service in \"My Account\"." )
+                    self.fail ( "<h3>Authorisation expired.</h3>" +\
+                        "This task requires authorisation with PDB-REDO software provider, " +\
+                        "which has expired. Please authorise with PDB-REDO service in \"My Account\".",
+                        "Authorisation expired." )
+                    return
+                else:
+                    self.fail ( "<h3>Authorisation data not passed.</h3>" +\
+                        "This task requires authorisation with PDB-REDO software provider, " +\
+                        "which data was not passed to the task. Reported status: " + auth_meta["status"],
+                        "No authorisation data." )
+                    return
+        except:
+            self.fail ( "<h3>Corrupt authorisation data.</h3>" +\
+                "This task requires authorisation with PDB-REDO software provider, " +\
+                "which is corrupt. Check CCP4 Cloud configuration.",
+                "Corrupt authorisation data." )
+            return
+  
         PDBREDO_URI = "https://services.pdb-redo.eu:443"
 
         # # imitate PDBREDO
@@ -299,7 +339,7 @@ class Pdbredo(basic.TaskDriver):
                     self.stderrln ('Possible internet connection issues ' + '\n' , status)
                     break
 
-        xyzout, mtzout = self.do_fetch(token_id, token_secret, run_id, PDBREDO_URI)
+        xyzout, mtzout, pdbredo_log = self.do_fetch ( token_id, token_secret, run_id, PDBREDO_URI )
 
         self.stdoutln(" final_pdb = " + str(xyzout))
         self.stdoutln(" final_mtz = " + str(mtzout))
@@ -311,6 +351,7 @@ class Pdbredo(basic.TaskDriver):
 
         # check solution and register data
         have_results = False
+        summary_line = "no output generated"
         if xyzout:
             # if os.path.isfile(final_pdb):
 
@@ -345,12 +386,32 @@ class Pdbredo(basic.TaskDriver):
                 revision.setStructureData(structure)
                 self.registerRevision(revision)
                 have_results = True
+                
+                rfactor = 1.0
+                rfree   = 1.0
+                lines   = pdbredo_log.splitlines()
+                for line in lines:
+                    if line.startswith("Resulting R-factor:"):
+                        rfactor = line.split(":")[1].strip()
+                    elif line.startswith("Resulting R-free  :"):
+                        rfree   = line.split(":")[1].strip()
+
+                self.generic_parser_summary["refmac"] = {
+                    "R_factor"   : rfactor,
+                    "R_free"     : rfree
+                }
+
+                summary_line = ""
 
                 rvrow0 = self.rvrow
                 # meta = qualrep.quality_report ( self,revision )
                 try:
                     # meta = qualrep.quality_report ( self,revision, refmacXML = xmlOutRefmac )
                     meta = qualrep.quality_report(self, revision)
+                    self.stdoutln ( str(meta) )
+                    if "molp_score" in meta:
+                        self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
+
                 except:
                     meta = None
                     self.stderr(" *** validation tools or molprobity failure")
@@ -368,10 +429,15 @@ class Pdbredo(basic.TaskDriver):
                 #     )
 
         else:
-            self.putTitle("No Output Generated")
+            self.putTitle ( "No Output Generated" )
 
-        shutil.rmtree(self.resultDir)
-        os.remove("result.zip")
+        # shutil.rmtree(self.resultDir)
+        # os.remove("result.zip")
+
+        if summary_line:
+            self.generic_parser_summary["pdbredo"] = {
+                "summary_line" : summary_line
+            }
 
         # close execution logs and quit
         self.success(have_results)
