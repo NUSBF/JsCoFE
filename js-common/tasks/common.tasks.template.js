@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.12.22   <--  Date of Last Modification.
+ *    08.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Template Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  ==========================================================================
  *
@@ -450,14 +450,22 @@ if (!dbx)  {
       if (authID && //__auth_software && (authID in __auth_software) &&
           (!__local_user) && ((!(authID in __user_authorisation)) ||
                               (!__user_authorisation[authID].auth_date)))  {
-        return ['authorisation',
-                'task requires authorisation from ' +
-                __auth_software[this.authorisationID()].desc_provider +
-                ' (available in "My Account")',
-                '<h3>Authorisation is required</h3>' +
-                'This task requires authorisation from ' +
-                __auth_software[this.authorisationID()].desc_provider +
-                ',<br>which may be obtained in "My Account" page.'];
+        if (__auth_software && (authID in __auth_software))  {
+          return ['authorisation',
+                  'task requires authorisation from ' +
+                  __auth_software[this.authorisationID()].desc_provider +
+                  ' (available in "My Account")',
+                  '<h3>Authorisation is required</h3>' +
+                  'This task requires authorisation from ' +
+                  __auth_software[this.authorisationID()].desc_provider +
+                  ',<br>which may be obtained in "My Account" page.'];
+        } else  {
+          return ['authorisation',
+                  'task requires authorisation, which is not configured',
+                  '<h3>Authorisation is required</h3>' +
+                  'This task requires authorisation, which is not available ' +
+                  ',<br>due to server misconfiguration.'];
+        }
       }
 
     }
