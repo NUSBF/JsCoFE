@@ -1589,7 +1589,7 @@ JobTree.prototype.stopJob = function ( nodeId,gracefully_bool,callback_func )  {
 
                     setTimeout ( function(){
                       new MessageBox ( msg[3],msg[3] + ', please wait a while.',
-                            'msg_information' );
+                                       'msg_information' );
                     },100 );
 
                     if (callback_func)
@@ -1616,8 +1616,8 @@ JobTree.prototype.stopJob = function ( nodeId,gracefully_bool,callback_func )  {
                               'msg_information' );
     else
       new MessageBox ( msg[0],'The job ' + jobId +
-                       ' is not running -- nothing to do.',
-                       'msg_information' );
+                              ' is not running -- nothing to do.',
+                              'msg_information' );
 
     if (node_id in this.node_map)
       this.node_map[node_id].setCustomIconVisible ( false );
