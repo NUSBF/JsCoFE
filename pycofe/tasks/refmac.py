@@ -481,10 +481,10 @@ class Refmac(basic.TaskDriver):
                             "refmac" : {
                                 "ncycles"    : int(sec1.NCYC.value),
                                 "twinning"   : isTwinning,
-                                "jellyBody"  : str(sec3.JELLY.value) == 'yes',
-                                "ncsRestr"   : str(sec3.NCSR.value) == 'yes',
-                                "tls"        : str(sec2.TLS.value) != 'none',
-                                "anisoBfact" : str(sec2.BFAC.value) == "ANIS",
+                                "jellyBody"  : str(sec3.JELLY.value)  == 'yes',
+                                "ncsRestr"   : str(sec3.NCSR.value)   == 'yes',
+                                "tls"        : str(sec2.TLS.value)    != 'none',
+                                "anisoBfact" : str(sec2.BFAC.value)   == "ANIS",
                                 "hydrogens"  : str(sec1.MKHYDR.value) == "ALL",
                                 "vdw_val"    : vdwrestraints
                             }
