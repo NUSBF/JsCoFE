@@ -126,6 +126,7 @@ class XyzUtils(basic.TaskDriver):
                 oxyz.addDataAssociation ( ixyz.dataId )  # ???
                 oxyz.copySubtype        ( ixyz )
                 oxyz.copyLigands        ( ixyz )
+                oxyz.copyLabels         ( ixyz )
                 if not xyzout:
                     oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
                 #self.putMessage (
