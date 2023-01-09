@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.12.22   <--  Date of Last Modification.
+ *    09.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Job Run Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  ==========================================================================
  *
@@ -1031,22 +1031,21 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
   if (auto_meta)  {
 
-    var projectData = prj.readProjectData ( loginData,projectName );
+    // var projectData = prj.readProjectData ( loginData,projectName );
+    var projectDesc = prj.readProjectDesc ( loginData,projectName );
 
-    if (!projectData)  {
+    if (!projectDesc)  {
       log.error ( 20,'project data ' + projectName + ' not found, login ' +
                      loginData.login );
     } else  {
 
-// pd.printProjectTree ( ' >>>auto-1',projectData );
-
       if (!('_root' in auto_meta.context.job_register))
         auto_meta.context.job_register._root = jobEntry.jobId;
 
-      var shared_logins  = projectData.desc.share;
+      var shared_logins  = projectDesc.share;
       var ownerLoginData = loginData;
-      if (projectData.desc.owner.login!=loginData.login)
-        ownerLoginData = user.getUserLoginData ( projectData.desc.owner.login );
+      if (projectDesc.owner.login!=loginData.login)
+        ownerLoginData = user.getUserLoginData ( projectDesc.owner.login );
 
       user.topupUserRation ( ownerLoginData,function(rdata){
 
@@ -1054,6 +1053,8 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
         if (check_list.length<=0)  {
   
           var tasks = [];
+          var projectData = prj.readProjectData ( loginData,projectName );
+          // pd.printProjectTree ( ' >>>auto-1',projectData );
   
           for (var key in auto_meta)
             if (key!='context')  {
