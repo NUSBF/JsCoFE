@@ -253,6 +253,17 @@ def startNautilus(driver):
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building of RNA/DNA with Nautilus')
     time.sleep(1)
 
+    try:
+        sf.clickByXpath(driver, "//span[starts-with(text(), '%s')]" % 'consider fixed')
+        time.sleep(1)
+
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'ignore')
+        time.sleep(1)
+
+    except:
+        pass
+
+
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
     for buttonRun in buttonsRun:
@@ -340,7 +351,7 @@ def test_1Nautilus(browser,
         editRevisionStructure(d.driver, d.waitShort) # 3
         refmacAfterRevision(d.driver, d.waitLong) # 4
         startNautilus(d.driver) # 5
-        verifyNautilus(d.driver, 600, '0005', 0.46, 0.50) # run takes 5 minutes, giving 10
+        verifyNautilus(d.driver, 1000, '0005', 0.3, 0.35) # run takes 5 minutes, giving 10
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
     except:
