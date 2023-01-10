@@ -15,8 +15,8 @@ building task places chains at an uncomfortable distance between them.
 
 **Optimise ASU** will move all chains as whole objects, except for water chains 
 made of residues named *HOH* or *WAT*. Water chains usually make contacts with all
-other chains in ASU, therefore, there cannot be a single suitable transormation 
-for all residues in the chain. **Optimise ASU** moves all water molecules 
+other chains in ASU, therefore, typically, no single suitable transormation 
+for all water molecules can be suggested. **Optimise ASU** moves all water molecules 
 individually -- please check results by visual inspection.
 
 In some cases, you may want ligand compounds to be moved individually, in a fashion 
