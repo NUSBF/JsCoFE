@@ -106,8 +106,8 @@ function Communicate ( server_request )  {
   var url_path   = url_parse.pathname.substr(1);
   this.command   = url_path.toLowerCase();
   this.search    = url_parse.search;
-//console.log ( "requested " + server_request.url );
-//console.log ( "parsed    " + JSON.stringify(url_parse) );
+// console.log ( "requested " + server_request.url );
+// console.log ( "parsed    " + JSON.stringify(url_parse) );
 
   if ((this.command=='') || (this.command==cmd.fe_command.cofe))  {
     this.filePath = this.fe_server.bootstrapHTML;
@@ -136,7 +136,7 @@ function Communicate ( server_request )  {
     this.job_token = '';
 
   log.debug2 ( 1,"requested path " + this.filePath );
-// console.log ( "requested path " + this.filePath );
+//console.log ( "requested path " + this.filePath );
   var ix = this.filePath.indexOf('jsrview');
   //if (ix<0)
   //  ix = this.filePath.indexOf('ccp4i2_support');
@@ -262,6 +262,13 @@ function Communicate ( server_request )  {
       log.debug2 ( 2,"calculated path " + this.filePath);
     }
   }
+  // if (ix<0)  {
+  //   if (this.filePath.startsWith('archive'))  {
+  //     this.filePath = 'archive.html';
+  //     ix = 0;
+  //   }
+  // }
+  // console.log ( "calculated path " + this.filePath);
 
   this.mimeType = utils.getMIMEType ( this.filePath );
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.11.22   <--  Date of Last Modification.
+ *    11.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Archive management Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022
+ *  (C) E. Krissinel, A. Lebedev 2022-2023
  *
  *  =================================================================
  *
@@ -466,6 +466,16 @@ var archPrjPath = findArchivedProject(archiveID)[0];
   var projectDir = prj.getProjectDirPath ( loginData,archiveID );
   if (utils.dirExists(projectDir))  {
     var pDesc = prj.readProjectDesc ( loginData,archiveID );
+    var pList = prj.readProjectList ( loginData );  // this reads new project in
+    if (pDesc && pList)  {
+      pList.current = pDesc.name;        // make it current
+      if (!prj.writeProjectList(loginData,pList))  {
+        log.error ( 11,'cannot write project list, login ' + loginData.login );
+        return new cmd.Response ( cmd.fe_retcode.ok,'',{
+          code : 'error_write_plist'
+        });
+      }
+    }
     var code  = 'already_accessed';
     if (!pDesc)  code = 'error_read_project';
     else if (!pDesc.archive)  code = 'duplicate_name';
@@ -492,7 +502,7 @@ var archPrjPath = findArchivedProject(archiveID)[0];
     // pList.projects.push ( pDesc );  // should be no need for this
     pList.current = pDesc.name;        // make it current
     if (!prj.writeProjectList(loginData,pList))  {
-      log.error ( 11,'cannot write project list, login ' + loginData.login );
+      log.error ( 12,'cannot write project list, login ' + loginData.login );
       return new cmd.Response ( cmd.fe_retcode.ok,'',{
         code : 'error_write_plist'
       });
@@ -500,7 +510,7 @@ var archPrjPath = findArchivedProject(archiveID)[0];
 
   } catch(e)  {
 
-    log.error ( 12,'update project list errors, login ' + loginData.login );
+    log.error ( 13,'update project list errors, login ' + loginData.login );
     return new cmd.Response ( cmd.fe_retcode.ok,'',{
       code : 'error_update_plist'
     });

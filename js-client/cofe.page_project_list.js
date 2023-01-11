@@ -1361,24 +1361,6 @@ function ProjectListPage ( sceneId )  {
     new ImportSharedProjectDialog ( self.loadProjectList1 );
   });
 
-  // add a listener to 'demo project' button
-  // if (demoprj_btn)
-  //   demoprj_btn.addOnClickListener ( function(){
-  //     // new ImportDemoProjectDialog ( self.loadProjectList1 );
-  //     (function(self){
-  //       self.currentCloudPath = __demo_projects;
-  //       new CloudFileBrowser ( null,self,5,[],function(items){
-  //         serverRequest ( fe_reqtype.startDemoImport,{
-  //                           'cloudpath' : self.currentCloudPath,
-  //                           'demoprj'   : items[0]
-  //                         },'Demo Project Import',function(data){
-  //                           new ImportDemoProjectDialog ( self.loadProjectList1 );
-  //                         });
-  //         return 1;  // do close browser window
-  //       });
-  //     }(this))
-  //   });
-
   (function(self){
     demoprj_btn.addOnClickListener ( function(){
       if (__demo_projects)  {

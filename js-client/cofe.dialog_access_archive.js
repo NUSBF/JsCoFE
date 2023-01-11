@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.11.22   <--  Date of Last Modification.
+ *    11.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project Archive Dialog (archives given project)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022
+ *  (C) E. Krissinel, A. Lebedev 2022-2023
  *
  *  =================================================================
  *
@@ -133,10 +133,11 @@ AccessArchiveDialog.prototype.makeLayout = function()  {
 // }
 
 
-function accessProject ( archiveID,mode,callback_func )  {
+function accessArchProject ( archiveID,mode,callback_func )  {
 
   serverRequest ( fe_reqtype.accessArchivedPrj,{
-    archiveID : archiveID
+    archiveID : archiveID,
+    mode      : mode
   },'Access Archived Project', function(response){
 
     var message  = '';
@@ -263,7 +264,7 @@ AccessArchiveDialog.prototype.accessProject = function ( callback_func )  {
   $( '#archdlg_access_btn' ).button('disable');
   $( '#archdlg_cancel_btn' ).button('disable');
 
-  accessProject ( archiveID,'strict',function(done){
+  accessArchProject ( archiveID,'strict',function(done){
     $( '#archdlg_access_btn' ).button('enable');
     $( '#archdlg_cancel_btn' ).button('enable');
     callback_func ( done );

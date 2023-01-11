@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.12.22   <--  Date of Last Modification.
+ *    11.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Tree
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  ==========================================================================
  *
@@ -246,13 +246,14 @@ JobTree.prototype.readProjectData = function ( page_title,
     serverRequest ( fe_reqtype.getProjectData,{'mode':tree.mode},
                     page_title,function(data){
 
-      if (data=='missing')  {
+      if ('missing' in data)  {
 
         tree.projectData = null;
         new MessageBox ( 'Missing Project',
           '<div style="width:400px"><h2>Missing Project</h2>' +
-          'The project does not exist. If it was shared with you, ' +
-          'then it could be deleted by owner.</div>',
+          'Project <i>"' + data.project + '"</i> does not exist. ' +
+          'If it was shared with you, check that it is not deleted ' +
+          'by owner.</div>',
           'msg_error'
         );
 
