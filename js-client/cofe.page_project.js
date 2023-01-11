@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    13.12.22   <--  Date of Last Modification.
+ *    11.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  ==========================================================================
  *
@@ -324,6 +324,7 @@ function ProjectPage ( sceneId )  {
 
   //  Read project data from server
   // (function(self){
+    // takes project name from projectList.current
     self.jobTree.readProjectData ( 'Project',true,-1,
       function(){
         if (self.onTreeLoaded(false,self.jobTree))  {

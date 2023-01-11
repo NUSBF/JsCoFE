@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.10.22   <--  Date of Last Modification.
+ *    11.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User session management
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2022
+ *  (C) E. Krissinel, A. Lebedev 2020-2023
  *
  *  =================================================================
  *
@@ -267,9 +267,16 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                         break;
 
                 case 102: // load archived project, archiveID=__url_parameters.id
-                          new HopOnDemoProjectDialog ( function(){
-                            makeProjectPage ( sceneId );
-                          });
+                          accessArchProject ( __url_parameters.id,'external',
+                            function(done){
+                              if (done)
+                                makeProjectPage ( sceneId );
+                              else
+                                new MessageBox ( 'Project not found',
+                                  '<div style="width:400px"><h2>Project not found</h2>' +
+                                  'Project <b>' + __url_parameters.id + '</b> not found in ' +
+                                  appName() + ' Archive.','msg_error' );
+                            });
                         break;
 
                 //default: if (__admin)  makeAdminPage   ( sceneId );

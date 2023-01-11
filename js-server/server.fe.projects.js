@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.12.22   <--  Date of Last Modification.
+ *    11.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -1056,7 +1056,10 @@ function getProjectData ( loginData,data )  {
         pdesc = projectList.projects[i];
   }
   if (!pdesc)
-    return new cmd.Response ( cmd.fe_retcode.ok,'','missing' );
+    return new cmd.Response ( cmd.fe_retcode.ok,'',{ 
+          'missing' : 1,
+          'project' : projectName 
+    });
 
   if (data.mode=='replay')
     projectName += ':' + replayDir;
