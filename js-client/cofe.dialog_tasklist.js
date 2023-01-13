@@ -244,7 +244,9 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   switch (btn.dataSummary.status)  {
     default :
     case 0 : $(btn.element).css({'border':'2px solid #FF1C00'});        // maroon
-             lbl.setFontColor('#888888').setFontItalic(true);    break;
+             btn.setIndicator ( image_path('nogo') );  // top-right corner indicator
+             lbl.setFontColor('#888888').setFontItalic(true);
+          break;
     case 1 : $(btn.element).css({'border':'2px solid #FFBF00'}); break; // amber
     case 2 : $(btn.element).css({'border':'2px solid #03C03C'}); break; // green
   }
