@@ -388,10 +388,16 @@ JobTree.prototype.makeNodeName = function ( task )  {
     var author = this.projectData.desc.owner.login;
     if ('author' in this.projectData.desc.owner)
       author = this.projectData.desc.owner.author;
-    if (author && (task.submitter!=author))  {  // empty author makes anonymisation
+
+    // put job submitter in the node name if:
+    //   submitter is not author
+    //   author is not 'tutorials'
+
+    if (author && (author!='tutorials') && 
+        (task.submitter!=author))  {  // empty author makes anonymisation
       if (node_name)
         node_name += ':';
-      node_name = task.submitter;
+      node_name += task.submitter;
     }
   }
   if (node_name)
