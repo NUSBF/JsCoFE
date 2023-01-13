@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    02.12.22   <--  Date of Last Modification.
+ *    13.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common GUI widgets
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  ========================================================================
  *
@@ -1233,6 +1233,20 @@ Button.prototype.getText = function()  {
 Button.prototype.setButton = function ( text,icon_uri )  {
   this._set_button ( text,icon_uri );
   return this;
+}
+
+Button.prototype.setIndicator = function ( indicon_uri )  {
+// indicator is a small icon overlaying the button and placed
+// in the top-right corner
+  var indicator = new Image ( indicon_uri,'16px','16px' );
+  $(indicator.element).css(
+    {'position' : 'absolute',
+    //  'z-index'  : '1',
+    'top'       : '-4px',
+    'right'     : '-8px'
+    }
+  );
+  this.addWidget ( indicator );
 }
 
 Button.prototype.setText = function ( text )  {
