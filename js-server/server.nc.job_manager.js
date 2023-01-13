@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.12.22   <--  Date of Last Modification.
+ *    13.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server -- Job Manager
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -931,11 +931,13 @@ var cfg = conf.getServerConfig();
                        conf.getServerConfig().sendDataWaitTime );
 
         } else if (comut.isObject(errcode) &&
-                   (errcode.status==cmd.fe_retcode.wrongJobToken))  {
+                   ((errcode.status==cmd.fe_retcode.wrongJobToken) ||
+                    (errcode.status==cmd.fe_retcode.fileErrors)))  {
           // the job cannot be accepted by FE, e.g., if task was deleted by user.
 
           removeJobDelayed ( job_token,task_t.job_code.finished );
-          log.error ( 4,'cannot send job ' + job_token + ' back to FE. TASK DELETED.' );
+          log.error ( 4,'cannot send job ' + job_token + ' back to FE (' + errcode.status + 
+                        '). TASK DELETED.' );
 
         } else  {
 
