@@ -37,7 +37,6 @@ function TaskPhaserEP()  {
   this.name    = 'phaser EP';
   this.setOName ( 'phaser-ep' );  // default output file name template
   this.title   = 'Experimental Phasing with Phaser-EP';
-  this.helpURL = './html/jscofe_task_phaserep.html';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision':['!anomalous','!asu',['xyz','substructure']]},
