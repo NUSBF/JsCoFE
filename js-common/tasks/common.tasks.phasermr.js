@@ -37,7 +37,6 @@ function TaskPhaserMR()  {
   this.name    = 'phaser MR';
   this.setOName ( 'phaser-mr' );  // default output file name template
   this.title   = 'Molecular Replacement with Phaser';
-  this.helpURL = './html/jscofe_task_phasermr.html';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataRevision':['hkl']}, // data type(s) and subtype(s)
