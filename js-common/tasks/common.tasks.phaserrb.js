@@ -35,7 +35,7 @@ function TaskPhaserRB()  {
 
   this._type   = 'TaskPhaserRB';
   this.name    = 'phaser RB';
-  this.setOName ( 'phaser-mr' );  // default output file name template
+  this.setOName ( 'phaser-rb' );  // default output file name template
   this.title   = 'Rigid-Body Refinement with Phaser';
 
   this.input_dtypes = [{  // input data types
@@ -166,7 +166,7 @@ if (!__template)  {
       this.input_data.data['seq'] = revision.ASU.seq;
       if (revision.Structure &&
           (revision.Structure.subtype.indexOf(dstruct.structure_subtype.XYZ)>=0))
-          this.input_data.data['xmodel'] = [revision.Structure];
+        this.input_data.data['xyz'] = [revision.Structure];
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );

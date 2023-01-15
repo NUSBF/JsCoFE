@@ -1235,17 +1235,29 @@ Button.prototype.setButton = function ( text,icon_uri )  {
   return this;
 }
 
-Button.prototype.setIndicator = function ( indicon_uri )  {
+Button.prototype.setIndicator = function ( indicon_uri,location )  {
 // indicator is a small icon overlaying the button and placed
-// in the top-right corner
+// in the specified location:
+//     0 : top-left
+//     1 : top-right
+//     2 : bottom-right
+//     3 : bottom-left
   var indicator = new Image ( indicon_uri,'16px','16px' );
-  $(indicator.element).css(
-    {'position' : 'absolute',
-    //  'z-index'  : '1',
-    'top'       : '-4px',
-    'right'     : '-8px'
-    }
-  );
+  var css = { 'position' : 'absolute' };
+  switch (location)  {
+    case 0  : css.top    = '-4px';   css.left = '-8px';  break;
+    default :
+    case 1  : css.top    = '-4px';   css.right = '-8px';  break;
+    case 2  : css.bottom = '-12px';  css.right = '-8px';  break;
+    case 3  : css.bottom = '-12px';  css.left  = '-8px';
+  }
+  $(indicator.element).css(css);
+  //   {'position' : 'absolute',
+  //   //  'z-index'  : '1',
+  //   'top'       : '-4px',
+  //   'right'     : '-8px'
+  //   }
+  // );
   this.addWidget ( indicator );
 }
 

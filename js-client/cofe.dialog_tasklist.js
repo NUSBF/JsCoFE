@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.23   <--  Date of Last Modification.
+ *    15.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -244,7 +244,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   switch (btn.dataSummary.status)  {
     default :
     case 0 : $(btn.element).css({'border':'2px solid #FF1C00'});        // maroon
-             btn.setIndicator ( image_path('nogo') );  // top-right corner indicator
+             btn.setIndicator ( image_path('nogo'),1 );  // top-right corner indicator
              lbl.setFontColor('#888888').setFontItalic(true);
           break;
     case 1 : $(btn.element).css({'border':'2px solid #FFBF00'}); break; // amber
@@ -623,6 +623,7 @@ var row      = 0;
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
       new TaskPDBREDO      (),
+      new TaskPhaserRB     (),
       new TaskPaiRef       (),
       // new TaskFindMySequence(),
       new TaskSheetbend    (),  // excluded also from the bootstrap html
