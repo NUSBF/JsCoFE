@@ -1821,12 +1821,12 @@ function cloudRun ( server_request,server_response )  {
 
                             response = new cmd.Response ( cmd.fe_retcode.ok,
                                 message + 'files uploaded, ' + meta.task + ' started',{} );
+      
+                            response.send ( server_response );
 
                             if (meta.load_project.toLowerCase()=='yes')
                                   user.signalUser ( loginData.login,'cloudrun_switch_to_project:'   + meta.project );
                             else  user.signalUser ( loginData.login,'cloudrun_reload_project_list:' + meta.project );
-      
-                            response.send ( server_response );
 
                           });  // end of job run callback
 

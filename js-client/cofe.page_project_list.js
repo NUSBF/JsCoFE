@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.12.22   <--  Date of Last Modification.
+ *    20.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project list page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -151,10 +151,14 @@ function ProjectListPage ( sceneId )  {
 
   // function to save Project List
   function saveProjectList ( onDone_func,crProjectName )  {
+
+    if (crProjectName)
+          projectList.current = crProjectName;
+    else  projectList.current = '';
+    
     if (self.tablesort_tbl.selectedRow)  {
-      if (crProjectName)
-            projectList.current = crProjectName;
-      else  projectList.current = currentProjectName();
+      if (!crProjectName)
+        projectList.current = currentProjectName();
       for (var i=0;i<projectList.projects.length;i++)  {
         var pDesc = projectList.projects[i];
         if (pDesc.name==projectList.current)  {
@@ -162,9 +166,8 @@ function ProjectListPage ( sceneId )  {
           break;
         }
       }
-    } else  {
-      projectList.current = '';
     }
+    
     projectList.sortList = self.tablesort_tbl.getSortList();
     serverRequest ( fe_reqtype.saveProjectList,projectList,'Project List',
       function(data){
@@ -172,6 +175,7 @@ function ProjectListPage ( sceneId )  {
           onDone_func ( data );
         self.updateUserRationDisplay ( data );
       },null,'persist' );
+  
   }
 
   // function to open selected Project

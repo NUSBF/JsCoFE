@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.01.23   <--  Date of Last Modification.
+ *    20.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -397,30 +397,8 @@ function checkSession ( sceneId )  {
               (rdata.status==fe_retcode.notLoggedIn))  {
             __login_token = '';
             logout ( sceneId,1 );
-        // } else if (__current_page && (__current_page._type=='ProjectListPage'))  {
-        //   offlineGreeting ( function(){
-        //     if ($.type(rdata.data) === "string")  {
-        //       if (rdata.data=='cloudrun_reload_project_list')
-        //         __current_page.reloadProjectList();
-        //       else if (rdata.data.startsWith('cloudrun_switch_to_project:'))
-        //         __current_page.loadProject (
-        //                           rdata.data.replace('cloudrun_switch_to_project:','') );
-        //     }
-        //     makeSessionCheck ( sceneId );
-        //   });
-        // } else  {
-        //   makeSessionCheck ( sceneId );
-        // }
           } else  {
             offlineGreeting ( function(){
-              // if (__current_page && (__current_page._type=='ProjectListPage') &&
-              //     ($.type(rdata.data) === "string"))  {
-              //   if (rdata.data.startsWith('cloudrun_reload_project_list:'))
-              //     __current_page.reloadProjectList();
-              //   else if (rdata.data.startsWith('cloudrun_switch_to_project:'))
-              //     __current_page.loadProject (
-              //                       rdata.data.replace('cloudrun_switch_to_project:','') );
-              // }
               if (__current_page && ($.type(rdata.data) === "string"))  {
                 var signal = rdata.data.split(':');
                 if (signal.length==2)  {
