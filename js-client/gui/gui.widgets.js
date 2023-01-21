@@ -1463,17 +1463,25 @@ RadioSet.prototype.selectButton = function ( btnId )  {
 }
 
 RadioSet.prototype.setDisabled = function ( disabled_bool )  {
-  $(this.element).controlgroup ( 'option','disabled',disabled_bool );
+  try {
+    $(this.element).controlgroup ( 'option','disabled',disabled_bool );
+  } catch(e) {}
   return this;
 }
 
 RadioSet.prototype.setEnabled = function ( enabled_bool )  {
-  $(this.element).controlgroup ( 'option','disabled',!enabled_bool );
+  try {
+    $(this.element).controlgroup ( 'option','disabled',!enabled_bool );
+  } catch(e) {}
   return this;
 }
 
 RadioSet.prototype.isDisabled = function()  {
-  return $(this.element).controlgroup ( 'option','disabled' );
+  try {
+    return $(this.element).controlgroup ( 'option','disabled' );
+  } catch(e) {
+    return true;
+  }
 }
 
 RadioSet.prototype.getValue = function()  {
@@ -1501,16 +1509,22 @@ function ProgressBar ( max_value )  {
 ProgressBar.prototype = Object.create ( Widget.prototype );
 ProgressBar.prototype.constructor = ProgressBar;
 
-ProgressBar.prototype.setMaxValue = function ( max_value ) {
-  $(this.element).progressbar( "option", "max", max_value );
+ProgressBar.prototype.setMaxValue = function ( max_value )  {
+  try {
+    $(this.element).progressbar( "option", "max", max_value );
+  } catch(e) {}
 }
 
 ProgressBar.prototype.getMaxValue = function() {
-  return $(this.element).progressbar( "option", "max" );
+  try {
+    return $(this.element).progressbar( "option", "max" );
+  } catch(e) {}
 }
 
 ProgressBar.prototype.setValue = function ( value ) {
-  $(this.element).progressbar( 'value', value );
+  try {
+    $(this.element).progressbar( 'value', value );
+  } catch(e) {}
 }
 
 ProgressBar.prototype.getValue = function() {
@@ -1665,18 +1679,24 @@ Section.prototype = Object.create ( Widget.prototype );
 Section.prototype.constructor = Section;
 
 Section.prototype.isOpen = function()  {
-var active = $( this.element ).accordion( "option", "active" );
-  if (active==0)  return true;
+  try {
+    var active = $( this.element ).accordion( "option", "active" );
+    if (active==0)  return true;
+  } catch(e) {}
   return false;
 }
 
 
 Section.prototype.open = function()  {
-  $( this.element ).accordion( "option", "active", 0 );
+  try {
+    $( this.element ).accordion( "option", "active", 0 );
+  } catch(e) {}
 }
 
 Section.prototype.close = function()  {
-  $( this.element ).accordion( "option", "active", false );
+  try {
+    $( this.element ).accordion( "option", "active", false );
+  } catch(e) {}
 }
 
 Section.prototype.setTitle = function ( title_str )  {
@@ -2010,20 +2030,32 @@ Spinner.prototype.setChangeListener = function ( socket_function )  {
 
 Spinner.prototype.setMaxValue = function ( value )  {
   this.maxV = value;
-  $(this.spinner.element).spinner( 'option', 'max', value );
+  try {
+    $(this.spinner.element).spinner( 'option', 'max', value );
+  } catch(e) {}
 }
 
 Spinner.prototype.getMaxValue = function()  {
-  return $(this.spinner.element).spinner( 'option', 'max' );
+  try {
+    return $(this.spinner.element).spinner( 'option', 'max' );
+  } catch(e) {
+    return this.maxV;
+  }
 }
 
 Spinner.prototype.setMinValue = function ( value )  {
   this.minV = value;
-  $(this.spinner.element).spinner( 'option', 'min', value );
+  try {
+    $(this.spinner.element).spinner( 'option', 'min', value );
+  } catch(e) {}
 }
 
 Spinner.prototype.getMinValue = function()  {
-  return $(this.spinner.element).spinner( 'option', 'min' );
+  try {
+    return $(this.spinner.element).spinner( 'option', 'min' );
+  } catch(e) {
+    return this.minV;
+  }
 }
 
 Spinner.prototype.setValue = function ( value )  {
