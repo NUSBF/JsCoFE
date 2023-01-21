@@ -1059,15 +1059,12 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
               self.jobTree.delete();
               self.setJobTree ( job_tree_1 );
               self.jobTree.selectTasks ( selTasks );
-              self.jobTree.show  ();
+              self.jobTree.show ();
               self.jobTree.parent.setScrollPosition ( scrollPos );
               if (!blink)  {
                 self.jobTree.relinkJobDialogs ( dlg_map,self );
-                // self.jobTree.relinkJobDialogs ( dlg_map,__current_page );
               } else  {
-                // self.jobTree.parent.setScrollPosition ( scrollPos );
                 self.jobTree.openJobs ( dlg_task_parameters,self );
-                // self.jobTree.openJobs ( dlg_task_parameters,__current_page );
               }
               if (rdata)  {
                 self.updateUserRationDisplay ( rdata );

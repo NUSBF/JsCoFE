@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.12.22   <--  Date of Last Modification.
+ *    21.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -623,16 +623,24 @@ JobDialog.prototype.makeToolBar = function()  {
 
   this.newtab_btn = this.addToolBarButton  ( false,'new_tab' ,'Open in new tab or window' );
   this.export_btn = this.addToolBarButton  ( false,'export'  ,'Download job data' );
-  // if (this.task.getHelpURL())
-  //   this.ref_btn  = this.addToolBarButton  ( true,'reference','Task Documentation'   );
   this.help_btn   = this.addToolBarButton  ( true,'help'     ,'Dialog Help'          );
-  //this.close_btn  = this.addToolBarButton  ( true,'close'    ,'Close Job Dialog'     );
   this.close_btn  = this.toolBar.setButton ( 'Close',image_path('close'), 0,this.col, 1,1 )
                                 .setMargins ( '4px','','','' )
                                 .setTooltip('Close Job Dialog' );
 
 }
 
+JobDialog.prototype.enableCloseButton = function ( do_close )  {
+  var dlg = this;
+  window.setTimeout ( function(){
+    if (dlg.parent_page.can_reload)  {
+      dlg.close_btn.setDisabled ( false );
+      if (do_close && dlg.task.autoRunId)
+        dlg.close_btn.click();
+    } else
+      dlg.enableCloseButton();
+  },2000);
+}
 
 JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
@@ -726,7 +734,6 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
             dlg.autorun_cbx.setEnabled ( false );
           dlg.close_btn.setEnabled ( false );
         } else if (e.detail=='upload_finished')  {
-// console.log ( dlg.dlg_active );
           dlg.run_btn.setEnabled ( dlg.dlg_active );
           if (dlg.autorun_cbx)
             dlg.autorun_cbx.setEnabled ( dlg.dlg_active );
@@ -760,7 +767,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
           dlg.close_btn.setDisabled ( true );
           serverRequest ( fe_reqtype.getUserRation,{ topup : true },'User Ration',
-            function(rdata){
+            function(rdata){   // on success
 
               var pdesc  = dlg.parent_page.ration.pdesc;
               var ration = rdata.ration;
@@ -784,7 +791,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       '<i><b>Recommended action:</b></i> export an old project and then<br>' +
                       'delete it from the list. You will be able to re-import that<br>' +
                       'project later using the file exported.', 'msg_excl' );
-                  dlg.close_btn.setDisabled ( false );
+                  dlg.enableCloseButton ( false );
                   return;
                 }
                 if ((ration.cpu_day>0.0) && (ration.cpu_day_used>=ration.cpu_day))  {
@@ -798,7 +805,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       'may need to push "Reload" button in the toolbar after<br>' +
                       'periods of inactivity to get updated readings.<p>' +
                       '<i><b>Recommended action:</b></i> run the job later.', 'msg_excl' );
-                  dlg.close_btn.setDisabled ( false );
+                  dlg.enableCloseButton ( false );
                   return;
                 }
                 if ((ration.cpu_month>0.0) && (ration.cpu_month_used>=ration.cpu_month))  {
@@ -812,7 +819,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       'may need to push "Reload" button in the toolbar after<br>' +
                       'periods of inactivity to get updated readings.<p>' +
                       '<i><b>Recommended action:</b></i> run the job later.', 'msg_excl');
-                  dlg.close_btn.setDisabled ( false );
+                  dlg.enableCloseButton ( false );
                   return;
                 }
               }
@@ -835,10 +842,10 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                   dlg.tree.projectData.desc.autorun = true;
                   // dlg.parent_page.job_tree.projectData.desc.autorun = true;
 
-                dlg.close_btn.setDisabled ( false );
+                // dlg.close_btn.setDisabled ( false );
                 dlg.task.doRun ( dlg.inputPanel,function(){
 
-                  dlg.close_btn.setDisabled ( true );
+                  // dlg.close_btn.setDisabled ( true );
                   dlg.task.job_dialog_data.panel = 'output';
                   dlg.task.state = job_code.running;
                   dlg.outputPanel.clear();
@@ -873,11 +880,12 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                             dlg.loadReport();
                             dlg.radioSet.selectButton ( 'output' );
                             onRun_func ( dlg );
-                            dlg.close_btn.setDisabled ( false );
-                            if (dlg.task.autoRunId)
-                              window.setTimeout ( function(){
-                                dlg.close_btn.click();
-                              },0);
+                            dlg.enableCloseButton ( true );
+                            // window.setTimeout ( function(){
+                            //   dlg.close_btn.setDisabled ( false );
+                            //   if (dlg.task.autoRunId)
+                            //     dlg.close_btn.click();
+                            // },1000);
                           }
                           return true;
                         });
@@ -887,20 +895,23 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       dlg.loadReport();
                       dlg.radioSet.selectButton ( 'output' );
                       onRun_func ( dlg );
-                      dlg.close_btn.setDisabled ( false );
-                      if (dlg.task.autoRunId)
-                        window.setTimeout ( function(){
-                          dlg.close_btn.click();
-                        },0);
+                      dlg.enableCloseButton ( true );
+                      // window.setTimeout ( function(){
+                      //   dlg.close_btn.setDisabled ( false );
+                      //   if (dlg.task.autoRunId)
+                      //     dlg.close_btn.click();
+                      // },1000);
                     }
                   });
 
                 });
 
-              } else
+              } else  // collectTaskData() did not succeed, data is not complete/ready
                 dlg.close_btn.setDisabled ( false );
 
-            },null,function(){
+            },
+            null,    // always (nothing)
+            function(){   // on failure/errors
               dlg.close_btn.setDisabled ( false );
             });
 
