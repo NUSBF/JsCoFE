@@ -1200,8 +1200,8 @@ function Button ( text,icon_uri )  {
   this.element.setAttribute ( 'type','button' );
   this.div = document.createElement ( 'div' );
   this.element.appendChild ( this.div );
-  this._set_button ( text,icon_uri );
   this.click_count = 1;
+  this._set_button ( text,icon_uri );
 }
 
 Button.prototype = Object.create ( Widget.prototype );
@@ -1271,17 +1271,23 @@ Button.prototype.setIcon = function ( icon_uri )  {
 }
 
 Button.prototype.setDisabled = function ( disabled_bool )  {
-  $(this.element).button ( "option", "disabled", disabled_bool );
+  try {
+    $(this.element).button ( "option", "disabled", disabled_bool );
+  } catch(e) {}
   return this;
 }
 
 Button.prototype.setEnabled = function ( enabled_bool )  {
-  $(this.element).button ( "option", "disabled", (!enabled_bool) );
+  try {
+    $(this.element).button ( "option", "disabled", (!enabled_bool) );
+  } catch(e) {}
   return this;
 }
 
 Button.prototype.isDisabled = function()  {
-  return $(this.element).button ( 'option','disabled' );
+  try {
+    return $(this.element).button ( 'option','disabled' );
+  } catch(e) {}
 }
 
 Button.prototype.setSize = function ( width,height )  {
