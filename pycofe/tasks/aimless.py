@@ -49,15 +49,15 @@ class ParamStorage(object):
 class Aimless(basic.TaskDriver):
 
     # make task-specific definitions
-    def pointless_xml   (self):  return "pointless.xml"
-    def pointless_mtz   (self):  return "pointless.mtz"
-    def pointless_report(self):  return "pointless_report"
-    def aimless_xml     (self):  return "aimless.xml"
-    def aimless_unmerged(self):  return "aimless_unmerged.mtz"
-    def aimless_report  (self):  return "aimless_report"
-    def ctruncate_mtz   (self):  return "merged.mtz"
-    def ctruncate_report(self):  return "ctruncate_report"
-    def symm_det        (self):  return "symm_det_table"
+    def pointless_xml    (self):  return "pointless.xml"
+    def pointless_mtz    (self):  return "pointless.mtz"
+    def pointless_report (self):  return "pointless_report"
+    def aimless_xml      (self):  return "aimless.xml"
+    def aimless_unmerged (self):  return "aimless_unmerged.mtz"
+    def aimless_report   (self):  return "aimless_report"
+    def ctruncate_mtz    (self):  return "merged.mtz"
+    def ctruncate_report (self):  return "ctruncate_report"
+    def symm_det         (self):  return "symm_det_table"
 
     # the following will provide for import of generated HKL dataset(s)
     def importDir        (self):  return "./"   # import from working directory
@@ -157,6 +157,7 @@ class Aimless(basic.TaskDriver):
 #       self.file_stdout.write('#-------------------------------------\n')
         n = 0
         for script in script_list:
+
             self.open_stdin()
             for line in pointless_lines:
                 self.write_stdin ( line + '\n' )
@@ -464,7 +465,7 @@ def scalingDetails(par, lines):
     emin = par.SELECT_EMIN
     iovsdmin = par.SELECT_IOVSDMIN
     if iovsdmin != '' or emin != '':
-        s = 'REFINE SELECT'
+        s  = 'REFINE SELECT'
         s += ' ' + '-1' if iovsdmin == '' else iovsdmin
         if emin != '':
             s += ' ' + emin
@@ -480,7 +481,7 @@ def scalingDetails(par, lines):
         bz_sd_prn = bz_sd if bz_sd != '' else '10.0'
         ro_sd_prn = ro_sd if ro_sd != '' else '0.05'
         su_sd_prn = su_sd if su_sd != '' else '0.005'
-        s = "TIE "
+        s  = "TIE "
         s += 'ROTATION %7.4f ' %float(ro_sd_prn)
         s += 'BFACTOR %7.4f ' %float(bf_sd_prn)
         s += 'SURFACE %7.4f ' %float(su_sd_prn)
