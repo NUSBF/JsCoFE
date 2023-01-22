@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.09.22   <--  Date of Last Modification.
+ *    22.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Login page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -241,7 +241,7 @@ function LoginPage ( sceneId )  {
     if (login_inp.getValue().length<=0)
       msg += '<b>Login name</b> must be provided.<p>';
     else if (login_inp.element.validity.patternMismatch)
-      msg += 'Login name should contain only latin letters, numbers,\n ' +
+      msg += 'Login name can contain only latin letters, numbers,\n ' +
              'undescores, dashes and dots, and must start with a letter.<p>';
 
     if (pwd_inp.getValue().length<=0)
@@ -250,7 +250,7 @@ function LoginPage ( sceneId )  {
     if (msg)  {
 
       new MessageBox ( 'Login',
-         'Login cannot be done due to the following reasons:<p>' +
+         'Login data is either incomplete or incorrect:<p>' +
           msg + '<p>Please provide all needful data and try again', 'msg_excl' );
 
     } else  {
