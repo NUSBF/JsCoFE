@@ -110,8 +110,8 @@ function TaskTemplate()  {
     this.input_data  = new dbx.DataBox(); // actual input data, represented by DataBox
     this.output_data = new dbx.DataBox(); // actual output data, represented by DataBox
   } else  {
-    this.input_data  = new DataBox(); // actual input data, represented by DataBox
-    this.output_data = new DataBox(); // actual output data, represented by DataBox
+    this.input_data  = new DataBox();  // actual input data, represented by DataBox
+    this.output_data = new DataBox();  // actual output data, represented by DataBox
   }
 
   this.parameters      = {};  // input parameters
