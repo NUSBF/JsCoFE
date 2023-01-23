@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.01.23   <--  Date of Last Modification.
+ *    23.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -348,8 +348,13 @@ JobTree.prototype.readProjectData = function ( page_title,
             } else if (!tree.task_map[key].job_dialog_data.viewed)
               tree.setStyle ( tree.node_map[key],__notViewedStyle,0 );
           }
-          if (!('R_free' in tree.projectData.desc.metrics))
+          if (!('R_free' in tree.projectData.desc.metrics) ||
+              (tree.projectData.desc.metrics.R_free>=1.0))  {
             tree.calcMetrics();
+            if (('R_free' in tree.projectData.desc.metrics) &&
+                (tree.projectData.desc.metrics.R_free<1.0))
+              tree.saveProjectData ( [],[],true, function(tree,rdata){} );
+          }
           onLoaded_func();
         },onRightClick_func,onDblClick_func,onSelect_func );
 
