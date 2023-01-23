@@ -314,11 +314,11 @@ class ModelCraft(basic.TaskDriver):
                     self.rvrow = rvrow0
 
                     self.generic_parser_summary["modelcraft"] = {
-                      "summary_line" : "Compl={0:.1f}%".format(Compl) +\
-                                       ", R=" + Rwork +\
-                                       " R<sub>free</sub>="  + Rfree,
-                      "R_factor"     : Rwork,
-                      "R_free"       : Rfree
+                        "summary_line" : "Compl={0:.1f}%".format(Compl) +\
+                                        ", R=" + Rwork +\
+                                        " R<sub>free</sub>="  + Rfree,
+                        "R_factor"     : Rwork,
+                        "R_free"       : Rfree
                     }
 
                     # auto.makeNextTask ( self,{
@@ -328,12 +328,12 @@ class ModelCraft(basic.TaskDriver):
                     # })
 
                     auto.makeNextTask ( self,{
-                    "revision" : revision,
-                    "summary_line" : "Compl={0:.1f}%".format(Compl) +\
-                                       ", R=" + Rwork +\
-                                       " R<sub>free</sub>="  + Rfree,
-                      "Rfactor"     : Rwork,
-                      "Rfree"       : Rfree
+                        "revision"     : revision,
+                        "summary_line" : "Compl={0:.1f}%".format(Compl) +\
+                                         ", R=" + Rwork +\
+                                         " R<sub>free</sub>="  + Rfree,
+                        "Rfactor"      : Rwork,
+                        "Rfree"        : Rfree
                     }, log=self.file_stderr)
 
             else:
