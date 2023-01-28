@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    24.12.22   <--  Date of Last Modification.
+#    28.01.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  Citation Framework Functions
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2023
 #
 # ============================================================================
 #
@@ -1173,6 +1173,19 @@ citations = {
                             'year'    : '2022',
                             'pages'   : '86-97',
                             'doi'     : '10.1107/S2052252521011088'
+                        }]
+                  },
+
+    'pairef'         : { 'name'     : 'PAIREF',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Maly, M., Diederichs, K., Dohnalek, J. & Kolenko, P.',
+                            'title'   : 'Paired refinement under the control of PAIREF',
+                            'journal' : 'IUCrJ',
+                            'volume'  : '7',
+                            'year'    : '2020',
+                            'pages'   : '681-692',
+                            'doi'     : '10.1107/S2052252520005916'
                         }]
                   },
 
