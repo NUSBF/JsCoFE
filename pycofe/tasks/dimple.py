@@ -183,12 +183,12 @@ class Dimple(basic.TaskDriver):
                 panel_id = self.getWidgetId ( self.refmac_report() )
                 self.setRefmacLogParser ( panel_id,False,
                                           graphTables=False,makePanel=True )
-                file_refmaclog  = open ( files[0],"r" )
+                file_refmaclog = open ( files[0],"r" )
                 self.log_parser.parse_stream ( file_refmaclog )
                 file_refmaclog.close()
 
                 #  data for verdict
-                self.refmac_log = files[0]
+                self.refmac_log  = files[0]
                 self.verdict_row = self.rvrow
                 self.rvrow += 4
 

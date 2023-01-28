@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.23   <--  Date of Last Modification.
+ *    28.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -10,7 +10,7 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  PDB-REDO
+ *  **** Content :  PaiRef task class
  *       ~~~~~~~~~
  *
  *  (C) M. Fando, E. Krissinel, A. Lebedev  2023
@@ -53,9 +53,51 @@ function TaskPaiRef()  {   // must start with Task...
     version   : 4,          // minimum data version allowed
     min       : 1,          // minimum acceptable number of data instances
     max       : 1           // maximum acceptable number of data instances
+  // },{
+  //   data_type : {'DataHKL':[]},  // data type(s) and subtype(s)
+  //   label     : 'Reflections',   // label for input dialog
+  //   tooltip   : 'High-resolution reflection dataset, which will be used for finding ' +
+  //               'the optimal resolution cut-off.',
+  //   inputId   : 'hkl',           // input Id for referencing input fields
+  //   min       : 1,               // minimum acceptable number of data instances
+  //   max       : 1                // maximum acceptable number of data instances
   }];
 
-  this.parameters = {};
+  this.parameters = {
+    SEP_LBL : {
+      type     : 'label',
+      label    : '&nbsp;',
+      position : [0,0,1,5]
+    },
+    sec1 :  {
+      type     : 'section',
+      title    : 'Parameters',
+      open     : true,  // true for the section to be initially open
+      position : [1,0,1,5],
+      contains : {
+        LORES : {
+                type     : 'real_',
+                keyword  : 'lores',
+                label    : 'Check to resolution of (&Aring;)',
+                tooltip  : 'Maximum number of search models to test',
+                range    : [7.0,'*'],
+                value    : '',
+                iwidth   : 40,
+                position : [0,0,1,1]
+              },
+        RSTEP : {
+          type     : 'real_',
+          keyword  : 'lores',
+          label    : 'with step (&Aring;)',
+          tooltip  : 'Maximum number of search models to test',
+          range    : [2.0,'*'],
+          value    : '',
+          iwidth   : 40,
+          position : [0,4,1,1]
+        }
+      }
+    }
+  };
 
 }
 
@@ -114,6 +156,9 @@ if (__template)  {  //  will run only on server side
       this.input_data.data['istruct'] = [revision.Structure];
       if (('file_unm' in revision.HKL.aimless_meta) && revision.HKL.aimless_meta.file_unm)
         this.addInputFile ( revision.HKL.aimless_meta.jobId,revision.HKL.aimless_meta.file_unm,jobDir );
+      // var hkl = this.input_data.data['hkl'][0]
+      // if (('file_unm' in hkl.aimless_meta) && hkl.aimless_meta.file_unm)
+      //   this.addInputFile ( hkl.aimless_meta.jobId,hkl.aimless_meta.file_unm,jobDir );
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
