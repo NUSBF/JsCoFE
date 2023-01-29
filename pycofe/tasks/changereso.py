@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.12.20   <--  Date of Last Modification.
+#    29.01.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -32,7 +32,7 @@ import os
 #  application imports
 from . import basic
 from   pycofe.dtypes import dtype_template
-from   pycofe.proc   import datred_utils, import_filetype, import_merged
+from   pycofe.proc   import import_filetype, import_merged
 
 
 # ============================================================================
@@ -72,7 +72,7 @@ class ChangeReso(basic.TaskDriver):
         outputMTZFName = self.getOFName ( "_" + hkl.new_spg.replace(" ","") +\
                       "_" + hkl.getFileName(dtype_template.file_key["mtz"]),-1 )
 
-        # Just in case (of repeated run) remove the output xyz file. When zanuda
+        # Just in case (of repeated run) remove the output mtz file. When zanuda
         # succeeds, this file is created.
         if os.path.isfile(outputMTZFName):
             os.remove(outputMTZFName)
