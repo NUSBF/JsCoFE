@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.01.23   <--  Date of Last Modification.
+#    29.01.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,6 +30,8 @@ import shutil
 
 #  application imports
 from . import basic
+from   pycofe.dtypes import dtype_template
+from   pycofe.proc   import import_filetype, import_merged
 
 # ============================================================================
 # Make PaiRef driver
@@ -44,6 +46,63 @@ class PaiRef(basic.TaskDriver):
 
     def pairefDir(self):
         return "pairef_" + self.pairefProject()
+
+    # the following will provide for import of generated HKL dataset(s)
+    def importDir        (self):  return "./"   # import from working directory
+    def import_summary_id(self):  return None   # don't make summary table
+
+    def cutResolution ( self,hkl,cutoff_res ):
+
+        # make new file name
+        outputMTZFName = self.getOFName ( "_" + hkl.new_spg.replace(" ","") +\
+                      "_" + hkl.getFileName(dtype_template.file_key["mtz"]),-1 )
+
+        # Just in case (of repeated run) remove the output mtz file. When zanuda
+        # succeeds, this file is created.
+        if os.path.isfile(outputMTZFName):
+            os.remove(outputMTZFName)
+
+        # make command-line parameters
+        cmd = [ "hklin1",hkl.getHKLFilePath(self.inputDir()),
+                "hklout",outputMTZFName ]
+
+        # prepare stdin
+        self.open_stdin  ()
+        self.write_stdin ([
+          "LABIN FILE_NUMBER 1 ALL",
+          "RESOLUTION FILE_NUMBER 1 " + cutoff_res + " " + hkl.getLowResolution(raw=False)
+        ])
+        self.close_stdin ()
+
+        # Prepare report parser
+        self.setGenericLogParser ( "chres_report",False )
+
+        # run reindex
+        self.runApp ( "cad",cmd,logType="Main" )
+        self.unsetLogParser()
+
+        self.removeCitation ( "cad" )
+        self.addCitation    ( "cad-primary" )
+
+        new_hkl = []
+
+        if os.path.isfile(outputMTZFName):
+
+            # make list of files to import
+            self.resetFileImport()
+            self.addFileImport ( outputMTZFName,import_filetype.ftype_MTZMerged() )
+
+            new_hkl = import_merged.run ( self,"Reflection dataset",importPhases="" )
+
+            if len(new_hkl)>0:
+
+                for i in range(len(new_hkl)):
+                    new_hkl[i].new_spg      = hkl.new_spg.replace(" ","")
+                    # Do not overwrite dataStats; they should be correct!
+                    # new_hkl[i].dataStats    = hkl.dataStats
+                    new_hkl[i].aimless_meta = hkl.aimless_meta
+
+        return new_hkl
 
 
     # ------------------------------------------------------------------------
@@ -61,30 +120,9 @@ class PaiRef(basic.TaskDriver):
         hkl     = self.makeClass ( self.input_data.data.hkl    [0] )
         istruct = self.makeClass ( self.input_data.data.istruct[0] )
 
-        # sec1 = self.task.parameters.sec1.contains
-
-        # self.open_stdin  ()
-        # self.write_stdin ([
-        #     "mtzin  " + hkl.getHKLFilePath(self.inputDir()),
-        #     "pdbin  " + istruct.getXYZFilePath(self.inputDir()),
-        #     "pdbout " + xyzout,
-        #     "colin-fo   /*/*/[" + istruct.FP + "," + istruct.SigFP + "]",
-        #     "colin-free /*/*/[" + istruct.FreeR_flag + "]",
-        #     "coord",
-        #     "cycles " + str(sec1.NCYCLES.value),
-        #     "postrefine-u-iso",
-        #     "pseudo-regularize",
-        #     "refine-regularize-cycles 3",
-        #     #"resolution-by-cycle 6.0, 6.0, 3.0",
-        #     "resolution-by-cycle 6.0, 3.0",
-        #     "radius-scale 4.0"
-        #     # "radius-scale 2.5"
-        # ])
-        # self.close_stdin ()
-
-        xyzin = istruct.getXYZFilePath ( self.inputDir() )
-        libin = istruct.getLibFilePath ( self.inputDir() )
-        hklin = hkl    .getHKLFilePath ( self.inputDir() )
+        xyzin   = istruct.getXYZFilePath ( self.inputDir() )
+        libin   = istruct.getLibFilePath ( self.inputDir() )
+        hklin   = hkl    .getHKLFilePath ( self.inputDir() )
 
         hklin_unmerged = None
         fname_unmerged = None
@@ -92,12 +130,38 @@ class PaiRef(basic.TaskDriver):
             fname_unmerged = hkl.aimless_meta.file_unm
             hklin_unmerged = os.path.join ( self.inputDir(),hkl.aimless_meta.file_unm )
 
+        sec1    = self.task.parameters.sec1.contains
+
+        hires   = round ( hkl.getHighResolution(raw=True),2 )
+        resList = []
+        mode    = self.getParameter ( sec1.MODE_SEL )
+        if mode=="eqd":
+            nshells = self.getParameter ( sec1.NSHELLS )
+            if nshells:
+                nshells = int(nshells)
+            else:
+                nshells = 20
+            rstep = self.getParameter ( sec1.RSTEP )
+            if rstep:
+                rstep = float(rstep)
+            else:
+                rstep = 0.05
+            for i in range(nshells+1):
+                resList.append ( str(hires + i*rstep) )
+        else:
+            s = self.getParameter ( sec1.RLIST )
+            resList = [x.strip() for x in s.split(',')]            
+
+        resList.sort ( reverse=True )
+        resList[len(resList)-1] = hkl.getHighResolution(raw=False)
+
         cmd = [
             #"-m"     , "pairef",
             "--project",self.pairefProject(),
             "--XYZIN"  , xyzin,
             "--HKLIN"  , hklin,
-            "-i"       , str(hkl.getHighResolution(raw=True)+0.15),
+            "-r"       , ",".join(resList[1:]),
+            "-i"       , str(resList[0]),
             "--refmac"
         ]
 
@@ -127,20 +191,7 @@ class PaiRef(basic.TaskDriver):
         if libin:
             cmd += [ "--LIBIN",libin ]
 
-
         htmlReport = "PAIREF_" + self.pairefProject() + ".html"
-
-        # if not os.path.isdir(self.pairefDir()):
-        #     os.mkdir ( self.pairefDir() )
-        # with (open(os.path.join(self.pairefDir(),htmlReport),"w")) as f:
-        #     f.write(
-        #         "<!DOCTYPE html>\n<html><head><title>Report is being generated</title>"
-        #         + '<meta http-equiv="refresh" content="90" /></head>'
-        #         + '<body class="main-page">'
-        #         + "<h2><i>Report is being generated ....</i></h2>"
-        #         + "</body></html>"
-        #     )
-        # shutil.rmtree ( self.pairefDir() )
 
         self.insertTab ( "pairef_report", "PaiRef Report", None, True )
  
@@ -168,12 +219,7 @@ class PaiRef(basic.TaskDriver):
         self.flush()
 
         self.runApp ( "pairef",cmd,logType="Main" )
-
-        # self.putMessage1 (
-        #     "pairef_report",
-        #     '<iframe id="' + frameId + '" src="' + frameURL + '" style="' + frameCSS + '"></iframe>',
-        #     0,
-        # )
+        self.addCitations ( ["refmac5"] )
 
         # check solution and register data
         have_results = False
@@ -213,9 +259,38 @@ class PaiRef(basic.TaskDriver):
 
         if mmcif_out:
 
+            self.putMessage ( "<h3>Suggested resolution cut-off: " + cutoff_res + "&Aring;</h3>" )
+
+            hkl0  = hkl
+            hires = hkl.getHighResolution(raw=True)
+            summary_line = "Res<sub>cutoff</sub>=" + cutoff_res
+            if (float(cutoff_res)-hires)<0.01:
+                self.putMessage ( "<i>The recommended cut-off is equal to the current high " +\
+                                  "resolution limit. Full-resolution dataset will be used in " +\
+                                  "subsequent tasks.</i>" )
+            else:
+                # cut resolution in the data set and replace it in the revision later
+                rvrow0  = self.rvrow
+                self.putMessage ( "<i>Reflection dataset is cut to resolution of " + cutoff_res +\
+                                    "&Aring; and will be used in subsequent tasks.</i><br>&nbsp;" )
+                new_hkl = self.cutResolution ( hkl,cutoff_res )
+                if len(new_hkl)>0:
+                    hkl0 = new_hkl[0]
+                else:
+                    self.rvrow = rvrow0
+                    self.putMessage ( '<i style="color:maroon">Reflection data set was not cut ' +\
+                                      'to the recommended resolution due to errors.</i><br>&nbsp;' )
+                    summary_line += " (not cut)"
+                    self.rvrow += 2
+
+            self.generic_parser_summary["pairef"] = {
+                "summary_line" : summary_line
+            }
+
+            self.putMessage ( "<h3>Refinement at " + cutoff_res + "&Aring; resolution cutoff</h3>" )
+
             panel_id = self.getWidgetId ( self.refmac_report() )
-            self.setRefmacLogParser ( panel_id,False,
-                                        graphTables=False,makePanel=True )
+            self.setRefmacLogParser ( panel_id,False,graphTables=False,makePanel=True )
             file_refmaclog = open ( mmcif_out.replace(".mmcif",".log"),"r" )
             self.log_parser.parse_stream ( file_refmaclog )
             file_refmaclog.close()
@@ -250,10 +325,10 @@ class PaiRef(basic.TaskDriver):
             )
 
             if structure:
-                structure.copyAssociations   ( istruct )
-                structure.addDataAssociation ( hkl.dataId     )
+                structure.copyAssociations   ( istruct        )
+                structure.addDataAssociation ( hkl0.dataId    )
                 structure.addDataAssociation ( istruct.dataId )  # ???
-                structure.setRefmacLabels    ( None if str(hkl.useHKLSet) in ["Fpm","TI"] else hkl )
+                structure.setRefmacLabels    ( None if str(hkl0.useHKLSet) in ["Fpm","TI"] else hkl0 )
                 structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
                 structure.copySubtype        ( istruct )
                 structure.copyLigands        ( istruct )
@@ -262,13 +337,18 @@ class PaiRef(basic.TaskDriver):
                                                "Structure and electron density",
                                                structure )
                 # update structure revision
-                revision = self.makeClass ( self.input_data.data.revision[0] )
-                revision.setStructureData ( structure )
-                self.registerRevision     ( revision  )
+                revision = self.makeClass  ( self.input_data.data.revision[0] )
+                revision.setStructureData  ( structure )
+                revision.setReflectionData ( hkl0      )
+                self.registerRevision      ( revision  )
                 have_results = True
 
         else:
             self.putTitle ( "No Output Generated" )
+            self.generic_parser_summary["pairef"] = {
+                "summary_line" : "failed"
+            }
+
 
         # close execution logs and quit
         self.success ( have_results )

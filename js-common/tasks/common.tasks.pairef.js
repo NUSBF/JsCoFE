@@ -75,26 +75,52 @@ function TaskPaiRef()  {   // must start with Task...
       open     : true,  // true for the section to be initially open
       position : [1,0,1,5],
       contains : {
-        LORES : {
-                type     : 'real_',
-                keyword  : 'lores',
-                label    : 'Check to resolution of (&Aring;)',
-                tooltip  : 'Maximum number of search models to test',
-                range    : [7.0,'*'],
-                value    : '',
-                iwidth   : 40,
-                position : [0,0,1,1]
-              },
-        RSTEP : {
-          type     : 'real_',
-          keyword  : 'lores',
-          label    : 'with step (&Aring;)',
-          tooltip  : 'Maximum number of search models to test',
-          range    : [2.0,'*'],
-          value    : '',
-          iwidth   : 40,
-          position : [0,4,1,1]
-        }
+        MODE_SEL : { type     : 'combobox',
+                     keyword  : 'mode',
+                     label    : 'Check',
+                     tooltip  : 'Select either equidistant or arbitrary placed, '     +
+                               'hi-resolution shells to check for optimal  '     +
+                               'resolution cut-off.',
+                     range    : ['eqd|equidistant hi-resolution shells',
+                                 'list|given hi-resolution shells'],
+                     value    : 'eqd',
+                     iwidth   : 280,
+                     position : [0,0,1,4]
+                   },
+        NSHELLS :  { type        : 'integer_',
+                     keyword     : 'nshells',
+                     label       : 'number of hi-resolution shells:',
+                     tooltip     : 'Number of hi-resolution shells to check or leave blank ' +
+                                   'for automatic choice',
+                     range       : [2,50],
+                     value       : '',
+                     placeholder : '20',
+                     iwidth      : 40,
+                     position    : [1,2,1,1],
+                     showon      : {'MODE_SEL':['eqd']}
+                   },
+        RSTEP :    { type        : 'real_',
+                     keyword     : 'rstep',
+                     label       : 'of',
+                     tooltip     : 'Thickness of resolution shells',
+                     range       : [0.01,2.0],
+                     value       : '',
+                     placeholder : '0.05',
+                     iwidth      : 40,
+                     label2      : '&Aring; each',
+                     position    : [1,6,1,1],
+                     showon      : {'MODE_SEL':['eqd']}
+                   },
+        RLIST :    { type        : 'string',
+                     keyword     : 'rlist',
+                     label       : 'resolution shells (&Aring;)',
+                     tooltip     : 'Comma-separated list of resolution shells',
+                     value       : '',
+                     placeholder : '1.5,1.6,1.75,1.90,2.10',
+                     iwidth      : 450,
+                     position    : [2,2,1,1],
+                     showon      : {'MODE_SEL':['list']}
+                   }
       }
     }
   };
