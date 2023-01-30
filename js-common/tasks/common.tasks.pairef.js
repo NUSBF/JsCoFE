@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.01.23   <--  Date of Last Modification.
+ *    30.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -18,6 +18,8 @@
  *  =================================================================
  *
  */
+
+'use strict';
 
 var __template = null;   // null __template indicates that the code runs in
 // client browser
@@ -160,6 +162,31 @@ TaskPaiRef.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
   return this.__check_keywords ( keywords,['pairef','paired','refinement',
                                            'resolution','cut-off'] );
+}
+
+if (!__template)  {  //  will run only on client side
+
+  TaskPaiRef.prototype.collectInput = function ( inputPanel )  {
+  var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+
+    if (this.parameters.sec1.contains.MODE_SEL.value=='list')  {
+      var rlist = this.parameters.sec1.contains.RLIST.value.trim().split(',');
+      if (rlist.length<3)
+        input_msg += '|<b>resolution shells:</b> minimum 3 shells must be specified.';
+      else  {
+        var ok = true;
+        for (var i=0;(i<rlist.length) && ok;i++)
+          if ((!rlist[i].trim()) || (!isFloat(rlist[i])))
+            ok = false;
+        if (!ok)
+          input_msg += '|<b>resolution shells:</b> format violations or empty items.';
+      }
+    }
+
+    return input_msg;
+
+  }
+
 }
 
 
