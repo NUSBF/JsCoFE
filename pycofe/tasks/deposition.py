@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.10.22   <--  Date of Last Modification.
+#   30.01.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -37,7 +37,7 @@ import json
 #  ccp4 imports
 import gemmi
 #from   gemmi import cif
-from  adding_stats_to_mmcif import run_process
+from   adding_stats_to_mmcif import run_process
 
 #  application imports
 from . import basic
@@ -427,8 +427,8 @@ class Deposition(basic.TaskDriver):
             self.putMessage1 ( grid_id,
                 "&nbsp;&nbsp;&nbsp;&nbsp;<i>2. Reflection data</i>" ,1,0 )
             self.putMessage1 ( grid_id,
-                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +\
-                "<b><u>either</u></b> <i>merged and unmerged:</i>",2,0 )
+                '<div style="white-space:nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +\
+                '<b><u>either</u></b> <i>merged and unmerged:</i></div>',2,0 )
             self.putDownloadButton ( sfCIF_unm,"download",grid_id,2,1 )
             self.putMessage1 ( grid_id,
                 "<i style=\"font-size:85%\">(recommended)</i>",2,2 )
@@ -439,7 +439,7 @@ class Deposition(basic.TaskDriver):
                 "<b><u>or</u></b> <i>merged only:</i>",3,0 )
             self.putDownloadButton ( sfCIF,"download",grid_id,3,1 )
             self.putMessage1 ( grid_id,
-                "<i style=\"font-size:85%\">(only if merged+unmerged causes " +\
+                "<i style=\"font-size:85%;white-space:nowrap;\">(only if merged+unmerged causes " +\
                 "problems at deposition)</i>",
                 3,2 )
         else:

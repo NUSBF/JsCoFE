@@ -147,7 +147,7 @@ class PaiRef(basic.TaskDriver):
             else:
                 rstep = 0.05
             for i in range(nshells+1):
-                resList.append ( str(hires + i*rstep) )
+                resList.append ( str(round(hires+i*rstep,2)) )
         else:
             s = self.getParameter ( sec1.RLIST )
             resList = [x.strip() for x in s.split(',')]            
@@ -272,14 +272,14 @@ class PaiRef(basic.TaskDriver):
                 # cut resolution in the data set and replace it in the revision later
                 rvrow0  = self.rvrow
                 self.putMessage ( "<i>Reflection dataset is cut to resolution of " + cutoff_res +\
-                                    "&Aring; and will be used in subsequent tasks.</i><br>&nbsp;" )
+                                    "&Aring; and will be used in subsequent tasks.</i>" )
                 new_hkl = self.cutResolution ( hkl,cutoff_res )
                 if len(new_hkl)>0:
                     hkl0 = new_hkl[0]
                 else:
                     self.rvrow = rvrow0
                     self.putMessage ( '<i style="color:maroon">Reflection data set was not cut ' +\
-                                      'to the recommended resolution due to errors.</i><br>&nbsp;' )
+                                      'to the recommended resolution due to errors.</i>' )
                     summary_line += " (not cut)"
                     self.rvrow += 2
 
