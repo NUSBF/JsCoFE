@@ -633,7 +633,9 @@ var row      = 0;
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
-      new TaskHelloWorld   ()
+      new TaskHelloWorld   (),
+      new TaskSC           ()
+
     ],false);
 
   }
@@ -794,8 +796,7 @@ var row      = 0;
     new TaskContact   (),
     new TaskRotamer   (),
     new TaskAreaimol  (),
-    new TaskRampage   (),
-    new TaskSC        ()
+    new TaskRampage   ()
   ],true);
 
   this.makeSection ( 'Toolbox',[
