@@ -46,7 +46,7 @@ def balbesAfterASU(driver, waitLong):
     except:
         print('Apparently the task balbesAfterASU has not been completed in time; terminating')
         sys.exit(1)
-
+    time.sleep(10)
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()

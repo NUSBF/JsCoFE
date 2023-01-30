@@ -1,0 +1,155 @@
+/*
+ *  =================================================================
+ *
+ *    18.01.23   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  js-common/cofe.tasks.sc.js
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  XYZ Utilities Task Class
+ *       ~~~~~~~~~
+ *
+ *  (C) M. Fando, E. Krissinel, A. Lebedev 2023
+ *
+ *  =================================================================
+ *
+ */
+
+
+var __template = null;// null __template indicates that the code runs in
+// client browser
+
+// otherwise, the code runs on a server, in which case __template references
+// a module with Task Template Class:
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+  __template = require ( './common.tasks.template' );
+
+// ===========================================================================
+// task constructor
+
+function TaskSC() { // must start with Task...
+
+  // invoke the template class constructor:
+  if (__template)  __template.TaskTemplate.call ( this );
+             else  TaskTemplate.call ( this );
+	
+  this._type   = 'TaskSC';  // must give name of the class
+  this.name    = 'SC';      // default name to be shown in Job Tree
+  this.title   = 'SC'; // title for job dialog
+	
+  // define fields important for jsCoFE framework
+  this.input_dtypes = [{ // input data types
+		data_type: {
+			'DataRevision': ['xyz'],
+			'DataEnsemble': [],
+			'DataModel': [],
+			'DataXYZ': []
+		}, // data type(s) and subtype(s)
+		label: 'Structure', // label for input dialog
+		inputId: 'ixyz', // input Id for referencing input fields
+		min: 1, // minimum acceptable number of data instances
+		max: 1 // maximum acceptable number of data instances
+	}];
+
+	this.parameters = { // no input parameters
+		SC_LBL: {
+			type: 'label',
+			keyword: 'none',
+			lwidth: 800,
+			label: '&nbsp;<br><div style="font-size:14px;">' +
+				'Set SC keywords and values ' +
+				'in the input field below (consult ' +
+				'<a href="https://www.ccp4.ac.uk/html/sc.html" ' +
+				'target="_blank"><i>SC reference</i></a> for more details).' +
+				'<sub>&nbsp;</sub></div>',
+			position: [0, 0, 1, 5]
+		},
+		SC_INPUT: {
+			type: 'aceditor_', // can be also 'textarea'
+			keyword: 'none', // optional
+			tooltip: '', // mandatory
+			iwidth: 800, // optional
+			iheight: 320, // optional
+			placeholder: '# For example:\n' +
+				'MOLECULE 1\n' +
+				'CHAIN A\n' +
+				'MOLECULE 2\n' +
+				'CHAIN B\n',
+			value: '', // mandatory
+			position: [1, 0, 1, 5] // mandatory
+		}
+	};
+
+}
+
+// finish constructor definition
+
+if (__template)
+	TaskSC.prototype = Object.create(__template.TaskTemplate.prototype);
+else TaskSC.prototype = Object.create(TaskTemplate.prototype);
+TaskSC.prototype.constructor = TaskSC;
+
+
+// ===========================================================================
+// export such that it could be used in both node and a browser
+
+// task icons. 
+TaskSC.prototype.icon = function() {
+	return 'task_SC';
+}
+
+//  Define task version. Whenever task changes (e.g. receives new input
+//    parameters or data), the version number must be advanced. jsCoFE framework
+//    forbids cloning jobs with version numbers lower than specified here.
+
+TaskSC.prototype.currentVersion = function()  {
+  var version = 1;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
+
+TaskSC.prototype.checkKeywords = function(keywords) {
+	// keywords supposed to be in low register
+	return this.__check_keywords(keywords, ['xyz', 'analysis', 'coordinates', 'toolbox', 'sc']);
+}
+
+if (!__template) {
+	// client side
+
+	TaskSC.prototype.desc_title = function() {
+		// this appears under task title in the task list
+		return 'determines Sc shape complementarity of two interacting molecular surfaces';
+	}
+
+} else {
+
+	// server side
+
+	var conf = require('../../js-server/server.configuration');
+
+	TaskSC.prototype.makeInputData = function(loginData, jobDir) {
+		var ixyz = this.input_data.data['ixyz'][0];
+		if (ixyz._type == 'DataRevision')
+			this.input_data.data['istruct'] = [ixyz.Structure];
+		__template.TaskTemplate.prototype.makeInputData.call(this, loginData, jobDir);
+	}
+
+	// form command line for server's node js to start task's python driver;
+  // note that last 3 parameters are optional and task driver will not use
+  // them in most cases.
+
+	TaskSC.prototype.getCommandLine = function(jobManager, jobDir) {
+		return [conf.pythonName(), '-m', 'pycofe.tasks.sc', jobManager, jobDir, this.id];
+	}
+
+	// -------------------------------------------------------------------------
+
+	// export such that it could be used in server's node js
+	module.exports.TaskSC = TaskSC;
+
+}

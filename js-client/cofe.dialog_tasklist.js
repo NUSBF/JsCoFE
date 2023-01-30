@@ -24,6 +24,9 @@
 
 'use strict';
 
+
+
+
 // -------------------------------------------------------------------------
 // TaskListDialog class
 
@@ -791,7 +794,8 @@ var row      = 0;
     new TaskContact   (),
     new TaskRotamer   (),
     new TaskAreaimol  (),
-    new TaskRampage   ()
+    new TaskRampage   (),
+    new TaskSC        ()
   ],true);
 
   this.makeSection ( 'Toolbox',[
@@ -863,3 +867,5 @@ var r = 0;  // grid row
 TaskListDialog.prototype.getSelectedTask = function()  {
   return this.selected_task;
 }
+
+

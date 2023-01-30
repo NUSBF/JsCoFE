@@ -62,6 +62,7 @@ def prepareMRmodelAfterASU(driver, waitShort):
         print('Apparently tha task premareMRmodelAfterASU has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -101,7 +102,8 @@ def molrepAfterMRmodel(driver, waitLong):
     except:
         print('Apparently tha task molrepAfterMRmodel has not been completed in time; terminating')
         sys.exit(1)
-
+        
+    time.sleep(10)
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
