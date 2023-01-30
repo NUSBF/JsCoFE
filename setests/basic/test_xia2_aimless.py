@@ -82,6 +82,7 @@ def xia2Processing(driver, isLocal):
         print('Apparently the task xia2Processing has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -140,6 +141,7 @@ def aimlessAfterXia2(driver, waitLong):
         print('Apparently the task xia2Processing has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -218,6 +220,7 @@ def simbad_05(driver, waitLong):
         print('Apparently the task simbadAfterImport has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -276,6 +279,7 @@ def dimple_06(driver, waitLong):
         print('Apparently tha task dimple has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -324,7 +328,8 @@ def addRemark(driver, title, detail, colour=None):
 
         sf.clickByXpath(driver, "//*[normalize-space()='%s']" % colour)
         time.sleep(1)
-
+        
+    time.sleep(10)
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()

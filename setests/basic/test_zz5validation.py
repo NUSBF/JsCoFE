@@ -46,7 +46,7 @@ def addSlice(driver):
     except:
         print('Apparently the Slice task has not been completed in time!')
 
-
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -93,6 +93,7 @@ def slicendiceVerification(driver, waitLong):
     assert rWork < 0.32
     assert rFree < 0.34  
 
+    time.sleep (10)
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()

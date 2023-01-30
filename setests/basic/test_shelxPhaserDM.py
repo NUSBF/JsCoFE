@@ -57,6 +57,9 @@ def asymmetricUnitContents(driver, waitShort):
         print('Apparently tha task asymmetricUnitContents has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
+
+
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -109,6 +112,7 @@ def startSHELXss(driver, waitLong):
     driver.find_elements_by_xpath("//*[contains(text(), '[0003] Substructure Found')]")
 
     # driver.find_element (By.XPATH, "//div[text() = '[0003] Substructure Found')]")
+    time.sleep(10)
 
         # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -190,7 +194,7 @@ def phaserEP(driver, waitLong):
     except:
         print('Apparently tha task Phaser-EP has not been completed in time; terminating')
         sys.exit(1)
-
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -261,6 +265,7 @@ def runParrot(driver):
         print('Apparently tha task Parrot has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -330,6 +335,9 @@ def runAcorn(driver):
     except:
         print('Apparently tha task Acorn has not been completed in time; terminating')
         sys.exit(1)
+
+    time.sleep(10)
+
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -402,7 +410,7 @@ def startShelxDM(driver):
             buttonRun.click()
             break
 
-    time.sleep(2)
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -470,7 +478,7 @@ def startBuccaneer(driver):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(1)
+    time.sleep(10)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")

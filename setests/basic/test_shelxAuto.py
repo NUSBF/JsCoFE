@@ -58,6 +58,9 @@ def asymmetricUnitContents(driver, waitShort):
         print('Apparently tha task asymmetricUnitContents has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
+
+
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -95,7 +98,7 @@ def startSHELXAuto(driver):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(2)
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")

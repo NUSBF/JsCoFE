@@ -67,6 +67,8 @@ class DocDev(basic.TaskDriver):
         elif doctype=="userguide":
             self.putMessage ( "<h3>Generating User Guide</h3>" )
             copytasks = "\nmv tips/* .\nrm -rf tips"
+        elif doctype=="source":
+            self.putMessage ( "<h3>Generating CCP4 documentation</h3>" )
 
         #self.putMessage ( os.path.realpath ( os.path.dirname ( __file__ ) ) )
         #self.putMessage ( self.jscofe_dir )
