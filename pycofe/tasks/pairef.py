@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.01.23   <--  Date of Last Modification.
+#    31.01.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -124,6 +124,15 @@ class PaiRef(basic.TaskDriver):
         libin   = istruct.getLibFilePath ( self.inputDir() )
         hklin   = hkl    .getHKLFilePath ( self.inputDir() )
 
+        # xyzin1  = "__input.pdb"
+        # fout    = open (xyzin1,"w" )
+        # with open(xyzin,"r") as fin:
+        #     for line in fin:
+        #         if not line.startswith("REMARK"):
+        #             fout.write ( line )
+        # fout.close()
+        # xyzin = xyzin1
+
         hklin_unmerged = None
         fname_unmerged = None
         if hasattr(hkl.aimless_meta,"file_unm") and hkl.aimless_meta.file_unm:
@@ -191,6 +200,15 @@ class PaiRef(basic.TaskDriver):
         if libin:
             cmd += [ "--LIBIN",libin ]
 
+        prencyc = self.getParameter ( sec1.PRENCYC ).strip()
+        if prencyc:
+            prencyc = int(prencyc)
+        else:
+            prencyc = 10
+        if prencyc>0:
+            cmd += [ "--prerefinement-ncyc", str(prencyc) ]
+
+
         htmlReport = "PAIREF_" + self.pairefProject() + ".html"
 
         self.insertTab ( "pairef_report", "PaiRef Report", None, True )
@@ -206,12 +224,16 @@ class PaiRef(basic.TaskDriver):
                 '$("#' + frameId + '").on("load",function(){' +\
                     'is_loaded = true;' +\
                 '});' +\
-                'window.setTimeout(function(){' +\
-                    'if (!is_loaded)  {' +\
-                        'var iframe = document.getElementById("' + frameId + '");' +\
-                        'iframe.src = "' + frameURL + '";' +\
-                    '}' +\
-                '},2000);' +\
+                'function _check_load()  {' +\
+                    'window.setTimeout(function(){' +\
+                        'if (!is_loaded)  {' +\
+                            'var iframe = document.getElementById("' + frameId + '");' +\
+                            'iframe.src = "' + frameURL + '";' +\
+                            '_check_load();' +\
+                        '}' +\
+                    '},2000);' +\
+                '}' +\
+                '_check_load();' +\
             '</script>',
             0,
         )
