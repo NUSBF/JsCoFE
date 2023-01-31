@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.01.23   <--  Date of Last Modification.
+ *    31.01.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -87,7 +87,7 @@ function TaskPaiRef()  {   // must start with Task...
                                  'list|given hi-resolution shells'],
                      value    : 'eqd',
                      iwidth   : 280,
-                     position : [0,0,1,4]
+                     position : [0,0,1,5]
                    },
         NSHELLS :  { type        : 'integer_',
                      keyword     : 'nshells',
@@ -118,12 +118,29 @@ function TaskPaiRef()  {   // must start with Task...
                      label       : 'resolution shells (&Aring;)',
                      tooltip     : 'Comma-separated list of resolution shells',
                      value       : '',
-                     placeholder : '1.5,1.6,1.75,1.90,2.10',
+                     placeholder : 'e.g., 1.5,1.6,1.75,1.90,2.10',
                      iwidth      : 450,
                      position    : [2,2,1,1],
                      showon      : {'MODE_SEL':['list']}
-                   }
-      }
+                    },
+        PRENCYC :   { type        : 'integer_',
+                      keyword     : 'prencyc',
+                      label       : 'Start with',
+                      tooltip     : 'Number of pre-refinement cycles to run at the initial low ' +
+                                    'resolution. Put zero for if you do not wish to run them, or ' +
+                                    'leave blank for automatic choice.',
+                      range       : [0,50],
+                      value       : '',
+                      placeholder : '10',
+                      iwidth      : 40,
+                      // label2      : 'refinement cycles at the intial low resolution',
+                      position    : [3,0,1,1]
+                    },
+        label   :   { type        : 'label',  // just a separator
+                      label       : 'refinement cycles',
+                      position    : [3,3,1,6]
+                    }
+   }
     }
   };
 
@@ -147,7 +164,7 @@ TaskPaiRef.prototype.icon = function()  { return 'task_pairef'; }
 //    forbids cloning jobs with version numbers lower than specified here.
 
 TaskPaiRef.prototype.currentVersion = function()  {
-var version = 1;
+var version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
