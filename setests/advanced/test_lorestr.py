@@ -28,13 +28,13 @@ def startLORESTRAfterRevision(driver):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-    time.sleep(1)
+    time.sleep(3)
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Low-Resolution Refinement with Lorestr')
-    time.sleep(2)
+    time.sleep(3)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Add structural homologues from the PDB')
-    time.sleep(2)
+    # sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Add structural homologues from the PDB')
+    # time.sleep(2)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -43,7 +43,7 @@ def startLORESTRAfterRevision(driver):
             buttonRun.click()
             break
 
-    time.sleep(2)
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")

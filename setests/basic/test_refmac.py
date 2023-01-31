@@ -49,6 +49,7 @@ def refmacAfterRevision(driver, waitLong):
         print('Apparently tha task refmacAfterRevision has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -136,7 +137,8 @@ def depositionAfterRefmac(driver):
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'finished') and contains(text(), '[0005]')]")))
     except:
         print('Apparently the task depositionAfterRefmac has not been completed in time!')
-
+        
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()

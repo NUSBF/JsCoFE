@@ -70,6 +70,7 @@ def importFromPDB(driver, waitShort):
         print('Apparently tha task importFromPDB has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -212,7 +213,8 @@ def refmacAfterRevision(driver, waitLong):
     except:
         print('Apparently tha task refmacAfterRevision has not been completed in time; terminating')
         sys.exit(1)
-
+        
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -270,7 +272,7 @@ def startNautilus(driver):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(1)
+    time.sleep(10)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")

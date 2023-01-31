@@ -71,7 +71,7 @@ def pisaAfterRevision(driver, waitLong):
 
     # SWITCHING FRAME BACK!
     driver.switch_to.default_content()
-
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()

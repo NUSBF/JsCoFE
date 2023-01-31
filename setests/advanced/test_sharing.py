@@ -190,7 +190,7 @@ def startSimbad(driver):
             buttonRun.click()
             break
 
-    time.sleep(2)
+    time.sleep(10)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -265,7 +265,7 @@ def startMrbump(driver):
             buttonRun.click()
             break
 
-    time.sleep(1.05)
+    time.sleep(10)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -381,7 +381,7 @@ def test_sharingBasic(browser,
         sf.clickTaskInTaskTree(d.driver, '\[0002\] asymmetric unit contents')
         time.sleep(2) # sensitive
         startSimbad(d.driver)
-
+        time.sleep(10)
         # pressing Close button for REFMAC window
         closeButton = d2.driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
         closeButton.click()

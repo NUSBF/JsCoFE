@@ -53,8 +53,9 @@ def mrbumpAfterASU(driver, waitLong):
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
     except:
         print('Apparently the task mrbumpAfterASU has not been completed in time; terminating')
-        sys.exit(1)
-
+        sys.exit(1) 
+        
+    time.sleep(10)
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()

@@ -86,7 +86,7 @@ def startRefmacAniso(driver, waitLong):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(1)
+    time.sleep(10)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -110,7 +110,8 @@ def startMordaCloning(driver, waitLong):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(1)
+        
+    time.sleep(10)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")

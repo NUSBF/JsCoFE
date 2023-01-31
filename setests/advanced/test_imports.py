@@ -47,7 +47,7 @@ def startBuccaneer(driver):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(1)
+    time.sleep(10)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -192,6 +192,8 @@ def startSHELXss(driver, waitLong):
 
     # driver.find_element (By.XPATH, "//div[text() = '[0003] Substructure Found')]")
 
+    time.sleep(10)
+
         # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -273,6 +275,7 @@ def phaserEP(driver, waitLong):
         print('Apparently tha task Phaser-EP has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -343,6 +346,8 @@ def runParrot(driver, job, inverted=False):
     except:
         print('Apparently tha task Parrot has not been completed in time; terminating')
         sys.exit(1)
+
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -448,6 +453,8 @@ def importReplace_p9(driver, dirName, waitShort=90):
         print('Apparently tha task importAndReplace has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
+    
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()

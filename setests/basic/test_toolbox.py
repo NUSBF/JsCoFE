@@ -78,7 +78,7 @@ def auspex(driver):
 
     # SWITCHING FRAME BACK!
     driver.switch_to.default_content()
-
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -142,7 +142,7 @@ def srf(driver):
 
     # SWITCHING FRAME BACK!
     driver.switch_to.default_content()
-
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -203,7 +203,7 @@ def crossec(driver):
 
     # SWITCHING FRAME BACK!
     driver.switch_to.default_content()
-
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()

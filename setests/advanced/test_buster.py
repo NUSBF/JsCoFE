@@ -47,7 +47,7 @@ def startBusterAfterRevision(driver, waitLong):
             buttonRun.click()
             break
 
-    time.sleep(2)
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")

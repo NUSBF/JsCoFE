@@ -54,7 +54,8 @@ function TaskDocDev()  {
            range    : ['taskref|Task Reference',
                        'tutorials|Tutorials',
                        'userguide|User Guide',
-                       'dev|Developers Reference'
+                       'dev|Developers Reference',
+                       'source|CCP4docs'
                       ],
            value    : 'taskref',
            iwidth   : 260,
