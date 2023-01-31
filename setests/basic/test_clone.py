@@ -48,7 +48,7 @@ def prepareMRmodelCOORD(driver, waitShort):
         print('Apparently tha task prepareMRmodelCOORD has not been completed in time; terminating')
         sys.exit(1)
 
-    time.sleep(5)
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -80,7 +80,7 @@ def startPhaser(driver):
             buttonRun.click()
             break
 
-    time.sleep(2)
+    time.sleep(10)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -156,7 +156,7 @@ def startModelCraft(driver, waitLong):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(1)
+    time.sleep(10)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -233,7 +233,8 @@ def refmacAfterBuccaner(driver, waitLong):
     except:
         print('Apparently tha task refmacAfterBuccaneer has not been completed in time; terminating')
         sys.exit(1)
-
+        
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -290,7 +291,7 @@ def prepareMRensembleSEQ(driver, waitShort):
         print('Apparently tha task prepareMRensembleSEQ has not been completed in time; terminating')
         sys.exit(1)
 
-    time.sleep(5)
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -331,6 +332,8 @@ def molrep(driver, waitLong):
     except:
         print('Apparently tha task molrepAfterMRmodel has not been completed in time; terminating')
         sys.exit(1)
+        
+    time.sleep(10)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")

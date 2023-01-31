@@ -60,7 +60,7 @@ def prepareMRmodelCOORD(driver, waitShort):
         print('Apparently tha task prepareMRmodelCOORD has not been completed in time; terminating')
         sys.exit(1)
 
-    time.sleep(5)
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -103,7 +103,7 @@ def prepareMRmodelALIGN(driver, waitShort):
         print('Apparently tha task prepareMRmodelALIGN has not been completed in time; terminating')
         sys.exit(1)
 
-    time.sleep(5)
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -146,7 +146,7 @@ def prepareMRensembleMODEL(driver, waitShort):
         print('Apparently tha task prepareMRensembleMODEL has not been completed in time; terminating')
         sys.exit(1)
 
-    time.sleep(5)
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -189,7 +189,7 @@ def prepareMRensembleSEQ(driver, waitShort):
         print('Apparently tha task prepareMRensembleSEQ has not been completed in time; terminating')
         sys.exit(1)
 
-    time.sleep(5)
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -232,7 +232,7 @@ def prepareMRensembleCOORD(driver, waitShort):
         print('Apparently tha task prepareMRensembleCOORD has not been completed in time; terminating')
         sys.exit(1)
 
-    time.sleep(5)
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -280,7 +280,7 @@ def prepareComplexModel(driver, waitShort):
         print('Apparently tha task Prepare Multi-Chain MR Model has not been completed in time; terminating')
         sys.exit(1)
 
-    time.sleep(5)
+    time.sleep(10)
 
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -320,7 +320,7 @@ def startPhaser(driver):
             buttonRun.click()
             break
 
-    time.sleep(2)
+    time.sleep(10)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -352,7 +352,7 @@ def startPhaser1(driver):
                     buttonRun.click()
                     break
 
-            time.sleep(2)
+            time.sleep(10)
 
             # pressing Close button
             closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")

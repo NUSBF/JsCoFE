@@ -102,6 +102,7 @@ def refmac_0004(driver):
         print('Apparently tha task refmac_0017 has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -217,6 +218,7 @@ def fitLigand(driver, wait):
         print('Apparently the task FitLigand has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -276,6 +278,7 @@ def refmac_0007(driver):
         print('Apparently tha task refmac_0017 has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -332,6 +335,7 @@ def fitWaters(driver, wait):
         print('Apparently the task FitWaters has not been completed in time; terminating')
         sys.exit(1)
 
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
@@ -390,7 +394,8 @@ def refmac_0009(driver):
     except:
         print('Apparently tha task refmac_009 has not been completed in time; terminating')
         sys.exit(1)
-
+        
+    time.sleep(10)
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()

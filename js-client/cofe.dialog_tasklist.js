@@ -24,6 +24,9 @@
 
 'use strict';
 
+
+
+
 // -------------------------------------------------------------------------
 // TaskListDialog class
 
@@ -630,7 +633,9 @@ var row      = 0;
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
-      new TaskHelloWorld   ()
+      new TaskHelloWorld   (),
+      new TaskSC           ()
+
     ],false);
 
   }
@@ -863,3 +868,5 @@ var r = 0;  // grid row
 TaskListDialog.prototype.getSelectedTask = function()  {
   return this.selected_task;
 }
+
+
