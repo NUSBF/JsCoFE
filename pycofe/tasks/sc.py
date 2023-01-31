@@ -40,24 +40,46 @@ class SC(basic.TaskDriver):
     def run(self):
 
         # fetch input data
-        ixyz = self.makeClass(self.input_data.data.ixyz[0])
-        if ixyz._type == dtype_revision.dtype():
-            ixyz = self.makeClass(self.input_data.data.istruct[0])
+        # ixyz = self.makeClass(self.input_data.data.ixyz[0])
+        # if ixyz._type == dtype_revision.dtype():
+        #     ixyz = self.makeClass(self.input_data.data.istruct[0])
+        xyz  = self.input_data.data.xyz
+        nXYZ = len(xyz)
 
+        # make command-line parameters
+        num = 0
+        cmd = []
+
+        keywords = []
+
+        num = 0
+        for i in range(nXYZ):
+            num +=1 
+            xyz[i] = self.makeClass ( xyz[i] )
+            cmd += ['XYZIN', xyz[i].getXYZFilePath(self.inputDir())]
+            keywords += ["MOLECULE " + str(num), "CHAIN " + xyz[i].chainSel + "\n"]
+
+
+
+       
         # --------------------------------------------------------------------
 
-        xyzin = ixyz.getXYZFilePath(self.inputDir())
+        # xyzin = xyz.getXYZFilePath(self.inputDir())
 
-        keywords = self.getParameter(self.task.parameters.SC_INPUT).strip()
-        if keywords == "":
-            keywords = "END"
+        # keywords = self.getParameter(self.task.parameters.SC_INPUT).strip()
+        
+        keywords += ["END"]
+        # for molecule in molecules:
+        #     num = 1
+        #     keywords = ('MOLECULE', num, '\n', 'CHAIN', xyz[i].chainSel)
+        #     num += 1
 
         self.open_stdin()
         self.write_stdin(keywords)
         self.close_stdin()
 
         # run CONTACT
-        self.runApp("sc", ["XYZIN", xyzin], logType="Main")
+        self.runApp("sc",cmd, logType="Main")
 
         grid_id = self.getWidgetId("grid")
         self.putGrid(grid_id)

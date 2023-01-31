@@ -42,47 +42,51 @@ function TaskSC() { // must start with Task...
   this.title   = 'SC'; // title for job dialog
 	
   // define fields important for jsCoFE framework
-  this.input_dtypes = [{ // input data types
-		data_type: {
-			'DataRevision': ['xyz'],
-			'DataEnsemble': [],
-			'DataModel': [],
-			'DataXYZ': []
-		}, // data type(s) and subtype(s)
-		label: 'Structure', // label for input dialog
-		inputId: 'ixyz', // input Id for referencing input fields
-		min: 1, // minimum acceptable number of data instances
-		max: 1 // maximum acceptable number of data instances
-	}];
+this.input_dtypes = [{      // input data types
+     data_type   : {'DataStructure':['protein'],
+                    'DataEnsemble' :['protein'],
+                    'DataModel'    :['protein'],
+                    'DataXYZ'      :['protein']
+                   },  // data type(s) and subtype(s)
+     label       : 'Structure',    // label for input dialog
+     inputId     : 'xyz',          // input Id for referencing input fields
+     customInput : 'chain-sel-protein', // lay custom fields next to the selection
+     force       : 2,           // meaning choose, by default, 1 xyz sets if
+                                // available; otherwise, the minimum (1) will
+                                // be selected
+     min         : 1,           // minimum acceptable number of data instances
+     max         : 10           // maximum acceptable number of data instances
+   }
+  ];
 
-	this.parameters = { // no input parameters
-		SC_LBL: {
-			type: 'label',
-			keyword: 'none',
-			lwidth: 800,
-			label: '&nbsp;<br><div style="font-size:14px;">' +
-				'Set SC keywords and values ' +
-				'in the input field below (consult ' +
-				'<a href="https://www.ccp4.ac.uk/html/sc.html" ' +
-				'target="_blank"><i>SC reference</i></a> for more details).' +
-				'<sub>&nbsp;</sub></div>',
-			position: [0, 0, 1, 5]
-		},
-		SC_INPUT: {
-			type: 'aceditor_', // can be also 'textarea'
-			keyword: 'none', // optional
-			tooltip: '', // mandatory
-			iwidth: 800, // optional
-			iheight: 320, // optional
-			placeholder: '# For example:\n' +
-				'MOLECULE 1\n' +
-				'CHAIN A\n' +
-				'MOLECULE 2\n' +
-				'CHAIN B\n',
-			value: '', // mandatory
-			position: [1, 0, 1, 5] // mandatory
-		}
-	};
+	// this.parameters = { // no input parameters
+	// 	SC_LBL: {
+	// 		type: 'label',
+	// 		keyword: 'none',
+	// 		lwidth: 800,
+	// 		label: '&nbsp;<br><div style="font-size:14px;">' +
+	// 			'Set SC keywords and values ' +
+	// 			'in the input field below (consult ' +
+	// 			'<a href="https://www.ccp4.ac.uk/html/sc.html" ' +
+	// 			'target="_blank"><i>SC reference</i></a> for more details).' +
+	// 			'<sub>&nbsp;</sub></div>',
+	// 		position: [0, 0, 1, 5]
+	// 	},
+	// 	SC_INPUT: {
+	// 		type: 'aceditor_', // can be also 'textarea'
+	// 		keyword: 'none', // optional
+	// 		tooltip: '', // mandatory
+	// 		iwidth: 800, // optional
+	// 		iheight: 320, // optional
+	// 		placeholder: '# For example:\n' +
+	// 			'MOLECULE 1\n' +
+	// 			'CHAIN A\n' +
+	// 			'MOLECULE 2\n' +
+	// 			'CHAIN B\n',
+	// 		value: '', // mandatory
+	// 		position: [1, 0, 1, 5] // mandatory
+	// 	}
+	// };
 
 }
 
@@ -133,9 +137,9 @@ if (!__template) {
 	var conf = require('../../js-server/server.configuration');
 
 	TaskSC.prototype.makeInputData = function(loginData, jobDir) {
-		var ixyz = this.input_data.data['ixyz'][0];
-		if (ixyz._type == 'DataRevision')
-			this.input_data.data['istruct'] = [ixyz.Structure];
+		var xyz = this.input_data.data['xyz'][0];
+		if (xyz._type == 'DataRevision')
+			this.input_data.data['istruct'] = [xyz.Structure];
 		__template.TaskTemplate.prototype.makeInputData.call(this, loginData, jobDir);
 	}
 
