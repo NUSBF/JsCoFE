@@ -150,5 +150,6 @@ def optimizeXYZ ( gemmi_st ):
 if __name__ == "__main__":
     import sys
     st = gemmi.read_structure ( sys.argv[1] )
+    st.setup_entities()
     optimizeXYZ  ( st  ) 
     st.write_pdb ( "a.pdb" )

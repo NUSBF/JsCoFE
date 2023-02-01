@@ -169,7 +169,9 @@ class LsqKab(basic.TaskDriver):
 
             # compose a superposed ensemble
             stf = gemmi.read_structure ( fixed_path )
+            stf.setup_entities()
             stm = gemmi.read_structure ( self.lsqkab_xyz() )
+            stm.setup_entities()
             stf.add_model ( stm[0] )
             stf.renumber_models()
             stf.write_pdb ( self.lsqkab_ens() )

@@ -42,6 +42,7 @@ def stripLigWat ( mmFile,outFile ):
 
 def mergeLigands ( mmFile, ligFiles, chainId, outFile ):
     st    = gemmi.read_structure ( mmFile )
+    st.setup_entities()
     nligs = 0
     try:
         chain = st[0].find_last_chain(chainId) or st[0].add_chain(gemmi.Chain(chainId))
@@ -58,6 +59,7 @@ def mergeLigands ( mmFile, ligFiles, chainId, outFile ):
 
     for lf in ligFiles:
         lig = gemmi.read_structure ( lf )
+        st.setup_entities()
         for lig_chain in lig[0]:
             residues = list ( lig_chain )
             for res in residues:
@@ -139,6 +141,7 @@ def fetchChains ( inFile,modelNo,chainList,removeWaters,removeLigands,outFile ):
     #fd.close()
 
     st = gemmi.read_structure ( inFile )
+    st.setup_entities()
 
     if removeWaters and removeLigands:
         st.remove_ligands_and_waters()
@@ -199,6 +202,7 @@ def fetchChains ( inFile,modelNo,chainList,removeWaters,removeLigands,outFile ):
 
 def hasMacromolecule ( path ):
     st = gemmi.read_structure ( path )
+    st.setup_entities()
     st.add_entity_types()
     for chain in st[0]:
         polymer = chain.get_polymer()

@@ -3,6 +3,7 @@
 import gemmi
 
 st = gemmi.read_structure ( "1_0_7.refmac.pdb" )
+st.setup_entities()
 for model in st:
     for i in range(len(model)):
         chain = model[i]

@@ -75,8 +75,10 @@ class Refmac(basic.TaskDriver):
         ha_type   = hatype.upper()
         is_substr = False
         st_xyz    = gemmi.read_structure ( xyzpath )
+        st_xyz.setup_entities()
         if os.path.exists(hapath):
             st_ha = gemmi.read_structure ( hapath  )
+            st_ha.setup_entities()
             if len(st_ha)>0:
                 for chain in st_ha[0]:
                     chain.name = "Z"

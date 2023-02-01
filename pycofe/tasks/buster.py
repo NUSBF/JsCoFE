@@ -65,6 +65,7 @@ class Buster(basic.TaskDriver):
     def check_substructure ( self,hapath ):
         if os.path.exists(hapath):
             st_ha = gemmi.read_structure ( hapath )
+            st_ha.setup_entities()
             if len(st_ha)>0:
                 for chain in st_ha[0]:
                     if len(chain)>0:
@@ -75,8 +76,10 @@ class Buster(basic.TaskDriver):
     def merge_sites ( self,xyzpath,hapath,hatype,outpath ):
         ha_type = hatype.upper()
         st_xyz  = gemmi.read_structure ( xyzpath )
+        st_xyz.setup_entities()
         if os.path.exists(hapath):
             st_ha = gemmi.read_structure ( hapath  )
+            st_ha.setup_entities()
             if len(st_ha)>0:
                 for chain in st_ha[0]:
                     chain.name = "Z"

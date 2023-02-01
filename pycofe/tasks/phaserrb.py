@@ -91,6 +91,7 @@ class PhaserRB(basic.TaskDriver):
 
         solu  = []
         st    = gemmi.read_structure ( xyzin )
+        st.setup_entities()
         for chain in st[0]:
             st1 = gemmi.Structure()
             md1 = gemmi.Model ( "1" )

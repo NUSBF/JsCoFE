@@ -276,6 +276,7 @@ class ShelxCD(basic.TaskDriver):
         have_results = False
         if os.path.isfile(pdbfile):
             st = gemmi.read_structure(pdbfile)
+            st.setup_entities()
             for model in st:
                 for chain in model:
                     for residue in chain:

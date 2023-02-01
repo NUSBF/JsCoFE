@@ -108,6 +108,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
     def delete_ligands_and_waters ( self,modSel,fpath_in,fpath_out ):
         self.stdoutln ( str(dir(gemmi)) )
         st = gemmi.read_structure ( fpath_in )
+        st.setup_entities()
         if modSel=="U":
             st.remove_waters()
         else:
