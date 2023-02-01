@@ -56,7 +56,10 @@ class CombStructure(basic.TaskDriver):
 
     def assess_results ( self,xyz1,xyz2 ):
         st1 = gemmi.read_structure ( xyz1 )
+        st1.setup_entities()
+        
         st2 = gemmi.read_structure ( xyz2 )
+        st2.setup_entities()
         result = {
             "nmodified" : 0,
             "rmsd"      : 0.0,

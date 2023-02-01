@@ -174,6 +174,7 @@ class EDStats(ccp4build_findwaters.FindWaters):
         edstats_pdb = os.path.join ( self.workdir,nameout+".pdb" )
 
         st = gemmi.read_structure ( inp_pdb )
+        st.setup_entities()
         modlist = []
 
         f = open ( stdout_prep_fpath,"a" )

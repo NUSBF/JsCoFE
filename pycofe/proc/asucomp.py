@@ -241,6 +241,7 @@ def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
 
     seqlist = []  # [[coordinate sequence,sequence type,chainId]]
     st      = gemmi.read_structure(coorFilePath)
+    st.setup_entities()
     if len(st)>0:
         model  = st[0]
         chains = []

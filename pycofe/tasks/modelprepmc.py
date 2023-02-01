@@ -89,6 +89,7 @@ class ModelPrepMC(modelprepxyz.ModelPrepXYZ):
                     self.putMessage ( "<h3>*** Failed to trim chain " + chainId + " (1)</h3>" )
                 else:
                     st = gemmi.read_structure ( fpath_out )
+                    st.setup_entities()
                     if len(st)>0 and len(st[0])>0:
                         st[0][0].name = chainId  # may be changed at trimming
                         if not st0:

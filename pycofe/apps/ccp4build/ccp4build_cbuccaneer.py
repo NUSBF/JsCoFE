@@ -58,6 +58,7 @@ class CBuccaneer(ccp4build_parrot.Parrot):
         if xyzpath:
             xyzout = os.path.splitext(xyzpath)[0] + "_no_waters.pdb"
             st = gemmi.read_structure ( xyzpath )
+            st.setup_entities()
             st.remove_waters()
             st.write_pdb ( xyzout )
             return xyzout
@@ -170,6 +171,7 @@ class CBuccaneer(ccp4build_parrot.Parrot):
         if os.path.exists(cbuccaneer_pdbout):
 
             st = gemmi.read_structure(cbuccaneer_pdbout)
+            st.setup_entities()
             # remove residues with insertion code and ones before them
             for model in st:
                 for chain in model:
@@ -231,6 +233,7 @@ class CBuccaneer(ccp4build_parrot.Parrot):
         meta["unklist_len"]      = 0
         if meta0:
             st = gemmi.read_structure ( meta0["xyzpath"] )
+            st.setup_entities()
             for model in st:
                 meta["n_chains_alloc"] = len(model)
                 meta["n_res_built"] = 0

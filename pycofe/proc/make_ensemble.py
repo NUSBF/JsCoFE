@@ -136,6 +136,7 @@ def run ( body, panelId, models,fpath_out, # body is reference to the basic clas
 
             # trim ends
             st = gemmi.read_structure ( fpath_out )
+            st.setup_entities()
             for j in range(len(alignment)):
                 algn = alignment[-1-j]
                 if algn[0]:
@@ -163,6 +164,7 @@ def run ( body, panelId, models,fpath_out, # body is reference to the basic clas
                 if trims[i]<100:
                     rmsd0 = rmsd[int(trims[i]*(len(rmsd)-1)/100)]
                     st = gemmi.read_structure ( fpath_out )
+                    st.setup_entities()
                     nres = []
                     for j in range(nmodels):
                         nres.append ( len(st[j][0])-1 )

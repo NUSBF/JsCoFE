@@ -50,6 +50,7 @@ class ModelPrepXYZ(basic.TaskDriver):
         if chainSel=="(all)" or not chainSel:
             return fpath_in
         st = gemmi.read_structure ( fpath_in )
+        st.setup_entities()
         if chainSel.startswith("/"):
             sel_lst = chainSel.split("/")
             cid     = sel_lst[2]
@@ -86,6 +87,7 @@ class ModelPrepXYZ(basic.TaskDriver):
 
     def prepare_clip ( self, fpath_in,fpath_out ):
         st = gemmi.read_structure   ( fpath_in )
+        st.setup_entities()
         st.remove_hydrogens         ()
         st.remove_ligands_and_waters()
         st.remove_empty_chains      ()
@@ -169,6 +171,7 @@ class ModelPrepXYZ(basic.TaskDriver):
 
     def prepare_polyalanine ( self, fpath_in,fpath_out ):
         st = gemmi.read_structure ( fpath_in )
+        st.setup_entities()
         st.remove_ligands_and_waters()
         for model in st:
             for chain in model:

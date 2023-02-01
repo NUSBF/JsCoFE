@@ -105,6 +105,7 @@ class AWNuce(basic.TaskDriver):
             st.setup_entities()
 
             stnuce = gemmi.read_structure ( os.path.join(awnuceDir,nuceout[0]) )
+            stnuce.setup_entities()
             for chain_nuce in stnuce[0]:
                 for res in chain_nuce:
                     for atom in res:

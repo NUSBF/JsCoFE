@@ -251,6 +251,7 @@ class ModelCraft(basic.TaskDriver):
 
                 pdbout = os.path.join ( self.modelcraft_tmp(),self.modelcraft_pdb() )
                 st = gemmi.read_structure ( cifout )
+                st.setup_entities()
                 st.shorten_chain_names()
                 st.write_pdb ( pdbout )
 

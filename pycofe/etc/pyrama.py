@@ -127,6 +127,7 @@ def calc_ramachandran ( file_name_list ):
             continue
 
         st = gemmi.read_structure ( inp )
+        st.setup_entities()
         for model in st:
             #print ( "  do model " )
             for chain in model:

@@ -121,6 +121,7 @@ def align_seq_xyz ( body,seqPath,xyzPath,seqtype="protein" ):
     ncopies = [1]
 
     st  = gemmi.read_structure ( xyzPath )
+    st.setup_entities()
     st.assign_subchains()  # internally marks polymer, ligand and waters
     cnt = 1
     for model in st:

@@ -138,6 +138,7 @@ class DType(dtype_template.DType):
         if fpath and fpath.lower().endswith(".pdb"):
             st = gemmi.read_structure ( fpath )
             st.setup_entities()
+            st.setup_entities()
             need_to_fix  = True
             max_bfactor  = 0.0
             min_bfactor  = 1000000.0

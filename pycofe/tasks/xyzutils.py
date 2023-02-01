@@ -191,6 +191,7 @@ class XyzUtils(basic.TaskDriver):
             # make model transformations
 
             st = gemmi.read_structure ( xyzpath )
+            st.setup_entities()
 
             sollig_sel = self.getParameter ( sec1.SOLLIG_SEL )
             chains_sel = self.getParameter ( sec1.CHAINS_SEL )
