@@ -629,7 +629,6 @@ var row      = 0;
       new TaskPhaserRB     (),
       new TaskPaiRef       (),
       // new TaskFindMySequence(),
-      new TaskSheetbend    (),  // excluded also from the bootstrap html
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
@@ -767,6 +766,7 @@ var row      = 0;
     new TaskLorestr   (),
     new TaskDimple    (),
     new TaskCombStructure(),
+    new TaskSheetbend    (),  
     'Model building -- polypeptides',
     new TaskModelCraft(),
     new TaskCCP4Build (),
