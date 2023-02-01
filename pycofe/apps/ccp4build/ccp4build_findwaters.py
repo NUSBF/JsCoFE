@@ -50,7 +50,6 @@ class FindWaters(ccp4build_coot.Coot):
         for lf in ligFiles:
             lig = gemmi.read_structure ( lf )
             lig.setup_entities()
-            st.setup_entities()
             for lig_chain in lig[0]:
                 residues = list ( lig_chain )
                 chain.append_residues ( residues, min_sep=1 )
