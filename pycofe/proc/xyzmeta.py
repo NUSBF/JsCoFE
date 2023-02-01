@@ -98,7 +98,6 @@ def getXYZMeta ( fpath,file_stdout,file_stderr,log_parser=None ):
 
     st = gemmi.read_structure ( fpath )
     st.setup_entities()
-    st.setup_entities()
     st.assign_subchains()  # internally marks polymer, ligand and waters
 
     cryst = dict(spaceGroup=str(st.spacegroup_hm),

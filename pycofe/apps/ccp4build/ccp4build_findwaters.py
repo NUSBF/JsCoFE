@@ -45,12 +45,12 @@ class FindWaters(ccp4build_coot.Coot):
 
     def mergeLigands ( self, mmFile, ligFiles, chainId, outFile ):
         st    = gemmi.read_structure ( mmFile )
+        st.setup_entities()
         nligs = 0
         chain = st[0].find_last_chain(chainId) or st[0].add_chain(chainId)
         for lf in ligFiles:
             lig = gemmi.read_structure ( lf )
             lig.setup_entities()
-            st.setup_entities()
             for lig_chain in lig[0]:
                 residues = list ( lig_chain )
                 chain.append_residues ( residues, min_sep=1 )

@@ -59,7 +59,7 @@ def mergeLigands ( mmFile, ligFiles, chainId, outFile ):
 
     for lf in ligFiles:
         lig = gemmi.read_structure ( lf )
-        st.setup_entities()
+        lig.setup_entities()
         for lig_chain in lig[0]:
             residues = list ( lig_chain )
             for res in residues:
