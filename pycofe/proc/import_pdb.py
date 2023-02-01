@@ -138,7 +138,6 @@ def run ( body,pdb_list,
             fpath_seq = os.path.join ( body.importDir(),fname_seq )
             st = gemmi.read_structure ( fpath_xyz )
             st.setup_entities()
-            st.setup_entities()
             for model in st:
                 for chain in model:
                     polymer = chain.get_polymer()
