@@ -51,9 +51,6 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
@@ -106,7 +103,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -355,7 +352,7 @@
 <span class="s2">        class="youtube-embed"</span>
 <span class="s2">        data="http://www.youtube.com/v/</span><span class="si">%(yid)s</span><span class="s2">"&gt;</span>
 <span class="s2">    &lt;param name="movie" value="http://www.youtube.com/v/</span><span class="si">%(yid)s</span><span class="s2">"&gt;&lt;/param&gt;</span>
-<span class="s2">    &lt;param name="wmode" value="transparent"&gt;&lt;/param&gt;</span><span class="si">%(extra)s</span><span class="s2"></span>
+<span class="s2">    &lt;param name="wmode" value="transparent"&gt;&lt;/param&gt;</span><span class="si">%(extra)s</span>
 <span class="s2">&lt;/object&gt;</span>
 <span class="s2">"""</span>
 
@@ -363,7 +360,7 @@
 
 <span class="k">def</span> <span class="nf">youtube</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span>
             <span class="n">contentOffset</span><span class="p">,</span> <span class="n">blockText</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">stateMachine</span><span class="p">):</span>
-    <span class="sd">""" Restructured text extension for inserting youtube embedded videos """</span>
+<span class="w">    </span><span class="sd">""" Restructured text extension for inserting youtube embedded videos """</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span>
     <span class="n">string_vars</span> <span class="o">=</span> <span class="p">{</span>
@@ -425,7 +422,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> <span class="section-number">10. </span>What is CCP4 Cloud Client Software </span>
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">10. </span>What is CCP4 Cloud Client Software </span>
               </div>
             </a>
           
@@ -438,7 +435,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

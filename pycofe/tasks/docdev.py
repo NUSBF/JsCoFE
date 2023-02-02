@@ -79,16 +79,19 @@ class DocDev(basic.TaskDriver):
 
         theme = self.getParameter ( self.task.parameters.THEME_SEL )
 
-        script = "#!/bin/bash" +\
-                 "\ncd "    + reppath +\
-                 "\ngit pull origin master" +\
-                 "\ncd "    + cwd +\
-                 "\ncp -r " + reppath + " " + repname +\
-                 "\ncd "    + srcpath +\
-                 copytasks  +\
-                 "\ncp ../build/Makefile ." +\
-                 "\ncp ../build/conf-" + theme + ".py conf.py" +\
-                 "\nmake html\n";
+        script = "#!/bin/bash"
+        if "SPHINX_PATH" in os.environ:
+            script += "\nexport PATH=" + os.environ["SPHINX_PATH"] + ":$PATH"
+        script += "\necho $PATH" +\
+                  "\ncd "    + reppath +\
+                  "\ngit pull origin master" +\
+                  "\ncd "    + cwd +\
+                  "\ncp -r " + reppath + " " + repname +\
+                  "\ncd "    + srcpath +\
+                  copytasks  +\
+                  "\ncp ../build/Makefile ." +\
+                  "\ncp ../build/conf-" + theme + ".py conf.py" +\
+                  "\nmake html\n";
 
         self.stdout (
             " ============================================================\n" +\
