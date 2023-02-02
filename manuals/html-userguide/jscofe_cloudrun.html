@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,11 +53,13 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="4. CCP4 Cloud Archive" href="jscofe_archive.html" />
+    <link rel="next" title="4. Cloud Run facility in CCP4i interface" href="jscofe_i1toCloud.html" />
     <link rel="prev" title="2.4. CCP4 Cloud Atlas" href="atlas/CCP4Cloud_Atlas.html" />
   
    
@@ -240,35 +242,42 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_archive.html" class="md-nav__link">4. CCP4 Cloud Archive</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">4. Cloud Run facility in CCP4i interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">5. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_archive.html" class="md-nav__link">5. CCP4 Cloud Archive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_QnA.html" class="md-nav__link">6. Questions and Answers</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">6. CCP4 Cloud education capabilities</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_troubleshooting.html" class="md-nav__link">7. Troubleshooting</a>
+      <a href="jscofe_QnA.html" class="md-nav__link">7. Questions and Answers</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_version_log.html" class="md-nav__link">8. CCP4 Cloud Version Log</a>
+      <a href="jscofe_troubleshooting.html" class="md-nav__link">8. Troubleshooting</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_version_log.html" class="md-nav__link">9. CCP4 Cloud Version Log</a>
       
     
     </li>
@@ -306,14 +315,14 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<span id="cloudrun"></span><h1 id="jscofe-cloudrun--page-root"><span class="section-number">3. </span>Starting CCP4 Cloud projects from the command line<a class="headerlink" href="#jscofe-cloudrun--page-root" title="Permalink to this headline">¶</a></h1>
+<span id="cloudrun"></span><h1 id="jscofe-cloudrun--page-root"><span class="section-number">3. </span>Starting CCP4 Cloud projects from the command line<a class="headerlink" href="#jscofe-cloudrun--page-root" title="Permalink to this heading">¶</a></h1>
 <p>CCP4 Cloud projects can be initiated and executed from the command line, which may be useful in many scenarious. For example, data collection session at a synchrotron beamline may include sending reflection data, sequence, optional structural homolog and ligand descriptions, automatically to the specified CCP4 Cloud account and starting a suitable structure solution workflow in it. Or, large series of structure solution projects can be initiated by custom script to save time for manipulations with CCP4 Cloud’s graphical interface.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Functionality, described in this article, requires local CCP4 setup version 8.0.003 or higher.</p>
 </div>
 
-<h2 id="cloudrun-utility"><span class="section-number">3.1. </span>CloudRun utility<a class="headerlink" href="#cloudrun-utility" title="Permalink to this headline">¶</a></h2>
+<h2 id="cloudrun-utility"><span class="section-number">3.1. </span>CloudRun utility<a class="headerlink" href="#cloudrun-utility" title="Permalink to this heading">¶</a></h2>
 <p>CloudRun utility, included in <a class="reference external" href="https://www.ccp4.ac.uk/download/" rel="noopener noreferrer" target="_blank">CCP4 Software Suite</a>, can create projects, upload data and start automatic structure solution workflow in a single run as shown below (CCP4 8.0.003+ environment is assumed on Linux/Mac OSX, <strong>use CCP4 Console</strong> on Windows):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cloudrun -c command_file
 </pre></div>
@@ -393,7 +402,7 @@ $
 </div>
 
 
-<h2 id="command-file-keywords"><span class="section-number">3.2. </span>Command file keywords<a class="headerlink" href="#command-file-keywords" title="Permalink to this headline">¶</a></h2>
+<h2 id="command-file-keywords"><span class="section-number">3.2. </span>Command file keywords<a class="headerlink" href="#command-file-keywords" title="Permalink to this heading">¶</a></h2>
 <dl class="docutils">
 <dt><strong>URL</strong></dt><dd><p><em>(mandatory)</em></p>
 <p>CCP4 Cloud server URL, for example:</p>
@@ -567,7 +576,7 @@ the CloudRun utility was run.</p>
 </dl>
 
 
-<h2 id="example"><span class="section-number">3.3. </span>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<h2 id="example"><span class="section-number">3.3. </span>Example<a class="headerlink" href="#example" title="Permalink to this heading">¶</a></h2>
 <p>The following commands will import data and start automatic Molecular Replacement workflow including the
 generation of AlphaFold-2 model and ligand fitting, for solving MDM2 Protein bound to Nutlin molecule
 from the standard set of CCP4 examples:</p>
@@ -626,12 +635,12 @@ In this case, this example is solvable by changing TASK from <code class="docuti
             </a>
           
           
-            <a href="jscofe_archive.html" title="4. CCP4 Cloud Archive"
+            <a href="jscofe_i1toCloud.html" title="4. Cloud Run facility in CCP4i interface"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> <span class="section-number">4. </span>CCP4 Cloud Archive </span>
+                class="md-footer-nav__direction"> Next </span> <span class="section-number">4. </span>Cloud Run facility in CCP4i interface </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -645,7 +654,7 @@ In this case, this example is solvable by changing TASK from <code class="docuti
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

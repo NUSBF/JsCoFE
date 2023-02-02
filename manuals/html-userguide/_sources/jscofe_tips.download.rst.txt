@@ -1,0 +1,34 @@
+===================================
+How to download files in CCP4 Cloud
+===================================
+
+
+**Project export and import**
+
+
+.. |Export| image:: images/export.png
+    :width: 16
+    :height: 16
+
+.. |Import| image:: images/task_import.png
+    :width: 16
+    :height: 16
+
+Using the |Export| button, you can download the selected project as a compressed archive. Exported archives can be uploaded later to your CCP4 Cloud account using the |Import| button above the project list.
+
+Exporting projects may be needed if there is no disk space left in your account, personal archival, or for transferring data to another CCP4 Cloud setup.
+
+Beware that projects usually grow to a considerable size, from 100s MBs to a few GBs. You will be advised about the project size before downloading.
+
+**Export Job data**
+
+Using the |Export| button in task menu (1), you can download the selected job as a compressed ZIP archive. You will be advised about the archive size before downloading.
+
+
+.. image::  images/tips_download_1.png
+        :align: center
+
+
+Or download the separate files in the Output tab => Output Structure => Export as shown above (2)
+
+:doc:`All CCP4 Cloud tips <jscofe_tips>`

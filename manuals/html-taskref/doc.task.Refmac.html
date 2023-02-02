@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,7 +53,9 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -518,11 +520,11 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="doc-task-refmac--page-root">REFMAC5<a class="headerlink" href="#doc-task-refmac--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="doc-task-refmac--page-root">REFMAC5<a class="headerlink" href="#doc-task-refmac--page-root" title="Permalink to this heading">¶</a></h1>
 <p><a class="reference external" href="https://journals.iucr.org/d/issues/2011/04/00/ba5152/index.html" rel="noopener noreferrer" target="_blank">REFMAC5</a> is a program designed for REFinement of MACromolecular structures. It’s final step in the process of solving a macromolecular crystal (MX) structure, refinement is carried out to maximize the agreement between the model and the X-ray data. Model parameters that are optimized in the refinement process include atomic coordinates, atomic displacement parameters (ADPs), scale factors and, in the presence of twinning, twin fraction(s).  It uses Maximum likelihood and some elements of Bayesian Statististics.</p>
 <p><em>Although refinement procedures are typically designed for the final stages of MX analysis, they are also often used to improve partial models and to calculate the `best’ electron-density maps for further model (re)building.</em></p>
 
-<h2 id="basic-principles-of-refinement">Basic principles of refinement<a class="headerlink" href="#basic-principles-of-refinement" title="Permalink to this headline">¶</a></h2>
+<h2 id="basic-principles-of-refinement">Basic principles of refinement<a class="headerlink" href="#basic-principles-of-refinement" title="Permalink to this heading">¶</a></h2>
 <p>refinement is a process of fitting the atomic model into observed X-ray crystallographic data. Allows the atomic model to be visualized, criticized and analyzed direct relation between model quality and phase quality. We need to Iteratively improve the model to optimize the agreement between <strong>F</strong> <sub>obs</sub> and <strong>F</strong> <sub>calc</sub></p>
 <p>The model is defined not only about the PDB file, but also should consider the parameters of the refinement program.</p>
 <p>We work with two types of maps:</p>
@@ -536,7 +538,7 @@
 </div>
 
 
-<h2 id="stages-of-model-building">Stages of model building<a class="headerlink" href="#stages-of-model-building" title="Permalink to this headline">¶</a></h2>
+<h2 id="stages-of-model-building">Stages of model building<a class="headerlink" href="#stages-of-model-building" title="Permalink to this heading">¶</a></h2>
 <p><strong>Early stages (e.g. straight after MR)</strong></p>
 <ul class="simple">
 <li>Run many cycles (up to 200 with jelly body restraints) of refinement</li>
@@ -563,9 +565,9 @@
 <p>User may find further suggestions about improving your refinement strategy in Refmac output =&gt; <strong>Verdict</strong></p>
 
 
-<h2 id="model-parameterisation">Model Parameterisation<a class="headerlink" href="#model-parameterisation" title="Permalink to this headline">¶</a></h2>
+<h2 id="model-parameterisation">Model Parameterisation<a class="headerlink" href="#model-parameterisation" title="Permalink to this heading">¶</a></h2>
 
-<h3 id="b-factors">B-factors<a class="headerlink" href="#b-factors" title="Permalink to this headline">¶</a></h3>
+<h3 id="b-factors">B-factors<a class="headerlink" href="#b-factors" title="Permalink to this heading">¶</a></h3>
 <blockquote>
 <div><strong>describe relative positional uncertainty</strong></div></blockquote>
 <p>Atomic displacement parameters, or B-values, are an integral part of atomic models. They reﬂect the mobility of atoms.</p>
@@ -597,7 +599,7 @@
 </div></blockquote>
 
 
-<h3 id="tls-groups">TLS Groups<a class="headerlink" href="#tls-groups" title="Permalink to this headline">¶</a></h3>
+<h3 id="tls-groups">TLS Groups<a class="headerlink" href="#tls-groups" title="Permalink to this heading">¶</a></h3>
 <blockquote>
 <div><strong>describe anisotropic motion</strong></div></blockquote>
 <p><a class="reference external" href="http://skuld.bmsc.washington.edu/~tlsmd/" rel="noopener noreferrer" target="_blank">TLS Motion Determination (TLSMD)</a> analyzes a macromolecular crystal structure for evidence of flexibility, e.g. local or inter-domain motions. It does this by partitioning individual chains into multiple segments that are modeled as rigid bodies undergoing TLS (Translation/Libration/Screw) vibrational (anisotropic) motion. It generates all possible partitions up to a maximum number of segments. Each trial partition is scored by how well it explains the observed atomic displacement parameters (<strong>B values</strong>) that came out of crystallographic refinement.</p>
@@ -625,7 +627,7 @@ Per group (20 parameters):</p>
 </div></blockquote>
 
 
-<h3 id="solvent-model">Solvent model<a class="headerlink" href="#solvent-model" title="Permalink to this headline">¶</a></h3>
+<h3 id="solvent-model">Solvent model<a class="headerlink" href="#solvent-model" title="Permalink to this heading">¶</a></h3>
 <blockquote>
 <div><strong>estimation of the bulk solvent contribution to the diffraction</strong></div></blockquote>
 <p>Typically, a significant part of a macromolecular crystal is occupied by disordered (bulk) solvent, whose contribution to low resolution reflections is quite significant. An atomic model of a macromolecule without the contribution of the bulk solvent cannot describe these low resolution diffraction data correctly.</p>
@@ -658,7 +660,7 @@ Per group (20 parameters):</p>
 
 
 
-<h2 id="restraints">Restraints<a class="headerlink" href="#restraints" title="Permalink to this headline">¶</a></h2>
+<h2 id="restraints">Restraints<a class="headerlink" href="#restraints" title="Permalink to this heading">¶</a></h2>
 <p>Standard restraints (used by default) include:</p>
 <ul class="simple">
 <li>Bond lengths</li>
@@ -673,7 +675,7 @@ Per group (20 parameters):</p>
 <blockquote>
 <div><em>we generally deal with restraints, not constraints.</em></div></blockquote>
 
-<h3 id="ncs-non-crystallographic-symmetry-restraints">NCS (Non-Crystallographic Symmetry Restraints)<a class="headerlink" href="#ncs-non-crystallographic-symmetry-restraints" title="Permalink to this headline">¶</a></h3>
+<h3 id="ncs-non-crystallographic-symmetry-restraints">NCS (Non-Crystallographic Symmetry Restraints)<a class="headerlink" href="#ncs-non-crystallographic-symmetry-restraints" title="Permalink to this heading">¶</a></h3>
 <p><em>Used if there are two copies of the same molecule present.</em></p>
 <ul>
 <li><p class="first"><strong>Local NCS restraints</strong>  ( <em>Useful only for high resolution data</em> )</p>
@@ -701,7 +703,7 @@ Per group (20 parameters):</p>
 </ul>
 
 
-<h3 id="jelly-body-restraints">Jelly-body restraints<a class="headerlink" href="#jelly-body-restraints" title="Permalink to this headline">¶</a></h3>
+<h3 id="jelly-body-restraints">Jelly-body restraints<a class="headerlink" href="#jelly-body-restraints" title="Permalink to this heading">¶</a></h3>
 <p>The effect of “jelly-body” restraints is the implicit parameterization between the rigid body and individual atoms.</p>
 <dl class="docutils">
 <dt>Jelly-body restraints</dt><dd><ul class="simple">
@@ -728,7 +730,7 @@ domains) to move in a concerted fashion. This helps to avoid local minima, incre
 </div>
 
 
-<h3 id="fourier-shell-correlation-fsc">Fourier Shell Correlation (FSC)<a class="headerlink" href="#fourier-shell-correlation-fsc" title="Permalink to this headline">¶</a></h3>
+<h3 id="fourier-shell-correlation-fsc">Fourier Shell Correlation (FSC)<a class="headerlink" href="#fourier-shell-correlation-fsc" title="Permalink to this heading">¶</a></h3>
 <p>Fourier shell correlation measures the normalised cross-correlation coefficient between two 3-dimensional volumes over corresponding shells in Fourier space.  FSC calculated over all structure factors.</p>
 <p>The main idea:</p>
 <blockquote>
@@ -804,7 +806,7 @@ domains) to move in a concerted fashion. This helps to avoid local minima, incre
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
