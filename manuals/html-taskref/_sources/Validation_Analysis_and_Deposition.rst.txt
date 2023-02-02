@@ -12,4 +12,5 @@ Validation, Analysis and Deposition
     doc.task.Contact
     doc.task.Rotamer
     doc.task.Areaimol
+    doc.task.Rampage
     

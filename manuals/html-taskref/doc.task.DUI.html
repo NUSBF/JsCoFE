@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,7 +53,9 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -471,18 +473,18 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="doc-task-dui--page-root">Interactive Image Processing with DIALS/DUI<a class="headerlink" href="#doc-task-dui--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="doc-task-dui--page-root">Interactive Image Processing with DIALS/DUI<a class="headerlink" href="#doc-task-dui--page-root" title="Permalink to this heading">¶</a></h1>
 <p>DIALS (Diffraction Integration for Advanced Light Sources) is a software project for the analysis of crystallographic diffraction images. DIALS processing on CCP4 Cloud may be performed by either running the individual tools (spot finding, indexing, refinement, integration, symmetry, scaling, exporting to MTZ) using the graphical user interface DUI, or by automated processing with xia2.</p>
 <p>You can click <a class="reference external" href="https://dials.github.io/documentation/tutorials/processing_in_detail_betalactamase_dui.html" rel="noopener noreferrer" target="_blank">here</a> to learn more about processing with DUI.</p>
 <p>Interactive Image Processing with DUI includes next steps:</p>
 
-<h2 id="import">Import<a class="headerlink" href="#import" title="Permalink to this headline">¶</a></h2>
+<h2 id="import">Import<a class="headerlink" href="#import" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><strong>import image data files into a format that can be used within DIALS.</strong></div></blockquote>
 <p>If all the images in the dataset are consistent, then the dataset is imported and initial models for the “Beam”, “Scan” and “Detector” are created. The images are now also displayed within the <strong>“Image”</strong> tab.</p>
 
 
-<h2 id="find">Find<a class="headerlink" href="#find" title="Permalink to this headline">¶</a></h2>
+<h2 id="find">Find<a class="headerlink" href="#find" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><strong>locate spots on some or all of the data</strong></div></blockquote>
 <p>The first “real” task in any processing using DIALS is the spot finding. This program tries to find strong spots on a sequence of images. Spot finding will be done against each logically grouped set of images given. Strong pixels will be found on each image and spots will be formed from connected components.</p>
@@ -503,7 +505,7 @@
 </div></blockquote>
 
 
-<h2 id="index">Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h2>
+<h2 id="index">Index<a class="headerlink" href="#index" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><strong>determining a crystal model which explains the position of the found spots (may optionally involve choices about lattice or space group)</strong></div></blockquote>
 <p>This program attempts to perform autoindexing on strong spots after spot finding. If one or more lattices are identified given the input list of strong spots, then the crystal orientation and experimental geometry are refined to minimize the differences between the observed and predicted spot centroids.</p>
@@ -512,14 +514,14 @@
 <p><em>The RMSDs at the start of each cycle start off worse than at the end of the previous cycle, because the best fit model for lower resolution data is being applied to higher resolution reflections. As long as each macrocycle shows a reduction in RMSDs then refinement is doing its job of extending the applicability of the model out to a new resolution limit, until eventually the highest resolution strong spots have been included.</em></p>
 
 
-<h2 id="lattice">Lattice<a class="headerlink" href="#lattice" title="Permalink to this headline">¶</a></h2>
+<h2 id="lattice">Lattice<a class="headerlink" href="#lattice" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><strong>finding a Bravais lattice</strong></div></blockquote>
 <p>Full refinement of the crystal and experimental geometry parameters will be performed (by default) in all Bravais settings that are consistent with the input primitive unit cell. A table is printed containing various information for each potential Bravais setting, including the metric fit (a measure of the deviation from the triclinic cell), the root-mean-square-deviations (rmsd), in mm, between the observed and predicted spot centroids, the refined unit cell parameters in each Bravais setting, and the change of basis operator to transform from the triclinic cell to each Bravais setting.</p>
 <p><em>If Bravais lattice unknown before indexing, we can determine likely candidates - by taking the results of the P1 autoindexing, and running refinement with all of the possible Bravais settings applied. You can then choose your preferred solution. Run this without altering any of the defaults, as they are suitable for the majority of data sets.Once the job has run, a window will pop up containing scoring data and the unit cell for each Bravais setting.</em></p>
 
 
-<h2 id="refine">Refine<a class="headerlink" href="#refine" title="Permalink to this headline">¶</a></h2>
+<h2 id="refine">Refine<a class="headerlink" href="#refine" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><strong>improving the model</strong></div></blockquote>
 <p>The model is already refined during indexing, but we can also add explicit refinement steps here. This is beneficial because it will use all reflections in refinement rather than a subset, uses a more sophisticated outlier rejection algorithm and will later allow us to fit a scan-varying model of the crystal.</p>
@@ -537,7 +539,7 @@
 </div></blockquote>
 
 
-<h2 id="integration">Integration<a class="headerlink" href="#integration" title="Permalink to this headline">¶</a></h2>
+<h2 id="integration">Integration<a class="headerlink" href="#integration" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><strong>recording how many counts in each spot, subtract background, usually fit reflection profiles.</strong></div></blockquote>
 <p>This program is used to integrate the reflections on the diffraction images. The program will output a set of integrated reflections and an experiment list with additional profile model data.</p>
@@ -563,7 +565,7 @@ more about <strong>Report View</strong></div>
 </div></blockquote>
 
 
-<h2 id="symmetry">Symmetry<a class="headerlink" href="#symmetry" title="Permalink to this headline">¶</a></h2>
+<h2 id="symmetry">Symmetry<a class="headerlink" href="#symmetry" title="Permalink to this heading">¶</a></h2>
 <p>This program implements the methods of <strong>POINTLESS</strong> <a class="reference external" href="https://doi.org/10.1107/S0907444905036693" rel="noopener noreferrer" target="_blank">[Evans 2006]</a> and  <a class="reference external" href="https://doi.org/10.1107/S090744491003982X" rel="noopener noreferrer" target="_blank">[Evans_2011]</a>  for scoring and determination of Laue group symmetry.
 The program takes as input a set of one or more integrated experiments and reflections.</p>
 <p><strong>Stages of space group determination in POINTLESS</strong> :</p>
@@ -589,7 +591,7 @@ The program takes as input a set of one or more integrated experiments and refle
 </div>
 
 
-<h2 id="scale">Scale<a class="headerlink" href="#scale" title="Permalink to this headline">¶</a></h2>
+<h2 id="scale">Scale<a class="headerlink" href="#scale" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><strong>correction for experimental effects i.e. beam intensity, illuminated volume, sample absorption etc.</strong></div></blockquote>
 <p>This program performs scaling on integrated datasets, which attempts to improve the internal consistency of the reflection intensities by correcting for various experimental effects.
@@ -597,7 +599,7 @@ By default, a physically motivated scaling model is used, with a scale, decay (B
 <p>A scaling.html file is also generated, containing interactive plots of merging statistics and scaling model plots.</p>
 
 
-<h2 id="export">Export<a class="headerlink" href="#export" title="Permalink to this headline">¶</a></h2>
+<h2 id="export">Export<a class="headerlink" href="#export" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><strong>exporting the results of dials processing in various formats.</strong></div></blockquote>
 <p>The output formats currently supported are:</p>
@@ -661,7 +663,7 @@ By default, a physically motivated scaling model is used, with a scale, decay (B
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

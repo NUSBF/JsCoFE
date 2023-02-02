@@ -33,7 +33,7 @@ CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. I
             :align: center
 
 
-Clik on |authorisation| manage button and you will redirect to the authorisation page. This page gives a summary of your authorisations and allows you to send authorisation requests.
+Click on |authorisation| manage button and you will redirect to the authorisation page. This page gives a summary of your authorisations and allows you to send authorisation requests.
 
 .. Note::
     Authorisation request will redirect you to the provider's web-site. Any data requested by software provider will be processed at provider's end and will not be stored in CCP4 Cloud.

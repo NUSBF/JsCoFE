@@ -19,4 +19,5 @@ Tips and Tricks
     jscofe_tips.folders
     jscofe_tips.archive
     jscofe_tips.tree_marker
+    jscofe_tips.download
 

@@ -39,7 +39,7 @@ of structure solution are described in the order they usually take place for the
 **FA estimation**
 
 The FA values are estimates of the structure factor amplitudes of the anomalously scattering substructure.  They are used as input to the substructure determination process. 
-Their simplest estimate for SAD data is the absolute value of Friedel pair differences \|F+ - F-\|, used by the program SHELXC.  You have the option to switch to,
+Their simplest estimate for SAD data is the absolute value of Friedel pair differences |F+ - F-|, used by the program SHELXC.  You have the option to switch to,
 currently experimental, maximum likelihood estimation of FA by AFRO.
 
 **Substructure determination**
@@ -98,10 +98,10 @@ Crank-2 Glossary
       the observed ΔF's and the F's calculated from the determined substructure model and CCweek is CC of the weaker
       reflections only. Please consult the SHELXD webpage for more information.
 
-   What is CC\ :sub:`range` in the PRASA output?
-      CC\ :sub:`range` reported by PRASA is an average of adjusted correlation coefficients between the observed ΔF's and
+   What is CC:sub:`range` in the PRASA output?
+      CC:sub:`range` reported by PRASA is an average of adjusted correlation coefficients between the observed ΔF's and
       the F's calculated from the determined substructure model at various resolution cutoffs. The correlation coefficients
-      at different cutoffs are not directly comparable but CC\ :sub:`range` allows for a rough comparison of solutions obtained
+      at different cutoffs are not directly comparable but CC:sub:`range` allows for a rough comparison of solutions obtained
       at different resolution cutoffs.
 
    What does the threshold in substructure determination mean?

@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,7 +53,9 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -408,7 +410,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="doc-task-srf--page-root">Self-Rotation Function Analysis with Molrep<a class="headerlink" href="#doc-task-srf--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="doc-task-srf--page-root">Self-Rotation Function Analysis with Molrep<a class="headerlink" href="#doc-task-srf--page-root" title="Permalink to this heading">¶</a></h1>
 <blockquote>
 <div><em>A self-rotation function calculation and visualisation tool. It’s used for preliminary analysis of X-Ray data</em></div></blockquote>
 <p>Many proteins function as macromolecular assemblies where monomers are often related to each other by <a class="reference external" href="https://en.wikipedia.org/wiki/Crystallographic_point_group" rel="noopener noreferrer" target="_blank">point-group symmetry</a>. When such assemblies are crystallised, the point-group symmetry of the assembly may superimpose with the crystallographic symmetry such that the assemblies are located at special positions in the unit cell. In such cases, the point-group symmetry of the assembly exists within the asymmetric units of the crystal and thereby the symmetry of the assembly becomes <a class="reference external" href="https://dictionary.iucr.org/Noncrystallographic_symmetry" rel="noopener noreferrer" target="_blank">non-crystallographic symmetry (NCS)</a> in the crystal. The presence of NCS introduces significant constraints on structure solution by the molecular-replacement method (a correct solution from the MR calculation must obey the NCS of the assembly). When the crystal contains NCS, self-rotation functions are used to determine the orientations of the NCS elements in the crystal unit cell. Structural similarity found in different parts of the asymmetric unit of a crystal lattice’s unit cell — could be exploited to recover the phases required for structure determination.</p>
@@ -419,14 +421,14 @@
 <li>Can’t distinguish different oligomers with the same symmetry</li>
 </ul>
 
-<h2 id="input">Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
+<h2 id="input">Input<a class="headerlink" href="#input" title="Permalink to this heading">¶</a></h2>
 <p><strong>Expected molecule size</strong> allows to define the radius of integration according the knowledge about molecule size.
 So the molecule size will define the radius of SRF sphere.</p>
 <p>If the point group of an assembly is known or can be assumed, then it is often possible to determine the orientation of the particle when the rotation-function peaks are otherwise hidden in noise. It is particularly important to know what range of angles needs to be explored before all independent rotation operations have been considered (angles selection depend on the point group of the rotated object). The task offers <strong>Chi sections</strong> at 180, 90, 120 and 60 (can be changed to any angle needed).</p>
 <p>Another point to consider is the <strong>resolution range</strong> of the data used in the calculation of the rotation function. Low-resolution data can be excluded because they are rather insensitive to rotation; moreover, they are determined to an appreciable extent by the solvent region. High-resolution data are more discriminating but are also more sensitive for the model. The best range is often found between <strong>3 and 5Å</strong>.</p>
 
 
-<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<h2 id="output">Output<a class="headerlink" href="#output" title="Permalink to this heading">¶</a></h2>
 <p>For a better interpretation of task results, required to have a certain understanding of the theory of crystallographic symmetry. <a class="reference external" href="http://xrayweb.chem.ou.edu/notes/symmetry.html" rel="noopener noreferrer" target="_blank">Here</a> you can find a nice article covering this topic.</p>
 <p>One of the more informative output of the self-rotation function task is the <a class="reference external" href="https://en.wikipedia.org/wiki/Stereographic_projection" rel="noopener noreferrer" target="_blank">stereographic projection</a>. This shows the values of the function at a given κ (axis rotation angle) for φ and ψ. However the plot is constructed to that it appears as if it were projected onto a hemisphere and viewed from above (from +z toward the origin).</p>
 <p>Crystallographic and noncrystallographic point groups are described  <a class="reference download internal" download="" href="_downloads/9553636f5e323fa1fb953c45886e9f63/PointGroups.pdf"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a></p>
@@ -480,7 +482,7 @@ So the molecule size will define the radius of SRF sphere.</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

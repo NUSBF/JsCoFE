@@ -1,7 +1,7 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,7 +53,9 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -251,35 +253,42 @@
     <li class="md-nav__item">
     
     
-      <a href="jscofe_archive.html" class="md-nav__link">4. CCP4 Cloud Archive</a>
+      <a href="jscofe_i1toCloud.html" class="md-nav__link">4. Cloud Run facility in CCP4i interface</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_CloudED.html" class="md-nav__link">5. CCP4 Cloud education capabilities</a>
+      <a href="jscofe_archive.html" class="md-nav__link">5. CCP4 Cloud Archive</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_QnA.html" class="md-nav__link">6. Questions and Answers</a>
+      <a href="jscofe_CloudED.html" class="md-nav__link">6. CCP4 Cloud education capabilities</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_troubleshooting.html" class="md-nav__link">7. Troubleshooting</a>
+      <a href="jscofe_QnA.html" class="md-nav__link">7. Questions and Answers</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="jscofe_version_log.html" class="md-nav__link">8. CCP4 Cloud Version Log</a>
+      <a href="jscofe_troubleshooting.html" class="md-nav__link">8. Troubleshooting</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="jscofe_version_log.html" class="md-nav__link">9. CCP4 Cloud Version Log</a>
       
     
     </li>
@@ -313,12 +322,12 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<span id="workflows-guide"></span><h1 id="jscofe-automated-workflows--page-root"><span class="section-number">2.3. </span>Automatic workflows<a class="headerlink" href="#jscofe-automated-workflows--page-root" title="Permalink to this headline">¶</a></h1>
+<span id="workflows-guide"></span><h1 id="jscofe-automated-workflows--page-root"><span class="section-number">2.3. </span>Automatic workflows<a class="headerlink" href="#jscofe-automated-workflows--page-root" title="Permalink to this heading">¶</a></h1>
 <p>Automatic workflows feature structure solution scenarios, such as Molecular Replacement or Experimental Phasing, which include several elementary tasks. A workflow can start with data import and then attempt phasing, model building, refinement, ligand fitting, solvent modeling, and preparing results for PDB deposition.</p>
 <p>A workflow will develop the <em>Project Tree</em> and perform all elementary steps automatically, exploring different ways of structure solutions and using various tasks as appropriate. For data of sufficiently high resolution, completeness and quality (no crystal pathologies), the automatic workflow can produce a reasonable approximation to the final structure. The result may be further improved with elementary task in manual mode, allowing finer control over tasks’ parameters.</p>
 <p>Not only the workflows can reduce chores, but they may also be used for a better understanding of the structure solution strategy.</p>
 
-<h2 id="using-automatic-workflows"><span class="section-number">2.3.1. </span>Using Automatic Workflows<a class="headerlink" href="#using-automatic-workflows" title="Permalink to this headline">¶</a></h2>
+<h2 id="using-automatic-workflows"><span class="section-number">2.3.1. </span>Using Automatic Workflows<a class="headerlink" href="#using-automatic-workflows" title="Permalink to this heading">¶</a></h2>
 <p>Automatic Workflows progress automatically, creating and running new tasks and branching as necessary. If a workflow task fails or does not produce useable results, the follow-up task is not formed and the corresponding <em>Project branch</em> terminates. Depending on the workflow logic, the algorithm attempt another approach (by starting another <em>Project branch</em>) or stops.</p>
 <p>A user can:</p>
 <ul class="simple">
@@ -373,7 +382,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
