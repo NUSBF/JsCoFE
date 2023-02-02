@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.03.20   <--  Date of Last Modification.
+#    02.02.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -12,7 +12,7 @@
 #  Makes structural alignment of an ensemble with Gesamt, reports all
 #  Gesamt's scores etc. and puts export data widget
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
 #
 # ============================================================================
 #

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    08.06.22   <--  Date of Last Modification.
+#    02.02.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
 #
 # ============================================================================
 #
@@ -59,14 +59,14 @@ class DocDev(basic.TaskDriver):
             self.putMessage ( "<h3>Generating Developer's Reference</h3>" )
         elif doctype=="taskref":
             self.putMessage ( "<h3>Generating Task Reference</h3>" )
-            copytasks = "\nmv tasks/* .\nrm -rf tasks" +\
-                        "\nmv atlas/* .\nrm -rf atlas"
+            copytasks = "\nmv tasks/* .\nrm -rf tasks" 
         elif doctype=="tutorials":
             self.putMessage ( "<h3>Generating Tutorials</h3>" )
             # copytasks = "\nmv tutorials/* .\nrm -rf tutorials"
         elif doctype=="userguide":
             self.putMessage ( "<h3>Generating User Guide</h3>" )
-            copytasks = "\nmv tips/* .\nrm -rf tips"
+            copytasks = "\nmv tips/* .\nrm -rf tips" +\
+                        "\nmv atlas/* .\nrm -rf atlas"
         elif doctype=="source":
             self.putMessage ( "<h3>Generating CCP4 documentation</h3>" )
 
