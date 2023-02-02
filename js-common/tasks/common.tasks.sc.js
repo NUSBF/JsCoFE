@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    18.01.23   <--  Date of Last Modification.
+ *    02.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -42,23 +42,21 @@ function TaskSC() { // must start with Task...
   this.title   = 'SC'; // title for job dialog
 	
   // define fields important for jsCoFE framework
-this.input_dtypes = [{      // input data types
-     data_type   : {'DataStructure':['protein'],
-                    'DataEnsemble' :['protein'],
-                    'DataModel'    :['protein'],
-                    'DataXYZ'      :['protein']
-                   },  // data type(s) and subtype(s)
-     label       : 'Structure',    // label for input dialog
-     inputId     : 'xyz',          // input Id for referencing input fields
-     customInput : 'chain-sel-protein', // lay custom fields next to the selection
-		 
-     force       : 2,           // meaning choose, by default, 1 xyz sets if
-                                // available; otherwise, the minimum (1) will
-                                // be selected
-     min         : 1,           // minimum acceptable number of data instances
-     max         : 2           // maximum acceptable number of data instances
-   }
-  ];
+  this.input_dtypes = [{      // input data types
+    data_type   : {'DataStructure':['protein'],
+                   'DataEnsemble' :['protein'],
+                   'DataModel'    :['protein'],
+                   'DataXYZ'      :['protein']
+                  },  // data type(s) and subtype(s)
+    label       : 'Structure',    // label for input dialog
+    inputId     : 'xyz',          // input Id for referencing input fields
+    customInput : 'chain-sel-poly-2', // lay custom fields next to the selection
+    //  force       : 2,           // meaning choose, by default, 1 xyz sets if
+    //                             // available; otherwise, the minimum (1) will
+    //                             // be selected
+    min         : 1,           // minimum acceptable number of data instances
+    max         : 1           // maximum acceptable number of data instances
+  }];
 
 	// this.parameters = { // no input parameters
 	// 	SC_LBL: {
@@ -94,8 +92,8 @@ this.input_dtypes = [{      // input data types
 // finish constructor definition
 
 if (__template)
-	TaskSC.prototype = Object.create(__template.TaskTemplate.prototype);
-else TaskSC.prototype = Object.create(TaskTemplate.prototype);
+      TaskSC.prototype = Object.create(__template.TaskTemplate.prototype);
+else  TaskSC.prototype = Object.create(TaskTemplate.prototype);
 TaskSC.prototype.constructor = TaskSC;
 
 
@@ -104,7 +102,7 @@ TaskSC.prototype.constructor = TaskSC;
 
 // task icons. 
 TaskSC.prototype.icon = function() {
-	return 'task_SC';
+  return 'task_SC';
 }
 
 //  Define task version. Whenever task changes (e.g. receives new input
@@ -119,42 +117,52 @@ TaskSC.prototype.currentVersion = function()  {
 }
 
 TaskSC.prototype.checkKeywords = function(keywords) {
-	// keywords supposed to be in low register
-	return this.__check_keywords(keywords, ['xyz', 'analysis', 'coordinates', 'toolbox', 'sc']);
+  // keywords supposed to be in low register
+  return this.__check_keywords(keywords, ['xyz', 'analysis', 'coordinates', 'toolbox', 'sc']);
 }
 
 if (!__template) {
-	// client side
+// client side
 
-	TaskSC.prototype.desc_title = function() {
-		// this appears under task title in the task list
-		return 'determines Sc shape complementarity of two interacting molecular surfaces';
-	}
+  TaskSC.prototype.desc_title = function() {
+	// this appears under task title in the task list
+	return 'determines Sc shape complementarity of two interacting molecular surfaces';
+  }
 
-} else {
+  TaskSC.prototype.collectInput = function ( inputPanel )  {
 
-	// server side
+    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    var xyz = this.input_data.getData ( 'xyz' )[0];
 
-	var conf = require('../../js-server/server.configuration');
+    if (!xyz.chainSel2)
+      input_msg = '<b><i>Usuitable coordinate data.</i></b>';
 
-	TaskSC.prototype.makeInputData = function(loginData, jobDir) {
-		var xyz = this.input_data.data['xyz'][0];
-		if (xyz._type == 'DataRevision')
-			this.input_data.data['istruct'] = [xyz.Structure];
-		__template.TaskTemplate.prototype.makeInputData.call(this, loginData, jobDir);
-	}
+    return input_msg;
 
-	// form command line for server's node js to start task's python driver;
+  }
+
+} else {  // server side
+
+  var conf = require('../../js-server/server.configuration');
+
+//   TaskSC.prototype.makeInputData = function(loginData, jobDir) {
+//     var xyz = this.input_data.data['xyz'][0];
+//     // if (xyz._type == 'DataRevision')
+// 	// 	this.input_data.data['istruct'] = [xyz.Structure];
+//     __template.TaskTemplate.prototype.makeInputData.call(this, loginData, jobDir);
+//   }
+
+  // form command line for server's node js to start task's python driver;
   // note that last 3 parameters are optional and task driver will not use
   // them in most cases.
 
-	TaskSC.prototype.getCommandLine = function(jobManager, jobDir) {
-		return [conf.pythonName(), '-m', 'pycofe.tasks.sc', jobManager, jobDir, this.id];
-	}
+  TaskSC.prototype.getCommandLine = function(jobManager, jobDir) {
+  return [conf.pythonName(), '-m', 'pycofe.tasks.sc', jobManager, jobDir, this.id];
+  }
 
-	// -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
 
-	// export such that it could be used in server's node js
-	module.exports.TaskSC = TaskSC;
+  // export such that it could be used in server's node js
+  module.exports.TaskSC = TaskSC;
 
 }
