@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.10.22   <--  Date of Last Modification.
+ *    02.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XYZ Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -305,14 +305,6 @@ if (!__template)  {
 
     } else if (startsWith(dropdown.layCustom,'chain-sel')) {
 
-      customGrid.setLabel ( 'Select chain:&nbsp;',0,0,1,1 )
-                .setFontItalic(true).setNoWrap();
-      customGrid.setVerticalAlignment ( 0,0,'middle' );
-
-      customGrid.chainSel = new Dropdown();
-      //customGrid.chainSel.setWidth ( '120%' );
-      customGrid.chainSel.setWidth ( '160px' );
-      //customGrid.chainSel.addItem ( 'All','','(all)',this.chainSel=='(all)' );
       var xyz    = this.xyzmeta.xyz;
       var labels = [];
       var ids    = [];
@@ -323,7 +315,8 @@ if (!__template)  {
             if ((dropdown.layCustom=='chain-sel') ||
                 ((dropdown.layCustom=='chain-sel-protein') &&
                  (chains[j].type=='Protein'))     ||
-                ((dropdown.layCustom=='chain-sel-poly') &&
+                (((dropdown.layCustom=='chain-sel-poly') ||
+                  (dropdown.layCustom=='chain-sel-poly-2')) &&
                  (['Protein','DNA','RNA','NA'].indexOf(chains[j].type)>=0)))  {
               var id = chains[j].id;
               if (xyz.length>1)
@@ -332,24 +325,98 @@ if (!__template)  {
               ids   .push ( id );
               if (!this.chainSel)
                 this.chainSel = id;
-              //customGrid.chainSel.addItem ( id + ' (' + chains[j].type.toLowerCase() + ')',
-              //                              '',id,this.chainSel==id );
             }
         }
-      if (labels.length<1)  {
-        labels.unshift ( 'No suitable chains found' );
-        ids   .unshift ( '(none)' );
-      // } else if (labels.length>1)  {
-      //   labels.unshift ( 'All'   );
-      //   ids   .unshift ( '(all)' );
-      }
-      for (var j=0;j<labels.length;j++)
-        customGrid.chainSel.addItem ( labels[j],'',ids[j],this.chainSel==ids[j] );
-      customGrid.setWidget ( customGrid.chainSel, 0,1,1,2 );
-      //customGrid.setCellSize ( '160px','',0,1 );
-      customGrid.chainSel.make();
 
-      customGrid.setLabel ( ' ',1,0,1,2 ).setHeight_px ( 8 );
+      if (dropdown.layCustom=='chain-sel-poly-2')  {
+
+        if (ids.length<1)  {
+          customGrid.setLabel ( 'No suitable chains found',0,0,1,1 )
+                    .setFontItalic(true).setFontColor('maroon').setNoWrap();
+          this.chainSel2 = '';
+        } else if (ids.length==1)  {
+          customGrid.setLabel ( 'Single-chain structure, unsuitable',0,0,1,1 )
+                    .setFontItalic(true).setFontColor('maroon').setNoWrap();
+          this.chainSel2 = '';
+        } else  {
+
+          if ((!('chainSel2' in this)) || (!this.chainSel2))  {
+            this.chainSel2 = '';
+            for (var j=0;(j<ids.length) && (!this.chainSel2);j++)
+              if (ids[j]!=this.chainSel)
+                this.chainSel2 = ids[j];
+          }
+
+          customGrid.setLabel ( '1<sup>st</sup> chain:&nbsp;',0,0,1,1 )
+                    .setFontItalic(true).setNoWrap();
+          customGrid.setVerticalAlignment ( 0,0,'middle' );
+          customGrid.setLabel ( '2<sup>nd</sup> chain:&nbsp;',1,0,1,1 )
+                    .setFontItalic(true).setNoWrap();
+          customGrid.setVerticalAlignment ( 1,0,'middle' );
+
+          customGrid.chainSel  = new Dropdown();
+          customGrid.chainSel.setWidth ( '160px' );
+          customGrid.chainSel2 = new Dropdown();
+          customGrid.chainSel2.setWidth ( '160px' );
+
+          for (var j=0;j<labels.length;j++)  {
+            customGrid.chainSel .addItem ( labels[j],'',ids[j],this.chainSel==ids[j]  );
+            customGrid.chainSel2.addItem ( labels[j],'',ids[j],this.chainSel2==ids[j] );
+          }
+          customGrid.setWidget ( customGrid.chainSel, 0,1,1,2 );
+          customGrid.chainSel.make();
+          customGrid.setWidget ( customGrid.chainSel2,1,1,1,2 );
+          customGrid.chainSel2.make();
+
+          var self = this;
+          customGrid.chainSel.addOnChangeListener ( function(text,value){
+            if (value==self.chainSel2)  {
+              customGrid.chainSel.selectItem ( self.chainSel );
+              new MessageBox ( 'Duplicate selection',
+                '<h2>Duplicate chain selection</h2>Selected chains must be different.',
+                'msg_stop'
+              );
+            } else  
+              self.chainSel = value;
+          });
+          customGrid.chainSel2.addOnChangeListener ( function(text,value){
+            if (value==self.chainSel)  {
+              customGrid.chainSel2.selectItem ( self.chainSel2 );
+              new MessageBox ( 'Duplicate selection',
+                '<h2>Duplicate chain selection</h2>Selected chains must be different.',
+                'msg_stop'
+              );
+            } else  
+              self.chainSel2 = value;
+          });
+
+        }
+
+        customGrid.setLabel ( ' ',2,0,1,2 ).setHeight_px ( 8 );
+
+      } else  {
+
+        if (labels.length<1)  {
+          labels.unshift ( 'No suitable chains found' );
+          ids   .unshift ( '(none)' );
+        }
+  
+        customGrid.setLabel ( 'Select chain:&nbsp;',0,0,1,1 )
+                  .setFontItalic(true).setNoWrap();
+        customGrid.setVerticalAlignment ( 0,0,'middle' );
+
+        customGrid.chainSel = new Dropdown();
+        customGrid.chainSel.setWidth ( '160px' );
+
+        for (var j=0;j<labels.length;j++)
+          customGrid.chainSel.addItem ( labels[j],'',ids[j],this.chainSel==ids[j] );
+        customGrid.setWidget ( customGrid.chainSel, 0,1,1,2 );
+        customGrid.chainSel.make();
+
+        customGrid.setLabel ( ' ',1,0,1,2 ).setHeight_px ( 8 );
+
+      }
+
 
     } else if (dropdown.layCustom=='texteditor')  {
       // just a place hoilder for keeping row height
@@ -371,13 +438,21 @@ if (!__template)  {
         if (!customGrid.cbxs[i].getValue())
           this.exclLigs.push ( this.xyzmeta.ligands[i] );
 
-    } else if (startsWith(dropdown.layCustom,'chain-sel'))  {
+    } else if (startsWith(dropdown.layCustom,'chain-sel') && ('chainSel' in customGrid))  {
 
       this.chainSel = customGrid.chainSel.getValue();
       var lst = customGrid.chainSel.getText().replace('(','').replace(')','').split(' ');
       if (lst.length>1)
             this.chainSelType = lst[1];
       else  this.chainSelType = '';
+
+      if (dropdown.layCustom=='chain-sel-poly-2')  {
+        this.chainSel2 = customGrid.chainSel2.getValue();
+        var lst = customGrid.chainSel2.getText().replace('(','').replace(')','').split(' ');
+        if (lst.length>1)
+              this.chainSel2Type = lst[1];
+        else  this.chainSel2Type = '';
+      }
 
     }
 

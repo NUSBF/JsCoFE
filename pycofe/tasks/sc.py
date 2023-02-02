@@ -40,25 +40,21 @@ class SC(basic.TaskDriver):
     def run(self):
 
         # fetch input data
-        # ixyz = self.makeClass(self.input_data.data.ixyz[0])
-        # if ixyz._type == dtype_revision.dtype():
-        #     ixyz = self.makeClass(self.input_data.data.istruct[0])
-        xyz  = self.input_data.data.xyz
-        nXYZ = len(xyz)
+        xyz = self.makeClass(self.input_data.data.xyz[0])
 
         # make command-line parameters
-        num = 0
-        cmd = []
 
-        keywords = []
+        cmd = ['XYZIN', xyz.getXYZFilePath(self.inputDir())]
 
-        num = 0
-        for i in range(nXYZ):
-            num +=1 
-            xyz[i] = self.makeClass ( xyz[i] )
-            cmd += ['XYZIN', xyz[i].getXYZFilePath(self.inputDir())]
-            keywords += ["MOLECULE " + str(num), "CHAIN " + xyz[i].chainSel + "\n"]
-
+        self.open_stdin()
+        self.write_stdin([
+            "MOLECULE 1",
+            "CHAIN    " + xyz.chainSel,
+            "MOLECULE 2",
+            "CHAIN    " + xyz.chainSel2,
+            "END"
+        ])
+        self.close_stdin()
 
 
        
@@ -68,15 +64,12 @@ class SC(basic.TaskDriver):
 
         # keywords = self.getParameter(self.task.parameters.SC_INPUT).strip()
         
-        keywords += ["END"]
+        # keywords += ["END"]
         # for molecule in molecules:
         #     num = 1
         #     keywords = ('MOLECULE', num, '\n', 'CHAIN', xyz[i].chainSel)
         #     num += 1
 
-        self.open_stdin()
-        self.write_stdin(keywords)
-        self.close_stdin()
 
         # run CONTACT
         self.runApp("sc",cmd, logType="Main")
@@ -95,7 +88,6 @@ class SC(basic.TaskDriver):
         self.success(False)
 
         return
-
 
 # ============================================================================
 
