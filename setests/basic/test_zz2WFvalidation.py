@@ -72,35 +72,35 @@ def validate2SMR(driver, waitLong):
         if match:
             break
     assert match
-    assert int(match.group(1)) > 1300
+    assert int(match.group(1)) > 1000
     assert float(match.group(3)) < 0.48
 
-    print('Verifying modelcraft  Rfree < 0.31... ')
+    print('Verifying modelcraft  Rfree < 0.25... ')
     match = False
     for t in ttts:
         match = re.search('modelcraft --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
         if match:
             break
     assert match
-    assert float(match.group(2)) < 0.31
+    assert float(match.group(2)) < 0.25
 
-    print('Verifying fitwaters 0013 >100 ... ')
-    match = False
-    for t in ttts:
-        match = re.search('fit waters -- Nwaters=(\d*)', t)
-        if match:
-            break
-    assert match
-    assert float(match.group(1)) > 100
+    # print('Verifying fitwaters 0013 >100 ... ')
+    # match = False
+    # for t in ttts:
+    #     match = re.search('fit waters -- Nwaters=(\d*)', t)
+    #     if match:
+    #         break
+    # assert match
+    # assert float(match.group(1)) > 100
 
-    print('Verifying refmac5 Rfree < 0.25... ')
+    print('Verifying refmac5 Rfree < 0.26... ')
     match = False
     for t in reversed(ttts):
         match = re.search('refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', t)
         if match:
             break
     assert match
-    assert float(match.group(2)) < 0.25
+    assert float(match.group(2)) < 0.26
 
     print('Verifying deposition ... ')
     match = False

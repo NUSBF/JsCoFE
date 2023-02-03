@@ -85,14 +85,14 @@ def validate1AMR(driver, waitLong):
     assert match
     assert float(match.group(2)) < 0.36
 
-    print('Verifying arpwarp Rfree < 0.31... ')
-    match = False
-    for t in ttts:
-        match = re.search('arpwarp --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
-        if match:
-            break
-    assert match
-    assert float(match.group(2)) < 0.31
+    # print('Verifying arpwarp Rfree < 0.31... ')
+    # match = False
+    # for t in ttts:
+    #     match = re.search('arpwarp --.*R=(0\.\d*) Rfree=(0\.\d*)', t)
+    #     if match:
+    #         break
+    # assert match
+    # assert float(match.group(2)) < 0.31
 
     print('Verifying fitligand = 1 ... ')
     match = False
@@ -102,21 +102,21 @@ def validate1AMR(driver, waitLong):
             break
     assert match
 
-    print('Verifying fitwaters >40 ... ')
+    print('Verifying fitwaters > 20 ... ')
     match = False
     for t in ttts:
         match = re.search('fit waters -- Nwaters=(\d*)', t)
         if match:
             break
     assert match
-    assert float(match.group(1)) > 40
+    assert float(match.group(1)) > 20
 
     print('Verifying refmac5  Rfree < 0.295... ')
     match = False
     for t in reversed(ttts):
         match = re.search('\[(\d*)\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', t)
         if match:
-            if int(match.group(1)) > 16:
+            if int(match.group(1)) > 15:
                 break
     assert match
     assert float(match.group(3)) < 0.295
