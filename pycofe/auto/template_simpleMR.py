@@ -117,11 +117,12 @@ def makeNextTask ( crTask,data ):
         resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
         # excludedTasks = auto_api.getContext('excludedTasks')
 
-        if float(data["Rfree"]) < float(prevRfree) : # No other rebuilding if Modelcraft performed well
+        if float(data["Rfree"]) < 0.4 : # No other rebuilding if Modelcraft performed well
             if resHi > 3.0:
                 auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
             else:
                 auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+            return
         else:
             # # Modelcraft performed not very well, Rfree > 0.3
             # # First choice in now ARP/wARP (if resolution permits and if installed), then CCP4Build
