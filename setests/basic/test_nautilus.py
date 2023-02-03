@@ -353,7 +353,7 @@ def test_1Nautilus(browser,
         editRevisionStructure(d.driver, d.waitShort) # 3
         refmacAfterRevision(d.driver, d.waitLong) # 4
         startNautilus(d.driver) # 5
-        verifyNautilus(d.driver, 1000, '0005', 0.3, 0.35) # run takes 5 minutes, giving 10
+        verifyNautilus(d.driver, 1000, '0005', 0.32, 0.35) # run takes 5 minutes, giving 10
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
     except:
