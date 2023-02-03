@@ -39,7 +39,7 @@ function TaskAWNuce()  {
   this.title   = 'NUCE: Trace Nucleic Acid Chains with Arp/wArp';
 
   this.input_dtypes = [{  // input data types
-      data_type : {'DataRevision':['!phases']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':[['rna','dna'],'!phases']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       version   : 4,          // minimum data version allowed

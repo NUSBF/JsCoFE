@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    27.05.21   <--  Date of Last Modification.
+#    03.02.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -364,6 +364,12 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
             revision = dtype_revision.DType ( -1 )
         revision.setReflectionData ( hkl )
         revision.setASUData ( base.job_id,seq,nRes,molWeight,dataKey,mc1,sol1,prb1 )
+
+        if composition:
+            if composition != "D":
+                revision.addProteinType()
+            if composition != "P" and not revision.hasDNAType():
+                revision.addRNAType()
 
         #makeAsuFitMessage ( base,nc0,sol0 )
 
