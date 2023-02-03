@@ -575,7 +575,7 @@ function AccountPage ( sceneId )  {
     userData = data;
     
     var msg  = checkUserData ( userData );
-    if (msg.length>0)
+    if ((msg.length>0) && (!__local_user))
       window.setTimeout ( function(){
         new MessageBox ( 'Update Account Data',
           'Please check your account settings:<ul>' + msg + '</ul>' +

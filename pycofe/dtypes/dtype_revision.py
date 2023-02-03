@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    28.12.21   <--  Date of Last Modification.
+#    03.02.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  REVISION DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -193,6 +193,28 @@ class DType(dtype_template.DType):
 
     def isASUData ( self ):
         return (len(self.ASU.seq)>0) or (self.ASU.nRes>0) or (self.ASU.molWeight>0.0)
+
+    def addProteinType ( self ):
+        self.addSubtype ( dtype_template.subtypeProtein() )
+        return
+
+    def addDNAType ( self ):
+        self.addSubtype ( dtype_template.subtypeDNA() )
+        return
+
+    def addRNAType ( self ):
+        self.addSubtype ( dtype_template.subtypeRNA() )
+        return
+
+    def hasProteinType ( self ):
+        return dtype_template.subtypeProtein() in self.subtype
+
+    def hasDNAType ( self ):
+        return dtype_template.subtypeDNA() in self.subtype
+
+    def hasRNAType ( self ):
+        return dtype_template.subtypeRNA() in self.subtype
+
 
     def getNofASUMonomers ( self ):
         n = 0

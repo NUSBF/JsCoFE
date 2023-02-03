@@ -100,16 +100,14 @@ var msg = '';
   if (!uData.hasOwnProperty('action'))    uData.action   = userdata_action.revise;
   if (!uData.hasOwnProperty('feedback'))  uData.feedback = '';
 
-  if (!__local_user)  {
-    if (uData.feedback.length<=0)  {
-      uData.action = userdata_action.revise;
-      msg = '<li>choose suitable <b>feedback agreement</b></li>';
-    }
-    if ((uData.action!=userdata_action.none) && (msg.length<=0))  {
-      if (uData.action==userdata_action.chpwd)
-            msg = '<li>change your <b>password</b></li>';
-      else  msg = '<li>confirm your account details</li>';
-    }
+  if (uData.feedback.length<=0)  {
+    uData.action = userdata_action.revise;
+    msg = '<li>choose suitable <b>feedback agreement</b></li>';
+  }
+  if ((uData.action!=userdata_action.none) && (msg.length<=0))  {
+    if (uData.action==userdata_action.chpwd)
+          msg = '<li>change your <b>password</b></li>';
+    else  msg = '<li>confirm your account details</li>';
   }
 
   if (!uData.hasOwnProperty('authorisation'))
