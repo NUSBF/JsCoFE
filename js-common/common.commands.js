@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    03.02.23   <--  Date of Last Modification.
+ *    05.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -77,6 +77,7 @@ var fe_command = {
   ignore            : 'ignore',          // special return code from Communicate module
   stop              : 'stop',            // quit the server
   whoareyou         : 'whoareyou',       // request server id
+  status            : 'status',          // request server status, e.g., for uptime watchers
   getInfo           : '=getinfo',        // request server metadata
   getClientInfo     : '=getclientinfo',  // request client server metadata
   register          : '=register',       // register a new user

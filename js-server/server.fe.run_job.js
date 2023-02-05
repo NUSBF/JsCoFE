@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.01.23   <--  Date of Last Modification.
+ *    05.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -366,15 +366,16 @@ var n0         = -1;
 }
 
 function ncSelectAndCheck ( nc_counter,task,callback_func )  {
+//  nc_counter == conf.getNumberOfNCs() at 1st call
   var nc_number = selectNumberCruncher ( task );
   if (nc_number>=0)  {
     var cfg = conf.getNCConfig ( nc_number );
     if (cfg)  {
       cfg.checkNCStatus ( function(error,response,body,config){
-        if ((!error) && (response.statusCode==200))  {
-          callback_func ( nc_number );
-        } else if ((error=='not-in-use') && (nc_counter>0))  {
+        if ((error=='not-in-use') && (nc_counter>0))  {
           ncSelectAndCheck ( nc_counter-1,task,callback_func );
+        } else if ((!error) && (response.statusCode==200))  {
+          callback_func ( nc_number );
         } else  {
           log.standard ( 1,'NC-' + nc_number + ' does not answer' );
           log.error    ( 1,'NC-' + nc_number + ' does not answer' );
@@ -1195,178 +1196,6 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
 
 }
 
-
-/*
-function addJobAuto ( jobEntry,jobClass )  {
-var loginData   = jobEntry.loginData;
-var projectName = jobEntry.project;
-var pJobDir     = prj.getJobDirPath ( loginData,projectName,jobEntry.jobId );
-var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
-
-  if (auto_meta)  {
-
-    var projectData = prj.readProjectData ( loginData,projectName );
-
-    if (!projectData)  {
-      log.error ( 20,'project data ' + projectName + ' not found, login ' +
-                     loginData.login );
-    } else  {
-
-// pd.printProjectTree ( ' >>>auto-1',projectData );
-
-      if (!('_root' in auto_meta.context.job_register))
-        auto_meta.context.job_register._root = jobEntry.jobId;
-
-      var shared_logins  = projectData.desc.share;
-      var ownerLoginData = loginData;
-      if (projectData.desc.owner.login!=loginData.login)
-        ownerLoginData = user.getUserLoginData ( projectData.desc.owner.login );
-
-      user.topupUserRation ( ownerLoginData,function(rdata){
-
-        var check_list = ration.checkUserRation ( ownerLoginData,false );
-        if (check_list.length<=0)  {
-  
-          var tasks = [];
-  
-          for (var key in auto_meta)
-            if (key!='context')  {
-  
-              var task = class_map.makeTaskClass ( auto_meta[key]._type );
-  
-              if (!task)  {
-                log.error ( 21,'wrong task class name ' + auto_meta[key]._type );
-              } else  {
-  
-                // place job tree node
-  
-                var pid = jobEntry.jobId;
-                if (auto_meta[key].parentName in auto_meta.context.job_register)
-                  pid = auto_meta.context.job_register[auto_meta[key].parentName];
-  
-                var pnode = pd.getProjectNode ( projectData,pid );
-                if (!pnode)  {
-                  log.error ( 22,'cannot get project node in workflow [' + loginData.login +
-                                 ']:' + projectName + ':' + pid );
-                } else  {
-  
-                  // form task
-
-                  // ***** MAKE JOB DIRECTORY HERE, CHOOSE ID
-  
-                  task.project          = projectName;
-                  task.id               = ++projectData.desc.jobCount;
-                  task.autoRunName      = key;
-                  // task.harvestedTaskIds = dataBox.harvestedTaskIds;
-                  task.autoRunId        = jobClass.autoRunId;
-                  task.submitter        = loginData.login;
-                  task.input_data.data  = auto_meta[key].data;
-                  task.start_time       = Date.now();
-  
-                  for (var field in auto_meta[key].fields)
-                    task[field] = auto_meta[key].fields[field];
-  
-                  task._clone_suggested ( task.parameters,auto_meta[key].parameters );
-                  tasks.push ( task );
-  
-                  var pnode_json = JSON.stringify ( pnode );
-  
-                  var cnode = JSON.parse ( pnode_json );
-                  cnode.id       = pnode.id + '_' + key;
-                  cnode.parentId = pnode.id;
-                  cnode.dataId   = task.id;
-                  cnode.icon     = cmd.image_path ( task.icon() );
-                  // cnode.text     = '<b>' + task.autoRunId + ':</b>[' +
-                  //                  com_utils.padDigits(task.id,4) + '] ' + task.name;
-                  cnode.text     = prj.makeNodeName ( task,task.name );
-                  cnode.text0    = cnode.text;
-                  cnode.state.selected = false;
-                  cnode.children = [];
-                  pnode.children.push ( cnode );
-  
-                  auto_meta.context.job_register[key] = task.id;
-  
-    // console.log ( ' >>>>> jobEntry.jobId = ' + jobEntry.jobId );
-    // console.log ( ' >>>>> pid            = ' + pid );
-    // console.log ( ' >>>>> parentName     = ' + auto_meta[key].parentName );
-    // console.log ( ' >>>>> pnode.dataId   = ' + pnode.dataId );
-    // console.log ( ' >>>>> pnode.text     = ' + pnode.text   );
-    // console.log ( ' >>>>> task.id        = ' + task.id );
-    // console.log ( ' >>>>> cnode.text     = ' + cnode.text   );
-    // console.log ( ' >>>>> jobCount       = ' + projectData.desc.jobCount );
-  
-                }
-  
-              }
-            }
-  
-          prj.writeProjectData ( loginData,projectData,true );
-    // pd.printProjectTree ( ' >>>auto-2',projectData );
-  
-          for (var i=0;i<tasks.length;i++)  {
-  
-            var task = tasks[i];
-  
-            // prepare job directory
-  
-            var jobDirPath = prj.getJobDirPath ( loginData,projectName,task.id );
-  
-            if (!utils.mkDir(jobDirPath))  {
-              log.error ( 23,'cannot create job directory in workflow at ' + jobDirPath );
-            } else  {
-  
-              // handle remarks and other pseudo-jobs here
-              var task_state = task.state;
-              if (task_state==task_t.job_code.new)  {
-                task.state = task_t.job_code.running;
-                task.job_dialog_data.panel = 'output';
-              }
-  
-              var jobDataPath = prj.getJobDataPath ( loginData,projectName,task.id );
-  
-              if (!utils.writeObject(jobDataPath,task))  {
-                log.error ( 24,'cannot write job metadata at ' + jobDataPath );
-              } else if (task_state==task_t.job_code.new)  {
-  
-                auto_meta.context.custom.excludedTasks = conf.getFEConfig().exclude_tasks;
-                utils.writeObject ( path.join(jobDirPath,"auto.context"),auto_meta.context );
-  
-                // create report directory
-                utils.mkDir_anchor ( prj.getJobReportDirPath(loginData,projectName,task.id) );
-                // create input directory (used only for sending data to NC)
-                utils.mkDir_anchor ( prj.getJobInputDirPath(loginData,projectName,task.id) );
-                // create output directory (used for hosting output data)
-                utils.mkDir_anchor ( prj.getJobOutputDirPath(loginData,projectName,task.id) );
-                // write out the self-updating html starting page, which will last
-                // only until it gets replaced by real report's bootstrap
-                utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
-  
-                // Run the job
-                var job_token = crypto.randomBytes(20).toString('hex');
-  
-                _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
-                           function(jtoken){} );
-  
-              }
-  
-            }
-  
-          }
-  
-        } else  {
-          log.standard ( 30,'Workflow stopped because of quota(s): ' + 
-                            check_list.join(', ') + ', login ' + 
-                            ownerLoginData.login );
-        }
-  
-      });
-
-    }
-
-  }
-
-}
-*/
 
 // ===========================================================================
 
