@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.12.22   <--  Date of Last Modification.
+ *    05.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Configuration Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -286,7 +286,7 @@ ServerConfig.prototype.checkNCStatus = function ( callback_func )  {
       callback_func ( error,response,body,this );
     });
   } else  {
-    callback_func ( 'not-in-use',response,body,this );
+    callback_func ( 'not-in-use',null,'',this );
   }
 
 }
@@ -1042,6 +1042,7 @@ var response = null;  // must become a cmd.Response object to return
   callback_func ( response );
 }
 
+
 function getFEProxyInfo ( inData,callback_func )  {
 var response = null;  // must become a cmd.Response object to return
   if (fe_server)  {
@@ -1056,6 +1057,86 @@ var response = null;  // must become a cmd.Response object to return
     response = new cmd.Response ( cmd.fe_retcode.unconfigured,'','' );
   }
   callback_func ( response );
+}
+
+
+function getAppStatus ( callback_func )  {
+var status  = [];
+var msg     = cmd.appName() + ' status: HEALTHY\n';
+var nNCs    = 0;
+var nNCDead = 0;
+
+  function __trim_name ( name )  {
+    if (name)  {
+      var nm = com_utils.padStringRight ( name,' ',15 );
+      if (nm.length>15) 
+        nm = nm.slice(0,15);
+      return nm;
+    } else
+      return com_utils.padStringRight ( ' ',' ',15 );
+  }
+
+  function __check_nc_server ( server_no )  {
+    if (server_no>=nc_servers.length)  {
+      if (nNCDead>0)
+        status.push ( 'NCDEAD');
+      if (status.length>0)
+        msg = msg.replace ( 'HEALTHY',status.join(',') );
+      callback_func ( msg );
+    } else if (nc_servers[server_no] && nc_servers[server_no].in_use)  {
+      nNCs++;
+      nc_servers[server_no].checkNCStatus ( function(error,response,body,config){
+        var servName = '\nNC' + com_utils.padStringLeft ( '' + server_no,'0',2 ) +
+            ' ' + __trim_name(nc_servers[server_no].name);
+        if ((error=='not-in-use') && (nc_counter>0))  {
+          nNCDead++;
+          msg += servName + '    misconfigured/not-in-use';
+        } else if ((!error) && (response.statusCode==200))  {
+
+          var codeVersion = response.body.version;
+          var startDate   = response.body.data.config.startDate;
+          var ccp4Version = response.body.data.ccp4_version;
+  
+          msg += servName + '    active   \"' + codeVersion + '\"   ' + ccp4Version + 
+                 '      \"' + startDate + '\"';
+          // msg += '\n\n' + JSON.stringify(response,null,2);
+        } else  {
+          nNCDead++;
+          msg += servName + '    dead';
+        }
+        __check_nc_server ( server_no+1 );
+      }); 
+    } else  {
+      __check_nc_server ( server_no+1 );
+    }
+  }
+
+  msg += '\nSERVER                  STATUS      CODE VERSION         CCP4 VERS.            START DATE' +
+         '\n------------------------------------------------------------------------------------------------------';
+
+  if (!fe_server)  {
+    status.push ( 'FEUNCONF' );
+    msg += '\nFE       unconfigured';
+  } else  {
+    msg += '\nFE     ' + __trim_name(fe_server.name) + '  ' + fe_server.state + '   \"' + cmd.appVersion() + '\"   ' +
+            CCP4Version() + '      \"' + fe_server.startDate + '\"';
+    if (fe_server.state!='active')
+      status.push ( 'FEINACT' );
+  }
+
+  if (!nc_servers)  {
+
+    status.push ( 'NCUNCONF' );
+    msg += '\n\n +++ NC servers:   unconfigured';
+    callback_func ( msg.replace ( 'HEALTHY',status.join(',') ) );
+
+  } else  {
+
+    // 'NC server #00:    active  "1.7.010 [03.02.2023]"     8.0.009      Sun, 05 Feb 2023 05:01:13 GMT'
+    __check_nc_server ( 0 );
+
+  }
+
 }
 
 
@@ -1268,6 +1349,7 @@ module.exports.isLocalSetup       = isLocalSetup;
 module.exports.isArchive          = isArchive;
 module.exports.getClientInfo      = getClientInfo;
 module.exports.getFEProxyInfo     = getFEProxyInfo;
+module.exports.getAppStatus       = getAppStatus;
 module.exports.getRegMode         = getRegMode;
 module.exports.isLocalFE          = isLocalFE;
 module.exports.getSetupID         = getSetupID;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.22   <--  Date of Last Modification.
+ *    05.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -215,6 +215,12 @@ function start ( callback_func )  {
                         cmd.appName() + ' FE ' + cmd.appVersion() +
                         ' CCP4-' + conf.CCP4Version() + ' ' + feConfig.state,
                         'text/plain' );
+          break;
+
+        case cmd.fe_command.status :
+            conf.getAppStatus ( function(msg){
+              cmd.sendResponseMessage ( server_response,msg,'text/plain' );
+            });
           break;
 
         case cmd.fe_command.authResponse :
