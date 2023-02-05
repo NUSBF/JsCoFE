@@ -1118,8 +1118,9 @@ var nNCDead = 0;
     status.push ( 'FEUNCONF' );
     msg += '\nFE       unconfigured';
   } else  {
-    msg += '\nFE     ' + __trim_name(fe_server.name) + '  ' + fe_server.state + '   \"' + cmd.appVersion() + '\"   ' +
-            CCP4Version() + '      \"' + fe_server.startDate + '\"';
+    msg += '\nFE   ' + __trim_name(fe_server.description.name) + '    ' + fe_server.state +
+           '   \"' + cmd.appVersion() + '\"   ' + CCP4Version() + '      \"' + 
+           fe_server.startDate + '\"';
     if (fe_server.state!='active')
       status.push ( 'FEINACT' );
   }
