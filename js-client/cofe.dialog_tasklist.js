@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.23   <--  Date of Last Modification.
+ *    06.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -628,6 +628,7 @@ var row      = 0;
       new TaskPDBREDO      (),
       new TaskPhaserRB     (),
       new TaskPaiRef       (),
+      new TaskWebCoot      (),
       // new TaskFindMySequence(),
       new TaskJLigand      (),
       new TaskFragon       (),

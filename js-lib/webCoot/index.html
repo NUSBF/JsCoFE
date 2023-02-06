@@ -1,0 +1,42 @@
+<!doctype html><html lang="en" class="scroller">
+  <head><meta charset="utf-8"/><link rel="icon" href="./favicon.ico"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1"/>
+        <meta name="theme-color" content="#000000"/>
+        <meta name="description" content="Web site created using create-react-app"/>
+        <link rel="apple-touch-icon" href="./public/logo192.png"/>
+        <link rel="manifest" href="./manifest.json"/>
+        <script>// See https://github.com/facebook/react/issues/20829#issuecomment-802088260
+    if (!crossOriginIsolated) SharedArrayBuffer = ArrayBuffer;</script><script>window.onload = () => {
+      createCCP4Module({
+        print(t) { console.log(["output", t]) },
+        printErr(t) { console.log(["output", t]); }
+      })
+        .then(function (CCP4Mod) {
+          window.CCP4Module = CCP4Mod;
+        })
+        .catch((e) => {
+          console.log("CCP4 problem :(");
+          console.log(e);
+        });
+    }</script><script src="./baby-gru/wasm/web_example.js"></script><script>window.moorhenInput = {
+        rootId: "root",
+        urlPrefix: ".",
+        inputFiles: [
+          {type: 'pdb', args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule"]},
+          {type: 'mtz', args: [
+            "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "map", 
+            {F: "FWT", PHI: "PHWT", Fobs: 'F', SigFobs: 'SIGF', FreeR: 'FREER', isDifference: false, useWeight: false, calcStructFact: true}
+          ]},
+          {type: 'mtz', args: [
+            "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", 'diff-map',
+            {F: "DELFWT", PHI: "PHDELWT", isDifference: true, useWeight: false, calcStructFact: false}
+          ]}
+        ]
+      }</script>
+      <title>Moorhen</title>
+      <link rel="icon" href="./favicon.ico">
+      <script defer="defer" src="./main.js"></script>
+      <link href="./maindd0ddc75c24601355a61.css" rel="stylesheet">
+    </head><body><noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div></body>
+</html>
