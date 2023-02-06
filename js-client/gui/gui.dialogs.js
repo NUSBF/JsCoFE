@@ -761,7 +761,7 @@ WebAppBox.prototype.launch = function() {
     window.setTimeout ( function(){
       $(self.element).dialog("destroy");
       if (self.element.parentNode)
-        self.element.parentNode.removeChild(self.element);
+        self.element.parentNode.removeChild ( self.element );
     },10);
   });
 
