@@ -29,7 +29,7 @@ def prepareMRmodelCOORD(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Coordinate data')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare Single-Chain MR Model(s) from Coordinate data')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -45,7 +45,7 @@ def prepareMRmodelCOORD(driver, waitShort):
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
     except:
-        print('Apparently tha task prepareMRmodelCOORD has not been completed in time; terminating')
+        print('Apparently the task Prepare Single-Chain MR Model(s) from Coordinate data has not been completed in time; terminating')
         sys.exit(1)
 
     time.sleep(10)
