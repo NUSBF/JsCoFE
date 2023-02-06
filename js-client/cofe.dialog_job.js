@@ -881,14 +881,17 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                             dlg.radioSet.selectButton ( 'output' );
                             onRun_func ( dlg );
                             dlg.enableCloseButton ( true );
-                            // window.setTimeout ( function(){
-                            //   dlg.close_btn.setDisabled ( false );
-                            //   if (dlg.task.autoRunId)
-                            //     dlg.close_btn.click();
-                            // },1000);
                           }
                           return true;
                         });
+
+                    } else if (dlg.task.nc_type == 'browser')  {
+
+                      dlg.task.launchWebApp();
+                      dlg.loadReport();
+                      dlg.radioSet.selectButton ( 'output' );
+                      onRun_func ( dlg );
+                      dlg.enableCloseButton ( true );
 
                     } else  {
                       dlg.task.postSubmit();
@@ -896,11 +899,6 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       dlg.radioSet.selectButton ( 'output' );
                       onRun_func ( dlg );
                       dlg.enableCloseButton ( true );
-                      // window.setTimeout ( function(){
-                      //   dlg.close_btn.setDisabled ( false );
-                      //   if (dlg.task.autoRunId)
-                      //     dlg.close_btn.click();
-                      // },1000);
                     }
                   });
 

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.02.23   <--  Date of Last Modification.
+ *    06.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -619,6 +619,35 @@ function runJob ( loginData,data, callback_func )  {
 
     // NOTE: we do not count client jobs against user rations (quotas)
 
+  } else if (task.nc_type=='browser')  {
+    // job for a web-application in browser, just prepare input data and inform client
+  
+    log.standard ( 5,'preparing job ' + task.id + ' for web-browser, token:' +
+                      job_token );
+  
+    // utils.writeJobReportMessage ( jobDir,'<h1>Preparing ...</h1>',true );
+  
+    // prepare input data
+    task.makeInputData ( loginData,jobDir );
+
+    utils.writeJobReportMessage ( jobDir,'<h1>Running as web-app in browser ...</h1>' +
+      'Job is running as web-application on client machine. Full report will ' +
+      'become available after job finishes.',true );
+
+    feJobRegister.addJob ( job_token,-1,ownerLoginData,  // -1 is nc number
+                           task.project,task.id,shared_logins,
+                           null );  // no notifications for client jobs
+    feJobRegister.getJobEntryByToken(job_token).nc_type = task.nc_type;
+    writeFEJobRegister();
+
+    rdata.job_token   = job_token;
+    rdata.jobballName = send_dir.jobballName;
+
+    callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',rdata ) );
+    log.standard ( 12, 'prepared data for web-app, dir=' + jobDir );
+
+    // NOTE: we do not count in-browser (web-app) jobs against user rations (quotas)
+  
   } else  {
     // job for ordinary NC, pack and send all job directory to number cruncher
 
@@ -703,7 +732,7 @@ function replayJob ( loginData,data, callback_func )  {
           rdata.job_token   = job_token;
           rdata.jobballName = send_dir.jobballName;
           callback_func ( new cmd.Response(cmd.fe_retcode.ok,{},rdata) );
-          log.standard ( 12,'created jobball for client, dir=' + jobDir + ', size=' + jobballSize );
+          log.standard ( 13,'created jobball for client, dir=' + jobDir + ', size=' + jobballSize );
 
         } else  {
           callback_func ( new cmd.Response(cmd.fe_retcode.jobballError,
@@ -1637,7 +1666,7 @@ function cloudRun ( server_request,server_response )  {
                           // Run the job
                           var job_token = crypto.randomBytes(20).toString('hex');
                           log.standard ( 6,'cloudrun job ' + task.id + ' formed, login:' +
-                                          loginData.login + ', token:' + job_token );
+                                           loginData.login + ', token:' + job_token );
                           _run_job ( loginData,task,job_token,loginData,[],
                                     function(jtoken){
                             var jobEntry = feJobRegister.getJobEntryByToken ( jtoken );
@@ -1710,250 +1739,6 @@ function cloudRun ( server_request,server_response )  {
 
 }
 
-
-/*
-function cloudRun ( server_request,server_response )  {
-// This function receives data from js-utils/cloudrun.js script, and runs the
-// requested job. New project is created if necessary.
-
-  // 1. Receive data and metadata
-
-  var tmpDir    = conf.getTmpFile();
-  var tmpJobDir = conf.getTmpFile();
-
-  if ((!utils.mkDir(tmpDir)) || (!utils.mkDir(tmpJobDir)))  {
-    log.error ( 16,'cannot make temporary directory for cloud run' );
-    utils.removePath ( tmpDir    );
-    utils.removePath ( tmpJobDir );
-    cmd.sendResponse ( server_response, cmd.fe_retcode.mkDirError,
-                      'cannot make temporary directory to receive files','' );
-    return;
-  }
-
-  send_dir.receiveDir ( tmpJobDir,tmpDir,server_request,
-    function(code,errs,meta){
-
-      var response = null;
-      var message  = '';
-
-      // remove temporary directory
-      utils.removePath ( tmpDir );
-
-      if (code)  {
-        // upload errors, directory with data was not received
-        log.error ( 11,'receive directory errors: code=' + code + '; desc=' + errs );
-        response = new cmd.Response ( cmd.fe_retcode.uploadErrors,
-                                      'errors: code='+code+'; desc='+errs,{} );
-      } else  {
-
-        // directory with data in 'uploads' subdirectory received safely
-        //   meta.user        - user login
-        //   meta.cloudrun_id - user login
-        //   meta.project     - project Id
-        //   meta.title       - project title (for new projects)
-        //   meta.task        - task code
-
-        // 2. Check that user exists and make loginData structure
-
-        var localSetup = conf.isLocalSetup();
-        if (localSetup)
-          meta.user = ud.__local_user_id;
-        var loginData = { login : meta.user, volume : null };
-
-        var uData = user.readUserData ( loginData );
-        if (!uData)  {
-
-          log.standard ( 60,'cloudrun request for unknown user (' + meta.user +
-                            ') -- ignored' );
-          response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'unknown user',{} );
-
-        } else if ((!localSetup) && (uData.cloudrun_id!=meta.cloudrun_id))  {
-
-          log.standard ( 61,'cloudrun request with wrong cloudrun_id (user ' +
-                            meta.user + ') -- ignored' );
-          response = new cmd.Response ( cmd.fe_retcode.wrongLogin,'wrong CloudRun Id',{} );
-
-        } else  {
-
-          loginData.volume = uData.volume;
-
-          user.topupUserRation ( loginData,function(rdata){
-
-            var check_list = ration.checkUserRation ( loginData,true );
-            if (check_list.length>0)  {
-
-              log.standard ( 62,'cloudrun rejected for user (' + meta.user + '): ' +
-                                check_list.join(', ') );
-              response = new cmd.Response ( cmd.fe_retcode.errors,
-                'cloudrun rejected: ' + check_list.join(', ') + ' quota is up',{} );
-
-            } else  {
-
-              // 3. Check project Id and make new project if necessary
-
-              var pData = prj.readProjectData ( loginData,meta.project );
-              if (!pData)  {
-                var pDesc = new pd.ProjectDesc();
-                pDesc.init ( meta.project,meta.title,pd.start_mode.standard,
-                            com_utils.getDateString() );
-                response = prj.makeNewProject ( loginData,pDesc );
-                if (response.status==cmd.fe_retcode.ok)  {
-                  pData = prj.readProjectData ( loginData,meta.project );
-                  if (!pData)  {
-                    log.error ( 12,'error creating new project for cloudRun: login ' +
-                                  loginData.login );
-                    response = new cmd.Response ( cmd.fe_retcode.noProjectData,
-                                                  'error creating new project',{} );
-                  } else  {
-                    message = 'project "' + meta.project + '" created, ';
-                    pData.tree.push({
-                      id          : 'treenode_06062',  // can be any
-                      parentId    : null,
-                      folderId    : null,
-                      fchildren   : [],
-                      text        : '<b>[' + meta.project + ']</b> <i>' + meta.title + '</i>',
-                      text0       : '',
-                      highlightId : 0,
-                      icon        : cmd.image_path('project'),
-                      data : {
-                        customIcon : cmd.activityIcon(),
-                        ci_width   : '22px',
-                        ci_height  : '22px',
-                        ci_state   : 'hidden'
-                      },
-                      state : {
-                        opened     : true,
-                        disabled   : false,
-                        selected   : false
-                      },
-                      children : [],
-                      li_attr  : {},
-                      a_attr   : {},
-                      dataId   : ''
-                    });
-                  }
-                }
-              }
-
-              if (pData)  {
-                // console.log ( meta );
-
-                pData.desc.jobCount++;
-                prj.writeProjectData ( loginData,pData,true );  // fix job count quickly
-
-                // 4. The project is either created or retrieved. Prepare task and run it
-
-                var task = utils.readClass ( path.join(tmpJobDir,task_t.jobDataFName) );
-                if (!task)  {
-                  log.error ( 13,'error reading task meta in cloudRun: login ' +
-                                 loginData.login + ', project ' + meta.project );
-                  response = new cmd.Response ( cmd.fe_retcode.noProjectData,
-                                                'error creating new project',{} );
-                } else  {
-
-                  // 5. Prepare task object
-
-                  task.project    = meta.project;
-                  task.id         = pData.desc.jobCount;
-                  task.submitter  = loginData.login;
-                  task.start_time = Date.now();
-                  task.state      = task_t.job_code.running;
-                  task.job_dialog_data.panel = 'output';
-
-                  var jobDirPath = prj.getJobDirPath ( loginData,meta.project,task.id );
-                  utils.moveDir ( tmpJobDir,jobDirPath,true );
-                  tmpJobDir = null;  // essential
-
-                  var jobDataPath = prj.getJobDataPath ( loginData,meta.project,task.id );
-
-                  if (!utils.writeObject(jobDataPath,task))  {
-                    log.error ( 14,'cannot write job metadata at ' + jobDataPath );
-                    utils.removePath ( jobDirPath );
-                  } else  {
-
-                    // 6. Shape job getDirectory
-
-                    // create report directory
-                    utils.mkDir_anchor ( prj.getJobReportDirPath(loginData,meta.project,task.id) );
-                    // create input directory (used only for sending data to NC)
-                    utils.mkDir_anchor ( prj.getJobInputDirPath(loginData,meta.project,task.id) );
-                    // create output directory (used for hosting output data)
-                    utils.mkDir_anchor ( prj.getJobOutputDirPath(loginData,meta.project,task.id) );
-                    // write out the self-updating html starting page, which will last
-                    // only until it gets replaced by real report's bootstrap
-                    utils.writeJobReportMessage ( jobDirPath,'<h1>Idle</h1>',true );
-
-                    // 7. Make project tree node
-
-                    var pnode = pData.tree[0];
-                    var pnode_json = JSON.stringify ( pnode );
-
-                    var cnode = JSON.parse ( pnode_json );
-                    cnode.id       = pnode.id + '_' + crypto.randomBytes(20).toString('hex'); //key;
-                    cnode.parentId = pnode.id;
-                    cnode.dataId   = task.id;
-                    cnode.icon     = cmd.image_path ( task.icon() );
-
-                    // cnode.text     = '[' + com_utils.padDigits(task.id,4) + '] ' + task.name;
-                    cnode.text     = prj.makeNodeName ( task,task.name );
-                    cnode.text0    = cnode.text;
-                    cnode.children = [];
-                    pnode.children.push ( cnode );
-
-                    prj.writeProjectData ( loginData,pData,true );
-
-                    // Run the job
-                    var job_token = crypto.randomBytes(20).toString('hex');
-                    log.standard ( 6,'cloudrun job ' + task.id + ' formed, login:' +
-                                    loginData.login + ', token:' + job_token );
-                    _run_job ( loginData,task,job_token,loginData,[],
-                              function(jtoken){
-                      var jobEntry = feJobRegister.getJobEntryByToken ( jtoken );
-                      if (jobEntry)  {
-                        jobEntry.cloudrun = true;
-                        // we do not save job register here, which is a small sin
-                        // (may lead only to miscalculation of cloudrun quota for)
-                        // the user), but one disk write less :)
-                      }
-                    });
-
-                    response = new cmd.Response ( cmd.fe_retcode.ok,
-                      message + 'files uploaded, ' + meta.task + ' started',{} );
-
-                    if (meta.load_project.toLowerCase()=='yes')
-                         user.signalUser ( loginData.login,'cloudrun_switch_to_project:'   + meta.project );
-                    else user.signalUser ( loginData.login,'cloudrun_reload_project_list:' + meta.project );
-
-                  }
-
-                }
-
-              }
-
-            }
-
-          });
-
-        }
-
-      }
-
-      // remove uploaded job directory if it was not used
-      if (tmpJobDir)
-        utils.removePath ( tmpJobDir );
-
-      // send response to sender
-
-      if (!response)
-        response = new cmd.Response ( cmd.fe_retcode.errors,
-                           'cloudRun task could not be formed or started',{} );
-
-      response.send ( server_response );
-
-    });
-
-}
-*/
 
 // ==========================================================================
 // export for use in node

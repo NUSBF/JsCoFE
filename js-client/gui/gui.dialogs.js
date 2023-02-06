@@ -68,35 +68,6 @@ Dialog.prototype.launch = function()  {
 }
 
 
-// -------------------------------------------------------------------------
-// MessageBox classes
-
-// function MessageBox ( title,message )  {
-// // plain message box
-//
-//   Widget.call ( this,'div' );
-//   this.element.setAttribute ( 'title',title );
-//   this.element.innerHTML = message;
-//   document.body.appendChild ( this.element );
-//
-//   $(this.element).dialog({
-//     resizable : false,
-//     height    : 'auto',
-//     width     : 'auto',
-//     modal     : true,
-//     buttons   : {
-//       "Ok": function() {
-//         $( this ).dialog( "close" );
-//       }
-//     }
-//   });
-//
-// }
-//
-// MessageBox.prototype = Object.create ( Widget.prototype );
-// MessageBox.prototype.constructor = MessageBox;
-
-
 // -------------------------------------------
 
 function MessageBox ( title,message,icon_name='' )  {
@@ -594,59 +565,6 @@ function QuestionBox ( title,message,buttons,icon_name='' )  {
 
 }
 
-/*
-function QuestionBox ( title,message,btn1_name,onButton1_func,
-                                     btn2_name,onButton2_func,
-                                     icon_name='' )  {
-
-  Widget.call ( this,'div' );
-  this.element.setAttribute ( 'title',title );
-  document.body.appendChild ( this.element );
-
-  if (icon_name)  {
-    var grid = new Grid ( '' );
-    this.addWidget   ( grid );
-    grid.setLabel    ( ' ',0,0,1,1 );
-    grid.setCellSize ( '','6px', 0,0 );
-    grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
-    grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
-    grid.setLabel    ( message,0,2,2,1 );
-    grid.setVerticalAlignment ( 0,2,'middle' );
-  } else
-    this.element.innerHTML = message;
-
-  this.options = {
-    resizable     : false,
-    height        : 'auto',
-    width         : 'auto',
-    modal         : true,
-    closeOnEscape : false,
-    open          : function(event, ui) {
-                      //hide close button.
-                      $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
-                    },
-    buttons       : {}
-  };
-
-  this.options.buttons[btn1_name] = function() {
-    $( this ).dialog( "close" );
-    if (onButton1_func)
-      window.setTimeout ( onButton1_func,0);
-  }
-
-  if (btn2_name)
-    this.options.buttons[btn2_name] = function() {
-      $( this ).dialog( "close" );
-      if (onButton2_func)
-        window.setTimeout ( onButton2_func,0);
-    }
-
-  $(this.element).dialog ( this.options );
-
-}
-*/
-
-
 QuestionBox.prototype = Object.create ( Widget.prototype );
 QuestionBox.prototype.constructor = QuestionBox;
 
@@ -705,5 +623,150 @@ InputBox.prototype.launch = function ( name_btn,add_func )  {
   }
 
   $(this.element).dialog ( this.options );
+
+}
+
+
+// -------------------------------------------------------------------------
+// WebAppBox class
+
+
+function _calc_viewer_size ( widthF,heightF )  {
+  //var jq = window.parent.$;
+  //var w  = jq(window.parent).width () - 40;
+  //var h  = jq(window.parent).height() - 64;
+
+  var w0 = window.parent.innerWidth;
+  var h0 = window.parent.innerHeight;
+  var w = w0 - 40;
+  var h = h0 - 56;
+
+  if (!window.parent.__any_mobile_device) {
+    h -= 8;
+    if ((typeof window.parent.__touch_device === 'undefined') ||
+      (!window.parent.__touch_device)) {
+      if (widthF > 0.0) w = widthF * Math.min(w0, h);
+      if (heightF > 0.0) h = heightF * Math.min(w0, h);
+    }
+  }
+
+  return [w, h];
+
+}
+
+
+function WebAppBox ( title )  {
+
+  // var doc = window.parent.document;
+  // $ = window.parent.$;
+
+  // if (!$) {
+  //   // doc = window.document;
+  //   $ = window.$;
+  // }
+
+  Widget.call ( this,'div' );
+  this.element.setAttribute ( 'title',title );
+  document.body.appendChild ( this.element  );
+
+  $(this.element).css({
+    'box-shadow': '8px 8px 16px 16px rgba(0,0,0,0.2)',
+    'overflow'  : 'hidden'
+  });
+
+  this.iframe = new IFrame ( '' );
+  $(this.iframe.element).css({
+    'border'  : 'none',
+    'overflow': 'hidden'
+  });
+
+  this.addWidget ( this.iframe );
+
+  var size;
+  if (window.parent.__any_mobile_device)
+       size = _calc_viewer_size ( 1.0, 1.0 );
+  else if (window.parent.__user_settings && window.parent.__user_settings.viewers_size)
+       size = _calc_viewer_size ( window.parent.__user_settings.viewers_size[0],
+                                  window.parent.__user_settings.viewers_size[1] );
+  else size = _calc_viewer_size ( 1.25, 0.85 );
+
+  $(this.iframe.element).width  ( size[0] );
+  $(this.iframe.element).height ( size[1] );
+
+  this.iframe.setSize_px ( size[0],size[1] );
+
+  //dialog.style.fontSize = '16px';
+
+  var self = this;
+
+  this.options = {
+    resizable     : true,
+    height        : 'auto',
+    width         : 'auto',
+    modal         : false,
+    title         : title,
+    effect        : 'fade',
+    headerVisible : false,
+    create        : function() { self.iframe.getDocument().focus(); },
+    focus         : function() { self.iframe.getDocument().focus(); },
+    open          : function() { self.iframe.getDocument().focus(); },
+    dragStop      : function() { self.iframe.getDocument().focus(); },
+    resizeStop    : function() { self.iframe.getDocument().focus(); },
+    buttons       : {}
+  };
+
+  if (window.parent.__any_mobile_device) {
+    this.options.position = {
+      my: 'left top',   // job dialog position reference
+      at: 'left top'
+    }; // job dialog offset in the screen
+    this.options.resizable = false;
+    this.options.modal     = true;
+  }
+
+  // var dlg = jq(dialog).dialog(this.options);
+  // //if (window.parent.__mobile_device)
+  // //  dlg.siblings('.ui-dialog-titlebar').remove();
+
+  // function encode_uri(uri) {
+  //   if (uri) return encodeURI(uri);
+  //   return uri;
+  // }
+
+  // var html = makeUglyMolHtml(encode_uri(xyz_uri), encode_uri(mtz_uri),
+  //   encode_uri(map_uri), encode_uri(diffmap_uri),
+  //   mapLabels);
+  // iframe.contentWindow.document.write(html);
+  // iframe.contentWindow.document.close();
+
+
+}
+
+WebAppBox.prototype = Object.create(Widget.prototype);
+WebAppBox.prototype.constructor = WebAppBox;
+
+WebAppBox.prototype.launch = function() {
+
+  $(this.element).dialog ( this.options );
+
+  var self = this;
+
+  $(this.element).on('dialogresize', function(event,ui){
+    var w = $(self.element).width();
+    var h = $(self.element).height();
+    self.iframe.setSize_px ( w,h );
+  });
+
+  $(this.element).on("dialogclose", function(event,ui){
+    window.setTimeout ( function(){
+      $(self.element).dialog("destroy");
+      if (self.element.parentNode)
+        self.element.parentNode.removeChild(self.element);
+    },10);
+  });
+
+  $(this.element).click ( function(){
+    self.iframe.getDocument().focus();
+  });
 
 }
