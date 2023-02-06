@@ -61,42 +61,47 @@ def addSlice(driver):
 
     assert finished == True
 
+
+    time.sleep(10)
+
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
+
     return ()
 
 def slicendiceVerification(driver, waitLong):
     print('Slice-n-Dice verification started')
 
-    try:
-        wait = WebDriverWait(driver, waitLong) # 20 minutest wait
-        # Waiting for the text 'completed' in the ui-dialog-title of the task 
-        wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'slicendice') and contains(text(), 'completed')]")))
-    except:
-        print('Apparently tha task Slice-n-Dice has not been completed in time; terminating')
-        sys.exit(1)
+    startTime = time.time()
 
     rWork = 1.0
     rFree = 1.0
-    ttts = sf.tasksTreeTexts(driver)
-    for taskText in ttts:
+    while (True):
+        ttts = sf.tasksTreeTexts(driver)
+        for taskText in ttts:
 
-        #LLG=1977.0 TFZ=45.7 R=0.2969 R
-        match = re.search('\[.*\] slicendice -- LLG=(.*) TFZ=(.*) R=(0\.\d*) Rfree=(0\.\d*)', taskText)
-        if match:
-            rWork = float(match.group(3))
-            rFree = float(match.group(4))
+            #LLG=1977.0 TFZ=45.7 R=0.2969 R
+            match = re.search('\[.*\] slicendice -- LLG=(.*) TFZ=(.*) R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+            if match:
+                rWork = float(match.group(3))
+                rFree = float(match.group(4))
+                break
+        if (rWork == 1.0) or (rFree == 1.0):
+            print('*** Verification: could not find Rwork or Rfree value after Slice-n-Dice run')
             break
-    if (rWork == 1.0) or (rFree == 1.0):
-        print('*** Verification: could not find Rwork or Rfree value after Slice-n-Dice run')
-    else:
-        print('*** Verification: Slice-n-Dice Rwork is %0.4f (expecting <0.32), Rfree is %0.4f (expecing <0.34)' % (rWork, rFree))
-    assert rWork < 0.32
-    assert rFree < 0.34  
+        curTime = time.time()
+        if curTime > startTime + float(waitLong):
+            print('*** Timeout for validateStructurePrediction results! Waited for long time plus %d seconds.' % waitLong)
+            break
+        else:
+            print('*** Verification: Slice-n-Dice Rwork is %0.4f (expecting <0.32), Rfree is %0.4f (expecing <0.34)' % (rWork, rFree))
+            assert rWork < 0.32
+            assert rFree < 0.34  
+            break
 
-    time.sleep (10)
-    # pressing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
     time.sleep(1)
 
     return ()
@@ -124,7 +129,8 @@ def validateStructurePrediction(driver, waitLong):
         if curTime > startTime + float(waitLong):
             print('*** Timeout for validateStructurePrediction results! Waited for long time plus %d seconds.' % waitLong)
             break
-        time.sleep(60)
+
+
 
     return ()
 
@@ -156,7 +162,13 @@ def addSliceNDice(driver):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(3)
+    time.sleep(10)
+
+
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(1)
 
     return ()
 

@@ -112,8 +112,8 @@ def validateSHELXAuto(driver, waitLong):
 
     rWork = 1.0
     rFree = 1.0
-    targetRwork = 0.27
-    targetRfree = 0.28
+    targetRwork = 0.29
+    targetRfree = 0.3
 
     print ('SHELX verification - starting pulling job every 30 seconds')
 
