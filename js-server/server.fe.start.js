@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.02.23   <--  Date of Last Modification.
+ *    07.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,20 +27,20 @@ const path    = require('path');
 const request = require('request');
 
 //  load application modules
-const conf  = require('./server.configuration');
-const pp    = require('./server.process_post');
-const anl   = require('./server.fe.analytics');
-const user  = require('./server.fe.user');
+const conf    = require('./server.configuration');
+const pp      = require('./server.process_post');
+const anl     = require('./server.fe.analytics');
+const user    = require('./server.fe.user');
 // const fcl   = require('./server.fe.facilities');
-const rj    = require('./server.fe.run_job');
-const comm  = require('./server.fe.communicate');
-const rh    = require('./server.fe.request_handler');
-const uh    = require('./server.fe.upload_handler');
-const utils = require('./server.utils');
-const cmd   = require('../js-common/common.commands');
+const rj      = require('./server.fe.run_job');
+const comm    = require('./server.fe.communicate');
+const rh      = require('./server.fe.request_handler');
+const uh      = require('./server.fe.upload_handler');
+const utils   = require('./server.utils');
+const cmd     = require('../js-common/common.commands');
 
 //  prepare log
-const log = require('./server.log').newLog(0);
+const log     = require('./server.log').newLog(0);
 
 // ==========================================================================
 
@@ -127,6 +127,9 @@ function start ( callback_func )  {
 
   //  set up request listener
   server.on ( 'request', function(server_request,server_response)  {
+
+    server_response.setHeader ( 'Cross-Origin-Opener-Policy'  ,'same-origin'  );
+    server_response.setHeader ( 'Cross-Origin-Embedder-Policy','require-corp' );
 
     try {
 
