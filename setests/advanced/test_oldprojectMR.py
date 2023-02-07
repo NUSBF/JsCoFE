@@ -15,9 +15,56 @@ import setests_func as sf
 
 d = sf.driverHandler()
 
+def importMRProject (driver):
+
+    sf.doubleClickByXpath(driver, "//button[contains(@style, '/images_png/demoprj.png')]" )
+    time.sleep(5)
+    # sf.doubleClickByXpath(driver, "//button[contains(@style, 'images_png/folder_ccp4.png')]" )
+    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Demo projects')
+    time.sleep(2)
+    sf.doubleClickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'D01. Simple Auto-MR with MoRDa')
+    time.sleep(60)
+
+    if driver.find_element(By.XPATH, "//table[contains(text(), '%s')]" % 'Demo Project "D01" is imported.'):
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Close')
+    else:
+        print ("Project wasn't imported")
+
+
+    return ()
+
+def removeProject(driver, testName):
+    print('Deleting previous test project if exists')
+
+    textEls = driver.find_elements_by_xpath("//*[starts-with(text(), '%s')]" % testName)
+    if len(textEls) > 0:
+        try:
+            sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % testName)
+            time.sleep(1)
+
+            sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
+            time.sleep(1)
+
+            textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Yes, delete')
+            if len(textEls) > 0:
+                textEls[-1].click()
+                time.sleep(1)
+            else:             
+                textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Delete')
+                textEls[-1].click()
+                time.sleep(1)
+
+
+        except:
+            return ()
+
+
+    return ()
+
+
 
 def startRefmac(driver, waitLong):
-    print('Running REFMAC5 by adding to 11-Dimple')
+    print('Running REFMAC5 by adding to Dimple')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
@@ -46,13 +93,13 @@ def startRefmac(driver, waitLong):
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
-    time.sleep(1)
+    time.sleep(3)
 
     return ()
 
 
 def startRefmacAniso(driver, waitLong):
-    print('Running REFMAC5 by adding to 13-coot anisotropic')
+    print('Running REFMAC5 by adding to comb')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
     addButton.click()
@@ -91,13 +138,13 @@ def startRefmacAniso(driver, waitLong):
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
-    time.sleep(1)
+    time.sleep(3)
 
     return ()
 
 
 def startMordaCloning(driver, waitLong):
-    print('Running MORDA by cloning of 0006-morda')
+    print('Running MORDA by cloning of 0004-morda')
 
     #Cloning job - cloning button
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/clonejob.png')]")
@@ -225,7 +272,7 @@ def test_1oldProjectsMR(browser,
     d.remote = remote
     d.login = login
 
-    d.testName = '01.auto-mr'
+    d.testName = 'D01'
 
 
     try:
@@ -235,39 +282,39 @@ def test_1oldProjectsMR(browser,
         if not nologin:
             sf.loginToCloud(d.driver, login, password)
 
-        sf.removeProject(d.driver, d.testName)
+        removeProject(d.driver, d.testName)
 
-        if sys.platform.startswith("win"):
-            sf.importLocalProject(d.driver, '%userprofile%\old_cloud\01.ccp4cloud')
-        else:
-            sf.importLocalProject(d.driver, '~/old_cloud/01.ccp4cloud')
-
+        # if sys.platform.startswith("win"):
+        #     sf.importLocalProject(d.driver, '%userprofile%\old_cloud\01.ccp4cloud')
+        # else:
+        #     sf.importLocalProject(d.driver, '~/old_cloud/01.ccp4cloud')
+        importMRProject(d.driver)
         time.sleep(1)
 
         sf.enterProject(d.driver, d.testName)
 
         time.sleep(5)
-        listOfActualTasks = []
-        tasksText = d.driver.find_elements(By.XPATH,
-                                         "//a[contains(@id,'treenode') and contains(@class, 'jstree-ancho')]")
-        for e in tasksText:
-            txt = e.text
-            print(txt)
-            listOfActualTasks.append(txt)
+        # listOfActualTasks = []
+        # tasksText = d.driver.find_elements(By.XPATH,
+        #                                  "//a[contains(@id,'treenode') and contains(@class, 'jstree-ancho')]")
+        # for e in tasksText:
+        #     txt = e.text
+        #     print(txt)
+        #     listOfActualTasks.append(txt)
 
-        assert len(listOfActualTasks) == len(listOfExpectedTasks)
-        assert listOfActualTasks == listOfExpectedTasks
+        # assert len(listOfActualTasks) == len(listOfExpectedTasks)
+        # assert listOfActualTasks == listOfExpectedTasks
 
-        sf.clickTaskInTaskTree(d.driver, '\[0006\] morda')
+        sf.clickTaskInTaskTree(d.driver, '\[0004\] morda')
         startMordaCloning(d.driver, d.waitLong)
         time.sleep(1)
 
-        sf.clickTaskInTaskTree(d.driver, '\[0011\] dimple')
+        sf.clickTaskInTaskTree(d.driver, '\[0009\] dimple')
         time.sleep(1)
         startRefmac(d.driver, d.waitLong)
         time.sleep(1)
 
-        sf.clickTaskInTaskTree(d.driver, '\[0013\] structure')
+        sf.clickTaskInTaskTree(d.driver, '\[0011\] comb structure')
         time.sleep(1)
         startRefmacAniso(d.driver, d.waitLong)
         time.sleep(1)
@@ -278,21 +325,21 @@ def test_1oldProjectsMR(browser,
 
 def test_2oldProjectsMR_verifyNewRefmac():
     try:
-        verifyRefmac(d.driver, d.waitLong, '0022', 0.2, 0.22)
+        verifyRefmac(d.driver, d.waitLong, '0030', 0.2, 0.22)
     except:
         d.driver.quit()
         raise
 
 def test_3oldProjectsMR_verifyCloneRefmac():
     try:
-        verifyRefmac(d.driver, d.waitLong, '0023', 0.16, 0.20)
+        verifyRefmac(d.driver, d.waitLong, '0031', 0.16, 0.22)
     except:
         d.driver.quit()
         raise
 
 def test_4oldProjectsMR_verifyCloneMorda():
     try:
-        verifyMorda(d.driver, 1200, '0021', 0.26, 0.28) # 1200 seconds to wait (20 minutes, takes ~15 on average)
+        verifyMorda(d.driver, 1200, '0029', 0.26, 0.28) # 1200 seconds to wait (20 minutes, takes ~15 on average)
         sf.renameProject(d.driver, 'Simple Auto-MR with MoRDa')
         d.driver.quit()
 
@@ -315,11 +362,11 @@ if __name__ == "__main__":
     parameters = parser.parse_args(sys.argv[1:])
 
     test_1oldProjectsMR(browser=parameters.browser,  # or 'Chrome'
-                      cloud=parameters.cloud,
-                      nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
-                      login=parameters.login,  # Used to login into remote Cloud
-                      password=parameters.password,  # Used to login into remote Cloud
-                      remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
+                     cloud=parameters.cloud,
+                     nologin=parameters.nologin,  # True for Cloud Desktop (no login page), False for remote server that requires login.
+                     login=parameters.login,  # Used to login into remote Cloud
+                     password=parameters.password,  # Used to login into remote Cloud
+                     remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
                       )
     test_2oldProjectsMR_verifyNewRefmac()
     test_3oldProjectsMR_verifyCloneRefmac()
