@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    06.02.23   <--  Date of Last Modification.
+ *    07.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
 // var jsCoFE_version = '1.7.009 [23.12.2022]';
-var jsCoFE_version = '1.7.010 [06.02.2023]';
+var jsCoFE_version = '1.7.010 [07.02.2023]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -274,8 +274,6 @@ Response.prototype.send = function ( server_response )  {
   server_response.writeHead ( 200, {
     'Content-Type'                 : 'text/plain',
     'Access-Control-Allow-Origin'  : '*'
-    // 'Cross-Origin-Opener-Policy'   : 'same-origin',
-    // 'Cross-Origin-Embedder-Policy' : 'require-corp'
   });
   server_response.end ( JSON.stringify(this) );
 }
@@ -289,8 +287,6 @@ function sendResponseMessage ( server_response,message,mimeType )  {
   server_response.writeHead ( 200, {
     'Content-Type'                 : mimeType,
     'Access-Control-Allow-Origin'  : '*'
-    // 'Cross-Origin-Opener-Policy'   : 'same-origin',
-    // 'Cross-Origin-Embedder-Policy' : 'require-corp'
   });
   server_response.end ( message );
 }
