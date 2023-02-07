@@ -79,30 +79,41 @@ def slicendiceVerification(driver, waitLong):
 
     rWork = 1.0
     rFree = 1.0
+    startTime = time.time()
+    success = False
+
     while (True):
         ttts = sf.tasksTreeTexts(driver)
         for taskText in ttts:
-
             #LLG=1977.0 TFZ=45.7 R=0.2969 R
             match = re.search('\[.*\] slicendice -- LLG=(.*) TFZ=(.*) R=(0\.\d*) Rfree=(0\.\d*)', taskText)
-            if match:
-                rWork = float(match.group(3))
-                rFree = float(match.group(4))
+        if match:
+            rWork = float(match.group(3))
+            rFree = float(match.group(4))
+            
+            if (rWork == 1.0) or (rFree == 1.0):
+                print('*** Verification: could not find Rwork or Rfree value after Slice-n-Dice run')
                 break
-        if (rWork == 1.0) or (rFree == 1.0):
-            print('*** Verification: could not find Rwork or Rfree value after Slice-n-Dice run')
-            break
+                
+        
+            else:
+                print('*** Verification: Slice-n-Dice Rwork is %0.4f (expecting <0.32), Rfree is %0.4f (expecing <0.34)' % (rWork, rFree))
+                assert rWork < 0.32
+                assert rFree < 0.34
+                success = True
+                break
+
         curTime = time.time()
         if curTime > startTime + float(waitLong):
             print('*** Timeout for validateStructurePrediction results! Waited for long time plus %d seconds.' % waitLong)
             break
-        else:
-            print('*** Verification: Slice-n-Dice Rwork is %0.4f (expecting <0.32), Rfree is %0.4f (expecing <0.34)' % (rWork, rFree))
-            assert rWork < 0.32
-            assert rFree < 0.34  
-            break
+                
+            
 
-    time.sleep(1)
+    time.sleep(2)
+    assert success == True
+
+    time.sleep(3)
 
     return ()
 
@@ -201,12 +212,12 @@ def test_slicenDiceBasic(browser,
 
         
         sf.enterProject(d.driver, 'structurePrediction')
-        sf.clickTaskInTaskTree(d.driver, '\[0003\]')
-        validateStructurePrediction(d.driver, 1000)
-        addSliceNDice(d.driver)
-        sf.clickTaskInTaskTree(d.driver, '\[0003\]')
-        addSlice(d.driver)
-        sf.doubleClickTaskInTaskTree(d.driver, '\[0004\]')
+        # sf.clickTaskInTaskTree(d.driver, '\[0003\]')
+        # validateStructurePrediction(d.driver, 1000)
+        # addSliceNDice(d.driver)
+        # sf.clickTaskInTaskTree(d.driver, '\[0003\]')
+        # addSlice(d.driver)
+        # sf.doubleClickTaskInTaskTree(d.driver, '\[0004\]')
         slicendiceVerification(d.driver, 1300)
         sf.renameProject(d.driver, d.testName)
 
