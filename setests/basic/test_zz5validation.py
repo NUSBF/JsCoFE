@@ -212,12 +212,12 @@ def test_slicenDiceBasic(browser,
 
         
         sf.enterProject(d.driver, 'structurePrediction')
-        # sf.clickTaskInTaskTree(d.driver, '\[0003\]')
-        # validateStructurePrediction(d.driver, 1000)
-        # addSliceNDice(d.driver)
-        # sf.clickTaskInTaskTree(d.driver, '\[0003\]')
-        # addSlice(d.driver)
-        # sf.doubleClickTaskInTaskTree(d.driver, '\[0004\]')
+        sf.clickTaskInTaskTree(d.driver, '\[0003\]')
+        validateStructurePrediction(d.driver, 1000)
+        addSliceNDice(d.driver)
+        sf.clickTaskInTaskTree(d.driver, '\[0003\]')
+        addSlice(d.driver)
+        sf.doubleClickTaskInTaskTree(d.driver, '\[0004\]')
         slicendiceVerification(d.driver, 1300)
         sf.renameProject(d.driver, d.testName)
 
