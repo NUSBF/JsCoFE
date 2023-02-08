@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    13.01.23   <--  Date of Last Modification.
+ *    08.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1626,7 +1626,9 @@ IFrame.prototype.loadPage = function ( uri )  {
 }
 
 IFrame.prototype.setHTML = function ( html )  {
-  this.element.src = 'data:text/html;charset=utf-8,' + encodeURI(html);
+  // this.element.src = 'data:text/html;charset=utf-8,' + encodeURI(html);
+  // this.element.src = 'data:text/html;charset=utf-8,' + html;
+  this.element.srcdoc = html;
   return this;
 }
 

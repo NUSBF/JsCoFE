@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.12.22   <--  Date of Last Modification.
+ *    07.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Request Handler
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-202
  *
  *  =================================================================
  *
@@ -236,6 +236,10 @@ var response = null;
           response = rj.stopJob ( loginData,data );
        break;
 
+    case cmd.fe_reqtype.webappEndJob :
+         response = rj.webappEndJob ( loginData,data,callback_func );
+      break;
+
     case cmd.fe_reqtype.getCloudFileTree :
           // response = fcl.getCloudFileTree ( loginData,data,callback_func );
           fcl.getCloudFileTree ( loginData,data,callback_func );
@@ -267,6 +271,7 @@ var response = null;
   else  {
     switch (request_cmd)  {
       case cmd.fe_reqtype.runJob           :
+      case cmd.fe_reqtype.webappEndJob     :
       case cmd.fe_reqtype.getCloudFileTree :
       case cmd.fe_reqtype.getAdminData     :
       case cmd.fe_reqtype.getUserRation    :

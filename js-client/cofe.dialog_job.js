@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.01.23   <--  Date of Last Modification.
+ *    08.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -28,16 +28,17 @@
 // JobDialog class
 
 var job_dialog_reason = {
-  rename_node   : 'rename_node',    // rename job node
-  set_node_icon : 'set_node_icon',  // set    job node icon
-  reset_node    : 'reset_node',     // reset  job node label
-  select_node   : 'select_node',    // select job node
-  stop_job      : 'stop_job',       // stop job
-  end_job       : 'end_job',        // end job gracefully
-  tree_updated  : 'tree_updated',   // job tree should be updated
-  add_job       : 'add_job',        // add job from task list
-  clone_job     : 'clone_job',      // clone job
-  run_job       : 'run_job'         // clone job
+  rename_node     : 'rename_node',     // rename job node
+  set_node_icon   : 'set_node_icon',   // set    job node icon
+  reset_node      : 'reset_node',      // reset  job node label
+  select_node     : 'select_node',     // select job node
+  stop_job        : 'stop_job',        // stop job
+  end_job         : 'end_job',         // end job gracefully
+  webapp_finish   : 'webapp_finish',   // finish webapp job
+  tree_updated    : 'tree_updated',    // job tree should be updated
+  add_job         : 'add_job',         // add job from task list
+  clone_job       : 'clone_job',       // clone job
+  run_job         : 'run_job'          // clone job
 }
 
 function JobDialog ( params,          // data and task projections up the tree branch
@@ -104,7 +105,20 @@ function JobDialog ( params,          // data and task projections up the tree b
       width     : size[0],
       height    : size[1],
       buttons   : {},
-      open      : function(event, ui) {
+      beforeClose : function(event, ui)  {
+        if ((dlg.task.nc_type=='browser') && 
+            ((dlg.task.state==job_code.running) || 
+             (dlg.task.state==job_code.ending)))  {
+          new MessageBox ( 'WebCoot running',
+            '<div style="width:400px"><h2>WebCoot is running</h2>' +
+            'This Job Dialog cannot be closed while <i>WebCoot</i> instance, ' +
+            'launched from it, is active. Please close <i>WebCoot</i> first.' +
+            '</div>','msg_stop' );
+          return false;
+        } else
+          return true;
+      },
+      open      : function(event, ui)  {
         if (__any_mobile_device)
           $(this).siblings('.ui-dialog-titlebar').remove();
         if (dlg.task.state==job_code.new)  {
@@ -303,14 +317,14 @@ JobDialog.prototype.setDlgState = function()  {
     var dlg = this;
       dlg.ind_timer = window.setTimeout ( function(){
         if (dlg.run_image) dlg.run_image.setVisible ( true );
-        if (dlg.stop_btn)  dlg.stop_btn .setVisible ( true );
-        if (dlg.end_btn)   dlg.end_btn  .setVisible ( true );
+        if (dlg.stop_btn)  dlg.stop_btn .setVisible ( (dlg.task.nc_type!='browser') );
+        if (dlg.end_btn)   dlg.end_btn  .setVisible ( (dlg.task.nc_type!='browser') );
       },1000 );
     // }(this));
   } else  {
     if (this.run_image) this.run_image.setVisible ( isRunning );
-    if (this.stop_btn)  this.stop_btn .setVisible ( isRunning );
-    if (this.end_btn)   this.end_btn  .setVisible ( isRunning );
+    if (this.stop_btn)  this.stop_btn .setVisible ( isRunning && (dlg.task.nc_type!='browser') );
+    if (this.end_btn)   this.end_btn  .setVisible ( isRunning && (dlg.task.nc_type!='browser') );
   }
 
   var title = '';
@@ -887,11 +901,24 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
                     } else if (dlg.task.nc_type == 'browser')  {
 
-                      dlg.task.launchWebApp();
+                      // dlg.enableCloseButton ( false );
+                      dlg.close_btn.setDisabled ( true );
+
+                      dlg.task.launchWebApp ( function(){
+                        dlg.requestServer ( fe_reqtype.webappEndJob,function(rdata){
+                          // dlg.task.postSubmit();
+                          // dlg.loadReport();
+                          // dlg.radioSet.selectButton ( 'output' );
+                          // onRun_func ( dlg );
+                          dlg.enableCloseButton ( true );    
+                        });
+                      });
+
                       dlg.loadReport();
                       dlg.radioSet.selectButton ( 'output' );
                       onRun_func ( dlg );
-                      dlg.enableCloseButton ( true );
+                      if (dlg.stop_btn)
+                        dlg.stop_btn.setVisible ( false );
 
                     } else  {
                       dlg.task.postSubmit();
@@ -900,6 +927,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       onRun_func ( dlg );
                       dlg.enableCloseButton ( true );
                     }
+
                   });
 
                 });
@@ -995,15 +1023,6 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
             dlg.close();
             // $(dlg.element).dialog ( "close" );
         });
-        /*  strict version with input validation ( does not close if error)
-        if (dlg.task.state!=job_code.exiting)  {
-          if (dlg.collectTaskData(false))  {
-            requestServer ( fe_reqtype.saveJobData,null );
-            $(dlg.element).dialog ( "close" );
-          }
-        } else
-          $(dlg.element).dialog ( "close" );
-        */
       });
 
   // }(this));

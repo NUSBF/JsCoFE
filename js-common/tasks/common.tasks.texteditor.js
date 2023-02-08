@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.10.22   <--  Date of Last Modification.
+ *    08.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Text Editor Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022
+ *  (C) E. Krissinel, A. Lebedev 2022-2023
  *
  *  =================================================================
  *
@@ -178,7 +178,6 @@ if (!__template)  {
       var fname = null;
       if (this.upload)  fname = this.upload.fspec.name;
                   else  fname = this.getSelectedFile(inputPanel_grid).name;
-      // var fname = this.getSelectedFile(inputPanel_grid).name;
       if (fname)  {
         fetchJobOutputFile ( this,fname,function(ftext){
           inputPanel_grid.file_loaded = fname;

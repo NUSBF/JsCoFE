@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    07.02.23   <--  Date of Last Modification.
+ *    08.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
 // var jsCoFE_version = '1.7.009 [23.12.2022]';
-var jsCoFE_version = '1.7.010 [07.02.2023]';
+var jsCoFE_version = '1.7.010 [08.02.2023]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -147,6 +147,7 @@ var fe_reqtype = {
   runJob            : '-runJob',            // request to run job
   replayJob         : '-replayJob',         // request to replay job
   stopJob           : '-stopJob',           // request to stop job
+  webappEndJob      : '-webappEndJob',      // request to conclude a webapp job
   checkJobs         : '-checkJobs',         // request to check on jobs' state
   wakeZombieJobs    : '-wakeZombieJobs',    // request to send zombie jobs to FE
   getJobFile        : '-getJobFile',        // request to download a job's file
