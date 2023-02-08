@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.02.23   <--  Date of Last Modification.
+ *    08.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -131,13 +131,145 @@ if (!__template)  {
     return [RefmacHotButton()];
   }
 
-  TaskWebCoot.prototype.launchWebApp = function ()  {
+  // TaskWebCoot.prototype.makeHtml = function()  {
+  //   var html = [
+  //     '<!doctype html>',
+  //     '<html lang="en" class="scroller">',
+  //     '<head>',
+  //       '<title>Moorhen</title>',
+  //       '<meta charset="utf-8"/>',
+  //       '<meta name="viewport" content="width=device-width,initial-scale=1"/>',
+  //       '<meta name="theme-color" content="#000000"/>',
+  //       '<meta name="description" content="Web site created using create-react-app"/>',
+  //       '<link rel="icon" href="./favicon.ico"/>',
+  //       '<link rel="apple-touch-icon" href="./public/logo192.png"/>',
+  //       '<link rel="manifest" href="./manifest.json"/>',
+  //       '<link rel="icon" href="./favicon.ico">',
+  //       '<link href="./maindd0ddc75c24601355a61.css" rel="stylesheet">',
+  //       '<script>// See https://github.com/facebook/react/issues/20829#issuecomment-802088260',
+  //         'if (!crossOriginIsolated) SharedArrayBuffer = ArrayBuffer;',
+  //         'window.onload = () => {',
+  //           'createCCP4Module({',
+  //             'print(t) { console.log(["output", t]) },',
+  //             'printErr(t) { console.log(["output", t]); }',
+  //           '})',
+  //           '.then(function (CCP4Mod) {',
+  //             'window.CCP4Module = CCP4Mod;',
+  //           '})',
+  //           '.catch((e) => {',
+  //             'console.log("CCP4 problem :(");',
+  //             'console.log(e);',
+  //           '});',
+  //         '}',
+  //       '</script>',
+  //       '<script src="./baby-gru/wasm/web_example.js"></script>',
+  //       '<script>',
+  //         'window.moorhenInput = {',
+  //           'rootId: "root",',
+  //           'urlPrefix: ".",',
+  //           'inputFiles: [',
+  //             '{type: "pdb", args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule"]},',
+  //             '{type: "mtz", args: [',
+  //               '"./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "map",', 
+  //               '{F: "FWT", PHI: "PHWT", Fobs: "F", SigFobs: "SIGF", FreeR: "FREER", isDifference: false, useWeight: false, calcStructFact: true}',
+  //             ']},',
+  //             '{type: "mtz", args: [',
+  //               '"./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "diff-map",',
+  //               '{F: "DELFWT", PHI: "PHDELWT", isDifference: true, useWeight: false, calcStructFact: false}',
+  //             ']}',
+  //           ']',
+  //         '}',
+  //       '</script>',
+  //       '<script defer="defer" src="./main.js"></script>',
+  //     '</head>',
+  //     '<body>',
+  //       '<noscript>You need to enable JavaScript to run this app.</noscript>',
+  //       '<div id="root"></div>',
+  //     '</body>',
+  //     '</html>'
+  //   ];
+
+  // }
+
+
+  TaskWebCoot.prototype.launchWebApp = function ( callback_func )  {
     // new MessageBox('Web-app', '<h1>Web application</h1>');
 
     var wab = new WebAppBox ( 'Web-Coot' );
+    wab.setOnCloseFunction ( function(){ callback_func(); } );
     wab.launch();
 
-    wab.iframe.loadPage ( './js-lib/webCoot/index.html' );
+    var self = this;
+
+    fetchFile ( 'js-lib/webCoot/webcoot.html',
+      function(text){
+
+        var html = text.replace ( '[[baseurl]]',
+                                   window.location + 'js-lib/webCoot/webcoot.html' );
+
+        var istruct = self.input_data.data['revision'][0].Structure;
+
+        var inputFiles = [];
+        if (istruct)  {
+          if (file_key.xyz in istruct.files)  {
+            var pdbURL = self.getURL ( 'input/' + istruct.files[file_key.xyz] );
+            inputFiles.push ({
+              type : 'pdb',
+              args : [ pdbURL,'molecule' ]
+            });
+          }
+          if (file_key.mtz in istruct.files)  {
+            var mtzURL = self.getURL ( 'input/' + istruct.files[file_key.mtz] );
+            if (istruct.FWT)
+              inputFiles.push ({
+                type : 'mtz',
+                args : [ mtzURL,'map',{
+                          F              : istruct.FWT,
+                          PHI            : istruct.PHWT,
+                          Fobs           : istruct.FP,
+                          SigFobs        : istruct.SigFP,
+                          FreeR          : istruct.FreeR_flag,
+                          isDifference   : false,
+                          useWeight      : false,
+                          calcStructFact : true
+                        }]
+              });
+            if (istruct.DELFWT)
+              inputFiles.push ({
+                type : 'mtz',
+                args : [ mtzURL,'diff-map',{
+                          F              : istruct.DELFWT,
+                          PHI            : istruct.PHDELWT,
+                          isDifference   : true,
+                          useWeight      : false,
+                          calcStructFact : false
+                        }]
+              });
+          }
+        }
+
+    //   { type: "mtz", 
+    //     args: [ "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "diff-map",
+    //             { F              : "DELFWT",
+    //               PHI            : "PHDELWT", 
+    //               isDifference   : true, 
+    //               useWeight      : false, 
+    //               calcStructFact : false
+    //             }
+    //           ]
+
+
+
+        html = html.replace ( '[[inputFiles]]',JSON.stringify(inputFiles) );
+
+        wab.iframe.setHTML ( html );
+      
+      },
+      null,
+      function(errcode){
+        new MessageBox ( 'File not found',
+            'file not found','msg_error' );
+      });
 
   }
 
@@ -145,10 +277,10 @@ if (!__template)  {
   //  for server side
 
   var path  = require('path');
-
   var conf  = require('../../js-server/server.configuration');
   var prj   = require('../../js-server/server.fe.projects');
   var utils = require('../../js-server/server.utils');
+  var dtemp = require('../../js-common/dtypes/common.dtypes.template');
 
   TaskWebCoot.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -181,11 +313,118 @@ if (!__template)  {
                          path.join(jobDir,coot_meta.files[i]) );
     }
 
+    // var cfg = conf.getFEProxyConfig();
+    // if (!cfg)
+    //   cfg = conf.conf.getFEConfig();
+
+    // var html = utils.readString ( path.join(process.cwd(),'js-lib','webCoot','webcoot.html') );
+
+    // html = html.replace ( '[[baseurl]]',cfg.externalURL + '/js-lib/webCoot/webcoot.html' );
+
+    // inputFiles = [];
+    // if (istruct)  {
+    //   inputFiles.push ({
+    //     'type' : 'pdb',
+    //     'args' : [this.getURL('input/'),'molecule']
+    //   });
+    // }
+
+    // var inputFiles = [
+    //   '[',
+    //     '{type: "pdb", args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule"]},',
+    //     '{type: "mtz", args: ["./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "map",',
+    //       '{F: "FWT", PHI: "PHWT", Fobs: "F", SigFobs: "SIGF", FreeR: "FREER", isDifference: false, useWeight: false, calcStructFact: true}',
+    //     ']},',
+    //     '{type: "mtz", args: ["./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "diff-map",',
+    //       '{F: "DELFWT", PHI: "PHDELWT", isDifference: true, useWeight: false, calcStructFact: false}',
+    //     ']}',
+    //   ']'
+    // ];
+
+    // var inputFiles = [];
+    // if (istruct)  {
+    //   if (dtemp.file_key.xyz in istruct.files)  {
+    //     var pdbURL = this.getURL ( 'input/' + istruct.files[dtemp.file_key.xyz] );
+    //     inputFiles.push ({
+    //       type : 'pdb',
+    //       args : [ pdbURL,'molecule' ]
+    //     });
+    //   }
+    //   if (dtemp.file_key.mtz in istruct.files)  {
+    //     var mtzURL = this.URL ( 'input/' + istruct.files[dtemp.file_key.mtz] );
+    //     if (istruct.FWT)
+    //       inputFiles.push ({
+    //         type : 'mtz',
+    //         args : [ mtzURL,'map',{
+    //                   F              : istruct.FWT,
+    //                   PHI            : istruct.PHWT,
+    //                   Fobs           : istruct.FP,
+    //                   SigFobs        : istruct.SigFP,
+    //                   FreeR          : istruct.FreeR_flag,
+    //                   isDifference   : false,
+    //                   useWeight      : false,
+    //                   calcStructFact : true
+    //                 }]
+    //       });
+    //   }
+    // }
+
+
+    // var inputFiles = [
+    //   { type: "pdb", 
+    //     args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule" ]
+    //   },
+    //   { type: "mtz", 
+    //     args: [ "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "map",
+    //             { F              : "FWT",
+    //               PHI            : "PHWT",
+    //               Fobs           : "F",
+    //               SigFobs        : "SIGF",
+    //               FreeR          : "FREER",
+    //               isDifference   : false,
+    //               useWeight      : false,
+    //               calcStructFact : true
+    //             }
+    //           ]
+    //   },
+    //   { type: "mtz", 
+    //     args: [ "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "diff-map",
+    //             { F              : "DELFWT",
+    //               PHI            : "PHDELWT", 
+    //               isDifference   : true, 
+    //               useWeight      : false, 
+    //               calcStructFact : false
+    //             }
+    //           ]
+    //   }
+    // ];
+
+    // html = html.replace ( '[[inputFiles]]',JSON.stringify(inputFiles,null,2) );
+    // html = html.replace ( '[[inputFiles]]',inputFiles.join('\n') )
+
+    // utils.writeString ( path.join(jobDir,'webcoot.html'),html );
+
+    // utils.copyFile ( path.join(process.cwd(),'js-lib','webCoot','webcoot.html'),
+    //                  path.join(jobDir,'webcoot.html') );
+
+
+    // inputFiles: [
+    //   {type: 'pdb', args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule"]},
+    //   {type: 'mtz', args: [
+    //     "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "map", 
+    //     {F: "FWT", PHI: "PHWT", Fobs: 'F', SigFobs: 'SIGF', FreeR: 'FREER', isDifference: false, useWeight: false, calcStructFact: true}
+    //   ]},
+    //   {type: 'mtz', args: [
+    //     "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", 'diff-map',
+    //     {F: "DELFWT", PHI: "PHDELWT", isDifference: true, useWeight: false, calcStructFact: false}
+    //   ]}
+    // ]
+
   }
 
   TaskWebCoot.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.coot_mb', jobManager, jobDir,
-            this.id, 'expire='+conf.getClientNCConfig().zombieLifeTime ];
+    return [conf.pythonName(), '-m', 'pycofe.tasks.webcoot', jobManager, jobDir,
+            this.id, 'expire=' + conf.getClientNCConfig().zombieLifeTime ];
   }
 
   // -------------------------------------------------------------------------

@@ -71,6 +71,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   // server side
 
   module.exports.DataTemplate = DataTemplate;
+  module.exports.file_key     = file_key;
 
 } else  {
   // client (browser) side

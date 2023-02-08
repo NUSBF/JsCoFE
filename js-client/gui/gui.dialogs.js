@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.10.22   <--  Date of Last Modification.
+ *    08.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
  *                                          btn2_name,onButton2_func )
  *           function InputBox      ( title )
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -665,6 +665,8 @@ function WebAppBox ( title )  {
   //   $ = window.$;
   // }
 
+  this.onClose_func = null;
+
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title',title );
   document.body.appendChild ( this.element  );
@@ -745,6 +747,10 @@ function WebAppBox ( title )  {
 WebAppBox.prototype = Object.create(Widget.prototype);
 WebAppBox.prototype.constructor = WebAppBox;
 
+WebAppBox.prototype.setOnCloseFunction = function ( onClose_func )  {
+  this.onClose_func = onClose_func;
+}
+
 WebAppBox.prototype.launch = function() {
 
   $(this.element).dialog ( this.options );
@@ -759,6 +765,8 @@ WebAppBox.prototype.launch = function() {
 
   $(this.element).on("dialogclose", function(event,ui){
     window.setTimeout ( function(){
+      if (self.onClose_func)
+        self.onClose_func();
       $(self.element).dialog("destroy");
       if (self.element.parentNode)
         self.element.parentNode.removeChild ( self.element );

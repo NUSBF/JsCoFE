@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.02.23   <--  Date of Last Modification.
+ *    08.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -34,9 +34,11 @@
  *     _run_job             ( loginData,task,job_token,ownerLoginData,
  *                            shared_logins, callback_func )
  *     runJob               ( loginData,data, callback_func )
+ *     webappEndJob         ( loginData,data, callback_func )
  *     replayJob            ( loginData,data, callback_func )
  *     stopJob              ( loginData,data )
  *     killJob              ( loginData,projectName,taskId )
+ *     webappFinished       ( loginData,data )
  *     writeJobStats        ( jobEntry )
  *     readJobStats         ()
  *     addJobAuto           ( jobEntry,jobClass )
@@ -566,7 +568,7 @@ function runJob ( loginData,data, callback_func )  {
 
   task.state      = task_t.job_code.running;
   var job_token   = crypto.randomBytes(20).toString('hex');
-  if (task.nc_type=='client')
+  if ((task.nc_type=='client') || (task.nc_type=='browser'))
     task.job_dialog_data.job_token = job_token;
   task.start_time = Date.now();
 
@@ -657,6 +659,71 @@ function runJob ( loginData,data, callback_func )  {
       });
 
   }
+
+}
+
+
+
+function webappEndJob ( loginData,data, callback_func )  {
+
+  var task = class_map.makeClass ( data.meta );
+  if (!task)  {
+    log.error ( 4,'Cannot make job class' );
+    callback_func ( new cmd.Response(cmd.fe_retcode.corruptJobMeta,
+                    '[00201] Corrupt job metadata',{}) );
+    return;
+  }
+
+  // job for ordinary NC, pack and send all job directory to number cruncher
+
+  var shared_logins  = {};
+  var projectData    = prj.readProjectData ( loginData,task.project );
+  var ownerLoginData = loginData;
+  if (projectData)  {
+    shared_logins = projectData.desc.share;
+    if (projectData.desc.owner.login!=loginData.login)
+      ownerLoginData = user.getUserLoginData ( projectData.desc.owner.login );
+    if (task.autoRunId.length>0)
+      projectData.desc.autorun = true;
+    if ((Object.keys(shared_logins).length>0) || projectData.desc.autorun) // update the timestamp
+      prj.writeProjectData ( loginData,projectData,true );
+  }
+
+  var job_token = task.job_dialog_data.job_token;
+
+  var rdata = {};  // response data structure
+  rdata.timestamp = projectData.desc.timestamp;
+
+  task.nc_type ='ordinary';
+
+  _run_job ( loginData,task,job_token,ownerLoginData,shared_logins,
+    function(jtoken){
+      callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
+    });
+
+
+  // var jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
+  // if (!utils.dirExists(jobDir))  {
+  //   callback_func ( new cmd.Response ( cmd.fe_retcode.writeError,
+  //               '[00005] Job directory does not exist (job deleted?).',rdata ) );
+  //   return;
+  // }
+
+  // var jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
+
+  // task.state      = task_t.job_code.running;
+  // var job_token   = crypto.randomBytes(20).toString('hex');
+  // if (task.nc_type=='client')
+  //   task.job_dialog_data.job_token = job_token;
+  // task.start_time = Date.now();
+
+  // // write task data because it may have latest changes
+  // if (!utils.writeObject(jobDataPath,task))  {
+  //   callback_func ( new cmd.Response ( cmd.fe_retcode.writeError,
+  //                             '[00005] Job metadata cannot be written.',rdata ) );
+  //   return;
+  // }
+
 
 }
 
@@ -928,10 +995,10 @@ function writeJobStats ( jobEntry )  {
 
   var t  = Date.now();
   var dt = t - jobEntry.start_time;
-  var dd = Math.trunc(dt/_day);   dt -= dd*_day;
-  var dh = Math.trunc(dt/_hour);  dt -= dh*_hour;
-  var dm = Math.trunc(dt/_min);   dt -= dm*_min;
-  var ds = Math.trunc(dt/_sec);
+  var dd = Math.trunc(dt/_day );   dt -= dd*_day;
+  var dh = Math.trunc(dt/_hour);   dt -= dh*_hour;
+  var dm = Math.trunc(dt/_min );   dt -= dm*_min;
+  var ds = Math.trunc(dt/_sec );
 
   var jobDataPath = prj.getJobDataPath ( jobEntry.loginData,jobEntry.project,
                                          jobEntry.jobId );
@@ -1429,7 +1496,13 @@ var nc_servers = conf.getNCConfigs();
           // console.log ( ' >>> NC#' + n + ' responded with ' + response.body.data.nzombies + ' zombies' );
           if (error)
                 log.error ( 17,'errors communicating with NC' + n + ': ' + error );
-          else  nzombies += response.body.data.nzombies;
+          else  {
+            try {
+              nzombies += response.body.data.nzombies;
+            } catch (e)  {
+              log.error ( 30,'corrupt response on wake zombies: ' + JSON.stringify(response) );
+            }
+          }
           nc_wake_zombie ( n+1 );
         });
       
@@ -1751,7 +1824,8 @@ module.exports.replayJob          = replayJob;
 module.exports.readJobStats       = readJobStats;
 module.exports.stopJob            = stopJob;
 module.exports.killJob            = killJob;
+module.exports.webappEndJob       = webappEndJob;
 module.exports.getJobResults      = getJobResults;
 module.exports.checkJobs          = checkJobs;
-module.exports.wakeZombieJobs      = wakeZombieJobs;
+module.exports.wakeZombieJobs     = wakeZombieJobs;
 module.exports.cloudRun           = cloudRun;

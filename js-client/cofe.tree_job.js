@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.01.23   <--  Date of Last Modification.
+ *    08.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -60,7 +60,8 @@
  *      function calcMetrics     ();
  *      function deleteJob       ( silent_bool,onDelete_func );
  *      function closeAllJobDialogs();
- *      function stopJob         ( nodeId,gracefully_bool );
+ *      function stopJob         ( nodeId,gracefully_bool,callback_func );
+ *      function webappFinished  ( nodeId );
  *      function openJob         ( dataBox,parent_page );
  *      function cloneJob        ( parent_page,onAdd_func );
  *      function getTaskDataBox  ( task );
@@ -1646,6 +1647,18 @@ JobTree.prototype.stopJob = function ( nodeId,gracefully_bool,callback_func )  {
 }
 
 
+// JobTree.prototype.webappFinished = function ( nodeId )  {
+//   this.forceSingleSelection();
+//   var data    = {};
+//   var node_id = nodeId;
+//   if (!nodeId)
+//     node_id = this.selected_node_id;
+//   data.meta      = this.task_map[node_id];
+//   data.job_token = data.meta.job_dialog_data.job_token;
+//   serverRequest ( fe_reqtype.webappFinished,data,data.meta.title,null,null,null );
+// }
+
+
 JobTree.prototype.openJob = function ( dataBox,parent_page )  {
 
   if (this.selected_node_id)  {
@@ -1736,6 +1749,9 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                           //   dlg.end_btn.setDisabled ( true );
                         });
                       break;
+              // case job_dialog_reason.webapp_finished :
+              //           dlg.tree.webappFinished ( dlg.nodeId );
+              //         break;
               case job_dialog_reason.tree_updated :
                         dlg.tree.emitSignal ( cofe_signals.treeUpdated,{} );
                       break;

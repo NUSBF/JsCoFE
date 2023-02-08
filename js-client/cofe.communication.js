@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.12.22   <--  Date of Last Modification.
+ *    08.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -15,7 +15,7 @@
  *                  serverCommand()
  *                  serverRequest()
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -697,11 +697,46 @@ var alink = document.getElementById(hiddenALinkID);
 //   // return url + '/' + __current_project + '/' + jobId + '/' + filePath;
 // }
 
-
-function fetchJobOutputFile ( task,fname,function_success,function_always,function_fail )  {
+/*
+function fetchJobFile ( task,fname,function_success,function_always,function_fail )  {
 // task may be any task from the project; the actual task number is obtained from 'fname'
 
-  var furl = task.getProjectURL(parseInt(fname.split('-')[0],10),'output/'+fname);
+  var furl = task.getProjectURL ( parseInt(fname.split('-')[0],10),fname );
+
+  var oReq = new XMLHttpRequest();
+
+  oReq.onload = function(oEvent) {
+    function_success ( oReq.responseText );
+    if (function_always)
+      function_always();
+  };
+
+  oReq.onerror = function()  {
+    if (function_fail)
+      function_fail ( 'communication errors' );
+    if (function_always)
+      function_always();
+  }
+
+  oReq.overrideMimeType ( "text/plain; charset=x-user-defined" );
+  // oReq.responseType = 'arraybuffer';
+  oReq.timeout      = 9999999;
+  oReq.open ( 'POST',furl,true );
+
+  try {
+    oReq.send(null);
+  } catch (e) {
+    if (function_fail)
+      function_fail ( 'general error' );
+    // alert ( 'loading ' + self.url + ' failed:\n' + e );
+  }
+
+}
+*/
+
+
+function fetchFile ( furl,function_success,function_always,function_fail )  {
+// furl is relative file url starting from FE URL
 
   var oReq = new XMLHttpRequest();
 
@@ -733,6 +768,21 @@ function fetchJobOutputFile ( task,fname,function_success,function_always,functi
 
 }
 
+
+function fetchJobFile ( task,fname,function_success,function_always,function_fail )  {
+// task may be any task from the project; the actual task number is obtained from 'fname'
+  fetchFile ( task.getProjectURL(parseInt(fname.split('-')[0],10),fname),
+              function_success,function_always,function_fail );
+}
+
+function fetchJobOutputFile ( task,fname,function_success,function_always,function_fail )  {
+// task may be any task from the project; the actual task number is obtained from 'fname'
+  fetchFile ( task.getProjectURL(parseInt(fname.split('-')[0],10),'output/'+fname),
+              function_success,function_always,function_fail );
+}
+  
+  
+  
 
 function getJobFileURL ( jobId,filePath )  {
   var url = __special_url_tag + '/';
