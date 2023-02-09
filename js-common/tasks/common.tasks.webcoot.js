@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.02.23   <--  Date of Last Modification.
+ *    09.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -423,8 +423,7 @@ if (!__template)  {
   }
 
   TaskWebCoot.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.webcoot', jobManager, jobDir,
-            this.id, 'expire=' + conf.getClientNCConfig().zombieLifeTime ];
+    return [conf.pythonName(), '-m', 'pycofe.tasks.webcoot', jobManager, jobDir,this.id ];
   }
 
   // -------------------------------------------------------------------------
