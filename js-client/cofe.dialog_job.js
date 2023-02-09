@@ -907,6 +907,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
                       dlg.task.launchWebApp ( function(){
                         dlg.requestServer ( fe_reqtype.webappEndJob,function(rdata){
+                          dlg.setVisible ( true );
                           // dlg.task.postSubmit();
                           // dlg.loadReport();
                           // dlg.radioSet.selectButton ( 'output' );
@@ -920,6 +921,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       onRun_func ( dlg );
                       if (dlg.stop_btn)
                         dlg.stop_btn.setVisible ( false );
+                      dlg.setVisible ( false );
 
                     } else  {
                       dlg.task.postSubmit();
