@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.02.23   <--  Date of Last Modification.
+ *    09.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -868,6 +868,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                   dlg.requestServer ( fe_reqtype.runJob,function(rdata){
 
                     addWfKnowledge ( dlg.task,dlg.ancestors.slice(1) );
+                    dlg.tree.projectData.desc.timestamp = rdata.timestamp;
 
                     if (dlg.task.nc_type=='client')  {
 
