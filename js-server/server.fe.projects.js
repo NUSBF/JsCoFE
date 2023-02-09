@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.01.23   <--  Date of Last Modification.
+ *    09.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1337,6 +1337,7 @@ var projectName = projectDesc.name;
               // task to be added at root, always allow, may be a problem with remarks
               pData.tree[0].children.push ( node_lst[0] );
             } else   {  // have to update, something's wrong -- should never be here
+              log.error ( 13,'unexpected reload request in saveProjectData()' );
               rdata.reload = 2;
             }
           }
