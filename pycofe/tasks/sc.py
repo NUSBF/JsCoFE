@@ -170,32 +170,13 @@ class SC(basic.TaskDriver):
             self.generic_parser_summary["SC"] = {"summary_line": "score not obtained"}
 
         # close execution logs and quit
-        self.success(False)
+        self.success ( False )
 
         return
 
 # ============================================================================
 
-"""
- Summary of results: 
-________________________________________________________
-           D(A->B)      D(B->A)     D(A->B)+D(B->A)/2 
- Mean       1.148        0.903            1.025
- Median     0.986        0.834            0.910
-
-           S(A->B)      S(B->A)     S(A->B)+S(B->A)/2
- Mean       0.421        0.471            0.446
- Median     0.436        0.480            0.458
-
- Shape complementarity statistic Sc =    0.458
-________________________________________________________
-
-"""
-
-
-
-
 if __name__ == "__main__":
 
-    drv = SC("", os.path.basename(__file__))
+    drv = SC ( "",os.path.basename(__file__) )
     drv.start()
