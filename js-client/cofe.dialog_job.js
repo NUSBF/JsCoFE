@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.02.23   <--  Date of Last Modification.
+ *    10.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -105,19 +105,19 @@ function JobDialog ( params,          // data and task projections up the tree b
       width     : size[0],
       height    : size[1],
       buttons   : {},
-      beforeClose : function(event, ui)  {
-        if ((dlg.task.nc_type=='browser') && 
-            ((dlg.task.state==job_code.running) || 
-             (dlg.task.state==job_code.ending)))  {
-          new MessageBox ( 'WebCoot running',
-            '<div style="width:400px"><h2>WebCoot is running</h2>' +
-            'This Job Dialog cannot be closed while <i>WebCoot</i> instance, ' +
-            'launched from it, is active. Please close <i>WebCoot</i> first.' +
-            '</div>','msg_stop' );
-          return false;
-        } else
-          return true;
-      },
+      // beforeClose : function(event, ui)  {
+      //   if ((dlg.task.nc_type=='browser') && 
+      //       ((dlg.task.state==job_code.running) || 
+      //        (dlg.task.state==job_code.ending)))  {
+      //     new MessageBox ( 'WebCoot running',
+      //       '<div style="width:400px"><h2>WebCoot is running</h2>' +
+      //       'This Job Dialog cannot be closed while <i>WebCoot</i> instance, ' +
+      //       'launched from it, is active. Please close <i>WebCoot</i> first.' +
+      //       '</div>','msg_stop' );
+      //     return false;
+      //   } else
+      //     return true;
+      // },
       open      : function(event, ui)  {
         if (__any_mobile_device)
           $(this).siblings('.ui-dialog-titlebar').remove();
@@ -438,6 +438,16 @@ JobDialog.prototype.close = function()  {
   //   this._created = false;
   // }
 }
+
+
+JobDialog.prototype.hide = function()  {
+  $(this.element).parent().hide();
+}
+
+JobDialog.prototype.show = function()  {
+  $(this.element).parent().show();
+}
+
 
 JobDialog.prototype.loadReport = function()  {
   if (this.outputPanel)  {  // check because the function may be called from outside
@@ -907,7 +917,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
                       dlg.task.launchWebApp ( function(){
                         dlg.requestServer ( fe_reqtype.webappEndJob,function(rdata){
-                          dlg.setVisible ( true );
+                          dlg.show();
+                          // dlg.setVisible ( true );
                           // dlg.task.postSubmit();
                           // dlg.loadReport();
                           // dlg.radioSet.selectButton ( 'output' );
@@ -921,7 +932,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       onRun_func ( dlg );
                       if (dlg.stop_btn)
                         dlg.stop_btn.setVisible ( false );
-                      dlg.setVisible ( false );
+                      // dlg.setVisible ( false );
+                      dlg.hide();
 
                     } else  {
                       dlg.task.postSubmit();
