@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.01.23   <--  Date of Last Modification.
+#    10.02.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -835,6 +835,19 @@ citations = {
                             'year'    : '2013',
                             'pages'   : '2777',
                             'doi'     : '10.1038/ncomms3777'
+                        }]
+                  },
+
+    'sc' :        { 'name'     : 'SC',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Lawrence, M.C., Colman, P.M.',
+                            'title'   : 'Shape complementarity at protein/protein interfaces',
+                            'journal' : 'J. Mol. Biol.',
+                            'volume'  : '234(4)',
+                            'year'    : '1993',
+                            'pages'   : '946-950',
+                            'doi'     : '10.1006/jmbi.1993.1648'
                         }]
                   },
 
