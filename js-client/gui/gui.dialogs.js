@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.02.23   <--  Date of Last Modification.
+ *    13.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -220,6 +220,8 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 //        this.element.setAttribute ( 'title','Online Help -- ' + title );
   else  this.element.setAttribute ( 'title','Online Help' );
   this.display = new IFrame ( '' );  // always initially empty
+  // this.display.setText ( loading_msg );
+
   $(this.display.element).css({'overflow':'hidden'});
   this.addWidget ( this.display );
   $(this.element).css({'overflow':'hidden'});
@@ -390,7 +392,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
     }
 
     dlg.options.create = function(event,ui) {
-      dlg.display.setHTML ( loading_msg );
+      dlg.display.setText ( loading_msg );
       dlg.resizeDisplay ( w0,h0 );
       dlg.history_length   = -2;
       dlg.history_position = -2;
