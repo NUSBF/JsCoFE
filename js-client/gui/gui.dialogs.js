@@ -220,7 +220,8 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 //        this.element.setAttribute ( 'title','Online Help -- ' + title );
   else  this.element.setAttribute ( 'title','Online Help' );
   this.display = new IFrame ( '' );  // always initially empty
-  // this.display.setText ( loading_msg );
+  var loading_msg = '<!DOCTYPE html>\n<html><body><h2>Loading ...</h2></body></html>';
+  this.display.setText ( loading_msg );
 
   $(this.display.element).css({'overflow':'hidden'});
   this.addWidget ( this.display );
@@ -322,8 +323,6 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
     this.options.height = h0 + 116;
   }
 
-  var loading_msg = '<!DOCTYPE html>\n<html><body><h2>Loading ...</h2></body></html>';
-
   var dlg = this;
 
   // (function(dlg){
@@ -391,8 +390,8 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 
     }
 
-    dlg.options.create = function(event,ui) {
-      dlg.display.setText ( loading_msg );
+    dlg.options.create = function(event,ui)  {
+      // dlg.display.setText ( loading_msg );
       dlg.resizeDisplay ( w0,h0 );
       dlg.history_length   = -2;
       dlg.history_position = -2;
