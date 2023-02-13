@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    08.02.23   <--  Date of Last Modification.
+ *    13.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1622,6 +1622,14 @@ IFrame.prototype.setOnLoadListener = function ( onload_func )  {
 
 IFrame.prototype.loadPage = function ( uri )  {
   this.element.src = uri;
+  return this;
+}
+
+
+IFrame.prototype.setText = function ( html )  {
+  this.element.src = 'data:text/html;charset=utf-8,' + encodeURI(html);
+  // this.element.src = 'data:text/html;charset=utf-8,' + html;
+  // this.element.srcdoc = html;
   return this;
 }
 
