@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.01.23   <--  Date of Last Modification.
+ *    14.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -191,7 +191,7 @@ function ProjectListPage ( sceneId )  {
     new AddProjectDialog ( projectList,function(pspecs){
       if (pspecs)  {
         if (projectList.addProject(pspecs.id,pspecs.title,
-                                  pspecs.startmode,getDateString()))  {
+                                   pspecs.startmode,getDateString()))  {
           projectList.current   = pspecs.id;
           projectList.startmode = pspecs.startmode;
           makeProjectListTable();
@@ -711,7 +711,8 @@ function ProjectListPage ( sceneId )  {
       projectList.sortList = [[5,1]];
 
     if (__current_folder.nprojects>=0)  // works first time after login
-      __current_folder = projectList.currentFolder;
+          __current_folder = projectList.currentFolder;
+    else  projectList.currentFolder = __current_folder;
     // var owners_folder = __login_id + '\'s Projects';
 
     var nrows = 0;
