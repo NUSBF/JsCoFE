@@ -422,7 +422,7 @@ substructure can be typically taken from the inputted initial model and improved
 of structure solution are described in the order they usually take place for the SAD, SIRAS or MAD experiments.</p>
 <p><strong>FA estimation</strong></p>
 <p>The FA values are estimates of the structure factor amplitudes of the anomalously scattering substructure.  They are used as input to the substructure determination process.
-Their simplest estimate for SAD data is the absolute value of Friedel pair differences <a href="#id1"><span class="problematic" id="id2">|F+ - F-|</span></a>, used by the program SHELXC.  You have the option to switch to,
+Their simplest estimate for SAD data is the absolute value of Friedel pair differences |F+ - F-|, used by the program SHELXC.  You have the option to switch to,
 currently experimental, maximum likelihood estimation of FA by AFRO.</p>
 <p><strong>Substructure determination</strong></p>
 <p>The determination of the anomalous substructure is a critical step of the protein structure solution from experimental phases.  The SHELXD program uses a
@@ -461,9 +461,9 @@ solvent content parameter (its estimation may be wrong).  If a partial model was
 <dt id="term-What-is-CFOM-in-the-SHELXD-output">What is CFOM in the SHELXD output?<a class="headerlink" href="#term-What-is-CFOM-in-the-SHELXD-output" title="Permalink to this term">¶</a></dt><dd>CFOM reported by SHELXD is sum of two correlation coefficients: CC+CCweak where CC is correlation coefficient between
 the observed ΔF’s and the F’s calculated from the determined substructure model and CCweek is CC of the weaker
 reflections only. Please consult the SHELXD webpage for more information.</dd>
-<dt id="term-What-is-CC-sub-range-in-the-PRASA-output">What is CC:sub:<cite>range</cite> in the PRASA output?<a class="headerlink" href="#term-What-is-CC-sub-range-in-the-PRASA-output" title="Permalink to this term">¶</a></dt><dd>CC:sub:<cite>range</cite> reported by PRASA is an average of adjusted correlation coefficients between the observed ΔF’s and
+<dt id="term-What-is-CCrange-in-the-PRASA-output">What is CC<sub>range</sub> in the PRASA output?<a class="headerlink" href="#term-What-is-CCrange-in-the-PRASA-output" title="Permalink to this term">¶</a></dt><dd>CC<sub>range</sub> reported by PRASA is an average of adjusted correlation coefficients between the observed ΔF’s and
 the F’s calculated from the determined substructure model at various resolution cutoffs. The correlation coefficients
-at different cutoffs are not directly comparable but CC:sub:<cite>range</cite> allows for a rough comparison of solutions obtained
+at different cutoffs are not directly comparable but CC<sub>range</sub> allows for a rough comparison of solutions obtained
 at different resolution cutoffs.</dd>
 <dt id="term-What-does-the-threshold-in-substructure-determination-mean">What does the threshold in substructure determination mean?<a class="headerlink" href="#term-What-does-the-threshold-in-substructure-determination-mean" title="Permalink to this term">¶</a></dt><dd>Substructure determination stops either by finishing the specified number of iterations or by reaching the specified
 score threshold (CFOM). The score threshold is automatically set rather conservatively to make sure that the procedure

@@ -8,6 +8,7 @@ Validation, Analysis and Deposition
     doc.task.Zanuda
     doc.task.Privateer
     doc.task.PISA
+    doc.task.SC
     doc.task.Deposition
     doc.task.Contact
     doc.task.Rotamer
