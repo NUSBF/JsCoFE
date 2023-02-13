@@ -107,7 +107,7 @@ function makeSymLink ( pathToTarget,pathToOrigin )  {
 }
 
 
-function readObject ( path ) {
+function readObject ( path )  {
   try {
     return JSON.parse ( fs.readFileSync(path).toString() );
   } catch (e)  {

@@ -38,6 +38,7 @@ from pycofe.dtypes import dtype_revision
 
 
 class SC(basic.TaskDriver):
+
     def run(self):
 
         # fetch input data
