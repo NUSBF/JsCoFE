@@ -1067,13 +1067,13 @@ def renameProject(driver, testName):
     clickResult = clickByXpath(driver, "//*[normalize-space()='%s']" % 'Project folder')
     if not clickResult:
         clickByXpath(driver, "//*[normalize-space()='%s']" % 'My Projects')
-    time.sleep(1)
+    time.sleep(3)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % testName)
-    time.sleep(1)
+    time.sleep(3)
 
     clickByXpath(driver, "//*[normalize-space()='%s']" % 'Rename')
-    time.sleep(1)
+    time.sleep(3)
 
     # Shall return list of two elements for project creation
     projectInput = driver.find_elements_by_xpath("//input[contains(@value,'%s')]" % testName)

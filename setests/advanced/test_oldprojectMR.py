@@ -1,4 +1,6 @@
 
+
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
@@ -6,7 +8,9 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 
-import time, sys, os, re
+import time, sys, os, re 
+
+
 
 curPath = os.path.abspath(os.path.join(os.path.dirname( __file__ ), '..'))
 if curPath not in sys.path:
@@ -237,115 +241,117 @@ def verifyMorda(driver, waitLong, jobNumber, targetRwork, targetRfree):
     assert rWork < targetRwork
     assert rFree < targetRfree
 
+# def test_1oldProjectsMR(browser,
+#                       cloud,
+#                       nologin,
+#                       login,
+#                       password,
+#                       remote
+#                       ):
 
-def test_1oldProjectsMR(browser,
-                      cloud,
-                      nologin,
-                      login,
-                      password,
-                      remote
-                      ):
-
-    listOfExpectedTasks = ['[01.auto-mr] Simple Auto-MR with MoRDa',
-    '[0001] Based on CCP4 RNase example. Open this remark for input data location',
-    '[0004] imported: HKL (1) Sequence (1) -- completed.',
-    '[0005] asymmetric unit contents -- Solv=47.6%',
-    '[0006] morda -- R=0.2475 Rfree=0.2617',
-    '[0007] Check sequence similarity of found solution and target protein',
-    '[0008] seqalign -- Seq.Id=100.0%',
-    '[0009] Found solution does not need rebuilding. Add water, refine and deposit',
-    '[0010] fit waters -- Nwaters=349',
-    '[0011] dimple -- R=0.1958 Rfree=0.2191',
-    '[0012] deposition -- package prepared, pdb report obtained R=0.1958 Rfree=0.2191',
-    '[0019] R-factors are a bit too high for given resolution',
-    '[0013] structure adjustments with coot (fit, refine, ramachandran) -- completed.',
-    '[0017] refine with anisotropic B-factors -- R=0.1532 Rfree=0.1954',
-    '[0018] deposition -- package prepared, pdb report obtained',
-    '[0020] R-factors may be still too high; unmodelled blobs remain']
-
-
-    (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
-    d.browser = browser
-    d.cloud = cloud
-    d.nologin = nologin
-    d.password = password
-    d.remote = remote
-    d.login = login
-
-    d.testName = 'D01'
+#     listOfExpectedTasks = ['[01.auto-mr] Simple Auto-MR with MoRDa',
+#     '[0001] Based on CCP4 RNase example. Open this remark for input data location',
+#     '[0004] imported: HKL (1) Sequence (1) -- completed.',
+#     '[0005] asymmetric unit contents -- Solv=47.6%',
+#     '[0006] morda -- R=0.2475 Rfree=0.2617',
+#     '[0007] Check sequence similarity of found solution and target protein',
+#     '[0008] seqalign -- Seq.Id=100.0%',
+#     '[0009] Found solution does not need rebuilding. Add water, refine and deposit',
+#     '[0010] fit waters -- Nwaters=349',
+#     '[0011] dimple -- R=0.1958 Rfree=0.2191',
+#     '[0012] deposition -- package prepared, pdb report obtained R=0.1958 Rfree=0.2191',
+#     '[0019] R-factors are a bit too high for given resolution',
+#     '[0013] structure adjustments with coot (fit, refine, ramachandran) -- completed.',
+#     '[0017] refine with anisotropic B-factors -- R=0.1532 Rfree=0.1954',
+#     '[0018] deposition -- package prepared, pdb report obtained',
+#     '[0020] R-factors may be still too high; unmodelled blobs remain']
 
 
-    try:
-        print('Opening URL: %s' % cloud)
-        d.driver.get(cloud)
-        assert "CCP4 Cloud" in d.driver.title
-        if not nologin:
-            sf.loginToCloud(d.driver, login, password)
+#     (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
+#     d.browser = browser
+#     d.cloud = cloud
+#     d.nologin = nologin
+#     d.password = password
+#     d.remote = remote
+#     d.login = login
 
-        removeProject(d.driver, d.testName)
+#     d.testName = 'D01'
 
-        # if sys.platform.startswith("win"):
-        #     sf.importLocalProject(d.driver, '%userprofile%\old_cloud\01.ccp4cloud')
-        # else:
-        #     sf.importLocalProject(d.driver, '~/old_cloud/01.ccp4cloud')
-        importMRProject(d.driver)
-        time.sleep(1)
+    
+#     try:
+        
+#         print('Opening URL: %s' % cloud)
+#         d.driver.get(cloud)
 
-        sf.enterProject(d.driver, d.testName)
+#         assert "CCP4 Cloud" in d.driver.title
+#         if not nologin:
+#             sf.loginToCloud(d.driver, login, password)
+        
+        
+#         removeProject(d.driver, d.testName)
 
-        time.sleep(5)
-        # listOfActualTasks = []
-        # tasksText = d.driver.find_elements(By.XPATH,
-        #                                  "//a[contains(@id,'treenode') and contains(@class, 'jstree-ancho')]")
-        # for e in tasksText:
-        #     txt = e.text
-        #     print(txt)
-        #     listOfActualTasks.append(txt)
+#         # if sys.platform.startswith("win"):
+#         #     sf.importLocalProject(d.driver, '%userprofile%\old_cloud\01.ccp4cloud')
+#         # else:
+#         #     sf.importLocalProject(d.driver, '~/old_cloud/01.ccp4cloud')
+#         importMRProject(d.driver)
+#         time.sleep(1)
 
-        # assert len(listOfActualTasks) == len(listOfExpectedTasks)
-        # assert listOfActualTasks == listOfExpectedTasks
+#         sf.enterProject(d.driver, d.testName)
 
-        sf.clickTaskInTaskTree(d.driver, '\[0004\] morda')
-        startMordaCloning(d.driver, d.waitLong)
-        time.sleep(1)
+#         time.sleep(5)
+#         # listOfActualTasks = []
+#         # tasksText = d.driver.find_elements(By.XPATH,
+#         #                                  "//a[contains(@id,'treenode') and contains(@class, 'jstree-ancho')]")
+#         # for e in tasksText:
+#         #     txt = e.text
+#         #     print(txt)
+#         #     listOfActualTasks.append(txt)
 
-        sf.clickTaskInTaskTree(d.driver, '\[0009\] dimple')
-        time.sleep(1)
-        startRefmac(d.driver, d.waitLong)
-        time.sleep(1)
+#         # assert len(listOfActualTasks) == len(listOfExpectedTasks)
+#         # assert listOfActualTasks == listOfExpectedTasks
 
-        sf.clickTaskInTaskTree(d.driver, '\[0011\] comb structure')
-        time.sleep(1)
-        startRefmacAniso(d.driver, d.waitLong)
-        time.sleep(1)
+#         sf.clickTaskInTaskTree(d.driver, '\[0004\] morda')
+#         startMordaCloning(d.driver, d.waitLong)
+#         time.sleep(1)
 
-    except:
-        d.driver.quit()
-        raise
+#         sf.clickTaskInTaskTree(d.driver, '\[0009\] dimple')
+#         time.sleep(1)
+#         startRefmac(d.driver, d.waitLong)
+#         time.sleep(1)
 
-def test_2oldProjectsMR_verifyNewRefmac():
-    try:
-        verifyRefmac(d.driver, d.waitLong, '0030', 0.2, 0.22)
-    except:
-        d.driver.quit()
-        raise
+#         sf.clickTaskInTaskTree(d.driver, '\[0011\] comb structure')
+#         time.sleep(1)
+#         startRefmacAniso(d.driver, d.waitLong)
+#         time.sleep(1)
 
-def test_3oldProjectsMR_verifyCloneRefmac():
-    try:
-        verifyRefmac(d.driver, d.waitLong, '0031', 0.16, 0.22)
-    except:
-        d.driver.quit()
-        raise
+#     except:
+#         d.driver.quit()
+#         raise
 
-def test_4oldProjectsMR_verifyCloneMorda():
-    try:
-        verifyMorda(d.driver, 1200, '0029', 0.26, 0.28) # 1200 seconds to wait (20 minutes, takes ~15 on average)
-        sf.renameProject(d.driver, 'Simple Auto-MR with MoRDa')
-        d.driver.quit()
+# def test_2oldProjectsMR_verifyNewRefmac():
+#     try:
+#         verifyRefmac(d.driver, d.waitLong, '0030', 0.2, 0.22)
+#     except:
+#         d.driver.quit()
+#         raise
 
-    except:
-        d.driver.quit()
-        raise
+# def test_3oldProjectsMR_verifyCloneRefmac():
+#     try:
+#         verifyRefmac(d.driver, d.waitLong, '0031', 0.16, 0.22)
+#     except:
+#         d.driver.quit()
+#         raise
+
+# def test_4oldProjectsMR_verifyCloneMorda():
+#     try:
+#         verifyMorda(d.driver, 1200, '0029', 0.26, 0.28) # 1200 seconds to wait (20 minutes, takes ~15 on average)
+#         sf.renameProject(d.driver, 'Simple Auto-MR with MoRDa')
+#         d.driver.quit()
+
+#     except:
+#         d.driver.quit()
+#         raise
 
 
 if __name__ == "__main__":

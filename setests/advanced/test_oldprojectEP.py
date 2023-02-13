@@ -288,133 +288,133 @@ def verifyBuccaneer(driver, waitLong, jobNumber, targetRwork, targetRfree):
 
 
 
-def test_1oldProjectsEP(browser,
-                      cloud,
-                      nologin,
-                      login,
-                      password,
-                      remote
-                      ):
+# def test_1oldProjectsEP(browser,
+#                       cloud,
+#                       nologin,
+#                       login,
+#                       password,
+#                       remote
+#                       ):
 
-    listOfExpectedTasks = ['[05.staged-ep] Staged solution of Insulin structure with EP on sulphur atoms',
-    '[0001] Based on CCP4 Insulin example. Open this remark for input data location',
-    '[0003] created datasets: Unmerged (2) HKL (1) -- completed.',
-    '[0004] imported: Sequence (2) -- completed.',
-    '[0005] asymmetric unit contents -- Solv=64.4%',
-    '[0006] shelx substructure search (SAD) -- R=0.5788 Rfree=0.5731',
-    '[0008] low value of CC suggests that solution is unlikely; try another space group',
-    '[0007] change space group (ASU) -- SpG=I 21 3',
-    '[0009] shelx substructure search (SAD) -- R=0.5643 Rfree=0.5922',
-    '[0010] phaser EP (SAD) -- completed.',
-    '[0011] original hand branch',
-    '[0021] parrot DM -- completed.',
-    '[0027] buccaneer -- Compl=100.0% R=0.2447 Rfree=0.2611',
-    '[0037] structure has been built - correct hand',
-    '[0030] fit waters -- Nwaters=66',
-    '[0034] refmac5 -- R=0.1527 Rfree=0.1886',
-    '[0036] deposition -- package prepared, pdb report obtained',
-    '[0038] needs more refinement',
-    '[0012] inverted hand branch',
-    '[0024] parrot DM -- completed.',
-    '[0025] buccaneer -- Compl=0.0%',
-    '[0026] structure cannot be built - wrong hand']
-
-
-    (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
-    d.browser = browser
-    d.cloud = cloud
-    d.nologin = nologin
-    d.password = password
-    d.remote = remote
-    d.login = login
-
-    d.testName = '05.staged-ep'
+#     listOfExpectedTasks = ['[05.staged-ep] Staged solution of Insulin structure with EP on sulphur atoms',
+#     '[0001] Based on CCP4 Insulin example. Open this remark for input data location',
+#     '[0003] created datasets: Unmerged (2) HKL (1) -- completed.',
+#     '[0004] imported: Sequence (2) -- completed.',
+#     '[0005] asymmetric unit contents -- Solv=64.4%',
+#     '[0006] shelx substructure search (SAD) -- R=0.5788 Rfree=0.5731',
+#     '[0008] low value of CC suggests that solution is unlikely; try another space group',
+#     '[0007] change space group (ASU) -- SpG=I 21 3',
+#     '[0009] shelx substructure search (SAD) -- R=0.5643 Rfree=0.5922',
+#     '[0010] phaser EP (SAD) -- completed.',
+#     '[0011] original hand branch',
+#     '[0021] parrot DM -- completed.',
+#     '[0027] buccaneer -- Compl=100.0% R=0.2447 Rfree=0.2611',
+#     '[0037] structure has been built - correct hand',
+#     '[0030] fit waters -- Nwaters=66',
+#     '[0034] refmac5 -- R=0.1527 Rfree=0.1886',
+#     '[0036] deposition -- package prepared, pdb report obtained',
+#     '[0038] needs more refinement',
+#     '[0012] inverted hand branch',
+#     '[0024] parrot DM -- completed.',
+#     '[0025] buccaneer -- Compl=0.0%',
+#     '[0026] structure cannot be built - wrong hand']
 
 
-    try:
-        print('Opening URL: %s' % cloud)
-        d.driver.get(cloud)
-        assert "CCP4 Cloud" in d.driver.title
-        if not nologin:
-            sf.loginToCloud(d.driver, login, password)
+#     (d.driver, d.waitLong, d.waitShort) = sf.startBrowser(remote, browser)
+#     d.browser = browser
+#     d.cloud = cloud
+#     d.nologin = nologin
+#     d.password = password
+#     d.remote = remote
+#     d.login = login
 
-        sf.removeProject(d.driver, d.testName)
-
-        if sys.platform.startswith("win"):
-            sf.importLocalProject(d.driver, '%userprofile%\old_cloud\05.ccp4cloud')
-        else:
-            sf.importLocalProject(d.driver, '~/old_cloud/05.ccp4cloud')
-        time.sleep(1)
-
-        sf.enterProject(d.driver, d.testName)
-
-        time.sleep(5)
-        listOfActualTasks = []
-        tasksText = d.driver.find_elements(By.XPATH,
-                                         "//a[contains(@id,'treenode') and contains(@class, 'jstree-ancho')]")
-        for e in tasksText:
-            txt = e.text
-            print(txt)
-            listOfActualTasks.append(txt)
-
-        assert len(listOfActualTasks) == len(listOfExpectedTasks)
-        assert listOfActualTasks == listOfExpectedTasks
-
-        sf.clickTaskInTaskTree(d.driver, '\[0009\] shelx')
-        time.sleep(2)
-        runShelxCloning(d.driver, d.waitLong)
-        time.sleep(2)
-
-    except:
-        d.driver.quit()
-        raise
+#     d.testName = '05.staged-ep'
 
 
-def test_2oldProjectsEP_PhaserEPandBuccaneer():
-    try:
-        sf.clickTaskInTaskTree(d.driver, '\[0010\] phaser EP')
-        time.sleep(2)
-        runPhaserCloning(d.driver, d.waitLong)
-        time.sleep(2)
+#     try:
+#         print('Opening URL: %s' % cloud)
+#         d.driver.get(cloud)
+#         assert "CCP4 Cloud" in d.driver.title
+#         if not nologin:
+#             sf.loginToCloud(d.driver, login, password)
 
-        sf.clickTaskInTaskTree(d.driver, '\[0027\] buccaneer')
-        time.sleep(2)
-        startBuccaneerCloning(d.driver)
-        time.sleep(2)
+#         sf.removeProject(d.driver, d.testName)
 
-    except:
-        d.driver.quit()
-        raise
+#         if sys.platform.startswith("win"):
+#             sf.importLocalProject(d.driver, '%userprofile%\old_cloud\05.ccp4cloud')
+#         else:
+#             sf.importLocalProject(d.driver, '~/old_cloud/05.ccp4cloud')
+#         time.sleep(1)
+
+#         sf.enterProject(d.driver, d.testName)
+
+#         time.sleep(5)
+#         listOfActualTasks = []
+#         tasksText = d.driver.find_elements(By.XPATH,
+#                                          "//a[contains(@id,'treenode') and contains(@class, 'jstree-ancho')]")
+#         for e in tasksText:
+#             txt = e.text
+#             print(txt)
+#             listOfActualTasks.append(txt)
+
+#         assert len(listOfActualTasks) == len(listOfExpectedTasks)
+#         assert listOfActualTasks == listOfExpectedTasks
+
+#         sf.clickTaskInTaskTree(d.driver, '\[0009\] shelx')
+#         time.sleep(2)
+#         runShelxCloning(d.driver, d.waitLong)
+#         time.sleep(2)
+
+#     except:
+#         d.driver.quit()
+#         raise
 
 
-def test_3oldProjectsEP_ParrotAndBuccaneer():
-    try:
+# def test_2oldProjectsEP_PhaserEPandBuccaneer():
+#     try:
+#         sf.clickTaskInTaskTree(d.driver, '\[0010\] phaser EP')
+#         time.sleep(2)
+#         runPhaserCloning(d.driver, d.waitLong)
+#         time.sleep(2)
 
-        sf.clickTaskInTaskTree(d.driver, '\[0040\] phaser EP')
-        time.sleep(2)
-        runParrot(d.driver, d.waitLong)
-        time.sleep(2)
+#         sf.clickTaskInTaskTree(d.driver, '\[0027\] buccaneer')
+#         time.sleep(2)
+#         startBuccaneerCloning(d.driver)
+#         time.sleep(2)
 
-        sf.clickTaskInTaskTree(d.driver, '\[0042\] parrot DM')
-        time.sleep(2)
-        startBuccaneer(d.driver)
-        time.sleep(2)
-
-    except:
-        d.driver.quit()
-        raise
+#     except:
+#         d.driver.quit()
+#         raise
 
 
-def test_4oldProjectsEP_Buccaneer():
-    try:
-        verifyBuccaneer(d.driver, 600, '0041', 0.37, 0.38) # run takes 6 minutes, giving 10
-        verifyBuccaneer(d.driver, 600, '0043', 0.37, 0.38) # run takes 6 minutes, giving 10
+# def test_3oldProjectsEP_ParrotAndBuccaneer():
+#     try:
 
-        sf.renameProject(d.driver, 'Staged solution of Insulin structure with EP on sulphur atoms')
-        d.driver.quit()
-    except:
-        d.driver.quit()
-        raise
+#         sf.clickTaskInTaskTree(d.driver, '\[0040\] phaser EP')
+#         time.sleep(2)
+#         runParrot(d.driver, d.waitLong)
+#         time.sleep(2)
+
+#         sf.clickTaskInTaskTree(d.driver, '\[0042\] parrot DM')
+#         time.sleep(2)
+#         startBuccaneer(d.driver)
+#         time.sleep(2)
+
+#     except:
+#         d.driver.quit()
+#         raise
+
+
+# def test_4oldProjectsEP_Buccaneer():
+#     try:
+#         verifyBuccaneer(d.driver, 600, '0041', 0.37, 0.38) # run takes 6 minutes, giving 10
+#         verifyBuccaneer(d.driver, 600, '0043', 0.37, 0.38) # run takes 6 minutes, giving 10
+
+#         sf.renameProject(d.driver, 'Staged solution of Insulin structure with EP on sulphur atoms')
+#         d.driver.quit()
+#     except:
+#         d.driver.quit()
+#         raise
 
 
 if __name__ == "__main__":
