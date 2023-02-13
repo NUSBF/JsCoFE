@@ -768,11 +768,11 @@ function readConfiguration ( confFilePath,serverType )  {
           fe_server.storage = _make_path ( fe_server.storage,null );
     else  fe_server.storage = storagePath;
 
-    if (this.isArchive())  {
+    if (fe_server.isArchive())  {
       for (var fsname in fe_server.archivePath)
         if (fe_server.archivePath[fsname].type=='prime-volume')
-          this.archivePrimePath = fe_server.archivePath[fsname].path;
-      if (!this.archivePrimePath)  {
+        fe_server.archivePrimePath = fe_server.archivePath[fsname].path;
+      if (!fe_server.archivePrimePath)  {
         // log.error ( 40,'prime volume for CCP4 Cloud Archive not specified -- stop' );
         return 'prime volume for CCP4 Cloud Archive not specified';
       }

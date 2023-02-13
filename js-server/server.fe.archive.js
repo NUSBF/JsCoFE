@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.01.23   <--  Date of Last Modification.
+ *    13.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,6 +31,7 @@ const checkDiskSpace = require('check-disk-space').default;
 const conf      = require('./server.configuration');
 const utils     = require('./server.utils');
 const cmd       = require('../js-common/common.commands');
+const comut     = require('../js-common/common.utils');
 const user      = require('./server.fe.user');
 const prj       = require('./server.fe.projects');
 const task_t    = require('../js-common/tasks/common.tasks.template');
@@ -46,7 +47,260 @@ const emailer   = require('./server.emailer');
 //  prepare log
 const log = require('./server.log').newLog(27);
 
+
 // ==========================================================================
+
+const annot_fname    = 'annot.index';
+const deplogin_fname = 'deplogin.index';
+const depname_fname  = 'depname.index';
+const depemail_fname = 'depemail.index';
+const depdate_fname  = 'depdate.index';
+const prid_fname     = 'prid.index';
+const pdb_fname      = 'pdb.index';
+const doi_fname      = 'doi.index';
+const kwd_fname      = 'kwd.index';
+
+
+var annot_index      = {};
+var deplogin_index   = {};
+var depname_index    = {};
+var depemail_index   = {};
+var depdate_index    = {};
+var prid_index       = {};
+var pdb_index        = {};
+var doi_index        = {};
+var kwd_index        = {};
+
+
+function clearIndex()  {
+  annot_index      = {};
+  deplogin_index   = {};
+  depname_index    = {};
+  depemail_index   = {};
+  depdate_index    = {};
+  prid_index       = {};
+  pdb_index        = {};
+  doi_index        = {};
+  kwd_index        = {};
+}
+
+
+function loadIndex()  {
+var primePath = conf.getFEConfig().archivePrimePath;
+  
+  if (!primePath)  {
+    log.error ( 2,'attempt to load archive index while archive is not configured' );
+    return -1;   // archive is not configured
+  }
+
+  var ipath = path.join ( primePath,annot_fname );
+  if (!utils.fileExists(ipath))  {
+    // all new index
+    clearIndex();
+    log.standard ( 11,'archive index is initialised' );
+    return 1;  // Ok
+  }
+
+  annot_index    = utils.readObject ( ipath );
+  deplogin_index = utils.readObject ( path.join(primePath,deplogin_fname) );
+  depname_index  = utils.readObject ( path.join(primePath,depname_fname ) );
+  depemail_index = utils.readObject ( path.join(primePath,depemail_fname) );
+  depdate_index  = utils.readObject ( path.join(primePath,depdate_fname ) );
+  prid_index     = utils.readObject ( path.join(primePath,prid_fname    ) );
+  pdb_index      = utils.readObject ( path.join(primePath,pdb_fname     ) );
+  doi_index      = utils.readObject ( path.join(primePath,doi_fname     ) );
+  kwd_index      = utils.readObject ( path.join(primePath,kwd_fname     ) );
+
+  if ((!annot_index)    || (!deplogin_index) || (!depname_index) || 
+      (!depemail_index) || (!depdate_index)  || (!prid_index)    || 
+      (!pdb_index)      || (!doi_index)      || (!kwd_index))  {
+    log.error ( 3,'archive index is corrupt' );
+    return -2;  // corrupt index
+  }
+
+  return 0;  // Ok
+
+}
+
+
+function saveIndex()  {
+var primePath = conf.getFEConfig().archivePrimePath;
+
+  if (!primePath)  {
+    log.error ( 5,'attempt to save archive index while archive is not configured' );
+    return -1;   // archive is not configured
+  }
+
+  if ((!utils.writeObject(path.join(primePath,annot_fname   ),annot_index   )) ||
+      (!utils.writeObject(path.join(primePath,deplogin_fname),deplogin_index)) ||
+      (!utils.writeObject(path.join(primePath,depname_fname ),depname_index )) ||
+      (!utils.writeObject(path.join(primePath,depemail_fname),depemail_index)) ||
+      (!utils.writeObject(path.join(primePath,depdate_fname ),depdate_index )) ||
+      (!utils.writeObject(path.join(primePath,prid_fname    ),prid_index    )) ||
+      (!utils.writeObject(path.join(primePath,pdb_fname     ),pdb_index     )) ||
+      (!utils.writeObject(path.join(primePath,doi_fname     ),doi_index     )) ||
+      (!utils.writeObject(path.join(primePath,kwd_fname     ),kwd_index)))  {
+    log.error ( 6,'errors at saving archive index, possibly index is corrupt' );
+    return -2;   // archive is not configured
+  }
+
+  return 0;
+
+}
+
+
+function _add_to_archive_index ( projectDesc )  {
+// Archive index structure:
+//
+// depositor login index:
+// deplogin_index = {
+//   login1 : [aid1,aid2,...],
+//   .........
+// }
+//
+// depositor name index (duplicated for names and surnames):
+// depname_index = {
+//   name1 : [aid1,aid2,...],
+//   .........
+// }
+//
+// depositor e-mail index
+// depemail_index = {
+//   email1 : [aid1,aid2,...],
+//   .........
+// }
+//
+// deposition date index
+// depdate_index = {
+//   year : { m00 : [aid1,aid2,...],
+//            m01 : [...],
+//            .........
+//          },
+//   .........
+// }
+//
+// project ID index
+// prid_index = {
+//   projectId1 : [aid1,aid2,...],
+//   .........
+// }
+//
+// pdb code index
+// pdb_index = {
+//   pdbcode1 : [aid1,aid2,...],
+//   .........
+// }
+//
+// publication doi index
+// doi_index = {
+//   doi1 : [aid1,aid2,...],
+//   .........
+// }
+//
+// keyword index
+// kwd_index = {
+//   kwd1 : [aid1,aid2,...],
+//   .........
+// }
+//
+
+var pa  = projectDesc.archive;
+var aid = pa.id;
+
+  function _add_to_index ( index,key )  {
+    if (!(key in index))       index[key] = [];
+    if (!(aid in index[key]))  index[key].push ( aid );
+  }
+
+  function _list_to_index ( index,keylist,minkeylength )  {
+    for (var i=0;i<keylist.length;i++)  {
+      var key = keylist[i].trim();
+      if (key.length>=minkeylength)
+        _add_to_index ( index,key );
+    }
+  }
+
+  annot_index[aid] = pa;
+  
+  _add_to_index ( deplogin_index,pa.depositor.login );
+
+  var name_lst = comut.replaceAll ( comut.replaceAll ( 
+                            pa.depositor.name,'.',' '), ',',' ' ).split(' ');
+  _list_to_index ( depname_index,name_lst,2 );
+
+  _add_to_index ( depemail_index,pa.depositor.email );
+
+  for (var i=0;i<pa.date.length;i++)  {
+    var date  = new Date(pa.date[i]);
+    var year  = date.getFullYear();
+    var month = date.getMonth();
+    if (!(year in depdate_index))
+      depdate_index[year] = [
+        [],[],[], [],[],[], [],[],[], [],[],[]
+      ];
+    if (!(aid in depdate_index[year][month]))
+      depdate_index[year][month].push ( aid );
+  }
+
+  _add_to_index  ( prid_index,pa.project_name );
+  _list_to_index ( pdb_index,pa.pdbs,4 );
+  _list_to_index ( doi_index,pa.dois,4 );
+  _list_to_index ( kwd_index,pa.kwds,1 );
+
+}
+
+
+function addToIndex ( projectDesc )  {
+  if (!projectDesc)  {
+    log.error ( 8,'empty project description attempted for archive indexing' );
+    return -3;
+  }
+  if (loadIndex()<0)
+    return -1;
+  _add_to_archive_index ( projectDesc );
+  if (saveIndex()<0)
+    return -2;
+  return 0;
+}
+
+
+function generateIndex()  {
+var fe_config = conf.getFEConfig();
+
+  if (!fe_config.isArchive())  {
+    log.error ( 7,'attempt to generate archive index while archive is not configured' );
+    return -1;
+  }
+
+  clearIndex();
+  log.standard ( 12,'archive index is initialised' );
+
+  for (var fsname in fe_config.archivePath)  {
+    var adir_path = fe_config.archivePath[fsname].path;
+    fs.readdirSync(adir_path).forEach(function(file,index){
+      var curPath = path.join ( adir_path,file );
+      var lstat   = fs.lstatSync(curPath);
+      if (lstat.isDirectory())  {
+        var pdesc_path  = path.join ( curPath,prj.projectDescFName );
+        var projectDesc = utils.readObject ( pdesc_path );
+        if (projectDesc)  {
+          _add_to_archive_index ( projectDesc );
+          console.log ( ' ... added ' + curPath );
+        } else 
+          log.warning ( 1,'project description is not found at  ' + pdesc_path );
+      }
+    });
+  }
+
+  if (saveIndex()<0)
+    return -2;
+
+  return 0;
+
+}
+
+
+// --------------------------------------------------------------------------
 
 function getArchiveDirPath ( archDiskName,archiveID )  {
   return path.join ( conf.getFEConfig().archivePath[archDiskName].path,archiveID );
@@ -378,6 +632,12 @@ var uData       = user.suspendUser ( loginData,true,'' );
                     archiveID + '; login ' + loginData.login + ', archive disk ' +
                     adname );
               }
+              
+              // update archive index
+
+              addToIndex ( utils.readObject(path.join(archiveDirPath,prj.projectDescFName)) );
+
+
               // add e-mail to user
 
               emailer.sendTemplateMessage ( uData,
@@ -524,7 +784,10 @@ var archPrjPath = findArchivedProject(archiveID)[0];
 
 }
 
+
 // ==========================================================================
 // export for use in node
+
 module.exports.archiveProject        = archiveProject;
+module.exports.generateIndex         = generateIndex;
 module.exports.accessArchivedProject = accessArchivedProject;
