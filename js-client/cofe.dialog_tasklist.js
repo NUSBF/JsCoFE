@@ -633,9 +633,7 @@ var row      = 0;
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
-      new TaskHelloWorld   (),
-      new TaskSC           ()
-
+      new TaskHelloWorld   ()
     ],false);
 
   }
@@ -793,6 +791,7 @@ var row      = 0;
     new TaskZanuda    (),
     new TaskPrivateer (),
     new TaskPISA      (),
+    new TaskSC        (),
     new TaskDeposition(),
     new TaskContact   (),
     new TaskRotamer   (),

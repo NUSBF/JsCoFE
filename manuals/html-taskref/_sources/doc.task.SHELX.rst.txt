@@ -8,9 +8,9 @@ The programs `SHELXC, SHELXD and SHELXE <https://journals.iucr.org/a/issues/2008
 SHELXC\D
 ========
 
-The program SHELXC provides a statistical analysis of the input data, estimates the marker-atom structure factors F:sub:`A`and the phase shifts α and sets up the files for SHELXD wich used for solving the substructure (i.e. locating the marker atoms).
+The program SHELXC provides a statistical analysis of the input data, estimates the marker-atom structure factors F\ :sub:`A`\ and the phase shifts α and sets up the files for SHELXD wich used for solving the substructure (i.e. locating the marker atoms).
 
-SHELXC outputs a file ``_fa.hkl`` containing h, k, l, F:sub:`A`, σ(FA) and the phase shift α for use by SHELXD for substructure solution and by SHELXE for calculating starting phases for the density modification and a file ``_fa.ins`` containing the crystal data and instructions for running SHELXD. ``The α estimates are only required for SHELXE``. SHELXD writes a ``_fa.res`` file in SHELX format for the best substructure solution, which in turn is read by SHELXE. *Content of outputs files you can find at* ``Main Log`` *window.*
+SHELXC outputs a file ``_fa.hkl`` containing h, k, l, F\ :sub:`A`\ , σ(FA) and the phase shift α for use by SHELXD for substructure solution and by SHELXE for calculating starting phases for the density modification and a file ``_fa.ins`` containing the crystal data and instructions for running SHELXD. ``The α estimates are only required for SHELXE``. SHELXD writes a ``_fa.res`` file in SHELX format for the best substructure solution, which in turn is read by SHELXE. *Content of outputs files you can find at* ``Main Log`` *window.*
 
 In general the critical parameters for locating heavy atoms with SHELXD are:
 
@@ -45,7 +45,7 @@ SHELXE autotracing algorithm is primarily designed to obtain a toehold in maps w
     
 The global cycle consists of density modification followed by autotracing include 20 cycles by default. This is usually a good choice, but it might be worth increasing if the solvent content is very high.
     
-SHELXE always uses σ:sub:`A`weights based on the correlation coefficient between the calculated and native E-values as a function of resolution to combine different sources of phase information. A correlation coefficient between the native intensities and those calculated from the trace (CC of a partial structure against native data) is a guide as to whether the structure has been solved or not. In the case of experimental phasing and native data extending to a resolution of 2.5 Å or better, *solutions with a CC of 25% or higher were invariably "solved".*
+SHELXE always uses σ\ :sub:`A`\ weights based on the correlation coefficient between the calculated and native E-values as a function of resolution to combine different sources of phase information. A correlation coefficient between the native intensities and those calculated from the trace (CC of a partial structure against native data) is a guide as to whether the structure has been solved or not. In the case of experimental phasing and native data extending to a resolution of 2.5 Å or better, *solutions with a CC of 25% or higher were invariably "solved".*
     
     **Criteria to tell if phasing worked:**
     
