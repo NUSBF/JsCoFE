@@ -2,18 +2,18 @@
 /*
  *  =================================================================
  *
- *    11.01.23   <--  Date of Last Modification.
+ *    14.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-client/cofe.dialog_access_archive.js
+ *  **** Module  :  js-client/cofe.dialog_search_archive.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Project Archive Dialog (archives given project)
+ *  **** Content :  Search Archive Dialog (fetches Archive IDs)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022-2023
+ *  (C) E. Krissinel, A. Lebedev 2023
  *
  *  =================================================================
  *
@@ -25,15 +25,14 @@
 'use strict';
 
 // -------------------------------------------------------------------------
-// AccessArchiveDialog class
+// SearchArchiveDialog class
 
-function AccessArchiveDialog ( callback_func )  {
+function SearchArchiveDialog ( callback_func )  {
 
   Widget.call ( this,'div' );
-  this.element.setAttribute ( 'title','Access ' + appName() + ' archive' );
+  this.element.setAttribute ( 'title','Search ' + appName() + ' archive' );
   document.body.appendChild ( this.element );
 
-  this.aID_inp = null;
   this.makeLayout();
 
   var self = this;
@@ -50,11 +49,11 @@ function AccessArchiveDialog ( callback_func )  {
                   $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
                 },
     buttons   : [
-      { id    : 'archdlg_access_btn',
-        text  : 'Access',
+      { id    : 'archdlg_search_btn',
+        text  : 'Search',
         click : function() {
                   (function(dlg){
-                    self.accessProject ( function(done){
+                    self.searchArchive ( function(done){
                       if (done)  {
                         callback_func ( true );
                         $(dlg).dialog('close');
@@ -63,7 +62,7 @@ function AccessArchiveDialog ( callback_func )  {
                   }(this))
                 }
       }, {
-        id    : 'archdlg_cancel_btn',
+        id    : 'archdlg_search_cancel_btn',
         text  : 'Cancel', 
         click : function() { 
                   callback_func ( false );
@@ -76,10 +75,10 @@ function AccessArchiveDialog ( callback_func )  {
 
 }
 
-AccessArchiveDialog.prototype = Object.create ( Widget.prototype );
-AccessArchiveDialog.prototype.constructor = AccessArchiveDialog;
+SearchArchiveDialog.prototype = Object.create ( Widget.prototype );
+SearchArchiveDialog.prototype.constructor = SearchArchiveDialog;
 
-AccessArchiveDialog.prototype.makeLayout = function()  {
+SearchArchiveDialog.prototype.makeLayout = function()  {
 
   this.grid = new Grid('');
   this.addWidget ( this.grid );
@@ -89,61 +88,52 @@ AccessArchiveDialog.prototype.makeLayout = function()  {
   this.grid.setImage    ( image_path('folder_cloud_archive'),'48px','48px', 1,0,1,1 );
   this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
 
-  this.grid.setLabel    ( '<h2>Access ' + appName() + ' Archive</h2>',0,2,2,1 );        
-
+  this.grid.setLabel    ( '<h2>Search ' + appName() + ' Archive</h2>',0,2,2,1 );        
   this.grid.setVerticalAlignment ( 0,2,'middle' );
+  this.grid.setLabel    ( '<hr/>Provide as many filters as possible',1,2,1,1 )
+           .setFontItalic(true).setFontSize('80%').setNoWrap();
 
-  this.grid.setHLine ( 2, 2,2, 1,1 );
+  // this.grid.setHLine ( 2, 2,2, 1,1 );
 
-  var panel = this.grid.setPanel ( 3,2,1,1 );
-  // $(panel.element).css({
-  //   'width'      : 700,
-  //   'height'     : 300,
-  //   'overflow-y' : 'auto'
-  // });
+  var pgrid = this.grid.setGrid ( '-compact', 2,2,1,1 );
+  pgrid.setLabel ( 'Depositor name:',0,0,1,1 ).setNoWrap();
+  this.dname  = pgrid.setInputText ( '',0,1,1,1 ).setWidth ( '300px' )
+                     .setStyle ( 'text','','John R. Nobody','Depositor name if known' );
+  pgrid.setLabel ( 'Depositor login:',1,0,1,1 ).setNoWrap();
+  this.dlogin = pgrid.setInputText ( '',1,1,1,1 ).setWidth ( '300px' )
+                     .setStyle ( 'text','','j.r.nobody','Depositor login name if known' );
+  pgrid.setLabel ( 'Deposition year:',2,0,1,1 ).setNoWrap();
+                    
 
-  var pgrid = new Grid ( '-compact' );
-  panel.addWidget ( pgrid );
+  // pgrid.setLabel ( 'Provide as many filters as possible',0,0,1,4 )
+  //      .setFontItalic(true).setFontSize('80%').setNoWrap();
 
-  pgrid.setLabel ( 'Access project with Archive ID:',0,0,1,1 ).setNoWrap();
-  this.aID_inp = pgrid.setInputText ( '',0,1,1,1 ).setWidth ( '200px' )
-                      .setStyle ( 'text','','CCP4-XXX.YYYY',
-                                  appName() + ' Archive ID of project to access' )
-                      .addOnInputListener(function(){
-                        var s = this.value.trim().toUpperCase();
-                        if (s && (!s.match(/^[0-9A-Z.\\-]+$/)))
-                          s = s.slice(0,-1);
-                        this.value = s;
-                      });
 
-  pgrid.setLabel ( '&nbsp;',1,0,1,1 ).setNoWrap();
+  // var panel = this.grid.setPanel ( 3,2,1,1 );
+  // // $(panel.element).css({
+  // //   'width'      : 700,
+  // //   'height'     : 300,
+  // //   'overflow-y' : 'auto'
+  // // });
 
-  pgrid.setLabel ( 'Do not have Archive ID?',2,0,1,1 ).setFontItalic(true).setNoWrap();
-  pgrid.setButton ( 'find Archive ID',image_path('search'),2,1,1,1 )
-       .addOnClickListener(function(){
-         new SearchArchiveDialog ( function(){} );
-       });
 
-  pgrid.setVerticalAlignment   ( 0,0,'middle' );
-  pgrid.setVerticalAlignment   ( 0,1,'middle' );
-  pgrid.setVerticalAlignment   ( 2,0,'middle' );
-  pgrid.setHorizontalAlignment ( 2,0,'right'  );
-  pgrid.setVerticalAlignment   ( 2,1,'middle' );
+  // pgrid.setLabel ( 'Access project with Archive ID:',0,0,1,1 ).setNoWrap();
+  // this.aID_inp = pgrid.setInputText ( '',0,1,1,1 ).setWidth ( '200px' )
+  //                     .setStyle ( 'text','','CCP4-XXX.YYYY',
+  //                                 appName() + ' Archive ID of project to access' )
+  //                     .addOnInputListener(function(){
+  //                       var s = this.value.trim().toUpperCase();
+  //                       if (s && (!s.match(/^[0-9A-Z.\\-]+$/)))
+  //                         s = s.slice(0,-1);
+  //                       this.value = s;
+  //                     });
+
+  // pgrid.setVerticalAlignment ( 0,0,'middle' );
+  // pgrid.setVerticalAlignment ( 0,1,'middle' );
 
 }
 
-
-// function isValidArchiveID ( archiveID )  {
-// var lst = archiveID.split('-');
-//   if (lst.length==2)  {
-//     // lst = lst[1].split('.');
-//     // return ((lst.length==2) && (lst[0].length==3) && (lst[1].length==4));
-//     return (lst[1].length>0) && (lst[1].length<=8);
-//   }
-//   return false;
-// }
-
-
+/*
 function accessArchProject ( archiveID,mode,callback_func )  {
 
   serverRequest ( fe_reqtype.accessArchivedPrj,{
@@ -247,39 +237,29 @@ function accessArchProject ( archiveID,mode,callback_func )  {
   },null,'persist' );
  
 }
+*/
 
+SearchArchiveDialog.prototype.searchArchive = function ( callback_func )  {
 
-AccessArchiveDialog.prototype.accessProject = function ( callback_func )  {
-
-  var archiveID = this.aID_inp.getValue().trim().toUpperCase();
+  // var archiveID = this.aID_inp.getValue().trim().toUpperCase();
   
-  if (!archiveID)  {
-    new MessageBox ( 'Archive ID not given',
-        '<div style="width:300px"><h2>Archive ID not given</h2>' +
-        '<i>Please provide a valid ' + appName() + ' Archive ID.</i></div>',
-        'msg_stop' );
-    callback_func ( false );
-    return;
-  }
-  
-  // if (!isValidArchiveID(archiveID))  {
-  //   new MessageBox ( 'Invalid Archive ID',
-  //       '<div style="width:300px"><h2>Invalid Archive ID</h2>' +
-  //       '<i>Please provide a valid ' + appName() + ' Archive ID, which '+
-  //       'follows the following pattern: "ABCD-XXX.YYY".</i></div>',
+  // if (!archiveID)  {
+  //   new MessageBox ( 'Archive ID not given',
+  //       '<div style="width:300px"><h2>Archive ID not given</h2>' +
+  //       '<i>Please provide a valid ' + appName() + ' Archive ID.</i></div>',
   //       'msg_stop' );
   //   callback_func ( false );
   //   return;
   // }
+  
+  // $( '#archdlg_access_btn' ).button('disable');
+  // $( '#archdlg_cancel_btn' ).button('disable');
 
-  $( '#archdlg_access_btn' ).button('disable');
-  $( '#archdlg_cancel_btn' ).button('disable');
-
-  accessArchProject ( archiveID,'strict',function(done){
-    $( '#archdlg_access_btn' ).button('enable');
-    $( '#archdlg_cancel_btn' ).button('enable');
-    callback_func ( done );
-  });
+  // accessArchProject ( archiveID,'strict',function(done){
+  //   $( '#archdlg_access_btn' ).button('enable');
+  //   $( '#archdlg_cancel_btn' ).button('enable');
+  //   callback_func ( done );
+  // });
 
 /*
 
