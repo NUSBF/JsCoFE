@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.12.22   <--  Date of Last Modification.
+ *    15.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Number Cruncher Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -154,6 +154,9 @@ function start()  {
 
   //  make request listener
   server.on ( 'request', function(server_request,server_response)  {
+
+    server_response.setHeader ( 'Cross-Origin-Opener-Policy'  ,'same-origin'  );
+    server_response.setHeader ( 'Cross-Origin-Embedder-Policy','require-corp' );
 
     try {
 
