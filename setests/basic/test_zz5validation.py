@@ -36,7 +36,7 @@ def addSlice(driver):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(1)
+    time.sleep(3)
 
     try:
         wait = WebDriverWait(driver, 600) # 10 minutest wait
@@ -50,25 +50,19 @@ def addSlice(driver):
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
-
+    time.sleep(3)
+    
     finished = False
 
     textEls = driver.find_elements_by_xpath( "//*[normalize-space()='%s']" % '2 models generated')   
     for textEl in reversed(textEls):
         if textEl.is_displayed():
             finished = True 
-    time.sleep(3)
+
+    time.sleep(1)
 
     assert finished == True
 
-
-    time.sleep(10)
-
-
-    # presing Close button
-    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-    closeButton.click()
-    time.sleep(1)
 
     return ()
 
