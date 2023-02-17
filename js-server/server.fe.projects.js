@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.02.23   <--  Date of Last Modification.
+ *    17.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -2656,10 +2656,19 @@ var jobId       = data.meta.id;
   //     writeProjectData ( loginData,pData,true );
   // }
 
-  var jobDataPath = getJobDataPath ( loginData,projectName,jobId );
+  var jobDirPath = getJobDirPath ( loginData,projectName,jobId );
 
-  if (utils.fileExists(jobDataPath) && utils.writeObject(jobDataPath,data.meta))  {
-    response = new cmd.Response ( cmd.fe_retcode.ok,'',{ 'project_missing':false } );
+  if (utils.fileExists(jobDirPath))  {
+    var fpath = path.join    ( jobDirPath,data.fpath );
+    var fdir  = path.dirname ( fpath );
+    if (fdir)
+      utils.mkPath ( fdir );
+    if (utils.writeString(fpath,data.data))
+          response = new cmd.Response ( cmd.fe_retcode.ok,'',
+                                        { 'project_missing':false } );
+    else  response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                        '[00038] Job file cannot be written.',
+                                        { 'project_missing':false } );
   } else  {
     if (data.is_shared &&
         (!utils.fileExists(getProjectDataPath(loginData,projectName))))
@@ -2667,7 +2676,7 @@ var jobId       = data.meta.id;
                                     { 'project_missing':true } );
     if (!response)
       response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                    '[00031] Job metadata cannot be written.',
+                                    '[00039] Job metadata cannot be written.',
                                     { 'project_missing':null } );
   }
 

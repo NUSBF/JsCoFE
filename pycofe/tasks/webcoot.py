@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.02.23   <--  Date of Last Modification.
+#    17.02.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -59,58 +59,119 @@ class WebCoot(basic.TaskDriver):
     #                    return code
     #    return None
 
-    def replace_ligand_code ( self,fpath,oldCode,newCode,rename=False ):
-        f = open(fpath,"r")
-        data = f.read()
-        f.close()
-        os.remove ( fpath )
-        if rename:
-            if oldCode in fpath:
-                fwpath   = fpath.replace ( oldCode,newCode )
-            else:
-                fn, fext = os.path.splitext ( fpath )
-                fwpath   = fn + "-" + newCode + fext
-        else:
-            fwpath = fpath
-        f = open(fwpath,"w")
-        f.write ( data.replace(oldCode,newCode) )
-        f.close()
-        return fwpath
+    # def replace_ligand_code ( self,fpath,oldCode,newCode,rename=False ):
+    #     f = open(fpath,"r")
+    #     data = f.read()
+    #     f.close()
+    #     os.remove ( fpath )
+    #     if rename:
+    #         if oldCode in fpath:
+    #             fwpath   = fpath.replace ( oldCode,newCode )
+    #         else:
+    #             fn, fext = os.path.splitext ( fpath )
+    #             fwpath   = fn + "-" + newCode + fext
+    #     else:
+    #         fwpath = fpath
+    #     f = open(fwpath,"w")
+    #     f.write ( data.replace(oldCode,newCode) )
+    #     f.close()
+    #     return fwpath
 
 
     # ------------------------------------------------------------------------
 
-    def addLigandToLibrary ( self,libPath,ligCode,ligPath,ligList ):
-        # returns path to ligand library whith new ligand included
+    # def addLigandToLibrary ( self,libPath,ligCode,ligPath,ligList ):
+    #     # returns path to ligand library whith new ligand included
 
-        if not ligPath:  # nothing to include
-            return (libPath,ligList)
+    #     if not ligPath:  # nothing to include
+    #         return (libPath,ligList)
 
-        if not libPath:  # nowhere to include
-            return (ligPath,ligList+[ligCode])
+    #     if not libPath:  # nowhere to include
+    #         return (ligPath,ligList+[ligCode])
 
-        if ligCode in ligList:  # no need to include
-            return (libPath,ligList)
+    #     if ligCode in ligList:  # no need to include
+    #         return (libPath,ligList)
 
-        self.open_stdin()
-        self.write_stdin (
-            "_Y"          +\
-            "\n_FILE_L  " + libPath +\
-            "\n_FILE_L2 " + ligPath +\
-            "\n_FILE_O  " + self.outputFName +\
-            "\n_END\n" )
-        self.close_stdin()
+    #     self.open_stdin()
+    #     self.write_stdin (
+    #         "_Y"          +\
+    #         "\n_FILE_L  " + libPath +\
+    #         "\n_FILE_L2 " + ligPath +\
+    #         "\n_FILE_O  " + self.outputFName +\
+    #         "\n_END\n" )
+    #     self.close_stdin()
 
-        self.runApp ( "libcheck",[],logType="Service" )
+    #     self.runApp ( "libcheck",[],logType="Service" )
 
-        return ( self.outputFName+".lib",ligList+[ligCode] )
+    #     return ( self.outputFName+".lib",ligList+[ligCode] )
 
     # ------------------------------------------------------------------------
 
     def run(self):
 
+        # revision  = self.makeClass ( self.input_data.data.revision[0] )
+        istruct   = self.makeClass ( self.input_data.data.istruct [0] )
+        # mtzfile   = istruct.getMTZFilePath ( self.inputDir() )
+        # lead_key  = istruct.leadKey
+
+        # Check for PDB files left by Coot and make the corresponding output revisions
+
+        pdbout     = [f for f in os.listdir('./') if f.lower().endswith(".pdb")]
+        hasResults = False
+
+        if len(pdbout)<=0:
+            self.putTitle   ( "No Output Structure Produced" )
+            self.putMessage ( "<i style=\"color:maroon\">" +\
+                              "Have you saved your results in CCP4 Cloud?</i>" )
+        else:
+            self.putTitle ( "Output Results" )
+
+        outputSerialNo = 0
+        for fout in pdbout:
+
+            outputSerialNo += 1
+
+            molName = os.path.splitext ( os.path.basename(fout) )[0]
+            self.putMessage ( "<h3>Output Structure" +\
+                    self.hotHelpLink ( "Structure","jscofe_qna.structure") +\
+                    " #" + str(outputSerialNo) + " \"" + molName + "\"</h3>" )
+
+            ostruct = self.registerStructure ( fout,
+                                    istruct.getSubFilePath(self.inputDir()),
+                                    istruct.getMTZFilePath(self.inputDir()),
+                                    istruct.getMapFilePath(self.inputDir()),
+                                    istruct.getDMapFilePath(self.inputDir()),
+                                    libPath=istruct.getLibFilePath(self.inputDir()),
+                                    leadKey=istruct.leadKey,copy_files=False,
+                                    map_labels=istruct.mapLabels,
+                                    refiner=istruct.refiner )
+            if ostruct:
+                ostruct.copyAssociations   ( istruct )
+                ostruct.addDataAssociation ( istruct.dataId )  # ???
+                ostruct.copySubtype        ( istruct )
+                ostruct.copyLigands        ( istruct )
+                ostruct.copyLabels         ( istruct )
+                # if not xyzout:
+                #     oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
+                #self.putMessage (
+                #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                #    oxyz.dname )
+                self.putStructureWidget ( self.getWidgetId("structure_btn"),
+                                            "Structure and electron density",
+                                            ostruct )
+                # update structure revision
+                revision = self.makeClass ( self.input_data.data.revision[0] )
+                revision.setStructureData ( ostruct  )
+
+                self.putMessage ( "<h3>Structure Revision" +\
+                    self.hotHelpLink ( "Structure Revision",
+                                    "jscofe_qna.structure_revision") + "</h3>" )
+                self.registerRevision ( revision,serialNo=outputSerialNo,
+                                        title="" )
+                hasResults = True
+
         self.task.nc_type = "browser"
-        self.success ( True )
+        self.success ( hasResults )
         return
 
         """

@@ -440,7 +440,7 @@ class Coot(coot_ce.CootCE):
                     summary_line += " from backup copy"
 
         else:
-            self.putTitle ( "No Output Structure Generated" )
+            self.putTitle ( "No Output Structure Produced" )
 
 
         # ============================================================================

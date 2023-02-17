@@ -260,10 +260,11 @@ if (!__template)  {
 
 
 
-        html = html.replace ( '[[inputFiles]]',JSON.stringify(inputFiles) );
+        html = html.replace ( '[[meta]]',JSON.stringify({'project':self.project,'id':self.id}) )
+                   .replace ( '[[inputFiles]]',JSON.stringify(inputFiles) );
 
         wab.iframe.setHTML ( html );
-      
+
       },
       null,
       function(errcode){
