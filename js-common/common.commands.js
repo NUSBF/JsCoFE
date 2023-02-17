@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    15.02.23   <--  Date of Last Modification.
+ *    16.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
 // var jsCoFE_version = '1.7.009 [23.12.2022]';
-var jsCoFE_version = '1.7.010 [15.02.2023]';
+var jsCoFE_version = '1.7.010 [16.02.2023]';
 
 function appVersion()  {
   return jsCoFE_version;
@@ -144,6 +144,7 @@ var fe_reqtype = {
   importProject     : '-importProject',     // request to save import a project
   shareProject      : '-shareProject',      // request to share a project
   saveJobData       : '-saveJobData',       // request to save job data
+  saveJobFile       : '-saveJobFile',       // request to save file in job directory
   runJob            : '-runJob',            // request to run job
   replayJob         : '-replayJob',         // request to replay job
   stopJob           : '-stopJob',           // request to stop job

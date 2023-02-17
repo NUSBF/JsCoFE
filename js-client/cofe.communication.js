@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.02.23   <--  Date of Last Modification.
+ *    16.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -781,8 +781,7 @@ function fetchJobOutputFile ( task,fname,function_success,function_always,functi
               function_success,function_always,function_fail );
 }
   
-  
-  
+
 
 function getJobFileURL ( jobId,filePath )  {
   var url = __special_url_tag + '/';
@@ -830,3 +829,23 @@ function setQuitDestructor()  {
 
 }
 */
+
+if (window.addEventListener) {
+  window.addEventListener ( 'message', onWindowMessage, false );
+} else if (window.attachEvent) {
+  window.attachEvent ( 'onmessage', onWindowMessage, false );
+} else 
+  alert ( 'No Window messaging' );
+
+function onWindowMessage(event) {
+    // Check sender origin to be trusted
+    // if (event.origin !== "http://example.com") return;
+
+    var data = event.data;
+
+    alert ( JSON.stringify(data) );
+
+    // if (typeof(window[data.func]) == "function") {
+    //     window[data.func].call(null, data.message);
+    // }
+}

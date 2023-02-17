@@ -1,28 +1,9 @@
-<!doctype html>
-  <html lang="en" class="scroller">
-
-  <head>
-
-    <title>Moorhen</title>
-
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="theme-color" content="#000000"/>
-    <meta name="description" content="Web site created using create-react-app"/>
-
-    <link rel="icon" href="./favicon.ico"/>
-    <link rel="apple-touch-icon" href="./public/logo192.png"/>
-    <link rel="manifest" href="./manifest.json"/>
-    <link rel="icon" href="./favicon.ico">
-    <link href="./maindd0ddc75c24601355a61.css" rel="stylesheet">
-
-    <script>// See https://github.com/facebook/react/issues/20829#issuecomment-802088260
-      if (!crossOriginIsolated) SharedArrayBuffer = ArrayBuffer; 
-      window.onload = () => {
-        createCCP4Module({
-          print(t) { console.log(["output", t]) },
-          printErr(t) { console.log(["output", t]); }
-        })
+<!doctype html><html lang="en" class="scroller"><head><meta charset="utf-8"/><link rel="icon" href="./favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><meta name="description" content="Web site created using create-react-app"/><link rel="apple-touch-icon" href="./public/logo192.png"/><link rel="manifest" href="./manifest.json"/><script>// See https://github.com/facebook/react/issues/20829#issuecomment-802088260
+    if (!crossOriginIsolated) SharedArrayBuffer = ArrayBuffer;</script><script>window.onload = () => {
+      createCCP4Module({
+        print(t) { console.log(["output", t]) },
+        printErr(t) { console.log(["output", t]); }
+      })
         .then(function (CCP4Mod) {
           window.CCP4Module = CCP4Mod;
         })
@@ -30,13 +11,10 @@
           console.log("CCP4 problem :(");
           console.log(e);
         });
-      }
-    </script>
-    <script src="./baby-gru/wasm/web_example.js"></script>
-    <script>
-      window.moorhenInput = {
+    }</script><script src="./baby-gru/wasm/web_example.js"></script><script>window.moorhenInput = {
         rootId: "root",
         urlPrefix: ".",
+        exportToCloudCallback: (molName, molData) => {console.log({name: molName, data: molData})},
         inputFiles: [
           {type: 'pdb', args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule"]},
           {type: 'mtz', args: [
@@ -48,12 +26,4 @@
             {F: "DELFWT", PHI: "PHDELWT", isDifference: true, useWeight: false, calcStructFact: false}
           ]}
         ]
-      }
-    </script>
-    <script defer="defer" src="./main.js"></script>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
-</html>
+      }</script><title>Moorhen</title><link rel="icon" href="./favicon.ico"><script defer="defer" src="./main.js"></script><link href="./maindd0ddc75c24601355a61.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
