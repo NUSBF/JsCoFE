@@ -39,6 +39,16 @@
       window.moorhenInput = {
         rootId     : "root",
         urlPrefix  : ".",
+        exportToCloudCallback : (molName, molData) => {
+
+          window.parent.postMessage({
+              'molecule' : molName,
+              'data'     : molData
+          }, '*' );
+
+          console.log ( '\n\n **** molname: ' + JSON.stringify(molName) );
+          console.log ( '\n\n **** moldata: ' + JSON.stringify(molData) );
+        },
         inputFiles : [[inputFiles]]
       }
     </script>

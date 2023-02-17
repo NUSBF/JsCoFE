@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.12.22   <--  Date of Last Modification.
+ *    16.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Server-side utility functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -36,17 +36,17 @@ const _is_windows = /^win/.test(process.platform);
 
 // ==========================================================================
 
-function fileExists ( path )  {
+function fileExists ( fpath )  {
   try {
-    return fs.lstatSync(path); // || fs.lstatSync(path);
+    return fs.lstatSync(fpath); // || fs.lstatSync(path);
   } catch (e)  {
     return null;
   }
 }
 
-function isSymbolicLink ( path )  {
+function isSymbolicLink ( fpath )  {
   try {
-    var stat = fs.lstatSync(path); // || fs.lstatSync(path);
+    var stat = fs.lstatSync(fpath); // || fs.lstatSync(path);
     if (stat && stat.isSymbolicLink())
       return stat;
     return null;
@@ -55,9 +55,9 @@ function isSymbolicLink ( path )  {
   }
 }
 
-function dirExists ( path )  {
+function dirExists ( fpath )  {
   try {
-    var stat = fs.statSync(path);
+    var stat = fs.statSync(fpath);
     if (stat)
       return stat.isDirectory();
     return null;
@@ -67,18 +67,18 @@ function dirExists ( path )  {
 }
 
 
-function fileSize ( path ) {
+function fileSize ( fpath ) {
   try {
-    return fs.statSync(path)['size'];
+    return fs.statSync(fpath)['size'];
   } catch (e)  {
     return 0;
   }
 }
 
 
-function removeFile ( path ) {
+function removeFile ( fpath ) {
   try {
-    fs.unlinkSync ( path );
+    fs.unlinkSync ( fpath );
     return true;
   } catch (e)  {
     return false;
@@ -86,9 +86,9 @@ function removeFile ( path ) {
 }
 
 
-function readString ( path )  {
+function readString ( fpath )  {
   try {
-    return fs.readFileSync(path).toString();
+    return fs.readFileSync(fpath).toString();
   } catch (e)  {
     return null;
   }
@@ -107,18 +107,18 @@ function makeSymLink ( pathToTarget,pathToOrigin )  {
 }
 
 
-function readObject ( path )  {
+function readObject ( fpath )  {
   try {
-    return JSON.parse ( fs.readFileSync(path).toString() );
+    return JSON.parse ( fs.readFileSync(fpath).toString() );
   } catch (e)  {
     return null;
   }
 }
 
 
-function readClass ( path ) {  // same as object but with class functions
+function readClass ( fpath ) {  // same as object but with class functions
   try {
-    return class_map.getClassInstance ( fs.readFileSync(path).toString() );
+    return class_map.getClassInstance ( fs.readFileSync(fpath).toString() );
   } catch (e)  {
     return null;
   }
@@ -163,12 +163,12 @@ function writeString ( path,data_string )  {
 }
 */
 
-function writeString ( path,data_string )  {
+function writeString ( fpath,data_string )  {
   try {
-    fs.writeFileSync ( path,data_string );
+    fs.writeFileSync ( fpath,data_string );
     return true;
   } catch (e)  {
-    log.error ( 1,'cannot write file ' + path +
+    log.error ( 1,'cannot write file ' + fpath +
                   ' error: ' + JSON.stringify(e) );
     console.error(e);
     return false;
@@ -176,12 +176,12 @@ function writeString ( path,data_string )  {
 }
 
 
-function appendString ( path,data_string )  {
+function appendString ( fpath,data_string )  {
   try {
-    fs.appendFileSync ( path,data_string );
+    fs.appendFileSync ( fpath,data_string );
     return true;
   } catch (e)  {
-    log.error ( 2,'cannot write file ' + path +
+    log.error ( 2,'cannot write file ' + fpath +
                   ' error: ' + JSON.stringify(e) );
     console.error(e);
     return false;
@@ -235,24 +235,24 @@ function writeObject ( path,dataObject )  {
 }
 */
 
-function writeObject ( path,dataObject )  {
+function writeObject ( fpath,dataObject )  {
 
   var json_str = '';
   try {
     // json_str = JSON.stringify ( dataObject );
     json_str = JSON.stringify ( dataObject,null,2 );
   } catch (e) {
-    log.error ( 31,'attempt to write corrupt data object at ' + path +
+    log.error ( 31,'attempt to write corrupt data object at ' + fpath +
                    ' error: ' + JSON.stringify(e) );
     console.error(e);
     return false;
   }
 
   try {
-    fs.writeFileSync ( path,json_str );
+    fs.writeFileSync ( fpath,json_str );
     return true;
   } catch (e)  {
-    log.error ( 3,'cannot write file ' + path );
+    log.error ( 3,'cannot write file ' + fpath );
     console.error(e);
     return false;
   }
@@ -419,6 +419,19 @@ function mkDir_anchor ( dirPath )  {
     if (!dirExists(dirPath))
       fs.mkdirSync ( dirPath );
     fs.writeFileSync ( path.join(dirPath,'__anchor__'),'anchor' );
+    return true;
+  } catch (e)  {
+    log.error ( 7,'cannot create directory or write anchor ' + dirPath +
+                  ' error: ' + JSON.stringify(e) );
+    return false;
+  }
+}
+
+
+function mkPath ( dirPath )  {
+  try {
+    if (!fs.existsSync(dirPath))
+      fs.mkdirSync ( dirPath, { recursive: true } );
     return true;
   } catch (e)  {
     log.error ( 7,'cannot create directory or write anchor ' + dirPath +
@@ -970,6 +983,7 @@ module.exports.copyDirAsync          = copyDirAsync;
 module.exports.mkDir                 = mkDir;
 module.exports.mkDir_check           = mkDir_check;
 module.exports.mkDir_anchor          = mkDir_anchor;
+module.exports.mkPath                = mkPath;
 module.exports.cleanDir              = cleanDir;
 module.exports.cleanDirExt           = cleanDirExt;
 module.exports.removeSymLinks        = removeSymLinks;

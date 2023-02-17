@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.02.23   <--  Date of Last Modification.
+ *    16.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -2638,6 +2638,46 @@ var jobId       = data.meta.id;
 
 // ===========================================================================
 
+function saveJobFile ( loginData,data )  {
+//
+//   data : {
+//     meta  : task_obj, // only 'project' and 'id' fields are used
+//     fpath : file_path_in_task_directory
+//     data  : file_content
+//   }
+//
+var response    = null;
+var projectName = data.meta.project;
+var jobId       = data.meta.id;
+
+  // if (data.update_tree)  {
+  //   var pData = readProjectData ( loginData,projectName );
+  //   if (pData)
+  //     writeProjectData ( loginData,pData,true );
+  // }
+
+  var jobDataPath = getJobDataPath ( loginData,projectName,jobId );
+
+  if (utils.fileExists(jobDataPath) && utils.writeObject(jobDataPath,data.meta))  {
+    response = new cmd.Response ( cmd.fe_retcode.ok,'',{ 'project_missing':false } );
+  } else  {
+    if (data.is_shared &&
+        (!utils.fileExists(getProjectDataPath(loginData,projectName))))
+      response = new cmd.Response ( cmd.fe_retcode.ok,'project_missing',
+                                    { 'project_missing':true } );
+    if (!response)
+      response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                    '[00031] Job metadata cannot be written.',
+                                    { 'project_missing':null } );
+  }
+
+  return response;
+
+}
+
+
+// ===========================================================================
+
 function getJobFile ( loginData,data )  {
 var response    = null;
 var projectName = data.meta.project;
@@ -2723,4 +2763,5 @@ module.exports.getOutputDirPath       = getOutputDirPath;
 module.exports.getInputFilePath       = getInputFilePath;
 module.exports.getOutputFilePath      = getOutputFilePath;
 module.exports.saveJobData            = saveJobData;
+module.exports.saveJobFile            = saveJobFile;
 module.exports.getJobFile             = getJobFile;

@@ -323,8 +323,8 @@ JobDialog.prototype.setDlgState = function()  {
     // }(this));
   } else  {
     if (this.run_image) this.run_image.setVisible ( isRunning );
-    if (this.stop_btn)  this.stop_btn .setVisible ( isRunning && (dlg.task.nc_type!='browser') );
-    if (this.end_btn)   this.end_btn  .setVisible ( isRunning && (dlg.task.nc_type!='browser') );
+    if (this.stop_btn)  this.stop_btn .setVisible ( isRunning && (this.task.nc_type!='browser') );
+    if (this.end_btn)   this.end_btn  .setVisible ( isRunning && (this.task.nc_type!='browser') );
   }
 
   var title = '';
