@@ -73,7 +73,6 @@ def slicendiceVerification(driver, waitLong):
 
     rWork = 1.0
     rFree = 1.0
-    startTime = time.time()
     success = False
 
     while (True):
@@ -84,23 +83,27 @@ def slicendiceVerification(driver, waitLong):
         if match:
             rWork = float(match.group(3))
             rFree = float(match.group(4))
+            # print(rWork)
+            # print(rFree)
             
-            if (rWork == 1.0) or (rFree == 1.0):
-                print('*** Verification: could not find Rwork or Rfree value after Slice-n-Dice run')
-                break
-                
-        
-            else:
-                print('*** Verification: Slice-n-Dice Rwork is %0.4f (expecting <0.32), Rfree is %0.4f (expecing <0.34)' % (rWork, rFree))
-                assert rWork < 0.32
-                assert rFree < 0.34
-                success = True
-                break
+        if (rWork == 1.0) or (rFree == 1.0):
+            print('*** Verification: could not find Rwork or Rfree value after Slice-n-Dice run')
+            break
 
         curTime = time.time()
         if curTime > startTime + float(waitLong):
             print('*** Timeout for validateStructurePrediction results! Waited for long time plus %d seconds.' % waitLong)
             break
+            
+    
+        else:
+            print('*** Verification: Slice-n-Dice Rwork is %0.4f(expecting <0.32), Rfree is %0.5f (expecing <0.34)' % (rWork, rFree))
+            assert rWork < 0.32
+            assert rFree < 0.34
+            success = True
+            break
+
+        
                 
             
 
@@ -167,7 +170,8 @@ def addSliceNDice(driver):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(10)
+
+    time.sleep(16)
 
 
     # presing Close button
@@ -211,7 +215,7 @@ def test_slicenDiceBasic(browser,
         addSliceNDice(d.driver)
         sf.clickTaskInTaskTree(d.driver, '\[0003\]')
         addSlice(d.driver)
-        sf.doubleClickTaskInTaskTree(d.driver, '\[0004\]')
+        sf.clickTaskInTaskTree(d.driver, '\[0004\]')
         slicendiceVerification(d.driver, 1300)
         sf.renameProject(d.driver, d.testName)
 
