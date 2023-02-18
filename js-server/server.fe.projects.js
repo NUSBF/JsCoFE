@@ -2475,10 +2475,11 @@ function importProject ( loginData,upload_meta )  {
 
 
 function startDemoImport ( loginData,meta )  {
-  var rc        = cmd.fe_retcode.ok;
-  var rc_msg    = 'success';
-  var tempdir   = getProjectTmpDir ( loginData,true );
-  var duplicate = false;
+var rc        = cmd.fe_retcode.ok;
+var rc_msg    = 'success';
+var rdata     = { 'status' : 'ok' };
+var tempdir   = getProjectTmpDir ( loginData,true );
+var duplicate = false;
 
   if (tempdir)  {
 
@@ -2514,11 +2515,13 @@ function startDemoImport ( loginData,meta )  {
           });
       } else  {
         rc     = cmd.fe_retcode.fileNotFound;
-        rc_msg = 'Demo project ' + meta.demoprj.name + ' does not exist';
+        rc_msg = 'Demo project<h3>' + meta.demoprj.name + '</h3>does not exist';
+        rdata.status = 'no_project';
       }
     } else  {
       rc     = cmd.fe_retcode.fileNotFound;
-      rc_msg = 'Cannot calculate path for demo project ' + meta.demoprj.name;
+      rc_msg = 'Cannot calculate path for demo Project<h3>' + meta.demoprj.name + '</h3>';
+      rdata.status = 'no_path';
     }
 
   } else {
@@ -2526,7 +2529,7 @@ function startDemoImport ( loginData,meta )  {
     rc_msg = 'Cannot make project directory for demo import';
   }
 
-  return new cmd.Response ( rc,rc_msg,{} );
+  return new cmd.Response ( rc,rc_msg,rdata );
 
 }
 
