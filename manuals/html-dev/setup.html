@@ -53,9 +53,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -446,10 +444,10 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="setup--page-root"><span class="section-number">1. </span>Setup<a class="headerlink" href="#setup--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="setup--page-root"><span class="section-number">1. </span>Setup<a class="headerlink" href="#setup--page-root" title="Permalink to this headline">¶</a></h1>
 <p>In this Section, we describe the most popular CCP4 Cloud setup, comprising one Front-End Server (<strong>FE</strong>) and one or more Number Crunchers (<strong>NCs</strong>).</p>
 
-<h2 id="prerequisites-and-general-notes"><span class="section-number">1.1. </span>Prerequisites and general notes<a class="headerlink" href="#prerequisites-and-general-notes" title="Permalink to this heading">¶</a></h2>
+<h2 id="prerequisites-and-general-notes"><span class="section-number">1.1. </span>Prerequisites and general notes<a class="headerlink" href="#prerequisites-and-general-notes" title="Permalink to this headline">¶</a></h2>
 <p>The Setup procedure is described in terms of servers and file systems, rather than machines (hardware hosts). Allocation of servers to hosts, virtual or real, should be done in respect to your requirements and resources. In simplest case, all servers can be placed on the same host. A few points should be taken into account:</p>
 <ul class="simple">
 <li><strong>FE</strong> does not perform computations, but should be efficient for file operations and network communication.</li>
@@ -520,7 +518,7 @@
 </div>
 
 
-<h2 id="setup-procedure"><span class="section-number">1.2. </span>Setup procedure<a class="headerlink" href="#setup-procedure" title="Permalink to this heading">¶</a></h2>
+<h2 id="setup-procedure"><span class="section-number">1.2. </span>Setup procedure<a class="headerlink" href="#setup-procedure" title="Permalink to this headline">¶</a></h2>
 <p>All actions, except 1 and 9, should be done in the designated CCP4 Cloud account on respective hosts (excluding <a class="reference internal" href="#appendix-f"><span class="std std-ref">Apache configuration</span></a>).</p>
 <ol class="arabic">
 <li><p class="first">Install CCP4 (see details in <a class="reference internal" href="#appendix-a"><span class="std std-ref">Appendix A</span></a>).</p>
@@ -612,7 +610,7 @@
 <p><strong>The End.</strong></p>
 
 
-<h2 id="configuration-of-ccp4-cloud-clients"><span class="section-number">1.3. </span>Configuration of CCP4 Cloud Clients<a class="headerlink" href="#configuration-of-ccp4-cloud-clients" title="Permalink to this heading">¶</a></h2>
+<h2 id="configuration-of-ccp4-cloud-clients"><span class="section-number">1.3. </span>Configuration of CCP4 Cloud Clients<a class="headerlink" href="#configuration-of-ccp4-cloud-clients" title="Permalink to this headline">¶</a></h2>
 <p>It is recommended that users access CCP4 Cloud via CCP4 Cloud Client, rather than direct web-link in browser. Using CCP4 Cloud Client allows to use interactive graphical software, such as <code class="docutils literal notranslate"><span class="pre">Coot</span></code>, with the remote CCP4 Cloud instance.</p>
 <p>CCP4 Cloud Client is launched by clicking on icon with CCP4 Diamond, cloud and Wi-Fi sign, found in CCP4 Setup 8.0 on user machines. By default, it connects to CCP4 Cloud run by CCP4 at Harwell, and should be re-configured for using your own CCP4 Cloud instance. For that, launch CCP4 Cloud Client Configurator by clicking on icon with CCP4 Diamond, cloud and gear sign, and change the URL in the field provided. In terms, used in this document, the URL will be</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="o">.</span><span class="n">mysite</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">ccp4cloud</span><span class="o">/</span>
@@ -627,7 +625,7 @@
 </div>
 
 
-<h2 id="maintenance-and-updates"><span class="section-number">1.4. </span>Maintenance and Updates<a class="headerlink" href="#maintenance-and-updates" title="Permalink to this heading">¶</a></h2>
+<h2 id="maintenance-and-updates"><span class="section-number">1.4. </span>Maintenance and Updates<a class="headerlink" href="#maintenance-and-updates" title="Permalink to this headline">¶</a></h2>
 <p>CCP4 Cloud can be started and restarted as below:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
 <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
@@ -648,11 +646,11 @@
 </div>
 
 
-<h2 id="contact"><span class="section-number">1.5. </span>Contact<a class="headerlink" href="#contact" title="Permalink to this heading">¶</a></h2>
+<h2 id="contact"><span class="section-number">1.5. </span>Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h2>
 <p>In case of problems with CCP4 Cloud setup or questions on further customisation of your CCP4 Cloud instance, do not hesitate to contact CCP4 at <a class="reference external" href="mailto:ccp4%40ccp4.ac.uk" rel="noopener noreferrer" target="_blank">ccp4<span>@</span>ccp4<span>.</span>ac<span>.</span>uk</a> .</p>
 
 
-<span id="appendix-a"></span><h2 id="appendix-a-installation-of-ccp4"><span class="section-number">1.6. </span>Appendix A. Installation of CCP4<a class="headerlink" href="#appendix-a-installation-of-ccp4" title="Permalink to this heading">¶</a></h2>
+<span id="appendix-a"></span><h2 id="appendix-a-installation-of-ccp4"><span class="section-number">1.6. </span>Appendix A. Installation of CCP4<a class="headerlink" href="#appendix-a-installation-of-ccp4" title="Permalink to this headline">¶</a></h2>
 <p>The latest CCP4 can be conveniently installed with the following script:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Installing the latest CCP4 version series 7.1 for Linux (minimal configuration)
 cd /path/to/CCP4
@@ -671,7 +669,7 @@ exit
 </div>
 
 
-<span id="appendix-b"></span><h2 id="appendix-b-adjusting-configuration-file-for-number-cruncher-servers"><span class="section-number">1.7. </span>Appendix B. Adjusting configuration file for Number Cruncher Servers<a class="headerlink" href="#appendix-b-adjusting-configuration-file-for-number-cruncher-servers" title="Permalink to this heading">¶</a></h2>
+<span id="appendix-b"></span><h2 id="appendix-b-adjusting-configuration-file-for-number-cruncher-servers"><span class="section-number">1.7. </span>Appendix B. Adjusting configuration file for Number Cruncher Servers<a class="headerlink" href="#appendix-b-adjusting-configuration-file-for-number-cruncher-servers" title="Permalink to this headline">¶</a></h2>
 <p>Below is an <em>excerpt</em> of <strong>NC</strong> configuration settings that must be revised. Other settings are for fine tuning and development, and can be left as is in most cases. Please refer to <a class="reference internal" href="configuration.html#ccp4-cloud-configuration"><span class="std std-ref">CCP4 Cloud configuration reference</span></a> for more details :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 
@@ -760,7 +758,7 @@ exit
 </dl>
 
 
-<span id="appendix-c"></span><h2 id="appendix-c-adjusting-configuration-file-for-the-front-end-server"><span class="section-number">1.8. </span>Appendix C. Adjusting configuration file for the Front-End Server<a class="headerlink" href="#appendix-c-adjusting-configuration-file-for-the-front-end-server" title="Permalink to this heading">¶</a></h2>
+<span id="appendix-c"></span><h2 id="appendix-c-adjusting-configuration-file-for-the-front-end-server"><span class="section-number">1.8. </span>Appendix C. Adjusting configuration file for the Front-End Server<a class="headerlink" href="#appendix-c-adjusting-configuration-file-for-the-front-end-server" title="Permalink to this headline">¶</a></h2>
 <p>Below is an <em>excerpt</em> of <strong>FE</strong> configuration settings that must be revised. Other settings are for fine tuning and development, and can be left as is in most cases. Please refer to <a class="reference internal" href="configuration.html#ccp4-cloud-configuration"><span class="std std-ref">CCP4 Cloud configuration reference</span></a> for more details :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 
@@ -864,7 +862,7 @@ exit
 </dl>
 
 
-<span id="appendix-d"></span><h2 id="appendix-d-adjusting-start-script-for-number-cruncher-servers"><span class="section-number">1.9. </span>Appendix D. Adjusting start script for Number Cruncher Servers<a class="headerlink" href="#appendix-d-adjusting-start-script-for-number-cruncher-servers" title="Permalink to this heading">¶</a></h2>
+<span id="appendix-d"></span><h2 id="appendix-d-adjusting-start-script-for-number-cruncher-servers"><span class="section-number">1.9. </span>Appendix D. Adjusting start script for Number Cruncher Servers<a class="headerlink" href="#appendix-d-adjusting-start-script-for-number-cruncher-servers" title="Permalink to this headline">¶</a></h2>
 <p>Replace paths in the following lines of the provided <strong>NC</strong> start script (<code class="docutils literal notranslate"><span class="pre">/path/to/NC/start-nc.sh</span></code>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ccp4_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">CCP4</span><span class="o">/</span><span class="n">ccp4</span><span class="o">-</span><span class="mf">7.1</span>
 <span class="n">nc_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC</span>
@@ -876,7 +874,7 @@ exit
 <p><strong>PDB_DIR</strong> is the local location of a pdb mirror, <strong>PDB_SEQDB</strong> is the sequence listings for the full set of pdb entries (available to download from the PDB <a class="reference external" href="https://files.wwpdb.org/pub/pdb/derived_data/" rel="noopener noreferrer" target="_blank">ftp area</a>) and <strong>AFDB_SEQDB</strong> is the sequence listings for the full set of entries in the EBI AlphaFold Database (also available to download from the EBI-AFDB <a class="reference external" href="https://ftp.ebi.ac.uk/pub/databases/alphafold/" rel="noopener noreferrer" target="_blank">ftp area</a>)</p>
 
 
-<span id="appendix-e"></span><h2 id="appendix-e-adjusting-start-script-for-the-front-end-server"><span class="section-number">1.10. </span>Appendix E. Adjusting start script for the Front-End Server<a class="headerlink" href="#appendix-e-adjusting-start-script-for-the-front-end-server" title="Permalink to this heading">¶</a></h2>
+<span id="appendix-e"></span><h2 id="appendix-e-adjusting-start-script-for-the-front-end-server"><span class="section-number">1.10. </span>Appendix E. Adjusting start script for the Front-End Server<a class="headerlink" href="#appendix-e-adjusting-start-script-for-the-front-end-server" title="Permalink to this headline">¶</a></h2>
 <p>Replace paths in the following lines of the provided <strong>FE</strong> start script (<code class="docutils literal notranslate"><span class="pre">/path/to/FE/start-fe.sh</span></code>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ccp4_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">CCP4</span><span class="o">/</span><span class="n">ccp4</span><span class="o">-</span><span class="mf">7.1</span>
 <span class="n">fe_dir</span><span class="o">=/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span>
@@ -887,7 +885,7 @@ exit
 </div>
 
 
-<span id="appendix-f"></span><h2 id="appendix-f-adjusting-apache-configuration-on-host-machines"><span class="section-number">1.11. </span>Appendix F. Adjusting Apache configuration on host machines<a class="headerlink" href="#appendix-f-adjusting-apache-configuration-on-host-machines" title="Permalink to this heading">¶</a></h2>
+<span id="appendix-f"></span><h2 id="appendix-f-adjusting-apache-configuration-on-host-machines"><span class="section-number">1.11. </span>Appendix F. Adjusting Apache configuration on host machines<a class="headerlink" href="#appendix-f-adjusting-apache-configuration-on-host-machines" title="Permalink to this headline">¶</a></h2>
 <p>CCP4 Cloud’s Front-End Server listens to the specified port of the <em>localhost</em> service running on their host machines. External requests from users must be redirected to that port. In order to do that:</p>
 <ol class="arabic">
 <li><p class="first">Note the port number and <code class="docutils literal notranslate"><span class="pre">externalURL's</span></code> path in <strong>FE</strong> <a class="reference internal" href="#appendix-c"><span class="std std-ref">configuration</span></a>. In this document, the suggested values are <code class="docutils literal notranslate"><span class="pre">8085</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;=ccp4cloud</span></code>, respectively.</p>
@@ -934,7 +932,7 @@ exit
 <p>If <strong>NC</strong> is placed on a host machine, different from <strong>FE’s</strong> host, then DNS-resolved <code class="docutils literal notranslate"><span class="pre">externalURL</span></code> should be specified in its configuration, and the corresponding redirection module provided for it, in exactly the same fashion as above.</p>
 
 
-<span id="appendix-g"></span><h2 id="appendix-g-tests-and-checks"><span class="section-number">1.12. </span>Appendix G. Tests and checks<a class="headerlink" href="#appendix-g-tests-and-checks" title="Permalink to this heading">¶</a></h2>
+<span id="appendix-g"></span><h2 id="appendix-g-tests-and-checks"><span class="section-number">1.12. </span>Appendix G. Tests and checks<a class="headerlink" href="#appendix-g-tests-and-checks" title="Permalink to this headline">¶</a></h2>
 <p>After starting CCP4 Cloud and Apache servers:</p>
 <ol class="arabic">
 <li><p class="first">Check <strong>FE</strong> and <strong>NC’s</strong> log files:</p>
@@ -1037,7 +1035,7 @@ exit
 </ol>
 
 
-<span id="appendix-h"></span><h2 id="appendix-h-creating-1st-user-with-administrative-privileges"><span class="section-number">1.13. </span>Appendix H. Creating 1st user with administrative privileges<a class="headerlink" href="#appendix-h-creating-1st-user-with-administrative-privileges" title="Permalink to this heading">¶</a></h2>
+<span id="appendix-h"></span><h2 id="appendix-h-creating-1st-user-with-administrative-privileges"><span class="section-number">1.13. </span>Appendix H. Creating 1st user with administrative privileges<a class="headerlink" href="#appendix-h-creating-1st-user-with-administrative-privileges" title="Permalink to this headline">¶</a></h2>
 <p>Admin user account is essential for CCP4 Cloud maintenance. By default, CCP4 Cloud is installed with <code class="docutils literal notranslate"><span class="pre">devel</span></code> user, which cannot be removed. Admin users can grant admin privileges to any other user, but 1st Admin must be created manually:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">devel</span><span class="o">.</span><span class="n">user</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">users</span><span class="o">/</span><span class="n">admin</span><span class="o">.</span><span class="n">user</span>
 <span class="n">cp</span> <span class="o">-</span><span class="n">r</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">devel</span><span class="o">.</span><span class="n">projects</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">disk1</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">admin</span><span class="o">.</span><span class="n">projects</span>
@@ -1101,7 +1099,7 @@ exit
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

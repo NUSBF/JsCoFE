@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.01.23   <--  Date of Last Modification.
+ *    18.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -116,19 +116,24 @@ AccessArchiveDialog.prototype.makeLayout = function()  {
                         this.value = s;
                       });
 
-  pgrid.setLabel ( '&nbsp;',1,0,1,1 ).setNoWrap();
-
-  pgrid.setLabel ( 'Do not have Archive ID?',2,0,1,1 ).setFontItalic(true).setNoWrap();
-  pgrid.setButton ( 'find Archive ID',image_path('search'),2,1,1,1 )
-       .addOnClickListener(function(){
-         new SearchArchiveDialog ( function(){} );
-       });
-
   pgrid.setVerticalAlignment   ( 0,0,'middle' );
   pgrid.setVerticalAlignment   ( 0,1,'middle' );
-  pgrid.setVerticalAlignment   ( 2,0,'middle' );
-  pgrid.setHorizontalAlignment ( 2,0,'right'  );
-  pgrid.setVerticalAlignment   ( 2,1,'middle' );
+
+  if (__user_role==role_code.developer)  {
+
+    pgrid.setLabel ( '&nbsp;',1,0,1,1 ).setNoWrap();
+
+    pgrid.setLabel ( 'Do not have Archive ID?',2,0,1,1 ).setFontItalic(true).setNoWrap();
+    pgrid.setButton ( 'find Archive ID',image_path('search'),2,1,1,1 )
+        .addOnClickListener(function(){
+          new SearchArchiveDialog ( function(){} );
+        });
+
+    pgrid.setVerticalAlignment   ( 2,0,'middle' );
+    pgrid.setHorizontalAlignment ( 2,0,'right'  );
+    pgrid.setVerticalAlignment   ( 2,1,'middle' );
+
+  }
 
 }
 

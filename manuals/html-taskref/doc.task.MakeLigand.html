@@ -53,9 +53,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -379,7 +377,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<span id="ligands-built"></span><h1 id="doc-task-makeligand--page-root">Make Ligand with Acedrg<a class="headerlink" href="#doc-task-makeligand--page-root" title="Permalink to this heading">¶</a></h1>
+<span id="ligands-built"></span><h1 id="doc-task-makeligand--page-root">Make Ligand with Acedrg<a class="headerlink" href="#doc-task-makeligand--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference external" href="http://scripts.iucr.org/cgi-bin/paper?S2059798317000067" rel="noopener noreferrer" target="_blank">AceDRG</a> is designed
 for the derivation of stereo-chemical information about monomers/ligands (or small
 molecules). It uses atom typing based on local chemical and topological environment
@@ -394,7 +392,7 @@ bond types.</p>
 lengths, angles for an unknown monomer/ligand. It also generates information on
 planar groups and stereo-chemical properties in the monomer/ligand</strong>.</p>
 
-<h2 id="what-the-task-is-used-for">What the task is used for<a class="headerlink" href="#what-the-task-is-used-for" title="Permalink to this heading">¶</a></h2>
+<h2 id="what-the-task-is-used-for">What the task is used for<a class="headerlink" href="#what-the-task-is-used-for" title="Permalink to this headline">¶</a></h2>
 <p>The <strong>Make Ligand</strong> task creates ligand description with AceDrg, using either a
 <a class="reference external" href="https://en.wikipedia.org/wiki/Simplified_molecular-input_line-entry_system" rel="noopener noreferrer" target="_blank">SMILE</a>
 string or the <a class="reference external" href="https://www.rcsb.org/pdb/staticHelp.do?p=help/advancedsearch/chemicalID.html" rel="noopener noreferrer" target="_blank">standard 3-letter code</a>
@@ -405,14 +403,14 @@ with Coot</strong> or <strong>Fit Ligand with Coot</strong>). After successful l
 tasks place the ligand description in the output Structure Revision.</p>
 
 
-<h2 id="ligand-descriptions-and-refinement">Ligand descriptions and refinement<a class="headerlink" href="#ligand-descriptions-and-refinement" title="Permalink to this heading">¶</a></h2>
+<h2 id="ligand-descriptions-and-refinement">Ligand descriptions and refinement<a class="headerlink" href="#ligand-descriptions-and-refinement" title="Permalink to this headline">¶</a></h2>
 <p>Ligand descriptions are also essential for structure refinement with either
 <strong>Refmac</strong> or <strong>Buster</strong>, if macromolecular model contains ligand coordinates. Both
 <strong>Refmac</strong> and <strong>Buster</strong> tasks receive ligand descriptions as part of input
 Structure Revision, usually after ligand fitting.</p>
 
 
-<h2 id="what-if-ligands-in-structural-model-were-not-obtained-with-ligand-fitting">What if ligands in structural model were not obtained with ligand fitting?<a class="headerlink" href="#what-if-ligands-in-structural-model-were-not-obtained-with-ligand-fitting" title="Permalink to this heading">¶</a></h2>
+<h2 id="what-if-ligands-in-structural-model-were-not-obtained-with-ligand-fitting">What if ligands in structural model were not obtained with ligand fitting?<a class="headerlink" href="#what-if-ligands-in-structural-model-were-not-obtained-with-ligand-fitting" title="Permalink to this headline">¶</a></h2>
 <p>Indeed, structural model with ligand coordinates may be imported or obtained
 from the PDB, in which case the corresponding ligand descriptions will be absent
 in Structure Revision, causing a failure in the refinement tasks. In this case:</p>
@@ -477,7 +475,7 @@ D73, 103-111.</a></p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

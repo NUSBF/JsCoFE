@@ -53,9 +53,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -279,7 +277,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="doc-tutorial-t2-003--page-root"><span class="section-number">5. </span>Structure prediction for Molecular Replacement<a class="headerlink" href="#doc-tutorial-t2-003--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="doc-tutorial-t2-003--page-root"><span class="section-number">5. </span>Structure prediction for Molecular Replacement<a class="headerlink" href="#doc-tutorial-t2-003--page-root" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://www.nature.com/articles/s41586-021-03819-2" rel="noopener noreferrer" target="_blank">AlphaFold2</a> and <a class="reference external" href="https://robetta.bakerlab.org/" rel="noopener noreferrer" target="_blank">RoseTTAFold</a> predicted models are widely acknowledged as good structure templates for Molecular Replacement (MR). This tutorial explains how to use predicted models as a search model for Molecular Replacement (MR). For this tutorial, we’ll use Sucrose-Phosphatase (SPP) from Synechocystis sp. PCC6803 in a closed conformation (PDB Entry - 1TJ3).</p>
 <p><code class="docutils literal notranslate"><span class="pre">1.</span></code>   All data required for this tutorial were already imported into the project. Please look at the import’s task output.</p>
 <p><code class="docutils literal notranslate"><span class="pre">2.</span></code> For obtaining the predicted model we will use CCP4 Cloud’s <a class="reference external" href="../html-taskref/doc.task.StructurePrediction.html" rel="noopener noreferrer" target="_blank">Structure Prediction</a> task, which uses AlphaFold-2 (in <a class="reference external" href="https://colab.research.google.com/github/aqlaboratory/openfold/blob/main/notebooks/OpenFold.ipynb" rel="noopener noreferrer" target="_blank">Openfold</a>  or <a class="reference external" href="https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb" rel="noopener noreferrer" target="_blank">ColabFold</a> implementation) for generating structure models from the given sequence: click <strong>add task =&gt; go to All tasks =&gt; Structure Prediction =&gt; Structure Prediction</strong></p>
@@ -347,7 +345,7 @@ This task prepares Single-Chain MR search model(s) for further use in molecular 
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

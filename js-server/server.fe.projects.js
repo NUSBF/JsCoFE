@@ -2659,16 +2659,23 @@ var jobId       = data.meta.id;
   var jobDirPath = getJobDirPath ( loginData,projectName,jobId );
 
   if (utils.fileExists(jobDirPath))  {
-    var fpath = path.join    ( jobDirPath,data.fpath );
-    var fdir  = path.dirname ( fpath );
-    if (fdir)
-      utils.mkPath ( fdir );
-    if (utils.writeString(fpath,data.data))
+    var fpath = path.join ( jobDirPath,data.fpath );
+    if (utils.writeString(fpath,data.data))  {
+      response = new cmd.Response ( cmd.fe_retcode.ok,'',
+                                    { 'project_missing':false } );
+    } else  {
+      var fdir = path.dirname ( fpath );
+      if (fdir!=jobDirPath)  {
+        utils.mkPath ( fdir );
+        if (utils.writeString(fpath,data.data))
           response = new cmd.Response ( cmd.fe_retcode.ok,'',
                                         { 'project_missing':false } );
-    else  response = new cmd.Response ( cmd.fe_retcode.writeError,
-                                        '[00038] Job file cannot be written.',
-                                        { 'project_missing':false } );
+      }
+      if (!response)
+        response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                      '[00038] Job file cannot be written.',
+                                      { 'project_missing':false } );
+    }
   } else  {
     if (data.is_shared &&
         (!utils.fileExists(getProjectDataPath(loginData,projectName))))
