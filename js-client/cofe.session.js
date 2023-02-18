@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.01.23   <--  Date of Last Modification.
+ *    18.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,7 +47,7 @@ function startSession ( sceneId,dev_switch )  {
     // alert ( JSON.stringify(__url_parameters) );
     if ((window.location.href.indexOf('localhost')<0) ||
         (window.location.href.indexOf('127.0.0.1')<0))  {
-      var lpath = window.location.pathname.substr(1).split('/');  // skip first slash
+      var lpath = window.location.pathname.slice(1).split('/');  // skip first slash
       var wpath = '/';
       if ((lpath.length>0) && lpath[0])
         wpath = '/' + lpath[0] + '/';
@@ -271,11 +271,17 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                             function(done){
                               if (done)
                                 makeProjectPage ( sceneId );
-                              else
-                                new MessageBox ( 'Project not found',
-                                  '<div style="width:400px"><h2>Project not found</h2>' +
-                                  'Project <b>' + __url_parameters.id + '</b> not found in ' +
-                                  appName() + ' Archive.','msg_error' );
+                              else  {
+                                makeProjectListPage ( sceneId );
+                                window.setTimeout ( function(){
+                                  new MessageBox ( 'Project not found',
+                                    '<h2>Project not found</h2>' +
+                                    'Project code<h3>' + __url_parameters.id + 
+                                    '</h3>is not found in ' + appName() + 
+                                    ' Archive. Check project code.','msg_error' );
+                                  __url_parameters = null;
+                                },100);
+                              }
                             });
                         break;
 

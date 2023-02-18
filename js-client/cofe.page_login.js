@@ -268,6 +268,21 @@ function LoginPage ( sceneId )  {
 
   setDefaultButton ( login_btn,this.grid );
 
+  if (__url_parameters)  {
+    if ('project' in __url_parameters)
+      new MessageBox ( 'Log in to ' + appName(),
+        '<h2>Log in to ' + appName() + '</h2>' +
+        'For getting access to Demo Project<h3>' + __url_parameters['project'] + 
+        '</h3>please log in to your ' + appName() + ' account now.',
+        'msg_information' );
+    else if ('id' in __url_parameters)
+      new MessageBox ( 'Log in to ' + appName(),
+        '<h2>Log in to ' + appName() + '</h2>' +
+        'For getting access to Archive Project<h3>' + __url_parameters['id'] + 
+        '</h3>please log in to your ' + appName() + ' account now.',
+        'msg_information' );
+  }
+
 }
 
 LoginPage.prototype = Object.create ( BasePage.prototype );

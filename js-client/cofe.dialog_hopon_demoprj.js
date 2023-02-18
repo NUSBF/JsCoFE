@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.10.21   <--  Date of Last Modification.
+ *    18.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Hop-on Demo Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -41,11 +41,45 @@ function HopOnDemoProjectDialog ( onSuccess_func )  {
                              '" is being prepared, please wait ...' );
   grid.setWidget ( msgLabel, 1,0,1,1 );
 
+
+//  w = 3*$(window).width()/5 + 'px';
+
+  $(this.element).dialog({
+    resizable : false,
+    height    : 'auto',
+    maxHeight : 500,
+    width     : 'auto',
+    modal     : true,
+    open      : function(event, ui) {
+      $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
+    },
+    buttons   : [
+      {
+        id    : "cancel_btn",
+        text  : "Cancel",
+        click : function() {
+          $(this).dialog("close");
+        }
+      }
+    ]
+  });
+
+  var dlg = this;
+  $(dlg.element).on( "dialogclose",function(event,ui){
+    serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Project Import',
+                    null,function(){
+      window.setTimeout ( function(){
+        $(dlg.element).dialog( "destroy" );
+        dlg.delete();
+      },10 );
+    },function(){} );  // depress error messages
+  });
+
   serverRequest ( fe_reqtype.startDemoImport,{
                       'cloudmount' : __url_parameters.cmount,
                       'demoprj'    : { 'name' : __url_parameters.project },
                       'duplicate'  : true
-                  },'Demo Project Loading',function(data){
+                  },'Demo Project Loading',function(rdata){  // ok
 
     var progressBar = new ProgressBar ( 0 );
     grid.setWidget ( progressBar, 2,0,1,1 );
@@ -74,44 +108,13 @@ function HopOnDemoProjectDialog ( onSuccess_func )  {
 
     window.setTimeout ( checkReady,2000 );
 
+  },
+  function ( key,rdata){  // always
+    if (rdata.status!='ok')
+      $(dlg.element).dialog("close");
+  },
+  function(xhr,err){  // fail
   });
-
-//  w = 3*$(window).width()/5 + 'px';
-
-  $(this.element).dialog({
-    resizable : false,
-    height    : 'auto',
-    maxHeight : 500,
-    width     : 'auto',
-    modal     : true,
-    open      : function(event, ui) {
-      $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
-    },
-    buttons   : [
-      {
-        id    : "cancel_btn",
-        text  : "Cancel",
-        click : function() {
-          $(this).dialog("close");
-        }
-      }
-    ]
-  });
-
-
-  (function(dlg){
-
-    $(dlg.element).on( "dialogclose",function(event,ui){
-      serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Project Import',
-                      null,function(){
-        window.setTimeout ( function(){
-          $(dlg.element).dialog( "destroy" );
-          dlg.delete();
-        },10 );
-      },function(){} );  // depress error messages
-    });
-
-  }(this))
 
   __url_parameters = null;
 
