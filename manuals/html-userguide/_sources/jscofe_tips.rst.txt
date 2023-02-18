@@ -20,4 +20,5 @@ Tips and Tricks
     jscofe_tips.archive
     jscofe_tips.tree_marker
     jscofe_tips.download
+    jscofe_tips.store_completed_projects
 

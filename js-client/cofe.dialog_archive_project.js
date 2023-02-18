@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.11.22   <--  Date of Last Modification.
+ *    18.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project Archive Dialog (archives given project)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022
+ *  (C) E. Krissinel, A. Lebedev 2022-2023
  *
  *  =================================================================
  *
@@ -143,7 +143,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   this.grid = new Grid('');
   this.addWidget ( this.grid );
 
-  var doclink = '<a href="javascript:launchHelpBox(\'CCP4 Cloud Archive\',' +
+  var doclink = '<a href="javascript:launchHelpBox(\'' + appName() + ' Archive\',' +
                 '\'' + __user_guide_base_url + 'jscofe_archive.html\',null,10)">' +
                 '<span style="color:blue">';
 

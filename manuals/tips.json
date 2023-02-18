@@ -65,6 +65,11 @@
       "title"   : "Project Tree Marker",
       "doc"     : "manuals/html-userguide",
       "link"    : "jscofe_tips.tree_marker.html"
+    },{
+      "summary" : "Sooner or later, disk needs cleaning even in Cloud. Read about project management <a>here</a>.",
+      "title"   : "Storing Completed Projects",
+      "doc"     : "manuals/html-userguide",
+      "link"    : "jscofe_tips.store_completed_projects.html"
     }
   ]
 }

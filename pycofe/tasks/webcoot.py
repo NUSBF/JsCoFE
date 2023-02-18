@@ -170,6 +170,17 @@ class WebCoot(basic.TaskDriver):
                                         title="" )
                 hasResults = True
 
+        summaryLine = "no models saved"
+        if hasResults:
+            summaryLine = str(outputSerialNo)
+            if outputSerialNo==1:
+                summaryLine += " model saved"
+            else:
+                summaryLine += " models saved"
+        self.generic_parser_summary["web_coot"] = {
+            "summary_line" : summaryLine
+        }
+
         self.task.nc_type = "browser"
         self.success ( hasResults )
         return

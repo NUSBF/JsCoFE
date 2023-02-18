@@ -53,9 +53,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -397,11 +395,11 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<span id="crank-doc"></span><h1 id="doc-task-crank2--page-root">Crank-2<a class="headerlink" href="#doc-task-crank2--page-root" title="Permalink to this heading">¶</a></h1>
+<span id="crank-doc"></span><h1 id="doc-task-crank2--page-root">Crank-2<a class="headerlink" href="#doc-task-crank2--page-root" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://journals.iucr.org/m/issues/2018/02/00/jt5023/" rel="noopener noreferrer" target="_blank">CRANK2</a> is a program designed for automatic X-ray structure solution of proteins using experimental phasing.
 Currently, CCP4 Cloud provides a CRANK2 interface for structure solution using SAD, SIRAS, MAD and MR-SAD.</p>
 
-<h2 id="the-basics-input-and-output">The basics - input and output<a class="headerlink" href="#the-basics-input-and-output" title="Permalink to this heading">¶</a></h2>
+<h2 id="the-basics-input-and-output">The basics - input and output<a class="headerlink" href="#the-basics-input-and-output" title="Permalink to this headline">¶</a></h2>
 <p>To run CRANK2, it is necessary to input at least one X-ray dataset with anomalous diffraction (single anomalous diffraction - <strong>SAD</strong>).
 If an initial partial model is available (e.g. from molecular replacement - MR; or from a previous CRANK2 job etc) then it can be input together with the anomalous data for <strong>MR-SAD</strong> model rebuilding.
 Multiple anomalous diffraction (<strong>MAD</strong>) requires an input of multiple datasets from the same crystal (or from an isomorphic crystal) collected at different wavelengths.
@@ -415,7 +413,7 @@ Furthermore, it is recommended to input the sequence of the protein.</p>
 If CRANK2 could not solve the structure then the report providing information about the structure solution process can be used to assess the reasons of the failure.</p>
 
 
-<h2 id="stages-of-structure-solution-using-crank2">Stages of structure solution using CRANK2<a class="headerlink" href="#stages-of-structure-solution-using-crank2" title="Permalink to this heading">¶</a></h2>
+<h2 id="stages-of-structure-solution-using-crank2">Stages of structure solution using CRANK2<a class="headerlink" href="#stages-of-structure-solution-using-crank2" title="Permalink to this headline">¶</a></h2>
 <p>Different experiments and pipelines consist of different steps.  For a SAD, SIRAS or MAD experiment, the structure solution process consists of two major steps:
 1) determination of the anomalous scatterers (anomalous substructure), 2) phasing and model building of the protein.  For the MR-SAD rebuilding, the anomalous
 substructure can be typically taken from the inputted initial model and improved, followed by the phased model rebuilding of the protein.  Below, the typical stages
@@ -446,7 +444,7 @@ of the hands is large, the hand with the larger score is selected for model buil
 from density modification.  For SIRAS and MAD datasets, an MLHL based reiteration of model building and refinement is used.</p>
 
 
-<h2 id="was-my-structure-solved">Was my structure solved?<a class="headerlink" href="#was-my-structure-solved" title="Permalink to this heading">¶</a></h2>
+<h2 id="was-my-structure-solved">Was my structure solved?<a class="headerlink" href="#was-my-structure-solved" title="Permalink to this headline">¶</a></h2>
 <p>The report from the CRANK2 job indicates whether the structure was solved.  If it was not, it is worthwhile to analyze the information from the steps
 of the structure solution as provided by the report.</p>
 <p>If you see <strong>no</strong> distinct clusters on the plot from substucture determination, low values of FOM from
@@ -456,7 +454,7 @@ phasing and density modification and a bad discrimination between the hands then
 solvent content parameter (its estimation may be wrong).  If a partial model was built then it is suggested to input it to another CRANK2 job for model rebuilding.</p>
 
 
-<h2 id="crank-2-glossary">Crank-2 Glossary<a class="headerlink" href="#crank-2-glossary" title="Permalink to this heading">¶</a></h2>
+<h2 id="crank-2-glossary">Crank-2 Glossary<a class="headerlink" href="#crank-2-glossary" title="Permalink to this headline">¶</a></h2>
 <dl class="glossary docutils">
 <dt id="term-What-is-CFOM-in-the-SHELXD-output">What is CFOM in the SHELXD output?<a class="headerlink" href="#term-What-is-CFOM-in-the-SHELXD-output" title="Permalink to this term">¶</a></dt><dd>CFOM reported by SHELXD is sum of two correlation coefficients: CC+CCweak where CC is correlation coefficient between
 the observed ΔF’s and the F’s calculated from the determined substructure model and CCweek is CC of the weaker
@@ -538,7 +536,7 @@ to 0 (or negative) for the other hand is a good sign indicating that there is a 
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

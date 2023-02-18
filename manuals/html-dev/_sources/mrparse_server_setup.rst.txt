@@ -15,7 +15,7 @@ various online resources such as the `EBI Phmmer`_ API to search for matches. A
 reduced version of the *PDB* and *EBI-AFDB* sequence listings is also distributed
 with *CCP4* and *MrParse* makes use of these. To improve results and keep them up to
 date, a locally installed mirror of the *PDB* and its sequence listing can be
-used. In addition, local vesions of the *EBI-AFDB* sequence listings (~92GBs) 
+used. In addition, local versions of the *EBI-AFDB* sequence listings (~92GBs) 
 and the *ESMAtlas* database sequence listings (~120GBs) can be used to enable a 
 complete search of these databases.
 

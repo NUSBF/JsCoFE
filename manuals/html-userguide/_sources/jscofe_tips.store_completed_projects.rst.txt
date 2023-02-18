@@ -1,0 +1,34 @@
+===============================
+How to store completed projects
+===============================
+
+Projects in CCP4 cloud can be exported and store as compressed file archive using the |Export| button
+
+Exported archives can be uploaded later to your CCP4 Cloud account using the |Import| button above the project list.
+
+Exporting projects may be needed if there is no disk space left in your account, personal archival, or for transferring data to another CCP4 Cloud setup.
+
+Beware that projects usually grow to a considerable size, from 100s MBs to few GBs. You will be advised about the project size before downloading.
+
+
+.. note:: Web-only and Remote modes share same projects, while the Desktop mode has own set of projects. Desktop projects are not synced with the Web-only/Remote projects. The only way to exchange projects between Desktop and server modes is through the explicit Export/Import procedure.
+
+The |desktop| ccp4cloud-desktop mode may be conveniently used for collecting projects finished in Web-only/Remote modes. **After transferring projects to the** |desktop| **Desktop mode, they may be deleted in the server (remote) Cloud area in order to release the online disk space quota for new projects.** 
+
+.. note:: Exported projects are cross-compatible with all Windows, Linux and Mac OSX systems.
+
+:doc:`All CCP4 Cloud tips <jscofe_tips>` 
+
+
+.. |Export| image:: images/export.png
+    :width: 16
+    :height: 16
+
+.. |Import| image:: images/task_import.png
+    :width: 16
+    :height: 16
+
+
+.. |desktop| image:: images/ccp4cloud_desktop.png
+    :width: 16
+    :height: 16

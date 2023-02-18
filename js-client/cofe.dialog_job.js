@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.02.23   <--  Date of Last Modification.
+ *    18.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -802,47 +802,64 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
               // dlg.parent_page.ration = ration;
               // dlg.parent_page.displayUserRation ( dlg.tree.projectData.desc );
 
+              var tiplink = ' <a href="javascript:launchHelpBox(\'Project storage\',' +
+                            '\'' + __user_guide_base_url + 
+                            'jscofe_tips.store_completed_projects.html\',null,10)">' +
+                            '<span style="color:blue">here</span>.';
+
               if (ration && (!__local_setup))  {
                 if ((ration.storage>0.0) && (ration.storage_used>=ration.storage))  {
                   new MessageBox ( 'Disk Quota Exceeded',
-                      'The job cannot be run because disk quota is up. ' +
-                      'Your<br>account currently uses <b>' + round(ration.storage_used,1) +
-                      '</b> MBytes out of <b>' + round(ration.storage,1) +
-                      '</b> MBytes<br>allocated.<p>' +
+                      '<div style="width:520px;"><h2>Disk Quota Exceeded</h2>' +
+                      'The job cannot be run because disk quota is up and cannot ' +
+                      'be automatically increased. Your account currently uses<p>' +
+                      '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                      '&nbsp;&nbsp;&nbsp;&nbsp;' + round(ration.storage_used,1) + 
+                      ' MBytes at ' + round(ration.storage,1) + ' MBytes allocated.</b><p>' +
                       '<i><b>Hint 1:</b></i> deleting jobs and projects will free up disk space.<p>' +
-                      '<i><b>Hint 2:</b></i> resource usage can be monitored using disk and<br>' +
+                      '<i><b>Hint 2:</b></i> resource usage can be monitored using disk and ' +
                       'CPU widgets in the top-right corner of the screen.<p>' +
-                      '<i><b>Recommended action:</b></i> export an old project and then<br>' +
-                      'delete it from the list. You will be able to re-import that<br>' +
-                      'project later using the file exported.', 'msg_excl' );
+                      '<i><b>Recommended action:</b></i> export an old project and then ' +
+                      'delete it from the list. You will be able to re-import that ' +
+                      'project later using the file exported.' +
+                      '<p><i>Read about disk space and project management in ' +
+                      appName() + tiplink + '</i></div>', 'msg_excl' );
                   dlg.enableCloseButton ( false );
                   return;
                 }
                 if ((ration.cpu_day>0.0) && (ration.cpu_day_used>=ration.cpu_day))  {
                   new MessageBox ( '24-hour CPU Quota Exceeded',
-                      'The job cannot be run because the 24-hour CPU quota<br>' +
-                      'is up. In last 24 hours, you have used <b>' + round(ration.cpu_day_used,3) +
-                      '</b> CPU hours<br>at <b>' + round(ration.cpu_day,3) +
-                      '</b> CPU hours allocated.<p>' +
-                      '<i><b>Hint:</b></i> resource usage can be monitored using disk and<br>' +
-                      'CPU widgets in the top-right corner of the screen. You<br>' +
-                      'may need to push "Reload" button in the toolbar after<br>' +
-                      'periods of inactivity to get updated readings.<p>' +
-                      '<i><b>Recommended action:</b></i> run the job later.', 'msg_excl' );
+                      '<div style="width:520px;"><h2>24-hour CPU Quota Exceeded</h2>' +
+                      'The job cannot be run because your 24-hour CPU quota is up. ' +
+                      'In last 24 hours, you have used<p>' +
+                      '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                      round(ration.cpu_day_used,3) + ' CPU hours at ' + 
+                      round(ration.cpu_day,3) + ' CPU hours allocated.</b><p>' +
+                      '<i><b>Hint:</b></i> resource usage can be monitored using ' +
+                      'disk and CPU widgets in the top-right corner of the screen. ' +
+                      'You may need to push the <i>"Reload"</i> button in the ' +
+                      'toolbar after periods of inactivity to get updated readings.<p>' +
+                      '<i><b>Recommended action:</b></i> run the job later or ask ' +
+                      appName() + ' maintainer to increase your 24-hour CPU quota.', 
+                      'msg_excl' );
                   dlg.enableCloseButton ( false );
                   return;
                 }
                 if ((ration.cpu_month>0.0) && (ration.cpu_month_used>=ration.cpu_month))  {
                   new MessageBox ( '30-day CPU Quota Exceeded',
-                      'The job cannot be run because the 30-day CPU quota<br>' +
-                      'is up. In last 30 days, you have used <b>' + round(ration.cpu_month_used,3) +
-                      '</b> CPU hours<br>at <b>' + round(ration.cpu_month,3) +
-                      '</b> CPU hours allocated.<p>' +
-                      '<i><b>Hint:</b></i> resource usage can be monitored using disk and<br>' +
-                      'CPU widgets in the top-right corner of the screen. You<br>' +
-                      'may need to push "Reload" button in the toolbar after<br>' +
-                      'periods of inactivity to get updated readings.<p>' +
-                      '<i><b>Recommended action:</b></i> run the job later.', 'msg_excl');
+                      '<div style="width:520px;"><h2>30-day CPU Quota Exceeded</h2>' +
+                      'The job cannot be run because your 30-day CPU quota is up. ' +
+                      'In last 30 days, you have used<p>' +
+                      '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                      round(ration.cpu_month_used,3) + ' CPU hours at ' + 
+                      round(ration.cpu_month,3) + ' CPU hours allocated.</b><p>' +
+                      '<i><b>Hint:</b></i> resource usage can be monitored using ' +
+                      'disk and CPU widgets in the top-right corner of the screen. ' +
+                      'You may need to push the <i>"Reload"</i> button in the ' +
+                      'toolbar after periods of inactivity to get updated readings.<p>' +
+                      '<i><b>Recommended action:</b></i> run the job later or ask ' +
+                      appName() + ' maintainer to increase your 30-day CPU quota.', 
+                      'msg_excl');
                   dlg.enableCloseButton ( false );
                   return;
                 }
@@ -853,9 +870,15 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                 dlg.parent_page.makeUserRationIndicator();        
                 window.setTimeout ( function(){
                   new MessageBox ( 'Disk Quota Increased',
-                      'Your disk quota was automatically increased<br>to ' +
-                      '<b>' + round(ration.storage,1) +
-                      '</b> MBytes. Enjoy!<p>Just push "Ok" to proceed.',
+                      '<div style="width:400px;"><h2>Disk quota increased</h2>' +
+                      'Your disk quota was automatically increased to<p>' +
+                      '<b style="font-size:120%;">&nbsp;&nbsp;&nbsp;&nbsp;' +
+                      '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                      '&nbsp;&nbsp;&nbsp;' + round(ration.storage,1) +
+                      ' MBytes</b><p>Enjoy! Just push "Ok" to proceed.' + 
+                      '<p><i><b>Important:</b> cleaning your ' + appName() + 
+                      ' disk space will be necessary at some point. Read about ' +
+                      'disk space and project management' + tiplink + '</i></div>',
                       'msg_information' );  
                 },500);
               }

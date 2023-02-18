@@ -53,9 +53,7 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -359,10 +357,10 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="tests--page-root"><span class="section-number">8. </span>Software testing in CCP4<a class="headerlink" href="#tests--page-root" title="Permalink to this heading">¶</a></h1>
+<h1 id="tests--page-root"><span class="section-number">8. </span>Software testing in CCP4<a class="headerlink" href="#tests--page-root" title="Permalink to this headline">¶</a></h1>
 <p>CCP4 command line tests contains <strong>unix scripts</strong> and <strong>pytest</strong> tests.</p>
 
-<h2 id="unix-scripts"><span class="section-number">8.1. </span>Unix scripts<a class="headerlink" href="#unix-scripts" title="Permalink to this heading">¶</a></h2>
+<h2 id="unix-scripts"><span class="section-number">8.1. </span>Unix scripts<a class="headerlink" href="#unix-scripts" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><dl class="first docutils">
 <dt>$CEXAM/unix/runnable:</dt><dd>unix scripts using the rnase/toxd data which should actually run</dd>
@@ -375,7 +373,7 @@
 </ul>
 
 
-<h2 id="pytest"><span class="section-number">8.2. </span>Pytest<a class="headerlink" href="#pytest" title="Permalink to this heading">¶</a></h2>
+<h2 id="pytest"><span class="section-number">8.2. </span>Pytest<a class="headerlink" href="#pytest" title="Permalink to this headline">¶</a></h2>
 <p>Pytests are designed using the Arrange-Act-Assert model:</p>
 <ol class="arabic simple">
 <li><strong>Arrange</strong>, or set up, the conditions for the test</li>
@@ -409,7 +407,7 @@ ccp4-python -m pytest $CEXAM/pytest/ --junit-xml runallTest.xml
 </div>
 <p>In order to get emails after tests run all emails should be listed in <strong>emailNotification.groovy</strong></p>
 
-<h3 id="test-new-build-manually"><span class="section-number">8.2.1. </span>Test new build manually<a class="headerlink" href="#test-new-build-manually" title="Permalink to this heading">¶</a></h3>
+<h3 id="test-new-build-manually"><span class="section-number">8.2.1. </span>Test new build manually<a class="headerlink" href="#test-new-build-manually" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic simple">
 <li>Download build from Jenkins =&gt; build (for example, Series 8.0 python3 pyside2 on windows (msvc/intel) =&gt; Build # or name =&gt; Build Artifacts</li>
 <li>Run <strong>postinstall.bat</strong> (Windows) or <strong>BINARY.setup</strong> (Mac/Linux)</li>
@@ -425,7 +423,7 @@ ccp4-python -m pytest $CEXAM/pytest/ --junit-xml runallTest.xml
 
 
 
-<h1 id="ccp4-cloud-tests"><span class="section-number">9. </span>CCP4 Cloud tests<a class="headerlink" href="#ccp4-cloud-tests" title="Permalink to this heading">¶</a></h1>
+<h1 id="ccp4-cloud-tests"><span class="section-number">9. </span>CCP4 Cloud tests<a class="headerlink" href="#ccp4-cloud-tests" title="Permalink to this headline">¶</a></h1>
 <p>Performed using <a class="reference external" href="https://www.selenium.dev/documentation/" rel="noopener noreferrer" target="_blank">Selenium WebDriver</a></p>
 <p>Tests can be found in <code class="docutils literal notranslate"><span class="pre">jsCoFE/setests</span></code></p>
 <blockquote>
@@ -525,7 +523,7 @@ it will start on STFC Cloud VM). This Cloud machine is accessible only from STFC
 </pre></div>
 </div>
 
-<h2 id="data-for-cloud-tests"><span class="section-number">9.1. </span>Data for Cloud tests<a class="headerlink" href="#data-for-cloud-tests" title="Permalink to this heading">¶</a></h2>
+<h2 id="data-for-cloud-tests"><span class="section-number">9.1. </span>Data for Cloud tests<a class="headerlink" href="#data-for-cloud-tests" title="Permalink to this headline">¶</a></h2>
 <p>#. Directory <code class="docutils literal notranslate"><span class="pre">test_data</span></code> shall be copied into <code class="docutils literal notranslate"><span class="pre">$HOME</span></code> of the current user, so Cloud tests would be able
 to upload data to the Cloud from that location (required for tests of imports and WorkFlows).
 Python code addresses this as <code class="docutils literal notranslate"><span class="pre">~/test_data</span></code> or <code class="docutils literal notranslate"><span class="pre">%userprofile%\\test_data</span></code> on Windows.
@@ -584,7 +582,7 @@ This is ‘test-data’ directory of the CCP4Cloud DEV and PRE Clouds; Cloud tes
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
