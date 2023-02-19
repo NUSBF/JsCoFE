@@ -1050,16 +1050,17 @@ function getProjectData ( loginData,data )  {
       if (projectList.projects[i].archive && 
           (projectList.projects[i].archive.id==projectName))
         pdesc = projectList.projects[i];
-  } else  {
+  }
+  if (!pdesc)  {
     for (var i=0;(i<projectList.projects.length) && (!pdesc);i++)
       if (projectList.projects[i].name==projectName)
         pdesc = projectList.projects[i];
-  }
-  if (!pdesc)
-    return new cmd.Response ( cmd.fe_retcode.ok,'',{ 
+    if (!pdesc)
+      return new cmd.Response ( cmd.fe_retcode.ok,'',{ 
           'missing' : 1,
           'project' : projectName 
-    });
+      });
+  }
 
   if (data.mode=='replay')
     projectName += ':' + replayDir;

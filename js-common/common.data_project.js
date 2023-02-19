@@ -603,18 +603,33 @@ ProjectList.prototype.renameProjectPaths = function ( loginName,oldpath,newpath 
         this.projects[i].folderPath.replace ( oldpath,newpath );
 }
 
-ProjectList.prototype._find_folder = function ( folders,fpath )  {
+function _find_project_folder ( folders,fpath )  {
 var folder = null;
   for (var i=0;(i<folders.length) && (!folder);i++)  {
     if (folders[i].path==fpath)
           folder = folders[i];
-    else  folder = this._find_folder ( folders[i].folders,fpath );
+    else  folder = _find_project_folder ( folders[i].folders,fpath );
   }
   return folder;
 }
 
+function findProjectFolder ( projectList,fpath )  {
+  return _find_project_folder ( projectList.folders,fpath );
+}
+
+// ProjectList.prototype._find_folder = function ( folders,fpath )  {
+// var folder = null;
+//   for (var i=0;(i<folders.length) && (!folder);i++)  {
+//     if (folders[i].path==fpath)
+//           folder = folders[i];
+//     else  folder = this._find_folder ( folders[i].folders,fpath );
+//   }
+//   return folder;
+// }
+
 ProjectList.prototype.findFolder = function ( fpath )  {
-  return this._find_folder ( this.folders,fpath );
+  // return this._find_folder ( this.folders,fpath );
+  return findProjectFolder ( this,fpath );
 }
 
 ProjectList.prototype.isProject = function ( name_str )  {
