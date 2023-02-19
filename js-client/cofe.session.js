@@ -34,7 +34,7 @@ function startSession ( sceneId,dev_switch )  {
   // https://cloud.ccp4.ac.uk/manuals/demo_project.html?cmount=Tutorials&project=D01.%20Simple%20Auto-MR%20with%20MORDA
   //
   // Example of URL with specification of archive project:
-  // https://cloud.ccp4.ac.uk/manuals/archive.html?id=CCP4-XXX.YYYY
+  // https://cloud.ccp4.ac.uk/archive/access.html?id=CCP4-XXX.YYYY
   //
   var url_search = window.location.search;
   if (url_search)  {
@@ -247,12 +247,26 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                             makeAccountPage ( sceneId );
                           else if (__user_settings.onlogin==on_login.last_project)  {
                             serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
-                              __current_folder = data.currentFolder;
-                              var found = false;
-                              for (var i=0;(i<data.projects.length) && (!found);i++)
-                                found = (data.projects[i].name==data.current);
-                              if (found)  makeProjectPage     ( sceneId );
-                                    else  makeProjectListPage ( sceneId );
+                              var n = -1;
+                              for (var i=0;(i<data.projects.length) && (n<0);i++)
+                                if (data.projects[i].name==data.current)
+                                  n = i;
+                              if (n>=0)  {
+                                __current_folder = findProjectFolder ( data,
+                                                      data.projects[n].folderPath );
+                                if (__current_folder.path!=data.currentFolder.path)  {
+                                  data.currentFolder = __current_folder;
+                                  serverRequest ( fe_reqtype.saveProjectList,data,'Project List',
+                                    function(rdata){
+                                      makeProjectPage ( sceneId );
+                                    },null,'persist' );
+                                } else  {
+                                  makeProjectPage ( sceneId );
+                                }
+                              } else  {
+                                __current_folder = data.currentFolder;
+                                makeProjectListPage ( sceneId );
+                              }
                             },null,'persist');
                           } else
                             makeProjectListPage ( sceneId );

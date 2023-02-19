@@ -88,12 +88,12 @@ SearchArchiveDialog.prototype.makeLayout = function()  {
   this.grid.setImage    ( image_path('folder_cloud_archive'),'48px','48px', 1,0,1,1 );
   this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
 
-  this.grid.setLabel    ( '<h2>Search ' + appName() + ' Archive</h2>',0,2,2,1 );        
+  this.grid.setLabel    ( '<h2>Search ' + appName() + ' Archive</h2><hr/>' +
+                          '<span style="font-size:85%"><i>' +
+                          'Provide as many filters as possible; at least one ' +
+                          'filter must be given</i><br>&nbsp;</span>',
+                          0,2,2,1 );        
   this.grid.setVerticalAlignment ( 0,2,'middle' );
-  this.grid.setLabel    ( '<hr/>Provide as many filters as possible',1,2,1,1 )
-           .setFontItalic(true).setFontSize('80%').setNoWrap();
-
-  // this.grid.setHLine ( 2, 2,2, 1,1 );
 
   var pgrid = this.grid.setGrid ( '-compact', 2,2,1,1 );
   pgrid.setLabel ( 'Depositor name:',0,0,1,1 ).setNoWrap();
