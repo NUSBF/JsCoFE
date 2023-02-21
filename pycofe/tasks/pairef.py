@@ -160,12 +160,18 @@ class PaiRef(basic.TaskDriver):
             resList.sort ( reverse=True )
             resList[len(resList)-1] = hkl.getHighResolution(raw=False)
         else:
-            s = self.getParameter ( sec1.RLIST )
-            resList = [x.strip() for x in s.split(',')]
-            hires0  = hkl.getHighResolution(raw=False)
-            if hires0 not in resList:
+            s       = self.getParameter ( sec1.RLIST )
+            resList = [float(x.strip()) for x in s.split(',')]
+            hires0  = hkl.getHighResolution(raw=True)
+            found   = False
+            for r in resList:
+                if abs(r-hires0)<0.01:
+                    found = True
+            if not found:
                 resList.append ( hires0 )
             resList.sort ( reverse=True )
+            for i in range(len(resList)):
+                resList[i] = str(resList[i])
 
 
         cmd = [
