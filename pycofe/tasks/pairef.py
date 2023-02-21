@@ -157,12 +157,16 @@ class PaiRef(basic.TaskDriver):
                 rstep = 0.05
             for i in range(nshells+1):
                 resList.append ( str(round(hires+i*rstep,2)) )
+            resList.sort ( reverse=True )
+            resList[len(resList)-1] = hkl.getHighResolution(raw=False)
         else:
             s = self.getParameter ( sec1.RLIST )
-            resList = [x.strip() for x in s.split(',')]            
+            resList = [x.strip() for x in s.split(',')]
+            hires0  = hkl.getHighResolution(raw=False)
+            if hires0 not in resList:
+                resList.append ( hires0 )
+            resList.sort ( reverse=True )
 
-        resList.sort ( reverse=True )
-        resList[len(resList)-1] = hkl.getHighResolution(raw=False)
 
         cmd = [
             #"-m"     , "pairef",
