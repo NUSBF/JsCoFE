@@ -867,7 +867,7 @@ function onWindowMessage(event) {
           }
         },null,'persist' );
     } else
-      alert ( 'Unknown windows message command: ' + edata.command );
+      console.log ( 'Unknown windows message command: ' + edata.command );
 
     // alert ( JSON.stringify(data) );
 

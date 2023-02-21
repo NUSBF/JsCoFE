@@ -110,7 +110,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
         asu       = []
         for i in range(len(seq)):
             seq[i]  = base.makeClass ( seq[i] )
-            seqType = 'dna'
+            seqType = "dna"
             if seq[i].isProtein():
                 isProtein = True
                 seqType = "protein"
@@ -121,7 +121,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
             ncopies = seq[i].ncopies
             if seq[i].ncopies_auto:
                 ncopies = 0
-            asu.append ( ["",seq[i].weight,seqType,ncopies] );
+            asu.append ( ["",seq[i].weight,seqType,ncopies] )
 
         asucomp.suggestASUComp ( hkl.dataset,asu )
 
