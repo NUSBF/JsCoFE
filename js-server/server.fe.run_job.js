@@ -1495,7 +1495,7 @@ var nc_servers = conf.getNCConfigs();
           // console.log ( ' >>> NC#' + n + ' responded ' + JSON.stringify(response) );
           // console.log ( ' >>> NC#' + n + ' responded with ' + response.body.data.nzombies + ' zombies' );
           if (error)
-                log.error ( 17,'errors communicating with NC' + n + ': ' + error );
+            log.error ( 17,'errors communicating with NC' + n + ': ' + error );
           else  {
             try {
               nzombies += response.body.data.nzombies;
