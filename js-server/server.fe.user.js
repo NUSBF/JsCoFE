@@ -207,7 +207,7 @@ var index = {};  // links volumes in config file and in vdata
       log.error    ( 3,msg );
 
       callback_func (
-        response = new cmd.Response ( cmd.fe_retcode.regFailed,
+        new cmd.Response ( cmd.fe_retcode.regFailed,
           '<h3>Sorry</h3>' +
           'New User cannot be registered because of insufficient disk space.' +
           '<p><i>Server maintenance team is informed. Please come back later</i>',
