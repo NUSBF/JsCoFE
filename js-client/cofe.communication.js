@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.02.23   <--  Date of Last Modification.
+ *    22.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -95,8 +95,11 @@ function makeCommErrorMessage ( title,response )  {
 
     case fe_retcode.notLoggedIn:
         //makePage ( new LogoutPage(__current_page.element.id) );
-        logout ( __current_page.element.id,0 )
-        MessageNotLoggedIn ( title );
+        // logout ( __current_page.element.id,0 );
+        // MessageNotLoggedIn ( title );
+        logout ( __current_page.element.id,0,function(){
+          MessageNotLoggedIn ( title );
+        });
       break;
 
     case fe_retcode.uploadErrors:
