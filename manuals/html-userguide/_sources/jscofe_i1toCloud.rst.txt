@@ -34,14 +34,14 @@ Next Cloud run tasks are available:
 
 
 
-- ``MR with Alphafold2``: creates standard project, import data and start `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`_ based on structure prediction with AlphaFold-2
+- ``MR with Alphafold2``: creates standard project, import data and start `workflow <../html-taskref/doc.task.WFlowAFMR.html>`__ based on structure prediction with AlphaFold-2
 
 .. note:: available on the CCP4 Cloud remote only, unless `local AlphaFold setup linked with CCP4 Cloud <../html-dev/af_setup.html>`_
 
 - ``AUTO EP``: creates standard project, import data and start `Auto-EP workflow <../html-taskref/doc.task.WFlowAEP.html>`_ based in `Crank-2 <../html-taskref/doc.task.Crank2.html>`_ pipeline
 
 
-- ``AUTO MR``: creates standard project, import data and start `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`_ utilising `MrBump <../html-taskref/doc.task.MrBump.html>`_ and `Simbad <../html-taskref/doc.task.Simbad.html>`_ pipelines
+- ``AUTO MR``: creates standard project, import data and start `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`__ utilising `MrBump <../html-taskref/doc.task.MrBump.html>`__ and `Simbad <../html-taskref/doc.task.Simbad.html>`_ pipelines
 
 - ``AUTO Refinement``: creates standard project, import data and start `Auto-REL workflow <../html-taskref/doc.task.WFlowREL.html>`_, performing automatic structure refinement with optimization of Refmac parameters and fitting water molecules
 

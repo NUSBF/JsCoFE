@@ -59,7 +59,7 @@ APW **Molecular Replacement with AlphaFold Model** develops MR projects based on
 
 Another APW: **Automatic Molecular Replacement with MrBump or MoRDa** uses MrBump for solving structure, which looks for suitable models in both the PDB and AFDB, followed by automatic model building, refinement, and optional ligand fitting.
 
-Predicted models also can be used in APW: **Simple Molecular Replacement with Search Model** wich prepares model and runs `Phaser <../html-taskref/doc.task.Phaser.html>`_ or `Molrep <../html-taskref/doc.task.Molrep.html>`_, followed by automatic model building, refinement, and optional ligand fitting.
+Predicted models also can be used in APW: **Simple Molecular Replacement with Search Model** with prepares model and runs `Phaser <../html-taskref/doc.task.Phaser.html>`_ or `Molrep <../html-taskref/doc.task.Molrep.html>`_, followed by automatic model building, refinement, and optional ligand fitting.
 
 ---------
 Tutorials
