@@ -99,6 +99,8 @@ function LogoutPage ( sceneId,reason_key )  {
     setDefaultButton             ( back_btn,panel );
   }
 
+  $(".ui-dialog:visible").find(".ui-dialog-content").dialog("close");
+
 }
 
 LogoutPage.prototype = Object.create ( BasePage.prototype );
@@ -107,16 +109,21 @@ LogoutPage.prototype.constructor = LogoutPage;
 
 function logout ( sceneId,reason_key,onLogout_func=null )  {
 
-  stopSessionChecks();
+  stopOfflineGreeting();
+  stopSessionChecks  ();
 
   if (__current_page && (__current_page._type=='ProjectPage'))
     __current_page.getJobTree().stopTaskLoop();
 
   if (__login_token && (reason_key!=3) && (reason_key!=10))  {
 
-    serverRequest ( fe_reqtype.logout,0,'Logout',function(data){
-      makePage ( new LogoutPage(sceneId,reason_key),onLogout_func );
-    },null,null);
+    serverRequest ( fe_reqtype.logout,0,'Logout',
+      function(data){},
+      function(){
+        makePage ( new LogoutPage(sceneId,reason_key),onLogout_func );
+      },
+      null
+    );
 
   } else {
 

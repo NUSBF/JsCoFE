@@ -66,7 +66,7 @@ var msg = '';
 }
 
 
-function makeCommErrorMessage ( title,response )  {
+function makeCommErrorMessage ( title,request_type,response )  {
 // starts respective error message dialog
 //    title:     dialog title string, which should correspond to error context
 //    response:  Response structure
@@ -97,9 +97,10 @@ function makeCommErrorMessage ( title,response )  {
         //makePage ( new LogoutPage(__current_page.element.id) );
         // logout ( __current_page.element.id,0 );
         // MessageNotLoggedIn ( title );
-        logout ( __current_page.element.id,0,function(){
-          MessageNotLoggedIn ( title );
-        });
+        if (request_type!=fe_reqtype.logout)
+          logout ( __current_page.element.id,0,function(){
+            MessageNotLoggedIn ( title );
+          });
       break;
 
     case fe_retcode.uploadErrors:
@@ -425,7 +426,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
           if (checkVersionMatch(rsp,false))  {
             var response = jQuery.extend ( true, new Response(), rsp );
             if (!function_response(response))
-              makeCommErrorMessage ( page_title,response );
+              makeCommErrorMessage ( page_title,cmd,response );
           }
         } catch(err) {
           console.log ( ' >>> error catch in __server_command.done: ' + err );  
@@ -500,7 +501,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
               if (function_ok)
                 function_ok ( response.data );
             } else
-              makeCommErrorMessage ( page_title,response );
+              makeCommErrorMessage ( page_title,request_type,response );
             /*
             // we put this function here and in the fail section because we
             // do not want to have it executed multiple times due to multiple
@@ -611,7 +612,7 @@ function local_command ( cmd,data_obj,command_title,function_response )  {
       if (checkVersionMatch(rsp,true))  {
         var response = jQuery.extend ( true,new Response(),rsp );
         if (function_response && (!function_response(response)))
-          makeCommErrorMessage ( command_title,response );
+          makeCommErrorMessage ( command_title,cmd,response );
       }
 
     })

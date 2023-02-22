@@ -472,7 +472,7 @@ HelpBox.prototype = Object.create ( Widget.prototype );
 HelpBox.prototype.constructor = HelpBox;
 
 function launchHelpBox ( title,helpURL,onDoNotShowAgain_func,delay_msec,params=null )  {
-  window.setTimeout ( function(){
+  return window.setTimeout ( function(){
     new HelpBox ( title,helpURL,onDoNotShowAgain_func,params );
   },delay_msec);
 }

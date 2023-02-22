@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.02.23   <--  Date of Last Modification.
+ *    22.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,7 +62,7 @@ function startSession ( sceneId,dev_switch )  {
       if (__local_user)  {
         //__login_token = 'e58e28a556d2b4884cb16ba8a37775f0';
         //__login_user  = 'Local user';
-        __offline_message = true;  // show prompt "working offline"
+        __offline_message = 'on';  // show prompt "working offline"
         login ( '**' + __local_user_id + '**','',sceneId,0 );
         //loadKnowledge ( 'Login' );
         //makeProjectListPage(sceneId);
@@ -379,10 +379,9 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 }
 
 function offlineGreeting ( callback_func )  {
-  if (__offline_message)  {
-    __offline_message = false;
-    launchHelpBox ( appName()+' offline',
-      './html/offline_greeting.html',doNotShowAgain,0,{
+  if (__offline_message=='on')  {
+    __offline_message = launchHelpBox ( appName()+' offline',
+      './html/offline_greeting.html',doNotShowAgain,200,{
         width      : 600,
         height     : 300,
         navigation : false
@@ -405,6 +404,14 @@ function offlineGreeting ( callback_func )  {
     // );
   } else
     callback_func();
+}
+
+
+function stopOfflineGreeting()  {
+  if ((__offline_message!='on') && (__offline_message!='off'))  {
+    clearTimeout ( __offline_message );
+    __offline_message = 'off';
+  }
 }
 
 
