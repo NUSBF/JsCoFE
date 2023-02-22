@@ -8,5 +8,5 @@ Structure solution with CCP4 Cloud
    jscofe_start_project
    jscofe_workflow_with_predicted_models
    jscofe_automated_workflows
-   atlas/CCP4Cloud_Atlas
+   CCP4Cloud_Atlas
    
