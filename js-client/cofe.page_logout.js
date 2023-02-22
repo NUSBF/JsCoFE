@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.11.22   <--  Date of Last Modification.
+ *    22.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Logout page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -105,7 +105,7 @@ LogoutPage.prototype = Object.create ( BasePage.prototype );
 LogoutPage.prototype.constructor = LogoutPage;
 
 
-function logout ( sceneId,reason_key )  {
+function logout ( sceneId,reason_key,onLogout_func=null )  {
 
   stopSessionChecks();
 
@@ -115,12 +115,12 @@ function logout ( sceneId,reason_key )  {
   if (__login_token && (reason_key!=3) && (reason_key!=10))  {
 
     serverRequest ( fe_reqtype.logout,0,'Logout',function(data){
-      makePage ( new LogoutPage(sceneId,reason_key) );
+      makePage ( new LogoutPage(sceneId,reason_key),onLogout_func );
     },null,null);
 
   } else {
 
-    makePage ( new LogoutPage(sceneId,reason_key) );
+    makePage ( new LogoutPage(sceneId,reason_key),onLogout_func );
 
   }
 

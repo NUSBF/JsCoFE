@@ -247,13 +247,14 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                             makeAccountPage ( sceneId );
                           else if (__user_settings.onlogin==on_login.last_project)  {
                             serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
+                              /*
                               var n = -1;
                               for (var i=0;(i<data.projects.length) && (n<0);i++)
                                 if (data.projects[i].name==data.current)
                                   n = i;
                               if (n>=0)  {
-                                __current_folder = findProjectFolder ( data,
-                                                      data.projects[n].folderPath );
+                                __current_folder      = data.currentFolder;
+                                __current_folder.path = data.projects[n].folderPath;
                                 if (__current_folder.path!=data.currentFolder.path)  {
                                   data.currentFolder = __current_folder;
                                   serverRequest ( fe_reqtype.saveProjectList,data,'Project List',
@@ -267,6 +268,14 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                                 __current_folder = data.currentFolder;
                                 makeProjectListPage ( sceneId );
                               }
+                              */
+                              __current_folder = data.currentFolder;
+                              var n = -1;
+                              for (var i=0;(i<data.projects.length) && (n<0);i++)
+                                if (data.projects[i].name==data.current)
+                                  n = i;
+                              if (n>=0)  makeProjectPage     ( sceneId );
+                                   else  makeProjectListPage ( sceneId );
                             },null,'persist');
                           } else
                             makeProjectListPage ( sceneId );

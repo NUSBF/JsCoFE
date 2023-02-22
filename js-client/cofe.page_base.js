@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.11.22   <--  Date of Last Modification.
+ *    22.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Base page class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -584,11 +584,13 @@ function replaceHistoryState ( stateName )  {
 }
 
 
-function makePage ( new_page )  {
+function makePage ( new_page,onCreate_func=null )  {
 
   function launch()  {
     window.setTimeout ( function(){
       __current_page = new_page;
+      if (onCreate_func)
+        onCreate_func();
     },10 );
   }
 
@@ -599,6 +601,7 @@ function makePage ( new_page )  {
   }
 
 }
+
 
 function setHistoryListener ( sceneId )  {
   $(window).on('popstate', function(event) {
