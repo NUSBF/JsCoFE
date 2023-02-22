@@ -243,7 +243,7 @@ def test_mainCloud(browser,
 
         # Starting three REFMACs in parallel to make sure different number crunchers are employed
         startRefmac(d.driver, d.waitLong)
-        time.sleep(0)
+        time.sleep(10)
         # pressing Close button for REFMAC window
         closeButton = d.driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
         closeButton.click()
