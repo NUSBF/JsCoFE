@@ -591,7 +591,7 @@ function makePage ( new_page,onCreate_func=null )  {
       __current_page = new_page;
       if (onCreate_func)
         onCreate_func();
-    },10 );
+    },50 );
   }
 
   if (__current_page)  {

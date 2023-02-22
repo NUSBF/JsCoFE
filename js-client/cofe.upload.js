@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    22.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  File upload class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -245,7 +245,7 @@ function Upload ( customData,upl_data,onSelect_func,onSelectPDB_func,onReady_fun
                                              jQuery.parseJSON(data) );
               upl.new_files = [];
               if (response.status!=fe_retcode.ok)  {
-                makeCommErrorMessage  ( 'Upload',response );
+                makeCommErrorMessage  ( 'Upload',fe_command.upload,response );
                 upl.indicator.setText ( 'upload failed'   );
                 upl.returnCode = 'failed';
               } else  {
