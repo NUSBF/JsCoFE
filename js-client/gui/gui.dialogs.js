@@ -235,10 +235,12 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 //  document.body.style.fontSize = '16px';
 
   var w0 = 1000;
-  var h0 = 600;
+  var h0 = Math.min ( $(window).height()-180,600 );
   if (params)  {
     if ('width'  in params)  w0 = params.width;
     if ('height' in params)  h0 = params.height;
+    w0 = Math.min ( w0, $(window).width ()-24  );
+    h0 = Math.min ( h0, $(window).height()-158 );
   } else if (__any_mobile_device)  {
     w0 = $(window).width () - 24;
     h0 = $(window).height() - 158;
