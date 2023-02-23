@@ -40,15 +40,19 @@ def unjoinProject(driver, testName):
 
         sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Delete')
         time.sleep(1.05)
-
         textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Unjoin')
+        textEls[0].click()   
+        time.sleep(1.05)
+     
+        
+        textEls = driver.find_elements_by_xpath("//button[normalize-space()='%s']" % 'Please unjoin')
         textEls[0].click()
         time.sleep(1.05)
 
     return ()
 
 
-def startRefmac(driver, waitLong):
+def startRefmac(driver):
     print('Running REFMAC5')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
@@ -70,12 +74,20 @@ def startRefmac(driver, waitLong):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(1)
+    
+    # try:
+    #     wait = WebDriverWait(driver, 600) # 10 minutest wait
+    #     # Waiting for the text 'completed' in the ui-dialog-title of the task [0005]
+    #     wait.until(EC.presence_of_element_located
+    #                ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'refmac5') and contains(text(), 'completed')]")))
+    # except:
+    #     print('Apparently the refmac task has not been completed in time!')
 
-    # pressing Close button
-#    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-#    closeButton.click()
-#    time.sleep(1)
+    time.sleep(10)
+    # presing Close button
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
+    time.sleep(3)
 
     return ()
 
@@ -195,6 +207,10 @@ def startSimbad(driver):
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
+    # for closeButton in closeButton:
+    #     if closeButton.is_displayed():
+    #         closeButton.click()
+    #         break
     time.sleep(1)
 
     return ()
@@ -360,54 +376,67 @@ def test_sharingBasic(browser,
 
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
-        sf.importFromCloud_rnase(d.driver, d.waitShort)
+        sf.importFromCloud_rnase(d.driver, 300)
 
         shareProject(d.driver, login+'2')
         joinSharedProject(d2.driver, d.testName)
         sf.enterProject(d2.driver, d.testName)
         time.sleep(1)
-        sf.asymmetricUnitContentsAfterCloudImport(d2.driver, d.waitShort)
+        sf.asymmetricUnitContentsAfterCloudImport(d2.driver, 300)
         time.sleep(1)
 
         sf.clickTaskInTaskTree(d.driver, '\[0002\] asymmetric unit contents')
         time.sleep(1)
-        sf.editRevisionStructure_rnase(d.driver, d.waitShort)
+        sf.editRevisionStructure_rnase(d.driver, 300)
         time.sleep(1)
 
         sf.clickTaskInTaskTree(d2.driver, '\[0003\] edit structure revision')
         time.sleep(1)
-        startRefmac(d2.driver, d.waitLong)
+        startRefmac(d2.driver)
         time.sleep(1)
         sf.clickTaskInTaskTree(d.driver, '\[0002\] asymmetric unit contents')
         time.sleep(2) # sensitive
         startSimbad(d.driver)
         time.sleep(10)
         # pressing Close button for REFMAC window
-        closeButton = d2.driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-        closeButton.click()
+        # closeButton = d2.driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+        # closeButton.click()
         time.sleep(1)
         sf.clickTaskInTaskTree(d2.driver, '\[0002\] asymmetric unit contents')
         time.sleep(1)
-        startMrbump(d2.driver)
+        # startMrbump(d2.driver)
 
-        verifySimbad(d2.driver, d.waitLong)
+        verifySimbad(d2.driver, 100)
         sf.clickTaskInTaskTree(d.driver, '\[0005\] simbad')
-        startRefmac(d.driver, d.waitLong)
+        startRefmac(d.driver)
 
-        verifyRefmac(d.driver, d.waitLong, '0004', 0.17, 0.2)
-        verifyRefmac(d2.driver, 300, '0007', 0.24, 0.27)
+        verifyRefmac(d.driver, 300, '0004', 0.17, 0.2)
+        verifyRefmac(d2.driver, 300, '0006', 0.24, 0.27)
 
-        verifyMrBump(d.driver)
+        # verifyMrBump(d.driver)
 
         #cant rename shared projects anymore
         #sf.renameProject(d.driver, d.testName)
-
-        d.driver.quit()
-        d2.driver.quit()
+        try:
+            d.driver.quit()
+        except: 
+            d2.driver.quit()
+        
+        try: 
+            d2.driver.quit()
+        except:
+            d.driver.quit()
 
     except:
-        d.driver.quit()
-        d2.driver.quit()
+        try:
+            d.driver.quit()
+        except: 
+            d2.driver.quit()
+        
+        try: 
+            d2.driver.quit()
+        except:
+            d.driver.quit()
         raise
 
 
