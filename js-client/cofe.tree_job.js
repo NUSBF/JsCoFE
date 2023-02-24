@@ -243,7 +243,9 @@ JobTree.prototype.readProjectData = function ( page_title,
 
   this.checkLoop = false;  // true if job check loop is running
 
-  (function(tree){
+  var tree = this;
+
+  // (function(tree){
     serverRequest ( fe_reqtype.getProjectData,{'mode':tree.mode},
                     page_title,function(data){
 
@@ -375,7 +377,7 @@ JobTree.prototype.readProjectData = function ( page_title,
       tree.startTaskLoop();
     },'persist');
 
-  }(this));
+  // }(this));
 
 }
 
@@ -1703,6 +1705,7 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
             dlg.tree.run_map [dlg.task.id] = dlg.nodeId;
             dlg.tree.node_map[dlg.nodeId ].setCustomIconVisible ( true );
             dlg.tree.setNodeName ( dlg.nodeId,false );
+            // set button state in project page
             dlg.tree.emitSignal ( cofe_signals.jobStarted,{
               'nodeId' : dlg.nodeId,
               'taskId' : dlg.task.id

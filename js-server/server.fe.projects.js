@@ -191,8 +191,10 @@ function getJobDataPath ( loginData,projectName,jobId )  {
 function writeProjectData ( loginData,projectData,putTimeStamp )  {
   if (!projectData)
     return false;
-  if (putTimeStamp)
+  if (putTimeStamp)  {
     projectData.desc.timestamp = Date.now();
+    console.log ( ' >>>>> wpd timestamp='+projectData.desc.timestamp);
+  }
   utils.writeObject ( getProjectDescPath(loginData,projectData.desc.name),
                       projectData.desc );
 
@@ -321,6 +323,10 @@ var update = false;
     update = true;
   }
   
+  // if (update) 
+  //   console.log ( ' >>>>>>> update project description after check' )
+
+
   return update;  // no changes
 
 }
@@ -354,7 +360,10 @@ var update = false;
   if (checkProjectDescData(projectData.desc,loginData))
     update = true;
 
-  return update;  // no changes
+  // if (update) 
+  //   console.log ( ' >>>>>>> update project data after check' )
+
+  return update;
 
 }
 
@@ -1241,6 +1250,7 @@ var projectName = projectDesc.name;
     if (rdata.pdesc.timestamp>projectDesc.timestamp)  {
       // client timestamp is behind server project timestamp;
       rdata.reload = 1;  // client should reload the project anyway
+      console.log ( ' >>>>> timestamps='+rdata.pdesc.timestamp+':'+projectDesc.timestamp );
     }
 
     var pData = readProjectData ( loginData,projectName );

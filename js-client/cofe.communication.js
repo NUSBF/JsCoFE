@@ -843,34 +843,34 @@ if (window.addEventListener) {
 
 
 function onWindowMessage(event) {
-    // Check sender origin to be trusted
-    // if (event.origin !== "http://example.com") return;
+  // Check sender origin to be trusted
+  // if (event.origin !== "http://example.com") return;
 
-    var edata = event.data;
+  var edata = event.data;
 
-    if (edata.command=='saveFile')  {
-      serverRequest ( fe_reqtype.saveJobFile,edata,'Save file',
-        function(rdata){
-          if (rdata.project_missing)  {
-            new MessageBox (  'Project not found',
-                              '<h3>Project "' + edata.meta.project +
-                              '" is not found on server</h3>' +
-                              'Project "' + edata.meta.project +
-                              '" was shared with you, please check<br>' +
-                              'whether it was deleted by project owner.',
-                              'msg_error'
-                           );
-          } else  {
-            new MessageBox (  'File saved',
-                              '<h3>File "' + edata.fpath + '" saved</h3>' +
-                              'File "' + edata.fpath + '" saved in ' + 
-                              appName() + '.',
-                              'msg_ok'
-                           );
-          }
-        },null,'persist' );
-    } else
-      console.log ( 'Unknown windows message command: ' + edata.command );
+  if (edata.command=='saveFile')  {
+    serverRequest ( fe_reqtype.saveJobFile,edata,'Save file',
+      function(rdata){
+        if (rdata.project_missing)  {
+          new MessageBox (  'Project not found',
+                            '<h3>Project "' + edata.meta.project +
+                            '" is not found on server</h3>' +
+                            'Project "' + edata.meta.project +
+                            '" was shared with you, please check<br>' +
+                            'whether it was deleted by project owner.',
+                            'msg_error'
+                          );
+        } else  {
+          new MessageBox (  'File saved',
+                            '<h3>File "' + edata.fpath + '" saved</h3>' +
+                            'File "' + edata.fpath + '" saved in ' + 
+                            appName() + '.',
+                            'msg_ok'
+                          );
+        }
+      },null,'persist' );
+  }
+//      console.log ( 'Unknown windows message command: ' + edata.command );
 
     // alert ( JSON.stringify(data) );
 

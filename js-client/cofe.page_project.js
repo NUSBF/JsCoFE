@@ -322,7 +322,7 @@ function ProjectPage ( sceneId )  {
 
   // this.onResize ( window.innerWidth,window.innerHeight );
 
-  //  Read project data from server
+  //  Read project data from server first time
   // (function(self){
     // takes project name from projectList.current
     self.jobTree.readProjectData ( 'Project',true,-1,
@@ -1057,7 +1057,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
               var selTasks = self.jobTree.getSelectedTasks();
               var dlg_map  = self.jobTree.dlg_map;
               self.jobTree.delete();
-              self.setJobTree ( job_tree_1 );
+              self.setJobTree ( job_tree_1 );  // -> self.jobTree
               self.jobTree.selectTasks ( selTasks );
               self.jobTree.show ();
               self.jobTree.parent.setScrollPosition ( scrollPos );
