@@ -265,6 +265,7 @@ JobTree.prototype.readProjectData = function ( page_title,
         MessageDataReadError ( page_title,data['message'] );
 
       } else if (data.meta.desc.timestamp>timestamp)  {
+//        console.log ( ' >>>>>>>> tree timestamp='+data.meta.desc.timestamp);
 
 // console.log ( 'loaded' );
 
@@ -487,7 +488,7 @@ JobTree.prototype.resetNodeName = function ( nodeId )  {
   }
 }
 
-
+/*
 JobTree.prototype.__checkTaskLoop = function()  {
 // checks on running tasks
 
@@ -610,6 +611,112 @@ JobTree.prototype.__checkTaskLoop = function()  {
   }(this));
 
 }
+*/
+
+
+JobTree.prototype.__checkTaskLoop = function()  {
+// checks on running tasks
+  
+  var tree = this;
+  var request_data = {};
+  request_data.project   = tree.projectData.desc.name;
+  request_data.shared    = tree.isShared();
+  request_data.timestamp = tree.projectData.desc.timestamp;
+  request_data.run_map   = tree.run_map;
+
+  serverRequest ( fe_reqtype.checkJobs,request_data,'Check jobs state',
+    function(data){
+
+      if ((!tree.checkTimeout) || (tree.checkTimeout==-1))
+        return;
+
+      if (data.reload)  {
+
+        // console.log ( 'reload at check');
+
+        tree.emitSignal ( cofe_signals.reloadTree,data );
+
+      } else  {
+
+        // console.log ( 'process check');
+
+        var completedJobs  = data.completed_map;
+        var completed_list = [];
+
+        for (var key in completedJobs)  {
+
+          var json   = JSON.stringify ( completedJobs[key] );
+          var task   = getObjectInstance ( json );
+
+          var nodeId = null;
+          if (task.id in tree.run_map)  {
+
+            nodeId = tree.run_map[task.id];  // task.id == key
+
+            if (nodeId in tree.task_map)  {
+              task.treeItemId       = nodeId;
+              tree.task_map[nodeId] = task;
+              tree.setNodeName ( nodeId,false );
+              if (task.isRemark())  {
+                tree.setRemarkStyle ( tree.node_map[nodeId],task );
+                // if (task.isLink())
+                //       tree.setStyle ( tree.node_map[nodeId],__linkStyle,0 );
+                // else  tree.setStyle ( tree.node_map[nodeId],__remarkStyle,0 );
+              } else
+                tree.setStyle ( tree.node_map[nodeId],__notViewedStyle,0 );
+              tree.node_map[nodeId].setCustomIconVisible ( false );
+              tree.setNodeIcon    ( nodeId,false );
+              completed_list.push ( task );
+              update_project_metrics ( task,tree.projectData.desc.metrics );
+            }
+
+            if (key in tree.dlg_map)  {
+              tree.dlg_map[key].task = task;
+              tree.dlg_map[key].setDlgState();
+              if (task.state==job_code.failed)
+                tree.dlg_map[key].reloadReport();
+                // tree.dlg_map[key].outputPanel.reload();
+              else if (task.nc_type=='client')
+                tree.dlg_map[key].loadReport();
+            }
+
+            tree.startChainTask ( task,nodeId );
+
+          }
+
+        }
+
+        tree.run_map = mapMaskOut ( tree.run_map,completedJobs );
+
+        if (completed_list.length>0)  {
+          tree.emitSignal ( cofe_signals.treeUpdated,{} );
+          tree.updateRation ( data );
+          tree.saveProjectData ( [],[],false, function(tree,rdata){});
+        }
+
+      }
+
+    },function(){  // always check on job and resume the task loop as necessary
+
+      if (tree.checkTimeout!=-1)  { // task loop was not blocked, and
+        if (tree.checkTimeout &&  // task loop was not terminated, and
+            ((Object.keys(tree.run_map).length>0) ||  // there are jobs to check on
+              (tree.isShared())  // or project is shared
+            )
+          )  {
+          tree.checkTimeout = window.setTimeout ( function(){
+            tree.__checkTaskLoop();
+          },__check_job_interval );
+        } else  {
+          tree.checkTimeout = null;   // otherwise, terminate and mark terminated
+        }
+      }
+
+    },
+    function(){}  // depress ajax failure messages in this particular case!
+  );
+
+}
 
 
 JobTree.prototype.startTaskLoop = function()  {
@@ -621,6 +728,7 @@ JobTree.prototype.startTaskLoop = function()  {
        (this.isShared())  // or project is shared
       )
     )  {
+    this.checkTimeout = 1;
     this.__checkTaskLoop();
   }
 
@@ -629,7 +737,7 @@ JobTree.prototype.startTaskLoop = function()  {
 JobTree.prototype.stopTaskLoop = function()  {
 // stops timeout loop for checking on running jobs
 
-  if (this.checkTimeout && (this.checkTimeout!=-1))  {
+  if (this.checkTimeout && (this.checkTimeout!=-1) && (this.checkTimeout!=1))  {
     window.clearTimeout ( this.checkTimeout );
     this.checkTimeout = null;  // mark as not running
   }
@@ -796,7 +904,7 @@ JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
           if (rdata.reload==-11111)  {
             tree.missingProject();
           } else if (rdata.reload>0)  {
-            tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
+            // tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
             if (callback_func)
                   callback_func ( tree,rdata );
             else  tree.emitSignal ( cofe_signals.reloadTree,rdata );
@@ -1921,6 +2029,10 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
           tree.openJob ( null,parent_page );
           if (task.isRemark())
             tree.setRemarkStyle ( node,task );
+          // if (rdata.reload>0)  {
+          //   rdata.force_reload = true;
+          //   tree.emitSignal ( cofe_signals.reloadTree,rdata );
+          // }
             //   tree.setStyle ( node,__remarkStyle,0 );
         }
       });

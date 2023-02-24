@@ -193,7 +193,7 @@ function writeProjectData ( loginData,projectData,putTimeStamp )  {
     return false;
   if (putTimeStamp)  {
     projectData.desc.timestamp = Date.now();
-    console.log ( ' >>>>> wpd timestamp='+projectData.desc.timestamp);
+//    console.log ( ' >>>>> wpd timestamp='+projectData.desc.timestamp);
   }
   utils.writeObject ( getProjectDescPath(loginData,projectData.desc.name),
                       projectData.desc );
@@ -1250,7 +1250,7 @@ var projectName = projectDesc.name;
     if (rdata.pdesc.timestamp>projectDesc.timestamp)  {
       // client timestamp is behind server project timestamp;
       rdata.reload = 1;  // client should reload the project anyway
-      console.log ( ' >>>>> timestamps='+rdata.pdesc.timestamp+':'+projectDesc.timestamp );
+      // console.log ( ' >>>>> timestamps='+rdata.pdesc.timestamp+':'+projectDesc.timestamp );
     }
 
     var pData = readProjectData ( loginData,projectName );
@@ -1433,6 +1433,8 @@ var projectName = projectDesc.name;
                                            (data.tasks_add.length>0);
 
     if (writeProjectData(loginData,projectData,update_time_stamp))  {
+
+      rdata.pdesc = projectData.desc;
 
       // remove job directories from the 'delete' list
       for (var i=0;i<data.tasks_del.length;i++)  {
