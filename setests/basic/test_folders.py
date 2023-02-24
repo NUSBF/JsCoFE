@@ -56,10 +56,10 @@ def movingProject(driver, testName):
     time.sleep(1)
 
     sf.clickByXpath(driver, "//i[contains(@style,'%s')]" % 'images_png/folder_projects_user.png')
-    time.sleep(1)
+    time.sleep(5)
 
     sf.clickByXpath(driver, "//button[contains(@style, 'images_png/folder_new.png')]")
-    time.sleep(1)
+    time.sleep(4)
 
     nameInput = driver.find_elements_by_xpath("//input[contains(@id,'input')]")
     nameInput[-1].click()
