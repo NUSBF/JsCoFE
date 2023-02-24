@@ -522,11 +522,13 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
 
 function runJob ( loginData,data, callback_func )  {
 
+  var rdata = {};  // response data structure
+
   var task = class_map.makeClass ( data.meta );
   if (!task)  {
     log.error ( 4,'Cannot make job class' );
     callback_func ( new cmd.Response(cmd.fe_retcode.corruptJobMeta,
-                    '[00201] Corrupt job metadata',{}) );
+                    '[00201] Corrupt job metadata',rdata) );
     return;
   }
 
@@ -552,10 +554,9 @@ function runJob ( loginData,data, callback_func )  {
       projectData.desc.autorun = true;
     if ((Object.keys(shared_logins).length>0) || projectData.desc.autorun) // update the timestamp
       prj.writeProjectData ( loginData,projectData,true );
+    rdata.timestamp = projectData.desc.timestamp;
   }
 
-  var rdata = {};  // response data structure
-  rdata.timestamp = projectData.desc.timestamp;
 
   var jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
   if (!utils.dirExists(jobDir))  {
@@ -666,11 +667,13 @@ function runJob ( loginData,data, callback_func )  {
 
 function webappEndJob ( loginData,data, callback_func )  {
 
+  var rdata = {};  // response data structure
+
   var task = class_map.makeClass ( data.meta );
   if (!task)  {
     log.error ( 4,'Cannot make job class' );
     callback_func ( new cmd.Response(cmd.fe_retcode.corruptJobMeta,
-                    '[00201] Corrupt job metadata',{}) );
+                    '[00201] Corrupt job metadata',rdata) );
     return;
   }
 
@@ -687,12 +690,10 @@ function webappEndJob ( loginData,data, callback_func )  {
       projectData.desc.autorun = true;
     if ((Object.keys(shared_logins).length>0) || projectData.desc.autorun) // update the timestamp
       prj.writeProjectData ( loginData,projectData,true );
+    rdata.timestamp = projectData.desc.timestamp;
   }
 
   var job_token = task.job_dialog_data.job_token;
-
-  var rdata = {};  // response data structure
-  rdata.timestamp = projectData.desc.timestamp;
 
   task.nc_type ='ordinary';
 
