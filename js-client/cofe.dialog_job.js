@@ -412,7 +412,8 @@ JobDialog.prototype.onDlgResize = function ()  {
     this.task.inputPanelResize ( this.inputPanel,panelWidth,panelHeight );
   }
 
-  this.outputPanel.setSize_px ( panelWidth,panelHeight );
+  if (this.outputPanel)
+    this.outputPanel.setSize_px ( panelWidth,panelHeight );
 
 }
 
