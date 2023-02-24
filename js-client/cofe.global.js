@@ -49,7 +49,7 @@ var __current_folder  = {
 };
 var __local_setup     = false;
 var __is_archive      = false;
-var __offline_message = false;  // true for showing "working offline" once at the beginning
+var __offline_message = 'off';  // true for showing "working offline" once at the beginning
 var __cloud_storage   = false;  // true if user has cloud storage allocated
 var __demo_projects   = false;  // true if demo projects are configured
 var __url_parameters  = null;   // decoded ?p1=v1&p2=v2 from url at session begining
