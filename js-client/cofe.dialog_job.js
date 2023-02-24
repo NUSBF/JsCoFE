@@ -902,6 +902,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
                     addWfKnowledge ( dlg.task,dlg.ancestors.slice(1) );
                     dlg.tree.projectData.desc.timestamp = rdata.timestamp;
+                    console.log ( ' >>>>> timestamp='+dlg.tree.projectData.desc.timestamp );
 
                     if (dlg.task.nc_type=='client')  {
 

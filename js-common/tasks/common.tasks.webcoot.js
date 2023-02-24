@@ -98,7 +98,7 @@ TaskWebCoot.prototype.taskDescription = function()  {
   return 'Fit atoms and new ligands in electron density, validate and explore';
 }
 
-TaskWebCoot.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
+// TaskWebCoot.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 
 //TaskWebCoot.prototype.cleanJobDir = function ( jobDir )  {}
 
