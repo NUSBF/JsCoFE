@@ -35,8 +35,8 @@ where ``task`` is one of:
 
   - ``import``: create standard project, `import data <../html-taskref/doc.task.Import.html>`_ and stop 
   - ``hop-on``: create `hop-on <../html-taskref/doc.task.Migrate.html>`_ project, import data and stop
-  - ``auto-af2``: create standard project, import data and start `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`_ based on structure prediction with AlphaFold-2
-  - ``auto-mr``: create standard project, import data and start `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`_ utilising `MrBump <../html-taskref/doc.task.MrBump.html>`_ and `Simbad <../html-taskref/doc.task.Simbad.html>`_ pipelines
+  - ``auto-af2``: create standard project, import data and start `workflow <../html-taskref/doc.task.WFlowAFMR.html>`__ based on structure prediction with AlphaFold-2
+  - ``auto-mr``: create standard project, import data and start `Auto-MR workflow <../html-taskref/doc.task.WFlowAMR.html>`__ utilising `MrBump <../html-taskref/doc.task.MrBump.html>`_ and `Simbad <../html-taskref/doc.task.Simbad.html>`_ pipelines
   - ``auto-ep``: create standard project, import data and start `Auto-EP workflow <../html-taskref/doc.task.WFlowAEP.html>`_ based in `Crank-2 <../html-taskref/doc.task.Crank2.html>`_ pipeline
   - ``auto-ref``: create standard project, import data and start `Auto-REL workflow <../html-taskref/doc.task.WFlowREL.html>`_ , performing automatic structure refinement with optimization of Refmac parameters and fitting water molecules
   - ``dimple``: create standard project, import data and start `Dimple <../html-taskref/doc.task.Dimple.html>`_ workflow for fast ligand blob identification and fitting

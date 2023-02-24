@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.12.22   <--  Date of Last Modification.
+ *    22.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -18,7 +18,7 @@
  *  =================================================================
  *
  * Invocation:
- *    node ./desktop.js configFile [-localuser Name]
+ *    node ./desktop.js configFile [-localuser Name] [-no-browser]
  *
  *  where "configFile" is path to JSON-formatted configuration file, containing
  *  configurations for Front End and Number Crunchers, one of which may have
@@ -56,6 +56,7 @@ tmp.setGracefulCleanup();
 var arg2      = null;
 var localuser = null;
 var confout   = null;
+var nobrowser = false;
 
 for (var arg of process.argv.slice(2).reverse()) {
   if (arg == '-localuser') {
@@ -63,7 +64,9 @@ for (var arg of process.argv.slice(2).reverse()) {
     localuser = arg2;
     arg2 = null;
   }
-  else if (arg == '-confout') {
+  else if (arg == '-no-browser')  {
+    nobrowser = true;
+  } else if (arg == '-confout') {
     if (arg2 == null) break;
     confout = arg2;
     arg2 = null;
@@ -176,6 +179,11 @@ function startNCServer ( nc_number,cfgpath )  {
 // Define function to start client application
 
 function start_client_application()  {
+
+  if (nobrowser)  {
+    log.standard ( 8,'launch of client application is supressed (no browser)' );
+    return;
+  }
 
   var desktopConfig = conf.getDesktopConfig();
   if (!desktopConfig)
