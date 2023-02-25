@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.02.23   <--  Date of Last Modification.
+ *    25.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1225,7 +1225,7 @@ var dpath = null;
 
 function saveProjectData ( loginData,data )  {
 var response    = null;
-var projectData = data.meta;
+var projectData = data.meta;          // client project data
 var projectDesc = projectData.desc;
 var projectName = projectDesc.name;
 
@@ -1250,10 +1250,12 @@ var projectName = projectDesc.name;
     if (rdata.pdesc.timestamp>projectDesc.timestamp)  {
       // client timestamp is behind server project timestamp;
       rdata.reload = 1;  // client should reload the project anyway
-      // console.log ( ' >>>>> timestamps='+rdata.pdesc.timestamp+':'+projectDesc.timestamp );
+// console.log ( ' >>>>> timestamps='+rdata.pdesc.timestamp+':'+projectDesc.timestamp );
     }
 
-    var pData = readProjectData ( loginData,projectName );
+    var pData = readProjectData ( loginData,projectName );  // server project data
+
+// console.log ( ' >>>>>>> nadd=' + data.tasks_add.length );
 
     if (data.tasks_add.length>0)  {
       // there are new tasks -- check that trees are compatible
@@ -1267,10 +1269,13 @@ var projectName = projectDesc.name;
             rdata.reload = 2;
           }
 
+// console.log ( ' >>>>>>> task_id=' + data.tasks_add[i].id );
+// console.log ( ' >>>>>>> reload=' + rdata.reload );
+
         if (rdata.reload<=1)  {
 
           // Check that suggested new task id does not clash with what is
-          // already there in the project. Simply try to creat job directory and
+          // already there in the project. Simply try to create job directory and
           // see if it already exists.
           
           var mjd = make_job_directory ( loginData,projectName,data.tasks_add[i].id );
@@ -1312,7 +1317,9 @@ var projectName = projectDesc.name;
 
           }
 
-          if (data.reload==1)  { // Given tree is behind the actual project state.
+          if (rdata.reload==1)  { // Given tree is behind the actual project state.
+
+// console.log ( ' >>>>>>> task_id=' + data.tasks_add[i].id );
 
             // Check that the parent node for added task is there in pData;
             // if found than projects can be merged without general reload of
@@ -1323,13 +1330,16 @@ var projectName = projectDesc.name;
             // and find parent task id (skip remarks and folders)
             var pDataId = '';
             for (var j=1;(j<node_lst.length) && (!pDataId);j++)
-              pDataId = node_lst[j].dataId;
+              pDataId = node_lst[j].dataId;  // empty for remarks
+
+// console.log ( ' >>>>>>> pDataId=' + pDataId );
 
             if (pDataId)  {
+              // find parent node for to-be-added job in server-side copy of project
               var pnode = pd.getProjectNode ( pData,pDataId );
-              if (pnode)  {  // node found, copy the added node over
-                // before copying, remove branches, coming with the added node,
-                // from the destination (if node was inserted rather than added)
+              if (pnode)  {  // node found, copy the to-be-added node over.
+                // Before copying, remove branches, coming with the added node,
+                // from the destination (works if node was inserted rather than added)
                 var childIds = [];
                 for (var j=0;j<node_lst[0].children.length;j++)
                   childIds.push ( node_lst[0].children[j].dataId );
@@ -1341,7 +1351,11 @@ var projectName = projectDesc.name;
                       pnode.children.push ( pchildren[j] );
                 }
                 pnode.children.push ( node_lst[0] );
+// console.log ( ' >>>>> added ' + node_lst[0].dataId + ' to ' + pnode.dataId );
               } else  {
+                // server-side tree differs significantly from the client-side tree
+                // so that adding new task is not possible; request hard reload
+                // in browser
                 rdata.reload = 2;
               }
             } else if ((pData.tree.length>0) && (node_lst.length>1))  {
@@ -1371,22 +1385,23 @@ var projectName = projectDesc.name;
     if (rdata.pdesc.timestamp>projectDesc.timestamp)  {
       // further on, will work on the actual Project, but mind that the tree
       // may return deleted nodes, see below
+      // pd.printProjectTree ( 'Client tree',projectData );
+      // pd.printProjectTree ( 'Server tree',pData );
       projectData = pData;
       projectDesc = projectData.desc;
     }
 
+  } else  {
+    log.error ( 32,'cannot read project description ' + loginData.login + ':' +
+                   projectName  );
+    emailer.send ( conf.getEmailerConfig().maintainerEmail,
+        'CCP4 Cloud Read Project Description Fails',
+        '[00027] Detected project description read failure for <b>' + 
+        loginData.login + ':' + projectName + '</b><p>Please investigate.' );
+    rdata.reload = 2;
+    return  new cmd.Response ( cmd.fe_retcode.readError,
+                               '[00027] Cannot read projecty description',rdata );
   }
-  //  else  {
-  //   log.error ( 32,'cannot read project description ' + loginData.login + ':' +
-  //                  projectName  );
-  //   emailer.send ( conf.getEmailerConfig().maintainerEmail,
-  //       'CCP4 Cloud Read Project Description Fails',
-  //       '[00027] Detected project description read failure for <b>' + 
-  //       loginData.login + ':' + projectName + '</b><p>Please investigate.' );
-  //   rdata.reload = 2;
-  //   return  new cmd.Response ( cmd.fe_retcode.readError,
-  //                              '[00027] Cannot read projecty description',rdata );
-  // }
 
   // Get users' projects list file name
   var projectDataPath = getProjectDataPath ( loginData,projectName );
@@ -1403,8 +1418,6 @@ var projectName = projectDesc.name;
       projectDesc.disk_space  = 0.0;   // should be eventually removed
       projectDesc.cpu_time    = 0.0;   // should be eventually removed
     }
-
-    // checkProjectData ( projectData,loginData );   21.05.2021
 
     if (disk_space_change!=0.0)  {
       // disk space change is booked to project owner inside this function
@@ -2160,6 +2173,7 @@ var pData    = readProjectData ( loginData,data.name );
         }
       }
       if (rdata.code=='ok')  {
+        writeProjectData ( loginData,pData,true );
         utils.copyDirAsync ( projectDirPath,newPrjDirPath,true,function(err){
           if (err)  {
             log.error ( 96,'clone project failed:' );
@@ -2173,6 +2187,7 @@ var pData    = readProjectData ( loginData,data.name );
               jmeta[i][1].project = data.new_name;
               utils.writeObject ( jmeta[i][0],jmeta[i][1] );
             }
+            pData = readProjectData ( loginData,data.name );
             var pDesc = pData.desc;
             pDesc.name  = data.new_name;
             pDesc.title = data.new_title;
@@ -2665,12 +2680,6 @@ function saveJobFile ( loginData,data )  {
 var response    = null;
 var projectName = data.meta.project;
 var jobId       = data.meta.id;
-
-  // if (data.update_tree)  {
-  //   var pData = readProjectData ( loginData,projectName );
-  //   if (pData)
-  //     writeProjectData ( loginData,pData,true );
-  // }
 
   var jobDirPath = getJobDirPath ( loginData,projectName,jobId );
 

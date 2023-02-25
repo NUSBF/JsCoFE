@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.02.23   <--  Date of Last Modification.
+ *    25.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -241,7 +241,7 @@ JobTree.prototype.readProjectData = function ( page_title,
 
   this.stopTaskLoop();
 
-  this.checkLoop = false;  // true if job check loop is running
+  // this.checkLoop = false;  // true if job check loop is running
 
   var tree = this;
 
@@ -908,6 +908,13 @@ JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
             if (callback_func)
                   callback_func ( tree,rdata );
             else  tree.emitSignal ( cofe_signals.reloadTree,rdata );
+
+            //   window.setTimeout ( function(){
+            //     console.log ( ' >>>>>>>>  reload triggered');
+            //     rdata.force_reload = true;
+            //     tree.emitSignal ( cofe_signals.reloadTree,rdata );
+            //   },10);
+
           } else  {
             tree.updateRation ( rdata );
             tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
@@ -2019,7 +2026,7 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
       this.setText ( node,this.makeNodeName(task) );
 
       this.saveProjectData ( [task],[],true, function(tree,rdata){
-        if (tree.checkReload(rdata,'add the job'))  {
+        if (tree.checkReload(rdata,'clone job'))  {
           task.id     = rdata.jobIds[0];
           node.dataId = task.id;
           tree.projectData.desc.jobCount = task.id;
@@ -2030,8 +2037,11 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
           if (task.isRemark())
             tree.setRemarkStyle ( node,task );
           // if (rdata.reload>0)  {
-          //   rdata.force_reload = true;
-          //   tree.emitSignal ( cofe_signals.reloadTree,rdata );
+          //   window.setTimeout ( function(){
+          //     console.log ( ' >>>>>>>>  reload triggered');
+          //     rdata.force_reload = true;
+          //     tree.emitSignal ( cofe_signals.reloadTree,rdata );
+          //   },10);
           // }
             //   tree.setStyle ( node,__remarkStyle,0 );
         }
@@ -2402,7 +2412,7 @@ JobTree.prototype.replayTree = function ( ref_tree )  {
 
   this.stopTaskLoop();
 
-  this.checkLoop = false;  // true if job check loop is running
+  // this.checkLoop = false;  // true if job check loop is running
 
   var task_del_list = [];
   for (var nodeId in this.task_map)

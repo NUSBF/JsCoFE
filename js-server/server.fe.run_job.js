@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.02.23   <--  Date of Last Modification.
+ *    25.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -701,30 +701,6 @@ function webappEndJob ( loginData,data, callback_func )  {
     function(jtoken){
       callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',rdata) );
     });
-
-
-  // var jobDir = prj.getJobDirPath ( loginData,task.project,task.id );
-  // if (!utils.dirExists(jobDir))  {
-  //   callback_func ( new cmd.Response ( cmd.fe_retcode.writeError,
-  //               '[00005] Job directory does not exist (job deleted?).',rdata ) );
-  //   return;
-  // }
-
-  // var jobDataPath = prj.getJobDataPath ( loginData,task.project,task.id );
-
-  // task.state      = task_t.job_code.running;
-  // var job_token   = crypto.randomBytes(20).toString('hex');
-  // if (task.nc_type=='client')
-  //   task.job_dialog_data.job_token = job_token;
-  // task.start_time = Date.now();
-
-  // // write task data because it may have latest changes
-  // if (!utils.writeObject(jobDataPath,task))  {
-  //   callback_func ( new cmd.Response ( cmd.fe_retcode.writeError,
-  //                             '[00005] Job metadata cannot be written.',rdata ) );
-  //   return;
-  // }
-
 
 }
 
