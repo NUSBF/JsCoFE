@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.01.23   <--  Date of Last Modification.
+#    27.02.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -140,6 +140,8 @@ class PaiRef(basic.TaskDriver):
             hklin_unmerged = os.path.join ( self.inputDir(),hkl.aimless_meta.file_unm )
 
         sec1    = self.task.parameters.sec1.contains
+        sec2    = self.task.parameters.sec2.contains
+
 
         hires   = round ( hkl.getHighResolution(raw=True),2 )
         resList = []
@@ -172,7 +174,7 @@ class PaiRef(basic.TaskDriver):
             resList.sort ( reverse=True )
             for i in range(len(resList)):
                 resList[i] = str(resList[i])
-
+        
 
         cmd = [
             #"-m"     , "pairef",
@@ -182,7 +184,9 @@ class PaiRef(basic.TaskDriver):
             "-r"       , ",".join(resList[1:]),
             "-i"       , str(resList[0]),
             "--refmac"
+
         ]
+
 
         # -r RES_SHELLS         explicit definition of high resolution shells - values
         #                         must be divided using commas without any spaces and
@@ -210,13 +214,26 @@ class PaiRef(basic.TaskDriver):
         if libin:
             cmd += [ "--LIBIN",libin ]
 
+
+        if str(sec1.WAUTO_YES.value) == 'yes':
+            pass
+        else:
+            cmd += [ '--weight ' + str(sec1.WAUTO_VAL.value) ]
+
+        
+        if self.task.parameters.sec1.contains.CMP_CBX.value:
+            cmd += ["--complete"]
+
         prencyc = self.getParameter ( sec1.PRENCYC ).strip()
         if prencyc:
             prencyc = int(prencyc)
         else:
-            prencyc = 10
+            prencyc = 20
         if prencyc>0:
             cmd += [ "--prerefinement-ncyc", str(prencyc) ]
+        
+        if str(sec2.KEYWORDS.value) != '':
+           cmd += [ str(sec2.KEYWORDS.value) ]
 
 
         htmlReport = "PAIREF_" + self.pairefProject() + ".html"

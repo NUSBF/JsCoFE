@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    31.01.23   <--  Date of Last Modification.
+ *    27.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -89,6 +89,7 @@ function TaskPaiRef()  {   // must start with Task...
                      iwidth   : 280,
                      position : [0,0,1,5]
                    },
+        
         NSHELLS :  { type        : 'integer_',
                      keyword     : 'nshells',
                      label       : 'number of hi-resolution shells:',
@@ -101,6 +102,7 @@ function TaskPaiRef()  {   // must start with Task...
                      position    : [1,2,1,1],
                      showon      : {'MODE_SEL':['eqd']}
                    },
+        
         RSTEP :    { type        : 'real_',
                      keyword     : 'rstep',
                      label       : 'of',
@@ -131,7 +133,7 @@ function TaskPaiRef()  {   // must start with Task...
                                     'leave blank for automatic choice.',
                       range       : [0,50],
                       value       : '',
-                      placeholder : '10',
+                      placeholder : '20',
                       iwidth      : 40,
                       // label2      : 'refinement cycles at the intial low resolution',
                       position    : [3,0,1,1]
@@ -139,9 +141,75 @@ function TaskPaiRef()  {   // must start with Task...
         label   :   { type        : 'label',  // just a separator
                       label       : 'refinement cycles',
                       position    : [3,3,1,6]
+                    },
+
+        WAUTO_YES : {
+                      type     : 'combobox',
+                      keyword  : 'none',
+                      label    : 'Overall data-geometry weight',
+                      tooltip  : 'Overall Data-geometry weight',
+                      range    : ['yes|Auto','no|Fixed'],
+                      value    : 'yes',
+                      position : [5,0,1,1]
+                   },
+        WAUTO_VAL : {
+                     type     : 'real',
+                     keyword  : 'none',
+                     label    : 'value',
+                     tooltip  : 'Weight for X-ray term',
+                     range    : [0,'*'],
+                     value    : '0.01',
+                     showon   : {'WAUTO_YES':['no']},
+                     position : [5,3,1,1]
+                  },
+        // WAUTO_VAL_AUTO : {
+        //              type     : 'real_',
+        //              keyword  : 'none',
+        //              label    : 'starting value',
+        //              tooltip  : 'Weight for X-ray term',
+        //              range    : [0,'*'],
+        //              value    : '',
+        //              default  : '',   // default cannot be a literal
+        //              showon   : {'WAUTO_YES':['yes']},
+        //              position : [4,3,1,1]
+        //           },
+        CMP_CBX : {
+                      type     : 'checkbox',
+                      label    : 'Complete cross validation',
+                      tooltip  : 'To run the paired refinement protocol for each individual free reflections set',
+                      value    : false,
+                      position : [6,0,1,1]
                     }
    }
-    }
+    },
+
+    sec2 : {
+      type     : 'section',
+      title    : 'Advanced',
+      open     : false,
+      position : [4,0,1,5],
+      contains : {
+         KEYWORDS_LBL : {
+           type     : 'label',
+           keyword  : 'none',
+           label    : '<div style="font-size:14px;">' +
+                      '<i>Type additional keywords here</i></div>',
+           position : [2,0,1,6]
+         },
+         KEYWORDS: {
+          type        : 'aceditor_',
+          //keyword     : 'keyword',
+          tooltip     : '',
+          reportas    : 'Keywords',
+          tooltip     : 'Keywords for Refmac',
+          value       : '',
+          iwidth      : 500,
+          iheight     : 160,
+          position    : [3,0,1,6]
+        }  
+
+      }
+   }
   };
 
 }
