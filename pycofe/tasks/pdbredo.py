@@ -60,9 +60,18 @@ class Pdbredo(basic.TaskDriver):
     token_id     = None
     token_secret = None
 
+    row0         = 0
     resultDir    = "pdbredo_results"
 
-    row0 = 0
+    start_time   = time.time()
+
+    def getElapsedTime(self):
+        elapsed = time.time() - self.start_time
+        hours   = elapsed//3600
+        elapsed = elapsed - 3600*hours
+        minutes = elapsed//60
+        seconds = elapsed - 60*minutes
+        return "{:0>2}h:{:0>2}m:{:0>2}s".format(int(hours),int(minutes),int(seconds))
 
     # ------------------------------------------------------------------------
 
@@ -119,7 +128,7 @@ class Pdbredo(basic.TaskDriver):
                cmd1 += [ "--job-id",self.pdbredoJobId ]
         cmd1 += ["--token-id",self.token_id,"--token-secret",self.token_secret]
 
-        self.stdout ( "... executing " + " ".join(cmd1) )
+        self.stdoutln ( "... executing " + " ".join(cmd1) )
 
         fout = open ( "_pdb_redo.log","w" )
         p = subprocess.Popen ( cmd1,
@@ -141,21 +150,23 @@ class Pdbredo(basic.TaskDriver):
             fout.close()
             if not result:
                 result = "void"
-            self.stdout ( "... returned: " + result )
+            self.stdoutln ( "... returned: " + result )
 
         return result
     
 
     def do_submit ( self,cmd ):
 
-        result = self.run_pdbredo ( "submit",cmd )
+        self.rvrow = self.row0
+        self.putWaitMessageLF ( "submitting to PDB REDO server " )
 
-        self.stdoutln ( " result="+result )
+        result = self.run_pdbredo ( "submit",cmd )
 
         if result.startswith("Job submitted with id"):
             self.pdbredoJobId = result.split()[-1]
 
         if not self.pdbredoJobId:
+            self.rvrow = self.row0
             self.putMessage ( "<h3>Job submission errors</h3>" +\
                 "Job submission to PDB-REDO server was not successful, server replied:<p>" +\
                 "<b>" + result + "</b><p>Stop here."
@@ -171,23 +182,40 @@ class Pdbredo(basic.TaskDriver):
 
 
     def do_wait ( self ):
-        result   = "***"
-        status   = "starting"
-        errcount = 0
+
+        self.rvrow = self.row0
+        gridId     = self.putWaitMessageLF ( "starting on PDB REDO server " )
+
+        result     = "***"
+        status     = "starting"
+        status0    = status
+        errcount   = 0
+
         while status in ["starting","running","errors"] and (errcount<100):
             result = self.run_pdbredo ( "status",[] )
             if result.startswith("Job status is"):
                 status   = result.split()[-1]
                 errcount = 0
+                if status!=status0:
+                    self.rvrow = self.row0
+                    gridId  = self.putWaitMessageLF ( status + " on PDB REDO server " )
+                    status0 = status
             else:
                 errcount += 1
                 self.stdoutln ( " ... possible PDB-REDO server connection issues" )
                 self.stderrln ( " ... possible PDB-REDO server connection issues" )
                 status = "errors"
+                if status!=status0:
+                    self.rvrow = self.row0
+                    gridId  = self.putWaitMessageLF ( "running on PDB REDO server, possible errors " )
+                    status0 = status
+            self.putMessage1 ( gridId,"&nbsp;&nbsp;(" + self.getElapsedTime() + ")",0,2 )
             self.flush()
-            time.sleep(120)
+            if status!="ended":
+                time.sleep(120)
 
         if status!="ended":
+            self.rvrow = self.row0
             self.putMessage ( "<h3>Job errors</h3>" +\
                 "Job status checks suggested errors on PDB-REDO server side, server replied:<p>" +\
                 "<b>" + result + "</b><p>Stop here."
@@ -216,9 +244,10 @@ class Pdbredo(basic.TaskDriver):
             }
             return False
 
-        with ZipFile(zipfname, "r") as zipObj:
+        with ZipFile(zipfname,"r") as zipObj:
             # Extract all the contents of zip file in different directory
-            zipObj.extractall ( self.resultDir )
+            zipObj.extractall ( "./" )
+            self.stdoutln ( " ... results unzipped" )
 
 
         unzipfname = self.pdbredoJobId.zfill(10)
@@ -232,32 +261,9 @@ class Pdbredo(basic.TaskDriver):
             return False
         
         os.rename ( unzipfname,self.resultDir )
+        os.remove ( zipfname )
 
         return True
-
-        # final_pdb = None
-        # final_mtz = None
-        # # final_lig = None
-
-        # for root, dir, files in os.walk(self.resultDir, topdown=False):
-        #     for fname in files:
-        #         if fname.endswith("_final.pdb"):
-        #             final_pdb = os.path.join(root, fname)
-        #         if fname.endswith("_final.mtz"):
-        #             final_mtz = os.path.join(root, fname)
-
-        # xyzout = self.getXYZOFName()
-
-        # mtzout = self.getMTZOFName()
-
-        # os.rename(final_pdb, xyzout)
-
-        # os.rename(final_mtz, mtzout)
-
-        # return [xyzout, mtzout, pdbredo_log]
-
-
-
 
 
     def run(self):
@@ -286,9 +292,6 @@ class Pdbredo(basic.TaskDriver):
         xyzin = istruct.getXYZFilePath(self.inputDir())
         hklin = hkl.getHKLFilePath(self.inputDir())
         libin = istruct.getLibFilePath(self.inputDir())
-
-        # xyzout = self.getXYZOFName()
-        # mtzout = self.getMTZOFName()
 
         auth_fpath = os.path.join ( self.inputDir(),"authorisation.json" )
         if not os.path.isfile(auth_fpath):
@@ -351,6 +354,8 @@ class Pdbredo(basic.TaskDriver):
         self.stdoutln ( "... submitting to PDB-REDO using id " + str(self.token_id) +\
                         " and secret " + str(self.token_secret) )
 
+        self.row0 = self.rvrow
+
         # submit job to PDB-REDO
 
         cmd = [ "--xyzin",xyzin, "--hklin",hklin ]
@@ -369,60 +374,42 @@ class Pdbredo(basic.TaskDriver):
             self.success ( False )
             return
 
+        self.insertTab ( self.getWidgetId("pdbredo_log"),"PDB-REDO Log",
+                         os.path.join("..",self.resultDir,"process.log"), False )
 
-        #pyrvapi.rvapi_keep_polling ( True )
-        # if sys.platform.startswith("win"):
-        #     self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
-        # else:
-        #     self.runApp ( "ccp4-python",cmd,logType="Main" )
+        final_pdb  = None
+        final_mtz  = None
+        refmac_log = None
+        # final_lig = None
 
+        files = os.listdir ( self.resultDir )
+        for fname in files:
+            for fname in files:
+                if fname.endswith("_final.pdb"):
+                    final_pdb = os.path.join(self.resultDir,fname)
+                if fname.endswith("_final.mtz"):
+                    final_mtz = os.path.join(self.resultDir,fname)
+                if fname.endswith("_final.log"):
+                    refmac_log = os.path.join(self.resultDir,fname)
 
-
-        # self.row0 = self.rvrow
-        # self.putWaitMessageLF("submitting to PDB REDO server ")
-
-
-        self.success(False)
-        return
-
-        # PDBREDO_URI = "https://services.pdb-redo.eu:443"
-
-        # # imitate PDBREDO
-        # #  ==================================
-        # shutil.copyfile ( xyzin,xyzout )
-        # shutil.copyfile ( istruct.getMTZFilePath(self.inputDir()),mtzout )
-        # #  ==================================
-
-        """
-
-        run_id = self.do_submit(xyzin, hklin )
-
-        number_of_try = 0
-
-        while True:
-            try :
-                status = self.do_status( run_id)
-                if status == "ended":
-                    break
-                if status == "stopped":
-                    break
-
-            except:
-                if number_of_try < 100:
-                    number_of_try +=1
-                    time.sleep(120)
-                    pass
-                else:
-                    self.stderrln ('Possible internet connection issues ' + '\n' , status)
-                    break
-
-        xyzout, mtzout, pdbredo_log = self.do_fetch ( run_id )
+        xyzout = self.getXYZOFName()
+        mtzout = self.getMTZOFName()
+        os.rename ( final_pdb,xyzout )
+        os.rename ( final_mtz,mtzout )
 
         self.stdoutln(" final_pdb = " + str(xyzout))
         self.stdoutln(" final_mtz = " + str(mtzout))
 
-        self.row0 = self.rvrow
+        self.rvrow = self.row0
         self.putMessage("")
+        self.rvrow = self.row0
+
+        if refmac_log:
+            panel_id = self.getWidgetId ( "refmac_report" )
+            self.setRefmacLogParser ( panel_id,False,graphTables=False,makePanel=True )
+            file_refmaclog = open ( refmac_log,"r" )
+            self.log_parser.parse_stream ( file_refmaclog )
+            file_refmaclog.close()
 
         self.addCitations ( ['pdbredo'] )
 
@@ -464,19 +451,20 @@ class Pdbredo(basic.TaskDriver):
                 self.registerRevision(revision)
                 have_results = True
                 
-                rfactor = 1.0
-                rfree   = 1.0
-                lines   = pdbredo_log.splitlines()
-                for line in lines:
-                    if line.startswith("Resulting R-factor:"):
-                        rfactor = line.split(":")[1].strip()
-                    elif line.startswith("Resulting R-free  :"):
-                        rfree   = line.split(":")[1].strip()
+                # rfactor = 1.0
+                # rfree   = 1.0
+                # with open(refmac_log,"r") as f:
+                #     lines = f.readlines()
+                #     for line in lines:
+                #         if line.startswith("    :"):
+                #             rfactor = line.split(":")[1].strip()
+                #         elif line.startswith("Resulting R-free  :"):
+                #             rfree   = line.split(":")[1].strip()
 
-                self.generic_parser_summary["refmac"] = {
-                    "R_factor"   : rfactor,
-                    "R_free"     : rfree
-                }
+                # self.generic_parser_summary["refmac"] = {
+                #     "R_factor"   : rfactor,
+                #     "R_free"     : rfree
+                # }
 
                 summary_line = ""
 
@@ -510,7 +498,6 @@ class Pdbredo(basic.TaskDriver):
 
         # shutil.rmtree(self.resultDir)
         # os.remove("result.zip")
-        """
 
         if summary_line:
             self.generic_parser_summary["pdbredo"] = {

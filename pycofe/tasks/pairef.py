@@ -238,13 +238,14 @@ class PaiRef(basic.TaskDriver):
 
         htmlReport = "PAIREF_" + self.pairefProject() + ".html"
 
-        self.insertTab ( "pairef_report", "PaiRef Report", None, True )
+        tabId = self.getWidgetId ( "pairef_report" )
+        self.insertTab ( tabId, "PaiRef Report", None, True )
  
         frameId  = self.getWidgetId ( "pairef_report_frame" )
         frameURL = '../' + self.pairefDir() + '/' + htmlReport
         frameCSS = "border:none;position:absolute;top:50px;left:0;width:100%;height:90%;"
         self.putMessage1 (
-            "pairef_report",
+            tabId,
             '<iframe id="' + frameId + '" src="' + frameURL + '" style="' + frameCSS + '"></iframe>' +\
             '<script>' +\
                 'var is_loaded = false;' +\

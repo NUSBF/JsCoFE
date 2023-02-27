@@ -516,7 +516,7 @@ class TaskDriver(object):
         self.rvrow += 1
         return
 
-    def putWaitMessageLF ( self,message_str ):
+    def putWaitMessageLF ( self,message_str,message2="" ):
         gridId = "wait_message_" + str(self.widget_no)
         pyrvapi.rvapi_set_text ( "&nbsp;",self.report_page_id(),self.rvrow,0,1,1 )
         pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),self.rvrow,0,1,1 )
@@ -524,9 +524,11 @@ class TaskDriver(object):
         #                          "</font>",gridId,0,0,1,1 )
         pyrvapi.rvapi_set_text ( "<i>" + message_str + "</i>" ,gridId,0,0,1,1 )
         pyrvapi.rvapi_set_text ( "<div class='activity_bar'/>",gridId,0,1,1,1 )
+        if message2:
+            pyrvapi.rvapi_set_text ( message2,gridId,0,2,1,1 )
         self.widget_no += 1
         pyrvapi.rvapi_flush ()
-        return
+        return gridId
 
     def putTitle ( self,title_str ):
         if self.rvrow>0:
