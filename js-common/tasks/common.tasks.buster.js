@@ -229,10 +229,13 @@ TaskBuster.prototype.constructor = TaskBuster;
 
 TaskBuster.prototype.icon = function()  { return 'task_buster'; }
 
+TaskBuster.prototype.cleanJobDir = function ( jobDir )  {}
+
+
 TaskBuster.prototype.desc_title = function()  {
-  // this appears under task title in the task list
-    return 'refines macromolecular structure';
-  };
+// this appears under task title in the task list
+  return 'refines macromolecular structure';
+};
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
@@ -258,9 +261,9 @@ TaskBuster.prototype.checkKeywords = function ( keywords )  {
 // TaskBuster.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskBuster.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['buster','refinement', 'global', 'phasing'] );
-  }
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['buster','refinement', 'global', 'phasing'] );
+}
 
 if (__template)  {
   //  for server side

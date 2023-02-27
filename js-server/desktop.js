@@ -58,7 +58,7 @@ var localuser = null;
 var confout   = null;
 var nobrowser = false;
 
-for (var arg of process.argv.slice(2).reverse()) {
+for (let arg of process.argv.slice(2).reverse()) {
   if (arg == '-localuser') {
     if (arg2 == null) break;
     localuser = arg2;
@@ -81,7 +81,7 @@ for (var arg of process.argv.slice(2).reverse()) {
 }
 
 if (!arg2) {
-  var usage = 'Usage: ' + process.argv[0] + ' ' + process.argv[1];
+  let usage = 'Usage: ' + process.argv[0] + ' ' + process.argv[1];
   usage += ' [-localuser Name] [-confout Path]';
   log.error ( 1,'Incorrect command line. Stop.' );
   log.error ( 1,usage );
@@ -109,7 +109,7 @@ var feProxyConfig = conf.getFEProxyConfig()
 var ncConfigs     = conf.getNCConfigs();
 
 feConfig.killPrevious();
-for (var i=0;i<ncConfigs.length;i++)
+for (let i=0;i<ncConfigs.length;i++)
   ncConfigs[i].killPrevious();
 
 if (localuser)
@@ -148,13 +148,13 @@ if (feProxyConfig)  {
 
 function startNCServer ( nc_number,cfgpath )  {
 
-  var stdout_path = path.join ( ncConfigs[nc_number].storage,'stdout.log' );
-  var stderr_path = path.join ( ncConfigs[nc_number].storage,'stderr.log' );
+  let stdout_path = path.join ( ncConfigs[nc_number].storage,'stdout.log' );
+  let stderr_path = path.join ( ncConfigs[nc_number].storage,'stderr.log' );
 
   utils.writeString ( stdout_path,'' );
   utils.writeString ( stderr_path,'' );
 
-  var job = child_process.spawn ( 'node',[path.join('js-server','nc_server.js'),
+  let job = child_process.spawn ( 'node',[path.join('js-server','nc_server.js'),
                                   cfgpath,nc_number.toString()] );
 
   log.standard ( 3,'server ' + ncConfigs[nc_number].name + ' started, pid=' +
@@ -185,14 +185,14 @@ function start_client_application()  {
     return;
   }
 
-  var desktopConfig = conf.getDesktopConfig();
+  let desktopConfig = conf.getDesktopConfig();
   if (!desktopConfig)
     return;   // no client application to
 
-  var command   = [];
-  var msg       = desktopConfig.clientApp;
-  var feURL     = feConfig.url();
-  var clientURL = '';
+  let command   = [];
+  let msg       = desktopConfig.clientApp;
+  let feURL     = feConfig.url();
+  let clientURL = '';
 
   if (feProxyConfig)  {
 
@@ -200,7 +200,7 @@ function start_client_application()  {
 
   } else  {
 
-    var clientConfig = conf.getClientNCConfig();
+    let clientConfig = conf.getClientNCConfig();
     if (clientConfig)  {
       if (clientConfig.protocol=='http')  clientURL  = 'lsp=';
                                     else  clientURL  = 'lsps=';
@@ -212,15 +212,15 @@ function start_client_application()  {
 
   }
 
-  for (var i=0;i<desktopConfig.args.length;i++)  {
-    var arg = desktopConfig.args[i].replace('$feURL',feURL)
+  for (let i=0;i<desktopConfig.args.length;i++)  {
+    let arg = desktopConfig.args[i].replace('$feURL',feURL)
                                    .replace('$clientURL',clientURL);
     command.push ( arg );
     if (arg.indexOf(' ')>=0)  msg += " '" + arg + "'";
                         else  msg += ' '  + arg;
   }
 
-  var job = child_process.spawn ( desktopConfig.clientApp,command );
+  let job = child_process.spawn ( desktopConfig.clientApp,command );
 
 //if ( confout ) fse.mkdirsSync(confout + '.READY');
   if (confout)
@@ -278,16 +278,16 @@ function launch()  {
 
         log.debug2 ( 7,'tmp file ' + cfgpath );
 
-        var cfg = conf.getFEConfig();
+        let cfg = conf.getFEConfig();
         cfg.externalURL = cfg.url();
 
         if (startFEProxy)  {
-          var cfg = conf.getFEProxyConfig();
+          cfg = conf.getFEProxyConfig();
           if (cfg)
             cfg.externalURL = cfg.url();
         }
 
-        for (var i=0;i<ncConfigs.length;i++)  {
+        for (let i=0;i<ncConfigs.length;i++)  {
           cfg = conf.getNCConfig(i);
           cfg.externalURL = cfg.url();
         }
@@ -296,7 +296,7 @@ function launch()  {
         conf.writeConfiguration ( cfgpath );
 
         // start number crunchers identified previously
-        for (var i=0;i<ncConfigs.length;i++)
+        for (let i=0;i<ncConfigs.length;i++)
           if (startNC[i])
             startNCServer ( i,cfgpath );
 

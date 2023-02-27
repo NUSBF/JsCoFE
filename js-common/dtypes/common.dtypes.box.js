@@ -49,14 +49,14 @@ DataBox.prototype.markNotEmpty = function()  {
 }
 
 DataBox.prototype.isEmpty = function()  {
-var empty = true;
+let empty = true;
 
-  for (var dtype in this.data)  {
+  for (let dtype in this.data)  {
     if (dtype=='___')
       empty = false;
     //else if (this.data[dtype].length>0)  {
     else if ((this.data[dtype]!='undefined') && (this.data[dtype].length>0))  {
-      var item = this.data[dtype][0];
+      let item = this.data[dtype][0];
       if (isObject(item))  {
         if (!item.hasSubtype('proxy'))
           empty = false;
@@ -84,7 +84,7 @@ DataBox.prototype.merge = function ( dBox )  {
   this.mergeIds = function ( name )  {
     if (name in dBox)  {
       if (name in this)  {
-        for (var i=0;i<dBox[name].length;i++)
+        for (let i=0;i<dBox[name].length;i++)
           if (this[name].indexOf(dBox[name][i])<0)
             this[name].push ( dBox[name][i] );
       } else
@@ -92,13 +92,13 @@ DataBox.prototype.merge = function ( dBox )  {
     }
   }
 
-  for (var dtype in dBox.data)
+  for (let dtype in dBox.data)
     if (dtype in this.data)  {
-      var d1 = this.data[dtype];
-      var d2 = dBox.data[dtype];
-      for (var i=0;i<d2.length;i++)  {
-        var found = false;
-        for (var j=0;(j<d1.length) && (!found);j++)
+      let d1 = this.data[dtype];
+      let d2 = dBox.data[dtype];
+      for (let i=0;i<d2.length;i++)  {
+        let found = false;
+        for (let j=0;(j<d1.length) && (!found);j++)
           found = (d1[j].dataId==d2[i].dataId);
         if (!found)
           d1.push ( d2[i] );
@@ -109,7 +109,7 @@ DataBox.prototype.merge = function ( dBox )  {
   this.mergeIds ( 'jobs'      );
   this.mergeIds ( 'inp_assoc' );
 
-  for (var item in dBox)
+  for (let item in dBox)
     if (!(item in this))
       this[item] = dBox[item];
 
@@ -119,20 +119,20 @@ DataBox.prototype.merge = function ( dBox )  {
 
 DataBox.prototype.extendData = function()  {
 // Extends all data objects in the box (i.e. deep copies them in-place).
-  for (var dtype in this.data)
-    for (var i=0;i<this.data[dtype].length;i++)
+  for (let dtype in this.data)
+    for (let i=0;i<this.data[dtype].length;i++)
       if (typeof this.data[dtype][i] === 'object' && this.data[dtype][i] !== null)
         this.data[dtype][i] = this.data[dtype][i].extend();
 }
 
 
 DataBox.prototype._add_assoc_data = function ( task )  {
-  var input_data_data  = task.input_data.data;
+  let input_data_data  = task.input_data.data;
   if ('inp_assoc' in this)  {
-    for (var dtype in input_data_data)  {
+    for (let dtype in input_data_data)  {
       if (!(dtype in this.inp_assoc))
         this.inp_assoc[dtype] = [];
-      for (var i=0;i<input_data_data[dtype].length;i++)
+      for (let i=0;i<input_data_data[dtype].length;i++)
         if (this.inp_assoc[dtype].indexOf(input_data_data[dtype][i].dataId)<0)
           this.inp_assoc[dtype].push ( input_data_data[dtype][i].dataId );
     }
@@ -142,19 +142,19 @@ DataBox.prototype._add_assoc_data = function ( task )  {
 
 DataBox.prototype.addTaskData = function ( task,include_used_bool )  {
 
-  var output_data_data = task.output_data.data;
+  let output_data_data = task.output_data.data;
   //var input_data_data  = task.input_data.data;
   if (this.jobs.indexOf(task.id)<0)
     this.jobs.push ( task.id );
 
-  for (var dtype in output_data_data)  {
+  for (let dtype in output_data_data)  {
     if (!(dtype in this.data))
       this.data[dtype] = [];
     if ((this.data[dtype].length<=0) || output_data_data[dtype][0].backtrace)  {
-      for (var i=0;i<output_data_data[dtype].length;i++)  {
-        var dt    = output_data_data[dtype][i];
-        var found = false;
-        for (var j=0;(j<this.data[dtype].length) && (!found);j++)
+      for (let i=0;i<output_data_data[dtype].length;i++)  {
+        let dt    = output_data_data[dtype][i];
+        let found = false;
+        for (let j=0;(j<this.data[dtype].length) && (!found);j++)
           found = (this.data[dtype][j].dataId==dt.dataId);
         if (!found)
           this.data[dtype].push ( dt );
@@ -171,24 +171,24 @@ DataBox.prototype.addTaskData = function ( task,include_used_bool )  {
 
 DataBox.prototype.addTaskInputData = function ( task,addall_bool )  {
 
-  var output_data_data = task.output_data.data;
-  var input_data_data  = task.input_data.data;
+  let output_data_data = task.output_data.data;
+  let input_data_data  = task.input_data.data;
   if (this.jobs.indexOf(task.id)<0)
     this.jobs.push ( task.id );
 
-  for (var inpId in input_data_data)
+  for (let inpId in input_data_data)
     if (!startsWith(inpId,'void'))  {
-      for (var i=0;i<input_data_data[inpId].length;i++)  {
-        var dt = input_data_data[inpId][i];
+      for (let i=0;i<input_data_data[inpId].length;i++)  {
+        let dt = input_data_data[inpId][i];
         if ((dt!==null) && (typeof dt === 'object'))  {
-          var dtype = dt._type;
+          let dtype = dt._type;
           if (!(dtype in this.data))
             this.data[dtype] = [dt];
           else if (addall_bool)
             this.data[dtype].push ( dt );
           else if (dt.backtrace)  {
-            var found = false;
-            for (var j=0;(j<this.data[dtype].length) && (!found);j++)
+            let found = false;
+            for (let j=0;(j<this.data[dtype].length) && (!found);j++)
               found = (this.data[dtype][j].dataId==dt.dataId);
             if (!found)
               this.data[dtype].push ( dt );
@@ -204,7 +204,7 @@ DataBox.prototype.addTaskInputData = function ( task,addall_bool )  {
 
 DataBox.prototype.addData = function ( data )  {
   if (data)  {
-    var dtype = data._type;
+    let dtype = data._type;
     if (!(dtype in this.data))
       this.data[dtype] = [];
     this.data[dtype].push ( data );
@@ -229,15 +229,15 @@ DataBox.prototype.addCustomData = function ( dataId,data )  {
 
 
 DataBox.prototype.getDataIds = function ( data_type )  {
-  var ids = [];
+  let ids = [];
   if (data_type)  {
     if (data_type in this.data)  {
-      for (var i=0;i<this.data[data_type].length;i++)
+      for (let i=0;i<this.data[data_type].length;i++)
         ids.push ( this.data[data_type][i].dataId );
     }
   } else  {
-    for (var dtype in this.data)  {
-      for (var i=0;i<this.data[dtype].length;i++)
+    for (let dtype in this.data)  {
+      for (let i=0;i<this.data[dtype].length;i++)
         ids.push ( this.data[dtype][i].dataId );
     }
   }
@@ -267,20 +267,20 @@ DataBox.prototype.compareSubtypes = function ( task_subtypes,data_object )  {
 // 'MR' and 'Protein', are found in subtypes. If subtypes are not enforced, e.g.,
 // ['MR','Protein'] then comparison will return true if any of them are found
 // in data_subtypes.
-var rc = false;
-var nt = task_subtypes.length;
+let rc = false;
+let nt = task_subtypes.length;
 
   if (nt<=0)  {
     rc = true;
   } else  { //if (data_subtypes.length>0)  {
-    var data_subtypes = data_object.subtype;
-    var leadKey = -1;
+    let data_subtypes = data_object.subtype;
+    let leadKey = -1;
     if ('leadKey' in data_object)
       leadKey = data_object.leadKey;
-    for (var i=0;i<nt;i++)
+    for (let i=0;i<nt;i++)
       if (task_subtypes[i].constructor===Array)  {
         rc = false;
-        for (var j=0;(j<task_subtypes[i].length) && (!rc);j++)
+        for (let j=0;(j<task_subtypes[i].length) && (!rc);j++)
           rc = (data_subtypes.indexOf(task_subtypes[i][j])>=0) ||
                ((task_subtypes[i][j]=='EP') && (leadKey==2))   ||
                ((task_subtypes[i][j]=='MR') && (leadKey==1));
@@ -362,14 +362,14 @@ var nt = task_subtypes.length;
 
 DataBox.prototype.getDataSummary = function ( task )  {
 
-  var summary = { status : 2 };   //  2: green, all data is just right
+  let summary = { status : 2 };   //  2: green, all data is just right
                                   //  1: amber, ambiguous data, needs choice
                                   //  0: some or all data missing
 
   // if ((task.input_dtypes.length==1) && (task.input_dtypes[0]==1))  {
   if (task.getInputMode()==input_mode.root)  {
-    var ndata = 0;
-    for (var dtype in this.data)
+    let ndata = 0;
+    for (let dtype in this.data)
       if (dtype!='undefined')
         ndata += this.data[dtype].length;
     if (ndata>0)
@@ -377,27 +377,27 @@ DataBox.prototype.getDataSummary = function ( task )  {
     return summary;
   }
 
-  for (var i=0;i<task.input_dtypes.length;i++)  {
+  for (let i=0;i<task.input_dtypes.length;i++)  {
 
-    var nDTypes  = 0;
-    var inp_item = task.input_dtypes[i];
-    var inp_data = inp_item.data_type;
-    var title    = '';
-    var desc     = '';
+    let nDTypes  = 0;
+    let inp_item = task.input_dtypes[i];
+    let inp_data = inp_item.data_type;
+    let title    = '';
+    let desc     = '';
     if (inp_item.hasOwnProperty('desc'))
       desc = inp_item.desc;
-    var hints    = [];
+    let hints    = [];
     //var mustHaveTypes    = [];
     //var mustNotHaveTypes = [];
-    var data_types = {};  // will contain n_required data types with subtypes
+    let data_types = {};  // will contain n_required data types with subtypes
 
-    for (var dtype in inp_data)  {
+    for (let dtype in inp_data)  {
 
       data_types[dtype] = inp_data[dtype];
 
       if (dtype in this.data)  {
-        var idata = inp_data[dtype];   // input data specs
-        var tdata = this.data[dtype];  // list of data available to task
+        let idata = inp_data[dtype];   // input data specs
+        let tdata = this.data[dtype];  // list of data available to task
         if (idata.length<=0)  {  // all subtypes are good
           nDTypes += tdata.length;
         } else  {  // count datasets with suitable subtypes
@@ -409,14 +409,14 @@ DataBox.prototype.getDataSummary = function ( task )  {
         }
       }
 
-      var dobj = getObjectInstance ( '{ "_type" : "' + dtype + '" }' );
+      let dobj = getObjectInstance ( '{ "_type" : "' + dtype + '" }' );
       if (title) title += ' <i>or</i><br>';
       if (dobj)  title += dobj.title();
            else  title += dtype;
 
       if (inp_data[dtype].length>0)  {
         title += ' (';
-        for (var j=0;j<inp_data[dtype].length;j++)  {
+        for (let j=0;j<inp_data[dtype].length;j++)  {
           if (j>0)
             title += ',';
           if (inp_data[dtype][j].constructor==Array)
@@ -430,14 +430,14 @@ DataBox.prototype.getDataSummary = function ( task )  {
 
     }
 
-    var n_required = inp_item.min;
-    var n_allowed  = inp_item.max;
+    let n_required = inp_item.min;
+    let n_allowed  = inp_item.max;
     if (title in summary)  {
       n_required = Math.max ( n_required,summary[title].n_required );
       n_allowed  = Math.min ( n_allowed ,summary[title].n_allowed  );
     }
 
-    var rc = 2;
+    let rc = 2;
     if ((nDTypes<n_required) || ((inp_item.max<=0) && (nDTypes>0)))  // no match (red)
       rc = 0;
     else if (nDTypes>n_required)
@@ -467,7 +467,7 @@ DataBox.prototype.getDataSummary = function ( task )  {
 
   }
 
-  for (var t in summary)
+  for (let t in summary)
     if (t!='status')
       summary.status = Math.min ( summary.status,summary[t].status );
 

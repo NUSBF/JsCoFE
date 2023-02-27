@@ -2732,7 +2732,9 @@ if (!dbx)  {
                                 if (resind=='')  resind = 'finished.';
                                 break;
 
-      case job_code.failed    : resind = 'failed.';
+      case job_code.failed    : resind = this.score_string();
+                                if (resind=='')  resind  = 'failed.';
+                                           else  resind += ' (failed).';
                                 break;
 
       case job_code.stopped   : resind = 'terminated.';
