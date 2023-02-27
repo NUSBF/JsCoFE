@@ -718,7 +718,7 @@ citations = {
                             'title'   : 'BUSTER Version 2.10.3',
                             'journal' : 'Cambridge, United Kingdom: Global Phasing Ltd.',
                             'volume'  : '',
-                            'year'    : '2017',
+                            'year'    : '2018',
                             'pages'   : '',
                             'doi'     : ''
                         }]

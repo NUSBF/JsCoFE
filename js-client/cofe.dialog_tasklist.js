@@ -626,10 +626,8 @@ var row      = 0;
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
       new TaskPDBREDO      (),
-      new TaskPhaserRB     (),
       new TaskPaiRef       (),
       new TaskWebCoot      (),
-      // new TaskFindMySequence(),
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
@@ -760,20 +758,21 @@ var row      = 0;
 
   this.makeSection ( 'Refinement and Model Building',[
     'Refinement',
-    new TaskRefmac    (),
-    new TaskBuster    (),
-    new TaskLorestr   (),
-    new TaskDimple    (),
+    new TaskRefmac       (),
+    new TaskBuster       (),
+    new TaskLorestr      (),
+    new TaskDimple       (),
     new TaskCombStructure(),
     new TaskSheetbend    (),  
+    new TaskPhaserRB     (),
     'Model building -- polypeptides',
-    new TaskModelCraft(),
-    new TaskCCP4Build (),
-    new TaskBuccaneer (),
-    new TaskArpWarp   (),
+    new TaskModelCraft   (),
+    new TaskCCP4Build    (),
+    new TaskBuccaneer    (),
+    new TaskArpWarp      (),
     'Model building -- polynucleotides',
-    new TaskAWNuce    (),
-    new TaskNautilus  ()
+    new TaskAWNuce       (),
+    new TaskNautilus     ()
   ],true);
 
   this.makeSection ( 'Coot',[

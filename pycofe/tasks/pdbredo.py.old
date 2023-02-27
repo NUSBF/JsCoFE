@@ -26,13 +26,13 @@
 
 #  python native imports
 import os
-import sys
+
+# import sys
 # import uuid
-# import shutil
+import shutil
 import json
 import time
-# import requests
-import subprocess
+import requests
 from   zipfile import ZipFile
 
 # from typing_extensions import Self
@@ -41,10 +41,10 @@ from   zipfile import ZipFile
 
 #  application imports
 from .               import basic
-# from pycofe.dtypes   import dtype_template
+from pycofe.dtypes   import dtype_template
 from pycofe.proc     import qualrep
-# from pycofe.proc     import PDBRedoAPIAuth
-# from pycofe.verdicts import verdict_refmac
+from pycofe.proc     import PDBRedoAPIAuth
+from pycofe.verdicts import verdict_refmac
 
 # ============================================================================
 # Make PDB-REDO driver
@@ -56,11 +56,7 @@ class Pdbredo(basic.TaskDriver):
 
     # def file_stdin_path(self):  return "pdbredo.script"
 
-    pdbredoJobId = None
-    token_id     = None
-    token_secret = None
-
-    resultDir    = "pdbredo_results"
+    resultDir = "result"
 
     row0 = 0
 
@@ -99,178 +95,150 @@ class Pdbredo(basic.TaskDriver):
             structure.addPhasesSubtype()
         return structure
 
+    PDBREDO_URI = "https://services.pdb-redo.eu:443"
+    token_id = 204
+    token_secret = "xGLbe2pVhF2POfNB0oqrw"
+
+    def do_submit(self, xyzin, hklin, token_id, token_secret, PDBREDO_URI):
+
+        # The authentication object, used by the requests module
+        auth = PDBRedoAPIAuth.PDBRedoAPIAuth(token_id, token_secret)
+
+        files = {"pdb-file": open(xyzin, "rb"), "mtz-file": open(hklin, "rb")}
+
+        r = requests.post(
+            PDBREDO_URI + "/api/session/{token_id}/run".format(token_id=token_id),
+            auth=auth,
+            files=files,
+        )
+        r.raise_for_status()
+
+        run_id = r.json()["id"]
+        self.rvrow = self.row0
+        self.putWaitMessageLF("Job submitted to PDB REDO server with id " + str(run_id))
+
+        return str(run_id)
+
+    def do_status(self, token_id, token_secret, PDBREDO_URI, run_id):
+
+        # The authentication object, used by the requests module
+        auth = PDBRedoAPIAuth.PDBRedoAPIAuth(token_id, token_secret)
+
+        t0 = time.time()
+        t1 = time.time() + 3600 * 24
+
+        while True and (t0 < t1):
+
+            time.sleep(60)
+
+            r = requests.get(
+                PDBREDO_URI
+                + "/api/session/{token_id}/run/{run_id}".format(
+                    token_id=token_id, run_id=run_id
+                ),
+                auth=auth,
+            )
+            r.raise_for_status()
+
+            status = r.json()["status"]
+
+            if status == "stopped":
+                self.stderrln("The job failed after submitting")
+                break
+
+            if status == "ended":
+                break
+
+        # status = r.json()['status']
+        time.sleep(5)
+
+        return status
+
+    def do_fetch(self, token_id, token_secret, run_id, PDBREDO_URI):
+        # The token id and secret for a session at PDB-REDO
+        token_id = token_id
+        token_secret = token_secret
+
+        # The authentication object, used by the requests module
+        auth = PDBRedoAPIAuth.PDBRedoAPIAuth(token_id, token_secret)
+
+        # The job ID
+        # run_id = args.job_id
+
+        r = requests.get(
+            PDBREDO_URI
+            + "/api/session/{token_id}/run/{run_id}/output".format(
+                token_id=token_id, run_id=run_id
+            ),
+            auth=auth,
+        )
+
+        if not r.ok:
+            self.stderrln("Failed to receive the output file list")
+
+        # for file in r.json():
+        #     self.stdoutln (str(file))
+
+        # Retrieve a single result file. Here you would probably like to retrieve more files
+        r = requests.get(
+            PDBREDO_URI
+            + "/api/session/{token_id}/run/{run_id}/output/process.log".format(
+                token_id=token_id, run_id=run_id
+            ),
+            auth=auth,
+        )
+
+        if not r.ok:
+            # self.stderrln (str(r.text))
+            self.stderrln("Failed to receive the process log")
+
+        pdbredo_log = str(r.text)
+
+        self.stdoutln ( pdbredo_log )
+
+        # Retrieve zip
+        r = requests.get(
+            PDBREDO_URI
+            + "/api/session/{token_id}/run/{run_id}/output/zipped".format(
+                token_id=token_id, run_id=run_id
+            ),
+            auth=auth,
+        )
+        r.raise_for_status()
+
+        output = "result.zip"
+
+        with open(output, "wb") as f:
+            f.write(r.content)
+
+        with ZipFile(output, "r") as zipObj:
+            # Extract all the contents of zip file in different directory
+            zipObj.extractall(self.resultDir)
+
+        final_pdb = None
+        final_mtz = None
+        # final_lig = None
+
+        for root, dir, files in os.walk(self.resultDir, topdown=False):
+            for fname in files:
+                if fname.endswith("_final.pdb"):
+                    final_pdb = os.path.join(root, fname)
+                if fname.endswith("_final.mtz"):
+                    final_mtz = os.path.join(root, fname)
+
+        xyzout = self.getXYZOFName()
+
+        mtzout = self.getMTZOFName()
+
+        os.rename(final_pdb, xyzout)
+
+        os.rename(final_mtz, mtzout)
+
+        return [xyzout, mtzout, pdbredo_log]
 
     # ------------------------------------------------------------------------
 
-    def run_pdbredo ( self,action,cmd ):
-
-        result = ""
-
-        python_exe = "ccp4-python"   
-        if sys.platform.startswith("win"):
-            python_exe = "ccp4-python.bat"
-
-        pdbredo_path = os.path.normpath ( os.path.join (
-                                os.path.dirname(os.path.abspath(__file__)),
-                                "..","apps","pdbredo","pdb-redo.py" ) )
-
-        cmd1 = [python_exe,pdbredo_path,action] + cmd
-        if self.pdbredoJobId:
-               cmd1 += [ "--job-id",self.pdbredoJobId ]
-        cmd1 += ["--token-id",self.token_id,"--token-secret",self.token_secret]
-
-        self.stdout ( "... executing " + " ".join(cmd1) )
-
-        fout = open ( "_pdb_redo.log","w" )
-        p = subprocess.Popen ( cmd1,
-                        shell=False,stdout=fout,
-                        stderr=self.file_stderr )
-        if sys.platform.startswith("win"):
-            rc = p.wait()
-        else:
-            rc = os.wait4(p.pid,0)
-        fout.close()
-        if rc and rc[1]:
-            result = "Error running pdb-redo\n" +\
-                     "Return code: " + str(rc[1])
-            self.stdoutln ( result )
-            self.stderrln ( result )
-        else:
-            fout = open ( "_pdb_redo.log","r" )
-            result = fout.read().strip()
-            fout.close()
-            if not result:
-                result = "void"
-            self.stdout ( "... returned: " + result )
-
-        return result
-    
-
-    def do_submit ( self,cmd ):
-
-        result = self.run_pdbredo ( "submit",cmd )
-
-        self.stdoutln ( " result="+result )
-
-        if result.startswith("Job submitted with id"):
-            self.pdbredoJobId = result.split()[-1]
-
-        if not self.pdbredoJobId:
-            self.putMessage ( "<h3>Job submission errors</h3>" +\
-                "Job submission to PDB-REDO server was not successful, server replied:<p>" +\
-                "<b>" + result + "</b><p>Stop here."
-            )
-            self.generic_parser_summary["pdbredo"] = {
-                "summary_line" : "job submission to PDB-REDO failed"
-            }
-            return False
-        
-        self.flush()
-        
-        return True
-
-
-    def do_wait ( self ):
-        result   = "***"
-        status   = "starting"
-        errcount = 0
-        while status in ["starting","running","errors"] and (errcount<100):
-            result = self.run_pdbredo ( "status",[] )
-            if result.startswith("Job status is"):
-                status   = result.split()[-1]
-                errcount = 0
-            else:
-                errcount += 1
-                self.stdoutln ( " ... possible PDB-REDO server connection issues" )
-                self.stderrln ( " ... possible PDB-REDO server connection issues" )
-                status = "errors"
-            self.flush()
-            time.sleep(120)
-
-        if status!="ended":
-            self.putMessage ( "<h3>Job errors</h3>" +\
-                "Job status checks suggested errors on PDB-REDO server side, server replied:<p>" +\
-                "<b>" + result + "</b><p>Stop here."
-            )
-            self.generic_parser_summary["pdbredo"] = {
-                "summary_line" : "job errors on PDB-REDO server"
-            }
-            return False
-        
-        return True
-
-
-
-    def do_fetch ( self ):
-
-        self.run_pdbredo ( "fetch",[] )
-
-        zipfname = "pdb-redo-result-" + self.pdbredoJobId + ".zip"
-
-        if not os.path.isfile(zipfname):
-            self.putMessage ( "<h3>No results obtained from PDB-REDO server</h3>" +\
-                "The PDB-REDO server has not returned any results. Stop here."
-            )
-            self.generic_parser_summary["pdbredo"] = {
-                "summary_line" : "no results obtained from PDB-REDO server"
-            }
-            return False
-
-        with ZipFile(zipfname, "r") as zipObj:
-            # Extract all the contents of zip file in different directory
-            zipObj.extractall ( self.resultDir )
-
-
-        unzipfname = self.pdbredoJobId.zfill(10)
-        if not os.path.isdir(unzipfname):
-            self.putMessage ( "<h3>Corrupt result data from PDB-REDO</h3>" +\
-                "The PDB-REDO server returned seemingly corrupt results. Stop here."
-            )
-            self.generic_parser_summary["pdbredo"] = {
-                "summary_line" : "corrupt data from PDB-REDO server"
-            }
-            return False
-        
-        os.rename ( unzipfname,self.resultDir )
-
-        return True
-
-        # final_pdb = None
-        # final_mtz = None
-        # # final_lig = None
-
-        # for root, dir, files in os.walk(self.resultDir, topdown=False):
-        #     for fname in files:
-        #         if fname.endswith("_final.pdb"):
-        #             final_pdb = os.path.join(root, fname)
-        #         if fname.endswith("_final.mtz"):
-        #             final_mtz = os.path.join(root, fname)
-
-        # xyzout = self.getXYZOFName()
-
-        # mtzout = self.getMTZOFName()
-
-        # os.rename(final_pdb, xyzout)
-
-        # os.rename(final_mtz, mtzout)
-
-        # return [xyzout, mtzout, pdbredo_log]
-
-
-
-
-
     def run(self):
-
-        if not self.have_internet():
-            self.generic_parser_summary["pdbredo"] = {
-                "summary_line" : "no internet connection"
-            }
-            self.fail ( "<h3>No internet connection.</h3>" +\
-                    "This task requires access to PDB REDO server, which is not " +\
-                    "possible due to missing internet connection.",
-                    "No internet connection" )
-            return
 
         # Just in case (of repeated run) remove the output xyz file.
         # succeeds, this file is created.
@@ -290,102 +258,50 @@ class Pdbredo(basic.TaskDriver):
         # xyzout = self.getXYZOFName()
         # mtzout = self.getMTZOFName()
 
+        # self.pdbredo_token_id
+        # self.pdbredo_token_secret
+
         auth_fpath = os.path.join ( self.inputDir(),"authorisation.json" )
         if not os.path.isfile(auth_fpath):
-            self.generic_parser_summary["pdbredo"] = {
-                "summary_line" : "no authorisation data"
-            }
             self.fail ( "<h3>No authorisation data.</h3>" +\
                 "This task requires authorisation with PDB-REDO software provider, " +\
                 "which was not found. Check CCP4 Cloud configuration.",
                 "No authorisation data." )
             return
+
+        token_id     = None
+        token_secret = None
+        # token_id = 221
+        # token_secret = "wD5sfnuBpU9iDJ1BetPn3w"
         
         try:
             with open(auth_fpath) as f:
                 auth_meta = json.loads ( f.read() )
                 if auth_meta["status"]=="ok":
-                    self.token_id     = str(auth_meta["auth_data"]["user_id"])
-                    self.token_secret = str(auth_meta["auth_data"]["user_token"])
+                    token_id     = auth_meta["auth_data"]["user_id"]
+                    token_secret = auth_meta["auth_data"]["user_token"]
                 elif auth_meta["status"]=="expired":
                     # self.putMessage ( "<h2>PDB-REDO authorisation expired</h2>" +\
                     #     "Please authorise with PDB-REDO service in \"My Account\"." )
-                    self.generic_parser_summary["pdbredo"] = {
-                        "summary_line" : "authorisation expired"
-                    }
                     self.fail ( "<h3>Authorisation expired.</h3>" +\
                         "This task requires authorisation with PDB-REDO software provider, " +\
                         "which has expired. Please authorise with PDB-REDO service in \"My Account\".",
                         "Authorisation expired." )
                     return
                 else:
-                    self.generic_parser_summary["pdbredo"] = {
-                        "summary_line" : "no authorisation data"
-                    }
                     self.fail ( "<h3>Authorisation data not passed.</h3>" +\
                         "This task requires authorisation with PDB-REDO software provider, " +\
                         "which data was not passed to the task. Reported status: " + auth_meta["status"],
                         "No authorisation data." )
                     return
         except:
-            self.generic_parser_summary["pdbredo"] = {
-                "summary_line" : "corrupt authorisation data"
-            }
             self.fail ( "<h3>Corrupt authorisation data.</h3>" +\
                 "This task requires authorisation with PDB-REDO software provider, " +\
                 "which is corrupt. Check CCP4 Cloud configuration.",
                 "Corrupt authorisation data." )
             return
-        
-        if not self.token_id or not self.token_secret:
-            self.generic_parser_summary["pdbredo"] = {
-                "summary_line" : "no authorisation acquired"
-            }
-            self.fail ( "<h3>No authorisation data.</h3>" +\
-                "This task requires authorisation with PDB-REDO software provider, " +\
-                "which was not acquired. Please authorise with PDB-REDO in your " +\
-                "CCP4 Cloud account settings.",
-                "No authorisation data." )
-            return
   
-        self.stdoutln ( "... submitting to PDB-REDO using id " + str(self.token_id) +\
-                        " and secret " + str(self.token_secret) )
-
-        # submit job to PDB-REDO
-
-        cmd = [ "--xyzin",xyzin, "--hklin",hklin ]
-        if libin:
-            cmd += [ "--libin",libin ]
-
-        if not self.do_submit(cmd):
-            self.success ( False )
-            return
-
-        if not self.do_wait():
-            self.success ( False )
-            return
-
-        if not self.do_fetch():
-            self.success ( False )
-            return
-
-
-        #pyrvapi.rvapi_keep_polling ( True )
-        # if sys.platform.startswith("win"):
-        #     self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
-        # else:
-        #     self.runApp ( "ccp4-python",cmd,logType="Main" )
-
-
-
-        # self.row0 = self.rvrow
-        # self.putWaitMessageLF("submitting to PDB REDO server ")
-
-
-        self.success(False)
-        return
-
-        # PDBREDO_URI = "https://services.pdb-redo.eu:443"
+        PDBREDO_URI = "https://services.pdb-redo.eu:443"
 
         # # imitate PDBREDO
         # #  ==================================
@@ -393,15 +309,21 @@ class Pdbredo(basic.TaskDriver):
         # shutil.copyfile ( istruct.getMTZFilePath(self.inputDir()),mtzout )
         # #  ==================================
 
-        """
+        self.row0 = self.rvrow
+        self.putWaitMessageLF("submitting to PDB REDO server ")
+        if not self.have_internet():
+            self.fail ( "<h3>No internet connection.</h3>" +\
+                    "This task requires access to PDB REDO server, which is not " +\
+                    "possible due to missing internet connection.",
+                    "No internet connection" )
 
-        run_id = self.do_submit(xyzin, hklin )
+        run_id = self.do_submit(xyzin, hklin, token_id, token_secret, PDBREDO_URI)
 
         number_of_try = 0
 
         while True:
             try :
-                status = self.do_status( run_id)
+                status = self.do_status(token_id, token_secret, PDBREDO_URI, run_id)
                 if status == "ended":
                     break
                 if status == "stopped":
@@ -416,7 +338,7 @@ class Pdbredo(basic.TaskDriver):
                     self.stderrln ('Possible internet connection issues ' + '\n' , status)
                     break
 
-        xyzout, mtzout, pdbredo_log = self.do_fetch ( run_id )
+        xyzout, mtzout, pdbredo_log = self.do_fetch ( token_id, token_secret, run_id, PDBREDO_URI )
 
         self.stdoutln(" final_pdb = " + str(xyzout))
         self.stdoutln(" final_mtz = " + str(mtzout))
@@ -510,7 +432,6 @@ class Pdbredo(basic.TaskDriver):
 
         # shutil.rmtree(self.resultDir)
         # os.remove("result.zip")
-        """
 
         if summary_line:
             self.generic_parser_summary["pdbredo"] = {
@@ -520,7 +441,6 @@ class Pdbredo(basic.TaskDriver):
         # close execution logs and quit
         self.success(have_results)
         return
-
 
 
 # ============================================================================
