@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    28.02.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -166,6 +166,9 @@ class ModelCraft(basic.TaskDriver):
 
         with open(self.contents_json(),"w") as contfile:
             json.dump ( contents,contfile )
+
+        self.stdoutln ( "CONTENTS FILE:\n\n" +\
+                        json.dumps(contents,sort_keys=True,indent=4) )
 
         # make command-line parameters
         cmd = [ "xray","--contents",self.contents_json(),"--data",input_mtz ]

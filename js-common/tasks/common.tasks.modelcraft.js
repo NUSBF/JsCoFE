@@ -40,7 +40,7 @@ function TaskModelCraft()  {
   this.title   = 'Automatic Model Building with ModelCraft';
 ``
   this.input_dtypes = [{      // input data types
-      data_type   : {'DataRevision':['!protein','!seq',['phases','xyz']]}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!seq',['phases','xyz']]}, // data type(s) and subtype(s)
       label       : 'Structure revision',   // label for input dialog
       inputId     : 'revision',   // input Id for referencing input fields
       customInput : 'modelcraft', // lay custom fields below the dropdown

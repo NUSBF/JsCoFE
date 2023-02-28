@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    28.12.22   <--  Date of Last Modification.
+#    28.02.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  STRUCTURE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -418,6 +418,10 @@ class DType(dtype_xyz.DType):
 
     def setSubstrSubtype ( self ):
         self.subtype = [dtype_template.subtypeSubstructure()]
+        return
+
+    def isSubstructure ( self ):
+        return dtype_template.subtypeSubstructure() in self.subtype
         return
 
     def setAnomSubstrSubtype ( self ):
