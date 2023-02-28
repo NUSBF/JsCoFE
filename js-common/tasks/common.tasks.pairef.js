@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.02.23   <--  Date of Last Modification.
+ *    28.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,54 +77,66 @@ function TaskPaiRef()  {   // must start with Task...
       open     : true,  // true for the section to be initially open
       position : [1,0,1,5],
       contains : {
-        MODE_SEL : { type     : 'combobox',
-                     keyword  : 'mode',
-                     label    : 'Check',
-                     tooltip  : 'Select either equidistant or arbitrary placed, '     +
-                               'hi-resolution shells to check for optimal  '     +
-                               'resolution cut-off.',
-                     range    : ['eqd|equidistant hi-resolution shells',
-                                 'list|given hi-resolution shells'],
-                     value    : 'eqd',
-                     iwidth   : 280,
-                     position : [0,0,1,5]
+        MODE_SEL : {  type     : 'combobox',
+                      keyword  : 'mode',
+                      label    : 'Check',
+                      tooltip  : 'Select either equidistant or arbitrary placed, '     +
+                                'hi-resolution shells to check for optimal  '     +
+                                'resolution cut-off.',
+                      range    : ['eqd|equidistant hi-resolution shells',
+                                  'list|given hi-resolution shells'],
+                      value    : 'eqd',
+                      iwidth   : 280,
+                      position : [0,0,1,5]
                    },
-        
-        NSHELLS :  { type        : 'integer_',
-                     keyword     : 'nshells',
-                     label       : 'number of hi-resolution shells:',
-                     tooltip     : 'Number of hi-resolution shells to check or leave blank ' +
-                                   'for automatic choice',
-                     range       : [2,50],
-                     value       : '',
-                     placeholder : '20',
-                     iwidth      : 40,
-                     position    : [1,2,1,1],
-                     showon      : {'MODE_SEL':['eqd']}
-                   },
-        
-        RSTEP :    { type        : 'real_',
-                     keyword     : 'rstep',
-                     label       : 'of',
-                     tooltip     : 'Thickness of resolution shells',
-                     range       : [0.01,2.0],
-                     value       : '',
-                     placeholder : '0.05',
-                     iwidth      : 40,
-                     label2      : '&Aring; each',
-                     position    : [1,6,1,1],
-                     showon      : {'MODE_SEL':['eqd']}
-                   },
-        RLIST :    { type        : 'string',
-                     keyword     : 'rlist',
-                     label       : 'resolution shells (&Aring;)',
-                     tooltip     : 'Comma-separated list of resolution shells',
-                     value       : '',
-                     placeholder : 'e.g., 1.5,1.6,1.75,1.90,2.10',
-                     iwidth      : 450,
-                     position    : [2,2,1,1],
-                     showon      : {'MODE_SEL':['list']}
+
+        label_ns : {  type        : 'label',  // just a separator
+                      label       : 'number of hi-resolution shells:',
+                      align       : 'left',
+                      position    : [1,2,1,2],
+                      showon      : {'MODE_SEL':['eqd']}
                     },
+        NSHELLS :   { type        : 'integer_',
+                      keyword     : 'nshells',
+                      label       : '',
+                      tooltip     : 'Number of hi-resolution shells to check or leave blank ' +
+                                    'for automatic choice',
+                      range       : [2,50],
+                      value       : '',
+                      placeholder : '20',
+                      iwidth      : 40,
+                      position    : [1,3,1,1],
+                      showon      : {'MODE_SEL':['eqd']}
+                    },
+        RSTEP :     { type        : 'real_',
+                      keyword     : 'rstep',
+                      label       : 'of',
+                      tooltip     : 'Thickness of resolution shells',
+                      range       : [0.01,2.0],
+                      value       : '',
+                      placeholder : '0.05',
+                      iwidth      : 40,
+                      label2      : '&Aring; each',
+                      position    : [1,6,1,1],
+                      showon      : {'MODE_SEL':['eqd']}
+                    },
+
+        label_rs :  { type        : 'label',  // just a separator
+                      label       : 'resolution shells (&Aring;)',
+                      position    : [2,2,1,2],
+                      showon      : {'MODE_SEL':['list']}
+                    },
+        RLIST :     { type        : 'string',
+                      keyword     : 'rlist',
+                      label       : '',
+                      tooltip     : 'Comma-separated list of resolution shells',
+                      value       : '',
+                      placeholder : 'e.g., 1.5,1.6,1.75,1.90,2.10',
+                      iwidth      : 450,
+                      position    : [2,3,1,4],
+                      showon      : {'MODE_SEL':['list']}
+                    },
+
         PRENCYC :   { type        : 'integer_',
                       keyword     : 'prencyc',
                       label       : 'Start with',
@@ -140,7 +152,8 @@ function TaskPaiRef()  {   // must start with Task...
                     },
         label   :   { type        : 'label',  // just a separator
                       label       : 'refinement cycles',
-                      position    : [3,3,1,6]
+                      align       : 'left',
+                      position    : [3,3,1,1]
                     },
 
         WAUTO_YES : {
@@ -156,11 +169,12 @@ function TaskPaiRef()  {   // must start with Task...
                      type     : 'real',
                      keyword  : 'none',
                      label    : 'value',
+                     align    : 'right',
                      tooltip  : 'Weight for X-ray term',
                      range    : [0,'*'],
                      value    : '0.01',
                      showon   : {'WAUTO_YES':['no']},
-                     position : [5,3,1,1]
+                     position : [5,3,1,3]
                   },
         // WAUTO_VAL_AUTO : {
         //              type     : 'real_',
@@ -177,8 +191,9 @@ function TaskPaiRef()  {   // must start with Task...
                       type     : 'checkbox',
                       label    : 'Complete cross validation',
                       tooltip  : 'To run the paired refinement protocol for each individual free reflections set',
+                      iwidth   : 220,
                       value    : false,
-                      position : [6,0,1,1]
+                      position : [6,0,1,6]
                     }
    }
     },
