@@ -156,6 +156,17 @@ function TaskPaiRef()  {   // must start with Task...
                       position    : [3,3,1,1]
                     },
 
+        
+   }
+    },
+
+    sec2 : {
+      type     : 'section',
+      title    : 'Advanced',
+      open     : true,
+      position : [4,0,1,5],
+      contains : {
+
         WAUTO_YES : {
                       type     : 'combobox',
                       keyword  : 'none',
@@ -163,7 +174,7 @@ function TaskPaiRef()  {   // must start with Task...
                       tooltip  : 'Overall Data-geometry weight',
                       range    : ['yes|Auto','no|Fixed'],
                       value    : 'yes',
-                      position : [5,0,1,1]
+                      position : [4,0,1,1]
                    },
         WAUTO_VAL : {
                      type     : 'real',
@@ -174,7 +185,7 @@ function TaskPaiRef()  {   // must start with Task...
                      range    : [0,'*'],
                      value    : '0.01',
                      showon   : {'WAUTO_YES':['no']},
-                     position : [5,3,1,3]
+                     position : [4,3,1,1]
                   },
         // WAUTO_VAL_AUTO : {
         //              type     : 'real_',
@@ -193,34 +204,25 @@ function TaskPaiRef()  {   // must start with Task...
                       tooltip  : 'To run the paired refinement protocol for each individual free reflections set',
                       iwidth   : 220,
                       value    : false,
-                      position : [6,0,1,6]
-                    }
-   }
-    },
-
-    sec2 : {
-      type     : 'section',
-      title    : 'Advanced',
-      open     : false,
-      position : [4,0,1,5],
-      contains : {
-         KEYWORDS_LBL : {
+                      position : [5,0,1,6]
+                    },
+        KEYWORDS_LBL : {
            type     : 'label',
            keyword  : 'none',
-           label    : '<div style="font-size:14px;">' +
-                      '<i>Type additional keywords here</i></div>',
-           position : [2,0,1,6]
+           label    : '<div style="font-size:16px;">' +
+                      'Type additional keywords here: </div>',
+           position : [7,0,1,3]
          },
          KEYWORDS: {
           type        : 'aceditor_',
           //keyword     : 'keyword',
           tooltip     : '',
           reportas    : 'Keywords',
-          tooltip     : 'Keywords for Refmac',
           value       : '',
           iwidth      : 500,
           iheight     : 160,
-          position    : [3,0,1,6]
+          position    : [8,0,1,6]
+          
         }  
 
       }

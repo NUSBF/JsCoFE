@@ -215,13 +215,13 @@ class PaiRef(basic.TaskDriver):
             cmd += [ "--LIBIN",libin ]
 
 
-        if str(sec1.WAUTO_YES.value) == 'yes':
+        if str(sec2.WAUTO_YES.value) == 'yes':
             pass
         else:
-            cmd += [ '--weight ' + str(sec1.WAUTO_VAL.value) ]
+            cmd += [ '--weight ' + str(sec2.WAUTO_VAL.value) ]
 
         
-        if self.task.parameters.sec1.contains.CMP_CBX.value:
+        if self.task.parameters.sec2.contains.CMP_CBX.value:
             cmd += ["--complete"]
 
         prencyc = self.getParameter ( sec1.PRENCYC ).strip()
