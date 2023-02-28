@@ -251,12 +251,23 @@ class PhaserEP(basic.TaskDriver):
         if hkl.res_low:
             self.write_stdin ( "\nRESOLUTION LOW " + str(hkl.res_low) )
 
+        # self.write_stdin ( "\nCOMPOSITION BY ASU" )
+        # for i in range(len(seq)):
+        #     seq[i] = self.makeClass ( seq[i] )
+        #     self.write_stdin (
+        #         "\nCOMPOSITION PROTEIN SEQ \"" +\
+        #         seq[i].getSeqFilePath ( self.inputDir() ) +\
+        #         "\" NUMBER " + str(seq[i].ncopies)
+        #     )
+
         self.write_stdin ( "\nCOMPOSITION BY ASU" )
         for i in range(len(seq)):
-            seq[i] = self.makeClass ( seq[i] )
-            self.write_stdin (
-                "\nCOMPOSITION PROTEIN SEQ \"" +\
-                seq[i].getSeqFilePath ( self.inputDir() ) +\
+            if (seq[i].isNucleotide()):
+                self.write_stdin ( "\nCOMPOSITION NUCLEIC SEQ" )
+            else:
+                self.write_stdin ( "\nCOMPOSITION PROTEIN SEQ" )
+            self.write_stdin ( " \"" +\
+                seq[i].getSeqFilePath(self.inputDir()) +\
                 "\" NUMBER " + str(seq[i].ncopies)
             )
 
