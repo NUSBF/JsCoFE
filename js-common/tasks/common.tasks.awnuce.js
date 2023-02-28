@@ -112,8 +112,11 @@ if (__template)  {
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      this.input_data.data['hkl']     = [revision.HKL];
-      this.input_data.data['istruct'] = [revision.Structure];
+      this.input_data.data['hkl'] = [revision.HKL];
+      if (revision.Structure)
+        this.input_data.data['istruct'] = [revision.Structure];
+      else if (revision.Substructure)
+        this.input_data.data['istruct'] = [revision.Substructure];
     }
 
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );

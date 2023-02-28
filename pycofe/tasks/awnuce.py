@@ -51,8 +51,10 @@ class AWNuce(basic.TaskDriver):
         hkl      = self.makeClass ( self.input_data.data.hkl[0]     )
 
         # make command-line parameters
-        pdbin    = istruct.getXYZFilePath ( self.inputDir() )
-        mtzin    = istruct.getMTZFilePath ( self.inputDir() )
+        pdbin = None
+        if not istruct.isSubstructure():
+            pdbin = istruct.getXYZFilePath ( self.inputDir() )
+        mtzin = istruct.getMTZFilePath ( self.inputDir() )
 
         labin_fo = hkl.getMeanF()
         if labin_fo[2]!="F":
@@ -101,8 +103,13 @@ class AWNuce(basic.TaskDriver):
 
         if len(nuceout)==1:
 
-            st     = gemmi.read_structure ( pdbin )
-            st.setup_entities()
+            st = None
+            if pdbin:
+                st = gemmi.read_structure ( pdbin )
+                st.setup_entities()
+            else:
+                st = gemmi.Structure()
+                st.add_model ( gemmi.Model("1") )  # structure with empty model
 
             stnuce = gemmi.read_structure ( os.path.join(awnuceDir,nuceout[0]) )
             stnuce.setup_entities()

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.02.23   <--  Date of Last Modification.
+#    28.02.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -281,7 +281,11 @@ class PaiRef(basic.TaskDriver):
         # -rw-r--r--  1 eugene  staff  213755 26 Jan 09:02 project_R00_1-90A.mmcif
         # -rw-r--r--  1 eugene  staff  889712 26 Jan 09:02 project_R00_1-90A.mtz
         # -rw-r--r--  1 eugene  staff   61957 26 Jan 09:02 project_R00_1-90A.pdb
+        #
+        #  PAIREF_out.log
 
+        with open(os.path.join(self.pairefDir(),"PAIREF_out.log"),"r") as f:
+            self.stdoutln ( f.read() )
 
         # PAIREF_project.html in pairef_project
 
