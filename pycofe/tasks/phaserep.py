@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    28.02.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -204,6 +204,9 @@ class PhaserEP(basic.TaskDriver):
         substr   = None
         if hasattr(self.input_data.data,'substructure'):
             substr = self.makeClass ( self.input_data.data.substructure[0] )
+
+        for i in range(len(seq)):
+            seq[i] = self.makeClass ( seq[i] )
 
         sec1   = self.task.parameters.sec1.contains
         sec2   = self.task.parameters.sec2.contains
