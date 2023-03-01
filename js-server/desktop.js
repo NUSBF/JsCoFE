@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.02.23   <--  Date of Last Modification.
+ *    22.02.25   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -18,7 +18,7 @@
  *  =================================================================
  *
  * Invocation:
- *    node ./desktop.js configFile [-localuser Name] [-no-browser]
+ *    node ./desktop.js configFile [-localuser Name] [-no-browser] [-confout Path]
  *
  *  where "configFile" is path to JSON-formatted configuration file, containing
  *  configurations for Front End and Number Crunchers, one of which may have
@@ -65,8 +65,10 @@ for (let arg of process.argv.slice(2).reverse()) {
     arg2 = null;
   }
   else if (arg == '-no-browser')  {
+    if (arg2 != null) break;
     nobrowser = true;
-  } else if (arg == '-confout') {
+  }
+  else if (arg == '-confout') {
     if (arg2 == null) break;
     confout = arg2;
     arg2 = null;
@@ -82,7 +84,7 @@ for (let arg of process.argv.slice(2).reverse()) {
 
 if (!arg2) {
   let usage = 'Usage: ' + process.argv[0] + ' ' + process.argv[1];
-  usage += ' [-localuser Name] [-confout Path]';
+  usage += ' [-localuser Name] [-no-browser] [-confout Path]';
   log.error ( 1,'Incorrect command line. Stop.' );
   log.error ( 1,usage );
   process.exit(1);
@@ -181,6 +183,8 @@ function startNCServer ( nc_number,cfgpath )  {
 function start_client_application()  {
 
   if (nobrowser)  {
+    if (confout)
+      fse.mkdirsSync ( path.join(path.dirname(confout),'LOCK') );
     log.standard ( 8,'launch of client application is supressed (no browser)' );
     return;
   }
