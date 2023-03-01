@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.23   <--  Date of Last Modification.
+ *    01.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -118,6 +118,7 @@ if (__template)  {  //  will run only on server side
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl']     = [revision.HKL];
+      this.input_data.data['seq']     = revision.ASU.seq;
       this.input_data.data['istruct'] = [revision.Structure];
     }
 
