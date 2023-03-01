@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.01.23   <--  Date of Last Modification.
+#    01.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,7 +28,7 @@
 import os
 import sys
 # import uuid
-# import shutil
+import shutil
 import json
 import time
 # import requests
@@ -65,6 +65,8 @@ class Pdbredo(basic.TaskDriver):
 
     start_time   = time.time()
 
+    # ------------------------------------------------------------------------
+
     def getElapsedTime(self):
         elapsed = time.time() - self.start_time
         hours   = elapsed//3600
@@ -72,34 +74,48 @@ class Pdbredo(basic.TaskDriver):
         minutes = elapsed//60
         seconds = elapsed - 60*minutes
         return "{:0>2}h:{:0>2}m:{:0>2}s".format(int(hours),int(minutes),int(seconds))
-    
+
+    # ------------------------------------------------------------------------
+
     def getPDBREDOPageHTML ( self ):
-        return """
-            <!DOCTYPE html SYSTEM "about:legacy-compat">
-            <html xmlns="http://www.w3.org/1999/xhtml" lang="nl">
-                <head>
-                    <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1">
-                    <title>PDB-REDO Result Page</title>
-                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-                        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-                </head>
-                <body>
-                    <pdb-redo-result data-url=''>
-                        <!-- Placeholders to improve time to first paint -->
-                        <h1>PDB-REDO results</h1>
-                        <!-- Check for JavaScript -->
-                        <p id="jsyes"></p>
-                        <script type="text/javascript">
-                            document.getElementById('jsyes').innerHTML = 'Loading...';
-                        </script>
-                        <noscript>
-                            Could not render the results. Check that JavaScript is enabled.
-                        </noscript>
-                    </pdb-redo-result>
-               </body>
-            </html>
-            """ # .replace ( "[[data_url]]",data_url )
+        
+        return '''<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PDB-REDO Result Page</title>
+  <link href="js-lib/pdb-redo/bootstrap.min.css" 
+        rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" 
+        crossorigin="anonymous">
+</head>
+<body>
+  <script>
+    let data_url = window.location.href.split("/");
+    data_url.pop();
+    data_url = data_url.join("/");
+    window.document.write ( 
+      "<pdb-redo-result data-url='" + data_url + "'>" +
+      "<!-- Placeholders to improve time to first paint -->" +
+      "<h3>PDB-REDO results</h3>" +
+      "<!-- Check for JavaScript -->" +
+      "<p id='jsyes'>Loading ...</p>" +
+      "<noscript>" +
+      "Could not render the results. Check that JavaScript is enabled." +
+      "</noscript>" +
+      "</pdb-redo-result>"
+    );
+  </script>
+  <script src="https://pdb-redo.eu/scripts/pdb-redo-result-loader.js" 
+          type="text/javascript" 
+          crossorigin="anonymous"></script>
+  <script src="js-lib/pdb-redo/bootstrap.bundle.min.js"
+          integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+          crossorigin="anonymous"></script>
+</body>
+</html>'''
+
 
     # ------------------------------------------------------------------------
 
@@ -277,7 +293,6 @@ class Pdbredo(basic.TaskDriver):
             zipObj.extractall ( "./" )
             self.stdoutln ( " ... results unzipped" )
 
-
         unzipfname = self.pdbredoJobId.zfill(10)
         if not os.path.isdir(unzipfname):
             self.putMessage ( "<h3>Corrupt result data from PDB-REDO</h3>" +\
@@ -315,11 +330,25 @@ class Pdbredo(basic.TaskDriver):
         # fetch input data
         revision = self.makeClass(self.input_data.data.revision[0])
         hkl      = self.makeClass(self.input_data.data.hkl[0])
+        seq      = self.input_data.data.seq
         istruct  = self.makeClass(self.input_data.data.istruct[0])
 
         xyzin = istruct.getXYZFilePath(self.inputDir())
         hklin = hkl.getHKLFilePath(self.inputDir())
         libin = istruct.getLibFilePath(self.inputDir())
+
+        pdbredo_seq = None
+        if len(seq)>0:
+            pdbredo_seq = "__pdbredo.seq"
+            with open(pdbredo_seq,'w') as newf:
+                for s in seq:
+                    s1 = self.makeClass ( s )
+                    with open(s1.getSeqFilePath(self.inputDir()),'r') as hf:
+                        newf.write(hf.read())
+                    newf.write ( '\n' );
+            with open(pdbredo_seq,'r') as newf:
+                self.stdoutln ( "... composing sequence file " + pdbredo_seq +\
+                                ":\n\n" + newf.read() )
 
         auth_fpath = os.path.join ( self.inputDir(),"authorisation.json" )
         if not os.path.isfile(auth_fpath):
@@ -388,7 +417,11 @@ class Pdbredo(basic.TaskDriver):
 
         cmd = [ "--xyzin",xyzin, "--hklin",hklin ]
         if libin:
-            cmd += [ "--libin",libin ]
+            cmd += [ "--restraints",libin ]
+        if pdbredo_seq:
+            cmd += [ "--sequence",pdbredo_seq ]
+
+        #  add other keyword-parameter pairs here from task's Input tab
 
         if not self.do_submit(cmd):
             self.success ( False )
@@ -401,6 +434,9 @@ class Pdbredo(basic.TaskDriver):
         if not self.do_fetch():
             self.success ( False )
             return
+
+
+        # form PDBREDO html report page and load it in 'PDBREDO Report' tab
 
         with open(os.path.join(self.resultDir,"PDBREDO_report.html"),"w") as f:
             f.write ( self.getPDBREDOPageHTML() )
@@ -418,8 +454,12 @@ class Pdbredo(basic.TaskDriver):
         )
         # self.flush()
 
+        # load PDBREDO log in 'PDBREDO log' tab
+
         self.insertTab ( self.getWidgetId("pdbredo_log"),"PDB-REDO Log",
                          "../" + self.resultDir + "/process.log", False )
+        
+        # form output structure and revision
 
         final_pdb  = None
         final_mtz  = None
@@ -438,8 +478,8 @@ class Pdbredo(basic.TaskDriver):
 
         xyzout = self.getXYZOFName()
         mtzout = self.getMTZOFName()
-        os.rename ( final_pdb,xyzout )
-        os.rename ( final_mtz,mtzout )
+        shutil.copyfile ( final_pdb,xyzout )
+        shutil.copyfile ( final_mtz,mtzout )
 
         self.stdoutln(" final_pdb = " + str(xyzout))
         self.stdoutln(" final_mtz = " + str(mtzout))

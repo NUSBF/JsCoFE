@@ -136,14 +136,14 @@ function Communicate ( server_request )  {
     this.job_token = '';
 
   log.debug2 ( 1,"requested path " + this.filePath );
-//console.log ( "requested path " + this.filePath );
-  var ix = this.filePath.indexOf('jsrview');
-  //if (ix<0)
-  //  ix = this.filePath.indexOf('ccp4i2_support');
+// console.log ( "requested path " + this.filePath );
+
+  let ix = this.filePath.indexOf('jsrview');
   if (ix>=0)  {  // request for jsrview library file, load it from js-lib
-                 // REGARDLESS the actual path requested
+                // REGARDLESS the actual path requested
     this.filePath = path.join ( 'js-lib',this.filePath.substr(ix) );
     log.debug2 ( 2,"calculated path " + this.filePath);
+    // console.log ( ' >>>>>> fpath=' + this.filePath );
   }
   if (ix<0) {
     var rtag = cmd.__special_url_tag + '-fe/';
@@ -160,6 +160,7 @@ function Communicate ( server_request )  {
     if (ix>=0)  {
       this.filePath = ustats.getUsageReportFilePath ( this.filePath.substr(ix+utag.length) );
       log.debug2 ( 3,"calculated path " + this.filePath);
+    // console.log ( ' >>>>>> fpath=' + this.filePath );
     }
   }
   if (ix<0) {
@@ -195,11 +196,19 @@ function Communicate ( server_request )  {
     }
   }
   if (ix<0) {
+    ix = this.filePath.indexOf('js-lib')
+    if (ix>cmd.__special_url_tag.length)  {
+      this.filePath = this.filePath.substr(ix);
+      // console.log ( ' >>>>>> fpath=' + this.filePath );
+    } else
+      ix = -1;
+  }
+  if (ix<0) {
 
     //if (this.filePath.startsWith(cmd.__special_url_tag))  { // special access to files not
     //                                             // supposed to be on http path
 
-    var ix = this.filePath.lastIndexOf ( cmd.__special_url_tag );
+    ix = this.filePath.lastIndexOf ( cmd.__special_url_tag );
     if (ix>=0)  {
 
       var flist     = this.filePath.slice(ix).split('/');
