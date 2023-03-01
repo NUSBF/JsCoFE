@@ -491,9 +491,10 @@ class Arcimboldo(basic.TaskDriver):
                 + "<h2><i>Report is being generated ....</i></h2>"
                 + "</body></html>"
             )
-        self.insertTab("arcimboldo_report", "Arcimboldo Report", None, True)
+        tabId = self.getWidgetId ( "arcimboldo_report" )
+        self.insertTab ( tabId,"Arcimboldo Report", None, True)
         self.putMessage1(
-            "arcimboldo_report",
+            tabId,
             '<iframe src="../'
             + self.arcimboldoDir()
             + '/arcimboldo.html" '
