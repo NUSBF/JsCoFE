@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.01.23   <--  Date of Last Modification.
+#    28.01.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -72,6 +72,34 @@ class Pdbredo(basic.TaskDriver):
         minutes = elapsed//60
         seconds = elapsed - 60*minutes
         return "{:0>2}h:{:0>2}m:{:0>2}s".format(int(hours),int(minutes),int(seconds))
+    
+    def getPDBREDOPageHTML ( self ):
+        return """
+            <!DOCTYPE html SYSTEM "about:legacy-compat">
+            <html xmlns="http://www.w3.org/1999/xhtml" lang="nl">
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <title>PDB-REDO Result Page</title>
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+                        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+                </head>
+                <body>
+                    <pdb-redo-result data-url=''>
+                        <!-- Placeholders to improve time to first paint -->
+                        <h1>PDB-REDO results</h1>
+                        <!-- Check for JavaScript -->
+                        <p id="jsyes"></p>
+                        <script type="text/javascript">
+                            document.getElementById('jsyes').innerHTML = 'Loading...';
+                        </script>
+                        <noscript>
+                            Could not render the results. Check that JavaScript is enabled.
+                        </noscript>
+                    </pdb-redo-result>
+               </body>
+            </html>
+            """ # .replace ( "[[data_url]]",data_url )
 
     # ------------------------------------------------------------------------
 
@@ -119,11 +147,11 @@ class Pdbredo(basic.TaskDriver):
         if sys.platform.startswith("win"):
             python_exe = "ccp4-python.bat"
 
-        pdbredo_path = os.path.normpath ( os.path.join (
+        pdbredo_py = os.path.normpath ( os.path.join (
                                 os.path.dirname(os.path.abspath(__file__)),
                                 "..","apps","pdbredo","pdb-redo.py" ) )
 
-        cmd1 = [python_exe,pdbredo_path,action] + cmd
+        cmd1 = [python_exe,pdbredo_py,action] + cmd
         if self.pdbredoJobId:
                cmd1 += [ "--job-id",self.pdbredoJobId ]
         cmd1 += ["--token-id",self.token_id,"--token-secret",self.token_secret]
@@ -374,8 +402,24 @@ class Pdbredo(basic.TaskDriver):
             self.success ( False )
             return
 
+        with open(os.path.join(self.resultDir,"PDBREDO_report.html"),"w") as f:
+            f.write ( self.getPDBREDOPageHTML() )
+
+        reportTabId = self.getWidgetId ( "pdbredo_report" )
+        self.insertTab ( reportTabId,"PDB-REDO Report",None,False )
+
+        self.putMessage1(
+            reportTabId,
+            '<iframe src="../'
+            + self.resultDir
+            + '/PDBREDO_report.html" '
+            + 'style="border:none;position:absolute;top:50px;left:0;width:100%;height:90%;"></iframe>',
+            0,
+        )
+        # self.flush()
+
         self.insertTab ( self.getWidgetId("pdbredo_log"),"PDB-REDO Log",
-                         os.path.join("..",self.resultDir,"process.log"), False )
+                         "../" + self.resultDir + "/process.log", False )
 
         final_pdb  = None
         final_mtz  = None
