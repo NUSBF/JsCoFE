@@ -11,19 +11,21 @@
           console.log("CCP4 problem :(");
           console.log(e);
         });
-    }</script><script src="./baby-gru/wasm/web_example.js"></script><script>window.moorhenInput = {
-        rootId: "root",
-        urlPrefix: ".",
-        exportToCloudCallback: (molName, molData) => {console.log({name: molName, data: molData})},
-        inputFiles: [
-          {type: 'pdb', args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule"]},
-          {type: 'mtz', args: [
-            "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "map", 
-            {F: "FWT", PHI: "PHWT", Fobs: 'F', SigFobs: 'SIGF', FreeR: 'FREER', isDifference: false, useWeight: false, calcStructFact: true}
-          ]},
-          {type: 'mtz', args: [
-            "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", 'diff-map',
-            {F: "DELFWT", PHI: "PHDELWT", isDifference: true, useWeight: false, calcStructFact: false}
-          ]}
-        ]
-      }</script><title>Moorhen</title><link rel="icon" href="./favicon.ico"><script defer="defer" src="./main.js"></script><link href="./maindd0ddc75c24601355a61.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
+    }</script><script src="./baby-gru/wasm/web_example.js"></script><script src="./moorhen.js" charset="utf-8"></script><title>Moorhen</title><link rel="icon" href="./favicon.ico"><script defer="defer" src="./moorhen.js"></script><link href="./maindd0ddc75c24601355a61.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script defer="defer">const rootId = "root"
+    const  urlPrefix = "."
+    const exportToCloudCallback = (molName, molData) => {console.log({name: molName, data: molData})}
+    const inputFiles = [
+      {type: 'pdb', args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule"]},
+      {type: 'mtz', args: [
+        "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "map",
+        {F: "FWT", PHI: "PHWT", Fobs: 'F', SigFobs: 'SIGF', FreeR: 'FREER', isDifference: false, useWeight: false, calcStructFact: true}
+      ]},
+      {type: 'mtz', args: [
+        "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", 'diff-map',
+        {F: "DELFWT", PHI: "PHDELWT", isDifference: true, useWeight: false, calcStructFact: false}
+      ]}
+    ]
+    
+    let moorhenWrapper = new moorhen.MoorhenWrapper(urlPrefix)
+    moorhenWrapper.renderMoorhen(rootId, exportToCloudCallback)
+    moorhenWrapper.waitForInitialisation().then(_ => moorhenWrapper.loadInputFiles(inputFiles))</script></body></html>

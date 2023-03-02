@@ -1,0 +1,62 @@
+<!doctype html>
+
+  <html lang="en" class="scroller">
+
+  <head>
+
+    <base href="[[baseurl]]" />
+
+    <title>Moorhen</title>
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="theme-color" content="#000000"/>
+    <meta name="description" content="Web site created using create-react-app"/>
+
+    <link rel="icon" href="./favicon.ico"/>
+    <link rel="apple-touch-icon" href="./public/logo192.png"/>
+    <link rel="manifest" href="./manifest.json"/>
+    <link href="./maindd0ddc75c24601355a61.css" rel="stylesheet">
+
+    <script>// See https://github.com/facebook/react/issues/20829#issuecomment-802088260
+      if (!crossOriginIsolated) SharedArrayBuffer = ArrayBuffer; 
+      window.onload = () => {
+        createCCP4Module({
+          print(t) { console.log(["output", t]) },
+          printErr(t) { console.log(["output", t]); }
+        })
+        .then(function (CCP4Mod) {
+          window.CCP4Module = CCP4Mod;
+        })
+        .catch((e) => {
+          console.log("CCP4 problem :(");
+          console.log(e);
+        });
+      }
+    </script>
+    <script src="./baby-gru/wasm/web_example.js"></script>
+    <script>
+      window.moorhenInput = {
+        rootId     : "root",
+        urlPrefix  : ".",
+        exportToCloudCallback : (molName, molData) => {
+          window.parent.postMessage ({
+              'command' : 'saveFile',
+              'fpath'   : molName + '.pdb',
+              'data'    : molData,
+              'meta'    : [[meta]]
+          }, window.location );
+          // console.log ( '\n\n **** molname: ' + JSON.stringify(molName) );
+          // console.log ( '\n\n **** moldata: ' + JSON.stringify(molData) );
+        },
+        inputFiles : [[inputFiles]]
+      }
+    </script>
+    <script defer="defer" src="./main.js"></script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>
+
