@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.02.23   <--  Date of Last Modification.
+#    02.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -178,12 +178,13 @@ class PaiRef(basic.TaskDriver):
 
         cmd = [
             #"-m"     , "pairef",
+            # "--ccp4cloud",
             "--project",self.pairefProject(),
             "--XYZIN"  , xyzin,
             "--HKLIN"  , hklin,
             "-r"       , ",".join(resList[1:]),
-            "-i"       , str(resList[0]),
-            "--refmac"
+            "-i"       , str(resList[0])
+            
 
         ]
 
@@ -207,6 +208,13 @@ class PaiRef(basic.TaskDriver):
         #                         manual definition of weighting term (only for REFMAC5)
         # --ncyc NCYC           number of refinement cycles that will be performed in
         #                         every resolution step
+
+
+
+
+        if str(sec2.KEYWORDS.value) != '':
+           cmd += [ str(sec2.KEYWORDS.value) ]
+        
 
         if hklin_unmerged:
             cmd += [ "-u",hklin_unmerged ]
@@ -232,8 +240,23 @@ class PaiRef(basic.TaskDriver):
         if prencyc>0:
             cmd += [ "--prerefinement-ncyc", str(prencyc) ]
         
-        if str(sec2.KEYWORDS.value) != '':
-           cmd += [ str(sec2.KEYWORDS.value) ]
+        cmd += ["--refmac"]
+
+        if str(sec2.KEYWORDS_REF.value) != '':
+            with open('keywords.txt', 'w') as f:
+                f.write(str(sec2.KEYWORDS_REF.value))
+                f.close
+            if os.path.isfile('keywords.txt') == True:
+                # os.path.join(str(self.inputDir))
+                cmd += ["--comfile", "keywords.txt"]
+            else:
+                self.rvrow = rvrow0
+                self.putMessage ( '<i style="color:red"> Refmac kaywords were NOT passed due to errors.</i>' )
+
+
+
+        
+        
 
 
         htmlReport = "PAIREF_" + self.pairefProject() + ".html"

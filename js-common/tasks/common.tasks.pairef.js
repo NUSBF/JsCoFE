@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.02.23   <--  Date of Last Modification.
+ *    02.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -154,7 +154,7 @@ function TaskPaiRef()  {   // must start with Task...
                       label       : 'refinement cycles',
                       align       : 'left',
                       position    : [3,3,1,1]
-                    },
+                    }
 
         
    }
@@ -199,18 +199,18 @@ function TaskPaiRef()  {   // must start with Task...
         //              position : [4,3,1,1]
         //           },
         CMP_CBX : {
-                      type     : 'checkbox',
-                      label    : 'Complete cross validation',
-                      tooltip  : 'To run the paired refinement protocol for each individual free reflections set',
-                      iwidth   : 220,
-                      value    : false,
-                      position : [5,0,1,6]
+          type     : 'checkbox',
+          label    : 'Complete cross validation',
+          tooltip  : 'To run the paired refinement protocol for each individual free reflections set',
+          iwidth   : 220,
+          value    : false,
+          position : [5,0,1,6]
                     },
         KEYWORDS_LBL : {
            type     : 'label',
            keyword  : 'none',
            label    : '<div style="font-size:16px;">' +
-                      'Type additional keywords here: </div>',
+                      '<br> </br> Type additional <b> PAIREF options </b> here: </div>',
            position : [7,0,1,3]
          },
          KEYWORDS: {
@@ -223,7 +223,26 @@ function TaskPaiRef()  {   // must start with Task...
           iheight     : 160,
           position    : [8,0,1,6]
           
-        }  
+        },  
+        
+        KEYWORDS_REF_LBL : {
+          type     : 'label',
+          keyword  : 'none',
+          label    : '<div style="font-size:16px;">' +
+                     '<br> </br> Type additional <b> REFMAC keywords </b> here: </div>',
+          position : [9,0,1,3]
+        },
+        KEYWORDS_REF: {
+         type        : 'aceditor_',
+         //keyword     : 'keyword',
+         tooltip     : '',
+         reportas    : 'Keywords',
+         value       : '',
+         iwidth      : 500,
+         iheight     : 160,
+         position    : [10,0,1,6]
+         
+       }
 
       }
    }
