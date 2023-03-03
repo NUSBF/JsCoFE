@@ -1,8 +1,40 @@
 :orphan:
 
 =======================================
-Authorization instructions for PDB-REDO
+Authorisation instructions for PDB-REDO
 =======================================
 
+CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. In order to use this software, you need to be authorised by the corresponding software provider. You can do that at **My Account** page.
 
-To be written ...
+    .. image:: images/My_account_Authorizations.png
+            :scale: 40 %
+            :align: center
+
+
+
+
+---------------
+PDB-REDO Tokens
+---------------
+
+PDB-REDO tokens should be generated on the `Token page <https://pdb-redo.eu/token>`_
+
+In order to generate token, please, register or log in to your PDB-REDO account, go to the Tokens tab. Here you should provide the Token name (can't be any) and click generate (**1**).
+
+.. image:: images/pdb-redo_aut_1.png
+           :align: center
+           :scale: 35 %
+
+
+Once Token is generated, please copy the Token-ID(**2**), Token-Secret (**3**) and Expiry date (**4**)to the corresponding lines in CCP4 Cloud's Software Authorisations page and press |authorisation| **request authentication** button (**5**)
+
+
+.. image:: images/pdb-redo_aut_2.png
+           :align: center
+
+
+.. |authorisation| image:: images/authorisation.png
+        :width: 16
+        :height: 16
+
+          
