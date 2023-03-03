@@ -188,10 +188,10 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
       this.grid.setLabel ( '&nbsp;',row2++,0,1,1 );
       if ('help_page' in __auth_software[key])
         this.grid.setLabel ( 
-            '<a href="javascript:launchHelpBox(\'Autorization instructions\',' +
+            '<br><a href="javascript:launchHelpBox(\'Autorization instructions\',' +
                 '\'' + __user_guide_base_url + __auth_software[key].help_page +
-                '.html\',null,10)"><span style="color:blue">Authorisation instructions</span></a>',
-            row2++,1,1,2 );
+                '.html\',null,10)"><span style="color:black">Authorisation instructions</span></a></br><br><a href="https://pdb-redo.eu/token"><span style="color:blue">PDB-REDO token page</span></a></br>',
+          row2++,1,1,2 );
       auth_inp = {};
       for (var auth_item in __auth_software[key].auth_data)  {
         this.grid.setLabel ( '<i>' + __auth_software[key].auth_data[auth_item].label + ':</i>&nbsp;',
