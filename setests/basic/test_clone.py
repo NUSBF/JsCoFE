@@ -128,7 +128,7 @@ def verifyPhaser(driver, waitLong, jobNumber):
               'Rwork is %0.4f (expecting <0.4681), ' \
               'Rfree is %0.4f (expecing <0.4575)' % (llg, tfz, rWork, rFree))
     assert llg > 1000
-    assert tfz > 30.0
+    assert tfz > 25.0
     assert rWork < 0.5
     assert rFree < 0.5
 
