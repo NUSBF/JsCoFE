@@ -53,7 +53,9 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -202,6 +204,20 @@
       <a href="doc.task.WFlowAMR.html" class="md-nav__link">Automatic Molecular Replacement Workflow</a>
       
     
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.WFlowAFMR.html" class="md-nav__link">Molecular Replacement with AlphaFold2 Model workflow</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.task.WFlowREL.html" class="md-nav__link">Automated refinement and ligand fitting workflow</a>
+      
+    
     </li></ul>
     
     </li>
@@ -326,7 +342,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="workflows--page-root">Automatic workflows<a class="headerlink" href="#workflows--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="workflows--page-root">Automatic workflows<a class="headerlink" href="#workflows--page-root" title="Permalink to this heading">¶</a></h1>
 <p>Automatic workflows feature structure solution scenarios, such as Molecular Replacement or Experimental Phasing, which include several elemntary tasks. A workflow can start with data import and then attempt phasing, model building, refinement, ligand fitting, solvent modelling and preparing resuts for PDB deposition.</p>
 <p>A workflow will develop the <em>Project Tree</em> and perform all elementary steps automatically, exploring different ways of structure solution and using varios tasks as appropriate. For data of sufficiently high resolution, completeness and quality (no crystal pathologies), automatic workflow can produce a reasonable approximation to final structure. The result may be further improved with elementary task in manual mode, allowing a finer control over tasks’ parameters.</p>
 <p>Not only the workflows can reduced chore, but they may also be used for better understanding the structure solution strategy.</p>
@@ -334,6 +350,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="doc.task.WFlowAEP.html">Automatic Experimental Phasing Workflow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc.task.WFlowAMR.html">Automatic Molecular Replacement Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.task.WFlowAFMR.html">Molecular Replacement with AlphaFold2 Model workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.task.WFlowREL.html">Automated refinement and ligand fitting workflow</a></li>
 </ul>
 </div>
 
@@ -381,7 +399,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

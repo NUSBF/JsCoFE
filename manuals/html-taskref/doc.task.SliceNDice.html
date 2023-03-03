@@ -53,7 +53,9 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -394,17 +396,17 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="doc-task-slicendice--page-root">MR with model splitting using Slice-n-Dice<a class="headerlink" href="#doc-task-slicendice--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="doc-task-slicendice--page-root">MR with model splitting using Slice-n-Dice<a class="headerlink" href="#doc-task-slicendice--page-root" title="Permalink to this heading">¶</a></h1>
 <p>Slice-n-Dice is an automated MR pipeline designed to pre-process AlphaFold2 and RosettaFold  models by removing low confidence regions and converting confidence scores into predicted B-factors. It also slices predicted models into distinct structural units then automatically placing the slices using Phaser. The slicing step can use AlphaFold2’s predicted aligned error (PAE), or can operate via a variety of Cɑ atom clustering algorithms, extending applicability to structures of any origin.</p>
 <p>Slice-n-Dice helps to deals with inaccuracy in domain-domain orientations of predicted models.</p>
 
-<h2 id="slice">Slice<a class="headerlink" href="#slice" title="Permalink to this headline">¶</a></h2>
+<h2 id="slice">Slice<a class="headerlink" href="#slice" title="Permalink to this heading">¶</a></h2>
 <p>Slice option in CCP4 cloud uses <a class="reference external" href="https://scikit-learn.org/stable/modules/clustering.html#birch" rel="noopener noreferrer" target="_blank">Birch clustering algorithm</a> based on the coordinates of the Cɑ atoms.</p>
 <p>The <strong>number of splits</strong> (clusters) can be specified. The large target protein needs to be modeled in several chunks. An increasing number of splits allows slice and dice to test a range of different splits.</p>
 <p>The default <strong>pLDDT threshold</strong> for AlphaFold2 models is <strong>70</strong> and the default <strong>RMS threshold</strong> for RosettaFold models is <strong>1.75</strong>.</p>
 
 
-<h2 id="dice">Dice<a class="headerlink" href="#dice" title="Permalink to this headline">¶</a></h2>
+<h2 id="dice">Dice<a class="headerlink" href="#dice" title="Permalink to this heading">¶</a></h2>
 <p>Dice method performs molecular replacement on the individual slices produced by Slice by <a class="reference internal" href="doc.task.Phaser.html"><span class="doc">Phaser</span></a>. Phaser automatically place as many slices as possible.</p>
 <p><a class="reference internal" href="doc.task.Molrep.html"><span class="doc">Molrep</span></a> <a class="reference external" href="http://journals.iucr.org/d/issues/2010/01/00/dz5175/" rel="noopener noreferrer" target="_blank">Phased Translation Function (PTF) mode</a> is used to try and place the slices that could not be positioned in the initial Phaser job. After each MOLREP job, <a class="reference internal" href="doc.task.Refmac.html"><span class="doc">REFMAC5</span></a> is used to assess if the placed slice has improved the solution.</p>
 <p><strong>ACKNOWLEDGEMENTS</strong></p>
@@ -460,7 +462,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

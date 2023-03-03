@@ -1,0 +1,20 @@
+====================================================
+Molecular Replacement with AlphaFold2 Model workflow
+====================================================
+
+This workflow uses predicted by AlphaFold2 models as structure templates for Molecular Replacement.
+Once started, *Workflow* develops automatically, adding new tasks and branches in *Project Tree* as necessary, until arriving at the solution, or being stopped by user, or failing because of being unable to solve the structure. Read more about `here <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_automated_workflows.html>`_
+
+The *Molecular Replacement with AlphaFold2 Model workflow* includes the following stages:
+
+- import of reflection dataset, target sequence and, optionally, ligand description
+- obtain macromolecular model with `Structure prediction <./doc.task.StructurePrediction.html>`_ task; 
+- preparation of :ref:`Asymmetric Unit <ASUDef>`
+- split model with `Slice <./doc.task.Slice.html>`_
+- phasing with `Phaser <./doc.task.Phaser.html>`_
+- if a solution is found:
+    - model building with `Modelcraft <./doc.task.ModelCraft.html>`_
+    - structure refinement
+    - :ref:`ligand fitting <ligands_built>` (if ligand is given)
+    - solvent modelling
+    - deposition package preparation

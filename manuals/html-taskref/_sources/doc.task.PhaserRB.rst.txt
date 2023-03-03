@@ -1,0 +1,5 @@
+=================================
+Rigid-Body Refinement with Phaser
+=================================
+
+Performs the refinement of rigid-body groups against the translation function target.
