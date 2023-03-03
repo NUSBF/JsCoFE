@@ -18,5 +18,5 @@ Refinement and Model Building
     doc.task.CombStructure
     doc.task.PhaserRB
     doc.task.Sheetbend
-    doc.task.Pairef
+    doc.task.PaiRef
 
