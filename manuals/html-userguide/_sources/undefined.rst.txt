@@ -1,0 +1,23 @@
+:orphan:
+
+==========================
+Authorisation instructions 
+==========================
+
+
+CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. In order to use this software, you need to be authorised by the corresponding software provider. You can do that at **My Account** page.
+
+    .. image:: images/My_account_Authorizations.png
+            :scale: 40 %
+            :align: center
+
+
+
+Click on |authorisation| manage button and you will redirect to the authorisation page. This page gives a summary of your authorisations and allows you to send authorisation requests.
+
+.. Note::
+    Authorisation request will redirect you to the provider's web-site. Any data requested by software provider will be processed at provider's end and will not be stored in CCP4 Cloud.
+
+.. |authorisation| image:: images/authorisation.png
+        :width: 16
+        :height: 16
