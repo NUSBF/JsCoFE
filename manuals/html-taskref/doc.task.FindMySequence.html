@@ -53,7 +53,9 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -383,7 +385,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="doc-task-findmysequence--page-root">findMySequence: protein sequence identification<a class="headerlink" href="#doc-task-findmysequence--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="doc-task-findmysequence--page-root">findMySequence: protein sequence identification<a class="headerlink" href="#doc-task-findmysequence--page-root" title="Permalink to this heading">¶</a></h1>
 <p>The <a class="reference external" href="https://gitlab.com/gchojnowski/findmysequence" rel="noopener noreferrer" target="_blank">findMySequence</a> is a neural-network-based approach for the identification of unknown proteins in X-ray crystallography and cryo-EM. Given a protein model (side-chains are ignored) and corresponding crystallographic <strong>2F</strong> <sub>obs</sub> <strong>- F</strong> <sub>calc</sub> map the program will identify most likely sequence from a database.</p>
 <p>The findMySequeden can be used for</p>
 <ul class="simple">
@@ -396,7 +398,7 @@
 <p class="last">There is usually no need to modify your model and map prior making queries; model-bias is already addressed in REFMAC’s maximum likelihood <strong>2F</strong> <sub>obs</sub> <strong>- F</strong> <sub>calc</sub> maps. However, removing obvious tracing errors and gaps in the model followed by a quick restrained refinement may help to identify a correct sequence in difficult cases.</p>
 </div>
 
-<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h2>
+<h2 id="parameters">Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">¶</a></h2>
 <p><strong>Model fragment selection</strong> By default findMySequence will use complete input model for queries. Here, you can select specific chain or residue range.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -452,7 +454,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

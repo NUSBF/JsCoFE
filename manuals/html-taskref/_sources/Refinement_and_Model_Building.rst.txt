@@ -16,3 +16,7 @@ Refinement and Model Building
     doc.task.Nautilus
     doc.task.Dimple
     doc.task.CombStructure
+    doc.task.PhaserRB
+    doc.task.Sheetbend
+    doc.task.Pairef
+

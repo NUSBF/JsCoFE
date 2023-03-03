@@ -23,7 +23,7 @@ AlphaFold produces a per-residue estimate of its confidence score (**pLDDT**) ra
                 
 * **pLDDT < 50** indicates residues that should not be interpreted. Such scores are a reasonably strong predictor of disorder, i.e. they suggest that the region is either unstructured in physiological conditions, or gets structured only as part of a complex.
 
-**Sequence coverages plot** shows the number of homologous identified across the representative sequence and coloured by the sequence identity to query.
+**Sequence coverages plot** shows the number of homologous identified across the representative sequence and colored by the sequence identity to query.
 
 
 **References**

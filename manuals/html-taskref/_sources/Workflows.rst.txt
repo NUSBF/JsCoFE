@@ -13,3 +13,5 @@ Not only the workflows can reduced chore, but they may also be used for better u
         
     doc.task.WFlowAEP
     doc.task.WFlowAMR
+    doc.task.WFlowAFMR
+    doc.task.WFlowREL
