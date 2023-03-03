@@ -3,3 +3,9 @@ Rigid-Body Refinement with Phaser
 =================================
 
 Performs the refinement of rigid-body groups against the translation function target.
+
+
+
+**References**
+
+`McCoy AJ. Solving structures of protein complexes by molecular replacement with Phaser. Acta Crystallogr D Biol Crystallogr. 2007 Jan;63(Pt 1):32-41. doi: 10.1107/S0907444906045975. Epub 2006 Dec 13. PMID: 17164524; PMCID: PMC2483468. <https://doi.org/10.1107%2FS0907444906045975>`_
