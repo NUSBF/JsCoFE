@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.02.23   <--  Date of Last Modification.
+ *    04.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -83,7 +83,7 @@ function UserData()  {
       end_of_job : { send : true, lapse : 24.0 }  // hours
     }
   };
-  this.action        = userdata_action.none;
+  this.action = userdata_action.none;
   this.onlogin_message = '';  // shown only once at login
 }
 
@@ -135,6 +135,7 @@ var msg = '';
   if (!uData.settings.hasOwnProperty('guided_import'))
     uData.settings.guided_import = true;
 
+  if (!uData.hasOwnProperty('email'))           uData.email   = 'localuser@localhost';
   if (!uData.hasOwnProperty('volume'))          uData.volume  = '***';
   if (!uData.hasOwnProperty('dormant'))         uData.dormant = 0;
   if (!uData.hasOwnProperty('onlogin_message')) uData.onlogin_message = '';
