@@ -493,7 +493,8 @@ var updateHash = false;
       (!__userLoginHash.getToken(ud.__local_user_id)))  {
     userData = new ud.UserData();
     userData.name    = fe_server.localuser;
-    userData.email   = conf.getEmailerConfig().maintainerEmail;
+    // userData.email   = conf.getEmailerConfig().maintainerEmail;
+    userData.email   = 'localuser@localhost';
     userData.login   = ud.__local_user_id;
     userData.pwd     = ud.__local_user_id;
     userData.licence = 'academic';
