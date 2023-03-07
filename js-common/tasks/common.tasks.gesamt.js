@@ -50,9 +50,9 @@ function TaskGesamt()  {
      label       : 'Structure',    // label for input dialog
      inputId     : 'xyz',          // input Id for referencing input fields
      customInput : 'chain-sel-protein', // lay custom fields next to the selection
-     force       : 2,           // meaning choose, by default, 1 xyz sets if
-                                // available; otherwise, the minimum (1) will
-                                // be selected
+    //  force       : 2,           // meaning choose, by default, 1 xyz sets if
+    //                             // available; otherwise, the minimum (1) will
+    //                             // be selected
      min         : 1,           // minimum acceptable number of data instances
      max         : 10           // maximum acceptable number of data instances
    }
