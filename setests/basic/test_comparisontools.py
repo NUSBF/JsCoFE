@@ -32,6 +32,16 @@ def gesamtAfterRevision(driver, waitLong):
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Structure Alignment and Superposition with Gesamt')
     time.sleep(1)
 
+    try:
+        sf.clickByXpath(driver, "//span[normalize-space()='%s']" % '[do not use]')
+        time.sleep(1)#
+        sf.clickByXpath(driver, "//div[contains(text(), '%s')]" % '[0003-01] editrevision')
+        time.sleep(1)
+
+    except:
+        pass
+
+
     sf.clickByXpath(driver, "//span[normalize-space()='%s']" % 'A (protein)')
     time.sleep(1)
 
