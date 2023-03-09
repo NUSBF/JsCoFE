@@ -171,7 +171,7 @@ DataBox.prototype.addTaskData = function ( task,include_used_bool )  {
 
 DataBox.prototype.addTaskInputData = function ( task,addall_bool )  {
 
-  let output_data_data = task.output_data.data;
+  // let output_data_data = task.output_data.data;
   let input_data_data  = task.input_data.data;
   if (this.jobs.indexOf(task.id)<0)
     this.jobs.push ( task.id );

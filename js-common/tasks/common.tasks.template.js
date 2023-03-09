@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.01.23   <--  Date of Last Modification.
+ *    09.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1524,8 +1524,10 @@ if (!dbx)  {
       //     in the task
 
       // loop over input data structures in 'this' task
-      for (var i=0;i<this.input_dtypes.length;i++)
+      for (let i=0;i<this.input_dtypes.length;i++)
         if (dropdown[i].length>0)  {
+          // fill data menu for ith input data type
+
           var dt = ddt[i];
           var dn = dsn[i];
 
@@ -1539,15 +1541,18 @@ if (!dbx)  {
             // of the interface
             var inp_data = this.input_data.getData ( inp_item.inputId );
 
-            var j = -1;
-            for (var n=0;n<inp_data.length;n++)  {
-              j++;
+            // ***before 09.03.2023 var j = -1;
+            for (let n=0;n<inp_data.length;n++)  {
+  // console.log ( ' >>>>>> i:n=' + i + ':' + n + '\n"' + dropdown[i][n].getContent() + '"' );
+              // ***before 09.03.2023 j++;
+              let j = 0;
               while ((j<dn.length) && (dt[dn[j]].dataId!=inp_data[n].dataId))
                 j++;
+  // console.log ( ' >>> j='+ j );
               if (j<dn.length)  {
                 var layCustom = dropdown[i][n].layCustom;
                 dropdown[i][n].layCustom = '';
-                //dropdown[i][n].selectItem ( dn[j] );
+                // dropdown[i][n].selectItem ( dn[j] );
                 _fill_optimized ( dropdown[i][n],dn[j] );
                 dropdown[i][n].inspect_btn.setVisible ( true );
                 if (layCustom)  {
@@ -1560,10 +1565,12 @@ if (!dbx)  {
                 //console.log ( dropdown[i][n].getContent() );
               } else
                 _fill_dropdown ( dropdown[i][n] );
-
             }
 
-            for (var n=inp_data.length;n<dropdown[i].length;n++)
+            // fill remaining menus (up to specified max value), which remain 
+            // hidden; unclear whether this is so necessary in 2b case, but
+            // no harm
+            for (let n=inp_data.length;n<dropdown[i].length;n++)
               _fill_dropdown ( dropdown[i][n] );
 
           }
