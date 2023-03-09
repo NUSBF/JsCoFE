@@ -2,11 +2,38 @@
 CCP4 Cloud Version Log
 ======================
 
+**Version 1.7.0011** 
+
+    *Released on --.--.2023 with CCP48.0.010*
+
+    **Changes and new features**
+
+    #. Added `SC <../html-taskref/doc.task.SC.html>`_, `Rigid-Body Refinement with Phaser <../html-taskref/doc.task.PhaserRB.html>`_, `Pairef <../html-taskref/doc.task.PaiRef.html>`_ and `PDB-REDO <../html-taskref/doc.task.PDBREDO.html>`_ tasks and corresponding documentation articles
+
+    #. Demo project updated
+
+    #. Roadmap updated
+
+    #. Fixed random task disappearance in shared project
+
+    #. Fixed random disappearance of data objects in the Input Panel of Job Dialog after task completion
+
+
+**Version 1.7.0010** 
+    
+    *Released on 02.02.2023 with CCP48.0.009*
+
+    **Changes and new features**
+
+    #. Added ``Rotamer``, ``Areaimol``, ``Rampage``, ``Post-MR model correction with Sheetbend`` tasks and corresponding documentation articles
+
+    #. User guide documentation updated
+
 
 
 **Version 1.7.009**
 
-    *Released on --.--.2022 with CCP4 8.0.008*
+    *Released with CCP4 8.0.008*
 
     **Changes and new features**
 
@@ -26,6 +53,7 @@ CCP4 Cloud Version Log
 
     #. Added task ``Optimise ASU`` for making compact ASUs
 
+   
 
 
 **Version 1.7.008**
