@@ -945,6 +945,8 @@ var cfg = conf.getServerConfig();
           console.log ( ' >>>>> stageNo=' + stageNo );
           console.log ( ' >>>>> isErrObject? ' + comut.isObject(errcode) );
           console.log ( ' >>>>> errcode = ' + errcode );
+          console.log ( ' >>>>> cmd.fe_retcode.fileErrors = ' + cmd.fe_retcode.fileErrors );
+          console.log ( ' >>>>> errcode.status            = ' + errcode.status );
           // **** what to do??? clean NC storage, the job was a waste.
           //removeJobDelayed ( job_token,task_t.job_code.finished );
           //log.error ( 4,'cannot send task ' + task.id +
