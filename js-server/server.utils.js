@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.02.23   <--  Date of Last Modification.
+ *    10.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -861,7 +861,8 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
         fReadStream.on ( 'error',function(e){
           log.error ( 14,'Read file errors, file = ' + fpath );
           console.error ( e.stack || e );
-          server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+          // causes errors of repeat send of the header, so commented out
+          // server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
           server_response.end ( '<p><b>[05-0007] FILE READ ERRORS</b></p>' );
           if (deleteOnDone)
             removeFile ( fpath );

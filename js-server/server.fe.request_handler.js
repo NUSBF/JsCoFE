@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.02.23   <--  Date of Last Modification.
+ *    09.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -174,6 +174,10 @@ var response = null;
 
     case cmd.fe_reqtype.accessArchivedPrj :
            response = arch.accessArchivedProject ( loginData,data );
+       break;
+
+    case cmd.fe_reqtype.searchArchive :
+           response = arch.searchArchive ( loginData,data );
        break;
 
     case cmd.fe_reqtype.checkPrjImport :
