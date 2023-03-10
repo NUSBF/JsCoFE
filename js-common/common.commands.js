@@ -129,6 +129,7 @@ var fe_reqtype = {
   startSharedImport : '-startSharedImport', // request to start shared project import
   archiveProject    : '-archiveProject',    // request to archive project
   accessArchivedPrj : '-accessArchivedPrj', // request to access archived project
+  searchArchive     : '-searchArchive',     // request to search archive
   checkPrjImport    : '-checkPrjImport',    // request to check project import state
   finishPrjImport   : '-finishPrjImport',   // request to finish project import
   prepareJobExport  : '-prepareJobExport',  // request to prepare job for export

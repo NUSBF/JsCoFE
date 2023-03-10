@@ -785,9 +785,20 @@ var archPrjPath = findArchivedProject(archiveID)[0];
 }
 
 
+// --------------------------------------------------------------------------
+
+function searchArchive ( loginData,data )  {
+var mlist = [];
+  return new cmd.Response ( cmd.fe_retcode.ok,'',{
+    mlist : mlist
+  });
+}
+
+
 // ==========================================================================
 // export for use in node
 
 module.exports.archiveProject        = archiveProject;
 module.exports.generateIndex         = generateIndex;
 module.exports.accessArchivedProject = accessArchivedProject;
+module.exports.searchArchive         = searchArchive;

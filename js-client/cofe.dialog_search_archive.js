@@ -54,9 +54,9 @@ function SearchArchiveDialog(callback_func) {
         text: 'Find',
         click: function () {
           (function (dlg) {
-            self.searchArchive(function (done) {
-              if (done) {
-                callback_func(true);
+            self.searchArchive ( function(archiveId) {
+              if (archiveId) {
+                callback_func ( archiveId );
                 $(dlg).dialog('close');
               }
             });
@@ -66,7 +66,7 @@ function SearchArchiveDialog(callback_func) {
         id: 'archdlg_search_cancel_btn',
         text: 'Cancel',
         click: function () {
-          callback_func(false);
+          callback_func ( '' );
           $(this).dialog('close');
         }
       }
@@ -75,6 +75,7 @@ function SearchArchiveDialog(callback_func) {
   });
 
 }
+
 
 SearchArchiveDialog.prototype = Object.create(Widget.prototype);
 SearchArchiveDialog.prototype.constructor = SearchArchiveDialog;
@@ -109,7 +110,7 @@ SearchArchiveDialog.prototype.makeLayout = function () {
                       .setStyle('text','','j.r.nobody','Depositor login name if known');
   pgrid.setLabel('Deposition year:',r,0,1,1).setNoWrap();
   this.year_sel = new Dropdown();
-  this.year_sel.addItem ( 'any year','','no_choice',true );
+  this.year_sel.addItem ( 'any year','','any',true );
   let year0 = new Date().getFullYear();
   for (let y=2022;y<=year0;y++)
     this.year_sel.addItem ( ''+y,'',''+y,false );
@@ -145,125 +146,113 @@ SearchArchiveDialog.prototype.searchArchive = function ( callback_func ) {
     'kwds'    : this.kwds    .getValue()
   };
 
-
-  // var archiveID = this.aID_inp.getValue().trim().toUpperCase();
-
-  // if (!archiveID)  {
-  //   new MessageBox ( 'Archive ID not given',
-  //       '<div style="width:300px"><h2>Archive ID not given</h2>' +
-  //       '<i>Please provide a valid ' + appName() + ' Archive ID.</i></div>',
-  //       'msg_stop' );
-  //   callback_func ( false );
-  //   return;
-  // }
-
-  // $( '#archdlg_access_btn' ).button('disable');
-  // $( '#archdlg_cancel_btn' ).button('disable');
-
-  // accessArchProject ( archiveID,'strict',function(done){
-  //   $( '#archdlg_access_btn' ).button('enable');
-  //   $( '#archdlg_cancel_btn' ).button('enable');
-  //   callback_func ( done );
-  // });
-
-  /*
+  if ((!search_options.pdbcode) && (!search_options.dname)  &&
+      (!search_options.dlogin)  && (!search_options.doiref) &&
+      (!search_options.kwds)    && (search_options.year=='any'))  {
+    new MessageBox ( 'No filter applied',
+        '<div style="width:300px"><h2>No filter applied</h2>' +
+        'At least one filter must be applied for searching in ' +
+        appName() + ' Archive.</div>','msg_stop' );
+    callback_func ( '' );
+    return;
+  }
   
-    serverRequest ( fe_reqtype.accessArchivedPrj,{
-      archiveID : archiveID
-    },'Access Archived Project', function(response){
+  serverRequest ( fe_reqtype.searchArchive,search_options,
+                  'Search ' + appName() + ' Archive',
+                  function(response){
   
-      $( '#archdlg_access_btn' ).button('enable');
-      $( '#archdlg_cancel_btn' ).button('enable');
+      // $( '#archdlg_access_btn' ).button('enable');
+      // $( '#archdlg_cancel_btn' ).button('enable');
   
-      var message  = '';
-      var aid      = '<b>' + archiveID + '</b>';
-      var archive  = appName() + ' Archive';
-      var done     = false;
-      var msg_icon = 'msg_system';
-      switch (response.code)  {
-        case 'project_not_found'    :  message = '<h2>Project not found</h2>' +
-                                       'Project ' + aid + ' is not found in ' +
-                                       archive;
-                                       msg_icon = 'msg_excl_yellow';
-                                    break;
-        case 'already_accessed'     :  message = '<h2>Project already accessed</h2>' +
-                                       'Project ' + aid + ' is in your <i>"' + 
-                                       archive    + '"</i> folder already.';
-                                       msg_icon = 'msg_information'; 
-                                    break;
-        case 'error_read_project'   :  message = '<h2>Project cannot be accessed</h2>' +
-                                       'There are read errors when accessing project ' +
-                                       aid + '. This project cannot be accessed ' +
-                                       'without repairs. Please inform ' +
-                                       report_problem(
-                                         'Errors reading archived projwect ' + archiveID,
-                                         'Read errors encountered at accessing archived ' +
-                                         'project ' + archiveID,'' );
-                                    break;
-        case 'duplicate_name'       :  message = '<h2>Duplicate project name</h2>' +
-                                       'Project ' + aid + ' cannot be accessed in ' +
-                                       archive + ' because a project with this ' +
-                                       'name is found in your work folder(s). Rename or ' +
-                                       'delete your project before accessing it in ' +
-                                       archive;
-                                       msg_icon = 'msg_stop'; 
-                                    break;
-        case 'author_archive'       :  message = '<h2>Project archived by you</h2>' +
-                                       'Project ' + aid + ' was archived by you ' +
-                                       'and can be found in your ' +
-                                       '<i>"Projects archived by me"</i> folder.';
-                                       msg_icon = 'msg_information'; 
-                                    break;
-        case 'error_access_project' :  message = '<h2>Access errors (1)</h2>' +
-                                       'There are link errors when accessing project ' +
-                                       aid + '. This project cannot be accessed ' +
-                                       'without repairs. Please inform ' +
-                                       report_problem(
-                                         'Errors accessing archived project ' + archiveID,
-                                         'Link errors encountered at accessing archived ' +
-                                         'project ' + archiveID,'' );
-                                    break;
-        case 'error_write_plist'    :  message = '<h2>Access errors (2)</h2>' +
-                                       'There are write errors when accessing project ' +
-                                       aid + '. This project cannot be accessed ' +
-                                       'without repairs. Please inform ' +
-                                       report_problem(
-                                         'Errors accessing archived project ' + archiveID,
-                                         'Project list write errors encountered at ' +
-                                         'accessing archived project ' + archiveID,'' );
-                                    break;
-        case 'error_update_plist'   :  message = '<h2>Access errors (3)</h2>' +
-                                       'There are general errors when accessing project ' +
-                                       aid + '. This project cannot be accessed ' +
-                                       'without repairs. Please inform ' +
-                                       report_problem(
-                                         'Errors accessing archived project ' + archiveID,
-                                         'Project list update errors encountered at ' +
-                                         'accessing archived project ' + archiveID,'' );
-                                    break;
-        case 'ok'                   :  message = '<h2>Access acquired</h2>' +
-                                       'Project ' + aid + ' is now accessible to you ' +
-                                       'via your "' + archive + '" folder.';
-                                       msg_icon = 'msg_ok'; 
-                                       done = true;
-                                    break;
-        default                     :  message = '<h2>Access errors (4)</h2>' +
-                                       'Unknown return code encountered when accessing project ' +
-                                       aid + '. Please inform ' +
-                                       report_problem(
-                                         'Errors accessing archived project '  + archiveID,
-                                         'Unknown return code encountered at accessing ' +
-                                         'archived project ' + archiveID,'' );
-                                    break;
-      }
+      // var message  = '';
+      // var aid      = '<b>' + archiveID + '</b>';
+      // var archive  = appName() + ' Archive';
+      // var done     = false;
+      // var msg_icon = 'msg_system';
+      // switch (response.code)  {
+      //   case 'project_not_found'    :  message = '<h2>Project not found</h2>' +
+      //                                  'Project ' + aid + ' is not found in ' +
+      //                                  archive;
+      //                                  msg_icon = 'msg_excl_yellow';
+      //                               break;
+      //   case 'already_accessed'     :  message = '<h2>Project already accessed</h2>' +
+      //                                  'Project ' + aid + ' is in your <i>"' + 
+      //                                  archive    + '"</i> folder already.';
+      //                                  msg_icon = 'msg_information'; 
+      //                               break;
+      //   case 'error_read_project'   :  message = '<h2>Project cannot be accessed</h2>' +
+      //                                  'There are read errors when accessing project ' +
+      //                                  aid + '. This project cannot be accessed ' +
+      //                                  'without repairs. Please inform ' +
+      //                                  report_problem(
+      //                                    'Errors reading archived projwect ' + archiveID,
+      //                                    'Read errors encountered at accessing archived ' +
+      //                                    'project ' + archiveID,'' );
+      //                               break;
+      //   case 'duplicate_name'       :  message = '<h2>Duplicate project name</h2>' +
+      //                                  'Project ' + aid + ' cannot be accessed in ' +
+      //                                  archive + ' because a project with this ' +
+      //                                  'name is found in your work folder(s). Rename or ' +
+      //                                  'delete your project before accessing it in ' +
+      //                                  archive;
+      //                                  msg_icon = 'msg_stop'; 
+      //                               break;
+      //   case 'author_archive'       :  message = '<h2>Project archived by you</h2>' +
+      //                                  'Project ' + aid + ' was archived by you ' +
+      //                                  'and can be found in your ' +
+      //                                  '<i>"Projects archived by me"</i> folder.';
+      //                                  msg_icon = 'msg_information'; 
+      //                               break;
+      //   case 'error_access_project' :  message = '<h2>Access errors (1)</h2>' +
+      //                                  'There are link errors when accessing project ' +
+      //                                  aid + '. This project cannot be accessed ' +
+      //                                  'without repairs. Please inform ' +
+      //                                  report_problem(
+      //                                    'Errors accessing archived project ' + archiveID,
+      //                                    'Link errors encountered at accessing archived ' +
+      //                                    'project ' + archiveID,'' );
+      //                               break;
+      //   case 'error_write_plist'    :  message = '<h2>Access errors (2)</h2>' +
+      //                                  'There are write errors when accessing project ' +
+      //                                  aid + '. This project cannot be accessed ' +
+      //                                  'without repairs. Please inform ' +
+      //                                  report_problem(
+      //                                    'Errors accessing archived project ' + archiveID,
+      //                                    'Project list write errors encountered at ' +
+      //                                    'accessing archived project ' + archiveID,'' );
+      //                               break;
+      //   case 'error_update_plist'   :  message = '<h2>Access errors (3)</h2>' +
+      //                                  'There are general errors when accessing project ' +
+      //                                  aid + '. This project cannot be accessed ' +
+      //                                  'without repairs. Please inform ' +
+      //                                  report_problem(
+      //                                    'Errors accessing archived project ' + archiveID,
+      //                                    'Project list update errors encountered at ' +
+      //                                    'accessing archived project ' + archiveID,'' );
+      //                               break;
+      //   case 'ok'                   :  message = '<h2>Access acquired</h2>' +
+      //                                  'Project ' + aid + ' is now accessible to you ' +
+      //                                  'via your "' + archive + '" folder.';
+      //                                  msg_icon = 'msg_ok'; 
+      //                                  done = true;
+      //                               break;
+      //   default                     :  message = '<h2>Access errors (4)</h2>' +
+      //                                  'Unknown return code encountered when accessing project ' +
+      //                                  aid + '. Please inform ' +
+      //                                  report_problem(
+      //                                    'Errors accessing archived project '  + archiveID,
+      //                                    'Unknown return code encountered at accessing ' +
+      //                                    'archived project ' + archiveID,'' );
+      //                               break;
+      // }
   
-      new MessageBox ( 'Accessing project ' + archiveID,
-                       '<div style="width:350px">' + message + '</div>',
-                       msg_icon );
-      callback_func ( done );
+      // new MessageBox ( 'Accessing project ' + archiveID,
+      //                  '<div style="width:350px">' + message + '</div>',
+      //                  msg_icon );
+      // callback_func ( done );
      
-    },null,'persist' );
-  
-  */
+  },null,'persist' );
+
+  return;
 
 }

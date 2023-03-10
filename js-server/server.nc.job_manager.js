@@ -130,6 +130,7 @@ NCJobRegister.prototype.wakeZombi = function ( job_token )  {
         // (jobEntry.sendTrials<=0))  {
       jobEntry.jobStatus  = task_t.job_code.running;
       jobEntry.sendTrials = conf.getServerConfig().maxSendTrials;
+      jobEntry.awakening  = true;
       return true;
     }
   }
@@ -902,7 +903,7 @@ var cfg = conf.getServerConfig();
                           'tokens'   : ncJobRegister.getListOfTokens()
                        },
 
-      function ( rdata ){  // send was successful
+      function(rdata)  {  // send was successful
 
         // just remove the job; do it in a separate thread and delayed,
         // which is useful for debugging etc.
@@ -911,7 +912,7 @@ var cfg = conf.getServerConfig();
                            job_token );
         removeJobDelayed ( job_token,task_t.job_code.finished );
 
-      },function(stageNo,errcode){  // send failed
+      },function(stageNo,errcode)  {  // send failed
 
         if (((stageNo>=2) && (jobEntry.sendTrials>0)) ||
             ((stageNo==1) && (jobEntry.sendTrials==cfg.maxSendTrials)))  {  // try to send again
@@ -941,6 +942,9 @@ var cfg = conf.getServerConfig();
 
         } else  {
 
+          console.log ( ' >>>>> stageNo=' + stageNo );
+          console.log ( ' >>>>> isErrObject? ' + comut.isObject(errcode) );
+          console.log ( ' >>>>> errcode = ' + errcode );
           // **** what to do??? clean NC storage, the job was a waste.
           //removeJobDelayed ( job_token,task_t.job_code.finished );
           //log.error ( 4,'cannot send task ' + task.id +
