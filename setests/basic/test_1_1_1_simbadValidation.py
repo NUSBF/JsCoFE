@@ -22,7 +22,7 @@ def simbadFirst (driver):
   ttts = sf.tasksTreeTexts(driver)
   for taskText in ttts:
     match = re.search('\[0002\] simbad -- best model: (.*)', taskText)
-    print(match)
+    # print(match)
     if match:
       model = str(match.group(1))
       print ('Model 0002 = '+ model)
