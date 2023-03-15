@@ -27,11 +27,11 @@
 // -------------------------------------------------------------------------
 // SearchArchiveDialog class
 
-function SearchArchiveDialog(callback_func) {
+function SearchArchiveDialog ( callback_func )  {
 
-  Widget.call(this,'div');
-  this.element.setAttribute('title','Search ' + appName() + ' archive');
-  document.body.appendChild(this.element);
+  Widget.call ( this,'div' );
+  this.element.setAttribute ( 'title','Search ' + appName() + ' archive' );
+  document.body.appendChild ( this.element );
 
   this.makeLayout();
 
@@ -102,12 +102,20 @@ SearchArchiveDialog.prototype.makeLayout = function () {
   pgrid.setLabel('PDB code:',r,0,1,1).setNoWrap();
   this.pdbcode = pgrid.setInputText('',r++,1,1,1).setWidth('80px')
                       .setStyle('text','','1XYZ','PDB code if known');
+  pgrid.setLabel('Project ID:',r,0,1,1).setNoWrap();
+  this.prid    = pgrid.setInputText('',r++,1,1,1).setWidth('80px')
+                      .setStyle('text','','','Project ID if known (case-sensitive)');
   pgrid.setLabel('Depositor name:',r,0,1,1).setNoWrap();
   this.dname   = pgrid.setInputText('',r++,1,1,1).setWidth('300px')
                       .setStyle('text','','John R. Nobody','Depositor name if known');
   pgrid.setLabel('Depositor login:',r,0,1,1).setNoWrap();
   this.dlogin  = pgrid.setInputText('',r++,1,1,1).setWidth('300px')
-                      .setStyle('text','','j.r.nobody','Depositor login name if known');
+                      .setStyle('text','','j.r.nobody',
+                                'Depositor login name if known (case-sensitive)');
+  pgrid.setLabel('Depositor email:',r,0,1,1).setNoWrap();
+  this.demail  = pgrid.setInputText('',r++,1,1,1).setWidth('300px')
+                      .setStyle('text','','j.r.nobody@uni-nowhere.edu',
+                                'Depositor e-mail address if known');
   pgrid.setLabel('Deposition year:',r,0,1,1).setNoWrap();
   this.year_sel = new Dropdown();
   this.year_sel.addItem ( 'any year','','any',true );
@@ -138,17 +146,29 @@ SearchArchiveDialog.prototype.searchArchive = function ( callback_func ) {
 
 
   let search_options = {
-    'pdbcode' : this.pdbcode .getValue(),
-    'dname'   : this.dname   .getValue(),
-    'dlogin'  : this.dlogin  .getValue(),
+    'pdbcode' : this.pdbcode .getValue().trim(),
+    'prid'    : this.prid    .getValue().trim(),
+    'dname'   : this.dname   .getValue().trim(),
+    'dlogin'  : this.dlogin  .getValue().trim(),
+    'demail'  : this.demail  .getValue().trim(),
     'year'    : this.year_sel.getValue(),
-    'doiref'  : this.doiref  .getValue(),
-    'kwds'    : this.kwds    .getValue()
+    'doiref'  : this.doiref  .getValue().trim(),
+    'kwds'    : []
   };
 
-  if ((!search_options.pdbcode) && (!search_options.dname)  &&
-      (!search_options.dlogin)  && (!search_options.doiref) &&
-      (!search_options.kwds)    && (search_options.year=='any'))  {
+
+  let kwds = this.kwds.getValue().split(',').filter(Boolean);
+  for (let i=0;i<search_options.kwds.length;i++)  {
+    let kwd = kwds[i].trim();
+    if (kwd)
+      search_options.kwds.push ( kwd );
+  }
+
+  if ((!search_options.pdbcode) && (!search_options.prid)   && 
+      (!search_options.dname)   && (!search_options.dlogin) && 
+      (!search_options.demail)  && (!search_options.doiref) && 
+      (!search_options.kwds.length>0) && 
+      (search_options.year=='any'))  {
     new MessageBox ( 'No filter applied',
         '<div style="width:300px"><h2>No filter applied</h2>' +
         'At least one filter must be applied for searching in ' +
@@ -156,100 +176,88 @@ SearchArchiveDialog.prototype.searchArchive = function ( callback_func ) {
     callback_func ( '' );
     return;
   }
-  
+
+  $('#archdlg_search_btn')       .button('disable');
+  $('#archdlg_search_cancel_btn').button('disable');
+
+  // alert ( JSON.stringify(search_options));
+
   serverRequest ( fe_reqtype.searchArchive,search_options,
                   'Search ' + appName() + ' Archive',
                   function(response){
+
+      $('#archdlg_search_btn')       .button('enable');
+      $('#archdlg_search_cancel_btn').button('enable');
   
-      // $( '#archdlg_access_btn' ).button('enable');
-      // $( '#archdlg_cancel_btn' ).button('enable');
+      var message  = '';
+      var archive  = appName() + ' Archive ';
+      var msg_icon = 'msg_system';
+      switch (response.code)  {
+        case 'ok'                   :  break;
+        case 'archive_unconfigured' :  message = '<h2>' + archive + 'not configured</h2>' +
+                                         archive + 'is not configured on your server. ' +
+                                         'Contact your ' + appName() + 
+                                         report_problem(
+                                           archive + 'is not configured.',
+                                           'Searches were requested for unconfigured ' + archive,
+                                           'maintainer');
+                                       msg_icon = 'msg_excl_yellow';
+                                    break;
+        case 'archive_corrupt'      :  message = '<h2>' + archive + 'index is corrupt</h2>' +
+                                         archive + 'index may be corrupt and needs attention. ' + 
+                                         'Contact your ' + appName() + 
+                                         report_problem(
+                                           archive + 'may be corrupt.',
+                                           'Reindex ' + archive,
+                                           'maintainer');
+                                       msg_icon = 'msg_excl_yellow'; 
+                                    break;
+        case 'archive_unindexed'    :  message = '<h2>' + archive + ' not indexed</h2>' +
+                                         archive + ' is not indexed and cannot be searched. ' +
+                                         'Contact your ' + appName() + 
+                                         report_problem(
+                                           archive + 'may be corrupt.',
+                                           'Reindex ' + archive,
+                                           'maintainer');
+                                       msg_icon = 'msg_excl_yellow';
+                                    break;
+        default                     :  message = '<h2>' + archive + 'search errors</h2>' +
+                                         'Unknown return code (' + response.code + 
+                                         ') encountered when searching ' + archive +
+                                         'Contact your ' + appName() + 
+                                         report_problem(
+                                           'Errors searching '  + archive,
+                                           'Unknown return code (' + response.code + 
+                                           ') encountered at searching ' + archive,
+                                           'maintainer' );
+                                       msg_icon = 'msg_excl_yellow';
+                                    break;
+      }
   
-      // var message  = '';
-      // var aid      = '<b>' + archiveID + '</b>';
-      // var archive  = appName() + ' Archive';
-      // var done     = false;
-      // var msg_icon = 'msg_system';
-      // switch (response.code)  {
-      //   case 'project_not_found'    :  message = '<h2>Project not found</h2>' +
-      //                                  'Project ' + aid + ' is not found in ' +
-      //                                  archive;
-      //                                  msg_icon = 'msg_excl_yellow';
-      //                               break;
-      //   case 'already_accessed'     :  message = '<h2>Project already accessed</h2>' +
-      //                                  'Project ' + aid + ' is in your <i>"' + 
-      //                                  archive    + '"</i> folder already.';
-      //                                  msg_icon = 'msg_information'; 
-      //                               break;
-      //   case 'error_read_project'   :  message = '<h2>Project cannot be accessed</h2>' +
-      //                                  'There are read errors when accessing project ' +
-      //                                  aid + '. This project cannot be accessed ' +
-      //                                  'without repairs. Please inform ' +
-      //                                  report_problem(
-      //                                    'Errors reading archived projwect ' + archiveID,
-      //                                    'Read errors encountered at accessing archived ' +
-      //                                    'project ' + archiveID,'' );
-      //                               break;
-      //   case 'duplicate_name'       :  message = '<h2>Duplicate project name</h2>' +
-      //                                  'Project ' + aid + ' cannot be accessed in ' +
-      //                                  archive + ' because a project with this ' +
-      //                                  'name is found in your work folder(s). Rename or ' +
-      //                                  'delete your project before accessing it in ' +
-      //                                  archive;
-      //                                  msg_icon = 'msg_stop'; 
-      //                               break;
-      //   case 'author_archive'       :  message = '<h2>Project archived by you</h2>' +
-      //                                  'Project ' + aid + ' was archived by you ' +
-      //                                  'and can be found in your ' +
-      //                                  '<i>"Projects archived by me"</i> folder.';
-      //                                  msg_icon = 'msg_information'; 
-      //                               break;
-      //   case 'error_access_project' :  message = '<h2>Access errors (1)</h2>' +
-      //                                  'There are link errors when accessing project ' +
-      //                                  aid + '. This project cannot be accessed ' +
-      //                                  'without repairs. Please inform ' +
-      //                                  report_problem(
-      //                                    'Errors accessing archived project ' + archiveID,
-      //                                    'Link errors encountered at accessing archived ' +
-      //                                    'project ' + archiveID,'' );
-      //                               break;
-      //   case 'error_write_plist'    :  message = '<h2>Access errors (2)</h2>' +
-      //                                  'There are write errors when accessing project ' +
-      //                                  aid + '. This project cannot be accessed ' +
-      //                                  'without repairs. Please inform ' +
-      //                                  report_problem(
-      //                                    'Errors accessing archived project ' + archiveID,
-      //                                    'Project list write errors encountered at ' +
-      //                                    'accessing archived project ' + archiveID,'' );
-      //                               break;
-      //   case 'error_update_plist'   :  message = '<h2>Access errors (3)</h2>' +
-      //                                  'There are general errors when accessing project ' +
-      //                                  aid + '. This project cannot be accessed ' +
-      //                                  'without repairs. Please inform ' +
-      //                                  report_problem(
-      //                                    'Errors accessing archived project ' + archiveID,
-      //                                    'Project list update errors encountered at ' +
-      //                                    'accessing archived project ' + archiveID,'' );
-      //                               break;
-      //   case 'ok'                   :  message = '<h2>Access acquired</h2>' +
-      //                                  'Project ' + aid + ' is now accessible to you ' +
-      //                                  'via your "' + archive + '" folder.';
-      //                                  msg_icon = 'msg_ok'; 
-      //                                  done = true;
-      //                               break;
-      //   default                     :  message = '<h2>Access errors (4)</h2>' +
-      //                                  'Unknown return code encountered when accessing project ' +
-      //                                  aid + '. Please inform ' +
-      //                                  report_problem(
-      //                                    'Errors accessing archived project '  + archiveID,
-      //                                    'Unknown return code encountered at accessing ' +
-      //                                    'archived project ' + archiveID,'' );
-      //                               break;
-      // }
-  
-      // new MessageBox ( 'Accessing project ' + archiveID,
-      //                  '<div style="width:350px">' + message + '</div>',
-      //                  msg_icon );
-      // callback_func ( done );
+      if (message)   {
+
+        new MessageBox ( 'Searching ' + archive,
+                         '<div style="width:350px">' + message + '</div>',
+                         msg_icon );
+        callback_func ( '' );
+      
+      } else if (response.mlist.length<=0)  {
+      
+        new MessageBox ( 'Search results',
+                         '<div style="width:350px"><h2>No matches found</h2>' + 
+                         'No matches, satisfying chosen search filters, were ' +
+                         'found. Modify search parameters.</div>',
+                         'msg_stop' );
+        callback_func ( '' );
+
+      } else  {
+
+        // alert ( JSON.stringify(response.mlist) );
+        new ArchiveMatchlistDialog ( response.mlist,function(archiveID){
+          callback_func ( archiveID );
+        });
+
+      }
      
   },null,'persist' );
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.04.21   <--  Date of Last Modification.
+ *    13.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Utils
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -127,9 +127,11 @@ function getBasename ( path )  {
   return path.split(/[\\/]/).pop();
 }
 
-function getDateString()  {
-  var d = new Date();
-  var date_str = d.getDate().toString();
+function getDateString ( timestamp = null )  {
+  let d;
+  if (timestamp)  d = new Date ( timestamp );
+            else  d = new Date();
+  let date_str = d.getDate().toString();
   if (date_str.length<2)  date_str = '0' + date_str;
   date_str = (d.getMonth()+1) + '-' + date_str;
   if (date_str.length<5)  date_str = '0' + date_str;

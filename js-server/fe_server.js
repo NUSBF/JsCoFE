@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    14.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -61,6 +61,10 @@ if (msg)  {
   log.error ( 2,msg );
   process.exit();
 }
+
+process.on ( 'uncaughtException', function (err) {
+  log.error ( 3,'Caught unhandled exception: ' + err );
+});
 
 conf.setServerConfig ( conf.getFEConfig() );
 conf.cleanFETmpDir();
