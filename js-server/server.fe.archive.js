@@ -689,7 +689,7 @@ var uData       = user.suspendUser ( loginData,true,'' );
                             failcode     : '' + failcode
                         });
 
-            // add e-mail to user and mainteiner
+            // add e-mail to user and maintainer
           }
 
         });

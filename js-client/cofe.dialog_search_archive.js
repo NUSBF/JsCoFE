@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.02.23   <--  Date of Last Modification.
+ *    15.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,12 +37,12 @@ function SearchArchiveDialog ( callback_func )  {
 
   var self = this;
   $(this.element).dialog({
-    resizable: false,
-    height: 'auto',
-    width: 'auto',
+    resizable : false,
+    height    : 'auto',
+    width     : 'auto',
     // maxHeight : 600,
-    // width     : 820,
-    modal: true,
+    // width     : '820px',
+    modal     : true,
     closeOnEscape: false,
     open: function (event,ui) {
       //hide close button.
@@ -196,7 +196,7 @@ SearchArchiveDialog.prototype.searchArchive = function ( callback_func ) {
         case 'ok'                   :  break;
         case 'archive_unconfigured' :  message = '<h2>' + archive + 'not configured</h2>' +
                                          archive + 'is not configured on your server. ' +
-                                         'Contact your ' + appName() + 
+                                         'Contact your ' + appName() + ' ' +
                                          report_problem(
                                            archive + 'is not configured.',
                                            'Searches were requested for unconfigured ' + archive,
@@ -205,7 +205,7 @@ SearchArchiveDialog.prototype.searchArchive = function ( callback_func ) {
                                     break;
         case 'archive_corrupt'      :  message = '<h2>' + archive + 'index is corrupt</h2>' +
                                          archive + 'index may be corrupt and needs attention. ' + 
-                                         'Contact your ' + appName() + 
+                                         'Contact your ' + appName() + ' ' +
                                          report_problem(
                                            archive + 'may be corrupt.',
                                            'Reindex ' + archive,
@@ -214,7 +214,7 @@ SearchArchiveDialog.prototype.searchArchive = function ( callback_func ) {
                                     break;
         case 'archive_unindexed'    :  message = '<h2>' + archive + ' not indexed</h2>' +
                                          archive + ' is not indexed and cannot be searched. ' +
-                                         'Contact your ' + appName() + 
+                                         'Contact your ' + appName() + ' ' +
                                          report_problem(
                                            archive + 'may be corrupt.',
                                            'Reindex ' + archive,
@@ -224,7 +224,7 @@ SearchArchiveDialog.prototype.searchArchive = function ( callback_func ) {
         default                     :  message = '<h2>' + archive + 'search errors</h2>' +
                                          'Unknown return code (' + response.code + 
                                          ') encountered when searching ' + archive +
-                                         'Contact your ' + appName() + 
+                                         'Contact your ' + appName() + ' ' +
                                          report_problem(
                                            'Errors searching '  + archive,
                                            'Unknown return code (' + response.code + 
