@@ -236,6 +236,8 @@ def test_simbadBasic(browser,
         sf.enterProject(d.driver, d.testName)
         sf.importFromCloud_mdm2(d.driver, d.waitShort)
         simbadAfterImport(d.driver, 1300)
+        sf.clickTaskInTaskTree(d.driver, '\[0001\]')
+
 
         aimless(d.driver, 1300)
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, 100, task='0004')
