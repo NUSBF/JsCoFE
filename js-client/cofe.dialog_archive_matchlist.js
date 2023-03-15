@@ -35,15 +35,15 @@ function ArchiveMatchlistDialog ( mlist,callback_func ) {
 
   this.makeLayout ( mlist );
 
-  // let w = 4*$(window).width()/5 + 'px';
+  let w = Math.max ( 600,4*$(window).width()/5 );
 
   var self = this;
   $(this.element).dialog({
     resizable : false,
     height    : 'auto',
-    width     : 'auto',
+    // width     : 'auto',
     // maxHeight : 400,
-    // width     : 820,
+    width     : w,
     modal     : true,
     closeOnEscape : false,
     open: function (event,ui) {
@@ -86,10 +86,13 @@ ArchiveMatchlistDialog.prototype.makeLayout = function ( mlist ) {
   this.grid.setImage ( image_path('folder_cloud_archive'),'48px','48px',0,0,1,1 );
   this.grid.setLabel ( '&nbsp;&nbsp;&nbsp;',0,1,1,1 );
 
-  this.grid.setLabel('<b style="font-size:125%">Search results</b><hr/>' +
+  this.grid.setLabel ( 
+    '<b style="font-size:125%">Search results</b><hr/>' +
     '<span style="font-size:85%"><i>' +
     'Choose Archive ID by row selection</i></span>',
-    0,2,1,1);
+    0,2,1,1
+  );
+
   this.grid.setVerticalAlignment ( 0,2,'middle' );
   this.grid.setCellSize ( '50px','50px',0,0 );
   this.grid.setCellSize ( '6px','',0,1 );
@@ -103,6 +106,7 @@ ArchiveMatchlistDialog.prototype.makeLayout = function ( mlist ) {
   ]);
 
   this.grid.setWidget ( this.tablesort_tbl,1,0,1,3 );
+  // this.grid.setCellSize ( 'auto','',1,0 );
 
   let selectedRow = null;
   for (let i=0;i<mlist.length;i++)  {
@@ -128,10 +132,11 @@ ArchiveMatchlistDialog.prototype.makeLayout = function ( mlist ) {
   this.tablesort_tbl.setHeaderFontSize ( '100%'  );
 
   this.tablesort_tbl.setTableHeight ( 300 );
-  this.tablesort_tbl.setTableWidth  ( 800 );
+  // this.tablesort_tbl.setTableWidth  ( 800 );
 
   var self = this;
   window.setTimeout ( function(){
+    // self.tablesort_tbl.setTableWidth ( 900 );
     self.tablesort_tbl.fixHeader();
   },10);
 

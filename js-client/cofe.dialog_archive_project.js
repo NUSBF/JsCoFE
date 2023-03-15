@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.02.23   <--  Date of Last Modification.
+ *    15.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -519,7 +519,7 @@ ProjectArchiveDialog.prototype.archiveProject = function()  {
                          message = '<h2>No Archive Quota</h2>' +
                            'Your Archive quota ' + q + 
                            'is used up. Please contact your ' + appName() + 
-                           ' mainteiner to increase your quota.' +
+                           ' maintainer to increase your quota.' +
                            '<p>Sincere apologies for any inconvenience ' +
                            'this may have caused.';
                       break;
