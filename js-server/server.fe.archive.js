@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.02.23   <--  Date of Last Modification.
+ *    12.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -172,10 +172,10 @@ function _add_to_archive_index ( projectDesc )  {
 //
 // deposition date index
 // depdate_index = {
-//   year : { m00 : [aid1,aid2,...],
-//            m01 : [...],
+//   year : [ [aid1,aid2,...],  // month 1
+//            [...],            // month 2
 //            .........
-//          },
+//          ],
 //   .........
 // }
 //
@@ -208,19 +208,22 @@ var pa  = projectDesc.archive;
 var aid = pa.id;
 
   function _add_to_index ( index,key )  {
-    if (!(key in index))       index[key] = [];
-    if (!(aid in index[key]))  index[key].push ( aid );
+    if (!(key in index))       
+      index[key] = [];
+    if (index[key].indexOf(aid)<0)
+      index[key].push ( aid );
   }
 
   function _list_to_index ( index,keylist,minkeylength )  {
     for (var i=0;i<keylist.length;i++)  {
       var key = keylist[i].trim();
       if (key.length>=minkeylength)
-        _add_to_index ( index,key );
+        _add_to_index ( index,key.toUpperCase() );
     }
   }
 
   annot_index[aid] = pa;
+  annot_index[aid].project_title = projectDesc.title;
   
   _add_to_index ( deplogin_index,pa.depositor.login );
 
@@ -228,7 +231,7 @@ var aid = pa.id;
                             pa.depositor.name,'.',' '), ',',' ' ).split(' ');
   _list_to_index ( depname_index,name_lst,2 );
 
-  _add_to_index ( depemail_index,pa.depositor.email );
+  _add_to_index ( depemail_index,pa.depositor.email.toUpperCase() );
 
   for (var i=0;i<pa.date.length;i++)  {
     var date  = new Date(pa.date[i]);
@@ -238,7 +241,7 @@ var aid = pa.id;
       depdate_index[year] = [
         [],[],[], [],[],[], [],[],[], [],[],[]
       ];
-    if (!(aid in depdate_index[year][month]))
+    if (depdate_index[year][month].indexOf(aid)<0)
       depdate_index[year][month].push ( aid );
   }
 
@@ -789,9 +792,66 @@ var archPrjPath = findArchivedProject(archiveID)[0];
 
 function searchArchive ( loginData,data )  {
 var mlist = [];
+
+  let code = 'ok';
+  switch (loadIndex())  {
+    case -1 : code = 'archive_unconfigured';  break; 
+    case -2 : code = 'archive_corrupt';       break; 
+    case  1 : code = 'archive_unindexed';     break;
+    default : ;
+  }
+
+  if (code=='ok')  {
+
+    var aids = [];
+    var filtered = false;
+
+    function __filter_list ( index,key )  {
+      if (key && (key in index))  {
+        if (!filtered)  {
+          aids     = index[key];
+          filtered = true;
+        } else
+          aids     = aids.filter ( Set.prototype.has, new Set(index[key]) );
+      }
+    }
+
+    __filter_list ( pdb_index     ,data.pdbcode.toUpperCase() ); 
+    __filter_list ( prid_index    ,data.prid                  ); 
+    __filter_list ( deplogin_index,data.dlogin                );
+    __filter_list ( depemail_index,data.demail.toUpperCase()  );
+    __filter_list ( doi_index     ,data.doiref.toUpperCase()  );
+
+    let name_lst = comut.replaceAll ( comut.replaceAll ( 
+                                      data.dname,'.',' '), ',',' ' ).split(' ');
+    for (let i=0;i<name_lst.length;i++)  {
+      let name = name_lst[i].trim().toUpperCase();
+      if (name.length>=2)
+        __filter_list ( depname_index,name );
+    }
+
+    for (let i=0;i<data.kwds.length;i++)
+      __filter_list ( kwd_index,data.kwds[i].toUpperCase() );
+
+    if ((data.year!='any') && (data.year in depdate_index))  {
+      let year_list = depdate_index[data.year];
+      let aids1     = [];
+      for (let i=0;i<year_list.length;i++)  // loop over months
+        aids1 = aids1.concat ( year_list[i] );
+      __filter_list ( { 'year' : aids1 },'year' );
+    }
+
+    for (let i=0;i<aids.length;i++)
+      if (aids[i] in annot_index)
+        mlist.push ( annot_index[aids[i]] );
+
+  }
+
   return new cmd.Response ( cmd.fe_retcode.ok,'',{
+    code  : code,
     mlist : mlist
   });
+
 }
 
 
