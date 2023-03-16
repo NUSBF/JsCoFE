@@ -291,7 +291,8 @@ class PaiRef(basic.TaskDriver):
 
         self.flush()
 
-        if str(os.name) == "nt":
+        # if str(os.name) == "nt":
+        if sys.platform.startswith("win"):
             self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
         else:
             self.runApp ( "ccp4-python",cmd,logType="Main" )
