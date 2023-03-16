@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.03.23   <--  Date of Last Modification.
+#    16.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -177,7 +177,7 @@ class PaiRef(basic.TaskDriver):
         
 
         cmd = [
-            #"-m"     , "pairef",
+            "-m"     , "pairef",
             # "--ccp4cloud",
             "--project",self.pairefProject(),
             "--XYZIN"  , xyzin,
@@ -291,7 +291,7 @@ class PaiRef(basic.TaskDriver):
 
         self.flush()
 
-        self.runApp ( "pairef",cmd,logType="Main" )
+        self.runApp ( "ccp4-python",cmd,logType="Main" )
         self.addCitations ( ["refmac5"] )
 
         # check solution and register data
