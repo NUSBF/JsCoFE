@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.02.23   <--  Date of Last Modification.
+ *    15.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,7 +33,8 @@ function AccessArchiveDialog ( callback_func )  {
   this.element.setAttribute ( 'title','Access ' + appName() + ' archive' );
   document.body.appendChild ( this.element );
 
-  this.aID_inp = null;
+  this.callback_func = callback_func;
+  this.aID_inp       = null;
   this.makeLayout();
 
   var self = this;
@@ -81,6 +82,8 @@ AccessArchiveDialog.prototype.constructor = AccessArchiveDialog;
 
 AccessArchiveDialog.prototype.makeLayout = function()  {
 
+  var self = this;
+
   this.grid = new Grid('');
   this.addWidget ( this.grid );
 
@@ -119,21 +122,27 @@ AccessArchiveDialog.prototype.makeLayout = function()  {
   pgrid.setVerticalAlignment   ( 0,0,'middle' );
   pgrid.setVerticalAlignment   ( 0,1,'middle' );
 
-  if (__user_role==role_code.developer)  {
+  pgrid.setLabel ( '&nbsp;',1,0,1,1 ).setNoWrap();
 
-    pgrid.setLabel ( '&nbsp;',1,0,1,1 ).setNoWrap();
-
-    pgrid.setLabel ( 'Do not have Archive ID?',2,0,1,1 ).setFontItalic(true).setNoWrap();
-    pgrid.setButton ( 'find Archive ID',image_path('search'),2,1,1,1 )
-        .addOnClickListener(function(){
-          new SearchArchiveDialog ( function(){} );
+  pgrid.setLabel ( 'Do not have Archive ID?',2,0,1,1 ).setFontItalic(true).setNoWrap();
+  pgrid.setButton ( 'find Archive ID',image_path('search'),2,1,1,1 )
+      .addOnClickListener(function(){
+        new SearchArchiveDialog ( function(aid){
+          if (aid)  {
+            self.aID_inp.setValue ( aid );
+            self.accessProject ( function(done){
+              if (done)  {
+                self.callback_func ( true );
+                $(self.element).dialog('close');
+              }
+            });
+          }
         });
+      });
 
-    pgrid.setVerticalAlignment   ( 2,0,'middle' );
-    pgrid.setHorizontalAlignment ( 2,0,'right'  );
-    pgrid.setVerticalAlignment   ( 2,1,'middle' );
-
-  }
+  pgrid.setVerticalAlignment   ( 2,0,'middle' );
+  pgrid.setHorizontalAlignment ( 2,0,'right'  );
+  pgrid.setVerticalAlignment   ( 2,1,'middle' );
 
 }
 
