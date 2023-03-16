@@ -26,6 +26,7 @@
 
 #  python native imports
 import os
+import sys
 import shutil
 
 #  application imports
@@ -252,11 +253,6 @@ class PaiRef(basic.TaskDriver):
             else:
                 self.rvrow = rvrow0
                 self.putMessage ( '<i style="color:red"> Refmac kaywords were NOT passed due to errors.</i>' )
-
-
-
-        
-        
 
 
         htmlReport = "PAIREF_" + self.pairefProject() + ".html"
