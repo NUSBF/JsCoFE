@@ -291,7 +291,10 @@ class PaiRef(basic.TaskDriver):
 
         self.flush()
 
-        self.runApp ( "ccp4-python",cmd,logType="Main" )
+        if str(os.name) == "nt":
+            self.runApp ( "ccp4-python.bat",cmd,logType="Main" )
+        else:
+            self.runApp ( "ccp4-python",cmd,logType="Main" )
         self.addCitations ( ["refmac5"] )
 
         # check solution and register data
