@@ -70,6 +70,11 @@ function ArchiveMatchlistDialog ( mlist,callback_func ) {
 
   });
 
+  this.tablesort_tbl.addSignalHandler ( 'row_dblclick',function(trow){
+    callback_func ( trow.child[0].text );
+    $(self.element).dialog('close');
+  });
+
 }
 
 
