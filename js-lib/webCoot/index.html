@@ -1,4 +1,4 @@
-<!doctype html><html lang="en" class="scroller"><head><meta charset="utf-8"/><link rel="icon" href="./favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><meta name="description" content="Web site created using create-react-app"/><link rel="apple-touch-icon" href="./public/logo192.png"/><link rel="manifest" href="./manifest.json"/><script>// See https://github.com/facebook/react/issues/20829#issuecomment-802088260
+<!doctype html><html lang="en" class="stop-scrolling"><head><meta charset="utf-8"/><link rel="icon" href="./favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><meta name="description" content="Web site created using create-react-app"/><link rel="apple-touch-icon" href="./public/logo192.png"/><link rel="manifest" href="./manifest.json"/><script>// See https://github.com/facebook/react/issues/20829#issuecomment-802088260
     if (!crossOriginIsolated) SharedArrayBuffer = ArrayBuffer;</script><script>window.onload = () => {
       createCCP4Module({
         print(t) { console.log(["output", t]) },
@@ -11,9 +11,9 @@
           console.log("CCP4 problem :(");
           console.log(e);
         });
-    }</script><script src="./baby-gru/wasm/web_example.js"></script><script src="./moorhen.js" charset="utf-8"></script><title>Moorhen</title><link rel="icon" href="./favicon.ico"><script defer="defer" src="./moorhen.js"></script><link href="./maindd0ddc75c24601355a61.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script defer="defer">const rootId = "root"
+    }</script><script src="./baby-gru/wasm/web_example.js"></script><script src="./moorhen.js" charset="utf-8"></script><title>Moorhen</title><link rel="icon" href="./favicon.ico"><script defer="defer" src="./moorhen.js"></script><link href="./moorhen.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div><script defer="defer">const rootId = "root"
     const  urlPrefix = "."
-    const exportToCloudCallback = (molName, molData) => {console.log({name: molName, data: molData})}
+    const exportCallback = (molName, molData) => {console.log({name: molName, data: molData})}
     const inputFiles = [
       {type: 'pdb', args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule"]},
       {type: 'mtz', args: [
@@ -25,7 +25,12 @@
         {F: "DELFWT", PHI: "PHDELWT", isDifference: true, useWeight: false, calcStructFact: false}
       ]}
     ]
-    
+
     let moorhenWrapper = new moorhen.MoorhenWrapper(urlPrefix)
-    moorhenWrapper.renderMoorhen(rootId, exportToCloudCallback)
-    moorhenWrapper.waitForInitialisation().then(_ => moorhenWrapper.loadInputFiles(inputFiles))</script></body></html>
+    moorhenWrapper.setWorkMode('view')
+    moorhenWrapper.addOnExportListener(exportCallback)
+    moorhenWrapper.setRootId(rootId)
+    moorhenWrapper.setInputFiles(inputFiles)
+    // IMPORTANT: use moorhenWrapper.removeUpdateInterval() to stop updates!
+    moorhenWrapper.setUpdateInterval(15000)
+    moorhenWrapper.start()</script></body></html>
