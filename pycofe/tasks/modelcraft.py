@@ -28,7 +28,7 @@
 
 #  python native imports
 import os
-import sys
+# import sys
 import json
 
 import gemmi
@@ -44,6 +44,9 @@ from   pycofe.auto     import auto
 
 # ============================================================================
 # Make ModelCraft driver
+
+# modelcraft_pipeline/modelcraft.cif
+# modelcraft_pipeline/modelcraft.mtz
 
 class ModelCraft(basic.TaskDriver):
 
@@ -196,7 +199,31 @@ class ModelCraft(basic.TaskDriver):
         if self.getParameter(sec1.MODE_SEL)=='basic':
             cmd += [ "--basic" ]
 
-        self.putWaitMessageLF ( "Building in progress ..." )
+        gridId = self.putWaitMessageLF ( "Building in progress ...",
+                                         message2="&nbsp;&nbsp;&nbsp;" )
+        
+        webcoot_options = {
+            "project"      : self.task.project,
+            "id"           : self.job_id,
+            "FWT"          : "FWT",
+            "PHWT"         : "PHWT", 
+            "FP"           : "FP",
+            "SigFP"        : "SIGFP",
+            "FreeR_flag"   : "FreeR_flag",
+            "DELFWT"       : "DELFWT",
+            "PHDELWT"      : "PHDELWT"
+        }
+
+        self.putWebCootButton (
+            self.modelcraft_tmp() + "/modelcraft.cif",
+            self.modelcraft_tmp() + "/modelcraft.mtz",
+            "view-update",
+            5000,  # milliseconds update interval
+            json.dumps(webcoot_options),
+            "WebCoot viewer",
+            "Show built structure",
+            gridId,0,3
+        )
         self.rvrow -= 1
 
         # prepare report parser

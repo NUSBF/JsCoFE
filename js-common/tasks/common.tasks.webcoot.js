@@ -192,7 +192,9 @@ if (!__template)  {
   // }
 
 
-  TaskWebCoot.prototype.launchWebApp = function ( callback_func )  {
+  TaskWebCoot.prototype.launchWebApp = function ( callback_func,
+                                                  mode='model-building',
+                                                  update_interval=3000 )  {
     // new MessageBox('Web-app', '<h1>Web application</h1>');
 
     var wab = new WebAppBox ( 'Web-Coot' );
@@ -205,7 +207,9 @@ if (!__template)  {
       function(text){
 
         var html = text.replace ( '[[baseurl]]',
-                                   window.location + 'js-lib/webCoot/webcoot.html' );
+                                   window.location + 'js-lib/webCoot/webcoot.html' )
+                       .replace ( '[[mode]]',mode )
+                       .replace ( '[[interval]]',update_interval.toString() );
 
         var istruct = self.input_data.data['revision'][0].Structure;
 

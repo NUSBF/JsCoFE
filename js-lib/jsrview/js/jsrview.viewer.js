@@ -135,7 +135,8 @@ var html =
     '  <footer id="help"></footer>\n' +
     '  <div id="inset"></div>\n' +
     '  <script>\n' +
-    '    V = new UM.Viewer({viewer:"viewer",hud:"hud",help:"help"});\n';
+    '    let V = new UM.Viewer({viewer:"viewer",hud:"hud",help:"help"});\n';
+    // '    let drawMolecule = function(){\n';
 
   if (xyz_uri.length>0)
     html += '    V.load_pdb("' + xyz_uri + '");\n';
@@ -162,7 +163,11 @@ var html =
             '    });\n';
   }
 
-  html += '  </script>\n' +
+  // html += '  };\n' +
+  //         // 'drawMolecule();\n' +
+  //         'let iterateDraw = function(){ drawMolecule(); window.setTimeout(iterateDraw,3000) };\n' +
+  //         'iterateDraw();\n' +
+  html += '</script>\n' +
           '</body>\n' +
           '</html>\n';
 
@@ -198,7 +203,7 @@ function calcViewerSize ( widthF,heightF )  {
 }
 
 
-function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
+function _start_viewer ( title,html_str )  {
 
   //console.log ( 'xyz_uri=' + xyz_uri );
   //console.log ( 'map_uri=' + map_uri );
@@ -206,7 +211,8 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
 
   if (is_rvapi_local_service()==2)  {
     new MessageBox ( 'Operation cannot be performed',
-                     'Structure visualisation cannot be started<br>at this moment' );
+                     'Structure visualisation cannot be started<br>at this moment',
+                     'msg_stop' );
     return;
   }
 
@@ -273,15 +279,13 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
   //if (window.parent.__mobile_device)
   //  dlg.siblings('.ui-dialog-titlebar').remove();
 
-  function encode_uri ( uri )  {
-    if (uri)  return encodeURI ( uri );
-    return uri;
-  }
-
-  var html = makeUglyMolHtml ( encode_uri(xyz_uri),encode_uri(mtz_uri),
-                               encode_uri(map_uri),encode_uri(diffmap_uri),
-                               mapLabels );
-  iframe.contentWindow.document.write(html);
+  // var html = makeUglyMolHtml ( encode_uri(xyz_uri),encode_uri(mtz_uri),
+  //                              encode_uri(map_uri),encode_uri(diffmap_uri),
+  //                              mapLabels );
+  // let iframeDocument = iframe.contentWindow.document || iframe.contentDocument;
+  // iframeDocument.write(html);
+  // iframeDocument.close();
+  iframe.contentWindow.document.write(html_str);
   iframe.contentWindow.document.close();
 
   jq(dialog).on ( 'dialogresize', function(event,ui){
@@ -303,6 +307,18 @@ function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
     iframe.contentWindow.focus();
   });
 
+}
+
+function startUglyMol ( title,xyz_uri,mtz_uri,map_uri,diffmap_uri,mapLabels )  {
+  function encode_uri ( uri )  {
+    if (uri)  return encodeURI ( uri );
+    return uri;
+  }
+  _start_viewer ( title,
+      makeUglyMolHtml ( encode_uri(xyz_uri),encode_uri(mtz_uri),
+                        encode_uri(map_uri),encode_uri(diffmap_uri),
+                        mapLabels )
+  );
 }
 
 
@@ -437,6 +453,7 @@ var html   =
 }
 
 
+/*
 function startViewHKL ( title,mtz_uri,window_instance )  {
 
   // take structure file basename as title
@@ -523,7 +540,15 @@ function startViewHKL ( title,mtz_uri,window_instance )  {
   });
 
 }
+*/
 
+function startViewHKL ( title,mtz_uri,window_instance )  {
+  // take structure file basename as title
+  var dlg_title = title;
+  if (!dlg_title)
+    dlg_title = mtz_uri.split(/[\\/]/).pop();
+  _start_viewer ( title,makeViewHKLHtml(dlg_title,mtz_uri) );
+}
 
 
 // ===========================================================================
@@ -668,5 +693,83 @@ function startRSViewer ( title,json_uri,map_uri )  {
   jq(dialog).click ( function() {
     iframe.contentWindow.focus();
   });
+
+}
+
+
+
+// ===========================================================================
+//  WebCoot Viewer
+// ===========================================================================
+
+
+function startWebCoot ( title,xyz_uri,mtz_uri,mode,update_interval,options )  {
+
+  // options = {
+  //   project      : 'project name',
+  //   id           : 'task id',
+  //   FWT          : 'FWT, may be empty string',
+  //   PHWT         : 'PHWT, must-be if FWT is not empty', 
+  //   FP           : 'FP, must-be if FWT is not empty',
+  //   SigFP        : 'SigFP, must-be if FWT is not empty',
+  //   FreeR_flag   : 'FreeR_flag, must-be if FWT is not empty',
+  //   DELFWT       : 'DELFWT, may be empty',
+  //   PHDELWT      : 'PHDELWT, must-be if DELFWT is not empty'
+  // }
+
+  fetchFile ( 'js-lib/webCoot/webcoot.html',
+    function(text){
+
+      let html = text.replace ( '[[baseurl]]',
+                                  window.location + 'js-lib/webCoot/webcoot.html' )
+                      .replace ( '[[mode]]',mode )
+                      .replace ( '[[interval]]',update_interval.toString() );
+
+      let inputFiles = [];
+      if (xyz_uri)
+        inputFiles.push ({
+          type : 'pdb',
+          args : [ xyz_uri,'molecule' ]
+        });
+
+      if (mtz_uri)  {
+        if (options.FWT)
+          inputFiles.push ({
+            type : 'mtz',
+            args : [ mtz_uri,'map',{
+                      F              : options.FWT,
+                      PHI            : options.PHWT,
+                      Fobs           : options.FP,
+                      SigFobs        : options.SigFP,
+                      FreeR          : options.FreeR_flag,
+                      isDifference   : false,
+                      useWeight      : false,
+                      calcStructFact : true
+                    }]
+          });
+        if (options.DELFWT)
+          inputFiles.push ({
+            type : 'mtz',
+            args : [ mtz_uri,'diff-map',{
+                      F              : options.DELFWT,
+                      PHI            : options.PHDELWT,
+                      isDifference   : true,
+                      useWeight      : false,
+                      calcStructFact : false
+                    }]
+          });
+      }
+
+      html = html.replace ( '[[meta]]',JSON.stringify({'project':options.project,'id':options.id}) )
+                 .replace ( '[[inputFiles]]',JSON.stringify(inputFiles) );
+
+      _start_viewer ( title,html );
+
+    },
+    null,
+    function(errcode){
+      new MessageBox ( 'File not found',
+          'WebCoot launch file not found (1)','msg_error' );
+    });
 
 }

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.12.22   <--  Date of Last Modification.
+#    21.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -11,7 +11,7 @@
 #
 #  Command-line:  N/A
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -1655,6 +1655,26 @@ class TaskDriver(object):
         return
 
 
+    def putWebCootButton ( self,xyzFilePath,mtzFilePath,mode,update_interval,
+                                options_str,title,text_btn,gridId,row,col ):
+        #  currently this function is used only with patterson plot, so mtz is
+        #  not relevant
+        buttonId = self.getWidgetId ( "webcoot" )
+        pyrvapi.rvapi_add_button ( buttonId,text_btn,"{function}",
+                    "window.parent.rvapi_wcviewer(" +\
+                       self.job_id          + ",'"  +\
+                       title                + "','" +\
+                       xyzFilePath          + "','" +\
+                       mtzFilePath          + "','" +\
+                       str(mode)            + "',"  +\
+                       str(update_interval) + ","   +\
+                       "'".join(options_str.split('"')) +\
+                    ")",
+                    False,gridId, row,col,1,1 )
+        self.addCitations ( ['webcoot'] )
+        return
+
+
     def putDownloadButton ( self,dnlFilePath,text_btn,gridId,row,col,colSpan=1 ):
         #buttonId = "download_" + str(self.widget_no)
         #self.widget_no += 1
@@ -1838,7 +1858,7 @@ class TaskDriver(object):
 
     def putHKLWidget ( self,widgetId,title_str,hkl,openState=0 ):
         self.putHKLWidget1 ( self.report_page_id(),widgetId + str(self.widget_no),
-                            title_str,hkl,openState,self.rvrow,1 )
+                             title_str,hkl,openState,self.rvrow,1 )
         self.rvrow     += 2
         self.widget_no += 1
         return

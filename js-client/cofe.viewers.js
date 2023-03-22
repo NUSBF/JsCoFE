@@ -55,7 +55,8 @@ function rvapi_umviewer ( jobId,title,xyzFilePath,mapFilePath,dmapFilePath )  {
                      'please contact ' + appName() + ' developer.', 'msg_error' );
   } else if (__current_page._type!='ProjectPage')  {
     new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
-                     'This is a bug, please contact ' + appName() + ' developer.', 'msg_error' );
+                     'This is a bug, please contact ' + appName() + ' developer.',
+                     'msg_error' );
   } else  {
     var task = __current_page.getJobTree().getTask ( jobId );
     if (task)  {
@@ -68,7 +69,37 @@ function rvapi_umviewer ( jobId,title,xyzFilePath,mapFilePath,dmapFilePath )  {
       startUglyMol ( title,xyz_uri,'',map_uri,dmap_uri,null );
     } else  {
       new MessageBox ( 'Task not found','Project Task not found. This is a bug, ' +
-                       'please contact ' + appName() + ' developer.', 'msg_error' );
+                       'please contact ' + appName() + ' developer.',
+                       'msg_error' );
+    }
+  }
+
+}
+
+
+// ===========================================================================
+
+function rvapi_wcviewer ( jobId,title,xyzFilePath,mtzFilePath,mode,update_interval,options )  {
+
+  if (!__current_page)  {
+    new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
+                     'please contact ' + appName() + ' developer.', 'msg_error' );
+  } else if (__current_page._type!='ProjectPage')  {
+    new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
+                     'This is a bug, please contact ' + appName() + ' developer.',
+                     'msg_error' );
+  } else  {
+    var task = __current_page.getJobTree().getTask ( jobId );
+    if (task)  {
+      var xyz_uri  = '';
+      var mtz_uri  = '';
+      if (xyzFilePath)  xyz_uri  = task.getProjectURL ( jobId,xyzFilePath );
+      if (mtzFilePath)  mtz_uri  = task.getProjectURL ( jobId,mtzFilePath );
+      startWebCoot ( title,xyz_uri,mtz_uri,mode,update_interval,options );
+    } else  {
+      new MessageBox ( 'Task not found','Project Task not found. This is a bug, ' +
+                       'please contact ' + appName() + ' developer.',
+                       'msg_error' );
     }
   }
 
