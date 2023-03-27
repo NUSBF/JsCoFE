@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    23.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -17,6 +17,7 @@
 
 import sys
 import os
+import shutil
 
 import gemmi
 
@@ -98,5 +99,7 @@ class FindWaters(ccp4build_coot.Coot):
 
         out_meta = meta.copy()
         out_meta["xyzpath"] = xyzout
+
+        shutil.copyfile ( xyzout,self.current_pdb )
 
         return out_meta

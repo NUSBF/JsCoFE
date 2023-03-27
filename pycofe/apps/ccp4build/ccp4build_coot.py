@@ -3,19 +3,17 @@
 #
 # ============================================================================
 #
-#    17.03.22   <--  Date of Last Modification.
+#    23.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build Coot class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2023
 #
 # ============================================================================
 #
 #
-
-# python-3 ready
 
 import os
 import sys
@@ -117,5 +115,6 @@ class Coot(ccp4build_refmac.Refmac):
             self.is_coot = False
         else:
             out_meta["xyzpath"] = xyzout
+            shutil.copyfile ( xyzout,self.current_pdb )
 
         return out_meta

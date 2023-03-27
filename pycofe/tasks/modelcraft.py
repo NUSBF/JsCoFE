@@ -220,8 +220,8 @@ class ModelCraft(basic.TaskDriver):
             "view-update",
             5000,  # milliseconds update interval
             json.dumps(webcoot_options),
-            "WebCoot viewer",
-            "Show built structure",
+            "[" + str(self.job_id).zfill(4) + "] Modelcraft current structure",
+            "Build in progress",
             gridId,0,3
         )
         self.rvrow -= 1

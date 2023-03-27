@@ -3,21 +3,22 @@
 #
 # ============================================================================
 #
-#    29.07.19   <--  Date of Last Modification.
+#    23.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build Base class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2023
 #
 # ============================================================================
 #
 #
 
-import sys
+# import sys
 import os
 import uuid
+import shutil
 
 import ccp4build_cbuccaneer
 
@@ -244,6 +245,9 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
         out_meta["labin_dfc"]    = "/*/*/[DELFWT,PHDELWT]"
         out_meta["labin_hl"]     = "/*/*/[HLACOMB,HLBCOMB,HLCCOMB,HLDCOMB]"
         out_meta["refmac"]       = self.getRefmacMetrics ( stdout_fpath )
+
+        shutil.copyfile ( refmac_xyzout,self.current_pdb )
+        shutil.copyfile ( refmac_mtzout,self.current_mtz )
 
         #return out_meta
 

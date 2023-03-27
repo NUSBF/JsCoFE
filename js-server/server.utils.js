@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.03.23   <--  Date of Last Modification.
+ *    23.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -836,7 +836,7 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
             log.error ( 13,'Read file errors, file = ' + fpath );
             log.error ( 13,'Error: ' + err );
             server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
-            server_response.end ( '<p><b>[05-0006] FILE NOT FOUND [' + fpath + ']</b></p>' );
+            server_response.end ( '<p><b>[05-0006] FILE READ ERRORS [' + fpath + ']</b></p>' );
           }
         }
 
@@ -933,6 +933,10 @@ function send_file ( fpath,server_response,mimeType,deleteOnDone,capSize,
 
       }
 
+    } else  {
+      // no file
+      server_response.writeHead ( 404, {'Content-Type':'text/html;charset=UTF-8'} );
+      server_response.end ( '<p><b>[05-0008] FILE NOT FOUND</b></p>' );
     }
 
   });

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.03.23   <--  Date of Last Modification.
+ *    23.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -565,7 +565,6 @@ var cap   = false;
   }
 
   // Read the requested file content from file system
-
   if (fname)  {
     var capSize = 0;
     if (cap)

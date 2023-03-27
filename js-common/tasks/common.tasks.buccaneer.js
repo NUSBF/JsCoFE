@@ -141,8 +141,8 @@ function TaskBuccaneer()  {
                       type     : 'integer',
                       keyword  : 'cycles',
                       label    : 'Number of building/refinement cycles',
-                      tooltip  : 'Choose a value between 1 and 500',
-                      range    : [1,500],
+                      tooltip  : 'Choose a value between 1 and 50',
+                      range    : [1,50],
                       value    : '5',
                       position : [4,0,1,1]
                     },
