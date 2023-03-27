@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    23.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -30,6 +30,7 @@
 import os
 import sys
 import shutil
+import json
 
 #  application imports
 from . import basic
@@ -221,6 +222,30 @@ class Buccaneer(basic.TaskDriver):
         self.addCmdLine ( "prefix","./" + self.buccaneer_tmp() + "/" )
 
         self.close_stdin()
+                
+        webcoot_options = {
+            "project"      : self.task.project,
+            "id"           : self.job_id,
+            "FWT"          : "FWT",
+            "PHWT"         : "PHWT", 
+            "FP"           : "FP",
+            "SigFP"        : "SIGFP",
+            "FreeR_flag"   : "FreeR_flag",
+            "DELFWT"       : "DELFWT",
+            "PHDELWT"      : "PHDELWT"
+        }
+
+        wcrvrow = self.rvrow + 110
+        self.putWebCootButton (
+            self.buccaneer_tmp() + "/refine.mmcif",
+            self.buccaneer_tmp() + "/refine.mtz",
+            "view-update",
+            5000,  # milliseconds update interval
+            json.dumps(webcoot_options),
+            "[" + str(self.job_id).zfill(4) + "] Buccaneer current structure",
+            "Build in progress",
+            self.report_page_id(),wcrvrow,0
+        )
 
         # make command-line parameters
         cmd = [ "-u",
@@ -238,6 +263,8 @@ class Buccaneer(basic.TaskDriver):
             rc = self.runApp ( "ccp4-python",cmd,logType="Main",quitOnError=False )
 
         self.addCitations ( ['buccaneer','refmac5'] )
+
+        self.putMessage1 ( self.report_page_id(),"",wcrvrow )
 
         have_results = False
 

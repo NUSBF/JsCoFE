@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.02.23   <--  Date of Last Modification.
+ *    23.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,7 +36,7 @@ function TaskWebCoot()  {
   this._type   = 'TaskWebCoot';
   this.name    = 'webcoot (model building)';
   this.setOName ( 'webcoot' );  // default output file name template
-  this.title   = 'Model Building with WebCoot';
+  this.title   = 'Model Building with WebCoot/Moorhen';
   this.nc_type = 'browser';     // job runs in-browser
 
   this.input_dtypes = [{        // input data types
@@ -47,6 +47,7 @@ function TaskWebCoot()  {
       version     : 4,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
+    /*
     },{
       data_type   : {'DataStructure':[],'DataEnsemble':[],
                      'DataModel':[],'DataXYZ':[]},  // data type(s) and subtype(s)
@@ -71,6 +72,7 @@ function TaskWebCoot()  {
       force       : 1000,      // "show" all revisions available
       min         : 0,         // minimum acceptable number of data instances
       max         : 1000       // maximum acceptable number of data instances
+    */
     }
   ];
 
@@ -98,8 +100,6 @@ TaskWebCoot.prototype.taskDescription = function()  {
   return 'Fit atoms and new ligands in electron density, validate and explore';
 }
 
-// TaskWebCoot.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
-
 //TaskWebCoot.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskWebCoot.prototype.currentVersion = function()  {
@@ -119,7 +119,7 @@ TaskWebCoot.prototype.currentVersion = function()  {
 TaskWebCoot.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
     return this.__check_keywords ( keywords,[
-      'webcoot','coot','model','building','manual-mb','mb','coordinate','editor'
+      'webcoot','moorhen','coot','model','building','manual-mb','mb','coordinate','editor'
     ]);
   }
 
@@ -228,26 +228,26 @@ if (!__template)  {
               inputFiles.push ({
                 type : 'mtz',
                 args : [ mtzURL,'map',{
-                          F              : istruct.FWT,
-                          PHI            : istruct.PHWT,
-                          Fobs           : istruct.FP,
-                          SigFobs        : istruct.SigFP,
-                          FreeR          : istruct.FreeR_flag,
-                          isDifference   : false,
-                          useWeight      : false,
-                          calcStructFact : true
-                        }]
+                           F              : istruct.FWT,
+                           PHI            : istruct.PHWT,
+                           Fobs           : istruct.FP,
+                           SigFobs        : istruct.SigFP,
+                           FreeR          : istruct.FreeR_flag,
+                           isDifference   : false,
+                           useWeight      : false,
+                           calcStructFact : true
+                         }]
               });
             if (istruct.DELFWT)
               inputFiles.push ({
                 type : 'mtz',
                 args : [ mtzURL,'diff-map',{
-                          F              : istruct.DELFWT,
-                          PHI            : istruct.PHDELWT,
-                          isDifference   : true,
-                          useWeight      : false,
-                          calcStructFact : false
-                        }]
+                           F              : istruct.DELFWT,
+                           PHI            : istruct.PHDELWT,
+                           isDifference   : true,
+                           useWeight      : false,
+                           calcStructFact : false
+                         }]
               });
           }
         }

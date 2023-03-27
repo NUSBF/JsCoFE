@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    23.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -17,8 +17,9 @@
 #
 #
 
-import sys
+# import sys
 import os
+import shutil
 
 import gemmi
 
@@ -206,6 +207,8 @@ class CBuccaneer(ccp4build_parrot.Parrot):
                             unklist.append ( [model.name,chain.name,str(residue.seqid),residue.name] )
             st.remove_empty_chains()
             st.write_pdb ( cbuccaneer_pdbout )
+
+            shutil.copyfile ( cbuccaneer_pdbout,self.current_pdb )
 
         else:
             cbuccaneer_pdbout = None  # to indicate that results were not produced

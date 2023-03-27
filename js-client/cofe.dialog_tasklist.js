@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.02.23   <--  Date of Last Modification.
+ *    23.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -625,7 +625,6 @@ var row      = 0;
       // new TaskStructurePrediction(),
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
-      new TaskWebCoot      (),
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
@@ -776,8 +775,9 @@ var row      = 0;
   ],true);
 
   this.makeSection ( 'Coot',[
-    new TaskCootMB(),
-    new TaskCootCE(),
+    new TaskCootMB (),
+    new TaskCootCE (),
+    new TaskWebCoot()
   ],true);
 
   this.makeSection ( 'Ligands',[

@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    19.11.20   <--  Date of Last Modification.
+#    23.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build Base class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2023
 #
 # ============================================================================
 #
@@ -43,7 +43,7 @@ import citations
 
 class Base(object):
 
-    appVersion     = "1.0.3 [19.11.20]"
+    appVersion     = "1.0.4 [23.03.23]"
 
     stdout_path    = None  #  main log
     stderr_path    = None  #  error log
@@ -54,6 +54,13 @@ class Base(object):
 
     script_path    = ""
     script_file    = None
+
+    current_pdb    = None
+    current_mtz    = None
+    wc_grid        = ""
+    wc_row         = 0
+    wc_col         = 0
+
 
     log_parser     = None
     generic_parser_summary = {}
@@ -69,7 +76,8 @@ class Base(object):
     report_page_id = "body" # report grid
     rvrow          = 0
 
-    jobId          = "1"    # jobId (coming from jsCoFE)
+    jobId          = "1"    # jobId (comes from jsCoFE)
+    project        = ""     # project Id (comes form jsCoFE)
     job_title      = "CCP4Build"
 
     keyword_list   = []     # keyword file read into a list of strings
@@ -204,6 +212,9 @@ class Base(object):
         if not os.path.isdir(self.scriptsdir):
             os.makedirs ( self.scriptsdir )
 
+        self.current_pdb = os.path.join ( self.workdir,"current.pdb" )
+        self.current_mtz = os.path.join ( self.workdir,"current.mtz" )
+
         """
         outdir = os.path.join ( self.workdir,self.outputdir )
         if not os.path.isdir(outdir):
@@ -266,6 +277,8 @@ class Base(object):
                 self.report_page_id = d["page_id"]
                 self.rvrow          = d["rvrow"]
                 self.input_data["nameout"] = d["nameout"]
+                self.jobId          = d["jobId"]
+                self.project        = d["project"]
 
                 if d["prefix_rfree" ]:
                     self.output_prefix_rfree  = d["prefix_rfree" ] + "_"
@@ -482,6 +495,52 @@ class Base(object):
 
         self.addCitations ( ['uglymol','ccp4mg','viewhkl'] )
 
+        return
+
+
+    def putWebCootButton ( self,xyzFilePath,mtzFilePath,gridId,row,col ):
+        
+        if not self.wc_grid:
+            
+            self.wc_grid = gridId
+            self.wc_row  = row
+            self.wc_col  = col
+
+            if self.project:
+            
+                webcoot_options = {
+                    "project"      : self.project,
+                    "id"           : self.jobId,
+                    "FWT"          : "FWT",
+                    "PHWT"         : "PHWT", 
+                    "FP"           : "FP",
+                    "SigFP"        : "SIGFP",
+                    "FreeR_flag"   : "FreeR_flag",
+                    "DELFWT"       : "DELFWT",
+                    "PHDELWT"      : "PHDELWT"
+                }
+
+                buttonId = self.getWidgetId ( "webcoot" )
+                pyrvapi.rvapi_add_button ( buttonId,"Build in progress","{function}",
+                            "window.parent.rvapi_wcviewer("  +\
+                            str(self.jobId)          + ",'[" +\
+                            str(self.jobId).zfill(4) +\
+                            "] CCP4Build current structure','" +\
+                            xyzFilePath              + "','"   +\
+                            mtzFilePath              + 
+                            "','view-update',5000,"  +\
+                            "'".join(json.dumps(webcoot_options).split('"')) +\
+                            ")",
+                            False,gridId, row,col,1,1 )
+                
+                self.addCitations ( ['webcoot'] )
+        
+        return
+
+    def removeWebCootButton ( self ):
+        if self.wc_grid:
+            pyrvapi.rvapi_set_text ( " ",self.wc_grid,self.wc_row,self.wc_col,1,1 )
+            self.wc_grid = ""
         return
 
 

@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    14.11.20   <--  Date of Last Modification.
+#    23.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  CCP4build Base class
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2023
 #
 # ============================================================================
 #
@@ -43,7 +43,7 @@
 
 
 
-import sys
+# import sys
 import os
 import shutil
 
@@ -92,7 +92,15 @@ class Build(ccp4build_report.Report):
             "modelling will not be used</i></b></span>"
         )
         return
+    
 
+    def put_webcoot_button ( self ):
+        self.putWebCootButton ( self.workdir + "/current.pdb",
+                                self.workdir + "/current.mtz",
+                                self.report_page_id,self.rvrow+5,0 )
+        return
+
+    
     def ccp4build_mr ( self ):
 
         refcyc = self.ref_cycles[min(3,max(0,int(self.input_data["ref_level"])-1))]
@@ -101,7 +109,13 @@ class Build(ccp4build_report.Report):
         if not meta["xyzpath"]:
             meta["xyzpath"] = meta["xyzpath_mr"]
 
+        if meta["mtzpath"]:
+            shutil.copyfile ( meta["mtzpath"],self.current_mtz )
+            self.put_webcoot_button()
+
         if meta["xyzpath"]:
+            shutil.copyfile ( meta["xyzpath"],self.current_pdb )
+            self.put_webcoot_button()
             meta["labin_phifom"] = None
             meta["labin_fc"]     = None
             self.log ( "\nInitial refinement:\n" )
@@ -205,6 +219,8 @@ class Build(ccp4build_report.Report):
 
             if meta_mb["cbuccaneer"]["n_res_built"]<=0:
                 break
+
+            self.put_webcoot_button()
 
             if self.input_data["trim_mode"]!="never":
                 meta1 = self.refmac ( self.edstats(meta_mb,trim="all",
@@ -359,7 +375,7 @@ class Build(ccp4build_report.Report):
                 #  and xyzpath (fixed model) after previous iteration or if given
                 #  on input, and xyzpath_ha (HA substructure) used on 1st
                 #  iteration
-                meta_dm  = self.parrot    ( meta,(i<=0),nameout=prefix+"01-2.parrot" )
+                meta_dm = self.parrot     ( meta,(i<=0),nameout=prefix+"01-2.parrot" )
                 meta_mb = self.cbuccaneer ( meta_dm,True,nameout=prefix+"01-2.cbuccaneer" )
                 if meta_mb["cbuccaneer"]["n_res_built"]>0:
                     meta_mb2 = self.refmac(meta_mb,ncycles=refcyc["inter"],nameout=prefix+"03-1.refmac")
@@ -389,6 +405,8 @@ class Build(ccp4build_report.Report):
 
             if meta_mb["cbuccaneer"]["n_res_built"]<=0:
                 break
+
+            self.put_webcoot_button()
 
             if self.input_data["trim_mode"]!="never":
                 meta1 = self.refmac ( self.edstats(meta_mb,trim="all",
@@ -520,6 +538,8 @@ class Build(ccp4build_report.Report):
             self.ccp4build_mr()
         else:
             self.ccp4build_ep()
+
+        self.removeWebCootButton()
 
         self.writeBestMetrics ( os.path.join (
                 self.outputdir,self.input_data["nameout"] + "_metrics.json" ) )

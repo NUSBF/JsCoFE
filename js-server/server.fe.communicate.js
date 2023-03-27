@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    23.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Communication Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  ==========================================================================
  *
@@ -286,8 +286,8 @@ function Communicate ( server_request )  {
   //   }
   // }
 
-  if (this.filePath.endsWith('.cif'))
-    console.log ( "calculated path " + this.filePath);
+  // if (this.filePath.endsWith('.mtz'))
+  //   console.log ( "calculated path " + this.filePath);
 
   this.mimeType = utils.getMIMEType ( this.filePath );
 
@@ -338,21 +338,38 @@ Communicate.prototype.sendFile = function ( server_response )  {
                         'request redirection' );
         } else  {
           log.debug2 ( 11,'tmp file ' + fpath );
+          let errors = false;
           request
             .get ( ncURL )
+            .on('response', function(response) {
+              if (response.statusCode!=200)  {
+                // if (ncURL.endsWith('.mtz'))
+                //   console.log ( ' >>>> statusCode ' + response.statusCode );
+                server_response.writeHead ( response.statusCode, {
+                    'Content-Type':response.headers['content-type']
+                });
+                server_response.end ( '<p><b>[05-0009] FILE NOT FOUND</b></p>' );
+                errors = true;
+              }
+            })
             .on('error', function(err) {
               log.error ( 12,'Download errors from ' + ncURL );
               log.error ( 12,'Error: ' + err );
               utils.removeFile ( fpath );
+              errors = true;
             })
             .pipe(fs.createWriteStream(fpath))
             .on('error', function(err) {
               log.error ( 13,'Download errors or stream read errors from ' + ncURL );
               log.error ( 13,'Error: ' + err );
               utils.removeFile ( fpath );
+              errors = true;
             })
             .on('close',function(){   // finish,end,
-              utils.send_file ( fpath,server_response,mimeType,true,0,0,null );
+              // if (ncURL.endsWith('.cif'))
+              //   console.log ( ' >>>> obtained ' + ncURL );
+              if (!errors)
+                utils.send_file ( fpath,server_response,mimeType,true,0,0,null );
             });
         }
       });

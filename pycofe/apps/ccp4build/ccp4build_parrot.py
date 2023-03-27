@@ -14,7 +14,7 @@
 # ============================================================================
 #
 
-import sys
+# import sys
 import os
 
 import ccp4build_base
