@@ -112,11 +112,9 @@ class Build(ccp4build_report.Report):
 
         if meta["mtzpath"]:
             shutil.copyfile ( meta["mtzpath"],self.current_mtz )
-            self.put_webcoot_button()
 
         if meta["xyzpath"]:
             shutil.copyfile ( meta["xyzpath"],self.current_pdb )
-            self.put_webcoot_button()
             meta["labin_phifom"] = None
             meta["labin_fc"]     = None
             self.log ( "\nInitial refinement:\n" )
@@ -220,8 +218,6 @@ class Build(ccp4build_report.Report):
 
             if meta_mb["cbuccaneer"]["n_res_built"]<=0:
                 break
-
-            self.put_webcoot_button()
 
             if self.input_data["trim_mode"]!="never":
                 meta1 = self.refmac ( self.edstats(meta_mb,trim="all",
@@ -407,8 +403,6 @@ class Build(ccp4build_report.Report):
             if meta_mb["cbuccaneer"]["n_res_built"]<=0:
                 break
 
-            self.put_webcoot_button()
-
             if self.input_data["trim_mode"]!="never":
                 meta1 = self.refmac ( self.edstats(meta_mb,trim="all",
                                                    nameout=prefix+"04.edstats",
@@ -534,6 +528,8 @@ class Build(ccp4build_report.Report):
 
         #self.putMessage ( "<div style=\"font-size:85%;width:100%;text-align:right\">CCP4Build v." +\
         #                  self.appVersion + "</div>" );
+
+        self.put_webcoot_button()
 
         if self.input_data["mode"]=="MR":
             self.ccp4build_mr()
