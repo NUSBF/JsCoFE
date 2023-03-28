@@ -205,6 +205,7 @@ class ModelCraft(basic.TaskDriver):
         webcoot_options = {
             "project"      : self.task.project,
             "id"           : self.job_id,
+            "no_data_msg"  : "<h3>Waiting for first build...</h3>",
             "FWT"          : "FWT",
             "PHWT"         : "PHWT", 
             "FP"           : "FP",
@@ -217,6 +218,7 @@ class ModelCraft(basic.TaskDriver):
         self.putWebCootButton (
             self.modelcraft_tmp() + "/modelcraft.cif",
             self.modelcraft_tmp() + "/modelcraft.mtz",
+            "",  # placeholder for legend file
             "view-update",
             5000,  # milliseconds update interval
             json.dumps(webcoot_options),

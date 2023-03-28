@@ -79,7 +79,8 @@ function rvapi_umviewer ( jobId,title,xyzFilePath,mapFilePath,dmapFilePath )  {
 
 // ===========================================================================
 
-function rvapi_wcviewer ( jobId,title,xyzFilePath,mtzFilePath,mode,update_interval,options )  {
+function rvapi_wcviewer ( jobId,title,xyzFilePath,mtzFilePath,legendFilePath,
+                          mode,update_interval,options )  {
 
   if (!__current_page)  {
     new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
@@ -91,11 +92,13 @@ function rvapi_wcviewer ( jobId,title,xyzFilePath,mtzFilePath,mode,update_interv
   } else  {
     var task = __current_page.getJobTree().getTask ( jobId );
     if (task)  {
-      var xyz_uri  = '';
-      var mtz_uri  = '';
-      if (xyzFilePath)  xyz_uri  = task.getProjectURL ( jobId,xyzFilePath );
-      if (mtzFilePath)  mtz_uri  = task.getProjectURL ( jobId,mtzFilePath );
-      startWebCoot ( title,xyz_uri,mtz_uri,mode,update_interval,options );
+      var xyz_uri     = '';
+      var mtz_uri     = '';
+      var legend_uri  = '';
+      if (xyzFilePath)     xyz_uri     = task.getProjectURL ( jobId,xyzFilePath );
+      if (mtzFilePath)     mtz_uri     = task.getProjectURL ( jobId,mtzFilePath );
+      if (legendFilePath)  legend_uri  = task.getProjectURL ( jobId,legendFilePath );
+      startWebCoot ( title,xyz_uri,mtz_uri,legend_uri,mode,update_interval,options );
     } else  {
       new MessageBox ( 'Task not found','Project Task not found. This is a bug, ' +
                        'please contact ' + appName() + ' developer.',

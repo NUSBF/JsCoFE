@@ -97,6 +97,7 @@ class Build(ccp4build_report.Report):
     def put_webcoot_button ( self ):
         self.putWebCootButton ( self.workdir + "/current.pdb",
                                 self.workdir + "/current.mtz",
+                                self.workdir + "/legend.html",
                                 self.report_page_id,self.rvrow+5,0 )
         return
 

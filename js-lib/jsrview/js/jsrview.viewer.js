@@ -703,11 +703,12 @@ function startRSViewer ( title,json_uri,map_uri )  {
 // ===========================================================================
 
 
-function startWebCoot ( title,xyz_uri,mtz_uri,mode,update_interval,options )  {
+function startWebCoot ( title,xyz_uri,mtz_uri,legend_uri,mode,update_interval,options )  {
 
   // options = {
   //   project      : 'project name',
   //   id           : 'task id',
+  //   no_data_msg  : 'wait',
   //   FWT          : 'FWT, may be empty string',
   //   PHWT         : 'PHWT, must-be if FWT is not empty', 
   //   FP           : 'FP, must-be if FWT is not empty',
@@ -720,12 +721,18 @@ function startWebCoot ( title,xyz_uri,mtz_uri,mode,update_interval,options )  {
   fetchFile ( 'js-lib/webCoot/webcoot.html',
     function(text){
 
+      let no_data_msg = '';
+      if (options.no_data_msg)
+        no_data_msg = options.no_data_msg;
+
       let html = text.replace ( '[[baseurl]]',
                                   window.location + 'js-lib/webCoot/webcoot.html' )
                       .replace ( '[[mode]]',mode )
-                      .replace ( '[[interval]]',update_interval.toString() );
+                      .replace ( '[[interval]]',update_interval.toString() )
+                      .replace ( '[[no_data_msg]]',no_data_msg );
 
       let inputFiles = [];
+  
       if (xyz_uri)
         inputFiles.push ({
           type : 'pdb',
@@ -759,6 +766,12 @@ function startWebCoot ( title,xyz_uri,mtz_uri,mode,update_interval,options )  {
                     }]
           });
       }
+
+      if (legend_uri)
+        inputFiles.push ({
+          type : 'legend',
+          args : [ legend_uri ]
+        });
 
       html = html.replace ( '[[meta]]',JSON.stringify({'project':options.project,'id':options.id}) )
                  .replace ( '[[inputFiles]]',JSON.stringify(inputFiles) );

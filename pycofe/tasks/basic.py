@@ -1655,8 +1655,9 @@ class TaskDriver(object):
         return
 
 
-    def putWebCootButton ( self,xyzFilePath,mtzFilePath,mode,update_interval,
-                                options_str,title,text_btn,gridId,row,col ):
+    def putWebCootButton ( self,xyzFilePath,mtzFilePath,legendFilePath,mode,
+                                update_interval,options_str,title,text_btn,
+                                gridId,row,col ):
         #  currently this function is used only with patterson plot, so mtz is
         #  not relevant
         buttonId = self.getWidgetId ( "webcoot" )
@@ -1666,6 +1667,7 @@ class TaskDriver(object):
                        title                + "','" +\
                        xyzFilePath          + "','" +\
                        mtzFilePath          + "','" +\
+                       legendFilePath       + "','" +\
                        str(mode)            + "',"  +\
                        str(update_interval) + ","   +\
                        "'".join(options_str.split('"')) +\

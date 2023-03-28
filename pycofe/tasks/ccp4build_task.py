@@ -315,33 +315,6 @@ class CCP4Build(basic.TaskDriver):
         meta["prefix_nbuilt"] = dtype_template.makeDataId ( self.job_id,3 )
         meta["prefix_nfrag" ] = dtype_template.makeDataId ( self.job_id,4 )
 
-                
-        # webcoot_options = {
-        #     "project"      : self.task.project,
-        #     "id"           : self.job_id,
-        #     "FWT"          : "FWT",
-        #     "PHWT"         : "PHWT", 
-        #     "FP"           : "FP",
-        #     "SigFP"        : "SIGFP",
-        #     "FreeR_flag"   : "FreeR_flag",
-        #     "DELFWT"       : "DELFWT",
-        #     "PHDELWT"      : "PHDELWT"
-        # }
-
-        # rvrow0 = self.rvrow + 100
-        # self.putWebCootButton (
-        #     self.workdir() + "/current.pdb",
-        #     self.workdir() + "/current.mtz",
-        #     "view-update",
-        #     5000,  # milliseconds update interval
-        #     json.dumps(webcoot_options),
-        #     "WebCoot viewer",
-        #     "Build in progress",
-        #     self.report_page_id(),rvrow0,0
-        # )
-        # self.rvrow = rvrow0 + 1
-        # self.putMessage ( "&nbsp;" );
-
         self.storeReportDocument ( json.dumps(meta) )
 
         cmd = [
