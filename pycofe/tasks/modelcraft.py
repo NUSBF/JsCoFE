@@ -205,7 +205,7 @@ class ModelCraft(basic.TaskDriver):
         webcoot_options = {
             "project"      : self.task.project,
             "id"           : self.job_id,
-            "no_data_msg"  : "<h3>Waiting for first build...</h3>",
+            "no_data_msg"  : "<b>Waiting for first build...</b>",
             "FWT"          : "FWT",
             "PHWT"         : "PHWT", 
             "FP"           : "FP",
