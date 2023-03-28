@@ -218,6 +218,7 @@ class CBuccaneer(ccp4build_parrot.Parrot):
         out_meta["cbuccaneer"] = self.getCBuccaneerMetrics ( stdout_fpath,len(badlist) )
         out_meta["cbuccaneer"]["unklist"]     = unklist
         out_meta["cbuccaneer"]["unklist_len"] = len(unklist)
+        self.writeWebCootLegend ( out_meta )
 
         return  out_meta
 

@@ -248,6 +248,7 @@ class Refmac(ccp4build_cbuccaneer.CBuccaneer):
 
         shutil.copyfile ( refmac_xyzout,self.current_pdb )
         shutil.copyfile ( refmac_mtzout,self.current_mtz )
+        self.writeWebCootLegend ( out_meta )
 
         #return out_meta
 

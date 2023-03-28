@@ -209,7 +209,8 @@ if (!__template)  {
         var html = text.replace ( '[[baseurl]]',
                                    window.location + 'js-lib/webCoot/webcoot.html' )
                        .replace ( '[[mode]]',mode )
-                       .replace ( '[[interval]]',update_interval.toString() );
+                       .replace ( '[[interval]]',update_interval.toString() )
+                       .replace ( '[[no_data_msg]]','<h2>Data not found</h2>');
 
         var istruct = self.input_data.data['revision'][0].Structure;
 

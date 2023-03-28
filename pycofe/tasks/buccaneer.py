@@ -226,6 +226,7 @@ class Buccaneer(basic.TaskDriver):
         webcoot_options = {
             "project"      : self.task.project,
             "id"           : self.job_id,
+            "no_data_msg"  : "<h4>Waiting for first build...</h4>",
             "FWT"          : "FWT",
             "PHWT"         : "PHWT", 
             "FP"           : "FP",
@@ -239,6 +240,7 @@ class Buccaneer(basic.TaskDriver):
         self.putWebCootButton (
             self.buccaneer_tmp() + "/refine.mmcif",
             self.buccaneer_tmp() + "/refine.mtz",
+            "",  # placeholder for legend file
             "view-update",
             5000,  # milliseconds update interval
             json.dumps(webcoot_options),

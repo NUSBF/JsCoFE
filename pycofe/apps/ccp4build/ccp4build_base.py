@@ -57,6 +57,7 @@ class Base(object):
 
     current_pdb    = None
     current_mtz    = None
+    legend_html    = None
     wc_grid        = ""
     wc_row         = 0
     wc_col         = 0
@@ -214,6 +215,7 @@ class Base(object):
 
         self.current_pdb = os.path.join ( self.workdir,"current.pdb" )
         self.current_mtz = os.path.join ( self.workdir,"current.mtz" )
+        self.legend_html = os.path.join ( self.workdir,"legend.html" )
 
         """
         outdir = os.path.join ( self.workdir,self.outputdir )
@@ -498,7 +500,7 @@ class Base(object):
         return
 
 
-    def putWebCootButton ( self,xyzFilePath,mtzFilePath,gridId,row,col ):
+    def putWebCootButton ( self,xyzFilePath,mtzFilePath,legendFilePath,gridId,row,col ):
         
         if not self.wc_grid:
             
@@ -511,6 +513,8 @@ class Base(object):
                 webcoot_options = {
                     "project"      : self.project,
                     "id"           : self.jobId,
+                    "no_data_msg"  : "<b>Waiting for first build...</b>",
+                    # "no_data_msg"  : "",
                     "FWT"          : "FWT",
                     "PHWT"         : "PHWT", 
                     "FP"           : "FP",
@@ -527,7 +531,8 @@ class Base(object):
                             str(self.jobId).zfill(4) +\
                             "] CCP4Build current structure','" +\
                             xyzFilePath              + "','"   +\
-                            mtzFilePath              + 
+                            mtzFilePath              + "','"   +\
+                            legendFilePath           +\
                             "','view-update',5000,"  +\
                             "'".join(json.dumps(webcoot_options).split('"')) +\
                             ")",
@@ -543,6 +548,25 @@ class Base(object):
             self.wc_grid = ""
         return
 
+    def writeWebCootLegend ( self,meta ):
+        with (open(self.legend_html,"w")) as f:
+            legend = []
+            if "cbuccaneer" in meta:
+                legend += ["N<sub>res</sub>=<i>" +\
+                           str(meta["cbuccaneer"]["n_res_built"]) + "&nbsp;(" +\
+                           str(meta["cbuccaneer"]["res_complete"]) + "%)</i>" ]
+            if "refmac" in meta:
+                legend += ["R/R<sub>free</sub>=<i>" +\
+                           str(meta["refmac"]["rfactor"][1]) + "/" +\
+                           str(meta["refmac"]["rfree"][1]) + "</i>"]
+            msg = "<b>Build in progress, please wait ...</b>"
+            if len(legend)>0:
+                msg = ", ".join(legend)
+                if "iteration" in meta:
+                    msg = "Cycle&nbsp;<i>" + str(meta["iteration"]+1) + "</i>:&nbsp;" + msg
+            f.write ( msg )
+
+        return
 
     # ----------------------------------------------------------------------
 
