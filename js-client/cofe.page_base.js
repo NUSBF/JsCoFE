@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.02.23   <--  Date of Last Modification.
+ *    29.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -437,7 +437,7 @@ BasePage.prototype.makeUserRationIndicator = function()  {
   if (this.rationPanel)  {
     this.rationPanel.disk_usage = null;
     if (this.ration)  {
-      if (this.ration.storage>0.0)  {
+      // if (this.ration.storage>=0.0)  {
         this.rationPanel.disk_icon  = this.rationPanel.setImageButton (
                                       image_path('disk'),'20px','20px',0,0,1,1 );
         this.rationPanel.disk_usage = this.rationPanel.setLabel ( '',0,1,1,1 )
@@ -449,8 +449,8 @@ BasePage.prototype.makeUserRationIndicator = function()  {
         this.rationPanel.cpu_usage  = this.rationPanel.setLabel ( '',0,4,1,1 )
                                           .setNoWrap().setFontSize('90%');
         this.displayUserRation ( null );
-      } else
-        this.rationPanel.hideRow(0);
+      // } else
+      //   this.rationPanel.hideRow(0);
     } else {
       this.rationPanel.hideRow(0);
     }
@@ -470,11 +470,17 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
     return pp;
   }
 
+  function getQuotaLine ( quota )  {
+    if (quota>0)  return quota;
+    return 'unlimited';
+  }
+
   if (this.rationPanel && this.ration)  {
 
     this.ration.pdesc = pdesc;
 
-    if ((this.ration.storage>0.0) && this.rationPanel.disk_usage)  {
+    // if ((this.ration.storage>0.0) && this.rationPanel.disk_usage)  {
+    if (this.rationPanel.disk_usage)  {
 
       var storage_pp   = getPercentLine ( this.ration.storage_used,this.ration.storage );
       var cpu_day_pp   = getPercentLine ( this.ration.cpu_day_used,this.ration.cpu_day );
@@ -483,13 +489,13 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
         '<tr><th>Resource</th><th>Used&nbsp;</th><th>Quota&nbsp;</th><th>%%</th></tr>' +
         '<tr><td colspan="4"><hr/></td></tr>' +
         '<tr><td>Storage&nbsp;(MBytes)&nbsp;</td><td>&nbsp;' + round(this.ration.storage_used,1) +
-                '&nbsp;</td><td>&nbsp;' + round(this.ration.storage,1) +
+                '&nbsp;</td><td>&nbsp;' + getQuotaLine(round(this.ration.storage,1)) +
                 '&nbsp;</td><td>&nbsp;' + storage_pp + '</td></tr>' +
         '<tr><td>CPU 24h (hours)</td><td>&nbsp;' + round(this.ration.cpu_day_used,4) +
-                '&nbsp;</td><td>&nbsp;' + round(this.ration.cpu_day,2) +
+                '&nbsp;</td><td>&nbsp;' + getQuotaLine(round(this.ration.cpu_day,2)) +
                 '&nbsp;</td><td>&nbsp;' + cpu_day_pp + '</td></tr>' +
         '<tr><td>CPU 30d (hours)</td><td>&nbsp;' + round(this.ration.cpu_month_used,4) +
-                '&nbsp;</td><td>&nbsp;' + round(this.ration.cpu_month,2) +
+                '&nbsp;</td><td>&nbsp;' + getQuotaLine(round(this.ration.cpu_month,2)) +
                 '&nbsp;</td><td>&nbsp;' + cpu_month_pp + '</td></tr>';
 
       if ((this.ration.cloudrun_day>0) && (this.ration.cloudrun_day_used>0))  {
@@ -497,7 +503,7 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
                                                this.ration.cloudrun_day );
         stats +=
           '<tr><td>CloudRun 24h (jobs)</td><td>&nbsp;' + this.ration.cloudrun_day_used +
-                  '&nbsp;</td><td>&nbsp;' + this.ration.cloudrun_day +
+                  '&nbsp;</td><td>&nbsp;' + getQuotaLine(this.ration.cloudrun_day) +
                   '&nbsp;</td><td>&nbsp;' + cloudrun_day_pp + '</td></tr>';
       }
 
@@ -506,7 +512,7 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
                                                this.ration.archive_year );
         stats +=
           '<tr><td>Archive 1yr (projects)</td><td>&nbsp;' + this.ration.archives.length +
-                  '&nbsp;</td><td>&nbsp;' + this.ration.archive_year +
+                  '&nbsp;</td><td>&nbsp;' + getQuotaLine(this.ration.archive_year) +
                   '&nbsp;</td><td>&nbsp;' + archive_year_pp + '</td></tr>';
       }
 
@@ -536,9 +542,11 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
                 '&nbsp;</i></td><td></td></tr>' +
         '</table>';
       this.rationPanel.setTooltip1 ( stats,'show',false,20000 );  // 20 secs
-      this.rationPanel.disk_usage.setText ( storage_pp );
-      this.rationPanel.cpu_usage .setText ( cpu_day_pp + ':' + cpu_month_pp );
-
+      if (this.ration.storage>0.0)
+            this.rationPanel.disk_usage.setText ( storage_pp );
+      else  this.rationPanel.disk_usage.setText ( round(this.ration.storage_used,0) + 'M' );
+      if ((this.ration.cpu_day>0.0) && (this.ration.cpu_month>0.0))
+        this.rationPanel.cpu_usage .setText ( cpu_day_pp + ':' + cpu_month_pp );
     }
 
   }
