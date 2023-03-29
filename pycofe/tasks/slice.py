@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.08.22   <--  Date of Last Modification.
+#    29.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -52,13 +52,17 @@ class Slice(basic.TaskDriver):
         xyz     = self.makeClass ( self.input_data.data.xyz[0] )
         sec1    = self.task.parameters.sec1.contains
         nsplits = self.getParameter ( sec1.NSPLITS )
+        plddt_threshold = self.getParameter ( sec1.PLDDT_THRESHOLD)
 
         cmd = [
             "-xyzin"     ,xyz.getXYZFilePath(self.inputDir()),
             "-min_splits",nsplits,
             "-max_splits",nsplits,
-            "-xyz_source","alphafold_bfactor"
+            "-xyz_source","alphafold_bfactor",
+            "-plddt_threshold", plddt_threshold
         ]
+
+
 
         rc = self.runApp ( "slicendice",cmd,logType="Main",quitOnError=False )
 
