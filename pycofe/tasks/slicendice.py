@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.08.22   <--  Date of Last Modification.
+#    29.03.23    <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -66,6 +66,8 @@ class SliceNDice(basic.TaskDriver):
         sec1        = self.task.parameters.sec1.contains
         min_nsplits = self.getParameter ( sec1.MIN_NSPLITS )
         max_nsplits = self.getParameter ( sec1.MAX_NSPLITS )
+        plddt_threshold = self.getParameter ( sec1.PLDDT_THRESHOLD)
+
 
         # prepare input MTZ file by selecting original reflection data
 
@@ -98,7 +100,8 @@ class SliceNDice(basic.TaskDriver):
             "-max_splits",max_nsplits,
             "-xyz_source","alphafold_bfactor",
             "-sga"       ,"all",
-            "-nproc"     ,str(min(6,int(max_nsplits)))
+            "-nproc"     ,str(min(6,int(max_nsplits))),
+            "-plddt_threshold", plddt_threshold
         ]
 
         self.putWaitMessageLF ( "Solution in progress ..." )
