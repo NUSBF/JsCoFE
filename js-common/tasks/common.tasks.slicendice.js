@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    02.09.22   <--  Date of Last Modification.
+ *    29.03.23    <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -88,6 +88,16 @@ function TaskSliceNDice()  {
                                 iwidth   : 40,
                                 label2   : 'splits',
                                 position : [0,5,1,1]
+                              },
+                PLDDT_THRESHOLD : {
+                            type     : 'combobox',
+                            keyword  : 'plddt_threshold',
+                            label    : 'pLDDT threshold',
+                            tooltip  : 'Removes residues from Alphafold models below this pLDDT threshold (default: 70)',
+                            range    : ['90|90','85|85', '80|80', '75|75','70|70','65|65','60|60', '50|50', '40|40', '30|30', '20|20', '10|10', '5|5', '0|0'],
+                            value    : 70,
+                            iwidth   : 100,
+                            position : [3,0,1,1]
                               }
               }
             }
