@@ -93,6 +93,7 @@ def run ( body ):  # body is reference to the main Import class
                     # then simply write out the block and coordinates
                     shutil.copyfile ( fin,fileCIF )
                     st = gemmi.make_structure_from_chemcomp_block ( block )
+                    st[0][0][0].seqid = gemmi.SeqId('1')
                     st.write_pdb    ( fileXYZ )
                 else:
                     # generate coordinates with AceDrg
@@ -101,6 +102,7 @@ def run ( body ):  # body is reference to the main Import class
                     ftmp    = "__ligand_tmp.cif"
                     doc_tmp = cif.Document()
                     doc_tmp.add_copied_block ( block )
+                    
                     doc_tmp.write_file ( ftmp )
 
                     # Start acedrg (only to calculate coordinates for ligand visualisation)
