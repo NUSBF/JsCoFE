@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.03.23   <--  Date of Last Modification.
+ *    29.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -172,7 +172,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   if (author!=__login_id)  {
     this.grid.setImage ( image_path('msg_stop'),'48px','48px', 1,0,1,1 );
     this.grid.setLabel ( title + 
-        'Projects can be archived only by their first authors. Please delegate this ' +
+        'Projects can be archived only by originators. Please delegate this ' +
         'action to your collaborator, who originally created the project.<p>' + 
         'Read all details about ' + appName() + ' archiving ' + doclink + 
         'here</span></a>.',

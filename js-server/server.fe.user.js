@@ -813,7 +813,7 @@ function getUserRation ( loginData,data,callback_func )  {
     callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',{
         code    : 'ok',
         message : '',
-        ration : ration.getUserRation(loginData)
+        ration  : ration.getUserRation(loginData)
       })
     );
   }

@@ -83,6 +83,17 @@ var cfg   = conf.getFEConfig();
       modified = true;
     }
   
+    if (loginData.login=='localuser')  {
+      modified = (r.storage>0.0)   || (r.storage_max>0.0) || (r.cpu_day>0.0) ||
+                 (r.cpu_month>0.0) || (r.cloudrun_day>0)  || (r.archive_year>0);
+      r.storage      = 0.0;  // committed MBytes (0: unlimited)
+      r.storage_max  = 0.0;  // maximum allocatable MBytes (0: unlimited)
+      r.cpu_day      = 0.0;  // hours  (0: unlimited)
+      r.cpu_month    = 0.0;  // hours  (0: unlimited)
+      r.cloudrun_day = 100;  // cloudruns (0: unlimited)
+      r.archive_year = 2;    // maximum number of project archived (0: unlimited)
+    }
+
     var msg_list = [];
     function checkQuota ( name,quota,cfg_quota )  {
       if ((quota>0) && (quota<cfg_quota))  {
