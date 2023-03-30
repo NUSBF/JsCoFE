@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.11.19   <--  Date of Last Modification.
+ *    30.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -79,9 +79,23 @@ function rvapi_umviewer ( jobId,title,xyzFilePath,mapFilePath,dmapFilePath )  {
 
 // ===========================================================================
 
+function checkBrowserForWebCoot()  {
+  if (navigator.userAgent.indexOf('Safari')>=0) {
+    new MessageBox ( 'Unsuitable browser',
+        '<div style="width:450px"><h2>Unsuitable browser</h2>' +
+        'At present, WebCoot/Moorhen does not work in Safari browser, which ' +
+        'you are using.<p>Please use another browser, such as Opera, Chrome, ' +
+        'or Firefox.</div>','msg_stop'
+    );
+    return false;
+  }
+  return true;
+}
+
 function rvapi_wcviewer ( jobId,title,xyzFilePath,mtzFilePath,legendFilePath,
                           mode,update_interval,options )  {
-
+  if (!checkBrowserForWebCoot())
+    return;
   if (!__current_page)  {
     new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
                      'please contact ' + appName() + ' developer.', 'msg_error' );
