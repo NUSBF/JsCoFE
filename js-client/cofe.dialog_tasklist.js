@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.23   <--  Date of Last Modification.
+ *    30.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -359,11 +359,16 @@ var r = 0;  // grid row
   grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('20%');
 
   var task_list = [
-
     "Refinement",
     new TaskRefmac (),
     new TaskBuster (),
-    new TaskCootMB (),
+    new TaskCootMB ()
+  ]
+
+  if (navigator.userAgent.indexOf('Safari')<0)
+    task_list.push ( new TaskWebCoot() );
+
+  task_list = task_list.concat ([
     new TaskLorestr(),
 
     "Ligands",
@@ -374,7 +379,7 @@ var r = 0;  // grid row
     "Import Additional Data",
     new TaskImport        (),
     new TaskImportReplace (),
-  ];
+  ]);
 
   if (key==30)
     task_list.push ( new TaskMigrate() );
@@ -774,11 +779,18 @@ var row      = 0;
     new TaskNautilus     ()
   ],true);
 
-  this.makeSection ( 'Coot',[
-    new TaskCootMB (),
-    new TaskCootCE (),
-    new TaskWebCoot()
-  ],true);
+  if (navigator.userAgent.indexOf('Safari')>=0)  {
+    this.makeSection ( 'Coot',[
+      new TaskCootMB (),
+      new TaskCootCE ()
+    ],true);
+  } else  {
+    this.makeSection ( 'Coot',[
+      new TaskCootMB (),
+      new TaskCootCE (),
+      new TaskWebCoot()
+    ],true);
+  }
 
   this.makeSection ( 'Ligands',[
     new TaskMakeLigand(),

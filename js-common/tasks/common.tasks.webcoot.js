@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.23   <--  Date of Last Modification.
+ *    30.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -196,6 +196,11 @@ if (!__template)  {
                                                   mode='model-building',
                                                   update_interval=3000 )  {
     // new MessageBox('Web-app', '<h1>Web application</h1>');
+
+    if (!checkBrowserForWebCoot())  {
+      callback_func();
+      return;
+    }
 
     var wab = new WebAppBox ( 'Web-Coot' );
     wab.setOnCloseFunction ( function(){ callback_func(); } );

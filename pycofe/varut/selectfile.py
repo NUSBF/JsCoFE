@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.06.22   <--  Date of Last Modification.
+#    30.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -15,7 +15,7 @@
 #
 #
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -35,7 +35,7 @@ def select ( title,filters,startDir=None,saveSettings=True ):
     start_dir = startDir
     if not start_dir:
         settings  = QtCore.QSettings ( "CCP4","SelectFile" )
-        start_dir = settings.value ( "last_path" ).toString()
+        start_dir = str(settings.value("last_path"))
 
     if not start_dir and "HOME" in os.environ:
         start_dir = os.environ["HOME"]
