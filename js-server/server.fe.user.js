@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.23   <--  Date of Last Modification.
+ *    02.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -807,7 +807,7 @@ var rData   = { code : 'ok', message : '', ration : uRation };
 
 
 function getUserRation ( loginData,data,callback_func )  {
-  if (data.topup)  {
+  if (data.topup && (loginData.login!=ud.__local_user_id))  {
     topupUserRation ( loginData,callback_func );
   } else  {
     callback_func ( new cmd.Response(cmd.fe_retcode.ok,'',{
@@ -878,22 +878,25 @@ var response = null;  // must become a cmd.Response object to return
   log.standard ( 8,'update user data, login ' + loginData.login );
 
   var uData = userData;
-  if (userData.login!=ud.__local_user_id)  {
+  var pwd   = userData.pwd;
+  if ((userData.login!=ud.__local_user_id) && pwd)  {
   // if (userData.login!='devel')  {
-    var pwd = userData.pwd;
-    if (pwd)  {
-      userData.pwd = hashPassword ( pwd );
-    } else  {
-      // can only change some records without password
-      var uData = readUserData ( loginData );
-      if (uData)  {
-        uData.helpTopics    = userData.helpTopics;
+    uData.pwd = hashPassword ( pwd );
+  } else  {
+    // can only change some records without password 
+    var uData = readUserData ( loginData );
+    if (uData)  {
+      if (userData.login==ud.__local_user_id)
+        uData.cloudrun_id = userData.cloudrun_id;
+      if ('helpTopics' in userData)
+        uData.helpTopics = userData.helpTopics;
+      if ('authorisation' in userData)  
         uData.authorisation = userData.authorisation;
-        uData.settings      = userData.settings;
-      } else  {
-        response = new cmd.Response ( cmd.fe_retcode.readError,
-                                      'User file cannot be read.','' );
-      }
+      if ('settings' in userData)  
+        uData.settings = userData.settings;
+    } else  {
+      response = new cmd.Response ( cmd.fe_retcode.readError,
+                                    'User file cannot be read.','' );
     }
   }
 

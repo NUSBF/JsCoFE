@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.10.22   <--  Date of Last Modification.
+ *    02.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Global variables
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  ==========================================================================
  *
@@ -91,6 +91,15 @@ var __any_mobile_device = __mobile_device || __iOS_device;
 
 
 var __browser_checked = false;
+
+function isSafari()  {
+  if (window.safari!==undefined)
+    return true;
+  return  navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+          navigator.userAgent &&
+          navigator.userAgent.indexOf('CriOS') == -1 &&
+          navigator.userAgent.indexOf('FxiOS') == -1;
+}
 
 function checkBrowser()  {
   // if ((navigator.userAgent.indexOf('Version/14')>=0) &&

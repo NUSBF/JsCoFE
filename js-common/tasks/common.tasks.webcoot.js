@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.03.23   <--  Date of Last Modification.
+ *    02.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -215,7 +215,8 @@ if (!__template)  {
                                    window.location + 'js-lib/webCoot/webcoot.html' )
                        .replace ( '[[mode]]',mode )
                        .replace ( '[[interval]]',update_interval.toString() )
-                       .replace ( '[[no_data_msg]]','<h2>Data not found</h2>');
+                       .replace ( '[[no_data_msg]]','<h2>Data not found</h2>')
+                       .replace ( '[[preferences]]',JSON.stringify(__user_settings.webcoot_pref) );
 
         var istruct = self.input_data.data['revision'][0].Structure;
 

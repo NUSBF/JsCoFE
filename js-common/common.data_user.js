@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.03.23   <--  Date of Last Modification.
+ *    02.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -81,7 +81,8 @@ function UserData()  {
     guided_import  : true,
     notifications  : {
       end_of_job : { send : true, lapse : 24.0 }  // hours
-    }
+    },
+    webcoot_pref   : null
   };
   this.action = userdata_action.none;
   this.onlogin_message = '';  // shown only once at login
@@ -134,6 +135,9 @@ var msg = '';
 
   if (!uData.settings.hasOwnProperty('guided_import'))
     uData.settings.guided_import = true;
+
+  if (!uData.settings.hasOwnProperty('webcoot_pref'))
+    uData.settings.webcoot_pref = null;
 
   if (!uData.hasOwnProperty('email'))           uData.email   = 'localuser@localhost';
   if (!uData.hasOwnProperty('volume'))          uData.volume  = '***';

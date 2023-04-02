@@ -4,7 +4,7 @@
     "====================================================================================",
     "                    jsCoFE Configuration for desktop setup mode                     ",
     "====================================================================================",
-    "   13.04.2022 "
+    "   02.04.2023 "
   ],
 
   "Desktop"  : {
@@ -38,13 +38,6 @@
     "ICAT_wdsl"        : "https://icat02.diamond.ac.uk/ICATService/ICAT?wsdl",
     "ICAT_ids"         : "https://ids01.diamond.ac.uk/ids",
     "auth_software"    : {
-      "arpwarp" : {
-        "desc_software" : "Arp/wArp Model Building Software from EMBL-Hamburg",
-        "icon_software" : "task_arpwarp",
-        "desc_provider" : "EMBL Outstation in Hamburg",
-        "icon_provider" : "org_emblhamburg",
-        "auth_url"      : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
-      },
       "gphl-buster"  : {
         "desc_software" : "Global Phasing Ltd. Software Suite",
         "icon_software" : "task_buster",
@@ -52,6 +45,18 @@
         "icon_provider" : "org_gphl",
         "auth_url"      : "https://www.globalphasing.com/cgi-bin/ccp4_licence.cgi?reqid=$reqid&addr=1.2.3.4&cburl=$cburl",
         "__auth_url"    : "https://arpwarp.embl-hamburg.de/api/maketoken/?reqid=$reqid&addr=1.2.3.4&cburl=$cburl"
+      },
+      "pdb-redo"  : {
+        "desc_software" : "PDB-REDO Model Optimisation Software from NKI-Amsterdam",
+        "icon_software" : "task_pdbredo",
+        "desc_provider" : "Netherlands Cancer Institute",
+        "icon_provider" : "org_nki",
+        "auth_data"     :  {
+          "user_id"     : { "label" : "Token ID"    , "type" : "integer" },
+          "user_token"  : { "label" : "Token secret", "type" : "string"  },
+          "expiry_date" : { "label" : "Expiry date" , "type" : "date"    }
+        },
+        "help_page"     : "authorize_pdbredo"
       }
     },
     "bootstrapHTML"    : "./bootstrap/jscofe.min.html",

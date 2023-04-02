@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    29.12.20   <--  Date of Last Modification.
+//    02.04.23   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  RVAPI javascript layer's window module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2020
+//  (C) E. Krissinel 2013-2023
 //
 //  ==========================================================================
 //
@@ -729,7 +729,8 @@ function startWebCoot ( title,xyz_uri,mtz_uri,legend_uri,mode,update_interval,op
                                   window.location + 'js-lib/webCoot/webcoot.html' )
                       .replace ( '[[mode]]',mode )
                       .replace ( '[[interval]]',update_interval.toString() )
-                      .replace ( '[[no_data_msg]]',no_data_msg );
+                      .replace ( '[[no_data_msg]]',no_data_msg )
+                      .replace ( '[[preferences]]',JSON.stringify(__user_settings.webcoot_pref) );
 
       let inputFiles = [];
   
