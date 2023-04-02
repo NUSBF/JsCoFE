@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.02.23   <--  Date of Last Modification.
+ *    02.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -870,7 +870,16 @@ function onWindowMessage(event) {
                           );
         }
       },null,'persist' );
+  } else if (edata.command=='saveWebCootPreferences')  {
+    let userData   = new UserData();
+    userData.login = __login_id;
+    userData.pwd   = '';  // can save only some records without password
+    __user_settings.webcoot_pref = edata.data;
+    userData.settings  = __user_settings;
+    serverRequest ( fe_reqtype.updateUserData,userData,
+                    'WebCoot preferences update',function(response){} );
   }
+
 //      console.log ( 'Unknown windows message command: ' + edata.command );
 
     // alert ( JSON.stringify(data) );

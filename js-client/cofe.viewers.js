@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    30.03.23   <--  Date of Last Modification.
+ *    02.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -80,7 +80,7 @@ function rvapi_umviewer ( jobId,title,xyzFilePath,mapFilePath,dmapFilePath )  {
 // ===========================================================================
 
 function checkBrowserForWebCoot()  {
-  if (navigator.userAgent.indexOf('Safari')>=0) {
+  if (isSafari()) {
     new MessageBox ( 'Unsuitable browser',
         '<div style="width:450px"><h2>Unsuitable browser</h2>' +
         'At present, WebCoot/Moorhen does not work in Safari browser, which ' +
