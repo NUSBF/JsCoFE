@@ -1,0 +1,117 @@
+========================================================================
+Transfer projects from remote to local installations CCP4 Cloud and back
+========================================================================
+
++++++++++++++++++++++++++++
+Late evening Thu 2023.03.30 
++++++++++++++++++++++++++++
+
+
+**Projects from web CCP4 cloud should be exported** using the |Export| button in My project Page.
+
+
+1. Please select a project you want to export (left-click)
+
+
+.. image:: images/aps_1.png
+
+2. Press |Export| button 
+
+3. Press download button 
+
+.. image:: images/aps_2.png
+        :scale: 40%
+
+
+4. Choose folder you want to save CCP4 Cloud project to
+
+5. Once the project was downloaded to the local machine find the cloud icon in the Activities or Software menus (depending on the installed version of Linux) and click on the |desktop| ccp4cloud-desktop icon or type ``ccp4cloud-desktop.sh`` in terminal.
+
+6. Upload project to |local| local installation of CCP4 Cloud using the |Import| button above the project list
+
+.. image:: images/aps_3.png
+        :scale: 40%
+
+
+|local| in top right corner indicates that you are using local installation of CCP4 Cloud
+
+7. Once imported you can continue working on your project locally
+
+
+.. image:: images/aps_4.png
+
+
+++++++++++++++++++++++
+Morning Mon 2023.04.03 
+++++++++++++++++++++++
+
+
+.. note:: You can export |Export| projects from local installation and import |Import| them back to the CCP4 Cloud server once it is up again
+
+.. warning:: Log in to |ccp4cloud_remote| CCP4 Cloud Remote and delete (or rename) all projects exported before.
+
+To login go to https://cloud.ccp4.ac.uk/ or find the cloud icon in the Activities or Software menus (depending on the installed version of Linux) and click on the |ccp4cloud_remote| ccp4cloud-remote icon or type ``ccp4cloud-remote.sh`` in terminal
+
+To **delete** your projects: select the project (left-click) in the list of projects and press the |delete| delete button. Do this with due care: once deleted, projects cannot be restored.
+
+To **rename** your projects: select the project (left-click) in the list of projects and press the |rename| rename button. You can't have two projects with the same IDs in your CCP4 Cloud account so It's important to change the Project ID.
+
+.. image:: images/aps_6.png
+        :scale: 50%
+
+
+.. image:: images/aps_5.png
+        :scale: 50%
+
+
+
+
+Once renamed or deleted you can import projects back to CCP4 Cloud server:
+
+
+#. Press |Export| button 
+
+#. Press download button 
+
+#. Choose folder you want to save CCP4 Cloud project to
+
+#. Once the project was downloaded go to https://cloud.ccp4.ac.uk/ or find the cloud icon in the Activities or Software menus (depending on the installed version of Linux) and click on the |ccp4cloud_remote| ccp4cloud-remote icon or type ``ccp4cloud-remote.sh`` in terminal.
+
+#. Upload project to your account at CCP4 Cloud server using the |Import| button 
+
+#. Once imported you can continue working on your project on the server
+
+
+
+
+.. |local| image:: images/setup_local.png
+    :width: 20
+    :height: 20
+
+
+.. |Export| image:: images/export.png
+    :width: 16
+    :height: 16
+
+.. |Import| image:: images/task_import.png
+    :width: 16
+    :height: 16
+
+
+.. |desktop| image:: images/ccp4cloud_desktop.png
+    :width: 25
+    :height: 25
+
+
+.. |delete| image:: images/delete.png
+    :width: 16
+    :height: 16
+
+.. |rename| image:: images/renameprj.png
+    :width: 16
+    :height: 16
+
+.. |ccp4cloud_remote| image:: images/ccp4cloud_remote.png
+   :width: 25
+   :height: 25
+

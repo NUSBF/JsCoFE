@@ -2,7 +2,7 @@
 How to store completed projects
 ===============================
 
-Projects in CCP4 cloud can be exported and store as compressed file archive using the |Export| button
+Projects in CCP4 cloud can be exported and stored as compressed file archive using the |Export| button
 
 Exported archives can be uploaded later to your CCP4 Cloud account using the |Import| button above the project list.
 

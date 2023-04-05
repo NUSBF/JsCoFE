@@ -57,10 +57,10 @@ Next Cloud run tasks are available:
          :align: center
 
 
-To send data on the remote server **login (1)** and **token(2)** are required. They can be found on **My account page**. Information how to find **login (1)** and **token(2)** can be acceded by pressing `help (3) <./jscofe_cloudRunID.html>`_ button.
+To send data on the remote server **login (1)** and **CloudRun Id(2)** are required. They can be found on **My account page**. Information how to find **login (1)** and **CloudRun Id(2)** can be acceded by pressing `help (3) <./jscofe_cloudRunID.html>`_ button.
 
 
-Copy your token from the web browser, **paste it into ccp4i (control-V, even on macOS)**, and enter your login name.
+Copy your CloudRun Id from the web browser, **paste it into ccp4i (control-V, even on macOS)**, and enter your login name.
 
 **Keep "Save any changes to ccp4i configuration on successful submission" checked** to save your authentication data to the ccp4i configurations. 
 
