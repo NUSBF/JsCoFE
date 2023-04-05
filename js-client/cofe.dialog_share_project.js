@@ -10,7 +10,7 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Export Job Dialog
+ *  **** Content :  Share Project Function
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, A. Lebedev 2019-2022
@@ -25,6 +25,17 @@
 'use strict';
 
 function shareProject ( projectDesc,callback_func )  {
+
+  if (__local_user)  {
+    new MessageBox ( 'No project sharing',
+                     '<div style="width:350px">' +
+                     '<h2>No Project Sharing in Desktop Mode</h2>' +
+                     'Project sharing is not possible in Desktop mode because ' +
+                     'only one user is present in the system.</div>',
+                     'msg_stop');
+    callback_func ( null );
+    return;
+  }
 
   // var author = projectDesc.owner.login;
   // if (('author' in projectDesc.owner) && projectDesc.owner.author)

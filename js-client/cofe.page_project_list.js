@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.02.23   <--  Date of Last Modification.
+ *    04.024.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -822,7 +822,7 @@ function ProjectListPage ( sceneId )  {
       del_btn   .setDisabled ( true  );
       import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       export_btn.setDisabled ( true  );
-      join_btn  .setDisabled ( (__dormant!=0) );
+      join_btn  .setDisabled ( (__dormant!=0) || __local_user );
 
     } else  {
 
@@ -894,7 +894,8 @@ function ProjectListPage ( sceneId )  {
             if (!archive_folder)
               contextMenu.addItem(del_label,image_path('remove')).addOnClickListener(deleteProject);
             contextMenu.addItem('Export',image_path('export')  ).addOnClickListener(exportProject);
-            if ((!archive_folder) && (__current_folder.type!=folder_type.joined))
+            if ((!archive_folder) && (__current_folder.type!=folder_type.joined) &&
+                (!__local_user))
               contextMenu.addItem('Share',image_path('share')).addOnClickListener(sharePrj);
             contextMenu.addItem('Clone',image_path('cloneprj')).addOnClickListener(cloneProject );
             if (((__current_folder.type==folder_type.user) &&
@@ -996,7 +997,7 @@ function ProjectListPage ( sceneId )  {
       del_btn   .setDisabled ( archive_folder  );
       import_btn.setDisabled ( (__dormant!=0) ); // for strange reason Firefox wants this!
       export_btn.setDisabled ( false );
-      join_btn  .setDisabled ( (__dormant!=0) );
+      join_btn  .setDisabled ( (__dormant!=0) || __local_user );
 
       self.welcome_lbl.hide();
 
