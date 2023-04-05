@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    11.01.23   <--  Date of Last Modification.
+ *    04.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -149,9 +149,10 @@ function ProjectPage ( sceneId )  {
       else  new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
     });
 
-    self.addMenuItem ( 'Share Project','share',function(){
-      self.share_project();
-    });
+    if (!__local_user)
+      self.addMenuItem ( 'Share Project','share',function(){
+        self.share_project();
+      });
 
     self.addLogoutToMenu ( function(){
       if (self.jobTree && self.jobTree.projectData)
