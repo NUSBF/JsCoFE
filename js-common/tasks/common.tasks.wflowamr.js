@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.09.22   <--  Date of Last Modification.
+ *    06.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,6 +22,7 @@
 'use strict';
 
 var __template = null;
+
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
   __template = require ( './common.tasks.template' );
@@ -60,6 +61,13 @@ function TaskWFlowAMR()  {
       inputId     : 'fseq',   // input Id for referencing input fields
       path        : '',
       min         : 1         // minimum acceptable number of data instances
+    },{
+      file_types  : '.cif', // data type(s) and subtype(s)
+      label       : 'Ligand CIF definition', // label for input dialog
+      tooltip     : '[Optional] Provide a path to CIF file with your ligand definition ',
+      inputId     : 'fcif',   // input Id for referencing input fields
+      path        : '',
+      min         : 0         // minimum acceptable number of data instances
     }
   ];
 

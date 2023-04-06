@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.02.22   <--  Date of Last Modification.
+#    06.04.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2021-2022
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -36,7 +36,17 @@ from   pycofe.auto   import auto
 # ============================================================================
 # Make CCP4go driver
 
+# simulates ligand data structure that is normally coming from JS part
+class ligandCarrier():
+    def __init__(self, source, smiles, code):
+        self.source = source
+        self.smiles = smiles
+        self.code = code
+
 class WFlowAMR(import_task.Import):
+
+    def smiles_file_path(self): return "smiles.smi"
+
 
     import_dir = "uploads"
     def importDir(self):  return self.import_dir       # import directory
@@ -50,6 +60,9 @@ class WFlowAMR(import_task.Import):
 
         # -------------------------------------------------------------------
         # fetch data for CCP4go pipeline
+
+        # self.lib = None  # ligand descriptions
+
 
         if "DataUnmerged" in self.outputDataBox.data:
             self.unm = self.outputDataBox.data["DataUnmerged"]
@@ -69,6 +82,13 @@ class WFlowAMR(import_task.Import):
         if "DataXYZ" in self.outputDataBox.data:
             self.xyz = self.outputDataBox.data["DataXYZ"]
 
+        if "DataLibrary" in self.outputDataBox.data:
+            self.lib = self.outputDataBox.data["DataLibrary"][0]
+        
+        if "DataLigand" in self.outputDataBox.data:
+            self.lib = self.outputDataBox.data["DataLigand"][0]
+
+
         self.ligdesc = []
         ldesc = getattr ( self.task,"input_ligands",[] )
         for i in range(len(ldesc)):
@@ -80,6 +100,8 @@ class WFlowAMR(import_task.Import):
             code = self.ligdesc[i].code.strip().upper()
             if (not code) or (code in self.ligand_exclude_list):
                 self.ligdesc[i].code = self.get_ligand_code([])
+
+        
 
         return
 
@@ -100,11 +122,16 @@ class WFlowAMR(import_task.Import):
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
             self.xyz = self.input_data.data.xyz
 
+        ligMessage = ''
+
         if hasattr(self.input_data.data,"ligand"):  # optional data parameter
             self.lig = self.input_data.data.ligand
 
-            # for i in range(len(self.input_data.data.ligand)):
-            #     self.ligands.append ( self.makeClass(self.input_data.data.ligand[i]) )
+            ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
+
+            # for i in range(len(self.input_data.data.lig)):
+            #     self.lig.append ( self.makeClass(self.input_data.data.lig[i]) )
+
 
         return
 
@@ -112,16 +139,27 @@ class WFlowAMR(import_task.Import):
 
     def run(self):
 
+
         self.unm = []  # unmerged dataset
         self.hkl = []  # selected merged dataset
         self.seq = []  # list of sequence objects
         self.xyz = []  # coordinates (model/apo)
         self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
+        self.lib = None
+
+        
+
 
         summary_line = ""
         ilist = []
 
+        # # ligand library CIF has been provided
+        if self.lib:
+            ligand = self.makeClass(self.lib)
+            self.lig.append(ligand)
+
+   
         fileDir = self.outputDir()
         if hasattr(self.input_data.data,"hkldata"):
             fileDir = self.inputDir()
