@@ -846,7 +846,7 @@ if (!dbx)  {
   */
 
 
-  TaskTemplate.prototype.__set_selected_files = function ( files,t,div )  {
+  TaskTemplate.prototype.__set_selected_files = function ( files,t,div,fdesc )  {
     if (files.length>0)  {
       // The next line is necessary for annotating just this upload.
       // If sequences also need to be uploaded. file_mod should be cleared
@@ -869,6 +869,7 @@ if (!dbx)  {
         });
       } else
         t.setValue ( fname );
+      // this.inputChanged ( div.grid.inpParamRef,fdesc.inputId,fname );
     }
   }
 
@@ -937,14 +938,14 @@ if (!dbx)  {
           else  {
             // new CloudFileBrowser ( div,div.task,4,fd.file_types.split(','),function(items){
             new CloudFileBrowser ( div,self,4,fd.file_types.split(','),function(items){
-              self.__set_selected_files ( items,t,div );
+              self.__set_selected_files ( items,t,div,fd );
               return 1;  // close browser window
             },null );
           }
         });
         f.addOnChangeListener ( function(){
           var files = f.getFiles();
-          self.__set_selected_files ( files,t,div );
+          self.__set_selected_files ( files,t,div,fd );
         });
       }(btn,fsel,fsdesc,itext,this))
       div[fsdesc.inputId] = fsel;

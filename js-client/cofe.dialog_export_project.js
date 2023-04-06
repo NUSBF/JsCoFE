@@ -29,6 +29,37 @@
 
 function ExportProjectDialog ( projectList )  {
 
+  this.startExport ( projectList );
+
+/*
+  var self = this;
+
+  var crProject = projectList.getProject ( projectList.current );
+  // alert ( crProject.name );
+
+  new QuestionBox ( 'Export Project',
+    '<h2>Project authorship</h2>',[{
+      name    : 'Keep authorship',
+      onclick : function(){
+        self.startExport ( projectList );
+      }
+    },{
+      name    : 'Remove authorship',
+      onclick : function(){
+        self.startExport ( projectList );
+      }
+    }],
+    'msg_question' );
+*/
+
+}
+
+ExportProjectDialog.prototype = Object.create ( InputBox.prototype );
+ExportProjectDialog.prototype.constructor = ExportProjectDialog;
+
+
+ExportProjectDialog.prototype.startExport = function ( projectList )  {
+
   (function(dlg){
 
     serverRequest ( fe_reqtype.preparePrjExport,projectList,
@@ -131,6 +162,3 @@ function ExportProjectDialog ( projectList )  {
   }(this))
 
 }
-
-ExportProjectDialog.prototype = Object.create ( InputBox.prototype );
-ExportProjectDialog.prototype.constructor = ExportProjectDialog;
