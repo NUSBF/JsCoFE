@@ -86,7 +86,7 @@ class WFlowAMR(import_task.Import):
             self.lib = self.outputDataBox.data["DataLibrary"][0]
         
         if "DataLigand" in self.outputDataBox.data:
-            self.lib = self.outputDataBox.data["DataLigand"][0]
+            self.lig = self.outputDataBox.data["DataLigand"]
 
 
         self.ligdesc = []
@@ -100,8 +100,6 @@ class WFlowAMR(import_task.Import):
             code = self.ligdesc[i].code.strip().upper()
             if (not code) or (code in self.ligand_exclude_list):
                 self.ligdesc[i].code = self.get_ligand_code([])
-
-        
 
         return
 
@@ -147,9 +145,6 @@ class WFlowAMR(import_task.Import):
         self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
         self.lib = None
-
-        
-
 
         summary_line = ""
         ilist = []
