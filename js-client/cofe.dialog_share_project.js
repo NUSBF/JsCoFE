@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.11.22   <--  Date of Last Modification.
+ *    07.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Share Project Function
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2022
+ *  (C) E. Krissinel, A. Lebedev 2019-2023
  *
  *  =================================================================
  *
@@ -42,15 +42,17 @@ function shareProject ( projectDesc,callback_func )  {
   //   author = projectDesc.owner.author;
 
   var author = getProjectAuthor ( projectDesc );
+  var owner  = getProjectOwner  ( projectDesc );
 
-  if ((author!=__login_id) && (author.toLowerCase()!=folder_type.tutorials))  {
+  if ((owner!=__login_id) && (author.toLowerCase()!=folder_type.tutorials))  {
     new MessageBox ( 'Share Project',
-                     'Only Project owner (<b>' + author +
+                     'Only Project owner (<b>' + owner +
                      '</b>) can share this Project.',
                      'msg_information');
     callback_func ( null );
     return;
   }
+
 
   if (projectDesc.archive && projectDesc.archive.in_archive)  {
     new MessageBox ( 'Archived Project',
@@ -107,7 +109,8 @@ function shareProject ( projectDesc,callback_func )  {
                            });
     projectDesc.share = {};
     for (var i=0;i<logins_lst.length;i++)
-      if (logins_lst[i]!=projectDesc.owner.login)  {
+      // if (logins_lst[i]!=projectDesc.owner.login)  {
+      if (logins_lst[i]!=owner)  {
         if (logins_lst[i] in share0)
           projectDesc.share[logins_lst[i]] = share0[logins_lst[i]];
         else
