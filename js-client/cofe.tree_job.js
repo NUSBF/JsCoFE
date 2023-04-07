@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.02.23   <--  Date of Last Modification.
+ *    07.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -292,7 +292,7 @@ JobTree.prototype.readProjectData = function ( page_title,
         // if ('author' in tree.projectData.desc.owner)
         //   author = tree.projectData.desc.owner.author;
         var author = getProjectAuthor ( tree.projectData.desc );
-        if (author==__login_id)  author  = '';
+        if (author==__login_id)  author = '';
         if (author)  author = '(' + author + '):';
         var archiveID = '';
         var pName     = tree.projectData.desc.name;
