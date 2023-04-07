@@ -186,6 +186,10 @@ var author = projectDesc.owner.login;
   return author;
 }
 
+function getProjectOwner ( projectDesc )  {
+  return projectDesc.owner.login;
+}
+
 function inArchive ( projectDesc )  {
   return (projectDesc.archive && projectDesc.archive.in_archive);
 }
