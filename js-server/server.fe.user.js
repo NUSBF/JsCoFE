@@ -1332,11 +1332,10 @@ var sLoginData = getUserLoginData ( meta.successor );
         var sProjectDir = prj.getProjectDirPath ( sData,pName );
         if (utils.moveDir(uProjectDir,sProjectDir,false))  {
           var pData = prj.readProjectData ( sData,pName );
-          if (!('author' in pData.desc.owner))
+          if ((!('author' in pData.desc.owner)) ||
+              (pData.desc.owner.author==ud.__local_user_id))
             pData.desc.owner.author = pData.desc.owner.login;
           pData.desc.owner.login = sData.login;
-          // pData.desc.folderPath  = pData.desc.folderPath.replace (
-          //                                         'My Projects',folder_name );
           prj.writeProjectData ( sData,pData,true );
         } else
           failed_move.push ( pName );

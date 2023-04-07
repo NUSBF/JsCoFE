@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.04.23   <--  Date of Last Modification.
+ *    07.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,6 +36,7 @@ const user      = require('./server.fe.user');
 const class_map = require('./server.class_map');
 const rj        = require('./server.fe.run_job');
 const pd        = require('../js-common/common.data_project');
+const ud        = require('../js-common/common.data_user');
 const cmd       = require('../js-common/common.commands');
 const com_utils = require('../js-common/common.utils');
 const task_t    = require('../js-common/tasks/common.tasks.template');
@@ -2192,10 +2193,9 @@ var pData    = readProjectData ( loginData,data.name );
             pDesc.name  = data.new_name;
             pDesc.title = data.new_title;
             pDesc.share = {};  // no initial sharing on the cloned project
-            if (!('author' in pDesc.owner))  {
+            if ((!('author' in pDesc.owner)) || 
+                (pDesc.owner.author==ud.__local_user_id))
               pDesc.owner.author = pDesc.owner.login;
-              // pDesc.folderPath   = loginData.login + '\'s Projects';
-            }
             var rootFPath = loginData.login + '\'s Projects';
             if (!pDesc.folderPath.startsWith(rootFPath))
               pDesc.folderPath = rootFPath;
@@ -2288,7 +2288,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
         if (!prjDir)  {  // this means that the project is imported, not shared
           switch (chown_key)  {
             case 'user'     : if (!projectDesc.owner.author)
-                                projectDesc.owner.author   = loginData.login;
+                                projectDesc.owner.author = loginData.login;
                           break;
             case '*'        : projectDesc.owner.author   = '';
                           break;
@@ -2298,7 +2298,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
                               prj_meta.desc.folderPath   = pd.folder_path.tutorials;
                           break;
             default         : if (!projectDesc.owner.author)
-                                projectDesc.owner.author   = prj_meta.desc.owner.login;
+                                projectDesc.owner.author = prj_meta.desc.owner.login;
           }
           projectDesc.owner.login = loginData.login;
           projectDesc.share = {};  // no initial sharing on imported project
@@ -2307,6 +2307,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
 
       if (!projectDesc.owner.login)
         projectDesc.owner.login = loginData.login;
+      if (projectDesc.owner.author==ud.__local_user_id)
+        projectDesc.owner.author = loginData.login;
       prj_meta.desc.owner = projectDesc.owner;
       prj_meta.desc.share = projectDesc.share;
       utils.writeObject ( prj_meta_path,prj_meta    );
