@@ -293,7 +293,7 @@ JobTree.prototype.readProjectData = function ( page_title,
         //   author = tree.projectData.desc.owner.author;
         var author = getProjectAuthor ( tree.projectData.desc );
         if (author==__login_id)  author  = '';
-        if (author)  author += ':';
+        if (author)  author = '(' + author + '):';
         var archiveID = '';
         var pName     = tree.projectData.desc.name;
         if (tree.in_archive)  {
