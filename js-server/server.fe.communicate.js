@@ -286,8 +286,8 @@ function Communicate ( server_request )  {
   //   }
   // }
 
-  // if (this.filePath.endsWith('.mtz'))
-  //   console.log ( "calculated path " + this.filePath);
+  if (this.filePath.endsWith('.wasm'))
+    console.log ( "calculated path " + this.filePath);
 
   this.mimeType = utils.getMIMEType ( this.filePath );
 
