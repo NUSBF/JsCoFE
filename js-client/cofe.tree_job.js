@@ -291,15 +291,15 @@ JobTree.prototype.readProjectData = function ( page_title,
         // var author = tree.projectData.desc.owner.login;
         // if ('author' in tree.projectData.desc.owner)
         //   author = tree.projectData.desc.owner.author;
-        var author = getProjectAuthor ( tree.projectData.desc );
-        if (author==__login_id)  author = '';
+        var author = '';
+        if (author!=__login_id)
+          author = getProjectAuthor ( tree.projectData.desc );
         if (author)  author = '(' + author + '):';
         var archiveID = '';
         var pName     = tree.projectData.desc.name;
         if (tree.in_archive)  {
-          archiveID = ', <i>arch.ID:</i> ' + 
-                      tree.projectData.desc.archive.id;
-          pName = tree.projectData.desc.archive.project_name;
+          archiveID = ' <i>arch.ID:</i> ' + tree.projectData.desc.archive.id;
+          pName     = tree.projectData.desc.archive.project_name;
         }
         var root_title = __projectStyle ( author + '[' + pName  + ']' + archiveID );
 
