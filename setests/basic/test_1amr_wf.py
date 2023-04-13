@@ -34,8 +34,12 @@ def startAMR_mdm2(driver, dirName, waitShort=90):
     seqFileName = os.path.join(dirName, 'mdm2_nolig', '4hg7.fasta')
 
     projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
-    projectInputs[-2].send_keys(mtzFileName)
-    projectInputs[-1].send_keys(seqFileName)
+    if d.cloud == "https://ccp4serv6.rc-harwell.ac.uk/jscofe-pre/":
+        projectInputs[-2].send_keys(mtzFileName)
+        projectInputs[-1].send_keys(seqFileName)
+    else:
+        projectInputs[-3].send_keys(mtzFileName)
+        projectInputs[-2].send_keys(seqFileName)
     time.sleep(2)
     sf.clickByXpath(driver, "//button[normalize-space()='Apply & Upload']")
     time.sleep(3)
