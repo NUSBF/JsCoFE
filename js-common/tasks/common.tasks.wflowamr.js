@@ -67,7 +67,8 @@ function TaskWFlowAMR()  {
       tooltip     : '[Optional] Provide a path to CIF file with your ligand definition ',
       inputId     : 'fcif',   // input Id for referencing input fields
       path        : '',
-      min         : 0         // minimum acceptable number of data instances
+      min         : 0,         // minimum acceptable number of data instances
+      max         : 1
     }
   ];
 

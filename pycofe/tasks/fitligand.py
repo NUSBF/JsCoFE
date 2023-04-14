@@ -104,7 +104,7 @@ class FitLigand(basic.TaskDriver):
         nligs   = 0
         ligands = [fn for fn in os.listdir("./") if fn.endswith(".pdb")]
         have_results = False
-        if len(ligands)>0:
+        if len(ligands)>=0:
 
             # prepare dictionary file for structure
             libadd = libin

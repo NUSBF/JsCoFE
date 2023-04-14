@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    05.11.22   <--  Date of Last Modification.
+#    14.04.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -13,7 +13,7 @@
 #
 #  Auto-MR workflow template
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2022
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -116,6 +116,16 @@ def makeNextTask ( crTask,data ):
         auto_api.addContext("modelcraft_revision", data["revision"])
         resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
         # excludedTasks = auto_api.getContext('excludedTasks')
+        ligand = auto_api.getContext("lig")
+        if ligand:
+            auto_tasks.fit_ligand("fitligand1", ligand, data["revision"], crTask.autoRunName)
+            return
+        # ligand description present? we shall make a ligand
+
+        ligdesc = auto_api.getContext("ligdesc")
+        if ligdesc:
+            auto_tasks.make_ligand('makeLigand1', ligdesc, data["revision"], crTask.autoRunName)
+            return
 
         if float(data["Rfree"]) < 0.4 : # No other rebuilding if Modelcraft performed well
             if resHi > 3.0:
@@ -138,6 +148,79 @@ def makeNextTask ( crTask,data ):
     #     auto_api.addContext("arpWarp_rfree", data["Rfree"])
     #     auto_tasks.xyzWaters('xyzWatersRemoval', data["revision"], crTask.autoRunName)
     #     return
+
+    elif crTask._type=="TaskMakeLigand":
+        if data["ligand"]:
+            auto_api.addContext ( "lig", data["ligand"] )
+            ligand = data["ligand"]
+            auto_tasks.fit_ligand("fitligand2", ligand, data["revision"], crTask.autoRunName)
+        else:
+            strTree = 'Sorry, ligand generation has failed - please check input parameters'
+            strText = 'Please carefully check all the input parameters; you can re-run the task for making ' + \
+                      'ligands by cloning and then enetering correct parameters.\n'
+            auto_tasks.remark("rem_sorry3", strTree, 9, strText, crTask.autoRunName) # 9 - Red
+
+
+    elif crTask._type=="TaskFitLigand":
+        if crTask.autoRunName == "fitligand1":
+
+            ligdesc = auto_api.getContext("ligdesc")
+            if ligdesc:
+                auto_tasks.make_ligand('makeLigand1', ligdesc, data["revision"], crTask.autoRunName)
+                auto_api.addContext("makeLigand1_revision", data["revision"])
+                auto_api.addContext("makeLigand1", crTask.autoRunName)
+                return
+        
+
+
+        if crTask.autoRunName == "fitligand2":
+        #     auto_tasks.refmac_vdw("refmacAfterLigand", data["revision"], crTask.autoRunName)
+        # else:        
+            
+            if int(data["nfitted"]) > 0:
+
+                auto_tasks.refmac_vdw("refmacAfterLigand", data["revision"], crTask.autoRunName)
+                return
+            
+            elif int(data["nfitted"]) == 0:
+
+            
+                strTree = 'Sorry, could not fit a ligand (look inside for comments)'
+                strText = 'Please carefully check all the input parameters and whether ligand has been generated correctly; ' + \
+                        'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
+                # auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
+                # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
+                auto_tasks.refmac_vdw("refmacAfterLigand",auto_api.getContext("makeLigand1_revision"), auto_api.getContext("makeLigand1"))
+                return
+            else:
+                strTree = 'Sorry, could not fit a ligand (look inside for comments)'
+                strText = 'Please carefully check all the input parameters and whether ligand has been generated correctly; ' + \
+                        'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
+
+
+        if int(data["nfitted"]) > 0:
+            auto_tasks.refmac_vdw("refmacAfterLigand", data["revision"], crTask.autoRunName)
+        else:
+            strTree = 'Sorry, could not fit a ligand (look inside for comments)'
+            strText = 'Please carefully check all the input parameters and whether ligand has been generated correctly; ' + \
+                      'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
+            # auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
+            # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
+            auto_tasks.refmac_vdw("refmacAfterLigand", data["revision"], crTask.autoRunName)
+
+
+    elif crTask._type=="TaskFitWaters":
+        auto_tasks.refligWF("ref_afterLig_", data["revision"], crTask.autoRunName)
+
+
+    elif crTask._type=="TaskDeposition":
+        strTree = 'Automated Workflow has finished succesfully (look inside for comments)'
+        strText = 'Please carefully examine the report to get an idea about quality of automatically built structure..\n' + \
+                  'Please do not deposit even if report looks reasonable, as nothing can substitute careful examination ' + \
+                  'of the structure by a human expert. Please run COOT and use the report and COOT validation tools ' + \
+                  'as guidance for further improvement of your structure.\n'
+        auto_tasks.remark("rem_Last", strTree, 4, strText, crTask.autoRunName)  # 4 - Green
+        return
 
 
     elif crTask._type == "TaskXyzUtils":
