@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.23   <--  Date of Last Modification.
+ *    13.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -288,11 +288,11 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var path  = require('path');
-  var conf  = require('../../js-server/server.configuration');
-  var prj   = require('../../js-server/server.fe.projects');
-  var utils = require('../../js-server/server.utils');
-  var dtemp = require('../../js-common/dtypes/common.dtypes.template');
+  const path  = require('path');
+  const conf  = require('../../js-server/server.configuration');
+  const prj   = require('../../js-server/server.fe.projects');
+  const utils = require('../../js-server/server.utils');
+  // var dtemp = require('../../js-common/dtypes/common.dtypes.template');
 
   TaskWebCoot.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -324,6 +324,8 @@ if (!__template)  {
         utils.copyFile ( path.join(srcJobDir,coot_meta.files[i]),
                          path.join(jobDir,coot_meta.files[i]) );
     }
+
+    utils.mkDir_check ( path.join(jobDir,'backups') );
 
     // var cfg = conf.getFEProxyConfig();
     // if (!cfg)
