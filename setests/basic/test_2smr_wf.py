@@ -35,9 +35,16 @@ def startSMR_RNAse(driver, dirName, waitShort=90):
     pdbFileName = os.path.join(dirName, 'rnase', 'rnase_polyala.pdb')
 
     projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
-    projectInputs[-3].send_keys(mtzFileName)
-    projectInputs[-2].send_keys(pdbFileName)
-    projectInputs[-1].send_keys(seqFileName)
+
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-pre/":
+        projectInputs[-3].send_keys(mtzFileName)
+        projectInputs[-2].send_keys(pdbFileName)
+        projectInputs[-1].send_keys(seqFileName)
+    else:
+        projectInputs[-4].send_keys(mtzFileName)
+        projectInputs[-3].send_keys(pdbFileName)
+        projectInputs[-2].send_keys(seqFileName)
+    
     time.sleep(2)
 
     sf.clickByXpath(driver, "//button[normalize-space()='Apply & Upload']")
