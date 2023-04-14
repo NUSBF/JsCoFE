@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.02.22   <--  Date of Last Modification.
+#    11.04.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -35,6 +35,13 @@ from   pycofe.auto   import auto
 
 # ============================================================================
 # Make CCP4go driver
+
+# simulates ligand data structure that is normally coming from JS part
+class ligandCarrier():
+    def __init__(self, source, smiles, code):
+        self.source = source
+        self.smiles = smiles
+        self.code = code
 
 class WFlowSMR(import_task.Import):
 
@@ -68,6 +75,11 @@ class WFlowSMR(import_task.Import):
 
         if "DataXYZ" in self.outputDataBox.data:
             self.xyz = self.outputDataBox.data["DataXYZ"]
+        if "DataLibrary" in self.outputDataBox.data:
+            self.lib = self.outputDataBox.data["DataLibrary"][0]
+
+        if "DataLigand" in self.outputDataBox.data:
+            self.lig = self.outputDataBox.data["DataLigand"]
 
         self.ligdesc = []
         ldesc = getattr ( self.task,"input_ligands",[] )
@@ -96,12 +108,16 @@ class WFlowSMR(import_task.Import):
             self.seq = self.input_data.data.seq
             # for i in range(len(self.input_data.data.seq)):
             #     self.seq.append ( self.makeClass(self.input_data.data.seq[i]) )
+        ligMessage = ''
+
 
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
             self.xyz = self.input_data.data.xyz
 
         if hasattr(self.input_data.data,"ligand"):  # optional data parameter
             self.lig = self.input_data.data.ligand
+
+            ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
 
             # for i in range(len(self.input_data.data.ligand)):
             #     self.ligands.append ( self.makeClass(self.input_data.data.ligand[i]) )
@@ -118,9 +134,16 @@ class WFlowSMR(import_task.Import):
         self.xyz = []  # coordinates (model/apo)
         self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
+        self.lib = None
+
 
         summary_line = ""
         ilist = []
+
+        # ligand library CIF has been provided
+        if self.lib:
+            ligand = self.makeClass(self.lib)
+            self.lig.append(ligand)
 
         fileDir = self.outputDir()
         if hasattr(self.input_data.data,"hkldata"):
