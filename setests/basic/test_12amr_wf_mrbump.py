@@ -31,7 +31,7 @@ def startAMR_lyzo(driver, dirName, waitShort=90):
 
     projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
 
-    if d.cloud == "https://ccp4serv6.rc-harwell.ac.uk/jscofe-pre/":
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-pre/":
         projectInputs[-2].send_keys(mtzFileName)
         projectInputs[-1].send_keys(seqFileName)
     else:
