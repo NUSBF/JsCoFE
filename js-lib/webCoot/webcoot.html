@@ -30,6 +30,10 @@
     const sf_meta     = [[meta]];
     const urlPrefix   = '.';
 
+    // function onWindowMessage ( event )  {
+    //   alert ( event.message );
+    // }
+
     const exportToCloudCallback = (molName,molData) => {
       window.parent.postMessage ({
           'command' : 'saveFile',
@@ -37,6 +41,7 @@
           'data'    : molData,
           'confirm' : true,
           'meta'    : sf_meta
+          // 'callback' : window
       }, window.location );
     }
     const savePreferencesCallback = (preferences) => {
@@ -53,7 +58,7 @@
         window.parent.postMessage ({
             'command' : 'saveFile',
             'fpath'   : 'backups/backup_' + obj.serNo,
-            'data'    : obj.data,
+            'data'    : JSON.stringify(obj.data),
             'confirm' : false,
             'meta'    : sf_meta
         }, window.location );
@@ -112,7 +117,7 @@
                            moorhenWrapper.start()
                        break;
       default            :  moorhenWrapper.addOnExportListener   ( exportToCloudCallback );
-                            moorhenWrapper.setBackupSaveListener ( saveBackupCallback    );
+                            // moorhenWrapper.setBackupSaveListener ( saveBackupCallback    );
                             moorhenWrapper.setRootId             ( rootId     );
                             moorhenWrapper.setInputFiles         ( inputFiles );
                             moorhenWrapper.start()

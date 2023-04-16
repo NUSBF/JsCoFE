@@ -843,16 +843,19 @@ if (window.addEventListener) {
   alert ( 'No Window messaging' );
 
 
-function onWindowMessage(event) {
+function onWindowMessage ( event ) {
   // Check sender origin to be trusted
   // if (event.origin !== "http://example.com") return;
 
   var edata = event.data;
 
   if (edata.command=='saveFile')  {
-    serverRequest ( fe_reqtype.saveJobFile,edata,'Save file',
+
+    serverRequest ( fe_reqtype.saveJobFile,edata,'Save job file',
       function(rdata){
         if (edata.confirm)  {
+          // if ('callback' in edata)
+          //   edata.callback.postMessage ({ message: 'done!'} );
           if (rdata.project_missing)  {
             new MessageBox (  'Project not found',
                               '<h3>Project "' + edata.meta.project +
@@ -872,7 +875,22 @@ function onWindowMessage(event) {
           }
         }
       },null,'persist' );
+
+  } else if (edata.command=='getFile')  {
+
+      var req_data  = {};
+      req_data.meta = {};
+      req_data.meta.project = edata.meta.project;
+      req_data.meta.id      = edata.meta.id;
+      req_data.meta.file    = edata.fpath;
+
+      serverRequest ( fe_reqtype.getJobFile,req_data,'Get job file',
+                      function(data){
+        // dsp.table.setLabel ( '<pre>'+data+'</pre>', dsp.trow-1,1, 1,1 );
+      },null,'persist');
+
   } else if (edata.command=='saveWebCootPreferences')  {
+
     let userData   = new UserData();
     userData.login = __login_id;
     userData.pwd   = '';  // can save only some records without password
@@ -880,6 +898,7 @@ function onWindowMessage(event) {
     userData.settings  = __user_settings;
     serverRequest ( fe_reqtype.updateUserData,userData,
                     'WebCoot preferences update',function(response){} );
+
   }
 
 //      console.log ( 'Unknown windows message command: ' + edata.command );
