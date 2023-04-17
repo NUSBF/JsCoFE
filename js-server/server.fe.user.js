@@ -874,6 +874,7 @@ function userLogout ( loginData )  {
 
 function updateUserData ( loginData,userData )  {
 var response = null;  // must become a cmd.Response object to return
+var notify   = false;
 
   log.standard ( 8,'update user data, login ' + loginData.login );
 
@@ -882,6 +883,7 @@ var response = null;  // must become a cmd.Response object to return
   if ((userData.login!=ud.__local_user_id) && pwd)  {
   // if (userData.login!='devel')  {
     uData.pwd = hashPassword ( pwd );
+    notify    = true;
   } else  {
     // can only change some records without password 
     var uData = readUserData ( loginData );
@@ -892,7 +894,7 @@ var response = null;  // must become a cmd.Response object to return
         uData.helpTopics = userData.helpTopics;
       if ('authorisation' in userData)  
         uData.authorisation = userData.authorisation;
-      if ('settings' in userData)  
+      if ('settings' in userData)
         uData.settings = userData.settings;
     } else  {
       response = new cmd.Response ( cmd.fe_retcode.readError,
@@ -906,11 +908,13 @@ var response = null;  // must become a cmd.Response object to return
 
     if (utils.writeObject(userFilePath,uData))  {
 
-      response = new cmd.Response ( cmd.fe_retcode.ok,'',
-        emailer.sendTemplateMessage ( uData,
-                  cmd.appName() + ' Account Update',
-                  'account_updated_user',{} )
-      );
+      var msg = '';
+      if (notify)
+        msg = emailer.sendTemplateMessage ( uData,
+                                            cmd.appName() + ' Account Update',
+                                            'account_updated_user',{} );
+
+      response = new cmd.Response ( cmd.fe_retcode.ok,'',msg );
 
     } else  {
       response = new cmd.Response ( cmd.fe_retcode.writeError,
