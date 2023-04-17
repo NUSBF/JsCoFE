@@ -37,7 +37,7 @@ function TaskMrParse()  {
   this._type = 'TaskMrParse';
   this.name  = 'mrparse';
   this.setOName ( '*' );  // default output file name template
-  this.title = 'Find and prepare MR models with MrParse!';
+  this.title = 'Find and prepare MR models with MrParse';
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataSequence':['protein']}, // data type(s) and subtype(s)
