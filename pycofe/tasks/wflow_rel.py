@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    18.04.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -67,6 +67,8 @@ class WFlowREL(basic.TaskDriver):
             self.lig = self.input_data.data.ligand
             ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
 
+        
+
 
         ldesc = getattr ( self.task.parameters.sec1,"contains" )
         if ldesc.SMILES.value or ldesc.CODE3.value:
@@ -80,10 +82,16 @@ class WFlowREL(basic.TaskDriver):
                     code = self.get_ligand_code(exclude_list)
 
                 newLig =ligandCarrier(ldesc.SOURCE_SEL.value, ldesc.SMILES.value, code)
-                ligMessage = 'Workflow will generate ligand from SMILES string: ' + str(newLig.smiles)
+                if len(ligMessage) >1:
+                    ligMessage = ligMessage + ' and ligand from SMILES string: ' + str(newLig.smiles)
+                else:
+                    ligMessage = 'Workflow will generate ligand from SMILES string: ' + str(newLig.smiles)
             elif ldesc.SOURCE_SEL.value == 'M':
                 newLig =ligandCarrier(ldesc.SOURCE_SEL.value, ldesc.SMILES.value, ldesc.CODE3.value)
-                ligMessage = 'Workflow will use ligand from monomer library: ' + str(newLig.code)
+                if len(ligMessage) >1:
+                    ligMessage = ligMessage + ' and ligand from monomer library: ' + str(newLig.code)
+                else:
+                    ligMessage = 'Workflow will use ligand from monomer library: ' + str(newLig.code)
             self.ligdesc.append ( newLig )
 
 

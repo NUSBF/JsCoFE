@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    21.04.22   <--  Date of Last Modification.
+#    18.04.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -36,7 +36,15 @@ from   pycofe.auto   import auto
 # ============================================================================
 # Make CCP4go driver
 
+class ligandCarrier():
+    def __init__(self, source, smiles, code):
+        self.source = source
+        self.smiles = smiles
+        self.code = code
+
 class WFlowAFMR(import_task.Import):
+    def smiles_file_path(self): return "smiles.smi"
+
 
     import_dir = "uploads"
     def importDir(self):  return self.import_dir       # import directory
@@ -65,6 +73,12 @@ class WFlowAFMR(import_task.Import):
 
         if "DataSequence" in self.outputDataBox.data:
             self.seq = self.outputDataBox.data["DataSequence"]
+
+        if "DataLibrary" in self.outputDataBox.data:
+            self.lib = self.outputDataBox.data["DataLibrary"][0]
+        
+        if "DataLigand" in self.outputDataBox.data:
+            self.lig = self.outputDataBox.data["DataLigand"]
 
         self.ligdesc = []
         ldesc = getattr ( self.task,"input_ligands",[] )
@@ -111,9 +125,16 @@ class WFlowAFMR(import_task.Import):
         self.seq = []  # list of sequence objects
         self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
+        self.lib = None
+
 
         summary_line = ""
         ilist = []
+
+        #  ligand library CIF has been provided
+        if self.lib:
+            ligand = self.makeClass(self.lib)
+            self.lig.append(ligand)
 
         fileDir = self.outputDir()
         if hasattr(self.input_data.data,"hkldata"):

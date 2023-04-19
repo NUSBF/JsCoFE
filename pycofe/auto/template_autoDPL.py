@@ -186,7 +186,7 @@ def makeNextTask ( crTask,data ):
                 strTree = 'Sorry, could not fit a ligand (look inside for comments)'
                 strText = 'Please carefully check all the input parameters and whether ligand has been generated correctly; ' + \
                         'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
-                # auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
+                auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
                 # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
                 auto_tasks.refmac_vdw("refmacAfterLigand",auto_api.getContext("makeLigand1_revision"), auto_api.getContext("makeLigand1"))
                 return

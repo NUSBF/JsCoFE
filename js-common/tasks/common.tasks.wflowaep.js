@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.11.22   <--  Date of Last Modification.
+ *    18.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskyi, A. Lebedev, M. Fando 2021-2022
+ *  (C) E. Krissinel, O. Kovalevskyi, A. Lebedev, M. Fando 2021-2023
  *
  *  =================================================================
  *
@@ -58,6 +58,14 @@ function TaskWFlowAEP()  {
       inputId     : 'fseq',   // input Id for referencing input fields
       path        : '',
       min         : 1         // minimum acceptable number of data instances
+    },{
+      file_types  : '.cif', // data type(s) and subtype(s)
+      label       : 'Ligand CIF definition', // label for input dialog
+      tooltip     : '[Optional] Provide a path to CIF file with your ligand definition ',
+      inputId     : 'fcif',   // input Id for referencing input fields
+      path        : '',
+      min         : 0,         // minimum acceptable number of data instances
+      // max         : 1
     }
   ];
 
