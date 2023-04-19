@@ -118,14 +118,65 @@ def makeNextTask ( crTask,data ):
 
 
     elif crTask._type=="TaskFitLigand":
-        if int(data["nfitted"]) > 0:
-            auto_tasks.refmac_vdw("refmacAfterLigand", data["revision"], crTask.autoRunName)
-        else:
-            strTree = 'Sorry, could not fit a ligand (look inside for comments)'
-            strText = 'Please carefully check all the input parameters and whether ligand has been generated correctly; ' + \
-                      'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
-            auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
-            auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
+        if crTask.autoRunName == "fitligand1":
+
+            ligdesc = auto_api.getContext("ligdesc")
+            if ligdesc:
+                auto_tasks.make_ligand('makeLigand1', ligdesc, data["revision"], crTask.autoRunName)
+                auto_api.addContext("makeLigand1_revision", data["revision"])
+                auto_api.addContext("makeLigand1", crTask.autoRunName)
+                return
+        
+
+
+        if crTask.autoRunName == "fitligand2":
+        #     auto_tasks.refmac_vdw("refmacAfterLigand", data["revision"], crTask.autoRunName)
+        # else:        
+            
+            if int(data["nfitted"]) > 0:
+
+                auto_tasks.refmac_vdw("refmacAfterLigand", data["revision"], crTask.autoRunName)
+                return
+            
+            elif int(data["nfitted"]) == 0:
+
+            
+                strTree = 'Sorry, could not fit a ligand (look inside for comments)'
+                strText = 'Please carefully check all the input parameters and whether ligand has been generated correctly; ' + \
+                        'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
+                auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
+                # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
+                auto_tasks.refmac_vdw("refmacAfterLigand",auto_api.getContext("makeLigand1_revision"), auto_api.getContext("makeLigand1"))
+                return
+            else:
+                strTree = 'Sorry, could not fit a ligand (look inside for comments)'
+                strText = 'Please carefully check all the input parameters and whether ligand has been generated correctly; ' + \
+                        'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
+
+
+            # if int(data["nfitted"]) > 0:
+            #     auto_tasks.refmac_vdw("refmacAfterLigand", data["revision"], crTask.autoRunName)
+            # else:
+            #     strTree = 'Sorry, could not fit a ligand (look inside for comments)'
+            #     strText = 'Please carefully check all the input parameters and whether ligand has been generated correctly; ' + \
+            #             'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
+            #     # auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
+            #     # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
+            #     auto_tasks.refmac_vdw("refmacAfterLigand", data["revision"], crTask.autoRunName)
+            
+
+    elif crTask._type=="TaskFitWaters":
+        auto_tasks.refligWF("ref_afterLig_", data["revision"], crTask.autoRunName)
+
+
+    elif crTask._type=="TaskDeposition":
+        strTree = 'Automated Workflow has finished succesfully (look inside for comments)'
+        strText = 'Please carefully examine the report to get an idea about quality of automatically built structure..\n' + \
+                  'Please do not deposit even if report looks reasonable, as nothing can substitute careful examination ' + \
+                  'of the structure by a human expert. Please run COOT and use the report and COOT validation tools ' + \
+                  'as guidance for further improvement of your structure.\n'
+        auto_tasks.remark("rem_Last", strTree, 4, strText, crTask.autoRunName)  # 4 - Green
+        return
 
 
     elif crTask._type=="TaskFitWaters":

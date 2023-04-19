@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    14.04.23   <--  Date of Last Modification.
+#    17.04.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -116,30 +116,11 @@ def makeNextTask ( crTask,data ):
         auto_api.addContext("modelcraft_revision", data["revision"])
         resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
         # excludedTasks = auto_api.getContext('excludedTasks')
-        ligand = auto_api.getContext("lig")
-        if ligand:
-            auto_tasks.fit_ligand("fitligand1", ligand, data["revision"], crTask.autoRunName)
-            return
-        # ligand description present? we shall make a ligand
-
-        ligdesc = auto_api.getContext("ligdesc")
-        if ligdesc:
-            auto_tasks.make_ligand('makeLigand1', ligdesc, data["revision"], crTask.autoRunName)
-            return
-
         if float(data["Rfree"]) < 0.4 : # No other rebuilding if Modelcraft performed well
-            if resHi > 3.0:
-                auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
-            else:
-                auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
-            return
+
+            auto_tasks.xyzWaters('xyzWatersRemoval', data["revision"], crTask.autoRunName)
         else:
-            # # Modelcraft performed not very well, Rfree > 0.3
-            # # First choice in now ARP/wARP (if resolution permits and if installed), then CCP4Build
-            # if ("warpbin" in os.environ) and (resHi <= 2.5) and ('TaskArpWarp' not in excludedTasks):
-            #     auto_tasks.arpwarp("arpwarp", auto_api.getContext("build_revision"),auto_api.getContext("build_parent"))
-            # else:
-            #     auto_tasks.ccp4build ( "ccp4Build",auto_api.getContext("build_revision"),auto_api.getContext("build_parent") )
+       
             auto_tasks.ccp4build ( "ccp4Build", auto_api.getContext("build_revision"), auto_api.getContext("build_parent") )
 
         return
@@ -204,7 +185,7 @@ def makeNextTask ( crTask,data ):
             strTree = 'Sorry, could not fit a ligand (look inside for comments)'
             strText = 'Please carefully check all the input parameters and whether ligand has been generated correctly; ' + \
                       'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
-            # auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
+            auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
             # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
             auto_tasks.refmac_vdw("refmacAfterLigand", data["revision"], crTask.autoRunName)
 
@@ -226,11 +207,27 @@ def makeNextTask ( crTask,data ):
     elif crTask._type == "TaskXyzUtils":
         parentTask = crTask.autoRunName
         revision = data["revision"]
-        resHi = float(data["revision"].HKL.dataset.RESO[1]) # RESO[0] is low res limit
-        if resHi > 3.0:
-            auto_tasks.refmac_jelly("refAfterArpwarpHOHremoval", revision, parentTask, ncyc=10)
-        else:
-            auto_tasks.refmac("refAfterArpwarpHOHremoval", revision, parentTask)
+        resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
+        # excludedTasks = auto_api.getContext('excludedTasks')
+        ligand = auto_api.getContext("lig")
+        if ligand:
+            auto_tasks.fit_ligand("fitligand1", ligand, data["revision"], crTask.autoRunName)
+            return
+        # ligand description present? we shall make a ligand
+
+        ligdesc = auto_api.getContext("ligdesc")
+        if ligdesc:
+            auto_tasks.make_ligand('makeLigand1', ligdesc, data["revision"], crTask.autoRunName)
+            return
+        
+        if float(data["Rfree"]) < 0.4 : # No other rebuilding if Modelcraft performed well
+            if resHi > 3.0:
+                auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
+            else:
+                
+
+                auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+
         return
 
 

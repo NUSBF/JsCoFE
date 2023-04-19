@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    18.04.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -35,6 +35,14 @@ from   pycofe.auto   import auto
 
 # ============================================================================
 # Make CCP4go driver
+
+
+# simulates ligand data structure that is normally coming from JS part
+class ligandCarrier():
+    def __init__(self, source, smiles, code):
+        self.source = source
+        self.smiles = smiles
+        self.code = code
 
 class WFlowAEP(import_task.Import):
 
@@ -65,6 +73,12 @@ class WFlowAEP(import_task.Import):
 
         if "DataXYZ" in self.outputDataBox.data:
             self.xyz = self.outputDataBox.data["DataXYZ"]
+
+        if "DataLibrary" in self.outputDataBox.data:
+            self.lib = self.outputDataBox.data["DataLibrary"][0]
+        
+        if "DataLigand" in self.outputDataBox.data:
+            self.lig = self.outputDataBox.data["DataLigand"]
 
         self.ligdesc = []
         ldesc = getattr ( self.task,"input_ligands",[] )
@@ -98,9 +112,14 @@ class WFlowAEP(import_task.Import):
 
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
             self.xyz = self.input_data.data.xyz
+        
+        ligMessage = ''
+
 
         if hasattr(self.input_data.data,"ligand"):  # optional data parameter
             self.lig = self.input_data.data.ligand
+
+            ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
 
             # for i in range(len(self.input_data.data.ligand)):
             #     self.ligands.append ( self.makeClass(self.input_data.data.ligand[i]) )
@@ -117,6 +136,13 @@ class WFlowAEP(import_task.Import):
         self.xyz = []  # coordinates (model/apo)
         self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
+        self.lib = None
+
+        # ligand library CIF has been provided
+        if self.lib:
+            ligand = self.makeClass(self.lib)
+            self.lig.append(ligand)
+
 
         summary_line = ""
         ilist = []

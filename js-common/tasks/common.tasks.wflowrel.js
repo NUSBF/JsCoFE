@@ -78,7 +78,7 @@ function TaskWFlowREL()  {
               title    : '',
               open     : true,  // true for the section to be initially open
               position : [1,0,1,5],
-              showon   : {'ligand':[0,-1]}, // from this and input data section
+              showon   : {'ligand':[1,-1]}, // from this and input data section
               contains : {
                         SOURCE_SEL : {
                                 type     : 'combobox',

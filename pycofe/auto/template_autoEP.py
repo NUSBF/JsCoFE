@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    18.04.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -13,7 +13,7 @@
 #
 #  Auto-EP workflow template
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -68,7 +68,10 @@ def makeNextTask ( crTask,data ):
             if resHi > 3.0:
                 auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
             else:
-                auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+                # auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+                auto_api.addContext("build_parent", crTask.autoRunName)
+                auto_api.addContext("build_revision", data["revision"])
+                auto_tasks.modelcraft( "modelcraftAfterSimbad",data["revision"],crTask.autoRunName )
         else: # Rfree > 0.4
             strTree = 'Sorry, automated phasing seems to fail as Rfree is only %0.3f (look inside for more comments)' % rFree
             strText = 'Although automated phasing seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
@@ -79,9 +82,72 @@ def makeNextTask ( crTask,data ):
 
             auto_tasks.remark("rem_sorry1", strTree, 9, strText, crTask.autoRunName) # 9 - Red
 
+    elif crTask._type=="TaskModelCraft":
+        # save rfree, completness
+        auto_api.addContext("modelcraft_rfree", data["Rfree"])
+        auto_api.addContext("modelcraft_taskName", crTask.autoRunName)
+        auto_api.addContext("modelcraft_revision", data["revision"])
+        resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
+        # excludedTasks = auto_api.getContext('excludedTasks')
+        if float(data["Rfree"]) < 0.4 : # No other rebuilding if Modelcraft performed well
+
+            auto_tasks.xyzWaters('xyzWatersRemoval', data["revision"], crTask.autoRunName)
+        else:
+       
+            auto_tasks.ccp4build ( "ccp4Build", auto_api.getContext("build_revision"), auto_api.getContext("build_parent") )
+
+        
+        return
+    elif crTask._type == "TaskXyzUtils":
+        parentTask = crTask.autoRunName
+        revision = data["revision"]
+        resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
+        # excludedTasks = auto_api.getContext('excludedTasks')
+        ligand = auto_api.getContext("lig")
+        if ligand:
+            auto_tasks.fit_ligand("fitligand1", ligand, data["revision"], crTask.autoRunName)
+            return
+        # ligand description present? we shall make a ligand
+
+        ligdesc = auto_api.getContext("ligdesc")
+        if ligdesc:
+            auto_tasks.make_ligand('makeLigand1', ligdesc, data["revision"], crTask.autoRunName)
+            return
+        
+        if float(data["Rfree"]) < 0.4 : # No other rebuilding if Modelcraft performed well
+            if resHi > 3.0:
+                auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
+            else:
+                
+
+                auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+
+        return
+
+
+    elif crTask._type == "TaskCCP4Build":
+        if float(data["Rfree"]) > float(auto_api.getContext("modelcraft_rfree")):
+            parentTask = auto_api.getContext("modelcraft_taskName")
+            revision = auto_api.getContext("modelcraft_revision")
+        else:
+            parentTask = crTask.autoRunName
+            revision = data["revision"]
+        resHi = float(data["revision"].HKL.dataset.RESO[1]) # RESO[0] is low res limit
+        if resHi > 3.0:
+            auto_tasks.lorestr("lorestr", revision, parentTask)
+        else:
+            if len(data["lig"]) > 0:
+                    auto_api.addContext("lig", data["lig"][0])
+            if len(data["ligdesc"]) > 0:
+                auto_api.addContext("ligdesc", data["ligdesc"][0])
+            auto_tasks.refligWF("refligWF_", revision, parentTask)
+        return
+
 
     elif crTask._type=="TaskLorestr":
-        auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+        auto_api.addContext("build_parent", crTask.autoRunName)
+        auto_api.addContext("build_revision", data["revision"])
+        auto_tasks.modelcraft( "modelcraftAfterSimbad",data["revision"],crTask.autoRunName )
 
 
     else:
@@ -89,6 +155,9 @@ def makeNextTask ( crTask,data ):
 
 
     return
+
+
+
 
     # Old code archive
 
