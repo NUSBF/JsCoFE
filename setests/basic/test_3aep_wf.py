@@ -34,23 +34,46 @@ def startAEP_P9(driver, dirName, waitShort=90):
     seqFileName = os.path.join(dirName, 'p9_sca', 'p9.seq')
 
     inputAnoScat = driver.find_elements_by_xpath("//input[@title='Specify atom type of dominant anomalous scatterer (e.g., S, SE etc.), or leave blank if uncertain.']")
-    inputAnoScat[-1].clear()
-    inputAnoScat[-1].send_keys('Se')
-    time.sleep(2)
-    projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
-    projectInputs[-2].send_keys(mtzFileName)
-    projectInputs[-1].send_keys(seqFileName)
-#title: Specify atom type of dominant anomalous scatterer (e.g., S, SE etc.), or leave blank if uncertain.
-    time.sleep(2)
 
-    sf.clickByXpath(driver, "//button[normalize-space()='Apply & Upload']")
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-pre/":
 
-    time.sleep(3)
+        inputAnoScat[-1].clear()
+        inputAnoScat[-1].send_keys('Se')
+        time.sleep(2)
+        projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
+        projectInputs[-2].send_keys(mtzFileName)
+        projectInputs[-1].send_keys(seqFileName)
+    #title: Specify atom type of dominant anomalous scatterer (e.g., S, SE etc.), or leave blank if uncertain.
+        time.sleep(2)
 
-    inputWaveLength = driver.find_elements_by_xpath("//input[@type='text']")
-    inputWaveLength[-1].click()
-    inputWaveLength[-1].clear()
-    inputWaveLength[-1].send_keys('1.2')
+        sf.clickByXpath(driver, "//button[normalize-space()='Apply & Upload']")
+
+        time.sleep(3)
+
+        inputWaveLength = driver.find_elements_by_xpath("//input[@type='text']")
+        inputWaveLength[-1].click()
+        inputWaveLength[-1].clear()
+        inputWaveLength[-1].send_keys('1.2')
+
+    else:
+        inputAnoScat[-1].clear()
+        inputAnoScat[-1].send_keys('Se')
+        time.sleep(2)
+        projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
+        projectInputs[-3].send_keys(mtzFileName)
+        projectInputs[-2].send_keys(seqFileName)
+    #title: Specify atom type of dominant anomalous scatterer (e.g., S, SE etc.), or leave blank if uncertain.
+        time.sleep(2)
+
+        sf.clickByXpath(driver, "//button[normalize-space()='Apply & Upload']")
+
+        time.sleep(3)
+
+        inputWaveLength = driver.find_elements_by_xpath("//input[@type='text']")
+        inputWaveLength[-1].click()
+        inputWaveLength[-1].clear()
+        inputWaveLength[-1].send_keys('1.2')
+
     time.sleep(2)
     sf.clickByXpath(driver, "//button[normalize-space()='Apply & Upload']")
     time.sleep(2)
