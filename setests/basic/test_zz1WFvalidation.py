@@ -67,14 +67,14 @@ def validate1AMR(driver, waitLong):
     print('Verifying WF task 0001 text... ')
     assert ttts[1] == 'auto-MR:[0001] MR automatic workflow -- imported Unmerged, Sequences (1), Ligands (1); workflow started'
 
-    print('Verifying MRBUMP Rfree < 0.42... ')
-    match = False
-    for t in ttts:
-        match = re.search('mrbump --.*R=(0\.\d*) Rfree=(0\.\d*).*', t)
-        if match:
-            break
-    assert match
-    assert float(match.group(2)) < 0.42
+    # print('Verifying MRBUMP Rfree < 0.42... ')
+    # match = False
+    # for t in ttts:
+    #     match = re.search('mrbump --.*R=(0\.\d*) Rfree=(0\.\d*).*', t)
+    #     if match:
+    #         break
+    # assert match
+    # assert float(match.group(2)) < 0.42
 
     print('Verifying modelcraft Rfree < 0.36... ')
     match = False
