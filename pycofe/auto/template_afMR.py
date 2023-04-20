@@ -226,6 +226,26 @@ def makeNextTask ( crTask,data ):
     elif crTask._type=="TaskFitWaters":
         auto_tasks.refligWF("ref_afterLig_", data["revision"], crTask.autoRunName)
 
+    elif crTask._type == "TaskXyzUtils":
+        parentTask = crTask.autoRunName
+        revision = data["revision"]
+        resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
+        # excludedTasks = auto_api.getContext('excludedTasks')
+        ligand = auto_api.getContext("lig")
+        if ligand:
+            auto_tasks.fit_ligand("fitligand1", ligand, data["revision"], crTask.autoRunName)
+            return
+        # ligand description present? we shall make a ligand
+
+        ligdesc = auto_api.getContext("ligdesc")
+        if ligdesc:
+            auto_tasks.make_ligand('makeLigand1', ligdesc, data["revision"], crTask.autoRunName)
+            return
+            
+        auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+
+        return
+
 
     elif crTask._type=="TaskDeposition":
         strTree = 'Automated Workflow has finished succesfully (look inside for comments)'

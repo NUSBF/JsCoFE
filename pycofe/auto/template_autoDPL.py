@@ -211,9 +211,6 @@ def makeNextTask ( crTask,data ):
         auto_tasks.refligWF("ref_afterLig_", data["revision"], crTask.autoRunName)
 
 
-    elif crTask._type=="TaskFitWaters":
-        auto_tasks.refligWF("ref_afterLig_", data["revision"], crTask.autoRunName)
-
 
     elif crTask._type=="TaskDeposition":
         strTree = 'Automated Workflow has finished succesfully (look inside for comments)'

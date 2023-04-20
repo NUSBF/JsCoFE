@@ -292,14 +292,8 @@ def makeNextTask ( crTask,data ):
         if ligdesc:
             auto_tasks.make_ligand('makeLigand1', ligdesc, data["revision"], crTask.autoRunName)
             return
-        
-        if float(data["Rfree"]) < 0.4 : # No other rebuilding if Modelcraft performed well
-            if resHi > 3.0:
-                auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
-            else:
-                
-
-                auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+            
+        auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
 
         return
 
