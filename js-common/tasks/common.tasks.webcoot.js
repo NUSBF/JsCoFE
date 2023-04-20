@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.04.23   <--  Date of Last Modification.
+ *    20.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -76,6 +76,20 @@ function TaskWebCoot()  {
     }
   ];
 
+  this.parameters = { // input parameters
+    NOTE : {  type     : 'label',
+              label    : '<center style="color:grey"><i>&nbsp;<p>' +
+                         '<h2>This Task is Experimental</h2>' +
+                         'WebCoot/Moorhen is developing fast aimig to deliver ' +
+                         'Coot functionality in-browser; many Coot functions are ' +
+                         'currently missing.<p>Please try it now and check ' +
+                         'regularly in future!<br>Any feedback is highly appreciated.' +
+                         '</i></center>',
+              position : [0,0,1,5]
+           }
+  };
+
+
 }
 
 
@@ -92,7 +106,7 @@ TaskWebCoot.prototype.icon = function()  { return 'task_webcoot'; }
 
 TaskWebCoot.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return 'fit atoms and new ligands in electron density, validate and explore';
+  return '<b>!EXPERIMENTAL!</b> fast-developing version of Coot for browsers';
 }
 
 TaskWebCoot.prototype.taskDescription = function()  {
