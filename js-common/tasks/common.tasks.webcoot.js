@@ -78,14 +78,15 @@ function TaskWebCoot()  {
 
   this.parameters = { // input parameters
     NOTE : {  type     : 'label',
-              label    : '<center style="color:grey"><i>&nbsp;<p>' +
+              label    : '<div style="width:500px;white-space:normal;"><center style="color:grey"><i>&nbsp;<p>' +
                          '<h2>This Task is Experimental</h2>' +
                          'WebCoot/Moorhen is developing fast aimig to deliver ' +
                          'Coot functionality in-browser; many Coot functions are ' +
                          'currently missing.<p>Please try it now and check ' +
                          'regularly in future!<br>Any feedback is highly appreciated.' +
-                         '</i></center>',
-              position : [0,0,1,5]
+                         '</i></center></div>',
+              // lwidth   : '200px',
+              position : [0,1,1,4]
            }
   };
 
