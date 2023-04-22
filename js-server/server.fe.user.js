@@ -876,14 +876,13 @@ function updateUserData ( loginData,userData )  {
 var response = null;  // must become a cmd.Response object to return
 var notify   = false;
 
-  log.standard ( 8,'update user data, login ' + loginData.login );
-
   var uData = userData;
   var pwd   = userData.pwd;
   if ((userData.login!=ud.__local_user_id) && pwd)  {
   // if (userData.login!='devel')  {
     uData.pwd = hashPassword ( pwd );
     notify    = true;
+    log.standard ( 8,'update user data, login ' + loginData.login );
   } else  {
     // can only change some records without password 
     var uData = readUserData ( loginData );
