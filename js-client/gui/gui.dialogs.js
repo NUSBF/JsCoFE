@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.02.23   <--  Date of Last Modification.
+ *    22.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -686,6 +686,7 @@ function WebAppBox ( title )  {
   });
 
   this.addWidget ( this.iframe );
+  this.fid = setCommunicationIFrame ( this.iframe );
 
   var size;
   if (window.parent.__any_mobile_device)
@@ -773,6 +774,7 @@ WebAppBox.prototype.launch = function() {
       $(self.element).dialog("destroy");
       if (self.element.parentNode)
         self.element.parentNode.removeChild ( self.element );
+      removeCommunicationIFrame ( self.fid );
     },10);
   });
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.04.23   <--  Date of Last Modification.
+ *    22.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -285,7 +285,11 @@ if (!__template)  {
 
 
 
-        html = html.replace ( '[[meta]]',JSON.stringify({'project':self.project,'id':self.id}) )
+        html = html.replace ( '[[meta]]',JSON.stringify({
+                                'project' : self.project,
+                                'id'      : self.id,
+                                'fid'     : wab.fid
+                            }))
                    .replace ( '[[inputFiles]]',JSON.stringify(inputFiles) );
 
         wab.iframe.setHTML ( html );

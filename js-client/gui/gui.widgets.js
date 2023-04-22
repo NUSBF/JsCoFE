@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    13.02.23   <--  Date of Last Modification.
+ *    22.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1659,6 +1659,10 @@ IFrame.prototype.getDocument = function()  {
   // return this.element.contentDocument || this.element.contentWindow;
   //return this.element.contentWindow || this.element.contentDocument.document ||
   //       this.element.contentDocument;
+}
+
+IFrame.prototype.getWindow = function()  {
+  return this.element.contentWindow;
 }
 
 

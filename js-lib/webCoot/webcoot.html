@@ -30,9 +30,16 @@
     const sf_meta     = [[meta]];
     const urlPrefix   = '.';
 
-    // function onWindowMessage ( event )  {
-    //   alert ( event.message );
-    // }
+    if (window.addEventListener) {
+      window.addEventListener ( 'message', onWindowMessage, false );
+    } else if (window.attachEvent) {
+      window.attachEvent ( 'onmessage', onWindowMessage, false );
+    } else 
+      alert ( 'No Window messaging in iframe!' );
+
+    function onWindowMessage ( event )  {
+      alert ( event.data.message );
+    }
 
     const exportToCloudCallback = (molName,molData) => {
       window.parent.postMessage ({
@@ -104,24 +111,29 @@
 
     switch (mode)  {  
       case "view-update" : moorhenWrapper.setWorkMode         ( 'view' );
-                           moorhenWrapper.addOnExportListener ( exportToCloudCallback );
-                           moorhenWrapper.setRootId           ( rootId     );
-                           moorhenWrapper.setInputFiles       ( inputFiles );
+                          //  moorhenWrapper.addOnExportListener ( exportToCloudCallback );
+                          //  moorhenWrapper.setRootId           ( rootId     );
+                          //  moorhenWrapper.setInputFiles       ( inputFiles );
                            moorhenWrapper.setUpdateInterval   ( interval   );
-                           moorhenWrapper.start()
+                          //  moorhenWrapper.start()
                        break;
-      case "view" :        moorhenWrapper.setWorkMode         ( 'view' );
-                           moorhenWrapper.addOnExportListener ( exportToCloudCallback );
-                           moorhenWrapper.setRootId           ( rootId     );
-                           moorhenWrapper.setInputFiles       ( inputFiles );
-                           moorhenWrapper.start()
+      case "view"        : moorhenWrapper.setWorkMode         ( 'view' );
+                          //  moorhenWrapper.addOnExportListener ( exportToCloudCallback );
+                          //  moorhenWrapper.setRootId           ( rootId     );
+                          //  moorhenWrapper.setInputFiles       ( inputFiles );
+                          //  moorhenWrapper.start()
                        break;
-      default            :  moorhenWrapper.addOnExportListener   ( exportToCloudCallback );
-                            // moorhenWrapper.setBackupSaveListener ( saveBackupCallback    );
-                            moorhenWrapper.setRootId             ( rootId     );
-                            moorhenWrapper.setInputFiles         ( inputFiles );
-                            moorhenWrapper.start()
+      default            : // moorhenWrapper.addOnExportListener ( exportToCloudCallback );
+                           // moorhenWrapper.setBackupSaveListener ( saveBackupCallback    );
+                          //  moorhenWrapper.setRootId           ( rootId     );
+                          //  moorhenWrapper.setInputFiles       ( inputFiles );
+                          //  moorhenWrapper.start()
     }
+
+    moorhenWrapper.addOnExportListener ( exportToCloudCallback );
+    moorhenWrapper.setRootId           ( rootId     );
+    moorhenWrapper.setInputFiles       ( inputFiles );
+    moorhenWrapper.start();
 
 </script>
 </body>

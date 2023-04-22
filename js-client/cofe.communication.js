@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.23   <--  Date of Last Modification.
+ *    22.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -835,6 +835,26 @@ function setQuitDestructor()  {
 */
 
 
+//  ===========================================================================
+
+var __comm_iframes = {};
+
+function setCommunicationIFrame ( iframe )  {
+var fid0 = 'fid_' + Date.now();
+var fid  = fid0;
+var k    = 0;
+  while (fid in __comm_iframes)
+    fid = fid0 + '_' + k++;
+  __comm_iframes[fid] = iframe;
+  return fid;
+}
+
+function removeCommunicationIFrame ( fid )  {
+  if (fid in __comm_iframes)
+    delete __comm_iframes[fid];
+}
+
+
 if (window.addEventListener) {
   window.addEventListener ( 'message', onWindowMessage, false );
 } else if (window.attachEvent) {
@@ -856,6 +876,9 @@ function onWindowMessage ( event ) {
         if (edata.confirm)  {
           // if ('callback' in edata)
           //   edata.callback.postMessage ({ message: 'done!'} );
+          // if (edata.meta.fid in __comm_iframes)
+          //   alert ( ' >>>> ' + edata.meta.fid );
+          __comm_iframes[edata.meta.fid].getWindow().postMessage ({ message: 'done!'} );
           if (rdata.project_missing)  {
             new MessageBox (  'Project not found',
                               '<h3>Project "' + edata.meta.project +
