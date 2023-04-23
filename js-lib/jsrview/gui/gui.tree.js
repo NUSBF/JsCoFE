@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.10.21   <--  Date of Last Modification.
+ *    25.11.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Generic tree class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2022
  *
  *  ==========================================================================
  *
@@ -73,6 +73,7 @@
  *      function setStyle           ( treeNode,style_str,propagate_int );
  *      function confirmCustomIconsVisibility();
  *      function deleteNode         ( node );
+ *      function deleteRootNode     ( node );
  *      function deleteBranch       ( node );
  *      function createTree         ( make_initial_selection,
                                       onReady_func   ,onContextMenu_func,
@@ -89,13 +90,14 @@
  *      function moveSelectedNodeUp   ();
  *      function deleteSelectedNodes  ();
  *      function canMakeFolder        ();
- *      function makeFolder           ( text,icon_uri ); // works on current selection
+ *      function makeStack            ( text,icon_uri ); // works on current selection
  *      function unfoldFolder         ();                // works on current selection
  *
  *   }
  *
  */
 
+'use strict'; // *client*
 
 // ===========================================================================
 // TreeNodeCustomIcon class
@@ -435,9 +437,10 @@ var parentId    = null;
 var clen        = 0;
 var pos         = -2;
 
-  if (node.parentId)  {
+  if (node.parentId && (node.parentId in this.node_map))  {
     parent_node = this.node_map[node.parentId];
     if (parent_node)  {
+
       parentId = parent_node.parentId;
 
       var parent_children = parent_node.children;
@@ -459,7 +462,7 @@ var pos         = -2;
 
 Tree.prototype.moveNodeUp = function ( node )  {
 
-  if (node.parentId)  {
+  if (node.parentId && (node.parentId in this.node_map))  {
 
     var parent_node     = this.node_map[node.parentId];
     var parent_children = parent_node.children;
@@ -477,7 +480,7 @@ Tree.prototype.moveNodeUp = function ( node )  {
         $(this.root.element).jstree(true).move_node(node,parent_node,pos-1,false,false);
 
       // reflect changes in internal list of children
-      var snode = parent_children[pos-1];
+      var snode = parent_children[pos-1];   // selected node
       parent_children[pos-1] = parent_children[pos];
       parent_children[pos]   = snode;
 
@@ -542,12 +545,13 @@ Tree.prototype.moveNodeUp = function ( node )  {
 
     }
 
+    // APPARENTLY HARMFUL AFTER JSTREE/JSQUERY UPDATE
     // force selection and refresh the tree
-    if (this.created)  {
-      this.selectSingle ( node );  // force selection of the node if tree is displayed
-      this.refresh();
-      this.confirmCustomIconsVisibility();
-    }
+    // if (this.created)  {
+    //   this.selectSingle ( node );  // force selection of the node if tree is displayed
+    //   this.refresh();
+    //   this.confirmCustomIconsVisibility();
+    // }
 
   }
 
@@ -796,6 +800,32 @@ Tree.prototype.deleteNode = function ( node )  {
     if (pnode.children.length>0)
           this.selectSingle ( pnode.children[0] );
     else  this.selectSingle ( pnode );
+  }
+
+}
+
+
+Tree.prototype.deleteRootNode = function ( node )  {
+// does not delete root node with children
+
+  if (!node)
+    return;
+
+  if (!(node.id in this.node_map))
+    return;
+
+  // remove node from general tree index
+  this.node_map[node.id] = null;
+  var node_map = {};  // new node map
+  for (var key in this.node_map)
+    if (this.node_map[key])
+      node_map[key] = this.node_map[key];
+  this.node_map = node_map;
+
+  if (this.created)  {
+    // remove node from tree
+    $(this.root.element).jstree(true).delete_node([node]);
+    this.confirmCustomIconsVisibility();
   }
 
 }
@@ -1192,12 +1222,12 @@ Tree.prototype.canMakeFolder1 = function ( sel_list )  {
 }
 
 
-Tree.prototype.makeFolder = function ( text,icon_uri )  {
-  return this.makeFolder1 ( this.calcSelectedNodeIds(),text,icon_uri );
+Tree.prototype.makeStack = function ( text,icon_uri )  {
+  return this.makeStack1 ( this.calcSelectedNodeIds(),text,icon_uri );
 }
 
 
-Tree.prototype.makeFolder1 = function ( sel_node_list,text,icon_uri )  {
+Tree.prototype.makeStack1 = function ( sel_node_list,text,icon_uri )  {
 // make a folder node and places currently selected nodes in it; current selction
 // must be validated with canMakeFolder() before using this function
   var sel_list = this.__connectivity_sort ( sel_node_list );
@@ -1216,7 +1246,7 @@ Tree.prototype.makeFolder1 = function ( sel_node_list,text,icon_uri )  {
     var name = text;
     if (name)
       name += ' ';
-    name += njobs + ' jobs archived';
+    name += njobs + ' jobs stacked';
     var folder_node = new TreeNode ( name,icon_uri,null );
     var pnode = this.node_map[node.parentId];
     for (var i=0;i<pnode.children.length;i++)

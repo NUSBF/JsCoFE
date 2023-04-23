@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.02.23   <--  Date of Last Modification.
+ *    23.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -153,6 +153,13 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.makeLayout ( onRun_func );
 
   $(this.element).dialog ( this.dialog_options );
+
+  extendToolbar ( this,{
+    "maximize" : function(evt,d){ dlg.onWindowResize(); },
+    // "minimize" : function(evt, dlg){ resize_func(); },
+    "restore"  : function(evt,d){ dlg.onWindowResize(); }
+  });
+
   //if (__any_mobile_device)
   //  dialog.siblings('.ui-dialog-titlebar').remove();
 
@@ -667,6 +674,14 @@ JobDialog.prototype.enableCloseButton = function ( do_close )  {
   },2000);
 }
 
+JobDialog.prototype.onWindowResize = function()  {
+  this.task.job_dialog_data.width  = this.width_px();
+  if (!__any_mobile_device)  {
+    this.task.job_dialog_data.height = this.height_px();
+    this.onDlgResize();
+  }
+}
+
 JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
   var dlg = this;
@@ -772,11 +787,12 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
       },false );
 
     $(dlg.element).on ( 'dialogresize', function(event,ui){
-      dlg.task.job_dialog_data.width  = dlg.width_px();
-      if (!__any_mobile_device)  {
-        dlg.task.job_dialog_data.height = dlg.height_px();
-        dlg.onDlgResize();
-      }
+      dlg.onWindowResize();
+      // dlg.task.job_dialog_data.width  = dlg.width_px();
+      // if (!__any_mobile_device)  {
+      //   dlg.task.job_dialog_data.height = dlg.height_px();
+      //   dlg.onDlgResize();
+      // }
     });
 
     if (dlg.run_btn)  {

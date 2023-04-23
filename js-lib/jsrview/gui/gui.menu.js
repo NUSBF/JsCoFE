@@ -22,6 +22,8 @@
  *
  */
 
+'use strict'; // *client*
+
 // -------------------------------------------------------------------------
 // MenuItem class
 
@@ -223,13 +225,15 @@ Menu.prototype.setHeight_px = function ( height_int )  {
 // -------------------------------------------------------------------------
 // ContextMenu class
 
-function ContextMenu ( widget )  {
+function ContextMenu ( widget,custom_func )  {
   Menu.call ( this,'','' );
   $(this.element).width  ( 1 );
   $(this.element).height ( 1 );
   (function(menu){
     widget.addOnRightClickListener ( function(){
       __close_all_menus();
+      if (custom_func)
+        custom_func();
       if (!menu.disabled)  {
         // __onclick_ignore_counter++;
         if (__onclick_ignore_counter<0)

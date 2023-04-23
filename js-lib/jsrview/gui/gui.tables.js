@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.01.22   <--  Date of Last Modification.
+ *    15.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *       ~~~~~~~~~  TableScroll  - table with scrollable body
  *                  TableSort    - table with sortable columns
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -26,6 +26,7 @@
  *
  */
 
+'use strict'; // *client*
 
 // -------------------------------------------------------------------------
 // Table class:  plain table, built as a Grid widget with direct access to all
@@ -67,8 +68,9 @@ Table.prototype.setHeaderRow = function ( header_list,tooltip_list )  {
     var headerCell = document.createElement('th');
     headerCell.innerHTML = header_list[i];
     headerCell.setAttribute ( 'class','table-blue-vh' );
-    if (tooltip_list.length>0)
-      headerCell.setAttribute ( 'title',tooltip_list[i] );
+    __set_tooltip ( headerCell,tooltip_list[i] );
+    // if (tooltip_list.length>0)
+    //   headerCell.setAttribute ( 'title',tooltip_list[i] );
     tableRow.appendChild ( headerCell );
   }
 }
@@ -82,8 +84,9 @@ Table.prototype.setRow = function ( header,tooltip,cell_list,row,alt_bool )  {
     var headerCell = document.createElement('th');
     headerCell.innerHTML = header;
     headerCell.setAttribute ( 'class','table-blue-vh' );
-    if (tooltip)
-      headerCell.setAttribute ( 'title',tooltip );
+    __set_tooltip ( headerCell,tooltip );
+    // if (tooltip)
+    //   headerCell.setAttribute ( 'title',tooltip );
     tableRow.appendChild ( headerCell );
     col_cnt++;
   }
@@ -545,6 +548,11 @@ TableSort.prototype.fixHeader = function()  {
 TableSort.prototype.setTableHeight = function ( height_int )  {
   if (this.body.child.length>0)
     this.table_div.element.style.height = height_int - this.head_top + 'px';
+}
+
+TableSort.prototype.setTableWidth = function ( width_int )  {
+  if (this.body.child.length>0)
+    this.table_div.element.style.width = width_int + 'px';
 }
 
 TableSort.prototype.getSortList = function()  {

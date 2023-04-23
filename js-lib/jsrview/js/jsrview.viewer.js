@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    02.04.23   <--  Date of Last Modification.
+//    23.04.23   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -275,7 +275,29 @@ function _start_viewer ( title,html_str )  {
     dialog_options.modal     = true;
   }
 
+  var resize_func = function()  {
+    var w = jq(dialog).width ();
+    var h = jq(dialog).height();
+    jq(iframe).width  ( w );
+    jq(iframe).height ( h );
+  }
+
   var dlg = jq(dialog).dialog ( dialog_options );
+
+  if ('extendToolbar_rvapi' in window)  {
+    extendToolbar_rvapi ( dlg,{
+      "maximize" : function(evt,d){ resize_func(); },
+      // "minimize" : function(evt, dlg){ resize_func(); },
+      "restore"  : function(evt,d){ resize_func(); }
+    });
+  } else  {
+    extendToolbar ( {element:dialog},{
+      "maximize" : function(evt,d){ resize_func(); },
+      // "minimize" : function(evt, dlg){ resize_func(); },
+      "restore"  : function(evt,d){ resize_func(); }
+    });
+  }
+
   //if (window.parent.__mobile_device)
   //  dlg.siblings('.ui-dialog-titlebar').remove();
 
@@ -289,10 +311,11 @@ function _start_viewer ( title,html_str )  {
   iframe.contentWindow.document.close();
 
   jq(dialog).on ( 'dialogresize', function(event,ui){
-    var w = jq(dialog).width ();
-    var h = jq(dialog).height();
-    jq(iframe).width  ( w );
-    jq(iframe).height ( h );
+    resize_func();
+    // var w = jq(dialog).width ();
+    // var h = jq(dialog).height();
+    // jq(iframe).width  ( w );
+    // jq(iframe).height ( h );
   });
 
   jq(dialog).on( "dialogclose",function(event,ui){
@@ -656,7 +679,14 @@ function startRSViewer ( title,json_uri,map_uri )  {
   dialog.appendChild ( iframe );
   //dialog.style.fontSize = '16px';
 
-  jq(dialog).dialog({
+  var resize_func = function()  {
+    var w = jq(dialog).width ();
+    var h = jq(dialog).height();
+    jq(iframe).width  ( w );
+    jq(iframe).height ( h );
+  }
+
+  var dlg = jq(dialog).dialog({
       resizable  : true,
       height     : 'auto',
       width      : 'auto',
@@ -671,15 +701,22 @@ function startRSViewer ( title,json_uri,map_uri )  {
       buttons: {}
   });
 
+  extendToolbar ( {element:dialog},{
+    "maximize" : function(evt,d){ resize_func(); },
+    // "minimize" : function(evt, dlg){ resize_func(); },
+    "restore"  : function(evt,d){ resize_func(); }
+  });
+
   var html = makeRSViewerHtml ( json_uri,map_uri );
   iframe.contentWindow.document.write(html);
   iframe.contentWindow.document.close();
 
   jq(dialog).on ( 'dialogresize', function(event,ui){
-    var w = jq(dialog).width ();
-    var h = jq(dialog).height();
-    jq(iframe).width  ( w );
-    jq(iframe).height ( h );
+    resize_func();
+    // var w = jq(dialog).width ();
+    // var h = jq(dialog).height();
+    // jq(iframe).width  ( w );
+    // jq(iframe).height ( h );
   });
 
   jq(dialog).on( "dialogclose",function(event,ui){
@@ -695,7 +732,6 @@ function startRSViewer ( title,json_uri,map_uri )  {
   });
 
 }
-
 
 
 // ===========================================================================
@@ -726,11 +762,11 @@ function startWebCoot ( title,xyz_uri,mtz_uri,legend_uri,mode,update_interval,op
         no_data_msg = options.no_data_msg;
 
       let html = text.replace ( '[[baseurl]]',
-                                  window.location + 'js-lib/webCoot/webcoot.html' )
-                      .replace ( '[[mode]]',mode )
-                      .replace ( '[[interval]]',update_interval.toString() )
-                      .replace ( '[[no_data_msg]]',no_data_msg )
-                      .replace ( '[[preferences]]',JSON.stringify(__user_settings.webcoot_pref) );
+                                window.location + 'js-lib/webCoot/webcoot.html' )
+                     .replace ( '[[mode]]',mode )
+                     .replace ( '[[interval]]',update_interval.toString() )
+                     .replace ( '[[no_data_msg]]',no_data_msg )
+                     .replace ( '[[preferences]]',JSON.stringify(__user_settings.webcoot_pref) );
 
       let inputFiles = [];
   
