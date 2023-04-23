@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    29.10.21   <--  Date of Last Modification.
+ *    22.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common GUI widgets
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  ========================================================================
  *
@@ -23,6 +23,7 @@
  *
  */
 
+'use strict'; // *client*
 
 // -------------------------------------------------------------------------
 // Base widget class
@@ -110,13 +111,13 @@ Widget.prototype.setCursor = function ( cursor )  {
   return this;
 }
 
-Widget.prototype.setTooltip = function ( text )  {
+function __set_tooltip ( element,text )  {
   if (text)  {
-    this.element.setAttribute ( 'title',text );
+    element.setAttribute ( 'title',text );
     var delay    = 1500;
     var duration = Math.sqrt(text.split(' ').length)*1500; // dynamic duration
     if (duration>0)  {
-      $(this.element).tooltip({
+      $(element).tooltip({
           show  : { effect : 'slideDown', delay: delay },
           track : true,
           content: function (callback) {
@@ -130,6 +131,29 @@ Widget.prototype.setTooltip = function ( text )  {
       });
     }
   }
+}
+
+Widget.prototype.setTooltip = function ( text )  {
+  __set_tooltip ( this.element,text );
+  // if (text)  {
+  //   this.element.setAttribute ( 'title',text );
+  //   var delay    = 1500;
+  //   var duration = Math.sqrt(text.split(' ').length)*1500; // dynamic duration
+  //   if (duration>0)  {
+  //     $(this.element).tooltip({
+  //         show  : { effect : 'slideDown', delay: delay },
+  //         track : true,
+  //         content: function (callback) {
+  //             callback($(this).prop('title'));
+  //         },
+  //         open  : function (event, ui) {
+  //             setTimeout(function() {
+  //                 $(ui.tooltip).hide('explode');
+  //             },delay+duration);
+  //         }
+  //     });
+  //   }
+  // }
   /*
   $(this.element).tooltip({
       content : text,
@@ -219,6 +243,11 @@ Widget.prototype.width_px = function ()  {
 
 Widget.prototype.height_px = function ()  {
   return $(this.element).outerHeight();
+}
+
+
+Widget.prototype.getBoundingRect = function ()  {
+  return this.element.getBoundingClientRect();
 }
 
 Widget.prototype.setFontSize = function ( size )  {
@@ -1069,20 +1098,35 @@ function ACEditor ( width,height,options )  {
 ACEditor.prototype = Object.create ( Widget.prototype );
 ACEditor.prototype.constructor = ACEditor;
 
-ACEditor.prototype.init = function ( text )  {
+ACEditor.prototype.init = function ( text,placeholder )  {
   if (!this.editor)  {
     this.editor = ace.edit ( this.panel.element.id );
     // this.editor.setTheme ( 'ace/theme/' + this.editor_theme );
     // this.editor.session.setMode ( 'ace/mode/' + this.editor_mode );
-    this.editor.setOptions({
+    var options =  {
       mode        : 'ace/mode/' + this.editor_mode,
-      theme       : 'ace/theme/' + this.editor_theme
-    });
+      theme       : 'ace/theme/' + this.editor_theme,
+    };
+    if (placeholder)
+      options.placeholder = placeholder;
+    this.editor.setOptions ( options );
     if (text)
       this.setText ( text );
   }
-
 }
+
+ACEditor.prototype.setReadOnly = function ( readonly_bool )  {
+  if (this.editor)
+    this.editor.setReadOnly ( readonly_bool );
+  return this;
+}
+
+ACEditor.prototype.addOnChangeListener = function ( listener_func )  {
+  if (this.editor)
+     this.editor.getSession().on('change',listener_func );
+  return this;
+}
+
 
 ACEditor.prototype.setText = function ( text )  {
   if (this.editor)  {
@@ -1153,10 +1197,11 @@ Image.prototype.setImage = function ( image_source )  {
 
 function Button ( text,icon_uri )  {
   Widget.call ( this,'button' );
+  this.element.setAttribute ( 'type','button' );
   this.div = document.createElement ( 'div' );
   this.element.appendChild ( this.div );
-  this._set_button ( text,icon_uri );
   this.click_count = 1;
+  this._set_button ( text,icon_uri );
 }
 
 Button.prototype = Object.create ( Widget.prototype );
@@ -1168,11 +1213,14 @@ Button.prototype._set_button = function ( text,icon_uri )  {
   //      else  this.div.innerHTML = ' ';  // Safari 14 fix
   if (icon_uri.length>0)  {
     $(this.div).css({'text-align':'center',
+                    //  'vertical-align' : 'middle',
                      'margin-left':'1.2em'});
     $(this.element).css(
       {'background-image'   :'url("'+icon_uri+'")',
        'background-repeat'  :'no-repeat',
        'background-size'    :'22px',
+      //  'vertical-align'     : 'middle',
+      //  'margin' : '0px 0px 0px 0px',
        'background-position':'0.5em center'});
   }
   $(this.element).button();
@@ -1187,6 +1235,32 @@ Button.prototype.setButton = function ( text,icon_uri )  {
   return this;
 }
 
+Button.prototype.setIndicator = function ( indicon_uri,location )  {
+// indicator is a small icon overlaying the button and placed
+// in the specified location:
+//     0 : top-left
+//     1 : top-right
+//     2 : bottom-right
+//     3 : bottom-left
+  var indicator = new Image ( indicon_uri,'16px','16px' );
+  var css = { 'position' : 'absolute' };
+  switch (location)  {
+    case 0  : css.top    = '-4px';   css.left = '-8px';  break;
+    default :
+    case 1  : css.top    = '-4px';   css.right = '-8px';  break;
+    case 2  : css.bottom = '-12px';  css.right = '-8px';  break;
+    case 3  : css.bottom = '-12px';  css.left  = '-8px';
+  }
+  $(indicator.element).css(css);
+  //   {'position' : 'absolute',
+  //   //  'z-index'  : '1',
+  //   'top'       : '-4px',
+  //   'right'     : '-8px'
+  //   }
+  // );
+  this.addWidget ( indicator );
+}
+
 Button.prototype.setText = function ( text )  {
   this._set_button ( text,'' );
   return this;
@@ -1197,17 +1271,23 @@ Button.prototype.setIcon = function ( icon_uri )  {
 }
 
 Button.prototype.setDisabled = function ( disabled_bool )  {
-  $(this.element).button ( "option", "disabled", disabled_bool );
+  try {
+    $(this.element).button ( "option", "disabled", disabled_bool );
+  } catch(e) {}
   return this;
 }
 
 Button.prototype.setEnabled = function ( enabled_bool )  {
-  $(this.element).button ( "option", "disabled", (!enabled_bool) );
+  try {
+    $(this.element).button ( "option", "disabled", (!enabled_bool) );
+  } catch(e) {}
   return this;
 }
 
 Button.prototype.isDisabled = function()  {
-  return $(this.element).button ( 'option','disabled' );
+  try {
+    return $(this.element).button ( 'option','disabled' );
+  } catch(e) {}
 }
 
 Button.prototype.setSize = function ( width,height )  {
@@ -1223,6 +1303,7 @@ Button.prototype.setSize = function ( width,height )  {
                        'background-position' : lm + 'px' });
   return Widget.prototype.setSize.call ( this,width,height );
 }
+
 
 Button.prototype.setSize_px = function ( width,height )  {
   $(this.element).css({'background-size':(height-4)+'px'});
@@ -1382,17 +1463,25 @@ RadioSet.prototype.selectButton = function ( btnId )  {
 }
 
 RadioSet.prototype.setDisabled = function ( disabled_bool )  {
-  $(this.element).controlgroup ( 'option','disabled',disabled_bool );
+  try {
+    $(this.element).controlgroup ( 'option','disabled',disabled_bool );
+  } catch(e) {}
   return this;
 }
 
 RadioSet.prototype.setEnabled = function ( enabled_bool )  {
-  $(this.element).controlgroup ( 'option','disabled',!enabled_bool );
+  try {
+    $(this.element).controlgroup ( 'option','disabled',!enabled_bool );
+  } catch(e) {}
   return this;
 }
 
 RadioSet.prototype.isDisabled = function()  {
-  return $(this.element).controlgroup ( 'option','disabled' );
+  try {
+    return $(this.element).controlgroup ( 'option','disabled' );
+  } catch(e) {
+    return true;
+  }
 }
 
 RadioSet.prototype.getValue = function()  {
@@ -1420,16 +1509,22 @@ function ProgressBar ( max_value )  {
 ProgressBar.prototype = Object.create ( Widget.prototype );
 ProgressBar.prototype.constructor = ProgressBar;
 
-ProgressBar.prototype.setMaxValue = function ( max_value ) {
-  $(this.element).progressbar( "option", "max", max_value );
+ProgressBar.prototype.setMaxValue = function ( max_value )  {
+  try {
+    $(this.element).progressbar( "option", "max", max_value );
+  } catch(e) {}
 }
 
 ProgressBar.prototype.getMaxValue = function() {
-  return $(this.element).progressbar( "option", "max" );
+  try {
+    return $(this.element).progressbar( "option", "max" );
+  } catch(e) {}
 }
 
 ProgressBar.prototype.setValue = function ( value ) {
-  $(this.element).progressbar( 'value', value );
+  try {
+    $(this.element).progressbar( 'value', value );
+  } catch(e) {}
 }
 
 ProgressBar.prototype.getValue = function() {
@@ -1530,8 +1625,18 @@ IFrame.prototype.loadPage = function ( uri )  {
   return this;
 }
 
-IFrame.prototype.setHTML = function ( html )  {
+
+IFrame.prototype.setText = function ( html )  {
   this.element.src = 'data:text/html;charset=utf-8,' + encodeURI(html);
+  // this.element.src = 'data:text/html;charset=utf-8,' + html;
+  // this.element.srcdoc = html;
+  return this;
+}
+
+IFrame.prototype.setHTML = function ( html )  {
+  // this.element.src = 'data:text/html;charset=utf-8,' + encodeURI(html);
+  // this.element.src = 'data:text/html;charset=utf-8,' + html;
+  this.element.srcdoc = html;
   return this;
 }
 
@@ -1554,6 +1659,10 @@ IFrame.prototype.getDocument = function()  {
   // return this.element.contentDocument || this.element.contentWindow;
   //return this.element.contentWindow || this.element.contentDocument.document ||
   //       this.element.contentDocument;
+}
+
+IFrame.prototype.getWindow = function()  {
+  return this.element.contentWindow;
 }
 
 
@@ -1584,18 +1693,24 @@ Section.prototype = Object.create ( Widget.prototype );
 Section.prototype.constructor = Section;
 
 Section.prototype.isOpen = function()  {
-var active = $( this.element ).accordion( "option", "active" );
-  if (active==0)  return true;
+  try {
+    var active = $( this.element ).accordion( "option", "active" );
+    if (active==0)  return true;
+  } catch(e) {}
   return false;
 }
 
 
 Section.prototype.open = function()  {
-  $( this.element ).accordion( "option", "active", 0 );
+  try {
+    $( this.element ).accordion( "option", "active", 0 );
+  } catch(e) {}
 }
 
 Section.prototype.close = function()  {
-  $( this.element ).accordion( "option", "active", false );
+  try {
+    $( this.element ).accordion( "option", "active", false );
+  } catch(e) {}
 }
 
 Section.prototype.setTitle = function ( title_str )  {
@@ -1929,20 +2044,32 @@ Spinner.prototype.setChangeListener = function ( socket_function )  {
 
 Spinner.prototype.setMaxValue = function ( value )  {
   this.maxV = value;
-  $(this.spinner.element).spinner( 'option', 'max', value );
+  try {
+    $(this.spinner.element).spinner( 'option', 'max', value );
+  } catch(e) {}
 }
 
 Spinner.prototype.getMaxValue = function()  {
-  return $(this.spinner.element).spinner( 'option', 'max' );
+  try {
+    return $(this.spinner.element).spinner( 'option', 'max' );
+  } catch(e) {
+    return this.maxV;
+  }
 }
 
 Spinner.prototype.setMinValue = function ( value )  {
   this.minV = value;
-  $(this.spinner.element).spinner( 'option', 'min', value );
+  try {
+    $(this.spinner.element).spinner( 'option', 'min', value );
+  } catch(e) {}
 }
 
 Spinner.prototype.getMinValue = function()  {
-  return $(this.spinner.element).spinner( 'option', 'min' );
+  try {
+    return $(this.spinner.element).spinner( 'option', 'min' );
+  } catch(e) {
+    return this.minV;
+  }
 }
 
 Spinner.prototype.setValue = function ( value )  {

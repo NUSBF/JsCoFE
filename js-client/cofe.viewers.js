@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.04.23   <--  Date of Last Modification.
+ *    23.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -106,12 +106,12 @@ function rvapi_wcviewer ( jobId,title,xyzFilePath,mtzFilePath,legendFilePath,
   } else  {
     var task = __current_page.getJobTree().getTask ( jobId );
     if (task)  {
-      var xyz_uri     = '';
-      var mtz_uri     = '';
-      var legend_uri  = '';
-      if (xyzFilePath)     xyz_uri     = task.getProjectURL ( jobId,xyzFilePath );
-      if (mtzFilePath)     mtz_uri     = task.getProjectURL ( jobId,mtzFilePath );
-      if (legendFilePath)  legend_uri  = task.getProjectURL ( jobId,legendFilePath );
+      var xyz_uri    = '';
+      var mtz_uri    = '';
+      var legend_uri = '';
+      if (xyzFilePath)     xyz_uri    = task.getProjectURL ( jobId,xyzFilePath );
+      if (mtzFilePath)     mtz_uri    = task.getProjectURL ( jobId,mtzFilePath );
+      if (legendFilePath)  legend_uri = task.getProjectURL ( jobId,legendFilePath );
       startWebCoot ( title,xyz_uri,mtz_uri,legend_uri,mode,update_interval,options );
     } else  {
       new MessageBox ( 'Task not found','Project Task not found. This is a bug, ' +

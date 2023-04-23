@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.04.23   <--  Date of Last Modification.
+ *    23.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,6 +13,7 @@
  *  **** Content :  Various dialog templates
  *       ~~~~~~~~~
  *
+ *           function extendToolbar ( dialog,options={} )
  *           function Dialog        ( title )
  *           function MessageBox    ( title,message )
  *           function MessageBoxW   ( title,message,width_ratio )
@@ -36,6 +37,48 @@
  */
 
 'use strict'; // *client*
+
+
+// -------------------------------------------------------------------------
+// Puts extended controls in Dialog's toolbar
+
+function extendToolbar ( dialog,options={} )  {
+
+  var opt = {
+    "closable"         : true,
+    "maximizable"      : true,
+    "minimizable"      : true,
+    "collapsable"      : true,
+    "dblclick"         : "maximize", // 'collapse', 'maximize', 'minimize', ''
+    // "titlebar"         : "",         // 'transparent', 'none', ''
+    "minimizeLocation" : "left"      // 'left' or 'right'
+    // "icons" : {
+    //   "close"    : "ui-icon-circle-close",
+    //   "maximize" : "ui-icon-circle-plus",
+    //   "minimize" : "ui-icon-circle-minus",
+    //   "collapse" : "ui-icon-triangle-1-s",
+    //   "restore"  : "ui-icon-bullet"
+    // }
+    // "load"           : function(evt, dlg){ alert(evt.type); },
+    // "beforeCollapse" : function(evt, dlg){ alert(evt.type); },
+    // "beforeMaximize" : function(evt, dlg){ alert(evt.type); },
+    // "beforeMinimize" : function(evt, dlg){ alert(evt.type); },
+    // "beforeRestore"  : function(evt, dlg){ alert(evt.type); },
+    // "collapse"       : function(evt, dlg){ alert(evt.type); },
+    // "maximize"       : function(evt, dlg){ alert(evt.type); },
+    // "minimize"       : function(evt, dlg){ alert(evt.type); },
+    // "restore"        : function(evt, dlg){ alert(evt.type); }
+  };
+
+  for (let key in options)
+    if ((key in opt) && (!options[key]))  delete opt[key];
+                                    else  opt[key] = options[key];
+
+  $(dialog.element).dialogExtend(opt);
+
+  return dialog;
+
+}
 
 // -------------------------------------------------------------------------
 // MessageBox class
@@ -401,14 +444,24 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 
   // }(this))
 
-  var dialog = $(this.element).dialog ( this.options );
-  if (__any_mobile_device)
-    dialog.siblings('.ui-dialog-titlebar').remove();
+    var resize_func = function()  {
+      dlg.resizeDisplay ( dlg.width_px(),dlg.height_px() );
+    }
+
+    var dialog = $(this.element).dialog ( this.options );
+    if (__any_mobile_device)
+          dialog.siblings('.ui-dialog-titlebar').remove();
+    else  extendToolbar ( this,{
+            "maximize" : function(evt,d){ resize_func(); },
+            // "minimize" : function(evt, dlg){ resize_func(); },
+            "restore"  : function(evt,d){ resize_func(); }
+          });
 
   // (function(dlg){
 
     $(dlg.element).on ( 'dialogresize', function(event,ui){
-      dlg.resizeDisplay ( dlg.width_px(),dlg.height_px() );
+      resize_func();
+      // dlg.resizeDisplay ( dlg.width_px(),dlg.height_px() );
     });
 
     $(dlg.display.element).on('load',function(){
@@ -761,10 +814,23 @@ WebAppBox.prototype.launch = function() {
 
   var self = this;
 
-  $(this.element).on('dialogresize', function(event,ui){
+  var resize_func = function()  {
     var w = $(self.element).width();
     var h = $(self.element).height();
     self.iframe.setSize_px ( w,h );
+  }
+
+  extendToolbar ( this,{
+    "maximize" : function(evt, dlg){ resize_func(); },
+    // "minimize" : function(evt, dlg){ resize_func(); },
+    "restore"  : function(evt, dlg){ resize_func(); }
+  });
+
+  $(this.element).on('dialogresize', function(event,ui){
+    resize_func();
+    // var w = $(self.element).width();
+    // var h = $(self.element).height();
+    // self.iframe.setSize_px ( w,h );
   });
 
   $(this.element).on("dialogclose", function(event,ui){
