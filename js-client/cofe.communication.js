@@ -274,7 +274,7 @@ function processServerQueue()  {
     }
     if (__delays_ind && (!__delays_ind.isVisible()) && (!__delays_timer))  {
       __delays_timer = window.setTimeout ( function(){
-        __delays_ind.show();
+          __delays_ind.show();
       },__delays_wait);
       // var t0 = Date.now();
       // console.log ( ' t0=' + t0 );  // debug
@@ -836,6 +836,7 @@ function setQuitDestructor()  {
 
 
 //  ===========================================================================
+//  Serice functions for communication with iframes
 
 var __comm_iframes = {};
 
@@ -878,7 +879,7 @@ function onWindowMessage ( event ) {
           //   edata.callback.postMessage ({ message: 'done!'} );
           // if (edata.meta.fid in __comm_iframes)
           //   alert ( ' >>>> ' + edata.meta.fid );
-          __comm_iframes[edata.meta.fid].getWindow().postMessage ({ message: 'done!'} );
+          // __comm_iframes[edata.meta.fid].getWindow().postMessage ({ message: 'done!'} );
           if (rdata.project_missing)  {
             new MessageBox (  'Project not found',
                               '<h3>Project "' + edata.meta.project +
@@ -909,7 +910,11 @@ function onWindowMessage ( event ) {
 
       serverRequest ( fe_reqtype.getJobFile,req_data,'Get job file',
                       function(data){
-        // dsp.table.setLabel ( '<pre>'+data+'</pre>', dsp.trow-1,1, 1,1 );
+        __comm_iframes[edata.meta.fid].getWindow().postMessage ({
+          postdata : edata,
+          content  : data
+          // message: 'done!'
+        });
       },null,'persist');
 
   } else if (edata.command=='saveWebCootPreferences')  {
