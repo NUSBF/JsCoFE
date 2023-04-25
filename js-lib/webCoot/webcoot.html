@@ -118,44 +118,39 @@
     //     })
     // }
 
-    // this.loadBackupList = () => {
-    //     return new Promise((resolve, reject) => {
-    //         resolve(this.BACKUPS)
-    //     })
-    // }
+    const loadBackupList = () => {
+      // alert ( ' req ' + JSON.stringify(BACKUPS) );
+      window.parent.postMessage ({
+          'command' : 'getFile',
+          'fpath'   : 'backups/backups.json',
+          'data'    : JSON.stringify(BACKUPS),
+          'confirm' : false,
+          'meta'    : sf_meta
+      }, window.location );
+
+      return new Promise((resolve,reject) => {
+        resolve ( BACKUPS );
+      })
+    }
 
     let moorhenWrapper = new moorhen.MoorhenWrapper ( urlPrefix );
-    if (preferences)  {
-      moorhenWrapper.setPreferences ( preferences );
-    }
-    if (no_data_msg)
-      moorhenWrapper.setNoDataLegendMessage ( no_data_msg );
+    moorhenWrapper.setRootId     ( rootId     );
+    moorhenWrapper.setInputFiles ( inputFiles );
+    if (preferences)  moorhenWrapper.setPreferences         ( preferences );
+    if (no_data_msg)  moorhenWrapper.setNoDataLegendMessage ( no_data_msg );
     moorhenWrapper.addOnChangePreferencesListener ( savePreferencesCallback );
 
     switch (mode)  {  
-      case "view-update" : moorhenWrapper.setWorkMode         ( 'view' );
-                          //  moorhenWrapper.addOnExportListener ( exportToCloudCallback );
-                          //  moorhenWrapper.setRootId           ( rootId     );
-                          //  moorhenWrapper.setInputFiles       ( inputFiles );
-                           moorhenWrapper.setUpdateInterval   ( interval   );
-                          //  moorhenWrapper.start()
+      case "view-update" : moorhenWrapper.setWorkMode       ( 'view'   );
+                           moorhenWrapper.setUpdateInterval ( interval );
                        break;
-      case "view"        : moorhenWrapper.setWorkMode         ( 'view' );
-                          //  moorhenWrapper.addOnExportListener ( exportToCloudCallback );
-                          //  moorhenWrapper.setRootId           ( rootId     );
-                          //  moorhenWrapper.setInputFiles       ( inputFiles );
-                          //  moorhenWrapper.start()
+      case "view"        : moorhenWrapper.setWorkMode       ( 'view'   );
                        break;
-      default            : // moorhenWrapper.addOnExportListener ( exportToCloudCallback );
-                           // moorhenWrapper.setBackupSaveListener ( saveBackupCallback    );
-                          //  moorhenWrapper.setRootId           ( rootId     );
-                          //  moorhenWrapper.setInputFiles       ( inputFiles );
-                          //  moorhenWrapper.start()
+      default            : moorhenWrapper.addOnExportListener       ( exportToCloudCallback );
+                           moorhenWrapper.setBackupSaveListener     ( saveBackupCallback    );
+                           //moorhenWrapper.setBackupListLoadListener ( loadBackupList        );                          //  moorhenWrapper.start()
     }
 
-    moorhenWrapper.addOnExportListener ( exportToCloudCallback );
-    moorhenWrapper.setRootId           ( rootId     );
-    moorhenWrapper.setInputFiles       ( inputFiles );
     moorhenWrapper.start();
 
 </script>
