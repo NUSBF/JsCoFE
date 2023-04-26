@@ -231,7 +231,7 @@ class PaiRef(basic.TaskDriver):
         if str(sec2.WAUTO_YES.value) == 'yes':
             pass
         else:
-            cmd += [ '--weight ', str(sec2.WAUTO_VAL.value) ]
+            cmd += [ '--weight', str(sec2.WAUTO_VAL.value) ]
 
         
         if self.task.parameters.sec2.contains.CMP_CBX.value:
@@ -281,6 +281,7 @@ class PaiRef(basic.TaskDriver):
                         'if (!is_loaded)  {' +\
                             'var iframe = document.getElementById("' + frameId + '");' +\
                             'iframe.src = "' + frameURL + '";' +\
+                            # 'iframe.contentWindow.location.reload(true);' +\
                             '_check_load();' +\
                         '}' +\
                     '},2000);' +\
