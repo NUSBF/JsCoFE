@@ -178,13 +178,13 @@ class PaiRef(basic.TaskDriver):
         
 
         cmd = [
-            "-m"     , "pairef",
+            "-m"         , "pairef",
             "--ccp4cloud",
-            "--project",self.pairefProject(),
-            "--XYZIN"  , xyzin,
-            "--HKLIN"  , hklin,
-            "-r"       , ",".join(resList[1:]),
-            "-i"       , str(resList[0])
+            "--project"  , self.pairefProject(),
+            "--XYZIN"    , xyzin,
+            "--HKLIN"    , hklin,
+            "-r"         , ",".join(resList[1:]),
+            "-i"         , str(resList[0])
             
             
 
@@ -210,9 +210,6 @@ class PaiRef(basic.TaskDriver):
         #                         manual definition of weighting term (only for REFMAC5)
         # --ncyc NCYC           number of refinement cycles that will be performed in
         #                         every resolution step
-
-
-
 
         if str(sec2.KEYWORDS.value) != '':
            keywords_Pairef= sec2.KEYWORDS.value.split()
@@ -284,7 +281,7 @@ class PaiRef(basic.TaskDriver):
                             'iframe.src = "' + frameURL + '";' +\
                             '_check_load();' +\
                         '}' +\
-                    '},10000);' +\
+                    '},2000);' +\
                 '}' +\
                 '_check_load();' +\
             '</script>',
@@ -390,7 +387,7 @@ class PaiRef(basic.TaskDriver):
             self.rvrow += 4
 
             self.putTitle ( "Output Structure" +\
-                        self.hotHelpLink ( "Structure","jscofe_qna.structure") )
+                            self.hotHelpLink ( "Structure","jscofe_qna.structure") )
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
