@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.03.23   <--  Date of Last Modification.
+ *    26.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -81,17 +81,17 @@ function TaskPaiRef()  {   // must start with Task...
                       keyword  : 'mode',
                       label    : 'Check',
                       tooltip  : 'Select either equidistant or arbitrary placed, '     +
-                                'hi-resolution shells to check for optimal  '     +
+                                'high-resolution shells to check for optimal  '     +
                                 'resolution cut-off.',
-                      range    : ['eqd|equidistant hi-resolution shells',
-                                  'list|given hi-resolution shells'],
+                      range    : ['eqd|equidistant high-resolution shells',
+                                  'list|given high-resolution shells'],
                       value    : 'eqd',
                       iwidth   : 280,
                       position : [0,0,1,5]
                    },
 
         label_ns : {  type        : 'label',  // just a separator
-                      label       : 'number of hi-resolution shells:',
+                      label       : 'number of high-resolution shells:',
                       align       : 'left',
                       position    : [1,2,1,2],
                       showon      : {'MODE_SEL':['eqd']}
@@ -99,7 +99,7 @@ function TaskPaiRef()  {   // must start with Task...
         NSHELLS :   { type        : 'integer_',
                       keyword     : 'nshells',
                       label       : '',
-                      tooltip     : 'Number of hi-resolution shells to check or leave blank ' +
+                      tooltip     : 'Number of high-resolution shells to check or leave blank ' +
                                     'for automatic choice',
                       range       : [2,50],
                       value       : '',

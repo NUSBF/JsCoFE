@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.03.23   <--  Date of Last Modification.
+#    66.04.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -179,12 +179,13 @@ class PaiRef(basic.TaskDriver):
 
         cmd = [
             "-m"     , "pairef",
-            # "--ccp4cloud",
+            "--ccp4cloud",
             "--project",self.pairefProject(),
             "--XYZIN"  , xyzin,
             "--HKLIN"  , hklin,
             "-r"       , ",".join(resList[1:]),
             "-i"       , str(resList[0])
+            
             
 
         ]
@@ -214,7 +215,10 @@ class PaiRef(basic.TaskDriver):
 
 
         if str(sec2.KEYWORDS.value) != '':
-           cmd += [ str(sec2.KEYWORDS.value) ]
+           keywords_Pairef= sec2.KEYWORDS.value.split()
+           for keyword in keywords_Pairef:
+            # cmd += [ str(sec2.KEYWORDS.value) ]
+            cmd += [ str(keyword) ]
         
 
         if hklin_unmerged:
@@ -227,7 +231,7 @@ class PaiRef(basic.TaskDriver):
         if str(sec2.WAUTO_YES.value) == 'yes':
             pass
         else:
-            cmd += [ '--weight ' + str(sec2.WAUTO_VAL.value) ]
+            cmd += [ '--weight ', str(sec2.WAUTO_VAL.value) ]
 
         
         if self.task.parameters.sec2.contains.CMP_CBX.value:
@@ -271,6 +275,7 @@ class PaiRef(basic.TaskDriver):
                 '$("#' + frameId + '").on("load",function(){' +\
                     'is_loaded = true;' +\
                 '});' +\
+
                 'function _check_load()  {' +\
                     'window.setTimeout(function(){' +\
                         'if (!is_loaded)  {' +\
@@ -284,6 +289,8 @@ class PaiRef(basic.TaskDriver):
             '</script>',
             0,
         )
+        
+
 
         self.flush()
 
