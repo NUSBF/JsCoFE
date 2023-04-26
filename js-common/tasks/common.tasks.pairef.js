@@ -157,13 +157,13 @@ function TaskPaiRef()  {   // must start with Task...
                     }
 
         
-   }
+      }
     },
 
     sec2 : {
       type     : 'section',
       title    : 'Advanced',
-      open     : true,
+      open     : false,
       position : [4,0,1,5],
       contains : {
 

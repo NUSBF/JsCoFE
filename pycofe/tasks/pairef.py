@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    66.04.23   <--  Date of Last Modification.
+#    26.04.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -271,27 +271,25 @@ class PaiRef(basic.TaskDriver):
             tabId,
             '<iframe id="' + frameId + '" src="' + frameURL + '" style="' + frameCSS + '"></iframe>' +\
             '<script>' +\
+                'var iframe    = document.getElementById("' + frameId + '");' +\
                 'var is_loaded = false;' +\
+                'iframe.src    = "data:text/html;charset=utf-8,<h2>Please wait &mldr;</h2>";' +\
                 '$("#' + frameId + '").on("load",function(){' +\
-                    'is_loaded = true;' +\
+                    'var response = $("#' + frameId + '").contents().find("body").html();' +\
+                    'if (response) is_loaded  = (response.indexOf("FILE NOT FOUND")<0);' +\
                 '});' +\
-
                 'function _check_load()  {' +\
                     'window.setTimeout(function(){' +\
                         'if (!is_loaded)  {' +\
-                            'var iframe = document.getElementById("' + frameId + '");' +\
                             'iframe.src = "' + frameURL + '";' +\
-                            # 'iframe.contentWindow.location.reload(true);' +\
                             '_check_load();' +\
                         '}' +\
-                    '},2000);' +\
+                    '},10000);' +\
                 '}' +\
                 '_check_load();' +\
             '</script>',
             0,
         )
-        
-
 
         self.flush()
 
