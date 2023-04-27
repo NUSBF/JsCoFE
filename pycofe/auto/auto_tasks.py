@@ -213,6 +213,14 @@ def lorestr ( name,revision,parentName ):
     auto_api.addTaskParameter(name, "PDB_CBX", "True") # auto search for homologues
     return
 
+def morda ( name,revision,parentName ):
+    auto_api.addTask(name, "TaskMorda", parentName)
+    auto_api.addTaskData(name, "revision", revision)
+    auto_api.addTaskParameter(name, "ALTGROUPS_CBX", True)
+    # auto_api.addTaskParameter(name, "NMODELS", nModels)
+
+    return
+
 def mrbump ( name,revision,parentName, nModels ):
     auto_api.addTask(name, "TaskMrBump", parentName)
     auto_api.addTaskData(name, "revision", revision)
