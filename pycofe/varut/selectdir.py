@@ -16,13 +16,13 @@
 
 import sys
 import os
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
+from   PyQt5 import QtWidgets
+from   PyQt5 import QtCore
 
 def select ( title ):
 
-    settings = QtCore.QSettings ( "CCP4","SelectDir" );
-    startDir = settings.value ( "last_path" ).toString()
+    settings = QtCore.QSettings ( "CCP4","SelectDir" )
+    startDir = str ( settings.value ( "last_path" ) )
 
     if not startDir and "HOME" in os.environ:
         startDir = os.environ["HOME"]

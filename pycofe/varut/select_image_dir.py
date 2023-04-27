@@ -18,8 +18,8 @@ import sys
 import os
 import re
 import json
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
+from   PyQt5 import QtWidgets
+from   PyQt5 import QtCore
 
 
 def dirpath2sectors(dirpath, sectors, file_list):
