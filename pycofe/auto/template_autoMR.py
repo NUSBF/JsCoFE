@@ -340,21 +340,28 @@ def makeNextTask ( crTask,data ):
 
     elif crTask._type=="TaskMrBump":
         auto_api.addContext("mrbump_rfree", data["Rfree"])
-        auto_tasks.refmac_jelly("jellyAfterMRBUMP", data["revision"], crTask.autoRunName)
+        # auto_api.addContext("build_parent", crTask.autoRunName)
+        # auto_api.addContext("build_revision", data["revision"])
+        if not data["revision"] or (float(data["Rfree"])>0.4):
+                # auto_tasks.asu ( "asu", auto_api.getContext("asu_parent"))
+                # running Morda from ASU task
+                revision = auto_api.getContext("starting_asu_revision")
+                parent = auto_api.getContext("asu_task_name")
+                if (os.path.isfile(os.path.join(os.environ["CCP4"],"share","mrd_data","VERSION")) or \
+                    os.path.isfile(os.path.join(os.environ["CCP4"],"lib","py2","morda","LINKED"))):
+                    auto_tasks.morda("morda", revision, parent)
+                   
+                    return
+                return
+        else:
+            auto_api.addContext("build_parent", crTask.autoRunName)
+            auto_api.addContext("build_revision", data["revision"])
+            auto_tasks.refmac_jelly("jellyAfterMRBUMP", data["revision"], crTask.autoRunName)
         return
 
 
     elif crTask._type=="TaskMorda":
         if not data["revision"]:
-            if (os.path.isfile(os.path.join(os.environ["CCP4"], "share", "mrd_data", "VERSION")) or \
-                    os.path.isfile(os.path.join(os.environ["CCP4"], "lib", "py2", "morda", "LINKED"))):
-                revision = auto_api.getContext("starting_asu_revision")
-                parent = auto_api.getContext("asu_task_name")
-                auto_api.addTask("morda", "TaskMorda", parent)
-                auto_api.addTaskData("morda", "revision", revision)
-                auto_api.addTaskParameter("morda", "ALTGROUPS_CBX", True)
-                return
-            else:
                 strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
                 strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
                           'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
@@ -387,9 +394,8 @@ def makeNextTask ( crTask,data ):
                 # not solved; trying Morda if installed
                 if (os.path.isfile(os.path.join(os.environ["CCP4"],"share","mrd_data","VERSION")) or \
                     os.path.isfile(os.path.join(os.environ["CCP4"],"lib","py2","morda","LINKED"))):
-                    auto_api.addTask          ( "morda","TaskMorda",crTask.autoRunName )
-                    auto_api.addTaskData      ( "morda","revision",data["revision"] )
-                    auto_api.addTaskParameter ( "morda","ALTGROUPS_CBX",True )
+                    auto_tasks.morda("morda", data["revision"], crTask.autoRunName)
+                    
                     return
                 else:
                     # Morda not installed
@@ -434,14 +440,15 @@ def makeNextTask ( crTask,data ):
 
 
         elif crTask.autoRunName == 'jellyAfterMorda':
+            auto_api.addContext("build_parent", crTask.autoRunName)
+            auto_api.addContext("build_revision", data["revision"])
             if float(data["Rfree"])<0.4:
-                auto_api.addContext("build_parent", crTask.autoRunName)
-                auto_api.addContext("build_revision", data["revision"])
+                
                 auto_tasks.modelcraft("modelcraftAfterMorda", data["revision"], crTask.autoRunName)
                 return
-            elif float(data["Rfree"]) > 0.5:
-                # last attempt to solve - full SIMBAD
-                auto_tasks.simbad("simbadFull", "LCS", data['revision'], crTask.autoRunName)
+            # elif float(data["Rfree"]) > 0.5:
+            #     # last attempt to solve - full SIMBAD
+            #     auto_tasks.simbad("simbadFull", "LCS", data['revision'], crTask.autoRunName)
                 # strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
                 # strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
                 #           'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \

@@ -213,6 +213,11 @@ class Morda(basic.TaskDriver):
             self.generic_parser_summary["morda"] = {
               "summary_line" : "solution not found"
             }
+            auto.makeNextTask ( self,{
+                "revision" : None,
+                "Rfactor"  :"1",
+                "Rfree"    :"1"
+            })
 
         # close execution logs and quit
         self.success ( have_results )

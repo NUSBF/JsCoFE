@@ -253,6 +253,12 @@ class MrBump(basic.TaskDriver):
             self.generic_parser_summary["mrbump"] = {
               "summary_line" : "solution not found"
             }
+            
+            auto.makeNextTask ( self,{
+                "revision" : None,
+                "Rfactor"  :"1",
+                "Rfree"    :"1"
+            })
 
         # apparently log parser completes action when stdout is closed. this
         # may happen after STOP_POLL is issued, in which case parser's report
