@@ -22,12 +22,9 @@
 
 import sys
 import os
-try:
-    from PyQt4 import QtGui as QtWidgets
-    from PyQt4 import QtCore
-except:
-    from PyQt5 import QtWidgets
-    from PyQt5 import QtCore
+from   PyQt5 import QtWidgets
+from   PyQt5 import QtCore
+
 
 def select ( title,filters,startDir=None,saveSettings=True ):
 
@@ -35,7 +32,7 @@ def select ( title,filters,startDir=None,saveSettings=True ):
     start_dir = startDir
     if not start_dir:
         settings  = QtCore.QSettings ( "CCP4","SelectFile" )
-        start_dir = str(settings.value("last_path"))
+        start_dir = str ( settings.value ( "last_path ") )
 
     if not start_dir and "HOME" in os.environ:
         start_dir = os.environ["HOME"]
