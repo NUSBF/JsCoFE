@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.04.23   <--  Date of Last Modification.
+ *    28.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,7 +47,6 @@ function TaskWebCoot()  {
       version     : 4,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
-    /*
     },{
       data_type   : {'DataStructure':[],'DataEnsemble':[],
                      'DataModel':[],'DataXYZ':[]},  // data type(s) and subtype(s)
@@ -62,6 +61,7 @@ function TaskWebCoot()  {
       inputId     : 'ligand',      // input Id for referencing input fields
       min         : 0,             // minimum acceptable number of data instances
       max         : 1              // maximum acceptable number of data instances
+    /*
     },{    // input data for making new ligand names
       data_type   : {'DataLigand':[]}, // this item is only for having list of
                                        // all ligands imported or generated
@@ -244,6 +244,13 @@ if (!__template)  {
               args : [ pdbURL,'molecule' ]
             });
           }
+          if (file_key.lib in istruct.files)  {
+            var libURL = self.getURL ( 'input/' + istruct.files[file_key.lib] );
+            inputFiles.push ({
+              type : 'ligand',
+              args : [ libURL ]
+            });
+          }
           if (file_key.mtz in istruct.files)  {
             var mtzURL = self.getURL ( 'input/' + istruct.files[file_key.mtz] );
             if (istruct.FWT)
@@ -274,6 +281,30 @@ if (!__template)  {
           }
         }
 
+        if ('aux_struct' in self.input_data.data)  {
+          let aux_struct = self.input_data.data['aux_struct'];
+          for (let i=0;i<aux_struct.length;i++)
+            if (file_key.xyz in aux_struct[i].files)  {
+              let structURL = self.getURL ( 'input/' + aux_struct[i].files[file_key.xyz] );
+              inputFiles.push ({
+                type : 'pdb',
+                args : [ structURL,'molecule_' + (i+1) ]
+              });
+            }
+        }
+
+        if ('ligand' in self.input_data.data)  {
+          let ligands = self.input_data.data['ligand'];
+          for (let i=0;i<ligands.length;i++)
+            if (file_key.lib in ligands[i].files)  {
+              let ligURL = self.getURL ( 'input/' + ligands[i].files[file_key.lib] );
+              inputFiles.push ({
+                type : 'ligand',
+                args : [ ligURL ]
+              });
+            }
+        }
+
     //   { type: "mtz", 
     //     args: [ "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "diff-map",
     //             { F              : "DELFWT",
@@ -284,7 +315,7 @@ if (!__template)  {
     //             }
     //           ]
 
-
+// alert ( JSON.stringify(inputFiles) )
 
         html = html.replace ( '[[meta]]',JSON.stringify({
                                 'project' : self.project,
