@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    26.07.22   <--  Date of Last Modification.
+#    28.04.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2023
 #
 # ============================================================================
 #
@@ -439,6 +439,10 @@ class Simbad(asudef.ASUDef):
         # elif hkl:
         else:
             self.putTitle ( "No Suitable Models Found" )
+
+        if os.path.exists("morda"):
+            shutil.rmtree("morda",ignore_errors=True )
+
 
         if not have_results or not revision:
             auto.makeNextTask ( self,{
