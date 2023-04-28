@@ -441,8 +441,7 @@ class Simbad(asudef.ASUDef):
             self.putTitle ( "No Suitable Models Found" )
 
         if os.path.exists("morda"):
-            shutil.rmtree("morda",ignore_errors=True )
-
+            shutil.rmtree ( "morda",ignore_errors=True )
 
         if not have_results or not revision:
             auto.makeNextTask ( self,{
