@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.04.23   <--  Date of Last Modification.
+ *    27.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -80,15 +80,15 @@ function rvapi_umviewer ( jobId,title,xyzFilePath,mapFilePath,dmapFilePath )  {
 // ===========================================================================
 
 function checkBrowserForWebCoot()  {
-  if (isSafari()) {
-    new MessageBox ( 'Unsuitable browser',
-        '<div style="width:450px"><h2>Unsuitable browser</h2>' +
-        'At present, WebCoot/Moorhen does not work in Safari browser, which ' +
-        'you are using.<p>Please use another browser, such as Opera, Chrome, ' +
-        'or Firefox.</div>','msg_stop'
-    );
-    return false;
-  }
+  // if (isSafari()) {
+  //   new MessageBox ( 'Unsuitable browser',
+  //       '<div style="width:450px"><h2>Unsuitable browser</h2>' +
+  //       'At present, WebCoot/Moorhen does not work in Safari browser, which ' +
+  //       'you are using.<p>Please use another browser, such as Opera, Chrome, ' +
+  //       'or Firefox.</div>','msg_stop'
+  //   );
+  //   return false;
+  // }
   return true;
 }
 
