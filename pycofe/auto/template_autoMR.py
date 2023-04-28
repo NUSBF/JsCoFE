@@ -420,10 +420,22 @@ def makeNextTask ( crTask,data ):
                                       'Please double-check whether all input parameters were correct (including diffraction data and sequence).\n' + \
                                       'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
                             auto_tasks.remark("rem_sorry1", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+                            # auto_api.addContext("build_parent", crTask.autoRunName)
+                            # auto_api.addContext("build_revision", data["revision"])
+                            # auto_tasks.modelcraft("modelcraftAfterMrbump", data["revision"], crTask.autoRunName)
                             return
                     else:
                         # last attempt to solve - full SIMBAD
-                        auto_tasks.simbad("simbadFull", "LCS", data['revision'], crTask.autoRunName)
+                        # auto_tasks.simbad("simbadFull", "LCS", data['revision'], crTask.autoRunName)
+                        strTree = 'Large parts of the structure are likely missing as Rfree is only %0.3f (click for more comments)' % float(
+                                data["Rfree"])
+                        strText = 'Automated MR seems to perform not very well on your structure.\n' + \
+                                'You can also try to solve the structure manually using MOLREP or Phaser via carefully crafted search model or ensemle of models.\n'
+                        auto_tasks.remark("rem_sorry1", strTree, 9, strText, crTask.autoRunName)  # 9 - Red
+
+                        auto_api.addContext("build_parent", crTask.autoRunName)
+                        auto_api.addContext("build_revision", data["revision"])
+                        auto_tasks.modelcraft("modelcraftAfterMrbump", data["revision"], crTask.autoRunName)
 
                         # strTree = 'Sorry, automated MR seems to fail (click remark for more comments)'
                         # strText = 'Although automated MR seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
