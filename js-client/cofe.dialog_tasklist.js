@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.04.23   <--  Date of Last Modification.
+ *    28.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -365,7 +365,7 @@ var r = 0;  // grid row
     new TaskCootMB ()
   ]
 
-  if (!isSafari())
+  // if (!isSafari())
     task_list.push ( new TaskWebCoot() );
 
   task_list = task_list.concat ([
@@ -779,18 +779,18 @@ var row      = 0;
     new TaskNautilus     ()
   ],true);
 
-  if (isSafari())  {
-    this.makeSection ( 'Coot',[
-      new TaskCootMB (),
-      new TaskCootCE ()
-    ],true);
-  } else  {
+  // if (isSafari())  {
+  //   this.makeSection ( 'Coot',[
+  //     new TaskCootMB (),
+  //     new TaskCootCE ()
+  //   ],true);
+  // } else  {
     this.makeSection ( 'Coot',[
       new TaskCootMB (),
       new TaskCootCE (),
       new TaskWebCoot()
-    ],true);
-  }
+    ],true );
+  // }
 
   this.makeSection ( 'Ligands',[
     new TaskMakeLigand(),
