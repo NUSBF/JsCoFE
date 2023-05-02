@@ -2,10 +2,6 @@
 Transfer projects from remote to local installations CCP4 Cloud and back
 ========================================================================
 
-+++++++++++++++++++++++++++
-Late evening Thu 2023.03.30 
-+++++++++++++++++++++++++++
-
 
 **Projects from web CCP4 cloud should be exported** using the |Export| button in My project Page.
 
@@ -42,7 +38,7 @@ Late evening Thu 2023.03.30
 
 
 ++++++++++++++++++++++
-Morning Mon 2023.04.03 
+
 ++++++++++++++++++++++
 
 

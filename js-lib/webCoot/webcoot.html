@@ -4,7 +4,7 @@
  *
  *  =================================================================
  *
- *    23.04.23   <..  Date of Last Modification.
+ *    29.04.23   <..  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  =================================================================
  *
@@ -38,7 +38,7 @@
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
   <script>// See https://github.com/facebook/react/issues/20829#issuecomment-802088260
-    if (!crossOriginIsolated) SharedArrayBuffer = ArrayBuffer;
+    if (!crossOriginIsolated)  SharedArrayBuffer = ArrayBuffer;
   </script>
   <script src="./baby-gru/wasm/web_example.js"></script>
   <script src="./moorhen.js"      charset="utf-8"></script>
@@ -51,8 +51,14 @@
     const no_data_msg = '[[no_data_msg]]';
     const preferences = [[preferences]];
     const sf_meta     = [[meta]];
+    const wdirURL     = '[[wdirURL]]';
     const urlPrefix   = '.';
 
+    let BACKUPS       = [];
+    let backupsFPath  = 'backups/backups.json';
+    let backupFPrefix = 'backups/backup_';
+
+    /*
     if (window.addEventListener) {
       window.addEventListener ( 'message', onWindowMessage, false );
     } else if (window.attachEvent) {
@@ -63,6 +69,24 @@
     function onWindowMessage ( event )  {
       // alert ( event.data.message );
     }
+    */
+
+    function saveBackupList()  {
+      let bcopy = [];
+      for (let i=0;i<BACKUPS.length;i++)  {
+        let obj = JSON.parse ( JSON.stringify(BACKUPS[i]) );
+        if (obj.data && (obj.data.length>100))
+          obj.data = null;
+        bcopy.push ( obj );
+      }
+      window.parent.postMessage ({
+        'command' : 'saveFile',
+        'fpath'   : backupsFPath,
+        'data'    : JSON.stringify(bcopy),
+        'confirm' : false,
+        'meta'    : sf_meta
+      }, window.location );
+    }
 
     const exportToCloudCallback = (molName,molData) => {
       window.parent.postMessage ({
@@ -71,87 +95,146 @@
           'data'    : molData,
           'confirm' : true,
           'meta'    : sf_meta
-          // 'callback' : window
       }, window.location );
     }
+
     const savePreferencesCallback = (preferences) => {
       window.parent.postMessage ({
           'command' : 'saveWebCootPreferences',
           'data'    : JSON.parse(JSON.stringify(preferences))
       }, window.location );
     }
-
-    let BACKUPS = [];
    
     const saveBackupCallback = (obj) => {
       return new Promise((resolve, reject) => {
-        window.parent.postMessage ({
-            'command' : 'saveFile',
-            'fpath'   : 'backups/backup_' + obj.serNo,
-            'data'    : JSON.stringify(obj.data),
-            'confirm' : false,
-            'meta'    : sf_meta
-        }, window.location );
-        obj.data = null;
+        if (obj.data.length>100)
+          window.parent.postMessage ({
+              'command' : 'saveFile',
+              'fpath'   : backupFPrefix + obj.serNo,
+              'data'    : JSON.stringify(obj.data),
+              'confirm' : false,
+              'meta'    : sf_meta
+          }, window.location );
         BACKUPS.push ( obj );
-        window.parent.postMessage ({
-            'command' : 'saveFile',
-            'fpath'   : 'backups/backups.json',
-            'data'    : JSON.stringify(BACKUPS),
-            'confirm' : false,
-            'meta'    : sf_meta
-        }, window.location );
+        saveBackupList();
         resolve();
       });
     }
 
-    // this.loadBackupCallback = (serNo) => {
-    //     return new Promise((resolve, reject) => {
-    //         resolve(this.BACKUPS.find(i => i.serNo === serNo))
-    //     })
-    // }
+    const loadBackupCallback = (serNo) => {
+      return new Promise((resolve, reject) => {
+        resolve ( BACKUPS.find ( i => i.serNo === serNo ) );
+      });
+    }
 
-    // this.removeBackupCallback = (serNo) => {
-    //     return new Promise((resolve, reject) => {
-    //         this.BACKUPS = this.BACKUPS.filter(i => i.serNo !== serNo)
-    //         resolve()
-    //     })
-    // }
+    const removeBackupCallback = (serNo) => {
+      return new Promise((resolve, reject) => {
+        BACKUPS = BACKUPS.filter ( i => i.serNo !== serNo );
+        saveBackupList();
+        resolve();
+      });
+    }
 
     const loadBackupList = () => {
-      // alert ( ' req ' + JSON.stringify(BACKUPS) );
-      window.parent.postMessage ({
-          'command' : 'getFile',
-          'fpath'   : 'backups/backups.json',
-          'data'    : JSON.stringify(BACKUPS),
-          'confirm' : false,
-          'meta'    : sf_meta
-      }, window.location );
-
       return new Promise((resolve,reject) => {
         resolve ( BACKUPS );
-      })
+      });
     }
 
-    let moorhenWrapper = new moorhen.MoorhenWrapper ( urlPrefix );
-    moorhenWrapper.setRootId     ( rootId     );
-    moorhenWrapper.setInputFiles ( inputFiles );
-    if (preferences)  moorhenWrapper.setPreferences         ( preferences );
-    if (no_data_msg)  moorhenWrapper.setNoDataLegendMessage ( no_data_msg );
-    moorhenWrapper.addOnChangePreferencesListener ( savePreferencesCallback );
 
-    switch (mode)  {  
-      case "view-update" : moorhenWrapper.setWorkMode       ( 'view'   );
-                           moorhenWrapper.setUpdateInterval ( interval );
-                       break;
-      case "view"        : moorhenWrapper.setWorkMode       ( 'view'   );
-                       break;
-      default            : moorhenWrapper.addOnExportListener       ( exportToCloudCallback );
-                           moorhenWrapper.setBackupSaveListener     ( saveBackupCallback    );
-                           //moorhenWrapper.setBackupListLoadListener ( loadBackupList        );                          //  moorhenWrapper.start()
+    function fetchFile ( furl,function_success,function_always,function_fail )  {
+
+      var oReq = new XMLHttpRequest();
+
+      oReq.onload = function(oEvent) {
+        function_success ( oReq.responseText );
+        if (function_always)
+          function_always();
+      };
+
+      oReq.onerror = function()  {
+        if (function_fail)
+          function_fail ( 'communication errors' );
+        if (function_always)
+          function_always();
+      }
+
+      oReq.overrideMimeType ( "text/plain; charset=x-user-defined" );
+      // oReq.responseType = 'arraybuffer';
+      oReq.timeout      = 9999999;
+      oReq.open ( 'POST',furl,true );
+
+      try {
+        oReq.send(null);
+      } catch (e) {
+        if (function_fail)
+          function_fail ( 'general error' );
+      }
+
     }
 
-    moorhenWrapper.start();
+
+    function startWebCoot()  {
+
+      let moorhenWrapper = new moorhen.MoorhenWrapper ( urlPrefix );
+      
+      moorhenWrapper.setRootId     ( rootId     );
+      
+      moorhenWrapper.setInputFiles ( inputFiles );
+      if (preferences)  moorhenWrapper.setPreferences         ( preferences );
+      if (no_data_msg)  moorhenWrapper.setNoDataLegendMessage ( no_data_msg );
+      moorhenWrapper.addOnChangePreferencesListener ( savePreferencesCallback );
+
+      switch (mode)  {  
+        case "view-update" : moorhenWrapper.setWorkMode       ( 'view'   );
+                             moorhenWrapper.setUpdateInterval ( interval );
+                        break;
+        case "view"        : moorhenWrapper.setWorkMode       ( 'view'   );
+                        break;
+        default            : moorhenWrapper.addOnExportListener       ( exportToCloudCallback );
+                             moorhenWrapper.setBackupSaveListener     ( saveBackupCallback    );
+                             moorhenWrapper.setBackupListLoadListener ( loadBackupList        );                          //  moorhenWrapper.start()
+                             moorhenWrapper.setBackupLoadListener     ( loadBackupCallback    );
+                             moorhenWrapper.setRemoveBackupListener   ( removeBackupCallback  );
+      }
+
+      moorhenWrapper.start();
+
+    }
+
+    if (wdirURL)  {
+      fetchFile ( wdirURL + '/' + backupsFPath,
+        function(text){
+          // Get the backups list
+          BACKUPS = JSON.parse ( text );
+          // Load backups in the background, without waiting. Slightly risky but 
+          // should work given webcoot start-up times. Rewrite this in case of
+          // problems
+          for (let i=0;i<BACKUPS.length;i++)
+            if (!BACKUPS[i].data)
+              (function(backupNo){
+                fetchFile ( wdirURL + '/' + backupFPrefix + BACKUPS[backupNo].serNo,
+                  function(txt){
+                    BACKUPS[backupNo].data = JSON.parse(txt);
+                    console.log ( ' >>>>> loaded backup #' + backupNo + ' : ' + BACKUPS[backupNo].serNo + ' : ' + text.length )
+                  },
+                  null,
+                  function(errcode){
+                    alert ( 'Backup #' + backupNo + ' could not be obtained' );
+                  });
+              }(i))
+          // start WebCoot
+          startWebCoot();
+        },
+        null,
+        function(errcode){
+          alert ( 'WebCoot backup directory not found. Backups are not available.' );
+          startWebCoot();
+          // new MessageBox ( 'File not found',
+          //     'file not found','msg_error' );
+        });
+    } else
+      startWebCoot();
 
 </script>
 </body>
