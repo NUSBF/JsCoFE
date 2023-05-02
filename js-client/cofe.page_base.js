@@ -46,7 +46,10 @@ function BasePage ( sceneId,gridStyle,pageType )  {
       background_image = 'background_local';
     $('#'+sceneId).css({
         "background-image"    : "url('" + image_path(background_image) + "')",
-        "background-repeat"   : "no-repeat",
+        // "background-color"    : "alicablue",
+        "background-color"    : "rgb(243, 250, 255)",
+        // "background-color"    : "rgb(231, 250, 255)",   // cloud
+        // "background-repeat"   : "no-repeat",
         "background-size"     : "cover",
         "background-position" : "center center"
     });

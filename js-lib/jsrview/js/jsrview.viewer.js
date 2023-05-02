@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    23.04.23   <--  Date of Last Modification.
+//    29.04.23   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -763,10 +763,11 @@ function startWebCoot ( title,xyz_uri,mtz_uri,legend_uri,mode,update_interval,op
 
       let html = text.replace ( '[[baseurl]]',
                                 window.location + 'js-lib/webCoot/webcoot.html' )
-                     .replace ( '[[mode]]',mode )
-                     .replace ( '[[interval]]',update_interval.toString() )
+                     .replace ( '[[mode]]'       ,mode )
+                     .replace ( '[[interval]]'   ,update_interval.toString() )
                      .replace ( '[[no_data_msg]]',no_data_msg )
-                     .replace ( '[[preferences]]',JSON.stringify(__user_settings.webcoot_pref) );
+                     .replace ( '[[preferences]]',JSON.stringify(__user_settings.webcoot_pref) )
+                     .replace ( '[[wdirURL]]'    ,'' );
 
       let inputFiles = [];
   

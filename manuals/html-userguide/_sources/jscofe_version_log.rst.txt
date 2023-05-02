@@ -2,6 +2,25 @@
 CCP4 Cloud Version Log
 ======================
 
+**Version 1.7.0013** 
+
+    *Released on --.--.2023 with CCP48.0.012*
+
+
+    #. Added ligand upload option in workflows 
+
+    #. Fixed workflow termination if non-ligands were fitted
+
+    #. Added option to fit uploaded ligand with ligand generated from ligand description
+
+    #. Pairef fixes
+
+    #. Added compatibility with previous version for Slice and Slice'N'Dice tasks
+
+    #. Added Morda try in Auto-MR workflow if mrBump run didn't succeed
+
+
+
 **Version 1.7.0012** 
 
     *Released on --.--.2023 with CCP48.0.011*
@@ -21,6 +40,8 @@ CCP4 Cloud Version Log
     #. Fixed bug in PDB-REDO authorisation in Desktop mode
 
     #. Project sharing/joining disabled in Desktop mode
+
+    #. Fixed project ownership bug at importing projects
     
 
 **Version 1.7.0011** 

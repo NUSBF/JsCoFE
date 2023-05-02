@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.04.23   <--  Date of Last Modification.
+ *    29.04.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskWebCoot()  {
              else  TaskTemplate.call ( this );
 
   this._type   = 'TaskWebCoot';
-  this.name    = 'webcoot (model building)';
+  this.name    = 'webcoot (interactive model building)';
   this.setOName ( 'webcoot' );  // default output file name template
   this.title   = 'Model Building with WebCoot/Moorhen';
   this.nc_type = 'browser';     // job runs in-browser
@@ -107,13 +107,15 @@ TaskWebCoot.prototype.icon = function()  { return 'task_webcoot'; }
 
 TaskWebCoot.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return '<b>!EXPERIMENTAL!</b> fast-developing version of Coot for browsers';
+  return '<b>!!EXPERIMENTAL!!</b> fast-developing version of Coot for browsers';
 }
 
 TaskWebCoot.prototype.taskDescription = function()  {
 // this appears under task title in the Task Dialog
   return 'Fit atoms and new ligands in electron density, validate and explore';
 }
+
+TaskWebCoot.prototype.cloneItems = function() { return ['backups']; }
 
 //TaskWebCoot.prototype.cleanJobDir = function ( jobDir )  {}
 
@@ -217,7 +219,10 @@ if (!__template)  {
       return;
     }
 
-    var wab = new WebAppBox ( 'Web-Coot' );
+    var title = '[' + padDigits(this.id,4) + '] ';
+    if (this.uname.length>0)  title += this.uname;
+                        else  title += this.name;
+    var wab = new WebAppBox ( title );
     wab.setOnCloseFunction ( function(){ callback_func(); } );
     wab.launch();
 
@@ -228,10 +233,11 @@ if (!__template)  {
 
         var html = text.replace ( '[[baseurl]]',
                                    window.location + 'js-lib/webCoot/webcoot.html' )
-                       .replace ( '[[mode]]',mode )
-                       .replace ( '[[interval]]',update_interval.toString() )
+                       .replace ( '[[mode]]'       ,mode )
+                       .replace ( '[[interval]]'   ,update_interval.toString() )
                        .replace ( '[[no_data_msg]]','<h2>Data not found</h2>')
-                       .replace ( '[[preferences]]',JSON.stringify(__user_settings.webcoot_pref) );
+                       .replace ( '[[preferences]]',JSON.stringify(__user_settings.webcoot_pref) )
+                       .replace ( '[[wdirURL]]'    ,self.getURL('') );
 
         var istruct = self.input_data.data['revision'][0].Structure;
 
@@ -349,10 +355,10 @@ if (!__template)  {
     // put structure data in input databox for copying their files in
     // job's 'input' directory
 
-    var istruct  = null;
-    var istruct2 = null;
+    let istruct  = null;
+    let istruct2 = null;
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       if (revision.Options.leading_structure=='substructure')  {
         istruct  = revision.Substructure;
         istruct2 = revision.Structure;
@@ -368,14 +374,19 @@ if (!__template)  {
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
     if (istruct && ('coot_meta' in istruct) && istruct.coot_meta)  {
-      var coot_meta = istruct.coot_meta;
-      var srcJobDir = prj.getSiblingJobDirPath ( jobDir,coot_meta.jobId );
+      let coot_meta = istruct.coot_meta;
+      let srcJobDir = prj.getSiblingJobDirPath ( jobDir,coot_meta.jobId );
       for (var i=0;i<coot_meta.files.length;i++)
         utils.copyFile ( path.join(srcJobDir,coot_meta.files[i]),
                          path.join(jobDir,coot_meta.files[i]) );
     }
 
-    utils.mkDir_check ( path.join(jobDir,'backups') );
+    // initialise backup directory
+    let backupsDirPath = path.join ( jobDir,'backups' );
+    utils.mkDir_check ( backupsDirPath );
+    let backupsListFPath = path.join ( backupsDirPath,'backups.json' );
+    if (!utils.fileExists(backupsListFPath))
+      utils.writeString ( backupsListFPath,'[]' );
 
     // var cfg = conf.getFEProxyConfig();
     // if (!cfg)
