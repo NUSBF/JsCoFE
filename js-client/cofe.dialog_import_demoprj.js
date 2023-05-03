@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.12.22   <--  Date of Last Modification.
+ *    03.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Demo Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -27,132 +27,19 @@
 // -------------------------------------------------------------------------
 // Import project dialog class
 
-/*
-function ImportDemoProjectDialog ( onSuccess_func )  {
-
-  Widget.call ( this,'div' );
-  this.element.setAttribute ( 'title','Import Demo Project' );
-  document.body.appendChild ( this.element );
-
-  var grid = new Grid('');
-  this.addWidget ( grid );
-  grid.setLabel ( '<h3>Import Demo Project</h3>',0,0,1,1 );
-
-  var msgLabel = new Label ( 'Use "<i>Select demo project</i>" button to navigate ' +
-                             'to a demo<br>project.<p>' +
-                             'The import will commence automatically once a '  +
-                             'project<br>is chosen -- <b><i>do not close ' +
-                             'this dialog until the import<br>is complete.</i></b>' +
-                             '<hr/>' );
-  grid.setWidget ( msgLabel, 1,0,1,1 );
-
-  var select_btn = grid.setButton ( 'Select demo project',
-                                    image_path('open_file'),2,0,1,1 )
-                                    .setNoWrap();
-  grid.setHorizontalAlignment ( 2,0,'center' );
-
-  this.currentCloudPath = __demo_projects;
-  (function(task){
-    select_btn.addOnClickListener ( function(){
-      new CloudFileBrowser ( null,task,5,[],function(items){
-        serverRequest ( fe_reqtype.startDemoImport,{
-                            'cloudpath' : task.currentCloudPath,
-                            'demoprj'   : items[0]
-                        },'Demo Project Import',function(data){
-
-          select_btn.hide();
-          msgLabel.setText ( 'The project is being imported, please wait ... ' );
-          var progressBar = new ProgressBar ( 0 );
-          grid.setWidget ( progressBar, 3,0,1,1 );
-
-          function checkReady() {
-            serverRequest ( fe_reqtype.checkPrjImport,0,'Demo Project Import',function(data){
-              if (!data.signal)
-                window.setTimeout ( checkReady,1000 );
-              else {
-                progressBar.hide();
-                $( "#cancel_btn" ).button ( "option","label","Close" );
-                if (data.signal=='Success')  {
-                  msgLabel.setText ( 'Demo Project "' + data.name + '" is imported, ' +
-                                     'you may close this dialog now.' );
-                  if (onSuccess_func)
-                    onSuccess_func();
-                } else
-                  msgLabel.setText ( 'Demo Project "' + data.name + '" failed to import, ' +
-                                     'the reason being:<p><b><i>' + data.signal +
-                                     '</i></b>.' );
-              }
-            },null,function(){
-              window.setTimeout ( checkReady,1000 );  // depress error messages
-            });
-          }
-
-          window.setTimeout ( checkReady,2000 );
-
-        });
-
-        return 1;  // do close browser window
-
-      },null );
-
-    });
-
-  }(this))
-
-//  w = 3*$(window).width()/5 + 'px';
-
-  $(this.element).dialog({
-    resizable : false,
-    height    : 'auto',
-    maxHeight : 500,
-    width     : 'auto',
-    modal     : true,
-    open      : function(event, ui) {
-      $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
-    },
-    buttons   : [
-      {
-        id    : "cancel_btn",
-        text  : "Cancel",
-        click : function() {
-          $(this).dialog("close");
-        }
-      }
-    ]
-  });
-
-
-  (function(dlg){
-
-    $(dlg.element).on( "dialogclose",function(event,ui){
-      serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Project Import',
-                      null,function(){
-        window.setTimeout ( function(){
-          $(dlg.element).dialog( "destroy" );
-          dlg.delete();
-        },10 );
-      },function(){} );  // depress error messages
-    });
-
-  }(this))
-
-}
-*/
-
 
 function ImportDemoProjectDialog ( onSuccess_func )  {
 
-  Widget.call ( this,'div' );
-  this.element.setAttribute ( 'title','Import Demo Project' );
-  document.body.appendChild ( this.element );
+  InputBox.call ( this,'Import Demo Project' );
+  this.setText ( '','demoprj' );
+  var grid = this.grid;
+  grid.setLabel ( '<h2>Import Demo Project</h2>',0,2,2,3 );
 
-  var grid = new Grid('');
-  this.addWidget ( grid );
-  grid.setLabel  ( '<h3>Import Demo Project</h3>',0,0,1,1 );
-
-  var msgLabel = grid.setText ( 'The project is being imported, please wait ... ',
-                                1,0,1,1 );
-  var progressBar = grid.setProgressBar ( 0, 2,0,1,1 );
+  var msgLabel = grid.setLabel ( 'The project is being imported, please wait ... ',
+                                 2,2,1,3 );
+  var progressBar = grid.setProgressBar ( 0, 4,2,1,3 );
+  
+  var self = this;
 
   $(this.element).dialog({
     resizable : false,
@@ -214,10 +101,12 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
         //   if (onSuccess_func)
         //     onSuccess_func();
 
-      } else
+        } else  {
+          self.setIcon ( 'msg_error' );
           msgLabel.setText ( 'Demo Project "' + data.name + '" failed to import, ' +
                              'the reason being:<p><b><i>' + data.signal +
                              '</i></b>.' );
+        }
       }
     },null,function(){
       window.setTimeout ( checkReady,1000 );  // depress error messages
@@ -226,94 +115,8 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
 
   window.setTimeout ( checkReady,2000 );
 
-/*
-  this.currentCloudPath = __demo_projects;
-  (function(task){
-    select_btn.addOnClickListener ( function(){
-      new CloudFileBrowser ( null,task,5,[],function(items){
-        serverRequest ( fe_reqtype.startDemoImport,{
-                            'cloudpath' : task.currentCloudPath,
-                            'demoprj'   : items[0]
-                        },'Demo Project Import',function(data){
-
-          select_btn.hide();
-          msgLabel.setText ( 'The project is being imported, please wait ... ' );
-          var progressBar = new ProgressBar ( 0 );
-          grid.setWidget ( progressBar, 3,0,1,1 );
-
-          function checkReady() {
-            serverRequest ( fe_reqtype.checkPrjImport,0,'Demo Project Import',function(data){
-              if (!data.signal)
-                window.setTimeout ( checkReady,1000 );
-              else {
-                progressBar.hide();
-                $( "#cancel_btn" ).button ( "option","label","Close" );
-                if (data.signal=='Success')  {
-                  msgLabel.setText ( 'Demo Project "' + data.name + '" is imported, ' +
-                                     'you may close this dialog now.' );
-                  if (onSuccess_func)
-                    onSuccess_func();
-                } else
-                  msgLabel.setText ( 'Demo Project "' + data.name + '" failed to import, ' +
-                                     'the reason being:<p><b><i>' + data.signal +
-                                     '</i></b>.' );
-              }
-            },null,function(){
-              window.setTimeout ( checkReady,1000 );  // depress error messages
-            });
-          }
-
-          window.setTimeout ( checkReady,2000 );
-
-        });
-
-        return 1;  // do close browser window
-
-      },null );
-
-    });
-
-  }(this))
-
-//  w = 3*$(window).width()/5 + 'px';
-
-  $(this.element).dialog({
-    resizable : false,
-    height    : 'auto',
-    maxHeight : 500,
-    width     : 'auto',
-    modal     : true,
-    open      : function(event, ui) {
-      $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide();
-    },
-    buttons   : [
-      {
-        id    : "cancel_btn",
-        text  : "Cancel",
-        click : function() {
-          $(this).dialog("close");
-        }
-      }
-    ]
-  });
-
-
-  (function(dlg){
-
-    $(dlg.element).on( "dialogclose",function(event,ui){
-      serverRequest ( fe_reqtype.finishPrjImport,0,'Finish Project Import',
-                      null,function(){
-        window.setTimeout ( function(){
-          $(dlg.element).dialog( "destroy" );
-          dlg.delete();
-        },10 );
-      },function(){} );  // depress error messages
-    });
-
-  }(this))
-*/
-
 }
 
-ImportDemoProjectDialog.prototype = Object.create ( Widget.prototype );
+ImportDemoProjectDialog.prototype = Object.create ( InputBox.prototype );
 ImportDemoProjectDialog.prototype.constructor = ImportDemoProjectDialog;
+

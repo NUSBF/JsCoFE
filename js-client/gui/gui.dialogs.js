@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.04.23   <--  Date of Last Modification.
+ *    03.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -636,6 +636,7 @@ QuestionBox.prototype.close = function()  {
 function InputBox ( title )  {
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title',title );
+  this.grid = null;
   document.body.appendChild ( this.element );
 }
 
@@ -649,14 +650,19 @@ InputBox.prototype.setText = function ( text,icon_name='' )  {
     this.addWidget        ( this.grid );
     this.grid.setLabel    ( ' ',0,0,1,1 );
     this.grid.setCellSize ( '','6px', 0,0 );
-    this.grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
+    // this.grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
+    this.setIcon          ( icon_name );
     this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
     this.grid.setLabel    ( text,0,2,2,1 );
     this.grid.setVerticalAlignment ( 0,2,'middle' );
   } else
     this.element.innerHTML = message;
 
-  // this.element.innerHTML = text.toString();
+}
+
+InputBox.prototype.setIcon = function ( icon_name )  {
+  if (this.grid)
+    this.grid.setImage ( image_path(icon_name),'48px','48px', 1,0,1,1 );
 }
 
 InputBox.prototype.launch = function ( name_btn,add_func )  {
