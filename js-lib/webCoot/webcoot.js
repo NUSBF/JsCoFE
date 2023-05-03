@@ -1,0 +1,212 @@
+/*
+ *  =================================================================
+ *
+ *    03.05.23   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  webcoot.js
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  WebCoot JS support
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel, F. Rodriguez 2023
+ *
+ *  =================================================================
+ *
+ */
+
+'use strict';
+
+let rootId        = 'root';
+let sf_meta       = null;
+let urlPrefix     = '.';
+
+let BACKUPS       = [];
+let backupsFPath  = 'backups/backups.json';
+let backupFPrefix = 'backups/backup_';
+
+function saveBackupList()  {
+let bcopy = [];
+  for (let i=0;i<BACKUPS.length;i++)  {
+    let obj = JSON.parse ( JSON.stringify(BACKUPS[i]) );
+    if (obj.data && (obj.data.length>100))
+      obj.data = null;
+    bcopy.push ( obj );
+  }
+  window.parent.postMessage ({
+    'command' : 'saveFile',
+    'fpath'   : backupsFPath,
+    'data'    : JSON.stringify(bcopy),
+    'confirm' : false,
+    'meta'    : sf_meta
+  }, window.location );
+}
+
+const exportToCloudCallback = (molName,molData) => {
+  window.parent.postMessage ({
+    'command' : 'saveFile',
+    'fpath'   : molName + '.pdb',
+    'data'    : molData,
+    'confirm' : 'model',
+    'meta'    : sf_meta
+  }, window.location );
+}
+
+const savePreferencesCallback = (preferences) => {
+  window.parent.postMessage ({
+    'command' : 'saveWebCootPreferences',
+    'data'    : JSON.parse(JSON.stringify(preferences))
+  }, window.location );
+}
+   
+const saveBackupCallback = (obj) => {
+  return new Promise((resolve, reject) => {
+    if (obj.data.length>100)
+      window.parent.postMessage ({
+        'command' : 'saveFile',
+        'fpath'   : backupFPrefix + obj.serNo,
+        'data'    : obj.data,
+        'confirm' : obj.type,
+        'meta'    : sf_meta
+      }, window.location );
+    BACKUPS.push ( obj );
+    saveBackupList();
+    resolve();
+  });
+}
+
+const loadBackupCallback = (serNo) => {
+  return new Promise((resolve, reject) => {
+    resolve ( BACKUPS.find ( i => i.serNo === serNo ) );
+  });
+}
+
+const removeBackupCallback = (serNo) => {
+  return new Promise((resolve, reject) => {
+    BACKUPS = BACKUPS.filter ( i => i.serNo !== serNo );
+    saveBackupList();
+    resolve();
+  });
+}
+
+const loadBackupList = () => {
+  return new Promise((resolve,reject) => {
+    resolve ( BACKUPS );
+  });
+}
+
+function fetchFile ( furl,function_success,function_always,function_fail )  {
+let oReq = new XMLHttpRequest();
+
+  oReq.onload = function(oEvent) {
+    function_success ( oReq.responseText );
+    if (function_always)
+      function_always();
+  };
+
+  oReq.onerror = function()  {
+    if (function_fail)
+      function_fail ( 'communication errors' );
+    if (function_always)
+      function_always();
+  }
+
+  oReq.overrideMimeType ( "text/plain; charset=x-user-defined" );
+  // oReq.responseType = 'arraybuffer';
+  oReq.timeout = 9999999;
+  oReq.open ( 'POST',furl,true );
+
+  try {
+    oReq.send(null);
+  } catch (e) {
+    if (function_fail)
+      function_fail ( 'general error' );
+  }
+
+}
+
+
+function launchApp ( params )  {
+
+  let moorhenWrapper = new moorhen.MoorhenWrapper ( urlPrefix );
+
+  moorhenWrapper.setRootId     ( rootId     );
+  moorhenWrapper.setInputFiles ( params.inputFiles );
+  if (params.preferences)  moorhenWrapper.setPreferences         ( params.preferences );
+  if (params.no_data_msg)  moorhenWrapper.setNoDataLegendMessage ( params.no_data_msg );
+  moorhenWrapper.addOnChangePreferencesListener ( savePreferencesCallback );
+
+  switch (params.mode)  {
+    case "view-update" : moorhenWrapper.setWorkMode       ( 'view'   );
+                         moorhenWrapper.setUpdateInterval ( params.interval );
+                        break;
+    case "view"        : moorhenWrapper.setWorkMode       ( 'view'   );
+                        break;
+    default            : moorhenWrapper.addOnExportListener       ( exportToCloudCallback );
+                         moorhenWrapper.setBackupSaveListener     ( saveBackupCallback    );
+                         moorhenWrapper.setBackupListLoadListener ( loadBackupList        );                          //  moorhenWrapper.start()
+                         moorhenWrapper.setBackupLoadListener     ( loadBackupCallback    );
+                         moorhenWrapper.setRemoveBackupListener   ( removeBackupCallback  );
+  }
+
+  moorhenWrapper.start();
+
+}
+
+
+function runWebCoot ( params )  {
+//
+//   params = {
+//     mode        : 'mode',
+//     inputFiles  : [],
+//     interval    : 1000,
+//     no_data_msg : 'no_data_msg',
+//     preferences : {},
+//     sf_meta     : {},
+//     wdirURL     : 'wdirURL'
+//   }
+//
+
+  sf_meta = params.sf_meta;
+
+  if (params.wdirURL)  {
+    // work directory URL given, find and load backups
+
+    fetchFile ( params.wdirURL + '/' + backupsFPath,
+      function(text){
+        // Get the backups list
+        BACKUPS = JSON.parse ( text );
+        // Load backups in the background, without waiting. Slightly risky but 
+        // should work given webcoot start-up times. Rewrite this in case of
+        // problems
+        for (let i=0;i<BACKUPS.length;i++)
+        if (!BACKUPS[i].data)
+          (function(backupNo){
+            fetchFile ( params.wdirURL + '/' + backupFPrefix + BACKUPS[backupNo].serNo,
+              function(txt){
+                BACKUPS[backupNo].data = txt;
+                // console.log ( ' >>>>> loaded backup #' + backupNo + ' : ' + BACKUPS[backupNo].serNo + ' : ' + text.length )
+              },
+              null,
+              function(errcode){
+                alert ( 'Backup #' + backupNo + ' could not be obtained' );
+              });
+          }(i))
+            // start WebCoot
+        launchApp ( params );
+      },
+      null,
+      function(errcode){
+        alert ( 'WebCoot backup directory not found. Backups are not available.' );
+        launchApp ( params );
+        // new MessageBox ( 'File not found',
+        //     'file not found','msg_error' );
+      });
+
+  } else
+    launchApp ( params );
+
+}

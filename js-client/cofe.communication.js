@@ -874,29 +874,32 @@ function onWindowMessage ( event ) {
 
     serverRequest ( fe_reqtype.saveJobFile,edata,'Save job file',
       function(rdata){
-        if (edata.confirm)  {
-          // if ('callback' in edata)
-          //   edata.callback.postMessage ({ message: 'done!'} );
-          // if (edata.meta.fid in __comm_iframes)
-          //   alert ( ' >>>> ' + edata.meta.fid );
-          // __comm_iframes[edata.meta.fid].getWindow().postMessage ({ message: 'done!'} );
-          if (rdata.project_missing)  {
-            new MessageBox (  'Project not found',
-                              '<h3>Project "' + edata.meta.project +
-                              '" is not found on server</h3>' +
-                              'Project "' + edata.meta.project +
-                              '" was shared with you, please check<br>' +
-                              'whether it was deleted by project owner.',
-                              'msg_error'
-                            );
-          } else  {
-            new MessageBox (  'File saved',
-                              '<h3>File "' + edata.fpath + '" saved</h3>' +
-                              'File "' + edata.fpath + '" saved in ' + 
-                              appName() + '.',
-                              'msg_ok'
-                            );
-          }
+        if (rdata.project_missing)  {
+          new MessageBox (  'Project not found',
+                            '<div style="width:350px"><h3>Project "' + edata.meta.project +
+                            '" is not found on server</h3>' +
+                            '<i>This is a bug, please report</i>.</div>',
+                            'msg_error'
+                          );
+        } else if (edata.confirm=='model')  {
+        // if ('callback' in edata)
+        //   edata.callback.postMessage ({ message: 'done!'} );
+        // if (edata.meta.fid in __comm_iframes)
+        //   alert ( ' >>>> ' + edata.meta.fid );
+        // __comm_iframes[edata.meta.fid].getWindow().postMessage ({ message: 'done!'} );
+          new MessageBox (  'Current model saved',
+                            '<div style="width:350px"><h3>Current model saved</h3>' +
+                            'Current model saved in file "' + edata.fpath + 
+                            '" on ' + appName() + '.</div>',
+                            'msg_ok'
+                          );
+        } else if (edata.confirm=='manual')  {
+          new MessageBox (  'Backup file written',
+                            '<div style="width:350px"><h3>Backup file written</h3>' +
+                            'Backip file saved in ' + appName() + 
+                            ', use <i>"Recover molecule backup"</i> to retrieve.</div>',
+                            'msg_ok'
+                          );
         }
       },null,'persist' );
 
