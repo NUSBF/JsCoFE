@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    29.04.23   <--  Date of Last Modification.
+//    03.05.23   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -754,68 +754,79 @@ function startWebCoot ( title,xyz_uri,mtz_uri,legend_uri,mode,update_interval,op
   //   PHDELWT      : 'PHDELWT, must-be if DELFWT is not empty'
   // }
 
+  let inputFiles = [];
+
+  if (xyz_uri)
+    inputFiles.push ({
+      type : 'pdb',
+      args : [ xyz_uri,'molecule' ]
+    });
+
+  if (mtz_uri)  {
+    if (options.FWT)
+      inputFiles.push ({
+        type : 'mtz',
+        args : [ mtz_uri,'map',{
+                  F              : options.FWT,
+                  PHI            : options.PHWT,
+                  Fobs           : options.FP,
+                  SigFobs        : options.SigFP,
+                  FreeR          : options.FreeR_flag,
+                  isDifference   : false,
+                  useWeight      : false,
+                  calcStructFact : true
+                }]
+      });
+    if (options.DELFWT)
+      inputFiles.push ({
+        type : 'mtz',
+        args : [ mtz_uri,'diff-map',{
+                  F              : options.DELFWT,
+                  PHI            : options.PHDELWT,
+                  isDifference   : true,
+                  useWeight      : false,
+                  calcStructFact : false
+                }]
+      });
+  }
+
+  if (legend_uri)
+    inputFiles.push ({
+      type : 'legend',
+      args : [ legend_uri ]
+    });
+
+
+  let no_data_msg = '';
+  if (options.no_data_msg)
+    no_data_msg = options.no_data_msg;
+
+  let params = {
+    mode        : mode,
+    inputFiles  : inputFiles,
+    interval    : update_interval,
+    no_data_msg : no_data_msg,
+    preferences : __user_settings.webcoot_pref,
+    sf_meta     : { project : options.project,
+                    id      : options.id
+                  },
+    wdirURL     : ''
+  };
+
+
   fetchFile ( 'js-lib/webCoot/webcoot.html',
     function(text){
-
-      let no_data_msg = '';
-      if (options.no_data_msg)
-        no_data_msg = options.no_data_msg;
-
-      let html = text.replace ( '[[baseurl]]',
-                                window.location + 'js-lib/webCoot/webcoot.html' )
-                     .replace ( '[[mode]]'       ,mode )
-                     .replace ( '[[interval]]'   ,update_interval.toString() )
-                     .replace ( '[[no_data_msg]]',no_data_msg )
-                     .replace ( '[[preferences]]',JSON.stringify(__user_settings.webcoot_pref) )
-                     .replace ( '[[wdirURL]]'    ,'' );
-
-      let inputFiles = [];
-  
-      if (xyz_uri)
-        inputFiles.push ({
-          type : 'pdb',
-          args : [ xyz_uri,'molecule' ]
-        });
-
-      if (mtz_uri)  {
-        if (options.FWT)
-          inputFiles.push ({
-            type : 'mtz',
-            args : [ mtz_uri,'map',{
-                      F              : options.FWT,
-                      PHI            : options.PHWT,
-                      Fobs           : options.FP,
-                      SigFobs        : options.SigFP,
-                      FreeR          : options.FreeR_flag,
-                      isDifference   : false,
-                      useWeight      : false,
-                      calcStructFact : true
-                    }]
-          });
-        if (options.DELFWT)
-          inputFiles.push ({
-            type : 'mtz',
-            args : [ mtz_uri,'diff-map',{
-                      F              : options.DELFWT,
-                      PHI            : options.PHDELWT,
-                      isDifference   : true,
-                      useWeight      : false,
-                      calcStructFact : false
-                    }]
-          });
-      }
-
-      if (legend_uri)
-        inputFiles.push ({
-          type : 'legend',
-          args : [ legend_uri ]
-        });
-
-      html = html.replace ( '[[meta]]',JSON.stringify({'project':options.project,'id':options.id}) )
-                 .replace ( '[[inputFiles]]',JSON.stringify(inputFiles) );
-
-      _start_viewer ( title,html );
-
+      _start_viewer ( 
+        title,
+        text.replace ( '[[baseurl]]',
+                       window.location + 'js-lib/webCoot/webcoot.html' )
+            .replace ( '</body>',
+                       '  <script type="text/javascript"  defer="defer">\n' + 
+                       '   runWebCoot ( ' + JSON.stringify(params) + ' );\n' +
+                       '  </script>\n' +
+                       '</body>'
+                     )
+       );
     },
     null,
     function(errcode){

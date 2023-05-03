@@ -148,67 +148,6 @@ if (!__template)  {
     return [RefmacHotButton()];
   }
 
-  // TaskWebCoot.prototype.makeHtml = function()  {
-  //   var html = [
-  //     '<!doctype html>',
-  //     '<html lang="en" class="scroller">',
-  //     '<head>',
-  //       '<title>Moorhen</title>',
-  //       '<meta charset="utf-8"/>',
-  //       '<meta name="viewport" content="width=device-width,initial-scale=1"/>',
-  //       '<meta name="theme-color" content="#000000"/>',
-  //       '<meta name="description" content="Web site created using create-react-app"/>',
-  //       '<link rel="icon" href="./favicon.ico"/>',
-  //       '<link rel="apple-touch-icon" href="./public/logo192.png"/>',
-  //       '<link rel="manifest" href="./manifest.json"/>',
-  //       '<link rel="icon" href="./favicon.ico">',
-  //       '<link href="./maindd0ddc75c24601355a61.css" rel="stylesheet">',
-  //       '<script>// See https://github.com/facebook/react/issues/20829#issuecomment-802088260',
-  //         'if (!crossOriginIsolated) SharedArrayBuffer = ArrayBuffer;',
-  //         'window.onload = () => {',
-  //           'createCCP4Module({',
-  //             'print(t) { console.log(["output", t]) },',
-  //             'printErr(t) { console.log(["output", t]); }',
-  //           '})',
-  //           '.then(function (CCP4Mod) {',
-  //             'window.CCP4Module = CCP4Mod;',
-  //           '})',
-  //           '.catch((e) => {',
-  //             'console.log("CCP4 problem :(");',
-  //             'console.log(e);',
-  //           '});',
-  //         '}',
-  //       '</script>',
-  //       '<script src="./baby-gru/wasm/web_example.js"></script>',
-  //       '<script>',
-  //         'window.moorhenInput = {',
-  //           'rootId: "root",',
-  //           'urlPrefix: ".",',
-  //           'inputFiles: [',
-  //             '{type: "pdb", args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule"]},',
-  //             '{type: "mtz", args: [',
-  //               '"./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "map",', 
-  //               '{F: "FWT", PHI: "PHWT", Fobs: "F", SigFobs: "SIGF", FreeR: "FREER", isDifference: false, useWeight: false, calcStructFact: true}',
-  //             ']},',
-  //             '{type: "mtz", args: [',
-  //               '"./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "diff-map",',
-  //               '{F: "DELFWT", PHI: "PHDELWT", isDifference: true, useWeight: false, calcStructFact: false}',
-  //             ']}',
-  //           ']',
-  //         '}',
-  //       '</script>',
-  //       '<script defer="defer" src="./main.js"></script>',
-  //     '</head>',
-  //     '<body>',
-  //       '<noscript>You need to enable JavaScript to run this app.</noscript>',
-  //       '<div id="root"></div>',
-  //     '</body>',
-  //     '</html>'
-  //   ];
-
-  // }
-
-
   TaskWebCoot.prototype.launchWebApp = function ( callback_func,
                                                   mode='model-building',
                                                   update_interval=3000 )  {
@@ -226,112 +165,103 @@ if (!__template)  {
     wab.setOnCloseFunction ( function(){ callback_func(); } );
     wab.launch();
 
-    var self = this;
+    var istruct = this.input_data.data['revision'][0].Structure;
+
+    var inputFiles = [];
+    if (istruct)  {
+      if (file_key.xyz in istruct.files)  {
+        var pdbURL = this.getURL ( 'input/' + istruct.files[file_key.xyz] );
+        inputFiles.push ({
+          type : 'pdb',
+          args : [ pdbURL,'molecule' ]
+        });
+      }
+      if (file_key.lib in istruct.files)  {
+        var libURL = this.getURL ( 'input/' + istruct.files[file_key.lib] );
+        inputFiles.push ({
+          type : 'ligand',
+          args : [ libURL ]
+        });
+      }
+      if (file_key.mtz in istruct.files)  {
+        var mtzURL = this.getURL ( 'input/' + istruct.files[file_key.mtz] );
+        if (istruct.FWT)
+          inputFiles.push ({
+            type : 'mtz',
+            args : [ mtzURL,'map',{
+                        F              : istruct.FWT,
+                        PHI            : istruct.PHWT,
+                        Fobs           : istruct.FP,
+                        SigFobs        : istruct.SigFP,
+                        FreeR          : istruct.FreeR_flag,
+                        isDifference   : false,
+                        useWeight      : false,
+                        calcStructFact : true
+                      }]
+          });
+        if (istruct.DELFWT)
+          inputFiles.push ({
+            type : 'mtz',
+            args : [ mtzURL,'diff-map',{
+                        F              : istruct.DELFWT,
+                        PHI            : istruct.PHDELWT,
+                        isDifference   : true,
+                        useWeight      : false,
+                        calcStructFact : false
+                      }]
+          });
+      }
+    }
+
+    if ('aux_struct' in this.input_data.data)  {
+      let aux_struct = this.input_data.data['aux_struct'];
+      for (let i=0;i<aux_struct.length;i++)
+        if (file_key.xyz in aux_struct[i].files)  {
+          let structURL = this.getURL ( 'input/' + aux_struct[i].files[file_key.xyz] );
+          inputFiles.push ({
+            type : 'pdb',
+            args : [ structURL,'molecule_' + (i+1) ]
+          });
+        }
+    }
+
+    if ('ligand' in this.input_data.data)  {
+      let ligands = this.input_data.data['ligand'];
+      for (let i=0;i<ligands.length;i++)
+        if (file_key.lib in ligands[i].files)  {
+          let ligURL = this.getURL ( 'input/' + ligands[i].files[file_key.lib] );
+          inputFiles.push ({
+            type : 'ligand',
+            args : [ ligURL ]
+          });
+        }
+    }
+
+    var params = {
+      mode        : mode,
+      inputFiles  : inputFiles,
+      interval    : update_interval,
+      no_data_msg : '<h2>Data not found</h2>',
+      preferences : __user_settings.webcoot_pref,
+      sf_meta     : { project : this.project,
+                      id      : this.id,
+                      fid     : wab.fid
+                    },
+      wdirURL     : this.getURL('')
+    };
 
     fetchFile ( 'js-lib/webCoot/webcoot.html',
       function(text){
-
-        var html = text.replace ( '[[baseurl]]',
-                                   window.location + 'js-lib/webCoot/webcoot.html' )
-                       .replace ( '[[mode]]'       ,mode )
-                       .replace ( '[[interval]]'   ,update_interval.toString() )
-                       .replace ( '[[no_data_msg]]','<h2>Data not found</h2>')
-                       .replace ( '[[preferences]]',JSON.stringify(__user_settings.webcoot_pref) )
-                       .replace ( '[[wdirURL]]'    ,self.getURL('') );
-
-        var istruct = self.input_data.data['revision'][0].Structure;
-
-        var inputFiles = [];
-        if (istruct)  {
-          if (file_key.xyz in istruct.files)  {
-            var pdbURL = self.getURL ( 'input/' + istruct.files[file_key.xyz] );
-            inputFiles.push ({
-              type : 'pdb',
-              args : [ pdbURL,'molecule' ]
-            });
-          }
-          if (file_key.lib in istruct.files)  {
-            var libURL = self.getURL ( 'input/' + istruct.files[file_key.lib] );
-            inputFiles.push ({
-              type : 'ligand',
-              args : [ libURL ]
-            });
-          }
-          if (file_key.mtz in istruct.files)  {
-            var mtzURL = self.getURL ( 'input/' + istruct.files[file_key.mtz] );
-            if (istruct.FWT)
-              inputFiles.push ({
-                type : 'mtz',
-                args : [ mtzURL,'map',{
-                           F              : istruct.FWT,
-                           PHI            : istruct.PHWT,
-                           Fobs           : istruct.FP,
-                           SigFobs        : istruct.SigFP,
-                           FreeR          : istruct.FreeR_flag,
-                           isDifference   : false,
-                           useWeight      : false,
-                           calcStructFact : true
-                         }]
-              });
-            if (istruct.DELFWT)
-              inputFiles.push ({
-                type : 'mtz',
-                args : [ mtzURL,'diff-map',{
-                           F              : istruct.DELFWT,
-                           PHI            : istruct.PHDELWT,
-                           isDifference   : true,
-                           useWeight      : false,
-                           calcStructFact : false
-                         }]
-              });
-          }
-        }
-
-        if ('aux_struct' in self.input_data.data)  {
-          let aux_struct = self.input_data.data['aux_struct'];
-          for (let i=0;i<aux_struct.length;i++)
-            if (file_key.xyz in aux_struct[i].files)  {
-              let structURL = self.getURL ( 'input/' + aux_struct[i].files[file_key.xyz] );
-              inputFiles.push ({
-                type : 'pdb',
-                args : [ structURL,'molecule_' + (i+1) ]
-              });
-            }
-        }
-
-        if ('ligand' in self.input_data.data)  {
-          let ligands = self.input_data.data['ligand'];
-          for (let i=0;i<ligands.length;i++)
-            if (file_key.lib in ligands[i].files)  {
-              let ligURL = self.getURL ( 'input/' + ligands[i].files[file_key.lib] );
-              inputFiles.push ({
-                type : 'ligand',
-                args : [ ligURL ]
-              });
-            }
-        }
-
-    //   { type: "mtz", 
-    //     args: [ "./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "diff-map",
-    //             { F              : "DELFWT",
-    //               PHI            : "PHDELWT", 
-    //               isDifference   : true, 
-    //               useWeight      : false, 
-    //               calcStructFact : false
-    //             }
-    //           ]
-
-// alert ( JSON.stringify(inputFiles) )
-
-        html = html.replace ( '[[meta]]',JSON.stringify({
-                                'project' : self.project,
-                                'id'      : self.id,
-                                'fid'     : wab.fid
-                            }))
-                   .replace ( '[[inputFiles]]',JSON.stringify(inputFiles) );
-
-        wab.iframe.setHTML ( html );
-
+        wab.iframe.setHTML (
+          text.replace ( '[[baseurl]]',
+                         window.location + 'js-lib/webCoot/webcoot.html' )
+              .replace ( '</body>',
+                         '  <script type="text/javascript"  defer="defer">\n' + 
+                         '   runWebCoot ( ' + JSON.stringify(params) + ' );\n' +
+                         '  </script>\n' +
+                         '</body>'
+                       )
+        );
       },
       null,
       function(errcode){
