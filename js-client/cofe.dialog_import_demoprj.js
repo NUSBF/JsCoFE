@@ -83,15 +83,16 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
         if (data.signal=='Success')  {
           if (__current_folder.type==folder_type.all_projects)
             msgLabel.setText (
-                  'Demo Project "' + data.name + '" is imported, ' +
-                  'you may close this dialog now.' );
+                  '<div style="width:400px">Demo Project <i>"' + data.name + 
+                  '"</i> is imported, you may close this dialog now.</div>' );
           else
             msgLabel.setText (
-                  'Demo Project "' + data.name + '" is imported.' +
+                  '<div style="width:400px">Demo Project <i>"' + data.name + 
+                  '"</i> is imported.' +
                   '<p><b>Note that you are now in the Tutorials project\'s '+
-                  'folder.<br>To navigate back to your folder(s), click on the ' +
-                  '<br>page title or use Main Menu.</b>' +
-                  '<p>You may close this dialog now.' );
+                  'folder. To navigate back to your folder(s), click on the ' +
+                  'page title or use Main Menu.</b>' +
+                  '<p>You may close this dialog now.</div>' );
           if (onSuccess_func)
             onSuccess_func();
 
@@ -103,9 +104,10 @@ function ImportDemoProjectDialog ( onSuccess_func )  {
 
         } else  {
           self.setIcon ( 'msg_error' );
-          msgLabel.setText ( 'Demo Project "' + data.name + '" failed to import, ' +
+          msgLabel.setText ( '<div style="width:400px">Demo Project <i>"' + 
+                             data.name + '"</i> failed to import, ' +
                              'the reason being:<p><b><i>' + data.signal +
-                             '</i></b>.' );
+                             '</i></b>.</div>' );
         }
       }
     },null,function(){
