@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.12.22   <--  Date of Last Modification.
+ *    03.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Manage User Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -214,7 +214,7 @@ function ManageUserDialog ( userData,FEconfig,onExit_func )  {
                                    0,2,2,3 );
             ibx_grid.setLabel    ( 'Successor:&nbsp;',2,2,1,1 );
             var name_inp  = ibx_grid.setInputText ( '',2,3,1,1 )
-                  .setStyle      ( 'text','^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
+                  .setStyle      ( 'text','^[a-zA-Z][a-zA-Z0-9.\\-]+$', //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
                                    'login name of successor','' )
                   .setFontItalic ( true )
                   .setWidth      ( '250px' );
