@@ -1047,7 +1047,10 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
         timestamp = -1; // force reload
     }
 
-    (function(self,job_tree_1){
+    // (function(self,job_tree_1){
+
+      var self = this;
+      var job_tree_1 = jobTree1;
 
       job_tree_1.multiple = self.jobTree.multiple;  // needed for tree creation
       job_tree_1.readProjectData ( 'Project',false,timestamp,
@@ -1108,7 +1111,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
         },function(){
           self.onTreeItemSelect();
         });
-    }(this,jobTree1))
+    // }(this,jobTree1))
   }
 }
 

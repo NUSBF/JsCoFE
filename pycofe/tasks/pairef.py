@@ -238,10 +238,18 @@ class PaiRef(basic.TaskDriver):
         if prencyc:
             prencyc = int(prencyc)
         else:
-            prencyc = 20
+            prencyc = 0
         if prencyc>0:
             cmd += [ "--prerefinement-ncyc", str(prencyc) ]
         
+        ncyc = self.getParameter ( sec1.NCYC ).strip()
+        if ncyc:
+            ncyc = int(ncyc)
+        else:
+            ncyc = 20
+        if ncyc>0:
+            cmd += [ "--ncyc",str(ncyc) ]
+
         cmd += ["--refmac"]
 
         if str(sec2.KEYWORDS_REF.value) != '':
