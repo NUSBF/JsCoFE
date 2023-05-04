@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -282,7 +281,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-ccp4build--page-root" class="md-nav__link">Automatic Model Building with CCP4Build</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -430,7 +429,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-ccp4build--page-root" class="md-nav__link">Automatic Model Building with CCP4Build</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -449,19 +448,19 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-ccp4build--page-root">Automatic Model Building with CCP4Build<a class="headerlink" href="#doc-task-ccp4build--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="automatic-model-building-with-ccp4build">
+<h1 id="doc-task-ccp4build--page-root">Automatic Model Building with CCP4Build<a class="headerlink" href="#doc-task-ccp4build--page-root" title="Permalink to this heading">¶</a></h1>
 <p>CCP4Build is an automated model builder based on several applications: CParrot, CBuccaneer, Refmac, Coot and EDStats. In essence, CCP4Build combines conventional model building steps with density modification, model trimming, side-chain reconstruction and real-space refinement, trying to achieve the optimal combination by exploring several building scenarios in an iterative approach with rollbacks on all stages. CCP4Build employs different approaches to phase calculations depending on whether the initial phases were obtained in the course o molecular replacement or experimental phasing. In CCP4 Cloud, however, correct approach is chosen automatically from the logic of the overall project development.</p>
-
-<h2 id="main-options">Main options<a class="headerlink" href="#main-options" title="Permalink to this headline">¶</a></h2>
+<section id="main-options">
+<h2 id="main-options">Main options<a class="headerlink" href="#main-options" title="Permalink to this heading">¶</a></h2>
 <p><strong>Minimum number of building cycles</strong> may be set to more than 3 (default number) if the first attempt ends up with an incomplete model.</p>
 <p><strong>Maximum number of building cycles</strong> should be more than the number of <strong>minimum number of building cycles</strong>, but can not be more than 50.</p>
 <p><strong>Anisotropy correction</strong> attempts to remove directional dependence in diffraction data. <em>This should be used by default</em></p>
 <p><strong>Build Selenomethionine (MSE instead of MET)</strong> option should be chosen if selenomethionine residues are expected in the model.</p>
 <p><strong>Model solvent for phase improvement</strong> option controls modelling the water molecules if Rfree falls below the given value in course of building.</p>
-
-
-<h2 id="advanced-build-parameters">Advanced Build Parameters<a class="headerlink" href="#advanced-build-parameters" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="advanced-build-parameters">
+<h2 id="advanced-build-parameters">Advanced Build Parameters<a class="headerlink" href="#advanced-build-parameters" title="Permalink to this heading">¶</a></h2>
 <p>Refinement may be described as an iterative adjustment of atomic coordinates such that the calculated structure factors match the observations as nearly as possible while keeping structural elements such as bond lengths, angles, chirality, planarity of aromatic rings and some others in chemically sensible states. CCP4Build offers three <strong>Refinement levels</strong>, which differ in the number of refinement cycles being used and, as a consequence, provide a different balance between quality of results and speed of calculations. Note that higher levels of refinement are not unambiguously linked with building success and quality.</p>
 <blockquote>
 <div><p>For the <strong>“light”</strong> level</p>
@@ -488,11 +487,11 @@
 <p><strong>Real Space Refinement</strong> moves the atoms in positions such as to achieve the best agreement with the electron density (rather than observations, as in conventional refinement) while minimising geometrical distortions. In automatic mode (<em>as required</em>), CCP4Build checks whether R-factors have decreased after a run of real-space refinement, and rolls back to the unrefined model if they have not.</p>
 <p><strong>Trim built models</strong> mode uses the ZEDCC (z-score electron density correlation coefficient) to decide whether it should trim the model or not. Backbone atoms and side chains are trimmed separately. If backbone ZEDCC is high then the whole residue is removed from the model. If, however, backbone ZEDCC of a residue is similar to ZEDCC of most other residues of the model, but side-chain ZEDCC is standing out, only side chain is removed.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">ZEDCC is not an absolute value it would vary in each particular case</p>
+<p class="admonition-title">Note</p>
+<p>ZEDCC is not an absolute value it would vary in each particular case</p>
 </div>
-
-
+</section>
+</section>
 
 
           </article>
@@ -513,7 +512,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Low-Resolution Refinement with Lorestr </span>
+                      class="md-footer-nav__direction"> "Previous" </span> Low-Resolution Refinement with Lorestr </span>
               </div>
             </a>
           
@@ -523,7 +522,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Automatic Model Building with Modelcraft </span>
+                class="md-footer-nav__direction"> "Next" </span> Automatic Model Building with Modelcraft </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -537,7 +536,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

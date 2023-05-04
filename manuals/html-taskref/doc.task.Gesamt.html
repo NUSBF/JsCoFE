@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -105,7 +104,7 @@
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" action="search.html" method="get" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
              autocapitalize="off" autocomplete="off" spellcheck="false"
              data-md-component="query" data-md-state="active">
       <label class="md-icon md-search__icon" for="__search"></label>
@@ -324,7 +323,7 @@
       
         
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-gesamt--page-root" class="md-nav__link">Pairwise Structural Alignment with GESAMT</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -379,7 +378,7 @@
               <div class="md-sidebar__inner">
                 
 <nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
+    <label class="md-nav__title" for="__toc">"Contents"</label>
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#doc-task-gesamt--page-root" class="md-nav__link">Pairwise Structural Alignment with GESAMT</a><nav class="md-nav">
               <ul class="md-nav__list">
@@ -396,8 +395,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-gesamt--page-root">Pairwise Structural Alignment with GESAMT<a class="headerlink" href="#doc-task-gesamt--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="pairwise-structural-alignment-with-gesamt">
+<h1 id="doc-task-gesamt--page-root">Pairwise Structural Alignment with GESAMT<a class="headerlink" href="#doc-task-gesamt--page-root" title="Permalink to this heading">¶</a></h1>
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3599502/" rel="noopener noreferrer" target="_blank">GESAMT</a> (General Efficient Structural Alignment of Macromolecular Targets) is an algorithm for the structural alignment of polypeptide chains. Structural alignment attempts to establish geometrically equivalents between two polymer structures based on their shape and three-dimensional conformation. Alignment results include the list of matched residues, superposition matrices and a set of scores which indicate the quality of alignment. The higher the alignment score, the higher structural similarity.</p>
 <p>GESAMT employs the idea of deriving the global structure similarity from a promising set of locally similar short fragments. The GESAMT algorithm performs a fully automatic calculation of the correspondence between two ordered sets of 3D coordinates using SSM’s <strong>Q-score</strong> (geometrical measure of structural similarity). <strong>Q-score</strong> is a more objective indicator of the quality of alignment than RMSD and N <sub>align</sub> alone <a class="reference external" href="https://journals.iucr.org/d/issues/2004/12/01/ba5056/index.html" rel="noopener noreferrer" target="_blank">[Krissinel &amp; Henrick 2004]</a>. <strong>The Q-score varies between 0 (for completely dissimilar structures) and 1 (identical structures). A reasonable level of structural similarity is usually indicated by Q-score &gt; 0.1.</strong></p>
 <p>The GESAMT algorithm is applicable to chains with undefined secondary structure, as well as incomplete and fragmented (broken) chains. This makes GESAMT a more convenient algorithm than SSM for the intermediate stages of the structure solution process when, e.g., only an outline of a protein backbone is known and allows GESAMT finds longer alignments at lower rmsd in comparison with SSM`s.</p>
@@ -409,8 +408,8 @@
 </div></blockquote>
 <p>The left part of figure represents the fragment similarity matrix for the given chains A and B. Every short section in the matrix represents an short fragment superpositions (SFS). SFSs with similar transformation matrices are collected into clusters, which after further refinement are brought to the common superposition matrix T <sub>0</sub>. <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3599502/" rel="noopener noreferrer" target="_blank">[Krissinel 2012]</a></p>
 <p>GESAMT has two alignment mode: <em>balance between quality and efficiency</em> (<em>normal mode</em>) and <em>prefer higher alignment quality</em> (<em>high mode</em>). In the majority of cases GESAMT is faster than SSM in <em>normal mode</em> and slower in <em>high mode</em>. There is marginal quality decrease (in less than 5% of cases) in the <em>normal mode</em> is accompanied by a 10-fold gain in speed. These figures justify the choice of internal parameters configured to the <em>normal mode</em> and leave the use of the <em>high mode</em> to special (doubtful and difficult) cases.</p>
-
-<h2 id="alignment-results">Alignment results<a class="headerlink" href="#alignment-results" title="Permalink to this headline">¶</a></h2>
+<section id="alignment-results">
+<h2 id="alignment-results">Alignment results<a class="headerlink" href="#alignment-results" title="Permalink to this heading">¶</a></h2>
 <p><strong>Structure Summary</strong> table gives a short summary of aligned structures: source (name of file), chain selection, size (in number of residues) and title (where it can be read from the source).</p>
 <p><strong>Alignment Summary</strong> table gives information about Q-score, RMSD (Å), the number of residues was aligned (Aligned residues) and sequence identity calculated from structure alignment (Sequence Id)</p>
 <p>In <strong>Residue alignment</strong> window you can find <strong>Rigid-body residue alignment</strong> and <strong>Per-domain residue alignment</strong> tables which present pairs of aligned residues. This table contains the index of peptide chain, the name of residue and its sequence number. <code class="docutils literal notranslate"><span class="pre">Helix-forming</span> <span class="pre">residues</span></code> are indicated by <code class="docutils literal notranslate"><span class="pre">"H"</span></code> and <code class="docutils literal notranslate"><span class="pre">beta-sheet</span> <span class="pre">forming</span> <span class="pre">residues</span></code> are indicated by <code class="docutils literal notranslate"><span class="pre">"S"</span></code>. <code class="docutils literal notranslate"><span class="pre">Hydrophilic</span> <span class="pre">residues</span></code> indicated by <code class="docutils literal notranslate"><span class="pre">"+"</span></code>, <code class="docutils literal notranslate"><span class="pre">hydrophobic</span> <span class="pre">residues</span></code> indicated by <code class="docutils literal notranslate"><span class="pre">"-"</span></code>, and <code class="docutils literal notranslate"><span class="pre">residues</span> <span class="pre">with</span> <span class="pre">weak</span> <span class="pre">hydropathy</span></code> are indicated by <code class="docutils literal notranslate"><span class="pre">"."</span></code> in second position. Rows with <em>aligned residues</em> contain the <em>distance between their C-alpha atoms</em> at best structure superposition, in angstroms.</p>
@@ -418,8 +417,8 @@
 <p><strong>References</strong></p>
 <p><a class="reference external" href="https://journals.iucr.org/d/issues/2004/12/01/ba5056/index.html" rel="noopener noreferrer" target="_blank">Krissinel E, Henrick K. Secondary-structure matching (SSM), a new tool for fast protein structure alignment in three dimensions. Acta Crystallogr. 2004;D60:2256–2268.</a></p>
 <p><a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3599502/" rel="noopener noreferrer" target="_blank">Krissinel, E. (2012) Enhanced fold recognition using efficient short fragment clustering. J. Mol. Biochem. 1(2): 76-85; PMCID: PMC5117261</a></p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -440,7 +439,7 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Gemmi </span>
+                      class="md-footer-nav__direction"> "Previous" </span> Gemmi </span>
               </div>
             </a>
           
@@ -450,7 +449,7 @@
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Structure Superposition with LsqKab </span>
+                class="md-footer-nav__direction"> "Next" </span> Structure Superposition with LsqKab </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
@@ -464,7 +463,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.0.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

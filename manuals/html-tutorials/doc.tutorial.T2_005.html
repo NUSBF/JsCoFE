@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#00020a">
+  <script src="_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>6. MCCS-2023 MR Tutorial &#8212; CCP4 Cloud 1.7 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="7. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms" href="doc.tutorial.T3_004.html" />
+    <link rel="prev" title="5. Structure prediction for Molecular Replacement" href="doc.tutorial.T2_003.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=#005BBB data-md-color-accent=yellow>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#doc.tutorial.T2_005" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
+           class="md-header-nav__button md-logo">
+          
+            <i class="md-icon">cloud</i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
+          <span class="md-header-nav__topic"> 6. MCCS-2023 MR Tutorial </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "_static/versions.json",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
+      
+        <i class="md-icon">cloud</i>
+      
+    </a>
+    <a href="index.html"
+       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
+  </label>
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T0_001.html" class="md-nav__link">1. Work with CCP4 Cloud</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T1_001.html" class="md-nav__link">2. Data processing and SAD phasing</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T2_001.html" class="md-nav__link">3. Creating MR Search Ensembles with CCP4MG/MrBUMP</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T2_002.html" class="md-nav__link">4. The multi-domain Molecular Replacement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T2_003.html" class="md-nav__link">5. Structure prediction for Molecular Replacement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> 6. MCCS-2023 MR Tutorial </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">6. MCCS-2023 MR Tutorial</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+  </ul>
+</nav>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T3_004.html" class="md-nav__link">7. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T4_001.html" class="md-nav__link">8. Refinement using REFMAC5 - Part 1: Simple Refinement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T4_002.html" class="md-nav__link">9. Refinement using REFMAC5 - Part 2: Twin Refinement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T4_003.html" class="md-nav__link">10. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.demo.PISA_start.html" class="md-nav__link">11. Using PISA in CCP4 Cloud</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  <section id="mccs-2023-mr-tutorial">
+<h1 id="doc-tutorial-t2-005--page-root"><span class="section-number">6. </span>MCCS-2023 MR Tutorial<a class="headerlink" href="#doc-tutorial-t2-005--page-root" title="Permalink to this heading">¶</a></h1>
+<p>In this tutorial, we will show you how to use predicted models as a search model for Molecular Replacement (MR), and how to develop a project tree in case the automatic workflow run was not successful on Chicken CNTN4 FN1-FN3 domains with T751A, V752A, Y781A, E786A mutations (<a class="reference external" href="https://www.rcsb.org/structure/7MRQ" rel="noopener noreferrer" target="_blank">PDB ID 7MRQ</a>) example.</p>
+<p><a class="reference external" href="https://www.nature.com/articles/s41586-021-03819-2" rel="noopener noreferrer" target="_blank">AlphaFold2</a> and <a class="reference external" href="https://robetta.bakerlab.org/" rel="noopener noreferrer" target="_blank">RoseTTAFold</a> predicted models are widely acknowledged as good structure templates for Molecular Replacement (MR).</p>
+<p>This tutorial comes with an already failed workflow branch, which will be used as a seed for further work.</p>
+<p>Structure prediction task generated model using OpenFold implementation of AlphaFold with a decent level of confidence.</p>
+<p>Let’s look at this closely.</p>
+<ol class="arabic simple">
+<li><p>Double-click on <strong>Structure Prediction task [0002]</strong>. In the task report you can find:</p></li>
+</ol>
+<p><strong>Predicted Aligned Error matrix:</strong></p>
+<img alt="_images/1_ptm_PAE.png" src="_images/1_ptm_PAE.png"/>
+<p>“Predicted Aligned Error” (PAE) matrix colour at (x, y) indicates AlphaFold’s expected position error at residue x if the predicted and true structures were aligned on residue y. <strong>The lower the error, the more trustworthy the model.</strong></p>
+<p><strong>Predicted local distance difference (pLDDT) scores plot:</strong></p>
+<img alt="_images/1_ptm_plddt.png" src="_images/1_ptm_plddt.png"/>
+<p>pLDDT scores are estimate of confidence on a scale from 0 - 100. Although pLDDT is stored in the B-factor fields of the mmCIF and PDB files but unlike a B-factor, higher pLDDT is better. This misguides MR programs regarding the regions with low or high reliability, and, therefore, the <strong>scores must be recalculated as B-factors</strong>. The good news is that in CCP4 Cloud, this recalculation is <strong>done automatically</strong></p>
+<div class="toggle-header docutils container">
+<p><strong>pLDDT</strong></p>
+</div>
+<div class="toggle-content docutils container">
+<blockquote>
+<div><p>Regions with pLDDT &gt; 90 are expected to be modelled to high accuracy. These should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).
+Regions with pLDDT between 70 and 90 are expected to be modelled well (a generally good backbone prediction).</p>
+<p>Regions with pLDDT between 50 and 70 are low confidence and should be treated with caution.</p>
+<p>The 3D coordinates of regions with pLDDT &lt; 50 often have a ribbon-like appearance and should not be interpreted. pLDDT &lt; 50 is a reasonably strong predictor of disorder, i.e. it suggests such a region is either unstructured in physiological conditions or only structured as part of a complex. <em>(this relationship has typically been tested in the context of well-studied proteins, which may have more evolutionarily-related sequences available than a randomly chosen UniProt entry.)</em>
+Structured domains with many inter-residue contacts are likely to be more reliable than extended linkers or isolated long helices.
+Unphysical bond lengths and clashes do not usually appear in confident regions. Any part of a structure with several of these should be disregarded.</p>
+</div></blockquote>
+</div>
+<p><em>Information regarding pLDDT and PAE was taken from</em> <a class="reference external" href="https://alphafold.ebi.ac.uk/" rel="noopener noreferrer" target="_blank">https://alphafold.ebi.ac.uk/</a></p>
+<p><strong>For successful Molecular Replacement with the predicted model as the next step we need to identify domains or rigid units:</strong></p>
+<ol class="arabic simple" start="2">
+<li><p>Let’s have a look at the model with UglyMol.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/T2_005_1.png"><img alt="_images/T2_005_1.png" class="align-center" src="_images/T2_005_1.png" style="width: 1096.0px; height: 848.0px;"/></a>
+<p>Here we can distinguish <strong>3 domains in the model</strong>.</p>
+<a class="reference internal image-reference" href="_images/T2_005_2.png"><img alt="_images/T2_005_2.png" class="align-center" src="_images/T2_005_2.png" style="width: 1683.0px; height: 971.0px;"/></a>
+<p>Splitting models into domains can make the placement of models through MR easier. <strong>So next logical step will be to slice the model into 3 domains with</strong> <a class="reference external" href="../html-taskref/doc.task.Slice.html" rel="noopener noreferrer" target="_blank">Silce</a> <strong>task</strong>.</p>
+<ol class="arabic simple" start="3">
+<li><p>Since Slice task was created in workflow, we can <strong>copy</strong> existing Slice task and change <strong>Number of splits</strong> to <strong>3</strong> and <strong>pLDDT threshold</strong> to <strong>85</strong> as shown below.</p></li>
+</ol>
+<a class="reference internal image-reference" href="_images/T2_005_3.png"><img alt="_images/T2_005_3.png" class="align-center" src="_images/T2_005_3.png" style="width: 877.8px; height: 388.5px;"/></a>
+<p>Run the task with <strong>Keep auto</strong> mode activated as shown above. By doing so you can <strong>continue workflow</strong> (WF) from the Slice task. That will result in branching out the working tree on the failed WF branch and the <strong>new WF branch with the model sliced on 3 domains</strong>. Domains will be separately phased by <a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser</a>.</p>
+<ol class="arabic simple" start="4">
+<li><p>Alongside WF we can branch the working tree even more and try solving our structure with <a class="reference external" href="../html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a>.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We will have to phase each domain separately.</p>
+</div>
+<p>To add Molrep task click on Slice task, then press add new task =&gt; and then in the bottom left corner Switch to full list
+for more tasks as shown below</p>
+<a class="reference internal image-reference" href="_images/T2_005_4.png"><img alt="_images/T2_005_4.png" class="align-center" src="_images/T2_005_4.png" style="width: 1110.0px; height: 717.0px;"/></a>
+<p>In full task list go to all tasks =&gt; Molecular Replacement =&gt; Molrep</p>
+<p><strong>It’s better to phase the bigger domain first</strong>. But in our case all 3 domains are approximately the same size, so we will start by choosing <strong>[0010-01] pdb_0002-01_af_struct_cluster_0 /model/protein/</strong> in <strong>Model ensemble</strong> section of Molrep input table as shown below</p>
+<a class="reference internal image-reference" href="_images/T2_005_5.png"><img alt="_images/T2_005_5.png" class="align-center" src="_images/T2_005_5.png" style="width: 926.0px; height: 717.0px;"/></a>
+<p>Run Molrep task</p>
+<ol class="arabic simple" start="5">
+<li><p>After the Molrep task is finished run the new Molrep task by selecting the finished Molrep task and adding a new task to it. For the second Molrep task choose <strong>[0010-02] pdb_0002-01_af_struct_cluster_1 /model/protein/</strong> in the <strong>Model ensemble</strong> section.</p></li>
+<li><p>Run third Molrep task with <strong>[0010-02] pdb_0002-01_af_struct_cluster_2 /model/protein/</strong> in the <strong>Model ensemble</strong> section.</p></li>
+</ol>
+<p>You should have a branch with 3 Molrep jobs as a result as shown below</p>
+<a class="reference internal image-reference" href="_images/T2_005_6.png"><img alt="_images/T2_005_6.png" class="align-center" src="_images/T2_005_6.png" style="width: 1075.0px; height: 734.0px;"/></a>
+<p>Predicted models usually have very high sequence similarity with the target structure. Nevertheless, structure rebuilding with <a class="reference external" href="../html-taskref/doc.task.Modelcraft.html" rel="noopener noreferrer" target="_blank">Modelcraft</a>, <a class="reference external" href="../html-taskref/doc.task.CCP4Build.html" rel="noopener noreferrer" target="_blank">CCP4 Build</a>, <a class="reference external" href="../html-taskref/doc.task.Buccaneer.html" rel="noopener noreferrer" target="_blank">Buccaneer</a> or <a class="reference external" href="../html-taskref/doc.task.ArpWArp.html" rel="noopener noreferrer" target="_blank">Arp/wArp</a> is usually required after phasing because low confidence parts of the model were removed at model preparation stage (equivalent to high B-factors).</p>
+<ol class="arabic simple" start="7">
+<li><p>Next step is start Modelcraft: add new job =&gt; All tasks =&gt; Refinement and Model Building =&gt; Automatic Model Building with ModelCraft.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can watch in real-time how Modelcraft builds model by clicking on <strong>Build in progress</strong> button</p>
+</div>
+<ol class="arabic simple" start="8">
+<li><p>Once Modelcraft is finished you may want to remove water at first. To remove water go to All Tasks =&gt; Toolbox =&gt; <strong>Coordinate Utilities</strong></p></li>
+</ol>
+<p>Select <strong>Remove waters</strong> in <strong>Solvent and ligands</strong> section as shown below</p>
+<a class="reference internal image-reference" href="_images/T2_005_7.png"><img alt="_images/T2_005_7.png" class="align-center" src="_images/T2_005_7.png" style="width: 769.0px; height: 492.0px;"/></a>
+<p>Run the tasks</p>
+<p>Now is time for refinement!</p>
+<p>Here are links for Refinement tutorials made by Dr. R. Nicholls which may help you to continue with refinement:</p>
+<p><a class="reference external" href="../demo_project.html?cmount=Tutorials&amp;project=T4_001.%20Simple%20Refinement.ccp4cloud" rel="noopener noreferrer" target="_blank">Refinement using REFMAC5 - Part 1: Simple Refinement</a></p>
+<p><a class="reference external" href="../demo_project.html?cmount=Tutorials&amp;project=T4_002.%20Twin%20Refinement" rel="noopener noreferrer" target="_blank">Refinement using REFMAC5 - Part 2: Twin Refinement</a></p>
+<p><a class="reference external" href="../demo_project.html?cmount=Tutorials&amp;project=T4_003.%20Ligand%20Dictionary%20Generation,%20Fitting%20&amp;%20Refinement.ccp4cloud" rel="noopener noreferrer" target="_blank">Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting &amp; Refinement</a></p>
+</section>
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="doc.tutorial.T2_003.html" title="5. Structure prediction for Molecular Replacement"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">5. </span>Structure prediction for Molecular Replacement </span>
+              </div>
+            </a>
+          
+          
+            <a href="doc.tutorial.T3_004.html" title="7. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">7. </span>Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

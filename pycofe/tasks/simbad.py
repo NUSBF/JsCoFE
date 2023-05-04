@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    28.04.23   <--  Date of Last Modification.
+#    04.05.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -110,17 +110,19 @@ class Simbad(asudef.ASUDef):
         maxnlatt   = self.getParameter(sec1.MAXNLATTICES)
         maxpenalty = self.getParameter(sec1.MAXPENALTY)
         if not maxnlatt:    maxnlatt   = "5"
-        if not maxpenalty:  maxpenalty = "12"
-        sgall = ''
+        if not maxpenalty:  maxpenalty = "4"
+        sgall = "all"
 
         if hkl:
             level = self.getParameter ( sec1.SEARCH_SEL )
-            if hkl.spg_alt=='ALL':
-                sgall = 'all'
+            if hkl.spg_alt=="ALL":
+                sgall = "all"
             else:
                 splist = hkl.spg_alt.split ( ";" )
                 if (len(splist)>1) and (not splist[0].startswith("I")):
-                    sgall = 'enant'
+                    sgall = "enant"
+                else:
+                    sgall = ""
 
             app = ""
             if level == 'L':
@@ -164,7 +166,7 @@ class Simbad(asudef.ASUDef):
 
         if level in ["S","LCS"]:
             morda_default = os.path.join ( os.environ["CCP4"],"share","simbad","static","morda" )
-            morda_path = os.environ["SIMBAD_DB"]
+            morda_path    = os.environ["SIMBAD_DB"]
             if not os.path.exists(morda_path):
                 morda_path = morda_default
             if not os.path.exists(morda_path):
