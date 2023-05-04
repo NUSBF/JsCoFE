@@ -1,0 +1,137 @@
+=====================
+MCCS-2023 MR Tutorial 
+=====================
+
+In this tutorial, we will show you how to use predicted models as a search model for Molecular Replacement (MR), and how to develop a project tree in case the automatic workflow run was not successful on Chicken CNTN4 FN1-FN3 domains with T751A, V752A, Y781A, E786A mutations (`PDB ID 7MRQ <https://www.rcsb.org/structure/7MRQ>`_) example.
+
+`AlphaFold2 <https://www.nature.com/articles/s41586-021-03819-2>`_ and `RoseTTAFold <https://robetta.bakerlab.org/>`_ predicted models are widely acknowledged as good structure templates for Molecular Replacement (MR). 
+
+This tutorial comes with an already failed workflow branch, which will be used as a seed for further work.
+
+Structure prediction task generated model using OpenFold implementation of AlphaFold with a decent level of confidence.
+
+Let's look at this closely. 
+
+1. Double-click on **Structure Prediction task [0002]**. In the task report you can find:
+
+
+**Predicted Aligned Error matrix:**
+
+.. image:: images/1_ptm_PAE.png
+
+
+
+“Predicted Aligned Error” (PAE) matrix colour at (x, y) indicates AlphaFold’s expected position error at residue x if the predicted and true structures were aligned on residue y. **The lower the error, the more trustworthy the model.**
+
+
+**Predicted local distance difference (pLDDT) scores plot:**
+
+.. image:: images/1_ptm_plddt.png
+
+pLDDT scores are estimate of confidence on a scale from 0 - 100. Although pLDDT is stored in the B-factor fields of the mmCIF and PDB files but unlike a B-factor, higher pLDDT is better. This misguides MR programs regarding the regions with low or high reliability, and, therefore, the **scores must be recalculated as B-factors**. The good news is that in CCP4 Cloud, this recalculation is **done automatically**
+
+.. toggle-header::
+       :header:  **pLDDT**
+
+                Regions with pLDDT > 90 are expected to be modelled to high accuracy. These should be suitable for any application that benefits from high accuracy (e.g. characterising binding sites).
+                Regions with pLDDT between 70 and 90 are expected to be modelled well (a generally good backbone prediction).
+
+                Regions with pLDDT between 50 and 70 are low confidence and should be treated with caution.
+
+                The 3D coordinates of regions with pLDDT < 50 often have a ribbon-like appearance and should not be interpreted. pLDDT < 50 is a reasonably strong predictor of disorder, i.e. it suggests such a region is either unstructured in physiological conditions or only structured as part of a complex. *(this relationship has typically been tested in the context of well-studied proteins, which may have more evolutionarily-related sequences available than a randomly chosen UniProt entry.)*
+                Structured domains with many inter-residue contacts are likely to be more reliable than extended linkers or isolated long helices.
+                Unphysical bond lengths and clashes do not usually appear in confident regions. Any part of a structure with several of these should be disregarded.
+
+
+*Information regarding pLDDT and PAE was taken from* https://alphafold.ebi.ac.uk/
+
+
+
+**For successful Molecular Replacement with the predicted model as the next step we need to identify domains or rigid units:**
+
+2. Let's have a look at the model with UglyMol.
+
+.. image:: images/T2_005_1.png
+    :scale: 50%
+    :align: center
+
+
+Here we can distinguish **3 domains in the model**. 
+
+
+.. image:: images/T2_005_2.png
+    :scale: 50%
+    :align: center
+
+Splitting models into domains can make the placement of models through MR easier. **So next logical step will be to slice the model into 3 domains with** `Silce <../html-taskref/doc.task.Slice.html>`_ **task**. 
+
+3. Since Slice task was created in workflow, we can **copy** existing Slice task and change **Number of splits** to **3** and **pLDDT threshold** to **85** as shown below.
+
+.. image:: images/T2_005_3.png
+    :scale: 35%
+    :align: center
+
+
+Run the task with **Keep auto** mode activated as shown above. By doing so you can **continue workflow** (WF) from the Slice task. That will result in branching out the working tree on the failed WF branch and the **new WF branch with the model sliced on 3 domains**. Domains will be separately phased by `Phaser <../html-taskref/doc.task.Phaser.html>`_.
+
+4. Alongside WF we can branch the working tree even more and try solving our structure with `Molrep <../html-taskref/doc.task.Molrep.html>`_. 
+
+.. note:: We will have to phase each domain separately.
+
+
+To add Molrep task click on Slice task, then press add new task => and then in the bottom left corner Switch to full list
+for more tasks as shown below
+
+.. image:: images/T2_005_4.png
+    :scale: 50%
+    :align: center
+
+In full task list go to all tasks => Molecular Replacement => Molrep
+
+**It's better to phase the bigger domain first**. But in our case all 3 domains are approximately the same size, so we will start by choosing **[0010-01] pdb_0002-01_af_struct_cluster_0 /model/protein/** in **Model ensemble** section of Molrep input table as shown below
+
+
+.. image:: images/T2_005_5.png
+    :scale: 50%
+    :align: center
+
+Run Molrep task
+
+5. After the Molrep task is finished run the new Molrep task by selecting the finished Molrep task and adding a new task to it. For the second Molrep task choose **[0010-02] pdb_0002-01_af_struct_cluster_1 /model/protein/** in the **Model ensemble** section.
+
+6. Run third Molrep task with **[0010-02] pdb_0002-01_af_struct_cluster_2 /model/protein/** in the **Model ensemble** section.
+
+You should have a branch with 3 Molrep jobs as a result as shown below
+
+.. image:: images/T2_005_6.png
+    :scale: 50%
+    :align: center
+
+
+
+Predicted models usually have very high sequence similarity with the target structure. Nevertheless, structure rebuilding with `Modelcraft <../html-taskref/doc.task.Modelcraft.html>`_, `CCP4 Build <../html-taskref/doc.task.CCP4Build.html>`_, `Buccaneer <../html-taskref/doc.task.Buccaneer.html>`_ or `Arp/wArp <../html-taskref/doc.task.ArpWArp.html>`_ is usually required after phasing because low confidence parts of the model were removed at model preparation stage (equivalent to high B-factors).
+
+7. Next step is start Modelcraft: add new job => All tasks => Refinement and Model Building => Automatic Model Building with ModelCraft.
+
+.. note:: You can watch in real-time how Modelcraft builds model by clicking on **Build in progress** button 
+
+8. Once Modelcraft is finished you may want to remove water at first. To remove water go to All Tasks => Toolbox => **Coordinate Utilities** 
+
+Select **Remove waters** in **Solvent and ligands** section as shown below
+
+.. image:: images/T2_005_7.png
+    :scale: 50%
+    :align: center
+
+
+Run the tasks 
+
+Now is time for refinement!
+
+Here are links for Refinement tutorials made by Dr. R. Nicholls which may help you to continue with refinement:
+
+`Refinement using REFMAC5 - Part 1: Simple Refinement <../demo_project.html?cmount=Tutorials&project=T4_001.%20Simple%20Refinement.ccp4cloud>`_
+
+`Refinement using REFMAC5 - Part 2: Twin Refinement <../demo_project.html?cmount=Tutorials&project=T4_002.%20Twin%20Refinement>`_
+
+`Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement <../demo_project.html?cmount=Tutorials&project=T4_003.%20Ligand%20Dictionary%20Generation,%20Fitting%20&%20Refinement.ccp4cloud>`_

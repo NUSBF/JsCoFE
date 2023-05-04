@@ -47,15 +47,15 @@ def aimless ( name,parentName ):
 
 def simbad ( name,searchType,revision, parentNode ): # branchName
     if revision:
-        auto_api.addTask          ( name,"TaskSimbad",parentNode )
+        auto_api.addTask          ( name, "TaskSimbad",parentNode )
         auto_api.addTaskData      ( name, "idata", revision)
-        auto_api.addTaskParameter ( name,"SEARCH_SEL",searchType )
+        auto_api.addTaskParameter ( name, "SEARCH_SEL",searchType )
     else:
         hkl = auto_api.getContext("hkl")
         if hkl:
-            auto_api.addTask(name, "TaskSimbad", parentNode)
-            auto_api.addTaskData      ( name,"idata",hkl )
-            auto_api.addTaskParameter(name, "SEARCH_SEL", searchType)
+            auto_api.addTask          ( name, "TaskSimbad", parentNode )
+            auto_api.addTaskData      ( name, "idata",hkl )
+            auto_api.addTaskParameter ( name, "SEARCH_SEL",searchType )
     return
 
 def asu ( name,parentName ):

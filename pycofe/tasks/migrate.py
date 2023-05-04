@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.07.22   <--  Date of Last Modification.
+#    04.05.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
 #
 # ============================================================================
 #
@@ -261,6 +261,7 @@ class Migrate(import_task.Import):
             for i in range(len(hkls)):
                 for j in range(len(structures)):
                     if structures[j]:
+                        structures[j].setHKLLabels ( hkls[i] )
                         self.outputFName = outFName + " " +\
                                             hkls[i].getDataSetName() + xyzid
                         r = dtype_revision.DType ( -1 )
@@ -277,6 +278,7 @@ class Migrate(import_task.Import):
         else:
             for j in range(len(structures)):
                 if structures[j]:
+                    structures[j].setHKLLabels ( self.hkl[j] )
                     self.outputFName = outFName + " " +\
                                         self.hkl[j].getDataSetName() + xyzid
                     r = dtype_revision.DType ( -1 )
