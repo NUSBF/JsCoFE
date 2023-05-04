@@ -83,9 +83,10 @@ function TaskPaiRef()  {   // must start with Task...
                       tooltip  : 'Select either equidistant or arbitrary placed, '     +
                                 'high-resolution shells to check for optimal  '     +
                                 'resolution cut-off.',
-                      range    : ['eqd|equidistant high-resolution shells',
-                                  'list|given high-resolution shells'],
-                      value    : 'eqd',
+                      range    : ['list|given high-resolution shells',
+                                  'eqd|equidistant high-resolution shells',
+                                 ],
+                      value    : 'list',
                       iwidth   : 280,
                       position : [0,0,1,5]
                    },
@@ -145,15 +146,34 @@ function TaskPaiRef()  {   // must start with Task...
                                     'leave blank for automatic choice.',
                       range       : [0,50],
                       value       : '',
-                      placeholder : '20',
+                      placeholder : '0',
                       iwidth      : 40,
                       // label2      : 'refinement cycles at the intial low resolution',
                       position    : [3,0,1,1]
                     },
-        label   :   { type        : 'label',  // just a separator
+        label1  :   { type        : 'label',  // just a separator
                       label       : 'refinement cycles',
                       align       : 'left',
                       position    : [3,3,1,1]
+                    },
+ 
+        NCYC :      { type        : 'integer_',
+                      keyword     : 'ncyc',
+                      label       : 'Make',
+                      tooltip     : 'Number of pre-refinement cycles to run at the initial low ' +
+                                    'resolution. Put zero for if you do not wish to run them, or ' +
+                                    'leave blank for automatic choice.',
+                      range       : [0,50],
+                      value       : '',
+                      placeholder : '20',
+                      iwidth      : 40,
+                      // label2      : 'refinement cycles at the intial low resolution',
+                      position    : [4,0,1,1]
+                    },
+        label2  :   { type        : 'label',  // just a separator
+                      label       : 'ref\'t cycles on every iteration',
+                      align       : 'left',
+                      position    : [4,3,1,3]
                     }
 
         
@@ -268,7 +288,7 @@ TaskPaiRef.prototype.icon = function()  { return 'task_pairef'; }
 //    forbids cloning jobs with version numbers lower than specified here.
 
 TaskPaiRef.prototype.currentVersion = function()  {
-var version = 2;
+var version = 3;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
