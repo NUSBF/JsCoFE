@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.04.23   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -81,18 +81,19 @@ function TaskPaiRef()  {   // must start with Task...
                       keyword  : 'mode',
                       label    : 'Check',
                       tooltip  : 'Select either equidistant or arbitrary placed, '     +
-                                'high-resolution shells to check for optimal  '     +
-                                'resolution cut-off.',
+                                 'high-resolution shells to check for optimal  '     +
+                                 'resolution cut-off.',
                       range    : ['list|given high-resolution shells',
                                   'eqd|equidistant high-resolution shells',
                                  ],
                       value    : 'list',
-                      iwidth   : 280,
-                      position : [0,0,1,5]
+                      iwidth   : 300,
+                      position : [0,0,1,9]
                    },
 
         label_ns : {  type        : 'label',  // just a separator
                       label       : 'number of high-resolution shells:',
+                      // lwidth      : 100,
                       align       : 'left',
                       position    : [1,2,1,2],
                       showon      : {'MODE_SEL':['eqd']}
@@ -124,7 +125,7 @@ function TaskPaiRef()  {   // must start with Task...
 
         label_rs :  { type        : 'label',  // just a separator
                       label       : 'resolution shells (&Aring;)',
-                      //lwidth      : '50%',
+                      // lwidth      : 100,
                       position    : [2,2,1,2],
                       showon      : {'MODE_SEL':['list']}
                     },
@@ -135,7 +136,7 @@ function TaskPaiRef()  {   // must start with Task...
                       value       : '',
                       placeholder : 'e.g., 1.5,1.6,1.75,1.90,2.10',
                       iwidth      : 450,
-                      position    : [2,3,1,6],
+                      position    : [2,3,1,1],
                       showon      : {'MODE_SEL':['list']}
                     },
 
@@ -155,7 +156,7 @@ function TaskPaiRef()  {   // must start with Task...
         label1  :   { type        : 'label',  // just a separator
                       label       : 'refinement cycles',
                       align       : 'left',
-                      position    : [3,3,1,10]
+                      position    : [3,3,1,4]
                     },
  
         NCYC :      { type        : 'integer_',
@@ -174,7 +175,7 @@ function TaskPaiRef()  {   // must start with Task...
         label2  :   { type        : 'label',  // just a separator
                       label       : 'refinement cycles on every iteration',
                       align       : 'left',
-                      position    : [4,3,1,10]
+                      position    : [4,3,1,4]
                     }
 
         
