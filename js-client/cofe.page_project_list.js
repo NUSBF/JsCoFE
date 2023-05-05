@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.024.23   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -336,7 +336,7 @@ function ProjectListPage ( sceneId )  {
           new MessageBox ( 'Invalid Project ID',
                 '<div style="width:400px"><h2>Invalid project ID</h2>' +
                 '<b>Project ID</b> should contain only latin letters, ' +
-                'numbers, undescores, dashes and dots, and must start ' +
+                'numbers, underscores, dashes and dots, and must start ' +
                 'with a letter.</div>','msg_stop' );
           return false;
         }
