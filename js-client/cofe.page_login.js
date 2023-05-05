@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.05.23   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -95,7 +95,7 @@ function LoginPage ( sceneId )  {
   login_lbl.setFontSize         ( '125%' );
   pwd_lbl  .setFontSize         ( '125%' );
   login_inp.setFontSize         ( '112%' );
-  login_inp.setStyle            ( 'text','^[a-zA-Z][a-zA-Z0-9.\\-]+$', //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
+  login_inp.setStyle            ( 'text','^[a-zA-Z][a-zA-Z0-9._\\-]+$', //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
                                   'Your CCP4 login','' );
   vis_btn  .setTooltip          ( 'Toggle password visibility' );
   vis_btn  .icon_hidden = true;

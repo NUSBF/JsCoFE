@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.05.23   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -124,7 +124,7 @@ function AccountPage ( sceneId )  {
     email_inp   .setStyle   ( 'email','','john.smith@university.ac.uk',
                               'Should be a valid e-mail address, at which ' +
                               'your\n new password will be sent' );
-    login_inp   .setStyle   ( 'text','^[a-zA-Z][a-zA-Z0-9.\\-]+$',//"^[A-Za-z0-9\\-\\._]+$",
+    login_inp   .setStyle   ( 'text','^[a-zA-Z][a-zA-Z0-9._\\-]+$',//"^[A-Za-z0-9\\-\\._]+$",
                               'john.smith',
                               'Login name cannot be changed' );
     pwd_inp     .setStyle   ( 'password','','password (old or new)',
