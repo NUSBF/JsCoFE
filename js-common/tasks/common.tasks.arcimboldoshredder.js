@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.11.22   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ArcimboldoShredder Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2023
  *
  *  =================================================================
  *
@@ -219,10 +219,7 @@ function TaskArcimboldoShredder()  {
 }
 
 
-TaskArcimboldoShredder.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['arcimboldo','arcimboldoshredder', 'shredder', 'molecular', 'replacement', 'mr'] );
-  }
+
 
 if (__template)
       TaskArcimboldoShredder.prototype = Object.create ( __template.TaskTemplate.prototype );
@@ -247,6 +244,11 @@ TaskArcimboldoShredder.prototype.desc_title = function()  {
   // this appears under task title in the task list
     return 'uses fragments derived from a distant homologue template for MR';
   };
+
+  TaskArcimboldoShredder.prototype.checkKeywords = function ( keywords )  {
+    // keywords supposed to be in low register
+      return this.__check_keywords ( keywords,['arcimboldo','arcimboldoshredder', 'shredder', 'molecular', 'replacement', 'mr'] );
+    }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows

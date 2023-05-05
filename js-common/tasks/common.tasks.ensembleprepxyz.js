@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -229,10 +229,7 @@ function TaskEnsemblePrepXYZ()  {
 
 }
 
-TaskEnsemblePrepXYZ.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['ensemble', 'ensembles','model', 'preparation','mr', 'molecular', 'replacement', 'coordinates'] );
-}
+
 
 if (__template)
       TaskEnsemblePrepXYZ.prototype = Object.create ( __template.TaskTemplate.prototype );
@@ -247,6 +244,10 @@ TaskEnsemblePrepXYZ.prototype.icon = function()  { return 'task_ensembleprepxyz'
 TaskEnsemblePrepXYZ.prototype.desc_title = function()  {
 // this appears under task title in the task list
   return 'make MR ensembles from atomic coordinates and sequence';
+}
+TaskEnsemblePrepXYZ.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['ensemble', 'ensembles','model', 'preparation','mr', 'molecular', 'replacement', 'coordinates'] );
 }
 
 TaskEnsemblePrepXYZ.prototype.currentVersion = function()  {

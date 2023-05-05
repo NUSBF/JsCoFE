@@ -131,7 +131,7 @@ TaskLorestr.prototype.desc_title = function()  {
     return 'performs low resolution (lower than around 3 Å) refinement';
   };
 
-  TaskLorestr.prototype.checkKeywords = function ( keywords )  {
+TaskLorestr.prototype.checkKeywords = function ( keywords )  {
     // keywords supposed to be in low register
       return this.__check_keywords ( keywords,['lorestr', 'low','resolution', 'refinement', 'lr'] );
   }

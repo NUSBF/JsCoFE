@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.02.23   <--  Date of Last Modification.
+ *    05.03.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,10 +59,7 @@ TaskAWNuce.prototype.constructor = TaskAWNuce;
 
 // ===========================================================================
 
-TaskAWNuce.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['trace', 'nucleic','acid','arpwarp'] );
-}
+
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
@@ -100,6 +97,11 @@ TaskAWNuce.prototype.hotButtons = function() {
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
+TaskAWNuce.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['awnuce','trace', 'nucleic','acid','arpwarp'] );
+}
+
 if (__template)  {
   //  for server side
 
@@ -122,6 +124,8 @@ if (__template)  {
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
   }
+
+  
 
   TaskAWNuce.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.awnuce', jobManager, jobDir, this.id];

@@ -119,7 +119,7 @@ TaskGemmi.prototype.desc_title = function()  {
     return 'exposes python terminal to user for performing very custom operations on coordinate data';
   };
 
-  TaskGemmi.prototype.checkKeywords = function ( keywords )  {
+TaskGemmi.prototype.checkKeywords = function ( keywords )  {
     // keywords supposed to be in low register
       return this.__check_keywords ( keywords,['gemmi', 'command','line', 'tool','tools', 'utilities'] );
   }
