@@ -80,7 +80,7 @@ function TaskWebCoot()  {
     NOTE : {  type     : 'label',
               label    : '<center style="white-space:normal;color:grey"><i>&nbsp;<p>' +
                          '<h2>This Task is Experimental</h2>' +
-                         'WebCoot/Moorhen is developing fast aimig to deliver ' +
+                         'WebCoot/Moorhen is developing fast aiming to deliver ' +
                          'Coot functionality in-browser; many Coot functions are ' +
                          'currently missing.<p>Please try it now and check ' +
                          'regularly in future!<br>Any feedback is highly appreciated.' +
