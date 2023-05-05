@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.09.22   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Coordinates Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -168,10 +168,7 @@ function TaskModelPrepXYZ()  {
 
 }
 
-TaskModelPrepXYZ.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['prepare', 'single-chain', 'mr', 'model(s)', 'from', 'coordinate', 'data','model','models', 'preparation', 'prepare single-chain mr model(s) from coordinate data', 'prepare  single-chain mr model from coordinate data'] );
-}
+
 
 if (__template)
       TaskModelPrepXYZ.prototype = Object.create ( __template.TaskTemplate.prototype );
@@ -199,6 +196,11 @@ TaskModelPrepXYZ.prototype.currentVersion = function()  {
 }
 
 // export such that it could be used in both node and a browser
+
+TaskModelPrepXYZ.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['prepare', 'single-chain', 'mr', 'model(s)', 'from', 'coordinate', 'data','model','models', 'preparation', 'prepare single-chain mr model(s) from coordinate data', 'prepare  single-chain mr model from coordinate data'] );
+}
 
 if (!__template)  {
   // for client side

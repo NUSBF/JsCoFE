@@ -77,7 +77,7 @@ TaskOptimiseASU.prototype.currentVersion = function()  {
 
 TaskOptimiseASU.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['optimise','asu','rearrange'] );
+    return this.__check_keywords ( keywords,['optimize','optimise','asu','rearrange'] );
 }
 
 // hotButtons return list of buttons added in JobDialog's toolBar.

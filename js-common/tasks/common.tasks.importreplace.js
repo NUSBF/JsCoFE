@@ -82,12 +82,16 @@ TaskImportReplace.prototype.currentVersion = function()  {
   else  return  version + TaskMigrate.prototype.currentVersion.call ( this );
 }
 
-TaskImportReplace.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['import', 'replace','data'] );
-}
+
 
 // export such that it could be used in both node and a browser
+
+TaskImportReplace.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['import','replace','data'] );
+}
+
+
 if (!__template)  {
   // for client side
 
@@ -96,6 +100,7 @@ if (!__template)  {
     return 'import data from your device or ' + appName() +
            ' storage and replace it in Structure Revision';
   }
+  
 
   TaskImportReplace.prototype.taskDescription = function()  {
   // this appears under task title in the Task Dialog

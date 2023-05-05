@@ -124,10 +124,10 @@ TaskEnsemblePrepSeq.prototype.currentVersion = function()  {
 
 // export such that it could be used in both node and a browser
 
-TaskEnsemblePrepSeq.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['ensembles','model', 'preparation','mr', 'molecular', 'replacement'] );
-}
+// TaskEnsemblePrepSeq.prototype.checkKeywords = function ( keywords )  {
+//   // keywords supposed to be in low register
+//     return this.__check_keywords ( keywords,['ensembles','model', 'preparation','mr', 'molecular', 'replacement'] );
+// }
 
 TaskEnsemblePrepSeq.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register

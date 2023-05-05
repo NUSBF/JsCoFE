@@ -70,6 +70,11 @@ TaskImport.prototype.desc_title = function()  {
   return 'upload and import various files from your device into the Project';
 }
 
+TaskImport.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['import', 'data'] );
+}
+
 TaskImport.prototype.taskDescription = function()  {
 // this appears under task title in the Task Dialog
   return 'Upload and import various files from your device into the Project';
@@ -286,13 +291,11 @@ function _import_checkFiles ( files,file_mod,uploaded_files,onReady_func )  {
 
 }
 
-TaskImport.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['import', 'data'] );
-}
+
 
 
 // export such that it could be used in both node and a browser
+
 if (!__template)  {
   // for client side
 
@@ -318,6 +321,7 @@ if (!__template)  {
     // if (__user_settings.guided_import)
     //   job_dialog.inputPanel.upload.button.click();
   }
+  
 
   TaskImport.prototype.onJobDialogClose = function ( job_dialog,callback_func )  {
     if ((this.upload_files.length>0) && (this.state==job_code.new))  {

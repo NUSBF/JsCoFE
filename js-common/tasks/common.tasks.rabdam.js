@@ -86,17 +86,22 @@ TaskRabdam.prototype.constructor = TaskRabdam;
 
 TaskRabdam.prototype.icon = function()  { return 'task_rabdam'; }
 
+// TaskRabdam.prototype.checkKeywords = function ( keywords )  {
+//   // keywords supposed to be in low register
+//     return this.__check_keywords ( keywords,['rabdam','radiation','damage','analysis'] );
+//   }
+
+
+
 TaskRabdam.prototype.currentVersion = function()  {
   var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+        
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-TaskRabdam.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['rabdam','radiation','damage','analysis'] );
-  }
+
 
 // export such that it could be used in both node and a browser
 
@@ -107,6 +112,8 @@ if (!__template)  {
   // this appears under task title in the task list
     return 'estimates the extent of specific radiation damage';
   }
+
+  
 
 } else  {
   //  for server side
