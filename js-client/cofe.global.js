@@ -68,6 +68,9 @@ var __iOS_device    = (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.M
                        /MacIntel/.test(navigator.platform));
 var __any_mobile_device = __mobile_device || __iOS_device;
 
+const __regexp_login = '^[a-zA-Z][a-zA-Z0-9._\\-]+$';
+const __regexp_uname = "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$";
+
 /*  ==================== unfinished userAgentData version -- for future
 
 var __mobile_device     = false;  // not iOS

@@ -95,13 +95,13 @@ function LoginPage ( sceneId )  {
   login_lbl.setFontSize         ( '125%' );
   pwd_lbl  .setFontSize         ( '125%' );
   login_inp.setFontSize         ( '112%' );
-  login_inp.setStyle            ( 'text','^[a-zA-Z][a-zA-Z0-9._\\-]+$', //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
+  login_inp.setStyle            ( 'text',__regexp_login, //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
                                   'Your CCP4 login','' );
   vis_btn  .setTooltip          ( 'Toggle password visibility' );
   vis_btn  .icon_hidden = true;
   /*
                                   'Login name should contain only latin ' +
-                                  'letters, numbers,\n undescores, dashes ' +
+                                  'letters, numbers,\n underscores, dashes ' +
                                   'and dots, and must start with a letter' );
   */
   login_inp.setFontItalic       ( true   );
@@ -242,7 +242,7 @@ function LoginPage ( sceneId )  {
       msg += '<b>Login name</b> must be provided.<p>';
     else if (login_inp.element.validity.patternMismatch)
       msg += 'Login name can contain only latin letters, numbers,\n ' +
-             'undescores, dashes and dots, and must start with a letter.<p>';
+             'underscores, dashes and dots, and must start with a letter.<p>';
 
     if (pwd_inp.getValue().length<=0)
       msg += '<b>Password</b> must be provided.';

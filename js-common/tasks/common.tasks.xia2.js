@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.09.22   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Xia-2 Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -777,7 +777,7 @@ if (!__template)  {
 //        (!(/^[a-z_]([a-z0-9_-]{0,31}|[a-z0-9_-]{0,30}\$)$/.test(this.parameters.sec1.contains.PROJECT.value))))
 //        (!(/^[A-Za-z][A-Za-z0-9\\-\\._-]+$/.test(this.parameters.sec1.contains.PROJECT.value))))
       msg += '|<b><i>Parameters/Project name should contain only latin letters, numbers, ' +
-             'undescores,<br>dashes and dots, and must start with a letter</i></b>';
+             'underscores,<br>dashes and dots, and must start with a letter</i></b>';
 
 
     if (startsWith(this.parameters.sec2.contains.PIPELINE.value,'3d'))  {

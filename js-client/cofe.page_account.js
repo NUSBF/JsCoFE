@@ -117,14 +117,14 @@ function AccountPage ( sceneId )  {
   //                          'letters, numbers,\n dots, dashes and spaces' );
 
   if (full_list)  {
-    user_inp    .setStyle   ( 'text',"^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$",
+    user_inp    .setStyle   ( 'text',__regexp_uname, // "^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$",
                               'John Smith',
                               'This name will be used for addressing to you in\n' +
                               'web-pages and e-mails' );
     email_inp   .setStyle   ( 'email','','john.smith@university.ac.uk',
                               'Should be a valid e-mail address, at which ' +
                               'your\n new password will be sent' );
-    login_inp   .setStyle   ( 'text','^[a-zA-Z][a-zA-Z0-9._\\-]+$',//"^[A-Za-z0-9\\-\\._]+$",
+    login_inp   .setStyle   ( 'text',__regexp_login,  //"^[A-Za-z0-9\\-\\._]+$",
                               'john.smith',
                               'Login name cannot be changed' );
     pwd_inp     .setStyle   ( 'password','','password (old or new)',

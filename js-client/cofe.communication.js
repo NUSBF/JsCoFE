@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.05.23   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,7 +59,7 @@ var msg = '';
     msg += '<b>Login name</b> must be provided.<p>';
   else if (login_inp.element.validity.patternMismatch)
     msg += '<b>Login name</b> should contain only latin letters, numbers,<br> ' +
-           'undescores, dashes and dots, and must start with a letter.<p>';
+           'underscores, dashes and dots, and must start with a letter.<p>';
 
   return msg;
 

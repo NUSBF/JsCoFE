@@ -56,17 +56,17 @@ function RegisterPage ( sceneId )  {
   var user_inp     = new InputText ( '' );
   var email_inp    = new InputText ( '' );
   var login_inp    = new InputText ( '' );
-  user_inp   .setStyle         ( 'text',"^[a-zA-Z]{2,}([-'\\s][a-zA-Z]+)*$", //"^[A-Za-z\\-\\.\\s]+$",
+  user_inp   .setStyle         ( 'text',__regexp_uname, //"^[A-Za-z\\-\\.\\s]+$",
                                  'John Smith',
                                  'User name should only contain latin ' +
                                  'letters,\n dots, dashes and spaces' );
   email_inp  .setStyle         ( 'email','','john.smith@university.ac.uk',
                                  'Should be a valid e-mail address, at which ' +
                                  'your\n temporary password will be sent' );
-  login_inp  .setStyle         ( 'text','^[a-zA-Z][a-zA-Z0-9._\\-]+$',  //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
+  login_inp  .setStyle         ( 'text',__regexp_login,  //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
                                  'john.smith',
                                  'Login name should contain only latin ' +
-                                 'letters, numbers,\n undescores, dashes ' +
+                                 'letters, numbers,\n underscores, dashes ' +
                                  'and dots, and must start with a letter' );
   /*
   licence_val.setTooltip       ( 'Type of licence must be chosen, please ' +

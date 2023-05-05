@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.06.20   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Data Dialog (shows data availability for given task)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2019-2023
  *
  *  =================================================================
  *
@@ -46,7 +46,7 @@ function ProjectSettingsDialog ( jobTree,callback_func )  {
   var prefix_inp = new InputText ( settings.prefix );
   prefix_inp.setStyle ( 'text',"^[A-Za-z0-9\\-\\._]+$",'',
                         'File prefix should contain only latin '   +
-                        'letters, numbers, undescores, dashes '    +
+                        'letters, numbers, underscores, dashes '    +
                         'and dots, and must start with a letter. ' +
                         'Specified prefix, unless blank, will be ' +
                         'used for forming output file names in '   +

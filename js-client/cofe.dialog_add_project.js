@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.03.21   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Add Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2021
+ *  (C) E. Krissinel, A. Lebedev 2020-2023
  *
  *  =================================================================
  *
@@ -106,7 +106,7 @@ function AddProjectDialog ( projectList,onclose_fnc )  {
             msg.push ( '<b>Project ID</b> must be provided.' );
           else if (name_inp.element.validity.patternMismatch)
             msg.push ( '<b>Project ID</b> should contain only latin letters, ' +
-                       'numbers, undescores,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
+                       'numbers, underscores,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                        '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                        '&nbsp;&nbsp;&nbsp;dashes and dots, and must start ' +
                        'with a letter.' );
