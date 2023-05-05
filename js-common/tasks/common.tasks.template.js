@@ -2097,6 +2097,8 @@ if (!dbx)  {
                           break;
 
             case 'label'    : _make_label  ( inpParamRef,key,item,grid,r,c,rs,cs );
+                              if (item.hasOwnProperty('lwidth'))
+                                grid.setCellSize ( item.lwidth+'px','',r,c );
                               //grid.setSpan ( r,c,rs,cs );
                           break;
 
@@ -2109,6 +2111,7 @@ if (!dbx)  {
                                  grid.addInputText ( item.value,r,c,rs,cs )
                                      .setStyle ( 'text','integer',defval,tooltip )
                                      .setWidth_px ( iwidth );
+                              grid.setCellSize ( iwidth+'px','',r,c );
                               this._set_item_emitting   ( inpParamRef,key,item );
                               if (item.hasOwnProperty('readonly'))
                                 inpParamRef.parameters[key].input
@@ -2125,6 +2128,7 @@ if (!dbx)  {
                                  grid.addInputText ( item.value,r,c,rs,cs )
                                      .setStyle ( 'text','real',defval,tooltip )
                                      .setWidth_px ( iwidth );
+                              grid.setCellSize ( iwidth+'px','',r,c );
                               this._set_item_emitting   ( inpParamRef,key,item );
                               if (item.hasOwnProperty('readonly'))
                                 inpParamRef.parameters[key].input

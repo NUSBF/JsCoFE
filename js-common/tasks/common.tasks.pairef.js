@@ -124,6 +124,7 @@ function TaskPaiRef()  {   // must start with Task...
 
         label_rs :  { type        : 'label',  // just a separator
                       label       : 'resolution shells (&Aring;)',
+                      //lwidth      : '50%',
                       position    : [2,2,1,2],
                       showon      : {'MODE_SEL':['list']}
                     },
@@ -134,7 +135,7 @@ function TaskPaiRef()  {   // must start with Task...
                       value       : '',
                       placeholder : 'e.g., 1.5,1.6,1.75,1.90,2.10',
                       iwidth      : 450,
-                      position    : [2,3,1,4],
+                      position    : [2,3,1,6],
                       showon      : {'MODE_SEL':['list']}
                     },
 
@@ -154,7 +155,7 @@ function TaskPaiRef()  {   // must start with Task...
         label1  :   { type        : 'label',  // just a separator
                       label       : 'refinement cycles',
                       align       : 'left',
-                      position    : [3,3,1,1]
+                      position    : [3,3,1,10]
                     },
  
         NCYC :      { type        : 'integer_',
@@ -173,7 +174,7 @@ function TaskPaiRef()  {   // must start with Task...
         label2  :   { type        : 'label',  // just a separator
                       label       : 'refinement cycles on every iteration',
                       align       : 'left',
-                      position    : [4,3,1,3]
+                      position    : [4,3,1,10]
                     }
 
         
