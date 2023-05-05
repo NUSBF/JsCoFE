@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Find Ligand Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -142,12 +142,6 @@ function TaskFitWaters()  {
 
 }
 
-TaskFitWaters.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['fit', 'water','waters','fitwater','coot'] );
-}
-
-
 if (__template)
       TaskFitWaters.prototype = Object.create ( __template.TaskTemplate.prototype );
 else  TaskFitWaters.prototype = Object.create ( TaskTemplate.prototype );
@@ -162,6 +156,11 @@ TaskFitWaters.prototype.icon = function()  { return 'task_fitwaters'; }
 TaskFitWaters.prototype.desc_title = function()  {
 // this appears under task title in the task list
   return 'auto-fits water molecules in density (does not launch Coot graphics)';
+}
+
+TaskFitWaters.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['fit', 'water','waters','fitwater','coot'] );
 }
 
 TaskFitWaters.prototype.currentVersion = function()  {
