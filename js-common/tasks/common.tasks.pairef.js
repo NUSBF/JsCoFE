@@ -171,7 +171,7 @@ function TaskPaiRef()  {   // must start with Task...
                       position    : [4,0,1,1]
                     },
         label2  :   { type        : 'label',  // just a separator
-                      label       : 'ref\'t cycles on every iteration',
+                      label       : 'refinement cycles on every iteration',
                       align       : 'left',
                       position    : [4,3,1,3]
                     }
