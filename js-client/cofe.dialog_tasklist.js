@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.04.23   <--  Date of Last Modification.
+ *    05.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -23,9 +23,6 @@
  */
 
 'use strict';
-
-
-
 
 // -------------------------------------------------------------------------
 // TaskListDialog class
@@ -104,7 +101,8 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
     this.combobox_lbl.setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
   }
 
-  (function(self){
+  var self = this;
+  // (function(self){
 
     $(self.element).dialog({
       resizable : true,
@@ -169,12 +167,13 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
         self.tabs_basic  .setVisible ( value==tasklist_mode.basic );
         self.tabs_full   .setVisible ( value==tasklist_mode.full  );
         self.combobox_lbl.setVisible ( value==tasklist_mode.basic );
+        projectDesc.tasklistmode = value;
         if (value=='full')  self.tabs_full.refresh();
                       else  self.tabs_basic.refresh();
       });
     }
 
-  }(this));
+  // }(this));
 
   $(this.element).css ( 'width:100%' );
 
