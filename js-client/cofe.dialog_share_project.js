@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.04.23   <--  Date of Last Modification.
+ *    09.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -124,6 +124,7 @@ function shareProject ( projectDesc,callback_func )  {
                       share0 : share0  // previous share state
                     },'Share Project',function(data){
                       if (data.desc)  {
+                        projectDesc.share = data.desc.share;
                         var msg = '<h2>Project "' + data.desc.name +
                                   '" Share Status</h2><b>Shared with:</b>&nbsp;<i>';
                         var logins_lst = Object.keys(data.desc.share);
