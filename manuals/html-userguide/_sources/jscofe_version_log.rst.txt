@@ -19,11 +19,19 @@ CCP4 Cloud Version Log
 
     #. Added Morda try in Auto-MR workflow if mrBump run didn't succeed
 
+    #. Validation of login names and user names fixed
+
+    #. Persistance of basic/full task list modes enhanced
+
+    #. Share/Join projects emoved in Desktop mode as not needed
+
+    #. Graceful handling of wrong Cloud Storage path implemented
+
 
 
 **Version 1.7.0012** 
 
-    *Released on --.--.2023 with CCP48.0.011*
+    *Released on 04.04.2023 with CCP48.0.011*
 
     #. Gemmi 0.6.0 compatibility fixes
 

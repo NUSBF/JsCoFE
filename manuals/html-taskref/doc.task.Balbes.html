@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -381,33 +382,33 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="balbes">
-<h1 id="doc-task-balbes--page-root">Balbes<a class="headerlink" href="#doc-task-balbes--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-balbes--page-root">Balbes<a class="headerlink" href="#doc-task-balbes--page-root" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://doi.org/10.1107/S0907444907050172" rel="noopener noreferrer" target="_blank">BALBES</a>, a system for fully automating molecular replacement  which automates the process of identifying the best possible search model from its own customized version of the PDB database, prepares it and puts it through molecular replacement. The system is automated so that a user needs only to provide a sequence file and a X-ray data file. After that BALBES will perform jobs such as data checking, homologous searching using its internal database to generate a variety of template models, and selecting different algorithms to do MR and refinement on those models and their combinations.</p>
 <p>All     models  are     corrected  <em>by sequence alignment</em> and  <em>by accessible  surface area</em>. If an input file contains more than one sequence then the system assumes that it is a complex of proteins (heteromultimeric models will be generated if possible).</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If the system cannot find a good solution from protein assembly then it tries to solve using individual models and combine them. Individual models may come from different proteins.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">If the system cannot find a good solution from protein assembly then it tries to solve using individual models and combine them. Individual models may come from different proteins.</p>
 </div>
-<section id="balbes-workflow">
-<h2 id="balbes-workflow">BALBES workflow<a class="headerlink" href="#balbes-workflow" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="balbes-workflow">BALBES workflow<a class="headerlink" href="#balbes-workflow" title="Permalink to this headline">¶</a></h2>
 <p>The first job in automated molecular replacement is to find the template structures by searching the internal database. When this process has finished, users are provided with a group of template structures.</p>
 <p>In the beginning, the input structure-factor is analyzed using SFCHECK and all necessary information is extracted (such as the unit-cell parameters, space group, data completeness, optimal resolution, the pseudo-translation vector if it exists, twin operators and estimates of the twin fractions).</p>
 <p>Then BALBES begins to analyse the sequence, unit-cell parameters and space group. If the space group is the same as one of the entries and the unit-cell parameters are very similar (the maximum difference in unit-cell lengths and angles between the target and search crystals is less than 0.5%), then the system tries to use this PDB entry for refinement. This is performed to account for potential mistakes that may arise during expression and crystallization. If the differences in the unit-cell parameters are within 5% (the corresponding maximum difference is less than 5%) and the sequence identity is greater than 90%, then the system again tries to use this PDB entry for refinement. If refinement does not produce a desirable R/Rfree, the system then starts the automated molecular-replacement runs. A desirable R/Rfree in the current version is determined according to the following procedure.</p>
 <p>ΔRfree = (Rfree − Rfree_init)/Rfree.</p>
 <ul class="simple">
-<li><p>If Rfree ≤ 0.35 then the structure is considered <code class="docutils literal notranslate"><span class="pre">solved</span></code> regardless of the value of ΔRfree.</p></li>
-<li><p>If 0.35 &lt; Rfree ≤ 0.45 then the structure is marked as <code class="docutils literal notranslate"><span class="pre">solved</span></code> if ΔRfree &lt; 0.0001, which means that Rfree could slightly increase.</p></li>
-<li><p>If 0.45 &lt; Rfree ≤ 0.50 then ΔRfree must be less than −0.05 for the structure to be considered as <code class="docutils literal notranslate"><span class="pre">solved</span></code>, which means that Rfree should decrease.</p></li>
-<li><p>If Rfree &gt; 0.50 and ΔRfree &gt; 0.03, then the structure is considered to be <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">solved</span></code>.</p></li>
-<li><p>All other cases are considered as potential solutions.</p></li>
+<li>If Rfree ≤ 0.35 then the structure is considered <code class="docutils literal notranslate"><span class="pre">solved</span></code> regardless of the value of ΔRfree.</li>
+<li>If 0.35 &lt; Rfree ≤ 0.45 then the structure is marked as <code class="docutils literal notranslate"><span class="pre">solved</span></code> if ΔRfree &lt; 0.0001, which means that Rfree could slightly increase.</li>
+<li>If 0.45 &lt; Rfree ≤ 0.50 then ΔRfree must be less than −0.05 for the structure to be considered as <code class="docutils literal notranslate"><span class="pre">solved</span></code>, which means that Rfree should decrease.</li>
+<li>If Rfree &gt; 0.50 and ΔRfree &gt; 0.03, then the structure is considered to be <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">solved</span></code>.</li>
+<li>All other cases are considered as potential solutions.</li>
 </ul>
 <p><strong>References</strong></p>
-<p><a class="reference external" href="https://doi.org/10.1107/S0907444907050172" rel="noopener noreferrer" target="_blank">F. Long, A. Vagin, P. Young and G.N. Murshudov “BALBES: a Molecular Replacement Pipeline “ Acta Cryst. D64 125-132(2008)</a></p>
+<p><a class="reference external" href="https://doi.org/10.1107/S0907444907050172" rel="noopener noreferrer" target="_blank">F. Long, A. Vagin, P. Young and G.N. Murshudov “BALBES: a Molecular Replacement Pipeline ” Acta Cryst. D64 125-132(2008)</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0907444911007530" rel="noopener noreferrer" target="_blank">R. Keegan, F. Long, V. Fazio, M. Winn,G.N.Murshudovb and A. Vaginb “Evaluating the solution from MrBUMP and BALBES” Acta Cryst. D67 313-323(2011)</a></p>
 <p>The official software page you can find <a class="reference external" href="https://www2.mrc-lmb.cam.ac.uk/groups/murshudov/content/balbes/balbes_layout.html" rel="noopener noreferrer" target="_blank">here</a></p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -452,7 +453,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
