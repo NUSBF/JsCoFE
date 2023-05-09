@@ -133,7 +133,7 @@ function start ( callback_func )  {
     // server_response.setHeader ( 'Cross-Origin-Resource-Policy','same-origin'  );
     server_response.setHeader ( 'Cross-Origin-Embedder-Policy','require-corp' );
     // server_response.setHeader ( 'Referrer-Policy','no-referrer' );
-    server_response.setHeader ( 'Referrer-Policy','no-referrer-when-downgrade' );
+    // server_response.setHeader ( 'Referrer-Policy','no-referrer-when-downgrade' );
 
     try {
 
