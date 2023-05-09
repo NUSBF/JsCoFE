@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    09.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -312,6 +312,9 @@ var slist = null;
     slist.path = spath;
 
     if (!cloudMounts)  {
+      slist.message = 'cloud storage is not configured';
+      slist.code    = 'unconfigured';
+      log.error ( 22,'cloud storage is not configured' );
       return slist;
     }
 
@@ -385,13 +388,16 @@ var slist = null;
           }
         }
       } else {
+        slist         = _storage_mounts_listing ( cloudMounts );
         slist.message = 'directory ' + spath + ' does not exist';
-        log.error ( 20,'could not find cloud storage directory ' + dirpath );
+        slist.code    = 'no_directory';
+        log.warning ( 20,'could not find cloud storage directory ' + dirpath );
       }
     } else {
-      slist = _storage_mounts_listing ( cloudMounts );
-      // slist.message = 'mount ' + lst[0] + ' not found';
-      log.error ( 21,'cloud storage mount "' + lst[0] + '" not found' );
+      slist         = _storage_mounts_listing ( cloudMounts );
+      slist.message = 'mount ' + lst[0] + ' not found';
+      slist.code    = 'no_mount';
+      log.warning ( 21,'cloud storage mount "' + lst[0] + '" not found' );
     }
   }
 

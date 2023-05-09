@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.11.21   <--  Date of Last Modification.
+ *    09.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  FacilityTree
  *       ~~~~~~~~~  StorageTree
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -70,9 +70,9 @@ FacilityTree.prototype.readFacilitiesData = function ( page_title,
   (function(tree){
     serverRequest ( fe_reqtype.getCloudFileTree,meta,page_title,function(data){
 
-      if ('message' in data)
+      if (data.message && (data.code=='unconfigured'))
         MessageDataReadError ( page_title,data['message'] );
-
+ 
       tree.facilityList = jQuery.extend ( true, new FacilityList(),data );
 
       function addDir ( tree,dnode,dir )  {
@@ -357,7 +357,7 @@ StorageTree.prototype.readStorageData = function ( page_title,
   (function(tree){
     serverRequest ( fe_reqtype.getCloudFileTree,meta,page_title,function(data){
 
-      if ('message' in data)  {
+      if (data.message && (data.code=='unconfigured'))  {
         MessageDataReadError ( page_title,data['message'] );
         tree.storageList = null;
         onLoaded_func();

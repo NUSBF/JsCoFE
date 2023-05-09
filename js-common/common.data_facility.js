@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.12.18   <--  Date of Last Modification.
+ *    09.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Facility Data Classes
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2018
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  ==========================================================================
  *
@@ -31,11 +31,13 @@ var facility_names = {
 // ===========================================================================
 
 function FacilityFile()  {
-  this._type = 'FacilityFile';
-  this.id    = '';
-  this.name  = '';
-  this.size  = '';
-  this.date  = '';
+  this._type   = 'FacilityFile';
+  this.id      = '';
+  this.name    = '';
+  this.size    = '';
+  this.date    = '';
+  this.message = '';
+  this.code    = 'ok';
 }
 
 FacilityFile.prototype.from_Object = function ( object )  {
