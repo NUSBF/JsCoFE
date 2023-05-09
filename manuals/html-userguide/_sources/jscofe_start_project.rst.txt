@@ -6,10 +6,14 @@ This article is designed to describe how to start a project and load the data in
 
 The `CCP4 Cloud <https://cloud.ccp4.ac.uk/>`_ account should be created or/and CCP4 Software Suite version 7.1 and above must be installed (download `here <https://www.ccp4.ac.uk/download/>`_).
 
-**Creating an account on CCP4Cloud remote**
+`Creating an account on CCP4Cloud remote <https://www.youtube.com/embed/oZeaD54oovs>`_
 
-.. youtube:: oZeaD54oovs
-   :align: center
+.. .. raw:: html
+
+..    <iframe width="560" height="315" src="https://www.youtube.com/embed/oZeaD54oovs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+.. .. youtube:: oZeaD54oovs
+..    :align: center
 
 
 ------------------
@@ -56,10 +60,10 @@ Once added the Cloud will provide you a choice of the project templates:
 
 After the template was picked the workflow would ask you to upload the data. You may choose **CCP4 Cloud storage** in **Import data from** if you have no data, yet want to practice working in the Cloud.
 
-**Automation in CCP4 Cloud: Workflows**
+`Automation in CCP4 Cloud: Workflows <https://www.youtube.com/v/ph2rxQSYiE0>`_
 
-.. youtube:: ph2rxQSYiE0
-   :align: center
+.. .. youtube:: ph2rxQSYiE0
+..    :align: center
 
 +++++++++++++
 Standard mode 
