@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.23   <--  Date of Last Modification.
+ *    09.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -79,17 +79,18 @@ var job_token     = crypto.randomBytes(20).toString('hex');
 var maxSendTrials = conf.getServerConfig().maxSendTrials;
 var crTime        = Date.now();
   this.job_map[job_token] = {
-    feURL       : '',
-    jobDir      : jobDir,
-    jobStatus   : task_t.job_code.new,
-    return_data : true,
-    sendTrials  : maxSendTrials,
-    startTime   : crTime,
-    endTime     : null,
-    progress    : 0,      // progress measure
-    lastAlive   : crTime, // last time when job was alive
-    exeType     : '',     // SHELL, SGE or SCRIPT
-    pid         : 0       // job pid is added separately
+    feURL         : '',
+    jobDir        : jobDir,
+    jobStatus     : task_t.job_code.new,
+    return_data   : true,
+    sendTrials    : maxSendTrials,
+    startTime     : crTime,
+    startTime_iso : new Date(crTime).toISOString(),
+    endTime       : null,
+    progress      : 0,      // progress measure
+    lastAlive     : crTime, // last time when job was alive
+    exeType       : '',     // SHELL, SGE or SCRIPT
+    pid           : 0       // job pid is added separately
   };
   return job_token;
 }
@@ -99,17 +100,18 @@ NCJobRegister.prototype.addJob1 = function ( jobDir,job_token )  {
 var maxSendTrials = conf.getServerConfig().maxSendTrials;
 var crTime        = Date.now();
   this.job_map[job_token] = {
-    feURL       : '',
-    jobDir      : jobDir,
-    jobStatus   : task_t.job_code.new,
-    return_data : true,
-    sendTrials  : maxSendTrials,
-    startTime   : crTime,
-    endTime     : null,
-    progress    : 0,      // progress measure
-    lastAlive   : crTime, // last time when job was alive
-    exeType     : '',     // SHELL or SGE
-    pid         : 0       // job pid is added separately
+    feURL         : '',
+    jobDir        : jobDir,
+    jobStatus     : task_t.job_code.new,
+    return_data   : true,
+    sendTrials    : maxSendTrials,
+    startTime     : crTime,
+    startTime_iso : new Date(crTime).toISOString(),
+    endTime       : null,
+    progress      : 0,      // progress measure
+    lastAlive     : crTime, // last time when job was alive
+    exeType       : '',     // SHELL or SGE
+    pid           : 0       // job pid is added separately
   };
   return job_token;
 }
@@ -782,8 +784,10 @@ var cfg = conf.getServerConfig();
                                                  // job listener in SHELL mode
 // *** for debugging
 //if (!jobEntry.endTime)  __use_fake_fe_url = true;
-  if (!jobEntry.endTime)
-    jobEntry.endTime = Date.now();
+  if (!jobEntry.endTime)  {
+    jobEntry.endTime     = Date.now();
+    jobEntry.endTime_iso = new Date(jobEntry.endTime).toISOString();
+  }
 
   if (!('logflow' in ncJobRegister))  {
     ncJobRegister.logflow = {};
