@@ -1,17 +1,15 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    11.10.21   <--  Date of Last Modification.
+#    11.05.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  MERGED MTZ DATA IMPORT FUNCTIONS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -327,14 +325,19 @@ def run ( body,   # body is reference to the main Import class
                         amplitudes = ""
 
                         meanCols = hkl.getMeanColumns()
+                        renameColumns = False
                         if meanCols[2] != "X":
                             cols = "/*/*/["
                             if meanCols[1] != None:
                                 cols = cols + meanCols[0] + "," + meanCols[1]
+                                renameColumns = meanCols[0]!="F" or meanCols[1]!="SigF"
                             else:
                                 cols = cols + meanCols[0]
+                                renameColumns = meanCols[0]!="F"
                             if meanCols[2] == "F":
                                 amplitudes = "-amplitudes"
+                            else:
+                                renameColumns = False
                             cmd += ["-colin",cols+"]"]
 
                         anomCols  = hkl.getAnomalousColumns()
@@ -368,6 +371,17 @@ def run ( body,   # body is reference to the main Import class
                         body.setGenericLogParser ( reportPanelId,False,False,False )
                         try:
                             body.runApp ( "ctruncate",cmd )
+                            if renameColumns:                             
+                                body.open_stdin()
+                                body.write_stdin ([
+                                    "LABIN  FILE 1 E1=F E2=SIGF E3="  + mf.FREE,
+                                    "LABOUT FILE 1 E1=" + meanCols[0] +\
+                                                 " E2=" + meanCols[1] +\
+                                                 " E3=" + mf.FREE
+                                ])
+                                cmd = ["HKLIN1",outFileName,"HKLOUT",outFileName]
+                                body.close_stdin()
+                                body.runApp ( "cad",cmd,logType="Service" )
                         except:
                             pass
 
