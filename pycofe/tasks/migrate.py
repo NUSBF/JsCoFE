@@ -262,6 +262,8 @@ class Migrate(import_task.Import):
                 for j in range(len(structures)):
                     if structures[j]:
                         structures[j].setHKLLabels ( hkls[i] )
+                        # structures[j].FP         = "FP"
+                        # structures[j].SigFP      = "SIGFP"
                         self.outputFName = outFName + " " +\
                                             hkls[i].getDataSetName() + xyzid
                         r = dtype_revision.DType ( -1 )
