@@ -104,7 +104,7 @@ class WFlowAFMR(import_task.Import):
             self.hkl = self.input_data.data.hkldata
 
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
-            self.seq = self.input_data.data.seq
+            self.seq = self.input_data.data.seq[0]
             # for i in range(len(self.input_data.data.seq)):
             #     self.seq.append ( self.makeClass(self.input_data.data.seq[i]) )
 
