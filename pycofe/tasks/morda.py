@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.07.22   <--  Date of Last Modification.
+#    12.05.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -207,6 +207,12 @@ class Morda(basic.TaskDriver):
                 })
             else:
                 self.putMessage ( "<h3>Structure cannot be formed</h3>" )
+
+        if os.path.exists("morda"):
+            shutil.rmtree ( "morda",ignore_errors=True )
+
+        if os.path.exists("tmp_local"):
+            shutil.rmtree ( "tmp_local",ignore_errors=True )
 
         # this will go in the project tree job's line
         if not have_results:
