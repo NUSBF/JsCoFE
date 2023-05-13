@@ -1149,6 +1149,10 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
                 if (!pnode)  {
                   log.error ( 22,'cannot get project node in workflow [' + loginData.login +
                                  ']:' + projectName + ':' + pid );
+                  log.error ( 22,'jobEntry=\n' + JSON.stringify(jobEntry) );
+                  log.error ( 22,'key=\n' + key );
+                  log.error ( 22,'auto_meta[key]=\n' + JSON.stringify(auto_meta[key]) );
+                  log.error ( 22,'projectData=\n' + JSON.stringify(projectData) );
                 } else  {
 
                   // make job directory
