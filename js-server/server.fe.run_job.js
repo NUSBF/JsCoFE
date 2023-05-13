@@ -1153,6 +1153,8 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
                   log.error ( 22,'key=\n' + key );
                   log.error ( 22,'auto_meta[key]=\n' + JSON.stringify(auto_meta[key]) );
                   log.error ( 22,'projectData=\n' + JSON.stringify(projectData) );
+                  pd.printProjectTree ( ' >>>auto-2',projectData );
+                  pd.printProjectTree ( ' >>>auto-3',prj.readProjectData ( loginData,projectName ) );
                 } else  {
 
                   // make job directory
