@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.12.22   <--  Date of Last Modification.
+ *    13.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -34,9 +34,9 @@ function TaskDeposition()  {
              else  TaskTemplate.call ( this );
 
   this._type   = 'TaskDeposition';
-  this.name    = 'deposition';
+  this.name    = 'prepare data for PDB deposition';
   this.setOName ( 'deposition' );  // default output file name template
-  this.title   = 'Prepare data for deposition';
+  this.title   = 'Prepare data for PDB deposition';
   //this.helpURL = './html/jscofe_task_deposition.html';
 
   this.input_dtypes = [{  // input data types
