@@ -21,6 +21,7 @@ Tutorials
    doc.tutorial.T4_001
    doc.tutorial.T4_002
    doc.tutorial.T4_003
+   doc.tutorial.T4_004
    doc.demo.PISA_start
 
 
