@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.06.22   <--  Date of Last Modification.
+ *    15.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Announcement Dialog
  *       ~~~~~~~~~  Dorman Users Dialog
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -33,27 +33,39 @@ function AnnounceDialog()  {
   this.element.setAttribute ( 'title','Announcement' );
   document.body.appendChild ( this.element );
 
-  var grid = new Grid('');
-  this.addWidget ( grid );
-  grid.setLabel ( '<h2>Announcement for all users</h2>',0,0,1,3 );
+  // var grid = new Grid('');
+  // this.addWidget ( grid );
+  // grid.setLabel ( '<h2>Announcement for all users</h2>',0,0,1,3 );
+
+  var grid = new Grid ( '' );
+  var row  = 0;
+  var col  = 2;
+  this.addWidget   ( grid );
+  grid.setLabel    ( ' ',row,0,1,1 );
+  grid.setCellSize ( '','6px', row,0 );
+  grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',row,1,2,1 );
+  grid.setLabel    ( '<h2>Announcement for all users</h2>',row,col,2,3 );
+  // grid.setVerticalAlignment ( row,col,'middle' );
+  grid.setAlignment ( row++,col,'middle','left' );
+  grid.setImage    ( image_path('announce'),'48px','48px', row++,0,1,1 );
 
   var header = grid.setLabel ( 'Dear &lt;User Name&gt;,<p>' +
                   'You receive this e-mail bacause you are registered as a ' +
-                  appName() + ' user.',1,0,1,3 );
+                  appName() + ' user.',row++,col,1,3 );
 
   var textarea = grid.setTextArea ( '','Place text of the announcement here',
-                   5,80, 2,0,1,3 );
+                   5,72, row++,col,1,3 );
 
-  grid.setLabel ( '&nbsp;',3,0,1,3 );
+  // grid.setLabel ( '&nbsp;',row++,col,1,3 );
 
   var footer = grid.setLabel ( 'This e-mail was sent from unmanned ' +
-                  'mailbox, please do not reply as replies cannot be<br>' +
+                  'mailbox, please do not reply as replies cannot be ' +
                   'received. For any questions, please contact ' + appName() +
                   ' maintainer at ' +
                   '<a href="mailto:' + __maintainerEmail +
                     '?Subject=jsCoFE%20Question">' + __maintainerEmail +
                   '</a>.<p>Kind regards<p>' + appName() + ' maintenance.',
-                  4,0,1,3 );
+                  row++,col,1,3 );
 
 
   //w = 3*$(window).width()/5 + 'px';
@@ -113,50 +125,63 @@ function DormantUsersDialog ( callback_func )  {
   this.element.setAttribute ( 'title','Dormant Users' );
   document.body.appendChild ( this.element );
 
-  var grid = new Grid('-compact');
-  var row  = 0;
-  this.addWidget    ( grid );
-  grid.setLabel     ( '<h2>Dormant users management</h2>',row++,0,1,5 );
+  // var grid = new Grid('-compact');
 
-  grid.setLabel     ( '<b>&#8226; <i>declare user account as dormant, if</i></b>',row,0,1,5 );
-  grid.setAlignment ( row++,0,'middle','left' );
-  grid.setLabel     ( '&nbsp;&nbsp;&nbsp;&nbsp;user is inactive during last',row,0,1,1 );
-  grid.setAlignment ( row  ,0,'middle','right' );
-  var period1_inp = grid.setInputText ( '365', row,1,1,1 )
+  var grid = new Grid ( '' );
+  var row  = 0;
+  var col  = 2;
+  this.addWidget   ( grid );
+  grid.setLabel    ( ' ',row,0,1,1 );
+  grid.setCellSize ( '','6px', row,0 );
+  grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',row,1,2,1 );
+  grid.setLabel    ( '<h2>Dormant users management</h2>' +
+                     '<b>&#8226; <i>declare user account as dormant, if</i></b>',row,col,2,5 );
+  // grid.setVerticalAlignment ( row,col,'middle' );
+  grid.setAlignment ( row++,col,'middle','left' );
+  grid.setImage    ( image_path('dormant'),'48px','48px', row++,0,1,1 );
+
+  // this.addWidget    ( grid );
+  // grid.setLabel     ( '<h2>Dormant users management</h2>',row++,0,1,5 );
+
+  // grid.setLabel     ( '<b>&#8226; <i>declare user account as dormant, if</i></b>',row,0,1,5 );
+  // grid.setAlignment ( row++,0,'middle','left' );
+  grid.setLabel     ( '&nbsp;&nbsp;&nbsp;&nbsp;user is inactive during last&nbsp;',row,col,1,1 );
+  grid.setAlignment ( row,col,'middle','right' );
+  var period1_inp = grid.setInputText ( '730', row,col+1,1,1 )
                         .setStyle ( 'text','integer','365',
                                     'Inactivity period for making a user dormant' )
-                        .setWidth_px ( 50 );
-  grid.setLabel     ( 'days, <b><i>or</i></b>',row,2,1,1 );
-  grid.setAlignment ( row++,2,'middle','left' );
-  grid.setLabel     ( 'has run fewer than',row,0,1,1 );
-  grid.setAlignment ( row,0,'middle','right' );
-  var njobs_inp = grid.setInputText ( '5', row,1,1,1 )
+                        .setWidth_px ( 60 );
+  grid.setLabel     ( '&nbsp;days, <b><i>or</i></b>',row,col+2,1,1 );
+  grid.setAlignment ( row++,col+2,'middle','left' );
+  grid.setLabel     ( 'has run fewer than&nbsp;',row,col,1,1 );
+  grid.setAlignment ( row,col,'middle','right' );
+  var njobs_inp = grid.setInputText ( '5', row,col+1,1,1 )
                       .setStyle ( 'text','integer','5',
                                   'Maximum number of jobs for making a user dormant' )
-                      .setWidth_px ( 50 );
-  grid.setLabel     ( 'jobs <b><i>and</i></b> is inactive during last',row,2,1,1 );
-  grid.setAlignment ( row,2,'middle','left' );
-  var period2_inp = grid.setInputText ( '90', row,3,1,1 )
+                      .setWidth_px ( 60 );
+  grid.setLabel     ( '&nbsp;jobs <b><i>and</i></b> is inactive during last&nbsp;',row,col+2,1,1 );
+  grid.setAlignment ( row,col+2,'middle','left' );
+  var period2_inp = grid.setInputText ( '730', row,col+3,1,1 )
                         .setStyle ( 'text','integer','90',
                                     'Inactivity period for making a user dormant' )
-                        .setWidth_px ( 50 );
-  grid.setLabel     ( 'days',row,4,1,1 );
-  grid.setAlignment ( row++,4,'middle','left' );
+                        .setWidth_px ( 60 );
+  grid.setLabel     ( '&nbsp;days',row,col+4,1,1 );
+  grid.setAlignment ( row++,col+4,'middle','left' );
 
-  grid.setLabel     ( '&nbsp;',row++,0,1,1 );
+  grid.setLabel     ( '&nbsp;',row++,col,1,1 );
 
-  grid.setLabel     ( '<b>&#8226; <i>delete user account, if</i></b>',row,0,1,5 );
-  grid.setAlignment ( row++,0,'middle','left' );
-  grid.setLabel     ( '&nbsp;&nbsp;&nbsp;&nbsp;it remains dormant during',row,0,1,1 );
-  grid.setAlignment ( row  ,0,'middle','right' );
-  var period3_inp = grid.setInputText ( '90', row,1,1,1 )
+  grid.setLabel     ( '<b>&#8226; <i>delete user account, if</i></b>',row,col,1,5 );
+  grid.setAlignment ( row++,col,'middle','left' );
+  grid.setLabel     ( '&nbsp;&nbsp;&nbsp;&nbsp;it remains dormant during&nbsp;',row,col,1,1 );
+  grid.setAlignment ( row  ,col,'middle','right' );
+  var period3_inp = grid.setInputText ( '365000', row,col+1,1,1 )
                         .setStyle ( 'text','integer','90',
                                     'Inactivity period for deleting a dormant account' )
-                        .setWidth_px ( 50 );
-  grid.setLabel     ( 'days',row,2,1,1 );
-  grid.setAlignment ( row++,2,'middle','left' );
+                        .setWidth_px ( 60 );
+  grid.setLabel     ( '&nbsp;days',row,col+2,1,1 );
+  grid.setAlignment ( row++,col+2,'middle','left' );
 
-  grid.setLabel ( '&nbsp;<br><i>Affected users will be notified by e-mail.</i>',row,0,1,5 );
+  grid.setLabel ( '&nbsp;<br><i>Affected users will be notified by e-mail.</i>',row,col,1,5 );
 
   //w = 3*$(window).width()/5 + 'px';
 
@@ -165,7 +190,7 @@ function DormantUsersDialog ( callback_func )  {
       resizable : false,
       height    : 'auto',
       maxHeight : 600,
-      width     : 700,
+      width     : 750,
       modal     : true,
       buttons: [
         {
@@ -193,45 +218,6 @@ function DormantUsersDialog ( callback_func )  {
                 new MessageBox ( 'Dormancy management',
                                  '<h2>Failure</h2>' + data.status, 'msg_error');
               } else  {
-                // new QuestionBox ( 'Dormancy management',
-                //       '<h2>Changes about to be made</h2><table><tr>'     +
-                //           '<td></td>'         +
-                //           '<td><b><i>Number&nbsp;&nbsp;</b></i></td>'    +
-                //           '<td><b><i>Disk effect (MB)</b></i></td>'      +
-                //       '</tr><tr><td><b><i>Total user accounts:</b></i></td><td>' +
-                //           '&nbsp;&nbsp;&nbsp;' + data.total_users   + '</td><td></td>' +
-                //       '</tr><tr><td><b><i>To become dormant:&nbsp;&nbsp;</b></i></td><td>' +
-                //           '&nbsp;&nbsp;&nbsp;' + data.dormant_users + '</td><td>'      +
-                //           '&nbsp;&nbsp;&nbsp;' + data.disk_released + '</td>'          +
-                //       '</tr><tr><td><b><i>To be deleted:</b></i></td><td>' +
-                //           '&nbsp;&nbsp;&nbsp;' + data.deleted_users + '</td><td>'      +
-                //           '&nbsp;&nbsp;&nbsp;' + data.disk_freed    + '</td></tr>'     +
-                //       '</tr><tr><td><b><i>Total disk effect:</b></i></td><td>&nbsp;</td><td>' +
-                //           '&nbsp;&nbsp;&nbsp;' + (data.disk_freed + data.disk_released) + '</td>' +
-                //       '</tr></table>',
-                //       'Confirm',function(){
-                //         _params.checkOnly = false;
-                //         serverRequest ( fe_reqtype.manageDormancy,_params,'Admin Page',
-                //                         function(data){
-                //           if (data.status!='ok')  {
-                //             new MessageBox ( 'Dormancy management',
-                //                              '<h2>Failure</h2>' + data.status, 'msg_error' );
-                //           } else  {
-                //             new MessageBox ( 'Dormancy management',
-                //                '<h2>Summary</h2>Out of ' + data.total_users +
-                //                ' users accounts, ' +
-                //                data.dormant_users + ' were declared dormant,<br>and ' +
-                //                data.deleted_users + ' were deleted. ' +
-                //                (data.disk_freed + data.disk_released) +
-                //                ' MBytes of disk released.' );
-                //             $(dlg.element).dialog("close");
-                //             if (callback_func)
-                //               callback_func();
-                //           }
-                //         },null,'persist' );
-                //       },
-                //       'Cancel' ,function(){});
-
                 new QuestionBox ( 'Dormancy management',
                       '<h2>Changes about to be made</h2><table><tr>'     +
                           '<td></td>'         +
@@ -260,9 +246,9 @@ function DormantUsersDialog ( callback_func )  {
                                         new MessageBox ( 'Dormancy management',
                                            '<h2>Summary</h2>Out of ' + data.total_users +
                                            ' users accounts, ' +
-                                           data.dormant_users + ' were declared dormant,<br>and ' +
-                                           data.deleted_users + ' were deleted. ' +
-                                           (data.disk_freed + data.disk_released) +
+                                           data.dormant_users  + ' were declared dormant,<br>and ' +
+                                           data.deleted_users  + ' were deleted. '   +
+                                           (data.disk_freed    + data.disk_released) +
                                            ' MBytes of disk released.' );
                                         $(dlg.element).dialog("close");
                                         if (callback_func)
