@@ -190,7 +190,7 @@ function LoginPage ( sceneId )  {
 //          .setNoWrap();
 
   panel.setLabel                ( '<center><i>Check ' + appName() +
-                                  ' <a target="_blank" href="html/tutorials.html">' +
+                                  ' <a target="_blank" href="html/roadmap.html">' +
                                   'roadmap<a></i> for new users</center>',
                                   row++,0,1,3 );
   panel.setLabel                ( '<center style="padding-top:6px;"><i>' +

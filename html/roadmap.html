@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-FCVD2T7BGM"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FCVD2T7BGM');
+  </script> -->
+
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta http-equiv="pragma"  content="no-cache">
+  <meta http-equiv="expires" content="0">
+
+  <meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name=apple-mobile-web-app-capable content=yes>
+  <meta name=apple-mobile-web-app-status-bar-style content=black>
+
+  <title>CCP4 Cloud Roadmap</title>
+
+  <style>
+    .main-page  {
+      font-family : Arial, Helvetica, sans-serif;
+      width       : 100%;
+      /* height      : 99%; */
+      font-size   : 16px;
+      line-height : 1.2;
+      background-color: gray;
+    }
+    .main-table {
+      border-spacing: 18px;
+      border-radius: 25px;
+      width: 1000px !important;
+      margin-top: 24px;
+      margin-left:auto;
+      margin-right:auto;
+      margin-bottom: 24px;
+      padding-left: 24px;
+      padding-right: 24px;
+      background-color: white;
+      box-shadow: 12px 12px #444444;
+    }
+    .serial-no {
+      width: 50px !important;
+    }
+    .stretch {
+      width: 180px !important;
+    }
+    .panel-gray-center {
+      border-radius: 25px;
+      background: #DDDDDD;
+      padding-top: 12px;
+      padding-bottom: 12px;
+      padding-left: 24px;
+      padding-right: 24px;
+      width: 360px !important;
+      text-align: center;
+      vertical-align: top;
+      /* height: 150px; */
+      box-shadow: 6px 6px #AAAAAA;
+    }
+    .panel-gray-side {
+      border-radius: 25px;
+      background: #DDDDDD;
+      padding-top: 12px;
+      padding-bottom: 12px;
+      padding-left: 24px;
+      padding-right: 24px;
+      width: 360px !important;
+      text-align: center;
+      vertical-align: top;
+      /* height: 150px; */
+      box-shadow: 6px 6px #AAAAAA;
+    }
+    .panel-title {
+      display       : block;
+      font-size     : 18px;
+      margin-top    : 1px;
+      margin-bottom : 8px;
+      margin-left   : 0;
+      margin-right  : 0;
+      font-weight   : bold;
+    }
+  </style>
+
+  <script>
+
+    function markRouteMR()  {
+      document.write (
+        '<img src="../images_png/route_mr.png" style="vertical-align:middle;height:16px;"> '
+      );
+    }
+
+    function markRouteEP()  {
+      document.write (
+        '<img src="../images_png/route_ep.png" style="vertical-align:middle;height:16px;"> '
+      );
+    }
+    function atlas ()  {
+      document.write (
+        '<img src="../images_png/atlas.png" style="vertical-align:middle;height:21px;"> '
+      );
+    }
+
+    function putHLink ( url_path )  {
+      document.write (
+        '<a target="_blank" href="../manuals/' + url_path +
+        '"><img src="../images_png/reference.png" style="vertical-align:middle;height:16px;"></a> '
+      );
+    }
+    function putUGLink ( url_path )  {
+      document.write (
+        '<a target="_blank" href="../manuals/' + url_path +
+        '"><img src="../images_png/help.png" style="vertical-align:middle;height:16px;"></a> '
+      );
+    }
+    function putDLink ( url_path )  {
+      document.write (
+        '<a target="_blank" href="../manuals/' + url_path +
+        '"><img src="../images_png/demoprj.png" style="vertical-align:middle;height:18px;"></a> '
+      );
+    }
+
+    function putYLink ( url )  {
+      document.write (
+        '<a target="_blank" href="' + url +
+        '"><img src="../images_png/video.png" style="vertical-align:middle;height:16px;"></a>'
+      );
+//      var w = window.open("url");
+//      w.document.write ( "xxxxxxxx");
+//      <iframe width="966" height="543" src="https://www.youtube.com/embed/oZeaD54oovs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    }
+
+    function openVLink ( url )  {
+      var w = window.open ( "../tutorials/clips/" + url );
+      /*
+      w.document.write (
+        '<video width="966" controls><source src="../tutorials/clips/' + url + '" type="video/mp4"></video>'
+      );
+      */
+    }
+
+    function putVLink ( url )  {
+      document.write (
+        '<a href="javascript:openVLink(\'' + url + '\');">' +
+        '<img src="../images_png/video.png" style="vertical-align:middle;height:16px;"></a>'
+      );
+    }
+
+
+  </script>
+
+</head>
+
+<body class="main-page">
+
+<table class="main-table">
+
+  <tr>
+    <td colspan=6>
+      <table style="width:100%;"><tr><td style="width:130px;">&nbsp;
+          <br><img src="../images_png/roadmap.png" style="vertical-align:middle;width:128px;">
+        </td><td>
+          <h1 style="text-align:center;font-size:48px;padding-top:12px;margin-bottom:6px;text-shadow: 1px 1px #AAAAAA;">
+            CCP4 Cloud Roadmap
+          </h1><center><i>
+            CCP4 Cloud is a system for remote computation in macromolecular crystallography,<br>
+            based on the <a target="_blank" href="https://www.ccp4.ac.uk">CCP4 Software Suite</b>.
+          </i></center>
+        </td><td style="width:96px;">&nbsp;</td></tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <td colspan=6>
+      <table><tr><td colspan=3>
+        <b><i>Useful links:</i></b>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putDLink("html-tutorials/doc.tutorial.T0_001.html");
+        </script>
+      </td><td>
+        <i>&nbsp; How to
+          <a target="_blank" href="../manuals/html-userguide/jscofe_start_project.html">start a project</a>
+          in CCP4 Cloud</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putHLink('html-taskref/index.html');
+        </script>
+      </td><td>
+        <i>&nbsp; links to
+           <a target="_blank" href="../manuals/html-taskref/index.html">CCP4 Cloud documentation</a>
+           articles</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putUGLink('html-userguide/index.html');
+        </script>
+      </td><td>
+        <i>&nbsp; links to
+           <a target="_blank" href="../manuals/html-userguide/index.html">CCP4 Cloud User Guide documentation</a>
+           articles</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putYLink('https://www.youtube.com/channel/UCMfGZOImz7Fn_Q4I4Wm0yew');
+        </script>
+      </td><td>
+        <i>&nbsp; links to video tutorials from
+           <a target="_blank" href="https://www.youtube.com/channel/UCMfGZOImz7Fn_Q4I4Wm0yew">CCP4 Youtube Channel</a>
+           on Youtube</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>
+        <script>
+          markRouteMR();
+        </script>
+      </td><td>
+        <i>&nbsp; minimalistic* route for Molecular Replacement</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>
+        <script>
+          markRouteEP();
+        </script>
+      </td><td>
+        <i>&nbsp; minimalistic* route for Experimental Phasing</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>
+        <script>
+          atlas('../manuals/html-userguide/CCP4Cloud_Atlas.html');
+        </script>
+      </td><td>
+        <i>&nbsp; links to
+           <a target="_blank" href="../manuals/html-userguide/CCP4Cloud_Atlas.html">CCP4 Cloud Atlas</a>
+           article</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td></td><td colspan=1><hr/>
+        <i style="font-size:85%;">&nbsp;  * minimalistic routes start from
+           merged reflection datasets and protein sequences; they may work
+           in typical cases without complications<br>
+           ** see full example videos in the end of this page
+        </i>
+    
+      </td></tr></table>
+    </td>
+  </tr>
+  <tr>
+    <td colspan=6></td>
+  </tr>
+
+  <tr>
+    <td class="serial-no"><h2>1.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
+      <span class="panel-title">
+        CCP4 Cloud Introduction
+      </span>
+      Make CCP4 Cloud account
+        <script>
+          putHLink('html-userguide/jscofe_myprojects.html');
+          putYLink('https://www.youtube.com/embed/oZeaD54oovs');
+        </script>
+      <br>How to start a project in CCP4 Cloud
+        <script>
+          markRouteMR(); markRouteEP();
+          putHLink('../manuals/html-userguide/jscofe_start_project.html');
+        </script>
+    <br>CCP4 Cloud projects
+        <script>
+          markRouteMR(); markRouteEP();
+          putHLink('html-userguide/jscofe_myprojects.html#projects');
+        </script>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
+  </tr>
+
+  <tr>
+    <td class="serial-no"><h2>3.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
+      <span class="panel-title">Data import</span>
+      Import local files
+        <script>
+          markRouteMR(); markRouteEP();
+          putHLink('html-taskref/doc.task.import.html');
+        </script>
+      <br>Import Sequence(s) by Copy-Paste
+      <script>
+        putHLink('html-taskref/doc.task.ImportSeqCP.html');
+      </script>
+      <br>Import from PDB/AFDB 
+      <script>
+        putHLink('html-taskref/doc.task.ImportPDB.html');
+      </script>
+      <br>Import data from Cloud
+      <script>
+        putHLink('html-taskref/doc.task.CloudImport.html');
+      </script>
+      <br>Import & Replace
+      <script>
+        putHLink('html-taskref/doc.task.ImportReplace.html');
+      </script>
+      <br>Continue projects started elsewhere
+      <script>
+        putHLink('html-taskref/doc.task.Migrate.html');
+      </script>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
+  </tr>
+
+
+  <tr>
+    <td class="serial-no"><h2>2.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
+      <span class="panel-title">Image processing</span>
+      Auto-processing with Xia-2
+      <script>
+        putHLink('html-taskref/doc.task.Xia2.html');
+      </script>
+      <br>Image processing with DIALS/DUI
+        <script>
+          putHLink('html-taskref/doc.task.DUI.html');
+        </script>
+      <br>Image processing with XDS GUI
+      <script>
+        putHLink('html-taskref/doc.task.XDSGUI.html');
+      </script>
+      <br>Image processing with iMosflm
+        <script>
+          putHLink('html-taskref/doc.task.iMosflm.html');
+          putYLink('https://www.youtube.com/embed/8IUMM58gMuo');
+        </script>
+      <br>Data Reduction with Aimless
+      <script>
+        putHLink('html-taskref/doc.task.Aimless.html');
+      </script>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
+  </tr>
+
+  
+<!--
+  <tr>
+    <td><h2>2.</h2></td>
+    <td class="panel-gray-side" colspan=2>
+      <span class="panel-title">Image processing</span>
+      Auto-processing with Xia-2
+      <br>Image processing with DIALS/DUI
+        <script>
+          putHLink('html-taskref/doc.task.DUI.html');
+        </script>
+      <br>Image processing with XDS GUI
+      <br>Image processing with iMosflm
+        <script>
+          putHLink('html-taskref/doc.task.iMosflm.html');
+          putYLink('https://www.youtube.com/embed/8IUMM58gMuo');
+        </script>
+    </td>
+    <td style="width:2px;"></td>
+    <td class="panel-gray-side" colspan=2>
+      <span class="panel-title">Data import</span>
+      Import local files
+        <script>
+          markRouteMR(); markRouteEP();
+          putHLink('html-taskref/doc.task.import.html');
+        </script>
+      <br>Import PDB entries
+      <br>Import data from Cloud
+    </td>
+  </tr>
+
+
+  <tr>
+    <td class="serial-no"><h2>4.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
+      <span class="panel-title">Data scaling and merging</span>
+      Data scaling and merging with Aimless
+       <script>
+         putHLink('html-taskref/doc.task.Aimless.html');
+       </script>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
+  </tr>
+-->
+
+<tr>
+  <td class="serial-no"><h2>5.</h2></td>
+  <td class="stretch">&nbsp;</td>
+  <td colspan=3><div class="panel-gray-center">
+    <span class="panel-title">Structure Prediction</span>
+    Structure Prediction with AlphaFold-2
+      <script>
+        putHLink('html-taskref/doc.task.StructurePrediction.html');
+      </script>
+  </div></td>
+  <td class="stretch">&nbsp;</td>
+</tr>
+
+
+  <tr>
+    <td class="serial-no"><h2>5.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
+      <span class="panel-title">Asymmetric Unit and Structure Revision</span>
+      ASU Content definition
+        <script>
+          markRouteMR();
+          markRouteEP();
+          putHLink('html-taskref/Asymmetric_Unit_and_Structure_Revision.html#asymmetric-unit');
+        </script>
+      <br>Change space group in ASU
+        <script>
+          putHLink('html-taskref/doc.task.ChangeSpGASU.html');
+        </script>
+      <br>Edit ASU content
+        <script>
+          putHLink('html-taskref/doc.task.EditRevisionASU.html');
+        </script>
+      <br>Edit Structure Revision
+      <script>
+        putHLink('html-taskref/doc.task.EditRevision.html');
+      </script>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
+  </tr>
+
+  <tr>
+    <td><h2>6.</h2></td>
+    <td colspan=2><div class="panel-gray-side" style="height:180px">
+      <span class="panel-title">Molecular Replacement</span>
+      Automated Molecular Replacement
+        <script>
+          markRouteMR();
+          putHLink('html-taskref/Automated_Molecular_Replacement.html');
+          putYLink('https://www.youtube.com/embed/SNdMCLhK8zQ');
+        </script>
+      <br>Molecular Replacement Models and Ensembles
+      <script>
+        putHLink('html-taskref/doc.task.MR_model_preparation.html');
+      </script>
+      <br>Phaser
+      <script>
+        putHLink('html-taskref/doc.task.Phaser.html');
+      </script>
+      <br>Molrep
+      <script>
+        putHLink('html-taskref/doc.task.Molrep.html');
+        </script>
+      <br>MR without sequence homologues (SIMBAD)
+        <script>
+          putHLink('html-taskref/doc.task.Simbad.html');
+        </script>
+        <br>Fragment-Based Molecular Replacement (Arcimboldo)
+        <script>
+          putHLink('html-taskref/Fragment-Based_Molecular_Replacement.html');
+        </script>
+    </div></td>
+    <td style="width:2px;">&nbsp;</td>
+    <td colspan=2 ><div class="panel-gray-side" style="height:180px">
+      <span class="panel-title">Experimental Phasing</span>
+      <br>
+      <br>
+      Auto-EP with Crank-2
+        <script>
+          markRouteEP();
+          putHLink('html-taskref/doc.task.Crank2.html');
+        </script>
+      <br>Heavy-Atom Substructure with SHELX
+        <script>
+          putHLink('html-taskref/doc.task.SHELX.html');
+        </script>
+      <br>EP with Phaser
+        <script>
+          putHLink('html-taskref/doc.task.Phaser.html');
+        </script>
+    </div></td>
+  </tr>
+
+  <tr>
+    <td class="serial-no"><h2>7.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
+      <span class="panel-title">Density modification</span>
+      DM with Parrot
+        <script>
+          putHLink('html-taskref/doc.task.Parrot.html');
+        </script>
+      <br>DM with Acorn
+        <script>
+          putHLink('html-taskref/doc.task.Acorn.html');
+        </script>
+      <br>DM with ShelxE
+        <script>
+          putHLink('html-taskref/doc.task.SHELX.html#id1');
+        </script>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
+  </tr>
+
+
+
+  <tr>
+    <td class="serial-no"><h2>8.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
+      <span class="panel-title">Model Building</span>
+      Automatic Model Building with Modelcraft
+        <script>
+          putHLink('html-taskref/doc.task.ModelCraft.html');
+        </script>
+      <br>Auto-MB with CCP4Build
+        <script>
+          markRouteMR();
+          putHLink('html-taskref/doc.task.CCP4Build.html');
+        </script>
+        <br>Auto-MB with Buccaneer
+        <script>
+          putHLink('html-taskref/doc.task.Buccaneer.html');
+        </script>
+      <br>Auto-MB with Arp/wArp
+        <script>
+          putHLink('html-taskref/doc.task.ArpWarp.html');
+        </script>
+        <br>NUCE:Trace Nucleic Acid Chains with Arp/wArp
+        <script>
+          putHLink('html-taskref/doc.task.AWNuce.html');
+        </script>
+      <br>Nautilus: Auto-building of RNA/DNA
+        <script>
+          putHLink('html-taskref/doc.task.Nautilus.html');
+        </script>
+      <br>MB with Coot
+        <script>
+          markRouteMR(); markRouteEP();
+          putHLink('html-taskref/doc.task.CootMB.html');
+        </script>
+      <br>Sequence identification with findMySequence
+        <script>
+          putHLink('html-taskref/doc.task.FindMySequence.html');
+        </script>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
+  </tr>
+
+  <tr>
+    <td class="serial-no"><h2>8.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
+      <span class="panel-title">Refinement</span>
+      Refmac
+        <script>
+          markRouteMR(); markRouteEP();
+          putHLink('html-taskref/doc.task.Refmac.html');
+        </script>
+      <br>Dimple
+        <script>
+          putHLink('html-taskref/doc.task.Dimple.html');
+        </script>
+      <br>Buster
+      <script>
+        putHLink('html-taskref/doc.task.Buster.html');
+      </script>
+      <br>Low-Resolution Refinement
+      <script>
+        putHLink('html-taskref/doc.task.Lorestr.html');
+      </script>
+      <br>Comb Structure with Coot/Refmac
+      <script>
+        putHLink('html-taskref/doc.task.CombStructure.html');
+      </script>
+      <br>Rigid-Body Refinement with Phaser
+      <script>
+        putHLink('html-taskref/doc.task.PhaserRB.html');
+      </script>
+      <br>Post-MR model correction with Sheetbend
+      <script>
+        putHLink('html-taskref/doc.task.Sheetbend.html');
+      </script>
+      <br>PDB-REDO
+      <script>
+        putHLink('html-taskref/doc.task.PDBREDO.html');
+      </script>      
+      <br>Paired refinement with PAIREF
+      <script>
+        putHLink('html-taskref/doc.task.Pairef.html');
+      </script>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
+  </tr>
+
+  <tr>
+    <td class="serial-no"><h2>9.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
+      <span class="panel-title">Ligands</span>
+      Prepare ligand structures with AceDrg
+        <script>
+          putHLink('html-taskref/doc.task.MakeLigand.html');
+        </script>
+      <br>Auto-fit ligands with Coot
+      <script>
+        putHLink('html-taskref/doc.task.FitLigand.html');
+      </script>
+      <br>Auto-fit waters with Coot
+        <script>
+          markRouteMR(); markRouteEP();
+          putHLink('html-taskref/doc.task.FitWaters.html');
+        </script>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
+  </tr>
+
+  <tr>
+    <td class="serial-no"><h2>10.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
+      <span class="panel-title">Validation, analysis and deposition</span>
+        Zanuda: Validation of Space Group
+        <script>
+          putHLink('html-taskref/doc.task.Zanuda.html');
+        </script>
+      <br>Privateer: Validation of carbohydrate structures
+        <script>
+          putHLink('html-taskref/doc.task.Privateer.html');
+        </script>
+      <br>PISA: Analysis of complexes and interfaces
+        <script>
+          putHLink('html-taskref/doc.task.PISA.html');
+          putYLink('https://www.youtube.com/embed/Ap160iBdqNk');
+          //putVLink('pisa.mp4');
+        </script>
+
+      <br>SC
+        <script>
+          putHLink('html-taskref/doc.task.SC.html');
+        </script>
+
+      <br>Prepare files for PDB Deposition
+        <script>
+          markRouteMR(); markRouteEP();
+          putHLink('html-taskref/doc.task.Deposition.html');
+        </script>
+
+      <br>Contact: explore atomic contacts
+        <script>
+          putHLink('html-taskref/doc.task.Contact.html');
+        </script>
+      <br>Rotamer: check for unusual rotamers
+      <script>
+        putHLink('html-taskref/doc.task.Rotamer.html');
+      </script>
+      <br>Areaimol: interface analysis
+      <script>
+        putHLink('html-taskref/doc.task.Areaimol.html');
+      </script>
+      <br>Rampage: Ramachandran plot analysis
+      <script>
+        putHLink('html-taskref/doc.task.Rampage.html');
+      </script>
+
+    </div></td>
+    <td class="stretch">&nbsp;</td>
+  </tr>
+
+  <tr>
+    <td class="serial-no"><h2>11.</h2></td>
+    <td class="stretch">&nbsp;</td>
+    <td colspan=3><div class="panel-gray-center">
+      <span class="panel-title">CCP4 Cloud Toolbox</span>
+      Reflection Data diagnostics with Auspex
+      <script>
+        putHLink('html-taskref/doc.task.Auspex.html');
+      </script>
+      <br>Self-Rotation Function Analysis
+      <script>
+        putHLink('html-taskref/doc.task.SRF.html');
+      </script>
+      <br>X-ray cross sections and anomalous scattering factors
+      <script>
+        putHLink('html-taskref/doc.task.CrosSec.html');
+      </script>
+       <br>Reindex Dataset
+       <!-- <script>
+         putHLink('html-taskref/');
+       </script> -->
+      <br>Coordinate utilities
+      <script>
+        putHLink('html-taskref/doc.task.XyzUtils.html');
+      </script>
+      </script>
+      <br>Gemmi terminal for running custom python scripts
+      <!-- <script>
+        putHLink('html-taskref/');
+      </script> -->
+      <br>Text data editor
+      <!-- <script>
+        putHLink('html-taskref/');
+      </script> -->
+      <br>Structure alignment
+        <script>
+          putHLink('html-taskref/doc.task.Gesamt.html');
+        </script>
+      </script>
+      <br>Structure Superposition
+      <script>
+        putHLink('html-taskref/doc.task.LsqKab.html');
+      </script>
+    </script>
+    <br>Sequence Alignment
+    <script>
+      putHLink('html-taskref/doc.task.SeqAlign.html');
+    </script>
+      <br>Symmetry match
+      <script>
+        putHLink('html-taskref/doc.task.SymMatch.html');
+      </script>
+    </div></td>
+    <td class="stretch">&nbsp;</td>
+  </tr>
+
+  <tr>
+    <td colspan=6></td>
+  </tr>
+  <tr>
+    <td colspan=6>
+      <table><tr><td colspan=6>
+        <h2>Example projects</h2>
+      </td></tr><tr><td><b style="font-size:24px;">&bull;</b>&nbsp;</td><td colspan=5>
+        MDM2 Protein linked to Nutlin molecule.
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putYLink('https://www.youtube.com/embed/YLu5oqDis2E');
+        </script>
+      </td><td colspan=3>
+        <i>&nbsp; Part 1: Molecular Replacement</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putYLink('https://www.youtube.com/embed/kgsBfMLCI5A');
+        </script>
+      </td><td colspan=3>
+        <i>&nbsp; Part 2: Ligand fitting and deposition</i>
+      </td></tr><tr><td><b style="font-size:24px;">&bull;</b>&nbsp;</td><td colspan=5>
+        <i>&nbsp; Tutorials (will require logging in CCP4 Cloud)</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putDLink('demo_project.html?cmount=Tutorials&project=T1_001.%20Data%20processing%20and%20SAD%20phasing.ccp4cloud');
+        </script>
+      </td><td colspan=3>
+        <i>&nbsp; Data processing and SAD phasing</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putDLink('demo_project.html?cmount=Tutorials&project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud');
+        </script>
+      </td><td colspan=3>
+        <i>&nbsp; Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putDLink('demo_project.html?cmount=Tutorials&project=T2_002.%20The%20 multidomain%20Molecular%20Replacement.ccp4cloud');
+        </script>
+      </td><td colspan=3>
+        <i>&nbsp; The multi-domain Molecular Replacement </i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putDLink('demo_project.html?cmount=Tutorials&project=T2_003.%20Structure%20prediction%20for%20Molecular%20Replacement.ccp4cloud');
+        </script>
+      </td><td colspan=3>
+        <i>&nbsp; Structure prediction for Molecular Replacement </i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>&nbsp;&nbsp;</td><td>
+
+        <script>
+          putDLink('demo_project.html?cmount=Tutorials&project=T3_002.%20GerE%20SAD%20and%20MR-SAD%20Phasing.ccp4cloud');
+        </script>
+      </td><td colspan=3>
+        <i>&nbsp; GerE: SAD and MR-SAD Phasing</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putDLink('demo_project.html?cmount=Tutorials&project=T3_004.%20Beta-Lactamase%20Experimental%20Phasing.ccp4cloud');
+        </script>
+      </td><td colspan=3>
+        <i>&nbsp; Beta-Lactamase Experimental Phasing</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putDLink('demo_project.html?cmount=Tutorials&project=T4_001.%20Simple%20Refinement.ccp4cloud');
+        </script>
+      </td><td colspan=3>
+        <i>&nbsp; Refinement using REFMAC5 - Part 1: Simple Refinement</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putDLink('demo_project.html?cmount=Tutorials&project=T4_002.%20Twin%20Refinement');
+        </script>
+      </td><td colspan=3>
+        <i>&nbsp; Refinement using REFMAC5 - Part 2: Twin Refinement</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putDLink('demo_project.html?cmount=Tutorials&project=T4_003.%20Ligand%20Dictionary%20Generation,%20Fitting%20&%20Refinement.ccp4cloud');
+        </script>
+      </td><td colspan=3>
+        <i>&nbsp; Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</i>
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putDLink('demo_project.html?cmount=Tutorials&project=T5_001.%20Starting%20PISA.ccp4cloud');
+        </script>
+      </td><td colspan=3>
+        <i>&nbsp; Starting PISA</i>
+      <!--
+      </td></tr><tr><td>&nbsp;&nbsp;</td><td>
+        <script>
+          putYLink('');
+        </script>
+      </td><td>
+        <i>&nbsp; Insulin structure solved by Experimental Phasing</i>
+      -->
+      </td></tr></table>
+    </td>
+  </tr>
+
+</table>
+
+</body>
+
+</html>
