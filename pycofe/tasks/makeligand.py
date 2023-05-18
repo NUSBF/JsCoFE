@@ -114,6 +114,7 @@ class MakeLigand(basic.TaskDriver):
                         # XYZ coordinates are found in dictionary, just copy
                         # them over
                         st = gemmi.make_structure_from_chemcomp_block ( block )
+                        st[0][0][0].seqid = gemmi.SeqId('1')
                         st.write_pdb ( xyzPath )
                         cmd = []  # do not use AceDrg
             else:
