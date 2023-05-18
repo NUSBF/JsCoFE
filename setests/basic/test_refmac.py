@@ -120,8 +120,21 @@ def depositionAfterRefmac(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for deposition')
-    time.sleep(1)
+    try: 
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for deposition')
+
+        time.sleep(1)
+    except: 
+        pass
+
+    try: 
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for PDB deposition')
+
+        time.sleep(1)
+    except: 
+        pass
+
+
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -142,19 +155,35 @@ def depositionAfterRefmac(driver):
     # presing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
     closeButton.click()
-    time.sleep(1)
+    time.sleep(10)
 
     taskText = ''
     ttts = sf.tasksTreeTexts(driver)
-    for task in ttts:
-        match = re.search('\[0005\] deposition -- (.*)', task)
-        if match:
-            taskText = match.group(1)
-            break
-    if taskText == '':
-        print('*** Verification: could not find text result value after deposition run')
+
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-pre/":
+
+        for task in ttts:
+            match = re.search('\[0005\] deposition -- (.*)', task)
+            if match:
+                taskText = match.group(1)
+                print(taskText)
+                break
+        if taskText == '':
+            print('*** Verification: could not find text result value after deposition run')
+        else:
+            print('*** Verification: deposition result is "%s" (expecting "package prepared, pdb report obtained")' % taskText)
+
     else:
-        print('*** Verification: deposition result is "%s" (expecting "package prepared, pdb report obtained")' % taskText)
+        for task in ttts:
+            match = re.search('\[0005\] prepare data for PDB deposition -- (.*)', task)
+            if match:
+                taskText = match.group(1)
+                print(taskText)
+                break
+        if taskText == '':
+            print('*** Verification: could not find text result value after deposition run')
+        else:
+            print('*** Verification: deposition result is "%s" (expecting "package prepared, pdb report obtained")' % taskText)
 
     if not taskText == 'package prepared, pdb report obtained':
         print('!!! Verification not passed!')
