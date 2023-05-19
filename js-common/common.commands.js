@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    09.05.23   <--  Date of Last Modification.
+ *    19.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud' }  // application name for reporting
 
 var jsCoFE_version = '1.7.012 [04.04.2023]';    // for the main server
-// var jsCoFE_version = '1.7.013 [11.05.2023]';   // for update
+// var jsCoFE_version = '1.7.013 [19.05.2023]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -103,64 +103,65 @@ var fe_command = {
 // type as a field.
 
 var fe_reqtype = {
-  logout            : '-logout',            // request to log out
-  getUserData       : '-getUserData',       // request for user data
-  saveHelpTopics    : '-saveHelpTopics',    // request to save list of help topics
-  updateUserData    : '-updateUserData',    // request to update user data
-  updateUData_admin : '-updateUData_admin', // request to update user data by admin
-  deleteUser        : '-deleteUser',        // request to delete user account and data
-  deleteUser_admin  : '-deleteUser_admin',  // request to delete user account and data by admin
-  retireUser_admin  : '-retireUser_admin',  // request to retire user by admin
-  resetUser_admin   : '-resetUser_admin',   // request to reset user password by admin
-  updateAndRestart  : '-updateAndRestart',  // request to update and restart all servers
-  getUserRation     : '-getUserRation',     // request to retrieve current user ration
-  getProjectList    : '-getProjectList',    // request for projects list
-  getDockData       : '-getDockData',       // request for dock data
-  getSharedPrjList  : '-getSharedPrjList',  // request for shared projects list
-  deleteProject     : '-deleteProject',     // request to save delete project
-  saveProjectList   : '-saveProjectList',   // request to save project list
-  saveDockData      : '-saveDockData',      // request to save dock data
-  getProjectData    : '-getProjectData',    // request for project data
+  logout              : '-logout',            // request to log out
+  getUserData         : '-getUserData',       // request for user data
+  saveHelpTopics      : '-saveHelpTopics',    // request to save list of help topics
+  updateUserData      : '-updateUserData',    // request to update user data
+  updateUData_admin   : '-updateUData_admin', // request to update user data by admin
+  deleteUser          : '-deleteUser',        // request to delete user account and data
+  deleteUser_admin    : '-deleteUser_admin',  // request to delete user account and data by admin
+  retireUser_admin    : '-retireUser_admin',  // request to retire user by admin
+  resetUser_admin     : '-resetUser_admin',   // request to reset user password by admin
+  updateAndRestart    : '-updateAndRestart',  // request to update and restart all servers
+  getUserRation       : '-getUserRation',     // request to retrieve current user ration
+  getProjectList      : '-getProjectList',    // request for projects list
+  getDockData         : '-getDockData',       // request for dock data
+  getSharedPrjList    : '-getSharedPrjList',  // request for shared projects list
+  deleteProject       : '-deleteProject',     // request to save delete project
+  saveProjectList     : '-saveProjectList',   // request to save project list
+  saveDockData        : '-saveDockData',      // request to save dock data
+  getProjectData      : '-getProjectData',    // request for project data
   // advanceJobCounter : '-advanceJobCounter', // request to advance job counter
-  saveProjectData   : '-saveProjectData',   // request to save project data
-  preparePrjExport  : '-preparePrjExport',  // request to prepare project for export
-  checkPrjExport    : '-checkPrjExport',    // request to check project export state
-  finishPrjExport   : '-finishPrjExport',   // request to finish project export
-  startDemoImport   : '-startDemoImport',   // request to start demo project import
-  startSharedImport : '-startSharedImport', // request to start shared project import
-  archiveProject    : '-archiveProject',    // request to archive project
-  accessArchivedPrj : '-accessArchivedPrj', // request to access archived project
-  searchArchive     : '-searchArchive',     // request to search archive
-  checkPrjImport    : '-checkPrjImport',    // request to check project import state
-  finishPrjImport   : '-finishPrjImport',   // request to finish project import
-  prepareJobExport  : '-prepareJobExport',  // request to prepare job for export
-  checkJobExport    : '-checkJobExport',    // request to check job export state
-  finishJobExport   : '-finishJobExport',   // request to finish job export
-  prepareFJobExport : '-prepareFJobExport', // request to prepare failed job for export
-  checkFJobExport   : '-checkFJobExport',   // request to check failed job export state
-  finishFJobExport  : '-finishFJobExport',  // request to finish failed job export
-  renameProject     : '-renameProject',     // request to rename a project
-  cloneProject      : '-cloneProject',      // request to clone a project
-  checkCloneProject : '-checkCloneProject', // request to check project clone state
-  importProject     : '-importProject',     // request to save import a project
-  shareProject      : '-shareProject',      // request to share a project
-  saveJobData       : '-saveJobData',       // request to save job data
-  saveJobFile       : '-saveJobFile',       // request to save file in job directory
-  runJob            : '-runJob',            // request to run job
-  replayJob         : '-replayJob',         // request to replay job
-  stopJob           : '-stopJob',           // request to stop job
-  webappEndJob      : '-webappEndJob',      // request to conclude a webapp job
-  checkJobs         : '-checkJobs',         // request to check on jobs' state
-  wakeZombieJobs    : '-wakeZombieJobs',    // request to send zombie jobs to FE
-  getJobFile        : '-getJobFile',        // request to download a job's file
-  getAdminData      : '-getAdminData',      // request to serve data for admin page
-  getAnalytics      : '-getAnalytics',      // request to serve analytics data
-  sendAnnouncement  : '-sendAnnouncement',  // request to send announcement to users
-  manageDormancy    : '-manageDormancy',    // request to manage dormant users
-  getUserKnowledge  : '-getUserKnowledge',  // request to send user knowledge data
-  getCloudFileTree  : '-getCloudFileTree',  // request for cloud file tree metadata
-  updateFacility    : '-updateFacility',    // request to update facility metadata
-  checkFclUpdate    : '-checkFclUpdate'     // request to check facility update
+  saveProjectData     : '-saveProjectData',   // request to save project data
+  preparePrjExport    : '-preparePrjExport',  // request to prepare project for export
+  checkPrjExport      : '-checkPrjExport',    // request to check project export state
+  finishPrjExport     : '-finishPrjExport',   // request to finish project export
+  startDemoImport     : '-startDemoImport',   // request to start demo project import
+  startSharedImport   : '-startSharedImport', // request to start shared project import
+  archiveProject      : '-archiveProject',    // request to archive project
+  accessArchivedPrj   : '-accessArchivedPrj', // request to access archived project
+  searchArchive       : '-searchArchive',     // request to search archive
+  checkPrjImport      : '-checkPrjImport',    // request to check project import state
+  finishPrjImport     : '-finishPrjImport',   // request to finish project import
+  prepareJobExport    : '-prepareJobExport',  // request to prepare job for export
+  checkJobExport      : '-checkJobExport',    // request to check job export state
+  finishJobExport     : '-finishJobExport',   // request to finish job export
+  prepareFJobExport   : '-prepareFJobExport', // request to prepare failed job for export
+  checkFJobExport     : '-checkFJobExport',   // request to check failed job export state
+  finishFJobExport    : '-finishFJobExport',  // request to finish failed job export
+  renameProject       : '-renameProject',     // request to rename a project
+  cloneProject        : '-cloneProject',      // request to clone a project
+  checkCloneProject   : '-checkCloneProject', // request to check project clone state
+  importProject       : '-importProject',     // request to save import a project
+  shareProjectConfirm : '-shareProjectConfirm', // request to prepare user data to confirm share
+  shareProject        : '-shareProject',      // request to share a project
+  saveJobData         : '-saveJobData',       // request to save job data
+  saveJobFile         : '-saveJobFile',       // request to save file in job directory
+  runJob              : '-runJob',            // request to run job
+  replayJob           : '-replayJob',         // request to replay job
+  stopJob             : '-stopJob',           // request to stop job
+  webappEndJob        : '-webappEndJob',      // request to conclude a webapp job
+  checkJobs           : '-checkJobs',         // request to check on jobs' state
+  wakeZombieJobs      : '-wakeZombieJobs',    // request to send zombie jobs to FE
+  getJobFile          : '-getJobFile',        // request to download a job's file
+  getAdminData        : '-getAdminData',      // request to serve data for admin page
+  getAnalytics        : '-getAnalytics',      // request to serve analytics data
+  sendAnnouncement    : '-sendAnnouncement',  // request to send announcement to users
+  manageDormancy      : '-manageDormancy',    // request to manage dormant users
+  getUserKnowledge    : '-getUserKnowledge',  // request to send user knowledge data
+  getCloudFileTree    : '-getCloudFileTree',  // request for cloud file tree metadata
+  updateFacility      : '-updateFacility',    // request to update facility metadata
+  checkFclUpdate      : '-checkFclUpdate'     // request to check facility update
 };
 
 
