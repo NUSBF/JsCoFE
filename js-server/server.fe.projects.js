@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.04.23   <--  Date of Last Modification.
+ *    19.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -2755,6 +2755,7 @@ module.exports.makeNodeName           = makeNodeName;
 module.exports.make_job_directory     = make_job_directory;
 module.exports.saveProjectData        = saveProjectData;
 module.exports.shareProject           = shareProject;
+module.exports.shareProjectConfirm    = shareProjectConfirm;
 module.exports.renameProject          = renameProject;
 module.exports.cloneProject           = cloneProject;
 module.exports.checkCloneProject      = checkCloneProject;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.03.23   <--  Date of Last Modification.
+ *    19.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Request Handler
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-202
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -144,9 +144,13 @@ var response = null;
           response = prj.saveProjectData ( loginData,data );
        break;
 
-    case cmd.fe_reqtype.shareProject :
-          response = prj.shareProject ( loginData,data );
+    case cmd.fe_reqtype.shareProjectConfirm :
+          response = prj.shareProjectConfirm ( loginData,data );
        break;
+
+   case cmd.fe_reqtype.shareProject :
+          response = prj.shareProject ( loginData,data );
+      break;
 
     case cmd.fe_reqtype.preparePrjExport :
           response = prj.prepareProjectExport ( loginData,data );
