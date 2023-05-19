@@ -286,7 +286,7 @@ function Communicate ( server_request )  {
   //   }
   // }
 
-  // if (this.filePath.endsWith('.json'))
+  // if (this.filePath.endsWith('.cif'))
   //   console.log ( "calculated path " + this.filePath);
 
   this.mimeType = utils.getMIMEType ( this.filePath );

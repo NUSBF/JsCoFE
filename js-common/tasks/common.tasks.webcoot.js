@@ -168,19 +168,32 @@ if (!__template)  {
     var istruct = this.input_data.data['revision'][0].Structure;
 
     var inputFiles = [];
+    
+    if ('ligand' in this.input_data.data)  {
+      let ligands = this.input_data.data['ligand'];
+      for (let i=0;i<ligands.length;i++)
+        if (file_key.lib in ligands[i].files)  {
+          let ligURL = this.getURL ( 'input/' + ligands[i].files[file_key.lib] );
+          inputFiles.push ({
+            type : 'ligand',
+            args : [ ligURL ]
+          });
+        }
+    }
+
     if (istruct)  {
-      if (file_key.xyz in istruct.files)  {
-        var pdbURL = this.getURL ( 'input/' + istruct.files[file_key.xyz] );
-        inputFiles.push ({
-          type : 'pdb',
-          args : [ pdbURL,'molecule' ]
-        });
-      }
       if (file_key.lib in istruct.files)  {
         var libURL = this.getURL ( 'input/' + istruct.files[file_key.lib] );
         inputFiles.push ({
           type : 'ligand',
           args : [ libURL ]
+        });
+      }
+      if (file_key.xyz in istruct.files)  {
+        var pdbURL = this.getURL ( 'input/' + istruct.files[file_key.xyz] );
+        inputFiles.push ({
+          type : 'pdb',
+          args : [ pdbURL,'molecule' ]
         });
       }
       if (file_key.mtz in istruct.files)  {
@@ -225,18 +238,6 @@ if (!__template)  {
         }
     }
 
-    if ('ligand' in this.input_data.data)  {
-      let ligands = this.input_data.data['ligand'];
-      for (let i=0;i<ligands.length;i++)
-        if (file_key.lib in ligands[i].files)  {
-          let ligURL = this.getURL ( 'input/' + ligands[i].files[file_key.lib] );
-          inputFiles.push ({
-            type : 'ligand',
-            args : [ ligURL ]
-          });
-        }
-    }
-
     var params = {
       mode        : mode,
       inputFiles  : inputFiles,
@@ -249,6 +250,8 @@ if (!__template)  {
                     },
       wdirURL     : this.getURL('')
     };
+
+    // console.log (  JSON.stringify(inputFiles) );
 
     fetchFile ( 'js-lib/webCoot/webcoot.html',
       function(text){

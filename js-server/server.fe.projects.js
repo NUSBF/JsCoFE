@@ -1857,6 +1857,45 @@ var projectName = projectDesc.name;
 
 // ===========================================================================
 
+function shareProjectConfirm ( loginData,data )  {
+// will only return user names for confirmation in project share dialog on client
+var pDesc     = data.desc;
+var share     = pDesc.share;  // requested share state
+var share0    = data.share0;  // old share state
+var unshared  = [];
+var unknown   = [];
+var newShared = [];
+var oldShared = [];
+
+  for (let shareLogin in share)  {
+    let uLoginData = user.getUserLoginData ( shareLogin );
+    if (uLoginData)  {
+      let userData = user.readUserData ( uLoginData );
+      if (shareLogin in share0)
+            oldShared.push ( [shareLogin,userData.name,userData.email] );
+      else  newShared.push ( [shareLogin,userData.name,userData.email] );
+    } else
+      unknown.push ( shareLogin );
+  }
+
+  for (let shareLogin in share0)  
+    if (shareLogin && (!(shareLogin in share)))  {  // not found in the requested -- unshare
+      let uLoginData = user.getUserLoginData ( shareLogin );
+      if (uLoginData)  {
+        let userData = user.readUserData ( uLoginData );
+        unshared.push ( [shareLogin,userData.name,userData.email] );
+      }  // do not put into unknown as it is going to be unshared anyway
+    }
+
+  return new cmd.Response ( cmd.fe_retcode.ok,'',{
+    unshared  : unshared,
+    unknown   : unknown,
+    newShared : newShared,
+    oldShared : oldShared
+  });
+
+}
+
 function shareProject ( loginData,data )  {  // data must contain new title
 var pDesc    = data.desc;
 var share    = pDesc.share;  // requested share state
@@ -1877,8 +1916,8 @@ var t_email  = 1000; //msec
   var pData = readProjectData ( loginData,pDesc.name );
   if (pData)  {
 
-    var userData0  = user.readUserData ( loginData );
-    var msg_params = {
+    let userData0  = user.readUserData ( loginData );
+    let msg_params = {
       'uname'          : userData0.name,
       'ulogin'         : userData0.login,
       'project_id'     : pDesc.name,
@@ -1886,16 +1925,16 @@ var t_email  = 1000; //msec
     };
 
     // unshare by comparison of share0 and share
-    var uData_unshared = [];
-    for (var shareLogin in share0)  // loop on the existing share state
+    let uData_unshared = [];
+    for (let shareLogin in share0)  // loop on the existing share state
       if (shareLogin && (!(shareLogin in share)))  {  // not found in the requested -- unshare
-        var uLoginData = user.getUserLoginData ( shareLogin );
+        let uLoginData = user.getUserLoginData ( shareLogin );
         unshared.push ( shareLogin );
         if (uLoginData)  {
-          var pShare = readProjectShare ( uLoginData );
+          let pShare = readProjectShare ( uLoginData );
           pShare.removeShare ( pDesc );
           writeProjectShare  ( uLoginData,pShare );
-          var userData = user.readUserData ( uLoginData );
+          let userData = user.readUserData ( uLoginData );
           if (userData)  {
             uData_unshared.push ( '<b>' + userData.login + '</b> (<i>' +
                                           userData.name + '</i>)' );
@@ -1911,50 +1950,19 @@ var t_email  = 1000; //msec
         }
       }
 
-    // var uData_unshared = [];
-    // for (var i=0;i<share0.length;i++)
-    //   if (share0[i].login)  {
-    //     var found = false;
-    //     for (var j=0;(j<share.length) && (!found);j++)
-    //       found = (share0[i].login==share[j].login);
-    //     if (!found)  {
-    //       var uLoginData = user.getUserLoginData ( share0[i].login );
-    //       if (uLoginData)  {
-    //         var pShare = readProjectShare ( uLoginData );
-    //         pShare.removeShare ( pDesc );
-    //         writeProjectShare  ( uLoginData,pShare );
-    //       }
-    //       unshared.push ( share0[i] );
-    //       var userData = user.readUserData ( uLoginData );
-    //       if (userData)  {
-    //         uData_unshared.push ( '<b>' + userData.login + '</b> (<i>' +
-    //                                       userData.name + '</i>)' );
-    //         (function(udata,mparams,delay){
-    //           setTimeout ( function(){
-    //             emailer.sendTemplateMessage ( udata,
-    //                        cmd.appName() + ': A project was unshared with you',
-    //                        'project_unshared',mparams );
-    //           },delay);
-    //         }(userData,msg_params,n_email*t_email))
-    //         n_email++;
-    //       }
-    //     }
-    //   }
-
-
     // share with users given by share
 
-    var share1 = pData.desc.share;
-    var uData_newShared = [];
-    var uData_oldShared = [];
-    for (var shareLogin in share)  {
-      var uLoginData = user.getUserLoginData ( shareLogin );
+    let share1 = pData.desc.share;
+    let uData_newShared = [];
+    let uData_oldShared = [];
+    for (let shareLogin in share)  {
+      let uLoginData = user.getUserLoginData ( shareLogin );
       if (uLoginData)  {
-        var pShare = readProjectShare ( uLoginData );
+        let pShare = readProjectShare ( uLoginData );
         pShare.addShare ( pDesc );
         writeProjectShare ( uLoginData,pShare );
         shared[shareLogin] = share[shareLogin];
-        var userData = user.readUserData ( uLoginData );
+        let userData = user.readUserData ( uLoginData );
         if (userData)  {
           if (!(shareLogin in share1))  {
             uData_newShared.push ( '<b>' + userData.login + '</b> (<i>' +
@@ -1972,59 +1980,18 @@ var t_email  = 1000; //msec
                                            userData.name + '</i>)' );
         }
       } else
-        unknown.push ( share[i] );
+        unknown.push ( shareLogin );
     }
 
     pDesc.share = shared;
     pData.desc.share = pDesc.share;
     writeProjectData ( loginData,pData,true );
 
-    // var share1 = pData.desc.owner.share;
-    // var uData_newShared = [];
-    // var uData_oldShared = [];
-    // for (var i=0;i<share.length;i++)
-    //   if (share[i].login)  {
-    //     var uLoginData = user.getUserLoginData ( share[i].login );
-    //     if (uLoginData)  {
-    //       var pShare = readProjectShare ( uLoginData );
-    //       pShare.addShare ( pDesc );
-    //       writeProjectShare ( uLoginData,pShare );
-    //       shared.push  ( share[i] );
-    //       var userData = user.readUserData ( uLoginData );
-    //       if (userData)  {
-    //         var found = false;
-    //         for (var j=0;(j<share1.length) && (!found);j++)
-    //           found = (share[i].login==share1[j].login);
-    //         if (!found)  {
-    //           uData_newShared.push ( '<b>' + userData.login + '</b> (<i>' +
-    //                                          userData.name + '</i>)' );
-    //           (function(udata,mparams,delay){
-    //             setTimeout ( function(){
-    //               emailer.sendTemplateMessage ( udata,
-    //                          cmd.appName() + ': A project was shared with you',
-    //                          'project_shared',mparams );
-    //             },delay);
-    //           }(userData,msg_params,n_email*t_email))
-    //           n_email++;
-    //         } else
-    //           uData_oldShared.push ( '<b>' + userData.login + '</b> (<i>' +
-    //                                          userData.name + '</i>)' );
-    //       }
-    //     } else
-    //       unknown.push ( share[i] );
-    //   }
-    //
-    // pDesc.owner.share = shared;
-    // pData.desc.owner.share = pDesc.owner.share;
-    // writeProjectData ( loginData,pData,true );
-
-
-
     // modify project entry in project list
-    var pList = readProjectList ( loginData );
+    let pList = readProjectList ( loginData );
     if (pList)  {
-      var pno = -1;
-      for (var i=0;(i<pList.projects.length) && (pno<0);i++)
+      let pno = -1;
+      for (let i=0;(i<pList.projects.length) && (pno<0);i++)
         if (pList.projects[i].name==pDesc.name)
           pno = i;
       if (pno>=0)  {
