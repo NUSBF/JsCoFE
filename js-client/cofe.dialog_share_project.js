@@ -119,6 +119,14 @@ function shareProject ( projectDesc,callback_func )  {
             permissions : 'rw'
           };
       }
+
+    // serverRequest ( fe_reqtype.shareProjectConfirm,{
+    //   desc   : projectDesc,
+    //   share0 : share0  // previous share state
+    // },'Share Project Confirm',
+    // function(data){
+    // },null,null );
+
     serverRequest ( fe_reqtype.shareProject,{
                       desc   : projectDesc,
                       share0 : share0  // previous share state
