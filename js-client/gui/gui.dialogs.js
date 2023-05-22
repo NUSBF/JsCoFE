@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.05.23   <--  Date of Last Modification.
+ *    21.05.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -566,7 +566,7 @@ WaitDialog.prototype.constructor = WaitDialog;
 // -------------------------------------------------------------------------
 // QuestionBox class
 
-function QuestionBox ( title,message,buttons,icon_name='' )  {
+function QuestionBox ( title,message,buttons,icon_name='',autoLaunch=true )  {
 // buttons = [{
 //   name    : button_name,
 //   onclick : button_function(){}
@@ -579,16 +579,18 @@ function QuestionBox ( title,message,buttons,icon_name='' )  {
   this.element.setAttribute ( 'title',title );
   document.body.appendChild ( this.element );
 
+  this.grid = null;
+
   if (icon_name)  {
-    var grid = new Grid ( '' );
-    this.addWidget   ( grid );
-    grid.setLabel    ( ' ',0,0,1,1 );
-    grid.setCellSize ( '','6px', 0,0 );
-    grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
-    grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
-    grid.setLabel    ( message,0,2,2,1 );
-    grid.setVerticalAlignment ( 0,2,'middle' );
-  } else
+    this.grid = new Grid  ( '' );
+    this.addWidget        ( this.grid );
+    this.grid.setLabel    ( ' ',0,0,1,1 );
+    this.grid.setCellSize ( '','6px', 0,0 );
+    this.grid.setImage    ( image_path(icon_name),'48px','48px', 1,0,1,1 );
+    this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
+    this.grid.setLabel    ( message,0,2,2,1 );
+    this.grid.setVerticalAlignment ( 0,2,'middle' );
+  } else if (message)
     this.element.innerHTML = message;
 
   var self = this;
@@ -617,12 +619,18 @@ function QuestionBox ( title,message,buttons,icon_name='' )  {
       }
     }(this,buttons[i]))
 
-  $(this.element).dialog ( this.options );
+  if (autoLaunch)
+    $(this.element).dialog ( this.options );
 
 }
 
 QuestionBox.prototype = Object.create ( Widget.prototype );
 QuestionBox.prototype.constructor = QuestionBox;
+
+QuestionBox.prototype.launch = function()  {
+// for use if autoLaunch=false in constructor
+  $(this.element).dialog ( this.options );
+}
 
 QuestionBox.prototype.close = function()  {
   if (this.initiated)
