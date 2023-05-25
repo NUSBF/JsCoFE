@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.03.23   <--  Date of Last Modification.
+#    25.03.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -235,7 +235,7 @@ class Pdbredo(basic.TaskDriver):
         status0    = status
         errcount   = 0
 
-        while status in ["starting","running","errors"] and (errcount<100):
+        while status in ["starting","queued","running","errors"] and (errcount<100):
             result = self.run_pdbredo ( "status",[] )
             if result.startswith("Job status is"):
                 status   = result.split()[-1]
