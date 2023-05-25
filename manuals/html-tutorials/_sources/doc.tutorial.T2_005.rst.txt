@@ -1,6 +1,6 @@
-=====================
-MCCS-2023 MR Tutorial 
-=====================
+=======================
+MR with predicted model 
+=======================
 
 In this tutorial, we will show you how to use predicted models as a search model for Molecular Replacement (MR), and how to develop a project tree in case the automatic workflow run was not successful on Chicken CNTN4 FN1-FN3 domains with T751A, V752A, Y781A, E786A mutations (`PDB ID 7MRQ <https://www.rcsb.org/structure/7MRQ>`_) example.
 
