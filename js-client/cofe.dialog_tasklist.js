@@ -861,6 +861,8 @@ var r = 0;  // grid row
     if (this.setTask(this.listAtoZ[i],panel,r,true))
       r++;
 
+  // console.log ( ' >>>> Ntasks=' + this.listAtoZ.length );
+
   (function(self){
     kwd_inp.addOnInputListener ( function(){
       // console.log ( kwd_inp.getValue() );
