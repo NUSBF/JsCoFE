@@ -47,6 +47,7 @@ function DataStructure()  {
 
   //  Refmac labels
   this.FP         = '';  // used in Buccaneer-MR and Parrot-MR
+  this.FC         = '';  // used in Omit map
   this.SigFP      = '';  // used in Buccaneer-MR and Parrot-MR
   this.PHI        = '';
   this.FOM        = '';

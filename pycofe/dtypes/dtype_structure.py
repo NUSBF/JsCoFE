@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.02.23   <--  Date of Last Modification.
+#    31.05.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -42,6 +42,7 @@ class DType(dtype_xyz.DType):
 
             #  Refmac labels
             self.FP       = ""  # used in Buccaneer-MR and Parrot-MR
+            self.FC       = ""  # used in Omit map
             self.SigFP    = ""  # used in Buccaneer-MR and Parrot-MR
             self.PHI      = ""
             self.FOM      = ""
@@ -149,6 +150,7 @@ class DType(dtype_xyz.DType):
 
     def setRefmacLabels ( self,hkl_class ):
         self.FP         = "FP"
+        self.FC         = "FC_ALL_LS"
         self.SigFP      = "SIGFP"
         self.FreeR_flag = "FreeR_flag"
         if hkl_class:
@@ -163,9 +165,11 @@ class DType(dtype_xyz.DType):
         self.HLB     = ""
         self.HLC     = ""
         self.HLD     = ""
+        self.refiner = "refmac"
         return
 
     def removeRefmacLabels ( self ):
+        self.FC      = ""
         self.PHI     = ""
         self.FOM     = ""
         self.FWT     = ""
@@ -176,6 +180,7 @@ class DType(dtype_xyz.DType):
 
     def setBusterLabels ( self,hkl_class ):
         self.FP         = "FP"
+        self.FC         = "FC"
         self.SigFP      = "SIGFP"
         self.FreeR_flag = "FreeR_flag"
         if hkl_class:
@@ -194,6 +199,7 @@ class DType(dtype_xyz.DType):
 
     def setShelxELabels ( self,struct_class ):
         self.FP      = "ShelxE.F"
+        self.FC      = ""
         self.SigFP   = "ShelxE.SIGF"
         self.PHI     = "ShelxE.PHI"
         self.FOM     = "ShelxE.FOM"
@@ -304,6 +310,7 @@ class DType(dtype_xyz.DType):
 
     def setCrank2Labels ( self,hkl_class ):
         self.FP      = "REFM_F"
+        self.FC      = "FC_ALL_LS"
         self.SigFP   = "REFM_SIGF"
         self.PHI     = "REFM_PHCOMB"
         self.FOM     = "REFM_FOMCOMB"
@@ -323,6 +330,10 @@ class DType(dtype_xyz.DType):
 
     def copyLabels ( self,struct_class ):
         self.FP      = struct_class.FP
+        if hasattr(struct_class,"FC"):
+            self.FC  = struct_class.FC
+        else:
+            self.FC  = ""
         self.SigFP   = struct_class.SigFP
         self.PHI     = struct_class.PHI
         self.FWT     = struct_class.FWT
@@ -612,11 +623,12 @@ class DType(dtype_xyz.DType):
 
 # ============================================================================
 
-def getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath ):
+def getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath ):
     if (xyzFilePath):  return xyzFilePath
     if (subFilePath):  return subFilePath
     if (mtzFilePath):  return mtzFilePath
-    return mapFilePath
+    if (mapFilePath):  return mapFilePath
+    return dmapFilePath
 
 
 # ----------------------------------------------------------------------------
@@ -624,7 +636,7 @@ def getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath ):
 def register ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
                dataSerialNo,job_id,leadKey,outDataBox,outputDir,copy_files=False,
                map_labels=None,refiner="" ):
-    fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath )
+    fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath )
     if fname0 and os.path.isfile(fname0):
         structure = DType   ( job_id )
         structure.leadKey = leadKey
@@ -667,7 +679,7 @@ def register1 ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,lib
                 regName,dataSerialNo,job_id,leadKey,outDataBox,map_labels=None,
                 refiner="" ):
 
-    fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath )
+    fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath )
     if fname0 and os.path.isfile(fname0):
         structure = DType   ( job_id       )
         structure.leadKey = leadKey

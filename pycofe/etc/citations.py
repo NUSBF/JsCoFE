@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.02.23   <--  Date of Last Modification.
+#    31.05.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1173,7 +1173,7 @@ citations = {
                             'year'    : '2014',
                             'pages'   : '213-220',
                             'doi'     : 'https://doi.org/10.1107/S2052252514009324'
-                        }]
+                         }]
                   },
 
     'findmysequence' : { 'name'     : 'findMySequence',
@@ -1186,7 +1186,20 @@ citations = {
                             'year'    : '2022',
                             'pages'   : '86-97',
                             'doi'     : '10.1107/S2052252521011088'
-                        }]
+                         }]
+                  },
+
+    'omit'           : { 'name'     : 'Omit',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Vellieux, F.M.D., and Dijkstra, B.W.',
+                            'title'   : "Computation of Bhat's OMIT maps with different coefficients",
+                            'journal' : 'J. Appl. Cryst.',
+                            'volume'  : '30',
+                            'year'    : '1997',
+                            'pages'   : '396-399',
+                            'doi'     : '10.1107/S0021889896012551'
+                         }]
                   },
 
     'pairef'         : { 'name'     : 'PAIREF',
@@ -1199,7 +1212,7 @@ citations = {
                             'year'    : '2020',
                             'pages'   : '681-692',
                             'doi'     : '10.1107/S2052252520005916'
-                        }]
+                         }]
                   },
 
     'rapper'         : { 'name'     : 'Rapper',

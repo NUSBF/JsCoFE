@@ -629,6 +629,7 @@ var row      = 0;
       // new TaskStructurePrediction(),
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
+      new TaskOmitMap      (),
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),

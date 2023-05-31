@@ -1885,7 +1885,7 @@ class TaskDriver(object):
 
 
     def putStructureWidget1 ( self,pageId,widgetId,title_str,structure,openState,
-                                  row,colSpan,legend="Assigned name" ):
+                                   row,colSpan,legend="Assigned name" ):
         self.putMessage1 ( pageId,"<b>" + legend + ":</b>&nbsp;" +
                                   structure.dname +
                                   "<font size='+2'><sub>&nbsp;</sub></font>",row )
