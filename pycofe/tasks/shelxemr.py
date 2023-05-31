@@ -55,6 +55,7 @@ class ShelxEMR(basic.TaskDriver):
     def shelxe_wrk_pdb   (self):  return "shelxe_wrk.pdb"
     def shelxe_wrk_pdo   (self):  return "shelxe_wrk.pdo"
     def shelxe_wrk_phs   (self):  return "shelxe_wrk.phs"
+    def shelxe_wrk_seq   (self):  return "shelxe_wrk.seq"
     def shelxe_tmp_mtz   (self):  return "shelxe_tmp.mtz"
     def shelxe_tmp_mtz1  (self):  return "shelxe_tmp_1.mtz"
     def shelxe_pdb       (self):  return "shelxe.pdb"
@@ -148,6 +149,7 @@ class ShelxEMR(basic.TaskDriver):
                 "-m" + self.getParameter(sec1.DM_CYCLES),
                 "-t" + self.getParameter(sec2.TIME_FACTOR),
                 "-s" + solvent_content
+                # "-O"
               ]
 
         autotrace = (self.getParameter(sec1.AUTOTRACE_CBX)=="True")

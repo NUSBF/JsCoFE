@@ -391,7 +391,7 @@ class Refmac(basic.TaskDriver):
                                              libin,hkl,istruct,
                                              "FWT,PHWT,DELFWT,PHDELWT",True )
             if structure:
-                self.putStructureWidget ( "structure_btn",
+                self.putStructureWidget ( self.getWidgetId("structure_btn"),
                                           "Structure and electron density",
                                           structure )
 
@@ -436,7 +436,7 @@ class Refmac(basic.TaskDriver):
                             nlst = struct_ano.dname.split ( " /" )
                             nlst[0] += " (anom maps)"
                             struct_ano.dname = " /".join(nlst)
-                            self.putStructureWidget ( "struct_ano_btn",
+                            self.putStructureWidget ( self.getWidgetId("struct_ano_btn"),
                                         "Structure, substructure and anomalous maps",struct_ano )
                             if is_substr:
                                 substructure = self.formStructure ( None,subfile,
