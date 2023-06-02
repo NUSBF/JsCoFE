@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    02.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -61,6 +61,11 @@ class Refmac(basic.TaskDriver):
             structure.addDataAssociation ( hkl.dataId     )
             structure.addDataAssociation ( istruct.dataId )  # ???
             structure.setRefmacLabels    ( None if str(hkl.useHKLSet) in ["Fpm","TI"] else hkl )
+            if maplabels.startswith("FAN"):
+                structure.FAN     = "FAN"
+                structure.PHAN    = "PHAN"
+                structure.DELFAN  = "DELFAN"
+                structure.PHDELAN = "PHDELAN"
             if not subfile:
                 mmcifout = self.getMMCIFOFName()
                 if os.path.isfile(mmcifout):
@@ -441,7 +446,7 @@ class Refmac(basic.TaskDriver):
                             if is_substr:
                                 substructure = self.formStructure ( None,subfile,
                                         structure.getMTZFilePath(self.outputDir()),
-                                        libin,hkl,istruct,"FWT,PHWT,DELFWT,PHDELWT",
+                                        libin,hkl,istruct,"FAN,PHAN,DELFAN,PHDELAN",
                                         False )
                                 if not substructure:
                                     self.putMessage ( "<i>Substructure could not be " +\
