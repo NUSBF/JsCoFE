@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.05.23   <--  Date of Last Modification.
+ *    02.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -629,7 +629,6 @@ var row      = 0;
       // new TaskStructurePrediction(),
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
-      new TaskOmitMap      (),
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
@@ -816,6 +815,8 @@ var row      = 0;
     new TaskSRF       (),
     new TaskCrosSec   (),
     new TaskReindexHKL(),
+    'Map tools',
+    new TaskOmitMap   (),
     'Coordinate data tools',
     new TaskXyzUtils  (),
     new TaskGemmi     (),
