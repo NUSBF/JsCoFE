@@ -41,7 +41,7 @@ function TaskShelxEMR()  {
 
   this.input_dtypes = [{  // input data types
       //data_type   : {'DataRevision':['!protein','!asu',['xyz','substructure']]}, // data type(s) and subtype(s)
-      data_type   : {'DataRevision':['!phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!phases','!xyz']}, // data type(s) and subtype(s)
       label       : 'Structure revision',         // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'shelxe',   // lay custom fields below the dropdown
