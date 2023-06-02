@@ -165,7 +165,8 @@ if (!__template)  {
     wab.setOnCloseFunction ( function(){ callback_func(); } );
     wab.launch();
 
-    var istruct = this.input_data.data['revision'][0].Structure;
+    var istruct    = this.input_data.data['revision'][0].Structure;
+    var isubstruct = this.input_data.data['revision'][0].Substructure;
 
     var inputFiles = [];
     
@@ -219,6 +220,26 @@ if (!__template)  {
                         F              : istruct.DELFWT,
                         PHI            : istruct.PHDELWT,
                         isDifference   : true,
+                        useWeight      : false,
+                        calcStructFact : false
+                      }]
+          });
+      }
+    }
+
+    if (isubstruct)  {
+      if (file_key.mtz in isubstruct.files)  {
+        var mtzURL = this.getURL ( 'input/' + isubstruct.files[file_key.mtz] );
+        if (isubstruct.FAN)
+          inputFiles.push ({
+            type : 'mtz',
+            args : [ mtzURL,'anom-map',{
+                        F              : isubstruct.FAN,
+                        PHI            : isubstruct.PHAN,
+                        // Fobs           : isubstruct.FP,
+                        // SigFobs        : isubstruct.SigFP,
+                        // FreeR          : isubstruct.FreeR_flag,
+                        isDifference   : false,
                         useWeight      : false,
                         calcStructFact : false
                       }]

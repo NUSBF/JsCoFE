@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.12.22   <--  Date of Last Modification.
+ *    02.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -55,6 +55,10 @@ function DataStructure()  {
   this.PHWT       = '';
   this.DELFWT     = '';
   this.PHDELWT    = '';
+  this.FAN        = '';
+  this.PHAN       = '';
+  this.DELFAN     = '';
+  this.PHDELAN    = '';
 
   // Hendrickson-Lattman Coefficients
   this.HLA        = '';

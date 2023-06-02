@@ -51,6 +51,11 @@ class DType(dtype_xyz.DType):
             self.DELFWT   = ""
             self.PHDELWT  = ""
 
+            self.FAN      = ""
+            self.PHAN     = ""
+            self.DELFAN   = ""
+            self.PHDELAN  = ""
+
             #  Hendrickson-Lattman Coefficients
             self.HLA      = ""
             self.HLB      = ""
