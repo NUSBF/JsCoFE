@@ -790,11 +790,15 @@ function startWebCoot ( title,xyz_uri,mtz_uri,legend_uri,mode,update_interval,op
       });
   }
 
+  // else  alert ( 'no mtz' );
+
   if (legend_uri)
     inputFiles.push ({
       type : 'legend',
       args : [ legend_uri ]
     });
+
+  // alert ( JSON.stringify(inputFiles) );
 
 
   let no_data_msg = '';

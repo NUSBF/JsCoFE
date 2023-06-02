@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    11.07.21   <--  Date of Last Modification.
+#    02.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,22 +21,23 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
 
 #  python native imports
 import os
-import sys
+# import sys
 import shutil
+import json
 
 #  ccp4-python imports
-import pyrvapi
+# import pyrvapi
 
 #  application imports
 from . import basic
-from   pycofe.dtypes import dtype_sequence, dtype_template
+from   pycofe.dtypes import dtype_template
 
 
 # ============================================================================
@@ -58,8 +59,8 @@ class ShelxEMR(basic.TaskDriver):
     def shelxe_wrk_seq   (self):  return "shelxe_wrk.seq"
     def shelxe_tmp_mtz   (self):  return "shelxe_tmp.mtz"
     def shelxe_tmp_mtz1  (self):  return "shelxe_tmp_1.mtz"
-    def shelxe_pdb       (self):  return "shelxe.pdb"
-    def shelxe_mtz       (self):  return "shelxe.mtz"
+    # def shelxe_pdb       (self):  return "shelxe.pdb"
+    # def shelxe_mtz       (self):  return "shelxe.mtz"
 
     # ------------------------------------------------------------------------
 
@@ -73,9 +74,12 @@ class ShelxEMR(basic.TaskDriver):
 
         # Prepare shelxe input
         # fetch input data
-        hkl      = self.makeClass ( self.input_data.data.hkl[0]      )
-        revision = self.makeClass ( self.input_data.data.revision[0] )
-        istruct  = self.makeClass ( self.input_data.data.istruct [0] )
+
+        idata    = self.input_data.data
+        revision = self.makeClass ( idata.revision[0] )
+        hkl      = self.makeClass ( idata.hkl[0]      )
+        istruct  = self.makeClass ( idata.istruct[0]  )
+        seq      = idata.seq
 
         # Prepare set of input files for shelxe
         # copy files according to Shelx notations
@@ -102,6 +106,7 @@ class ShelxEMR(basic.TaskDriver):
 
         # use mtz2various to prepare the reflection file
         self.mtz2hkl ( hklin,labin,self.shelxe_wrk_hkl() )
+
 
         # shutil.copyfile ( istruct.getMTZFilePath(self.inputDir()),
         #                   self.shelxe_wrk_mtz() )
@@ -149,8 +154,17 @@ class ShelxEMR(basic.TaskDriver):
                 "-m" + self.getParameter(sec1.DM_CYCLES),
                 "-t" + self.getParameter(sec2.TIME_FACTOR),
                 "-s" + solvent_content
-                # "-O"
               ]
+
+        # prepare squence file
+        if seq and len(seq)>0:
+            with open(self.shelxe_wrk_seq(),'w') as newf:
+                for s in seq:
+                    s1 = self.makeClass ( s )
+                    with open(s1.getSeqFilePath(self.inputDir()),'r') as hf:
+                        newf.write ( hf.read() )
+                    newf.write ( "\n" );
+            cmd += ["-O"]
 
         autotrace = (self.getParameter(sec1.AUTOTRACE_CBX)=="True")
 
@@ -165,7 +179,39 @@ class ShelxEMR(basic.TaskDriver):
 
         cmd += ["-f"]  # read amplitudes not intensities
 
+        gridId = self.putWaitMessageLF ( "Autotracing in progress ...",
+                                         message2="&nbsp;&nbsp;&nbsp;" )
+
+        webcoot_options = {
+            "project"      : self.task.project,
+            "id"           : self.job_id,
+            "no_data_msg"  : "<b>Waiting for first trace...</b>",
+            "FWT"          : "FWT",
+            "PHWT"         : "PHWT", 
+            "FP"           : "FP",
+            "SigFP"        : "SIGFP",
+            "FreeR_flag"   : "FreeR_flag",
+            "DELFWT"       : "DELFWT",
+            "PHDELWT"      : "PHDELWT"
+        }
+
+        self.putWebCootButton (
+            self.shelxe_wrk_pdb(),
+            "",
+            "",  # placeholder for legend file
+            "view-update",
+            5000,  # milliseconds update interval
+            json.dumps(webcoot_options),
+            "[" + str(self.job_id).zfill(4) + "] SHELXE current structure",
+            "Autotrace in progress",
+            gridId,0,3
+        )
+
+        self.flush()
+
+        rvrow0 = self.rvrow
         self.runApp ( "shelxe",cmd,logType="Main" )
+        self.putMessage1 ( self.report_page_id()," ",rvrow0 )
 
         # - every cycle
         #CC for partial structure against native data =   7.29 %
@@ -303,6 +349,7 @@ class ShelxEMR(basic.TaskDriver):
             self.runApp ( "cad",cmd,logType="Service" )
 
             # Calculate map coefficients
+            mtzout = self.getMTZOFName()
             self.open_stdin  ()
             self.write_stdin (
                 "mode batch\n" +\
@@ -310,7 +357,7 @@ class ShelxEMR(basic.TaskDriver):
                 "read " + self.shelxe_tmp_mtz1() + " mtz\n" +\
                 "CALC F COL FWT  = COL ShelxE.F COL ShelxE.FOM *\n" +\
                 "CALC P COL PHWT = COL ShelxE.PHI 0 +\n" +\
-                "write " + self.shelxe_mtz() + " mtz\n" +\
+                "write " + mtzout + " mtz\n" +\
                 "EXIT\n" +\
                 "YES\n"
             )
@@ -318,23 +365,30 @@ class ShelxEMR(basic.TaskDriver):
 
             self.runApp ( "sftools",[],logType="Service" )
 
-            #fnames = self.calcCCP4Maps ( self.shelxe_mtz(),self.outputFName,"shelxe" )
+            #fnames = self.calcCCP4Maps ( mtzout,self.outputFName,"shelxe" )
 
             structure = None
             if os.path.isfile(self.shelxe_wrk_pdb()):
                 # copy pdb
-                shutil.copyfile ( self.shelxe_wrk_pdb(),self.shelxe_pdb() )
-                structure = self.registerStructure1 (
-                                self.shelxe_pdb(),None,self.shelxe_mtz(),
-                                None,None,None,self.outputFName,leadKey=2,
-                                map_labels="FWT,PHWT",
-                                refiner="" )
+                pdbout = self.getXYZOFName()
+                os.rename ( self.shelxe_wrk_pdb(),pdbout )
+                # structure = self.registerStructure1 (
+                #                 pdbout,None,mtzout,
+                #                 None,None,None,self.outputFName,leadKey=2,
+                #                 map_labels="FWT,PHWT",
+                #                 refiner="" )
                                 #fnames[0],None,None,self.outputFName,leadKey=2 )
+                structure = self.registerStructure ( 
+                            pdbout,None,mtzout,
+                            None,None,None,leadKey=2,
+                            copy_files=True,map_labels="FWT,PHWT",
+                            refiner="" )
+
             elif istruct.hasXYZSubtype():
                 structure = self.registerStructure1 (
                                 istruct.getXYZFilePath(self.inputDir()),
-                                None,self.shelxe_mtz(),None,None,None,
-                                #None,self.shelxe_mtz(),fnames[0],None,None,
+                                None,mtzout,None,None,None,
+                                #None,mtzout,fnames[0],None,None,
                                 self.outputFName,leadKey=2,
                                 map_labels="FWT,PHWT",
                                 refiner=istruct.refiner )
@@ -359,8 +413,8 @@ class ShelxEMR(basic.TaskDriver):
             if istruct.hasSubSubtype():
                 substructure = self.registerStructure1 (
                                 None,istruct.getSubFilePath(self.inputDir()),
-                                #self.shelxe_mtz(),fnames[0],None,None,
-                                self.shelxe_mtz(),None,None,None,
+                                #mtzout,fnames[0],None,None,
+                                mtzout,None,None,None,
                                 self.outputFName,leadKey=2,
                                 map_labels="FWT,PHWT",
                                 refiner=istruct.refiner )
