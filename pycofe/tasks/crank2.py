@@ -712,6 +712,11 @@ class Crank2(basic.TaskDriver):
         else:
             self.runApp ( "ccp4-python",cmd,logType="Main" )
 
+        self.stdoutln ( " >>>>>  path=" + self.subout_fpath )
+        with open(self.subout_fpath,"r") as ff:
+            self.stdoutln ( "\n\n" + ff.read() + "\n\n" )
+
+
         """
         cad hklin1 x.mtz hklin2 x.mtz  hklout y.mtz <<eof
         LABIN file 1 e1=REFM_FWT e2=REFM_PHWT ...

@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    24.01.22   <--  Date of Last Modification.
+#    02.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -121,6 +121,7 @@ class MakeLigand(basic.TaskDriver):
                 self.putMessage ( "<h3>Ligand \"" + code + "\" is not found in CCP4 Monomer Library.</h3>" )
                 code = None  # signal not to continue with making ligand
 
+        summary_line = "no ligand created (errors)"
         if code:  # can continue
 
             if self.outputFName == "":
@@ -138,24 +139,25 @@ class MakeLigand(basic.TaskDriver):
 
             ligand = self.finaliseLigand ( code,xyzPath,cifPath )
 
-            revNext = None
-            if len(revisions) > 0:
-                revNext = revisions[0]
-            elif hasattr(self.input_data.data,"revision"):
-                revNext = self.makeClass(self.input_data.data.revision[0])
+            if ligand:
+                revNext = None
+                if len(revisions) > 0:
+                    revNext = revisions[0]
+                elif hasattr(self.input_data.data,"revision"):
+                    revNext = self.makeClass(self.input_data.data.revision[0])
 
-            auto.makeNextTask ( self,{
-                "ligand" : ligand,
-                'revision' : revNext
-            })
-
-            self.generic_parser_summary["makeligand"] = {
-                "summary_line" : "ligand \"" + code + "\" prepared"
-            }
+                auto.makeNextTask ( self,{
+                    "ligand" : ligand,
+                    'revision' : revNext
+                })
+                summary_line = "ligand \"" + code + "\" prepared"
 
         else:
             self.putTitle ( "No Ligand Structure Created" )
 
+        self.generic_parser_summary["makeligand"] = {
+            "summary_line" : summary_line
+        }
 
         # close execution logs and quit
         self.success ( code is not None )

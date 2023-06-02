@@ -349,7 +349,7 @@ class ShelxEMR(basic.TaskDriver):
             self.runApp ( "cad",cmd,logType="Service" )
 
             # Calculate map coefficients
-            mtzout = self.getMTZOFName()
+            mtzout = self.makeDataId(1) + "_" + self.getMTZOFName()
             self.open_stdin  ()
             self.write_stdin (
                 "mode batch\n" +\
