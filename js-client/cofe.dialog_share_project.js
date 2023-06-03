@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.05.23   <--  Date of Last Modification.
+ *    03.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -23,6 +23,127 @@
  */
 
 'use strict';
+
+
+function ulist ( user_lst )  {
+  var s = '<table>';
+  if (user_lst.length<=0)
+    s += '<tr><td>&nbsp;&nbsp;<b><i>Nobody</i></b></td></tr>';
+  else  {
+    for (let i=0;i<user_lst.length;i++)
+      s += '<tr><td>&nbsp;&nbsp;'    + user_lst[i][1] + 
+           '</td><td>&nbsp;<b>['     + user_lst[i][0] + 
+           ']</b>&nbsp;</td><td><i>' + user_lst[i][2] + 
+           '</i></td></tr>';
+  }
+  return s + '</table>';
+}
+
+/*
+function share_project ( projectDesc,share0,callback_func )  {
+  serverRequest ( 
+    fe_reqtype.shareProject,{
+      desc   : projectDesc,
+      share0 : share0  // previous share state
+    },'Share Project',function(data){
+// console.log ( ' >>>>>>> ' + JSON.stringify(data) );
+      if (data.desc)  {
+        projectDesc.share = data.desc.share;
+        var msg = '<h2>Project "' + data.desc.name +
+                  '" Share Status</h2><b>Shared with:</b>&nbsp;<i>';
+        var logins_lst = Object.keys(data.desc.share);
+        if (logins_lst.length<=0)
+          msg += 'nobody';
+        else  {
+          msg += logins_lst.join(', ');
+          // msg += data.desc.owner.share[0].login;
+          // for (var i=1;i<data.desc.owner.share.length;i++)
+          //   msg += ', ' + data.desc.owner.share[i].login;
+          msg += '<br><font size="-1">(these users can join ' +
+                  'this project and work on it simultaneously ' +
+                  'with you)</font>';
+        }
+        msg += '</i>';
+        if (data.unshared.length>0)  {
+          msg += '<p><b>Unshared with:</b>&nbsp;<i>' +
+                  data.unshared[0];
+          for (var i=1;i<data.unshared.length;i++)
+            msg += ', ' + data.unshared[i];
+          msg += '</i>';
+        }
+        if (data.unknown.length>0)  {
+          msg += '<p><b>Unknown users:</b>&nbsp;<i>' +
+                  data.unknown[0];
+          for (var i=1;i<data.unknown.length;i++)
+            msg += ', ' + data.unknown[i];
+          msg += '<br><font size="-1">(sharing request was not ' +
+                  'fulfilled for these users)</font></i>';
+        }
+        new MessageBox ( 'Share Project',msg,'share' );
+        callback_func ( data.desc );
+      } else  {
+        projectDesc.share = share0;
+        new MessageBox ( 'Share Project',
+              '<h2>Sharing request denied</h2>' +
+              '<i>Only Project owner can change sharing.</i>',
+              'msg_excl' );
+        callback_func ( null );
+      }
+    },null,null
+  );
+}
+*/
+
+function share_project ( projectDesc,share0,callback_func )  {
+  serverRequest ( 
+    fe_reqtype.shareProject,{
+      desc   : projectDesc,
+      share0 : share0  // previous share state
+    },'Share Project',function(data){
+// console.log ( ' >>>>>>> ' + JSON.stringify(data) );
+      if (data.desc)  {
+        
+        projectDesc.share = data.desc.share;
+
+        var msg = '<h2>Project "' + data.desc.name + '" Share Status</h2>' +
+                  '<div style="max-height:200px;overflow-y:auto">' +
+                  '<b>The Project is shared with:</b>&nbsp;';
+        let shared = data.oldShared.concat ( data.newShared );
+        if (shared.length<=0)
+          msg += '<i>Nobody</i>';
+        else
+          msg += '<br><font size="-1">(these users can join this ' +
+                 'project and work on it simultaneously with you)</font>' +
+                 ulist ( shared );
+            
+        if (data.unshared.length>0)
+          msg += '<p><b>Unshared with:</b>' + 
+                 ulist ( data.unshared ) + 
+                 '</p>';
+        
+        if (data.unknown.length>0)  {
+          msg += '<p><b>Unknown login names:</b>&nbsp;<i>' +
+                 data.unknown[0];
+          for (var i=1;i<data.unknown.length;i++)
+            msg += ', ' + data.unknown[i];
+          msg += '<sub>&nbsp;</sub><br><font size="-1">(sharing request was not ' +
+                  'fulfilled for these users)</font></i></p>';
+        }
+        msg += '</div>';
+        new MessageBox ( 'Share Project',msg,'share' );
+        callback_func ( data.desc );
+      } else  {
+        projectDesc.share = share0;
+        new MessageBox ( 'Share Project',
+              '<h2>Sharing request denied</h2>' +
+              '<i>Only Project owner can change sharing.</i>',
+              'msg_excl' );
+        callback_func ( null );
+      }
+    },null,null
+  );
+}
+
 
 function shareProject ( projectDesc,callback_func )  {
 
@@ -87,13 +208,13 @@ function shareProject ( projectDesc,callback_func )  {
                      // );
   share_inp.setFontItalic ( true    );
   ibx_grid .setWidget     ( share_inp,3,2,1,1 );
-  share_inp.setWidth      ( '300pt' );
+  share_inp.setWidth      ( '420px' );
   ibx_grid .setLabel      ( '&nbsp;<br>can join this project and work on ' +
                             'it simultaneously.', 4,2,1,1  );
-  ibx_grid .setLabel      ( '&nbsp;<br>* Full (comma-separated) list of users ' +
-                            'with access to the project<br>must be given. In ' +
-                            'order to unshare project with a user, remove<br>' +
-                            'their login name from the list.',
+  ibx_grid .setLabel      ( '<div style="width:440px">&nbsp;<br>* Full comma-separated list of users must ' +
+                            'be given, to whom the access to the project should ' +
+                            'be granted. In order to unshare project with a user, ' +
+                            'remove their login name from the list.</div>',
                             5,2,1,1  )
            .setFontItalic ( true  )
            .setFontSize   ( '85%' );
@@ -120,59 +241,127 @@ function shareProject ( projectDesc,callback_func )  {
           };
       }
 
-    // serverRequest ( fe_reqtype.shareProjectConfirm,{
-    //   desc   : projectDesc,
-    //   share0 : share0  // previous share state
-    // },'Share Project Confirm',
-    // function(data){
-    // },null,null );
+    serverRequest ( fe_reqtype.shareProjectConfirm,{
+      desc   : projectDesc,
+      share0 : share0  // previous share state
+    },'Share Project Confirm',
+    function(data){
+      if (data.unknown.length>0)  {
+        projectDesc.share = share0;
+        new MessageBox ( 'Unknown user(s)',
+             '<div style="width:400px">' +
+             '<h2>Unknown user(s)</h2>The following login names are not ' +
+             'recognised:<p><i>' + data.unknown.join(', ') +
+             '</i><p>Please verify user login name(s) and repeat your request.' +
+             '</div>',
+             'unknown_user' );      
+      } else  {
+        let shared = data.oldShared.concat ( data.newShared );
+        // let title  = 'Project "' + projectDesc.name + '" Share Status Change';
+        let msg    = '<h2>Change share state</h2>' + 
+                     '<div style="max-height:200px;overflow-y:auto">' +
+                     '<b>Project "' + projectDesc.name + '" will be ';
+        if (data.unshared.length>0)
+          msg += ' unshared with:</b><sub>&nbsp;</sub><br>' + 
+                 ulist ( data.unshared ) + 
+                 '<p><b>and ';
+        msg += 'shared with:</b><br><font size="-1">(these users will be able to join ' +
+               'this project and work on it simultaneously with you)</font><br>' +
+               ulist ( shared ) +
+               '</p><p><b>Please confirm.</b></p></div>';
+        new QuestionBox ( 'Share state for project ' + projectDesc.name,msg,[{
+              name    : 'Confirm',
+              onclick : function(){ 
+                          share_project ( projectDesc,share0,callback_func );
+                        }
+            },{
+              name    : 'Cancel',
+              onclick : function(){ projectDesc.share = share0; }
+            }],'share' );
+      }
+    },null,null );
 
-    serverRequest ( fe_reqtype.shareProject,{
-                      desc   : projectDesc,
-                      share0 : share0  // previous share state
-                    },'Share Project',function(data){
-                      if (data.desc)  {
-                        projectDesc.share = data.desc.share;
-                        var msg = '<h2>Project "' + data.desc.name +
-                                  '" Share Status</h2><b>Shared with:</b>&nbsp;<i>';
-                        var logins_lst = Object.keys(data.desc.share);
-                        if (logins_lst.length<=0)
-                          msg += 'nobody';
-                        else  {
-                          msg += logins_lst.join(', ');
-                          // msg += data.desc.owner.share[0].login;
-                          // for (var i=1;i<data.desc.owner.share.length;i++)
-                          //   msg += ', ' + data.desc.owner.share[i].login;
-                          msg += '<br><font size="-1">(these users can join ' +
-                                 'this project and work on it simultaneously ' +
-                                 'with you)</font>';
-                        }
-                        msg += '</i>';
-                        if (data.unshared.length>0)  {
-                          msg += '<p><b>Unshared with:</b>&nbsp;<i>' +
-                                 data.unshared[0].login;
-                          for (var i=1;i<data.unshared.length;i++)
-                            msg += ', ' + data.unshared[i].login;
-                          msg += '</i>';
-                        }
-                        if (data.unknown.length>0)  {
-                          msg += '<p><b>Unknown users:</b>&nbsp;<i>' +
-                                 data.unknown[0].login;
-                          for (var i=1;i<data.unknown.length;i++)
-                            msg += ', ' + data.unknown[i].login;
-                          msg += '<br><font size="-1">(sharing request was not ' +
-                                 'fulfilled for these users)</font></i>';
-                        }
-                        new MessageBox ( 'Share Project',msg,'share' );
-                        callback_func ( data.desc );
-                      } else  {
-                        new MessageBox ( 'Share Project',
-                              '<h2>Sharing request denied</h2>' +
-                              '<i>Only Project owner can change sharing.</i>',
-                              'msg_excl' );
-                        callback_func ( null );
-                      }
-                    },null,null );
     return true;
+  
   });
+
+}
+
+
+function showWorkTeam ( projectDesc )  {
+
+  var author = getProjectAuthor ( projectDesc );
+  var owner  = getProjectOwner  ( projectDesc );
+
+  serverRequest ( fe_reqtype.shareProjectConfirm,{
+    desc   : projectDesc,
+    share0 : projectDesc.share,
+    author : author,
+    owner  : owner
+  },'Share Project Confirm',
+    function(data){
+      let msg = 
+        '<h2>Project "' + projectDesc.name + '" Work Team</h2>' +
+        '<div style="max-height:200px;overflow-y:auto">' +
+        '<table>' +
+          '<tr><td><b><i>Author</i>:</b></td><td>' + data.author[1] +
+              '</td><td>&nbsp;<b>[' + data.author[0] + ']</b>&nbsp;</td><td><i>' +
+              data.author[2] + '</i></td></tr>' +
+          '<tr><td><b><i>Owner (keeper)</i>:&nbsp;</b></td><td>' + data.owner[1] +
+              '</td><td>&nbsp;<b>[' + data.owner[0] + ']</b>&nbsp;</td><td><i>' +
+              data.owner[2] + '</i></td></tr>' +
+          '<tr><td colspan=4 height="6px"> </td></tr>';
+      if (data.oldShared.length<=0)
+        msg += '<tr><td><b><i>Co-workers (shared)</i>:&nbsp;</b></td>' +
+               '<td><i>None</i></td><td></td><td></td></tr>';
+      else  {
+        msg += '<tr><td><b><i>Co-workers (shared)</i>:&nbsp;</b></td><td>' + 
+                data.oldShared[0][1] + '</td><td>&nbsp;<b>[' + 
+                data.oldShared[0][0] + ']</b>&nbsp;</td><td><i>' +
+                data.oldShared[0][2] + '</i></td></tr>';
+        for (let i=1;i<data.oldShared.length;i++)
+          msg += '<tr><td></td><td>' + 
+                data.oldShared[i][1] + '</td><td>&nbsp;<b>[' + 
+                data.oldShared[i][0] + ']</b>&nbsp;</td><td><i>' +
+                data.oldShared[i][2] + '</i></td></tr>';
+      }
+      if (data.unknown.length>0)  {
+        msg += '<tr><td colspan=3 height="6px"> </td></tr>' +
+               '<tr><td><b><i>Unknown</i>:&nbsp;</b></td><td colspan=3><b>[' + 
+               data.unknown[0] + ']</b></td></tr>';
+        for (let i=1;i<data.unknown.length;i++)
+          msg += '<tr><td></td><td colspan=3><b>[' + 
+                data.unknown[i] + ']</b></td></tr>';
+      }
+      msg += '</table></div>';
+      new MessageBox ( 'Project work team',msg,'workteam' );
+    },null,null );
+
+
+
+    // if (data.unknown.length>0)  {
+    //   new MessageBox ( 'Unknown user(s)',
+    //       '<div style="width:400px">' +
+    //       '<h2>Unknown user(s)</h2>The following login names are not ' +
+    //       'recognised:<p><i>' + data.unknown.join(', ') +
+    //       '</i><p>Please verify user login name(s) and repeat your request.' +
+    //       '</div>',
+    //       'unknown_user' );      
+    // } else  {
+    //   let shared = data.oldShared.concat ( data.newShared );
+    //   // let title  = 'Project "' + projectDesc.name + '" Share Status Change';
+    //   let msg    = '<h2>Change share state</h2><b>Project "' + projectDesc.name + 
+    //               '" will be ';
+    //   if (data.unshared.length>0)
+    //     msg += ' unshared with:</b><sub>&nbsp;</sub><br>' + 
+    //           ulist ( data.unshared ) + 
+    //           '<p><b>and ';
+    //   msg += 'shared with:</b><br><font size="-1">(these users will be able to join ' +
+    //         'this project and work on it simultaneously with you)</font><br>' +
+    //         ulist ( shared ) +
+    //         '</p><p><b>Please confirm.</b></p>';
+    //   new MessageBox ( 'Share state for project ' + projectDesc.name,msg,'workteam' );
+  //   }
+  // },null,null );
+
 }
