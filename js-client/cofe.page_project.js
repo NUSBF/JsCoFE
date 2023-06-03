@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.04.23   <--  Date of Last Modification.
+ *    03.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -149,10 +149,18 @@ function ProjectPage ( sceneId )  {
       else  new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
     });
 
-    if (!__local_user)
+    if (!__local_user)  {
+      self.addMenuItem ( 'Work team','workteam',function(){
+        if (self.jobTree)
+          showWorkTeam ( self.jobTree.projectData.desc );
+        else
+          new MessageBox ( 'No project loaded','<h2>No Project Loaded</h2>' +
+                           'Please call later','msg_error' );
+      });
       self.addMenuItem ( 'Share Project','share',function(){
         self.share_project();
       });
+    }
 
     self.addLogoutToMenu ( function(){
       if (self.jobTree && self.jobTree.projectData)
