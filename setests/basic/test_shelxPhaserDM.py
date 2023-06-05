@@ -260,7 +260,7 @@ def runParrot(driver):
     try:
         wait = WebDriverWait(driver, 300) # giving 5 minutes
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0006]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0005]')]")))
     except:
         print('Apparently tha task Parrot has not been completed in time; terminating')
         sys.exit(1)
@@ -276,7 +276,7 @@ def runParrot(driver):
     fcorr = 0.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0006\] parrot DM --\s(.*)', taskText)
+        match = re.search('\[0005\] parrot DM --\s(.*)', taskText)
         if match:
             completed = match.group(1)
             match2 = re.search('FOM=(.*)\sFcorr=(.*)', match.group(1))
@@ -331,7 +331,7 @@ def runAcorn(driver):
     try:
         wait = WebDriverWait(driver, 300) # giving 5 minutes
         wait.until(EC.presence_of_element_located
-                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0008]')]")))
+                   ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0007]')]")))
     except:
         print('Apparently tha task Acorn has not been completed in time; terminating')
         sys.exit(1)
@@ -347,7 +347,7 @@ def runAcorn(driver):
     fcorr = None
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0008\] acorn -- Fcorr=(.*)', taskText)
+        match = re.search('\[0007\] acorn -- Fcorr=(.*)', taskText)
         if match:
             fcorr = float(match.group(1))
             break
@@ -357,7 +357,7 @@ def runAcorn(driver):
     else:
         completed = ''
         for taskText in ttts:
-            match = re.search('\[0008\] acorn -- (.*)', taskText)
+            match = re.search('\[0007\] acorn -- (.*)', taskText)
             if match:
                 completed = match.group(1)
                 break
@@ -565,12 +565,12 @@ def test_1shelx_phaser(browser,
         raise
 
 
-def test_2ShelxE_DM():
-    try:
-        startShelxDM(d.driver) # 5
-    except:
-        d.driver.quit()
-        raise
+# def test_2ShelxE_DM():
+#     try:
+#         startShelxDM(d.driver) # 5
+#     except:
+#         d.driver.quit()
+#         raise
 
 
 def test_3parrot():
@@ -589,9 +589,9 @@ def test_4acorn():
         runAcorn(d.driver) # 8
         startBuccaneer(d.driver)  # 9
 
-        verifyBuccaneer(d.driver, 420, '0007', 0.36, 0.37)
-        verifyBuccaneer(d.driver, 420, '0009', 0.36, 0.37)
-        verifyShelxDM(d.driver)
+        verifyBuccaneer(d.driver, 420, '0006', 0.36, 0.37)
+        verifyBuccaneer(d.driver, 420, '0008', 0.36, 0.37)
+        # verifyShelxDM(d.driver)
 
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()

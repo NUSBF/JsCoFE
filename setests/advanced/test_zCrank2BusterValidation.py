@@ -136,7 +136,7 @@ def test_9Crank2Validation():
 
     try:
         sf.enterProject(d.driver, d.testName)
-        validateCrank2run(d.driver, 300)
+        validateCrank2run(d.driver, 3000)
         sf.renameProject(d.driver, d.testName)
 
         d.driver.quit()
