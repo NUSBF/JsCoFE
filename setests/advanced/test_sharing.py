@@ -152,6 +152,11 @@ def shareProject(driver, login):
     sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Apply')
     time.sleep(1.05)
 
+    try:
+        sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Confirm')
+    except:
+        pass
+
     sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Ok')
     time.sleep(1.05)
 
