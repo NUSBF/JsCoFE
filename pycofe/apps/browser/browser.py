@@ -1,9 +1,17 @@
 # importing required libraries
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtWebEngineWidgets import *
-from PyQt5.QtPrintSupport import *
+# from PyQt5.QtCore import *
+# from PyQt5.QtWidgets import *
+# from PyQt5.QtGui import *
+# from PyQt5.QtWebEngineWidgets import *
+# from PyQt5.QtPrintSupport import *
+# from PySide2. ....
+
+from PySide2.QtCore import *
+from PySide2.QtWidgets import *
+from PySide2.QtGui import *
+from PySide2.QtWebEngineWidgets import *
+from PySide2.QtPrintSupport import *
+
 import os
 import sys
 
