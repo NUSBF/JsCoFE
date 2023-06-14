@@ -22,12 +22,13 @@ class MainWindow(QMainWindow):
 	def __init__(self, *args, **kwargs):
 		super(MainWindow, self).__init__(*args, **kwargs)
 
+		self.urlbar = None
 
 		# creating a QWebEngineView
 		self.browser = QWebEngineView()
 
 		# setting default browser url as google
-		self.browser.setUrl(QUrl("http://google.com"))
+		self.browser.setUrl(QUrl("https://cloud.ccp4.ac.uk"))
 
 		# adding action when url get changed
 		self.browser.urlChanged.connect(self.update_urlbar)
@@ -38,6 +39,7 @@ class MainWindow(QMainWindow):
 		# set this browser as central widget or main window
 		self.setCentralWidget(self.browser)
 
+		'''
 		# creating a status bar object
 		self.status = QStatusBar()
 
@@ -108,6 +110,7 @@ class MainWindow(QMainWindow):
 		# making browser to stop
 		stop_btn.triggered.connect(self.browser.stop)
 		navtb.addAction(stop_btn)
+		'''
 
 		# showing all the components
 		self.show()
@@ -116,38 +119,45 @@ class MainWindow(QMainWindow):
 	# method for updating the title of the window
 	def update_title(self):
 		title = self.browser.page().title()
-		self.setWindowTitle("% s - Geek Browser" % title)
+		# self.setWindowTitle("% s - Geek Browser" % title)
+		self.setWindowTitle ( title )
 
 
 	# method called by the home action
 	def navigate_home(self):
 
 		# open the google
-		self.browser.setUrl(QUrl("http://www.google.com"))
+		self.browser.setUrl(QUrl("https://cloud.ccp4.ac.uk"))
 
 	# method called by the line edit when return key is pressed
 	def navigate_to_url(self):
 
-		# getting url and converting it to QUrl object
-		q = QUrl(self.urlbar.text())
+		if self.urlbar:
+			# getting url and converting it to QUrl object
+			q = QUrl(self.urlbar.text())
 
-		# if url is scheme is blank
-		if q.scheme() == "":
-			# set url scheme to html
-			q.setScheme("http")
+			# if url is scheme is blank
+			if q.scheme() == "":
+				# set url scheme to html
+				q.setScheme("http")
 
-		# set the url to the browser
-		self.browser.setUrl(q)
+			# set the url to the browser
+			self.browser.setUrl(q)
+
+		return
 
 	# method for updating url
 	# this method is called by the QWebEngineView object
 	def update_urlbar(self, q):
 
-		# setting text to the url bar
-		self.urlbar.setText(q.toString())
+		if self.urlbar:
+			# setting text to the url bar
+			self.urlbar.setText(q.toString())
 
-		# setting cursor position of the url bar
-		self.urlbar.setCursorPosition(0)
+			# setting cursor position of the url bar
+			self.urlbar.setCursorPosition(0)
+
+		return
 
 
 # creating a pyQt5 application
