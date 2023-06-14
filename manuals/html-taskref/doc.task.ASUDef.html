@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -375,31 +374,31 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<span id="asudef"></span><h1 id="doc-task-asudef--page-root">Asymmetric Unit Contents<a class="headerlink" href="#doc-task-asudef--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="asymmetric-unit-contents">
+<span id="asudef"></span><h1 id="doc-task-asudef--page-root">Asymmetric Unit Contents<a class="headerlink" href="#doc-task-asudef--page-root" title="Permalink to this heading">¶</a></h1>
 <p>The <strong>asymmetric unit</strong> or <strong>ASU</strong> is the smallest part of a crystal structure to which symmetry operations can be applied in order to generate the complete unit cell (the crystal repeating unit). The symmetry operations that are common for biological molecules are rotation, translation, and screw operations (which combine rotation and translation). It is important to note that molecules related by crystallographic symmetry are identical and have identical crystallographic environments.</p>
 <a class="reference internal image-reference" href="_images/asymmetric_unit.png"><img alt="_images/asymmetric_unit.png" class="align-center" src="_images/asymmetric_unit.png" style="width: 597.0px; height: 417.0px;"/></a>
 <p>The <strong>ASU</strong> contains the unique part of a crystal structure.The <strong>ASU</strong> is what is contained in the model that crystallographers publish in the <strong>Protein Data Bank (PDB)</strong>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">ASU is not to be confused with the Biologically Functional Unit, which may be the same, but also smaller, or larger than the ASU.</p>
+<p class="admonition-title">Note</p>
+<p>ASU is not to be confused with the Biologically Functional Unit, which may be the same, but also smaller, or larger than the ASU.</p>
 </div>
 <p>A crystal asymmetric unit may contain:</p>
 <blockquote>
 <div><ul class="simple">
-<li>one biological assembly</li>
-<li>a portion of a biological assembly</li>
-<li>multiple biological assemblies</li>
+<li><p>one biological assembly</p></li>
+<li><p>a portion of a biological assembly</p></li>
+<li><p>multiple biological assemblies</p></li>
 </ul>
 </div></blockquote>
 <p>There might be two or more independent molecules in each asymmetric unit. In this case, they do not have an identical environment and, moreover, they might differ in conformation. On the other hand, if a molecule occupies a special position (e.g., if a symmetry axis passes through a molecule, relating one part of the molecule to one or more other parts in that molecule), the unit cell contains fewer molecules than anticipated from the number of asymmetric units.</p>
-
-<h2 id="matthews-coefficient">Matthews coefficient<a class="headerlink" href="#matthews-coefficient" title="Permalink to this headline">¶</a></h2>
+<section id="matthews-coefficient">
+<h2 id="matthews-coefficient">Matthews coefficient<a class="headerlink" href="#matthews-coefficient" title="Permalink to this heading">¶</a></h2>
 <p>Estimating the number of molecules in the crystallographic asymmetric unit is one of the first steps in a macromolecular structure determination. Distribution of V <sub>M</sub> , the crystal volume per unit of protein molecular weight, known as <strong>Matthews coefficient</strong>.  A significant percentage of the volume of protein crystals is occupied by solvent ranged from 27% to 78%, with the most common value being about 43%. <a class="reference external" href="https://www.sciencedirect.com/science/article/abs/pii/0022283668902052?via%3Dihub" rel="noopener noreferrer" target="_blank">[Matthews 1968]</a>.
 The Matthews Coefficient and solvent content are calculated from the unit cell and the molecular weight of the molecules in the unit cell.</p>
 <p>The probabilities from the Matthews coefficient (P <sub>matthews</sub>) <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2323984/" rel="noopener noreferrer" target="_blank">[Kantardjieff and Rupp 2003]</a>  gives the probability of a particular Matthews coefficient based upon the high resolution limit.</p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -444,7 +443,7 @@ The Matthews Coefficient and solvent content are calculated from the unit cell a
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

@@ -17,9 +17,10 @@ CCP4 Cloud provides access to 3rd party software, not covered by CCP4 license. I
 PDB-REDO Tokens
 ---------------
 
-PDB-REDO tokens should be generated on the `Token page <https://pdb-redo.eu/token>`_
 
-In order to generate token, please, register or log in to your PDB-REDO account, go to the Tokens tab. Here you should provide the Token name (can't be any) and click generate (**1**).
+In order to generate token, please, `register <https://pdb-redo.eu/register>`_ or `login <https://pdb-redo.eu/login>`_ to your PDB-REDO account. After you can generate PDB-REDO tokens on the `Token page <https://pdb-redo.eu/token>`_
+
+Here you should provide the Token name (can't be any) and click generate (**1**).
 
 .. image:: images/pdb-redo_aut_1.png
            :align: center

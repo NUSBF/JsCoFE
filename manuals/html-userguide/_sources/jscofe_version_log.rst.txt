@@ -2,9 +2,29 @@
 CCP4 Cloud Version Log
 ======================
 
+
+**Version 1.7.0014** 
+
+    *Released on --.--.2023 with CCP4 8.0.013*
+
+    #. Column names are now preserved at importing merged mtz files when possible
+
+    #. Fixed bug which could put crashed MorDA job in zombie state
+
+    #. ``Omit`` task added
+
+    #. ``ShelxEMR`` task now accepts sequences and build side chains
+
+    #. Fixed bug in ``Make Ligand`` causing success report in case of errors
+
+    #. User name and e-mail are verifyed before sharing now 
+
+    #. New function *"check workteam"* added to *Project page*
+
+
 **Version 1.7.0013** 
 
-    *Released on --.--.2023 with CCP48.0.012*
+    *Released on 13.06.2023 with CCP4 8.0.012*
 
 
     #. Added ligand upload option in workflows 
@@ -23,15 +43,18 @@ CCP4 Cloud Version Log
 
     #. Persistance of basic/full task list modes enhanced
 
-    #. Share/Join projects emoved in Desktop mode as not needed
+    #. Share/Join projects removed in Desktop mode as not needed
 
     #. Graceful handling of wrong Cloud Storage path implemented
+
+    #. Fixed bug not letting to rename projects right after unsharing
+
 
 
 
 **Version 1.7.0012** 
 
-    *Released on 04.04.2023 with CCP48.0.011*
+    *Released on 04.04.2023 with CCP4 8.0.011*
 
     #. Gemmi 0.6.0 compatibility fixes
 
@@ -54,7 +77,7 @@ CCP4 Cloud Version Log
 
 **Version 1.7.0011** 
 
-    *Released on 29.03.2023 with CCP48.0.010*
+    *Released on 29.03.2023 with CCP4 8.0.010*
 
     **Changes and new features**
 
@@ -73,7 +96,7 @@ CCP4 Cloud Version Log
 
 **Version 1.7.0010** 
     
-    *Released on 02.02.2023 with CCP48.0.009*
+    *Released on 02.02.2023 with CCP4 8.0.009*
 
     **Changes and new features**
 
