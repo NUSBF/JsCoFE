@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -404,25 +403,25 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-modelprepmc--page-root">Prepare Complex Model<a class="headerlink" href="#doc-task-modelprepmc--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="prepare-complex-model">
+<h1 id="doc-task-modelprepmc--page-root">Prepare Complex Model<a class="headerlink" href="#doc-task-modelprepmc--page-root" title="Permalink to this heading">¶</a></h1>
 <p><strong>MR Search Models</strong> are structural templates prepared for use in molecular replacement programs (<a class="reference internal" href="doc.task.Phaser.html"><span class="doc">Phaser</span></a> and <a class="reference internal" href="doc.task.Molrep.html"><span class="doc">Molrep</span></a>). For the success of Molecular Replacement, MR model should be sufficiently similar to the target structure. This task prepares a complex (more than one domain) MR search model from atomic coordinates. A comma-separated list of <strong>associated chains</strong> needs to be provided.</p>
 <p>The coordinates are usually modified (pruned) in order to remove parts that do not correspond to the target sequence. A few modification protocols are available:</p>
 <blockquote>
 <div><ul class="simple">
-<li><strong>Unmodified</strong>: atomic coordinates are not altered in any way</li>
-<li><strong>PDB Clip</strong>: removes solvent, hydrogens, and select most probable conformations</li>
-<li><strong>Molrep</strong>: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
-<a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/" rel="noopener noreferrer" target="_blank">Molrep</a></li>
-<li><strong>Sculptor</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
-<code class="docutils literal notranslate"><span class="pre">Phaser.Sculptor</span></code> (<em>cf.</em> <a class="reference external" href="https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement" rel="noopener noreferrer" target="_blank">here</a>)</li>
-<li><strong>Chainsaw</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
-<a class="reference external" href="https://doi.org/10.1107/S0021889808006985" rel="noopener noreferrer" target="_blank">Chainsaw</a></li>
-<li><strong>Polyalanine</strong>: all residues are replaced with polyalanines</li>
+<li><p><strong>Unmodified</strong>: atomic coordinates are not altered in any way</p></li>
+<li><p><strong>PDB Clip</strong>: removes solvent, hydrogens, and select most probable conformations</p></li>
+<li><p><strong>Molrep</strong>: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
+<a class="reference external" href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/" rel="noopener noreferrer" target="_blank">Molrep</a></p></li>
+<li><p><strong>Sculptor</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+<code class="docutils literal notranslate"><span class="pre">Phaser.Sculptor</span></code> (<em>cf.</em> <a class="reference external" href="https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement" rel="noopener noreferrer" target="_blank">here</a>)</p></li>
+<li><p><strong>Chainsaw</strong>: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+<a class="reference external" href="https://doi.org/10.1107/S0021889808006985" rel="noopener noreferrer" target="_blank">Chainsaw</a></p></li>
+<li><p><strong>Polyalanine</strong>: all residues are replaced with polyalanines</p></li>
 </ul>
 </div></blockquote>
 <p>The resulting models can be used in both <a class="reference internal" href="doc.task.Phaser.html"><span class="doc">Phaser</span></a> and <a class="reference internal" href="doc.task.Molrep.html"><span class="doc">Molrep</span></a> tasks, which may give different outcome, especially in difficult cases.</p>
-
+</section>
 
 
           </article>
@@ -467,7 +466,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
