@@ -1,34 +1,69 @@
-# importing required libraries
-# from PyQt5.QtCore import *
-# from PyQt5.QtWidgets import *
-# from PyQt5.QtGui import *
-# from PyQt5.QtWebEngineWidgets import *
-# from PyQt5.QtPrintSupport import *
-# from PySide2. ....
 
-from PySide2.QtCore import *
-from PySide2.QtWidgets import *
-from PySide2.QtGui import *
-from PySide2.QtWebEngineWidgets import *
-from PySide2.QtPrintSupport import *
+import argparse
 
-import os
+from   PySide2.QtCore import *
+from   PySide2.QtWidgets import *
+from   PySide2.QtGui import *
+from   PySide2.QtWebEngineWidgets import *
+from   PySide2.QtPrintSupport import *
+
+# import os
 import sys
+
+
+# class CustomWebEnginePage(QWebEnginePage):
+#     """ Custom WebEnginePage to customize how we handle link navigation """
+#     # Store external windows.
+#     external_windows = []
+
+#     def acceptNavigationRequest(self, url,  _type, isMainFrame):
+#         if (_type == QWebEnginePage.NavigationTypeLinkClicked and
+#             url.host() != 'www.mfitzp.com'):
+#             # Send the URL to the system default URL handler.
+#             QDesktopServices.openUrl(url)
+#             return False
+#         return super().acceptNavigationRequest(url,  _type, isMainFrame)
+
+
+class CustomWebEnginePage(QWebEnginePage):
+    # Store second window.
+    external_window = None
+    def acceptNavigationRequest(self, url,  _type, isMainFrame):
+        print(url, _type, isMainFrame)
+        if _type == QWebEnginePage.NavigationTypeLinkClicked:
+            if not self.external_window:
+                self.external_window = QWebEngineView()
+            self.external_window.setUrl(url)
+            self.external_window.show()
+            return False
+        return super().acceptNavigationRequest(url,  _type, isMainFrame)
+
+
 
 # creating main window class
 class MainWindow(QMainWindow):
 
 	# constructor
-	def __init__(self, *args, **kwargs):
-		super(MainWindow, self).__init__(*args, **kwargs)
+	def __init__ ( self,args ):
+		super(MainWindow, self).__init__()
 
 		self.urlbar = None
+		self.args   = args
 
 		# creating a QWebEngineView
 		self.browser = QWebEngineView()
+		self.browser.setPage(CustomWebEnginePage(self))
+
+		self.settings = QSettings ("CCP4","CCP4 Browser")
+
+		geometry = self.settings.value('geometry','')
+		if geometry:
+			self.restoreGeometry(geometry)
+		else:
+			self.setGeometry ( 100,100,1200,800 )
 
 		# setting default browser url as google
-		self.browser.setUrl(QUrl("https://cloud.ccp4.ac.uk"))
+		self.browser.setUrl ( QUrl(self.args.url) )
 
 		# adding action when url get changed
 		self.browser.urlChanged.connect(self.update_urlbar)
@@ -37,7 +72,8 @@ class MainWindow(QMainWindow):
 		self.browser.loadFinished.connect(self.update_title)
 
 		# set this browser as central widget or main window
-		self.setCentralWidget(self.browser)
+		self.setCentralWidget ( self.browser )
+
 
 		'''
 		# creating a status bar object
@@ -127,14 +163,14 @@ class MainWindow(QMainWindow):
 	def navigate_home(self):
 
 		# open the google
-		self.browser.setUrl(QUrl("https://cloud.ccp4.ac.uk"))
+		self.browser.setUrl ( QUrl(self.args.url) )
 
 	# method called by the line edit when return key is pressed
 	def navigate_to_url(self):
 
 		if self.urlbar:
 			# getting url and converting it to QUrl object
-			q = QUrl(self.urlbar.text())
+			q = QUrl ( self.urlbar.text() )
 
 			# if url is scheme is blank
 			if q.scheme() == "":
@@ -159,45 +195,30 @@ class MainWindow(QMainWindow):
 
 		return
 
+	def closeEvent(self, event):
+		geometry = self.saveGeometry()
+		self.settings.setValue('geometry', geometry)
+		super(MainWindow, self).closeEvent(event)
+		return
+
+
+
+#  ====== main
+
+argParser = argparse.ArgumentParser()
+argParser.add_argument ( "-u", "--url", 
+			             help="CCP4 Cloud's URL address; default: https://cloud.ccp4.ac.uk",
+						 default="https://cloud.ccp4.ac.uk" )
+args = argParser.parse_args()
 
 # creating a pyQt5 application
 app = QApplication(sys.argv)
 
 # setting name to the application
-app.setApplicationName("Geek Browser")
+app.setApplicationName ( "CCP4 Browser" )
 
 # creating a main window object
-window = MainWindow()
+window = MainWindow ( args )
 
 # loop
 app.exec_()
-
-
-
-
-"""
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtWebEngineWidgets import *
-
-import sys
-
-class MainWindow(QMainWindow):
-
-    def __init__(self, *args, **kwargs):
-        super(MainWindow,self).__init__(*args, **kwargs)
-
-        self.browser = QWebEngineView()
-        self.browser.setUrl(QUrl("http://www.google.com"))
-
-        self.setCentralWidget(self.browser)
-
-        self.show()
-
-app = QApplication(sys.argv)
-window = MainWindow()
-
-app.exec_()
-"""
-
