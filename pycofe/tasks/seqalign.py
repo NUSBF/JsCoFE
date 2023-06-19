@@ -48,21 +48,38 @@ class SeqAlign(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
+    # def seqHTML ( self,seqLine,align ):
+    #     S = "<div style=\"font-family:monospace;margin:0;padding:0;white-space:nowrap;\">"
+    #     i = 0
+    #     while i<len(seqLine):
+    #         while i<len(seqLine) and align[i]==" ":
+    #             S += seqLine[i]
+    #             i += 1
+    #         if i<len(seqLine) and align[i]!=" ":
+    #             S += "<span style='color:cyan;'>"
+    #             while i<len(seqLine) and align[i]!=" ":
+    #                 S += seqLine[i]
+    #                 i += 1
+    #             S += "</span>"
+    #     S += "</div>"
+    #     return S
+
     def seqHTML ( self,seqLine,align ):
         S = "<div style=\"font-family:monospace;margin:0;padding:0;white-space:nowrap;\">"
         i = 0
         while i<len(seqLine):
-            while i<len(seqLine) and align[i]==" ":
+            while i<len(seqLine) and align[i]!="*":
                 S += seqLine[i]
                 i += 1
-            if i<len(seqLine) and align[i]!=" ":
+            if i<len(seqLine) and align[i]=="*":
                 S += "<span style='color:cyan;'>"
-                while i<len(seqLine) and align[i]!=" ":
+                while i<len(seqLine) and align[i]=="*":
                     S += seqLine[i]
                     i += 1
                 S += "</span>"
         S += "</div>"
         return S
+
 
     def putTableLine2 ( self,tableId,header,v1,v2,row ):
         self.putTableLine ( tableId,header,"",v1,row )
