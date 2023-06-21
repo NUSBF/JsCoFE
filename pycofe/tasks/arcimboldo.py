@@ -648,7 +648,7 @@ class Arcimboldo(basic.TaskDriver):
         # shutil.rmtree ( self.arcimboldoDir() )
 
         # close execution logs and quit
-        self.success(have_results)
+        self.success ( have_results )
         return
 
 

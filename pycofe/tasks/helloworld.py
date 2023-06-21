@@ -88,7 +88,7 @@ class HelloWorld(basic.TaskDriver):
         makeRow ( "HANDDET_DO",sec1.HANDDET_DO,3 )
 
         # close execution logs and quit
-        self.success()
+        self.success ( True )
         return
 
 # ============================================================================

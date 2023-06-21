@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.04.23   <--  Date of Last Modification.
+ *    20.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,7 +38,7 @@ var job_dialog_reason = {
   tree_updated    : 'tree_updated',    // job tree should be updated
   add_job         : 'add_job',         // add job from task list
   clone_job       : 'clone_job',       // clone job
-  run_job         : 'run_job'          // clone job
+  run_job         : 'run_job'          // run job
 }
 
 function JobDialog ( params,          // data and task projections up the tree branch
@@ -248,12 +248,13 @@ JobDialog.prototype.changeTitle = function ( new_title )  {
 
 JobDialog.prototype.statusLine = function()  {
   switch (this.task.state)  {
-    case job_code.new       :  return ' (new)';
-    case job_code.running   :  return ' -- running';
-    case job_code.finished  :  return ' -- completed';
-    case job_code.noresults :  return ' -- finished';
-    case job_code.failed    :  return ' -- failed';
-    case job_code.stopped   :  return ' -- terminated by user';
+    case job_code.new           :  return ' (new)';
+    case job_code.running       :  return ' -- running';
+    case job_code.finished      :  return ' -- completed';
+    case job_code.hiddenresults :
+    case job_code.noresults     :  return ' -- finished';
+    case job_code.failed        :  return ' -- failed';
+    case job_code.stopped       :  return ' -- terminated by user';
     default : ;
   }
   return '';
@@ -346,20 +347,21 @@ JobDialog.prototype.setDlgState = function()  {
   for (var i=0;i<this.hot_btn.length;i++)  {
     this.hot_btn[i].setVisible ( show_hot_buttons );
     this.hot_btn[i].setEnabled ( this.dlg_active && 
-                                 (this.task.state==job_code.finished) );
+                                 (this.task.state==job_code.finished) ||
+                                 (this.task.state==job_code.hiddenresults) );
   }
 
   if (this.addjob_btn)  {
     this.addjob_btn.setVisible ( show_hot_buttons );
     this.addjob_btn.setEnabled ( this.dlg_active && (
-                                     (this.task.state==job_code.finished) ||
-                                     this.task.isRemark()
-                                   )
+                                    (this.task.state==job_code.finished) ||
+                                    this.task.isRemark()
+                                  )
                                );
   }
 
   if (this.clone_btn)
-    this.clone_btn.setVisible ( this.dlg_active && 
+    this.clone_btn.setVisible ( this.dlg_active && this.task.canClone(null,this.tree) && 
                                 (this.task.state!=job_code.new) && (!isRunning) );
 
   if (this.export_btn)

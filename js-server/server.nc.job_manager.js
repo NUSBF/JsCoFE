@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.05.23   <--  Date of Last Modification.
+ *    20.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -844,6 +844,8 @@ var cfg = conf.getServerConfig();
       task.state = task_t.job_code.stopped;
     } else if (code==204)  {
       task.state = task_t.job_code.noresults;
+    } else if (code==205)  {
+      task.state = task_t.job_code.hiddenresults;
     } else  {
       task.state = task_t.job_code.failed;
       if (code==200)
@@ -1074,7 +1076,7 @@ function ncRunJob ( job_token,meta )  {
 
                         if (jobEntry.jobStatus!=task_t.job_code.stopped)  {
 //                          if ((code!=0) && (code!=203) && (code!=204))
-                          if (code && (code!=203) && (code!=204))
+                          if (code && (code!=203) && (code!=204) && (code!=205))
                             writeJobDriverFailureMessage ( code,stdout,stderr,jobDir );
                           if (jobEntry.jobStatus!=task_t.job_code.exiting)
                             ncJobFinished ( job_token,code );

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.05.23   <--  Date of Last Modification.
+#    21.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1215,6 +1215,19 @@ citations = {
                          }]
                   },
 
+    'pdbval'         : { 'name'     : 'PDB Validation Report',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Read, R.J., Adams, P.D., Arendall, W.B. 3rd, Brunger, A.T., Emsley, P., Joosten, R.P., Kleywegt, G.J., Krissinel, E.B., Lütteke, T., Otwinowski, Z., Perrakis, A., Richardson, J.S., Sheffler, W.H., Smith, J.L., Tickle, I.J., Vriend, G., and Zwart, P.H.',
+                            'title'   : 'A new generation of crystallographic validation tools for the protein data bank',
+                            'journal' : 'Structure',
+                            'volume'  : '19(10)',
+                            'year'    : '2011',
+                            'pages'   : '1395-412',
+                            'doi'     : '10.1016/j.str.2011.08.006'
+                          }]  
+                  },
+
     'rapper'         : { 'name'     : 'Rapper',
                          'category' : 'primary',
                          'refs'     : [{
@@ -1545,7 +1558,7 @@ def makeSummaryCitationsHTML ( clist,eol_tasks ):
         if rstr not in plist:
             plist.append ( rstr )
 
-        html  = "<b>Your results were obtained using developments from publications " +\
+        html  = "<b>Your structure was solved using developments from publications " +\
                 "listed below. Please cite them when publishing:</b><ul>" +\
                 "".join(plist) + "</ul>"
 

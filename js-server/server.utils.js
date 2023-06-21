@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.03.23   <--  Date of Last Modification.
+ *    21.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -441,7 +441,7 @@ function mkPath ( dirPath )  {
 }
 
 
-function removePath ( dir_path ) {
+function removePath ( dir_path )  {
 var rc   = true;
 var stat = fileExists(dir_path);
 
@@ -451,14 +451,18 @@ var stat = fileExists(dir_path);
     fs.unlinkSync ( dir_path );
   } else if (stat)  {
     fs.readdirSync(dir_path).forEach(function(file,index){
-      var curPath = path.join ( dir_path,file );
-      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+      let curPath = path.join ( dir_path,file );
+      let curstat = fileExists ( curPath );
+      if (!curstat)  {
+        log.error ( 82,'cannot stat path ' + curPath );
+        rc = false;
+      } else if (curstat.isDirectory()) { // recurse
         removePath ( curPath );
       } else { // delete file
         try {
           fs.unlinkSync ( curPath );
         } catch (e)  {
-          log.error ( 82,'cannot remove file ' + curPath +
+          log.error ( 83,'cannot remove file ' + curPath +
                          ' error: ' + JSON.stringify(e) );
           rc = false;
         }
@@ -498,8 +502,12 @@ function cleanDir ( dir_path ) {
   var rc = true;
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
-      var curPath = path.join ( dir_path,file );
-      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+      let curPath = path.join ( dir_path,file );
+      let curstat = fileExists ( curPath );
+      if (!curstat)  {
+        log.error ( 84,'cannot stat path ' + curPath );
+        rc = false;
+      } else if (curstat.isDirectory()) { // recurse
         removePath ( curPath );
       } else { // delete file
         try {
@@ -522,8 +530,12 @@ function cleanDirExt ( dir_path,fext )  {
   var rc = true;
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
-      var curPath = path.join ( dir_path,file );
-      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+      let curPath = path.join ( dir_path,file );
+      let curstat = fileExists ( curPath );
+      if (!curstat)  {
+        log.error ( 85,'cannot stat path ' + curPath );
+        rc = false;
+      } else if (curstat.isDirectory()) { // recurse
         cleanDirExt ( curPath,fext );
       } else if (curPath.endsWith(fext)) { // delete file
         try {
@@ -545,11 +557,14 @@ function removeSymLinks ( dir_path )  {
   var rc = true;
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
-      var curPath = path.join ( dir_path,file );
-      var stat = fs.lstatSync(curPath); // || fs.lstatSync(path);
-      if (stat.isDirectory()) { // recurse
+      let curPath = path.join ( dir_path,file );
+      let curstat = fileExists ( curPath );
+      if (!curstat)  {
+        log.error ( 86,'cannot stat path ' + curPath );
+        rc = false;
+      } else if (curstat.isDirectory()) { // recurse
         removeSymLinks ( curPath );
-      } else if (stat && stat.isSymbolicLink())
+      } else if (curstat.isSymbolicLink())
         try {
           var fpath = fs.readlinkSync( curPath );
           fs.unlinkSync ( curPath );
@@ -570,13 +585,13 @@ function getDirectorySize ( dir_path )  {
     var size = 0.0;
     if (fileExists(dir_path))  {
       fs.readdirSync(dir_path).forEach(function(file,index){
-        var curPath = path.join ( dir_path,file );
-        var lstat   = fs.lstatSync(curPath);
-        if (lstat)  {
-          if (lstat.isDirectory())  { // recurse
+        let curPath = path.join ( dir_path,file );
+        let curstat = fileExists ( curPath );
+        if (curstat)  {
+          if (curstat.isDirectory())  { // recurse
             size += getDirectorySize ( curPath );
-          } else if (!lstat.isSymbolicLink())  {
-            size += lstat['size'];
+          } else if (!curstat.isSymbolicLink())  {
+            size += curstat['size'];
           }
         }
       });
@@ -599,9 +614,9 @@ function searchTree ( dir_path,filename,matchKey ) {
   try {
     if (fileExists(dir_path))  {
       fs.readdirSync(dir_path).forEach(function(file,index){
-        var curPath = path.join ( dir_path,file );
-        var lstat   = fs.lstatSync(curPath);
-        if (lstat.isDirectory()) { // recurse
+        let curPath = path.join ( dir_path,file );
+        let curstat = fileExists ( curPath );
+        if (curstat && curstat.isDirectory()) { // recurse
           filepaths = filepaths.concat ( searchTree(curPath,filename,matchKey) );
         } else if (((matchKey==0) && (file==filename)) ||
                    ((matchKey==1) && (file.startsWith(filename)))) {
@@ -637,17 +652,21 @@ function walk(dir, callback) {
 
 
 function removeFiles ( dir_path,extList ) {
-  var rc = true;
+var rc = true;
 
   if (fileExists(dir_path))  {
     fs.readdirSync(dir_path).forEach(function(file,index){
-      var dlt = false;
-      var fl  = file.toLowerCase();
-      for (var i=0;(i<extList.length) && (!dlt);i++)
+      let dlt = false;
+      let fl  = file.toLowerCase();
+      for (let i=0;(i<extList.length) && (!dlt);i++)
         dlt = fl.endsWith(extList[i]);
       if (dlt)  {
-        var curPath = path.join ( dir_path,file );
-        if (!fs.lstatSync(curPath).isDirectory())  {
+        let curPath = path.join ( dir_path,file );
+        let curstat = fileExists ( curPath );
+        if (!curstat)  {
+          log.error ( 87,'cannot stat path ' + curPath );
+          rc = false;
+        } else if (!curstat.isDirectory())  {
           // delete file
           try {
             fs.unlinkSync ( curPath );

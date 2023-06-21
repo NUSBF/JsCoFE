@@ -110,7 +110,7 @@ class WFlowDPL(migrate.Migrate):
                 "summary_line": "merged data required"
             }
             self.have_results = False
-            self.success(self.have_results)
+            self.success ( self.have_results )
             return False
 
         if "DataXYZ" in self.outputDataBox.data:
