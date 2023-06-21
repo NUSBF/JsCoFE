@@ -589,7 +589,7 @@ class Pdbredo(basic.TaskDriver):
             }
 
         # close execution logs and quit
-        self.success(have_results)
+        self.success ( have_results )
         return
 
 

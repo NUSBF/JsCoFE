@@ -108,7 +108,7 @@ class Aimless(basic.TaskDriver):
 
 # for quick tests of parameters:
 #       else:
-#           self.success()
+#           self.success ( True )
 #           return
 #   def tmp(self):
 

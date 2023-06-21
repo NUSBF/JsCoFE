@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.06.23   <--  Date of Last Modification.
+ *    20.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -629,6 +629,7 @@ var row      = 0;
       // new TaskStructurePrediction(),
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
+      new TaskPDBVal       (),
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),

@@ -428,7 +428,7 @@ class ShelxCD(basic.TaskDriver):
         self.flush()
 
         # close execution logs and quit
-        self.success(have_results)
+        self.success ( have_results )
         return
 
 

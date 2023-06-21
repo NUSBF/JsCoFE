@@ -1677,12 +1677,13 @@ class TaskDriver(object):
         return
 
 
-    def putDownloadButton ( self,dnlFilePath,text_btn,gridId,row,col,colSpan=1 ):
-        #buttonId = "download_" + str(self.widget_no)
-        #self.widget_no += 1
+    def putDownloadButton ( self,dnlFilePath,text_btn,gridId,row,col,colSpan=1,job_id=None ):
+        jobId = job_id
+        if not jobId:
+            jobId = self.job_id
         buttonId = self.getWidgetId ( "download" )
         pyrvapi.rvapi_add_button ( buttonId,text_btn,"{function}",
-                    "window.parent.downloadJobFile(" + self.job_id +\
+                    "window.parent.downloadJobFile(" + str(jobId) +\
                     ",'" + dnlFilePath + "')",False,gridId, row,col,1,colSpan )
         return
 
@@ -2241,7 +2242,7 @@ class TaskDriver(object):
 
     # ============================================================================
 
-    def success ( self,have_results=True ):
+    def success ( self,have_results,hidden_results=False ):
         self.putCitations()
         if self.task:
             self.task.cpu_time = command.getTimes()[1]
@@ -2254,7 +2255,10 @@ class TaskDriver(object):
         self.outputDataBox.save ( self.outputDir() )
         self.flush()
         if have_results:
-            raise signal.Success()
+            if hidden_results:
+                raise signal.HiddenResults()
+            else:
+                raise signal.Success()
         else:
             raise signal.NoResults()
 
@@ -2303,6 +2307,9 @@ class TaskDriver(object):
             signal_obj = s
 
         except signal.NoResults as s:
+            signal_obj = s
+
+        except signal.HiddenResults as s:
             signal_obj = s
 
         except signal.JobFailure as s:

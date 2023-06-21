@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.04.23   <--  Date of Last Modification.
+ *    21.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -27,18 +27,19 @@
 // for class reconstruction from json strings
 
 const job_code = {
-  new       : 'new',       // new job_code
-  running   : 'running',   // job is running
-  ending    : 'ending',    // job is in gracefull ending phase
-  exiting   : 'exiting',   // job is in post-run processing
-  finished  : 'finished',  // job finished normally (nothing to do with the results)
-  noresults : 'noresults', // job finished normally but no results produced
-  failed    : 'failed',    // job failed
-  stopped   : 'stopped',   // job stopped (terminated by user)
-  remark    : 'remark',    // remark node
-  remdet    : 'remdet',    // detached remark node
-  remdoc    : 'remdoc',    // remark node converted from documentation import
-  retired   : 'retired'    // indicates that the task should not appear in task list
+  new           : 'new',           // new job_code
+  running       : 'running',       // job is running
+  ending        : 'ending',        // job is in gracefull ending phase
+  exiting       : 'exiting',       // job is in post-run processing
+  finished      : 'finished',      // job finished normally (nothing to do with the results)
+  noresults     : 'noresults',     // job finished normally but no results produced
+  hiddenresults : 'hiddenresults', // job finished normally but results are hidden
+  failed        : 'failed',        // job failed
+  stopped       : 'stopped',       // job stopped (terminated by user)
+  remark        : 'remark',        // remark node
+  remdet        : 'remdet',        // detached remark node
+  remdoc        : 'remdoc',        // remark node converted from documentation import
+  retired       : 'retired'        // indicates that the task should not appear in task list
 };
 
 const input_mode = {
@@ -495,7 +496,8 @@ if (!dbx)  {
   }
 
   TaskTemplate.prototype.canClone = function ( node,jobTree )  {
-    return (this.isTaskAvailable()[0]=='ok') && (!jobTree.in_archive);
+    return (this.isTaskAvailable()[0]=='ok') && jobTree && 
+           (!jobTree.in_archive);
     /*
     if ((this.nc_type=='client') && (!__local_service))
       return false;
@@ -2742,6 +2744,7 @@ if (!dbx)  {
                                 if (resind=='')  resind = 'completed.';
                                 break;
 
+      case job_code.hiddenresults :
       case job_code.noresults : resind = this.score_string();
                                 if (resind=='')  resind = 'finished.';
                                 break;

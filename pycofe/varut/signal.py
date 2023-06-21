@@ -55,6 +55,11 @@ class NoResults( CofeSignal ):
     signal_prefix = "noresults"
 
 
+class HiddenResults( CofeSignal ):
+    returncode    = 205
+    signal_prefix = "hiddenresults"
+
+
 class ImportFailure( CofeSignal ):
     returncode    = 200
     signal_prefix = "fail_import"
