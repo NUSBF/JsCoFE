@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.23   <--  Date of Last Modification.
+ *    22.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -629,6 +629,7 @@ JobDialog.prototype.makeToolBar = function()  {
                             dlg.onDlgSignal_func ( dlg,job_dialog_reason.run_job,
                                                    task );
                           });
+            hbtn.task = hot_list[i].task;
             gap = true;
             dlg.hot_btn.push ( hbtn );
           }(task_obj))
@@ -662,6 +663,23 @@ JobDialog.prototype.makeToolBar = function()  {
                                 .setMargins ( '4px','','','' )
                                 .setTooltip('Close Job Dialog' );
 
+}
+
+JobDialog.prototype.runHotButtonJob = function ( task )  {
+  let n = -1;
+  for (let i=0;(i<this.hot_btn.length) && (n<0);i++)
+    if (this.hot_btn[i].task==task)
+      n = i;
+  if (n>=0)
+    this.hot_btn[n].click();
+  else
+    new MessageBox ( 
+      'Error',
+      '<div style="width:300px"><h2>Error</h2>' +
+      '<i>Cannot find task to run. ' +
+      'This is a bug, please report</div>',
+      'msg_error' 
+    );
 }
 
 JobDialog.prototype.enableCloseButton = function ( do_close )  {

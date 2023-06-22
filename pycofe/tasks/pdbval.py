@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#   20.06.23   <--  Date of Last Modification.
+#   22.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -363,6 +363,21 @@ class PDBVal(basic.TaskDriver):
 
         line_summary = "pdb report obtained"
 
+        # self.putMessage ( 
+        #                 "<i style='font-size:80%;'><span style='vertical-align:middle;'>" +\
+        #                 "To obtain deposition files in mmCIF format, " +\
+        #                 "run the file preparation task by clicking button</span> " +\
+        #                 "<img src='../../../../../images_png/task_pdbdepfiles.png' " +\
+        #                       "style='height:16px;width:16px;border:1px solid lightgrey;" +\
+        #                              "border-radius:2px;padding:2px;background-color:#F0F0F0;" +\
+        #                              "vertical-align:middle;' " +\
+        #                       "onclick='window.parent.rvapi_runHotButtonJob(" + self.job_id + ",\"TaskPDBDepFiles\");'/> " +\
+        #                 "<span style='vertical-align:middle;'>in the toolbar.</span></i>" )
+
+        # self.success ( True, hidden_results=True )
+        # return
+
+
         if not self.have_internet():
             line_summary = "pdb report not obtained (no internet)"
             self.putMessage ( "<b><i>No internet connection.</i></b>" )
@@ -398,6 +413,17 @@ class PDBVal(basic.TaskDriver):
                 # remove wait message
                 self.putMessage1 ( self.report_page_id(),"",self.rvrow,0,1,1 )
 
+                self.putMessage (
+                    "<i style='font-size:90%;'><span style='vertical-align:middle;'>" +\
+                    "To obtain deposition files in mmCIF format, " +\
+                    "run the file preparation task by clicking button</span> " +\
+                    "<img src='../../../../../images_png/task_pdbdepfiles.png' " +\
+                            "style='height:22px;width:22px;border:1px solid lightgrey;" +\
+                                    "border-radius:2px;padding:2px;background-color:#F0F0F0;" +\
+                                    "vertical-align:middle;' " +\
+                            "onclick='window.parent.rvapi_runHotButtonJob(" + self.job_id + ",\"TaskPDBDepFiles\");'/> " +\
+                    "<span style='vertical-align:middle;'>in the toolbar.</span></i>" )
+
                 if msg:
                     self.putMessage ( "Failed: <b><i>" + str(msg) + "</i></b>" )
 
@@ -405,16 +431,6 @@ class PDBVal(basic.TaskDriver):
 
                     repFilePath1 = os.path.join ( self.reportDir(),repFilePath )
                     os.rename ( repFilePath,repFilePath1 )
-
-                    self.putMessage ( 
-                        "<i style='font-size:80%;'><span style='vertical-align:middle;'>" +\
-                        "To obtain deposition files in mmCIF format, " +\
-                        "run the file preparation task by clicking button</span> " +\
-                        "<img src='../../../../../images_png/task_pdbdepfiles.png' " +\
-                              "style='height:16px;width:16px;border:1px solid lightgrey;" +\
-                                     "border-radius:2px;padding:2px;background-color:#F0F0F0;" +\
-                                     "vertical-align:middle;'/> " +\
-                        "<span style='vertical-align:middle;'>in the toolbar.</span></i>" )
 
                     # self.putSection ( self.report_id(),"wwPDB Validation Report",False )
                     # self.putMessage1 ( self.report_id(),
