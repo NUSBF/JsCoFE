@@ -143,7 +143,7 @@ ProjectArchiveDialog.prototype.makeLayout = function()  {
   this.grid = new Grid('');
   this.addWidget ( this.grid );
 
-  var doclink = '<a href="javascript:launchHelpBox(\'' + appName() + ' Archive\',' +
+  var doclink = '<a href="javascript:launchHelpBox1(\'' + appName() + ' Archive\',' +
                 '\'' + __user_guide_base_url + 'jscofe_archive.html\',null,10)">' +
                 '<span style="color:blue">';
 

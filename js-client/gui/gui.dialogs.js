@@ -532,6 +532,9 @@ function launchHelpBox ( title,helpURL,onDoNotShowAgain_func,delay_msec,params=n
   },delay_msec);
 }
 
+function launchHelpBox1 ( title,helpURL,onDoNotShowAgain_func,delay_msec,params=null )  {
+  launchHelpBox ( title,helpURL,onDoNotShowAgain_func,delay_msec,params=null );
+}
 
 // -------------------------------------------------------------------------
 // WaitDialog class

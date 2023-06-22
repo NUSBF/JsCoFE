@@ -426,7 +426,7 @@ var r = 0;  // grid row
   // grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
   // grid.setLabel ( 'Choose starting workflow that matches your project best, ' +
   //                 'see details ' +
-  //                 '<a href="javascript:launchHelpBox(\'Automatic Workflows\',' +
+  //                 '<a href="javascript:launchHelpBox1(\'Automatic Workflows\',' +
   //                 '\'' + __user_guide_base_url +
   //                 'jscofe_workflows.html\',null,10)">here</a>.',r++,0,1,3 )
   //     .setFontSize('90%').setFontItalic(true);
@@ -472,7 +472,7 @@ var r = 0;  // grid row
       .setFontSize('140%').setFontBold(true);
   grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
   grid.setLabel ( 'Each workflow will run a series of tasks, see details ' +
-                  '<a href="javascript:launchHelpBox(\'Automatic Workflows\',' +
+                  '<a href="javascript:launchHelpBox1(\'Automatic Workflows\',' +
                   '\'' + __user_guide_base_url +
                   'jscofe_workflows.html\',null,10)">here</a>.',r++,0,1,3 )
       .setFontSize('90%').setFontItalic(true);
