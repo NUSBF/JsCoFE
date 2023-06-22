@@ -188,9 +188,9 @@ AuthorisationDialog.prototype.layAuthorisationEntries = function()  {
       this.grid.setLabel ( '&nbsp;',row2++,0,1,1 );
       if ('help_page' in __auth_software[key])
         this.grid.setLabel ( 
-            '<a href="javascript:launchHelpBox(\'Authorisation instructions\',' +
+            '<a href="javascript:launchHelpBox1(\'Authorisation instructions\',' +
                 '\'' + __user_guide_base_url + __auth_software[key].help_page +
-                '.html\',null,10)"><span style="color:black">Authorisation instructions</span></a>' +
+                '.html\',null,0)"><span style="color:black">Authorisation instructions</span></a>' +
                 '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                 '<a target="_blank" href="https://pdb-redo.eu/token">' +
                 '<span style="color:blue">PDB-REDO token page</span></a></br>&nbsp;',

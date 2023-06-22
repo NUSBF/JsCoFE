@@ -455,7 +455,7 @@ AdminPage.prototype.loadAnalytics = function()  {
         ],
         function(anlTable,i){
           anlTable.setRow ( ''  + (i+1),'',[
-              '<a href="javascript:launchHelpBox(\'Documentation\',' +
+              '<a href="javascript:launchHelpBox1(\'Documentation\',' +
                 '\'' +
                   anldata.doc_stats[i].name.replaceAll('\\','/') +
                 '\',null,10)">' +

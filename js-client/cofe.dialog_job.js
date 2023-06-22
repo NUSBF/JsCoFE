@@ -821,7 +821,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
               // dlg.parent_page.ration = ration;
               // dlg.parent_page.displayUserRation ( dlg.tree.projectData.desc );
 
-              var tiplink = ' <a href="javascript:launchHelpBox(\'Project storage\',' +
+              var tiplink = ' <a href="javascript:launchHelpBox1(\'Project storage\',' +
                             '\'' + __user_guide_base_url + 
                             'jscofe_tips.store_completed_projects.html\',null,10)">' +
                             '<span style="color:blue">here</span>.';

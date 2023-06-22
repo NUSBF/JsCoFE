@@ -460,7 +460,8 @@ if (!dbx)  {
                   '<h3>Authorisation is required</h3>' +
                   'This task requires authorisation from ' +
                   __auth_software[this.authorisationID()].desc_provider +
-                  ',<br>which may be obtained in "My Account" page.</br><br><a href="javascript:launchHelpBox(\'Authorisation instructions\',' +
+                  ',<br>which may be obtained in "My Account" page.</br><br>' +
+                  '<a href="javascript:launchHelpBox1(\'Authorisation instructions\',' +
                   '\'' + __user_guide_base_url +__auth_software[this.authorisationID()].help_page +
                   '.html\',null,10)"><span style="color:blue">Authorisation instructions</span></a></br>'];
         } else  {
