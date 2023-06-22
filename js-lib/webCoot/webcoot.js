@@ -183,19 +183,19 @@ function runWebCoot ( params )  {
         // should work given webcoot start-up times. Rewrite this in case of
         // problems
         for (let i=0;i<BACKUPS.length;i++)
-        if (!BACKUPS[i].data)
-          (function(backupNo){
-            fetchFile ( params.wdirURL + '/' + backupFPrefix + BACKUPS[backupNo].serNo,
-              function(txt){
-                BACKUPS[backupNo].data = txt;
-                // console.log ( ' >>>>> loaded backup #' + backupNo + ' : ' + BACKUPS[backupNo].serNo + ' : ' + text.length )
-              },
-              null,
-              function(errcode){
-                alert ( 'Backup #' + backupNo + ' could not be obtained' );
-              });
-          }(i))
-            // start WebCoot
+          if (!BACKUPS[i].data)
+            (function(backupNo){
+              fetchFile ( params.wdirURL + '/' + backupFPrefix + BACKUPS[backupNo].serNo,
+                function(txt){
+                  BACKUPS[backupNo].data = txt;
+                  // console.log ( ' >>>>> loaded backup #' + backupNo + ' : ' + BACKUPS[backupNo].serNo + ' : ' + text.length )
+                },
+                null,
+                function(errcode){
+                  alert ( 'Backup #' + backupNo + ' could not be obtained' );
+                });
+            }(i))
+        // start WebCoot
         launchApp ( params );
       },
       null,

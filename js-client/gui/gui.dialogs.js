@@ -533,6 +533,7 @@ function launchHelpBox ( title,helpURL,onDoNotShowAgain_func,delay_msec,params=n
 }
 
 function launchHelpBox1 ( title,helpURL,onDoNotShowAgain_func,delay_msec,params=null )  {
+// need this function in onCLick responses because of bugs in Firefox
   launchHelpBox ( title,helpURL,onDoNotShowAgain_func,delay_msec,params=null );
 }
 

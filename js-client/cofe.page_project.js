@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.06.23   <--  Date of Last Modification.
+ *    22.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1348,19 +1348,30 @@ ProjectPage.prototype.reloadProject = function()  {
 
 ProjectPage.prototype.cloneJobWithSuggestedParameters = function ( jobId ) {
   var self = this;
-  // (function(self){
-    self.jobTree.cloneJob ( 'copy_suggested',self,function(){
-      // self.del_btn.setDisabled ( false );
-      self._set_del_button_state();
-      if (jobId in self.jobTree.dlg_map)
-        self.jobTree.dlg_map[jobId].close();
-    });
-  // }(this))
+  this.jobTree.cloneJob ( 'copy_suggested',self,function(){
+    // self.del_btn.setDisabled ( false );
+    self._set_del_button_state();
+    if (jobId in self.jobTree.dlg_map)
+      self.jobTree.dlg_map[jobId].close();
+  });
+}
+
+ProjectPage.prototype.runHotButtonJob = function ( jobId,task )  {
+  if (jobId in this.jobTree.dlg_map)
+    this.jobTree.dlg_map[jobId].runHotButtonJob ( task );
+  else
+    new MessageBox ( 
+        'Error',
+        '<div style="width:300px"><h2>Error</h2>' +
+        '<i>Cannot find dialog to run the task from. ' +
+        'This is a bug, please report</div>',
+        'msg_error' 
+    );
 }
 
 
-function rvapi_cloneJob ( jobId )  {
-
+function rvapi_canRunJob()  {
+var canrun = false;
   if (!__current_page)  {
     new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
                      'please contact ' + appName() + ' developer.', 'msg_error' );
@@ -1368,10 +1379,29 @@ function rvapi_cloneJob ( jobId )  {
     new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
                      'This is a bug, please contact ' + appName() + ' developer.',
                      'msg_error' );
-  } else  {
-    __current_page.cloneJobWithSuggestedParameters ( jobId );
-  }
+  } else
+    canrun = true;
+  return canrun;
+}
 
+function rvapi_cloneJob ( jobId )  {
+  // if (!__current_page)  {
+  //   new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
+  //                    'please contact ' + appName() + ' developer.', 'msg_error' );
+  // } else if (__current_page._type!='ProjectPage')  {
+  //   new MessageBox ( 'Wrong page type','Wrong Project Page type encountered. ' +
+  //                    'This is a bug, please contact ' + appName() + ' developer.',
+  //                    'msg_error' );
+  // } else  {
+  //   __current_page.cloneJobWithSuggestedParameters ( jobId );
+  // }
+  if (rvapi_canRunJob())
+    __current_page.cloneJobWithSuggestedParameters ( jobId );
+}
+
+function rvapi_runHotButtonJob ( jobId,task )  {
+  if (rvapi_canRunJob())
+    __current_page.runHotButtonJob ( jobId,task );
 }
 
 
