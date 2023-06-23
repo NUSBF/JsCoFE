@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#   22.06.23   <--  Date of Last Modification.
+#   23.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -415,7 +415,7 @@ class PDBVal(basic.TaskDriver):
 
                 self.putMessage (
                     "<i style='font-size:90%;'><span style='vertical-align:middle;'>" +\
-                    "To obtain deposition files in mmCIF format, " +\
+                    "<b>To obtain deposition files in mmCIF format,</b> " +\
                     "run the file preparation task by clicking button</span> " +\
                     "<img src='../../../../../images_png/task_pdbdepfiles.png' " +\
                             "style='height:22px;width:22px;border:1px solid lightgrey;" +\
