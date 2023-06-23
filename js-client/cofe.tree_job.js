@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.04.23   <--  Date of Last Modification.
+ *    23.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1064,7 +1064,7 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
         node.dataId = task.id;
         tree.projectData.desc.jobCount = task.id;
         if (onAdd_func)  {
-          onAdd_func ( Math.min(node.children.length,1) );
+          onAdd_func ( Math.min(node.children.length,1),null,null );
           // if (insert_bool)  onAdd_func ( 1 );
           //             else  onAdd_func ( 0 );
         }
@@ -1087,7 +1087,7 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
   } else  {
     console.log ( 'no selection in the tree:_add_job' );
     if (onAdd_func)
-      onAdd_func(-1);
+      onAdd_func ( -1,null,null );
     // alert ( ' no selection in the tree! ' );
   }
 }
@@ -1141,27 +1141,27 @@ JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_
                     'parameters manually.</div>',
                     'msg_stop' );
                   if (onAdd_func)
-                    onAdd_func(-5);
+                    onAdd_func ( -5,null,null );
                   return;
                 }
               }
               tree._copy_task_cloud_path ( task,branch_task_list );
               tree._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
             } else if (onAdd_func)  { // "Cancel" was pressed
-              onAdd_func(-2);
+              onAdd_func ( -2,null,null );
             }
           });
     }(this));
   } else if (onAdd_func)
-    onAdd_func(-3);
+    onAdd_func ( -3,null,null );
 }
 
 
 JobTree.prototype.addTask = function ( task,insert_bool,copy_params,parent_page,onAdd_func )  {
 var dataBox = this.harvestTaskData ( 1,[] );
 
-  if (dataBox.isEmpty())
-    task.inputMode = input_mode.root;
+  // if (dataBox.isEmpty())
+  //   task.inputMode = input_mode.root;
 
   var avail_key   = task.isTaskAvailable();
   var dataSummary = dataBox.getDataSummary ( task );
@@ -1171,14 +1171,17 @@ var dataBox = this.harvestTaskData ( 1,[] );
   else if (avail_key[0]!='ok')
     dataSummary.status = -1;
 
+
   if (dataSummary.status>0)  {
     var branch_task_list = this.getAllAncestors ( this.getSelectedTask() );
     if (copy_params)
       this._copy_task_parameters ( task,branch_task_list );
     this._copy_task_cloud_path ( task,branch_task_list );
-    this._add_job ( insert_bool,task,dataBox, parent_page,onAdd_func );
+    this._add_job ( insert_bool,task,dataBox,parent_page, function(key,ak,dsum){
+      onAdd_func(key,avail_key,dataSummary);
+    });
   } else if (onAdd_func)
-    onAdd_func(-4);
+    onAdd_func ( -4,avail_key,dataSummary );
 
   return [avail_key,dataSummary];
 

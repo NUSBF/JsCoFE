@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    22.06.23   <--  Date of Last Modification.
+ *    23.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1250,15 +1250,16 @@ ProjectPage.prototype.makeDock = function()  {
 
             if (self.start_action('add_job'))  {
               self.can_reload = true;
-              var rc = self.jobTree.addTask ( task,false,false,self,function(key){
-                // if (key!=1)  // task was added or failed
-                self._set_del_button_state();
-                self.end_action();
-                var avail_key   = rc[0];
-                var dataSummary = rc[1];
-                if (dataSummary.status<=0)
-                  new TaskDataDialog ( dataSummary,task,avail_key );
-              });
+              self.jobTree.addTask ( task,false,false,self,
+                function(key,avail_key,dataSummary){
+                  // if (key!=1)  // task was added or failed
+                  self._set_del_button_state();
+                  self.end_action();
+                  // if (key>=0)  {
+                    if (dataSummary.status<=0)
+                      new TaskDataDialog ( dataSummary,task,avail_key );
+                  // }
+                });
             }
 
           }
