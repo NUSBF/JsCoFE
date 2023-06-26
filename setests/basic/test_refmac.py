@@ -120,19 +120,17 @@ def depositionAfterRefmac(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
     time.sleep(1)
 
-    try: 
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for deposition')
+    # try: 
+    #     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for deposition')
 
-        time.sleep(1)
-    except: 
-        pass
+    #     time.sleep(1)
+    # except: 
+    #     pass
 
-    try: 
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for PDB deposition')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for PDB deposition')
 
-        time.sleep(1)
-    except: 
-        pass
+    time.sleep(1)
+
 
 
 
@@ -163,7 +161,7 @@ def depositionAfterRefmac(driver):
     if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-pre/":
 
         for task in ttts:
-            match = re.search('\[0005\] deposition -- (.*)', task)
+            match = re.search('\[0005\] prepare data for PDB deposition  -- (.*)', task)
             if match:
                 taskText = match.group(1)
                 print(taskText)
@@ -191,7 +189,7 @@ def depositionAfterRefmac(driver):
         if not os.path.exists(os.path.expanduser('~/.setest_no_email')):
             print('Sending emails to OK, EK and pdbdep@ebi.ac.uk')
             time.sleep(1)
-            sf.doubleClickTaskInTaskTree(driver, '\[0005\] deposition')
+            sf.doubleClickTaskInTaskTree(driver, '\[0005\] prepare data for PDB deposition')
             time.sleep(2)
             driver.switch_to.frame(driver.find_element_by_xpath("//iframe[contains(@src, 'report/index.html')]"))
             sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Main Log')
