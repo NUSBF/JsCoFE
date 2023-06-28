@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.06.23   <--  Date of Last Modification.
+#    28.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -396,6 +396,7 @@ class Refmac(basic.TaskDriver):
                                              libin,hkl,istruct,
                                              "FWT,PHWT,DELFWT,PHDELWT",True )
             if structure:
+                structure.setRefinerParameters ( stdin )
                 self.putStructureWidget ( self.getWidgetId("structure_btn"),
                                           "Structure and electron density",
                                           structure )
@@ -432,7 +433,7 @@ class Refmac(basic.TaskDriver):
                         xyz_merged = self.getOFName ( "_ha.pdb" )
                         is_substr  = self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
 
-                        self.putTitle ( "Structure, substructure and anomolous maps" )
+                        self.putTitle ( "Structure with heavy-atom substructure and anomolous maps" )
                         struct_ano = self.formStructure ( xyz_merged,None,self.getMTZOFName(),
                                                           libin,hkl,istruct,
                                                           "FAN,PHAN,DELFAN,PHDELAN",

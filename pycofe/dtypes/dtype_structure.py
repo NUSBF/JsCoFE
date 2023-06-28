@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.05.23   <--  Date of Last Modification.
+#    28.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -86,6 +86,7 @@ class DType(dtype_xyz.DType):
             self.mapLabels      = None;  # used in UglyMol widgets
 
             self.refiner        = ""     # refinement program used
+            self.refiner_params = None
 
         return
 
@@ -333,6 +334,15 @@ class DType(dtype_xyz.DType):
                 self.FreeR_flag = hkl_class.dataset.FREE
         return
 
+    def setRefinerParameters ( self,params ):
+        self.refiner_params = params
+        return
+
+    def getRefinerParameters ( self ):
+        if hasattr(self,"refiner_params"):
+            return self.refiner_params
+        return None
+
     def copyLabels ( self,struct_class ):
         self.FP      = struct_class.FP
         if hasattr(struct_class,"FC"):
@@ -351,6 +361,10 @@ class DType(dtype_xyz.DType):
         self.HLC     = struct_class.HLC
         self.HLD     = struct_class.HLD
         self.FreeR_flag = struct_class.FreeR_flag
+        return
+
+    def copyRefinerParameters ( self,struct_class ):
+        self.refiner_params = struct_class.getRefinerParameters()
         return
 
     def getAllLabels ( self ):

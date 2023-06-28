@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.06.21   <--  Date of Last Modification.
+#    28.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2023
 #
 # ============================================================================
 #
@@ -219,6 +219,7 @@ class Privateer(basic.TaskDriver):
                                     refiner=istruct.refiner )
 
             if structure:
+                structure.copyRefinerParameters ( istruct )
                 structure.copyAssociations ( istruct )
                 structure.addSubtypes      ( istruct.subtype )
                 # structure.removeSubtype    ( dtype_template.subtypeSubstructure() )

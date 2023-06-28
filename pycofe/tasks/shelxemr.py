@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.06.23   <--  Date of Last Modification.
+#    28.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -279,7 +279,7 @@ class ShelxEMR(basic.TaskDriver):
                           "xtitle" : "Cycle No.",
                           "ytitle" : "Correlation Coefficient (%%)",
                           "x"      : {  "name":"Cycle No.", "values": cycleNo },
-                          "y"      : [{ "name":"CC", "values": CC }]
+                          "y"      : [{ "name":"CC"       , "values": CC }]
                         },{
                           "name"   : "Residues Built",
                           "xtitle" : "Cycle No.",
@@ -394,6 +394,7 @@ class ShelxEMR(basic.TaskDriver):
                                 refiner=istruct.refiner )
 
             if structure:
+                structure.copyRefinerParameters ( istruct )
                 structure.copyAssociations ( istruct )
                 structure.copyLabels       ( istruct )
                 structure.setShelxELabels  ( istruct )
@@ -419,6 +420,7 @@ class ShelxEMR(basic.TaskDriver):
                                 map_labels="FWT,PHWT",
                                 refiner=istruct.refiner )
                 if substructure:
+                    structure.copyRefinerParameters ( istruct )
                     substructure.copyAssociations ( istruct )
                     substructure.copyLabels       ( istruct )
                     substructure.setShelxELabels  ( istruct )
