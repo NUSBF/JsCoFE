@@ -230,7 +230,7 @@ class Gesamt(basic.TaskDriver):
 
                         self.putSection ( self.hits_graph_sec_id(),"Score Plots",False )
 
-                        pyrvapi.rvapi_set_text ( "<h3>Alignment scores</h3>",self.hits_graph_sec_id(),0,0,1,1 )
+                        pyrvapi.rvapi_set_text  ( "<h3>Alignment scores</h3>",self.hits_graph_sec_id(),0,0,1,1 )
                         pyrvapi.rvapi_add_graph ( self.hits_graph_id(),self.hits_graph_sec_id(),1,0,1,1 )
                         pyrvapi.rvapi_set_graph_size ( self.hits_graph_id(),700,400 )
 

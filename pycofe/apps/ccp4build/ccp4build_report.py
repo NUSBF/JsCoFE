@@ -319,7 +319,7 @@ class Report(ccp4build_edstats.EDStats):
 
         self.drawPlot ( "edcc_plot_id",nx,[
             [ "edcc_id",emeta["EDCC"] ],
-            [ "zd_id",emeta["ZEDCC"]/10.0 ]
+            [ "zd_id"  ,emeta["ZEDCC"]/10.0 ]
         ])
 
         self.drawPlot ( "residues_plot_id",nx,[

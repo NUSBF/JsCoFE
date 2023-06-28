@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.10.22   <--  Date of Last Modification.
+#    28.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
 #
 # ============================================================================
 #
@@ -231,6 +231,7 @@ class TextEditor(basic.TaskDriver):
                                         map_labels=ixyz.mapLabels,
                                         refiner=ixyz.refiner )
                 if oxyz:
+                    oxyz.copyRefinerParameters ( ixyz )
                     oxyz.copyAssociations   ( ixyz )
                     oxyz.addDataAssociation ( ixyz.dataId )  # ???
                     oxyz.copySubtype        ( ixyz )

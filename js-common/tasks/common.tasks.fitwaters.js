@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.05.23   <--  Date of Last Modification.
+ *    24.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -77,17 +77,19 @@ function TaskFitWaters()  {
   this.parameters = { // input parameters
     sec1  : { type     : 'section',
               title    : 'Parameters',
-              open     : true,  // true for the section to be initially open
+              open     : false,  // true for the section to be initially open
               position : [0,0,1,5],
               contains : {
                 SIGMA : {
-                        type      : 'real',
+                        type      : 'real_',
                         keyword   : '--sigma',
                         label     : 'Map level, &sigma;',
-                        tooltip   : 'Specify map level for water search',
+                        tooltip   : 'Specify map level for water search or ' +
+                                    'leave blank for automatic choice (will ' +
+                                    'take longer time)',
                         range     : [0.0,10.0],
-                        value     : '2.0',
-                        default   : '2.0',
+                        value     : '',
+                        // default   : '2.0',
                         position  : [0,0,1,1]
                       },
                 FLOOD_CBX : {
@@ -113,26 +115,26 @@ function TaskFitWaters()  {
                         showon    : {FLOOD_CBX:[true]}
                       },
                 MIN_DIST : {
-                        type      : 'real',
+                        type      : 'real_',
                         keyword   : '--min-dist',
                         label     : 'Minimum distance to macromolecule [&Aring;]',
                         tooltip   : 'The minimum distance to macromolecular ' +
                                     'surface water molecules should be found at.',
                         range     : [0.0,'*'],
-                        value     : '0.0',
-                        default   : '0.0',
+                        value     : '',
+                        // default   : '0.0',
                         position  : [2,0,1,1],
                         showon    : {FLOOD_CBX:[false]}
                       },
                 MAX_DIST : {
-                        type      : 'real',
+                        type      : 'real_',
                         keyword   : '--max-dist',
                         label     : 'Maximum distance to macromolecule [&Aring;]',
                         tooltip   : 'The maximum distance to macromolecular ' +
                                     'surface water molecules should be found at.',
                         range     : [0.0,'*'],
-                        value     : '50.0',
-                        default   : '50.0',
+                        value     : '',
+                        // default   : '50.0',
                         position  : [3,0,1,1],
                         showon    : {FLOOD_CBX:[false]}
                       }
@@ -191,7 +193,7 @@ if (!__template)  {
 
     if ('revision' in this.input_data.data)  {
       var revision = this.input_data.data['revision'][0];
-      //this.input_data.data['hkl']     = [revision.HKL];
+      this.input_data.data['hkl']     = [revision.HKL];
       this.input_data.data['istruct'] = [revision.Structure];
     }
 

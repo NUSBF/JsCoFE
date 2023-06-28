@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.03.23   <--  Date of Last Modification.
+#    28.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -610,11 +610,13 @@ class TaskDriver(object):
     # ============================================================================
 
     def putPanel ( self,panel_id ):
+        pyrvapi.rvapi_set_text  ( "",self.report_page_id(),self.rvrow,0,1,1 )
         pyrvapi.rvapi_add_panel ( panel_id,self.report_page_id(),self.rvrow,0,1,1 )
         self.rvrow += 1
         return
 
     def putPanel1 ( self,pageId,panel_id,row,colSpan=1 ):
+        pyrvapi.rvapi_set_text  ( "",self.report_page_id(),self.rvrow,0,1,1 )
         pyrvapi.rvapi_add_panel ( panel_id,pageId,row,0,1,colSpan )
         return
 
@@ -969,7 +971,7 @@ class TaskDriver(object):
         return
 
     def setRefmacLogParser ( self,panel_id,split_sections_bool,
-                              graphTables=False,makePanel=True ):
+                             graphTables=False,makePanel=True ):
         #return
         if makePanel:
             self.putPanel ( panel_id )
