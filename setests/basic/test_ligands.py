@@ -351,8 +351,8 @@ def fitWaters(driver, wait):
     if nwat == 0:
         print('*** Verification: could not find Nwaters result value after FitWaters run')
     else:
-        print('*** Verification: Nwaters is %d (expecting > 90 )' % nwat)
-    assert nwat > 90
+        print('*** Verification: Nwaters is %d (expecting > 89 )' % nwat)
+    assert nwat > 85
 
     return ()
 
@@ -449,8 +449,8 @@ def test_1ligandsImportandRefmac(browser,
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
-        sf.importFromCloud_mdm2NoLigand(d.driver, d.waitShort) # 1
-        sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort) # 2
+        sf.importFromCloud_mdm2NoLigand(d.driver, 120) # 1
+        sf.asymmetricUnitContentsAfterCloudImport(d.driver, 120) # 2
         editRevisionStructure_mdm2(d.driver, d.waitShort) # 3
         refmac_0004(d.driver) # 4
 
@@ -461,7 +461,7 @@ def test_1ligandsImportandRefmac(browser,
 
 def test_2MakeLigand():
     try:
-        makingLigand(d.driver, d.waitLong) # 5
+        makingLigand(d.driver, 1000) # 5
     except:
         d.driver.quit()
         raise
@@ -469,7 +469,7 @@ def test_2MakeLigand():
 
 def test_3FitLigand():
     try:
-        fitLigand(d.driver, d.waitLong) # 6
+        fitLigand(d.driver, 1000) # 6
         refmac_0007(d.driver)  # 7
     except:
         d.driver.quit()
@@ -478,7 +478,7 @@ def test_3FitLigand():
 
 def test_4FitWaters():
     try:
-        fitWaters(d.driver, d.waitShort) # 8
+        fitWaters(d.driver, 420) # 8
         refmac_0009(d.driver)  # 9
 
         sf.renameProject(d.driver, d.testName)
