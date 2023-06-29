@@ -413,7 +413,7 @@ class Refmac(basic.TaskDriver):
                     self.open_stdin()
                     self.write_stdin ([
                         "residue " + hatype,
-                        "atname " + hatype,
+                        "atname "  + hatype,
                         "numpeaks 100",
                         "threshold rms 4",
                         "output pdb",
