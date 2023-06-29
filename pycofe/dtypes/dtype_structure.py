@@ -268,6 +268,13 @@ class DType(dtype_xyz.DType):
         self.FreeR_flag = "FreeR_flag"
         return
 
+    def setAnomMapLabels ( self,FAN,PHAN,DELFAN=None,PHDELAN=None ):
+        self.FAN     = FAN
+        self.PHAN    = PHAN
+        self.DELFAN  = DELFAN
+        self.PHDELAN = PHDELAN
+        return
+
     def setHLLabels ( self ):
         self.HLA = "HLA"
         self.HLB = "HLB"

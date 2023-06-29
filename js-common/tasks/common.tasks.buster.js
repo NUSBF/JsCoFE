@@ -262,7 +262,16 @@ TaskBuster.prototype.checkKeywords = function ( keywords )  {
   return this.__check_keywords ( keywords,['buster','refinement', 'global', 'phasing'] );
 }
 
-if (__template)  {
+
+if (!__template)  {
+//  for client side
+
+  // hotButtons return list of buttons added in JobDialog's toolBar.
+  TaskBuster.prototype.hotButtons = function() {
+    return [CootMBHotButton()];
+  }
+
+} else  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');

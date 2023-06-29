@@ -224,6 +224,28 @@ if (!__template)  {
                         calcStructFact : false
                       }]
           });
+        if (istruct.FAN)
+          inputFiles.push ({
+            type : 'mtz',
+            args : [ mtzURL,'anom-map',{
+                        F              : istruct.FAN,
+                        PHI            : istruct.PHAN,
+                        isDifference   : true,
+                        useWeight      : false,
+                        calcStructFact : false
+                      }]
+          });
+        if (istruct.DELFAN)
+          inputFiles.push ({
+            type : 'mtz',
+            args : [ mtzURL,'anom-diff-map',{
+                        F              : istruct.DELFAN,
+                        PHI            : istruct.PHDELAN,
+                        isDifference   : true,
+                        useWeight      : false,
+                        calcStructFact : false
+                      }]
+          });
       }
     }
 
