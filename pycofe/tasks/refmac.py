@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.06.23   <--  Date of Last Modification.
+#    29.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -439,6 +439,8 @@ class Refmac(basic.TaskDriver):
                                                           "FAN,PHAN,DELFAN,PHDELAN",
                                                           False )
                         if struct_ano:
+                            structure.setAnomMapLabels ( "FAN","PHAN",
+                                                         DELFAN="DELFAN",PHDELAN="PHDELAN" )
                             nlst = struct_ano.dname.split ( " /" )
                             nlst[0] += " (anom maps)"
                             struct_ano.dname = " /".join(nlst)
