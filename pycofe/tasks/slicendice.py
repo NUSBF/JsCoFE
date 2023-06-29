@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.06.23    <--  Date of Last Modification.
+#    29.06.23    <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -197,7 +197,6 @@ class SliceNDice(basic.TaskDriver):
                                                      None,None, leadKey=1,
                                                      refiner="refmac" )
                 if structure:
-                    structure.copyRefinerParameters ( istruct )
                     structure.addDataAssociation ( sol_hkl.dataId )
                     structure.setRefmacLabels    ( sol_hkl    )
                     structure.addPhasesSubtype   ()
