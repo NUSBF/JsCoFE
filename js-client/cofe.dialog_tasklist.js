@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.23   <--  Date of Last Modification.
+ *    30.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -395,8 +395,9 @@ var r = 0;  // grid row
     new TaskModelCraft(),
     new TaskNautilus  (),
 
-    "Deposition",
-    new TaskDeposition()
+    "Validation and Deposition",
+    new TaskPDBVal    ()
+    // new TaskDeposition()
 
   ]);
 
@@ -629,7 +630,7 @@ var row      = 0;
       // new TaskStructurePrediction(),
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
-      new TaskPDBVal       (),
+      // new TaskPDBVal       (),
       new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
@@ -803,7 +804,8 @@ var row      = 0;
     new TaskPrivateer (),
     new TaskPISA      (),
     new TaskSC        (),
-    new TaskDeposition(),
+    new TaskPDBVal    (),
+    // new TaskDeposition(),
     new TaskContact   (),
     new TaskRotamer   (),
     new TaskAreaimol  (),

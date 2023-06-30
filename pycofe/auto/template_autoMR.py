@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    17.04.23   <--  Date of Last Modification.
+#    30.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -238,7 +238,8 @@ def makeNextTask ( crTask,data ):
         auto_tasks.refligWF("ref_afterLig_", data["revision"], crTask.autoRunName)
 
 
-    elif crTask._type=="TaskDeposition":
+    # elif crTask._type=="TaskDeposition":
+    elif crTask._type=="TaskPDBVal":
         strTree = 'Automated Workflow has finished succesfully (look inside for comments)'
         strText = 'Please carefully examine the report to get an idea about quality of automatically built structure..\n' + \
                   'Please do not deposit even if report looks reasonable, as nothing can substitute careful examination ' + \
