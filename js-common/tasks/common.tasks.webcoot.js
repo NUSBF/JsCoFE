@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.04.23   <--  Date of Last Modification.
+ *    30.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -230,10 +230,10 @@ if (!__template)  {
             args : [ mtzURL,'anom-map',{
                         F              : istruct.FAN,
                         PHI            : istruct.PHAN,
-                        isDifference   : true,
+                        isDifference   : false,
                         useWeight      : false,
                         calcStructFact : false
-                      }]
+                      }, { r: 0.733, g: 0.0, b: 0.0 } ]
           });
         if (istruct.DELFAN)
           inputFiles.push ({

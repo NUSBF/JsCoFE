@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    23.04.21   <--  Date of Last Modification.
+#    30.06.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -13,12 +11,12 @@
 #
 #  Task templates for automatic workflows
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2021-2023
 #
 # ============================================================================
 #
 
-from   pycofe.auto   import auto_api
+from pycofe.auto import auto_api
 
 
 # ============================================================================
@@ -37,35 +35,35 @@ def store ( unm,hkl,seq,lig,ligdesc ):
     return
 
 def aimless ( name,parentName ):
-    unm = auto_api.getContext("unm")
+    unm = auto_api.getContext ( "unm" )
     if unm:
         auto_api.addTask     ( name,"TaskAimless",parentName )
-        auto_api.addTaskData ( name,"unmerged"   ,unm )
-        auto_api.addTaskData ( name,"ds0"        ,unm )
+        auto_api.addTaskData ( name,"unmerged"   ,unm        )
+        auto_api.addTaskData ( name,"ds0"        ,unm        )
 #        auto_api.addContext  ( "hkl_node",name )
     return unm
 
 def simbad ( name,searchType,revision, parentNode ): # branchName
     if revision:
         auto_api.addTask          ( name, "TaskSimbad",parentNode )
-        auto_api.addTaskData      ( name, "idata", revision)
+        auto_api.addTaskData      ( name, "idata"     ,revision   )
         auto_api.addTaskParameter ( name, "SEARCH_SEL",searchType )
     else:
-        hkl = auto_api.getContext("hkl")
+        hkl = auto_api.getContext ( "hkl" )
         if hkl:
-            auto_api.addTask          ( name, "TaskSimbad", parentNode )
-            auto_api.addTaskData      ( name, "idata",hkl )
+            auto_api.addTask          ( name, "TaskSimbad",parentNode )
+            auto_api.addTaskData      ( name, "idata"     ,hkl        )
             auto_api.addTaskParameter ( name, "SEARCH_SEL",searchType )
     return
 
 def asu ( name,parentName ):
-    hkl = auto_api.getContext("hkl")
-    seq = auto_api.getContext("seq")
+    hkl = auto_api.getContext ( "hkl" )
+    seq = auto_api.getContext ( "seq" )
     if hkl and seq:
         auto_api.addTask     ( name,"TaskASUDef",parentName )
         auto_api.addTaskData ( name,"hkl",hkl )
         auto_api.addTaskData ( name,"seq",seq )
-        ha_type = auto_api.getContext("hatom")
+        ha_type = auto_api.getContext ( "hatom" )
         if ha_type:
             auto_api.addTaskParameter ( name,"HATOM",ha_type )
         # auto_api.addContext  ( "branch",branchName )
@@ -80,44 +78,44 @@ def asu ( name,parentName ):
 #     return
 
 def dimple ( name,revision,parentName ):
-    auto_api.addTask ( name,"TaskDimple",parentName  )
-    auto_api.addTaskData ( name,"revision",revision )
-    auto_api.addTaskParameter(name, "NJELLY", '0')
-    auto_api.addTaskParameter(name, "NRESTR", '20')
-    auto_api.addTaskParameter(name, "MRTHRESHOLD", '0.4')
-    auto_api.addTaskParameter(name, "MRRESO", '3.25')
-    auto_api.addTaskParameter(name, "MRPROG", 'phaser')
+    auto_api.addTask          ( name,"TaskDimple"  ,parentName )
+    auto_api.addTaskData      ( name,"revision"    ,revision   )
+    auto_api.addTaskParameter ( name, "NJELLY"     , "0"       )
+    auto_api.addTaskParameter ( name, "NRESTR"     , "20"      )
+    auto_api.addTaskParameter ( name, "MRTHRESHOLD", "0.4"     )
+    auto_api.addTaskParameter ( name, "MRRESO"     , "3.25"    )
+    auto_api.addTaskParameter ( name, "MRPROG"     , "phaser"  )
     return
 
 def buccaneer ( name,revision,parentName ):
-    auto_api.addTask ( name,"TaskBuccaneer",parentName  )
-    auto_api.addTaskData ( name,"revision",revision )
+    auto_api.addTask     ( name,"TaskBuccaneer",parentName )
+    auto_api.addTaskData ( name,"revision"     ,revision   )
     return
 
 def modelcraft ( name,revision,parentName ):
-    auto_api.addTask ( name,"TaskModelCraft",parentName  )
-    auto_api.addTaskData ( name,"revision",revision )
+    auto_api.addTask     ( name,"TaskModelCraft",parentName )
+    auto_api.addTaskData ( name,"revision"      ,revision   )
     return
 
 
 def ccp4build ( name,revision,parentName ):
-    auto_api.addTask ( name,"TaskCCP4Build",parentName  )
-    auto_api.addTaskData ( name,"revision",revision )
+    auto_api.addTask     ( name,"TaskCCP4Build",parentName )
+    auto_api.addTaskData ( name,"revision"     ,revision   )
     return
 
 
 def arpwarp ( name,revision,parentName ):
-    auto_api.addTask ( name,"TaskArpWarp",parentName  )
-    auto_api.addTaskData ( name,"revision",revision )
-    auto_api.addTaskParameter ( name,"AWA_BIG_CYCLES","2" )
+    auto_api.addTask          ( name,"TaskArpWarp"   ,parentName )
+    auto_api.addTaskData      ( name,"revision"      ,revision   )
+    auto_api.addTaskParameter ( name,"AWA_BIG_CYCLES","2"        )
     return
 
 
 def xyzWaters ( name,revision,parentName ):
-    auto_api.addTask ( name,"TaskXyzUtils",parentName  )
-    auto_api.addTaskData ( name,"istruct",revision)
+    auto_api.addTask          ( name,"TaskXyzUtils",parentName )
+    auto_api.addTaskData      ( name,"istruct"     ,revision   )
     # remove waters
-    auto_api.addTaskParameter(name, "SOLLIG_SEL", 'W')
+    auto_api.addTaskParameter ( name, "SOLLIG_SEL" , "W"       )
     return
 
 
@@ -156,21 +154,22 @@ def fit_ligand ( name, ligand, revision,parentName ):
 
 
 def refmac ( name,revision,parentName ):
-    auto_api.addTask     ( name,"TaskRefmac",parentName )
-    auto_api.addTaskData ( name,"revision",revision )
+    auto_api.addTask          ( name,"TaskRefmac",parentName )
+    auto_api.addTaskData      ( name,"revision",revision )
     return
 
 
 def fit_waters ( name,revision,parentName ):
-    auto_api.addTask     ( name,"TaskFitWaters",parentName )
-    auto_api.addTaskData ( name,"revision",revision )
-    auto_api.addTaskParameter(name, 'SIGMA', '3.0')
+    auto_api.addTask          ( name,"TaskFitWaters",parentName )
+    auto_api.addTaskData      ( name,"revision",revision )
+    auto_api.addTaskParameter ( name,"SIGMA","3.0" )
     return
 
 
 def deposition ( name,revision,parentName ):
-    auto_api.addTask     ( name,"TaskDeposition",parentName )
-    auto_api.addTaskData ( name,"revision",revision )
+    # auto_api.addTask     ( name,"TaskDeposition",parentName )
+    auto_api.addTask          ( name,"TaskPDBVal",parentName )
+    auto_api.addTaskData      ( name,"revision"  ,revision )
     return
 
 
@@ -184,83 +183,82 @@ def remark ( name,text,themeNo,description,parentName ):
 
 def refligWF ( name,revision,parentName ):
     newNRun = '0'
-    auto_api.addContext("refmacClonedRun", newNRun)
+    auto_api.addContext  ( "refmacClonedRun",newNRun )
     actualName = str(name + newNRun)
     auto_api.addTask     ( actualName,"TaskRefmac",parentName )
-    auto_api.addTaskData ( actualName,"revision",revision )
+    auto_api.addTaskData ( actualName,"revision"  ,revision   )
     auto_api.noteTask    ( actualName,"refmac_noted" )  # cloning current task
     return
 
 
 def refmacSuggested ( name, revision, suggested ):
-    nRun = auto_api.getContext("refmacClonedRun")
+    nRun = auto_api.getContext ( "refmacClonedRun" )
     newNRun = str(int(nRun) + 1)
-    auto_api.addContext("refmacClonedRun", newNRun)
+    auto_api.addContext        ( "refmacClonedRun",newNRun )
     actualName = str(name + newNRun)
-
-    auto_api.cloneTask   ( actualName, "refmac_noted" )
+    auto_api.cloneTask         ( actualName,"refmac_noted" )
     # seems to be critical not to add task data for cloned tasks
     # auto_api.addTaskData ( actualName,"revision",revision )
     for k in suggested:
-        auto_api.addTaskParameter(actualName, k, suggested[k])
+        auto_api.addTaskParameter ( actualName,k,suggested[k] )
     auto_api.noteTask    ( actualName,"refmac_noted" )  # for the next run cloning current task
     return
 
 
 def lorestr ( name,revision,parentName ):
-    auto_api.addTask     ( name,"TaskLorestr",parentName )
-    auto_api.addTaskData ( name,"revision",revision )
-    auto_api.addTaskParameter(name, "PDB_CBX", "True") # auto search for homologues
+    auto_api.addTask          ( name,"TaskLorestr",parentName )
+    auto_api.addTaskData      ( name,"revision"   ,revision   )
+    auto_api.addTaskParameter ( name,"PDB_CBX"    ,"True"     ) # auto search for homologues
     return
 
 def morda ( name,revision,parentName ):
-    auto_api.addTask(name, "TaskMorda", parentName)
-    auto_api.addTaskData(name, "revision", revision)
-    auto_api.addTaskParameter(name, "ALTGROUPS_CBX", True)
+    auto_api.addTask          ( name,"TaskMorda"    , parentName )
+    auto_api.addTaskData      ( name,"revision"     , revision   )
+    auto_api.addTaskParameter ( name,"ALTGROUPS_CBX",True        )
     # auto_api.addTaskParameter(name, "NMODELS", nModels)
 
     return
 
 def mrbump ( name,revision,parentName, nModels ):
-    auto_api.addTask(name, "TaskMrBump", parentName)
-    auto_api.addTaskData(name, "revision", revision)
-    auto_api.addTaskParameter(name, "ALTGROUPS_CBX", True)
-    auto_api.addTaskParameter(name, "MRNUM", nModels)
+    auto_api.addTask          ( name,"TaskMrBump"   , parentName )
+    auto_api.addTaskData      ( name,"revision"     , revision   )
+    auto_api.addTaskParameter ( name,"ALTGROUPS_CBX", True       )
+    auto_api.addTaskParameter ( name,"MRNUM"        , nModels    ) 
     return
 
 def modelprepXYZ ( name, parentName ):
-    xyz = auto_api.getContext("xyz")
-    seq = auto_api.getContext("seq")
+    xyz = auto_api.getContext ( "xyz" )
+    seq = auto_api.getContext ( "seq" )
     if xyz and seq:
-        auto_api.addTask(name, "TaskModelPrepXYZ", parentName)
-        auto_api.addTaskData(name, "seq", seq)
-        auto_api.addTaskData(name, "xyz", xyz)
-        hasNA = auto_api.getContext("na")
+        auto_api.addTask     ( name,"TaskModelPrepXYZ", parentName )
+        auto_api.addTaskData ( name,"seq", seq )
+        auto_api.addTaskData ( name,"xyz", xyz )
+        hasNA = auto_api.getContext ( "na" )
         if hasNA:
-            auto_api.addTaskParameter(name, "MODIFICATION_SEL", "U")
+            auto_api.addTaskParameter ( name, "MODIFICATION_SEL", "U" )
     return
 
 def phaserAllModels ( name,parentName ):
-    revision = auto_api.getContext("revisionForPhaser")
-    models = auto_api.getContext("modelsForPhaser")
-    auto_api.addTask(name, "TaskPhaserMR", parentName)
-    auto_api.addTaskData(name, "revision", revision)
-    auto_api.addTaskData(name, "model", models)
+    revision = auto_api.getContext ( "revisionForPhaser" )
+    models   = auto_api.getContext ( "modelsForPhaser"   )
+    auto_api.addTask     ( name, "TaskPhaserMR", parentName )
+    auto_api.addTaskData ( name, "revision"    , revision   )
+    auto_api.addTaskData ( name, "model"       , models     )
     return
 
 def phaserFirst ( name,parentName ):
-    revision = auto_api.getContext("revisionForPhaser")
-    model = auto_api.getContext("modelForPhaser")
-    auto_api.addTask(name, "TaskPhaserMR", parentName)
-    auto_api.addTaskData(name, "revision", revision)
-    auto_api.addTaskData(name, "model", model)
+    revision = auto_api.getContext ( "revisionForPhaser" )
+    model    = auto_api.getContext ( "modelForPhaser"    )
+    auto_api.addTask     ( name, "TaskPhaserMR", parentName )
+    auto_api.addTaskData ( name, "revision"    , revision   )
+    auto_api.addTaskData ( name, "model"       , model      )
     return
 
 def phaserNext ( name,revision,parentName ):
-    model = auto_api.getContext("modelForPhaser")
-    auto_api.addTask(name, "TaskPhaserMR", parentName)
-    auto_api.addTaskData(name, "revision", revision)
-    auto_api.addTaskData(name, "model", model)
+    model = auto_api.getContext ( "modelForPhaser" )
+    auto_api.addTask     ( name, "TaskPhaserMR", parentName )
+    auto_api.addTaskData ( name, "revision"    , revision   )
+    auto_api.addTaskData ( name, "model"       , model      )
     return
 
 def afStructurePrediction ( name,seq,parentName ):
@@ -269,18 +267,18 @@ def afStructurePrediction ( name,seq,parentName ):
     return
 
 def slicendice ( name,parentName ):
-    revision = auto_api.getContext("revisionForSliceNDice")
-    xyz      = auto_api.getContext("xyz")
-    auto_api.addTask(name, "TaskSliceNDice", parentName)
-    auto_api.addTaskData(name, "revision", revision)
-    auto_api.addTaskData(name, "xyz", xyz)
+    revision = auto_api.getContext ( "revisionForSliceNDice" )
+    xyz      = auto_api.getContext ( "xyz" )
+    auto_api.addTask     ( name, "TaskSliceNDice", parentName )
+    auto_api.addTaskData ( name, "revision"      , revision   )
+    auto_api.addTaskData ( name, "xyz"           , xyz        )
     return
 
 def slice ( name,parentName ):
-    xyz = auto_api.getContext("xyz")
-    seq = auto_api.getContext("seq")
+    xyz = auto_api.getContext ( "xyz" )
+    seq = auto_api.getContext ( "seq" )
     if xyz and seq:
-        auto_api.addTask(name, "TaskSlice", parentName)
-        auto_api.addTaskData(name, "seq", seq)
-        auto_api.addTaskData(name, "xyz", xyz)
+        auto_api.addTask     ( name, "TaskSlice", parentName )
+        auto_api.addTaskData ( name, "seq"      , seq        )
+        auto_api.addTaskData ( name, "xyz"      , xyz        )
     return

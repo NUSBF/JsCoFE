@@ -194,7 +194,8 @@ var _taskIndex = {
   'j1' : { type: 'TaskCombStructure'      , after: ['V','W','i','U','r'] },
 
   // suggest PDB Deposition after Refmac
-  'k'  : { type: 'TaskDeposition'         , after: ['V','V1'] },
+  // 'k'  : { type: 'TaskDeposition'         , after: ['V','V1'] },
+  'k1' : { type: 'TaskPDBVal'             , after: ['V','V1'] },
 
   // do not suggest Coot Cooridinate Editing
   'l'  : { type: 'TaskCootCE'             , after: [] },

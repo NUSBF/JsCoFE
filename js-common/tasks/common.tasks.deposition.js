@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.05.23   <--  Date of Last Modification.
+ *    30.06.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -30,8 +30,13 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 function TaskDeposition()  {
 
-  if (__template)  __template.TaskTemplate.call ( this );
-             else  TaskTemplate.call ( this );
+  if (__template)  {
+    this.state = __template.job_code.retired;  // do not include in task lists
+    __template.TaskTemplate.call ( this );
+  } else  {
+    this.state = job_code.retired;  // do not include in task lists
+    TaskTemplate.call ( this );
+  }
 
   this._type   = 'TaskDeposition';
   this.name    = 'prepare data for PDB deposition';
