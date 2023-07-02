@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.06.23   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -247,17 +247,52 @@ TaskTemplate.prototype.cpu_credit = function()  {
 }
 
 
+// stores default parameters in copies at class initialisation
+TaskTemplate.prototype.saveDefaultValues = function ( parameters )  {
+  for (let item in parameters)
+    if (parameters[item].hasOwnProperty('value'))  {
+      parameters[item].default_value = parameters[item].value;
+    } else if (comut)  {
+      if (comut.isObject(parameters[item]))
+        this.saveDefaultValues ( parameters[item] );
+    } else if (isObject(parameters[item]))
+      this.saveDefaultValues ( parameters[item] );
+}
+
+
+// highlight changed parameters
+// TaskTemplate.prototype._highlight_changed_parameters = function ( parameters )  {
+//   for (var item in parameters)
+//     if ('value' in parameters[item])  {
+//       if (parameters[item].value!=parameters[item].default_value)  {
+//         if ('label' in parameters[item])
+//           parameters[item].label = '<font style=\'color:darkblue\'><i>' +
+//                                   parameters[item].label + '</i></font>';
+//         if ('label2' in parameters[item])
+//           parameters[item].label2 = '<font style=\'color:darkblue\'><i>' +
+//                                     parameters[item].label2 + '</i></font>';
+//       }
+//     } else if (comut)  {
+//       if (comut.isObject(parameters[item]))
+//         this._highlight_changed_parameters ( parameters[item] );
+//     } else if (isObject(parameters[item]))
+//       this._highlight_changed_parameters ( parameters[item] );
+// }
+
+
 // recursion for substituting suggested parameters in depth
 TaskTemplate.prototype._clone_suggested = function ( parameters,suggestedParameters )  {
   for (var item in parameters)
     if (item in suggestedParameters)  {
-      parameters[item].value = suggestedParameters[item];
-      if ('label' in parameters[item])
-        parameters[item].label = '<font style=\'color:darkblue\'><i>' +
-                                 parameters[item].label + '</i></font>';
-      if ('label2' in parameters[item])
-        parameters[item].label2 = '<font style=\'color:darkblue\'><i>' +
-                                  parameters[item].label2 + '</i></font>';
+      if (parameters[item].value!=suggestedParameters[item])  {
+        parameters[item].value = suggestedParameters[item];
+        if ('label' in parameters[item])
+          parameters[item].label = '<font style=\'color:darkblue\'><i>' +
+                                  parameters[item].label + '</i></font>';
+        if ('label2' in parameters[item])
+          parameters[item].label2 = '<font style=\'color:darkblue\'><i>' +
+                                    parameters[item].label2 + '</i></font>';
+      }
     } else if (comut)  {
       if (comut.isObject(parameters[item]))
         this._clone_suggested ( parameters[item],suggestedParameters );
@@ -1944,8 +1979,19 @@ if (!dbx)  {
         return col;
     }
 
+    let item_label  = '';
+    let item_label2 = '';
+    if (item.hasOwnProperty('label'))
+      item_label  = item.label;
+    if (item.hasOwnProperty('label2'))
+      item_label2 = item.label2;
+    if (item.hasOwnProperty('default_value') && (item.value!=item.default_value))  {
+      item_label  = '<font style=\'color:darkblue\'><i>' + item_label  + '</i></font>';
+      item_label2 = '<font style=\'color:darkblue\'><i>' + item_label2 + '</i></font>';
+    }
+
     inpParamRef.parameters[key].label =
-                           grid.addLabel ( item.label,row,col,rowSpan,colSpan )
+                           grid.addLabel ( item_label,row,col,rowSpan,colSpan )
                                .setNoWrap();
     if (item.hasOwnProperty('tooltip'))
       inpParamRef.parameters[key].label.setTooltip ( item.tooltip );
@@ -1975,7 +2021,7 @@ if (!dbx)  {
         grid.setCellSize ( '1px','',row,col+3 );
       }
       inpParamRef.parameters[key].label2 =
-                             grid.addLabel ( item.label2,row,col+4,rowSpan,1 )
+                             grid.addLabel ( item_label2,row,col+4,rowSpan,1 )
                                  .setNoWrap();
       if (item.hasOwnProperty('tooltip2'))
         inpParamRef.parameters[key].label.setTooltip ( item.tooltip2 );

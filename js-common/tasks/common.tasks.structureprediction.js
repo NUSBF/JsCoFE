@@ -1,7 +1,7 @@
 /*
  *  ====================================================================
  *
- *    02.09.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  Structure Prediction Task Class
  *       ~~~~~~~~~
  *
- *  (C) M. Fando, E. Krissinel, A. Lebedev 2022
+ *  (C) M. Fando, E. Krissinel, A. Lebedev 2022-2023
  *
  *  ====================================================================
  *
@@ -101,6 +101,8 @@ function TaskStructurePrediction()  {   // must start with Task...
           }
         }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

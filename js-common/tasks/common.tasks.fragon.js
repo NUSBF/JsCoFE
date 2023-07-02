@@ -1,8 +1,10 @@
 
 /*
+ * !!!IN DEVELOPMENT!! Not in production list
+ *
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +15,7 @@
  *  **** Content :  Fragon Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -274,6 +276,8 @@ function TaskFragon()  {
             }
           }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

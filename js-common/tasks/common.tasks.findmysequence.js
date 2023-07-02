@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.01.23   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -90,6 +90,8 @@ function TaskFindMySequence()  {
              }
            }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

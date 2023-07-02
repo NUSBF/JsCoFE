@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -76,6 +76,8 @@ function TaskASUMod()  {
     'MW|molecular weight'
   ];
   this.parameters.sec1.contains.ESTIMATE_SEL.value = 'KE';
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

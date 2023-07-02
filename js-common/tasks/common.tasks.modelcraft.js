@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.01.23   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -129,6 +129,7 @@ function TaskModelCraft()  {
   // --twinned             Turn on twinned refinement. Only use this option if
   //                       you are sure your crystal is twinned. (default: False)
 
+  this.saveDefaultValues ( this.parameters );
 
 }
 

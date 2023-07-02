@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.12.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, R. Nicholls, O. Kovalevskyi 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, R. Nicholls, O. Kovalevskyi 2016-2023
  *
  *  ==========================================================================
  *
@@ -578,6 +578,8 @@ function TaskRefmac()  {
         }
      }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

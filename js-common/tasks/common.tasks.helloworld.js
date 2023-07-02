@@ -107,6 +107,8 @@
           }
     };
 
+    this.saveDefaultValues ( this.parameters );
+
   }
 
   // finish constructor definition

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.05.23   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  PaiRef task class
  *       ~~~~~~~~~
  *
- *  (C) M. Fando, E. Krissinel, A. Lebedev  2023
+ *  (C) M. Fando, E. Krissinel, A. Lebedev, M. Fando  2023
  *
  *  =================================================================
  *
@@ -267,8 +267,11 @@ function TaskPaiRef()  {   // must start with Task...
        }
 
       }
-   }
+    }
+
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

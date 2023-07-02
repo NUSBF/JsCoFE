@@ -6,7 +6,7 @@
  *
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -17,7 +17,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskyi, A. Lebedev 2021
+ *  (C) E. Krissinel, O. Kovalevskyi, A. Lebedev 2021-2023
  *
  *  =================================================================
  *
@@ -207,6 +207,8 @@ function TaskCCP4go2()  {
               }
             }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

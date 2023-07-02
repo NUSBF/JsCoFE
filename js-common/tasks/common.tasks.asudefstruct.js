@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  ASU Definition (from Structure) Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -71,6 +71,8 @@ function TaskASUDefStruct()  {
       max         : 10             // maximum acceptable number of data instances
     }
   ];
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.11.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Arcimboldo Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2023
  *
  *  =================================================================
  *
@@ -221,6 +221,8 @@ function TaskArcimboldoLite()  {
               }
             }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 
