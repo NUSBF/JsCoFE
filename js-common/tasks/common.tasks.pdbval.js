@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.23   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -124,6 +124,8 @@ function TaskPDBVal()  {
   //   if (__user_licence=='commercial')  // do not send data to the PDB by default
   //     this.parameters.PDBREPORT_CBX.value = false;
   // }
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

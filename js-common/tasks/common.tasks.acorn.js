@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.12.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ACORN Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2023
  *
  *  =================================================================
  *
@@ -881,6 +881,8 @@ function TaskAcorn()  {
               }
             }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

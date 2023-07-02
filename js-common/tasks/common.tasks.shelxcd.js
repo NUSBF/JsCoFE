@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.12.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SHELX-CD Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -275,6 +275,8 @@ function TaskShelxCD()  {
                 hkl   :[2,3,4]
               }
 */
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

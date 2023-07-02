@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.12.22   <--  Date of Last Modification.
+ *    07.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Aimless Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -1185,6 +1185,8 @@ function TaskAimless()  {
             }
         }
     };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

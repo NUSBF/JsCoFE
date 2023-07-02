@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.09.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SIMBAD Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, Oleg Kovalevskyi, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, Oleg Kovalevskyi, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -264,6 +264,8 @@ function TaskSimbad()  {
     //         }
 
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

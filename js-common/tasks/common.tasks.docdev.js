@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Documentation Development Task
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2023
  *
  *  =================================================================
  *
@@ -90,6 +90,8 @@ function TaskDocDev()  {
            position : [3,0,1,1]
          }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

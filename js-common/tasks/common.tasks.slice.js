@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    29.03.23   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  MrBUMP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2022-2023
  *
  *  =================================================================
  *
@@ -84,6 +84,7 @@ function TaskSlice()  {
             }
   };
 
+  this.saveDefaultValues ( this.parameters );
 
 }
 

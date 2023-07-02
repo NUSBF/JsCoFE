@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.06.23   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -213,6 +213,7 @@ function TaskShelxEMR()  {
   -z unset  do not optimize heavy atoms
 */
 
+  this.saveDefaultValues ( this.parameters );
 
 }
 

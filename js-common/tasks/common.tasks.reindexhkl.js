@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.09.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Reindex Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2022-2023
  *
  *  =================================================================
  *
@@ -83,7 +83,10 @@ function TaskReindexHKL()  {
                 }
              }
     }
+
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

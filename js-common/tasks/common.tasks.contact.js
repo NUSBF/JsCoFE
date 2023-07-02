@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.12.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XYZ Utilities Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022
+ *  (C) E. Krissinel, A. Lebedev 2022-2023
  *
  *  =================================================================
  *
@@ -78,6 +78,8 @@ function TaskContact()  {
             position : [1,0,1,5]     // mandatory
           }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

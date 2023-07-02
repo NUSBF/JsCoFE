@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.05.23   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -232,6 +232,8 @@ function TaskXia2()  {
     if (__environ_server.indexOf('Xia2_durin')<0)
       delete this.parameters.sec2.contains.PLUGIN;
   }
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.12.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Auspex Plots Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2023
  *
  *  =================================================================
  *
@@ -108,6 +108,8 @@ function TaskAuspex()  {
               }
             }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

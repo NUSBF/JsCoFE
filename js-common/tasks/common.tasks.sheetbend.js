@@ -4,7 +4,7 @@
 /*
  *  =================================================================
  *
- *    23.12.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -15,7 +15,7 @@
  *  **** Content :  Sheetbend Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2022
+ *  (C) E. Krissinel, A. Lebedev 2020-2023
  *
  *  =================================================================
  *
@@ -70,6 +70,8 @@ function TaskSheetbend()  {
              }
            }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

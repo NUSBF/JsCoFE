@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SymMatch Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2023
  *
  *  =================================================================
  *
@@ -93,6 +93,8 @@ function TaskSymMatch()  {
              }
            }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 

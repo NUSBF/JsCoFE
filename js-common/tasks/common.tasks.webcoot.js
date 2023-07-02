@@ -233,7 +233,7 @@ if (!__template)  {
                         isDifference   : false,
                         useWeight      : false,
                         calcStructFact : false
-                      }, { r: 0.733, g: 0.0, b: 0.0 } ]
+                      }, { r: 0.733, g: 0.2, b: 1.0 } ]
           });
         if (istruct.DELFAN)
           inputFiles.push ({
