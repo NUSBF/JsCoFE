@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.05.23   <--  Date of Last Modification.
+ *    02.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -215,6 +215,8 @@ function TaskArcimboldoShredder()  {
               }
             }
   };
+
+  this.saveDefaultValues ( this.parameters );
 
 }
 
