@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.06.23   <--  Date of Last Modification.
+#    05.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,10 +30,12 @@ import sys
 import uuid
 
 import pyrvapi
+import gemmi
 
 #  application imports
 from . import basic
 from   pycofe.proc   import coor
+from   pycofe.proc   import qualrep
 from   pycofe.auto   import auto
 
 # ============================================================================
@@ -159,6 +161,36 @@ class FitWaters(basic.TaskDriver):
 
         return
 
+    # def removeCloseContacts ( self ):
+    #     st       = gemmi.read_structure ( self.xyz_wat )
+    #     st.setup_entities()
+    #     model    = st[0]
+    #     cdist    = float(self.mindist)
+    #     ns       = gemmi.NeighborSearch ( model,st.cell,max(cdist,5.0) ).populate()
+    #     cs       = gemmi.ContactSearch  ( cdist )
+    #     results  = cs.find_contacts ( ns )
+    #     nremoved = 0
+    #     for r in results:
+    #         if r.partner1.residue.is_water() and (not r.partner2.residue.is_water()):
+    #             # r.partner2.residue.entity_type == gemmi.EntityType.Polymer):
+    #             # print('removing %s %s in distance %g from %s %s' %
+    #             #         (r.partner1.chain.name, r.partner1.residue, r.dist,
+    #             #          r.partner2.chain.name, r.partner2.residue))
+    #             del r.partner1.residue[:]
+    #             nremoved += 1
+    #         elif r.partner2.residue.is_water() and (not r.partner1.residue.is_water()):
+    #             # r.partner1.residue.entity_type == gemmi.EntityType.Polymer):
+    #             # print('removing %s %s in distance %g from %s %s' %
+    #             #         (r.partner2.chain.name, r.partner2.residue, r.dist,
+    #             #          r.partner1.chain.name, r.partner1.residue))
+    #             del r.partner2.residue[:]
+    #             nremoved += 1
+    #     self.stdoutln ( "... total " + str(nremoved) + " close contacts removed" )
+    #     if nremoved>0:
+    #         st.write_pdb ( self.xyz_wat )
+    #     return
+
+
 
     def findWaters ( self,sigma,log_type ):
 
@@ -170,6 +202,8 @@ class FitWaters(basic.TaskDriver):
             self.runApp ( "findwaters",cmd,logType=log_type )
 
         nwaters = coor.mergeLigands ( self.pdbin,[self.watout],"W",self.xyz_wat )
+        # if self.mindist:
+        #     self.removeCloseContacts()
 
         self.rvrow = self.report_row
 
@@ -240,7 +274,7 @@ class FitWaters(basic.TaskDriver):
             elif rc0:
                 ninc += 1
             self.drawProgressGraph ( sigma,int(rc["nwaters"]),float(rc["rfactor"]),
-                                    float(rc["rfree"]) )
+                                     float(rc["rfree"]) )
             sigma += step
 
         os.rename ( rc0["logfile"],self.refmac_log )
@@ -298,16 +332,18 @@ class FitWaters(basic.TaskDriver):
         #    self.PHI      = ""
         #    self.FOM      = ""
 
+        self.mindist = None
+        self.maxdist = None
         if self.getParameter(sec1.FLOOD_CBX)=="True":
             self.fndwat_cmd += [ "--flood","--flood-atom-radius",
                                  self.getParameter(sec1.FLOOD_RADIUS) ]
         else:
-            mindist = self.getParameter ( sec1.MIN_DIST )
-            maxdist = self.getParameter ( sec1.MAX_DIST )
-            if mindist:
-                self.fndwat_cmd += [ "--min-dist",self.getParameter(sec1.MIN_DIST) ]
-            if maxdist:
-                self.fndwat_cmd += [ "--max-dist",self.getParameter(sec1.MAX_DIST) ]
+            self.mindist = self.getParameter ( sec1.MIN_DIST )
+            self.maxdist = self.getParameter ( sec1.MAX_DIST )
+            if self.mindist:
+                self.fndwat_cmd += [ "--min-dist",self.mindist ]
+            if self.maxdist:
+                self.fndwat_cmd += [ "--max-dist",self.maxdist ]
 
         # make command-line parameters for refmac
         self.refmac_cmd = [ 
@@ -371,14 +407,28 @@ class FitWaters(basic.TaskDriver):
                 structure.copyLigands          ( istruct    )
                 structure.addWaterSubtype  ()
                 self.putTitle   ( "Results" )
-                self.putStructureWidget ( "structure_btn_",
-                                          "Structure and electron density",
-                                          structure )
+                self.putStructureWidget   ( "structure_btn_",
+                                            "Structure and electron density",
+                                            structure )
                 # update structure revision
                 revision = self.makeClass ( self.input_data.data.revision[0] )
                 revision.setStructureData ( structure )
                 self.registerRevision     ( revision  )
                 have_results = True
+
+                rvrow0 = self.rvrow
+                # meta = qualrep.quality_report ( self,revision )
+                try:
+                    meta = qualrep.quality_report ( self,revision )
+                    # self.stderr ( " META=" + str(meta) )
+                    if "molp_score" in meta:
+                        self.generic_parser_summary["refmac"]["molp_score"] = meta["molp_score"]
+
+                except:
+                    meta = None
+                    self.stderr ( " *** validation tools or molprobity failure" )
+                    self.rvrow = rvrow0 + 4
+
                 auto.makeNextTask ( self,{
                     "revision" : revision,
                     "nwaters"  : str(nwaters)

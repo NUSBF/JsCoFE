@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    05.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -121,7 +121,7 @@ function TaskFitWaters()  {
                         tooltip   : 'The minimum distance to macromolecular ' +
                                     'surface water molecules should be found at.',
                         range     : [0.0,'*'],
-                        value     : '',
+                        value     : '1.7',
                         // default   : '0.0',
                         position  : [2,0,1,1],
                         showon    : {FLOOD_CBX:[false]}
