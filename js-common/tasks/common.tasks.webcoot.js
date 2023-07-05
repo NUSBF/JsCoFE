@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.06.23   <--  Date of Last Modification.
+ *    05.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -233,7 +233,9 @@ if (!__template)  {
                         isDifference   : false,
                         useWeight      : false,
                         calcStructFact : false
-                      }, { r: 0.733, g: 0.2, b: 1.0 } ]
+                      }, {
+                        mapColour: { r: 0.733, g: 0.2, b: 1.0 }
+                      }]
           });
         if (istruct.DELFAN)
           inputFiles.push ({
@@ -244,6 +246,9 @@ if (!__template)  {
                         isDifference   : true,
                         useWeight      : false,
                         calcStructFact : false
+                      }, {
+                        positiveDiffColour: { r: 0.055, g: 0.4, b: 0.333 },
+                        negativeDiffColour: { r: 0.98 , g: 0.5, b: 0.45  }
                       }]
           });
       }
@@ -255,7 +260,7 @@ if (!__template)  {
         if (isubstruct.FAN)
           inputFiles.push ({
             type : 'mtz',
-            args : [ mtzURL,'anom-map',{
+            args : [ mtzURL,'anom-substr-map',{
                         F              : isubstruct.FAN,
                         PHI            : isubstruct.PHAN,
                         // Fobs           : isubstruct.FP,
@@ -264,6 +269,8 @@ if (!__template)  {
                         isDifference   : false,
                         useWeight      : false,
                         calcStructFact : false
+                      }, {
+                        mapColour: { r: 0.686, g: 0.376, b: 0.102 }
                       }]
           });
       }
