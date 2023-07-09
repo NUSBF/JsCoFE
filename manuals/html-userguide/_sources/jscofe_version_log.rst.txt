@@ -22,6 +22,20 @@ CCP4 Cloud Version Log
     #. New function *"check workteam"* added to *Project page*
 
 
+    
+
+    #. ``Deposition task`` replaced by the pair of ``PDB Validation report`` and ``PDB Deposition files``
+
+    #. Fixed a bug allowing to create tasks from *Task Dock* irrespectively of data available
+
+    #. ``Fit waters`` now looks for map level optimising ``R-factor``
+
+    #. Parameters, different from default, are now highlighted with blue italics
+
+    #. Jobs can be copy-pasted with set parameters
+
+
+
 **Version 1.7.0013** 
 
     *Released on 13.06.2023 with CCP4 8.0.012*
@@ -33,11 +47,11 @@ CCP4 Cloud Version Log
 
     #. Added option to fit uploaded ligand with ligand generated from ligand description
 
-    #. Pairef fixes
+    #. ``Pairef`` fixes
 
-    #. Added compatibility with previous version for Slice and Slice'N'Dice tasks
+    #. Added compatibility with previous version for ``Slice`` and ``Slice'N'Dice`` tasks
 
-    #. Added Morda try in Auto-MR workflow if mrBump run didn't succeed
+    #. Added Morda try in Auto-MR workflow if ``mrBump`` run didn't succeed
 
     #. Validation of login names and user names fixed
 
@@ -48,8 +62,6 @@ CCP4 Cloud Version Log
     #. Graceful handling of wrong Cloud Storage path implemented
 
     #. Fixed bug not letting to rename projects right after unsharing
-
-
 
 
 **Version 1.7.0012** 

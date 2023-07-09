@@ -182,3 +182,11 @@ This is 'test-data' directory of the CCP4Cloud DEV and PRE Clouds; Cloud tests d
 
 Cloud tests are run on setest machine on https://openstack.stfc.ac.uk/auth/login/ 
 
+---------
+Inventory
+---------
+
+
+`CCP4 tests <http://devtools.fg.oisin.rc-harwell.ac.uk/tests/>`_
+
+`Failing tests <http://devtools.fg.oisin.rc-harwell.ac.uk/tests/CCP4%20tests%2051ebb87582b44485825c2d5a19e24fd3/Failing%20tests%209284330721fb4b8d9c61fa5f265dd301.html>`_
