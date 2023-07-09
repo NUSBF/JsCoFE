@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.06.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -449,16 +449,15 @@ ProjectPage.prototype.end_action = function()  {
 }
 
 ProjectPage.prototype.addJob = function()  {
+  // this.addJobRepeat();
   this.selectRemark();
   var self = this;
   if (this.start_action('add_job'))
-    // (function(self){
-      self.jobTree.addJob ( false,false,self,function(key){
-        // self.del_btn.setDisabled ( false );
-        self._set_del_button_state();
-        self.end_action();
-      });
-    // }(this))
+    self.jobTree.addJob ( false,false,self,function(key){
+      // self.del_btn.setDisabled ( false );
+      self._set_del_button_state();
+      self.end_action();
+    });
 }
 
 ProjectPage.prototype.addJobRepeat = function()  {
@@ -532,6 +531,31 @@ ProjectPage.prototype.cloneJob = function() {
       });
     // }(this))
   }
+}
+
+ProjectPage.prototype.copyToClipboard = function() {
+let crTask = this.jobTree.getSelectedTask();
+  if (crTask)  {
+    __clipboard.task = crTask;
+  } else
+    new MessageBox ( 'No task copied',
+      '<div style="width:300px;"><h2>No task copied</h2>' +
+      'Task could not be copied to Clipboard.',
+      'msg_error' );
+}
+
+ProjectPage.prototype.pasteFromClipboard = function() {
+  if (__clipboard.task)  {
+    let task = eval ( 'new ' + __clipboard.task._type + '()' );
+    task.uname      = __clipboard.task.uname;
+    task.uoname     = __clipboard.task.uoname;
+    task.parameters = $.extend ( true,{},__clipboard.task.parameters );
+    this.addTaskToSelected ( task,image_path(task.icon()),task.title );
+  } else
+    new MessageBox ( 'Empty clipboard',
+      '<div style="width:300px;"><h2>Empty Clipboard</h2>' +
+      'No task found in Clipboard.',
+      'msg_error' );
 }
 
 ProjectPage.prototype.deleteJob = function() {
@@ -855,6 +879,24 @@ ProjectPage.prototype.onTreeContextMenu = function() {
         items.delJobItem.label = 'Delete remark';
     }
 
+    if (crTask)  {
+      let clipboard_name = crTask.clipboard_name();
+      if (clipboard_name)
+        items.copyToClipboard = { // The "Clone job" menu item
+          label : 'Copy ' + clipboard_name + ' to clipboard',
+          icon  : image_path('copy'),
+          action: function(){ self.copyToClipboard(); }
+        };
+    }
+
+    if (__clipboard.task)  {
+      items.pasteFromClipboard = { // The "Clone job" menu item
+        label : 'Paste ' + __clipboard.task.clipboard_name() + ' from clipboard',
+        icon  : image_path('paste'),
+        action: function(){ self.pasteFromClipboard(); }
+      };
+    }
+
     if (!$(self.open_btn.element).button('option','disabled'))  {
       if (crTask && (crTask.state==job_code.remark) && (crTask.isWebLink()))  {
         items.openJobItem = { // The "Open job" menu item
@@ -919,11 +961,11 @@ ProjectPage.prototype.onTreeContextMenu = function() {
       };
     }
 
-    if (node.parentId && (!self.jobTree.in_archive))  {
-      var crTask = self.jobTree.task_map[node.id];
-      if (crTask && (crTask.state!=job_code.remark))
+    if (node.parentId && (!self.jobTree.in_archive) && crTask)  {
+      let clipboard_name = crTask.clipboard_name();
+      if (clipboard_name && (crTask.state!=job_code.remark))
         items.addToDockItem = {
-          label : "Add task to dock",
+          label : 'Add ' + clipboard_name + ' to dock',
           icon  : image_path('dock_small'),
           action: function(){ self.addToDock(); }
         };
@@ -1203,6 +1245,38 @@ ProjectPage.prototype.selectRemark = function()  {
 }
 
 
+ProjectPage.prototype.addTaskToSelected = function ( task,icon_uri,title )  {
+
+  if (task.state==job_code.retired)  {
+
+    new MessageBox ( 'Task retired',
+        '<div style="min-width:400px"><h2>Task retired</h2>Task<p>' +
+        '<div style="text-align:center"><img style="vertical-align:middle" src="' +
+        icon_uri +
+        '" width="26" height="24"><span style="vertical-align:middle">&nbsp;&nbsp;<b>' +
+        title + '</b></span></div><p>has been retired and cannot be added ' +
+        'to the Project. You may remove this task from the dock.</div>',
+        'msg_warning' );
+
+  } else  {
+    this.selectRemark();
+    if (this.start_action('add_job'))  {
+      this.can_reload = true;
+      var self = this;
+      this.jobTree.addTask ( task,false,false,this,
+        function(key,avail_key,dataSummary){
+          // if (key!=1)  // task was added or failed
+          self._set_del_button_state();
+          self.end_action();
+          if (dataSummary.status<=0)
+            new TaskDataDialog ( dataSummary,task,avail_key );
+        });
+    }
+  }
+
+}
+
+
 ProjectPage.prototype.makeDock = function()  {
 
   var dock_btn = this.toolPanel
@@ -1222,47 +1296,49 @@ ProjectPage.prototype.makeDock = function()  {
         if (!$(self.add_btn.element).button('option','disabled'))  {
 
           var task = eval ( 'new ' + taskType + '()' );
-          if (task.state==job_code.retired)  {
+          self.addTaskToSelected ( task,icon_uri,title );
 
-            new MessageBox ( 'Task retired',
-                '<div style="min-width:400px"><h2>Task retired</h2>Task<p>' +
-                '<div style="text-align:center"><img style="vertical-align:middle" src="' +
-                icon_uri +
-                '" width="26" height="24"><span style="vertical-align:middle">&nbsp;&nbsp;<b>' +
-                title + '</b></span></div><p>has been retired and cannot be added ' +
-                'to the Project. You may remove this task from the dock.</div>',
-                'msg_warning' );
+          // if (task.state==job_code.retired)  {
 
-          } else  {
+          //   new MessageBox ( 'Task retired',
+          //       '<div style="min-width:400px"><h2>Task retired</h2>Task<p>' +
+          //       '<div style="text-align:center"><img style="vertical-align:middle" src="' +
+          //       icon_uri +
+          //       '" width="26" height="24"><span style="vertical-align:middle">&nbsp;&nbsp;<b>' +
+          //       title + '</b></span></div><p>has been retired and cannot be added ' +
+          //       'to the Project. You may remove this task from the dock.</div>',
+          //       'msg_warning' );
 
-            self.selectRemark();
+          // } else  {
 
-            // var rc = self.jobTree.addTask ( task,false,false,self,
-            //                   function(){
-            //                     self._set_del_button_state();
-            //                     // self.del_btn.setDisabled ( false );
-            //                   });
-            // var avail_key   = rc[0];
-            // var dataSummary = rc[1];
+          //   self.selectRemark();
 
-            // if (dataSummary.status<=0)
-            //   new TaskDataDialog ( dataSummary,task,avail_key );
+          //   // var rc = self.jobTree.addTask ( task,false,false,self,
+          //   //                   function(){
+          //   //                     self._set_del_button_state();
+          //   //                     // self.del_btn.setDisabled ( false );
+          //   //                   });
+          //   // var avail_key   = rc[0];
+          //   // var dataSummary = rc[1];
 
-            if (self.start_action('add_job'))  {
-              self.can_reload = true;
-              self.jobTree.addTask ( task,false,false,self,
-                function(key,avail_key,dataSummary){
-                  // if (key!=1)  // task was added or failed
-                  self._set_del_button_state();
-                  self.end_action();
-                  // if (key>=0)  {
-                    if (dataSummary.status<=0)
-                      new TaskDataDialog ( dataSummary,task,avail_key );
-                  // }
-                });
-            }
+          //   // if (dataSummary.status<=0)
+          //   //   new TaskDataDialog ( dataSummary,task,avail_key );
 
-          }
+          //   if (self.start_action('add_job'))  {
+          //     self.can_reload = true;
+          //     self.jobTree.addTask ( task,false,false,self,
+          //       function(key,avail_key,dataSummary){
+          //         // if (key!=1)  // task was added or failed
+          //         self._set_del_button_state();
+          //         self.end_action();
+          //         // if (key>=0)  {
+          //           if (dataSummary.status<=0)
+          //             new TaskDataDialog ( dataSummary,task,avail_key );
+          //         // }
+          //       });
+          //   }
+
+          // }
 
         }
 

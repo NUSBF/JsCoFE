@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Privateer Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2023
  *
  *  =================================================================
  *
@@ -63,7 +63,8 @@ TaskPrivateer.prototype.constructor = TaskPrivateer;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskPrivateer.prototype.icon = function()  { return 'task_privateer'; }
+TaskPrivateer.prototype.icon           = function()  { return 'task_privateer'; }
+TaskPrivateer.prototype.clipboard_name = function()  { return '"Privateer"';    }
 
 TaskPrivateer.prototype.currentVersion = function()  {
   var version = 0;

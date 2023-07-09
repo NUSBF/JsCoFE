@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -343,7 +343,8 @@ TaskBuccaneer.prototype.constructor = TaskBuccaneer;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskBuccaneer.prototype.icon = function()  { return 'task_buccaneer'; }
+TaskBuccaneer.prototype.icon           = function()  { return 'task_buccaneer'; }
+TaskBuccaneer.prototype.clipboard_name = function()  { return '"Buccaneer"';    }
 // TaskBuccaneer.prototype.desc_title = function()  {
 //   return 'Automatic model building after MR or Experimental Phasing';
 // }

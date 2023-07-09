@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -152,8 +152,10 @@ TaskWFlowAEP.prototype.constructor = TaskWFlowAEP;
 
 // ===========================================================================
 
-TaskWFlowAEP.prototype.icon = function()  { return 'task_wflowaep'; }
-TaskWFlowAEP.prototype.desc_title = function()  {
+TaskWFlowAEP.prototype.icon           = function()  { return 'task_wflowaep'; }
+TaskWFlowAEP.prototype.clipboard_name = function()  { return '"EP Workflow"'; }
+
+TaskWFlowAEP.prototype.desc_title     = function()  {
   return 'data import, ASU definition, automatic EP, refinement, ligand fitting and PDB deposition';
 }
 

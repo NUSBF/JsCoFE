@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -120,9 +120,10 @@ TaskEnsemblePrepMG.prototype.constructor = TaskEnsemblePrepMG;
 
 // ===========================================================================
 
-TaskEnsemblePrepMG.prototype.icon = function()  { return 'task_ensembleprepmg'; }
+TaskEnsemblePrepMG.prototype.icon           = function()  { return 'task_ensembleprepmg'; }
+TaskEnsemblePrepMG.prototype.clipboard_name = function()  { return '"MR Ensemble (MG)"';  }
 
-TaskEnsemblePrepMG.prototype.desc_title = function()  {
+TaskEnsemblePrepMG.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'use MrBump and CCP4mg for interactive preparation and trimming MR ensembles';
 }

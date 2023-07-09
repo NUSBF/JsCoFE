@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -896,7 +896,8 @@ TaskAcorn.prototype.constructor = TaskAcorn;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskAcorn.prototype.icon = function()  { return 'task_acorn'; }
+TaskAcorn.prototype.icon           = function()  { return 'task_acorn'; }
+TaskAcorn.prototype.clipboard_name = function()  { return '"Acorn"';    }
 
 TaskAcorn.prototype.currentVersion = function()  {
   var version = 1;

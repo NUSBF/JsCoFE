@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -224,7 +224,8 @@ TaskCCP4go.prototype.constructor = TaskCCP4go;
 
 // ===========================================================================
 
-TaskCCP4go.prototype.icon = function()  { return 'task_ccp4go'; }
+TaskCCP4go.prototype.icon           = function()  { return 'task_ccp4go'; }
+TaskCCP4go.prototype.clipboard_name = function()  { return '"CCP4go"';    }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows

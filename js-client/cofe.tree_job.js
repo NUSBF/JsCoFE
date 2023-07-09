@@ -1878,7 +1878,8 @@ JobTree.prototype.openJob = function ( dataBox,parent_page )  {
                       break;
               case job_dialog_reason.add_job :
                         dlg.tree.selectSingle ( dlg.tree.node_map[dlg.nodeId] );
-                        dlg.tree.addJob ( false,false,dlg.parent_page,function(key){
+                        // dlg.tree.addJob ( false,false,dlg.parent_page,function(key){
+                        dlg.tree.addJob ( false,true,dlg.parent_page,function(key){
                           dlg.close();
                         });
                       break;

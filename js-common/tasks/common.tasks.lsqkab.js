@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,7 +37,7 @@ function TaskLsqKab()  {
   this._type   = 'TaskLsqKab';
   this.name    = 'lsqkab';
   this.setOName ( 'lsqkab' );  // default output file name template
-  this.title   = 'Structure Superposition with LsqKab';
+  this.title   = 'Structure Superposition with LSQKab';
   //this.helpURL = './html/jscofe_task_lsqkab.html';
 
   this.maxFitParamRows = 10;
@@ -191,7 +191,8 @@ TaskLsqKab.prototype.constructor = TaskLsqKab;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskLsqKab.prototype.icon = function()  { return 'task_lsqkab'; }
+TaskLsqKab.prototype.icon           = function()  { return 'task_lsqkab'; }
+TaskLsqKab.prototype.clipboard_name = function()  { return '"LSQKab"';    }
 
 TaskLsqKab.prototype.desc_title = function()  {
 // this appears under task title in the task list

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    09.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -71,7 +71,8 @@ TaskAmple.prototype.constructor = TaskAmple;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskAmple.prototype.icon = function()  { return 'task_ample'; }
+TaskAmple.prototype.icon           = function()  { return 'task_ample'; }
+TaskAmple.prototype.clipboard_name = function()  { return '"Ample"';    }
 TaskAmple.prototype.requiredEnvironment = function() { return ['CCP4','ROSETTA_DIR']; }
 
 TaskAmple.prototype.currentVersion = function()  {

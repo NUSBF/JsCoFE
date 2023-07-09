@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,9 +59,10 @@ TaskShelxSubstr.prototype.constructor = TaskShelxSubstr;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskShelxSubstr.prototype.icon = function()  { return 'task_shelx_substr'; }
+TaskShelxSubstr.prototype.icon           = function()  { return 'task_shelx_substr'; }
+TaskShelxSubstr.prototype.clipboard_name = function()  { return '"Shelx (substr)"';  }
 
-TaskShelxSubstr.prototype.desc_title = function()  {
+TaskShelxSubstr.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'find heavy-atom substructure for use in Phaser-EP';
 }

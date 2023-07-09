@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -104,9 +104,10 @@ TaskMorda.prototype.constructor = TaskMorda;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskMorda.prototype.icon = function()  { return 'task_morda'; }
+TaskMorda.prototype.icon           = function()  { return 'task_morda'; }
+TaskMorda.prototype.clipboard_name = function()  { return '"MoRDa"';    }
 
-TaskMorda.prototype.desc_title = function()  {
+TaskMorda.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'performs automated molecular replacement protein structure solution using own domain database';
 };

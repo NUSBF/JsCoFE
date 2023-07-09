@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -105,8 +105,9 @@ TaskDocDev.prototype.constructor = TaskDocDev;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskDocDev.prototype.icon = function() { return 'task_docdev'; }
-TaskDocDev.prototype.requiredEnvironment = function() { return ['DOCREPO']; }
+TaskDocDev.prototype.icon                = function()  { return 'task_docdev';     }
+TaskDocDev.prototype.clipboard_name      = function()  { return '"Documentation"'; }
+TaskDocDev.prototype.requiredEnvironment = function()  { return ['DOCREPO'];       }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows

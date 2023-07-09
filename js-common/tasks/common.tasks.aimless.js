@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.23   <--  Date of Last Modification.
+ *    09.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1200,7 +1200,8 @@ TaskAimless.prototype.constructor = TaskAimless;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskAimless.prototype.icon = function()  { return 'task_aimless'; }
+TaskAimless.prototype.icon           = function()  { return 'task_aimless'; }
+TaskAimless.prototype.clipboard_name = function()  { return '"Aimless"';    }
 
 TaskAimless.prototype.currentVersion = function()  {
   var version = 0;

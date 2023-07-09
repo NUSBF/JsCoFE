@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -287,9 +287,10 @@ TaskCombStructure.prototype.constructor = TaskCombStructure;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCombStructure.prototype.icon = function()  { return 'task_combstructure'; }
+TaskCombStructure.prototype.icon           = function()  { return 'task_combstructure'; }
+TaskCombStructure.prototype.clipboard_name = function()  { return '"Comb Structure"';   }
 
-TaskCombStructure.prototype.desc_title = function()  {
+TaskCombStructure.prototype.desc_title     = function()  {
   // this appears under task title in the task list
     return 'provides an access to the model building COOT tools with the following cycles of refinement with Refmac';
   };

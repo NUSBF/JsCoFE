@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.04.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2022
+ *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2023
  *
  *  =================================================================
  *
@@ -141,8 +141,10 @@ TaskWFlowAMR.prototype.constructor = TaskWFlowAMR;
 
 // ===========================================================================
 
-TaskWFlowAMR.prototype.icon = function()  { return 'task_wflowamr'; }
-TaskWFlowAMR.prototype.desc_title = function()  {
+TaskWFlowAMR.prototype.icon           = function()  { return 'task_wflowamr';  }
+TaskWFlowAMR.prototype.clipboard_name = function()  { return '"AMR Workflow"'; }
+
+TaskWFlowAMR.prototype.desc_title     = function()  {
   return 'data import, ASU definition, automatic MR, refinement, ligand fitting and PDB deposition';
 }
 

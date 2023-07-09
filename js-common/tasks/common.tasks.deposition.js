@@ -4,7 +4,7 @@
  *
  *  =================================================================
  *
- *    30.06.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -146,9 +146,10 @@ TaskDeposition.prototype.constructor = TaskDeposition;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskDeposition.prototype.icon = function()  { return 'task_deposition'; }
+TaskDeposition.prototype.icon           = function()  { return 'task_deposition';  }
+TaskDeposition.prototype.clipboard_name = function()  { return ''; }  // means no copy-paste & dock
 
-TaskDeposition.prototype.desc_title = function()  {
+TaskDeposition.prototype.desc_title     = function()  {
   // this appears under task title in the task list
     return 'prepares mmCIF files for deposition and acquires the PDB Validation report from wwPDB servers';
   };

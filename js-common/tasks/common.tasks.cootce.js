@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Coot Coordinate Editor Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2023
  *
  *  =================================================================
  *
@@ -82,9 +82,10 @@ TaskCootCE.prototype.constructor = TaskCootCE;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCootCE.prototype.icon = function()  { return 'task_cootce'; }
+TaskCootCE.prototype.icon           = function()  { return 'task_cootce';   }
+TaskCootCE.prototype.clipboard_name = function()  { return '"Coot Editor"'; }
 
-TaskCootCE.prototype.desc_title = function()  {
+TaskCootCE.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'use for editing structure models without electron density (e.g., MR models)';
 }

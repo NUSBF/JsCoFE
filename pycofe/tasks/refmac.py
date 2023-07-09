@@ -396,7 +396,7 @@ class Refmac(basic.TaskDriver):
                                              libin,hkl,istruct,
                                              "FWT,PHWT,DELFWT,PHDELWT",True )
             if structure:
-                structure.setRefinerParameters ( stdin )
+                # structure.setRefinerParameters ( stdin )
                 self.putStructureWidget ( self.getWidgetId("structure_btn"),
                                           "Structure and electron density",
                                           structure )

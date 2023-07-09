@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -155,9 +155,10 @@ TaskFitWaters.prototype.constructor = TaskFitWaters;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskFitWaters.prototype.icon = function()  { return 'task_fitwaters'; }
+TaskFitWaters.prototype.icon           = function()  { return 'task_fitwaters'; }
+TaskFitWaters.prototype.clipboard_name = function()  { return '"fitWaters"';    }
 
-TaskFitWaters.prototype.desc_title = function()  {
+TaskFitWaters.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'auto-fits water molecules in density (does not launch Coot graphics)';
 }

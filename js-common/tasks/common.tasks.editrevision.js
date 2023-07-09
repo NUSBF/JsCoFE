@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.11.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2023
  *
  *  =================================================================
  *
@@ -129,7 +129,8 @@ TaskEditRevision.prototype.constructor = TaskEditRevision;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskEditRevision.prototype.icon = function()  { return 'task_editrevision'; }
+TaskEditRevision.prototype.icon           = function()  { return 'task_editrevision'; }
+TaskEditRevision.prototype.clipboard_name = function()  { return '"Edit Revision"';   }
 
 TaskEditRevision.prototype.currentVersion = function()  {
   var version = 3;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -111,9 +111,10 @@ TaskMrParse.prototype.constructor = TaskMrParse;
 
 // ===========================================================================
 
-TaskMrParse.prototype.icon = function()  { return 'task_mrparse'; }
+TaskMrParse.prototype.icon           = function()  { return 'task_mrparse'; }
+TaskMrParse.prototype.clipboard_name = function()  { return '"MrParse"';    }
 
-TaskMrParse.prototype.desc_title = function()  {
+TaskMrParse.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'finds relevant PDB/AFDB structures and prepares MR search models from them';
 }

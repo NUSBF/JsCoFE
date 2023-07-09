@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -100,7 +100,8 @@ TaskReindexHKL.prototype.constructor = TaskReindexHKL;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskReindexHKL.prototype.icon = function()  { return 'task_reindexhkl'; }
+TaskReindexHKL.prototype.icon           = function()  { return 'task_reindexhkl'; }
+TaskReindexHKL.prototype.clipboard_name = function()  { return '"Reindex"';       }
 
 TaskReindexHKL.prototype.currentVersion = function()  {
   var version = 0;

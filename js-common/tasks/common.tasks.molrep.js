@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -426,9 +426,10 @@ TaskMolrep.prototype.constructor = TaskMolrep;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskMolrep.prototype.icon = function()  { return 'task_molrep'; }
+TaskMolrep.prototype.icon           = function()  { return 'task_molrep'; }
+TaskMolrep.prototype.clipboard_name = function()  { return '"Molrep"';    }
 
-TaskMolrep.prototype.desc_title = function()  {
+TaskMolrep.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'perform MR using defined ASU and prepared MR models and/or ensembles';
 }

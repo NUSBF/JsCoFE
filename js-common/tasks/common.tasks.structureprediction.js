@@ -1,7 +1,7 @@
 /*
  *  ====================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------
  *
@@ -120,9 +120,10 @@ TaskStructurePrediction.prototype.constructor = TaskStructurePrediction;
 //    but please follow file name convention as below. Small 20x20px icon is
 //    used in Job Tree, and the large icon is used in Job Dialog and documentation.
 
-TaskStructurePrediction.prototype.icon = function()  { return 'task_structureprediction'; }
+TaskStructurePrediction.prototype.icon           = function()  { return 'task_structureprediction'; }
+TaskStructurePrediction.prototype.clipboard_name = function()  { return '"Structure Prediction"';   }
 
-TaskStructurePrediction.prototype.desc_title = function()  {
+TaskStructurePrediction.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'generate structure model with AlphaFold2';
 }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.01.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -61,9 +61,10 @@ TaskOptimiseASU.prototype.constructor = TaskOptimiseASU;
 
 // ===========================================================================
 
-TaskOptimiseASU.prototype.icon = function()  { return 'task_optimiseasu'; }
+TaskOptimiseASU.prototype.icon           = function()  { return 'task_optimiseasu'; }
+TaskOptimiseASU.prototype.clipboard_name = function()  { return '"Optimise ASU"';   }
 
-TaskOptimiseASU.prototype.desc_title = function()  {
+TaskOptimiseASU.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'makes ASU compact by moving chains via symmetry operations';
 }

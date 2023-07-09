@@ -5,7 +5,7 @@
 /*
  *  =================================================================
  *
- *    15.01.20   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -16,7 +16,7 @@
  *  **** Content :  Coot Model Building Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -47,6 +47,8 @@ TaskCoot.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.201
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
+
+TaskCoot.prototype.clipboard_name = function()  { return '"Coot"'; }
 
 if (__template)  {
   //  for server side

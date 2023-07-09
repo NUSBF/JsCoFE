@@ -341,14 +341,14 @@ class DType(dtype_xyz.DType):
                 self.FreeR_flag = hkl_class.dataset.FREE
         return
 
-    def setRefinerParameters ( self,params ):
-        self.refiner_params = params
-        return
+    # def setRefinerParameters ( self,params ):
+    #     self.refiner_params = params
+    #     return
 
-    def getRefinerParameters ( self ):
-        if hasattr(self,"refiner_params"):
-            return self.refiner_params
-        return None
+    # def getRefinerParameters ( self ):
+    #     if hasattr(self,"refiner_params"):
+    #         return self.refiner_params
+    #     return None
 
     def copyLabels ( self,struct_class ):
         self.FP      = struct_class.FP

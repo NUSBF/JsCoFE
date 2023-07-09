@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,7 +38,7 @@ function TaskNautilus()  {
   this.name    = 'nautilus';
   this.setOName ( 'nautilus' );  // default output file name template
   this.title   = 'Automatic Model Building of RNA/DNA with Nautilus';
-  this.helpURL = './html/jscofe_task_nautilus.html';
+  // this.helpURL = './html/jscofe_task_nautilus.html';
 
   this.input_dtypes = [{      // input data types
       data_type   : {'DataRevision':[['rna','dna'],'!asu','!phases']}, // data type(s) and subtype(s)
@@ -162,7 +162,8 @@ TaskNautilus.prototype.constructor = TaskNautilus;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskNautilus.prototype.icon = function()  { return 'task_nautilus'; }
+TaskNautilus.prototype.icon           = function()  { return 'task_nautilus'; }
+TaskNautilus.prototype.clipboard_name = function()  { return '"Nautilus"';    }
 
 TaskNautilus.prototype.currentVersion = function()  {
   var version = 0;

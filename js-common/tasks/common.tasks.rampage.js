@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    24.12.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  RAMPAGE Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev  2022
+ *  (C) E. Krissinel, A. Lebedev  2022-2023
  *
  *  =================================================================
  *
@@ -60,7 +60,8 @@ TaskRampage.prototype.constructor = TaskRampage;
 
 // ===========================================================================
 
-TaskRampage.prototype.icon = function()  { return 'task_rampage'; }
+TaskRampage.prototype.icon           = function()  { return 'task_rampage'; }
+TaskRampage.prototype.clipboard_name = function()  { return '"Rampage"';    }
 
 TaskRampage.prototype.currentVersion = function()  {
   var version = 1;

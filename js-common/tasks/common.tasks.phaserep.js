@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -287,9 +287,10 @@ TaskPhaserEP.prototype.constructor = TaskPhaserEP;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskPhaserEP.prototype.icon = function()  { return 'task_phaserep'; }
+TaskPhaserEP.prototype.icon           = function()  { return 'task_phaserep'; }
+TaskPhaserEP.prototype.clipboard_name = function()  { return '"Phaser-EP"';   }
 
-TaskPhaserEP.prototype.desc_title = function()  {
+TaskPhaserEP.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'perform EP using a defined ASU and heavy-atom substructure';
 }

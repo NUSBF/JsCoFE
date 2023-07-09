@@ -400,7 +400,7 @@ class FitWaters(basic.TaskDriver):
                             leadKey=istruct.leadKey,
                             refiner=istruct.refiner )
             if structure:
-                structure.setRefinerParameters ( ref_params )
+                # structure.setRefinerParameters ( ref_params )
                 structure.copyAssociations     ( istruct    )
                 structure.copySubtype          ( istruct    )
                 structure.copyLabels           ( istruct    )

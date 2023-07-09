@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -82,7 +82,8 @@ TaskBalbes.prototype.constructor = TaskBalbes;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskBalbes.prototype.icon = function()  { return 'task_balbes'; }
+TaskBalbes.prototype.icon           = function()  { return 'task_balbes'; }
+TaskBalbes.prototype.clipboard_name = function()  { return '"Balbes"';    }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows

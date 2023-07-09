@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Facility Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2023
  *
  *  =================================================================
  *
@@ -66,6 +66,8 @@ TaskCloudImport.prototype.constructor = TaskCloudImport;
 
 
 // ===========================================================================
+
+TaskCloudImport.prototype.clipboard_name = function()  { return '"Cloud Import"'; }
 
 TaskCloudImport.prototype.currentVersion = function()  {
   var version = 0;

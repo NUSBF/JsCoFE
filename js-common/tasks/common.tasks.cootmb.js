@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Coot Model Building Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -86,9 +86,10 @@ TaskCootMB.prototype.constructor = TaskCootMB;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCootMB.prototype.icon = function()  { return 'task_cootmb'; }
+TaskCootMB.prototype.icon           = function()  { return 'task_cootmb';           }
+TaskCootMB.prototype.clipboard_name = function()  { return '"Coot Model Building"'; }
 
-TaskCootMB.prototype.desc_title = function()  {
+TaskCootMB.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'fit atoms and new ligands in electron density, validate and explore';
 }

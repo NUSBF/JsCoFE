@@ -8,7 +8,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    09.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -78,7 +78,8 @@ TaskChangeSpG.prototype.constructor = TaskChangeSpG;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskChangeSpG.prototype.icon = function()  { return 'task_changespg'; }
+TaskChangeSpG.prototype.icon           = function()  { return 'task_changespg';       }
+TaskChangeSpG.prototype.clipboard_name = function()  { return '"Change Space Group"'; }
 
 TaskChangeSpG.prototype.currentVersion = function()  {
   var version = 1;  // was advanced to prevent cloning in old projects

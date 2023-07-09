@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -116,7 +116,8 @@ TaskPISA.prototype.constructor = TaskPISA;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskPISA.prototype.icon = function()  { return 'task_pisa'; }
+TaskPISA.prototype.icon           = function()  { return 'task_pisa'; }
+TaskPISA.prototype.clipboard_name = function()  { return '"PISA"';    }
 
 TaskPISA.prototype.currentVersion = function()  {
   var version = 1;  // advanced on 06.12.2022

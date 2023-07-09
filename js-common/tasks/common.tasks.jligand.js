@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  jLigand Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2023
  *
  *  =================================================================
  *
@@ -62,7 +62,8 @@ TaskJLigand.prototype.constructor = TaskJLigand;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskJLigand.prototype.icon = function()  { return 'task_jligand'; }
+TaskJLigand.prototype.icon           = function()  { return 'task_jligand'; }
+TaskJLigand.prototype.clipboard_name = function()  { return '"jLigand"';    }
 
 TaskJLigand.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  iMosflm Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2023
  *
  *  =================================================================
  *
@@ -72,7 +72,8 @@ TaskIMosflm.prototype.constructor = TaskIMosflm;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskIMosflm.prototype.icon = function()  { return 'task_imosflm'; }
+TaskIMosflm.prototype.icon           = function()  { return 'task_imosflm'; }
+TaskIMosflm.prototype.clipboard_name = function()  { return '"iMosflm"';    }
 
 TaskIMosflm.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 

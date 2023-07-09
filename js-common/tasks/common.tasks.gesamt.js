@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -186,9 +186,10 @@ TaskGesamt.prototype.constructor = TaskGesamt;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskGesamt.prototype.icon = function()  { return 'task_gesamt'; }
+TaskGesamt.prototype.icon           = function()  { return 'task_gesamt'; }
+TaskGesamt.prototype.clipboard_name = function()  { return '"Gesamt"';    }
 
-TaskGesamt.prototype.desc_title = function()  {
+TaskGesamt.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'automatic, pairwise/multiple, structure alignment/superposition and PDB searches';
 }

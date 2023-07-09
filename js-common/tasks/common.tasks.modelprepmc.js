@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.08.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MultiChain Model Preparation from Coordinates Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2023
  *
  *  =================================================================
  *
@@ -71,9 +71,10 @@ TaskModelPrepMC.prototype.constructor = TaskModelPrepMC;
 
 // TaskModelPrepMC.prototype.cleanJobDir = function ( jobDir )  {}
 
-TaskModelPrepMC.prototype.icon = function()  { return 'task_modelprepmc'; }
+TaskModelPrepMC.prototype.icon           = function()  { return 'task_modelprepmc';     }
+TaskModelPrepMC.prototype.clipboard_name = function()  { return '"MR Model (complex)"'; }
 
-TaskModelPrepMC.prototype.desc_title = function()  {
+TaskModelPrepMC.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'prepare multi-chain MR search model from template complex structure';
 }

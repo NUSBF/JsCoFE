@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -105,9 +105,10 @@ TaskFindMySequence.prototype.constructor = TaskFindMySequence;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskFindMySequence.prototype.icon = function()  { return 'task_findmysequence'; }
+TaskFindMySequence.prototype.icon           = function()  { return 'task_findmysequence'; }
+TaskFindMySequence.prototype.clipboard_name = function()  { return '"findMySequence"';    }
 
-TaskFindMySequence.prototype.desc_title = function()  {
+TaskFindMySequence.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'reconstructs sequence from phases';
 };

@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -151,7 +151,8 @@ TaskMrBump.prototype.constructor = TaskMrBump;
 
 // ===========================================================================
 
-TaskMrBump.prototype.icon = function()  { return 'task_mrbump'; }
+TaskMrBump.prototype.icon           = function()  { return 'task_mrbump'; }
+TaskMrBump.prototype.clipboard_name = function()  { return '"MrBump"';    }
 
 TaskMrBump.prototype.currentVersion = function()  {
   var version = 1;

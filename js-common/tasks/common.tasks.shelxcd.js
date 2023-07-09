@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -290,9 +290,10 @@ TaskShelxCD.prototype.constructor = TaskShelxCD;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskShelxCD.prototype.icon = function()  { return 'task_shelx_substr'; }
+TaskShelxCD.prototype.icon           = function()  { return 'task_shelx_substr'; }
+TaskShelxCD.prototype.clipboard_name = function()  { return '"Shelx-C/D"';       }
 
-TaskShelxCD.prototype.desc_title = function()  {
+TaskShelxCD.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'find heavy-atom substructure for use in Phaser-EP';
 }

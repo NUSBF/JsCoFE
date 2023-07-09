@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.09.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ImportSeqCP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M, Fando 2020-2022
+ *  (C) E. Krissinel, A. Lebedev, M, Fando 2020-2023
  *
  *  =================================================================
  *
@@ -108,7 +108,8 @@ TaskImportSeqCP.prototype.constructor = TaskImportSeqCP;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskImportSeqCP.prototype.icon = function()  { return 'task_importseqcp'; }
+TaskImportSeqCP.prototype.icon           = function()  { return 'task_importseqcp';  }
+TaskImportSeqCP.prototype.clipboard_name = function()  { return '"Import Sequence"'; }
 
 TaskImportSeqCP.prototype.currentVersion = function()  {
   var version = 0;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -110,9 +110,10 @@ TaskEnsemblePrepSeq.prototype.constructor = TaskEnsemblePrepSeq;
 
 // ===========================================================================
 
-TaskEnsemblePrepSeq.prototype.icon = function()  { return 'task_ensembleprepseq'; }
+TaskEnsemblePrepSeq.prototype.icon           = function()  { return 'task_ensembleprepseq'; }
+TaskEnsemblePrepSeq.prototype.clipboard_name = function()  { return '"MR Ensemble (seq)"';  }
 
-TaskEnsemblePrepSeq.prototype.desc_title = function()  {
+TaskEnsemblePrepSeq.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'finds relevant PDB/AFDB structures and makes MR ensembles from them';
 }

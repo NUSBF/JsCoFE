@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    02.02.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -101,9 +101,8 @@ TaskSC.prototype.constructor = TaskSC;
 // export such that it could be used in both node and a browser
 
 // task icons. 
-TaskSC.prototype.icon = function() {
-  return 'task_SC';
-}
+TaskSC.prototype.icon           = function()  { return 'task_SC'; }
+TaskSC.prototype.clipboard_name = function()  { return '"SC"';    }
 
 //  Define task version. Whenever task changes (e.g. receives new input
 //    parameters or data), the version number must be advanced. jsCoFE framework

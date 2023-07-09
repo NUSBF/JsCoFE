@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -60,9 +60,10 @@ TaskShelxAuto.prototype.constructor = TaskShelxAuto;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskShelxAuto.prototype.icon = function()  { return 'task_shelx'; }
+TaskShelxAuto.prototype.icon           = function()  { return 'task_shelx';   }
+TaskShelxAuto.prototype.clipboard_name = function()  { return '"Shelx-Auto"'; }
 
-TaskShelxAuto.prototype.desc_title = function()  {
+TaskShelxAuto.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'finds heavy-atom substructure, performs EP and builds atomic model';
 }

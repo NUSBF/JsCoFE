@@ -6,7 +6,7 @@
 /*
  *  =================================================================
  *
- *    15.04.21   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -17,7 +17,7 @@
  *  **** Content :  Facility Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -62,7 +62,8 @@ TaskFacilityImport.prototype.constructor = TaskFacilityImport;
 
 // ===========================================================================
 
-TaskFacilityImport.prototype.icon = function()  { return 'task_fimport'; }
+TaskFacilityImport.prototype.icon           = function()  { return 'task_fimport';      }
+TaskFacilityImport.prototype.clipboard_name = function()  { return '"Facility Import"'; }
 
 TaskFacilityImport.prototype.currentVersion = function()  {
   var version = 0;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.03.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -59,7 +59,20 @@ TaskAWNuce.prototype.constructor = TaskAWNuce;
 
 // ===========================================================================
 
+TaskAWNuce.prototype.icon           = function()  { return 'task_arpwarp'; }
+TaskAWNuce.prototype.clipboard_name = function()  { return '"Nuce"';       }
 
+TaskAWNuce.prototype.desc_title = function()  {
+// this appears under task title in the task list
+  return 'traces nucleic acid chains in electron density';
+}
+
+TaskAWNuce.prototype.currentVersion = function()  {
+  var version = 0;
+  if (__template)
+        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
+  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
+}
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
@@ -72,20 +85,6 @@ TaskAWNuce.prototype.requiredEnvironment = function() { return ['CCP4','warpbin'
 TaskAWNuce.prototype.authorisationID = function() {
   if (this.nc_type=='client')  return 'arpwarp';  // check Arp/wArp authorisation
   return '';
-}
-
-TaskAWNuce.prototype.icon = function()  { return 'task_arpwarp'; }
-
-TaskAWNuce.prototype.desc_title = function()  {
-// this appears under task title in the task list
-  return 'traces nucleic acid chains in electron density';
-}
-
-TaskAWNuce.prototype.currentVersion = function()  {
-  var version = 0;
-  if (__template)
-        return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
-  else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
 // hotButtons return list of buttons added in JobDialog's toolBar.

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -104,7 +104,8 @@ TaskZanuda.prototype.constructor = TaskZanuda;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskZanuda.prototype.icon = function()  { return 'task_zanuda'; }
+TaskZanuda.prototype.icon           = function()  { return 'task_zanuda'; }
+TaskZanuda.prototype.clipboard_name = function()  { return '"Zanuda"';    }
 
 TaskZanuda.prototype.currentVersion = function()  {
   var version = 1;
