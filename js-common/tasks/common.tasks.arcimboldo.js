@@ -5,7 +5,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -16,7 +16,7 @@
  *  **** Content :  Arcimboldo-Lite Legacy Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2021
+ *  (C) E. Krissinel, A. Lebedev 2021-2023
  *
  *  =================================================================
  *
@@ -48,6 +48,8 @@ TaskArcimboldo.prototype.constructor = TaskArcimboldo;
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
+
+TaskArcimboldo.prototype.clipboard_name = function()  { return '"Arcimboldo"'; }
 
 if (__template)  {
   //  for server side

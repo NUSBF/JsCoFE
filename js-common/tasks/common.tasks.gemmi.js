@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -114,9 +114,10 @@ TaskGemmi.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-TaskGemmi.prototype.icon = function()  { return 'task_gemmi'; }
+TaskGemmi.prototype.icon           = function()  { return 'task_gemmi'; }
+TaskGemmi.prototype.clipboard_name = function()  { return '"Gemmi"';    }
 
-TaskGemmi.prototype.desc_title = function()  {
+TaskGemmi.prototype.desc_title     = function()  {
   // this appears under task title in the task list
     return 'exposes python terminal to user for performing very custom operations on coordinate data';
   };

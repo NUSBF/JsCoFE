@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -240,7 +240,8 @@ TaskXyzUtils.prototype.constructor = TaskXyzUtils;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskXyzUtils.prototype.icon = function()  { return 'task_xyzutils'; }
+TaskXyzUtils.prototype.icon           = function()  { return 'task_xyzutils'; }
+TaskXyzUtils.prototype.clipboard_name = function()  { return '"XYZ Utils"';   }
 
 TaskXyzUtils.prototype.currentVersion = function()  {
   var version = 0;

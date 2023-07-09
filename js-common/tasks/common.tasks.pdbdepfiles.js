@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.06.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -62,9 +62,10 @@ TaskPDBDepFiles.prototype.constructor = TaskPDBDepFiles;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskPDBDepFiles.prototype.icon = function()  { return 'task_pdbdepfiles'; }
+TaskPDBDepFiles.prototype.icon           = function()  { return 'task_pdbdepfiles'; }
+TaskPDBDepFiles.prototype.clipboard_name = function()  { return ''; }  // means no copy-paste & dock
 
-TaskPDBDepFiles.prototype.desc_title = function()  {
+TaskPDBDepFiles.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'prepares mmCIF files for PDB deposition';
 };

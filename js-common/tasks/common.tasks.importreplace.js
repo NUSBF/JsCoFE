@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.21   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ImportReplace Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2023
  *
  *  =================================================================
  *
@@ -66,7 +66,8 @@ TaskImportReplace.prototype.constructor = TaskImportReplace;
 
 // ===========================================================================
 
-TaskImportReplace.prototype.icon = function()  { return 'task_migrate'; }
+TaskImportReplace.prototype.icon           = function()  { return 'task_migrate';       }
+TaskImportReplace.prototype.clipboard_name = function()  { return '"Import & Replace"'; }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows

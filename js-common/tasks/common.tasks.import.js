@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    20.06.22   <--  Date of Last Modification.
+ *    09.02.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  ==========================================================================
  *
@@ -65,7 +65,9 @@ TaskImport.prototype.constructor = TaskImport;
 
 // ===========================================================================
 
-TaskImport.prototype.desc_title = function()  {
+TaskImport.prototype.clipboard_name = function()  { return '"Import"'; }
+
+TaskImport.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'upload and import various files from your device into the Project';
 }

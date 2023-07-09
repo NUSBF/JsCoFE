@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -109,7 +109,8 @@ TaskFreeRFlag.prototype.constructor = TaskFreeRFlag;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskFreeRFlag.prototype.icon = function()  { return 'task_freerflag'; }
+TaskFreeRFlag.prototype.icon           = function()  { return 'task_freerflag'; }
+TaskFreeRFlag.prototype.clipboard_name = function()  { return '"FreeRFlag"';    }
 
 TaskFreeRFlag.prototype.currentVersion = function()  {
   var version = 0;

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.09.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Remark Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -106,6 +106,8 @@ if (!__template)  {
     //   return __remark_icon[this.theme_no][0] + '_s';
     // return __remark_icon[this.theme_no][0];
   }
+
+  TaskRemark.prototype.clipboard_name = function()  { return '"Remark"'; }
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class

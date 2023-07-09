@@ -5,7 +5,7 @@
 /*
  *  =================================================================
  *
- *    26.03.20   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -16,7 +16,7 @@
  *  **** Content :  CCP4ez Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -52,6 +52,8 @@ TaskCCP4ez.prototype.constructor = TaskCCP4ez;
 
 
 // ===========================================================================
+
+TaskCCP4ez.prototype.clipboard_name = function()  { return '"CCP4ez"'; }
 
 // export such that it could be used in both node and a browser
 if (__template)  {

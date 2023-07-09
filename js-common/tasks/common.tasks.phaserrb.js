@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.01.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -63,9 +63,10 @@ TaskPhaserRB.prototype.constructor = TaskPhaserRB;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskPhaserRB.prototype.icon = function()  { return 'task_phaserrb'; }
+TaskPhaserRB.prototype.icon           = function()  { return 'task_phaserrb'; }
+TaskPhaserRB.prototype.clipboard_name = function()  { return '"Phaser-RB"';   }
 
-TaskPhaserRB.prototype.desc_title = function()  {
+TaskPhaserRB.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'optimises position of macromolecular chains';
 }

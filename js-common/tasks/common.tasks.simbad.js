@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -279,9 +279,10 @@ TaskSimbad.prototype.constructor = TaskSimbad;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskSimbad.prototype.icon = function()  { return 'task_simbad'; }
+TaskSimbad.prototype.icon           = function()  { return 'task_simbad'; }
+TaskSimbad.prototype.clipboard_name = function()  { return '"Simbad"';    }
 
-TaskSimbad.prototype.desc_title = function()  {
+TaskSimbad.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'finds structural homologs by matching the dataset properties and performs MR';
 }

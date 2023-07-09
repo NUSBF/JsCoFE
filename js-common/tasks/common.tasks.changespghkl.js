@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Change Space Group Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -73,7 +73,8 @@ TaskChangeSpGHKL.prototype.constructor = TaskChangeSpGHKL;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskChangeSpGHKL.prototype.icon = function()  { return 'task_changespghkl'; }
+TaskChangeSpGHKL.prototype.icon           = function()  { return 'task_changespghkl';    }
+TaskChangeSpGHKL.prototype.clipboard_name = function()  { return '"Change Space Group"'; }
 
 TaskChangeSpGHKL.prototype.currentVersion = function()  {
   var version = 0;

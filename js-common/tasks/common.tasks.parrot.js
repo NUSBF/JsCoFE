@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -219,7 +219,8 @@ TaskParrot.prototype.constructor = TaskParrot;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskParrot.prototype.icon = function()  { return 'task_parrot'; }
+TaskParrot.prototype.icon           = function()  { return 'task_parrot'; }
+TaskParrot.prototype.clipboard_name = function()  { return '"Parrot"';    }
 
 TaskParrot.prototype.doPackSuffixes = function()  {
   return [ '.mtz_diff.map', // when comes from shelx-substructure

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.04.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -155,8 +155,10 @@ TaskWFlowSMR.prototype.constructor = TaskWFlowSMR;
 
 // ===========================================================================
 
-TaskWFlowSMR.prototype.icon = function()  { return 'task_wflowsmr'; }
-TaskWFlowSMR.prototype.desc_title = function()  {
+TaskWFlowSMR.prototype.icon           = function()  { return 'task_wflowsmr';  }
+TaskWFlowSMR.prototype.clipboard_name = function()  { return '"SMR Workflow"'; }
+
+TaskWFlowSMR.prototype.desc_title     = function()  {
   return 'data import, ASU definition, phaser MR, refinement, ligand fitting and PDB deposition';
 }
 

@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  Substructure Editing Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2021
+ *  (C) E. Krissinel, A. Lebedev 2019-2023
  *
  *  =================================================================
  *
@@ -98,7 +98,8 @@ TaskEditRevisionSubstr.prototype.constructor = TaskEditRevisionSubstr;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskEditRevisionSubstr.prototype.icon = function()  { return 'task_editrevision_substr'; }
+TaskEditRevisionSubstr.prototype.icon           = function()  { return 'task_editrevision_substr'; }
+TaskEditRevisionSubstr.prototype.clipboard_name = function()  { return '"Edit Revision"';          }
 
 TaskEditRevisionSubstr.prototype.currentVersion = function()  {
   var version = 2;

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -397,7 +397,9 @@ TaskCCP4Build.prototype.constructor = TaskCCP4Build;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCCP4Build.prototype.icon = function() { return 'task_ccp4build'; }
+TaskCCP4Build.prototype.icon           = function()  { return 'task_ccp4build'; }
+TaskCCP4Build.prototype.clipboard_name = function()  { return '"CCP4Build"';    }
+
 // TaskCCP4Build.prototype.desc_title = function()  {
 //   return 'Automatic model building after MR or Experimental Phasing';
 // }

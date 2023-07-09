@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MakeLigand Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -153,9 +153,10 @@ TaskMakeLigand.prototype.constructor = TaskMakeLigand;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskMakeLigand.prototype.icon = function()  { return 'task_makeligand'; }
+TaskMakeLigand.prototype.icon           = function()  { return 'task_makeligand'; }
+TaskMakeLigand.prototype.clipboard_name = function()  { return '"MakeLigand"';    }
 
-TaskMakeLigand.prototype.desc_title = function()  {
+TaskMakeLigand.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'generate crystallographic restraints for fitting ligand in the density and refinement';
 }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -159,9 +159,10 @@ TaskFitLigand.prototype.constructor = TaskFitLigand;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskFitLigand.prototype.icon = function()  { return 'task_fitligand'; }
+TaskFitLigand.prototype.icon           = function()  { return 'task_fitligand'; }
+TaskFitLigand.prototype.clipboard_name = function()  { return '"fitLigand"';    }
 
-TaskFitLigand.prototype.desc_title = function()  {
+TaskFitLigand.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'auto-fits ligand in density (does not launch Coot graphics)';
 }

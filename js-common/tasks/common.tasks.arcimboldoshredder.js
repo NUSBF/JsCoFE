@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -232,7 +232,8 @@ TaskArcimboldoShredder.prototype.constructor = TaskArcimboldoShredder;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskArcimboldoShredder.prototype.icon = function()  { return 'task_arcimboldo'; }
+TaskArcimboldoShredder.prototype.icon           = function()  { return 'task_arcimboldo';       }
+TaskArcimboldoShredder.prototype.clipboard_name = function()  { return '"Arcimboldo-Shredder"'; }
 //TaskArcimboldoShredder.prototype.requiredEnvironment = function() { return ['CCP4','ROSETTA_DIR']; }
 
 TaskArcimboldoShredder.prototype.currentVersion = function()  {

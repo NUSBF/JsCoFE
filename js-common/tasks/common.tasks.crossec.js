@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -337,9 +337,10 @@ TaskCrosSec.prototype.constructor = TaskCrosSec;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskCrosSec.prototype.icon = function()  { return 'task_crossec'; }
+TaskCrosSec.prototype.icon           = function()  { return 'task_crossec';     }
+TaskCrosSec.prototype.clipboard_name = function()  { return '"Cross-Sections"'; }
 
-TaskCrosSec.prototype.desc_title = function()  {
+TaskCrosSec.prototype.desc_title     = function()  {
   // this appears under task title in the task list
     return 'interpolates X-ray cross sections and compute anomalous scattering factors';
   };

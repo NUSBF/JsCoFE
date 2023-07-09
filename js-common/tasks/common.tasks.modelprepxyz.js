@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -182,9 +182,10 @@ TaskModelPrepXYZ.prototype.constructor = TaskModelPrepXYZ;
 
 // TaskModelPrepXYZ.prototype.cleanJobDir = function ( jobDir )  {}
 
-TaskModelPrepXYZ.prototype.icon = function()  { return 'task_modelprepxyz'; }
+TaskModelPrepXYZ.prototype.icon           = function()  { return 'task_modelprepxyz'; }
+TaskModelPrepXYZ.prototype.clipboard_name = function()  { return '"MR Model (xyz)"';  }
 
-TaskModelPrepXYZ.prototype.desc_title = function()  {
+TaskModelPrepXYZ.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'prepare single-chain MR search model(s) from atomic coordinates and sequence';
 }

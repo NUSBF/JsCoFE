@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -863,9 +863,10 @@ TaskPhaserMR.prototype.constructor = TaskPhaserMR;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskPhaserMR.prototype.icon = function()  { return 'task_phasermr'; }
+TaskPhaserMR.prototype.icon           = function()  { return 'task_phasermr'; }
+TaskPhaserMR.prototype.clipboard_name = function()  { return '"Phaser-MR"';   }
 
-TaskPhaserMR.prototype.desc_title = function()  {
+TaskPhaserMR.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'perform MR using a defined ASU and prepared MR models and/or ensembles';
 }

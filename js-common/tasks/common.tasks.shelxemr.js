@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -227,7 +227,9 @@ TaskShelxEMR.prototype.constructor = TaskShelxEMR;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskShelxEMR.prototype.icon = function()  { return 'task_shelxemr'; }
+TaskShelxEMR.prototype.icon           = function()  { return 'task_shelxemr'; }
+TaskShelxEMR.prototype.clipboard_name = function()  { return '"Shelx-E"';     }
+
 TaskShelxEMR.prototype.requiredEnvironment = function() {
   return ['CCP4',['$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe']];
 }

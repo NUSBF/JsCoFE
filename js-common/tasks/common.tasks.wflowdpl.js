@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.12.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CCP4go Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2022
+ *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2023
  *
  *  =================================================================
  *
@@ -119,8 +119,10 @@ TaskWFlowDPL.prototype.constructor = TaskWFlowDPL;
 
 // ===========================================================================
 
-TaskWFlowDPL.prototype.icon = function()  { return 'task_wflowdpl'; }
-TaskWFlowDPL.prototype.desc_title = function()  {
+TaskWFlowDPL.prototype.icon           = function()  { return 'task_wflowdpl';     }
+TaskWFlowDPL.prototype.clipboard_name = function()  { return '"Dimple Workflow"'; }
+
+TaskWFlowDPL.prototype.desc_title     = function()  {
   return 'data import, Dimple pipeline, ligand fitting, refinement and PDB deposition';
 }
 

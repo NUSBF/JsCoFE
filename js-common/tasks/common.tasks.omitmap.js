@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -199,7 +199,8 @@ TaskOmitMap.prototype.constructor = TaskOmitMap;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskOmitMap.prototype.icon = function()  { return 'task_omitmap'; }
+TaskOmitMap.prototype.icon           = function()  { return 'task_omitmap'; }
+TaskOmitMap.prototype.clipboard_name = function()  { return '"Omit Map"';   }
 
 TaskOmitMap.prototype.currentVersion = function()  {
   var version = 0;

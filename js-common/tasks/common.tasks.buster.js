@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -229,9 +229,10 @@ TaskBuster.prototype.constructor = TaskBuster;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskBuster.prototype.icon = function()  { return 'task_buster'; }
+TaskBuster.prototype.icon           = function()  { return 'task_buster'; }
+TaskBuster.prototype.clipboard_name = function()  { return '"Buster"';    }
 
-TaskBuster.prototype.cleanJobDir = function ( jobDir )  {}
+TaskBuster.prototype.cleanJobDir    = function ( jobDir )  {}
 
 
 TaskBuster.prototype.desc_title = function()  {

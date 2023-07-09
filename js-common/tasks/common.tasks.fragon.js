@@ -4,7 +4,7 @@
  *
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -291,7 +291,8 @@ TaskFragon.prototype.constructor = TaskFragon;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskFragon.prototype.icon = function()  { return 'task_fragon'; }
+TaskFragon.prototype.icon           = function()  { return 'task_fragon'; }
+TaskFragon.prototype.clipboard_name = function()  { return '"Fragon"';    }
 
 TaskFragon.prototype.currentVersion = function()  {
   var version = 0;
@@ -305,9 +306,9 @@ if (!__template)  {
   //  for client side
 
   TaskFragon.prototype.desc_title = function()  {
-    // this appears under task title in the task list
-      return 'uses fragments of secondary structure such as ideal alpha helices or ensembles of beta strands as model for MR ';
-    };
+  // this appears under task title in the task list
+    return 'uses fragments of secondary structure as model for MR ';
+  };
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   //TaskFragon.prototype.hotButtons = function() {

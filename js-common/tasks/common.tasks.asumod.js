@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -91,7 +91,8 @@ TaskASUMod.prototype.constructor = TaskASUMod;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskASUMod.prototype.icon = function()  { return 'task_asumod'; }
+TaskASUMod.prototype.icon           = function()  { return 'task_asumod';        }
+TaskASUMod.prototype.clipboard_name = function()  { return '"ASU Modification"'; }
 
 TaskASUMod.prototype.currentVersion = function()  {
   var version = 1;

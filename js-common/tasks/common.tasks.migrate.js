@@ -75,9 +75,10 @@ TaskMigrate.prototype.constructor = TaskMigrate;
 
 // ===========================================================================
 
-TaskMigrate.prototype.icon = function()  { return 'task_migrate'; }
+TaskMigrate.prototype.icon           = function()  { return 'task_migrate';   }
+TaskMigrate.prototype.clipboard_name = function()  { return '"Hop on Cloud"'; }
 
-TaskMigrate.prototype.desc_title = function()  {
+TaskMigrate.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'import phased structure (HKL, phases and/or XYZ) as Structure Revision';
 }

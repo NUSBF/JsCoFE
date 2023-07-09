@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    09.07.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -66,11 +66,11 @@ TaskDUI.prototype.constructor = TaskDUI;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskDUI.prototype.icon = function()  { return 'task_dui'; }
+TaskDUI.prototype.icon                = function()  { return 'task_dui'; }
+TaskDUI.prototype.clipboard_name      = function()  { return '"DUI"';    }
+TaskDUI.prototype.lowestClientVersion = function()  { return '1.6.001 [01.01.2019]'; }
 
-TaskDUI.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
-
-TaskDUI.prototype.currentVersion = function()  {
+TaskDUI.prototype.currentVersion      = function()  {
   var version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );

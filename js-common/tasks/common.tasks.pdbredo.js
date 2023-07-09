@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.03.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,7 +45,6 @@ function TaskPDBREDO()  {   // must start with Task...
   this.setOName ( 'pdbredo' );   // default output file name template
   this.title   = 'PDB-REDO: optimise, rebuild, refine and validate';  // title for job dialog
 
-
   this.input_dtypes = [{  // input data types
     data_type : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
     label     : 'Structure revision',     // label for input dialog
@@ -70,7 +69,8 @@ TaskPDBREDO.prototype.constructor = TaskPDBREDO;
 
 // Define task icons. 
 
-TaskPDBREDO.prototype.icon = function()  { return 'task_pdbredo'; }
+TaskPDBREDO.prototype.icon           = function()  { return 'task_pdbredo'; }
+TaskPDBREDO.prototype.clipboard_name = function()  { return '"PDB-Redo"';   }
 
 // request authorisation checks
 TaskPDBREDO.prototype.authorisationID = function() { return 'pdb-redo'; }

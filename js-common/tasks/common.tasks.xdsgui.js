@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XDSGUI Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2021
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2023
  *
  *  =================================================================
  *
@@ -66,6 +66,7 @@ TaskXDSGUI.prototype.constructor = TaskXDSGUI;
 // export such that it could be used in both node and a browser
 
 TaskXDSGUI.prototype.icon                = function() { return 'task_xdsgui'; }
+TaskXDSGUI.prototype.clipboard_name      = function() { return '"XDS GUI"';   }
 TaskXDSGUI.prototype.requiredEnvironment = function() { return ['CCP4','XDS_home','XDSGUI_home']; }
 TaskXDSGUI.prototype.lowestClientVersion = function() { return '1.6.005 [29.01.2019]'; }
 TaskXDSGUI.prototype.cloneItems          = function() { return ['xds_dir']; }

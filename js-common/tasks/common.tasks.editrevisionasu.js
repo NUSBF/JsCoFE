@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    12.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  ASU Modification Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2019-2023
  *
  *  =================================================================
  *
@@ -96,7 +96,8 @@ TaskEditRevisionASU.prototype.constructor = TaskEditRevisionASU;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskEditRevisionASU.prototype.icon = function()  { return 'task_editrevision_asu'; }
+TaskEditRevisionASU.prototype.icon           = function()  { return 'task_editrevision_asu'; }
+TaskEditRevisionASU.prototype.clipboard_name = function()  { return '"Edit Revision"';       }
 
 TaskEditRevisionASU.prototype.currentVersion = function()  {
   var version = 1;

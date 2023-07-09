@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -593,7 +593,8 @@ TaskRefmac.prototype.constructor = TaskRefmac;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskRefmac.prototype.icon = function()  { return 'task_refmac'; }
+TaskRefmac.prototype.icon           = function()  { return 'task_refmac'; }
+TaskRefmac.prototype.clipboard_name = function()  { return '"Refmac"';    }
 
 TaskRefmac.prototype.currentVersion = function()  {
   var version = 5;

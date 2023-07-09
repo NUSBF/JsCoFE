@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -155,6 +155,9 @@ TaskTemplate.prototype.desc_title = function()  {
 TaskTemplate.prototype.taskDescription = function()  {
   return ''; //'this appears under task title in the Task Dialog';
   // return 'Task description in small font which will appear under the task title in Task Dialog';
+}
+TaskTemplate.prototype.clipboard_name = function()  {
+  return 'task';
 }
 
 // task.platforms() identifies suitable platforms:
@@ -2473,6 +2476,10 @@ if (!dbx)  {
   // laying parameters, it also created 'grid.inpParamRef' structure with
   // references to input widgets, used later for collecting values of the
   // corresponding parameters.
+
+    // grid.setButton ( 'Reset parameters to default values',
+    //                  image_path('reset'), row,0,1,5 );
+    // row++;
 
     grid.inpParamRef = { row        : row,
                          grid       : grid,

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -143,9 +143,10 @@ TaskModelCraft.prototype.constructor = TaskModelCraft;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskModelCraft.prototype.icon = function() { return 'task_modelcraft'; }
+TaskModelCraft.prototype.icon           = function() { return 'task_modelcraft'; }
+TaskModelCraft.prototype.clipboard_name = function()  { return '"Modelcraft"';   }
 
-TaskModelCraft.prototype.desc_title = function()  {
+TaskModelCraft.prototype.desc_title     = function()  {
   return 'performs automatic model building after MR or Experimental Phasing';
 }
 

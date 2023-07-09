@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.02.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -73,9 +73,10 @@ TaskTextEditor.prototype.constructor = TaskTextEditor;
 
 //TaskTextEditor.prototype.cleanJobDir   = function ( jobDir )  {}
 
-TaskTextEditor.prototype.icon = function()  { return 'task_texteditor';  }
+TaskTextEditor.prototype.icon           = function()  { return 'task_texteditor'; }
+TaskTextEditor.prototype.clipboard_name = function()  { return '"Text Editor"';   }
 
-TaskTextEditor.prototype.desc_title = function()  {
+TaskTextEditor.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'edit text data in data objects and revisions';
 }

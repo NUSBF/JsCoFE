@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -91,7 +91,8 @@ TaskAreaimol.prototype.constructor = TaskAreaimol;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskAreaimol.prototype.icon = function()  { return 'task_areaimol'; }
+TaskAreaimol.prototype.icon           = function()  { return 'task_areaimol'; }
+TaskAreaimol.prototype.clipboard_name = function()  { return '"Areaimol"';    }
 
 TaskAreaimol.prototype.currentVersion = function()  {
   var version = 0;

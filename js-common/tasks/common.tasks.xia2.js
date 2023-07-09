@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -245,11 +245,12 @@ TaskXia2.prototype.constructor = TaskXia2;
 
 // ===========================================================================
 
-TaskXia2.prototype.icon = function()  { return 'task_xia2'; }
+TaskXia2.prototype.icon                = function() { return 'task_xia2'; }
+TaskXia2.prototype.clipboard_name      = function() { return '"Xia-2"';   }
 
 TaskXia2.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 
-TaskXia2.prototype.currentVersion = function()  {
+TaskXia2.prototype.currentVersion      = function() {
   var version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );

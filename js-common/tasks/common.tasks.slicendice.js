@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23    <--  Date of Last Modification.
+ *    09.07.23    <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -115,7 +115,8 @@ TaskSliceNDice.prototype.constructor = TaskSliceNDice;
 
 // ===========================================================================
 
-TaskSliceNDice.prototype.icon = function()  { return 'task_slicendice'; }
+TaskSliceNDice.prototype.icon           = function()  { return 'task_slicendice';  }
+TaskSliceNDice.prototype.clipboard_name = function()  { return '"Slice\'N\'Dice"'; }
 
 TaskSliceNDice.prototype.currentVersion = function()  {
   var version = 1;

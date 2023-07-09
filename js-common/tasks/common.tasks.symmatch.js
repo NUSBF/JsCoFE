@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -108,7 +108,8 @@ TaskSymMatch.prototype.constructor = TaskSymMatch;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskSymMatch.prototype.icon = function()  { return 'task_symmatch'; }
+TaskSymMatch.prototype.icon           = function()  { return 'task_symmatch'; }
+TaskSymMatch.prototype.clipboard_name = function()  { return '"SymMatch"';    }
 
 TaskSymMatch.prototype.currentVersion = function()  {
   var version = 0;

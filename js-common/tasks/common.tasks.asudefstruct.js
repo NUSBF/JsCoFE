@@ -3,7 +3,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -86,7 +86,8 @@ TaskASUDefStruct.prototype.constructor = TaskASUDefStruct;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskASUDefStruct.prototype.icon = function()  { return 'task_asudef'; }
+TaskASUDefStruct.prototype.icon           = function()  { return 'task_asudef';    }
+TaskASUDefStruct.prototype.clipboard_name = function()  { return '"ASU Contents"'; }
 
 TaskASUDefStruct.prototype.currentVersion = function()  {
   var version = 0;

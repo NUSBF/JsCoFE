@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    11.12.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  ROTAMER Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev  2022
+ *  (C) E. Krissinel, A. Lebedev  2022-2023
  *
  *  =================================================================
  *
@@ -84,7 +84,8 @@ TaskRabdam.prototype.constructor = TaskRabdam;
 
 // ===========================================================================
 
-TaskRabdam.prototype.icon = function()  { return 'task_rabdam'; }
+TaskRabdam.prototype.icon           = function()  { return 'task_rabdam'; }
+TaskRabdam.prototype.clipboard_name = function()  { return '"Rabdam"';    }
 
 // TaskRabdam.prototype.checkKeywords = function ( keywords )  {
 //   // keywords supposed to be in low register

@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -86,7 +86,8 @@ TaskRotamer.prototype.constructor = TaskRotamer;
 
 // ===========================================================================
 
-TaskRotamer.prototype.icon = function()  { return 'task_rotamer'; }
+TaskRotamer.prototype.icon           = function()  { return 'task_rotamer'; }
+TaskRotamer.prototype.clipboard_name = function()  { return '"Rotamer"';    }
 
 TaskRotamer.prototype.currentVersion = function()  {
   var version = 1;

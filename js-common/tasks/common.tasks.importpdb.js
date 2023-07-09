@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.08.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2023
  *
  *  ==========================================================================
  *
@@ -174,11 +174,6 @@ function TaskImportPDB()  {
 
 }
 
-TaskImportPDB.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['import', 'data','pdb'] );
-}
-
 if (__template)
       TaskImportPDB.prototype = Object.create ( __template.TaskTemplate.prototype );
 else  TaskImportPDB.prototype = Object.create ( TaskTemplate.prototype );
@@ -187,7 +182,13 @@ TaskImportPDB.prototype.constructor = TaskImportPDB;
 
 // ===========================================================================
 
-TaskImportPDB.prototype.icon = function()  { return 'task_importpdbafdb'; }
+TaskImportPDB.prototype.icon           = function()  { return 'task_importpdbafdb'; }
+TaskImportPDB.prototype.clipboard_name = function()  { return '"PDB Import"';       }
+
+TaskImportPDB.prototype.checkKeywords = function ( keywords )  {
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['import', 'data','pdb'] );
+}
 
 TaskImportPDB.prototype.desc_title = function()  {
 // this appears under task title in the task list

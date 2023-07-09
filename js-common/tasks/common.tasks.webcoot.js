@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,11 +33,12 @@ function TaskWebCoot()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type   = 'TaskWebCoot';
-  this.name    = 'webcoot (interactive model building)';
+  this._type     = 'TaskWebCoot';
+  this.name      = 'webcoot (interactive model building)';
   this.setOName ( 'webcoot' );  // default output file name template
-  this.title   = 'Model Building with WebCoot/Moorhen';
-  this.nc_type = 'browser';     // job runs in-browser
+  this.title     = 'Model Building with WebCoot/Moorhen';
+  this.nc_type   = 'browser';     // job runs in-browser
+  this.fasttrack = true;  // forces immediate execution
 
   this.input_dtypes = [{        // input data types
       data_type   : {'DataRevision':['!phases']}, // data type(s) and subtype(s)
@@ -103,9 +104,10 @@ TaskWebCoot.prototype.constructor = TaskWebCoot;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskWebCoot.prototype.icon = function()  { return 'task_webcoot'; }
+TaskWebCoot.prototype.icon           = function()  { return 'task_webcoot'; }
+TaskWebCoot.prototype.clipboard_name = function()  { return '"WebCoot"';    }
 
-TaskWebCoot.prototype.desc_title = function()  {
+TaskWebCoot.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return '<b>!!EXPERIMENTAL!!</b> fast-developing version of Coot for browsers';
 }

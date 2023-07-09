@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -286,7 +286,8 @@ TaskPaiRef.prototype.constructor = TaskPaiRef;
 
 // Define task icons. 
 
-TaskPaiRef.prototype.icon = function()  { return 'task_pairef'; }
+TaskPaiRef.prototype.icon           = function()  { return 'task_pairef'; }
+TaskPaiRef.prototype.clipboard_name = function()  { return '"PaiRef"';    }
 
 //  Define task version. Whenever task changes (e.g. receives new input
 //    parameters or data), the version number must be advanced. jsCoFE framework

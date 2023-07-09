@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Change ASU Space Group Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -66,7 +66,8 @@ TaskChangeSpGASU.prototype.constructor = TaskChangeSpGASU;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskChangeSpGASU.prototype.icon = function()  { return 'task_changespgasu'; }
+TaskChangeSpGASU.prototype.icon           = function()  { return 'task_changespgasu';    }
+TaskChangeSpGASU.prototype.clipboard_name = function()  { return '"Change Space Group"'; }
 
 TaskChangeSpGASU.prototype.desc_title = function()  {
 // this appears under task title in the task list

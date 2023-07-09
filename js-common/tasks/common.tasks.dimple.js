@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -210,9 +210,10 @@ TaskDimple.prototype.constructor = TaskDimple;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskDimple.prototype.icon = function()  { return 'task_dimple'; }
+TaskDimple.prototype.icon           = function()  { return 'task_dimple'; }
+TaskDimple.prototype.clipboard_name = function()  { return '"Dimple"';    }
 
-TaskDimple.prototype.desc_title = function()  {
+TaskDimple.prototype.desc_title     = function()  {
   // this appears under task title in the task list
     return 'allows quick assessment of crystal data to see if a ligand has bound to the structure';
   };

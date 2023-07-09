@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -123,7 +123,8 @@ TaskAuspex.prototype.constructor = TaskAuspex;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskAuspex.prototype.icon = function()  { return 'task_auspex'; }
+TaskAuspex.prototype.icon           = function()  { return 'task_auspex'; }
+TaskAuspex.prototype.clipboard_name = function()  { return '"Auspex"';    }
 
 TaskAuspex.prototype.currentVersion = function()  {
   var version = 0;

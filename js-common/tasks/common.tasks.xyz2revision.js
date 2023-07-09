@@ -5,7 +5,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -95,7 +95,8 @@ TaskXyz2Revision.prototype.constructor = TaskXyz2Revision;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskXyz2Revision.prototype.icon = function()  { return 'task_formstructure'; }
+TaskXyz2Revision.prototype.icon           = function()  { return 'task_formstructure'; }
+TaskXyz2Revision.prototype.clipboard_name = function()  { return '"Link XYZ & HKL"';   }
 
 TaskXyz2Revision.prototype.currentVersion = function()  {
   var version = 1;

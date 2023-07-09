@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -97,9 +97,10 @@ TaskEnsembler.prototype.constructor = TaskEnsembler;
 
 // ===========================================================================
 
-TaskEnsembler.prototype.icon = function()  { return 'task_ensembler'; }
+TaskEnsembler.prototype.icon           = function()  { return 'task_ensembler';  }
+TaskEnsembler.prototype.clipboard_name = function()  { return '"MR Ensembler"';  }
 
-TaskEnsembler.prototype.desc_title = function()  {
+TaskEnsembler.prototype.desc_title     = function()  {
 // this appears under task title in the task list
   return 'make MR ensembles from MR search models';
 }

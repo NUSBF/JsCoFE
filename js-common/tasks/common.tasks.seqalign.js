@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.07.22   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Sequence Alignment Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -67,7 +67,8 @@ TaskSeqAlign.prototype.constructor = TaskSeqAlign;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskSeqAlign.prototype.icon = function()  { return 'task_seqalign'; }
+TaskSeqAlign.prototype.icon           = function()  { return 'task_seqalign'; }
+TaskSeqAlign.prototype.clipboard_name = function()  { return '"ClustalW"';    }
 
 TaskSeqAlign.prototype.currentVersion = function()  {
   var version = 1;

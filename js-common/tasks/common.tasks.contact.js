@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -93,7 +93,8 @@ TaskContact.prototype.constructor = TaskContact;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskContact.prototype.icon = function()  { return 'task_contact'; }
+TaskContact.prototype.icon           = function()  { return 'task_contact'; }
+TaskContact.prototype.clipboard_name = function()  { return '"Contact"';    }
 
 TaskContact.prototype.currentVersion = function()  {
   var version = 0;

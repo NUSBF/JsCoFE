@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -119,7 +119,8 @@ TaskLorestr.prototype.constructor = TaskLorestr;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskLorestr.prototype.icon = function()  { return 'task_lorestr'; }
+TaskLorestr.prototype.icon           = function()  { return 'task_lorestr'; }
+TaskLorestr.prototype.clipboard_name = function()  { return '"Lorestr"';    }
 
 TaskLorestr.prototype.currentVersion = function()  {
   var version = 0;

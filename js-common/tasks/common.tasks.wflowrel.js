@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.07.23   <--  Date of Last Modification.
+ *    09.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -157,8 +157,10 @@ TaskWFlowREL.prototype.constructor = TaskWFlowREL;
 
 // ===========================================================================
 
-TaskWFlowREL.prototype.icon = function()  { return 'task_wflowrel'; }
-TaskWFlowREL.prototype.desc_title = function()  {
+TaskWFlowREL.prototype.icon           = function()  { return 'task_wflowrel';         }
+TaskWFlowREL.prototype.clipboard_name = function()  { return '"Refinement Workflow"'; }
+
+TaskWFlowREL.prototype.desc_title     = function()  {
   return 'refinement, ligand fitting and PDB deposition, starting from a phased structure';
 }
 
