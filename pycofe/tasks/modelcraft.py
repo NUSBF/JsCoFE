@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    28.02.23   <--  Date of Last Modification.
+#    10.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -192,7 +192,8 @@ class ModelCraft(basic.TaskDriver):
         cmd += [
             "--cycles"          ,self.getParameter(sec1.NCYCLES_MAX),
             "--auto-stop-cycles",self.getParameter(sec1.NOIMPROVE_CYCLES),
-            "--directory"       ,self.modelcraft_tmp()
+            "--directory"       ,self.modelcraft_tmp(),
+            "--disable-sheetbend"
         ]
         if hkl.detwin:
             cmd += [ "--twinned" ]
