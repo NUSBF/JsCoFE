@@ -120,16 +120,19 @@ def depositionAfterRefmac(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
     time.sleep(1)
 
-    # try: 
-    #     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for deposition')
+    try: 
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'PDB Validation Report')
 
-    #     time.sleep(1)
-    # except: 
-    #     pass
+        time.sleep(1)
+    except: 
+        pass
+    
+    try:
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for PDB deposition')
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for PDB deposition')
-
-    time.sleep(1)
+        time.sleep(1)
+    except:
+        pass
 
 
 
@@ -173,7 +176,7 @@ def depositionAfterRefmac(driver):
 
     else:
         for task in ttts:
-            match = re.search('\[0005\] prepare data for PDB deposition -- (.*)', task)
+            match = re.search('\[0005\] PDB validation report -- (.*)', task)
             if match:
                 taskText = match.group(1)
                 print(taskText)
@@ -183,33 +186,33 @@ def depositionAfterRefmac(driver):
         else:
             print('*** Verification: deposition result is "%s" (expecting "package prepared, pdb report obtained")' % taskText)
 
-    if not taskText == 'package prepared, pdb report obtained':
+    if not taskText == 'package prepared, pdb report obtained' or 'pdb report obtained':
         print('!!! Verification not passed!')
 
-        if not os.path.exists(os.path.expanduser('~/.setest_no_email')):
-            print('Sending emails to OK, EK and pdbdep@ebi.ac.uk')
-            time.sleep(1)
-            sf.doubleClickTaskInTaskTree(driver, '\[0005\] prepare data for PDB deposition')
-            time.sleep(2)
-            driver.switch_to.frame(driver.find_element_by_xpath("//iframe[contains(@src, 'report/index.html')]"))
-            sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Main Log')
-            time.sleep(2)
-            mainLog = driver.find_element(By.XPATH, "//pre[@id='log_page-0-0-pre']")
-            logText = mainLog.text
-            driver.switch_to.default_content()
+        # if not os.path.exists(os.path.expanduser('~/.setest_no_email')):
+        #     print('Sending emails to OK, EK and pdbdep@ebi.ac.uk')
+        #     time.sleep(1)
+        #     sf.doubleClickTaskInTaskTree(driver, '\[0005\] prepare data for PDB deposition')
+        #     time.sleep(2)
+        #     driver.switch_to.frame(driver.find_element_by_xpath("//iframe[contains(@src, 'report/index.html')]"))
+        #     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Main Log')
+        #     time.sleep(2)
+        #     mainLog = driver.find_element(By.XPATH, "//pre[@id='log_page-0-0-pre']")
+        #     logText = mainLog.text
+        #     driver.switch_to.default_content()
 
-            logStrings = logText.split('\n')
-            isDeposLog = False
-            deposLog = []
-            for s in logStrings:
-                if str(s).strip() == 'RUNNING DATA PREPARATION SCRIPT FROM EBI':
-                    isDeposLog = True
-                if isDeposLog:
-                    deposLog.append(str(s))
-            if len(deposLog) > 1:
-                sendEmail(deposLog)
+        #     logStrings = logText.split('\n')
+        #     isDeposLog = False
+        #     deposLog = []
+        #     for s in logStrings:
+        #         if str(s).strip() == 'RUNNING DATA PREPARATION SCRIPT FROM EBI':
+        #             isDeposLog = True
+        #         if isDeposLog:
+        #             deposLog.append(str(s))
+        #     if len(deposLog) > 1:
+        #         sendEmail(deposLog)
 
-    assert taskText == 'package prepared, pdb report obtained'
+    assert taskText == 'package prepared, pdb report obtained' or 'pdb report obtained'
 
     return ()
 

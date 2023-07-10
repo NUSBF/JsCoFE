@@ -1212,7 +1212,7 @@ def startRefmac(driver, waitLong):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
-    time.sleep(3)
+    time.sleep(7)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
