@@ -110,9 +110,17 @@ def lsqkabAfterGesamt(driver, wait):
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(3)
+    try:
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Structure Superposition with LSQKab')
+        time.sleep(1)
+    except:
+        pass
+    try:
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Structure Superposition with LsqKab')
+        time.sleep(1)
+    except:
+        pass
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Structure Superposition with LSQKab')
-    time.sleep(1)
 
     sf.clickByXpath(driver, "//span[normalize-space()='%s']" % 'A (protein)')
     time.sleep(1)
