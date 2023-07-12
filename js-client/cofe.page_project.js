@@ -961,9 +961,10 @@ ProjectPage.prototype.onTreeContextMenu = function() {
       };
     }
 
-    if (node.parentId && (!self.jobTree.in_archive) && crTask)  {
+    if (node.parentId && (!self.jobTree.in_archive) && crTask 
+                      && (crTask.state!=job_code.remark))  {
       let clipboard_name = crTask.clipboard_name();
-      if (clipboard_name && (crTask.state!=job_code.remark))
+      if (clipboard_name)
         items.addToDockItem = {
           label : 'Add ' + clipboard_name + ' to dock',
           icon  : image_path('dock_small'),
