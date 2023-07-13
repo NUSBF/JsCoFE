@@ -125,7 +125,7 @@ def phaserEP(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Experimental Phasing')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Experimental Phasing with Phaser')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Experimental Phasing with Phaser-EP')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -349,7 +349,7 @@ def test_1SHELXCD(browser,
         sf.enterProject(d.driver, d.testName)
         sf.importFromCloud_insulin(d.driver, d.waitShort) # 1
         asymmetricUnitContents(d.driver, d.waitShort) # 2
-        startSHELXcd(d.driver, 1200) # 3
+        startSHELXcd(d.driver, 1300) # 3
         #         
     except:
         d.driver.quit()
