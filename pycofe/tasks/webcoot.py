@@ -146,7 +146,7 @@ class WebCoot(basic.TaskDriver):
                                     map_labels=istruct.mapLabels,
                                     refiner=istruct.refiner )
             if ostruct:
-                ostruct.copyRefinerParameters ( istruct )
+                # ostruct.copyRefinerParameters ( istruct )
                 ostruct.copyAssociations   ( istruct )
                 ostruct.addDataAssociation ( istruct.dataId )  # ???
                 ostruct.copySubtype        ( istruct )

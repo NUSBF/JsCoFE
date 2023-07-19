@@ -219,7 +219,7 @@ class Privateer(basic.TaskDriver):
                                     refiner=istruct.refiner )
 
             if structure:
-                structure.copyRefinerParameters ( istruct )
+                # structure.copyRefinerParameters ( istruct )
                 structure.copyAssociations ( istruct )
                 structure.addSubtypes      ( istruct.subtype )
                 # structure.removeSubtype    ( dtype_template.subtypeSubstructure() )

@@ -370,9 +370,9 @@ class DType(dtype_xyz.DType):
         self.FreeR_flag = struct_class.FreeR_flag
         return
 
-    def copyRefinerParameters ( self,struct_class ):
-        self.refiner_params = struct_class.getRefinerParameters()
-        return
+    # def copyRefinerParameters ( self,struct_class ):
+    #     self.refiner_params = struct_class.getRefinerParameters()
+    #     return
 
     def getAllLabels ( self ):
         lbl = [ self.FP    ,self.SigFP  ,self.PHI,self.FOM,self.FWT,self.PHWT,
