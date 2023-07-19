@@ -122,7 +122,7 @@ class XyzUtils(basic.TaskDriver):
                                     map_labels=ixyz.mapLabels,
                                     refiner=ixyz.refiner )
             if oxyz:
-                oxyz.copyRefinerParameters ( ixyz )
+                # oxyz.copyRefinerParameters ( ixyz )
                 oxyz.copyAssociations   ( ixyz )
                 oxyz.addDataAssociation ( ixyz.dataId )  # ???
                 oxyz.copySubtype        ( ixyz )

@@ -394,7 +394,7 @@ class ShelxEMR(basic.TaskDriver):
                                 refiner=istruct.refiner )
 
             if structure:
-                structure.copyRefinerParameters ( istruct )
+                # structure.copyRefinerParameters ( istruct )
                 structure.copyAssociations ( istruct )
                 structure.copyLabels       ( istruct )
                 structure.setShelxELabels  ( istruct )
@@ -420,7 +420,7 @@ class ShelxEMR(basic.TaskDriver):
                                 map_labels="FWT,PHWT",
                                 refiner=istruct.refiner )
                 if substructure:
-                    structure.copyRefinerParameters ( istruct )
+                    # substructure.copyRefinerParameters ( istruct )
                     substructure.copyAssociations ( istruct )
                     substructure.copyLabels       ( istruct )
                     substructure.setShelxELabels  ( istruct )

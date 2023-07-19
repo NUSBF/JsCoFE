@@ -108,7 +108,7 @@ class Sheetbend(basic.TaskDriver):
                 #if os.path.isfile(mmcifout):
                 #    structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
 
-                structure.copyRefinerParameters ( istruct )
+                # structure.copyRefinerParameters ( istruct )
                 structure.copyAssociations   ( istruct )
                 structure.addDataAssociation ( hkl.dataId     )
                 structure.addDataAssociation ( istruct.dataId )  # ???
