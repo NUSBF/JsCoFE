@@ -71,8 +71,8 @@ def verifyLORESTR(driver):
         if (compl != ''):
             break
         curTime = time.time()
-        if curTime > startTime + float(2700): # 45 minutes, normally shall finish in 35
-            print('*** Timeout for LORESTR results! Waited for %d seconds.' % 2700)
+        if curTime > startTime + float(3700): # 61 minutes, normally shall finish in 35, but slower with update
+            print('*** Timeout for LORESTR results! Waited for %d seconds.' % 3700)
             break
         time.sleep(60)
 

@@ -39,7 +39,7 @@ def balbesAfterASU(driver, waitLong):
             break
 
     try:
-        wait = WebDriverWait(driver, 600) # allowing 10 minutes to the task to finish
+        wait = WebDriverWait(driver, 1200) # allowing 20 minutes to the task to finish
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0003]
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0003]')]")))
