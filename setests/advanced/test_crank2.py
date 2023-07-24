@@ -53,6 +53,11 @@ def startCrank2(driver):
         if buttonRun.is_displayed():
             buttonRun.click()
             break
+    time.sleep(10)
+
+
+    closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+    closeButton.click()
     time.sleep(2)
 
     # Logging out

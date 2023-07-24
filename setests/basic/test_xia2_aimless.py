@@ -74,7 +74,7 @@ def xia2Processing(driver, isLocal):
             break
 
     try:
-        wait = WebDriverWait(driver, 420) # allowing 7 minutes to the task to finish, normally takes 3 minutes, but 6 minutes locally
+        wait = WebDriverWait(driver, 1200) # allowing 20 minutes to the task to finish, normally takes 3 minutes, but 6 minutes locally. Slower on dev
         # Waiting for the text 'completed' in the ui-dialog-title of the task [0001]
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0002]')]")))
