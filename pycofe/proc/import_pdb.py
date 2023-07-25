@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  PDB DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2018-2023
 #
 # ============================================================================
 #
@@ -72,6 +72,9 @@ def download_file ( url,fpath,body=None ):
                     body.stdout ( line )
                 l = line.strip()
                 if len(l)>0:
+                    if l.find("No fasta files were found.")!=-1:
+                        rc = -2
+                        break;
                     if l.startswith("<!DOCTYPE") or "<Error>" in l:
                         rc = -1
                         break;
@@ -228,14 +231,14 @@ def run ( body,pdb_list,
         if len(body.files_all)>0:
 
             subSecId = body.getWidgetId ( "_pdb_sec_"+code )
-            body.putSection ( subSecId,"PDB Entry " + ucode,False )
+            body.putSection ( subSecId,"PDB Entry " + ucode,True )
             body.setReportWidget ( subSecId )  # retain section id for signalling to gauge widget here
 
             xyz = import_xyz     .run ( body )
             seq = import_sequence.run ( body )
             hkl = import_merged  .run ( body,importPhases="" )
 
-            if len(hkl)>0 and import_revisions:  # compose structure and revision
+            if len(hkl)>0 and import_revisions and asuComp!= None:  # compose structure and revision
 
                 revision = [None]  # for formal logic below
                 seqdesc  = asuComp["asucomp"]
@@ -273,6 +276,10 @@ def run ( body,pdb_list,
                         "<b><i>" + ucode + " structure revision name:</i></b>","" )
                     revisionNo += 1
                     body.outputFName = "*"
+
+            else:
+                body.putMessage ( "<h3>" + "No revision is created" + "</h3>" )
+
 
             body.resetReportPage()
 
