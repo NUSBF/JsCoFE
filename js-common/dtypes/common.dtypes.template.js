@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.05.20   <--  Date of Last Modification.
+ *    24.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Base Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2020
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -56,6 +56,12 @@ function DataTemplate()  {
   this.associated = [];                    // list of associated data Ids
   this.backtrace  = true;                  // collect all data up the tree branch
   this.citations  = [];                    // list of program citations
+  // this.refkeys    = {};                    // reference keyworded parameters;
+                                              // this line should stay comented.
+                                              // Look using refkeys in 
+                                              // DataTemplate.store_refkeys_parameters() and
+                                              // TaskTemplate.set_refkeys_parameters()
+                                              // in python and js layers, respectively.
 }
 
 

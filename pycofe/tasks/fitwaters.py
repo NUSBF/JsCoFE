@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.07.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -360,8 +360,13 @@ class FitWaters(basic.TaskDriver):
 
         # prepare refmac script
         self.open_stdin()
-        ref_params = istruct.getRefinerParameters()
-        if not ref_params:
+        ref_params = []
+        refkeys = istruct.get_refkeys_parameters ( "TaskRefmac" )
+        if refkeys:
+            self.putMessage ( "<i>Using refinement parameters from job " +\
+                              str(refkeys.id) + "</i><br>&nbsp;" )
+            ref_params = refkeys.keywords
+        else:
             ref_params = "LABIN FP="   + hkl.dataset.Fmean.value +\
                              " SIGFP=" + hkl.dataset.Fmean.sigma +\
                              " FREE="  + hkl.dataset.FREE +\
@@ -400,7 +405,7 @@ class FitWaters(basic.TaskDriver):
                             leadKey=istruct.leadKey,
                             refiner=istruct.refiner )
             if structure:
-                # structure.setRefinerParameters ( ref_params )
+                structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations     ( istruct    )
                 structure.copySubtype          ( istruct    )
                 structure.copyLabels           ( istruct    )

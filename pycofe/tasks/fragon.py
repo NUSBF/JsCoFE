@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
 #
 # ============================================================================
 #
@@ -342,6 +342,7 @@ class Fragon(basic.TaskDriver):
                         leadKey=2,refiner="refmac" ) # ,map_labels=cols[0] + ",acorn.PHI" )
 
                     if structure:
+                        # structure.copy_refkeys_parameters ( istruct )
                         #structure.copyAssociations ( istruct )
                         #structure.copySubtype      ( istruct )
                         #structure.copyLabels       ( istruct )

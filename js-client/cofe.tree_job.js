@@ -1093,17 +1093,23 @@ JobTree.prototype._add_job = function ( insert_bool,task,dataBox,
 }
 
 JobTree.prototype._copy_task_parameters = function ( task,branch_task_list )  {
-var reftask = null;
-  for (var i=0;(i<branch_task_list.length) && (!reftask);i++)
+var reftask = null;  // reference task
+var refkeys = null;  // reference keywords
+  for (let i=0;(i<branch_task_list.length) && (!reftask) && (!refkeys);i++)
     if (task._type==branch_task_list[i]._type)
       reftask = branch_task_list[i];
+    else if ('data' in branch_task_list[i].output_data)
+      for (let item in branch_task_list[i].output_data.data)
+        if (('refkeys' in item) && (task._type in item.refkeys))
+          refkeys = item.refkeys[task._type];
   if (reftask)  {
     if (reftask.version<task.currentVersion())
       return -1;  // version clash, stop
     task.parameters = jQuery.extend ( true,{},reftask.parameters );
     return 1;  // reference task found and parameters copied, Ok
-  }
-  return 0;  // reference task not found, Ok
+  } else if (refkeys)
+    task.set_refkeys_parameters ( refkeys );
+  return 0;  // reference task or keys not found, Ok
 }
 
 

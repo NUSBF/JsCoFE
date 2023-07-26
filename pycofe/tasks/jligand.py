@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.12.21   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@
 #      jobDir/report  : directory receiving HTML report
 #    expire      is timeout for removing coot backup directories
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -88,6 +88,7 @@ class JLigand(basic.TaskDriver):
                             refiner=istruct.refiner )
 
             if struct:
+                struct.copy_refkeys_parameters ( istruct )
                 struct.copyAssociations ( istruct )
                 struct.copySubtype      ( istruct )
                 struct.copyLabels       ( istruct )

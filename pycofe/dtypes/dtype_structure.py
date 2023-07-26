@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.06.23   <--  Date of Last Modification.
+#    24.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -62,7 +62,7 @@ class DType(dtype_xyz.DType):
             self.HLC      = ""
             self.HLD      = ""
 
-            #  Free R-flag
+            #  Free R-flag label
             self.FreeR_flag = ""
 
             self.leadKey  = 0;   # data lead key: 0: undefined, 1: coordinates, 2: phases
@@ -86,7 +86,7 @@ class DType(dtype_xyz.DType):
             self.mapLabels      = None;  # used in UglyMol widgets
 
             self.refiner        = ""     # refinement program used
-            self.refiner_params = None
+            # self.refiner_params = None
 
         return
 

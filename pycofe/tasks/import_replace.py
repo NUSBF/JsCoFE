@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    28.06.22   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
 #
 # ============================================================================
 #
@@ -201,6 +201,7 @@ class ImportReplace(migrate.Migrate):
                         sxyz.addSubtypes      ( self.map[0].subtype )
                         sxyz.copyLabels       ( self.map[0] )
                     elif istruct:
+                        sxyz.copy_refkeys_parameters ( istruct )
                         sxyz.copyAssociations ( istruct )
                         sxyz.addSubtypes      ( istruct.subtype )
                         sxyz.copyLabels       ( istruct )
@@ -271,6 +272,7 @@ class ImportReplace(migrate.Migrate):
                         sub.addSubtypes      ( self.map[0].subtype )
                         sub.copyLabels       ( self.map[0] )
                     elif isub:
+                        sub.copy_refkeys_parameters ( isub )
                         sub.copyAssociations ( isub )
                         sub.addSubtypes      ( isub.subtype )
                         sub.copyLabels       ( isub )

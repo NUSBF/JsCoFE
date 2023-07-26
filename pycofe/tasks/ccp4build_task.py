@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2023
 #
 # ============================================================================
 #
@@ -419,6 +419,7 @@ class CCP4Build(basic.TaskDriver):
                         if structure:
 
                             if istruct:
+                                structure.copy_refkeys_parameters ( istruct )
                                 structure.copyAssociations ( istruct )
                                 #structure.copySubtype      ( istruct )
                                 structure.addSubtypes      ( istruct.subtype )

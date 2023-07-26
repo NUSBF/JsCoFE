@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    28.06.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -394,7 +394,7 @@ class ShelxEMR(basic.TaskDriver):
                                 refiner=istruct.refiner )
 
             if structure:
-                # structure.copyRefinerParameters ( istruct )
+                structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations ( istruct )
                 structure.copyLabels       ( istruct )
                 structure.setShelxELabels  ( istruct )
@@ -420,7 +420,7 @@ class ShelxEMR(basic.TaskDriver):
                                 map_labels="FWT,PHWT",
                                 refiner=istruct.refiner )
                 if substructure:
-                    # substructure.copyRefinerParameters ( istruct )
+                    substructure.copy_refkeys_parameters ( istruct )
                     substructure.copyAssociations ( istruct )
                     substructure.copyLabels       ( istruct )
                     substructure.setShelxELabels  ( istruct )

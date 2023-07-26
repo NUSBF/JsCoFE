@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.06.23   <--  Date of Last Modification.
+ *    24.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -636,13 +636,13 @@ JobDialog.prototype.makeToolBar = function()  {
         }
       }
     }
-    dlg.addjob_btn = dlg.addToolBarButton ( gap,'add','Add next job' )
+    dlg.addjob_btn = dlg.addToolBarButton ( gap,'add_repeat','Add next job with last used parameters' )
                         .addOnClickListener ( function(){
                           dlg.onDlgSignal_func ( dlg,job_dialog_reason.add_job,
                                                  null );
                         });
     gap = true;
-    dlg.clone_btn  = dlg.addToolBarButton ( gap,'clonejob','Clone job' )
+    dlg.clone_btn  = dlg.addToolBarButton ( gap,'clonejob','Clone this job' )
                         .addOnClickListener ( function(){
                           dlg.onDlgSignal_func ( dlg,job_dialog_reason.clone_job,
                                                  null );

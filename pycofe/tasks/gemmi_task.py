@@ -164,6 +164,7 @@ class Gemmi(basic.TaskDriver):
                                      map_labels=st0.mapLabels,
                                      refiner=st0.refiner )
                 if xyz:
+                    xyz.copy_refkeys_parameters ( st0 )
                     xyz.copyAssociations   ( st0 )
                     xyz.addDataAssociation ( st0.dataId )  # ???
                     xyz.copySubtype        ( st0 )
@@ -198,6 +199,7 @@ class Gemmi(basic.TaskDriver):
                                      map_labels=struct0.mapLabels,
                                      refiner=struct0.refiner )
                 if xyz:
+                    xyz.copy_refkeys_parameters ( struct0 )
                     xyz.copyAssociations   ( struct0 )
                     xyz.addDataAssociation ( struct0.dataId )  # ???
                     xyz.copySubtype        ( struct0 )

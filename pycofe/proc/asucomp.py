@@ -231,7 +231,7 @@ def suggestASUComp ( hkl,asu ):
 
 
 
-def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
+def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9,body=None ):
     #  sequenceList has the following format:
     #    [[name1,seq1],[name2,seq2]...[nameN,seqN]]
     #   nameX : sequence name for identification
@@ -293,7 +293,11 @@ def getASUComp ( coorFilePath,sequenceList,clustThresh=0.9 ):
         for i in range(len(asuComp)):
             seq = asuComp[i]["seq"]
             for j in range(len(sequenceList)):
+                if body:
+                    body.stdoutln ( " .... seq=" + str(seq) )
                 align = pairwise2.align.globalxx ( seq,sequenceList[j][1] )
+                if body:
+                    body.stdoutln ( " .... align=" + str(align) )
                 seqid = align[0][2]/len(seq)
                 matchentry = { "seqid":seqid, "coorseq":i, "givenseq":j }
                 matches.append ( matchentry )
@@ -354,7 +358,7 @@ def getASUComp1 ( coorFilePath,seqFilePath,clustThresh=0.9,body=None ):
             seqlist.append ( [seqdata[0],seq] ) # [title,sequence]
     if body:
         body.stdout ( "seqlist = \n" + str(seqlist) + "\n-------------\n" )
-    return getASUComp ( coorFilePath,seqlist,clustThresh )
+    return getASUComp ( coorFilePath,seqlist,clustThresh=clustThresh,body=body )
 
 
 def main():

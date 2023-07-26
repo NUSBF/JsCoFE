@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.04.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -413,6 +413,7 @@ class PaiRef(basic.TaskDriver):
             )
 
             if structure:
+                structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations   ( istruct        )
                 structure.addDataAssociation ( hkl0.dataId    )
                 structure.addDataAssociation ( istruct.dataId )  # ???

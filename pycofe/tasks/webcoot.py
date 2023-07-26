@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.03.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -146,7 +146,7 @@ class WebCoot(basic.TaskDriver):
                                     map_labels=istruct.mapLabels,
                                     refiner=istruct.refiner )
             if ostruct:
-                # ostruct.copyRefinerParameters ( istruct )
+                ostruct.copy_refkeys_parameters ( istruct )
                 ostruct.copyAssociations   ( istruct )
                 ostruct.addDataAssociation ( istruct.dataId )  # ???
                 ostruct.copySubtype        ( istruct )

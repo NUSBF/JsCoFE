@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.06.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -231,7 +231,7 @@ class TextEditor(basic.TaskDriver):
                                         map_labels=ixyz.mapLabels,
                                         refiner=ixyz.refiner )
                 if oxyz:
-                    # oxyz.copyRefinerParameters ( ixyz )
+                    oxyz.copy_refkeys_parameters ( ixyz )
                     oxyz.copyAssociations   ( ixyz )
                     oxyz.addDataAssociation ( ixyz.dataId )  # ???
                     oxyz.copySubtype        ( ixyz )

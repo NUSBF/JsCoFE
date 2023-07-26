@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.05.20   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2023
 #
 # ============================================================================
 #
@@ -277,6 +277,7 @@ class Nautilus(basic.TaskDriver):
                                     #fnames[0],fnames[1],None,  -- not needed for new UglyMol
                                     leadKey=1,refiner="refmac" )
             if structure:
+                structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations ( istruct )
                 structure.copySubtype      ( istruct )
                 structure.removeSubtype    ( dtype_template.subtypeSubstructure() )

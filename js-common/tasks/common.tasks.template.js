@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    23.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -249,6 +249,16 @@ TaskTemplate.prototype.cpu_credit = function()  {
   return 0.02;
 }
 
+
+// optional; sets task parameters from given standard input file, 
+// represented as refkeys = { id: id, keywords: keywords } where keywords
+// is list of lines in task's stdin
+TaskTemplate.prototype.set_refkeys_parameters = function ( refkeys )  {
+// refkeys is supposed to be a list of strings representig standard input file;
+// any representation of parameters is possible, but it should match input to
+// DataTemplate.store_parameters() function in python layer 
+}
+  
 
 // stores default parameters in copies at class initialisation
 TaskTemplate.prototype.saveDefaultValues = function ( parameters )  {

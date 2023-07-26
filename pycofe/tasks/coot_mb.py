@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    16.03.22   <--  Date of Last Modification.
+#    25.07.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -408,6 +408,7 @@ class Coot(coot_ce.CootCE):
                                               refiner=istruct.refiner )
 
             if struct:
+                struct.copy_refkeys_parameters ( istruct )
                 struct.copyAssociations ( istruct )
                 struct.copySubtype      ( istruct )
                 struct.putCootMeta      ( self.job_id )

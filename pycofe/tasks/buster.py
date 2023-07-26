@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -348,6 +348,7 @@ class Buster(basic.TaskDriver):
                                 copy_files=True,refiner="buster" )
 
             if structure:
+                structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations   ( istruct )
                 structure.addDataAssociation ( hkl.dataId     )
                 structure.addDataAssociation ( istruct.dataId )  # ???
