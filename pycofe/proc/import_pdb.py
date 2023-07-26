@@ -283,9 +283,6 @@ def run ( body,pdb_list,
                 seqdesc  = asuComp["asucomp"]
                 seqlist  = asuComp["seqlist"]  # sequences from PDB header
                 # if len(seqdesc)>0 and len(seq)==len(seqdesc)+len(seqlist): # import ok
-                body.stdoutln ( " **** len(seq)=" + str(len(seq)) )
-                body.stdoutln ( " **** len(seqdesc)=" + str(len(seqdesc)) )
-                body.stdoutln ( " **** len(seqlist)=" + str(len(seqlist)) )
                 if (rc_seq==0 and len(seq)==len(seqdesc)+len(seqlist)) or \
                    (rc_seq==1 and len(seq)==len(seqdesc) and len(seq)==len(seqlist)): # import ok
 
