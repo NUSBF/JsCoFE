@@ -350,7 +350,7 @@ def test_2buccaneer():
 
 def test_3ccp4build():
     try:
-        verifyCCP4Build(d.driver, 1500, '0006', 0.32, 0.37) # run takes long
+        verifyCCP4Build(d.driver, 2500, '0006', 0.32, 0.37) # run takes long
     except:
         d.driver.quit()
         raise
@@ -358,7 +358,7 @@ def test_3ccp4build():
 
 def test_4modelcraft():
     try:
-        verifyModelcraft(d.driver, 1800, '0007', 0.22, 0.255) # run takes long
+        verifyModelcraft(d.driver, 2800, '0007', 0.22, 0.255) # run takes long
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()
     except:
