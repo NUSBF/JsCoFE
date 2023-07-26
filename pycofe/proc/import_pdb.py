@@ -100,7 +100,9 @@ def run ( body,pdb_list,
     imported_codes = []
     rejected_codes = []
 
-    for code in pdb_list:
+    code_list = list ( dict.fromkeys(pdb_list) )  # eliminate duplicates
+
+    for code in code_list:
 
         rc_xyz    = -1
         rc_seq    = -1
@@ -203,7 +205,7 @@ def run ( body,pdb_list,
             if import_sequences and (rc_seq>=0):
 
                 # infer non-redundant sequence composition of ASU
-                asuComp = asucomp.getASUComp1 ( fpath_xyz,fpath_seq,0.9999,body=body )
+                asuComp = asucomp.getASUComp1 ( fpath_xyz,fpath_seq,0.9999,body=None )
 
                 #  prepare separate sequence files annotation json for sequence import
 
@@ -282,6 +284,10 @@ def run ( body,pdb_list,
                 revision = [None]  # for formal logic below
                 seqdesc  = asuComp["asucomp"]
                 seqlist  = asuComp["seqlist"]  # sequences from PDB header
+                body.stdoutln ( " *** rc_seq=" + str(rc_seq) )
+                body.stdoutln ( " *** len(seq)=" + str(len(seq)) )
+                body.stdoutln ( " *** len(seqdesc)=" + str(len(seqdesc)) )
+                body.stdoutln ( " *** len(seqlist)=" + str(len(seqlist)) )
                 # if len(seqdesc)>0 and len(seq)==len(seqdesc)+len(seqlist): # import ok
                 if (rc_seq==0 and len(seq)==len(seqdesc)+len(seqlist)) or \
                    (rc_seq==1 and len(seq)==len(seqdesc) and len(seq)==len(seqlist)): # import ok
@@ -323,6 +329,17 @@ def run ( body,pdb_list,
                     revisionNo += 1
                     body.outputFName = "*"
 
+            elif import_revisions:
+                if len(hkl)<=0 and len(seq)<=0:
+                    body.putMessage ( "<h3>No structure revision was formed because " +\
+                                      "neither reflection nor sequence data are available</h3>" )
+                elif len(hkl)<=0:
+                    body.putMessage ( "<h3>No structure revision was formed because " +\
+                                      "reflection data are not available</h3>" )
+                elif len(seq)<=0:
+                    body.putMessage ( "<h3>No structure revision was formed because " +\
+                                      "sequence data are not available</h3>" )
+
             body.resetReportPage()
 
         elif len(code)==4:
@@ -338,5 +355,10 @@ def run ( body,pdb_list,
             body.putSummaryLine_red ( code,"Invalid code","Wrong code, ignored" )
 
         body.generic_parser_summary = {}  # depress showing R-factors from refmac
+
+        os.rename   ( body.importDir(),"download_" + ucode )
+        os.makedirs ( body.importDir() )
+
+
 
     return [imported_codes,rejected_codes]
