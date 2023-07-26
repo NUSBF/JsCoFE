@@ -28,11 +28,13 @@ CCP4 Cloud Version Log
 
     #. Fixed a bug allowing to create tasks from *Task Dock* irrespectively of data available
 
-    #. ``Fit waters`` now looks for map level optimising ``R-factor``
+    #. ``Find waters`` now looks for map level optimising ``R-factor``
 
     #. Parameters, different from default, are now highlighted with blue italics
 
     #. Jobs can be copy-pasted with set parameters
+
+    #. Refinemnet parameters in ``Find waters`` are now taken from last refinement job on the branch
 
 
 
