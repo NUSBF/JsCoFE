@@ -32,9 +32,9 @@ from   pycofe.proc    import import_filetype, mtz, patterson
 # ============================================================================
 # Merged MTZ import functions
 
-def freerflag_script(): return "freerflag.script"
-def cad_script():       return "cad.script"
-def mtzutils_script():       return "mtzutils.script"
+def freerflag_script():  return "freerflag.script"
+def cad_script      ():  return "cad.script"
+def mtzutils_script ():  return "mtzutils.script"
 
 def makeHKLTable ( body,tableId,holderId,original_data,new_data,
                         truncation,trunc_msg,row ):
@@ -159,11 +159,13 @@ def run ( body,   # body is reference to the main Import class
         p_mtzin = p_orig
 
         if f_fmt==import_filetype.ftype_CIFMerged():
-            p_mtzin = os.path.splitext(f_orig)[0] + '.mtz'
-            body.open_stdin()
-            body.write_stdin ( "END\n" )
-            body.close_stdin()
-            rc = body.runApp ( "cif2mtz",["HKLIN",p_orig,"HKLOUT",p_mtzin],
+            # p_mtzin = os.path.splitext(f_orig)[0] + '.mtz'
+            # body.open_stdin()
+            # body.write_stdin ( "END\n" )
+            # body.close_stdin()
+            # rc = body.runApp ( "cif2mtz",["HKLIN",p_orig,"HKLOUT",p_mtzin],
+            #                    quitOnError=False )
+            rc = body.runApp ( "gemmi",["cif2mtz",p_orig,p_mtzin],
                                quitOnError=False )
             if rc.msg or not os.path.isfile(p_mtzin):
                 body.putSummaryLine_red ( body.get_cloud_import_path(f_orig),"CIF",
@@ -241,7 +243,6 @@ def run ( body,   # body is reference to the main Import class
                                         body.file_stderr,log_parser=None,
                                         citation_ref="freerflag-srv",
                                         file_stdout_alt=body.file_stdout )
-
 
                     scr_file = open ( freerflag_script(),"w" )
                     scr_file.write ( "FREERFRAC  0.05\nEND\n" )
