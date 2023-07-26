@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    28.06.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -358,6 +358,7 @@ class CombStructure(basic.TaskDriver):
                                                  None,None,libin,
                                                  leadKey=1,refiner="refmac" )
             if structure:
+                structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations   ( istruct )
                 structure.addDataAssociation ( hkl.dataId     )
                 structure.addDataAssociation ( istruct.dataId )  # ???

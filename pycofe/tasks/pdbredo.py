@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.03.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -135,6 +135,7 @@ class Pdbredo(basic.TaskDriver):
             refiner="pdbredo",
         )
         if structure:
+            structure.copy_refkeys_parameters ( istruct )
             structure.copyAssociations(istruct)
             structure.addDataAssociation(hkl.dataId)
             structure.addDataAssociation(istruct.dataId)  # ???
@@ -464,6 +465,7 @@ class Pdbredo(basic.TaskDriver):
         final_pdb  = None
         final_mtz  = None
         refmac_log = None
+        refmac_kwd = None
         # final_lig = None
 
         files = os.listdir ( self.resultDir )
@@ -471,10 +473,12 @@ class Pdbredo(basic.TaskDriver):
             for fname in files:
                 if fname.endswith("_final.pdb"):
                     final_pdb = os.path.join(self.resultDir,fname)
-                if fname.endswith("_final.mtz"):
+                elif fname.endswith("_final.mtz"):
                     final_mtz = os.path.join(self.resultDir,fname)
-                if fname.endswith("_final.log"):
+                elif fname.endswith("_final.log"):
                     refmac_log = os.path.join(self.resultDir,fname)
+                elif fname.endswith(".refmac"):
+                    refmac_kwd = os.path.join(self.resultDir,fname)
 
         xyzout = self.getXYZOFName()
         mtzout = self.getMTZOFName()
@@ -503,7 +507,7 @@ class Pdbredo(basic.TaskDriver):
         if xyzout:
             # if os.path.isfile(final_pdb):
 
-            verdict_row = self.rvrow
+            # verdict_row = self.rvrow
 
             self.rvrow += 5
 
@@ -525,7 +529,20 @@ class Pdbredo(basic.TaskDriver):
                 "FWT,PHWT,DELFWT,PHDELWT",
                 True,
             )
+
             if structure:
+
+                refmac_keywords = None
+                try:
+                    with open(refmac_kwd,"r") as f:
+                        refmac_keywords = f.read().splitlines()
+                except:
+                    self.stdoutln ( "\n ****** refmac parameters not found at " +\
+                                    refmac_kwd + "\n " )
+                if refmac_keywords:
+                    structure.store_refkeys_parameters ( "TaskRefmac",self.task.id,
+                                                         refmac_keywords )
+
                 self.putStructureWidget(
                     "structure_btn", "Structure and electron density", structure
                 )

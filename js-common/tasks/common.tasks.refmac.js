@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    25.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -39,31 +39,30 @@ function TaskRefmac()  {
   this.title   = 'Refinement with Refmac';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
-      label       : 'Structure revision',     // label for input dialog
-      inputId     : 'revision', // input Id for referencing input fields
-      customInput : 'refmac',   // lay custom fields below the dropdown
-      version     : 1,          // minimum data version allowed
-      min         : 1,          // minimum acceptable number of data instances
-      max         : 1           // maximum acceptable number of data instances
-    },{
-      data_type   : {'DataXYZ':['protein','dna','rna'] },  // data type(s) and subtype(s)
-      label       : 'Homologous model',    // label for input dialog
-      inputId     : 'hmodel',    // input Id for referencing input fields
-      //customInput : 'chain-sel', // lay custom fields next to the selection
-      min         : 0,           // minimum acceptable number of data instances
-      max         : 10           // maximum acceptable number of data instances
-    },{
-      data_type   : { 'DataStructure' : ['!phases','!EP'] }, // data type(s) and subtype(s)
-      label       : 'External phases',       // label for input dialog
-      cast        : 'phases',
-      tooltip     : 'External phases',
-      inputId     : 'phases',       // input Id for referencing input fields
-      version     : 0,              // minimum data version allowed
-      min         : 0,              // minimum acceptable number of data instances
-      max         : 1               // maximum acceptable number of data instances
-    }
-  ];
+    data_type   : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
+    label       : 'Structure revision',     // label for input dialog
+    inputId     : 'revision', // input Id for referencing input fields
+    customInput : 'refmac',   // lay custom fields below the dropdown
+    version     : 1,          // minimum data version allowed
+    min         : 1,          // minimum acceptable number of data instances
+    max         : 1           // maximum acceptable number of data instances
+  },{
+    data_type   : {'DataXYZ':['protein','dna','rna'] },  // data type(s) and subtype(s)
+    label       : 'Homologous model',    // label for input dialog
+    inputId     : 'hmodel',    // input Id for referencing input fields
+    //customInput : 'chain-sel', // lay custom fields next to the selection
+    min         : 0,           // minimum acceptable number of data instances
+    max         : 10           // maximum acceptable number of data instances
+  },{
+    data_type   : { 'DataStructure' : ['!phases','!EP'] }, // data type(s) and subtype(s)
+    label       : 'External phases',       // label for input dialog
+    cast        : 'phases',
+    tooltip     : 'External phases',
+    inputId     : 'phases',       // input Id for referencing input fields
+    version     : 0,              // minimum data version allowed
+    min         : 0,              // minimum acceptable number of data instances
+    max         : 1               // maximum acceptable number of data instances
+  }];
 
   this.parameters = {
     sec1 : { type     : 'section',
@@ -597,7 +596,7 @@ TaskRefmac.prototype.icon           = function()  { return 'task_refmac'; }
 TaskRefmac.prototype.clipboard_name = function()  { return '"Refmac"';    }
 
 TaskRefmac.prototype.currentVersion = function()  {
-  var version = 5;
+let version = 5;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -627,6 +626,110 @@ TaskRefmac.prototype.checkKeywords = function ( keywords )  {
 if (!__template)  {
   //  for client side
 
+  // sets task parameters from given standard input file, represented as 
+  // refkeys = { id: id, keywords: keywords } where keywords is list of lines 
+  // in task's stdin
+  TaskRefmac.prototype.set_refkeys_parameters = function ( refkeys )  {
+  let lines = refkeys.keywords;
+  let sec1  = this.parameters.sec1.contains;
+  let sec2  = this.parameters.sec2.contains;
+  let sec3  = this.parameters.sec3.contains;
+  let sec4  = this.parameters.sec4.contains;
+  let sec5  = this.parameters.sec5.contains;
+    for (let i=0;i<lines.length;i++)  {
+      let words = lines[i].toUpperCase().trim().split(/\s+/);
+      if ((words.length>0) && (!words[0].startsWith('#')))  {
+        let w1 = '';
+        if (words.length>1)
+          w1 = words[1].substring(0,4);2
+        let w2 = '';
+        if (words.length>2)
+          w2 = words[2];
+        switch (words[0].substring(0,4))  {
+          case 'NCYC' : sec1.NCYC.value = words[1];
+                      break;
+          case 'WEIG' : if (w1=='AUTO')  {
+                          sec1.WAUTO_YES.value      = 'yes';
+                          sec1.WAUTO_VAL_AUTO.value = w2;
+                        } else  {
+                          sec1.WAUTO_YES.value = 'no';
+                          sec1.WAUTO_VAL.value = w2;
+                        }
+                      break;
+          case 'REFI' : if (w1=='BREF')
+                          sec2.BFAC.value = w2;
+                        else if (w1=='TLSC')  {
+                          sec2.TLS.value = 'auto';
+                          sec2.TLS_CYCLES.value = w2;
+                        }
+                        break;
+          case 'BFAC' : if (w1=='SET')  {
+                          if (sec2.TLS.value=='none')
+                                sec2.RESET_B_VAL.value     = w2;
+                          else  sec2.RESET_B_TLS_VAL.value = w2;
+                        }
+                      break;
+          case 'TLSO' : if (w1=='ADDU')  {
+                          sec2.TLS.value         = 'auto';
+                          sec2.TLSOUT_ADDU.value = 'yes';
+                        }
+                      break;
+          case 'MAPC' : if (w1=='SHAR')  {
+                          sec4.MAP_SHARPEN.value = 'yes';
+                          if (w2)  sec4.MAP_SHARPEN_B.value = w2;
+                             else  sec4.MAP_SHARPEN_B.value = 'default';
+                        }
+                      break;
+          case 'SOUR' : if (w1=='ELEC')  {
+                        sec5.EXPERIMENT.value = 'electron';
+                        if (w2=='MB')  sec5.FORM_FACTOR.value = 'mb';
+                                 else  sec5.FORM_FACTOR.value = 'gaussian';
+                      }
+                    break;
+        case 'ANOM' : 
+          case 'LABI' :
+          default     : break;
+        }
+      }
+    }
+  }
+
+  /*
+
+  "DataRevision": [
+   "ANOM MAPONLY",
+   "LABIN FP=F SIGFP=SIGF F+=F(+) SIGF+=SIGF(+) F-=F(-) SIGF-=SIGF(-) FREE=FreeR_flag",
+   "NCYC 10",
+   "WEIGHT AUTO",
+   "MAKE HYDR ALL",
+   "MAKE LINK NO",
+   "REFI BREF ISOT",
+   "SCALE TYPE SIMPLE",
+   "SOLVENT YES",
+   "NCSR LOCAL",
+   "REFI RESO 34 1.79",
+   "MAKE NEWLIGAND EXIT",
+   "Pdbout keep true",
+   "END"
+  ]
+
+  #Refmac command script from PDB-REDO 8.01
+   #
+   #Use of riding hydrogens
+   make hydrogen ALL
+   #B-factor model selection
+   refi bref ISOT
+   #Solvent related settings
+   scal type SIMP lssc function a sigma n
+   solvent YES
+   solvent vdwprobe 1.1 ionprobe 0.7 rshrink 0.7
+   tlsd waters exclude
+   #Restraint weights
+   weight  MATRIX 0.10
+   temp 0.30
+  */
+   
+
   TaskRefmac.prototype.collectInput = function ( inputPanel )  {
 
     var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
@@ -641,7 +744,6 @@ if (!__template)  {
     return input_msg;
 
   }
-
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
   TaskRefmac.prototype.hotButtons = function() {

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -141,6 +141,7 @@ class FitLigand(basic.TaskDriver):
                                 libadd,leadKey=istruct.leadKey,
                                 refiner=istruct.refiner )
             if structure:
+                structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations ( istruct )
                 structure.copySubtype      ( istruct )
                 structure.copyLabels       ( istruct )

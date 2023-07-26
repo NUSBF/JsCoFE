@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    28.06.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -219,7 +219,7 @@ class Privateer(basic.TaskDriver):
                                     refiner=istruct.refiner )
 
             if structure:
-                # structure.copyRefinerParameters ( istruct )
+                structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations ( istruct )
                 structure.addSubtypes      ( istruct.subtype )
                 # structure.removeSubtype    ( dtype_template.subtypeSubstructure() )

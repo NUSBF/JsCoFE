@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    08.10.22   <--  Date of Last Modification.
+#    23.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  BASE (TEMPLATE) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -91,6 +91,11 @@ class DType(jsonut.jObject):
             self.files      = {}  # may be a multiple-file data type
             self.associated = []  # optional list of associated data Ids
             self.citations  = []  # list of program citations
+            # self.refkeys    = {}; # reference keyworded parameters; this line
+                                    # should stay commented. Look using refkeys in 
+                                    # DataTemplate.store_refkeys_parameters() and
+                                    # TaskTemplate.set_refkeys_parameters() 
+                                    # in python and js layers, respectively.
         return
 
     def makeDataId ( self,serialNo ):
@@ -234,7 +239,6 @@ class DType(jsonut.jObject):
     def getSubtypes ( self ):
         return self.subtype
 
-
     def add_file ( self,fn,outputDir,fileKeyName,copy_bool=False ):
         if fn and os.path.isfile(fn):
             fname = os.path.basename(fn)
@@ -250,7 +254,6 @@ class DType(jsonut.jObject):
                 else:
                     os.rename ( fn,fpath )
         return
-
 
     def getFileName ( self,fileKey ):
         if isinstance(self.files,dict):
@@ -268,4 +271,20 @@ class DType(jsonut.jObject):
                 return str ( os.path.join ( dirPath,self.files[fileKey] ) )
         elif hasattr(self.files,fileKey):
             return str ( os.path.join ( dirPath,getattr(self.files,fileKey) ) )
+        return None
+
+    def store_refkeys_parameters ( self,taskType,taskID,keywords ):
+        if not hasattr(self,"refkeys"):
+            self.refkeys = {}
+        self.refkeys[taskType] = { "id": taskID, "keywords" : keywords }
+        return
+
+    def copy_refkeys_parameters ( self,istruct ):
+        if hasattr(istruct,"refkeys"):
+            self.refkeys = istruct.refkeys
+        return
+
+    def get_refkeys_parameters ( self,taskType ):
+        if hasattr(self,"refkeys"):
+            return getattr(self.refkeys,taskType)
         return None

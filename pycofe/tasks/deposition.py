@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#   28.06.23   <--  Date of Last Modification.
+#   25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -219,6 +219,7 @@ class Deposition(basic.TaskDriver):
                                                  leadKey=istruct.leadKey,
                                                  refiner="refmac" )
             if structure:
+                structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations ( istruct )
                 structure.copyLabels       ( istruct )
                 structure.copySubtype      ( istruct )

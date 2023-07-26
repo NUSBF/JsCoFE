@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.07.22   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2023
 #
 # ============================================================================
 #
@@ -100,6 +100,7 @@ class SymMatch(basic.TaskDriver):
                                                  stitle="Symmetry matched structure and<br>electron density" )
 
             if structure:
+                structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations   ( istruct )
                 structure.addDataAssociation ( hkl.dataId     )
                 structure.addDataAssociation ( istruct.dataId )  # ???

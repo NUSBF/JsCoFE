@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.03.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -309,6 +309,7 @@ class Buccaneer(basic.TaskDriver):
                                     #fnames[0],fnames[1],None,  -- not needed for new UglyMol
                                     leadKey=1,refiner="refmac" )
             if structure:
+                structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations ( istruct )
                 structure.addSubtypes      ( istruct.subtype )
                 structure.removeSubtype    ( dtype_template.subtypeSubstructure() )

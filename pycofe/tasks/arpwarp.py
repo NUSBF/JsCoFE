@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    21.06.22   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,7 +23,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2023
 #
 # ============================================================================
 #
@@ -334,6 +334,7 @@ class ArpWarp(basic.TaskDriver):
                                     #fnames[0],fnames[1],None,  -- not needed for new UglyMol
                                     leadKey=1,refiner="refmac" )
             if structure:
+                structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations ( istruct )
                 structure.copySubtype      ( istruct )
                 structure.removeSubtype    ( dtype_template.subtypeSubstructure() )

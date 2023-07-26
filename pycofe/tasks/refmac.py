@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.06.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -57,6 +57,7 @@ class Refmac(basic.TaskDriver):
                                              copy_files=copyfiles,
                                              refiner="refmac" )
         if structure:
+            structure.copy_refkeys_parameters ( istruct )
             structure.copyAssociations   ( istruct )
             structure.addDataAssociation ( hkl.dataId     )
             structure.addDataAssociation ( istruct.dataId )  # ???
@@ -302,7 +303,7 @@ class Refmac(basic.TaskDriver):
         if len(external_restraint_files) > 0:
             stdin += [
                 'EXTE WEIGHT SCALE ' + str(sec3.EXTE_WEIGHT.value),
-                'EXTE ALPHA '  + str(sec3.EXTE_ALPHA.value),
+                'EXTE ALPHA '        + str(sec3.EXTE_ALPHA.value),
                 'EXTE DMAX '         + str(sec3.EXTE_MAXD.value)
             ]
             for i in range(len(external_restraint_files) ):
@@ -396,7 +397,7 @@ class Refmac(basic.TaskDriver):
                                              libin,hkl,istruct,
                                              "FWT,PHWT,DELFWT,PHDELWT",True )
             if structure:
-                # structure.setRefinerParameters ( stdin )
+                structure.store_refkeys_parameters ( self.task._type,self.task.id,stdin )
                 self.putStructureWidget ( self.getWidgetId("structure_btn"),
                                           "Structure and electron density",
                                           structure )

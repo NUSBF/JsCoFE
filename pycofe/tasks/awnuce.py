@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -161,6 +161,7 @@ class AWNuce(basic.TaskDriver):
                                 leadKey=istruct.leadKey,
                                 refiner=istruct.refiner )
                 if structure:
+                    structure.copy_refkeys_parameters ( istruct )
                     structure.copyAssociations ( istruct )
                     structure.copySubtype      ( istruct )
                     structure.copyLabels       ( istruct )

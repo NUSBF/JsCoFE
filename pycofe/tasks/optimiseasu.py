@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -158,6 +158,7 @@ class OptimiseASU(basic.TaskDriver):
                                             map_labels=istruct.mapLabels,
                                             refiner=istruct.refiner )
                     if oxyz:
+                        oxyz.copy_refkeys_parameters ( istruct )
                         oxyz.copyAssociations   ( istruct )
                         oxyz.addDataAssociation ( istruct.dataId )  # ???
                         oxyz.copySubtype        ( istruct )

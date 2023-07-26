@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    10.07.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -296,6 +296,7 @@ class ModelCraft(basic.TaskDriver):
                                         None,None,None,
                                         leadKey=1,refiner="refmac" )
                 if structure:
+                    structure.copy_refkeys_parameters ( istruct )
                     structure.copyAssociations ( istruct )
                     structure.addSubtypes      ( istruct.subtype )
                     structure.removeSubtype    ( dtype_template.subtypeSubstructure() )
