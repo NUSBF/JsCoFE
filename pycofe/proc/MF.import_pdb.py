@@ -5,13 +5,13 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  PDB DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2018-2023
 #
 # ============================================================================
 #
@@ -69,11 +69,13 @@ def download_file ( url,fpath,body=None ):
             line = f.readline()
             while line:
                 if body:
-                    body.stdout ( " >>>> downloaded: " + line )
+                    body.stdout ( line )
                 l = line.strip()
                 if len(l)>0:
-                    if l.startswith("<!DOCTYPE") or "<Error>" in l or\
-                       "No fasta files were found." in l:
+                    if l.find("No fasta files were found.")!=-1:
+                        rc = -2
+                        break;
+                    if l.startswith("<!DOCTYPE") or "<Error>" in l:
                         rc = -1
                         break;
                 line = f.readline()
@@ -117,52 +119,26 @@ def run ( body,pdb_list,
             fname_sf  = lcode + "-sf.cif"
             fpath_seq = os.path.join ( body.importDir(),fname_seq )
             if import_coordinates or import_sequences:
-                # coordiinates are used for sequence annotation, so must be obtained
+                # coordiinates are used for sequence annotation
                 rc_xyz = download_file ( get_pdb_file_url(ucode),fpath_xyz )
                 if rc_xyz:
                     fname_xyz = lcode + ".cif"
                     fpath_xyz = os.path.join ( body.importDir(),fname_xyz )
-                    rc_xyz    = download_file ( get_cif_file_url(ucode),fpath_xyz )
-                if rc_xyz:
-                    body.stdoutln ( " ***** PDB entry " + code + " coordinate file not obtained" )
-                    body.putSummaryLine_red ( fname_xyz,"XYZ","not obtained" )
+                    rc_xyz = download_file ( get_cif_file_url(ucode),fpath_xyz )
 
             if import_sequences:
                 # these will be the "expected" sequences
                 rc_seq = download_file ( get_seq_file_url(ucode),fpath_seq,body=None )
-                # body.stdoutln ( " .... rc_seq=" + str(rc_seq) )
-                if rc_seq:
-                    body.stdoutln ( " ***** PDB entry " + code + " sequence file not obtained" )
-                    body.putSummaryLine_red ( fname_seq,"SEQ","not obtained" )
-                    if not rc_xyz:
-                        # fetch sequences from coordinates
-                        st = gemmi.read_structure ( fpath_xyz )
-                        st.setup_entities()
-                        model   = st[0]  # use first model
-                        content = ""     # contrent of sequence file
-                        for chain in model:
-                            polymer = chain.get_polymer()
-                            seqline = str(polymer.make_one_letter_sequence())
-                            content += ">chain_" + chain.name + "\n" + seqline + "\n\n"
-                        if content:
-                            with open(fpath_seq,"w") as f:
-                                f.write ( content )
-                            rc_seq = 0
-                            body.putMessage ( "<i>Note: sequence(s) obtained from coordinates</i>" )
 
             if import_reflections:
                 rc_sf  = download_file ( "https://files.rcsb.org/download/" + ucode + "-sf.cif",
-                                         os.path.join(body.importDir(),fname_sf) )
-                if rc_sf:
-                    body.stdoutln ( " ***** PDB entry " + code + " reflection file not obtained" )
-                    body.putSummaryLine_red ( fname_sf,"HKL","not obtained" )
+                                        os.path.join(body.importDir(),fname_sf) )
 
         elif (len(code)>4) and (import_coordinates or import_sequences):
             # coordiinates are used for sequence annotation
-            rc_xyz    = download_file ( get_afdb_file_url(ucode),fpath_xyz )
+            rc_xyz = download_file ( get_afdb_file_url(ucode),fpath_xyz )
             fname_seq = "afdb_" + ucode + ".fasta"
             fpath_seq = os.path.join ( body.importDir(),fname_seq )
-            # note: assume that alphafold models contain single chains
             st = gemmi.read_structure ( fpath_xyz )
             st.setup_entities()
             for model in st:
@@ -171,7 +147,6 @@ def run ( body,pdb_list,
                     seqline = str(polymer.make_one_letter_sequence())
                     dtype_sequence.writeSeqFile ( fpath_seq,ucode,seqline )
                     rc_seq = 0
-                    body.putMessage ( "<i>Note: sequence(s) obtained from coordinates</i>" )
 
         body.resetFileImport()
         asuComp = None
@@ -189,7 +164,7 @@ def run ( body,pdb_list,
             if import_sequences and not rc_seq:
 
                 # infer non-redundant sequence composition of ASU
-                asuComp = asucomp.getASUComp1 ( fpath_xyz,fpath_seq,0.9999,body=body )
+                asuComp = asucomp.getASUComp1 ( fpath_xyz,fpath_seq,0.9999,body=None )
 
                 #  prepare separate sequence files annotation json for sequence import
 
@@ -256,14 +231,14 @@ def run ( body,pdb_list,
         if len(body.files_all)>0:
 
             subSecId = body.getWidgetId ( "_pdb_sec_"+code )
-            body.putSection ( subSecId,"PDB Entry " + ucode,False )
+            body.putSection ( subSecId,"PDB Entry " + ucode,True )
             body.setReportWidget ( subSecId )  # retain section id for signalling to gauge widget here
 
             xyz = import_xyz     .run ( body )
             seq = import_sequence.run ( body )
             hkl = import_merged  .run ( body,importPhases="" )
 
-            if len(hkl)>0 and len(seq)>0 and import_revisions:  # compose structure and revision
+            if len(hkl)>0 and import_revisions and asuComp!= None:  # compose structure and revision
 
                 revision = [None]  # for formal logic below
                 seqdesc  = asuComp["asucomp"]
@@ -301,6 +276,10 @@ def run ( body,pdb_list,
                         "<b><i>" + ucode + " structure revision name:</i></b>","" )
                     revisionNo += 1
                     body.outputFName = "*"
+
+            else:
+                body.putMessage ( "<h3>" + "No revision is created" + "</h3>" )
+
 
             body.resetReportPage()
 
