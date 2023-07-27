@@ -19,7 +19,7 @@
  *
  */
 
-'use strict'; // *client*
+'use strict';
 
 var __template = null;
 
@@ -65,11 +65,11 @@ function TaskRefmac()  {
   }];
 
   this.parameters = {
-    sec1 : { type     : 'section',
-             title    : 'Basic options',
-             open     : true,
-             position : [0,0,1,5],
-             contains : {
+    sec1 :  { type     : 'section',
+              title    : 'Basic options',
+              open     : true,
+              position : [0,0,1,5],
+              contains : {
                 NCYC  : {
                    type     : 'integer',
                    keyword  : 'none',
@@ -145,15 +145,15 @@ function TaskRefmac()  {
         open     : false,
         position : [1,0,1,5],
         contains : {
-           BFAC : { 
+            BFAC : { 
               type     : 'combobox',
               keyword  : 'none',
               label    : 'Atomic B-factors',
               range    : ['ISOT|Isotropic','ANIS|Anisotropic','OVER|Overall','MIXED|Mixed'],
               value    : 'ISOT',
               position : [0,0,1,1]
-           },
-           TLS : { 
+            },
+            TLS : { 
               type     : 'combobox',
               keyword  : 'none',
               label    : 'TLS groups',
@@ -162,9 +162,9 @@ function TaskRefmac()  {
               value    : 'none',
               showon   : {'BFAC':['ISOT']},
               position : [1,0,1,1]
-           },
+            },
 
-           TLS_CYCLES : { 
+            TLS_CYCLES : { 
               type     : 'integer',
               keyword  : 'none',
               label    : '&nbsp;&nbsp;&nbsp;&nbsp;Number of TLS cycles',
@@ -173,9 +173,9 @@ function TaskRefmac()  {
               value    : '5',
               showon   : {'TLS':['auto']},
               position : [2,2,1,1]
-           },
+            },
 
-           TLSOUT_ADDU : { 
+            TLSOUT_ADDU : { 
               type     : 'combobox',
               keyword  : 'none',
               label    : '&nbsp;&nbsp;&nbsp;&nbsp;Add TLS contribution to B-factors',
@@ -184,15 +184,16 @@ function TaskRefmac()  {
               value    : 'no',
               showon   : {'TLS':['auto']},
               position : [3,2,1,1]
-           },
-           TLSOUT_ADDU_1 : { type   : 'label',
+            },
+            TLSOUT_ADDU_1 : { 
+              type     : 'label',
               keyword  : 'none',
               label    : '(only for analysis and deposition)',
               showon   : {'TLS':['auto']},
               position : [3,5,1,3]
-           },
+            },
 
-           RESET_B : { 
+            RESET_B : { 
               type     : 'combobox',
               keyword  : 'none',
               label    : 'Reset all B-factors at start',
@@ -201,8 +202,8 @@ function TaskRefmac()  {
               value    : 'no',
               showon   : {'TLS':['none']},
               position : [4,0,1,1]
-           },
-           RESET_B_VAL : { 
+            },
+            RESET_B_VAL : { 
               type     : 'real',
               keyword  : 'none',
               label    : '&nbsp;&nbsp;&nbsp;&nbsp;to fixed value',
@@ -211,9 +212,10 @@ function TaskRefmac()  {
               value    : '30.0',
               showon   : {'TLS':['none'],'RESET_B':['yes']},
               position : [5,2,1,1]
-           },
+            },
 
-           RESET_B_TLS : { type   : 'combobox',
+            RESET_B_TLS : { 
+              type     : 'combobox',
               keyword  : 'none',
               label    : 'Reset all B-factors at start',
               tooltip  : 'Reset all B-factors at start',
@@ -221,8 +223,9 @@ function TaskRefmac()  {
               value    : 'yes',
               showon   : {'TLS':['auto']},
               position : [6,0,1,1]
-           },
-           RESET_B_TLS_VAL : { type   : 'real',
+            },
+            RESET_B_TLS_VAL : { 
+              type     : 'real',
               keyword  : 'none',
               label    : '&nbsp;&nbsp;&nbsp;&nbsp;to fixed value',
               tooltip  : 'to fixed value',
@@ -230,25 +233,28 @@ function TaskRefmac()  {
               value    : '30.0',
               showon   : {'TLS':['auto'],'RESET_B_TLS':['yes']},
               position : [7,2,1,1]
-           },
+            },
 
-           SCALING : { type   : 'combobox',
+            SCALING : { 
+              type     : 'combobox',
               keyword  : 'none',
               label    : 'Solvent model type',
               tooltip  : 'Solvent model type',
               range    : ['SIMPLE|Simple','BULK|Bulk'],
               value    : 'SIMPLE',
               position : [8,0,1,1]
-           },
-           SOLVENT_MASK : { type   : 'combobox',
+            },
+            SOLVENT_MASK : { 
+              type     : 'combobox',
               keyword  : 'none',
               label    : 'Explicit solvent mask',
               tooltip  : 'Specify whether to use an explicit solvent mask',
               range    : ['explicit|Yes','no|No'],
               value    : 'explicit',
               position : [9,0,1,1]
-           },
-           SOLVENT_CUSTOM : { type   : 'combobox',
+            },
+            SOLVENT_CUSTOM : { 
+              type     : 'combobox',
               keyword  : 'none',
               label    : '&nbsp;&nbsp;&nbsp;&nbsp;Custom mask parameters',
               tooltip  : 'Use custom solvent mask parameters',
@@ -256,8 +262,9 @@ function TaskRefmac()  {
               value    : 'no',
               showon   : {'SOLVENT_MASK':['explicit']},
               position : [10,2,1,1]
-           },
-           SOLVENT_CUSTOM_VDW : { type   : 'real',
+            },
+            SOLVENT_CUSTOM_VDW : { 
+              type     : 'real',
               keyword  : 'none',
               label    : '&nbsp;&nbsp;&nbsp;&nbsp;Increase non-ion VDW radius by',
               tooltip  : 'Increase VDW radius of non-ion atoms',
@@ -265,8 +272,9 @@ function TaskRefmac()  {
               value    : '1.4',
               showon   : {'SOLVENT_MASK':['explicit'],'SOLVENT_CUSTOM':['yes']},
               position : [11,4,1,1]
-           },
-           SOLVENT_CUSTOM_ION : { type   : 'real',
+            },
+            SOLVENT_CUSTOM_ION : { 
+              type     : 'real',
               keyword  : 'none',
               label    : '&nbsp;&nbsp;&nbsp;&nbsp;Increase radius of ions by',
               tooltip  : 'Increase ionic radius of potential ion atoms',
@@ -274,8 +282,9 @@ function TaskRefmac()  {
               value    : '0.8',
               showon   : {'SOLVENT_MASK':['explicit'],'SOLVENT_CUSTOM':['yes']},
               position : [12,4,1,1]
-           },
-           SOLVENT_CUSTOM_SHRINK : { type   : 'real',
+            },
+            SOLVENT_CUSTOM_SHRINK : { 
+              type     : 'real',
               keyword  : 'none',
               label    : '&nbsp;&nbsp;&nbsp;&nbsp;Shrink the mask area by',
               tooltip  : 'Shrink the mask area after calculation',
@@ -283,8 +292,8 @@ function TaskRefmac()  {
               value    : '0.8',
               showon   : {'SOLVENT_MASK':['explicit'],'SOLVENT_CUSTOM':['yes']},
               position : [13,4,1,1]
-           }
-         }
+            }
+        }
     },
     sec3 : {
         type     : 'section',
@@ -292,15 +301,15 @@ function TaskRefmac()  {
         open     : false,
         position : [2,0,1,5],
         contains : {
-           NCSR : { type   : 'combobox',
+            NCSR : { type   : 'combobox',
               keyword  : 'none',
               label    : 'Use automatic NCS restraints',
               tooltip  : 'Use automatic Non-Crystallographic Symmetry restraints',
               range    : ['yes|Yes','no|No'],
               value    : 'yes`',
               position : [0,0,1,1]
-           },
-           NCSR_TYPE : { type   : 'combobox',
+            },
+            NCSR_TYPE : { type   : 'combobox',
               keyword  : 'none',
               label    : '',
               tooltip  : 'Local or global Non-Crystallographic Symmetry restraints',
@@ -308,16 +317,16 @@ function TaskRefmac()  {
               value    : 'LOCAL',
               showon   : {'NCSR':['yes']},
               position : [0,3,1,1]
-           },
-           JELLY : { type : 'combobox',
+            },
+            JELLY : { type : 'combobox',
               keyword  : 'none',
               label    : 'Use jelly-body restraints',
               tooltip  : 'Use jelly-body restraints',
               range    : ['no|No','yes|Yes'],
               value    : 'no',
               position : [1,0,1,1]
-           },
-           JELLY_SIGMA : { type : 'real',
+            },
+            JELLY_SIGMA : { type : 'real',
               keyword  : 'none',
               label    : 'weight',
               tooltip  : 'Sigma parameter for jelly-body restraints',
@@ -325,8 +334,8 @@ function TaskRefmac()  {
               value    : '0.01',
               showon   : {'JELLY':['yes']},
               position : [1,3,1,1]
-           },
-           JELLY_DMAX : { type : 'real',
+            },
+            JELLY_DMAX : { type : 'real',
               keyword  : 'none',
               label    : 'max distance',
               tooltip  : 'Maximum distance between jelly-body restrained atoms',
@@ -334,8 +343,8 @@ function TaskRefmac()  {
               value    : '4.2',
               showon   : {'JELLY':['yes']},
               position : [1,8,1,1]
-           },
-           MKLINKS : {
+            },
+            MKLINKS : {
               type     : 'combobox',
               keyword  : 'none',
               label    : 'Covalent/metal link identification',
@@ -344,23 +353,23 @@ function TaskRefmac()  {
               range    : ['NO|No','YES|Yes'],
               value    : 'NO',
               position : [2,0,1,3]
-           },
-           HBOND_RESTR : { type   : 'combobox',
+            },
+            HBOND_RESTR : { type   : 'combobox',
               keyword  : 'none',
               label    : 'Generate backbone H-bond restraints',
               tooltip  : 'Use ProSMART to generate H-bond restraints for the protein backbone',
               range    : ['no|No','yes|Yes'],
               value    : 'no',
               position : [3,0,1,1]
-           },
-           EXTE_GEN : { 
+            },
+            EXTE_GEN : { 
               type     : 'label',
               keyword  : 'none',
               label    : 'Generate external restraints<br>with following ProSMART parameters:',
               hideon   : {hmodel:[0,-1]},
               position : [4,0,1,1]
-           },
-           ALL_BEST : { type   : 'combobox',
+            },
+            ALL_BEST : { type   : 'combobox',
               keyword  : 'none',
               label    : 'Use these chain(s) from the reference model(s)',
               tooltip  : 'Select whether to generate restraints using all chains, or just the one that is the most structurally similar to the target, from each homologous reference model',
@@ -368,8 +377,8 @@ function TaskRefmac()  {
               value    : 'all',
               hideon   : {hmodel:[0,-1]},
               position : [4,3,1,1]
-           },
-           SEQID : { type : 'real',
+            },
+            SEQID : { type : 'real',
               keyword  : 'none',
               label    : 'Minimum sequence identity',
               tooltip  : 'Minimum sequence identity between reference and target chains',
@@ -377,8 +386,8 @@ function TaskRefmac()  {
               value    : '75.0',
               hideon   : {hmodel:[0,-1]},
               position : [5,3,1,1]
-           },
-           SIDE_MAIN : { type   : 'combobox',
+            },
+            SIDE_MAIN : { type   : 'combobox',
               keyword  : 'none',
               label    : 'Generate restraints between following atom-pairs',
               tooltip  : 'Select whether to generate restraints involving both main chain and side chain atoms, or main chain atoms only',
@@ -386,8 +395,8 @@ function TaskRefmac()  {
               value    : 'side',
               hideon   : {hmodel:[0,-1]},
               position : [6,3,1,1]
-           },
-           RMIN : { type : 'real',
+            },
+            RMIN : { type : 'real',
               keyword  : 'none',
               label    : 'Minimum interatomic distance range',
               tooltip  : 'Generate restraints with minimum interatomic distance (Angstroms)',
@@ -395,8 +404,8 @@ function TaskRefmac()  {
               value    : '2.5',
               hideon   : {hmodel:[0,-1]},
               position : [7,3,1,1]
-           },
-           RMAX : { type : 'real',
+            },
+            RMAX : { type : 'real',
               keyword  : 'none',
               label    : 'Maximum interatomic distance range',
               tooltip  : 'Generate restraints with maximum interatomic distance (Angstroms)',
@@ -404,8 +413,8 @@ function TaskRefmac()  {
               value    : '6.0',
               hideon   : {hmodel:[0,-1]},
               position : [8,3,1,1]
-           },
-           BFAC_RM : { type   : 'real',
+            },
+            BFAC_RM : { type   : 'real',
               keyword  : 'none',
               label    : 'Remove restraints where homologue has B-factors<br>higher than median plus interquartile range multiplied<br>by a factor of',
               tooltip  : 'Remove restraints involving atoms, in the homologue, that have high B-factors relative to the rest of the model',
@@ -413,8 +422,8 @@ function TaskRefmac()  {
               value    : '2.0',
               hideon   : {hmodel:[0,-1]},
               position : [9,3,1,1]
-           },
-           TOGGLE_ALT : { type   : 'combobox',
+            },
+            TOGGLE_ALT : { type   : 'combobox',
               keyword  : 'none',
               label    : 'Allow restraints involving atoms with alt codes',
               tooltip  : 'Allow restraints involving atoms with alt codes',
@@ -422,8 +431,8 @@ function TaskRefmac()  {
               value    : 'no',
               hideon   : {hmodel:[0,-1]},
               position : [10,3,1,1]
-           },
-           OCCUPANCY : { type   : 'real',
+            },
+            OCCUPANCY : { type   : 'real',
               keyword  : 'none',
               label    : 'Ignore atoms with occupancies lower than',
               tooltip  : 'Do not generate restraints involving atoms, either in the target or in homologous reference model, with occupancies lower than this value',
@@ -431,14 +440,14 @@ function TaskRefmac()  {
               value    : '0.0',
               hideon   : {hmodel:[0,-1]},
               position : [11,3,1,1]
-           },
-           EXTE_APPLY : { type   : 'label',
+            },
+            EXTE_APPLY : { type   : 'label',
               keyword  : 'none',
               label    : 'Apply external restraints<br>with following REFMAC5 parameters:',
               hideon   : {hmodel:[0,-1]},
               position : [12,0,1,1]
-           },
-          EXTE_WEIGHT : { type : 'real',
+            },
+            EXTE_WEIGHT : { type : 'real',
               keyword  : 'none',
               label    : 'Weight of external restraints',
               tooltip  : 'Overall strength of the external restraints (lower is stronger)',
@@ -446,8 +455,8 @@ function TaskRefmac()  {
               value    : '10.0',
               hideon   : {hmodel:[0,-1]},
               position : [12,3,1,1]
-           },
-          EXTE_ALPHA : { type : 'real',
+            },
+            EXTE_ALPHA : { type : 'real',
               keyword  : 'none',
               label    : 'Robustness parameter',
               tooltip  : 'Alpha parameter - controls robustness to outliers, with lower values resulting in outliers having less of an effect. E.g. 2.0 corresponds to Least Squares, and -2.0 corresponds to the Geman-McClure loss function.',
@@ -455,8 +464,8 @@ function TaskRefmac()  {
               value    : '1.0',
               hideon   : {hmodel:[0,-1]},
               position : [13,3,1,1]
-          },
-          EXTE_MAXD : { type : 'real',
+            },
+            EXTE_MAXD : { type : 'real',
               keyword  : 'none',
               label    : 'Maximal distance between restrained atoms',
               tooltip  : 'Maximum distance between externally restrained atoms',
@@ -464,7 +473,7 @@ function TaskRefmac()  {
               value    : '4.2',
               hideon   : {hmodel:[0,-1]},
               position : [14,3,1,1]
-          }
+            }
         }
     },
     sec4 : {
@@ -473,23 +482,23 @@ function TaskRefmac()  {
         open     : false,
         position : [3,0,1,5],
         contains : {
-           RIDING_HYDROGENS : { type   : 'combobox',
+            RIDING_HYDROGENS : { type   : 'combobox',
               keyword  : 'none',
               label    : 'Output calculated riding hydrogens',
               tooltip  : 'Output calculated riding hydrogens',
               range    : ['DEFAULT|Default','YES|Yes','NO|No'],
               value    : 'DEFAULT',
               position : [0,0,1,1]
-           },
-           MAP_SHARPEN : { type   : 'combobox',
+            },
+            MAP_SHARPEN : { type   : 'combobox',
               keyword  : 'none',
               label    : 'Perform map sharpening when calculating maps',
               tooltip  : 'Perform map sharpening when calculating maps',
               range    : ['no|No','yes|Yes'],
               value    : 'no',
               position : [1,0,1,1]
-           },
-           MAP_SHARPEN_B : { type : 'real_',
+            },
+            MAP_SHARPEN_B : { type : 'real_',
               keyword  : 'none',
               label    : 'using sharpening B-factor',
               tooltip  : 'Custom sharpening B-factor',
@@ -499,7 +508,7 @@ function TaskRefmac()  {
               iwidth   : 220,
               showon   : {'MAP_SHARPEN':['yes']},
               position : [1,3,1,1]
-           },
+            }
         }
     },
     sec5 : {
@@ -508,15 +517,15 @@ function TaskRefmac()  {
         open     : false,
         position : [4,0,1,5],
         contains : {
-           EXPERIMENT : { type   : 'combobox',
+            EXPERIMENT : { type   : 'combobox',
               keyword  : 'none',
               label    : 'Diffraction experiment type',
               tooltip  : 'Diffraction experiment type',
               range    : ['xray|X-ray','electron|Electron','neutron|Neutron'],
               value    : 'xray',
               position : [0,0,1,1]
-           },
-           FORM_FACTOR : { type   : 'combobox',
+            },
+            FORM_FACTOR : { type   : 'combobox',
               keyword  : 'none',
               label    : 'form factor calculation method',
               tooltip  : 'Electron form factor calculation method',
@@ -524,9 +533,9 @@ function TaskRefmac()  {
               value    : 'gaussian',
               showon   : {'EXPERIMENT':['electron']},
               position : [0,5,1,1]
-           },
-           /*
-           RES_LIMIT_MIN : { type   : 'real_',
+            },
+            /*
+            RES_LIMIT_MIN : { type   : 'real_',
               keyword  : 'none',
               label    : 'Use resolution limits',
               tooltip  : 'low resolution limit',
@@ -534,8 +543,8 @@ function TaskRefmac()  {
               value    : '',
               default  : 'default',
               position : [1,0,1,1]
-           },
-           RES_LIMIT_MAX : { type   : 'real_',
+            },
+            RES_LIMIT_MAX : { type   : 'real_',
               keyword  : 'none',
               label    : 'to',
               tooltip  : 'high resolution limit',
@@ -543,37 +552,36 @@ function TaskRefmac()  {
               value    : '',
               default  : 'default',
               position : [1,3,1,1]
-           },
-           */
-         //   KEYWORDS: {
-         //      type        : 'textarea_',  // can be also 'textarea'
-         //      keyword     : 'none',       // optional
-         //      tooltip     : 'Advanced keywords',  // mandatory
-         //      placeholder : 'Type additional keywords here', // optional
-         //      nrows       : 5,         // optional
-         //      ncols       : 90,        // optional
-         //      iwidth      : 500,       // optional
-         //      value       : '',        // mandatory
-         //      position    : [2,0,1,6]  // mandatory
-         //   }
-           KEYWORDS_LBL : {
-             type     : 'label',
-             keyword  : 'none',
-             label    : '<div style="font-size:14px;">' +
-                        '<i>Type additional keywords here</i></div>',
-             position : [2,0,1,6]
-           },
-           KEYWORDS: {
-            type        : 'aceditor_',
-            //keyword     : 'keyword',
-            tooltip     : '',
-            reportas    : 'Keywords',
-            value       : '',
-            iwidth      : 500,
-            iheight     : 160,
-            position    : [3,0,1,6]
-          }  
-  
+            },
+            */
+            //   KEYWORDS: {
+            //      type        : 'textarea_',  // can be also 'textarea'
+            //      keyword     : 'none',       // optional
+            //      tooltip     : 'Advanced keywords',  // mandatory
+            //      placeholder : 'Type additional keywords here', // optional
+            //      nrows       : 5,         // optional
+            //      ncols       : 90,        // optional
+            //      iwidth      : 500,       // optional
+            //      value       : '',        // mandatory
+            //      position    : [2,0,1,6]  // mandatory
+            //   }
+            KEYWORDS_LBL : {
+              type     : 'label',
+              keyword  : 'none',
+              label    : '<div style="font-size:14px;">' +
+                         '<i>Type additional keywords here</i></div>',
+              position : [2,0,1,6]
+            },
+            KEYWORDS: {
+              type        : 'aceditor_',
+              //keyword     : 'keyword',
+              tooltip     : '',
+              reportas    : 'Keywords',
+              value       : '',
+              iwidth      : 500,
+              iheight     : 160,
+              position    : [3,0,1,6]
+            }  
         }
      }
   };
@@ -630,22 +638,23 @@ if (!__template)  {
   // refkeys = { id: id, keywords: keywords } where keywords is list of lines 
   // in task's stdin
   TaskRefmac.prototype.set_refkeys_parameters = function ( refkeys )  {
-  let lines = refkeys.keywords;
-  let sec1  = this.parameters.sec1.contains;
-  let sec2  = this.parameters.sec2.contains;
-  let sec3  = this.parameters.sec3.contains;
-  let sec4  = this.parameters.sec4.contains;
-  let sec5  = this.parameters.sec5.contains;
+  let lines  = refkeys.keywords;
+  let sec1   = this.parameters.sec1.contains;
+  let sec2   = this.parameters.sec2.contains;
+  let sec3   = this.parameters.sec3.contains;
+  let sec4   = this.parameters.sec4.contains;
+  let sec5   = this.parameters.sec5.contains;
+  let advkwd = [];
     for (let i=0;i<lines.length;i++)  {
-      let words = lines[i].toUpperCase().trim().split(/\s+/);
+      let words = lines[i].trim().split(/\s+/);
       if ((words.length>0) && (!words[0].startsWith('#')))  {
         let w1 = '';
         if (words.length>1)
-          w1 = words[1].substring(0,4);2
+          w1 = words[1].toUpperCase().substring(0,4);2
         let w2 = '';
         if (words.length>2)
           w2 = words[2];
-        switch (words[0].substring(0,4))  {
+        switch (words[0].toUpperCase().substring(0,4))  {
           case 'NCYC' : sec1.NCYC.value = words[1];
                       break;
           case 'WEIG' : if (w1=='AUTO')  {
@@ -682,16 +691,43 @@ if (!__template)  {
                       break;
           case 'SOUR' : if (w1=='ELEC')  {
                         sec5.EXPERIMENT.value = 'electron';
-                        if (w2=='MB')  sec5.FORM_FACTOR.value = 'mb';
-                                 else  sec5.FORM_FACTOR.value = 'gaussian';
+                        if (w2.toUpperCase()=='MB')
+                              sec5.FORM_FACTOR.value = 'mb';
+                        else  sec5.FORM_FACTOR.value = 'gaussian';
                       }
                     break;
-        case 'ANOM' : 
+          case 'SCAL' : if ((words.length==3) && (w1=='TYPE'))
+                              sec2.SCALING.value = w2;
+                        else  advkwd.push ( lines[i] );
+                    break;
+          case 'SOLV' : let j = 1;
+                        while (j<words.length)  {
+                          switch (words[j].toUpperCase().substring(0,4))  {
+                            case 'NO'   : sec2.SOLVENT_MASK.value = 'no';   break;
+                            case 'YES'  : sec2.SOLVENT_MASK.value = 'yes';  break;
+                            case 'VDWP' : sec2.SOLVENT_CUSTOM_VDW.value = words[++j];
+                                          sec2.SOLVENT_CUSTOM.value = 'yes';
+                                        break;
+                            case 'IONP' : sec2.SOLVENT_CUSTOM_ION.value = words[++j];
+                                          sec2.SOLVENT_CUSTOM.value = 'yes';
+                                        break;
+                            case 'RSHR' : sec2.SOLVENT_CUSTOM_SHRINK.value = words[++j];
+                                          sec2.SOLVENT_CUSTOM.value = 'yes';
+                                        break;
+                            default : ;
+                          }
+                          j++;
+                        }
+                    break;
+          case 'TLSD' : advkwd.push ( lines[i] );  break;
+          case 'ANOM' : 
           case 'LABI' :
           default     : break;
         }
       }
     }
+    sec5.KEYWORDS.value = advkwd.join('\n');
+    return 1;  // all Ok, else -1 (incompatibility)
   }
 
   /*

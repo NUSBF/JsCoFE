@@ -280,7 +280,7 @@ class Refmac(basic.TaskDriver):
             stdin.append ( 'BFAC SET ' + str(sec2.RESET_B_VAL.value) )
 
         stdin.append ('SCALE TYPE ' + str(sec2.SCALING.value) )
-        if str(sec2.SCALING.value) == 'no':
+        if str(sec2.SOLVENT_MASK.value) == 'no':
             stdin.append ( 'SOLVENT NO' )
         else:
             stdin.append ( 'SOLVENT YES' )

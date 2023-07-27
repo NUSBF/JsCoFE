@@ -276,7 +276,10 @@ class DType(jsonut.jObject):
     def store_refkeys_parameters ( self,taskType,taskID,keywords ):
         if not hasattr(self,"refkeys"):
             self.refkeys = {}
-        self.refkeys[taskType] = { "id": taskID, "keywords" : keywords }
+        if isinstance(self.refkeys,dict):
+            self.refkeys[taskType] = { "id": taskID, "keywords" : keywords }
+        else:
+            setattr ( self.refkeys,taskType,{ "id": taskID, "keywords" : keywords } )
         return
 
     def copy_refkeys_parameters ( self,istruct ):
