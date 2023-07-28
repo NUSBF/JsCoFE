@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.07.23   <--  Date of Last Modification.
+ *    28.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -227,13 +227,14 @@ JobDialog.prototype.delete = function()  {
     this.outputPanel = null;
   }
 
-  if (this._created)  {
+  if (this._created)
     this._created = false;
-    $(this.element).dialog( 'destroy' );
-  }
 
   if (this.onClose_func)
     this.onClose_func ( this );
+
+  if ((this.task.nc_type=='browser') && (this.task.state==job_code.running))
+    this.requestServer ( fe_reqtype.webappEndJob,function(rdata){});
 
   Widget.prototype.delete.call ( this );
 

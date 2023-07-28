@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    28.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -75,15 +75,17 @@ function ProjectPage ( sceneId )  {
   // -------------------------------------------------------------------------
 
   this.makeHeader0 ( 3 );
-  // (function(self){
-    if (self.logout_btn)
-      self.logout_btn.addOnClickListener ( function(){
-        self.jobTree.stopTaskLoop    ();
-        self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-          logout ( self.element.id,0 );
-        });
+  if (self.logout_btn)
+    self.logout_btn.addOnClickListener ( function(){
+      self.confirmLeaving ( function(do_leave){
+        if (do_leave)  {
+          self.jobTree.stopTaskLoop    ();
+          self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
+            logout ( self.element.id,0 );
+          });
+        }
       });
-  // }(this));
+    });
 
   title_lbl = this.headerPanel.setLabel ( '',0,2,1,1 );
   title_lbl.setFont  ( 'times','150%',true,true )
@@ -107,35 +109,47 @@ function ProjectPage ( sceneId )  {
   // (function(self){
 
     self.addMenuItem ( 'Project folder','list',function(){
-      if (self.jobTree && self.jobTree.projectData)
-        self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-          makeProjectListPage ( sceneId );
-        });
-      else
-        makeProjectListPage ( sceneId );
+      self.confirmLeaving ( function(do_leave){
+        if (do_leave)  {
+          if (self.jobTree && self.jobTree.projectData)
+            self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
+              makeProjectListPage ( sceneId );
+            });
+          else
+            makeProjectListPage ( sceneId );
+        }
+      });
     });
 
     var accLbl = 'My Account';
     if (__local_user)
       accLbl = 'Settings';
     self.addMenuItem ( accLbl,'settings',function(){
-      if (self.jobTree && self.jobTree.projectData)
-        self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-          makeAccountPage ( sceneId );
-        });
-      else
-        makeAccountPage ( sceneId );
+      self.confirmLeaving ( function(do_leave){
+        if (do_leave)  {
+          if (self.jobTree && self.jobTree.projectData)
+            self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
+              makeAccountPage ( sceneId );
+            });
+          else
+            makeAccountPage ( sceneId );
+        }
+      });
     });
   
     if (!__local_user)  {
       if (__user_role==role_code.admin)
         self.addMenuItem ( 'Admin Page',role_code.admin,function(){
-          if (self.jobTree && self.jobTree.projectData)
-            self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-              makeAdminPage ( sceneId );
-            });
-          else
-            makeAdminPage ( sceneId );
+          self.confirmLeaving ( function(do_leave){
+            if (do_leave)  {
+              if (self.jobTree && self.jobTree.projectData)
+                self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
+                  makeAdminPage ( sceneId );
+                });
+              else
+                makeAdminPage ( sceneId );
+            }
+          });
         });
     }
 
@@ -163,12 +177,16 @@ function ProjectPage ( sceneId )  {
     }
 
     self.addLogoutToMenu ( function(){
-      if (self.jobTree && self.jobTree.projectData)
-        self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
-          logout ( sceneId,0 );
-        });
-      else
-        logout ( sceneId,0 );
+      self.confirmLeaving ( function(do_leave){
+        if (do_leave)  {
+          if (self.jobTree && self.jobTree.projectData)
+            self.jobTree.saveProjectData ( [],[],false, function(tree,rdata){
+              logout ( sceneId,0 );
+            });
+          else
+            logout ( sceneId,0 );
+        }
+      });
     });
 
   // }(this))
@@ -370,6 +388,27 @@ ProjectPage.prototype.constructor = ProjectPage;
 
 
 // --------------------------------------------------------------------------
+
+ProjectPage.prototype.confirmLeaving = function ( callback_func )  {
+  if (getNofCommunicationIFrames()+this.jobTree.getNofJobDialogs(true)>0)  {
+    new QuestionBox ( 'Active task dialogs',
+                      '<div style="width:360px;"><h2>Active task dialogs</h2>'  +
+                      'Some task are open in this Project Page. Closing them '  +
+                      'them automatically may cause losing last changes.<p>'    +
+                      'It is recommended that you review and close open tasks ' +
+                      'manually before leaving this page.<p>What you would '    +
+                      'like to do?</div',
+                      [
+                        { name    : 'Close them',
+                          onclick : function(){ callback_func(true); }
+                        },{
+                          name    : 'I will review and close manually',
+                          onclick : function(){ callback_func(false); }
+                        }
+                      ],'msg_confirm' );
+  } else
+    callback_func(true);
+}
 
 ProjectPage.prototype.destructor = function ( function_ready )  {
   if (this.jobTree)  {
