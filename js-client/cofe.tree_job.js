@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.06.23   <--  Date of Last Modification.
+ *    28.07.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1563,6 +1563,20 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func ) {
     // alert ( ' no selection in the tree! ' );
   }
 
+}
+
+JobTree.prototype.getNofJobDialogs = function ( ignore_completed )  {
+let c = 0;
+  for (let p in this.dlg_map)
+    if (this.dlg_map.hasOwnProperty(p))  {
+      let job_state = this.dlg_map[p].task.state;
+      if ((!ignore_completed) ||
+          ((job_state==job_code.new) || 
+           ((this.dlg_map[p].task.nc_type=='browser') && (job_state==job_code.runnings))
+          ))
+        c++;
+    }
+  return c;
 }
 
 JobTree.prototype.closeAllJobDialogs = function()  {
