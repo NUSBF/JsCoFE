@@ -184,8 +184,10 @@ def run ( body,pdb_list,
                     seqline = str(polymer.make_one_letter_sequence())
                     dtype_sequence.writeSeqFile ( fpath_seq,ucode,seqline )
                     rc_seq = 0
-                    body.putMessage ( "<h3 style=\"color:#4682B4;\"> Note: sequence(s) " +\
-                                      "restored from atomic coordinates </h3>" )
+                    # body.putMessage ( "<h3 style=\"color:#4682B4;\"> Note: sequence(s) " +\
+                    #                   "restored from atomic coordinates </h3>" )
+                    
+                    body.putNote('sequence(s) restored from atomic coordinates')
 
         body.resetFileImport()
         asuComp = None
@@ -293,9 +295,10 @@ def run ( body,pdb_list,
                     body.putMessage ( "&nbsp;<br><h3>" + ucode + " Unit Cell</h3>" )
 
                     if rc_seq:
-                        body.putMessage ( "<h3 style=\"color:#4682B4;\">Note: " +\
-                                          "sequence(s) restored from atomic coordinates" +\
-                                          "</h3>" )
+                        # body.putMessage ( "<h3 style=\"color:#4682B4;\">Note: " +\
+                        #                   "sequence(s) restored from atomic coordinates" +\
+                        #                   "</h3>" )
+                        body.putNote("sequence(s) restored from atomic coordinates")
 
                     seq_coor = []
                     for i in range(len(seqdesc)):

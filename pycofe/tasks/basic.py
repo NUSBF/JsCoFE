@@ -495,6 +495,11 @@ class TaskDriver(object):
         pyrvapi.rvapi_set_text ( message_str,self.report_page_id(),self.rvrow,col,1,colSpan )
         self.rvrow += 1
         return
+    
+    def putNote ( self,message_str,col=0,colSpan=1 ):
+        pyrvapi.rvapi_set_text ( "<h3 style=\"color:#4682B4;\"> Note: " + message_str +  "</h3>", self.report_page_id(),self.rvrow,col,1,colSpan )
+        self.rvrow += 1
+        return
 
     def putMessage1 ( self,pageId,message_str,row,col=0,rowSpan=1,colSpan=1 ):
         pyrvapi.rvapi_set_text ( message_str,pageId,row,col,rowSpan,colSpan )
