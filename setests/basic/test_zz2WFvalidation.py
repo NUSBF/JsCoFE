@@ -105,7 +105,7 @@ def validate2SMR(driver, waitLong):
     print('Verifying deposition ... ')
     match = False
     for t in ttts:
-        if 'deposition -- package prepared, pdb report' in t:
+        if 'deposition -- package prepared, pdb report' or 'PDB validation report -- pdb report obtained' in t:
             match = True
             break
     assert match

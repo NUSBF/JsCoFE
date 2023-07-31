@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.06.23   <--  Date of Last Modification.
+#    31.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -11,7 +11,7 @@
 #
 #  Command-line:  N/A
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2017-2023
 #
 # ============================================================================
 #
@@ -493,6 +493,11 @@ class TaskDriver(object):
 
     def putMessage ( self,message_str,col=0,colSpan=1 ):
         pyrvapi.rvapi_set_text ( message_str,self.report_page_id(),self.rvrow,col,1,colSpan )
+        self.rvrow += 1
+        return
+    
+    def putNote ( self,message_str,col=0,colSpan=1 ):
+        pyrvapi.rvapi_set_text ( "<h3 style=\"color:#4682B4;\"> Note: " + message_str +  "</h3>", self.report_page_id(),self.rvrow,col,1,colSpan )
         self.rvrow += 1
         return
 
