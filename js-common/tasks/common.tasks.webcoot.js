@@ -307,17 +307,6 @@ if (!__template)  {
 
     fetchFile ( 'js-lib/webCoot/webcoot.html',
       function(text){
-
-        // console.log (  text.replace ( '[[baseurl]]',
-        //                    window.location + 'js-lib/webCoot/webcoot.html' )
-        //         .replace ( '</body>',
-        //                    '  <script type="text/javascript"  defer="defer">\n' + 
-        //                    '   runWebCoot ( ' + JSON.stringify(params) + ' );\n' +
-        //                    '  </script>\n' +
-        //                    '</body>'
-        //                  )
-        // ); 
-
         wab.iframe.setHTML (
           text.replace ( '[[baseurl]]',
                          window.location + 'js-lib/webCoot/webcoot.html' )

@@ -36,6 +36,8 @@ CCP4 Cloud Version Log
 
     #. Refinemnet parameters in ``Find waters`` are now taken from last refinement job on the branch
 
+    #. Added graceful termination of open tasks when leaving *Project Page*
+
 
 
 **Version 1.7.0013** 
