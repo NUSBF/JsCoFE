@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.07.23   <--  Date of Last Modification.
+#    31.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -187,7 +187,7 @@ def run ( body,pdb_list,
                     # body.putMessage ( "<h3 style=\"color:#4682B4;\"> Note: sequence(s) " +\
                     #                   "restored from atomic coordinates </h3>" )
                     
-                    body.putNote('sequence(s) restored from atomic coordinates')
+                    body.putNote("sequence(s) restored from atomic coordinates")
 
         body.resetFileImport()
         asuComp = None
