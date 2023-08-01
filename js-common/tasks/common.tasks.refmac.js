@@ -689,6 +689,10 @@ if (!__template)  {
                              else  sec4.MAP_SHARPEN_B.value = 'default';
                         }
                       break;
+          case 'MAKE' : //to do
+                      break;
+          case 'MAPC' :  // to do
+                      break;
           case 'SOUR' : if (w1=='ELEC')  {
                         sec5.EXPERIMENT.value = 'electron';
                         if (w2.toUpperCase()=='MB')
@@ -719,7 +723,9 @@ if (!__template)  {
                           j++;
                         }
                     break;
-          case 'TLSD' : advkwd.push ( lines[i] );  break;
+          case 'TLSD' : advkwd.push ( lines[i] );       break;
+          case 'VDWR' : sec1.VDW_VAL.value = words[1];  break;
+
           case 'ANOM' : 
           case 'LABI' :
           default     : break;

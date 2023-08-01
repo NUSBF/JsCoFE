@@ -41,18 +41,29 @@ function BasePage ( sceneId,gridStyle,pageType )  {
 
   // set background image
   if (getClientCode()==client_code.ccp4)  {
-    var background_image = 'background_remote';
-    if (__local_setup)
-      background_image = 'background_local';
-    $('#'+sceneId).css({
-        "background-image"    : "url('" + image_path(background_image) + "')",
+    let css = {
+        // "background-image"    : "url('" + image_path(background_image) + "')",
         // "background-color"    : "alicablue",
         "background-color"    : "rgb(243, 250, 255)",
         // "background-color"    : "rgb(231, 250, 255)",   // cloud
         // "background-repeat"   : "no-repeat",
         "background-size"     : "cover",
         "background-position" : "center center"
-    });
+    };
+    var background_image = 'background_remote';
+    if (__local_setup)
+      background_image = 'background_local';
+    css['background-image'] = "url('" + image_path(background_image) + "')"
+    $('#'+sceneId).css ( css );
+    // $('#'+sceneId).css({
+    //     // "background-image"    : "url('" + image_path(background_image) + "')",
+    //     // "background-color"    : "alicablue",
+    //     "background-color"    : "rgb(243, 250, 255)",
+    //     // "background-color"    : "rgb(231, 250, 255)",   // cloud
+    //     // "background-repeat"   : "no-repeat",
+    //     "background-size"     : "cover",
+    //     "background-position" : "center center"
+    // });
   } else
     $('#'+sceneId).css({
         "background-image"    : "url('" + image_path('ccpem_background') + "')",
