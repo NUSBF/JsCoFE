@@ -185,9 +185,6 @@ class PaiRef(basic.TaskDriver):
             "--HKLIN"    , hklin,
             "-r"         , ",".join(resList[1:]),
             "-i"         , str(resList[0])
-            
-            
-
         ]
 
 
