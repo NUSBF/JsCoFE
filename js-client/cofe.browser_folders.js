@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    12.12.22   <--  Date of Last Modification.
+ *    02.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  FoldersBrowser
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022
+ *  (C) E. Krissinel, A. Lebedev 2022-2023
  *
  *  ===========================================================================
  *
@@ -217,7 +217,7 @@ FoldersBrowser.prototype.disableButton = function ( btn_id,disable_bool )  {
 
 FoldersBrowser.prototype.setFolders = function ( pnode,folders,ftree )  {
   for (var i=0;i<folders.length;i++)  {
-    var node = ftree.addNode ( pnode,folders[i].name + ' (' + folders[i].nprojects + ')',
+    var node = ftree.addNode ( pnode,folders[i].name + ' (' + folders[i].nprjtree + ')',
                                image_path('folder_projects'),
                                null );
     node.dataId     = folders[i].path;
@@ -232,7 +232,7 @@ FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
   var ftree = new Tree ( '<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>' );
   for (var i=0;i<folders.length;i++)  {
     var icon = 'folder_projects_user';
-    var nprj = ' <i>(' + folders[i].nprojects + ')</i>';
+    var nprj = ' <i>(' + folders[i].nprjtree + ')</i>';
     switch (folders[i].type)  {
       case folder_type.shared        :
       case folder_type.joined        :
@@ -241,7 +241,7 @@ FoldersBrowser.prototype.makeFolderTree = function ( folders )  {
       case folder_type.archived      : icon = 'folder_my_archive';     break;
       case folder_type.cloud_archive : icon = 'folder_cloud_archive';  break;
       case folder_type.tutorials     : icon = 'folder_tutorials';      break;
-      default :     var nprj = ' (' + folders[i].nprojects + ')';
+      default :     var nprj = ' (' + folders[i].nprjtree + ')';
     }
     var node = ftree.addRootNode ( this.projectList.getRootFolderName(i,__login_id) +
                                    nprj,image_path(icon),null );
@@ -650,7 +650,7 @@ var label   = 'Folder';
         folder_name : oldName,
         rename_name : newName
     });
-    self.ftree.setText ( selNode,newName + ' (' + folder.nprojects + ')' );
+    self.ftree.setText ( selNode,newName + ' (' + folder.nprjtree + ')' );
     selNode.dataId = newPath;
     return true;
   });

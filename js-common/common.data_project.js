@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.02.23   <--  Date of Last Modification.
+ *    02.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -277,24 +277,28 @@ ProjectList.prototype.seedFolders = function ( loginName )  {
     { name      : f0name,
       path      : f0name,
       nprojects : 0,
+      nprjtree  : 0,
       type      : folder_type.user,
       folders   : []
     },{
       name      : folder_name.shared, // project folders tree basic element
       path      : folder_path.shared,
       nprojects : 0,
+      nprjtree  : 0,
       type      : folder_type.shared,
       folders   : []
     },{
       name      : folder_name.joined, // project folders tree basic element
       path      : folder_path.joined,
       nprojects : 0,
+      nprjtree  : 0,
       type      : folder_type.joined,
       folders   : []
     },{
       name      : folder_name.all_projects, // project folders tree basic element
       path      : folder_path.all_projects,
       nprojects : 0,
+      nprjtree  : 0,
       type      : folder_type.all_projects,
       folders   : []
     }
@@ -304,6 +308,7 @@ ProjectList.prototype.seedFolders = function ( loginName )  {
       name      : folder_name.archived, // project folders tree basic element
       path      : folder_path.archived,
       nprojects : 0,
+      nprjtree  : 0,
       type      : folder_type.archived,
       folders   : []
     });
@@ -311,6 +316,7 @@ ProjectList.prototype.seedFolders = function ( loginName )  {
       name      : folder_name.cloud_archive, // project folders tree basic element
       path      : folder_path.cloud_archive,
       nprojects : 0,
+      nprjtree  : 0,
       type      : folder_type.cloud_archive,
       folders   : []
     });
@@ -380,12 +386,14 @@ ProjectList.prototype._add_folder_path = function (
          path      : fpath,
          type      : ftype,
          nprojects : 0,
+         nprjtree  : 0,  // number of projects in folder and all subfolders
          folders   : []
       };
       folders.push ( folder );
     }
     if (level==flist.length-1)
       folders[k].nprojects = nprojects;
+    folders[k].nprjtree += nprojects;
     this._add_folder_path ( flist,level+1,folders[k].folders,nprojects,list_bool );
   }
 }
@@ -397,6 +405,7 @@ ProjectList.prototype.addFolderPath = function ( folderPath,nprojects,list_bool 
 ProjectList.prototype._reset_folders = function ( folders )  {
   for (var i=0;i<folders.length;i++)  {
     folders[i].nprojects = 0;
+    folders[i].nprjtree  = 0;
     this._reset_folders ( folders[i].folders );
   }
 }
@@ -450,7 +459,7 @@ var i  = 4;
 
 
 function _print_folder ( folder )  {
-  console.log ( ' - ' + folder.path + '(' + folder.nprojects + ')' );
+  console.log ( ' - ' + folder.path + '(' + folder.nprjtree + ')' );
   for (var i=0;i<folder.folders.length;i++)
     _print_folder ( folder.folders[i] );
 }
@@ -573,7 +582,8 @@ ProjectList.prototype.setCurrentFolder = function ( folder )  {
       name      : folder.name,
       path      : folder.path,
       type      : folder.type,
-      nprojects : folder.nprojects
+      nprojects : folder.nprojects,
+      nprjtree  : folder.nprjtree
     };
     return true;
   } else  {
@@ -581,7 +591,8 @@ ProjectList.prototype.setCurrentFolder = function ( folder )  {
       name      : this.folders[0].name,
       path      : this.folders[0].path,
       type      : this.folders[0].type,
-      nprojects : this.folders[0].nprojects
+      nprojects : this.folders[0].nprojects,
+      nprjtree  : this.folders[0].nprjtree
     };
   }
   return false;
