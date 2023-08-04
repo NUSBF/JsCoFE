@@ -352,7 +352,8 @@ let total_diff = 0;
 
       let uData = users[i];
       let user_size = 0;
-      log.standard ( 100,'checking disk space for for user ' + uData.login );
+      log.standard ( 100,'checking disk space for for user ' + uData.login +
+                         '  ' + (i+1) + '/' + users.length );
 
       for (let j=0;j<pList.projects.length;j++)  {
 
