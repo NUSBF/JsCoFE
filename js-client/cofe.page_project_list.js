@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.05.23   <--  Date of Last Modification.
+ *    04.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -722,11 +722,21 @@ function ProjectListPage ( sceneId )  {
 
     __current_folder.nprojects = nrows;
     switch (__current_folder.type)  {
-      case folder_type.shared        : projectList.folders[1].nprojects = nrows;  break;
-      case folder_type.joined        : projectList.folders[2].nprojects = nrows;  break;
-      case folder_type.all_projects  : projectList.folders[3].nprojects = nrows;  break;
-      case folder_type.archived      : projectList.folders[4].nprojects = nrows;  break;
-      case folder_type.cloud_archive : projectList.folders[5].nprojects = nrows;  break;
+      case folder_type.shared        : projectList.folders[1].nprojects = nrows;
+                                       projectList.folders[1].nprjtree  = nrows;
+                                     break;
+      case folder_type.joined        : projectList.folders[2].nprojects = nrows;
+                                       projectList.folders[2].nprjtree  = nrows;
+                                     break;
+      case folder_type.all_projects  : projectList.folders[3].nprojects = nrows;
+                                       projectList.folders[3].nprjtree  = nrows;
+                                     break;
+      case folder_type.archived      : projectList.folders[4].nprojects = nrows;
+                                       projectList.folders[4].nprjtree  = nrows;
+                                     break;
+      case folder_type.cloud_archive : projectList.folders[5].nprojects = nrows;
+                                       projectList.folders[5].nprjtree  = nrows;
+                                     break;
       default : ;
     }
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.10.22   <--  Date of Last Modification.
+ *    04.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- User Support Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2022
+ *  (C) E. Krissinel, A. Lebedev 2019-2023
  *
  *  =================================================================
  *
@@ -22,8 +22,9 @@
 'use strict';
 
 //  load system modules
-const path          = require('path');
-const child_process = require('child_process');
+const fs        = require('fs-extra');
+const path      = require('path');
+// const child_process = require('child_process');
 
 //  load application modules
 const cmd     = require('../js-common/common.commands');
@@ -33,6 +34,9 @@ const anl     = require('./server.fe.analytics');
 const user    = require('./server.fe.user');
 const emailer = require('./server.emailer');
 const utils   = require('./server.utils');
+const prj     = require('./server.fe.projects');
+const ration  = require('./server.fe.ration');
+const pd      = require('../js-common/common.data_project');
 const task_t  = require('../js-common/tasks/common.tasks.template');
 const ud      = require('../js-common/common.data_user');
 
@@ -333,6 +337,72 @@ var generate_report = false;
 }
 
 
+function diskSpaceFix ( check_only )  {
+// This function calcualtes the actual disk use in the system for every
+// user, project and job and stores results in the corresponding metadata files.
+// Since the metadata files are used, this function should be used only when
+// CCP4 Cloud is taken down for maintenance.
+let users = user.readUsersData().userList;
+  for (let i=0;i<users.length;i++)  {
+    let pList = prj.readProjectList ( users[i] );
+    if (pList)  {
+      let uData = users[i];
+      log.standard ( 100,'checking disk space for for user ' + uData.login );
+      for (let j=0;j<pList.projects.length;j++)  {
+        let pDesc  = pList.projects[j];
+        let prjInd = '(' + uData.login + ')' + pDesc.name;
+        let pData  = prj.readProjectData ( uData,pDesc.name );
+        let project_size = 0;
+        if (pData)  {
+          if (pd.isProjectJoined(uData.login,pDesc))  {
+            log.standard ( 101,'project #' + (j+1) + ' ' + pDesc.name + ' is joined -- skipping' );
+          } else if (!pd.inArchive(pDesc))  {
+            log.standard ( 102,'project #' + (j+1) + ' ' + pDesc.name + ' is archived -- skipping' );
+          } else  {
+            log.standard ( 103,'project #' + (j+1) + ' ' + prjInd );
+            let projectDirPath = prj.getProjectDirPath ( uData,pDesc.name );
+            fs.readdirSync ( projectDirPath).sort().forEach(function(file,index){
+              if (file.startsWith(prj.jobDirPrefix)) {
+                let jobPath = path.join ( projectDirPath,file,task_t.jobDataFName );
+                let task    = utils.readObject ( jobPath );
+                if (task)  {
+                  let jobDirPath = path.join ( projectDirPath,file );
+                  let job_size   = utils.getDirectorySize ( jobDirPath ) / 1024.0 / 1024.0;
+                  project_size  += job_size;
+                  if (task.hasOwnProperty('disk_space'))  {
+                    let dspace = Math.abs(job_size-task.disk_space);
+                    if (dspace>1.0)
+                      log.standard ( 104,'job #' + task.id  + prjInd   + ' ' + 
+                                         task._type  + ' [' + task.state +
+                                         '] disk/rec/diff MBs: '   + job_size + 
+                                         '/' + task.disk_space +
+                                         '/' + (job_size-task.disk_space) );
+                  } else
+                    log.standard ( 105,'job #' + task.id + prjInd + ' ' + 
+                                       task._type + ' [' + task.state +
+                                       '] disk MBs: ' + job_size +
+                                       ' NOT RECORDED' );
+                } else  {
+                  log.error ( 103,'cannot read job data for job ' + task.id +
+                                  ', project ' + prjInd );
+                }
+              }
+            });
+            log.standard ( 105,'project #' + (j+1) + ' ' + prjInd + ' disk/rec MBs: ' +
+                               project_size + '/' + pDesc.disk_space );
+          }
+        } else
+          log.error ( 101,'cannot read project data for project ' + prjInd );
+      }
+
+      ration.calculate_user_disk_space ( uData,pList )
+
+    } else
+      log.error ( 100,'cannot read project list for user ' + users[i].login );
+  }
+}
+
+
 // ==========================================================================
 // export for use in node
 module.exports.UsageStats             = UsageStats;
@@ -340,3 +410,4 @@ module.exports.registerJob            = registerJob;
 module.exports.statsDirName           = statsDirName;
 module.exports.getUsageReportURL      = getUsageReportURL;
 module.exports.getUsageReportFilePath = getUsageReportFilePath;
+module.exports.diskSpaceFix           = diskSpaceFix;

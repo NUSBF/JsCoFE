@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.11.20   <--  Date of Last Modification.
+ *    04.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User making utility
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020
+ *  (C) E. Krissinel, A. Lebedev 2020-2023
  *
  *  =================================================================
  *
@@ -117,7 +117,7 @@ function getUserData()  {
     }
   ];
 
-  prompt.start();
+  // prompt.start();
 
   prompt.get ( properties, function(err,result){
     if (err)  {

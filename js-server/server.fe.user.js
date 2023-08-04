@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.04.23   <--  Date of Last Modification.
+ *    04.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,6 +14,37 @@
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *
+ *
+ *    function hashPassword     ( pwd )
+ *    function getUserDataFName ( loginData )
+ *    function makeNewUser      ( userData,callback_func )
+ *    function recoverUserLogin ( userData,callback_func )
+ *    class UserLoginHash()
+ *    function readUserLoginHash()
+ *    function getLoginEntry    ( token )
+ *    function signalUser       ( login_name,signal )
+ *    function userLogin        ( userData,callback_func )
+ *    function checkSession     ( userData,callback_func )
+ *    function readUserData     ( loginData )
+ *    function getUserLoginData ( login )
+ *    function readUsersData    ()
+ *    function getUserData      ( loginData )
+ *    function topupUserRation  ( loginData,callback_func )
+ *    function getUserRation    ( loginData,data,callback_func )
+ *    function saveHelpTopics   ( loginData,userData )
+ *    function userLogout       ( loginData )
+ *    function updateUserData   ( loginData,userData )
+ *    function updateUserData_admin ( loginData,userData )
+ *    function deleteUser       ( loginData,userData )
+ *    function deleteUser_admin ( loginData,userData )
+ *    function suspendUser      ( loginData,suspend_bool,message )
+ *    function retireUser_admin ( loginData,meta )
+ *    function resetUser_admin  ( loginData,userData )
+ *    function sendAnnouncement ( loginData,message )
+ *    function manageDormancy   ( loginData,params )
+ *    function getInfo          ( inData,callback_func )
+ *    function authResponse     ( server_request,server_response )
  *
  *  =================================================================
  *

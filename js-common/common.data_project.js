@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.08.23   <--  Date of Last Modification.
+ *    04.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -547,11 +547,16 @@ var i0 = 4;
     }
   }
   this.folders[1].nprojects = nshared;  // "shared by me"
+  this.folders[1].nprjtree  = nshared;  // "shared by me"
   this.folders[2].nprojects = njoined;  // "joined by me"
+  this.folders[2].nprjtree  = njoined;  // "joined by me"
   this.folders[3].nprojects = nall;     // "All folders" length
+  this.folders[3].nprjtree  = nall;     // "All folders" length
   if (i0>4)  {
     this.folders[4].nprojects = narchived;  // "archived by me"
+    this.folders[4].nprjtree  = narchived;  // "archived by me"
     this.folders[5].nprojects = nfetched;   // "cloud archive"
+    this.folders[5].nprjtree  = nfetched;   // "cloud archive"
   }
 
   for (var fpath in folderPaths)
