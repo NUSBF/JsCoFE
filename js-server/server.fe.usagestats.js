@@ -344,65 +344,106 @@ function diskSpaceFix ( check_only )  {
 // CCP4 Cloud is taken down for maintenance.
 let users      = user.readUsersData().userList;
 let total_diff = 0;
+
   for (let i=0;i<users.length;i++)  {
+
     let pList = prj.readProjectList ( users[i] );
     if (pList)  {
+
       let uData = users[i];
+      let user_size = 0;
       log.standard ( 100,'checking disk space for for user ' + uData.login );
+
       for (let j=0;j<pList.projects.length;j++)  {
+
         let pDesc  = pList.projects[j];
         let prjInd = '(' + uData.login + ')' + pDesc.name;
         let pData  = prj.readProjectData ( uData,pDesc.name );
         let project_size = 0;
+
         if (pData)  {
+
           if (pd.isProjectJoined(uData.login,pDesc))  {
             log.standard ( 101,'project #' + (j+1) + ' ' + pDesc.name + ' is joined -- skipping' );
           } else if (pd.inArchive(pDesc))  {
             log.standard ( 102,'project #' + (j+1) + ' ' + pDesc.name + ' is archived -- skipping' );
           } else  {
+
             log.standard ( 103,'project #' + (j+1) + ' ' + prjInd );
             let projectDirPath = prj.getProjectDirPath ( uData,pDesc.name );
+
             fs.readdirSync ( projectDirPath).sort().forEach(function(file,index){
               if (file.startsWith(prj.jobDirPrefix)) {
+
                 let jobPath = path.join ( projectDirPath,file,task_t.jobDataFName );
                 let task    = utils.readObject ( jobPath );
                 if (task)  {
                   let jobDirPath = path.join ( projectDirPath,file );
                   let job_size   = utils.getDirectorySize ( jobDirPath ) / 1024.0 / 1024.0;
                   project_size  += job_size;
+                  user_size     += job_size;
                   if (task.hasOwnProperty('disk_space'))  {
-                    let dspace  = Math.abs(job_size-task.disk_space);
+                    let dspace  = job_size - task.disk_space;
                     total_diff += dspace;
-                    if (dspace>1.0)
+                    if (Math.abs(dspace)>1.0)
                       log.standard ( 104,'job #' + task.id  + prjInd   + ' ' + 
                                          task._type  + ' [' + task.state +
-                                         '] disk/rec/diff MBs: '   + job_size + 
-                                         '/' + task.disk_space +
-                                         '/' + (job_size-task.disk_space) );
+                                         '] disk/rec/diff MBs: ' + job_size + 
+                                         '/' + task.disk_space   +
+                                         '/' + dspace + ' [MISMATCHED]' );
                   } else
                     log.standard ( 105,'job #' + task.id + prjInd + ' ' + 
                                        task._type + ' [' + task.state +
                                        '] disk MBs: ' + job_size +
-                                       ' NOT RECORDED' );
+                                       ' [NOT RECORDED]' );
+                  if (!check_only)  {
+                    task.disk_space = job_size;
+                    if (!utils.writeObject(jobPath,task))
+                      log.error ( 101,'cannot write job data for job ' + task.id +
+                                      ', project ' + prjInd  );
+                    else
+                      log.standard ( 106,'job #' + task.id + prjInd + ' ' + 
+                                         task._type + ' [' + task.state +
+                                         '] ' + job_size + 'MB UPDATED' );
+                  }
                 } else  {
-                  log.error ( 103,'cannot read job data for job ' + task.id +
-                                  ', project ' + prjInd );
+                  log.error ( 102,'cannot read job data in project ' + prjInd );
                 }
+ 
               }
             });
-            log.standard ( 106,'project #' + (j+1) + ' ' + prjInd + ' disk/rec MBs: ' +
+
+            log.standard ( 107,'project #' + (j+1) + ' ' + prjInd + ' disk/rec MBs: ' +
                                project_size + '/' + pDesc.disk_space );
+            
+            if (!check_only)  {
+              pDesc.disk_space      = project_size;
+              pData.desc.disk_space = project_size;
+              if (!prj.writeProjectData(uData,pData,true))
+                log.error ( 103,'cannot write project data for project ' + prjInd );
+              else
+                log.standard ( 108,'project #' + (j+1) + ' ' + prjInd + ' ' +
+                                    project_size + 'MB UPDATED' );
+            }
+
           }
         } else
-          log.error ( 101,'cannot read project data for project ' + prjInd );
+          log.error ( 104,'cannot read project data for project ' + prjInd );
       }
 
-      ration.calculate_user_disk_space ( uData,pList )
+      if (!check_only)  {
+        if (!prj.writeProjectList(users[i],pList))
+          log.error ( 104,'cannot write project list for user ' + users[i].login );
+        else
+          log.standard ( 109,'project list for user ' + users[i].login +
+                             ' ' + user_size + 'MB UPDATED' );
+        ration.calculate_user_disk_space ( uData,pList )
+      }
 
     } else
-      log.error ( 100,'cannot read project list for user ' + users[i].login );
+      log.error ( 104,'cannot read project list for user ' + users[i].login );
   }
-  log.standard ( 107,'total space mismatch: ' + total_diff );
+  log.standard ( 110,'total space mismatch (MB): ' + total_diff );
 }
 
 
