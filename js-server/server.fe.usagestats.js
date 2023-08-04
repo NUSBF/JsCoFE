@@ -356,7 +356,7 @@ let users = user.readUsersData().userList;
         if (pData)  {
           if (pd.isProjectJoined(uData.login,pDesc))  {
             log.standard ( 101,'project #' + (j+1) + ' ' + pDesc.name + ' is joined -- skipping' );
-          } else if (!pd.inArchive(pDesc))  {
+          } else if (pd.inArchive(pDesc))  {
             log.standard ( 102,'project #' + (j+1) + ' ' + pDesc.name + ' is archived -- skipping' );
           } else  {
             log.standard ( 103,'project #' + (j+1) + ' ' + prjInd );
