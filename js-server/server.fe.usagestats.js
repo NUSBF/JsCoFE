@@ -342,7 +342,8 @@ function diskSpaceFix ( check_only )  {
 // user, project and job and stores results in the corresponding metadata files.
 // Since the metadata files are used, this function should be used only when
 // CCP4 Cloud is taken down for maintenance.
-let users = user.readUsersData().userList;
+let users      = user.readUsersData().userList;
+let total_diff = 0;
   for (let i=0;i<users.length;i++)  {
     let pList = prj.readProjectList ( users[i] );
     if (pList)  {
@@ -370,7 +371,8 @@ let users = user.readUsersData().userList;
                   let job_size   = utils.getDirectorySize ( jobDirPath ) / 1024.0 / 1024.0;
                   project_size  += job_size;
                   if (task.hasOwnProperty('disk_space'))  {
-                    let dspace = Math.abs(job_size-task.disk_space);
+                    let dspace  = Math.abs(job_size-task.disk_space);
+                    total_diff += dspace;
                     if (dspace>1.0)
                       log.standard ( 104,'job #' + task.id  + prjInd   + ' ' + 
                                          task._type  + ' [' + task.state +
@@ -388,7 +390,7 @@ let users = user.readUsersData().userList;
                 }
               }
             });
-            log.standard ( 105,'project #' + (j+1) + ' ' + prjInd + ' disk/rec MBs: ' +
+            log.standard ( 106,'project #' + (j+1) + ' ' + prjInd + ' disk/rec MBs: ' +
                                project_size + '/' + pDesc.disk_space );
           }
         } else
@@ -400,6 +402,7 @@ let users = user.readUsersData().userList;
     } else
       log.error ( 100,'cannot read project list for user ' + users[i].login );
   }
+  log.standard ( 107,'total space mismatch: ' + total_diff );
 }
 
 
