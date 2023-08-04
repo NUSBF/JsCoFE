@@ -28,6 +28,7 @@
 import os
 import stat
 import json
+import shutil
 # import uuid
 
 from pycofe.tasks  import basic
@@ -156,7 +157,7 @@ class StructurePrediction(basic.TaskDriver):
         # self.rvrow -= 1
 
         if simulation:
-            import shutil
+            # import shutil
             shutil.copytree ( "C:/Users/ezg07123/Projects/CCP4Cloud/AF2/af2_output", dirName )
 
         else:
@@ -174,7 +175,7 @@ class StructurePrediction(basic.TaskDriver):
             self.putTitle ( "Failed to make models" )
             self.putMessage ( "<b>Execution errors</b>" )
         else:
-
+            
             fpaths = []   #  create a empty object list
             xyzs   = []   #  output data objects
 
@@ -356,6 +357,12 @@ class StructurePrediction(basic.TaskDriver):
                         xyzs.append ( xyz )
 
                         #models.append ( model )
+
+            # clean up
+            try:
+                shutil.rmtree ( os.path.join(dirName,"input") )
+            except:
+                pass
 
             if nModels == 1:
                 self.generic_parser_summary["structureprediction"] = {
