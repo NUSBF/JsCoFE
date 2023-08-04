@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.12.22   <--  Date of Last Modification.
+ *    04.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,8 +13,21 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
+ *      function getUserRationFPath        ( loginData )
+ *      function getUserRation             ( loginData )
+ *      function saveUserRation            ( loginData,user_ration )
+ *      function checkUserRation           ( loginData,include_cloudrun )
+ *      function updateResourceStats       ( loginData,job_class,add_resource )
+ *      function bookJob                   ( loginData,job_class,cloudrun_bool )
+ *      function updateProjectStats        ( loginData,projectName,cpu_change,
+ *                                          disk_space_change,njobs_change,
+ *                                          update_ration_bool )
+ *      function calculate_user_disk_space ( loginData,pList )
+ *      function calculateUserDiskSpace    ( loginData )
+ *      function maskProject               ( loginData,projectName )
+ *  
  *  ==========================================================================
  *
  */
@@ -22,7 +35,7 @@
 'use strict';
 
 //  load system modules
-const path  = require('path');
+const path      = require('path');
 
 //  load application modules
 const conf      = require('./server.configuration');

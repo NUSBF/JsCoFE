@@ -2,7 +2,7 @@
 /*
  *  ===========================================================================
  *
- *    02.08.23   <--  Date of Last Modification.
+ *    04.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ---------------------------------------------------------------------------
  *
@@ -47,6 +47,7 @@ function FoldersBrowser ( title,projectList,currentFolder,currentPDesc,funcKey,
   this.funcKey       = funcKey;
   this.onReturn_fnc  = onReturn_fnc;
   this.nprojects     = currentFolder.nprojects; // 0;
+  this.nprjtree      = currentFolder.nprjtree;  // 0;
 
   // var crFolder = this.findFolder(currentFolder.path);
   // if (crFolder)
@@ -96,6 +97,7 @@ FoldersBrowser.prototype.setProjectList = function ( projectList,currentFolder,c
   this.currentFolder = currentFolder;
   this.currentPDesc  = currentPDesc;
   this.nprojects     = currentFolder.nprojects;
+  this.nprjtree      = currentFolder.nprjtree;
 }
 
 FoldersBrowser.prototype.makeFoldersTree = function ( row,col,colSpan )  {
