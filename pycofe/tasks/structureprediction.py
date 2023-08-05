@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.09.22   <--  Date of Last Modification.
+#    05.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022
+#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2023
 #
 # ============================================================================
 #
