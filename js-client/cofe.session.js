@@ -317,7 +317,27 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
               makeSessionCheck ( sceneId );
 
-              if (__dormant)
+              if (__dormant==1)  {
+
+                window.setTimeout ( function(){
+                  new MessageBox ( 'Dormant Account',
+                    '<div style="width:500px"><h2>Welcome back, ' + __login_user + '!</h2>' +
+                    'We did not see you for some while, and gave your <i>unused</i> disk space ' +
+                    'to other users. This is why you see your disk quota in red.' +
+                    '<p>But do not worry, your disk space will be automatically topped up ' +
+                    'once you submit a job; just carry on as usual.' +
+                    '<p>Contact server\'s maintainer at ' +
+                    '<a href="mailto:' + __maintainerEmail +
+                      '?Subject=' + appName() + '%20Account re-activation">' +
+                       __maintainerEmail +
+                    '</a> if you have any questions.',
+                    'msg_ok'
+                  );
+                },100);
+                __dormant = 0;  // remove dormancy
+              
+              } else if (__dormant)  {
+              
                 window.setTimeout ( function(){
                   new MessageBox ( 'Dormant Account',
                     'Dear ' + __login_user + ',' +
@@ -341,6 +361,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                     'msg_mail'
                   );
                 },100);
+              
+              }
 
           return true;
 

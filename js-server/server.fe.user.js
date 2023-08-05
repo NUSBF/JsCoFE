@@ -612,6 +612,17 @@ var fe_server = conf.getFEConfig();
           'volume' : uData.volume
         });
 
+        if (uData.dormant && (!fe_server.dormancy_control.strict))  {
+          // A non-strict dormancy only limits user disk space and is removed 
+          // automatically when user logins. Therefore, remove dormancy here
+          // and pass client a code indicating that dormant account has been
+          // re-activated.
+          uData.dormant = 0;
+          if (!utils.writeObject(userFilePath,uData))
+            log.error ( 44,'cannot write user data at ' + userFilePath );
+          uData.dormant = 1;
+        }
+
         // remove personal information just in case
         uData.pwd   = '';
         uData.email = '';

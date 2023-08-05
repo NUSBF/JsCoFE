@@ -194,9 +194,17 @@ var generate_report = false;
       committed[committed.length-1] = 0.0;
     }
 
-    var users = user.readUsersData().userList;
-    for (var i=0;i<users.length;i++)  {
-      var c = 0;
+    let users    = user.readUsersData().userList;
+    let crTime   = Date.now()
+    let after_ms = 0;
+    if ((!fe_config.dormancy_control.strict) && fe_config.dormancy_control.after)
+      after_ms = crTime - day_ms*fe_config.dormancy_control.after;
+    for (let i=0;i<users.length;i++)  {
+      if (users[i].lastSeen<after_ms)  {
+        users[i].dormant        = crTime;
+        users[i].ration.storage = users[i].ration.storage_used;
+      }
+      let c = 0;
       if (users[i].dormant)  c = users[i].ration.storage_used;
                        else  c = users[i].ration.storage;
       if (users[i].volume in usageStats.volumes)  {

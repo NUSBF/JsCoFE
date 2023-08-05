@@ -81,6 +81,11 @@ function ServerConfig ( type )  {
   this.storage        = null;
   this.update_rcode   = 0;    // can be be detected by launcher script to do the needful
   this.rejectUnauthorized = true; // should be true by default
+  this.dormancy_control = {
+    strict : false,   // strict dormant accounts are actually frozen
+    after  : 180      // accounts become dormant automatically after 180 days
+                      // of inactivity; 0 means no auto-dormancy
+  };
   if (type=='FEProxy')
         this.state = 'active';  // server state: 'active', 'inactive'
   else  this.state = 'active';  // server state: 'active', 'inactive'
