@@ -322,11 +322,16 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
 
                 window.setTimeout ( function(){
                   new MessageBox ( 'Dormant Account',
-                    '<div style="width:500px"><h2>Welcome back, ' + __login_user + '!</h2>' +
-                    'We did not see you for some while, and gave your <i>unused</i> disk space ' +
-                    'to other users. This is why you see your disk quota in red.' +
-                    '<p>But do not worry, your disk space will be automatically topped up ' +
-                    'once you submit a job; just carry on as usual.' +
+                    '<div style="width:500px"><h2>Welcome back, ' + __login_user   +
+                    '!</h2>' +
+                    'We did not see you for some while, and while you were away, ' +
+                    'we gave your <i>unused</i> disk space to other users. This '  +
+                    'is why you may find that your <i>free</i> disk space is '  +
+                    'shorter than at your last session back on ' + 
+                    new Date(userData.lastSeen).toISOString().slice(0,10) + '.' +
+                    '<p>Be reassured though, that <b>your disk space will be '  +
+                    'automatically topped up</b> once you submit a job. So, just ' +
+                    'carry on working with ' + appName() + ' as usual.' +
                     '<p>Contact server\'s maintainer at ' +
                     '<a href="mailto:' + __maintainerEmail +
                       '?Subject=' + appName() + '%20Account re-activation">' +
