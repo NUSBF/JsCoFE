@@ -101,6 +101,7 @@ function checkLocalService ( callback_func )  {
         __licensed_tasks  = rData.licensed_tasks;
         __cloud_storage   = rData.cloud_storage;
         __jobs_safe       = rData.jobs_safe;
+        __strict_dormancy = rData.strict_dormancy;
         __demo_projects   = rData.demo_projects;
         __auth_software   = rData.auth_software;
         __local_setup     = rData.localSetup;
