@@ -177,6 +177,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                     __login_id     = __local_user_id;
               else  __login_id     = user_login_name;
               __cloud_storage      = response.data.cloud_storage;
+              __strict_dormancy    = response.data.strict_dormancy;
               __jobs_safe          = response.data.jobs_safe;
               __demo_projects      = response.data.demo_projects;
               __environ_server     = response.data.environ_server;

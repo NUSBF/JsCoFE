@@ -626,13 +626,14 @@ var fe_server = conf.getFEConfig();
         // remove personal information just in case
         uData.pwd   = '';
         uData.email = '';
-        rData.userData      = uData;
-        rData.localSetup    = conf.isLocalSetup();
-        rData.isArchive     = conf.isArchive();
-        rData.cloud_storage = (fcl.getUserCloudMounts(uData).length>0);
-        rData.jobs_safe     = (fe_server.getJobsSafePath().length>0);
-        rData.demo_projects = fe_server.getDemoProjectsMount();
-        rData.auth_software = fe_server.auth_software;
+        rData.userData        = uData;
+        rData.localSetup      = conf.isLocalSetup();
+        rData.isArchive       = conf.isArchive();
+        rData.cloud_storage   = (fcl.getUserCloudMounts(uData).length>0);
+        rData.strict_dormancy = fe_server.dormancy_control.strict;
+        rData.jobs_safe       = (fe_server.getJobsSafePath().length>0);
+        rData.demo_projects   = fe_server.getDemoProjectsMount();
+        rData.auth_software   = fe_server.auth_software;
         if (fe_server.hasOwnProperty('description'))
               rData.setup_desc = fe_server.description;
         else  rData.setup_desc = null;
@@ -1707,14 +1708,15 @@ var fe_server = conf.getFEConfig();
   if (fe_server)  {
 
     var rData = {};
-    rData.localuser      = null;
-    rData.logintoken     = null;
-    rData.helpTopics     = [];
-    rData.exclude_tasks  = conf.getExcludedTasks();
-    rData.licensed_tasks = fe_server.licensed_tasks;
-    rData.cloud_storage  = false;
-    rData.demo_projects  = fe_server.getDemoProjectsMount();
-    rData.auth_software  = fe_server.auth_software;
+    rData.localuser       = null;
+    rData.logintoken      = null;
+    rData.helpTopics      = [];
+    rData.exclude_tasks   = conf.getExcludedTasks();
+    rData.licensed_tasks  = fe_server.licensed_tasks;
+    rData.cloud_storage   = false;
+    rData.demo_projects   = fe_server.getDemoProjectsMount();
+    rData.auth_software   = fe_server.auth_software;
+    rData.strict_dormancy = fe_server.dormancy_control.strict;
     if ('localuser' in fe_server)  {
       rData.localuser  = fe_server.localuser;
       rData.logintoken = __userLoginHash.getToken ( ud.__local_user_id );
