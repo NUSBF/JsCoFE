@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.08.23   <--  Date of Last Modification.
+ *    06.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -108,8 +108,14 @@ var cfg   = conf.getFEConfig();
     }
 
     var msg_list = [];
+    var uData    = null;
     function checkQuota ( name,quota,cfg_quota )  {
       if ((quota>0) && (quota<cfg_quota))  {
+        // check that account is not dormant
+        if (!uData)
+          uData = user.getUserData ( loginData );
+        if (uData && uData.dormant)
+          return quota;
         msg_list.push ( [name,quota,cfg_quota] );
         quota = cfg_quota;
       }
