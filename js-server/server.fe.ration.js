@@ -114,7 +114,7 @@ var cfg   = conf.getFEConfig();
         // check that account is not dormant
         if (!uData)  {
           uData = user.getUserData ( loginData );
-          console.log ( ' >>>>>>> uData=' + uData.dormant );  
+          console.log ( ' >>>>>>> uData=' + JSON.stringify(uData) );  
         }
         if (uData && uData.dormant)
           return quota;
