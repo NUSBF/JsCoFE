@@ -729,7 +729,7 @@ function readConfiguration ( confFilePath,serverType )  {
 
     fe_server.description.partners.unshift (
       { "name"        : "CCP4",
-        "logo"        : "images_png/logo-ccp4_online.png",
+        "logo"        : "images_png/logo-ccp4.png",
         "description" : "Collaborative Computational Project Number 4 (CCP4) UK",
         "thanks"      : "Funding and computing",
         "url"         : "https://www.ccp4.ac.uk"
