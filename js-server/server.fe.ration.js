@@ -112,8 +112,10 @@ var cfg   = conf.getFEConfig();
     function checkQuota ( name,quota,cfg_quota )  {
       if ((quota>0) && (quota<cfg_quota))  {
         // check that account is not dormant
-        if (!uData)
+        if (!uData)  {
           uData = user.getUserData ( loginData );
+          console.log ( ' >>>>>>> uData=' + uData );
+        }
         if (uData && uData.dormant)
           return quota;
         msg_list.push ( [name,quota,cfg_quota] );
