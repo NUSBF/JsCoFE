@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.08.23   <--  Date of Last Modification.
+ *    06.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -78,6 +78,9 @@ const log = require('./server.log').newLog(10);
 
 const __userDataExt       = '.user';
 const __userLoginHashFile = 'login.hash';
+
+const day_ms              = 86400000;  // milliseconds in a day
+
 
 // ===========================================================================
 
@@ -712,34 +715,67 @@ function getUserLoginData ( login )  {
 }
 
 function readUsersData()  {
+var usersData = {};
+var fe_config = conf.getFEConfig();
+var udir_path = fe_config.userDataPath;
 
-  var usersData = {};
   usersData.loginHash = __userLoginHash;
   usersData.userList  = [];
-  var udir_path = conf.getFEConfig().userDataPath;
 
   if (utils.fileExists(udir_path))  {
+
+    let crTime   = Date.now()
+    let after_ms = 0;
+    if ((!fe_config.dormancy_control.strict) && fe_config.dormancy_control.after)
+      after_ms = crTime - day_ms*fe_config.dormancy_control.after;
+
     fs.readdirSync(udir_path).forEach(function(file,index){
       if (file.endsWith(__userDataExt))  {
-        var udata = utils.readObject ( path.join(udir_path,file) );
-        if (udata)  {
-          ud.checkUserData ( udata );
-          if (!('knownSince' in udata) || (udata.knownSince==''))  {
-            udata.knownSince = new Date("2017-09-01").valueOf();
-            utils.writeObject ( path.join(udir_path,file),udata );
+
+        let uDataFPath = path.join    ( udir_path,file );
+        let uData      = utils.readObject ( uDataFPath );
+        if (uData)  {
+          ud.checkUserData ( uData );
+        
+          let update_udata   = false;
+          let update_uration = false;
+
+          if (!('knownSince' in uData) || (uData.knownSince==''))  {
+            uData.knownSince = new Date("2017-09-01").valueOf();
+            uData.lastSeen   = uData.knownSince;
+            update_udata     = true;
           }
-          var loginData = {
+
+          let loginData = {
             'login'  : file.slice ( 0,file.length-__userDataExt.length ),
             'volume' : ''
           };
-          udata.ration = ration.getUserRation ( loginData );
-          if (('nJobs' in udata) && (udata.ration.jobs_total<udata.nJobs))  {
-            // backward compatibility 07.06.2018
-            udata.ration.jobs_total = udata.nJobs;
-            ration.saveUserRation ( loginData,udata.ration );
+          let uration = ration.getUserRation ( loginData );
+
+          if ((!uData.dormant) && (uData.lastSeen<after_ms))  {
+            // auto-dormancy in non-strict mode
+            uData.dormant   = crTime;
+            uration.storage = uration.storage_used;
+            update_udata    = true;
+            update_uration  = true;
           }
-          udata.ration.clearJobs();  // just to make it slimmer for transmission
-          usersData.userList.push ( udata );
+
+          if (update_udata)
+            utils.writeObject ( uDataFPath,uData );
+
+          if (('nJobs' in uData) && (uration.jobs_total<uData.nJobs))  {
+            // backward compatibility 07.06.2018
+            uration.jobs_total = uData.nJobs;
+            update_uration     = true;
+          }
+
+          if (update_uration)
+            ration.saveUserRation ( loginData,uration );
+
+          uration.clearJobs();  // just to make it slimmer for transmission
+          uData.ration = uration;
+          usersData.userList.push ( uData );
+
         }
       }
     });

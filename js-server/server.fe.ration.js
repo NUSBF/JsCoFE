@@ -64,6 +64,7 @@ function getUserRation ( loginData )  {
 var fpath = getUserRationFPath ( loginData );
 var r     = utils.readObject ( fpath );
 var cfg   = conf.getFEConfig();
+
   if (!r)  {
     var cfg_ration = null;
     if (cfg.hasOwnProperty('ration'))
