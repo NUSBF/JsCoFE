@@ -1009,7 +1009,8 @@ var userFilePath = getUserDataFName ( loginData );
           if ((!uData.dormant) && userData.dormant)  {
             // new dormancy request
             userData.dormant = Date.now();  // make in sync with server time
-            storage = Number(userData.storage_used) + 1;  // release unused space
+            storage = uRation.storage_used + 1;  // release unused space, avoid
+                                                 // '0' which means unlimited
           }
 
           if ((uRation.storage      != storage      )    ||
