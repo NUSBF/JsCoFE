@@ -1006,6 +1006,12 @@ var userFilePath = getUserDataFName ( loginData );
           if (userData.hasOwnProperty('feedback'))
               feedback = userData.feedback;
 
+          if ((!uData.dormant) && userData.dormant)  {
+            // new dormancy request
+            userData.dormant = Date.now();  // make in sync with server time
+            storage = Number(userData.storage_used) + 1;  // release unused space
+          }
+
           if ((uRation.storage      != storage      )    ||
               (uRation.storage_max  != storage_max  )    ||
               (uRation.cpu_day      != cpu_day      )    ||

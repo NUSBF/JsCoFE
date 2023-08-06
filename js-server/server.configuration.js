@@ -503,6 +503,11 @@ function CCP4DirName()  {
     "fileCapSize"      : 500000,
     "regMode"          : "admin",  // if 'email':  registration by user;
                                    // 'admin': all users are registration by admin
+    "dormancy_control" : {
+        "strict" : false,   // strict dormant accounts are actually frozen
+        "after"  : 180      // accounts become dormant automatically after 180 days
+                      // of inactivity; 0 means no auto-dormancy
+    },
     "sessionCheckPeriod" : 2000,
     "ration"           : {
         "storage"      : 5000,     // currently comitted storage
