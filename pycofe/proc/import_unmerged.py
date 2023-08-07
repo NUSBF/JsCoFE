@@ -154,6 +154,7 @@ def run ( body,        # body is reference to the main Import class
                 pyrvapi.rvapi_add_section ( unmergedSecId,sectionTitle,
                                             body.report_page_id(),body.rvrow,
                                             0,1,1,sectionOpen )
+                body.rvrow += 1
                 urow = 0
 
             fileSecId = unmergedSecId
@@ -315,7 +316,6 @@ def run ( body,        # body is reference to the main Import class
         body.fail(trace, 'import failed')
 
 
-    body.rvrow += 1
     pyrvapi.rvapi_flush()
 
     return imported_data
