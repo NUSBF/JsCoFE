@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.07.23   <--  Date of Last Modification.
+ *    07.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, R. Nicholls, O. Kovalevskyi 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, R. Nicholls, O. Kovalevskyi, M. Fando 2016-2023
  *
  *  ==========================================================================
  *
@@ -644,6 +644,7 @@ if (!__template)  {
   let sec3   = this.parameters.sec3.contains;
   let sec4   = this.parameters.sec4.contains;
   let sec5   = this.parameters.sec5.contains;
+  let ncsr =0;
   let advkwd = [];
     for (let i=0;i<lines.length;i++)  {
       let words = lines[i].trim().split(/\s+/);
@@ -665,12 +666,14 @@ if (!__template)  {
                           sec1.WAUTO_VAL.value = w2;
                         }
                       break;
-          case 'REFI' : if (w1=='BREF')
-                          sec2.BFAC.value = w2;
+          case 'REFI' : if (w1=='BREF')                          
+                        sec2.BFAC.value = words[2].toUpperCase().substring(0,4);
+
                         else if (w1=='TLSC')  {
                           sec2.TLS.value = 'auto';
                           sec2.TLS_CYCLES.value = w2;
                         }
+                        else advkwd.push ( lines[i] );
                         break;
           case 'BFAC' : if (w1=='SET')  {
                           if (sec2.TLS.value=='none')
@@ -689,19 +692,69 @@ if (!__template)  {
                              else  sec4.MAP_SHARPEN_B.value = 'default';
                         }
                       break;
-          case 'MAKE' : //to do
+          case 'MAKE' : if (w1=='HYDR')  {
+                          sec1.MKHYDR.value = words[2].toUpperCase(); 
+                          break;}
+                          // NO, YES, ALL 
+  
+                        if (w1=='LINK')  {
+                          sec3.MKLINKS.value = words[2].toUpperCase();
+                        }
+
+                          // No, Yes
+                          if (w1=='HOUT')  
+                            sec4.RIDING_HYDROGENS.value == words[2].toUpperCase().substring(0,1)
+
+                          //DEFAULT|Default','YES|Yes','NO|No
+
                       break;
-          case 'MAPC' :  // to do
-                      break;
+
+          case 'NCSR': if (words[1].toUpperCase() == "LOCAL") {
+
+                        sec3.NCSR.value == 'yes'
+                        sec3.NCSR_TYPE.value == 'LOCAL'
+                        ncsr =1
+                        break;
+                      };
+                      if (words[1].toUpperCase() == "GLOBAL"){
+                        sec3.NCSR.value == 'yes'
+                        sec3.NCSR_TYPE.value == 'GLOBAL'
+                        ncsr =1
+                        break;
+                      }
+                      
+                      // console.log('____________', {
+                      //   words,
+                      //   firstWord: words[1],
+                      //   boolCheck: (words[1].toUpperCase() != "LOCAL") || (words[1].toUpperCase() != 'GLOBAL')
+                      // })
+                      // debugger;
+                      if ((words[1].toUpperCase() != "LOCAL") && (words[1].toUpperCase() != 'GLOBAL')) {
+                        advkwd.push ( lines[i] )
+                      }
+                        break;
+
+                      // if str(sec3.NCSR.value) == 'yes':
+                      // stdin.append ('NCSR ' + str(sec3.NCSR_TYPE.value) )
           case 'SOUR' : if (w1=='ELEC')  {
                         sec5.EXPERIMENT.value = 'electron';
                         if (w2.toUpperCase()=='MB')
                               sec5.FORM_FACTOR.value = 'mb';
                         else  sec5.FORM_FACTOR.value = 'gaussian';
                       }
+                      if (w1=='NEUT')  {
+                        sec5.EXPERIMENT.value = 'neutron';
+                      }
+                      if (w1=='XRAY')  {
+                        sec5.EXPERIMENT.value = 'xray';
+                      }
+
                     break;
-          case 'SCAL' : if ((words.length==3) && (w1=='TYPE'))
-                              sec2.SCALING.value = w2;
+          case 'SCAL' : if ((words.length==3) && (w1=='TYPE')){
+                        if ((words[2].toUpperCase()== 'SIMPLE') && (words[2].toUpperCase()== 'BULK') )
+                              sec2.SCALING.value = words[2].toUpperCase();
+                        else advkwd.push ( lines[i] )
+                            }
                         else  advkwd.push ( lines[i] );
                     break;
           case 'SOLV' : let j = 1;
@@ -725,13 +778,50 @@ if (!__template)  {
                     break;
           case 'TLSD' : advkwd.push ( lines[i] );       break;
           case 'VDWR' : sec1.VDW_VAL.value = words[1];  break;
+          case 'VAND' : sec1.VDW_VAL.value = words[1];  break;
+          case 'NONB' : sec1.VDW_VAL.value = words[1];  break;
+          case 'RIDG' : sec3.JELLY.value = 'yes';
+                        if ((w1 == 'DIST') && (words[2].toUpperCase().substring(0,4) == 'SIGM' ))
+                        sec3.JELLY_SIGMA.value = words[3];
+                        if ((w1 == 'DIST') && (words[2].toUpperCase().substring(0,4) == 'DMAX' ))
+                        sec3.JELLY_DMAX.value = words[3];
+                        else advkwd.push ( lines[i] );
+                        break;
 
-          case 'ANOM' : 
-          case 'LABI' :
+
+          case 'ANOM' : advkwd.push ( lines[i] ); break;
+          case 'ANGL' : advkwd.push ( lines[i] ); break;
+          case 'BINS' : advkwd.push ( lines[i] ); break;
+          case 'BLIM' : advkwd.push ( lines[i] ); break;
+          case 'CELL' : advkwd.push ( lines[i] ); break;
+          case 'CHIR' : advkwd.push ( lines[i] ); break;
+          case 'DAMP' : advkwd.push ( lines[i] ); break;
+          case 'FREE' : advkwd.push ( lines[i] ); break;
+          case 'SIGM' : advkwd.push ( lines[i] ); break;
+          case 'LABI' : advkwd.push ( lines[i] ); break;
+          case 'LABO' : advkwd.push ( lines[i] ); break;
+          case 'MONI' : advkwd.push ( lines[i] ); break;
+          case 'PHAS' : advkwd.push ( lines[i] ); break;
+          case 'RIGI' : advkwd.push ( lines[i] ); break;
+          case 'SCPA' : advkwd.push ( lines[i] ); break;
+          case 'SYMM' : advkwd.push ( lines[i] ); break;
+          case 'SHAN' : advkwd.push ( lines[i] ); break;
+          case 'SPHE' : advkwd.push ( lines[i] ); break;
+          case 'PLAN' : advkwd.push ( lines[i] ); break;
+          case 'RBON' : advkwd.push ( lines[i] ); break;
+          case 'TEMP' : advkwd.push ( lines[i] ); break;
+          case 'TORS' : advkwd.push ( lines[i] ); break;
+          case 'HOLD' : advkwd.push ( lines[i] ); break;
           default     : break;
         }
       }
+
+      
     }
+    if (ncsr === 0) {
+      sec3.NCSR.value = "no" 
+    };
+
     sec5.KEYWORDS.value = advkwd.join('\n');
     return 1;  // all Ok, else -1 (incompatibility)
   }
