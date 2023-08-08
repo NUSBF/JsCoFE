@@ -249,50 +249,53 @@ class PaiRef(basic.TaskDriver):
 
         cmd += ["--refmac"]
 
-        ref_params = ""
-        refkeys    = istruct.get_refkeys_parameters ( "TaskRefmac" )
-        if refkeys:
-            self.putMessage ( "<i>Using refinement parameters from job " +\
-                              str(refkeys.id) + "</i><br>&nbsp;" )
-            params = refkeys.keywords
-            if len(params)>0:
-                ref_params = "\n".join(params)
+        reuse_refmac_parameters = False
 
-        if str(sec2.KEYWORDS_REF.value) != "":
-            ref_params += "\n#----  parameters from pairef interface ----\n" +\
-                          str(sec2.KEYWORDS_REF.value)
+        if reuse_refmac_parameters:
+            ref_params = ""
+            refkeys    = istruct.get_refkeys_parameters ( "TaskRefmac" )
+            if refkeys:
+                self.putMessage ( "<i>Using refinement parameters from job " +\
+                                str(refkeys.id) + "</i><br>&nbsp;" )
+                params = refkeys.keywords
+                if len(params)>0:
+                    ref_params = "\n".join(params)
 
-        if ref_params:
-            with open('keywords.txt', 'w') as f:
-                f.write ( ref_params )
-                f.close
-            if os.path.isfile('keywords.txt') == True:
-                # os.path.join(str(self.inputDir))
-                cmd += ["--comfile", "keywords.txt"]
-                self.stdoutln ( 
-                    "\n" +\
-                    "\n----------------------------------------------------------\n" +\
-                    "  Refmac parameters to be used:" +\
-                    "\n----------------------------------------------------------\n" +\
-                    ref_params +\
-                    "\n----------------------------------------------------------"
-                )
-            else:
-                self.rvrow = rvrow0
-                self.putMessage ( '<i style="color:red"> Refmac kaywords were ' +\
-                                  'NOT passed due to errors.</i>' )
-                self.stderrln ( "\n ***** Refmac parameters were not written in file\n" ) 
-
-        # if str(sec2.KEYWORDS_REF.value) != '':
-        #     with open('keywords.txt', 'w') as f:
-        #         f.write(str(sec2.KEYWORDS_REF.value))
-        #         f.close
-        #     if os.path.isfile('keywords.txt') == True:
-        #         # os.path.join(str(self.inputDir))
-        #         cmd += ["--comfile", "keywords.txt"]
-        #     else:
-        #         self.rvrow = rvrow0
-        #         self.putMessage ( '<i style="color:red"> Refmac kaywords were NOT passed due to errors.</i>' )
+            if str(sec2.KEYWORDS_REF.value) != "":
+                ref_params += "\n#----  parameters from pairef interface ----\n" +\
+                            str(sec2.KEYWORDS_REF.value)
+                
+            if ref_params:
+                with open('keywords.txt', 'w') as f:
+                    f.write ( ref_params )
+                    f.close
+                if os.path.isfile('keywords.txt') == True:
+                    # os.path.join(str(self.inputDir))
+                    cmd += ["--comfile", "keywords.txt"]
+                    self.stdoutln ( 
+                        "\n" +\
+                        "\n----------------------------------------------------------\n" +\
+                        "  Refmac parameters to be used:" +\
+                        "\n----------------------------------------------------------\n" +\
+                        ref_params +\
+                        "\n----------------------------------------------------------"
+                    )
+                else:
+                    self.rvrow = rvrow0
+                    self.putMessage ( '<i style="color:red"> Refmac kaywords were ' +\
+                                    'NOT passed due to errors.</i>' )
+                    self.stderrln ( "\n ***** Refmac parameters were not written in file\n" ) 
+        else:
+            if str(sec2.KEYWORDS_REF.value) != '':
+                with open('keywords.txt', 'w') as f:
+                    f.write(str(sec2.KEYWORDS_REF.value))
+                    f.close
+                if os.path.isfile('keywords.txt') == True:
+                    # os.path.join(str(self.inputDir))
+                    cmd += ["--comfile", "keywords.txt"]
+                else:
+                    self.rvrow = rvrow0
+                    self.putMessage ( '<i style="color:red"> Refmac kaywords were NOT passed due to errors.</i>' )
 
 
         htmlReport = "PAIREF_" + self.pairefProject() + ".html"
