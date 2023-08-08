@@ -283,7 +283,7 @@ class PaiRef(basic.TaskDriver):
                 else:
                     self.rvrow = rvrow0
                     self.putMessage ( '<i style="color:red"> Refmac kaywords were ' +\
-                                    'NOT passed due to errors.</i>' )
+                                      'NOT passed due to errors.</i>' )
                     self.stderrln ( "\n ***** Refmac parameters were not written in file\n" ) 
         else:
             if str(sec2.KEYWORDS_REF.value) != '':

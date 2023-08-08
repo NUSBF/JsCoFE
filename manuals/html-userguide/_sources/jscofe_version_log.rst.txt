@@ -2,9 +2,11 @@
 CCP4 Cloud Version Log
 ======================
 
+
 **Version 1.7.0015** 
 
-    *Released on --.--.2023 with CCP4 8.0.013*
+    *Released on --.--.2023 with CCP4 8.0.014*
+
 
     #. ``Deposition task`` replaced by the pair of ``PDB Validation report`` and ``PDB Deposition files``
 
@@ -22,14 +24,10 @@ CCP4 Cloud Version Log
 
     #. Added graceful termination of open tasks when leaving *Project Page*
 
-    #. Fixed workflow termination with previously generated ligand
-
-    #. Added transferring refmac parameters from the previous task
-
 
 **Version 1.7.0014** 
 
-    *Released on 29.06.2023 with CCP4 8.0.013*
+    *Released on 19.07.2023 with CCP4 8.0.013*
 
     #. Column names are now preserved at importing merged mtz files when possible
 
@@ -44,6 +42,7 @@ CCP4 Cloud Version Log
     #. User name and e-mail are verified before sharing now 
 
     #. New function *"check workteam"* added to *Project page*
+
 
 
 **Version 1.7.0013** 
