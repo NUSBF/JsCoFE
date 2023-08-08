@@ -20,7 +20,7 @@ Preliminary notes
 
 * The tutorial project is initialised in *Hop-on* mode. This means that:
    a. The structure is already phased and built
-   b. Protein sequence is not imported (and not neeeded)
+   b. Protein sequence is not imported (and not needed)
    c. The *Task List* is limited to a subset of tasks relevant to structure completion and refinement; if necessary, it can be switched to the full mode.
 
 

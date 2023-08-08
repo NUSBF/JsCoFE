@@ -80,7 +80,7 @@ B-values have various roles:
     
     * When atoms are incorrectly placed, the atomic B-values become large. This indicates reﬂecting errors in the model. 
      
-        It generally expected for neighboring atoms to have similar B-values in regions where modeled atoms are positioned suffciently accurately. If neighboring atoms have wildly different B-values after refnement, it usually means that some of the atoms are either in the wrong place; or  otherwise incorrectly parameterized (e.g., the occupancies and/or element types for some of the atoms are wrong).
+        It generally expected for neighboring atoms to have similar B-values in regions where modeled atoms are positioned sufficiently accurately. If neighboring atoms have wildly different B-values after refinement, it usually means that some of the atoms are either in the wrong place; or  otherwise incorrectly parameterized (e.g., the occupancies and/or element types for some of the atoms are wrong).
 
         B-values of bonded atoms will be more similar to each other than those of atoms that are spatially close but non-bonded. 
 
@@ -236,10 +236,10 @@ w(t :subscript:`m` ,t :subscript:`i`) is an additional weighting factor that may
 
 d :subscript:`m` and d :subscript:`c` denote the current and ideal values of interatomic distances in the model. 
 
-    At every cycle of refnement d :subscript:`c` = d :subscript:`m`, i.e., the current values of the interatomic distances are always taken as the ideal values.
+    At every cycle of refinement d :subscript:`c` = d :subscript:`m`, i.e., the current values of the interatomic distances are always taken as the ideal values.
 
 The purpose of this term is to keep the local conformation of the molecule intact, while allowing groups of atoms (e.g., secondary structures,
-domains) to move in a concerted fashion. This helps to avoid local minima, increasing the radius of convergence of refnement. Were all pairs of distances restrained with large weights, then the only allowed movement would be a rigid-body movement with six parameters for each domain, i.e., refnement would be reduced to rigid-body ftting. In practice, restraining interatomic distances up to 4.2 Å with σ = 0.01 or 0.02 Å works suffciently well for a large class of problems.
+domains) to move in a concerted fashion. This helps to avoid local minima, increasing the radius of convergence of refinement. Were all pairs of distances restrained with large weights, then the only allowed movement would be a rigid-body movement with six parameters for each domain, i.e., refinement would be reduced to rigid-body fitting. In practice, restraining interatomic distances up to 4.2 Å with σ = 0.01 or 0.02 Å works sufficiently well for a large class of problems.
 
 .. tip::  
         ``Run many cycles (up to 200 with jelly body restraints) on the early stage of refinement (e.g. straight after MR)``

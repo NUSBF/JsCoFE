@@ -33,7 +33,7 @@ All tasks runnable in CCP4 cloud have to have **reference documentation**. The t
          :scale: 50 %
          :align: center 
 
-The main purpose of task documentation is to gain knowledge of CCP4 task capabilities and to improve your experience of using CCP4 tasks. Task documentation not only will guide you on more efficient ways to youse the whole potential of CCP4 tasks but also help you to enrich a knowledge base about ways is used to accomplish the task.
+The main purpose of task documentation is to gain knowledge of CCP4 task capabilities and to improve your experience of using CCP4 tasks. Task documentation not only will guide you on more efficient ways to use the whole potential of CCP4 tasks but also help you to enrich a knowledge base about ways is used to accomplish the task.
 
 .. tip::
         Please read another CCP4 Cloud task documentation by pressing on **Contents** on your upright corner of the window. The content page contains all available list task documentation 

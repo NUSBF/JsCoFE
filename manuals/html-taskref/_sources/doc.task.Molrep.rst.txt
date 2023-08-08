@@ -73,7 +73,7 @@ Scores
 
     • RFZ – rotation search score should be greater than 5 and peak should be clear/
 
-    • TFZ – translation search score. You shold see a clear peak.
+    • TFZ – translation search score. You should see a clear peak.
 
 
 The maps should show plausible information which was not in the model (new side chains, parts missing from the model). If you don’t see new features, then the model is probably wrong (model bias). In case of doubt, you can remove part of the model to see if it comes back.  

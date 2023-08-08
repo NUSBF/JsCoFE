@@ -29,7 +29,7 @@ Common description items
         label : 'N<sub>cycles</sub>'
         
 **align**
-    optional hprizontal alignment of item's label: ::
+    optional horizontal alignment of item's label: ::
     
         align    : 'right'  // or 'left', or 'center'
 

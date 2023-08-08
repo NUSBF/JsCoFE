@@ -109,4 +109,4 @@ Install theme as written in theme documentation::
             range    : ['material|MATERIAL']
     
 
-.. note:: Material theme should be installed as **pip3 install git+https://github.com/bwithd/sphinx-material**ß
+.. note:: Material theme should be installed as **pip3 install git+https://github.com/bwithd/sphinx-material**

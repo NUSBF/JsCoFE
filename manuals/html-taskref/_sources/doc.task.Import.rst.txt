@@ -2,7 +2,7 @@
 Data Import
 ===========
 
-This task allows **importing files stored on the user's device** and **attaching the pdf and html** (must be uploaded along with all corresponded files) **files** in project tree.
+This task allows **importing files stored on the user's device** and **attaching the PDF and HTML** (must be uploaded along with all corresponded files) **files** in project tree.
 
 .. note:: Users can switch off the extra guidance through the data import procedure in Account settings (Find **Guide through the data import** in **"My Account"** page)
 

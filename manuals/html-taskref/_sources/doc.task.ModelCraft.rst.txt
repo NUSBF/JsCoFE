@@ -6,7 +6,7 @@ ModelCraft is an automated model-building pipeline for X-ray crystallography. It
 
 - Building of protein, RNA and DNA in a single pipeline.
 
-- Prelimary refinement of the input model using `SHEETBEND <https://pure.york.ac.uk/portal/en/publications/sheetbend-software-for-model-morphing-of-atomic-models(497dd49d-c29c-4958-863b-18563a7dde17).html>`_.
+- Preliminary refinement of the input model using `SHEETBEND <https://pure.york.ac.uk/portal/en/publications/sheetbend-software-for-model-morphing-of-atomic-models(497dd49d-c29c-4958-863b-18563a7dde17).html>`_.
 
 - Machine-learned pruning of protein residues and chains.
 
@@ -36,7 +36,7 @@ A **single cycle of ModelCraft** consists of the following seven steps:
 
 3. **Add dummy atoms** using `COOT <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.CootMB.html>`_ followed by 10 cycles of `REFMAC <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html>`_.
 
-      Dummy atoms are pseudo atoms that are added to an atomic model to represent unknown scattering matter. They do not have a chemical identity but are assigned an element, often oxygen, so their contribution to the structure factor equation can be calculated. As dummy atoms do not represent real atom sites with known bonding, they are refined without geometry restraints. However, at high resolution, it is often possible to determine individual atomic positions even with unrestrained refinement. At lower resolution, the unrestrained atoms will become over-fitted, but it could still be beneficial to include them even without accurate parameters. In ModelCraft, they are only used as a tool for phase improvement and are discarded after refinement. **The dummy atom refinement is only accepted if it produces a lower free-R factor. Overwise, the map from the previous step will be used.**
+      Dummy atoms are pseudo atoms that are added to an atomic model to represent unknown scattering matter. They do not have a chemical identity but are assigned an element, often oxygen, so their contribution to the structure factor equation can be calculated. As dummy atoms do not represent real atom sites with known bonding, they are refined without geometry restraints. However, at high resolution, it is often possible to determine individual atomic positions even with unrestrained refinement. At lower resolution, the unrestrained atoms will become over-fitted, but it could still be beneficial to include them even without accurate parameters. In ModelCraft, they are only used as a tool for phase improvement and are discarded after refinement. **The dummy atom refinement is only accepted if it produces a lower free-R factor. Otherwise, the map from the previous step will be used.**
 
 4. **Build protein** using `BUCCANEER <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Buccaneer.html>`_ followed by 10 cycles of `REFMAC <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Refmac.html>`_.
 

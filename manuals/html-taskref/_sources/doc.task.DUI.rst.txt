@@ -78,7 +78,7 @@ In the **“Report View”** we can see plots of how the cell and orientation ch
     .. toggle-header::
         :header: **Other useful plots in the report are:**
 
-        *	Difference between observed and calculated centroids vs phi, which shows how the average residuals in each of X, Y, and φ vary as a fuction of φ. If scan-varying refinement has been successful in capturing the real changes during the scan then we would expect these plots to be straight lines.
+        *	Difference between observed and calculated centroids vs phi, which shows how the average residuals in each of X, Y, and φ vary as a function of φ. If scan-varying refinement has been successful in capturing the real changes during the scan then we would expect these plots to be straight lines.
         *	Centroid residuals in X and Y, in which the X, Y residuals are shown directly. The key point here is to look for a globular shape centred at the origin.
         *	Difference between observed and calculated centroids in X and Y, which show the difference between predicted and observed reflection positions in either X or Y as functions of detector position. From these plots it is very easy to see whole tiles that are worse than their neighbours, and whether those tiles might be simply shifted or slightly rotated compared to the model detector.
 
@@ -92,7 +92,7 @@ This program is used to integrate the reflections on the diffraction images. The
 
 *Mostly, the default parameters are fine for Pilatus data, which will perform XDS-like 3D profile fitting while using a generalized linear model in order to fit a Poisson-distributed background model.*
 
-       ``It possible to have adjusted the resolution limits using arameters d_min and d_max under prediction in the **“Advanced”** parameters tab.``
+       ``It possible to have adjusted the resolution limits using parameters d_min and d_max under prediction in the **“Advanced”** parameters tab.``
 
 After these jobs are finished, the reflections are ‘post-processed’, which includes the application of the LP correction to the intensities. Then summary tables are printed giving quality statistics first by frame, and then by resolution bin.
 

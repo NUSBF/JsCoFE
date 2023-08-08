@@ -97,7 +97,7 @@ The default is to dock the fragments starting from building cycle 0. This may be
 
 **Density modification prior autobuilding**
 
-This step improves the density map by optmising positions of 'free' atoms (without channging the current model) and requires X-ray data to about 2.5 Å resolution or higher.
+This step improves the density map by optimising positions of 'free' atoms (without changing the current model) and requires X-ray data to about 2.5 Å resolution or higher.
 
 
 Refinement is performed by Refmac, read more about :doc:`Refmac Parameters <doc.task.Refmac>`

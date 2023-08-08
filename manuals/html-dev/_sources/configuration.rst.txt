@@ -22,7 +22,7 @@ CCP4 Cloud Configuration File is a json document with the following components: 
     "Emailer" : { ............ }
   }
 
-Not all components are required for all severs.
+Not all components are required for all servers.
 
 *Front End Server*  requires ``"FrontEnd"``, all ``"NumberCrunchers"`` and
 ``"Emailer"``.
@@ -235,7 +235,7 @@ FE Server Configuration Items
 **"exclude_tasks"**
 
     Optional list of tasks that can be excluded from the list of available tasks.
-    The tasks are specified by the names of the corresponding Javascript task
+    The tasks are specified by the names of the corresponding JavaScript task
     classes, for example, ::
     
         "exclude_tasks" : ["TaskAmple","TaskBalbes"]
@@ -300,7 +300,7 @@ FE Server Configuration Items
 
     Description of file system area allocated for users' projects and data.
     In simplest case, it may be just a path to a directory on a file system 
-    with sufficient disk space (extimated as number of users times user's 
+    with sufficient disk space (estimated as number of users times user's 
     disk quota, see *"ration"* configuration below). Also in this case,
     *"storage"* configuration may be omitted. However, this type of
     description is deprecated and should not be used.
@@ -346,7 +346,7 @@ FE Server Configuration Items
     
                 *"home"* : indicates that projects are placed in user's home directories;
                 in this, case, the actual directory path is calculated as 
-                ``/path/login/dirName`` (must exist) where ``login`` is user's loginname,
+                ``/path/login/dirName`` (must exist) where ``login`` is user's login name,
                 and ``dirName`` is given below
     
         *"diskReserve"*
@@ -362,7 +362,7 @@ FE Server Configuration Items
 **"jobs_safe"**
 
 Description of a safe for failed jobs. Users may choose a type of feedback
-agreement, including retention of failed jobs, alnog with input data, in
+agreement, including retention of failed jobs, along with input data, in
 CP4 Cloud safe for further investigation by developers. The safe is a directory
 in file system shared between the Front End and *all* Number Crunchers. Safe 
 description is the following object: ::
@@ -448,11 +448,11 @@ Here,
 
 **"bootstrapHTML"**
  
-    Path (relative or absolute) to HTML bootrstrap file: ::
+    Path (relative or absolute) to HTML bootstrap file: ::
     
         "bootstrap/jscofe.html"
     
-    Alernative bootstrap files can be used for debug pyrposes or quick change 
+    Alternative bootstrap files can be used for debug purposes or quick change 
     of source code directories.
  
  
@@ -477,7 +477,7 @@ Here,
     
         "regMode" : "admin"
         
-    specifies administrative registration mode, when a new user can be registared
+    specifies administrative registration mode, when a new user can be registered
     only by server admin (a user with administrative privileges).
     Configuration ::
     
@@ -543,7 +543,7 @@ Here,
     which can be imported by using the *Demo projects* button found above
     user's List of Projects. Other mounts can be used in dedicated import 
     task (*Cloud Import*) and in few tasks that use direct access to local and 
-    Cloud-based dircetories (e.g. *Xia-2* may process images from a directory 
+    Cloud-based directories (e.g. *Xia-2* may process images from a directory 
     mounted in this way). Cloud mount names may be chosen arbitrarily; the
     appearance of words *"My"*, *"Home"*, *"CCP4"* in mount name will
     decorate the mount with the corresponding icon in Cloud File Browser.
@@ -560,7 +560,7 @@ Here,
 
     This is optional item, which control automatic renumbering of FE log
     files. FE server writes ``stderr`` and ``stdout`` log files, with names 
-    given in FE launch script. This files may grow uncompfortably large, and,
+    given in FE launch script. This files may grow uncomfortably large, and,
     ideally, should be split in manageable chunks for long-term bookkeeping.
     This may be achieved using the following configuration object: ::
 
@@ -572,15 +572,15 @@ Here,
     where
 
         *"log_file"*
-            is template path to log files. For example, tempate ``/path/to/npde_fe``
+            is template path to log files. For example, template ``/path/to/npde_fe``
             means that launch script defines log files with paths 
             ``/path/to/node_fe.log`` and ``/path/to/node_fe.err``
     
-        *"chunk_lenhgth"*
+        *"chunk_length"*
             is the number of job launch records in a chunk. When specified number
             of jobs is launched, current log files are renamed as
             ``/path/to/node_fe.NN.log`` and ``/path/to/node_fe.NN.err``, where
-            ``NN`` is chunk number, and new log files with tempate names are
+            ``NN`` is chunk number, and new log files with template names are
             initialised
         
 
@@ -672,8 +672,8 @@ Client Proxy Server Configuration Items
             obtained from local CCP4 setup. This is the recommended option
     
         *"localisation" : 2*
-            image files, icons, documentation, and standard javascript
-            librarries are obtained from local CCP4 setup
+            image files, icons, documentation, and standard JavaScript
+            libraries are obtained from local CCP4 setup
     
         *"localisation" : 3*
             all CCP4 Cloud source files are obtained from local CCP4 setup

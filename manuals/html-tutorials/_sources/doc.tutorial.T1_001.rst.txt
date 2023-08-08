@@ -27,7 +27,7 @@ Specify **Se** as **Heavy atom type** in the task input.
 
                   **Completeness** describes the percentage of the theoretically observable reflections (within given resolution limits) that have been actually measured in the experiment. Completeness should be used for estimating whether the data is principally sufficient for structure determination. A value greater than 90% is generally desired, while a value less than 75% is considered to be poor. Values in between of these limits will provide less than optimal results.
 
-                  **Look for the plot of Rmerge vs Batch for all images** (it is found in the **Dataset SAD** => **Analysis by batch** section). **Rmerge** shows how well multiple observations of equivalent reflections agree with each other, with a low value indicating better agreement. Note that this value is stable throughout much of the dataset, but starts to drift upwards towards the end of data collection, indicating a possible radiation damage to the crystal. It is often benefitial to remove these compromised data from furgher processing, for as long as we can leave ourselves with the acceptable degree of completeness. **For this tutorial's dataset, removing images starting from 121 on represents a reasonable compromise**.
+                  **Look for the plot of Rmerge vs Batch for all images** (it is found in the **Dataset SAD** => **Analysis by batch** section). **Rmerge** shows how well multiple observations of equivalent reflections agree with each other, with a low value indicating better agreement. Note that this value is stable throughout much of the dataset, but starts to drift upwards towards the end of data collection, indicating a possible radiation damage to the crystal. It is often beneficial to remove these compromised data from furgher processing, for as long as we can leave ourselves with the acceptable degree of completeness. **For this tutorial's dataset, removing images starting from 121 on represents a reasonable compromise**.
 
 
 ``3.`` While it is possible to use the merged reflection dataset, produced by Xia-2, straight away, manual data reduction and merging gives more control and may result in better data quality. Let's do that with `Aimless <https://cloud.ccp4.ac.uk/manuals/html-taskref/doc.task.Aimless.html>`_: **add next job => All tasks => Data Processing => Merging and Scaling with Aimless**
@@ -69,7 +69,7 @@ The substructure is found with ShelxCD software, which may be used as part of Cr
 
             A good indication that the substructure has been correctly determined is if CFOM reaches the *automatically set threshold* before the maximum number of cycles has been made.
 
-            .. note:: this indication may be invalid if automatic choice of CFOM threshold is overriden in tasks's input parameters.
+            .. note:: this indication may be invalid if automatic choice of CFOM threshold is overridden in the tasks input parameters.
 
             A clear separation between low-value and high-value CFOM distributions in the **distribution of CFOM from trials** graph is another an encouraging indication. In this tutorial, the graph shows good separation of unsuccessful (lower CFOM) trials and successful (higher CFOM) solutions.
 

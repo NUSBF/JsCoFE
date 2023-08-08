@@ -21,6 +21,18 @@ def clickByXpath(driver, xpath):
 
     return False
 
+def clickByID(driver, id):
+    textEls = driver.find_elements(By.ID, id)
+    #print('clckByXpath - "%s", %d elements' % (xpath, len(textEls)))
+    for textEl in reversed(textEls):
+#        parentEl = textEl.find_element_by_xpath("..")
+        if textEl.is_displayed():
+            driver.execute_script("arguments[0].scrollIntoView();", textEl)
+            ActionChains(driver).move_to_element(textEl).click(textEl).perform()
+            return True
+
+    return False
+
 
 def clickByXpathMultiple(driver, xpath, n):
     textEls = driver.find_elements_by_xpath(xpath)

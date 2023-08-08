@@ -50,7 +50,7 @@ Observations Used
 -----------------
 
 
-If both summation and profile-fitted intensities are avalable, you can use:
+If both summation and profile-fitted intensities are available, you can use:
 
 1. **Combined intensives** (Default). Use weighted mean of profile-fitted & integrated intensity, profile-fitted for weak data, summation integration value for strong.
 

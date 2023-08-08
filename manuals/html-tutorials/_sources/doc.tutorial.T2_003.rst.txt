@@ -8,7 +8,7 @@ Structure prediction for Molecular Replacement
 
 ``2.`` For obtaining the predicted model we will use CCP4 Cloud's `Structure Prediction <../html-taskref/doc.task.StructurePrediction.html>`_ task, which uses AlphaFold-2 (in `Openfold <https://colab.research.google.com/github/aqlaboratory/openfold/blob/main/notebooks/OpenFold.ipynb>`_  or `ColabFold <https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb>`_ implementation) for generating structure models from the given sequence: click **add task => go to All tasks => Structure Prediction => Structure Prediction**
 
-.. image:: images/structure_presiction_all_tasks.png
+.. image:: images/structure_prediction_all_tasks.png
          :scale: 50 %
          :align: center
 

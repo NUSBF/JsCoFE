@@ -26,7 +26,7 @@ Parameters
 
 **UniProt proteome identifier**  Identifier (UPID) of a proteome for querying sequences (will be downloaded automatically from UniProt). By default the program uses a database of all PDB sequences from :doc:`MrBump <doc.task.MrBump>`.
 
-**Number of best sequence hits to show** By default 3 most plausible sequece hits are selected. This number can be increased if more hits are expected.
+**Number of best sequence hits to show** By default 3 most plausible sequence hits are selected. This number can be increased if more hits are expected.
 
     
 **REFERENCES**

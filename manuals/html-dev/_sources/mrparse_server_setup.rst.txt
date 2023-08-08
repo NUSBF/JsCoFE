@@ -9,7 +9,7 @@ MrParse search in CCP4 Cloud
 In CCP4 Cloud, *MrParse* can be used to search various databases for possible
 homologous structures in the *Protein databank* (*PDB*) or entries in the `EBI 
 AlphaFold Database`_ (*EBI-AFDB*) or `ESMAtlas`_ Database. It can also be used 
-to run *ESMFold* (through the *ESMAtlas* API) to generate a predcition for a 
+to run *ESMFold* (through the *ESMAtlas* API) to generate a prediction for a 
 given sequence (limited to 350 residues). The default behaviour is to use 
 various online resources such as the `EBI Phmmer`_ API to search for matches. A 
 reduced version of the *PDB* and *EBI-AFDB* sequence listings is also distributed

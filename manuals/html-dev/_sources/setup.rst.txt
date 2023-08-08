@@ -52,7 +52,7 @@ The Setup procedure is described in terms of servers and file systems, rather th
 
 6. Apache servers running *on each host machine* in the setup (excluding **Queue(s)** ).
 
-7. CCP4 Cloud account *in each host machine*. This account does not need elevated priviliges, but it must have access to disk areas as described above.
+7. CCP4 Cloud account *in each host machine*. This account does not need elevated privileges, but it must have access to disk areas as described above.
 
 .. note:: **FE**, **NC(s)** and computational jobs will run in the CCP4 Cloud account. For security reasons, do not use a personal account for running CCP4 Cloud and restrict the designated account such that no changes or unauthorised access can be made in sensitive parts of your system and personal disk areas.
 
@@ -158,7 +158,7 @@ CCP4 Cloud can be started and restarted as below: ::
 
 You may find it more convenient to write a single script for (re)starting CCP4 Cloud, possibly using ssh access to all hosts involved.
 
-CCP4 Software is regularly updated (once in 2-4 weeks). CCP4 Cloud maintainer will be informed by e-mail when a new update is issued; in addtion, CCP4 Cloud users may see notification of new updates when working via CCP4 Cloud Client. Updates may be applied with the following commands, which can be, again, put into a single convenience script): ::
+CCP4 Software is regularly updated (once in 2-4 weeks). CCP4 Cloud maintainer will be informed by e-mail when a new update is issued; in addition, CCP4 Cloud users may see notification of new updates when working via CCP4 Cloud Client. Updates may be applied with the following commands, which can be, again, put into a single convenience script): ::
 
     /path/to/CCP4/ccp4-8.0/bin/ccp4um -auto
     /path/to/NC1/start-nc.sh 
@@ -255,7 +255,7 @@ Below is an *excerpt* of **NC** configuration settings that must be revised. Oth
     this is the number of cores that a *job* can use on given **NC**
 
 **storage**
-    path to disk area, used for making job's working directories. The area is self-cleaning; working diretories are deleted when job is finished and sent back to **FE** . Do not mistake this area with temporary disk space on individual cluster nodes. In general, this area can be located anywhere, the template distribution tarball assumes that it is within the **NC** directory. E.g., for 1st **NC**, put ::
+    path to disk area, used for making job's working directories. The area is self-cleaning; working directories are deleted when job is finished and sent back to **FE** . Do not mistake this area with temporary disk space on individual cluster nodes. In general, this area can be located anywhere, the template distribution tarball assumes that it is within the **NC** directory. E.g., for 1st **NC**, put ::
 
     /path/to/NC1/nc-storage
 
@@ -289,14 +289,14 @@ In any case, this directory must exist before starting CCP4 Cloud.
             "secure"             : true,
             "auth"               : {
                 "user" : "name@gmail.com",
-                "pass" : "insecure-passowrd"
+                "pass" : "insecure-password"
                 "file" : "path-to-file-with-userId-and-password-space-separated"
             }
         }
 
     where **auth** should contain either **user** and **pass** or **file** but not both.
 
-    Configuratuion ::
+    Configuration ::
 
         "Emailer" : { "type" : "desktop" } 
 
@@ -408,7 +408,7 @@ Below is an *excerpt* of **FE** configuration settings that must be revised. Oth
     this is disk area for retaining working directories for failed jobs. In **FE** configuration, it should be given only if **NC** configurations place it in a shared file system
 
 **facilitiesPath**
-    this item is rudimental item but still needed. Put this directory on ``"disk1"``: ::
+    this item is a rudimental item but still needed. Put this directory on ``"disk1"``: ::
 
         "facilitiesPath"   : "/path/to/disk1/facilities"
 
@@ -452,7 +452,7 @@ Replace paths in the following lines of the provided **NC** start script (``/pat
     export AFDB_SEQDB=/path/to/afdb/sequences.fasta
 
 
-**PDB_DIR** is the local location of a pdb mirror, **PDB_SEQDB** is the sequence listings for the full set of pdb entries (available to download from the PDB `ftp area <https://files.wwpdb.org/pub/pdb/derived_data/>`_) and **AFDB_SEQDB** is the sequence listings for the full set of entries in the EBI AlphaFold Database (also available to download from the EBI-AFDB `ftp area <https://ftp.ebi.ac.uk/pub/databases/alphafold/>`_)
+**PDB_DIR** is the local location of a pdb mirror, **PDB_SEQDB** is the sequence listings for the full set of pdb entries (available to download from the PDB `ftp area <https://files.wwpdb.org/pub/pdb/derived_data/>`__) and **AFDB_SEQDB** is the sequence listings for the full set of entries in the EBI AlphaFold Database (also available to download from the EBI-AFDB `ftp area <https://ftp.ebi.ac.uk/pub/databases/alphafold/>`__)
 
 .. _appendix-e:
 
@@ -484,7 +484,7 @@ CCP4 Cloud's Front-End Server listens to the specified port of the *localhost* s
 3. Edit and install the provided template configuration module for Apache: ::
 
     cp /path/to/setup-tmp/ccp4cloud-setup/apache.conf /path/to/setup-tmp/<path>.conf
-    # in <path>.conf, replace all occurences of:
+    # in <path>.conf, replace all occurrences of:
     #      '0000'  for the selected port number
     #      'path'  for the chosen URL path ('<path>')
     vi /path/to/setup-tmp/<path>.conf
@@ -546,7 +546,7 @@ may mean that the selected *localhost* port is used by another process running o
     Error: EBUSY: resource busy or locked
     Error: ENOENT: no such file or directory
 
-indicate problems with file systems or with directory specifications in CCP4 Cloud's configuration files and/or start scripts. Errors are complemented with code trace, which may help a developer to identify the exact problem. Therefore, please inculde code traces in the respective communications.
+indicate problems with file systems or with directory specifications in CCP4 Cloud's configuration files and/or start scripts. Errors are complemented with code trace, which may help a developer to identify the exact problem. Therefore, please include code traces in the respective communications.
 
 If **FE** server starts normally, its ``*.log`` file should start with messages similar to the following ::
 

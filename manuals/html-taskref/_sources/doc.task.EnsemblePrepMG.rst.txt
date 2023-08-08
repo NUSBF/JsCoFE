@@ -44,7 +44,7 @@ Workflow
 
 The task requires only amino acid sequence to prepare MR Ensemble with MrBump and CCP4mg.
 
- * homologous structures are found in PDB and/or AFDB by :doc:`MrBump <doc.task.MrBump>`, which uses `phmmer <https://www.ebi.ac.uk/Tools/hmmer/search/phmmer>`__ for scenning the corresponding sequence databases.
+ * homologous structures are found in PDB and/or AFDB by :doc:`MrBump <doc.task.MrBump>`, which uses `phmmer <https://www.ebi.ac.uk/Tools/hmmer/search/phmmer>`__ for scanning the corresponding sequence databases.
 
  * Based on the sequence alignment, search models are made from found homologs using `Sculptor <https://doi.org/10.1107/S0907444910051218>`_, which can modify the the structures in three different ways: main-chain deletion, side-chain pruning and B-factor modification.
 
