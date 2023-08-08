@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    08.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -383,7 +383,7 @@ class Refmac(basic.TaskDriver):
             self.rvrow += 5
 
             self.putTitle ( "Output Structure" +\
-                        self.hotHelpLink ( "Structure","jscofe_qna.structure") )
+                            self.hotHelpLink ( "Structure","jscofe_qna.structure") )
 
             # calculate maps for UglyMol using final mtz from temporary location
             #fnames = self.calcCCP4Maps ( self.getMTZOFName(),self.outputFName )
@@ -397,7 +397,15 @@ class Refmac(basic.TaskDriver):
                                              libin,hkl,istruct,
                                              "FWT,PHWT,DELFWT,PHDELWT",True )
             if structure:
-                structure.store_refkeys_parameters ( self.task._type,self.task.id,stdin )
+                refkeys = []
+                for line in stdin:
+                    lineu = line.strip().upper()
+                    if not lineu.startswith("LABI") and\
+                       not lineu.startswith("PDBO") and\
+                       not lineu.startswith("ANOM") and\
+                       not lineu.startswith("END"):
+                        refkeys.append ( line )
+                structure.store_refkeys_parameters ( self.task._type,self.task.id,refkeys )
                 self.putStructureWidget ( self.getWidgetId("structure_btn"),
                                           "Structure and electron density",
                                           structure )
