@@ -14,13 +14,13 @@ PISA delivers the following data:
     * free energy of protein folding
     * energy of hydrophobic interaction between macromolecules and hydrophobic effect of individual residues
     * multiparametric assessment of macromolecular affinity (interaction radar)
-    * probable macromolecular assemblies, their surface and buried areas, free energy of dissociation, dissociation patterns, ralation to crystal interfaces and assemblage details
+    * probable macromolecular assemblies, their surface and buried areas, free energy of dissociation, dissociation patterns, relation to crystal interfaces and assemblage details
     * concentration profiles of assembly stock with stoichiometry defined by crystal content
 
 On input, PISA requires only atomic coordinates of sufficiently well refined
 structures. Do not use PISA if your structure is not yet complete and ready for PDB
 deposition, because even a small imperfectness in crystal contacts may make
-the difference between estimating a particuar interface as binding or not.
+the difference between estimating a particular interface as binding or not.
 
 PISA does not have any input parameters that should be manipulated by user.
 

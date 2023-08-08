@@ -2,27 +2,9 @@
 CCP4 Cloud Version Log
 ======================
 
-
-**Version 1.7.0014** 
+**Version 1.7.0015** 
 
     *Released on --.--.2023 with CCP4 8.0.013*
-
-    #. Column names are now preserved at importing merged mtz files when possible
-
-    #. Fixed bug which could put crashed MorDA job in zombie state
-
-    #. ``Omit`` task added
-
-    #. ``ShelxEMR`` task now accepts sequences and build side chains
-
-    #. Fixed bug in ``Make Ligand`` causing success report in case of errors
-
-    #. User name and e-mail are verifyed before sharing now 
-
-    #. New function *"check workteam"* added to *Project page*
-
-
-    
 
     #. ``Deposition task`` replaced by the pair of ``PDB Validation report`` and ``PDB Deposition files``
 
@@ -34,10 +16,34 @@ CCP4 Cloud Version Log
 
     #. Jobs can be copy-pasted with set parameters
 
-    #. Refinemnet parameters in ``Find waters`` are now taken from last refinement job on the branch
+    #. Fixed PDB Import for cases when sequence file is not found
+
+    #. Refinement parameters in ``Find waters`` are now taken from last refinement job on the branch
 
     #. Added graceful termination of open tasks when leaving *Project Page*
 
+    #. Fixed workflow termination with previously generated ligand
+
+    #. Added transferring refmac parameters from the previous task
+
+
+**Version 1.7.0014** 
+
+    *Released on 29.06.2023 with CCP4 8.0.013*
+
+    #. Column names are now preserved at importing merged mtz files when possible
+
+    #. Fixed bug which could put crashed MorDA job in zombie state
+
+    #. ``Omit`` task added
+
+    #. ``ShelxEMR`` task now accepts sequences and build side chains
+
+    #. Fixed bug in ``Make Ligand`` causing success report in case of errors
+
+    #. User name and e-mail are verified before sharing now 
+
+    #. New function *"check workteam"* added to *Project page*
 
 
 **Version 1.7.0013** 
@@ -163,7 +169,7 @@ CCP4 Cloud Version Log
 
     #. Added option for running ``PDBSET`` as part of ``XYZ Utils``
 
-    #. Introfuced auto-topup of disk space
+    #. Introduced auto-topup of disk space
 
     #. Stability fixes
 
@@ -250,7 +256,7 @@ CCP4 Cloud Version Log
 
     #. Project can be now organised in Folders
 
-    #. Added new tasks ``Slice`` for splitiing models in domains, and ``Slice-n-dice`` for splitting followed by auto-MR with Phaser
+    #. Added new tasks ``Slice`` for splitting models in domains, and ``Slice-n-dice`` for splitting followed by auto-MR with Phaser
 
     #. Covalent/metal link identification switch added in ``Refmac`` task
 
@@ -312,7 +318,7 @@ CCP4 Cloud Version Log
 
     #. Fixed bug causing *Job Dialog* malfunction if protein and rna data types are mixed in the project
 
-    #. Fixed bug causeing failure at importing merged ``.mtz`` files with phase information but without mean amplitudes.
+    #. Fixed bug causing failure at importing merged ``.mtz`` files with phase information but without mean amplitudes.
 
     #. B-factors are automatically corrected in files from AFDB and Rosetta-Fold 
 
@@ -337,7 +343,7 @@ CCP4 Cloud Version Log
 
     #. ``baverage`` and ``edsats`` analysis added to quality report section of various tasks
 
-    #. Added disagnostics on non-existing PDB codes in ``PDB Import`` task
+    #. Added diagnostics on non-existing PDB codes in ``PDB Import`` task
 
     #. ``Dimple`` task can now work with mean amplitudes
 

@@ -46,11 +46,11 @@ Can be run:
 *  Locally
     **CCP4 console** => ``ccp4-python -m pytest ./path/to/tests``
 
-*  Nigtly on `Jenkins <https://anvil.softeng-support.ac.uk/jenkins/job/CCP4/>`_
+*  Nightly on `Jenkins <https://anvil.softeng-support.ac.uk/jenkins/job/CCP4/>`_
 
 Groovy scripts for Jenkins can be found `here <https://gitlab.stfc.ac.uk/ccb63/ccp4-groovy/-/tree/master/vars>`_
 
-**testCCP4.groovy** runs nigtly, **testCCP4Exhaustive.groovy** runs weekly (longer)
+**testCCP4.groovy** runs nightly, **testCCP4Exhaustive.groovy** runs weekly (longer)
 
 .. attention:: Groovy scripts have Mac/Linux and Windows parts, all changes should be duplicated
 
@@ -137,11 +137,11 @@ Tests can be found in ``jsCoFE/setests``
    
         python -m pytest . --cloud http://localhost:8085 --login devel --password devel
 
-- To test CCP4Cloud Destop (for instance, to test Cloud from standard CCP4 installation on Windows or Mac), you may use following. Just run CCP4Cloud Desktop first and **look for correct port number instead of 12345**. Only basic tests will be run from the ./basic/directory ::
+- To test CCP4Cloud Desktop (for instance, to test Cloud from standard CCP4 installation on Windows or Mac), you may use following. Just run CCP4Cloud Desktop first and **look for correct port number instead of 12345**. Only basic tests will be run from the ./basic/directory ::
    
         python -m pytest ./basic/ -v -s --cloud http://localhost:12345 --nologin True 
 
-- You can use any combination of all abovementioned parameters.
+- You can use any combination of all above mentioned parameters.
 
 These tests will start the browser (controlled by Selenium) on your computer
 

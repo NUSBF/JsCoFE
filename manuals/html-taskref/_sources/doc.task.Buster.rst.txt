@@ -21,7 +21,7 @@ For more information, please visit `BUSTER Documentation <http://www.globalphasi
 
     * `mmCIF generation - for deposition <https://www.globalphasing.com/buster/wiki/index.cgi?DepositionMmCif>`_
 
-BUSTER reference card you cand find `here <https://www.globalphasing.com/buster/manual/autobuster/buster_reference_card.pdf>`_
+BUSTER reference card you can find `here <https://www.globalphasing.com/buster/manual/autobuster/buster_reference_card.pdf>`_
 
 
 **References**

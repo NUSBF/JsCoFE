@@ -22,7 +22,7 @@ The calculation consists of the following steps:
 
 The option **”Current model should be fixed”** may be chosen if you want an initial model to be extended (*chains containing at least one non-nucleotide will be left untouched*)
 
-**High resolution limit (Å)** Use of high resolution data in Buccaneer makes the calculation slower and more memory-consuming, and does not contribute signficantly to the quality of the final model.
+**High resolution limit (Å)** Use of high resolution data in Buccaneer makes the calculation slower and more memory-consuming, and does not contribute significantly to the quality of the final model.
 
 -------
 Options

@@ -72,7 +72,7 @@ Options
 
 **Build Selenomethionine (MSE istead of MET)** option should be chosen if selenomethionine is present.
 
-**Number of building/refinement cycles** may be set more than 5(default number) if first attemt ends up with an incomplete model. 
+**Number of building/refinement cycles** may be set more than 5(default number) if first attempt ends up with an incomplete model. 
 
 .. Note::
     The chance to benefit from using more than 20 cycles is really small
@@ -80,7 +80,7 @@ Options
 **Use fastest methods** option shortens the job running time without a loss in quality of obtained results in most cases. In case of low resolution data, turning this option off may produce better results.
 
 --------------------------
-Model Building Parameteres
+Model Building Parameters
 --------------------------
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -97,7 +97,7 @@ Parameters for first and subsequent Buccaneer cycles
 General parameters
 ------------------
 
-**Truncate data beyond resolution limit [Å]**. Using high resolution data in Buccaneer makes it slower and more memory-consuming, yet it does not contribute signficantly to the quality of the final model. Therefore, by default, reflection data is truncated beyond 2.0Å, unless you change this value.
+**Truncate data beyond resolution limit [Å]**. Using high resolution data in Buccaneer makes it slower and more memory-consuming, yet it does not contribute significantly to the quality of the final model. Therefore, by default, reflection data is truncated beyond 2.0Å, unless you change this value.
 
 **Residue name for unsequenced residues** you may set the name which will be given to newly built residues of unrecognised type. The default is 'UNK', change this to 'ALA' if you need to use the built model in a program which doesn't recognise 'UNK' (this should not be required in CCP4 Cloud).
 
@@ -109,7 +109,7 @@ Reference structure is used for generating search target functions of various st
 
 **Library reference structure to use** option allows you to change the buccaneer reference structure; ``1tqw`` is used by default and hardly needs changing. 
 
-Futher refinement is performed by Refmac, read more about :doc:`Refmac Parameters <doc.task.Refmac>`
+Further refinement is performed by Refmac, read more about :doc:`Refmac Parameters <doc.task.Refmac>`
 
 Read more about Buccaneer `here <http://www.ysbl.york.ac.uk/~cowtan/buccaneer/buccaneer.html>`_
 

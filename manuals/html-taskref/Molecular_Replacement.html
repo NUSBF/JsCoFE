@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -331,11 +332,10 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="molecular-replacement">
-<h1 id="molecular-replacement--page-root">Molecular Replacement<a class="headerlink" href="#molecular-replacement--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="molecular-replacement--page-root">Molecular Replacement<a class="headerlink" href="#molecular-replacement--page-root" title="Permalink to this headline">¶</a></h1>
 <blockquote>
-<div><p><strong>are efficient for model preparation and for those cases with an existed homolog of unknown structure</strong></p>
-</div></blockquote>
+<div><strong>are efficient for model preparation and for those cases with an existed homolog of unknown structure</strong></div></blockquote>
 <p>electron density in a crystal can be obtained by calculating the Fourier summation:</p>
 <a class="reference internal image-reference" href="_images/Fourier_transform.PNG"><img alt="_images/Fourier_transform.PNG" class="align-center" src="_images/Fourier_transform.PNG" style="width: 625.5px; height: 69.0px;"/></a>
 <p>in which <strong>|F(h k l)|</strong> is the structure factor amplitude of reflection (h k l), including the temperature factor, and <strong>α(h k l)</strong> is the phase angle. <strong>x</strong>, <strong>y</strong>, and <strong>z</strong> are coordinates in the unit cell.</p>
@@ -345,8 +345,8 @@
 <p><strong>Molecular replacement</strong> is the process of solving the phase problem for an unknown structure by placing the atomic model known structure in the unit cell of the unknown structure by trying all possible orientations and positions and picking the one which gives the best fit to the observed data. Once we do so we can calculate approximate structure factors phases which, in combination with the observed structure factors for the unknown structure, allow the model to be rebuilt and refined.</p>
 <p>Molecular Replacement is based on the assumption that target structure has a <strong>highly similar structural homologue</strong>, which may be found by, e.g. matching target’s sequence to sequences of known PDB structures. You can create a model for Molecular Replacement by using <strong>MR model preparation</strong> tasks within CCP4 Cloud.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Molecular replacement can fail, if the model does not match the unknown structure (insufficiently homologous or changed conformation).</p>
+<p class="first admonition-title">Note</p>
+<p class="last">Molecular replacement can fail, if the model does not match the unknown structure (insufficiently homologous or changed conformation).</p>
 </div>
 <p>In case you have a homologous protein structure you can use:</p>
 <div class="toctree-wrapper compound">
@@ -375,10 +375,10 @@
 </ul>
 </div>
 <div class="admonition hint">
-<p class="admonition-title">Hint</p>
-<p>If you cannot create a suitable module, you can try programs for <strong>Automated Molecular Replacement</strong>.</p>
+<p class="first admonition-title">Hint</p>
+<p class="last">If you cannot create a suitable module, you can try programs for <strong>Automated Molecular Replacement</strong>.</p>
 </div>
-</section>
+
 
 
           </article>
@@ -423,7 +423,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

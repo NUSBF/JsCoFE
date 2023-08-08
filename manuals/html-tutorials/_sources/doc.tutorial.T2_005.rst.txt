@@ -63,7 +63,7 @@ Here we can distinguish **3 domains in the model**.
     :scale: 50%
     :align: center
 
-Splitting models into domains can make the placement of models through MR easier. **So next logical step will be to slice the model into 3 domains with** `Silce <../html-taskref/doc.task.Slice.html>`_ **task**. 
+Splitting models into domains can make the placement of models through MR easier. **So next logical step will be to slice the model into 3 domains with** `Slice <../html-taskref/doc.task.Slice.html>`_ **task**. 
 
 3. Since Slice task was created in workflow, we can **copy** existing Slice task and change **Number of splits** to **3** and **pLDDT threshold** to **85** as shown below.
 

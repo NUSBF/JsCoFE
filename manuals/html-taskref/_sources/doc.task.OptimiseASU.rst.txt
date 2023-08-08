@@ -10,12 +10,12 @@ You may want to use this tool if, *e.g.,* a molecular replacement or model
 building task places chains at an uncomfortable distance between them.
 
 .. note::
-    **Optimise ASU** does not attempt to build a meaningfull biological unit. 
+    **Optimise ASU** does not attempt to build a meaningful biological unit. 
     Use **PISA** task for that purpose.
 
 **Optimise ASU** will move all chains as whole objects, except for water chains 
 made of residues named *HOH* or *WAT*. Water chains usually make contacts with all
-other chains in ASU, therefore, typically, no single suitable transormation 
+other chains in ASU, therefore, typically, no single suitable transformation 
 for all water molecules can be suggested. **Optimise ASU** moves all water molecules 
 individually -- please check results by visual inspection.
 

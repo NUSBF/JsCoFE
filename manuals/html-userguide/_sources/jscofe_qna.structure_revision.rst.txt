@@ -18,7 +18,7 @@ CCP4 Cloud tasks can accept only one **Structure Revision** on input, and most o
 
 **Structure Revisions** are named as in the following example:  ``R0258.01: refmac (protein)/xyz,phases``
 
-where ``R`` stands for "Revision", ``0258`` is the serial number of the job, which produced the revision, ``01`` is the serial number of output revision in that job, ``refmac`` is the task name of the job (either generic or user-provided), and the rest is a variable list of descriptors. In the above example, the revision describes a crystal with protein content, for which some atomic coordinates and phases are calculated. If ``xyz`` prepends ``phases``, then the latter was calculated using the former (e.g., as in molecular replacement); otherwise, phases were obtained in course of Experimental Phasing or imported in the project, and atomic coordinates were ontained by building model in the corresponding electron density.
+where ``R`` stands for "Revision", ``0258`` is the serial number of the job, which produced the revision, ``01`` is the serial number of output revision in that job, ``refmac`` is the task name of the job (either generic or user-provided), and the rest is a variable list of descriptors. In the above example, the revision describes a crystal with protein content, for which some atomic coordinates and phases are calculated. If ``xyz`` prepends ``phases``, then the latter was calculated using the former (e.g., as in molecular replacement); otherwise, phases were obtained in course of Experimental Phasing or imported in the project, and atomic coordinates were obtained by building model in the corresponding electron density.
 
 ---------------------------------------
 *Structure Revision* content inspection

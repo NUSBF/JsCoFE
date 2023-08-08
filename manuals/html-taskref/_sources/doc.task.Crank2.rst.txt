@@ -122,8 +122,8 @@ Crank-2 Glossary
       phases by values below 0.35. After model building and refinement, the FOM of a reasonable model should be above 0.6.
 
    What is the β parameter in density modification?
-      Density modification is known to lead to highly biased (overstimated) figures of merit. CRANK2 implements a bias
-      reduction method to suppres the bias and keep the figures of merit a sensible measure of quality of the phases
+      Density modification is known to lead to highly biased (overestimated) figures of merit. CRANK2 implements a bias
+      reduction method to suppress the bias and keep the figures of merit a sensible measure of quality of the phases
       (the procedure often helps to slightly improve the quality of the maps from density modification as well).
       The β parameter is an estimator of the bias: values close to 1 estimate there is (almost) no bias and values below
       0.5 mean a very large bias. The β parameter is applied to the covariance matrix of the likelihood function that

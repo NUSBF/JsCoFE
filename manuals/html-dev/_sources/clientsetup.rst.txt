@@ -20,7 +20,7 @@ Installation should be performed in account with administrative privileges.
 
 **Desktop shortcuts**
 
-After successful installation, *local* (marked with airplane sign),
+After successful installation, *local* (marked with an airplane sign),
 *remote* (marked with WiFi sign) and *configuration* (bearing gears sign)
 CCP4 Cloud icons should appear on your desktop. You are ready to use
 CCP4 Cloud -- simply double-click on the *remote* or *local* icon.

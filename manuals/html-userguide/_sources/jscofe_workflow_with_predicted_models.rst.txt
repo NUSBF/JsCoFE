@@ -26,7 +26,7 @@ Structure prediction in CCP4 Cloud
 
 In addition to importing predicted models as files obtained from AlphaFold and RoseTTAFold servers, and fetching them from AFDB, CCP4 Cloud includes the `Structure Prediction <../html-taskref/doc.task.StructurePrediction.html>`_ task, which uses AlphaFold-2 (in `Openfold <https://colab.research.google.com/github/aqlaboratory/openfold/blob/main/notebooks/OpenFold.ipynb>`_  or `ColabFold <https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb>`_ implementation) for generating structure models from the given sequence:
 
-    .. image:: images/structure_presiction_all_tasks.png
+    .. image:: images/structure_prediction_all_tasks.png
          :scale: 50 %
          :align: center
 
@@ -34,7 +34,7 @@ The task produces coordinate data, which should be prepared (trimmed) as MR mode
 
 
 .. note::
-    `MoRDA <../html-taskref/doc.task.Morda.html>`_ and `Arcimboldo Shredder <../html-taskref/doc.task.ArcimboldoShredder.html>`_ provide functionality similar to Slice-n-Dice. They can use models directly and splits model into domains wich will used for further MR.
+    `MoRDA <../html-taskref/doc.task.Morda.html>`_ and `Arcimboldo Shredder <../html-taskref/doc.task.ArcimboldoShredder.html>`_ provide functionality similar to Slice-n-Dice. They can use models directly and splits model into domains which will used for further MR.
 
 
 

@@ -4,7 +4,7 @@ PDB-REDO: optimise, rebuild, refine and validate
 
 .. note:: Authorisation with PDB-REDO is required
 
-`read here how to autorise <../html-userguide/authorize_pdbredo.html>`_
+`read here how to authorize <../html-userguide/authorize_pdbredo.html>`_
 
 PDB-REDO can automatically optimise most of the existing structures to derive improved, up-to-date structure models based on the original experimental data that were deposited with the atomic coordinates in the PDB. PDB-REDO performs "constructive validation" by ensuring that the refinement parameters are consistent and optimal, and by proactively rebuilding the model. This process goes beyond just correcting errors in the structure, but also aims to achieve the best possible interpretation of the electron density data. PDB_REDO checks every amino-acid side chain to determine whether an alternative rotameric conformation can be found with an equal or better fit to the electron density.
 

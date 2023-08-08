@@ -2,7 +2,7 @@
 Import from PDB/AFDB 
 ====================
 
-This task allows importing coordinats, sequence and reflection files from `Protein Data Bank <https://www.rcsb.org/>`_ and `AFDB <https://alphafold.ebi.ac.uk/>`_ databases.
+This task allows importing coordinates, sequence and reflection files from `Protein Data Bank <https://www.rcsb.org/>`_ and `AFDB <https://alphafold.ebi.ac.uk/>`_ databases.
  	
 Import from PDB/AFDB task can create `Structure Revision <https://cloud.ccp4.ac.uk/manuals/html-userguide/jscofe_qna.structure_revision.html>`_ if the **Structure revision** box was checked. 
 

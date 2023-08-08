@@ -29,7 +29,7 @@ string or the `standard 3-letter code <https://www.rcsb.org/pdb/staticHelp.do?p=
 for the ligand.
 
 Ligand descriptions are essential for fitting ligands in electron density
-maps, and are required for runnung the ligand-fitting tasks (**Model Building
+maps, and are required for running the ligand-fitting tasks (**Model Building
 with Coot** or **Fit Ligand with Coot**). After successful ligand fit, these
 tasks place the ligand description in the output Structure Revision.
 

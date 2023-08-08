@@ -56,7 +56,7 @@ In order to **generate models** CCP4 Cloud offers a following tasks:
 
 #. `Structure Prediction <../html-taskref/doc.task.StructurePrediction.html>`_ task, which uses AlphaFold-2 for generating structure models from a given sequence.
 
-    .. image:: images/structure_presiction_all_tasks.png
+    .. image:: images/structure_prediction_all_tasks.png
          :scale: 50 %
          :align: center
 
@@ -109,7 +109,7 @@ Tutorials
 ---------
 
 
-We also reccomend to use `Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP <../demo_project.html?cmount=Tutorials&project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud>`_ tutorial to learn on practice how to create the ensembles for Molecular Replacement with `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ molecular viewer.
+We also recommend to use `Creating Molecular Replacement Search Ensembles with CCP4MG/MrBUMP <../demo_project.html?cmount=Tutorials&project=T2_001.%20Creating%20Molecular%20Replacement%20Search%20Ensembles%20with%20CCP4MG.ccp4cloud>`_ tutorial to learn on practice how to create the ensembles for Molecular Replacement with `CCP4mg <https://www.ccp4.ac.uk/MG/>`_ molecular viewer.
 
 
 **ACKNOWLEDGEMENTS**

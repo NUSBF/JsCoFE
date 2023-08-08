@@ -29,4 +29,4 @@ From the above list, suitable import tasks include ``File(s) Upload and Import``
          :scale: 40 %
          :align: center 
 
-PISA is fairly automatic, and does not have any input parameters to be set. The **ligand processing mode** in **Advanced paeameters** should be always set to *Auto* (default). In rare cases, when crystal contains too many ligand molecules, them may be declared *Fixed* to macromolecules in order to keep the problem computationally tractable. *Free* ligand processing mode forces ligands to be always treated as independent entities and is for expert use only.
+PISA is fairly automatic, and does not have any input parameters to be set. The **ligand processing mode** in **Advanced parameters** should be always set to *Auto* (default). In rare cases, when crystal contains too many ligand molecules, them may be declared *Fixed* to macromolecules in order to keep the problem computationally tractable. *Free* ligand processing mode forces ligands to be always treated as independent entities and is for expert use only.

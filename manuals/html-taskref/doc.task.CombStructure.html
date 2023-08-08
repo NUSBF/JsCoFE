@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -416,32 +417,32 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="comb-structure-with-coot-refmac">
-<h1 id="doc-task-combstructure--page-root">Comb Structure with Coot/Refmac<a class="headerlink" href="#doc-task-combstructure--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-combstructure--page-root">Comb Structure with Coot/Refmac<a class="headerlink" href="#doc-task-combstructure--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The task provides an access to the model building <a class="reference external" href="https://doi.org/10.1107/S0907444910007493" rel="noopener noreferrer" target="_blank">COOT</a> tools with the following cycles of refinement with <a class="reference external" href="https://doi.org/10.1107/S0907444911001314" rel="noopener noreferrer" target="_blank">Refmac</a>.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p><strong>Comb Structure with Coot/Refmac</strong> task can be run in a bare browser and doesn’t require local installation of CCP4 Cloud.</p>
+<p class="first admonition-title">Note</p>
+<p class="last"><strong>Comb Structure with Coot/Refmac</strong> task can be run in a bare browser and doesn’t require local installation of CCP4 Cloud.</p>
 </div>
 <p>The following model building stages are available:</p>
 <blockquote>
 <div><ol class="arabic">
-<li><p><a class="reference external" href="https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/web/docs/coot.html#Fill-Partial-Residues" rel="noopener noreferrer" target="_blank">Fill Partial Residues</a></p>
+<li><p class="first"><a class="reference external" href="https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/web/docs/coot.html#Fill-Partial-Residues" rel="noopener noreferrer" target="_blank">Fill Partial Residues</a></p>
 <blockquote>
 <div><p>Identifies residues with missing atoms, fills them and does a rotamer fit, and then performs real-space refinement</p>
 </div></blockquote>
 </li>
-<li><p><strong>Fit protein</strong></p>
+<li><p class="first"><strong>Fit protein</strong></p>
 <blockquote>
 <div><p>Does real-space refinement for every residue</p>
 </div></blockquote>
 </li>
-<li><p><strong>Stepped refine</strong> (2 passes are optimal)</p>
+<li><p class="first"><strong>Stepped refine</strong> (2 passes are optimal)</p>
 <blockquote>
 <div><p>Steps through the residues of a molecule and at each step it does a residue range refinement</p>
 </div></blockquote>
 </li>
-<li><p><strong>Ramachandran Plot refine</strong></p>
+<li><p class="first"><strong>Ramachandran Plot refine</strong></p>
 <blockquote>
 <div><p>Refines each residue with Ramachandran restraints</p>
 </div></blockquote>
@@ -452,7 +453,7 @@
 <p><a class="reference external" href="https://doi.org/10.1107/S0907444910007493" rel="noopener noreferrer" target="_blank">Emsley, P., Lohkamp, B., Scott, W.G., Cowtan, K. (2010) Features and development of Coot. Acta Cryst. D66: 486-501; doi:10.1107/S0907444910007493</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S0907444911001314" rel="noopener noreferrer" target="_blank">Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A. (2011)  Acta Cryst. D67: 355-367;</a></p>
 <p><a class="reference external" href="https://doi.org/10.1007/978-1-4939-7000-1_23" rel="noopener noreferrer" target="_blank">Nicholls R.A., Kovalevskiy O., Murshudov G.N. (2017). Methods Mol Biol. 1607: 565-593.</a></p>
-</section>
+
 
 
           </article>
@@ -497,7 +498,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

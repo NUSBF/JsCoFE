@@ -22,11 +22,11 @@ Options
 -------
 
 **NUCE** works completely automatically and has no options or parameters to 
-manioulate with.
+manipulate with.
 
 .. note::
    **NUCE** can built nucleotide chains in arbitrary location; in such case,
-   they should be brought in the proxinity of protein chains by suitable
+   they should be brought in the proximity of protein chains by suitable
    symmetry transformation, *e.g.,* by using **Coot**.
 
 

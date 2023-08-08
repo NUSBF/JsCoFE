@@ -51,11 +51,11 @@ python -m pytest . --cloud https://cloud.ccp4.ac.uk --login abcd --password efgh
 ```
    - To test CCP4Cloud for developers running locally, you may use following:
 ```
-ccp4-python -m pytest . --cloud http://localhost:8085/ --login devel --password devel
+ccp4-python -m pytest . --cloud http://localhost:61509/ --login devel --password devel
 ```
    - To test CCP4Cloud Destop (for instance, to test Cloud from standard CCP4 installation on Windows or Mac), you may use following. Just run CCP4Cloud Desktop first and look for correct port number instead of 12345. Only basic tests will be run from the ./basic/directory
 ```
-python -m pytest ./basic/ -v -s --cloud http://localhost:49582 --nologin True 
+python -m pytest ./basic/ -v -s --cloud http://localhost:49582/ --nologin True 
 ```
    - You can use any combination of all abovementioned parameters.
 These tests will start browser (controlled by Selenium) at your computer; 
