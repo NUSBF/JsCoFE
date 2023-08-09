@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.08.23   <--  Date of Last Modification.
+ *    09.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1567,7 +1567,7 @@ var userFilePath = getUserDataFName ( loginData );
 function _send_announcement ( subject,message,user_list,count )  {
   if (count<user_list.length)  {
 
-    //if (user_list[count].email!='eugene.krissinel@stfc.ac.uk')  {
+    //if (user_list[count].email!='ccp4_cloud@listserv.stfc.ac.uk')  {
     //  setTimeout ( function(){
     //    _send_announcement ( subject,message,user_list,count+1 );
     //  },1);

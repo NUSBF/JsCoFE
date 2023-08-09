@@ -72,7 +72,7 @@
   "Emailer" : {
     "type"            : "telnet",
     "emailFrom"       : "ccp4.cofe@ccp4.ac.uk",
-    "maintainerEmail" : "eugene.krissinel@stfc.ac.uk",
+    "maintainerEmail" : "ccp4_cloud@listserv.stfc.ac.uk",
     "host"            : "lists.fg.oisin.rc-harwell.ac.uk",
     "port"            : 25,
     "headerFrom"      : "CCP4 on-line <ccp4.cofe@ccp4.ac.uk>"

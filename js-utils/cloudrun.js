@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    28.07.22   <--  Date of Last Modification.
+ *    09.08.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -138,7 +138,7 @@ function printInstructions()  {
     '',
     '________________________________________________________',
     'Authors: E. Krissinel, A. Lebedev, O. Kovalevskyi (2021)',
-    'Contact: eugene.krissinel@stfc.ac.uk',
+    'Contact: ccp4_cloud@listserv.stfc.ac.uk',
     ''
   ];
   console.log ( msg.join('\n') );
