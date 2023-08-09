@@ -89,8 +89,8 @@ Please see extract from the log file below:
     message += '\n\nThis is automatically generated message from CCP4Cloud test system.'
 
     toaddr = 'pdbdep@ebi.ac.uk'
-    cc = ['oleg.kovalevskiy@stfc.ac.uk', 'eugene.krissinel@stfc.ac.uk', 'deposit-help@mail.wwpdb.org']
-    fromaddr = 'oleg.kovalevskiy@stfc.ac.uk'
+    cc = ['ccp4_cloud@listserv.stfc.ac.uk', 'eugene.krissinel@stfc.ac.uk', 'deposit-help@mail.wwpdb.org']
+    fromaddr = 'ccp4_cloud@listserv.stfc.ac.uk'
     message_subject = "OneDep API has failed - automated report from CCP4Cloud"
 
     messageToSend = "From: %s\r\n" % fromaddr

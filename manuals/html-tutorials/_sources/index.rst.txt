@@ -43,4 +43,4 @@ Tutorials for CCP4 Cloud were prepared by:
 
 Please send questions and suggestions to: `CCP4 Cloud Reception`_ .
 
-.. _CCP4 Cloud Reception: maria.fando@stfc.ac.uk?Subject=CCP4%20Cloud%20question
+.. _CCP4 Cloud Reception: ccp4_cloud@listserv.stfc.ac.uk?Subject=CCP4%20Cloud%20question
