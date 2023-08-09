@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -448,40 +449,40 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="pairef">
-<h1 id="doc-task-pairef--page-root">PAIREF<a class="headerlink" href="#doc-task-pairef--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-pairef--page-root">PAIREF<a class="headerlink" href="#doc-task-pairef--page-root" title="Permalink to this headline">¶</a></h1>
 <p>PAIREF is a tool for macromolecular crystallographers that performs the PAIRed REFinement protocol <a class="reference external" href="https://doi.org/10.1126%2Fscience.1218231" rel="noopener noreferrer" target="_blank">[1]</a> automatically to estimate the optimal high-resolution cutoff.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>To obtain meaningful results, the refinement setting during the paired refinement protocol should be very similar to the setting that has been used in previous refinement steps.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">To obtain meaningful results, the refinement setting during the paired refinement protocol should be very similar to the setting that has been used in previous refinement steps.</p>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The usage of unmerged data is not obligatory, however, it is strongly recommended as they are required for the CC* calculation. Various file formats are supported (.HKL from XDS, .mtz, .sca).</p>
+<p class="first admonition-title">Note</p>
+<p class="last">The usage of unmerged data is not obligatory, however, it is strongly recommended as they are required for the CC* calculation. Various file formats are supported (.HKL from XDS, .mtz, .sca).</p>
 </div>
-<section id="complete-cross-validation">
-<h2 id="complete-cross-validation">Complete cross-validation<a class="headerlink" href="#complete-cross-validation" title="Permalink to this heading">¶</a></h2>
+
+<h2 id="complete-cross-validation">Complete cross-validation<a class="headerlink" href="#complete-cross-validation" title="Permalink to this headline">¶</a></h2>
 <p>Use complete cross-validation option to run the paired refinement protocol for each individual free reflections set (<em>e.i.</em> to perform the complete cross-validation). The input structure model is modified to remove the bias of previous free reflection selection. The default setting is:</p>
 <ul class="simple">
-<li><p>the atomic coordinates are perturbed by an average of 0.25 Å,</p></li>
-<li><p>ADPs are set to their average value.</p></li>
+<li>the atomic coordinates are perturbed by an average of 0.25 Å,</li>
+<li>ADPs are set to their average value.</li>
 </ul>
 <p>The modified model is then refined at the starting resolution, the number of refinement cycles is controlled by an option <code class="code docutils literal notranslate"><span class="pre">--prerefinement-ncyc</span></code> (20 cycles by default). To disable the automatic modification, use an option <code class="code docutils literal notranslate"><span class="pre">--prerefinement-no-modification</span></code>. For further information about the input model modification, see the Modification of input structure model section.</p>
 <div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>It will require sufficient time to complete cross-validation</p>
+<p class="first admonition-title">Warning</p>
+<p class="last">It will require sufficient time to complete cross-validation</p>
 </div>
-</section>
-<section id="modification-of-input-structure-model">
-<h2 id="modification-of-input-structure-model">Modification of input structure model<a class="headerlink" href="#modification-of-input-structure-model" title="Permalink to this heading">¶</a></h2>
+
+
+<h2 id="modification-of-input-structure-model">Modification of input structure model<a class="headerlink" href="#modification-of-input-structure-model" title="Permalink to this headline">¶</a></h2>
 <p>The input structure model can be modified and refined at the starting resolution before the paired refinement. These options should be used if the structure has been refined in another software or another version than it is currently used, or the bias of previous free reflection selection is present. The number of refinement cycles at the starting resolution is being controlled by the option <code class="code docutils literal notranslate"><span class="pre">--prerefinement-ncyc</span></code> (20 cycles by default).</p>
 <p>Possible modifications of the structure model:</p>
 <ul class="simple">
-<li><p>reset ADPs their mean value: <code class="code docutils literal notranslate"><span class="pre">--prerefinement-reset-bfactor</span></code>,</p></li>
-<li><p>add a value to the ADPs: <code class="code docutils literal notranslate"><span class="pre">--prerefinement-add-to-bfactor</span> <span class="pre">ADD_TO_BFACTOR</span></code>,</p></li>
-<li><p>set ADPs to a value: <code class="code docutils literal notranslate"><span class="pre">--prerefinement-set-bfactor</span></code>,</p></li>
-<li><p>perturb the atomic coordinates by an average of a value (0.25 Å by default): <code class="code docutils literal notranslate"><span class="pre">--prerefinement-shake-sites</span> <span class="pre">[SHAKE_SITES]</span></code>,</p></li>
-<li><p>no modification <code class="code docutils literal notranslate"><span class="pre">--prerefinement-no-modification</span></code>.</p></li>
+<li>reset ADPs their mean value: <code class="code docutils literal notranslate"><span class="pre">--prerefinement-reset-bfactor</span></code>,</li>
+<li>add a value to the ADPs: <code class="code docutils literal notranslate"><span class="pre">--prerefinement-add-to-bfactor</span> <span class="pre">ADD_TO_BFACTOR</span></code>,</li>
+<li>set ADPs to a value: <code class="code docutils literal notranslate"><span class="pre">--prerefinement-set-bfactor</span></code>,</li>
+<li>perturb the atomic coordinates by an average of a value (0.25 Å by default): <code class="code docutils literal notranslate"><span class="pre">--prerefinement-shake-sites</span> <span class="pre">[SHAKE_SITES]</span></code>,</li>
+<li>no modification <code class="code docutils literal notranslate"><span class="pre">--prerefinement-no-modification</span></code>.</li>
 </ul>
 <p><strong>Useful links</strong></p>
 <p><a class="reference external" href="https://pairef.fjfi.cvut.cz/docs/index.html" rel="noopener noreferrer" target="_blank">PAIREF - Documentation</a></p>
@@ -492,8 +493,8 @@
 <p><a class="reference external" href="https://doi.org/10.1126%2Fscience.1218231" rel="noopener noreferrer" target="_blank">P.A. Karplus, K. Diederichs: “Linking crystallographic model and data quality.” (2012) Science, 336(6084):1030-3.</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S2052252520005916" rel="noopener noreferrer" target="_blank">M. Maly, K. Diederichs, J. Dohnalek, P. Kolenko: Paired refinement under the control of PAIREF (2020) IUCrJ 7, 681-692</a></p>
 <p><a class="reference external" href="https://doi.org/10.1107/S2053230X21006129" rel="noopener noreferrer" target="_blank">M. Maly, K. Diederichs, J. Dohnalek, P. Kolenko: PAIREF: paired refinement also for Phenix users (2021) Acta Cryst F77, 226-229</a></p>
-</section>
-</section>
+
+
 
 
           </article>
@@ -538,7 +539,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

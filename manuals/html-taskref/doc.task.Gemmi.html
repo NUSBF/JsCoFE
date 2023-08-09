@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -374,8 +375,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="gemmi">
-<h1 id="doc-task-gemmi--page-root">Gemmi<a class="headerlink" href="#doc-task-gemmi--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="doc-task-gemmi--page-root">Gemmi<a class="headerlink" href="#doc-task-gemmi--page-root" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://gemmi.readthedocs.io/en/latest/" rel="noopener noreferrer" target="_blank">Gemmi</a> is a C++/Python library for manipulating coordinate files in <em>PDB</em> and <em>mmCIF</em> formats, parsing raw <em>mmCIF</em> and <em>CIF</em> -formatted files and working with reflection data in <em>mmCIF</em>. <em>Gemmi</em> was written by Marcin Wojdyr and is a joint product of Global Phasing Ltd and CCP4.</p>
 <p>Gemmi task in CCP4 Cloud exposes python terminal to user for performing very custom operations on coordinate data, which cannot be done using other tools in the system. In most cases, one should not need this level of operating, and, therefore, Gemmi task represents an advanced option for experts.</p>
 <p>Gemmi task accepts a list of coordinate-related objects: structural revision, MR ensembles and models, XYZ data, and reads them into Gemmi documents referenced by python variables <code class="docutils literal notranslate"><span class="pre">stN</span></code>, where <code class="docutils literal notranslate"><span class="pre">N=1,2,...</span></code> is the position of the referenced object in the list. The python script, provided by user, may perform any Gemmi functions on the objects, and should place the final result in document <code class="docutils literal notranslate"><span class="pre">st1</span></code>.</p>
@@ -387,7 +388,7 @@
 <p>After execution, the task will produce a copy of input object, where all solvent and ligand molecules are removed.</p>
 <p>Principles of Gemmi library and the list of available functions can be found <a class="reference external" href="https://gemmi.readthedocs.io/en/latest/" rel="noopener noreferrer" target="_blank">here</a>.</p>
 <p>Due to security implications, this task can be run only on user’s machine via CCP4 Cloud Client.</p>
-</section>
+
 
 
           </article>
@@ -432,7 +433,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
