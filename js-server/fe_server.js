@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.03.23   <--  Date of Last Modification.
+ *    09.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,7 +39,7 @@ const log = require('./server.log').newLog(21);
 conf.setEmailerConfig ( 'telnet'          );
 var emailer = require('./js-server/server.emailer');
 console.log ( ' ... send e-mail with: ' + conf.getEmailerConfig().type );
-emailer.send ( 'eugene.krissinel@stfc.ac.uk','Test message','Test message' );
+emailer.send ( 'ccp4_cloud@listserv.stfc.ac.uk','Test message','Test message' );
 */
 
 // ==========================================================================
