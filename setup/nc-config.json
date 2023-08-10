@@ -1,0 +1,51 @@
+{
+
+  "NumberCrunchers" : [
+    {
+      "serNo"            : 0,
+      "name"             : "nc-1",
+      "in_use"           : true,
+      "protocol"         : "http",
+      "host"             : "localhost",
+      "port"             : 8083,
+      "externalURL"      : "http://your.nc1.url/ccp4cloud-nc1",
+      "exclusive"        : true,
+      "stoppable"        : false,
+      "fsmount"          : null,
+      "capacity"         : 16,
+      "max_nproc"        : 4,
+      "exclude_tasks"    : [
+          "TaskAmple"
+      ],
+      "fasttrack"        : 1,
+      "storage"          : "/path/to/NC1/",
+      "jobs_safe"        : {
+         "path"     : "/path/to/job_safe",
+         "capacity" : 10
+      },
+      "exeType"          : "SHELL",
+      "__exeType"          : "SGE",
+      "__exeData"          : ["-cwd","-V","-b","y","-q","all.q","-notify"],
+      "jobCheckPeriod"   : 2000,
+      "sendDataWaitTime" : 1000,
+      "maxSendTrials"    : 10,
+      "jobRemoveTimeout" : 10000,
+      "maxRestarts"      : 100,
+      "fileCapSize"      : 500000,
+      "logflow" : {
+        "chunk_length" : 10000,
+        "log_file"     : "/path/to/NC1/logs/node_nc"
+      }
+    }
+  ],
+
+  "Emailer" : {
+    "type"            : "telnet",
+    "emailFrom"       : "ccp4.cofe@ccp4.ac.uk",
+    "maintainerEmail" : "andrey.lebedev@stfc.ac.uk",
+    "host"            : "lists.fg.oisin.rc-harwell.ac.uk",
+    "port"            : 25,
+    "headerFrom"      : "CCP4 on-line <ccp4.cofe@ccp4.ac.uk>"
+  }
+
+}
