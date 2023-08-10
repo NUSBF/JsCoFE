@@ -1,17 +1,15 @@
 #!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    26.05.21   <--  Date of Last Modification.
+#    10.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  APPLICATION CALL ROUTINES
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
