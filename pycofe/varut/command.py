@@ -134,6 +134,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
 
     except Exception as e:
         rc.msg = str(e)
+        file_stderr.write ( " ***** " + rc.msg )
 
     if file_stdin:
         file_stdin.close()
