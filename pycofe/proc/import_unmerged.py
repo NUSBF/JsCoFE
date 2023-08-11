@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    08.06.22   <--  Date of Last Modification.
+#    11.06.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -187,7 +185,7 @@ def run ( body,        # body is reference to the main Import class
             body.file_stdin.close()
 
             try:
-                os.remove(pointless_xml())
+                os.remove(pointless_xml())  #  needed for Windows
             except OSError:
                 pass
             rc = command.call ( "pointless",[],"./",pointless_script(),
@@ -250,7 +248,7 @@ def run ( body,        # body is reference to the main Import class
                     body.file_stdin.close()
 
                     try:
-                        os.remove(pointless_xml())
+                        os.remove(pointless_xml())  #  needed for Windows
                     except OSError:
                         pass
 

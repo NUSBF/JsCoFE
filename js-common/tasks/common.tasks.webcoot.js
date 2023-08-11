@@ -180,9 +180,15 @@ if (!__template)  {
           inputFiles.push ({
             type : 'ligand',
             args : [ ligURL ]
+            // args : [ ligands[i].code,ligURL,true ]
           });
         }
     }
+
+    // const inputFiles  = [
+    //    { "type": "ligand", "args": ["00Z", "./uri/to/file/dict.cif", true] },
+    // ];
+
 
     if (istruct)  {
       if (file_key.lib in istruct.files)  {
