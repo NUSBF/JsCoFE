@@ -186,6 +186,10 @@ def run ( body,        # body is reference to the main Import class
             )
             body.file_stdin.close()
 
+            try:
+                os.remove(pointless_xml())
+            except OSError:
+                pass
             rc = command.call ( "pointless",[],"./",pointless_script(),
                                 body.file_stdout,body.file_stderr,log_parser )
             body.unsetLogParser()
@@ -244,6 +248,11 @@ def run ( body,        # body is reference to the main Import class
                         body.file_stdin.write ( "RUN 1 FILE 1 BATCH " + str(first) + " to " + str(last) + "\n" )
                     body.file_stdin.write ( "END\n" )
                     body.file_stdin.close()
+
+                    try:
+                        os.remove(pointless_xml())
+                    except OSError:
+                        pass
 
                     rc = command.call ( "pointless",[],"./",pointless_script(),
                                         body.file_stdout,body.file_stderr,None )

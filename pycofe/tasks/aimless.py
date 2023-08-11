@@ -171,6 +171,10 @@ class Aimless(basic.TaskDriver):
             panel_id = self.pointless_report() + "_" + str(n)
             self.setGenericLogParser ( panel_id,True )
 
+            try:
+                os.remove(pointless_xml())
+            except OSError:
+                pass
             self.runApp ( "pointless",[],logType="Main" )
             n += 1
 
