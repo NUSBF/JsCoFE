@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    15.06.21   <--  Date of Last Modification.
+#    11.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2023
 #
 # ============================================================================
 #
@@ -172,7 +172,7 @@ class Aimless(basic.TaskDriver):
             self.setGenericLogParser ( panel_id,True )
 
             try:
-                os.remove(pointless_xml())
+                os.remove ( pointless_xml() )   #  needed for Windows
             except OSError:
                 pass
             self.runApp ( "pointless",[],logType="Main" )

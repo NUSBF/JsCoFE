@@ -83,15 +83,15 @@ export namespace moorhen {
     }
     
     interface Molecule {
+        removeRepresentation(representationId: string): void;
+        addRepresentation(style: string, cid: string, isCustom?: boolean, colour?: moorhen.ColourRule[]): Promise<void>;
         getNeighborResiduesCids(selectionCid: string, radius: number, minDist: number, maxDist: number): Promise<string[]>;
-        drawWithStyleFromMesh(style: string, meshObjects: any[], newBufferAtoms?: AtomInfo[]): Promise<void>;
+        drawWithStyleFromMesh(style: string, meshObjects: any[], cid?: string): Promise<void>;
         updateWithMovedAtoms(movedResidues: AtomInfo[][]): Promise<void>;
         transformedCachedAtomsAsMovedAtoms(selectionCid?: string): AtomInfo[][];
-        drawWithStyleFromAtoms(style: string): Promise<void>;
-        copyFragmentUsingCid(cid: string, backgroundColor: [number, number, number, number], defaultBondSmoothness: number, doRecentre?: boolean): Promise<Molecule>;
+        copyFragmentUsingCid(cid: string, backgroundColor: [number, number, number, number], defaultBondSmoothness: number, doRecentre?: boolean, style?: string): Promise<Molecule>;
         hideCid(cid: string): Promise<void>;
         unhideAll(): Promise<void>;
-        drawSelection(cid: string): Promise<void>;
         drawUnitCell(): void;
         gemmiAtomsForCid: (cid: string) => Promise<AtomInfo[]>;
         mergeMolecules(otherMolecules: Molecule[], doHide?: boolean): Promise<void>;
@@ -108,32 +108,37 @@ export namespace moorhen {
         refineResiduesUsingAtomCid(cid: string, mode: string, ncyc: number): Promise<WorkerResponse>;
         redo(): Promise<void>;
         undo(): Promise<void>;
-        show(style: string): Promise<void>;
+        show(style: string, cid?: string): void;
         setSymmetryRadius(radius: number): Promise<void>;
         drawSymmetry: (fetchSymMatrix?: boolean) => Promise<void>;
         getUnitCellParams():  { a: number; b: number; c: number; alpha: number; beta: number; gamma: number; };
         replaceModelWithFile(fileUrl: string, molName: string): Promise<void>
         delete(): Promise<WorkerResponse> 
-        setColourRules(ruleList: ColourRule[], redraw?: boolean): Promise<void>;
-        fetchCurrentColourRules(): Promise<void>;
+        fetchDefaultColourRules(): Promise<void>;
         fetchIfDirtyAndDraw(arg0: string): Promise<void>;
-        drawGemmiAtomPairs: (gemmiAtomPairs: any[], style: string,  colour: number[], labelled?: boolean, clearBuffers?: boolean) => void;
-        drawEnvironment: (chainID: string, resNo: number,  altLoc: string, labelled?: boolean) => Promise<void>;
+        drawEnvironment: (cid: string, labelled?: boolean) => Promise<void>;
         centreOn: (selectionCid?: string, animate?: boolean) => Promise<void>;
         drawHover: (cid: string) => Promise<void>;
         clearBuffersOfStyle: (style: string) => void;
         loadToCootFromURL: (inputFile: string, molName: string) => Promise<_moorhen.Molecule>;
+        applyTransform: () => Promise<void>;
+        getAtoms(format?: string): Promise<WorkerResponse>;
+        hide: (style: string, cid?: string) => void;
+        redraw: () => Promise<void>;
+        setAtomsDirty: (newVal: boolean) => void;
+        hasVisibleBuffers: (excludeBuffers?: string[]) => boolean;
+        centreAndAlignViewOn(selectionCid: string, animate?: boolean): Promise<void>;
+        buffersInclude: (bufferIn: { id: string; }) => boolean;
         type: string;
+        excludedCids: string[];
         commandCentre: React.RefObject<CommandCentre>;
         glRef: React.RefObject<webGL.MGWebGL>;
-        HBondsAssigned: boolean;
         atomsDirty: boolean;
         isVisible: boolean;
         name: string;
         molNo: number;
         gemmiStructure: gemmi.Structure;
         sequences: Sequence[];
-        colourRules: ColourRule[];
         ligands: LigandInfo[];
         ligandDicts: {[comp_id: string]: string};
         connectedToMaps: number[];
@@ -147,38 +152,48 @@ export namespace moorhen {
             boxRadius: number;
             gridScale: number;
         };
+        representations: MoleculeRepresentation[];
         cootBondsOptions: cootBondOptions;
-        displayObjects: {
-            CBs: DisplayObject[];
-            CAs: DisplayObject[];
-            CRs: DisplayObject[];
-            ligands: DisplayObject[];
-            gaussian: DisplayObject[];
-            MolecularSurface: DisplayObject[];
-            VdWSurface: DisplayObject[];
-            DishyBases: DisplayObject[];
-            VdwSpheres: DisplayObject[];
-            rama: DisplayObject[];
-            rotamer: DisplayObject[];
-            CDs: DisplayObject[];
-            allHBonds: DisplayObject[];
-            hover: DisplayObject[];
-            selection: DisplayObject[];
-            originNeighbours: DisplayObject[];
-            originNeighboursHBond: DisplayObject[];
-            originNeighboursBump: DisplayObject[];
-        };
         displayObjectsTransformation: { origin: [number, number, number], quat: any, centre: [number, number, number] }
         uniqueId: string;
+        defaultColourRules: ColourRule[];
         monomerLibraryPath: string;
-        applyTransform: () => Promise<void>;
-        getAtoms(format?: string): Promise<WorkerResponse>;
-        hide: (style: string) => void;
-        redraw: () => Promise<void>;
-        setAtomsDirty: (newVal: boolean) => void;
-        hasVisibleBuffers: (excludeBuffers?: string[]) => boolean;
-        centreAndAlignViewOn(selectionCid: string, animate?: boolean): Promise<void>;
-        buffersInclude: (bufferIn: { id: string; }) => boolean;
+        hoverRepresentation: moorhen.MoleculeRepresentation;
+        unitCellRepresentation: moorhen.MoleculeRepresentation;
+        environmentRepresentation: moorhen.MoleculeRepresentation;
+    }
+
+    type RepresentationStyles = 'VdwSpheres' | 'ligands' | 'CAs' | 'CBs' | 'CDs' | 'gaussian' | 'allHBonds' | 'rama' | 
+    'rotamer' | 'CRs' | 'MolecularSurface' | 'DishyBases' | 'VdWSurface' | 'Calpha' | 'unitCell' | 'hover' | 'environment' | 
+    'ligand_environment' | 'contact_dots' | 'chemical_features' | 'ligand_validation'
+
+    interface MoleculeRepresentation {
+        setUseDefaultColourRules(arg0: boolean): void;
+        setColourRules(ruleList: ColourRule[]): void;
+        buildBuffers(arg0: DisplayObject[]): Promise<void>;
+        setBuffers(meshObjects: DisplayObject[]): void;
+        drawSymmetry(): void
+        deleteBuffers(): void;
+        draw(): Promise<void>;
+        redraw(): Promise<void>;
+        setParentMolecule(arg0: Molecule): void;
+        show(): void;
+        hide(): void;
+        setAtomBuffers(arg0: AtomInfo[]): void;
+        useDefaultColourRules: boolean;
+        uniqueId: string;
+        style: string;
+        cid: string;
+        visible: boolean;
+        buffers: DisplayObject[];
+        commandCentre: React.RefObject<CommandCentre>;
+        glRef: React.RefObject<webGL.MGWebGL>;
+        parentMolecule: Molecule;
+        colourRules: ColourRule[];
+        styleHasAtomBuffers: boolean;
+        styleHasSymmetry: boolean;
+        isCustom: boolean;
+        styleHasColourRules: boolean;
     }
     
     type HoveredAtom = {
@@ -324,7 +339,7 @@ export namespace moorhen {
         name: string;
         molNo: number;
         pdbData: string;
-        displayObjectsKeys: string[];
+        representations: {cid: string, style: string}[];
         cootBondsOptions: cootBondOptions;
         connectedToMaps: number[];
     }
@@ -347,6 +362,7 @@ export namespace moorhen {
     }
     
     type backupSession = {
+        version: string;
         includesAdditionalMapData: boolean;
         moleculeData: moleculeSessionData[];
         mapData: mapDataSession[];
@@ -647,8 +663,6 @@ export namespace moorhen {
         setShowToast: React.Dispatch<React.SetStateAction<boolean>>;
         windowWidth: number;
         windowHeight: number;
-        showColourRulesToast: boolean;
-        setShowColourRulesToast: React.Dispatch<React.SetStateAction<boolean>>;
         availableFonts: string[];
     }
     
@@ -697,8 +711,6 @@ export namespace moorhen {
         setShowToast: React.Dispatch<React.SetStateAction<boolean>>;
         toastContent: null | JSX.Element;
         setToastContent: React.Dispatch<React.SetStateAction<JSX.Element>>;
-        showColourRulesToast: boolean;
-        setShowColourRulesToast: React.Dispatch<React.SetStateAction<boolean>>;
         availableFonts: string[];
         setAvailableFonts: React.Dispatch<React.SetStateAction<string[]>>
     }
