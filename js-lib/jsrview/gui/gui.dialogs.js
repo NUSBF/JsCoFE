@@ -729,7 +729,7 @@ function WebAppBox ( title )  {
   });
 
   this.addWidget ( this.iframe );
-  this.fid = setCommunicationIFrame ( this.iframe );
+  this.fid = setCommunicatingIFrame ( this,this.iframe );
 
   var size;
   if (window.parent.__any_mobile_device)
@@ -817,7 +817,7 @@ WebAppBox.prototype.launch = function() {
       $(self.element).dialog("destroy");
       if (self.element.parentNode)
         self.element.parentNode.removeChild ( self.element );
-      removeCommunicationIFrame ( self.fid );
+      removeCommunicatingIFrame ( self.fid );
     },10);
   });
 

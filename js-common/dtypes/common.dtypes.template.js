@@ -263,3 +263,9 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   */
 
 }
+
+function getRefKeys ( data_obj,taskType )  {
+  if (('refkeys' in data_obj) && (taskType in data_obj.refkeys))
+    return data_obj.refkeys[taskType];
+  return null;
+}

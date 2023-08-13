@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    03.05.23   <--  Date of Last Modification.
+//    13.08.23   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -806,15 +806,16 @@ function startWebCoot ( title,xyz_uri,mtz_uri,legend_uri,mode,update_interval,op
     no_data_msg = options.no_data_msg;
 
   let params = {
-    mode        : mode,
-    inputFiles  : inputFiles,
-    interval    : update_interval,
-    no_data_msg : no_data_msg,
-    preferences : __user_settings.webcoot_pref,
-    sf_meta     : { project : options.project,
-                    id      : options.id
-                  },
-    wdirURL     : ''
+    mode         : mode,
+    inputFiles   : inputFiles,
+    interval     : update_interval,
+    no_data_msg  : no_data_msg,
+    preferences  : __user_settings.webcoot_pref,
+    viewSettings : null,
+    sf_meta      : { project : options.project,
+                     id      : options.id
+                   },
+    wdirURL      : ''
   };
 
 

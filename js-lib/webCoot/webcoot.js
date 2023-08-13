@@ -20,13 +20,15 @@
 
 'use strict';
 
-let rootId        = 'root';
-let sf_meta       = null;
-let urlPrefix     = '.';
+let rootId         = 'root';
+let sf_meta        = null;
+let urlPrefix      = '.';
 
-let BACKUPS       = [];
-let backupsFPath  = 'backups/backups.json';
-let backupFPrefix = 'backups/backup_';
+let BACKUPS        = [];
+let backupsFPath   = 'backups/backups.json';
+let backupFPrefix  = 'backups/backup_';
+
+let moorhenWrapper = null;
 
 function saveBackupList()  {
 let bcopy = [];
@@ -37,22 +39,42 @@ let bcopy = [];
     bcopy.push ( obj );
   }
   window.parent.postMessage ({
-    'command' : 'saveFile',
-    'fpath'   : backupsFPath,
-    'data'    : JSON.stringify(bcopy),
+    'command' : 'saveFiles',
+    'files'   : [{ 'fpath'   : backupsFPath,
+                   'data'    : JSON.stringify(bcopy)
+                }],
     'confirm' : false,
     'meta'    : sf_meta
   }, window.location );
 }
 
-const exportToCloudCallback = (molName,molData) => {
-  window.parent.postMessage ({
-    'command' : 'saveFile',
-    'fpath'   : molName + '.pdb',
-    'data'    : molData,
-    'confirm' : 'model',
-    'meta'    : sf_meta
-  }, window.location );
+// const exportToCloudCallback = (molName,molData) => {
+//   window.parent.postMessage ({
+//     'command' : 'saveFile',
+//     'fpath'   : molName + '.pdb',
+//     'data'    : molData,
+//     'confirm' : 'model',
+//     'meta'    : sf_meta
+//   }, window.location );
+// }
+
+const exitCallback = (viewSettings,molData) => {
+// moldata = [{molName: string, pdbData: string}]
+  var edata = {
+      'command' : 'saveFiles',
+      'files'   : [{ 'fpath'  : 'view_settings.json',
+                     'data'   : JSON.stringify(viewSettings),
+                     'report' : false
+                  }],
+      'confirm' : 'model',
+      'meta'    : sf_meta
+  };
+  for (let i=0;i<molData.length;i++)
+    edata.files.push ({
+      'fpath' : molData[i].molName + '.pdb',
+      'data'  : molData[i].pdbData
+    });
+  window.parent.postMessage ( edata,window.location );
 }
 
 const savePreferencesCallback = (preferences) => {
@@ -66,9 +88,10 @@ const saveBackupCallback = (obj) => {
   return new Promise((resolve, reject) => {
     if (obj.data.length>100)
       window.parent.postMessage ({
-        'command' : 'saveFile',
-        'fpath'   : backupFPrefix + obj.serNo,
-        'data'    : obj.data,
+        'command' : 'saveFiles',
+        'files'   : [{ 'fpath'   : backupFPrefix + obj.serNo,
+                       'data'    : obj.data,
+                    }],
         'confirm' : obj.type,
         'meta'    : sf_meta
       }, window.location );
@@ -128,10 +151,27 @@ let oReq = new XMLHttpRequest();
 
 }
 
+function onWindowMessage ( event )  {
+var edata = event.data;
+  if (edata.command=='call_exit')  {
+    if (moorhenWrapper)
+      moorhenWrapper.exit();
+  } else
+    alert ( ' signals back ' + JSON.stringify(edata) );
+}
+
+if (window.addEventListener) {
+  window.addEventListener ( 'message', onWindowMessage, false );
+} else if (window.attachEvent) {
+  window.attachEvent ( 'onmessage', onWindowMessage, false );
+} else 
+  alert ( 'No Window messaging in WebCoot' );
+
+
 
 function launchApp ( params )  {
 
-  let moorhenWrapper = new moorhen.MoorhenWrapper ( urlPrefix );
+  moorhenWrapper = new moorhen.MoorhenWrapper ( urlPrefix );
 
   moorhenWrapper.setRootId     ( rootId     );
   moorhenWrapper.setInputFiles ( params.inputFiles );
@@ -140,17 +180,21 @@ function launchApp ( params )  {
   moorhenWrapper.addOnChangePreferencesListener ( savePreferencesCallback );
 
   switch (params.mode)  {
-    case "view-update" : moorhenWrapper.setWorkMode       ( 'view'   );
-                         moorhenWrapper.setUpdateInterval ( params.interval );
+    case "view-update"  : moorhenWrapper.setWorkMode       ( 'view'   );
+                          moorhenWrapper.setUpdateInterval ( params.interval );
                         break;
-    case "view"        : moorhenWrapper.setWorkMode       ( 'view'   );
+    case "view"         : moorhenWrapper.setWorkMode       ( 'view'   );
                         break;
-    default            : moorhenWrapper.addOnExportListener       ( exportToCloudCallback );
-                         moorhenWrapper.setBackupSaveListener     ( saveBackupCallback    );
-                         moorhenWrapper.setBackupListLoadListener ( loadBackupList        );                          //  moorhenWrapper.start()
-                         moorhenWrapper.setBackupLoadListener     ( loadBackupCallback    );
-                         moorhenWrapper.setRemoveBackupListener   ( removeBackupCallback  );
+    default             : //moorhenWrapper.addOnExportListener       ( exportToCloudCallback );
+                          moorhenWrapper.addOnExitListener         ( exitCallback          );
+                          moorhenWrapper.setBackupSaveListener     ( saveBackupCallback    );
+                          moorhenWrapper.setBackupListLoadListener ( loadBackupList        );                          //  moorhenWrapper.start()
+                          moorhenWrapper.setBackupLoadListener     ( loadBackupCallback    );
+                          moorhenWrapper.setRemoveBackupListener   ( removeBackupCallback  );
   }
+
+  if (('viewSettings' in params) && params.viewSettings)
+    moorhenWrapper.setViewSettings ( params.viewSettings );
 
   moorhenWrapper.start();
 

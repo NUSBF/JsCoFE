@@ -739,7 +739,8 @@ function WebAppBox ( title )  {
   //   $ = window.$;
   // }
 
-  this.onClose_func = null;
+  this.onClose_func        = null;
+  this.onToolbarClose_func = null;
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title',title );
@@ -757,7 +758,7 @@ function WebAppBox ( title )  {
   });
 
   this.addWidget ( this.iframe );
-  this.fid = setCommunicationIFrame ( this.iframe );
+  this.fid = setCommunicatingIFrame ( this,this.iframe );
 
   var size;
   if (window.parent.__any_mobile_device)
@@ -784,11 +785,28 @@ function WebAppBox ( title )  {
     title         : title,
     effect        : 'fade',
     headerVisible : false,
-    create        : function() { self.iframe.getDocument().focus(); },
+    create        : function() { 
+                      self.iframe.getDocument().focus(); 
+                      // $(this).closest('div.ui-dialog')
+                      //        .find('.ui-dialog-titlebar-close')
+                      //        .click(function(e) {
+                      //          alert('hi');
+                      //          e.preventDefault();
+                      //          return true;
+                      //        });
+                    },
     focus         : function() { self.iframe.getDocument().focus(); },
     open          : function() { self.iframe.getDocument().focus(); },
     dragStop      : function() { self.iframe.getDocument().focus(); },
     resizeStop    : function() { self.iframe.getDocument().focus(); },
+    beforeClose   : function (e, ui)  {
+      if ($(e.currentTarget).hasClass('ui-dialog-titlebar-close'))  {
+        if (self.onToolbarClose_func && self.onToolbarClose_func())  {
+          // alert ( ' prevented' );
+          e.preventDefault();
+        }
+      }
+    },
     buttons       : {}
   };
 
@@ -826,6 +844,10 @@ WebAppBox.prototype.setOnCloseFunction = function ( onClose_func )  {
   this.onClose_func = onClose_func;
 }
 
+WebAppBox.prototype.setOnToolbarCloseFunction = function ( onToolbarClose_func )  {
+  this.onToolbarClose_func = onToolbarClose_func;
+}
+
 WebAppBox.prototype.launch = function() {
 
   $(this.element).dialog ( this.options );
@@ -858,7 +880,7 @@ WebAppBox.prototype.launch = function() {
       $(self.element).dialog("destroy");
       if (self.element.parentNode)
         self.element.parentNode.removeChild ( self.element );
-      removeCommunicationIFrame ( self.fid );
+      removeCommunicatingIFrame ( self.fid );
     },10);
   });
 
@@ -866,4 +888,8 @@ WebAppBox.prototype.launch = function() {
     self.iframe.getDocument().focus();
   });
 
+}
+
+WebAppBox.prototype.close = function()  {
+  $(this.element).dialog ( 'close' );
 }

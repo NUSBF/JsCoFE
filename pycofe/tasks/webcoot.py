@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    13.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,6 +27,7 @@
 
 #  python native imports
 import os
+import json
 # import sys
 # import shutil
 
@@ -126,6 +127,13 @@ class WebCoot(basic.TaskDriver):
         else:
             self.putTitle ( "Output Results" )
 
+        refkeys = None
+        try:
+            with open("view_settings.json") as file:
+                refkeys = json.load(file)
+        except:
+            pass
+
         outputSerialNo = 0
         for fout in pdbout:
 
@@ -146,7 +154,8 @@ class WebCoot(basic.TaskDriver):
                                     map_labels=istruct.mapLabels,
                                     refiner=istruct.refiner )
             if ostruct:
-                ostruct.copy_refkeys_parameters ( istruct )
+                ostruct.copy_refkeys_parameters  ( istruct )
+                ostruct.store_refkeys_parameters ( self.task._type,self.task.id,refkeys )
                 ostruct.copyAssociations   ( istruct )
                 ostruct.addDataAssociation ( istruct.dataId )  # ???
                 ostruct.copySubtype        ( istruct )

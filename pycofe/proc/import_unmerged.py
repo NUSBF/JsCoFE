@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    11.06.22   <--  Date of Last Modification.
+#    12.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  UNMERGED DATA IMPORT CLASS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -185,7 +185,7 @@ def run ( body,        # body is reference to the main Import class
             body.file_stdin.close()
 
             try:
-                os.remove(pointless_xml())  #  needed for Windows
+                os.remove ( pointless_xml() )  #  needed for Windows
             except OSError:
                 pass
             rc = command.call ( "pointless",[],"./",pointless_script(),
@@ -248,7 +248,7 @@ def run ( body,        # body is reference to the main Import class
                     body.file_stdin.close()
 
                     try:
-                        os.remove(pointless_xml())  #  needed for Windows
+                        os.remove ( pointless_xml() )  #  needed for Windows
                     except OSError:
                         pass
 

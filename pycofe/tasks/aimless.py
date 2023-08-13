@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    11.08.23   <--  Date of Last Modification.
+#    12.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,8 +26,8 @@
 
 #  python native imports
 import os
-import sys
-import shutil
+# import sys
+# import shutil
 
 #  ccp4-python imports
 import pyrvapi
