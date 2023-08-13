@@ -1,10 +1,10 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,9 +51,8 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -321,45 +320,42 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  
-<h1 id="doc-task-import1--page-root">Data Import<a class="headerlink" href="#doc-task-import1--page-root" title="Permalink to this headline">¶</a></h1>
+  <section id="data-import">
+<h1 id="doc-task-import1--page-root">Data Import<a class="headerlink" href="#doc-task-import1--page-root" title="Permalink to this heading">¶</a></h1>
 <p>Data import is almost always the first task in any Project (only the <strong>Make Ligand</strong> task may be run without any data imported). There may be as many data imports in projects as necessary, however, it is usually a good idea to import all available experimental data, sequences and molecular coordinates in the very beginning.</p>
 <p><em>From user’s perspective, CCP4 Cloud operates with data objects, rather than raw files. There are only 2 points where a user deals with actual files: (1) importing and (2) exporting data to/from CCP4 Cloud Project. Data objects correspond to entities that are passed from task to task as a whole. Therefore, for all tasks, except Data Import, require choice of data objects, rather than raw files. This is done in form of drop-down selectors, pre-filled with data objects, relevant to particular task and input field only</em></p>
-
-<h2 id="ccp4-cloud-data-management">CCP4 Cloud Data Management<a class="headerlink" href="#ccp4-cloud-data-management" title="Permalink to this headline">¶</a></h2>
-
-<h3 id="data-object-naming">Data Object Naming<a class="headerlink" href="#data-object-naming" title="Permalink to this headline">¶</a></h3>
+<section id="ccp4-cloud-data-management">
+<h2 id="ccp4-cloud-data-management">CCP4 Cloud Data Management<a class="headerlink" href="#ccp4-cloud-data-management" title="Permalink to this heading">¶</a></h2>
+<section id="data-object-naming">
+<h3 id="data-object-naming">Data Object Naming<a class="headerlink" href="#data-object-naming" title="Permalink to this heading">¶</a></h3>
 <blockquote>
-<div><strong>From user’s perspective, CCP4 Cloud operates with data objects, rather than raw files. There are only 2 points where a user deals with actual files: (1) importing and (2) exporting data to/from CCP4 Cloud Project. Data objects correspond to entities that are passed from task to task as a whole.</strong></div></blockquote>
+<div><p><strong>From user’s perspective, CCP4 Cloud operates with data objects, rather than raw files. There are only 2 points where a user deals with actual files: (1) importing and (2) exporting data to/from CCP4 Cloud Project. Data objects correspond to entities that are passed from task to task as a whole.</strong></p>
+</div></blockquote>
 <p>All data objects are named according to the following template:
 <code class="docutils literal notranslate"><span class="pre">[NNNN-MM]</span> <span class="pre">name</span> <span class="pre">/type/subtype(s)</span></code></p>
 <p>where:</p>
-<table border="1">
-<colgroup>
-<col width="6%"/>
-<col width="94%"/>
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td>NNNN</td>
-<td>Serial number of job, which produced the data object</td>
+<table>
+<tbody>
+<tr class="row-odd"><td><p>NNNN</p></td>
+<td><p>Serial number of job, which produced the data object</p></td>
 </tr>
-<tr class="row-even"><td>MM</td>
-<td>Serial number of data object in the job, which produced it</td>
+<tr class="row-even"><td><p>MM</p></td>
+<td><p>Serial number of data object in the job, which produced it</p></td>
 </tr>
-<tr class="row-odd"><td>name</td>
-<td>Given name, which can be derived either from the name of related file imported to the Project, or from program or task name that created the respective data, or from the output id of the Job Dialog</td>
+<tr class="row-odd"><td><p>name</p></td>
+<td><p>Given name, which can be derived either from the name of related file imported to the Project, or from program or task name that created the respective data, or from the output id of the Job Dialog</p></td>
 </tr>
-<tr class="row-even"><td>type</td>
-<td>Type of data object (see above)</td>
+<tr class="row-even"><td><p>type</p></td>
+<td><p>Type of data object (see above)</p></td>
 </tr>
-<tr class="row-odd"><td>subtype(s)</td>
-<td>Optional subtypes (see above)</td>
+<tr class="row-odd"><td><p>subtype(s)</p></td>
+<td><p>Optional subtypes (see above)</p></td>
 </tr>
 </tbody>
 </table>
-
-
-<h3 id="data-object-visibility">Data Object Visibility<a class="headerlink" href="#data-object-visibility" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="data-object-visibility">
+<h3 id="data-object-visibility">Data Object Visibility<a class="headerlink" href="#data-object-visibility" title="Permalink to this heading">¶</a></h3>
 <p>By default, each new job has access to data objects, imported or generated by all its parent jobs. For example:</p>
 <blockquote>
 <div><a class="reference internal image-reference" href="_images/doc.task.import1.png"><img alt="_images/doc.task.import1.png" src="_images/doc.task.import1.png" style="width: 529.0px; height: 284.0px;"/></a>
@@ -370,122 +366,134 @@ If you may need to use data from different branches in a subsequent job. For exa
 <div><a class="reference internal image-reference" href="_images/doc.task.import2.png"><img alt="_images/doc.task.import2.png" src="_images/doc.task.import2.png" style="width: 536.0px; height: 455.0px;"/></a>
 </div></blockquote>
 <p>Choosing “Add job” from the dropdown menu will bring up the Task List Dialog, from which the “Structural comparison with Gesamt” task can be chosen. The new job will be added as a child to the right-clicked job ([0008] in the above Figure) and will see only data produced in jobs selected.</p>
-
-
-<h3 id="data-objects-and-project-branching">Data Objects and Project Branching<a class="headerlink" href="#data-objects-and-project-branching" title="Permalink to this headline">¶</a></h3>
+</section>
+<section id="data-objects-and-project-branching">
+<h3 id="data-objects-and-project-branching">Data Objects and Project Branching<a class="headerlink" href="#data-objects-and-project-branching" title="Permalink to this heading">¶</a></h3>
 <p>Limitation of data visibility along branches of the job tree helps to keep the content of input data selectors in job dialogs as concise and relevant as possible. For new jobs, CCP4 Cloud will always offer initially data settings based on most recently generated data (in given branch of the job tree), as well as associated data. For example, a new refinement job will have, as initial settings, the most recently produced Structure Data and reflection dataset (HKL) used to produce it. However, you can always change these settings, e.g., in order to refine structure against another compatible dataset.</p>
 <p>It is therefore clear that you want to grow your Project (the job tree) in such a way that needed data is always in the scope, and you do not have to resort to breaking the default behaviour by adjusting the data visibility scope with multiple job selection. Following these principles will help to keep your projects in the most logical way, where the structure solution pathway can be easily identified (as a branch that led to best results).</p>
 <p>The disadvantage of non-branching is the gradual lose of clarity of the structure solution process with growing number of trials, as well as growing inconvenience of dealing with long lists of input data to be chosen for new tasks. While these disadvantages do not seem to be dramatic in case of simple short projects, they may become critical in not so unusual case of projects having 100s of jobs.</p>
-<dl class="docutils">
+<dl class="simple">
 <dt>CCP4 Cloud does not impose any specific rules for project branching. However, it may be convenient to branch when you:</dt><dd><ul class="simple">
-<li>start working with a new crystal / reflection dataset</li>
-<li>start a new route of structure solution (e.g. trying to solve structure stage-by-stage after a failure of automated solvers)</li>
-<li>try another method of phasing (e.g. EP after MR); however, do not branch if you are planning a hybrid phasing, such as using MR phases in combination with those obtained from heavy atom location</li>
-<li>start working with new model for molecular replacement</li>
-<li>change the composition of asymmetric unit</li>
-<li>want to rerun the same job with different input parameters (job cloning)</li>
+<li><p>start working with a new crystal / reflection dataset</p></li>
+<li><p>start a new route of structure solution (e.g. trying to solve structure stage-by-stage after a failure of automated solvers)</p></li>
+<li><p>try another method of phasing (e.g. EP after MR); however, do not branch if you are planning a hybrid phasing, such as using MR phases in combination with those obtained from heavy atom location</p></li>
+<li><p>start working with new model for molecular replacement</p></li>
+<li><p>change the composition of asymmetric unit</p></li>
+<li><p>want to rerun the same job with different input parameters (job cloning)</p></li>
 </ul>
 </dd>
 </dl>
-
-
-
-<h2 id="file-formats">File formats<a class="headerlink" href="#file-formats" title="Permalink to this headline">¶</a></h2>
+</section>
+</section>
+<section id="file-formats">
+<h2 id="file-formats">File formats<a class="headerlink" href="#file-formats" title="Permalink to this heading">¶</a></h2>
 <p>CCP4 Cloud operates with data objects, rather than raw files. There are only 2 points where a user deals with actual files: (1) importing and (2) exporting data to/from CCP4 Cloud Project.
 Import procedure automatically identifies the type of uploaded data and converts it into CCP4 Cloud’s Data Objects</p>
-<table border="1">
-<colgroup>
-<col width="5%"/>
-<col width="7%"/>
-<col width="84%"/>
-<col width="5%"/>
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Type</th>
-<th class="head">File</th>
-<th class="head">Description</th>
-<th class="head">CCP4 Cloud Object</th>
+<table>
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>File</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>CCP4 Cloud Object</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td>Unmerged reflections</td>
-<td>.mtz,  .hkl</td>
-<td>All datasets found in uploaded files will be converted into individual Unmerged objects, complemented with symmetry metadata, used for subsequent merging and scaling. Useful properties of datasets, calculated with Pointless, will be presented in the output.</td>
-<td>Unmerged</td>
+<tbody>
+<tr class="row-even"><td><p>Unmerged reflections</p></td>
+<td><p>.mtz,  .hkl</p></td>
+<td><p>All datasets found in uploaded files will be converted into individual Unmerged objects, complemented with symmetry metadata, used for subsequent merging and scaling. Useful properties of datasets, calculated with Pointless, will be presented in the output.</p></td>
+<td><p>Unmerged</p></td>
 </tr>
-<tr class="row-odd"><td>Merged reflections</td>
-<td>.mtz</td>
-<td>Merged reflections in CCP4 file format. All datasets found in uploaded files will be converted into individual HKL objects, complemented with FreeR flag columns (unless found in the file) and truncated if necessary. Useful properties of datasets, calculated with CTruncate, will be presented in the output.</td>
-<td>HKL</td>
+<tr class="row-odd"><td><p>Merged reflections</p></td>
+<td><p>.mtz</p></td>
+<td><p>Merged reflections in CCP4 file format. All datasets found in uploaded files will be converted into individual HKL objects, complemented with FreeR flag columns (unless found in the file) and truncated if necessary. Useful properties of datasets, calculated with CTruncate, will be presented in the output.</p></td>
+<td><p>HKL</p></td>
 </tr>
-<tr class="row-even"><td>Sequence</td>
-<td>.seq,  .pir,  .fasta</td>
-<td>Macromolecular sequence.</td>
-<td>Sequence</td>
+<tr class="row-even"><td><p>Sequence</p></td>
+<td><p>.seq,  .pir,  .fasta</p></td>
+<td><p>Macromolecular sequence.</p></td>
+<td><p>Sequence</p></td>
 </tr>
-<tr class="row-odd"><td>Coordinates</td>
-<td>.pdb,  .cif,  .mmcif,  .ent</td>
-<td>Macromolecular coordinates. Multi-chain files will be split into single chains and added as additional XYZ objects.</td>
-<td>XYZ</td>
+<tr class="row-odd"><td><p>Coordinates</p></td>
+<td><p>.pdb,  .cif,  .mmcif,  .ent</p></td>
+<td><p>Macromolecular coordinates. Multi-chain files will be split into single chains and added as additional XYZ objects.</p></td>
+<td><p>XYZ</p></td>
 </tr>
 </tbody>
 </table>
-
-
-<h2 id="mtz-reflection-format">MTZ reflection format<a class="headerlink" href="#mtz-reflection-format" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="mtz-reflection-format">
+<h2 id="mtz-reflection-format">MTZ reflection format<a class="headerlink" href="#mtz-reflection-format" title="Permalink to this heading">¶</a></h2>
 <p>The MTZ file format is used for the storage of reflection data. The file contains the data and a header of metadata. The former is held as a table with rows representing reflections and columns representing different quantities for each reflection. The latter aims to make the file self-contained by including all necessary information, such as symmetry operations, cell dimensions, etc. The MTZ file is a flat-file representation of a particular data model.</p>
 <p>There are exist two different types of mtz files:</p>
 <ul class="simple">
-<li><strong>unmerged</strong> is a file type in which original individual reflections are kept separate.</li>
-<li><strong>merged</strong>  is file type in which all reflections merged from multiple measurements of symmetry equivalent reflections and also the different components of reflections that are partially recorded over a number of adjacent images.</li>
+<li><p><strong>unmerged</strong> is a file type in which original individual reflections are kept separate.</p></li>
+<li><p><strong>merged</strong>  is file type in which all reflections merged from multiple measurements of symmetry equivalent reflections and also the different components of reflections that are partially recorded over a number of adjacent images.</p></li>
 </ul>
 <p>The file contains basically two classes of records - header records and reflection data records.</p>
 <blockquote>
 <div><div class="toggle-header docutils container">
-A standard reflection data file contains the following <strong>items:</strong></div>
+<p>A standard reflection data file contains the following <strong>items:</strong></p>
+</div>
 <div class="toggle-content docutils container">
 <blockquote>
-<div><dl class="docutils">
-<dt>VERS</dt><dd>Version stamp</dd>
-<dt>TITLE</dt><dd>File Title - short identification of file</dd>
-<dt>NCOL</dt><dd>Number of columns, number of reflections in file, number of batches if number of batches &gt; 0 this indicates multi-record file</dd>
-<dt>CELL</dt><dd>Global Cell Parameters. The use of these is deprecated in favour of the dataset cell parameters.</dd>
-<dt>SORT</dt><dd>Sort order of 1st 5 columns in file.</dd>
-<dt>SYMINF</dt><dd>Number of Symmetry operations
+<div><dl class="simple">
+<dt>VERS</dt><dd><p>Version stamp</p>
+</dd>
+<dt>TITLE</dt><dd><p>File Title - short identification of file</p>
+</dd>
+<dt>NCOL</dt><dd><p>Number of columns, number of reflections in file, number of batches if number of batches &gt; 0 this indicates multi-record file</p>
+</dd>
+<dt>CELL</dt><dd><p>Global Cell Parameters. The use of these is deprecated in favour of the dataset cell parameters.</p>
+</dd>
+<dt>SORT</dt><dd><p>Sort order of 1st 5 columns in file.</p>
+</dd>
+<dt>SYMINF</dt><dd><p>Number of Symmetry operations
 Number of Primitive operations
 Lattice Type
 Space Group Number
 Space Group Name
-Point Group Name</dd>
-<dt>SYMM</dt><dd>Symmetry operations</dd>
-<dt>RESO</dt><dd>Minimum and Max resolution stored as 1/d-squared</dd>
-<dt>VALM</dt><dd>Value with which Missing Number Flag is represented.</dd>
-<dt>COL</dt><dd>Column Label
+Point Group Name</p>
+</dd>
+<dt>SYMM</dt><dd><p>Symmetry operations</p>
+</dd>
+<dt>RESO</dt><dd><p>Minimum and Max resolution stored as 1/d-squared</p>
+</dd>
+<dt>VALM</dt><dd><p>Value with which Missing Number Flag is represented.</p>
+</dd>
+<dt>COL</dt><dd><p>Column Label
 Column Type for each column
 Minimum and Maximum value in each column
-ID of corresponding dataset</dd>
-<dt>NDIF</dt><dd>Number of datasets represented in the file.</dd>
-<dt>PROJECT</dt><dd>ID of dataset
-Project Name. Normally one for each structure determination.</dd>
-<dt>CRYSTAL</dt><dd>ID of dataset
-Crystal Name (may be several for each structure determination, representing the different crystals used).</dd>
-<dt>DATASET</dt><dd>ID of dataset
-Dataset Name (may be several for each structure determination, representing the different datasets measured).</dd>
-<dt>DCELL</dt><dd>ID of dataset
-Cell dimensions (these are identical for all datasets belonging to the same crystal).</dd>
-<dt>DWAVEL</dt><dd>ID of dataset
-Wavelength (Real) for dataset.</dd>
-<dt>BATCH</dt><dd>Batch Serial Number for each batch present. This line is only present in ‘multi-record’ files</dd>
+ID of corresponding dataset</p>
+</dd>
+<dt>NDIF</dt><dd><p>Number of datasets represented in the file.</p>
+</dd>
+<dt>PROJECT</dt><dd><p>ID of dataset
+Project Name. Normally one for each structure determination.</p>
+</dd>
+<dt>CRYSTAL</dt><dd><p>ID of dataset
+Crystal Name (may be several for each structure determination, representing the different crystals used).</p>
+</dd>
+<dt>DATASET</dt><dd><p>ID of dataset
+Dataset Name (may be several for each structure determination, representing the different datasets measured).</p>
+</dd>
+<dt>DCELL</dt><dd><p>ID of dataset
+Cell dimensions (these are identical for all datasets belonging to the same crystal).</p>
+</dd>
+<dt>DWAVEL</dt><dd><p>ID of dataset
+Wavelength (Real) for dataset.</p>
+</dd>
+<dt>BATCH</dt><dd><p>Batch Serial Number for each batch present. This line is only present in ‘multi-record’ files</p>
+</dd>
 </dl>
 </div></blockquote>
 </div>
 </div></blockquote>
-
-
-<h2 id="the-hkl-file">The HKL file<a class="headerlink" href="#the-hkl-file" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="the-hkl-file">
+<h2 id="the-hkl-file">The HKL file<a class="headerlink" href="#the-hkl-file" title="Permalink to this heading">¶</a></h2>
 <p>A HKL file consists of x-ray reflections related to reflection planes (hkl) of the crystal lattice. Each of these planes obeys Bragg’s equation. The experimental reflections are characterised by the indices h k l, a measured intensity I and its error sigma(I).</p>
-
-
+</section>
+</section>
 
 
           </article>
@@ -506,7 +514,7 @@ Wavelength (Real) for dataset.</dd>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

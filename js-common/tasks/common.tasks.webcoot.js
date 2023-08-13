@@ -165,10 +165,18 @@ if (!__template)  {
                         else  title += this.name;
     var wab = new WebAppBox ( title );
     wab.setOnCloseFunction ( function(){ callback_func(); } );
+    wab.setOnToolbarCloseFunction ( function(){
+      __comm_iframes[wab.fid].iframe.getWindow().postMessage ({
+        command: 'call_exit'
+      });
+      return true;
+    });
     wab.launch();
 
     var istruct    = this.input_data.data['revision'][0].Structure;
     var isubstruct = this.input_data.data['revision'][0].Substructure;
+
+    var viewSettings = null;
 
     var inputFiles = [];
     
@@ -179,18 +187,16 @@ if (!__template)  {
           let ligURL = this.getURL ( 'input/' + ligands[i].files[file_key.lib] );
           inputFiles.push ({
             type : 'ligand',
-            args : [ ligURL ]
-            // args : [ ligands[i].code,ligURL,true ]
+            // args : [ ligURL ]
+            args : [ ligands[i].code,ligURL,true ]
           });
         }
     }
 
-    // const inputFiles  = [
-    //    { "type": "ligand", "args": ["00Z", "./uri/to/file/dict.cif", true] },
-    // ];
-
-
     if (istruct)  {
+      let refkeys = getRefKeys ( istruct,this._type );
+      if (refkeys)
+        viewSettings = refkeys.keywords;
       if (file_key.lib in istruct.files)  {
         var libURL = this.getURL ( 'input/' + istruct.files[file_key.lib] );
         inputFiles.push ({
@@ -263,6 +269,11 @@ if (!__template)  {
     }
 
     if (isubstruct)  {
+      if (!viewSettings)  {
+        let refkeys = getRefKeys ( isubstruct,this._type );
+        if (refkeys)
+          viewSettings = refkeys.keywords;
+      }
       if (file_key.mtz in isubstruct.files)  {
         var mtzURL = this.getURL ( 'input/' + isubstruct.files[file_key.mtz] );
         if (isubstruct.FAN)
@@ -288,6 +299,11 @@ if (!__template)  {
       let aux_struct = this.input_data.data['aux_struct'];
       for (let i=0;i<aux_struct.length;i++)
         if (file_key.xyz in aux_struct[i].files)  {
+          if (!viewSettings)  {
+            let refkeys = getRefKeys ( aux_struct[i],this._type );
+            if (refkeys)
+              viewSettings = refkeys.keywords;
+          }
           let structURL = this.getURL ( 'input/' + aux_struct[i].files[file_key.xyz] );
           inputFiles.push ({
             type : 'pdb',
@@ -297,16 +313,17 @@ if (!__template)  {
     }
 
     var params = {
-      mode        : mode,
-      inputFiles  : inputFiles,
-      interval    : update_interval,
-      no_data_msg : '<h2>Data not found</h2>',
-      preferences : __user_settings.webcoot_pref,
-      sf_meta     : { project : this.project,
-                      id      : this.id,
-                      fid     : wab.fid
-                    },
-      wdirURL     : this.getURL('')
+      mode         : mode,
+      inputFiles   : inputFiles,
+      interval     : update_interval,
+      no_data_msg  : '<h2>Data not found</h2>',
+      preferences  : __user_settings.webcoot_pref,
+      viewSettings : viewSettings,
+      sf_meta      : { project : this.project,
+                       id      : this.id,
+                       fid     : wab.fid
+                     },
+      wdirURL      : this.getURL('')
     };
 
     // console.log (  JSON.stringify(inputFiles) );

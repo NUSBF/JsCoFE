@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.06.23   <--  Date of Last Modification.
+ *    12.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,6 +13,25 @@
  *  **** Content :  Front End Server -- Projects Handler Functions
  *       ~~~~~~~~~
  *
+ *     function getUserProjectsDirPath  ( loginData )
+ *     function getUserProjectListPath  ( loginData )
+ *     function getUserDockDataPath     ( loginData )
+ *     function getUserProjectSharePath ( loginData )
+ *     function getUserKnowledgePath    ( loginData )
+ *     function getProjectDirPath       ( loginData,projectName )
+ *     function getProjectDataPath      ( loginData,projectName )
+ *     function getProjectDescPath      ( loginData,projectName )
+ *     function getJobDirPath           ( loginData,projectName,jobId )
+ *     function getSiblingJobDirPath    ( jobDir,jobId )
+ *     function getJobReportDirPath     ( loginData,projectName,jobId )
+ *     function getJobInputDirPath      ( loginData,projectName,jobId )
+ *     function getInputDirPath         ( jobDir )
+ *     function getInputFilePath        ( jobDir,fileName )
+ *     function getJobOutputDirPath     ( loginData,projectName,jobId )
+ *     function getOutputDirPath        ( jobDir )
+ *     function getOutputFilePath       ( jobDir,fileName )
+ *     function getJobDataPath          ( loginData,projectName,jobId )
+ * 
  *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
@@ -2418,6 +2437,60 @@ var jobId       = data.meta.id;
 }
 
 
+function saveJobFiles ( loginData,data )  {
+//
+//   data : {
+//     meta   : task_obj, // only 'project' and 'id' fields are used
+//     files : [
+//       { fpath : file_path_in_task_directory
+//         data  : file_content
+//        },
+//        ...
+//     ]
+//   }
+//
+var response    = null;
+var projectName = data.meta.project;
+var jobId       = data.meta.id;
+
+  var jobDirPath = getJobDirPath ( loginData,projectName,jobId );
+
+  if (utils.fileExists(jobDirPath))  {
+    for (let i=0;(i<data.files.length) && (!response);i++)  {
+      var fpath = path.join ( jobDirPath,data.files[i].fpath );
+      if (!utils.writeString(fpath,data.files[i].data))  {
+        var fdir = path.dirname ( fpath );
+        if (fdir!=jobDirPath)  {
+          utils.mkPath ( fdir );
+          if (!utils.writeString(fpath,data.files[i].data))
+            response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                          '[00040] Job file cannot be written.',
+                                          { 'project_missing':false } );
+        } else
+          response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                        '[00041] Job file cannot be written.',
+                                        { 'project_missing':false } );
+      }
+    }
+    if (!response)
+      response = new cmd.Response ( cmd.fe_retcode.ok,'',
+                                        { 'project_missing':false } );
+  } else  {
+    if (data.is_shared &&
+        (!utils.fileExists(getProjectDataPath(loginData,projectName))))
+      response = new cmd.Response ( cmd.fe_retcode.ok,'project_missing',
+                                    { 'project_missing':true } );
+    if (!response)
+      response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                    '[00042] Job metadata cannot be written.',
+                                    { 'project_missing':null } );
+  }
+
+  return response;
+
+}
+
+
 // ===========================================================================
 
 function getJobFile ( loginData,data )  {
@@ -2507,4 +2580,5 @@ module.exports.getInputFilePath       = getInputFilePath;
 module.exports.getOutputFilePath      = getOutputFilePath;
 module.exports.saveJobData            = saveJobData;
 module.exports.saveJobFile            = saveJobFile;
+module.exports.saveJobFiles           = saveJobFiles;
 module.exports.getJobFile             = getJobFile;

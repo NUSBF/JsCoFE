@@ -224,6 +224,10 @@ var response = null;
           response = prj.saveJobFile ( loginData,data );
        break;
 
+    case cmd.fe_reqtype.saveJobFiles :
+          response = prj.saveJobFiles ( loginData,data );
+       break;
+
     case cmd.fe_reqtype.getJobFile :
           response = prj.getJobFile ( loginData,data );
        break;

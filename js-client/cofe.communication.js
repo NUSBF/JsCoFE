@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.07.23   <--  Date of Last Modification.
+ *    13.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -840,22 +840,25 @@ function setQuitDestructor()  {
 
 var __comm_iframes = {};
 
-function setCommunicationIFrame ( iframe )  {
+function setCommunicatingIFrame ( holder,iframe )  {
 var fid0 = 'fid_' + Date.now();
 var fid  = fid0;
 var k    = 0;
   while (fid in __comm_iframes)
     fid = fid0 + '_' + k++;
-  __comm_iframes[fid] = iframe;
+  __comm_iframes[fid] = { 
+    'holder' : holder,
+    'iframe' : iframe
+  };
   return fid;
 }
 
-function removeCommunicationIFrame ( fid )  {
+function removeCommunicatingIFrame ( fid )  {
   if (fid in __comm_iframes)
-    delete __comm_iframes[fid];
+    delete __comm_iframes[fid].iframe;
 }
 
-function getNofCommunicationIFrames()  {
+function getNofCommunicatingIFramess()  {
 let c = 0;
   for (let p in __comm_iframes)
     if (__comm_iframes.hasOwnProperty(p))
@@ -878,39 +881,63 @@ function onWindowMessage ( event ) {
 
   var edata = event.data;
 
-  if (edata.command=='saveFile')  {
-
-    serverRequest ( fe_reqtype.saveJobFile,edata,'Save job file',
-      function(rdata){
-        if (rdata.project_missing)  {
-          new MessageBox (  'Project not found',
-                            '<div style="width:350px"><h3>Project "' + edata.meta.project +
-                            '" is not found on server</h3>' +
-                            '<i>This is a bug, please report</i>.</div>',
-                            'msg_error'
-                          );
-        } else if (edata.confirm=='model')  {
-        // if ('callback' in edata)
-        //   edata.callback.postMessage ({ message: 'done!'} );
-        // if (edata.meta.fid in __comm_iframes)
-        //   alert ( ' >>>> ' + edata.meta.fid );
-        // __comm_iframes[edata.meta.fid].getWindow().postMessage ({ message: 'done!'} );
-          new MessageBox (  'Current model saved',
-                            '<div style="width:350px"><h3>Current model saved</h3>' +
-                            'Current model saved in file "' + edata.fpath + 
-                            '" on ' + appName() + '.</div>',
-                            'msg_ok'
-                          );
-        } else if (edata.confirm=='manual')  {
-          new MessageBox (  'Backup file written',
-                            '<div style="width:350px"><h3>Backup file written</h3>' +
-                            'Backip file saved in ' + appName() + 
-                            ', use <i>"Recover molecule backup"</i> to retrieve.</div>',
-                            'msg_ok'
-                          );
-        }
-      },null,'persist' );
-
+  if (edata.command=='saveFiles')  {
+    if (edata.files.length<=0)  {
+      if ( __comm_iframes[edata.meta.fid].holder)
+        __comm_iframes[edata.meta.fid].holder.close();
+    } else  {
+      serverRequest ( fe_reqtype.saveJobFiles,edata,'Save job file',
+        function(rdata){
+          if (rdata.project_missing)  {
+            new MessageBox (  'Project not found',
+                              '<div style="width:350px"><h3>Project "' + edata.meta.project +
+                              '" is not found on server</h3>' +
+                              '<i>This is a bug, please report</i>.</div>',
+                              'msg_error'
+                            );
+          } else if (edata.confirm=='model')  {
+          // if ('callback' in edata)
+          //   edata.callback.postMessage ({ message: 'done!'} );
+          // if (edata.meta.fid in __comm_iframes)
+          //   alert ( ' >>>> ' + edata.meta.fid );
+          // __comm_iframes[edata.meta.fid].iframe.getWindow().postMessage ({ message: 'done!'} );
+            let flist = [];
+            for (let i=0;i<edata.files.length;i++)
+              if (!('report' in edata.files[i]) || edata.files[i].report)
+                flist.push ( edata.files[i].fpath );
+            if (flist.length<=0)  {
+              if ( __comm_iframes[edata.meta.fid].holder)
+                __comm_iframes[edata.meta.fid].holder.close();
+            } else  {
+              new MessageBoxF ( 'Model(s) saved',
+                                '<div style="width:400px"><h3>Model(s) saved</h3>' +
+                                'The following model(s) are saved on ' + appName() +':<p>' +
+                                flist.join('<br>')  + '</div>',
+                                'Exit Moorhen',function(){
+                                  // __comm_iframes[edata.meta.fid].iframe.getWindow().postMessage ({
+                                  //   message: 'done!'
+                                  // });
+                                  if ( __comm_iframes[edata.meta.fid].holder)
+                                    __comm_iframes[edata.meta.fid].holder.close();
+                                },false,'msg_ok'
+                              );
+              // new MessageBox (  'Current model saved',
+              //                   '<div style="width:350px"><h3>Current model saved</h3>' +
+              //                   'Current model saved in file "' + edata.fpath + 
+              //                   '" on ' + appName() + '.</div>',
+              //                   'msg_ok'
+              //                 );
+            }              
+          } else if (edata.confirm=='manual')  {
+            new MessageBox (  'Backup file written',
+                              '<div style="width:350px"><h3>Backup file written</h3>' +
+                              'Backip file saved in ' + appName() + 
+                              ', use <i>"Recover molecule backup"</i> to retrieve.</div>',
+                              'msg_ok'
+                            );
+          }
+        },null,'persist' );
+    }
   } else if (edata.command=='getFile')  {
 
       var req_data  = {};
@@ -921,7 +948,7 @@ function onWindowMessage ( event ) {
 
       serverRequest ( fe_reqtype.getJobFile,req_data,'Get job file',
                       function(data){
-        __comm_iframes[edata.meta.fid].getWindow().postMessage ({
+        __comm_iframes[edata.meta.fid].iframe.getWindow().postMessage ({
           postdata : edata,
           content  : data
           // message: 'done!'
