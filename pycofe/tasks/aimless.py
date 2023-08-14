@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.08.23   <--  Date of Last Modification.
+#    13.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -170,7 +170,7 @@ class Aimless(basic.TaskDriver):
             self.setGenericLogParser ( panel_id,True )
 
             try:
-                os.remove ( pointless_xml() )   #  needed for Windows
+                os.remove ( self.pointless_xml() )   #  needed for Windows
             except OSError:
                 pass
             self.runApp ( "pointless",[],logType="Main" )
