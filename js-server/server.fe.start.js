@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.02.23   <--  Date of Last Modification.
+ *    14.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -131,7 +131,8 @@ function start ( callback_func )  {
     server_response.setHeader ( 'Cross-Origin-Opener-Policy'  ,'same-origin'   );
     // server_response.setHeader ( 'Cross-Origin-Embedder-Policy','credentialles' );
     // server_response.setHeader ( 'Cross-Origin-Resource-Policy','same-origin'  );
-    server_response.setHeader ( 'Cross-Origin-Embedder-Policy','require-corp' );
+    // *** server_response.setHeader ( 'Cross-Origin-Embedder-Policy','require-corp' );
+    server_response.setHeader ( 'Cross-Origin-Embedder-Policy','credentialless' );
     // server_response.setHeader ( 'Referrer-Policy','no-referrer' );
     // server_response.setHeader ( 'Referrer-Policy','no-referrer-when-downgrade' );
 
