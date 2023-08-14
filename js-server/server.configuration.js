@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.02.23   <--  Date of Last Modification.
+ *    15.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -681,7 +681,7 @@ function readConfiguration ( confFilePath,serverType )  {
   var confObj = utils.readObject ( confFilePath );
 
   if (!confObj)
-    return 'configuration file ' + confFilePath + ' not found';
+    return 'cannot load configuration file ' + confFilePath + ' (missing/invalid?)';
 
   if (confObj.hasOwnProperty('Desktop'))
     desktop = confObj.Desktop;
