@@ -355,6 +355,42 @@ class Xia2(basic.TaskDriver):
           "summary_line" : "created datasets: " + ilist
         }
 
+        # hack the bloody xia2.html
+        xia2_html = None
+        try:
+            with open ("xia2.html","r") as file:
+                xia2_html = file.read()
+        except:
+            self.stderrln ( " *** cannot read xia2.html" )
+            pass
+
+        if xia2_html:
+            xia2_html = xia2_html.replace ( "https://code.jquery.com/jquery-1.12.0.min.js",
+                                            "js-lib/xia-2/jquery-1.12.0.min.js" ) \
+                                 .replace ( "https://cdn.plot.ly/plotly-latest.min.js",
+                                            "js-lib/xia-2/plotly-latest.min.js" ) \
+                                 .replace ( "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js",
+                                            "js-lib/xia-2/bootstrap.min.js" ) \
+                                 .replace ( "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js",
+                                            "js-lib/xia-2/katex.min.js" ) \
+                                 .replace ( "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/contrib/auto-render.min.js",
+                                            "js-lib/xia-2/auto-render.min.js" ) \
+                                 .replace ( "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css",
+                                            "js-lib/xia-2/bootstrap.min.css" ) \
+                                 .replace ( "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css",
+                                            "js-lib/xia-2/katex.min.css" )
+            with open ("xia2.html","w") as file:
+                file.write ( xia2_html )
+
+        # <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+        # <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        # <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        # <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.js"></script>
+        # <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/contrib/auto-render.min.js"></script>
+        # <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
+        # <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css"/>
+
+
         # Add Xia-2 own html report
         self.insertTab   ( "xia2_report","Xia-2 Report",None,True )
         self.putMessage1 ( "xia2_report","<iframe src=\"../xia2.html\" " +\

@@ -331,8 +331,9 @@ if (!__template)  {
     fetchFile ( 'js-lib/webCoot/webcoot.html',
       function(text){
         wab.iframe.setHTML (
-          text.replace ( '[[baseurl]]',
-                         window.location + 'js-lib/webCoot/webcoot.html' )
+          // text.replace ( '[[baseurl]]',
+          //                window.location + 'js-lib/webCoot/webcoot.html' )
+          text.replaceAll ( '[[prefix]]','js-lib/webCoot' )
               .replace ( '</body>',
                          '  <script type="text/javascript"  defer="defer">\n' + 
                          '   runWebCoot ( ' + JSON.stringify(params) + ' );\n' +
