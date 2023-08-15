@@ -1,7 +1,7 @@
 //
 //  ==========================================================================
 //
-//    13.08.23   <--  Date of Last Modification.
+//    15.08.23   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  --------------------------------------------------------------------------
 //
@@ -823,14 +823,15 @@ function startWebCoot ( title,xyz_uri,mtz_uri,legend_uri,mode,update_interval,op
     function(text){
       _start_viewer ( 
         title,
-        text.replace ( '[[baseurl]]',
-                       window.location + 'js-lib/webCoot/webcoot.html' )
-            .replace ( '</body>',
-                       '  <script type="text/javascript"  defer="defer">\n' + 
-                       '   runWebCoot ( ' + JSON.stringify(params) + ' );\n' +
-                       '  </script>\n' +
-                       '</body>'
-                     )
+        // text.replace ( '[[baseurl]]',
+        //                window.location + 'js-lib/webCoot/webcoot.html' )
+        text.replaceAll ( '[[prefix]]','js-lib/webCoot' )
+            .replace    ( '</body>',
+                          '  <script type="text/javascript"  defer="defer">\n' + 
+                          '   runWebCoot ( ' + JSON.stringify(params) + ' );\n' +
+                          '  </script>\n' +
+                          '</body>'
+                        )
        );
     },
     null,

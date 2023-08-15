@@ -22,7 +22,7 @@
 
 let rootId         = 'root';
 let sf_meta        = null;
-let urlPrefix      = '.';
+let urlPrefix      = 'js-lib/webCoot';
 
 let BACKUPS        = [];
 let backupsFPath   = 'backups/backups.json';
