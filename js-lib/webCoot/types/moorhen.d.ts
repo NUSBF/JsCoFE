@@ -165,7 +165,7 @@ export namespace moorhen {
 
     type RepresentationStyles = 'VdwSpheres' | 'ligands' | 'CAs' | 'CBs' | 'CDs' | 'gaussian' | 'allHBonds' | 'rama' | 
     'rotamer' | 'CRs' | 'MolecularSurface' | 'DishyBases' | 'VdWSurface' | 'Calpha' | 'unitCell' | 'hover' | 'environment' | 
-    'ligand_environment' | 'contact_dots' | 'chemical_features' | 'ligand_validation'
+    'ligand_environment' | 'contact_dots' | 'chemical_features' | 'ligand_validation' | 'glycoBlocks'
 
     interface MoleculeRepresentation {
         setUseDefaultColourRules(arg0: boolean): void;
@@ -211,6 +211,7 @@ export namespace moorhen {
         onConsoleChanged: null | ( (msg: string) => void );
         onNewCommand : null | ( (kwargs: any) => void );
         onActiveMessagesChanged: null | ( (activeMessages: WorkerMessage[]) => void );
+        cootCommandList(commandList: cootCommandKwargs[]): Promise<WorkerResponse>;
         cootCommand: (kwargs: cootCommandKwargs, doJournal?: boolean) => Promise<WorkerResponse>;
         postMessage: (kwargs: cootCommandKwargs) => Promise<WorkerResponse>;
         extendConsoleMessage: (msg: string) => void;

@@ -181,6 +181,7 @@ if (!__template)  {
     var inputFiles = [];
     
     if ('ligand' in this.input_data.data)  {
+
       let ligands = this.input_data.data['ligand'];
       for (let i=0;i<ligands.length;i++)
         if (file_key.lib in ligands[i].files)  {
@@ -188,7 +189,7 @@ if (!__template)  {
           inputFiles.push ({
             type : 'ligand',
             // args : [ ligURL ]
-            args : [ ligands[i].code,ligURL,true ]
+            args : [ ligURL,[ligands[i].code] ]
           });
         }
     }
@@ -201,7 +202,7 @@ if (!__template)  {
         var libURL = this.getURL ( 'input/' + istruct.files[file_key.lib] );
         inputFiles.push ({
           type : 'ligand',
-          args : [ libURL ]
+          args : [ libURL,[] ]
         });
       }
       if (file_key.xyz in istruct.files)  {

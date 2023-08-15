@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    15.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,7 +36,7 @@ function TaskAuspex()  {
   this._type   = 'TaskAuspex';
   this.name    = 'Auspex';     // short name for job tree
   this.oname   = '*';          // asterisk here means do not use
-  this.title   = 'Reflection data diagnostics with Auspex plots';     // full title
+  this.title   = 'Reflection data diagnostics with Auspex plots'; // full title
   //this.helpURL = './html/jscofe_task_auspex.html';
 
   this.input_dtypes = [{    // input data types
@@ -132,6 +132,13 @@ TaskAuspex.prototype.currentVersion = function()  {
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
+
+// task.platforms() identifies suitable platforms:
+//   'W"  : Windows
+//   'L'  : Linux
+//   'M'  : Mac
+//   'U'  : Unix ( = Linux + Mac)
+TaskAuspex.prototype.platforms  = function() { return 'LMU'; }
 
 TaskAuspex.prototype.desc_title = function()  {
   // this appears under task title in the task list
