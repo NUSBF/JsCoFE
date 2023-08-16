@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    28.07.23   <--  Date of Last Modification.
+ *    16.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -390,7 +390,7 @@ ProjectPage.prototype.constructor = ProjectPage;
 // --------------------------------------------------------------------------
 
 ProjectPage.prototype.confirmLeaving = function ( callback_func )  {
-  if (getNofCommunicatingIFramess()+this.jobTree.getNofJobDialogs(true)>0)  {
+  if (getNofCommunicatingIFrames()+this.jobTree.getNofJobDialogs(true)>0)  {
     new QuestionBox ( 'Active task dialogs',
                       '<div style="width:360px;"><h2>Active task dialogs</h2>'  +
                       'Some task are open in this Project Page. Closing them '  +
