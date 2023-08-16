@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.08.23   <--  Date of Last Modification.
+ *    16.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -855,10 +855,10 @@ var k    = 0;
 
 function removeCommunicatingIFrame ( fid )  {
   if (fid in __comm_iframes)
-    delete __comm_iframes[fid].iframe;
+    delete __comm_iframes[fid];
 }
 
-function getNofCommunicatingIFramess()  {
+function getNofCommunicatingIFrames()  {
 let c = 0;
   for (let p in __comm_iframes)
     if (__comm_iframes.hasOwnProperty(p))

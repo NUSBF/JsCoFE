@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.05.23   <--  Date of Last Modification.
+ *    16.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -875,12 +875,12 @@ WebAppBox.prototype.launch = function() {
 
   $(this.element).on("dialogclose", function(event,ui){
     window.setTimeout ( function(){
+      removeCommunicatingIFrame ( self.fid );
       if (self.onClose_func)
         self.onClose_func();
       $(self.element).dialog("destroy");
       if (self.element.parentNode)
         self.element.parentNode.removeChild ( self.element );
-      removeCommunicatingIFrame ( self.fid );
     },10);
   });
 
