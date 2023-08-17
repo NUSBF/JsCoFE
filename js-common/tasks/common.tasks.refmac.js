@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.08.23   <--  Date of Last Modification.
+ *    16.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -306,7 +306,7 @@ function TaskRefmac()  {
               label    : 'Use automatic NCS restraints',
               tooltip  : 'Use automatic Non-Crystallographic Symmetry restraints',
               range    : ['yes|Yes','no|No'],
-              value    : 'yes`',
+              value    : 'yes',
               position : [0,0,1,1]
             },
             NCSR_TYPE : { type   : 'combobox',
