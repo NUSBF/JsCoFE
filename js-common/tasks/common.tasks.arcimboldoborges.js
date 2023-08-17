@@ -69,6 +69,14 @@ function TaskArcimboldoBorges()  {
               open     : true,  // true for the section to be initially open
               position : [1,0,1,5],
               contains : {
+                COIL_COILED_CBX : {
+                  type     : 'checkbox',
+                  label    : 'Run in coil coiled mode',
+                  tooltip  : 'Check to run in coil coiled mode',
+                  value    : false,
+                  iwidth   : 200,
+                  position : [0,0,1,1]
+                },
                 LIBRARY_SEL : {
                           type     : 'combobox',
                           keyword  : 'HELICES',
@@ -85,7 +93,7 @@ function TaskArcimboldoBorges()  {
                           value    : 'HELI_lib_uu',
                           iwidth  : 160,
                           label2   : 'topology: u: up, d: down',
-                          position : [0,0,1,1],
+                          position : [1,0,1,1],
                           showon   : {'fragments':[-1,0]} // from input data section
                         },
                 GYRE_SEL : {
@@ -99,7 +107,7 @@ function TaskArcimboldoBorges()  {
                                     ],
                           value    : 'auto',
                           iwidth   : 100,
-                          position : [1,0,1,1]
+                          position : [2,0,1,1]
                         },
                 GIMBLE_SEL : {
                           type     : 'combobox',
@@ -112,20 +120,13 @@ function TaskArcimboldoBorges()  {
                                     ],
                           value    : 'auto',
                           iwidth   : 100,
-                          position : [2,0,1,1]
-                        },
-                COIL_COILED_CBX : {
-                          type     : 'checkbox',
-                          label    : 'Run in coil coiled mode',
-                          tooltip  : 'Check to run in coil coiled mode',
-                          value    : false,
-                          iwidth   : 200,
                           position : [3,0,1,1]
                         },
+                
                 MULTICOPY: {
                   type     : 'combobox',
                   keyword  : 'MULTICOPY',
-                  label    : 'Multicopy search',
+                  label    : 'Multicopy search:',
                   tooltip  : 'Choose multicopy search option mode',
                   range    : ['auto|Auto',
                               'On|On',
