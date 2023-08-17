@@ -1,7 +1,7 @@
 /*
  *  ========================================================================
  *
- *    28.12.22   <--  Date of Last Modification.
+ *    16.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  ------------------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  Knowledge routines and data
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2023
  *
  *  ========================================================================
  *
@@ -52,6 +52,7 @@ var _taskIndex = {
   'D3' : { type: 'TaskEnsembler'          , after: ['D1','D2'] },
   'D4' : { type: 'TaskModelPrepMC'        , after: ['B','B1','C','m'] },
   'D5' : { type: 'TaskSlice'              , after: ['B','B1','C','m'] },
+  'D6' : { type: 'TaskMrParse'            , after: ['B','B1','m'] },
 
   // suggest Make Ligand after Import and Model Preparation
   'E'  : { type: 'TaskMakeLigand'         , after: ['B','B1','C','D','E','m'] },
@@ -97,6 +98,8 @@ var _taskIndex = {
   // suggest ShelxE-MR after either Phaser-MR or Molrep; do not suggest it
   // after itself
   'O'  : { type: 'TaskShelxEMR'           , after: ['M','N'] },
+  'O1' : { type: 'TaskPhaserRB'           , after: ['M','N'] },
+  'O2' : { type: 'TaskSheetbend'          , after: ['M','N'] },
 
   // suggest Crank-2 and Shelx-AutoEP after ASUDef and MR; do not suggest
   // them after themselves (user should branch/clone instead)
@@ -136,6 +139,10 @@ var _taskIndex = {
   // suggest Lorester after Buccaneer and Refmac; not after itself
   'W'  : { type: 'TaskLorestr'            , after: ['U','V','r'] },
 
+  // suggest PaiRef after Refmac and Lorestr
+  'W1' : { type: 'TaskPaiRef'             , after: ['V','W','X'] },
+  'W2' : { type: 'TaskPDBREDO'            , after: ['V','W','X'] },
+
   // sugget FitLigand after Refmac, Lorestr and after itself
   'X'  : { type: 'TaskFitLigand'          , after: ['V','W','X','U','U1','r'] },
 
@@ -153,17 +160,20 @@ var _taskIndex = {
   'b1' : { type: 'TaskContact'            , after: ['V','W','X'] },
   'b2' : { type: 'TaskRotamer'            , after: ['V','W','X'] },
   'b3' : { type: 'TaskAreaimol'           , after: ['V','W','X'] },
+  'b4' : { type: 'TaskRampage'            , after: ['V','W','X'] },
+  'b5' : { type: 'TaskSC'                 , after: ['V','W','X'] },
+  'b6' : { type: 'TaskOmitMap'            , after: ['V','W','X'] },
+  'b7' : { type: 'TaskPrivateer'          , after: ['V','W','X'] },
 
   // suggest ChangeSpG after dataprocessing tasks
   //'c'  : { type: 'TaskChangeSpG'      , after: ['h','t','u'] },
   'c'  : { type: 'TaskChangeSpGHKL'       , after: ['h','t','u'] },
-  'c2' : { type: 'TaskChangeSpGASU'       , after: ['H'] },
-
   // suggest ChangeReso after dataprocessing tasks
   'c1' : { type: 'TaskChangeReso'         , after: ['h','t','u'] },
-
+  'c2' : { type: 'TaskChangeSpGASU'       , after: ['H'] },
   // do not suggest FreeRflag
-  'c2' : { type: 'TaskFreeRFlag'          , after: [] },
+  'c3' : { type: 'TaskFreeRFlag'          , after: [] },
+  'c4' : { type: 'TaskOptimiseASU'        , after: ['V','W','X'] },
 
   // do not suggest ASUMod
   //'d' : { type: 'TaskASUMod'         , after: [] },
@@ -193,6 +203,8 @@ var _taskIndex = {
   // suggest CombStructure after refinememnt
   'j1' : { type: 'TaskCombStructure'      , after: ['V','W','i','U','r'] },
 
+  'j2' : { type: 'TaskWebCoot'             , after: ['V','W','i','U','r'] },
+
   // suggest PDB Deposition after Refmac
   // 'k'  : { type: 'TaskDeposition'         , after: ['V','V1'] },
   'k1' : { type: 'TaskPDBVal'             , after: ['V','V1'] },
@@ -202,7 +214,8 @@ var _taskIndex = {
   'l1' : { type: 'TaskGemmi'              , after: [] },
 
   // do not suggest XYZ Utils
-  'l1'  : { type: 'TaskXyzUtils'          , after: [] },
+  'l2'  : { type: 'TaskXyzUtils'          , after: [] },
+  'l3'  : { type: 'TaskTextEditor'        , after: [] },
 
   // suggest CloudImport alike plain Import
   'm'  : { type: 'TaskCloudImport'        , after: ['0','B','B1','C','D','E','m'] },
