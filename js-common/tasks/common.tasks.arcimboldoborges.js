@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    17.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -113,7 +113,28 @@ function TaskArcimboldoBorges()  {
                           value    : 'auto',
                           iwidth   : 100,
                           position : [2,0,1,1]
-                        }
+                        },
+                COIL_COILED_CBX : {
+                          type     : 'checkbox',
+                          label    : 'Run in coil coiled mode',
+                          tooltip  : 'Check to run in coil coiled mode',
+                          value    : false,
+                          iwidth   : 200,
+                          position : [3,0,1,1]
+                        },
+                MULTICOPY: {
+                  type     : 'combobox',
+                  keyword  : 'MULTICOPY',
+                  label    : 'Multicopy search',
+                  tooltip  : 'Choose multicopy search option mode',
+                  range    : ['auto|Auto',
+                              'On|On',
+                              'Off|Off'
+                            ],
+                  value    : 'auto',
+                  iwidth   : 100,
+                  position : [4,0,1,1]
+                }
               }
             }
   };

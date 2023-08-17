@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    17.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -67,6 +67,7 @@ function TaskArcimboldoShredder()  {
               open     : true,  // true for the section to be initially open
               position : [1,0,1,5],
               contains : {
+                
                 RMSD :  { type     : 'real',
                           keyword  : 'RMSD',
                           label    : 'Assume',
@@ -120,6 +121,21 @@ function TaskArcimboldoShredder()  {
                           iwidth   : 140,
                           position : [3,0,1,3]
                         },
+                MULTICOPY: {
+                          type     : 'combobox',
+                          keyword  : 'MULTICOPY',
+                          label    : 'Multicopy search',
+                          tooltip  : 'Choose multicopy search option mode',
+                          range    : ['auto|Auto',
+                                      'On|On',
+                                      'Off|Off'
+                                    ],
+                          value    : 'auto',
+                          iwidth   : 100,
+                          position : [4,0,1,3],
+                          showon   : {SHRMODE_SEL:['spherical']}
+                          
+                        },
                 COIL_SEL : {
                           type     : 'combobox',
                           keyword  : 'COIL',
@@ -131,7 +147,7 @@ function TaskArcimboldoShredder()  {
                                     ],
                           value    : 'auto',
                           iwidth   : 100,
-                          position : [4,0,1,3],
+                          position : [5,0,1,3],
                           showon   : {SHRMODE_SEL:['spherical']}
                         },
                 GYRE_SEL : {
@@ -145,7 +161,7 @@ function TaskArcimboldoShredder()  {
                                     ],
                           value    : 'auto',
                           iwidth   : 100,
-                          position : [5,0,1,3],
+                          position : [6,0,1,3],
                           showon   : {SHRMODE_SEL:['spherical']}
                         },
                 GIMBLE_SEL : {
@@ -159,7 +175,7 @@ function TaskArcimboldoShredder()  {
                                     ],
                           value    : 'auto',
                           iwidth   : 100,
-                          position : [6,0,1,3],
+                          position : [7,0,1,3],
                           showon   : {SHRMODE_SEL:['spherical']}
                         },
                 LLG_SEL : {
@@ -173,7 +189,7 @@ function TaskArcimboldoShredder()  {
                                     ],
                           value    : 'auto',
                           iwidth   : 100,
-                          position : [7,0,1,3],
+                          position : [8,0,1,3],
                           showon   : {SHRMODE_SEL:['spherical']}
                         },
                 PHASES_SEL : {
@@ -188,8 +204,25 @@ function TaskArcimboldoShredder()  {
                                     ],
                           value    : 'auto',
                           iwidth   : 100,
-                          position : [8,0,1,3],
+                          position : [9,0,1,3],
                           showon   : {SHRMODE_SEL:['spherical']}
+                        },
+
+                COIL_COILED_CBX : {
+                          type     : 'checkbox',
+                          label    : 'Run in coil coiled mode',
+                          tooltip  : 'Check to run in coil coiled mode',
+                          value    : false,
+                          iwidth   : 200,
+                          position : [10,0,1,3]
+                        },
+                PREDICTED_MODEL : {
+                          type     : 'checkbox',
+                          label    : 'Run in predicted model mode',
+                          tooltip  : 'Check to run in predicted model mode',
+                          value    : false,
+                          iwidth   : 220,
+                          position : [11,0,1,3]
                         }
               }
             },

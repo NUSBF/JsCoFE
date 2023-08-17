@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.12.22   <--  Date of Last Modification.
+#    17.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2022-2023
 #
 # ============================================================================
 #
@@ -235,6 +235,8 @@ class Arcimboldo(basic.TaskDriver):
     def make_setup_borges(self):
 
         self.prepare_setup()
+        coiled_coil = self.getParameter(self.sec1.COIL_COILED_CBX) == "True"
+
 
         custom_library = None
         if self.fragments:
@@ -279,6 +281,7 @@ class Arcimboldo(basic.TaskDriver):
 
         rotation_model_refinement = self.getParameter(self.sec1.GYRE_SEL)
         gimble = self.getParameter(self.sec1.GIMBLE_SEL)
+        multicopy = self.getParameter(self.sec1.MULTICOPY)
 
         # pdbout_path = "./best.pdb"
         # logfile     = "./arcimboldo_out.log"
@@ -301,8 +304,12 @@ class Arcimboldo(basic.TaskDriver):
         f_bor.write("sigf_label = %s\n" % (self.sigf_label))
         # f_bor.write('i_label = %s\n' % (i_label))
         # f_bor.write('sigi_label = %s\n' % (sigi_label))
+        f_bor.write("coiled_coil = %s\n" % (coiled_coil))
+
         f_bor.write("molecular_weight = %10.2f\n" % (self.molecular_weight))
         f_bor.write("number_of_component = %d\n" % (self.number_of_component))
+        if multicopy !="auto":
+            f_bor.write("multicopy = %s\n" % ("True" if multicopy == "On" else "False"))
 
         if borges_library == "CUSTOM":
             f_bor.write("library_path = %s\n" % (custom_library))
@@ -326,11 +333,17 @@ class Arcimboldo(basic.TaskDriver):
         f_bor.write("path_local_phaser = %s/bin/phaser\n" % (self.ccp4_home))
         f_bor.write("path_local_shelxe = %s/bin/shelxe\n" % (self.ccp4_home))
 
+        
+
         return
 
     def make_setup_shredder(self):
 
         self.prepare_setup()
+        coiled_coil = self.getParameter(self.sec1.COIL_COILED_CBX) == "True"
+        predicted_model = self.getParameter(self.sec1.PREDICTED_MODEL) == "True"
+        multicopy = self.getParameter(self.sec1.MULTICOPY)
+
 
         model_file = self.xyz[0].getXYZFilePath(self.inputDir())
 
@@ -365,7 +378,11 @@ class Arcimboldo(basic.TaskDriver):
         f_bor.write("sigf_label = %s\n" % (self.sigf_label))
         # f_bor.write('i_label = %s\n' % (i_label))
         # f_bor.write('sigi_label = %s\n' % (sigi_label))
+        f_bor.write("coiled_coil = %s\n" % (coiled_coil))
+        if predicted_model == True:
+            f_bor.write("predicted_model= %s\n" % (predicted_model))
 
+        
         f_bor.write("molecular_weight = %10.2f\n" % (self.molecular_weight))
         f_bor.write("number_of_component = %d\n" % (self.number_of_component))
 
@@ -386,6 +403,8 @@ class Arcimboldo(basic.TaskDriver):
                 fragment_size = str(fragment_size)
             else:
                 fragment_size = "default"
+            if multicopy !="auto":
+                f_bor.write("multicopy = %s\n" % ("True" if multicopy == "On" else "False"))
             if maintain_coil != "auto":
                 f_bor.write(
                     "sphere_definition = %s 1 %s 7 4 0.45 0.3\n"
