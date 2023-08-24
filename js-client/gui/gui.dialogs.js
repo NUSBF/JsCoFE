@@ -44,37 +44,41 @@
 
 function extendToolbar ( dialog,options={} )  {
 
-  var opt = {
-    "closable"         : true,
-    "maximizable"      : true,
-    "minimizable"      : true,
-    "collapsable"      : true,
-    "dblclick"         : "maximize", // 'collapse', 'maximize', 'minimize', ''
-    // "titlebar"         : "",         // 'transparent', 'none', ''
-    "minimizeLocation" : "left"      // 'left' or 'right'
-    // "icons" : {
-    //   "close"    : "ui-icon-circle-close",
-    //   "maximize" : "ui-icon-circle-plus",
-    //   "minimize" : "ui-icon-circle-minus",
-    //   "collapse" : "ui-icon-triangle-1-s",
-    //   "restore"  : "ui-icon-bullet"
-    // }
-    // "load"           : function(evt, dlg){ alert(evt.type); },
-    // "beforeCollapse" : function(evt, dlg){ alert(evt.type); },
-    // "beforeMaximize" : function(evt, dlg){ alert(evt.type); },
-    // "beforeMinimize" : function(evt, dlg){ alert(evt.type); },
-    // "beforeRestore"  : function(evt, dlg){ alert(evt.type); },
-    // "collapse"       : function(evt, dlg){ alert(evt.type); },
-    // "maximize"       : function(evt, dlg){ alert(evt.type); },
-    // "minimize"       : function(evt, dlg){ alert(evt.type); },
-    // "restore"        : function(evt, dlg){ alert(evt.type); }
-  };
+  if (!__any_mobile_device)  {
 
-  for (let key in options)
-    if ((key in opt) && (!options[key]))  delete opt[key];
-                                    else  opt[key] = options[key];
+    var opt = {
+      "closable"         : true,
+      "maximizable"      : true,
+      "minimizable"      : true,
+      "collapsable"      : true,
+      "dblclick"         : "maximize", // 'collapse', 'maximize', 'minimize', ''
+      // "titlebar"         : "",         // 'transparent', 'none', ''
+      "minimizeLocation" : "left"      // 'left' or 'right'
+      // "icons" : {
+      //   "close"    : "ui-icon-circle-close",
+      //   "maximize" : "ui-icon-circle-plus",
+      //   "minimize" : "ui-icon-circle-minus",
+      //   "collapse" : "ui-icon-triangle-1-s",
+      //   "restore"  : "ui-icon-bullet"
+      // }
+      // "load"           : function(evt, dlg){ alert(evt.type); },
+      // "beforeCollapse" : function(evt, dlg){ alert(evt.type); },
+      // "beforeMaximize" : function(evt, dlg){ alert(evt.type); },
+      // "beforeMinimize" : function(evt, dlg){ alert(evt.type); },
+      // "beforeRestore"  : function(evt, dlg){ alert(evt.type); },
+      // "collapse"       : function(evt, dlg){ alert(evt.type); },
+      // "maximize"       : function(evt, dlg){ alert(evt.type); },
+      // "minimize"       : function(evt, dlg){ alert(evt.type); },
+      // "restore"        : function(evt, dlg){ alert(evt.type); }
+    };
 
-  $(dialog.element).dialogExtend(opt);
+    for (let key in options)
+      if ((key in opt) && (!options[key]))  delete opt[key];
+                                      else  opt[key] = options[key];
+
+    $(dialog.element).dialogExtend(opt);
+
+  }
 
   return dialog;
 
