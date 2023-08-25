@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    25.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -225,7 +225,8 @@ if (!__template)  {
                         FreeR          : istruct.FreeR_flag,
                         isDifference   : false,
                         useWeight      : false,
-                        calcStructFact : true
+                        calcStructFact : istruct.FP && istruct.SigFP && 
+                                         istruct.FreeR_flag
                       }]
           });
         if (istruct.DELFWT)

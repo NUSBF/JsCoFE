@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.05.23   <--  Date of Last Modification.
+#    25.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -253,41 +253,70 @@ class Migrate(import_task.Import):
                 self.hotHelpLink ( "Structure Revision",
                                    "jscofe_qna.structure_revision") )
 
-        outFName = self.outputFName
+        outFName         = self.outputFName
         revisionSerialNo = 1
-        revision = None
+        revision         = None
+        singleMTZ        = (self.task.file_hkl == self.task.file_mtz)
 
         if len(hkls)>0:
             for i in range(len(hkls)):
                 for j in range(len(structures)):
                     if structures[j]:
-                        structures[j].setHKLLabels ( hkls[i] )
+
+                        # self.stderrln ( ' 1 >>>>> ' + hkls[i].dataset.Fmean.value +\
+                        #            '  ' + hkls[i].dataset.Fmean.sigma +\
+                        #            '  ' + hkls[i].dataset.FREE )
+
+                        # if hasattr(hkls[i].dataset,"Fmean"):
+                        #     self.stderrln ( "  -- Fmean" )
+                        # if hasattr(hkls[i].dataset,"FREE"):
+                        #     self.stderrln ( "  -- FREE" )
+
+                        if singleMTZ:
+                            structures[j].setHKLLabels ( hkls[i] )
+
+                        # self.stderrln ( ' S >>>>> ' + structures[j].FP +\
+                        #            '  ' + structures[j].SigFP +\
+                        #            '  ' + structures[j].FreeR_flag )
+
+
                         # structures[j].FP         = "FP"
                         # structures[j].SigFP      = "SIGFP"
                         self.outputFName = outFName + " " +\
-                                            hkls[i].getDataSetName() + xyzid
+                                           hkls[i].getDataSetName() + xyzid
                         r = dtype_revision.DType ( -1 )
-                        r.makeDataId ( revisionSerialNo )
-                        r.setReflectionData ( hkls[i] )
-                        r.setASUData ( self.job_id,[],0,0.0,0,1.0,50.0,0.0 )
-                        r.setStructureData ( structures[j] )
+                        r.makeDataId          ( revisionSerialNo )
+                        r.setReflectionData   ( hkls[i]          )
+                        r.setASUData          ( self.job_id,[],0,0.0,0,1.0,50.0,0.0 )
+                        r.setStructureData    ( structures[j]    )
                         self.registerRevision ( r,serialNo=revisionSerialNo,
                                                   title=None,message="" )
                         revisionSerialNo += 1
                         self.have_results = True
                         if not revision:
                             revision = copy.deepcopy(r)
+
+                        # self.stderrln ( ' S >>>>> ' + revision.Structure.FP +\
+                        #            '  ' + revision.Structure.SigFP +\
+                        #            '  ' + revision.Structure.FreeR_flag )
+
         else:
             for j in range(len(structures)):
                 if structures[j]:
-                    structures[j].setHKLLabels ( self.hkl[j] )
+                    
+                    # self.stderrln ( ' 2 >>>>> ' + self.hkl[j].dataset.Fmean.value +\
+                    #                '  ' + self.hkl[j].dataset.Fmean.sigma +\
+                    #                '  ' + self.hkl[j].dataset.FREE )
+
+                    if singleMTZ:
+                        structures[j].setHKLLabels ( self.hkl[j] )
                     self.outputFName = outFName + " " +\
                                         self.hkl[j].getDataSetName() + xyzid
                     r = dtype_revision.DType ( -1 )
-                    r.makeDataId ( revisionSerialNo )
-                    r.setReflectionData ( self.hkl[j] )
-                    r.setASUData ( self.job_id,[],0,0.0,0,1.0,50.0,0.0 )
-                    r.setStructureData ( structures[j] )
+                    r.makeDataId          ( revisionSerialNo )
+                    r.setReflectionData   ( self.hkl[j]      )
+                    r.setASUData          ( self.job_id,[],0,0.0,0,1.0,50.0,0.0 )
+                    r.setStructureData    ( structures[j]    )
                     self.registerRevision ( r,serialNo=revisionSerialNo,
                                               title=None,message="" )
                     revisionSerialNo += 1

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    24.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -34,7 +34,7 @@ function TaskASUDef()  {
              else  TaskTemplate.call ( this );
 
   this._type     = 'TaskASUDef';
-  this.name      = 'asymmetric unit contents';
+  this.name      = 'define asymmetric unit contents';
   this.oname     = '';  //'*';   // asterisk here means do not use
   this.title     = 'Asymmetric Unit Contents';
   //this.helpURL   = './html/jscofe_task_asudef.html';
