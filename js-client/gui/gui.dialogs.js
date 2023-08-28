@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.08.23   <--  Date of Last Modification.
+ *    28.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -859,7 +859,7 @@ WebAppBox.prototype.launch = function() {
   var self = this;
 
   var resize_func = function()  {
-    var w = $(self.element).width();
+    var w = $(self.element).width ();
     var h = $(self.element).height();
     self.iframe.setSize_px ( w,h );
   }
