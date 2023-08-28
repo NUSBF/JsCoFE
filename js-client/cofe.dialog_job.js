@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.07.23   <--  Date of Last Modification.
+ *    28.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -973,6 +973,8 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                         });
 
                     } else if (dlg.task.nc_type == 'browser')  {
+
+                      dlg.task.job_dialog_data.job_token = rdata.job_token;
 
                       // dlg.enableCloseButton ( false );
                       dlg.close_btn.setDisabled ( true );
