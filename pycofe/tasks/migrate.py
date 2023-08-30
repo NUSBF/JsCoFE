@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.08.23   <--  Date of Last Modification.
+#    30.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -256,7 +256,12 @@ class Migrate(import_task.Import):
         outFName         = self.outputFName
         revisionSerialNo = 1
         revision         = None
-        singleMTZ        = (self.task.file_hkl == self.task.file_mtz)
+        try: 
+            singleMTZ        = (self.task.file_hkl == self.task.file_mtz)
+        except:
+            pass
+        try: singleMTZ = self.hkl
+        except: pass
 
         if len(hkls)>0:
             for i in range(len(hkls)):
