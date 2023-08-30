@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    30.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -78,7 +78,7 @@ function TaskWFlowDPL()  {
   this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'' }];
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataUnmerged':[],'DataHKL':['']}, // data type(s) and subtype(s)
+      data_type   : {'DataUnmerged':[],'DataHKL':[], }, // data type(s) and subtype(s)
       label       : 'Reflection Data', // label for input dialog
       inputId     : 'hkldata',  // input Id for referencing input fields
       version     : 0,          // minimum data version allowed
@@ -106,6 +106,8 @@ function TaskWFlowDPL()  {
       max         : this.input_ligands.length // maximum acceptable number of data instances
     }
   ];
+
+
 
   this.parameters = {};
 
