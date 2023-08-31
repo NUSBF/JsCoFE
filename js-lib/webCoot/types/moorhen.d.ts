@@ -2,6 +2,7 @@ import React from "react"
 import { emscriptem } from "./emscriptem";
 import { gemmi } from "./gemmi";
 import { webGL } from "./mgWebGL";
+import { MoorhenCommandCentre } from "../moorhen";
 
 export namespace moorhen {
 
@@ -16,6 +17,7 @@ export namespace moorhen {
         chainName: string;
         resNum: string;
         modelName: string;
+        cid: string;
     }
     
     type Sequence = {
@@ -63,7 +65,6 @@ export namespace moorhen {
     }
     
     type cootBondOptions = {
-        isDarkBackground: boolean;
         smoothness: number;
         width: number;
         atomRadiusBondRatio: number;
@@ -83,14 +84,15 @@ export namespace moorhen {
     }
     
     interface Molecule {
+        fitLigandHere(mapMolNo: number, ligandMolNo: number, redraw?: boolean, useConformers?: boolean, conformerCount?: number): Promise<Molecule[]>;
         isLigand(): boolean;
         removeRepresentation(representationId: string): void;
-        addRepresentation(style: string, cid: string, isCustom?: boolean, colour?: moorhen.ColourRule[]): Promise<void>;
+        addRepresentation(style: string, cid: string, isCustom?: boolean, colour?: ColourRule[], bondOptions?: cootBondOptions): Promise<void>;
         getNeighborResiduesCids(selectionCid: string, radius: number, minDist: number, maxDist: number): Promise<string[]>;
         drawWithStyleFromMesh(style: string, meshObjects: any[], cid?: string): Promise<void>;
         updateWithMovedAtoms(movedResidues: AtomInfo[][]): Promise<void>;
         transformedCachedAtomsAsMovedAtoms(selectionCid?: string): AtomInfo[][];
-        copyFragmentUsingCid(cid: string, backgroundColor: [number, number, number, number], defaultBondSmoothness: number, doRecentre?: boolean, style?: string): Promise<Molecule>;
+        copyFragmentUsingCid(cid: string, doRecentre?: boolean, style?: string): Promise<Molecule>;
         hideCid(cid: string): Promise<void>;
         unhideAll(): Promise<void>;
         drawUnitCell(): void;
@@ -121,7 +123,7 @@ export namespace moorhen {
         centreOn: (selectionCid?: string, animate?: boolean) => Promise<void>;
         drawHover: (cid: string) => Promise<void>;
         clearBuffersOfStyle: (style: string) => void;
-        loadToCootFromURL: (inputFile: string, molName: string) => Promise<_moorhen.Molecule>;
+        loadToCootFromURL: (inputFile: string, molName: string) => Promise<Molecule>;
         applyTransform: () => Promise<void>;
         getAtoms(format?: string): Promise<WorkerResponse>;
         hide: (style: string, cid?: string) => void;
@@ -130,6 +132,7 @@ export namespace moorhen {
         hasVisibleBuffers: (excludeBuffers?: string[]) => boolean;
         centreAndAlignViewOn(selectionCid: string, animate?: boolean): Promise<void>;
         buffersInclude: (bufferIn: { id: string; }) => boolean;
+        redrawRepresentation: (id: string) => Promise<void>;
         type: string;
         excludedCids: string[];
         commandCentre: React.RefObject<CommandCentre>;
@@ -153,8 +156,9 @@ export namespace moorhen {
             boxRadius: number;
             gridScale: number;
         };
+        isDarkBackground: boolean;
         representations: MoleculeRepresentation[];
-        cootBondsOptions: cootBondOptions;
+        defaultBondOptions: cootBondOptions;
         displayObjectsTransformation: { origin: [number, number, number], quat: any, centre: [number, number, number] }
         uniqueId: string;
         defaultColourRules: ColourRule[];
@@ -181,7 +185,9 @@ export namespace moorhen {
         show(): void;
         hide(): void;
         setAtomBuffers(arg0: AtomInfo[]): void;
+        bondOptions: moorhen.cootBondOptions;
         useDefaultColourRules: boolean;
+        useDefaultBondOptions: boolean;
         uniqueId: string;
         style: string;
         cid: string;
@@ -202,10 +208,19 @@ export namespace moorhen {
         cid: string | null
     }
 
+    interface History {
+        setCommandCentre(arg0: CommandCentre): void;
+        entries: cootCommandKwargs[];
+        addEntry: (newEntry: cootCommandKwargs) => Promise<void>;
+        getEntriesForMolNo: (molNo: number) => cootCommandKwargs[];
+        getModifiedMolNo: () => number[];
+    }
+
     interface CommandCentre {
         urlPrefix: string;
         cootWorker: Worker;
         consoleMessage: string;
+        history: History;
         activeMessages: WorkerMessage[];
         unhook: () => void;
         onCootInitialized: null | ( () => void );
@@ -292,13 +307,16 @@ export namespace moorhen {
         fetchSuggestedLevel(): Promise<number>;
         fetchMapCentre(): Promise<[number, number, number]>;
         replaceMapWithMtzFile(fileUrl: RequestInfo | URL, name: string, selectedColumns: selectedMtzColumns, mapColour?: { [type: string]: {r: number, g: number, b: number} }): Promise<void>;
-        associateToReflectionData (selectedColumns: selectedMtzColumns, reflectionData: Uint8Array | ArrayBuffer): Promise<WorkerResponse>;
+        associateToReflectionData (selectedColumns: selectedMtzColumns, reflectionData: Uint8Array | ArrayBuffer): Promise<void>;
         delete(): Promise<void> 
         doCootContour(x: number, y: number, z: number, radius: number, contourLevel: number): Promise<void>;
         fetchReflectionData(): Promise<WorkerResponse<Uint8Array>>;
         getMap(): Promise<WorkerResponse>;
         loadToCootFromMtzURL(url: RequestInfo | URL, name: string, selectedColumns: selectedMtzColumns): Promise<Map>;
+        loadToCootFromMapURL(url: RequestInfo | URL, name: string, isDiffMap?: boolean): Promise<Map>
+        isEM: boolean;
         suggestedContourLevel: number;
+        suggestedRadius: number;
         mapCentre: [number, number, number];
         type: string;
         name: string;
@@ -341,8 +359,8 @@ export namespace moorhen {
         name: string;
         molNo: number;
         pdbData: string;
-        representations: {cid: string, style: string}[];
-        cootBondsOptions: cootBondOptions;
+        representations: {cid: string, style: string, isCustom: boolean, colourRules: ColourRule[], bondOptions: cootBondOptions }[];
+        defaultBondOptions: cootBondOptions;
         connectedToMaps: number[];
     }
     
@@ -478,6 +496,7 @@ export namespace moorhen {
     }
 
     interface ContextSetters {
+        setDefaultMapSamplingRate: React.Dispatch<React.SetStateAction<number>>;
         setDoShadowDepthDebug: React.Dispatch<React.SetStateAction<boolean>>;
         setDefaultBackgroundColor: React.Dispatch<React.SetStateAction<[number, number, number, number]>>;
         setDoShadow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -525,8 +544,9 @@ export namespace moorhen {
     
     interface ContextValues {
         version?: string;
-        transparentModalsOnMouseOut: boolean;
         isMounted?: boolean;
+        defaultMapSamplingRate: number;
+        transparentModalsOnMouseOut: boolean;
         defaultBackgroundColor: [number, number, number, number];
         atomLabelDepthMode: boolean; 
         enableTimeCapsule: boolean;
@@ -595,6 +615,8 @@ export namespace moorhen {
         defaultBondSmoothness: number;
         isDark: boolean;
         changeMolecules: (arg0: MolChange<Molecule>) => void
+        defaultActionButtonSettings: actionButtonSettings;
+        setDefaultActionButtonSettings: (arg0: {key: string; value: string}) => void;     
     }
     
     type MolChange<T extends Molecule | Map> = {
@@ -662,7 +684,6 @@ export namespace moorhen {
         setActiveMolecule: React.Dispatch<React.SetStateAction<Molecule>>;
         hoveredAtom: null | HoveredAtom;
         setHoveredAtom: React.Dispatch<React.SetStateAction<HoveredAtom>>;
-        commandHistory: any;
         backgroundColor: [number, number, number, number];
         setBackgroundColor: React.Dispatch<React.SetStateAction<[number, number, number, number]>>;
         toastContent: null | JSX.Element;
@@ -701,8 +722,6 @@ export namespace moorhen {
         setWindowWidth: React.Dispatch<React.SetStateAction<number>>;
         windowHeight: number;
         setWindowHeight: React.Dispatch<React.SetStateAction<number>>;
-        commandHistory: any;
-        dispatchHistoryReducer: (arg0: any) => void;
         molecules: Molecule[];
         changeMolecules: (arg0: MolChange<Molecule>) => void;
         maps: Map[];
@@ -724,5 +743,14 @@ export namespace moorhen {
     }
     
     interface ContainerProps extends Partial<ContainerStates>, Partial<ContainerOptionalProps> { }
+
+    type actionButtonSettings = {
+        mutate: 'ALA' | 'CYS' | 'ASP' | 'GLU' | 'PHE' | 'GLY' | 'HIS' | 'ILE' | 'LYS' | 'LEU' | 'MET' | 'ASN' | 'PRO' | 'GLN' | 'ARG' | 'SER' | 'THR' | 'VAL' | 'TRP' | 'TYR';
+        refine: 'SINGLE' | 'TRIPLE' | 'QUINTUPLE' | 'HEPTUPLE' | 'SPHERE' | 'BIG_SPHERE' | 'CHAIN' | 'ALL';
+        delete: 'ATOM' | 'RESIDUE' | 'RESIDUE HYDROGENS' | 'RESIDUE SIDE-CHAIN' | 'CHAIN' | 'CHAIN HYDROGENS' | 'MOLECULE HYDROGENS';
+        rotateTranslate: 'ATOM' | 'RESIDUE' | 'CHAIN' | 'MOLECULE';
+        drag: 'SINGLE' | 'TRIPLE' | 'QUINTUPLE' | 'HEPTUPLE' | 'SPHERE';
+        rigidBodyFit: 'SINGLE' | 'TRIPLE' | 'QUINTUPLE' | 'HEPTUPLE' | 'CHAIN' | 'ALL';
+    }
     
 }

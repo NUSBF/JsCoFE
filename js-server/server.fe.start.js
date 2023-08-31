@@ -135,6 +135,7 @@ function start ( callback_func )  {
     // server_response.setHeader ( 'Cross-Origin-Embedder-Policy','credentialless' );
     // server_response.setHeader ( 'Referrer-Policy','no-referrer' );
     // server_response.setHeader ( 'Referrer-Policy','no-referrer-when-downgrade' );
+    server_response.setHeader ( 'Cache-Control','max-age=31536000' );
 
     try {
 
