@@ -140,10 +140,6 @@ function start ( callback_func )  {
 
       var c = new comm.Communicate ( server_request,server_response );
 
-      if ((c.mimeType=='image/jpeg') || (c.mimeType=='image/png') ||
-          (c.mimeType=='image/svg+xml'))
-        server_response.setHeader ( 'Cache-Control','max-age=31536000' );
-
       switch (c.command)  {
 
         case cmd.fe_command.getInfo :
