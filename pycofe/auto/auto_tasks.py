@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.06.23   <--  Date of Last Modification.
+#    31.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -11,7 +11,7 @@
 #
 #  Task templates for automatic workflows
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2021-2023
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -69,13 +69,13 @@ def asu ( name,parentName ):
         # auto_api.addContext  ( "branch",branchName )
     return
 
-# def editrevision ( name, revision, parentName ):
-#     xyz = auto_api.getContext("xyz")
-#     if xyz:
-#         auto_api.addTask     ( name,"TaskEditRevision",parentName )
-#         auto_api.addTaskData ( name, "xyz", xyz)
-#         auto_api.addTaskData(name, "revision", revision)
-#     return
+def editrevision ( name, revision, parentName ):
+    seq = auto_api.getContext("seq")
+    if seq:
+        auto_api.addTask     ( name,"TaskEditRevision",parentName )
+        auto_api.addTaskData ( name, "seq", seq)
+        auto_api.addTaskData(name, "revision", revision)
+    return
 
 def dimple ( name,revision,parentName ):
     auto_api.addTask          ( name,"TaskDimple"  ,parentName )

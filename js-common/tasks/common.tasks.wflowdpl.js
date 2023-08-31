@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.08.23   <--  Date of Last Modification.
+ *    31.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -104,6 +104,13 @@ function TaskWFlowDPL()  {
       inputId     : 'ligand',      // input Id for referencing input fields
       min         : 0,             // minimum acceptable number of data instances
       max         : this.input_ligands.length // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataXYZ':['protein','dna','rna'] },  // data type(s) and subtype(s)
+      label       : 'Template structure',    // label for input dialog
+      inputId     : 'fpdb',    // input Id for referencing input fields
+      //customInput : 'chain-sel', // lay custom fields next to the selection
+      min         : 1,            // minimum acceptable number of data instances
+      max         : 1            // maximum acceptable number of data instances
     }
   ];
 
