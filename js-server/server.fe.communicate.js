@@ -324,6 +324,11 @@ Communicate.prototype.sendFile = function ( server_response )  {
 
   //var mtype = this.mimeType;
 
+  if ((this.mimeType=='image/jpeg') || (this.mimeType=='image/png') ||
+      (this.mimeType=='image/svg+xml'))
+    server_response.setHeader ( 'Cache-Control','max-age=31536000' );
+
+
   log.debug2 ( 5,'send file = ' + this.filePath );
 
 //console.log ( 'send file = ' + this.filePath + ',  mtype=' + mtype );
