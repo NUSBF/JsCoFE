@@ -135,11 +135,14 @@ function start ( callback_func )  {
     // server_response.setHeader ( 'Cross-Origin-Embedder-Policy','credentialless' );
     // server_response.setHeader ( 'Referrer-Policy','no-referrer' );
     // server_response.setHeader ( 'Referrer-Policy','no-referrer-when-downgrade' );
-    server_response.setHeader ( 'Cache-Control','max-age=31536000' );
 
     try {
 
       var c = new comm.Communicate ( server_request,server_response );
+
+      if ((c.mimeType=='image/jpeg') || (c.mimeType=='image/png') ||
+          (c.mimeType=='image/svg+xml'))
+        server_response.setHeader ( 'Cache-Control','max-age=31536000' );
 
       switch (c.command)  {
 
