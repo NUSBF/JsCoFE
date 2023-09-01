@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    08.08.23   <--  Date of Last Modification.
+#    31.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -42,7 +42,9 @@ def makeNextTask ( crTask,data ):
 
     if crTask._type=="TaskWFlowDPL":
         auto_tasks.store(data["unm"], data["hkl"], data["seq"], data["lig"], data["ligdesc"])
-        auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
+        auto_api.addContext("xyz", data["xyz"])
+        auto_tasks.editrevision ("TaskEditRevision", data["revision"], crTask.autoRunName )
+        # auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
         return
         # if len(data["unm"]) > 0:
         #     auto_tasks.aimless ( "aimless", crTask.autoRunName )
@@ -65,6 +67,10 @@ def makeNextTask ( crTask,data ):
     # elif crTask._type=="TaskEditRevision":
     #     auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
     #     return
+    elif crTask._type=="TaskEditRevision":
+        auto_api.getContext("revision")
+        # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
+        auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
 
 
     elif crTask._type=="TaskDimple":
@@ -107,7 +113,9 @@ def makeNextTask ( crTask,data ):
                         auto_tasks.refmacSuggested("ref_afterLig_", data["revision"], data['suggestedParameters'] )
                         return
             # If it comes down here, REFMAC second round after ligand seems to converge or maximal number of attempts is over.
+            
             auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
+            
             return
 
         # Refinements until convergence - first round
@@ -146,6 +154,7 @@ def makeNextTask ( crTask,data ):
                         auto_tasks.fit_waters("fitwaters", data["revision"], crTask.autoRunName)
                         return
 
+    
 
     elif crTask._type=="TaskMakeLigand":
         if data["ligand"]:
