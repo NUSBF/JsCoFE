@@ -99,7 +99,7 @@ def calculate ( meta ) :
     else:
         externalBest = False
 
-    if meta['params']['homologs'] == 'True':
+    if meta['params']['homologs'] != 'none':
         homologsUsed = True
     else:
         homologsUsed = False
