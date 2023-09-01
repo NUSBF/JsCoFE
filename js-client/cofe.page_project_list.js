@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.08.23   <--  Date of Last Modification.
+ *    01.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project list page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
  *
  *  =================================================================
  *
@@ -22,7 +22,7 @@
 'use strict';
 
 /*
-http://tablesorter.com/docs/#Introduction
+http://tablesorter.com/docs/#Introduction  seems like fraud web page
 https://mottie.github.io/tablesorter/docs/example-widget-filter-custom.html
 
 https://mottie.github.io/tablesorter/docs/example-css-highlighting.html
@@ -127,8 +127,9 @@ function ProjectListPage ( sceneId )  {
   function setPageTitle ( folder )  {
     if (pageTitle_lbl)  {
       pageTitle_lbl.setText ( '&nbsp;' + folderPathTitle(folder,__login_id,50) );
-      pageTitle_lbl.setFont ( 'times','200%',true,true );
+      pageTitle_lbl.setFont ( 'times','200%',true,true);
       pageTitle_lbl.setVisible ( true );
+      pageTitle_lbl.setCursor('pointer');
     }
     if (folder_btn)  {
       var icon = 'folder_projects';
