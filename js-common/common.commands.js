@@ -278,6 +278,7 @@ function Response ( status,message,data )  {
 Response.prototype.send = function ( server_response )  {
   server_response.writeHead ( 200, {
     'Content-Type'                 : 'text/plain',
+    'Transfer-Encoding'            : 'deflate, compress, gzip',
     'Access-Control-Allow-Origin'  : '*'
   });
   server_response.end ( JSON.stringify(this) );
@@ -291,6 +292,7 @@ var resp = new Response ( status,message,data );
 function sendResponseMessage ( server_response,message,mimeType )  {
   server_response.writeHead ( 200, {
     'Content-Type'                 : mimeType,
+    'Transfer-Encoding'            : 'deflate, compress, gzip',
     'Access-Control-Allow-Origin'  : '*'
   });
   server_response.end ( message );
