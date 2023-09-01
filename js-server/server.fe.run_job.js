@@ -377,6 +377,8 @@ function ncSelectAndCheck ( nc_counter,task,callback_func )  {
         if ((error=='not-in-use') && (nc_counter>0))  {
           ncSelectAndCheck ( nc_counter-1,task,callback_func );
         } else if ((!error) && (response.statusCode==200))  {
+          if (nc_number>=0)
+            conf.getNCConfigs()[nc_number].current_capacity--;
           callback_func ( nc_number );
         } else  {
           log.standard ( 1,'NC-' + nc_number + ' does not answer' );
@@ -515,7 +517,6 @@ function _run_job ( loginData,task,job_token,ownerLoginData,shared_logins, callb
     }
 
   });
-
 
 }
 
@@ -662,7 +663,6 @@ function runJob ( loginData,data, callback_func )  {
   }
 
 }
-
 
 
 function webappEndJob ( loginData,data, callback_func )  {
@@ -1298,6 +1298,16 @@ function getJobResults ( job_token,server_request,server_response )  {
         if (utils.fileExists(jobball_path))
           utils.removeFile ( jobball_path );
 
+        if (('capacity' in meta) && (jobEntry.nc_number>=0))  {
+          var nc_servers = conf.getNCConfigs();
+          if (jobEntry.nc_number<nc_servers.length)  {
+            nc_servers[jobEntry.nc_number].current_capacity = meta.capacity;
+            log.standard ( 19,'NC' + jobEntry.nc_number + ' capacity=' + meta.capacity );
+          } else
+            log.error ( 19,'wrong NC number (' + jobEntry.nc_number + ') capacity=' + 
+                          meta.capacity );
+        }
+
         if (!code)  {  // success
           // print usage stats and update the user ration state
 
@@ -1324,15 +1334,15 @@ function getJobResults ( job_token,server_request,server_response )  {
 
           if ('tokens' in meta)
             feJobRegister.cleanup ( job_token,meta.tokens.split(',') );
-          if (('capacity' in meta) && (jobEntry.nc_number>=0))  {
-            var nc_servers = conf.getNCConfigs();
-            if (jobEntry.nc_number<nc_servers.length)  {
-              nc_servers[jobEntry.nc_number].current_capacity = meta.capacity;
-              log.standard ( 19,'NC' + jobEntry.nc_number + ' capacity=' + meta.capacity );
-            } else
-              log.error ( 19,'wrong NC number (' + jobEntry.nc_number + ') capacity=' + 
-                             meta.capacity );
-          }
+          // if (('capacity' in meta) && (jobEntry.nc_number>=0))  {
+          //   var nc_servers = conf.getNCConfigs();
+          //   if (jobEntry.nc_number<nc_servers.length)  {
+          //     nc_servers[jobEntry.nc_number].current_capacity = meta.capacity;
+          //     log.standard ( 19,'NC' + jobEntry.nc_number + ' capacity=' + meta.capacity );
+          //   } else
+          //     log.error ( 19,'wrong NC number (' + jobEntry.nc_number + ') capacity=' + 
+          //                    meta.capacity );
+          // }
           feJobRegister.removeJob ( job_token );
           feJobRegister.n_jobs++;
           writeFEJobRegister();
