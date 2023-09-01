@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.06.22   <--  Date of Last Modification.
+#    31.08.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,6 +31,7 @@ import os
 from  pycofe.dtypes  import dtype_structure, dtype_template
 from  pycofe.tasks   import asudef
 from  pycofe.proc    import makelib
+from   pycofe.auto     import auto
 
 
 # ============================================================================
@@ -292,6 +293,10 @@ class EditRevision(asudef.ASUDef):
 
             self.registerRevision ( revision  )
             have_results = True
+            auto.makeNextTask ( self,{
+                "revision" : revision0 
+            })
+            
 
             # this will go in the project tree line
             summary_line = ""

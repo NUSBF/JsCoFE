@@ -390,7 +390,7 @@ def test_sharingBasic(browser,
         sf.asymmetricUnitContentsAfterCloudImport(d2.driver, 300)
         time.sleep(1)
 
-        sf.clickTaskInTaskTree(d.driver, '\[0002\] asymmetric unit contents')
+        sf.clickTaskInTaskTree(d.driver, '\[0002\]')
         time.sleep(1)
         sf.editRevisionStructure_rnase(d.driver, 300)
         time.sleep(1)
@@ -399,7 +399,7 @@ def test_sharingBasic(browser,
         time.sleep(1)
         startRefmac(d2.driver)
         time.sleep(1)
-        sf.clickTaskInTaskTree(d.driver, '\[0002\] asymmetric unit contents')
+        sf.clickTaskInTaskTree(d.driver, '\[0002\]')
         time.sleep(2) # sensitive
         startSimbad(d.driver)
         time.sleep(10)
@@ -407,7 +407,7 @@ def test_sharingBasic(browser,
         # closeButton = d2.driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
         # closeButton.click()
         time.sleep(1)
-        sf.clickTaskInTaskTree(d2.driver, '\[0002\] asymmetric unit contents')
+        sf.clickTaskInTaskTree(d2.driver, '\[0002\]')
         time.sleep(1)
         # startMrbump(d2.driver)
 

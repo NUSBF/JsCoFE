@@ -90,6 +90,7 @@ class Migrate(import_task.Import):
         self.xyz = None  # coordinates
         self.map = []    # maps/phases
         self.lib = None  # ligand descriptions
+        self.seq = []
 
         if "DataHKL" in self.outputDataBox.data:
             self.hkl = self.outputDataBox.data["DataHKL"]
@@ -99,6 +100,8 @@ class Migrate(import_task.Import):
 
         if "DataXYZ" in self.outputDataBox.data:
             self.xyz = self.outputDataBox.data["DataXYZ"][0]
+        if "DataSequence" in self.outputDataBox.data:
+            self.seq = self.outputDataBox.data["DataSequence"]
 
         if "DataLibrary" in self.outputDataBox.data:
             self.lib = self.outputDataBox.data["DataLibrary"][0]

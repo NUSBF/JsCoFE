@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    07.04.22   <--  Date of Last Modification.
+#    31.08.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021-2022
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -61,7 +61,7 @@ class WFlowDPL(migrate.Migrate):
         # fetch data for the Migrate pipeline
 
         self.hkl = []    # all reflections dataset (given and in map mtzs)
-        self.xyz = None  # coordinates
+        self.xyz = []  # coordinates
         self.map = []    # maps/phases
         self.lib = None  # ligand descriptions
         self.unm = []
@@ -75,6 +75,7 @@ class WFlowDPL(migrate.Migrate):
 
         if "DataHKL" in self.outputDataBox.data:
             self.hkl = self.outputDataBox.data["DataHKL"]
+
 
         # if len(self.unm)<1:
         #     hasI = False
@@ -192,6 +193,7 @@ class WFlowDPL(migrate.Migrate):
             "revision" : revision,
              "hkl": self.hkl,
              "seq": self.seq,
+             "xyz": self.xyz,
              "lig": self.lig,
              "ligdesc": self.ligdesc,
            }):
