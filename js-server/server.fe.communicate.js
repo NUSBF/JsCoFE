@@ -328,7 +328,6 @@ Communicate.prototype.sendFile = function ( server_response )  {
       (this.mimeType=='image/svg+xml'))
     server_response.setHeader ( 'Cache-Control','max-age=31536000' );
 
-
   log.debug2 ( 5,'send file = ' + this.filePath );
 
 //console.log ( 'send file = ' + this.filePath + ',  mtype=' + mtype );
