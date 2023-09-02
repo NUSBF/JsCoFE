@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.12.22   <--  Date of Last Modification.
+ *    02.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Admin page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -172,7 +172,7 @@ function AdminPage ( sceneId )  {
         '<div style="width:400px"><h2>' + appName() + ' update</h2>' +
         appName() + ' will be shut down, updated and restarted. This is ' +
         'administrative action, which will work only if ' + appName() + 
-        'is appropriately configured. Use this only if you know what you ' +
+        ' is appropriately configured. Use this only if you know what you ' +
         'are doing.' +
         '<p>Are you sure?',[
         { name    : 'Yes, update and restart',
