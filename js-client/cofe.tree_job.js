@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    28.07.23   <--  Date of Last Modification.
+ *    02.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1970,6 +1970,39 @@ JobTree.prototype.isShared = function()  {
   return false;
 }
 
+JobTree.prototype.copyJobToClipboard = function() {
+let crTask = this.getSelectedTask();
+  if (crTask)  {
+    let reftask = eval ( 'new ' + crTask._type + '()' );
+    if (crTask.version<reftask.currentVersion())  {
+      new MessageBox ( 'Cannot copy',
+        '<h2>This job cannot be copied.</h2>' +
+        'The job was created with a lower version of ' + appName() + 
+        '<br>and cannot be copied to clipboard.<p>Please create the job ' +
+        'as a new one, using "<i>Add Job</i>"<br>button from the control ' +
+        'bar.','msg_stop' );
+    } else
+      __clipboard.task = crTask;
+  } else
+    new MessageBox ( 'No task copied',
+      '<div style="width:300px;"><h2>No task copied</h2>' +
+      'Task could not be copied to Clipboard.',
+      'msg_error' );
+}
+
+JobTree.prototype.pasteJobFromClipboard = function ( callback_func ) {
+  if (__clipboard.task)  {
+    let task = eval ( 'new ' + __clipboard.task._type + '()' );
+    task.uname      = __clipboard.task.uname;
+    task.uoname     = __clipboard.task.uoname;
+    task.parameters = $.extend ( true,{},__clipboard.task.parameters );
+    callback_func ( task );
+  } else
+    new MessageBox ( 'Empty clipboard',
+      '<div style="width:300px;"><h2>Empty Clipboard</h2>' +
+      'No task found in Clipboard.',
+      'msg_error' );
+}
 
 JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
 
@@ -1989,10 +2022,11 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
     if (task0.version<task.currentVersion())  {
 
       new MessageBox ( 'Cannot clone',
-        '<div style="width:400px"><h2>This job cannot be cloned.</h2><p>' +
-        'The job was created with a lower version of ' + appName() + ' and cannot ' +
-        'be cloned.<p>Please create the job as a new one, using ' +
-        '"<i>Add Job</i>" button from the control bar.</div>','msg_stop' );
+        '<h2>This job cannot be cloned.</h2>' +
+        'The job was created with a lower version of ' + appName() + 
+        '<br>and cannot be cloned.<p>Please create the job as ' +
+        'a new one, using "<i>Add Job</i>",br.button from the ' +
+        'control bar.</div>','msg_stop' );
       if (onAdd_func)
         onAdd_func(-5);
 

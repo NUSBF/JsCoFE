@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.08.23   <--  Date of Last Modification.
+ *    02.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -572,30 +572,50 @@ ProjectPage.prototype.cloneJob = function() {
   }
 }
 
-ProjectPage.prototype.copyToClipboard = function() {
-let crTask = this.jobTree.getSelectedTask();
-  if (crTask)  {
-    __clipboard.task = crTask;
-  } else
-    new MessageBox ( 'No task copied',
-      '<div style="width:300px;"><h2>No task copied</h2>' +
-      'Task could not be copied to Clipboard.',
-      'msg_error' );
+ProjectPage.prototype.copyJobToClipboard = function()  {
+  this.jobTree.copyJobToClipboard();
 }
 
-ProjectPage.prototype.pasteFromClipboard = function() {
-  if (__clipboard.task)  {
-    let task = eval ( 'new ' + __clipboard.task._type + '()' );
-    task.uname      = __clipboard.task.uname;
-    task.uoname     = __clipboard.task.uoname;
-    task.parameters = $.extend ( true,{},__clipboard.task.parameters );
-    this.addTaskToSelected ( task,image_path(task.icon()),task.title );
-  } else
-    new MessageBox ( 'Empty clipboard',
-      '<div style="width:300px;"><h2>Empty Clipboard</h2>' +
-      'No task found in Clipboard.',
-      'msg_error' );
+ProjectPage.prototype.pasteJobFromClipboard = function() {
+  var self = this;
+  this.jobTree.pasteJobFromClipboard ( function(task){
+    self.addTaskToSelected ( task,image_path(task.icon()),task.title );
+  });
 }
+
+// ProjectPage.prototype.copyJobToClipboard = function() {
+// let crTask = this.jobTree.getSelectedTask();
+//   if (crTask)  {
+//     let reftask = eval ( 'new ' + crTask._type + '()' );
+//     if (crTask.version<reftask.currentVersion())  {
+//       new MessageBox ( 'Cannot copy',
+//         '<div style="width:400px"><h2>This job cannot be copied.</h2><p>' +
+//         'The job was created with a lower version of ' + appName() + 
+//         ' and cannot be copied to clipboard.<p>Please create the job ' +
+//         'as a new one, using "<i>Add Job</i>" button from the control ' +
+//         'bar.</div>','msg_stop' );
+//     } else
+//       __clipboard.task = crTask;
+//   } else
+//     new MessageBox ( 'No task copied',
+//       '<div style="width:300px;"><h2>No task copied</h2>' +
+//       'Task could not be copied to Clipboard.',
+//       'msg_error' );
+// }
+
+// ProjectPage.prototype.pasteJobFromClipboard = function() {
+//   if (__clipboard.task)  {
+//     let task = eval ( 'new ' + __clipboard.task._type + '()' );
+//     task.uname      = __clipboard.task.uname;
+//     task.uoname     = __clipboard.task.uoname;
+//     task.parameters = $.extend ( true,{},__clipboard.task.parameters );
+//     this.addTaskToSelected ( task,image_path(task.icon()),task.title );
+//   } else
+//     new MessageBox ( 'Empty clipboard',
+//       '<div style="width:300px;"><h2>Empty Clipboard</h2>' +
+//       'No task found in Clipboard.',
+//       'msg_error' );
+// }
 
 ProjectPage.prototype.deleteJob = function() {
   if (this.start_action('delete_job'))  {
@@ -921,18 +941,18 @@ ProjectPage.prototype.onTreeContextMenu = function() {
     if (crTask)  {
       let clipboard_name = crTask.clipboard_name();
       if (clipboard_name)
-        items.copyToClipboard = { // The "Clone job" menu item
+        items.copyJobToClipboard = { // The "Clone job" menu item
           label : 'Copy ' + clipboard_name + ' to clipboard',
           icon  : image_path('copy'),
-          action: function(){ self.copyToClipboard(); }
+          action: function(){ self.copyJobToClipboard(); }
         };
     }
 
     if (__clipboard.task)  {
-      items.pasteFromClipboard = { // The "Clone job" menu item
+      items.pasteJobFromClipboard = { // The "Clone job" menu item
         label : 'Paste ' + __clipboard.task.clipboard_name() + ' from clipboard',
         icon  : image_path('paste'),
-        action: function(){ self.pasteFromClipboard(); }
+        action: function(){ self.pasteJobFromClipboard(); }
       };
     }
 
@@ -1299,6 +1319,7 @@ ProjectPage.prototype.addTaskToSelected = function ( task,icon_uri,title )  {
         'msg_warning' );
 
   } else  {
+
     this.selectRemark();
     if (this.start_action('add_job'))  {
       this.can_reload = true;
@@ -1312,6 +1333,7 @@ ProjectPage.prototype.addTaskToSelected = function ( task,icon_uri,title )  {
             new TaskDataDialog ( dataSummary,task,avail_key );
         });
     }
+
   }
 
 }
