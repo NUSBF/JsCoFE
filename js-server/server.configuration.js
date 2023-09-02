@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.02.23   <--  Date of Last Modification.
+ *    02.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -86,6 +86,7 @@ function ServerConfig ( type )  {
     after  : 180      // accounts become dormant automatically after 180 days
                       // of inactivity; 0 means no auto-dormancy
   };
+  this.cache_max_age  = 31536000;  // 1 year in ms; max age for caching icons on clients  
   if (type=='FEProxy')
         this.state = 'active';  // server state: 'active', 'inactive'
   else  this.state = 'active';  // server state: 'active', 'inactive'
@@ -508,6 +509,7 @@ function CCP4DirName()  {
         "after"  : 180      // accounts become dormant automatically after 180 days
                       // of inactivity; 0 means no auto-dormancy
     },
+    "cache_max_age"    : 31536000,  // (optional) 1 year in ms; max age for caching icons on clients  
     "sessionCheckPeriod" : 2000,
     "ration"           : {
         "storage"      : 5000,     // currently comitted storage
