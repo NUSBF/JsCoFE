@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.03.23   <--  Date of Last Modification.
+ *    02.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -324,9 +324,12 @@ Communicate.prototype.sendFile = function ( server_response )  {
 
   //var mtype = this.mimeType;
 
-  if ((this.mimeType=='image/jpeg') || (this.mimeType=='image/png') ||
-      (this.mimeType=='image/svg+xml'))
-    server_response.setHeader ( 'Cache-Control','max-age=31536000' );
+  let cache_max_age = conf.getFEConfig().cache_max_age;
+  if ((cache_max_age>0) && 
+      ((this.mimeType=='image/jpeg') || 
+       (this.mimeType=='image/png')  ||
+       (this.mimeType=='image/svg+xml')))
+    server_response.setHeader ( 'Cache-Control','max-age=' + cache_max_age );
 
   log.debug2 ( 5,'send file = ' + this.filePath );
 

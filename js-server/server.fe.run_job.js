@@ -263,6 +263,35 @@ function getEFJobEntry ( loginData,project,jobId )  {
 
 var last_number_cruncher = -1;
 
+function printNCState ( nc_selected )  {
+let nc_servers = conf.getNCConfigs();
+  let s = '';
+  for (let i=0;i<nc_servers.length;i++)  {
+    s += ' ';
+    if ((i==nc_selected) && (i==last_number_cruncher))  s += '(*^)';
+    else if (i==last_number_cruncher)  s += '(^)';
+    else if (i==nc_selected)  s += '(*)';
+    s += i + '[' + nc_servers[i].capacity + ']:';
+    if (!nc_servers[i].in_use)
+      s += 'NIU';
+    else if (nc_servers[i].exeType=='CLIENT')
+      s += 'CLIENT';
+    else
+      s += Math.round ( 100*(1-nc_servers[i].current_capacity/nc_servers[i].capacity) ) + '%';
+  }
+  log.standard ( 14,'NC state:' + s );
+}
+
+function advance_last_number_cruncher ( nc_servers )  {
+  let i = 0;
+  do {
+    i++;
+    last_number_cruncher = (last_number_cruncher+1) % nc_servers.length;
+  } while ((i<nc_servers.length) && 
+           ((nc_servers[last_number_cruncher].exeType=='CLIENT') || 
+            (!nc_servers[last_number_cruncher].in_use)));
+}
+
 function selectNumberCruncher ( task )  {
 var nc_servers = conf.getNCConfigs();
 var nc_number  = -1;
@@ -270,8 +299,13 @@ var n          = last_number_cruncher;
 var maxcap0    = Number.MIN_SAFE_INTEGER;
 var n0         = -1;
 
+  function nextLNC()  {
+
+  }
+
   if ('nc_number' in task)  {  // developer's option
-    last_number_cruncher = task.nc_number;
+    // last_number_cruncher = task.nc_number;
+    advance_last_number_cruncher ( nc_servers );
     return task.nc_number;
   }
 
@@ -287,8 +321,9 @@ var n0         = -1;
 
     for (var i=0;(i<nc_servers.length) && (nc_number<0);i++)  {
 
-      n++;
-      if (n>=nc_servers.length)  n = 0;
+      // n++;
+      // if (n>=nc_servers.length)  n = 0;
+      n = (n+1) % nc_servers.length;
 
       if (nc_servers[n].in_use  &&
            (nc_servers[n].exeType!='CLIENT')  &&
@@ -329,7 +364,8 @@ var n0         = -1;
     }
 
     if (nc_number>=0)  {
-      last_number_cruncher = nc_number;
+      // last_number_cruncher = nc_number;
+      advance_last_number_cruncher ( nc_servers );
       return nc_number;
     }
 
@@ -340,8 +376,9 @@ var n0         = -1;
 
   // look for next free server, starting from the last used one (#n)
   for (var i=0;(i<nc_servers.length) && (nc_number<0);i++)  {
-    n++;  // this ensures that NCs are cycled, as initially n = last_number_cruncher
-    if (n>=nc_servers.length)  n = 0;  // wrap around
+    // n++;  // this ensures that NCs are cycled, as initially n = last_number_cruncher
+    // if (n>=nc_servers.length)  n = 0;  // wrap around
+    n = (n+1) % nc_servers.length;
     if (nc_servers[n].in_use  &&
          (nc_servers[n].exeType!='CLIENT')  &&
          (nc_servers[n].exclude_tasks.indexOf(task._type)<0)  &&
@@ -360,8 +397,10 @@ var n0         = -1;
   if (nc_number<0)  // all NCs are busy with negative current capacity,
     nc_number = n0;  // choose the least busy one
 
-  if (nc_number>=0)  // make sure that NCs work on rota basis
-    last_number_cruncher = nc_number;
+  // if (nc_number>=0)  // make sure that NCs work on rota basis
+  //   last_number_cruncher = nc_number;
+
+  advance_last_number_cruncher ( nc_servers );
 
   return nc_number;
 
@@ -377,15 +416,16 @@ function ncSelectAndCheck ( nc_counter,task,callback_func )  {
         if ((error=='not-in-use') && (nc_counter>0))  {
           ncSelectAndCheck ( nc_counter-1,task,callback_func );
         } else if ((!error) && (response.statusCode==200))  {
+          printNCState ( nc_number );
           if (nc_number>=0)
             conf.getNCConfigs()[nc_number].current_capacity--;
           callback_func ( nc_number );
         } else  {
           log.standard ( 1,'NC-' + nc_number + ' does not answer' );
           log.error    ( 1,'NC-' + nc_number + ' does not answer' );
-          if (nc_counter>0)
+          if (nc_counter>0)  {
             ncSelectAndCheck ( nc_counter-1,task,callback_func );
-          else  {
+          } else  {
             log.standard ( 2,'no response from number crunchers' );
             log.error    ( 2,'no response from number crunchers' );
             callback_func ( -102 );
