@@ -267,17 +267,22 @@ function printNCState ( nc_selected )  {
 let nc_servers = conf.getNCConfigs();
   let s = '';
   for (let i=0;i<nc_servers.length;i++)  {
-    s += ' ';
-    if ((i==nc_selected) && (i==last_number_cruncher))  s += '(*^)';
-    else if (i==last_number_cruncher)  s += '(^)';
-    else if (i==nc_selected)  s += '(*)';
-    s += i + '[' + nc_servers[i].capacity + ']:';
+    let s1 = ' ';
+    if ((i==nc_selected) && (i==last_number_cruncher))  s1 += '^*';
+    else if (i==last_number_cruncher)  s1 += ' ^';
+    else if (i==nc_selected)  s1 += ' *';
+    else s1 += '  ';
+    s1 += i + '[' + nc_servers[i].capacity + ']:';
     if (!nc_servers[i].in_use)
-      s += 'NIU';
+      s1 += 'NIU';
     else if (nc_servers[i].exeType=='CLIENT')
-      s += 'CLIENT';
-    else
-      s += Math.round ( 100*(1-nc_servers[i].current_capacity/nc_servers[i].capacity) ) + '%';
+      s1 += 'CLIENT';
+    else {
+      let s2 = Math.round ( 100*(1-nc_servers[i].current_capacity/nc_servers[i].capacity) ) + '%';
+      while (s2.length<4)  s2 += ' ';
+      s1 += s2;
+    }
+    s += s1;
   }
   log.standard ( 14,'NC state:' + s );
 }
