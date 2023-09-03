@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.07.23   <--  Date of Last Modification.
+ *    03.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -141,7 +141,7 @@ TaskPDBVal.prototype.constructor = TaskPDBVal;
 
 TaskPDBVal.prototype.icon             = function()  { return 'task_pdbval';      }
 TaskPDBVal.prototype.clipboard_name   = function()  { return '"PDB Validation"'; }
-TaskPDBVal.prototype.canEndGracefully = function()  { return true; }
+TaskPDBVal.prototype.canEndGracefully = function()  { return true;               }
 
 TaskPDBVal.prototype.desc_title = function()  {
 // this appears under task title in the task list
