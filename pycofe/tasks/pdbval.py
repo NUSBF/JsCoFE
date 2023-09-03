@@ -448,8 +448,8 @@ class PDBVal(basic.TaskDriver):
                 "Error: \"" + error_msg + "\"<p>" +\
                 "<i><b>Note:</b> despite the failure, you can prepare deposition "   +\
                 "files and use them in PDB deposition session, but be advised that " +\
-                "analysis of validation report is an important part of the PDB "     +\
-                "deposition process.</i>s"
+                "the analysis of the validation report is an important part of the " +\
+                "PDB deposition process.</i>"
             )
 
         self.addCitation ( 'pdbval' )
