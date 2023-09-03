@@ -139,10 +139,11 @@ TaskPDBVal.prototype.constructor = TaskPDBVal;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskPDBVal.prototype.icon           = function()  { return 'task_pdbval';      }
-TaskPDBVal.prototype.clipboard_name = function()  { return '"PDB Validation"'; }
+TaskPDBVal.prototype.icon             = function()  { return 'task_pdbval';      }
+TaskPDBVal.prototype.clipboard_name   = function()  { return '"PDB Validation"'; }
+TaskPDBVal.prototype.canEndGracefully = function()  { return true; }
 
-TaskPDBVal.prototype.desc_title     = function()  {
+TaskPDBVal.prototype.desc_title = function()  {
 // this appears under task title in the task list
   return 'acquires the PDB Validation report from wwPDB servers';
 };

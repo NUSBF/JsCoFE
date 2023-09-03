@@ -1,5 +1,6 @@
 #!/usr/bin/python2
 
+import os
 import time
 
 from onedep import __apiUrl__
@@ -17,7 +18,7 @@ def checkStatus ( sD,logfile ):
     return rc
 
 
-def getValidationReport ( modelFilePath,sfFilePath,repFilePath,logfile ):
+def getValidationReport ( modelFilePath,sfFilePath,repFilePath,logfile,endfile ):
     # Given:
     # modelFilePath contains the path to the model file
     # sfFilePath contains the path to the structure factor file
@@ -64,14 +65,19 @@ def getValidationReport ( modelFilePath,sfFilePath,repFilePath,logfile ):
                                 break
                             logfile.write ( "[%4d] Pausing for %4d (seconds)\n" % (it, pause) )
                             logfile.flush()
+                            if endfile and os.path.isfile(endfile):
+                                msg = "terminated by user"
+                                rc  = "22222"
+                                break
 
                         #lt = time.strftime("%Y%m%d%H%M%S", time.localtime())
                         #fnR = "xray-report-%s.pdf" % lt
                         #rD = val.getReport(fnR)
-                        rD = val.getReport ( repFilePath )
-                        rc = checkStatus ( rD,logfile )
-                        if not rc:
-                            msg = " --- success"
+                        if rc != "22222":
+                            rD = val.getReport ( repFilePath )
+                            rc = checkStatus ( rD,logfile )
+                            if not rc:
+                                msg = " --- success"
 
                     else:
                         msg = " *** validation run failed"
@@ -83,7 +89,7 @@ def getValidationReport ( modelFilePath,sfFilePath,repFilePath,logfile ):
             msg = " *** cannot create validation session"
     except:
         msg = " *** exception thrown"
-        rc  = 11111
+        rc  = "11111"
 
     if not rc:
         logfile.write ( " --- success\n" )
