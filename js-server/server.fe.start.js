@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.08.23   <--  Date of Last Modification.
+ *    03.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -287,6 +287,7 @@ function start ( callback_func )  {
 
     setTimeout ( function(){
       rj.cleanFEJobRegister ( 5 );  // 5 attempts
+      rj.setNCCapacityChecks();
     },10000);
 
     if (callback_func)

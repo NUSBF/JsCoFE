@@ -221,6 +221,10 @@ function start()  {
               response = rm.ncGetInfo ( server_request,server_response );
             break;
 
+          case cmd.nc_command.getNCCapacity :
+              rm.ncGetCapacity ( server_request,server_response );
+            break;
+
           case cmd.nc_command.stopJob :
               pp.processPOSTData ( server_request,server_response,jm.ncStopJob,'active' );
             break;
