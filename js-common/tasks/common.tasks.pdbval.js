@@ -156,7 +156,7 @@ TaskPDBVal.prototype.taskDescription = function()  {
 // TaskPDBVal.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskPDBVal.prototype.currentVersion = function()  {
-  var version = 1;
+  var version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
