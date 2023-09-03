@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#   25.07.23   <--  Date of Last Modification.
+#   03.09.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -28,11 +28,10 @@
 import os
 # import sys
 import uuid
-#import json
+# import json
 import time
 #from   xml.etree import ElementTree as ET
 import shutil
-import json
 
 #  ccp4 imports
 import gemmi
@@ -368,9 +367,11 @@ class PDBVal(basic.TaskDriver):
         rvrow0 = self.rvrow
         self.rvrow += 2
 
+        error_msg = None
+
         if not self.have_internet():
             line_summary = "pdb report not obtained (no internet)"
-            self.putMessage ( "<b><i>No internet connection.</i></b>" )
+            error_msg    = "no internet connection"
 
         else:
 
@@ -381,9 +382,6 @@ class PDBVal(basic.TaskDriver):
                 self.file_stdout.write ( "modelFilePath=" + deposition_cif + "\n" )
                 self.file_stdout.write ( "sfCIF=" + sfCIF + "\n" )
                 self.file_stdout.write ( "repFilePath=" + repFilePath + "\n" )
-
-                #modelFilePath = "/Users/eugene/Projects/jsCoFE/tmp/valrep/1sar.cif"
-                #sfCIF = "/Users/eugene/Projects/jsCoFE/tmp/valrep/1sar-sf.cif"
 
                 self.putWaitMessageLF ( "Validation Report is being acquired from wwPDB, please wait ..." )
 
@@ -403,31 +401,14 @@ class PDBVal(basic.TaskDriver):
                 # remove wait message
                 self.putMessage1 ( self.report_page_id(),"",self.rvrow,0,1,1 )
 
-                # self.putMessage (
-                #     "<i style='font-size:90%;'><span style='vertical-align:middle;'>" +\
-                #     "<b>To obtain deposition files in mmCIF format,</b> " +\
-                #     "run the file preparation task by clicking button</span> " +\
-                #     "<img src='../../../../../images_png/task_pdbdepfiles.png' " +\
-                #             "style='height:22px;width:22px;border:1px solid lightgrey;" +\
-                #                     "border-radius:2px;padding:2px;background-color:#F0F0F0;" +\
-                #                     "vertical-align:middle;' " +\
-                #             "onclick='window.parent.rvapi_runHotButtonJob(" + self.job_id + ",\"TaskPDBDepFiles\");'/> " +\
-                #     "<span style='vertical-align:middle;'>in the toolbar.</span></i>" )
-
                 if msg:
-                    self.putMessage ( "Failed: <b><i>" + str(msg) + "</i></b>" )
-
-                elif os.path.isfile(repFilePath):
+                    error_msg = str(msg)
+                elif not os.path.isfile(repFilePath):
+                    error_msg = "failed to download"
+                else:
 
                     repFilePath1 = os.path.join ( self.reportDir(),repFilePath )
                     os.rename ( repFilePath,repFilePath1 )
-
-                    # self.putSection ( self.report_id(),"wwPDB Validation Report",False )
-                    # self.putMessage1 ( self.report_id(),
-                    #         "<object data=\"" + repFilePath +\
-                    #         "\" type=\"application/pdf\" " +\
-                    #         "style=\"border:none;width:100%;height:1000px;\"></object>",
-                    #         0,0,1,1 )
 
                     self.putMessage (
                         "<object data=\"" + repFilePath +\
@@ -436,23 +417,21 @@ class PDBVal(basic.TaskDriver):
                     )
 
                     grid_id1 = self.getWidgetId ( self.dep_grid() )
-                    self.putMessage ( "&nbsp;<p><hr/>" )
-                    self.putGrid ( grid_id1 )
+                    self.putMessage  ( "&nbsp;<p><hr/>" )
+                    self.putGrid     ( grid_id1 )
                     self.putMessage1 ( grid_id1,"<i>PDB Validation Report in PDF format</i>&nbsp;",0,0 )
                     self.putDownloadButton ( repFilePath1,"download",grid_id1,0,1 )
-                    self.putMessage ( "<hr/>" )
-
-                    # self.registerRevision ( revision )
-
-                    revision.makeRevDName ( self.job_id,1,self.outputFName )
-                    revision.register     ( self.outputDataBox )
-
-                else:
-                    self.putMessage ( "&nbsp;<p><b><i> -- failed to download</i></b>" )
+                    self.putMessage  ( "<hr/>" )
 
             except:
+                # remove wait message
+                error_msg = "code exception"
                 line_summary = "pdb report not obtained (error)"
-                self.putMessage ( "&nbsp;<p><b><i> -- errors in obtaining the PDB Validation Report</i></b>" )
+
+        # self.registerRevision ( revision )
+
+        revision.makeRevDName ( self.job_id,1,self.outputFName )
+        revision.register     ( self.outputDataBox )
 
         pyrvapi.rvapi_add_button ( self.getWidgetId("depfiles"),
                 "Prepare deposition files","{function}",
@@ -461,6 +440,17 @@ class PDBVal(basic.TaskDriver):
                 False,self.report_page_id(),rvrow0,0,1,1 )
         self.putMessage1 ( self.report_page_id(),
                             "<div style='height:6px;'>&nbsp;</div>",rvrow0+1 )
+        
+        if error_msg:
+            self.putMessage1 ( self.report_page_id(),"",self.rvrow,0,1,1 )
+            self.putMessage  ( 
+                "<b><i>PDB Validation Report not obtained.</i></b><br>" +\
+                "Error: \"" + error_msg + "\"<p>" +\
+                "<i><b>Note:</b> despite the failure, you can prepare deposition "   +\
+                "files and use them in PDB deposition session, but be advised that " +\
+                "analysis of validation report is an important part of the PDB "     +\
+                "deposition process.</i>s"
+            )
 
         self.addCitation ( 'pdbval' )
 
