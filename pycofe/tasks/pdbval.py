@@ -450,7 +450,7 @@ class PDBVal(basic.TaskDriver):
             self.putMessage1 ( self.report_page_id(),"",self.rvrow,0,1,1 )
             self.putMessage  ( 
                 "<b><i>PDB Validation Report not obtained.</i></b><br>" +\
-                "Error: \"" + error_msg + "\"<p>" +\
+                "Reason: \"" + error_msg + "\"<p>" +\
                 "<i><b>Note:</b> despite the failure, you can prepare deposition "   +\
                 "files and use them in PDB deposition session, but be advised that " +\
                 "the analysis of the validation report is an important part of the " +\
