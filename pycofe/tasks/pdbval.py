@@ -394,7 +394,7 @@ class PDBVal(basic.TaskDriver):
                     self.file_stdout.flush ()
                     msg = valrep.getValidationReport ( deposition_cif,sfCIF,repFilePath,self.file_stdout )
                     if msg and (ntry<nattempts):
-                        self.file_stdout.write ( "\n -- server replied: " + msg + "\n" )
+                        self.file_stdout.write ( "\n -- server replied: " + str(msg) + "\n" )
                         ntry += 1
                         time.sleep ( 10 )
 
@@ -425,8 +425,8 @@ class PDBVal(basic.TaskDriver):
 
             except:
                 # remove wait message
-                error_msg = "code exception"
-                line_summary = "pdb report not obtained (error)"
+                error_msg    = "code exception"
+                line_summary = "pdb report not obtained (exception)"
 
         # self.registerRevision ( revision )
 
