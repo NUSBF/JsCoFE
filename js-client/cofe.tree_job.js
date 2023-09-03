@@ -2025,7 +2025,7 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
         '<h2>This job cannot be cloned.</h2>' +
         'The job was created with a lower version of ' + appName() + 
         '<br>and cannot be cloned.<p>Please create the job as ' +
-        'a new one, using "<i>Add Job</i>",br.button from the ' +
+        'a new one, using "<i>Add Job</i>"<br>button from the ' +
         'control bar.</div>','msg_stop' );
       if (onAdd_func)
         onAdd_func(-5);
