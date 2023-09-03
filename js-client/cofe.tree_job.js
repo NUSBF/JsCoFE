@@ -1692,8 +1692,8 @@ JobTree.prototype.stopJob = function ( nodeId,gracefully_bool,callback_func )  {
   if (gracefully_bool)
     msg = [ 'End Job',
             'End ' + word + ' job ' + jobId +
-            '? Ending job may take a while, but already obtained results<br>' +
-            '(if any) will be made available for subsequent jobs.<br>' +
+            '? Ending job may take a while,<br>but already obtained results ' +
+            '(if any) will be made<br>available for subsequent jobs.<p>' +
             'Once a job is ended, it cannot be resumed.',
             'End',
             'Job ' + jobId + ' is being ended' ];
