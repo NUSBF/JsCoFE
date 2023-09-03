@@ -222,7 +222,8 @@ var nc_command = {
   selectImageDir : '-selectImageDir', // request to select image directory (local service)
   runRVAPIApp    : '-runRVAPIApp',    // run RVAPI helper application (local service)
   runClientJob   : '-runClientJob',   // run client job (local service)
-  getNCInfo      : '-getNCInfo'       // get NC config and other info
+  getNCInfo      : '-getNCInfo',      // get NC config and other info
+  getNCCapacity  : '-getNCCapacity'   // get NC current capacity
 };
 
 

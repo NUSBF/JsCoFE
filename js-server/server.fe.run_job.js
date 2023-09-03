@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.02.23   <--  Date of Last Modification.
+ *    03.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -261,6 +261,25 @@ function getEFJobEntry ( loginData,project,jobId )  {
 
 // ===========================================================================
 
+var nc_check_handler = null;
+
+function setNCCapacityChecks()  {
+  if (!nc_check_handler)  {
+    nc_check_handler = setInterval ( function(){
+      let nc_servers = conf.getNCConfigs();
+      for (let i=0;i<nc_servers.length;i++)
+        if (nc_servers[i].in_use && (nc_servers[i].exeType!='CLIENT'))
+          nc_servers[i].checkNCCapacity ( function(error,response,body,config){
+            if ((!error) && (response.statusCode==200))  {
+              nc_servers[i].capacity         = response.body.data.capacity;
+              nc_servers[i].current_capacity = response.body.data.current_capacity;
+            } else
+              log.standard ( 15,'NC' + i + ' (' +  nc_servers[i].name + ') is dead' );
+          });
+    },conf.getFEConfig().capacity_check_interval);
+  }
+}
+
 var last_number_cruncher = -1;
 
 function printNCState ( nc_selected )  {
@@ -303,10 +322,6 @@ var nc_number  = -1;
 var n          = last_number_cruncher;
 var maxcap0    = Number.MIN_SAFE_INTEGER;
 var n0         = -1;
-
-  function nextLNC()  {
-
-  }
 
   if ('nc_number' in task)  {  // developer's option
     // last_number_cruncher = task.nc_number;
@@ -1343,14 +1358,22 @@ function getJobResults ( job_token,server_request,server_response )  {
         if (utils.fileExists(jobball_path))
           utils.removeFile ( jobball_path );
 
-        if (('capacity' in meta) && (jobEntry.nc_number>=0))  {
-          var nc_servers = conf.getNCConfigs();
-          if (jobEntry.nc_number<nc_servers.length)  {
-            nc_servers[jobEntry.nc_number].current_capacity = meta.capacity;
-            log.standard ( 19,'NC' + jobEntry.nc_number + ' capacity=' + meta.capacity );
-          } else
-            log.error ( 19,'wrong NC number (' + jobEntry.nc_number + ') capacity=' + 
-                          meta.capacity );
+        if (jobEntry.nc_number>=0)  {
+          if (jobEntry.nc_number>=nc_servers.length)  {
+            log.error ( 19,'wrong NC number (' + jobEntry.nc_number + ')' );
+          } else  {
+            let nc_servers = conf.getNCConfigs();
+            if ('current_capacity' in meta)  {
+              nc_servers[jobEntry.nc_number].capacity         = meta.capacity;
+              nc_servers[jobEntry.nc_number].current_capacity = meta.current_capacity;
+              log.standard ( 19,'NC' + jobEntry.nc_number + ' current capacity ' + 
+                                meta.current_capacity + ' / ' +
+                                meta.capacity );
+            } else if ('capacity' in meta)  {
+              nc_servers[jobEntry.nc_number].current_capacity = meta.capacity;
+              log.standard ( 19,'NC' + jobEntry.nc_number + ' capacity=' + meta.capacity );
+            }
+          }
         }
 
         if (!code)  {  // success
@@ -1853,17 +1876,18 @@ function cloudRun ( server_request,server_response )  {
 
 // ==========================================================================
 // export for use in node
-module.exports.readFEJobRegister  = readFEJobRegister;
-module.exports.writeFEJobRegister = writeFEJobRegister;
-module.exports.cleanFEJobRegister = cleanFEJobRegister;
-module.exports.getEFJobEntry      = getEFJobEntry;
-module.exports.runJob             = runJob;
-module.exports.replayJob          = replayJob;
-module.exports.readJobStats       = readJobStats;
-module.exports.stopJob            = stopJob;
-module.exports.killJob            = killJob;
-module.exports.webappEndJob       = webappEndJob;
-module.exports.getJobResults      = getJobResults;
-module.exports.checkJobs          = checkJobs;
-module.exports.wakeZombieJobs     = wakeZombieJobs;
-module.exports.cloudRun           = cloudRun;
+module.exports.readFEJobRegister   = readFEJobRegister;
+module.exports.writeFEJobRegister  = writeFEJobRegister;
+module.exports.cleanFEJobRegister  = cleanFEJobRegister;
+module.exports.getEFJobEntry       = getEFJobEntry;
+module.exports.setNCCapacityChecks = setNCCapacityChecks;
+module.exports.runJob              = runJob;
+module.exports.replayJob           = replayJob;
+module.exports.readJobStats        = readJobStats;
+module.exports.stopJob             = stopJob;
+module.exports.killJob             = killJob;
+module.exports.webappEndJob        = webappEndJob;
+module.exports.getJobResults       = getJobResults;
+module.exports.checkJobs           = checkJobs;
+module.exports.wakeZombieJobs      = wakeZombieJobs;
+module.exports.cloudRun            = cloudRun;

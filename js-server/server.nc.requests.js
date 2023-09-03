@@ -185,11 +185,19 @@ function ncGetInfo ( server_request,server_response )  {
 //$CCP4/lib/py2/morda/LINKED
 //$CCP4/share/mrd_data/VERSION
 
-
   return new cmd.Response ( cmd.nc_retcode.ok,'',ncInfo );
 
 }
 
+function ncGetCapacity ( server_request,server_response )  {
+  jm.calcCapacity ( function(current_capacity){
+    let response = new cmd.Response ( cmd.nc_retcode.ok,'',{
+      'capacity'         : conf.getServerConfig().capacity,
+      'current_capacity' : current_capacity
+    });
+    response.send ( server_response );
+  });
+}
 
 // ==========================================================================
 // export for use in node
@@ -197,3 +205,4 @@ module.exports.ncSelectDir      = ncSelectDir;
 module.exports.ncSelectFile     = ncSelectFile;
 module.exports.ncSelectImageDir = ncSelectImageDir;
 module.exports.ncGetInfo        = ncGetInfo;
+module.exports.ncGetCapacity    = ncGetCapacity;

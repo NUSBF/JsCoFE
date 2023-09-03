@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.09.23   <--  Date of Last Modification.
+ *    03.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -87,6 +87,7 @@ function ServerConfig ( type )  {
                       // of inactivity; 0 means no auto-dormancy
   };
   this.cache_max_age  = 31536000;  // 1 year in ms; max age for caching icons on clients  
+  this.capacity_check_interval = 10*60*1000; // check NC capacity once in 10 minutes
   if (type=='FEProxy')
         this.state = 'active';  // server state: 'active', 'inactive'
   else  this.state = 'active';  // server state: 'active', 'inactive'
@@ -283,6 +284,25 @@ ServerConfig.prototype.checkNCStatus = function ( callback_func )  {
   if (this.in_use)  {
     request({
       uri     : cmd.nc_command.getNCInfo,
+      baseUrl : this.externalURL,
+      method  : 'POST',
+      body    : '',
+      json    : true,
+      rejectUnauthorized : this.rejectUnauthorized
+    },function(error,response,body){
+      callback_func ( error,response,body,this );
+    });
+  } else  {
+    callback_func ( 'not-in-use',null,'',this );
+  }
+
+}
+
+ServerConfig.prototype.checkNCCapacity = function ( callback_func )  {
+
+  if (this.in_use)  {
+    request({
+      uri     : cmd.nc_command.getNCCapacity,
       baseUrl : this.externalURL,
       method  : 'POST',
       body    : '',

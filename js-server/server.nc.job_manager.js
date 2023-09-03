@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.06.23   <--  Date of Last Modification.
+ *    03.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -594,7 +594,7 @@ function calcCapacity ( onFinish_func )  {
 //
 //   Negative capacity means that NC is overloaded and is deprioritised for 
 // sending jobs to it. The job despatch mechansim sends jobs evenly to NCs 
-// with positive capacity, or to NC with least negat=ive capacity if all NCs 
+// with positive capacity, or to NC with least negative capacity if all NCs 
 // are overloaded.
 //
 var ncConfig = conf.getServerConfig();
@@ -876,9 +876,9 @@ var cfg = conf.getServerConfig();
   //   Results are being sent together with the remaining capcity estimations,
   // which are calculated differently in SHELL and SGE modes
 
-  calcCapacity ( function(capacity){
+  calcCapacity ( function(current_capacity){
 
-    log.standard ( 104,'NC capacity=' + capacity );
+    log.standard ( 104,'NC current capacity: ' + current_capacity );
 
     // get original front-end url
     var feURL = jobEntry.feURL;
@@ -904,8 +904,9 @@ var cfg = conf.getServerConfig();
     send_dir.sendDir ( jobEntry.jobDir,'*',
                        feURL,
                        cmd.fe_command.jobFinished + job_token, {
-                          'capacity' : capacity,
-                          'tokens'   : ncJobRegister.getListOfTokens()
+                          'capacity'         : cfg.capacity,
+                          'current_capacity' : current_capacity,
+                          'tokens'           : ncJobRegister.getListOfTokens()
                        },
 
       function(rdata)  {  // send was successful
@@ -1740,6 +1741,7 @@ function ncRunClientJob ( post_data_obj,callback_func )  {
 
 module.exports.cleanNC            = cleanNC;
 module.exports.ncSendFile         = ncSendFile;
+module.exports.calcCapacity       = calcCapacity;
 module.exports.ncMakeJob          = ncMakeJob;
 module.exports.ncStopJob          = ncStopJob;
 module.exports.ncWakeZombieJobs   = ncWakeZombieJobs;
