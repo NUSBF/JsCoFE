@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.08.23   <--  Date of Last Modification.
+ *    03.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -598,16 +598,16 @@ JobDialog.prototype.makeToolBar = function()  {
   if (this.task.canEndGracefully())
     this.end_btn = this.toolBar.setButton ( 'End',image_path('endjob'),
                                            0,this.col++, 1,1 )
-                               .setTooltip('End the job gracefully. This may take a ' +
-                                           'long time, but will make obtaned ' +
-                                           'results available for subsequent ' +
+                               .setTooltip('End the job gracefully. This may take ' +
+                                           'a while, but already obtaned results '  +
+                                           'will be made available for subsequent ' +
                                            'jobs. Once ended, a job cannot ' +
                                            'be resumed' );
   else
     this.end_btn = null;
   this.stop_btn = this.toolBar.setButton ( 'Stop',image_path('stopjob'),
                                            0,this.col++, 1,1 )
-                              .setTooltip('Stop the job immediately. Obtained ' +
+                              .setTooltip('Stop the job immediately. Obtained '  +
                                           'results will be kept for inspection ' +
                                           'but unavailable for subsequent jobs.');
 

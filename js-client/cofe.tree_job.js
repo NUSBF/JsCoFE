@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.09.23   <--  Date of Last Modification.
+ *    03.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1692,7 +1692,7 @@ JobTree.prototype.stopJob = function ( nodeId,gracefully_bool,callback_func )  {
   if (gracefully_bool)
     msg = [ 'End Job',
             'End ' + word + ' job ' + jobId +
-            '? Ending job may take long time, but obtained results<br>' +
+            '? Ending job may take a while, but already obtained results<br>' +
             '(if any) will be made available for subsequent jobs.<br>' +
             'Once a job is ended, it cannot be resumed.',
             'End',

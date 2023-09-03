@@ -370,9 +370,7 @@ class PDBVal(basic.TaskDriver):
         error_msg = None
 
         if not self.have_internet():
-            line_summary = "pdb report not obtained (no internet)"
-            error_msg    = "no internet connection"
-
+            error_msg = "no internet connection"
         else:
 
             try:
@@ -392,9 +390,17 @@ class PDBVal(basic.TaskDriver):
                 while msg and (ntry<nattempts):
                     self.file_stdout.write ( "\n -- attempt " + str(ntry+1) + "\n" )
                     self.file_stdout.flush ()
-                    msg = valrep.getValidationReport ( deposition_cif,sfCIF,repFilePath,self.file_stdout )
+                    msg = valrep.getValidationReport ( deposition_cif,sfCIF,repFilePath,
+                                                       self.file_stdout,self.jobEndFName )
+                    if msg=="22222":
+                        msg = "ended by user"
+                        break
                     if msg and (ntry<nattempts):
-                        self.file_stdout.write ( "\n -- server replied: " + str(msg) + "\n" )
+                        if msg=="11111":
+                            msg = "exception thrown (job killed?)"
+                            self.file_stdout.write ( "\n -- server replied: exception thrown (job killed?)\n" )
+                        else:
+                            self.file_stdout.write ( "\n -- server replied: " + str(msg) + "\n" )
                         ntry += 1
                         time.sleep ( 10 )
 
@@ -425,8 +431,7 @@ class PDBVal(basic.TaskDriver):
 
             except:
                 # remove wait message
-                error_msg    = "code exception"
-                line_summary = "pdb report not obtained (exception)"
+                error_msg = "code exception"
 
         # self.registerRevision ( revision )
 
@@ -451,6 +456,7 @@ class PDBVal(basic.TaskDriver):
                 "the analysis of the validation report is an important part of the " +\
                 "PDB deposition process.</i>"
             )
+            line_summary = "pdb report not obtained (" + error_msg + ")"
 
         self.addCitation ( 'pdbval' )
 
