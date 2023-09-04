@@ -107,14 +107,24 @@ function makeSymLink ( pathToTarget,pathToOrigin )  {
 }
 
 
+// function readObject ( fpath )  {
+//   if (!fs.existsSync(fpath)) {
+//     return null;
+//   }
+//   try {
+//     return JSON.parse ( fs.readFileSync(fpath).toString() );
+//   } catch (e)  {
+//     log.error ( 30, e.message + ' when loading ' + fpath );
+//     return null;
+//   }
+// }
+
 function readObject ( fpath )  {
-  if (!fs.existsSync(fpath)) {
-    return null;
-  }
   try {
     return JSON.parse ( fs.readFileSync(fpath).toString() );
   } catch (e)  {
-    log.error ( 30, e.message + ' when loading ' + fpath );
+    if (e.code !== 'ENOENT')
+      log.error ( 30, e.message + ' when loading ' + fpath );
     return null;
   }
 }
