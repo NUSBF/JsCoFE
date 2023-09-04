@@ -1359,10 +1359,10 @@ function getJobResults ( job_token,server_request,server_response )  {
           utils.removeFile ( jobball_path );
 
         if (jobEntry.nc_number>=0)  {
+          let nc_servers = conf.getNCConfigs();
           if (jobEntry.nc_number>=nc_servers.length)  {
             log.error ( 19,'wrong NC number (' + jobEntry.nc_number + ')' );
           } else  {
-            let nc_servers = conf.getNCConfigs();
             if ('current_capacity' in meta)  {
               nc_servers[jobEntry.nc_number].capacity         = meta.capacity;
               nc_servers[jobEntry.nc_number].current_capacity = meta.current_capacity;
