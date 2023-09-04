@@ -713,7 +713,7 @@ function readConfiguration ( confFilePath,serverType )  {
   var confObj = utils.readObject ( confFilePath );
 
   if (!confObj)
-    return 'configuration file ' + confFilePath + ' not found';
+    return 'cannot load configuration file ' + confFilePath + ' (missing/invalid?)';
 
   if (confObj.hasOwnProperty('Desktop'))
     desktop = confObj.Desktop;
