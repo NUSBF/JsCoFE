@@ -262,6 +262,8 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
               dlg.onSelect_func ( task_obj,dlg.combobox.getValue() );
         else  dlg.onSelect_func ( task_obj,null );
         $(dlg.element).dialog ( 'close' );
+      } else if (avail_key[0]=='private')  {
+        new MessageBox ( 'Confidentiality conflict',avail_key[2],'msg_stop' );
       } else  {
         // insufficient data
         new TaskDataDialog ( btn.dataSummary,task_obj,avail_key );

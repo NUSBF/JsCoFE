@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.08.23   <--  Date of Last Modification.
+ *    08.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -178,6 +178,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               else  __login_id     = user_login_name;
               __cloud_storage      = response.data.cloud_storage;
               __strict_dormancy    = response.data.strict_dormancy;
+              __treat_private      = response.data.treat_private;
               __jobs_safe          = response.data.jobs_safe;
               __demo_projects      = response.data.demo_projects;
               __environ_server     = response.data.environ_server;

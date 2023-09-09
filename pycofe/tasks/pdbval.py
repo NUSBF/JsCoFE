@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#   03.09.23   <--  Date of Last Modification.
+#   08.09.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -369,8 +369,14 @@ class PDBVal(basic.TaskDriver):
 
         error_msg = None
 
+        private_data = self.getCommandLineParameter ( "private_data" )
+        if not private_data:
+            private_data = "no"
+
         if not self.have_internet():
             error_msg = "no internet connection"
+        elif private_data=="yes":
+            error_msg = "private data"
         else:
 
             try:
@@ -446,17 +452,28 @@ class PDBVal(basic.TaskDriver):
         self.putMessage1 ( self.report_page_id(),
                             "<div style='height:6px;'>&nbsp;</div>",rvrow0+1 )
         
+
         if error_msg:
             self.putMessage1 ( self.report_page_id(),"",self.rvrow,0,1,1 )
-            self.putMessage  ( 
-                "<b><i>PDB Validation Report not obtained.</i></b><br>" +\
-                "Reason: \"" + error_msg + "\"<p>" +\
-                "<i><b>Note:</b> despite the failure, you can prepare deposition "   +\
-                "files and use them in PDB deposition session, but be advised that " +\
-                "the analysis of the validation report is an important part of the " +\
-                "PDB deposition process.</i>"
-            )
-            line_summary = "pdb report not obtained (" + error_msg + ")"
+            if private_data:
+                self.putMessage  ( 
+                    "<b><i>PDB Validation Report was not requested.</i></b><br>" +\
+                    "Reason: \"data and results are treated confidential on this server\"<p>" +\
+                    "<i><b>Note:</b> despite not obtaining the PDB Validation Report, " +\
+                    "you can still prepare deposition files in mmCIF format if needed " +\
+                    "for any purposes.</i>"
+                )
+                line_summary = "pdb report not requested due to data confidentiality"
+            else:
+                self.putMessage  ( 
+                    "<b><i>PDB Validation Report not obtained.</i></b><br>" +\
+                    "Reason: \"" + error_msg + "\"<p>" +\
+                    "<i><b>Note:</b> despite the failure, you can prepare deposition "   +\
+                    "files and use them in PDB deposition session, but be advised that " +\
+                    "the analysis of the validation report is an important part of the " +\
+                    "PDB deposition process.</i>"
+                )
+                line_summary = "pdb report not obtained (" + error_msg + ")"
 
         self.addCitation ( 'pdbval' )
 

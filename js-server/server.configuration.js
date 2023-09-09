@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.08.23   <--  Date of Last Modification.
+ *    08.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -81,13 +81,6 @@ function ServerConfig ( type )  {
   this.storage        = null;
   this.update_rcode   = 0;    // can be be detected by launcher script to do the needful
   this.rejectUnauthorized = true; // should be true by default
-  this.dormancy_control = {
-    strict : false,   // strict dormant accounts are actually frozen
-    after  : 180      // accounts become dormant automatically after 180 days
-                      // of inactivity; 0 means no auto-dormancy
-  };
-  this.cache_max_age  = 31536000;  // 1 year in ms; max age for caching icons on clients  
-  this.capacity_check_interval = 10*60*1000; // check NC capacity once in 10 minutes
   if (type=='FEProxy')
         this.state = 'active';  // server state: 'active', 'inactive'
   else  this.state = 'active';  // server state: 'active', 'inactive'
@@ -451,6 +444,7 @@ function CCP4DirName()  {
     "rejectUnauthorized" : true, // optional; use only for debugging, see docs
     "exclude_tasks"    : [],
     "licensed_tasks"   : [],   // ["TaskArpWarp"] if arpwarp installed on server
+    "treat_private"    : ["none","seq","xyz","lig","hkl","all"],  // data not to be sent out
     "fsmount"          : "/",
     "localSetup"       : true,  // optional, overrides automatic definition
     "update_rcode"     : 212, // optional
@@ -729,6 +723,14 @@ function readConfiguration ( confFilePath,serverType )  {
     fe_server.update_notifications   = false; // optional notification on CCP4 updates
     fe_server.archivePath            = null;  // no archive by default
     fe_server.archivePrimePath       = null;  // one archive volume must be prime
+    fe_server.treat_private          = ['none'];  // ['none','seq','xyz','lig','hkl','all']
+    fe_server.dormancy_control = {
+      strict : false,   // strict dormant accounts are actually frozen
+      after  : 180      // accounts become dormant automatically after 180 days
+                        // of inactivity; 0 means no auto-dormancy
+    };
+    fe_server.cache_max_age  = 31536000;  // 1 year in ms; max age for caching icons on clients  
+    fe_server.capacity_check_interval = 10*60*1000; // check NC capacity once in 10 minutes
 
     // read configuration file
     for (var key in confObj.FrontEnd)

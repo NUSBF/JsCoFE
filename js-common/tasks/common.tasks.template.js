@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.07.23   <--  Date of Last Modification.
+ *    08.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -176,6 +176,12 @@ TaskTemplate.prototype.doPackSuffixes      = function() { return [''];     }
 
 TaskTemplate.prototype.canEndGracefully    = function() { return false;    }
 // TaskTemplate.prototype.canRunInAutoMode    = function() { return false;    }
+
+TaskTemplate.prototype.sendsOut = function()  {
+  // return ['seq','xyz','lig','hkl']; 
+  return [];
+}
+
 
 TaskTemplate.prototype.getHelpURL = function()  {
   return __task_reference_base_url + 'doc.task.' + this._type.substr(4) + '.html';
@@ -423,7 +429,7 @@ if (!dbx)  {
               '<h3>Task is not available on server</h3>' +
               'The task is excluded from configuration on ' + appName() +
               ' server which you use.<br>This may be due to the ' +
-              'availability of software or resources, which are ' +
+              'unavailability of software or resources, which are ' +
               '<br>required for the task.'];
     }
 
@@ -466,10 +472,47 @@ if (!dbx)  {
               'or if Cloud Storage is configured',
               '<h3>CCP4 Cloud Client is required</h3>' +
               'This task can be used only if ' + appName() +
-              ' was accessed via CCP4 Cloud Client,<br>found in ' +
+              ' was accessed via ' + appName() + ' Client,<br>found in ' +
               'CCP4 Software Suite, or if user has access to ' +
               'Cloud Storage.'];
     }
+
+    if (__treat_private.length>0)  {
+      let sends_out = this.sendsOut();
+      if (sends_out.length>0)  {
+        if ((__treat_private.indexOf('all')>=0) || (sends_out.indexOf('all')>=0))
+          return ['private',
+                  'task can transmit data to external servers, which ' +
+                  'is not allowed by ' + appName() + ' configuration',
+                  '<div style="width:350px;"><h3>Data confidentiality conflict</h3>' +
+                  'This task can transmit data to external servers, which ' +
+                  'is blocked in the configuration of ' + appName() + 
+                  ' server you are currently using.</div>'];
+        let breachlist = [];
+        for (let i=0;i<sends_out.length;i++)
+          if ((sends_out[i]!='none') && (sends_out[i]!='all') && 
+              (__treat_private.indexOf(sends_out[i])>=0))  {
+            switch (sends_out[i])  {
+              case 'seq' : breachlist.push ( 'sequence(s)' );         break;
+              case 'xyz' : breachlist.push ( 'structure model(s)' );  break;
+              case 'lig' : breachlist.push ( 'ligand structure(s)' ); break;
+              case 'hkl' : breachlist.push ( 'reflections' );         break;
+              default    : breachlist.push ( 'unspecified' );
+            }
+          }
+        if (breachlist.length>0)  {
+          let blist = breachlist.join ( ', ' );
+          return ['private',
+                  'task can transmit ' + blist + ' to external servers, which ' +
+                  'is not allowed by ' + appName() + ' configuration',
+                  '<div style="width:350px;"><h3>Data confidentiality conflict</h3>' +
+                  'This task can transmit ' + blist + ' to external servers, which ' +
+                  'is blocked in the configuration of ' + appName() + 
+                  ' server you are currently using.</div>'];
+        }
+      }
+    }
+    
 
     if (startsWith(this.nc_type,'client'))  {
 
