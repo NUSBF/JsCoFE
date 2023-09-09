@@ -634,6 +634,7 @@ var fe_server = conf.getFEConfig();
         rData.isArchive       = conf.isArchive();
         rData.cloud_storage   = (fcl.getUserCloudMounts(uData).length>0);
         rData.strict_dormancy = fe_server.dormancy_control.strict;
+        rData.treat_private   = fe_server.treat_private;
         rData.jobs_safe       = (fe_server.getJobsSafePath().length>0);
         rData.demo_projects   = fe_server.getDemoProjectsMount();
         rData.auth_software   = fe_server.auth_software;
@@ -1760,6 +1761,7 @@ var fe_server = conf.getFEConfig();
     rData.demo_projects   = fe_server.getDemoProjectsMount();
     rData.auth_software   = fe_server.auth_software;
     rData.strict_dormancy = fe_server.dormancy_control.strict;
+    rData.treat_private   = fe_server.treat_private;
     if ('localuser' in fe_server)  {
       rData.localuser  = fe_server.localuser;
       rData.logintoken = __userLoginHash.getToken ( ud.__local_user_id );

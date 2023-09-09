@@ -254,7 +254,18 @@ if (!__template)  {
   }
 
   TaskPDBVal.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.pdbval', jobManager, jobDir, this.id];
+
+    let treat_private = conf.getFEConfig().treat_private;
+    let private_data  = 'private_data=';
+    if ((treat_private.indexOf('xyz')<0) && (treat_private.indexOf('seq')<0) &&
+        (treat_private.indexOf('lig')<0) && (treat_private.indexOf('hkl')<0) &&
+        (treat_private.indexOf('all')<0))
+          private_data += 'no';
+    else  private_data += 'yes';
+
+    return [conf.pythonName(), '-m', 'pycofe.tasks.pdbval', jobManager, jobDir, 
+                               this.id,private_data ];
+
   }
 
   // -------------------------------------------------------------------------

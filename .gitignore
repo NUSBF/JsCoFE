@@ -5,3 +5,5 @@ __pycache__
 *.bak
 .gitignore
 webCoot.bak
+package-lock.json
+node_modules

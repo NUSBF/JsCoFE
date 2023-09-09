@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    08.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -96,6 +96,10 @@ TaskPDBREDO.prototype.checkKeywords = function ( keywords )  {
   return this.__check_keywords ( keywords,['pdbredo','pdb-redo','refinement','rebuild',
                                            'rebuilding','optimise','optimisation',
                                            'validate','validation'] );
+}
+
+TaskPDBREDO.prototype.sendsOut = function()  {
+  return ['seq','xyz','lig','hkl']; 
 }
 
 
