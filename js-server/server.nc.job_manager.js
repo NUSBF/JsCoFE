@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.23   <--  Date of Last Modification.
+ *    10.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,6 +12,11 @@
  *       ~~~~~~~~~
  *  **** Content :  Number Cruncher Server -- Job Manager
  *       ~~~~~~~~~
+ *
+ *        function ncGetJobsDir()
+ *        function ncGetJobDir ( jobNo )
+ *        class NCJobRegister()
+ *
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
@@ -224,7 +229,7 @@ function readNCJobRegister ( readKey )  {
 }
 
 function writeNCJobRegister()  {
-var fpath = path.join ( conf.getServerConfig().storage,registerFName );
+let fpath = path.join ( conf.getServerConfig().storage,registerFName );
 
   if (!ncJobRegister)
     ncJobRegister = new NCJobRegister();
@@ -234,7 +239,7 @@ var fpath = path.join ( conf.getServerConfig().storage,registerFName );
   // loop here -- but take care not to write the timer object
   // (ncJobRegister.timer) in the file!
 
-  var timer = ncJobRegister.timer;
+  let timer = ncJobRegister.timer;
   ncJobRegister.timer = null;
 
   utils.writeObject ( fpath,ncJobRegister );
@@ -246,7 +251,7 @@ var fpath = path.join ( conf.getServerConfig().storage,registerFName );
 
 function removeJobDelayed ( job_token,jobStatus )  {
   if (ncJobRegister)  {
-    var jobEntry = ncJobRegister.getJobEntry ( job_token );
+    let jobEntry = ncJobRegister.getJobEntry ( job_token );
     if (jobEntry)  {
       jobEntry.jobStatus = jobStatus;
       writeNCJobRegister();
@@ -270,7 +275,7 @@ function cleanNC ( cleanDeadJobs_bool )  {
 
   var mask = {};
   var n    = 0;
-  for (var job_token in ncJobRegister.job_map)
+  for (let job_token in ncJobRegister.job_map)
     if (utils.dirExists(ncJobRegister.job_map[job_token].jobDir))  {
       // job directory exists; mask token against deletion
       mask[job_token] = true;
@@ -316,7 +321,7 @@ function cleanNC ( cleanDeadJobs_bool )  {
     var t = Date.now()/__day_ms;
     var n = 0;
     var nzombies = 0;
-    for (var job_token in ncJobRegister.job_map)  {
+    for (let job_token in ncJobRegister.job_map)  {
       var jobEntry = ncJobRegister.job_map[job_token];
       var endTime  = ncJobRegister.job_map[job_token].endTime;
       if (endTime)  {
@@ -593,7 +598,7 @@ function calcCapacity ( onFinish_func )  {
 // waiting jobs.
 //
 //   Negative capacity means that NC is overloaded and is deprioritised for 
-// sending jobs to it. The job despatch mechansim sends jobs evenly to NCs 
+// sending jobs to it. The job despatch mechanism sends jobs evenly to NCs 
 // with positive capacity, or to NC with least negative capacity if all NCs 
 // are overloaded.
 //
@@ -602,7 +607,7 @@ var capacity = ncConfig.capacity;  // total number of jobs the number cruncher
                                    // can accept without stretching
 var nRegJobs = 0;  // number of jobs listed as active in registry
 
-  for (var item in ncJobRegister.job_map)
+  for (let item in ncJobRegister.job_map)
     // if (!ncJobRegister.job_map[item].endTime)
     if (ncJobRegister.job_map[item].jobStatus==task_t.job_code.running)
       nRegJobs++;

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.09.23   <--  Date of Last Modification.
+ *    10.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -316,7 +316,8 @@ function advance_last_number_cruncher ( nc_servers )  {
             (!nc_servers[last_number_cruncher].in_use)));
 }
 
-function selectNumberCruncher ( task )  {
+
+function selectNC_by_order ( task )  {
 var nc_servers = conf.getNCConfigs();
 var nc_number  = -1;
 var n          = last_number_cruncher;
@@ -339,7 +340,7 @@ var n0         = -1;
     // first, look for servers dedicated to fast tracking, and choose first
     // free or the least busy one
 
-    for (var i=0;(i<nc_servers.length) && (nc_number<0);i++)  {
+    for (let i=0;(i<nc_servers.length) && (nc_number<0);i++)  {
 
       // n++;
       // if (n>=nc_servers.length)  n = 0;
@@ -395,7 +396,7 @@ var n0         = -1;
   }
 
   // look for next free server, starting from the last used one (#n)
-  for (var i=0;(i<nc_servers.length) && (nc_number<0);i++)  {
+  for (let i=0;(i<nc_servers.length) && (nc_number<0);i++)  {
     // n++;  // this ensures that NCs are cycled, as initially n = last_number_cruncher
     // if (n>=nc_servers.length)  n = 0;  // wrap around
     n = (n+1) % nc_servers.length;
@@ -424,6 +425,89 @@ var n0         = -1;
 
   return nc_number;
 
+}
+
+
+function selectNC_by_capacity ( task )  {
+var nc_servers     = conf.getNCConfigs();
+var ft_cores       = [];  // fast track cores
+var cores          = [];  // general cores
+var ft_maxCapacity = Number.MIN_SAFE_INTEGER;
+var ft_nc_number0  = -1;  // NC with maximal capacity
+var maxCapacity    = Number.MIN_SAFE_INTEGER;
+var nc_number0     = -1;  // NC with maximal capacity
+
+  if ('nc_number' in task)  {  // developer's option
+    return task.nc_number;
+  }
+
+  if (task.nc_type!='ordinary')
+    return -1;  // this will not be used for client job, just make a valid return
+
+  for (let n=0;n<nc_servers.length;n++)
+    if (nc_servers[n].in_use  &&
+          (nc_servers[n].exeType!='CLIENT')  &&
+          (nc_servers[n].exclude_tasks.indexOf(task._type)<0)  &&
+          ( (nc_servers[n].only_tasks.length<=0) ||
+            (nc_servers[n].only_tasks.indexOf(task._type)>=0) ) )  {
+
+      if ((nc_servers[n].fasttrack>0) && 
+          (nc_servers[n].current_capacity>ft_maxCapacity))  {
+        ft_maxCapacity = nc_servers[n].current_capacity;
+        ft_nc_number0  = n;
+      }
+
+      if (nc_servers[n].fasttrack==2)  {
+        //  fasttrack==2 means a fast-track dedicated server
+        for (let i=0;i<nc_servers[n].current_capacity;i++)
+          ft_cores.push ( n );
+      } else  {
+        if (nc_servers[n].current_capacity>maxCapacity)  {
+          maxCapacity = nc_servers[n].current_capacity;
+          nc_number0  = n;
+        }
+        for (let i=0;i<nc_servers[n].current_capacity;i++)  {
+          if (nc_servers[n].fasttrack==1)
+            cores.push ( n );
+        }
+      }
+    }
+
+  if (task.fasttrack)  {
+    if (ft_cores.length<=0)  { 
+      // request for fast track but no fast track cores are available
+      if (ft_nc_number0>=0)  {
+        // fast track is supposed to clear up promptly, so put the task on
+        // a fast track NC with maximal residual capacity
+        return ft_nc_number0;
+      }
+      // if we are here than fast track NC is not found at all;
+      // put job on a regular NC further down below
+    } else  {
+      // free fast track cores are found, choose fast track NC randomly with 
+      // respect to residual capacities
+      return ft_cores [ Math.floor(Math.random()*ft_cores.length) ];
+    }
+  }
+
+  if (nc_number0>=0)  {
+    if (cores.length<=0)  {
+      // all cores are busy, choose NC with maximal residual capacity
+      return ft_nc_number0;
+    }
+    // free cores are found, choose NC randomly with respect to residual capacities
+    return cores [ Math.floor(Math.random()*cores.length) ];
+  }
+
+  // no NC was found for job
+  return -1;
+
+}
+
+function selectNumberCruncher ( task )  {
+  if (conf.getFEConfig().job_despatch=="opt_comm")
+        return selectNC_by_order    ( task );
+  else  return selectNC_by_capacity ( task );
 }
 
 function ncSelectAndCheck ( nc_counter,task,callback_func )  {
