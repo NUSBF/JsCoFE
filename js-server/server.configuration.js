@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.09.23   <--  Date of Last Modification.
+ *    10.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -445,6 +445,7 @@ function CCP4DirName()  {
     "exclude_tasks"    : [],
     "licensed_tasks"   : [],   // ["TaskArpWarp"] if arpwarp installed on server
     "treat_private"    : ["none","seq","xyz","lig","hkl","all"],  // data not to be sent out
+    "job_despatch"     : "opt_comm", // "opt_load" optimise communication or NC load
     "fsmount"          : "/",
     "localSetup"       : true,  // optional, overrides automatic definition
     "update_rcode"     : 212, // optional
@@ -717,6 +718,8 @@ function readConfiguration ( confFilePath,serverType )  {
     fe_server = new ServerConfig('FE');
 
     // assign default values
+    fe_server.job_despatch           = "opt_comm";  // "opt_comm" or "opt_load" to 
+                                                    // optimise communication or NC load
     fe_server.sessionCheckPeriod     = 2000;  // ms
     fe_server.auth_software          = null;
     fe_server.malicious_attempts_max = -1;    // around 100; <0 means do not use
