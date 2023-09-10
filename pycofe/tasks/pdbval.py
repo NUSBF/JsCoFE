@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#   08.09.23   <--  Date of Last Modification.
+#   10.09.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -369,13 +369,9 @@ class PDBVal(basic.TaskDriver):
 
         error_msg = None
 
-        private_data = self.getCommandLineParameter ( "private_data" )
-        if not private_data:
-            private_data = "no"
-
         if not self.have_internet():
             error_msg = "no internet connection"
-        elif private_data=="yes":
+        elif self.task.private_data:
             error_msg = "private data"
         else:
 
@@ -455,7 +451,7 @@ class PDBVal(basic.TaskDriver):
 
         if error_msg:
             self.putMessage1 ( self.report_page_id(),"",self.rvrow,0,1,1 )
-            if private_data:
+            if self.task.private_data:
                 self.putMessage  ( 
                     "<b><i>PDB Validation Report was not requested.</i></b><br>" +\
                     "Reason: \"data and results are treated confidential on this server\"<p>" +\
