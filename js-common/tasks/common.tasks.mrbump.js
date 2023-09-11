@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    10.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,8 +22,13 @@
 
 var __template = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  var path  = require('path');
+  var fs    = require('fs-extra');
+  var conf  = require('../../js-server/server.configuration');
+  var utils = require('../../js-server/server.utils');
+}
 
 
 // ===========================================================================
@@ -37,7 +42,6 @@ function TaskMrBump()  {
   this.name    = 'mrbump';
   this.setOName ( 'mrbump' ); // default output file name template
   this.title   = 'Auto-MR with MrBump';
-  this.helpURL = './html/jscofe_task_mrbump.html';
 
   this.input_dtypes = [{  // input data types
       data_type : {'DataRevision':['!protein','!asu','~xyz']}, // data type(s) and subtype(s)
@@ -60,6 +64,7 @@ function TaskMrBump()  {
     }
     */
   ];
+
 
   this.parameters = { // input parameters
     SEP_LBL : {
@@ -139,6 +144,8 @@ function TaskMrBump()  {
             }
   };
 
+  this.checkPrivateData();
+
   this.saveDefaultValues ( this.parameters );
 
 }
@@ -166,11 +173,39 @@ TaskMrBump.prototype.checkKeywords = function ( keywords )  {
     return this.__check_keywords ( keywords,['mrbump', 'molecular','replacement','mr', 'auto-mr', 'alphafold','alphafold2','af', 'af2'] );
 }
 
+// This function is called at cloning jobs and should do copying of all
+// custom class fields not found in the Template class
+TaskMrBump.prototype.customDataClone = function ( cloneMode,task )  {
+  this.checkPrivateData();
+  return;
+}
+
+TaskMrBump.prototype.checkPrivateData = function()  {
+  if (!__template)  {
+    this.private_data = (__treat_private.indexOf('seq')>=0) || 
+                        (__treat_private.indexOf('all')>=0);
+  } else  {
+    let fe_server = conf.getFEConfig();
+    this.private_data = (fe_server.treat_private.indexOf('seq')>=0) || 
+                        (fe_server.treat_private.indexOf('all')>=0);
+  }
+  if (this.private_data)  {
+    this.parameters.sec1.contains.AFDB_CBX.value  = false;
+    this.parameters.sec1.contains.AFDB_CBX.hideon = {};
+  }
+}
+
 
 // export such that it could be used in both node and a browser
 
 if (!__template)  {
   //  for client side
+
+  TaskMrBump.prototype.sendsOut = function()  {
+    if (__environ_server.indexOf('PDB_DIR')<0)
+      return ['seq'];
+    return []; 
+  }
 
   TaskMrBump.prototype.desc_title = function()  {
   // this appears under task title in the task list
@@ -225,11 +260,6 @@ if (!__template)  {
 
 } else  {
   //  for server side
-
-  var path  = require('path');
-  var fs    = require('fs-extra');
-  var conf  = require('../../js-server/server.configuration');
-  var utils = require('../../js-server/server.utils');
 
   TaskMrBump.prototype.makeInputData = function ( loginData,jobDir )  {
 

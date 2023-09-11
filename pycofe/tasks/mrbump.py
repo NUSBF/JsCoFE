@@ -67,11 +67,18 @@ class MrBump(basic.TaskDriver):
         if self.checkPDB(False):
             #pdbLine   = "PDBLOCAL " + os.environ["PDB_DIR"] + "\n"
             checkLine = "CHECK False"
+        elif self.task.private_data:
+            self.fail ( "<h3>Data confidentiality conflict.</h3>" +\
+                    "This task requires access to PDB archive, which is not " +\
+                    "installed locally while transmission of sequence data to " +\
+                    "external servers is blocked by CCP4 Cloud configuration.",
+                    "No internet connection" )
+            return
         elif not self.have_internet():
             self.fail ( "<h3>No internet connection.</h3>" +\
                     "This task requires access to PDB archive, which is not " +\
-                    "installed locally, and remote access to wwPDB is not " +\
-                    "possible due to missing internet connection.",
+                    "installed locally while wwPDB is not accessible due to " +\
+                    "missing internet connection.",
                     "No internet connection" )
             return
 
@@ -93,14 +100,14 @@ class MrBump(basic.TaskDriver):
         # make a file with input script
         self.open_stdin()
 
-        sec1 = self.task.parameters.sec1.contains
+        sec1    = self.task.parameters.sec1.contains
 
         sgmode  = self.getCheckbox ( sec1.ALTGROUPS_CBX,checkVisible=True )
 
-        rlevel = "RLEVEL "
+        rlevel  = "RLEVEL "
         rlevel += self.getParameter ( sec1.RLEVEL_SEL,False )
 
-        if self.getParameter(sec1.AFDB_CBX)=="True":
+        if self.getParameter(sec1.AFDB_CBX)=="True" and not self.task.private_data:
             aflevel = "AFLEVEL "
             aflevel += self.getParameter ( sec1.AFLEVEL_SEL,False )
         else:

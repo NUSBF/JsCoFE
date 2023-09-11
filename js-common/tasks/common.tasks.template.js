@@ -60,7 +60,7 @@ const jobReportTaskName = 'task.tsk';
 
 const keyEnvironment = ['CCP4','BALBES_ROOT','ROSETTA_DIR','warpbin','BDG_home',
                         'XDS_home','XDSGUI_home','DOCREPO','ALPHAFOLD_CFG',
-                        '$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe',
+                        '$CCP4/bin/shelxe','$CCP4/bin/shelxe.exe','PDB_DIR',
                         '$CCP4/share/mrd_data/VERSION','$CCP4/lib/py2/morda/LINKED',
                         'Xia2_durin','$CCP4_MASTER/BORGES_LIBS'
                        ];

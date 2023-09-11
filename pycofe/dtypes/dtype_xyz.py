@@ -17,6 +17,7 @@
 #  python native imports
 import os
 # import sys
+import math
 
 import gemmi
 
@@ -176,11 +177,14 @@ class DType(dtype_template.DType):
                             for atom in res:
                                 rmsd_est = atom.b_iso
                                 if max_bfactor>=5.0:  # alphafold
-                                    lddt = atom.b_iso / 100
-                                    if lddt <= 0.5:
-                                        rmsd_est = 5.0
-                                    else:
-                                        rmsd_est = (0.6 / (lddt**3))
+                                    lddt = atom.b_iso / 100.0
+                                    # see Baek et al. (2021) Science 373:871–876
+                                    rmsd_est = 1.5 * math.exp ( 4.0*(0.7-lddt) )
+                                    # Randy's earlier formula:
+                                    # if lddt <= 0.5:
+                                    #     rmsd_est = 5.0
+                                    # else:
+                                    #     rmsd_est = (0.6 / (lddt**3))
                                 atom.b_iso = min ( 999.99, 26.318945069571623*rmsd_est**2 )
                 st.write_pdb ( fpath )
                 if max_bfactor>=5.0:
