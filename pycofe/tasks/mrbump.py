@@ -61,7 +61,7 @@ class MrBump(basic.TaskDriver):
 
     def run(self):
 
-        # Check the existence of PDB archive
+        # Check availability of PDB archive
         pdbLine   = ""
         checkLine = "CHECK True"
         if self.checkPDB(False):
@@ -72,7 +72,7 @@ class MrBump(basic.TaskDriver):
                     "This task requires access to PDB archive, which is not " +\
                     "installed locally while transmission of sequence data to " +\
                     "external servers is blocked by CCP4 Cloud configuration.",
-                    "No internet connection" )
+                    "No local PDB archive" )
             return
         elif not self.have_internet():
             self.fail ( "<h3>No internet connection.</h3>" +\
@@ -81,7 +81,6 @@ class MrBump(basic.TaskDriver):
                     "missing internet connection.",
                     "No internet connection" )
             return
-
 
         # Prepare mrbump input
         # fetch input data

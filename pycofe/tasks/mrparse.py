@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.11.22   <--  Date of Last Modification.
+#    12.09.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2023
 #
 # ============================================================================
 #
@@ -97,6 +97,21 @@ class MrParse(basic.TaskDriver):
         database     = self.getParameter ( sec1.DATABASE )
         plddt_cutoff = self.getParameter ( sec1.PLDDT_CUTOFF )
 
+
+        # Check availability of PDB archive and the internet
+
+        isLocalPDB   = self.checkPDB(False)
+
+        if self.task.private_data:
+            database = "pdb"
+            if not isLocalPDB:
+                self.fail ( "<h3>Data confidentiality conflict.</h3>" +\
+                        "This task requires access to PDB archive, which is not " +\
+                        "installed locally while transmission of sequence data to " +\
+                        "external servers is blocked by CCP4 Cloud configuration.",
+                        "No local PDB archive" )
+                return
+
         # make command-line parameters for mrparse
 
         tmp_seq = "__sequence.fasta"  #  for mrparse likes .fasta
@@ -106,6 +121,7 @@ class MrParse(basic.TaskDriver):
         f = open ( tmp_seq,"w" )
         f.write ( seq_content.replace("*","") )
         f.close()
+
         # shutil.copy2 ( seq.getSeqFilePath(self.inputDir()),tmp_seq )
         cmd = [ "--seqin",tmp_seq ]
         if hkl:
@@ -113,8 +129,7 @@ class MrParse(basic.TaskDriver):
         # cmd += [ "--do_classify","--ccp4cloud" ]
         cmd += [ "--ccp4cloud" ]
 
-        # -- commented out until the relevnt bug is fixed in MrParse
-        if "PDB_DIR" in os.environ:
+        if isLocalPDB:
             cmd += [ "--pdb_local",os.environ["PDB_DIR"] ]
         if "PDB_SEQDB" in os.environ:
             if os.path.isfile(os.environ["PDB_SEQDB"]):
@@ -304,17 +319,24 @@ class MrParse(basic.TaskDriver):
                 }
 
             if nhomologs+nafmodels+nesmmodels>0:
+                summary_line = str(nhomologs+nafmodels+nesmmodels) + " MR model(s) prepared "
+                if database=="pdb":
+                    summary_line += "from PDB"
+                elif database=="esmfold":
+                    summary_line += "from ESMFold"
+                elif database=="afdb":
+                    summary_line += "from AFDB"
+                else:
+                    summary_line += "(PDB:" + str(nhomologs) +\
+                                    ", AFDB:" + str(nafmodels) +\
+                                    ", ESMFold:" + str(nesmmodels) + ")"
                 self.generic_parser_summary["mrparse"] = {
-                  "summary_line" : str(nhomologs+nafmodels) +\
-                                   " MR model(s) prepared (PDB:" + str(nhomologs) +\
-                                   ", AFDB:" + str(nafmodels) +\
-                                   ", ESMFold:" + str(nesmmodels) + ")"
+                  "summary_line" : summary_line
                 }
             else:
                 self.generic_parser_summary["mrparse"] = {
                   "summary_line" : "MR model preparation failed"
                 }
-
 
         # close execution logs and quit
         self.success ( have_results )
