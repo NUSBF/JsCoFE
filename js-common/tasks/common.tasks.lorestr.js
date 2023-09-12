@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    12.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -109,7 +109,6 @@ function TaskLorestr()  {
 
 }
 
-
 if (__template)
       TaskLorestr.prototype = Object.create ( __template.TaskTemplate.prototype );
 else  TaskLorestr.prototype = Object.create ( TaskTemplate.prototype );
@@ -130,14 +129,18 @@ TaskLorestr.prototype.currentVersion = function()  {
 }
 
 TaskLorestr.prototype.desc_title = function()  {
-  // this appears under task title in the task list
-    return 'performs low resolution (lower than around 3 Å) refinement';
-  };
+// this appears under task title in the task list
+  return 'performs low resolution (lower than around 3 Å) refinement';
+}
 
 TaskLorestr.prototype.checkKeywords = function ( keywords )  {
-    // keywords supposed to be in low register
-      return this.__check_keywords ( keywords,['lorestr', 'low','resolution', 'refinement', 'lr'] );
-  }
+  // keywords supposed to be in low register
+    return this.__check_keywords ( keywords,['lorestr', 'low','resolution', 'refinement', 'lr'] );
+}
+
+TaskLorestr.prototype.sendsOut = function()  {
+  return ['seq']; 
+}
 
 if (__template)  {
   //  for server side

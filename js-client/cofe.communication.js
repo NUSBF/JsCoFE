@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.09.23   <--  Date of Last Modification.
+ *    12.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -404,11 +404,19 @@ function __server_command ( cmd,data_obj,page_title,function_response,
           console.log ( ' >>> error catch in __server_command.done: ' + err );  
           console.log ( ' >>> rdata = ' + rdata );
         }
-        processServerQueue();
+        // *** old version
+        // processServerQueue();
       } else  {
         console.log ( ' >>> return on skipped operation in __server_command.done' );
         console.log ( ' >>> rdata = ' + rdata );
+        // *** new version
+        if (__server_queue.length>0)  {
+          __server_queue.shift();
+          __process_network_indicators();
+        }
       }
+      // *** new version
+      processServerQueue();
     })
     .always ( function(){
       __check_session_drops = 0;
@@ -422,10 +430,18 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         if (function_fail)
               function_fail();
         else  MessageAJAXFailure(page_title,xhr,err);
-        processServerQueue();
+        // *** old version
+        // processServerQueue();
       } else  {
         console.log ( ' >>> return on skipped operation in __server_command.fail' );
+        // *** new version
+        if (__server_queue.length>0)  {
+          __server_queue.shift();
+          __process_network_indicators();
+        }
       }
+      // *** new version
+      processServerQueue();
     });
 
 }
@@ -460,12 +476,13 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
   }
 }
 */
+
       if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
 
         __server_queue.shift();  // request completed
         __process_network_indicators();
 
-        // try {
+        try {
           var rsp = jQuery.parseJSON ( rdata );
           if (checkVersionMatch(rsp,false))  {
             var response = jQuery.extend ( true, new Response(), rsp );
@@ -482,18 +499,27 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
               function_always(0,response.data);
             */
           }
-        // } catch(err) {
-        //   console.log ( ' >>> error catch in __server_request.done:' +
-        //                 '\n --- ' + err +
-        //                 '\n --- request type: ' + request_type +
-        //                 '\n --- rdata = ' + rdata );
-        // }
+        } catch(err) {
+          console.log ( ' >>> error catch in __server_request.done:' +
+                        '\n --- ' + err +
+                        '\n --- request type: ' + request_type +
+                        '\n --- rdata = ' + rdata );
+        }
 
-        processServerQueue();
+        // *** old version
+        // processServerQueue();
 
       } else  {
         console.log ( ' >>> return on skipped operation in __server_request.done' );
+        // *** new version
+        if (__server_queue.length>0)  {
+          __server_queue.shift();
+          __process_network_indicators();
+        }
       }
+
+      // *** new version
+      processServerQueue();
 
       // we put this function here and in the fail section because we
       // do not want to have it executed multiple times due to multiple
@@ -511,6 +537,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
       if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
 
+        // *** old version
         __server_queue.shift();  // request completed
         __process_network_indicators();
 
@@ -539,11 +566,20 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
           console.log ( ' >>> error catch in __server_request.fail: ' + err );
         }
 
-        processServerQueue();
+        // *** old version
+        // processServerQueue();
 
       } else  {
         console.log ( ' >>> return on skipped operation in __server_request.fail' );
+        // *** new version
+        if (__server_queue.length>0)  {
+          __server_queue.shift();
+          __process_network_indicators();
+        }
       }
+
+      // *** new version
+      processServerQueue();
 
     });
 

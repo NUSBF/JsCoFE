@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    12.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -23,8 +23,10 @@
 
 var __template = null;
 
-if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
+  var conf   = require('../../js-server/server.configuration');
+}
 
 
 // ===========================================================================
@@ -99,6 +101,8 @@ function TaskMrParse()  {
   
   };
 
+  this.checkPrivateData();
+
   this.saveDefaultValues ( this.parameters );
 
 }
@@ -136,12 +140,40 @@ TaskMrParse.prototype.checkKeywords = function ( keywords )  {
     return this.__check_keywords ( keywords,['mrparse', 'molecular','replacement','mr', 'model','preparation','mp', 'alphafold','alphafold2','af', 'af2'] );
 }
 
+// This function is called at cloning jobs and should do copying of all
+// custom class fields not found in the Template class
+TaskMrParse.prototype.customDataClone = function ( cloneMode,task )  {
+  this.checkPrivateData();
+  return;
+}
+
+TaskMrParse.prototype.checkPrivateData = function()  {
+  if (!__template)  {
+    this.private_data = (__treat_private.indexOf('seq')>=0) || 
+                        (__treat_private.indexOf('all')>=0);
+  } else  {
+    let fe_server = conf.getFEConfig();
+    this.private_data = (fe_server.treat_private.indexOf('seq')>=0) || 
+                        (fe_server.treat_private.indexOf('all')>=0);
+  }
+  if (this.private_data)  {
+    this.parameters.sec1.contains.DATABASE.value  = 'pdb';
+    this.parameters.sec1.contains.DATABASE.hideon = {};
+  }
+}
+
+TaskMrParse.prototype.sendsOut = function()  {
+  if (__environ_server.indexOf('PDB_DIR')<0)
+    return ['seq'];
+  return []; 
+}
+
 // export such that it could be used in both node and a browser
 
 if (__template)  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  // var conf = require('../../js-server/server.configuration');
 
   TaskMrParse.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.mrparse', jobManager, jobDir, this.id];

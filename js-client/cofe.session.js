@@ -511,7 +511,6 @@ function checkSession ( sceneId )  {
 
 }
 
-
 function stopSessionChecks()  {
   if (__session_check_timer)  {
     clearTimeout ( __session_check_timer );
