@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.09.23   <--  Date of Last Modification.
+ *    12.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -989,6 +989,7 @@ function ncRunJob ( job_token,meta )  {
   jobEntry.feedback  = meta.feedback;
   jobEntry.user_name = meta.user_name;
   jobEntry.email     = meta.email;
+  writeNCJobRegister();
 
   // get number cruncher configuration object
   var ncConfig = conf.getServerConfig();
