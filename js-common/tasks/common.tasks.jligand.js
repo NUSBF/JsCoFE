@@ -47,6 +47,12 @@ function TaskJLigand()  {
       force       : 1,          // "show" all revisions available
       min         : 0,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
+      label       : 'Ligand data', // label for input dialog
+      inputId     : 'ligand',      // input Id for referencing input fields
+      min         : 0,             // minimum acceptable number of data instances
+      max         : 19             // maximum acceptable number of data instances
     }
   ];
 
