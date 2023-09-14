@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.08.23   <--  Date of Last Modification.
+ *    14.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -34,9 +34,9 @@ function TaskRefmac()  {
              else  TaskTemplate.call ( this );
 
   this._type   = 'TaskRefmac';
-  this.name    = 'refmac5';
-  this.setOName ( 'refmac' );  // default output file name template
-  this.title   = 'Refinement with Refmac';
+  this.name    = 'refmacat';
+  this.setOName ( 'refmacat' );  // default output file name template
+  this.title   = 'Refinement with Refmac5 via Refmacat';
 
   this.input_dtypes = [{  // input data types
     data_type   : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
@@ -125,6 +125,7 @@ function TaskRefmac()  {
                    tooltip  : 'Select how to represent hydrogen atoms in refinement',
                    range    : ['NO|No','YES|Yes if in input file','ALL|Yes'],
                    value    : 'ALL',
+                   showon   : {'EXPERIMENT':['xray','electron']},
                    position : [3,0,1,3]
                 }
                 /*,
@@ -532,7 +533,62 @@ function TaskRefmac()  {
               range    : ['gaussian|Sum of Gaussians','mb|Mott-Bethe'],
               value    : 'gaussian',
               showon   : {'EXPERIMENT':['electron']},
-              position : [0,5,1,1]
+              position : [0,3,1,1]
+            },
+            MKHYDR_NEUTRON : {
+               type     : 'combobox',
+               keyword  : 'none',
+               label    : 'Use hydrogen atoms during refinement',
+               tooltip  : 'Select how to represent hydrogen atoms in refinement',
+               range    : ['NO|No','ALL|Yes','YES|Only if present in input file'],
+               value    : 'ALL',
+               showon   : {'EXPERIMENT':['neutron']},
+               position : [0,3,1,1]
+            },
+            H_REFINE : { type : 'combobox',
+              keyword  : 'none',
+              label    : 'Refine hydrogen positions',
+              tooltip  : 'Whether to refine hydrogens, and if yes then which selection',
+              range    : ['NO|No','ALL|Yes - all hydrogens','POLAR|Yes - only polar hydrogens','RPOLAR|Yes - only rotatable polar hydrogens'],
+              value    : 'ALL',
+              showon   : {'EXPERIMENT':['neutron'],'MKHYDR_NEUTRON':['ALL','YES']},
+              position : [1,3,1,1]
+            },
+            H_TORSION : { type : 'combobox',
+              keyword  : 'none',
+              label    : 'Use hydrogen torsion angle restraints',
+              tooltip  : 'Whether to use hydrogen-involving torsion angle restraints, for both positional generation and refinement.',
+              range    : ['yes|Yes','no|No'],
+              value    : 'yes',
+              showon   : {'EXPERIMENT':['neutron'],'MKHYDR_NEUTRON':['ALL','YES']},
+              position : [2,3,1,1]
+            },
+            H_REFINE_HD : { type : 'combobox',
+              keyword  : 'none',
+              label    : 'Refine H/D fractions',
+              tooltip  : 'H/D fraction refinement is iteratively performed during each main refinement cycle - this results in more cycles being reported in the output.',
+              range    : ['NO|No','POLAR|Yes - only polar hydrogens (for H/D exchange experiments)','ALL|Yes - all hydrogens (for perdeuterated crystals)'],
+              value    : 'POLAR',
+              showon   : {'EXPERIMENT':['neutron'],'MKHYDR_NEUTRON':['ALL','YES']},
+              position : [3,3,1,1]
+            },
+            H_INIT_HD : { type : 'combobox',
+              keyword  : 'none',
+              label    : 'Initialise H/D fractions',
+              tooltip  : 'H/D fractions should be initialised if they have not been refined before, or the model has undergone substantial changes since the last round of refinement.',
+              range    : ['no|No - assumes H/D fraction has been refined before','mix|Yes - set to D for exchangable atoms; H for others (for H/D exchange experiments)','alld|Yes - set all to D (for perdeuterated crystals)'],
+              value    : 'no',
+              showon   : {'EXPERIMENT':['neutron'],'MKHYDR_NEUTRON':['YES'],'H_REFINE_HD':['ALL','POLAR']},
+              position : [4,3,1,1]
+            },
+            H_INIT_HD_HALL : { type : 'combobox',
+              keyword  : 'none',
+              label    : 'Initialise H/D fractions',
+              tooltip  : 'H/D fractions should be initialised if they have not been refined before, or the model has undergone substantial changes since the last round of refinement.',
+              range    : ['mix|Set to D for exchangable atoms; H for others (for H/D exchange experiments)','alld|Set all to D (for perdeuterated crystals)'],
+              value    : 'mix',
+              showon   : {'EXPERIMENT':['neutron'],'MKHYDR_NEUTRON':['ALL'],'H_REFINE_HD':['ALL','POLAR']},
+              position : [4,3,1,1]
             },
             /*
             RES_LIMIT_MIN : { type   : 'real_',
@@ -570,7 +626,7 @@ function TaskRefmac()  {
               keyword  : 'none',
               label    : '<div style="font-size:14px;">' +
                          '<i>Type additional keywords here</i></div>',
-              position : [2,0,1,6]
+              position : [5,0,1,6]
             },
             KEYWORDS: {
               type        : 'aceditor_',
@@ -580,7 +636,7 @@ function TaskRefmac()  {
               value       : '',
               iwidth      : 500,
               iheight     : 160,
-              position    : [3,0,1,6]
+              position    : [6,0,1,6]
             }  
         }
      }
