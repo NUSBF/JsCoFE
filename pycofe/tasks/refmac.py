@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.23   <--  Date of Last Modification.
+#    14.09.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -259,7 +259,9 @@ class Refmac(basic.TaskDriver):
             if vdwrestraints:
                stdin.append ( 'VDWRESTRAINTS ' + vdwrestraints )
 
-        stdin.append ( 'MAKE HYDR ' + str(sec1.MKHYDR.value)  )
+        if str(sec5.EXPERIMENT.value) != 'neutron':
+            stdin.append ( 'MAKE HYDR ' + str(sec1.MKHYDR.value)  )
+
         stdin.append ( 'MAKE LINK ' + str(sec3.MKLINKS.value) )
 
         isTwinning = False
@@ -325,6 +327,27 @@ class Refmac(basic.TaskDriver):
               stdin.append ( 'SOURCE ELECTRON MB' )
            else:
               stdin.append ( 'SOURCE ELECTRON' )
+        elif str(sec5.EXPERIMENT.value) == 'neutron':
+           stdin.append ( 'SOURCE NEUTRON' )
+           stdin.append ( 'MAKE HYDR ' + str(sec5.MKHYDR_NEUTRON.value) )
+           if str(sec5.MKHYDR_NEUTRON.value) != 'NO':
+              if str(sec5.H_REFINE.value) != 'NO':
+                 stdin.append ( 'HYDROGEN REFINE ' + str(sec5.H_REFINE.value) )
+              if str(sec5.H_TORSION.value) == 'yes':
+                 stdin.append ( 'RESTRAINT TORSION HYDROGEN INCLUDE ALL' )
+              if str(sec5.H_REFINE_HD.value) != 'NO':
+                 stdin.append ( 'REFINEMENT DFRACTION' )
+                 stdin.append ( 'HYDROGEN DFRACTION ' + str(sec5.H_REFINE_HD.value) )
+              if str(sec5.MKHYDR_NEUTRON.value) == 'YES':
+                 if str(sec5.H_INIT_HD.value) == 'alld':
+                    stdin.append ( 'HYDROGEN DFRACTION INIT' )
+                 elif str(sec5.H_INIT_HD.value) == 'mix':
+                    stdin.append ( 'HYDROGEN DFRACTION INIT REFINEABLE 1 UNREFINEABLE 0' )  
+              elif str(sec5.MKHYDR_NEUTRON.value) == 'ALL':
+                 if str(sec5.H_INIT_HD_HALL.value) == 'alld':
+                    stdin.append ( 'HYDROGEN DFRACTION INIT' )
+                 elif str(sec5.H_INIT_HD_HALL.value) == 'mix':
+                    stdin.append ( 'HYDROGEN DFRACTION INIT REFINEABLE 1 UNREFINEABLE 0' )                  
 
         stdin.append ( 'REFI RESO ' + str(hkl.res_low) + ' ' + str(hkl.res_high) )
 
@@ -361,15 +384,15 @@ class Refmac(basic.TaskDriver):
 
         if str(sec5.EXPERIMENT.value) == 'electron':
            if str(sec5.FORM_FACTOR.value) == 'gaussian':
-              cmd += ["libin",os.path.join(os.environ["CCP4"], 'lib', 'data', 'atomsf_electron.lib')]
+              cmd += ["atomsf",os.path.join(os.environ["CCP4"], 'lib', 'data', 'atomsf_electron.lib')]
         elif str(sec5.EXPERIMENT.value) == 'neutron':
-           cmd += ["libin",os.path.join(os.environ["CCP4"], 'lib', 'data', 'atomsf_neutron.lib')]
+           cmd += ["atomsf",os.path.join(os.environ["CCP4"], 'lib', 'data', 'atomsf_neutron.lib')]
 
         # Prepare report parser
         self.setRefmacLogParser ( self.refmac_report(),False )
 
         # Start refmac
-        self.runApp ( "refmac5",cmd,logType="Main" )
+        self.runApp ( "refmacat",cmd,logType="Main" )
         self.unsetLogParser()
 
         # check solution and register data
