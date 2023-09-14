@@ -373,6 +373,17 @@ function processLocalQueue()  {
 //   }
 // }
 
+function printServerQueueState()  {
+  if (__server_queue.length>0)
+    console.log (
+      ' >>> queue.length='  + __server_queue.length +
+      ' queue[0].type=' + __server_queue[0].type +
+      ' request_type='  + __server_queue[0].request_type +
+      ' ndrops=' + __check_session_drops
+    );
+  else
+    console.log ( ' >>> queue.length='  + __server_queue.length );
+}
 
 function __server_command ( cmd,data_obj,page_title,function_response,
                             function_always,function_fail,sqid )  {
@@ -403,12 +414,14 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         } catch(err) {
           console.log ( ' >>> error catch in __server_command.done: ' + err );  
           console.log ( ' >>> rdata = ' + rdata );
+          printServerQueueState();
         }
         // *** old version
         // processServerQueue();
       } else  {
         console.log ( ' >>> return on skipped operation in __server_command.done' );
         console.log ( ' >>> rdata = ' + rdata );
+        printServerQueueState();
         // *** new version
         if (__server_queue.length>0)  {
           __server_queue.shift();
@@ -434,6 +447,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         // processServerQueue();
       } else  {
         console.log ( ' >>> return on skipped operation in __server_command.fail' );
+        printServerQueueState();
         // *** new version
         if (__server_queue.length>0)  {
           __server_queue.shift();
@@ -504,6 +518,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
                         '\n --- ' + err +
                         '\n --- request type: ' + request_type +
                         '\n --- rdata = ' + rdata );
+          printServerQueueState();
         }
 
         // *** old version
@@ -511,6 +526,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
       } else  {
         console.log ( ' >>> return on skipped operation in __server_request.done' );
+        printServerQueueState();
         // *** new version
         if (__server_queue.length>0)  {
           __server_queue.shift();
@@ -564,6 +580,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
         } catch(err) {
           console.log ( ' >>> error catch in __server_request.fail: ' + err );
+          printServerQueueState();
         }
 
         // *** old version
@@ -571,6 +588,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
       } else  {
         console.log ( ' >>> return on skipped operation in __server_request.fail' );
+        printServerQueueState();
         // *** new version
         if (__server_queue.length>0)  {
           __server_queue.shift();

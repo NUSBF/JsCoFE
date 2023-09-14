@@ -40,12 +40,12 @@ function TaskJLigand()  {
   this.nc_type = 'client';   // the job may be run only on client NC
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':[]}, // any revision will be passed
-      label       : '',         // no label for void data entry
+      data_type   : {'DataRevision':[]},  // any revision will be passed
+      label       : 'Structure revision', // no label for void data entry
       inputId     : 'revision', // prefix 'void' will hide entry in import dialog
       version     : 0,          // minimum data version allowed
-      force       : 1,          // "show" all revisions available
-      min         : 0,          // minimum acceptable number of data instances
+      // force       : 1,          // "show" all revisions available
+      min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     }
   ];
