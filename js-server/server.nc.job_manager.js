@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.09.23   <--  Date of Last Modification.
+ *    14.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -56,6 +56,8 @@ const log = require('./server.log').newLog(11);
 
 const jobsDir       = 'jobs';  // area in nc-storage to host all job directories
 const registerFName = 'job_register.meta';  // file name to keep job register
+
+const __day_ms      = 86400000;
 
 // ===========================================================================
 
@@ -130,11 +132,21 @@ NCJobRegister.prototype.getJobEntry = function ( job_token )  {
 
 NCJobRegister.prototype.wakeZombi = function ( job_token )  {
   if (job_token in this.job_map)  {
-    var jobEntry = this.job_map[job_token];
+    let jobEntry = this.job_map[job_token];
+    var crTime   = Date.now();
     // console.log ( ' >> awaken ' + JSON.stringify(jobEntry) );
-    if (jobEntry && (jobEntry.jobStatus==task_t.job_code.exiting) &&
-        jobEntry.endTime)  {
-        // (jobEntry.sendTrials<=0))  {
+    // if (jobEntry && jobEntry.endTime &&
+    //      ((jobEntry.jobStatus==task_t.job_code.exiting) ||
+    //       (([task_t.job_code.finished,task_t.job_code.failed,task_t.job_code.stopped]
+    //         .indexOf(jobEntry.jobStatus)>=0) &&
+    //        ((crTime-jobEntry.endTime)>86400)
+    //       )
+    //      )
+    //    )  {
+    if (jobEntry && jobEntry.endTime &&
+         ((jobEntry.jobStatus==task_t.job_code.exiting) || 
+          (crTime-jobEntry.endTime>__day_ms)))  {
+      // (jobEntry.sendTrials<=0))  {
       jobEntry.jobStatus  = task_t.job_code.running;
       jobEntry.sendTrials = conf.getServerConfig().maxSendTrials;
       jobEntry.awakening  = true;
@@ -263,8 +275,6 @@ function removeJobDelayed ( job_token,jobStatus )  {
     }
   }
 }
-
-const __day_ms = 86400000;
 
 function cleanNC ( cleanDeadJobs_bool )  {
 
