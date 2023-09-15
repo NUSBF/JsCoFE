@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.08.23   <--  Date of Last Modification.
+#    15.09.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -662,7 +662,10 @@ class Arcimboldo(basic.TaskDriver):
             elif os.path.islink(fpath):
                 lfpath = os.readlink(fpath)
                 os.unlink(fpath)
-                shutil.copy2(lfpath,fpath)
+                try:
+                    shutil.copy2(lfpath,fpath)
+                except:
+                    pass
 
         # shutil.rmtree ( self.arcimboldoDir() )
 
