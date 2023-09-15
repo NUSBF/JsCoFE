@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.08.23   <--  Date of Last Modification.
+ *    15.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -271,21 +271,21 @@ TaskArcimboldoShredder.prototype.clipboard_name = function()  { return '"Arcimbo
 //TaskArcimboldoShredder.prototype.requiredEnvironment = function() { return ['CCP4','ROSETTA_DIR']; }
 
 TaskArcimboldoShredder.prototype.currentVersion = function()  {
-  var version = 0;
+let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
 TaskArcimboldoShredder.prototype.desc_title = function()  {
-  // this appears under task title in the task list
-    return 'uses fragments derived from a distant homologue template for MR';
-  };
+// this appears under task title in the task list
+  return 'uses fragments derived from a distant homologue template for MR';
+}
 
-  TaskArcimboldoShredder.prototype.checkKeywords = function ( keywords )  {
-    // keywords supposed to be in low register
-      return this.__check_keywords ( keywords,['arcimboldo','arcimboldoshredder', 'shredder', 'molecular', 'replacement', 'mr'] );
-    }
+TaskArcimboldoShredder.prototype.checkKeywords = function ( keywords )  {
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['arcimboldo','arcimboldoshredder', 'shredder', 'molecular', 'replacement', 'mr'] );
+}
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
