@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    15.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -241,16 +241,16 @@ TaskArcimboldoLite.prototype.clipboard_name = function()  { return '"Arcimboldo-
 //TaskArcimboldoLite.prototype.requiredEnvironment = function() { return ['CCP4','ROSETTA_DIR']; }
 
 TaskArcimboldoLite.prototype.currentVersion = function()  {
-  var version = 0;
+let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
 TaskArcimboldoLite.prototype.desc_title = function()  {
-  // this appears under task title in the task list
-    return 'performs ab initio phasing using polyalanine helices or other single search fragments for MR';
-  };
+// this appears under task title in the task list
+  return 'performs ab initio phasing using polyalanine helices or other single search fragments for MR';
+}
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
@@ -260,9 +260,9 @@ TaskArcimboldoLite.prototype.desc_title = function()  {
 TaskArcimboldoLite.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskArcimboldoLite.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['arcimboldo','arcimboldolite', 'lite', 'molecular', 'replacement', 'mr'] );
-  }
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['arcimboldo','arcimboldolite', 'lite', 'molecular', 'replacement', 'mr'] );
+}
 
 if (__template)  {
   //  for server side

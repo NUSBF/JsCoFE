@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.08.23   <--  Date of Last Modification.
+ *    15.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -160,16 +160,16 @@ TaskArcimboldoBorges.prototype.clipboard_name = function()  { return '"Arcimbold
 //TaskArcimboldoBorges.prototype.requiredEnvironment = function() { return ['CCP4','ROSETTA_DIR']; }
 
 TaskArcimboldoBorges.prototype.currentVersion = function()  {
-  var version = 0;
+let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
 TaskArcimboldoBorges.prototype.desc_title = function()  {
-  // this appears under task title in the task list
-    return 'performs ab initio phasing with nonspecific libraries of small folds';
-  };
+// this appears under task title in the task list
+  return 'performs ab initio phasing with nonspecific libraries of small folds';
+}
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
@@ -182,9 +182,9 @@ TaskArcimboldoBorges.prototype.requiredEnvironment = function() {
 }
 
 TaskArcimboldoBorges.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['arcimboldo','arcimboldoborges', 'borges', 'molecular', 'replacement', 'mr'] );
-  }
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['arcimboldo','arcimboldoborges', 'borges', 'molecular', 'replacement', 'mr'] );
+}
 
 if (__template)  {
   //  for server side
