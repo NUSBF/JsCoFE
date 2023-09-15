@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.09.23   <--  Date of Last Modification.
+ *    15.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -429,7 +429,8 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         if (__server_queue.length>0)  {
           __server_queue.shift();
           __process_network_indicators();
-        }
+        } else
+          makeSessionCheck ( __current_page.sceneId );
       }
       // *** new version
       processServerQueue();
@@ -456,7 +457,8 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         if (__server_queue.length>0)  {
           __server_queue.shift();
           __process_network_indicators();
-        }
+        } else
+          makeSessionCheck ( __current_page.sceneId );
       }
       // *** new version
       processServerQueue();
@@ -535,7 +537,8 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
         if (__server_queue.length>0)  {
           __server_queue.shift();
           __process_network_indicators();
-        }
+        } else
+          makeSessionCheck ( __current_page.sceneId );
       }
 
       // *** new version
@@ -597,7 +600,8 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
         if (__server_queue.length>0)  {
           __server_queue.shift();
           __process_network_indicators();
-        }
+        } else
+          makeSessionCheck ( __current_page.sceneId );
       }
 
       // *** new version
