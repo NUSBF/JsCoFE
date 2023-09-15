@@ -373,16 +373,16 @@ function processLocalQueue()  {
 //   }
 // }
 
-function printServerQueueState()  {
+function printServerQueueState ( checkPoint)  {
   if (__server_queue.length>0)
     console.log (
-      ' >>> queue.length='  + __server_queue.length +
+      ' >>> ' + checkPoint + ' queue.length='  + __server_queue.length +
       ' queue[0].type=' + __server_queue[0].type +
       ' request_type='  + __server_queue[0].request_type +
       ' ndrops=' + __check_session_drops
     );
   else
-    console.log ( ' >>> queue.length='  + __server_queue.length );
+    console.log ( ' >>> ' + checkPoint + ' queue.length='  + __server_queue.length );
 }
 
 function __server_command ( cmd,data_obj,page_title,function_response,
@@ -399,6 +399,9 @@ function __server_command ( cmd,data_obj,page_title,function_response,
       data     : json,
       timeout  : 1000000,   // milliseconds
       dataType : 'text'
+      // error: function(xhr, ajaxOptions, thrownError) {
+      //             alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+      //           }
     })
     .done ( function(rdata) {
       if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
@@ -414,14 +417,14 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         } catch(err) {
           console.log ( ' >>> error catch in __server_command.done: ' + err );  
           console.log ( ' >>> rdata = ' + rdata );
-          printServerQueueState();
+          printServerQueueState ( 1 );
         }
         // *** old version
         // processServerQueue();
       } else  {
         console.log ( ' >>> return on skipped operation in __server_command.done' );
         console.log ( ' >>> rdata = ' + rdata );
-        printServerQueueState();
+        printServerQueueState ( 2 );
         // *** new version
         if (__server_queue.length>0)  {
           __server_queue.shift();
@@ -437,6 +440,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         function_always();
     })
     .fail ( function(xhr,err){
+      console.log ( ' >>> err=' + err );
       if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
         __server_queue.shift();
         __process_network_indicators();
@@ -446,8 +450,8 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         // *** old version
         // processServerQueue();
       } else  {
-        console.log ( ' >>> return on skipped operation in __server_command.fail' );
-        printServerQueueState();
+        console.log ( ' >>> return on skipped operation in __server_command.fail, err=' + err );
+        printServerQueueState ( 3 );
         // *** new version
         if (__server_queue.length>0)  {
           __server_queue.shift();
@@ -518,7 +522,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
                         '\n --- ' + err +
                         '\n --- request type: ' + request_type +
                         '\n --- rdata = ' + rdata );
-          printServerQueueState();
+          printServerQueueState ( 4 );
         }
 
         // *** old version
@@ -526,7 +530,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
       } else  {
         console.log ( ' >>> return on skipped operation in __server_request.done' );
-        printServerQueueState();
+        printServerQueueState ( 5 );
         // *** new version
         if (__server_queue.length>0)  {
           __server_queue.shift();
@@ -580,7 +584,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
         } catch(err) {
           console.log ( ' >>> error catch in __server_request.fail: ' + err );
-          printServerQueueState();
+          printServerQueueState ( 6 );
         }
 
         // *** old version
@@ -588,7 +592,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
       } else  {
         console.log ( ' >>> return on skipped operation in __server_request.fail' );
-        printServerQueueState();
+        printServerQueueState ( 7 );
         // *** new version
         if (__server_queue.length>0)  {
           __server_queue.shift();
