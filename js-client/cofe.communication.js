@@ -453,9 +453,11 @@ function __server_command ( cmd,data_obj,page_title,function_response,
       __process_network_indicators();
       if (function_fail)
             function_fail();
-      else  MessageAJAXFailure(page_title,xhr,err);
+      else  MessageAJAXFailure ( page_title,xhr,err );
       // *** old version
       processServerQueue();
+      // if (cmd==fe_command.checkSession)
+      //   makeSessionCheck ( __current_page.sceneId );
 
       /*  ==== ORIGINAL
       if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
