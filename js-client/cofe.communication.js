@@ -442,6 +442,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
     })
     .fail ( function(xhr,err){
       console.log ( ' >>> err=' + err );
+      // can be "error" and "timeout"
       if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
         __server_queue.shift();
         __process_network_indicators();
@@ -557,6 +558,9 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
     })
 
     .fail ( function(xhr,err){
+
+      console.log ( ' >>> 2 err=' + err );
+      // can be "error" and "timeout"
 
       if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
 
