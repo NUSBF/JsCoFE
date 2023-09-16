@@ -342,6 +342,8 @@ function processServerQueue()  {
                 }
               ],'msg_system'
             );
+          } else  {
+            console.log ( ' >>> undefined server request delayed' );
           }
         }
       },__holdup_wait);
@@ -429,8 +431,8 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         if (__server_queue.length>0)  {
           __server_queue.shift();
           __process_network_indicators();
-        } else
-          makeSessionCheck ( __current_page.sceneId );
+        } //else
+          //makeSessionCheck ( __current_page.sceneId );
       }
       // *** new version
       processServerQueue();
@@ -443,6 +445,19 @@ function __server_command ( cmd,data_obj,page_title,function_response,
     .fail ( function(xhr,err){
       console.log ( ' >>> cmd=' + cmd + ' err=' + err );
       // can be "error" and "timeout"
+      if ((__server_queue.length<=0) || (sqid!=__server_queue[0].id))  {
+        console.log ( ' >>> return on skipped operation in __server_command.fail, err=' + err );
+        printServerQueueState ( 3 );
+      }
+      __server_queue.shift();
+      __process_network_indicators();
+      if (function_fail)
+            function_fail();
+      else  MessageAJAXFailure(page_title,xhr,err);
+      // *** old version
+      processServerQueue();
+
+      /*  ==== ORIGINAL
       if ((__server_queue.length>0) && (sqid==__server_queue[0].id))  {
         __server_queue.shift();
         __process_network_indicators();
@@ -450,19 +465,22 @@ function __server_command ( cmd,data_obj,page_title,function_response,
               function_fail();
         else  MessageAJAXFailure(page_title,xhr,err);
         // *** old version
-        // processServerQueue();
+        processServerQueue();
       } else  {
         console.log ( ' >>> return on skipped operation in __server_command.fail, err=' + err );
         printServerQueueState ( 3 );
         // *** new version
-        if (__server_queue.length>0)  {
-          __server_queue.shift();
-          __process_network_indicators();
-        } else
-          makeSessionCheck ( __current_page.sceneId );
+        // if (__server_queue.length>0)  {
+        //   __server_queue.shift();
+        //   __process_network_indicators();
+        // } //else
+          //makeSessionCheck ( __current_page.sceneId );
       }
+      */
       // *** new version
-      processServerQueue();
+      // processServerQueue();
+      // if (cmd==fe_command.checkSession)
+      //   makeSessionCheck ( __current_page.sceneId );
     });
 
 }
