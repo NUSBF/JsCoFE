@@ -157,7 +157,7 @@ function start ( callback_func )  {
     // setTimeout ( function(){
     //   proxy.web ( server_request,server_response,options_web );
     // },10);
-    proxy.web ( server_request,server_response,options_proxy );
+    // *** proxy.web ( server_request,server_response,options_proxy );
   });
 
   // Listen to the `upgrade` event in order to proxy the WebSocket requests as well.
@@ -188,10 +188,10 @@ function start ( callback_func )  {
     proxy_client.on ( 'error', function(err,server_request,server_response){
       log.warning ( 4,'Proxy-client ' + err + ' fetching ' + 
                        url.parse(server_request.url).pathname.substr(1) );
-      setTimeout ( function(){
-        // proxy_client.web ( server_request,server_response,options_web );
-        proxy_client.web ( server_request,server_response,options_proxy_client );
-      },10);
+      // setTimeout ( function(){
+      //   // proxy_client.web ( server_request,server_response,options_web );
+      //   proxy_client.web ( server_request,server_response,options_proxy_client );
+      // },10);
     });
 
     // Listen to the `upgrade` event in order to proxy the WebSocket requests as well.
