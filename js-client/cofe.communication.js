@@ -688,7 +688,7 @@ function local_command ( cmd,data_obj,command_title,function_response )  {
 function promptSessionCheck ( cmd )  {
   // resumes check loop after client wakes up from sleeping
   if (__current_page && (cmd!=fe_command.checkSession))  {
-    let crTime = Data.now();
+    let crTime = Date.now();
     if ((crTime-__last_session_check_time>5*__check_session_period))  {
       __last_session_check_time = crTime + 2*__check_session_period;
       makeSessionCheck ( __current_page.sceneId );
