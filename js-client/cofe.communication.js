@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.09.23   <--  Date of Last Modification.
+ *    17.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -685,13 +685,21 @@ function local_command ( cmd,data_obj,command_title,function_response )  {
 
 }
 
+function promptSessionCheck ( cmd )  {
+  // resumes check loop after client wakes up from sleeping
+  if (__current_page && (cmd!=fe_command.checkSession))  {
+    let crTime = Data.now();
+    if ((crTime-__last_session_check_time>5*__check_session_period))  {
+      __last_session_check_time = crTime + 2*__check_session_period;
+      makeSessionCheck ( __current_page.sceneId );
+    }
+  }
+}
 
 function serverCommand ( cmd,data_obj,page_title,function_response,
                          function_always,function_fail )  {
-  
-  if (__current_page && (cmd!=fe_command.checkSession) && 
-      (Date.now()-__last_session_check_time>5*__check_session_period))
-    makeSessionCheck ( __current_page.sceneId );
+
+  promptSessionCheck ( cmd );
 
   __server_queue.push ({
     status            : 'waiting',
@@ -715,9 +723,7 @@ function serverCommand ( cmd,data_obj,page_title,function_response,
 function serverRequest ( request_type,data_obj,page_title,function_ok,
                          function_always,function_fail )  {
 
-  if (__current_page &&
-      (Date.now()-__last_session_check_time>5*__check_session_period))
-    makeSessionCheck ( __current_page.sceneId );
+  promptSessionCheck ( 'x' );
 
   __server_queue.push ({
     status          : 'waiting',
@@ -738,10 +744,8 @@ function serverRequest ( request_type,data_obj,page_title,function_ok,
 
 
 function localCommand ( cmd,data_obj,command_title,function_response )  {
-    
-  if (__current_page && (cmd!=fe_command.checkSession) && 
-      (Date.now()-__last_session_check_time>5*__check_session_period))
-    makeSessionCheck ( __current_page.sceneId );
+
+  promptSessionCheck ( 'x' );
 
   if (__local_service)  {
     __local_queue.push ({
