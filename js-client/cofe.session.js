@@ -445,70 +445,75 @@ function stopOfflineGreeting()  {
 }
 
 
-var __session_check_timer  = null;
+var __session_check_timer     = null;
+var __last_session_check_time = 0;
 
-function checkSession ( sceneId )  {
+function checkSession0 ( sceneId )  {
 
-  if (__server_queue.length>0)  {
+  __last_session_check_time = Date.now();
 
-    makeSessionCheck ( sceneId );
-
-  } else  {
-
-    serverCommand ( fe_command.checkSession,{'login_token':__login_token},
-                    'Check session',
-      function(rdata){ // successful reply
-        if (__session_check_timer)  {
-          if ((rdata.status==fe_retcode.wrongSession) ||
-              (rdata.status==fe_retcode.notLoggedIn))  {
-            __login_token = '';
-            logout ( sceneId,1 );
-          } else  {
-            offlineGreeting ( function(){
-              if (__current_page && ($.type(rdata.data) === "string"))  {
-                var signal = rdata.data.split(':');
-                if (signal.length==2)  {
-                  switch (__current_page._type)  {
-                    case 'ProjectListPage' : if (signal[0]=='cloudrun_reload_project_list')
-                                               __current_page.reloadProjectList();
-                                             else if (signal[0]=='cloudrun_switch_to_project')
-                                               __current_page.loadProject ( signal[1] );
-                                           break;
-                    case 'ProjectPage'     : if (__current_page.getProjectName()==signal[1])  {
-                                               __current_page.reloadProject();
-                                               break;
-                                             }
-                    default : if (signal[0]=='cloudrun_switch_to_project')
-                        new MessageBox ( 'CloudRun submitted',
-                          '<div style="width:400px"><h2>CloudRun job submitted</h2>' +
-                          'A CloudRun job was just submitted in your account and ' +
-                          'it now starts in project <b>' + signal[1] +
-                          '</b>.<p>This message is only for your information.</div>',
-                          'msg_information'
-                        );
-                  }
+  console.log ( ' >>> checkSession fired' );
+  serverCommand ( fe_command.checkSession,{'login_token':__login_token},
+                  'Check session',
+    function(rdata){ // successful reply
+      if (__session_check_timer)  {
+console.log ( ' >>> checkSession return timer on ' + Date.now() );
+        if ((rdata.status==fe_retcode.wrongSession) ||
+            (rdata.status==fe_retcode.notLoggedIn))  {
+          __login_token = '';
+          logout ( sceneId,1 );
+        } else  {
+          offlineGreeting ( function(){
+            if (__current_page && ($.type(rdata.data) === "string"))  {
+              var signal = rdata.data.split(':');
+              if (signal.length==2)  {
+                switch (__current_page._type)  {
+                  case 'ProjectListPage' : if (signal[0]=='cloudrun_reload_project_list')
+                                              __current_page.reloadProjectList();
+                                            else if (signal[0]=='cloudrun_switch_to_project')
+                                              __current_page.loadProject ( signal[1] );
+                                          break;
+                  case 'ProjectPage'     : if (__current_page.getProjectName()==signal[1])  {
+                                              __current_page.reloadProject();
+                                              break;
+                                            }
+                  default : if (signal[0]=='cloudrun_switch_to_project')
+                      new MessageBox ( 'CloudRun submitted',
+                        '<div style="width:400px"><h2>CloudRun job submitted</h2>' +
+                        'A CloudRun job was just submitted in your account and ' +
+                        'it now starts in project <b>' + signal[1] +
+                        '</b>.<p>This message is only for your information.</div>',
+                        'msg_information'
+                      );
                 }
               }
-              makeSessionCheck ( sceneId );
-            });
-          }
-        }
-        return true;
-      },
-      function(){}, // always do nothing
-      function(){   // fail
-        if (__session_check_timer)  {
-          if (__local_setup)  {
-            __login_token = '';
-            logout ( sceneId,2 );
-          } else
+            }
             makeSessionCheck ( sceneId );
+          });
         }
       }
-    );
+else console.log ( ' >>> checkSession return timer off' );
+      return true;
+    },
+    function(){}, // always do nothing
+    function(){   // fail
 
-  }
+console.log ( ' >>> checkSession fail ' );
 
+      if (__session_check_timer)  {
+        if (__local_setup)  {
+          __login_token = '';
+          logout ( sceneId,2 );
+        } else
+          makeSessionCheck ( sceneId );
+      }
+    }
+  );
+}
+
+function checkSession ( sceneId )  {
+  if (__server_queue.length>0)  makeSessionCheck ( sceneId );
+                          else  checkSession0    ( sceneId );
 }
 
 function stopSessionChecks()  {
@@ -519,6 +524,7 @@ function stopSessionChecks()  {
 }
 
 function makeSessionCheck ( sceneId )  {
+  console.log ( ' >>> makeSessionCheck' );
   stopSessionChecks();
   __session_check_timer = setTimeout ( function(){
     checkSession ( sceneId );

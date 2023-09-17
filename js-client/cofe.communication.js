@@ -688,6 +688,11 @@ function local_command ( cmd,data_obj,command_title,function_response )  {
 
 function serverCommand ( cmd,data_obj,page_title,function_response,
                          function_always,function_fail )  {
+  
+  if (__current_page && (cmd!=fe_command.checkSession) && 
+      (Date.now()-__last_session_check_time>5*__check_session_period))
+    makeSessionCheck ( __current_page.sceneId );
+
   __server_queue.push ({
     status            : 'waiting',
     type              : 'command',
@@ -700,12 +705,20 @@ function serverCommand ( cmd,data_obj,page_title,function_response,
     function_always   : function_always,
     function_fail     : function_fail
   });
+
   __process_network_indicators();
   processServerQueue();
+
 }
+
 
 function serverRequest ( request_type,data_obj,page_title,function_ok,
                          function_always,function_fail )  {
+
+  if (__current_page &&
+      (Date.now()-__last_session_check_time>5*__check_session_period))
+    makeSessionCheck ( __current_page.sceneId );
+
   __server_queue.push ({
     status          : 'waiting',
     type            : 'request',
@@ -717,11 +730,19 @@ function serverRequest ( request_type,data_obj,page_title,function_ok,
     function_always : function_always,
     function_fail   : function_fail
   });
+
   __process_network_indicators();
   processServerQueue();
+
 }
 
+
 function localCommand ( cmd,data_obj,command_title,function_response )  {
+    
+  if (__current_page && (cmd!=fe_command.checkSession) && 
+      (Date.now()-__last_session_check_time>5*__check_session_period))
+    makeSessionCheck ( __current_page.sceneId );
+
   if (__local_service)  {
     __local_queue.push ({
       status            : 'waiting',
