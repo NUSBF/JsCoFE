@@ -250,28 +250,6 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                             makeAccountPage ( sceneId );
                           else if (__user_settings.onlogin==on_login.last_project)  {
                             serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
-                              /*
-                              var n = -1;
-                              for (var i=0;(i<data.projects.length) && (n<0);i++)
-                                if (data.projects[i].name==data.current)
-                                  n = i;
-                              if (n>=0)  {
-                                __current_folder      = data.currentFolder;
-                                __current_folder.path = data.projects[n].folderPath;
-                                if (__current_folder.path!=data.currentFolder.path)  {
-                                  data.currentFolder = __current_folder;
-                                  serverRequest ( fe_reqtype.saveProjectList,data,'Project List',
-                                    function(rdata){
-                                      makeProjectPage ( sceneId );
-                                    },null,'persist' );
-                                } else  {
-                                  makeProjectPage ( sceneId );
-                                }
-                              } else  {
-                                __current_folder = data.currentFolder;
-                                makeProjectListPage ( sceneId );
-                              }
-                              */
                               __current_folder = data.currentFolder;
                               var n = -1;
                               for (var i=0;(i<data.projects.length) && (n<0);i++)
@@ -452,12 +430,10 @@ function checkSession0 ( sceneId )  {
 
   __last_session_check_time = Date.now();
 
-  console.log ( ' >>> checkSession fired' );
   serverCommand ( fe_command.checkSession,{'login_token':__login_token},
                   'Check session',
     function(rdata){ // successful reply
       if (__session_check_timer)  {
-console.log ( ' >>> checkSession return timer on ' + Date.now() );
         if ((rdata.status==fe_retcode.wrongSession) ||
             (rdata.status==fe_retcode.notLoggedIn))  {
           __login_token = '';
@@ -492,13 +468,10 @@ console.log ( ' >>> checkSession return timer on ' + Date.now() );
           });
         }
       }
-else console.log ( ' >>> checkSession return timer off' );
       return true;
     },
     function(){}, // always do nothing
     function(){   // fail
-
-console.log ( ' >>> checkSession fail ' );
 
       if (__session_check_timer)  {
         if (__local_setup)  {
@@ -524,7 +497,6 @@ function stopSessionChecks()  {
 }
 
 function makeSessionCheck ( sceneId )  {
-  console.log ( ' >>> makeSessionCheck' );
   stopSessionChecks();
   __session_check_timer = setTimeout ( function(){
     checkSession ( sceneId );
