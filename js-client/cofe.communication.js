@@ -415,28 +415,32 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         } //else
           //makeSessionCheck ( __current_page.sceneId );
       }
+      __check_session_drops = 0;
       // *** new version
       processServerQueue();
     })
     .always ( function(){
-      __check_session_drops = 0;
+      // __check_session_drops = 0;
       if (function_always)
         function_always();
     })
     .fail ( function(xhr,err){
-      console.log ( ' >>> cmd=' + cmd + ' err=' + err );
+      console.log ( ' >>> cmd=' + cmd + ' err=' + err + ' ndrops=' + __check_session_drops );
       // can be "error" and "timeout"
       if ((__server_queue.length<=0) || (sqid!=__server_queue[0].id))  {
         console.log ( ' >>> return on skipped operation in __server_command.fail, err=' + err );
         // printServerQueueState ( 3 );
       }
-      __server_queue.shift();
-      __process_network_indicators();
+      if (cmd==fe_command.checkSession)
+        __check_session_drops++;
       if (function_fail)
             function_fail();
       else  MessageAJAXFailure ( page_title,xhr,err );
+      // __server_queue.shift();
+      __process_network_indicators();
       // *** old version
       processServerQueue();
+
       // if (cmd==fe_command.checkSession)
       //   makeSessionCheck ( __current_page.sceneId );
 
@@ -543,6 +547,8 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
           makeSessionCheck ( __current_page.sceneId );
       }
 
+      __check_session_drops = 0;
+
       // *** new version
       processServerQueue();
 
@@ -555,7 +561,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
     })
 
     .always ( function(){
-      __check_session_drops = 0;
+      // __check_session_drops = 0;
     })
 
     .fail ( function(xhr,err){
