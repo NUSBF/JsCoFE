@@ -216,9 +216,9 @@ class refmac_parser(object):
     self.parser.add_recovery_next(ignored)
     self.parser.add_recovery_action(self.item_reset)
     
- 
-  def parse_stream(self, istream, **kwrgs):
-    self.parser.parse_stream(istream, **kwrgs)
+
+  def parse_stream(self, istream, ostream=None, verbose=False, pause=0, patches=None):
+    self.parser.parse_stream(istream, ostream, verbose, pause, patches)
     if self.sect is not self.grid:
       self.sect.set_state(False)
 
