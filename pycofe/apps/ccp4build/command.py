@@ -111,7 +111,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
                           stdout=subprocess.PIPE if log_parser else file_stdout,
                           stderr=file_stderr )
         if log_parser:
-            log_parser.parse_stream ( p.stdout,file_stdout )
+            log_parser.parse_stream ( p.stdout,ostream=file_stdout )
 
         if iswindows:
             rc = comrc ( [0,p.wait()],process_time()-t1 )

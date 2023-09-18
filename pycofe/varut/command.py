@@ -123,7 +123,7 @@ def call ( executable,command_line,job_dir,stdin_fname,file_stdout,
                           stderr=file_stderr,env=environ,cwd=work_dir )
 
         if log_parser:
-            log_parser.parse_stream ( p.stdout,file_stdout )
+            log_parser.parse_stream ( p.stdout,ostream=file_stdout )
 
         if iswindows:
             rc = comrc ( [0,p.wait()],process_time()-t1 )
