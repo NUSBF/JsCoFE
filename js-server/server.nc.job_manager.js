@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.09.23   <--  Date of Last Modification.
+ *    19.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -583,11 +583,13 @@ var cap   = false;
 
   // Read the requested file content from file system
   if (fname)  {
-    var capSize = 0;
+    let capSize = 0;
+    let server_cfg = conf.getServerConfig();
     if (cap)
-      capSize = conf.getServerConfig().fileCapSize;
-    utils.send_file ( fname,server_response,utils.getMIMEType(fname),false,
-                      capSize,20,null );
+      capSize = server_cfg.fileCapSize;
+    if (server_cfg.isFilePathAllowed(fname))
+      utils.send_file ( fname,server_response,utils.getMIMEType(fname),false,
+                        capSize,20,null );
   }
 
 }

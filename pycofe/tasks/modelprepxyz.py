@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    19.09.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -102,7 +102,9 @@ class ModelPrepXYZ(basic.TaskDriver):
             ],
             logType="Service"
         )
-        shutil.move ( "align.pdb",fpath_out )
+        # shutil.move ( "align.pdb",fpath_out )
+        st = gemmi.read_structure ( "align.pdb" )
+        st.write_pdb ( fpath_out )
         return
 
     def prepare_sculptor ( self, protocolNo,fpath_in,fpath_algn,fpath_out ):
