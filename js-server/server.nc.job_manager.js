@@ -1240,7 +1240,7 @@ function ncRunJob ( job_token,meta )  {
 
   } else  { // something wrong's happened, just put an error message in job report.
 
-    log.error ( 7,'no task received when expected' );
+    log.error ( 7,'no task received when expected at ' + taskDataPath );
     utils.writeJobReportMessage ( jobDir,
                    '<h1>[00102] Error: cannot find task metadata</h1>',false );
 
