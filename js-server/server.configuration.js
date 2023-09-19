@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.09.23   <--  Date of Last Modification.
+ *    19.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -22,6 +22,7 @@
 'use strict';
 
 //  load system modules
+const fs        = require('fs-extra');
 const path      = require('path');
 const http      = require('http');
 const crypto    = require('crypto');
@@ -88,6 +89,7 @@ function ServerConfig ( type )  {
   this.logflow       = {};
   this.logflow.chunk_length = 10000; // number of jobs to advance log file counters
   this.logflow.log_file     = '';    // full path less of '.log' and '.err' extensions
+  this.allowedPaths  = [];
 }
 
 ServerConfig.prototype.url = function()  {
@@ -185,7 +187,8 @@ var plist;
         }
       }
       if (found)
-        return plist.join ( path.sep ); // return path with system's separator
+        return  plist.join ( path.sep ); // return path with system's separator
+        // return plist.join ( path.sep ); // return path with system's separator
     }
   } else  {
     // paths in config file always to have '/' separator
@@ -201,7 +204,8 @@ var plist;
           found = false;
       }
     if (found)
-      return plist.join ( path.sep ); // return path with system's separator
+      return  plist.join ( path.sep ); // return path with system's separator
+      // return plist.join ( path.sep ); // return path with system's separator
   }
   return null;
 }
@@ -271,6 +275,16 @@ ServerConfig.prototype.getJobsSafe = function()  {
     'capacity' : 10
   };
 }
+
+
+ServerConfig.prototype.isFilePathAllowed = function ( fpath )  {
+let rpath = fs.realpathSync(fpath);
+let ok    = false;
+  for (let i=0;(i<this.allowedPaths.length) && (!ok);i++)
+    ok = rpath.startsWith ( this.allowedPaths[i] );
+  return ok;
+}
+
 
 ServerConfig.prototype.checkNCStatus = function ( callback_func )  {
 
@@ -880,6 +894,7 @@ function readConfiguration ( confFilePath,serverType )  {
       if (!nc_server.externalURL)
         nc_server.externalURL = nc_server.url();
       nc_server.storage = _make_path ( nc_server.storage,null );
+      nc_server.allowedPaths.push ( fs.realpathSync(nc_server.storage) );
       nc_server._checkLocalStatus();
       nc_servers.push ( nc_server );
       if (nc_server.exeType=='CLIENT')  {
@@ -888,6 +903,8 @@ function readConfiguration ( confFilePath,serverType )  {
         if (fe_proxy && (!fe_proxy.storage))
           fe_proxy.storage = client_server.storage;
       }
+      if (nc_server.hasOwnProperty('jobs_safe'))
+        nc_server.allowedPaths.push ( fs.realpathSync(nc_server.jobs_safe.path) );
       if (!nc_server.hasOwnProperty('jobCheckPeriod'))
         nc_server.jobCheckPeriod = 2000;
       if (!nc_server.hasOwnProperty('jobManager'))

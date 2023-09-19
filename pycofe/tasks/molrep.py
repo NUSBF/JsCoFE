@@ -28,8 +28,6 @@
 import os
 import uuid
 
-import gemmi
-
 #  application imports
 from . import basic
 from   pycofe.dtypes import dtype_template
@@ -163,10 +161,6 @@ class Molrep(basic.TaskDriver):
         have_results = False
 
         self.putMessage ( '&nbsp;' );
-
-        st = gemmi.read_structure ( self.molrep_pdb() )
-        st.write_pdb ( self.molrep_pdb() )
-
         structure = self.finaliseStructure ( self.molrep_pdb(),self.outputFName,
                                 hkl,None,[],0,leadKey=1, # openState="hidden",
                                 title="Positioned Structure" )
