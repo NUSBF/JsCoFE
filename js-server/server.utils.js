@@ -131,11 +131,13 @@ function readObject ( fpath )  {
 
 
 function readClass ( fpath ) {  // same as object but with class functions
-  try {
-    return class_map.getClassInstance ( fs.readFileSync(fpath).toString() );
-  } catch (e)  {
-    return null;
-  }
+  // try {
+    let obj_json = fs.readFileSync(fpath).toString();
+    console.log ( ' >>>> classType = ' + obj_json._type );
+    return class_map.getClassInstance ( obj_json );
+  // } catch (e)  {
+  //   return null;
+  // }
 }
 
 /*
