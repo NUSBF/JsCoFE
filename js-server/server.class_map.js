@@ -80,11 +80,11 @@ function __object_to_instance ( key,value ) {
 // recreates particular class instance from stringified object
 function getClassInstance ( class_json )  {
   // return JSON.parse ( class_json,__object_to_instance );
-  try {
+  // try {
     return JSON.parse ( class_json,__object_to_instance );
-  } catch(e) {
-    return null;
-  }
+  // } catch(e) {
+  //   return null;
+  // }
 }
 
 function makeClass ( classObject )  {
