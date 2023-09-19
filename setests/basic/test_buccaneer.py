@@ -59,7 +59,7 @@ def refmacAfterRevision(driver, waitLong):
     rFree = 1.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0004\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        match = re.search('\[0004\] refmacat -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))

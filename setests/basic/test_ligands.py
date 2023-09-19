@@ -112,7 +112,7 @@ def refmac_0004(driver):
     rFree = 1.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0004\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        match = re.search('\[0004\] refmacat -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
@@ -288,7 +288,7 @@ def refmac_0007(driver):
     rFree = 1.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0007\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        match = re.search('\[0007\] refmacat -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
@@ -405,7 +405,7 @@ def refmac_0009(driver):
     rFree = 1.0
     ttts = sf.tasksTreeTexts(driver)
     for taskText in ttts:
-        match = re.search('\[0009\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+        match = re.search('\[0009\] refmacat -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
         if match:
             rWork = float(match.group(1))
             rFree = float(match.group(2))
