@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.12.22   <--  Date of Last Modification.
+#    19.09.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -27,6 +27,8 @@
 #  python native imports
 import os
 import uuid
+
+import gemmi
 
 #  application imports
 from . import basic
@@ -161,6 +163,10 @@ class Molrep(basic.TaskDriver):
         have_results = False
 
         self.putMessage ( '&nbsp;' );
+
+        st = gemmi.read_structure ( self.molrep_pdb() )
+        st.write_pdb ( self.molrep_pdb() )
+
         structure = self.finaliseStructure ( self.molrep_pdb(),self.outputFName,
                                 hkl,None,[],0,leadKey=1, # openState="hidden",
                                 title="Positioned Structure" )
