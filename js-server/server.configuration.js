@@ -894,8 +894,6 @@ function readConfiguration ( confFilePath,serverType )  {
       if (!nc_server.externalURL)
         nc_server.externalURL = nc_server.url();
       nc_server.storage = _make_path ( nc_server.storage,null );
-      if (!fe_server)
-        nc_server.allowedPaths.push ( fs.realpathSync(nc_server.storage) );
       nc_server._checkLocalStatus();
       nc_servers.push ( nc_server );
       if (nc_server.exeType=='CLIENT')  {
@@ -904,8 +902,15 @@ function readConfiguration ( confFilePath,serverType )  {
         if (fe_proxy && (!fe_proxy.storage))
           fe_proxy.storage = client_server.storage;
       }
-      if ((!fe_server) && nc_server.hasOwnProperty('jobs_safe'))
-        nc_server.allowedPaths.push ( fs.realpathSync(nc_server.jobs_safe.path) );
+      try {
+        nc_server.allowedPaths.push ( fs.realpathSync(nc_server.storage) );
+        if (nc_server.hasOwnProperty('jobs_safe'))
+          nc_server.allowedPaths.push ( fs.realpathSync(nc_server.jobs_safe.path) );
+      } catch(err)  {
+        nc_server.allowedPaths.push ( nc_server.storage );
+        if (nc_server.hasOwnProperty('jobs_safe'))
+          nc_server.allowedPaths.push ( nc_server.jobs_safe.path );
+      }
       if (!nc_server.hasOwnProperty('jobCheckPeriod'))
         nc_server.jobCheckPeriod = 2000;
       if (!nc_server.hasOwnProperty('jobManager'))
