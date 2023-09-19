@@ -104,7 +104,7 @@ def verifyRefmac(driver, waitLong, jobNumber, targetRwork, targetRfree):
             ttts = sf.tasksTreeTexts(driver)
             for taskText in ttts:
                 # Job number as string
-                match = re.search('\[' + jobNumber +'\] refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
+                match = re.search('\[' + jobNumber +'\] refmacat -- R=(0\.\d*) Rfree=(0\.\d*)', taskText)
                 if match:
                     rWork = float(match.group(1))
                     rFree = float(match.group(2))
