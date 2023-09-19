@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.09.23   <--  Date of Last Modification.
+ *    18.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -276,16 +276,8 @@ function processServerQueue()  {
       __delays_timer = window.setTimeout ( function(){
           __delays_ind.show();
       },__delays_wait);
-      // var t0 = Date.now();
-      // console.log ( ' t0=' + t0 );  // debug
       __holdup_timer = window.setTimeout ( function(){
         __holdup_timer = null;
-        // console.log ( ' __holdup_timer delay: ' + (Date.now()-t0) );  // debug
-        // if (Date.now()-t0>__holdup_wait+__check_session_period)  {
-        //   // assume that machine was sleeping for an extended period, then simply repeat
-        //   processServerQueue();
-        //   console.log ( ' repeat queue processing' );  // for debugging
-        // } else
         if (__server_queue.length>0)  {
           if ((__server_queue[0].type=='command') &&
                    (__server_queue[0].request_type==fe_command.checkSession) &&
@@ -295,12 +287,6 @@ function processServerQueue()  {
             __process_network_indicators();
             processServerQueue();
           } else if (__server_queue[0].request_type!=undefined)  {
-// console.log (
-//    ' queue.length='  + __server_queue.length +
-//    ' queue[0].type=' + __server_queue[0].type +
-//    ' request_type='  + __server_queue[0].request_type +
-//    ' ndrops=' + __check_session_drops
-// );
             __holdup_dlg = new QuestionBox ( 'Communication hold-up',
                 '<div style="width:450px"><h3>Communication hold-up</h3>' +
                 'Communication with ' + appName() + ' is severely delayed. ' +
@@ -325,11 +311,6 @@ function processServerQueue()  {
                           makeSessionCheck ( __current_page.sceneId );
                         } else  {  // should never come to here
                           reloadBrowser();
-                          // window.location = window.location;  // complete refresh
-                          // less safe version:
-                          // __server_queue.shift();
-                          // __process_network_indicators();
-                          // processServerQueue();
                         }
                       },100);
                     }
@@ -419,14 +400,14 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         } catch(err) {
           console.log ( ' >>> error catch in __server_command.done: ' + err );  
           console.log ( ' >>> rdata = ' + rdata );
-          printServerQueueState ( 1 );
+          // printServerQueueState ( 1 );
         }
         // *** old version
         // processServerQueue();
       } else  {
         console.log ( ' >>> return on skipped operation in __server_command.done' );
         console.log ( ' >>> rdata = ' + rdata );
-        printServerQueueState ( 2 );
+        // printServerQueueState ( 2 );
         // *** new version
         if (__server_queue.length>0)  {
           __server_queue.shift();
@@ -434,28 +415,32 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         } //else
           //makeSessionCheck ( __current_page.sceneId );
       }
+      __check_session_drops = 0;
       // *** new version
       processServerQueue();
     })
     .always ( function(){
-      __check_session_drops = 0;
+      // __check_session_drops = 0;
       if (function_always)
         function_always();
     })
     .fail ( function(xhr,err){
-      console.log ( ' >>> cmd=' + cmd + ' err=' + err );
+      console.log ( ' >>> cmd=' + cmd + ' err=' + err + ' ndrops=' + __check_session_drops );
       // can be "error" and "timeout"
       if ((__server_queue.length<=0) || (sqid!=__server_queue[0].id))  {
         console.log ( ' >>> return on skipped operation in __server_command.fail, err=' + err );
-        printServerQueueState ( 3 );
+        // printServerQueueState ( 3 );
       }
-      __server_queue.shift();
-      __process_network_indicators();
+      if (cmd==fe_command.checkSession)
+        __check_session_drops++;
       if (function_fail)
             function_fail();
       else  MessageAJAXFailure ( page_title,xhr,err );
+      // __server_queue.shift();
+      __process_network_indicators();
       // *** old version
       processServerQueue();
+
       // if (cmd==fe_command.checkSession)
       //   makeSessionCheck ( __current_page.sceneId );
 
@@ -470,7 +455,7 @@ function __server_command ( cmd,data_obj,page_title,function_response,
         processServerQueue();
       } else  {
         console.log ( ' >>> return on skipped operation in __server_command.fail, err=' + err );
-        printServerQueueState ( 3 );
+        // printServerQueueState ( 3 );
         // *** new version
         // if (__server_queue.length>0)  {
         //   __server_queue.shift();
@@ -545,7 +530,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
                         '\n --- ' + err +
                         '\n --- request type: ' + request_type +
                         '\n --- rdata = ' + rdata );
-          printServerQueueState ( 4 );
+          // printServerQueueState ( 4 );
         }
 
         // *** old version
@@ -553,7 +538,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
       } else  {
         console.log ( ' >>> return on skipped operation in __server_request.done' );
-        printServerQueueState ( 5 );
+        // printServerQueueState ( 5 );
         // *** new version
         if (__server_queue.length>0)  {
           __server_queue.shift();
@@ -561,6 +546,8 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
         } else
           makeSessionCheck ( __current_page.sceneId );
       }
+
+      __check_session_drops = 0;
 
       // *** new version
       processServerQueue();
@@ -574,7 +561,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
     })
 
     .always ( function(){
-      __check_session_drops = 0;
+      // __check_session_drops = 0;
     })
 
     .fail ( function(xhr,err){
@@ -611,7 +598,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
         } catch(err) {
           console.log ( ' >>> error catch in __server_request.fail: ' + err );
-          printServerQueueState ( 6 );
+          // printServerQueueState ( 6 );
         }
 
         // *** old version
@@ -619,7 +606,7 @@ if ((typeof function_fail === 'string' || function_fail instanceof String) &&
 
       } else  {
         console.log ( ' >>> return on skipped operation in __server_request.fail' );
-        printServerQueueState ( 7 );
+        // printServerQueueState ( 7 );
         // *** new version
         if (__server_queue.length>0)  {
           __server_queue.shift();
