@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.09.23   <--  Date of Last Modification.
+ *    19.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -151,12 +151,12 @@ TaskMrParse.prototype.checkPrivateData = function()  {
   if (!__template)  {
     this.private_data = (__treat_private.indexOf('seq')>=0) || 
                         (__treat_private.indexOf('all')>=0);
+  } else  {
+    let fe_server = conf.getFEConfig();
+    if (fe_server)
+      this.private_data = (fe_server.treat_private.indexOf('seq')>=0) || 
+                          (fe_server.treat_private.indexOf('all')>=0);
   }
-  //  else  {
-  //   let fe_server = conf.getFEConfig();
-  //   this.private_data = (fe_server.treat_private.indexOf('seq')>=0) || 
-  //                       (fe_server.treat_private.indexOf('all')>=0);
-  // }
   if (this.private_data)  {
     this.parameters.sec1.contains.DATABASE.value  = 'pdb';
     this.parameters.sec1.contains.DATABASE.hideon = {};
