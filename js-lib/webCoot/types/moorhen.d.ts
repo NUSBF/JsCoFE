@@ -71,12 +71,7 @@ export namespace moorhen {
     }
     
     type ColourRule = {
-        commandInput: {
-            message: string;
-            command: string;
-            returnType: string;
-            commandArgs: [number, string, string?];
-        };
+        args: (string | number)[];
         color?: string;
         isMultiColourRule: boolean;
         ruleType: string;
@@ -87,7 +82,7 @@ export namespace moorhen {
         fitLigandHere(mapMolNo: number, ligandMolNo: number, redraw?: boolean, useConformers?: boolean, conformerCount?: number): Promise<Molecule[]>;
         isLigand(): boolean;
         removeRepresentation(representationId: string): void;
-        addRepresentation(style: string, cid: string, isCustom?: boolean, colour?: ColourRule[], bondOptions?: cootBondOptions): Promise<void>;
+        addRepresentation(style: string, cid: string, isCustom?: boolean, colour?: ColourRule[], bondOptions?: cootBondOptions): Promise<MoleculeRepresentation>;
         getNeighborResiduesCids(selectionCid: string, radius: number, minDist: number, maxDist: number): Promise<string[]>;
         drawWithStyleFromMesh(style: string, meshObjects: any[], cid?: string): Promise<void>;
         updateWithMovedAtoms(movedResidues: AtomInfo[][]): Promise<void>;
@@ -211,11 +206,24 @@ export namespace moorhen {
     }
 
     interface History {
+        reset(): void;
+        setSkipTracking(arg0: boolean): void;
+        setCurrentHead(uniqueId: string): void;
         setCommandCentre(arg0: CommandCentre): void;
-        entries: cootCommandKwargs[];
         addEntry: (newEntry: cootCommandKwargs) => Promise<void>;
         getEntriesForMolNo: (molNo: number) => cootCommandKwargs[];
         getModifiedMolNo: () => number[];
+        lastModifiedMolNo: () => number;
+        rebase: (id: string) => void;
+        entries: HistoryEntry[];
+        headId: string;
+        headIsDetached: boolean;
+    }
+
+    interface HistoryEntry extends cootCommandKwargs{
+        uniqueId: string;
+        associatedBackupKey: string;
+        label: string;
     }
 
     interface CommandCentre {
@@ -235,7 +243,7 @@ export namespace moorhen {
         extendConsoleMessage: (msg: string) => void;
     }
     
-    type cootCommandKwargs = { 
+    interface cootCommandKwargs { 
         message?: string;
         data?: {};
         returnType?: string;
@@ -361,8 +369,9 @@ export namespace moorhen {
         name: string;
         molNo: number;
         pdbData: string;
-        representations: {cid: string, style: string, isCustom: boolean, colourRules: ColourRule[], bondOptions: cootBondOptions }[];
+        representations: { cid: string, style: string, isCustom: boolean, colourRules: ColourRule[], bondOptions: cootBondOptions }[];
         defaultBondOptions: cootBondOptions;
+        defaultColourRules: ColourRule[];
         connectedToMaps: number[];
     }
     
