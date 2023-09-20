@@ -168,9 +168,11 @@ function start()  {
       var url_path  = url_parse.pathname;
       if (url_path.length>0)  {
         // remove leading slash and proxy forward-to-client tag
-        command = url_path.substr(1);
+        // command = url_path.substr(1);
+        command = url_path.slice(1);
         if (command.startsWith(cmd.__special_client_tag))
-          command = command.substr(cmd.__special_client_tag.length+1);
+          command = command.slice(cmd.__special_client_tag.length+1);
+          // command = command.substr(cmd.__special_client_tag.length+1);
       } else
         command = url_path;
 
