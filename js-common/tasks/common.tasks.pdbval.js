@@ -175,6 +175,12 @@ TaskPDBVal.prototype.hotButtons = function() {
   return [PDBDepFilesHotButton()];
 }
 
+// This function is called at cloning jobs and should do copying of all
+// custom class fields not found in the Template class
+TaskPDBVal.prototype.customDataClone = function ( cloneMode,task )  {
+  this.checkPrivateData();
+  return;
+}
 
 TaskPDBVal.prototype.checkPrivateData = function()  {
 let treat_private = null;
