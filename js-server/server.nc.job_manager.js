@@ -590,6 +590,11 @@ var cap   = false;
     if (server_cfg.isFilePathAllowed(fname))
       utils.send_file ( fname,server_response,utils.getMIMEType(fname),false,
                         capSize,20,null );
+    else  {
+      server_response.writeHead ( 404,
+                                      {'Content-Type': 'text/html;charset=UTF-8'} );
+      server_response.end ( '<p><b>ACCESS DENIED</b></p>' );
+    }
   }
 
 }
