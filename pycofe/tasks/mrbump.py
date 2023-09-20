@@ -274,7 +274,12 @@ class MrBump(basic.TaskDriver):
 
         # unless deleted, symbolic links inside this directory will not let
         # it to be sent back to FE.
-        shutil.rmtree ( search_dir )
+        try:
+            shutil.rmtree ( search_dir )
+        except:
+            self.stderrln ( "\n ***** could not delete residual directory at " +\
+                            search_dir + "\n" )
+            pass
 
         # close execution logs and quit
         self.success ( have_results )
