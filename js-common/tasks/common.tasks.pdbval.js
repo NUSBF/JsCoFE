@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.09.23   <--  Date of Last Modification.
+ *    20.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -125,6 +125,8 @@ function TaskPDBVal()  {
   //     this.parameters.PDBREPORT_CBX.value = false;
   // }
 
+  this.checkPrivateData();
+
   this.saveDefaultValues ( this.parameters );
 
 }
@@ -174,6 +176,27 @@ TaskPDBVal.prototype.hotButtons = function() {
 }
 
 
+TaskPDBVal.prototype.checkPrivateData = function()  {
+let treat_private = null;
+  if (!__template)  {
+    treat_private = __treat_private;
+  } else  {
+    let fe_server = conf.getFEConfig();
+    if (fe_server)
+      treat_private = fe_server.treat_private;
+  }
+  if (treat_private)
+    this.private_data = 
+        (treat_private.indexOf('xyz')>=0) || 
+        (treat_private.indexOf('seq')>=0) ||
+        (treat_private.indexOf('lig')>=0) ||
+        (treat_private.indexOf('hkl')>=0) ||
+        (treat_private.indexOf('all')>=0);
+  else
+    this.private_data = false;
+}
+
+
 if (!__template)  {
 
   TaskPDBVal.prototype.collectInput = function ( inputPanel )  {
@@ -189,13 +212,6 @@ if (!__template)  {
     if (msg.length>0)  {
       input_msg += '|<b>' + msg.join('</b><br><b>') + '</b>';
     }
-
-    this.private_data = 
-        (__treat_private.indexOf('xyz')>=0) || 
-        (__treat_private.indexOf('seq')>=0) ||
-        (__treat_private.indexOf('lig')>=0) ||
-        (__treat_private.indexOf('hkl')>=0) ||
-        (__treat_private.indexOf('all')>=0);
 
     return input_msg;
 
