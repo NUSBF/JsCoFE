@@ -96,7 +96,7 @@ def validate2SMR(driver, waitLong):
     print('Verifying refmac5 Rfree < 0.26... ')
     match = False
     for t in reversed(ttts):
-        match = re.search('refmac5 -- R=(0\.\d*) Rfree=(0\.\d*)', t)
+        match = re.search('refmacat -- R=(0\.\d*) Rfree=(0\.\d*)', t)
         if match:
             break
     assert match
