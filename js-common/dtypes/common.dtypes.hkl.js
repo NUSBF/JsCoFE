@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.12.22   <--  Date of Last Modification.
+ *    21.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  HKL Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
  *
  *  =================================================================
  *
@@ -564,7 +564,7 @@ if (!__template)  {
       var col = 0;
       if (customGrid.getNRows()>0)
         col = 1;
-      customGrid.detwin = customGrid.setCheckbox ( 'Apply detwinning',
+      customGrid.detwin = customGrid.setCheckbox ( 'Use twinned refinement',
                                                    this.detwin, 0,col,1,1 )
                 .setTooltip ( 'Check for twinned refinement. Only use this ' +
                               'option if you are sure your crystal is twinned.' );
