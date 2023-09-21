@@ -193,15 +193,40 @@ citations = {
                         }]
                   },
 
+     'refmacat' :   { 'name'     : 'Refmacat',
+                    'category' : 'primary',
+                    'refs'     : [{
+                            'authors' : 'Yamashita, K., Wojdyr, M., Long, F., Nicholls, R. A. & Murshudov, G. N.',
+                            'title'   : 'GEMMI and Servalcat restrain REFMAC5',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D79',
+                            'year'    : '2023',
+                            'pages'   : '368-373',
+                            'doi'     : '10.1107/S2059798323002413'
+                        },
+                        {   
+                            'authors' : 'Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A.',
+                            'title'   : 'REFMAC5 for the refinement of macromolecular crystal structures',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D67',
+                            'year'    : '2011',
+                            'pages'   : '355-367',
+                            'doi'     : '10.1107/S0907444911001314'
+                        }],
+                    
+                  },
+                  
+
     'refmac' :    { 'name'     : 'Refmac',
                     'category' : 'primary',
+                    'copy'     : [['refmacat',-1]],
                     'copy'     : [['refmac5',-1]]
                   },
 
 
     'refmac5-srv' : { 'name'   : 'Refmac',
                     'category' : 'service',
-                    'copy'     : [['refmac5',-1]]
+                    'copy'     : [['refmacat',-1]]
                   },
 
     'mrbump' :    { 'name'     : 'MrBUMP',
