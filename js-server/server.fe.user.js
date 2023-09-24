@@ -1779,7 +1779,7 @@ var fe_server = conf.getFEConfig();
       rData.cloud_storage = (fcl.getUserCloudMounts(loginData).length>0);
     }
     rData.localSetup = conf.isLocalSetup();
-    rData.isArchive  = conf.isArchive();
+    rData.isArchive  = conf.isArchive   ();
     rData.regMode    = conf.getRegMode  ();
     if (fe_server.hasOwnProperty('description'))
           rData.setup_desc = fe_server.description;
