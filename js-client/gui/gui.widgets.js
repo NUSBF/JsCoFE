@@ -1104,8 +1104,8 @@ ACEditor.prototype.init = function ( text,placeholder )  {
     // this.editor.setTheme ( 'ace/theme/' + this.editor_theme );
     // this.editor.session.setMode ( 'ace/mode/' + this.editor_mode );
     var options =  {
-      mode        : 'ace/mode/' + this.editor_mode,
-      theme       : 'ace/theme/' + this.editor_theme,
+      mode  : 'ace/mode/'  + this.editor_mode,
+      theme : 'ace/theme/' + this.editor_theme
     };
     if (placeholder)
       options.placeholder = placeholder;
