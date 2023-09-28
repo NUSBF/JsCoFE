@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.09.23   <--  Date of Last Modification.
+ *    28.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,9 +45,9 @@ function RegisterPage ( sceneId )  {
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
-  let maintainer_link = '<a href="mailto:' + __maintainerEmail +
-                        '?Subject=CCP4%20Cloud%20Registration">' + 
-                        __maintainerEmail + '</a>';
+  // let maintainer_link = '<a href="mailto:' + __maintainerEmail +
+  //                       '?Subject=CCP4%20Cloud%20Registration">' + 
+  //                       __maintainerEmail + '</a>';
 
   var reg_lbl      = new Label     ( 'Registration' );
   var user_lbl     = new Label     ( 'User name:'   ).setNoWrap();
@@ -59,12 +59,12 @@ function RegisterPage ( sceneId )  {
   //var feedback_val = new Label     ( '--/--/--/--'  ).setFontColor('darkred').setNoWrap();
   var user_inp     = new InputText ( '' );
   var email_inp    = new InputText ( '' );
-  var email_warn   = new Label     ( '<b>GMail addresses cannot be used;</b> ' +
-                                     'request custom registration from ' +
-                                     maintainer_link +
-                                     ' if you cannot use any other address' )
-                                     .setFontItalic(true).setFontSize('80%')
-                                     .setFontColor('maroon');
+  // var email_warn   = new Label     ( '<b>GMail addresses cannot be used;</b> ' +
+  //                                    'request custom registration from ' +
+  //                                    maintainer_link +
+  //                                    ' if you cannot use any other address' )
+  //                                    .setFontItalic(true).setFontSize('80%')
+  //                                    .setFontColor('maroon');
   var login_inp    = new InputText ( '' );
   user_inp   .setStyle         ( 'text',__regexp_uname, //"^[A-Za-z\\-\\.\\s]+$",
                                  'John Smith',
@@ -117,10 +117,10 @@ function RegisterPage ( sceneId )  {
     panel.setVerticalAlignment ( row+i,0,'middle' );
     panel.setVerticalAlignment ( row+i,1,'middle' );
   }
-  if (email_warn)  {
-    panel.addWidget            ( email_warn,row+1,1,1,3 );  
-    panel.setVerticalAlignment ( row+1,0,'top' );
-  }
+  // if (email_warn)  {
+  //   panel.addWidget            ( email_warn,row+1,1,1,3 );  
+  //   panel.setVerticalAlignment ( row+1,0,'top' );
+  // }
 
   row += 3;
   //var licence_btn = new Button ( 'Choose',image_path('licence') );
