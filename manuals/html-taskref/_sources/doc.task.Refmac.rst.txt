@@ -1,6 +1,6 @@
-=======
-REFMAC5
-=======
+========
+REFMACAT
+========
 
 `REFMAC5 <https://journals.iucr.org/d/issues/2011/04/00/ba5152/index.html>`__ is a program designed for REFinement of MACromolecular structures. It’s final step in the process of solving a macromolecular crystal (MX) structure, refinement is carried out to maximize the agreement between the model and the X-ray data. Model parameters that are optimized in the refinement process include atomic coordinates, atomic displacement parameters (ADPs), scale factors and, in the presence of twinning, twin fraction(s).  It uses Maximum likelihood and some elements of Bayesian Statististics.
 
@@ -285,6 +285,8 @@ We may have **exact phases and nonrandom amplitudes**:  if the correlation betwe
 This article uses materials kindly provided by Dr. Robert Nicholls and Dr. Garib Murshudov, whose help is greatly appreciated.
 
 **REFERENCES**
+
+`Yamashita, K., Wojdyr, M., Long, F., Nicholls, R. A. & Murshudov, G. N. (2023). Acta Cryst. D79, 368-373 <https://doi.org/10.1107/S2059798323002413>`_
 
 `Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A. (2011)  Acta Cryst. D67: 355-367; <https://doi.org/10.1107/S0907444911001314>`_
 

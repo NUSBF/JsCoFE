@@ -2,10 +2,42 @@
 CCP4 Cloud Version Log
 ======================
 
+**Version 1.7.0016** 
+
+    *Released on __.__.2023 with CCP4 8.0.016*
+
+    #. Added new parameters for ``Arcimboldo Shredder`` and ``Arcimboldo Borges``
+
+    #. Fixed Dimple Workflow data handling
+
+    #. Deposition files can now be prepared even if PDB Validation Report was not obtained
+
+    #. Fixed task report in ``xia-2`` by removing external HTML references
+
+    #. Additional structures and ligands can now be loaded in ``Moorhen``
+
+    #. ``Moorhen`` results are now saved automatically if there were edits
+
+    #. Fixed bug at saving ``Moorhen`` results in shared projects
+
+    #. Anomalous maps from ``Refmac`` are now loaded in ``Moorhen``
+
+    #. Data confidentiality rules are now configurable
+
+    #. Task version is now enforced in jobs copy-pasting
+
+    #. ``Moorhen`` jobs will finish gracefully even if Job Dialog is not closed
+
+    #. ``Dimple`` task fixed and is working again
+
+    #. Job despatch mechanism can be now configured to optimise communications in Cloud or NC loads
+
+    #. Refmac5 replaced by `Refmacat <https://doi.org/10.1107/S2059798323002413>`_
+
 
 **Version 1.7.0015** 
 
-    *Released on --.--.2023 with CCP4 8.0.014*
+    *Released on 16.08.2023 with CCP4 8.0.015*
 
 
     #. ``Deposition task`` replaced by the pair of ``PDB Validation report`` and ``PDB Deposition files``
