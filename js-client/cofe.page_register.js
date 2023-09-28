@@ -233,6 +233,8 @@ function RegisterPage ( sceneId )  {
 
       serverCommand ( fe_command.register,ud,'Registration',function(response){
 
+        stopSessionChecks();
+
         switch (response.status)  {
 
           case fe_retcode.ok:
