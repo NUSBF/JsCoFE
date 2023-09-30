@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.08.23   <--  Date of Last Modification.
+ *    30.09.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1782,6 +1782,103 @@ var t_email   = 1000; //msec
 
 // ===========================================================================
 
+function rename_project_0 ( projectDirPath,new_name,check_running )  {
+let jmeta = [];    
+let rcode = 'ok';
+
+  if (!utils.dirExists(projectDirPath))  {
+
+    rcode = 'Project directory does not exist -- possible data corruption.';
+  
+  } else  {
+
+    let files = fs.readdirSync ( projectDirPath );
+    for (let i=0;(i<files.length) && (rcode=='ok');i++)
+      if (files[i].startsWith(jobDirPrefix))  {
+        let jmpath = path.join ( projectDirPath,files[i],task_t.jobDataFName );
+        let jm     = utils.readObject ( jmpath );
+        if (jm)  {
+          if (check_running &&
+              ((jm.state==task_t.job_code.running) || (jm.state==task_t.job_code.exiting)))
+                rcode = 'Jobs are running -- not possible to change Project ID before they finish.';
+          else  jmeta.push ( [jmpath,jm] );
+        }
+      }
+
+  }
+
+  if (rcode=='ok')  {
+    // change code id in all files and rename project directory
+    for (let i=0;i<jmeta.length;i++)  {
+      jmeta[i][1].project = new_name;
+      if (!utils.writeObject(jmeta[i][0],jmeta[i][1]))
+        rcode = 'Error writing job metadata';
+    }
+  }
+
+  return rcode;
+
+}
+
+function renameProject ( loginData,data )  {  // data must contain new title
+var response = null;
+var pData    = readProjectData ( loginData,data.name );
+
+  if (pData)  {
+    var rdata = { 'code' : 'ok' };
+    pData.desc.title = data.title;
+    if (('new_name' in data) && (data.new_name!=pData.desc.name))  {
+      // project ID to be changed: serious
+      // make sure that the project is not shared and that no jobs are running
+      if (Object.keys(pData.desc.share).length>0)  {
+        rdata.code = 'Not possible to change ID of a shared project';
+      } else  {
+        // Get users' projects directory name
+        var projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
+        var newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
+        if (utils.fileExists(newPrjDirPath))  {
+          rdata.code = 'Project with requested ID (' + data.new_name +
+                       ') already exists (check all folders)';
+        } else  {
+          rdata.code = rename_project_0 ( projectDirPath,data.new_name,true );
+          if (rdata.code=='ok')  {
+            pData.desc.name = data.new_name;
+            utils.moveDir ( projectDirPath,newPrjDirPath,false );
+            if (!writeProjectData(loginData,pData,true))  {
+              utils.moveDir ( newPrjDirPath,projectDirPath,false );
+              response = new cmd.Response ( cmd.fe_retcode.writeError,
+                                    '[00032] Project metadata cannot be written (1).','' );
+            } else  {
+              rdata.meta = pData;
+              response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+            }
+          }
+        }
+      }
+
+      if (!response)
+        response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+
+    } else  {
+      if (!writeProjectData(loginData,pData,true))  {
+        response = new cmd.Response ( cmd.fe_retcode.writeError,
+                             '[00032] Project metadata cannot be written (2).','' );
+      } else  {
+        rdata.meta = pData;
+        response   = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+      }
+    }
+
+  } else  {
+    response = new cmd.Response ( cmd.fe_retcode.readError,
+                             '[00033] Project metadata cannot be read.','' );
+  }
+
+  return response;
+
+}
+
+/*
 function renameProject ( loginData,data )  {  // data must contain new title
 var response = null;
 var pData    = readProjectData ( loginData,data.name );
@@ -1816,7 +1913,8 @@ var pData    = readProjectData ( loginData,data.name );
                   jmeta.push ( [jmpath,jm] );
               }
             }
-          }
+          } else
+            rdata.code = 'Project directory does not exist -- possible data corruption.';
           if (rdata.code=='ok')  {
             // change code id in all files and rename project directory
             for (var i=0;i<jmeta.length;i++)  {
@@ -1858,6 +1956,7 @@ var pData    = readProjectData ( loginData,data.name );
   return response;
 
 }
+*/
 
 
 // ===========================================================================
@@ -1960,10 +2059,13 @@ var newPrjDirPath = getProjectDirPath ( loginData,projectName );
 
 // ===========================================================================
 
-function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  {
+function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
 // 'tempdir' may contain unpacked project directory, in which case 'prjDir'
 // should be null. Alternatively, 'prjDir' gives project directory to be
 // symlinked, in which case 'tempdir' should be supplied as well
+//    duplicate_key = 0 : stop on duplicate project name (Id)
+//                  = 1 : ignore duplicate project name (shared projects special)
+//                  = 2 : rename project if duplicate name
 
   // read project meta to make sure it was a project tarball
   var prj_meta_path = '';
@@ -2054,9 +2156,10 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
     }
 
     // if (utils.fileExists(projectDir) && (!utils.isSymbolicLink(projectDir)))  {
-    if (utils.fileExists(projectDir))  {
+    if (utils.fileExists(projectDir) && (duplicate_key<2))  {
 
-      if (duplicate_bool)  {
+      // if (duplicate_bool)  {
+      if (duplicate_key==1)  {
 
         // re-read project list because a new project was added
         var pList = readProjectList ( loginData );
@@ -2071,25 +2174,98 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
                                               projectDesc.name );
 
       } else  {
+      // } else if (duplicate==0)  {
 
         utils.writeString ( signal_path,'Project "' + projectDesc.name +
                                         '" already exists (check all folders)\n' +
                                         projectDesc.name );
       }
 
+      /*
+      switch (duplicate_key)  {
+
+        case 1  : // re-read project list because a new project was added
+                  var pList = readProjectList ( loginData );
+                  if (!pList)
+                    pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
+                  pList.current = projectDesc.name;        // make it current
+                  if (pList.currentFolder.path!=pd.folder_type.all_projects)
+                    pList.setCurrentFolder ( pList.findFolder(projectDesc.folderPath) );
+                  if (writeProjectList(loginData,pList))
+                        utils.writeString ( signal_path,'Success\n' + projectDesc.name );
+                  else  utils.writeString ( signal_path,'Cannot write project list\n' +
+                                                        projectDesc.name );
+                break;
+
+        case 2  : // rename project by indexing
+                  let new_name = '';
+                  let mod = 0;
+                  do {
+                    new_name   = projectDesc.name + '_(' + (++mod) + ')';
+                    projectDir = getProjectDirPath ( loginData,new_name );
+                  } while (utils.fileExists(projectDir));
+                  rename_project_0 ( tempdir,new_name,false );
+                  utils.writeString ( signal_path,'Renamed "' + new_name + '"\n' +
+                                      projectDesc.name );
+                break;
+
+        case 0  :
+        default : utils.writeString ( signal_path,'Project "' + projectDesc.name +
+                                      '" already exists (check all folders)\n' +
+                                      projectDesc.name );
+
+      }
+      */
+
     } else  {
 
-      var placed = true;
+      let placed   = true;
+      let old_name = projectDesc.name;
+      let new_name = '';
+      let mod      = 0;
+
       if (prjDir)  {
         utils.removeFile ( projectDir );  // in case it exists
         placed = utils.makeSymLink ( projectDir,path.resolve(prjDir) );
-      } else if (utils.moveDir(tempdir,projectDir,true))  {
-        utils.mkDir ( tempdir );  // because it was moved
-      } else {
-        utils.writeString ( signal_path,'Cannot copy to project ' +
-                                        'directory (disk full?)\n' +
-                                        projectDesc.name );
-        placed = false;
+      } else  {
+        if (duplicate_key>=2)  {
+          // rename project by indexing
+          while (utils.fileExists(projectDir))  {
+            new_name   = projectDesc.name + '_(' + (++mod) + ')';
+            projectDir = getProjectDirPath ( loginData,new_name );
+          }
+          if (mod)  {
+            rename_project_0 ( tempdir,new_name,false );
+            utils.writeString ( signal_path,'Renamed "' + new_name + '"\n' +
+                                projectDesc.name );
+          }
+        }
+        if (utils.moveDir(tempdir,projectDir,true))  {
+          utils.mkDir ( tempdir );  // because it was moved
+          if (mod)  {
+            projectDesc.name = new_name;
+            let pData = readProjectData ( loginData,new_name );
+            if (!pData)  {
+              utils.writeString ( signal_path,'Cannot read copied project ' +
+                                              '(bug or file errors?)\n' +
+                                              projectDesc.name );
+              placed = false;
+            } else  {
+              pData.desc.name = new_name;
+              if (!writeProjectData(loginData,pData,true))  {
+                utils.writeString ( signal_path,'Cannot write renamed project ' +
+                                                '(bug or file errors?)\n' +
+                                                projectDesc.name );
+                placed = false;
+              }
+            }
+          }
+        } else {
+          utils.writeString ( signal_path,'Cannot copy to project ' +
+                                          'directory (disk full?)\n' +
+                                          projectDesc.name );
+          placed = false;
+        }
       }
 
       if (placed)  {
@@ -2122,10 +2298,15 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_bool )  
           pList.resetFolders ( loginData.login );  // in case joined folder was not there
           pList.setCurrentFolder ( pList.findFolder(projectDesc.folderPath) );
         }
-        if (writeProjectList(loginData,pList))
-              utils.writeString ( signal_path,'Success\n' + projectDesc.name );
-        else  utils.writeString ( signal_path,'Cannot write project list\n' +
-                                              projectDesc.name );
+        if (writeProjectList(loginData,pList))  {
+          if (!mod)
+                utils.writeString ( signal_path,'Success\n' + projectDesc.name );
+          else  utils.writeString ( signal_path,'Success\n' + projectDesc.name +
+                                                        ' ' + old_name );
+        } else  {
+          utils.writeString ( signal_path,'Cannot write project list\n' +
+                                          projectDesc.name );
+        }
 
         //if (loginData.login==projectDesc.owner.login)
         //  ration.changeUserDiskSpace ( loginData,projectDesc.disk_space );
@@ -2174,7 +2355,7 @@ function getProjectTmpDir ( loginData,make_clean )  {
 
 function importProject ( loginData,upload_meta )  {
 
-  // create temporary directory, where all project tarball will unpack;
+  // create temporary directory, where project tarball will unpack;
   // directory name is derived from user login in order to check on
   // import outcome in subsequent 'checkPrjImport' requests
 
@@ -2195,7 +2376,8 @@ function importProject ( loginData,upload_meta )  {
         send_dir.unpackDir ( tempdir,null,function(code,jobballSize){
           if (code)
             log.error ( 50,'unpack errors, code=' + code + ', filesize=' + jobballSize );
-          _import_project ( loginData,tempdir,null,'',false );
+          // _import_project ( loginData,tempdir,null,'',false );
+          _import_project ( loginData,tempdir,null,'',2 );  // '2' means 'rename if needed'
         });
 
       } else  {
@@ -2227,7 +2409,8 @@ var rc        = cmd.fe_retcode.ok;
 var rc_msg    = 'success';
 var rdata     = { 'status' : 'ok' };
 var tempdir   = getProjectTmpDir ( loginData,true );
-var duplicate = false;
+// var duplicate = false;
+var duplicate = 0;
 
   if (tempdir)  {
 
@@ -2250,7 +2433,9 @@ var duplicate = false;
         if (flist.length>0)
           demoProjectPath = flist[0];
       }
-      duplicate = meta.duplicate;
+      // duplicate = meta.duplicate;
+      if (meta.duplicate)
+        duplicate = 1;  // can duplicate project
     }
 
     if (demoProjectPath)  {
@@ -2300,15 +2485,18 @@ function startSharedImport ( loginData,meta )  {
       var sProjectDirPath = getProjectDirPath ( uLoginData,meta.name );
       if (utils.fileExists(sProjectDirPath))  {
         if (import_as_link)  {
-          _import_project ( loginData,tempdir,sProjectDirPath,'',false );
+          // _import_project ( loginData,tempdir,sProjectDirPath,'',false );
+          _import_project ( loginData,tempdir,sProjectDirPath,'',0 );  // '0' means 'do not duplicate'
         } else  {
           fs.copy ( sProjectDirPath,tempdir,function(err){
             if (err)
               utils.writeString ( path.join(tempdir,'signal'),
                                   'Errors during data copy\n' +
                                   projectDesc.name );
-            else
-              _import_project ( loginData,tempdir,null,'',false );
+            else  {
+              // _import_project ( loginData,tempdir,null,'',false );
+              _import_project ( loginData,tempdir,null,'',0 );  // '0' means 'do not duplicate'
+            }
           });
         }
       } else  {
