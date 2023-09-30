@@ -79,6 +79,7 @@ export namespace moorhen {
     }
     
     interface Molecule {
+        checkHasGlycans(): Promise<boolean>;
         fitLigandHere(mapMolNo: number, ligandMolNo: number, redraw?: boolean, useConformers?: boolean, conformerCount?: number): Promise<Molecule[]>;
         isLigand(): boolean;
         removeRepresentation(representationId: string): void;
@@ -161,6 +162,8 @@ export namespace moorhen {
         hoverRepresentation: moorhen.MoleculeRepresentation;
         unitCellRepresentation: moorhen.MoleculeRepresentation;
         environmentRepresentation: moorhen.MoleculeRepresentation;
+        hasDNA: boolean;
+        hasGlycans: boolean;
     }
 
     type RepresentationStyles = 'VdwSpheres' | 'ligands' | 'CAs' | 'CBs' | 'CDs' | 'gaussian' | 'allHBonds' | 'rama' | 
@@ -266,6 +269,7 @@ export namespace moorhen {
             result: T;
             [key: string]: any;
         }
+        command: string;
         messageId: string;
         myTimeStamp: string;
         message: string;
@@ -373,6 +377,7 @@ export namespace moorhen {
         defaultBondOptions: cootBondOptions;
         defaultColourRules: ColourRule[];
         connectedToMaps: number[];
+        ligandDicts: {[comp_id: string]: string};
     }
     
     type mapDataSession = {
@@ -676,7 +681,7 @@ export namespace moorhen {
         aceDRGInstance: AceDRGInstance | null; 
     }
     
-    interface Controls extends Context, ContainerOptionalProps {
+    interface Controls extends ContainerOptionalProps {
         isDark: boolean;
         molecules: Molecule[];
         changeMolecules: (arg0: MolChange<Molecule>) => void;
@@ -716,7 +721,6 @@ export namespace moorhen {
         consoleDivRef: React.MutableRefObject<null | HTMLDivElement>;
         lastHoveredAtom: React.MutableRefObject<null | HoveredAtom>;
         prevActiveMoleculeRef: React.MutableRefObject<null | Molecule>;
-        context: Context;
         activeMap: Map;
         setActiveMap: React.Dispatch<React.SetStateAction<Map>>;
         activeMolecule: Molecule;

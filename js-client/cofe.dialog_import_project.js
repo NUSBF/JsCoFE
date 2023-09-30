@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    20.12.22   <--  Date of Last Modification.
+ *    30.12.22   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -71,21 +71,35 @@ function ImportProjectDialog ( onSuccess_func )  {
             progressBar.hide();
             $( "#cancel_btn" ).button ( "option","label","Close" );
             if (data.signal=='Success')  {
-              if (__current_folder.type==folder_type.all_projects)
+              if (__current_folder.type==folder_type.all_projects)  {
                 msgLabel.setText (
-                      'Project "' + data.name + '" is imported, ' +
-                      'you may close this dialog now.' );
-              else
-                msgLabel.setText (
-                      'Project "' + data.name + '" is imported.' +
-                      '<p><b>Note that you are now in the original project\'s '+
-                      'folder.<br>To navigate back to your folder(s), click on the ' +
-                      '<br>page title or use Main Menu.</b>' +
-                      '<p>You may close this dialog now.' );
+                  'Project "<i>' + data.name + '</i>" is imported, ' +
+                  'you may close this dialog now.' );
+              } else  {
+                let pnames = data.name.split(' ');
+                if (pnames.length<2)  {
+                  msgLabel.setText (
+                    'Project "<i>' + data.name + '</i>" is imported.' +
+                    '<p><b>Note that you are now in the original project\'s '+
+                    'folder.<br>To navigate back to your folder(s), click on the ' +
+                    '<br>page title or use Main Menu.</b>' +
+                    '<p>You may close this dialog now.' );
+                } else  {
+                  msgLabel.setText (
+                    '<div style="width:450px;">Project "<i>'        + pnames[1] + 
+                    '</i>" is imported, but it was renamed to "<i>' + pnames[0] + 
+                    '</i>" because another project with same name was found in the ' +
+                    'list. You can rename either project to your liking.' +
+                    '<p><b>Note that you are now in the original project\'s '+
+                    'folder.<br>To navigate back to your folder(s), click on the ' +
+                    '<br>page title or use Main Menu.</b>' +
+                    '<p>You may close this dialog now.</div>' );
+                }
+              }
               if (onSuccess_func)
                 onSuccess_func();
             } else
-              msgLabel.setText ( 'Project "' + data.name + '" failed to import, ' +
+              msgLabel.setText ( 'Project "<i>' + data.name + '</i>" failed to import, ' +
                                  'the reason being:<p><b><i>' + data.signal +
                                  '</i></b>.' );
           }
