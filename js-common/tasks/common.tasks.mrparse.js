@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.09.23   <--  Date of Last Modification.
+ *    02.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -160,6 +160,9 @@ TaskMrParse.prototype.checkPrivateData = function()  {
   if (this.private_data)  {
     this.parameters.sec1.contains.DATABASE.value  = 'pdb';
     this.parameters.sec1.contains.DATABASE.hideon = {};
+  } else if ('hideon' in this.parameters.sec1.contains.DATABASE)  {
+    this.parameters.sec1.contains.DATABASE.value  = 'all';
+    delete this.parameters.sec1.contains.DATABASE.hideon;
   }
 }
 

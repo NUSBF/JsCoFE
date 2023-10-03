@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.09.23   <--  Date of Last Modification.
+ *    03.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -979,16 +979,28 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                       // dlg.enableCloseButton ( false );
                       dlg.close_btn.setDisabled ( true );
 
-                      dlg.task.launchWebApp ( function(){
-                        dlg.requestServer ( fe_reqtype.webappEndJob,function(rdata){
-                          dlg.show();
-                          // dlg.setVisible ( true );
-                          // dlg.task.postSubmit();
-                          // dlg.loadReport();
-                          // dlg.radioSet.selectButton ( 'output' );
-                          // onRun_func ( dlg );
-                          dlg.enableCloseButton ( true );    
-                        });
+                      dlg.task.launchWebApp ( function(was_output,jobName){
+                        if (was_output)  {
+                          dlg.requestServer ( fe_reqtype.webappEndJob,function(rdata){
+                            dlg.show();
+                            // dlg.setVisible ( true );
+                            // dlg.task.postSubmit();
+                            // dlg.loadReport();
+                            // dlg.radioSet.selectButton ( 'output' );
+                            // onRun_func ( dlg );
+                            dlg.enableCloseButton ( true );    
+                          });
+                        } else  {
+                          dlg.task.state = job_code.finished;
+                          dlg.tree.selectSingle ( dlg.tree.node_map[dlg.nodeId] );
+                          dlg.tree.deleteJob    ( true,function(){
+                            new MessageBox ( 'Job deleted',
+                              '<div style="350px"><h2>Job deleted</h2>' +
+                              jobName + ' produced no results, job deleted automatically',
+                              'msg_ok'
+                            );
+                          });
+                        }
                       });
 
                       dlg.loadReport();

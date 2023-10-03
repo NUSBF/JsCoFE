@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.09.23   <--  Date of Last Modification.
+ *    03.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -908,7 +908,7 @@ function setQuitDestructor()  {
 
 
 //  ===========================================================================
-//  Serice functions for communication with iframes
+//  Service functions for communication with iframes
 
 var __comm_iframes = {};
 
@@ -920,9 +920,21 @@ var k    = 0;
     fid = fid0 + '_' + k++;
   __comm_iframes[fid] = { 
     'holder' : holder,
-    'iframe' : iframe
+    'iframe' : iframe,
+    'data'   : { 'was_output' : false }  // no output from job initially
   };
   return fid;
+}
+
+function setCommunicationFrameData ( fid,dataName,data )  {
+  if (fid in __comm_iframes)
+    __comm_iframes[fid].data[dataName] = data;
+}
+
+function getCommunicationFrameData ( fid,dataName )  {
+  if (fid in __comm_iframes)
+    return __comm_iframes[fid].data[dataName];
+  return null;
 }
 
 function removeCommunicatingIFrame ( fid )  {
@@ -981,6 +993,9 @@ function onWindowMessage ( event ) {
               if ( __comm_iframes[edata.meta.fid].holder)
                 __comm_iframes[edata.meta.fid].holder.close();
             } else  {
+              // set up a flag that some output was created; unless it os set,
+              // the job will be deleted automatically
+              setCommunicationFrameData ( edata.meta.fid,'was_output',true );
               new MessageBoxF ( 'Model(s) saved',
                                 '<div style="width:400px"><h3>Model(s) saved</h3>' +
                                 'The following model(s) are saved on ' + appName() +':<p>' +
@@ -1001,6 +1016,8 @@ function onWindowMessage ( event ) {
               //                 );
             }              
           } else if (edata.confirm=='manual')  {
+            // making a backup does not count as making an output
+            // setCommunicationFrameData ( edata.meta.fid,'was_output',true );
             new MessageBox (  'Backup file written',
                               '<div style="width:350px"><h3>Backup file written</h3>' +
                               'Backip file saved in ' + appName() + 

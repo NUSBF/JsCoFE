@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.09.23   <--  Date of Last Modification.
+#    02.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -47,19 +47,27 @@ class MrParse(basic.TaskDriver):
     #  redefine name of input script file
     # def file_stdin_path(self):  return "mrparse.script"
 
+    # old version; apparently MrParse does all remarking by itself now (02.10.2023)
+    # def add_seqid_remark ( self,model ):
+    #     fpath = model.getXYZFilePath ( self.outputDir() )
+    #     file = open ( fpath,"r" )
+    #     fcnt = file.read()
+    #     file.close  ()
+    #     file = open ( fpath,"w" )
+    #     model.meta["seqId_ens"] = [model.meta["seqId"]]
+    #     file.write  ( "REMARK PHASER ENSEMBLE MODEL 1 ID " + model.meta["seqId"] + "\n" )
+    #     file.write  ( fcnt )
+    #     file.close  ()
+    #     model.seqrem  = True
+    #     model.simtype = "cardon";
+    #     return
+
     def add_seqid_remark ( self,model ):
-        fpath = model.getXYZFilePath ( self.outputDir() )
-        file = open ( fpath,"r" )
-        fcnt = file.read()
-        file.close  ()
-        file = open ( fpath,"w" )
         model.meta["seqId_ens"] = [model.meta["seqId"]]
-        file.write  ( "REMARK PHASER ENSEMBLE MODEL 1 ID " + model.meta["seqId"] + "\n" )
-        file.write  ( fcnt )
-        file.close  ()
         model.seqrem  = True
         model.simtype = "cardon";
         return
+
 
     # ------------------------------------------------------------------------
 
