@@ -35,6 +35,12 @@ CCP4 Cloud Version Log
     #. Refmac5 replaced by `Refmacat <https://doi.org/10.1107/S2059798323002413>`_
 
 
+
+    #. Imported projects are renamed automatically if project name is already used
+
+    #. Moorhen jobs, where no modifications to model were done, are automatically deleted
+
+
 **Version 1.7.0015** 
 
     *Released on 16.08.2023 with CCP4 8.0.015*
