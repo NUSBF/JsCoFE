@@ -1379,7 +1379,7 @@ JobTree.prototype.calcMetrics = function() {
 }
 
 
-JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func ) {
+JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func )  {
 
   if (this.selected_node_id)  {
 

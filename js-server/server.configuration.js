@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.09.23   <--  Date of Last Modification.
+ *    03.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -748,6 +748,7 @@ function readConfiguration ( confFilePath,serverType )  {
     };
     fe_server.cache_max_age  = 31536000;  // 1 year in ms; max age for caching icons on clients  
     fe_server.capacity_check_interval = 10*60*1000; // check NC capacity once in 10 minutes
+
 
     // read configuration file
     for (var key in confObj.FrontEnd)

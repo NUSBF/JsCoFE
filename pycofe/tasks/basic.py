@@ -1424,8 +1424,12 @@ class TaskDriver(object):
         file = open ( ens_path,"w" )
         model.meta["seqId_ens"] = []
         for i in range(len(seqid_lst)):
-            file.write  ( "REMARK PHASER ENSEMBLE MODEL " +\
-                          str(i+1) + " ID " + seqid_lst[i] + "\n" )
+            if model.BF_correction=="alphafold":
+                file.write  ( "REMARK PHASER ENSEMBLE MODEL " +\
+                            str(i+1) + " RMS " + str(model.meta["rmsd"]) + "\n" )   
+            else:
+                file.write  ( "REMARK PHASER ENSEMBLE MODEL " +\
+                            str(i+1) + " ID " + seqid_lst[i] + "\n" )
             model.meta["seqId_ens"].append ( seqid_lst[i] )
         lst = fcnt.split ( "\n" )
         for s in lst:

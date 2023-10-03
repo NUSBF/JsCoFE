@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.08.23   <--  Date of Last Modification.
+ *    03.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,7 +37,7 @@ function TaskWebCoot()  {
   this.name      = 'webcoot (interactive model building)';
   this.setOName ( 'webcoot' );  // default output file name template
   this.title     = 'Model Building with WebCoot/Moorhen';
-  this.nc_type   = 'browser';     // job runs in-browser
+  this.nc_type   = 'browser';   // job runs in-browser
   this.fasttrack = true;  // forces immediate execution
 
   this.input_dtypes = [{        // input data types
@@ -156,7 +156,7 @@ if (!__template)  {
     // new MessageBox('Web-app', '<h1>Web application</h1>');
 
     if (!checkBrowserForWebCoot())  {
-      callback_func();
+      callback_func ( false,'Moorhen' );
       return;
     }
 
@@ -164,7 +164,9 @@ if (!__template)  {
     if (this.uname.length>0)  title += this.uname;
                         else  title += this.name;
     var wab = new WebAppBox ( title );
-    wab.setOnCloseFunction ( function(){ callback_func(); } );
+    wab.setOnCloseFunction ( function(){
+      callback_func ( getCommunicationFrameData(wab.fid,'was_output'),'Moorhen' ); 
+    });
     wab.setOnToolbarCloseFunction ( function(){
       __comm_iframes[wab.fid].iframe.getWindow().postMessage ({
         command: 'call_exit'
@@ -172,6 +174,7 @@ if (!__template)  {
       return true;
     });
     wab.launch();
+    // setCommunicationFrameData ( wab.fid,'was_output',false );
 
     var istruct    = this.input_data.data['revision'][0].Structure;
     var isubstruct = this.input_data.data['revision'][0].Substructure;

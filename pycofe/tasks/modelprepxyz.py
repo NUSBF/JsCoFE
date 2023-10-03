@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    19.09.23   <--  Date of Last Modification.
+#    02.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -182,28 +182,28 @@ class ModelPrepXYZ(basic.TaskDriver):
         st.write_pdb ( fpath_out )
         return
 
-    def add_seqid_remark ( self,model,seqid_lst ):
-        ens_path = model.getXYZFilePath ( self.outputDir() )
-        file = open ( ens_path,"r" )
-        fcnt = file.read()
-        file.close  ()
-        file = open ( ens_path,"w" )
-        model.meta["seqId_ens"] = []
-        for i in range(len(seqid_lst)):
-            file.write  ( "REMARK PHASER ENSEMBLE MODEL " +\
-                          str(i+1) + " ID " + seqid_lst[i] + "\n" )
-            model.meta["seqId_ens"].append ( seqid_lst[i] )
-        lst = fcnt.split ( "\n" )
-        for s in lst:
-            if "REMARK PHASER ENSEMBLE MODEL" not in s:
-                file.write ( s + "\n" )
-        # file.write  ( fcnt )
-        file.close  ()
-        model.seqrem  = True
-        model.simtype = "cardon"
-        if len(seqid_lst)==1:
-            model.meta["seqId"] = seqid_lst[0]
-        return
+    # def add_seqid_remark ( self,model,seqid_lst ):
+    #     ens_path = model.getXYZFilePath ( self.outputDir() )
+    #     file = open ( ens_path,"r" )
+    #     fcnt = file.read()
+    #     file.close  ()
+    #     file = open ( ens_path,"w" )
+    #     model.meta["seqId_ens"] = []
+    #     for i in range(len(seqid_lst)):
+    #         file.write  ( "REMARK PHASER ENSEMBLE MODEL " +\
+    #                       str(i+1) + " ID " + seqid_lst[i] + "\n" )
+    #         model.meta["seqId_ens"].append ( seqid_lst[i] )
+    #     lst = fcnt.split ( "\n" )
+    #     for s in lst:
+    #         if "REMARK PHASER ENSEMBLE MODEL" not in s:
+    #             file.write ( s + "\n" )
+    #     # file.write  ( fcnt )
+    #     file.close  ()
+    #     model.seqrem  = True
+    #     model.simtype = "cardon"
+    #     if len(seqid_lst)==1:
+    #         model.meta["seqId"] = seqid_lst[0]
+    #     return
 
 
     def trim_chain ( self,xyz,chainId,seq,modSel,sclpSel,csMode ):
