@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.08.23   <--  Date of Last Modification.
+#    04.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -73,7 +73,7 @@ class StructurePrediction(basic.TaskDriver):
         seq  = self.makeClass ( self.input_data.data.seq[0] )
         sec1 = self.task.parameters.sec1.contains
 
-        seqfilename = seq.getSeqFilePath(self.inputDir())
+        seqfilepath = seq.getSeqFilePath ( self.inputDir() )
 
         # os.path.join ( os.environ["CCP4"],"bin","af2start" )
 
@@ -98,7 +98,83 @@ class StructurePrediction(basic.TaskDriver):
                 self.success ( False )
                 return
 
-        if engine not in ["colabfold","openfold","alphafold"]:
+        nmodels_str = "1"
+        if hasattr(sec1,"NSTRUCTS"):
+            nmodels_str = self.getParameter ( sec1.NSTRUCTS )
+
+        if engine=="script":
+            
+            self.putWaitMessageLF ( "Prediction in progress ..." )
+
+            rc = self.runApp ( configuration["script_path"],
+                               [seqfilepath,nmodels_str,dirName],
+                               logType="Main",quitOnError=False )
+
+            self.removeCitation ( configuration["script_path"] )
+            
+        elif engine in ["colabfold","openfold","alphafold"]:
+
+            script = "#!/bin/bash\n" +\
+                    "af2start"  +\
+                    " --seqin " + seqfilepath
+
+            if hasattr(sec1,"MINSCORE"):
+                script += " --stop-at-score " + self.getParameter(sec1.MINSCORE)
+
+            script += " --num_models " + nmodels_str
+
+            script += " --out " + dirPath
+            
+            if engine=="alphafold":
+                script += "\n"  # " -relax\n"
+            else:
+                script += " --" + engine + "\n"
+
+            if engine=="alphafold":
+                self.putMessage ( "Using vanilla implementation of AlphaFold" )
+            elif engine=="colabfold":
+                self.putMessage ( "Using ColabFold implementation of AlphaFold" )
+            else:
+                self.putMessage ( "Using OpenFold implementation of AlphaFold" )
+
+            if nmodels_str=="1":
+                self.putMessage ( "1 model will be generated<br>&nbsp;" )
+            else:
+                self.putMessage ( nmodels_str + " models will be generated<br>&nbsp;" )
+
+            self.stdout (
+                "--------------------------------------------------------------------------------\n" +\
+                "   Processing script:\n\n" +\
+                script +\
+                "--------------------------------------------------------------------------------\n"
+            )
+
+            f = open ( scriptf,"w" )
+            f.write ( script )
+            f.close()
+
+            os.chmod ( scriptf, os.stat(scriptf).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH )
+
+            self.putWaitMessageLF ( "Prediction in progress ..." )
+            # self.rvrow -= 1
+
+            if simulation:
+                # import shutil
+                shutil.copytree ( "C:/Users/ezg07123/Projects/CCP4Cloud/AF2/af2_output", dirName )
+
+            else:
+                rc = self.runApp ( "env",[
+                                        "-i",
+                                        "HOME=" + os.environ["HOME"],
+                                        "PATH=" + os.environ["PATH"],
+                                        "ALPHAFOLD_CFG=" + os.environ["ALPHAFOLD_CFG"],
+                                        "/bin/bash","-l","-c","./" + scriptf
+                                    ],logType="Main",quitOnError=False )
+
+                self.removeCitation ( "env" )
+
+
+        else:
             self.putTitle   ( "Invalid or corrupt configuration" )
             self.putMessage ( "Task engine is not specified in the configuration " +\
                 "file or is misspelled. Report this to your " + self.appName() +\
@@ -109,65 +185,6 @@ class StructurePrediction(basic.TaskDriver):
             self.success ( False )
             return
 
-        script = "#!/bin/bash\n" +\
-                 "af2start"  +\
-                 " --seqin " + seqfilename
-
-        if hasattr(sec1,"MINSCORE"):
-            script += " --stop-at-score " + self.getParameter(sec1.MINSCORE)
-
-        nmodels_str = "1"
-        if hasattr(sec1,"NSTRUCTS"):
-            nmodels_str = self.getParameter ( sec1.NSTRUCTS )
-        script += " --num_models " + nmodels_str
-
-        script += " --out " + dirPath
-        
-        if engine=="alphafold":
-            script += "\n"  # " -relax\n"
-        else:
-            script += " --" + engine + "\n"
-
-        if engine=="alphafold":
-            self.putMessage ( "Using vanilla implementation of AlphaFold" )
-        elif engine=="colabfold":
-            self.putMessage ( "Using ColabFold implementation of AlphaFold" )
-        else:
-            self.putMessage ( "Using OpenFold implementation of AlphaFold" )
-
-        if nmodels_str=="1":
-            self.putMessage ( "1 model will be generated<br>&nbsp;" )
-        else:
-            self.putMessage ( nmodels_str + " models will be generated<br>&nbsp;" )
-
-        self.stdout (
-            "--------------------------------------------------------------------------------\n" +\
-            "   Processing script:\n\n" +\
-            script +\
-            "--------------------------------------------------------------------------------\n"
-        )
-
-        f = open ( scriptf,"w" )
-        f.write ( script )
-        f.close()
-
-        os.chmod ( scriptf, os.stat(scriptf).st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH )
-
-        self.putWaitMessageLF ( "Prediction in progress ..." )
-        # self.rvrow -= 1
-
-        if simulation:
-            # import shutil
-            shutil.copytree ( "C:/Users/ezg07123/Projects/CCP4Cloud/AF2/af2_output", dirName )
-
-        else:
-            rc = self.runApp ( "env",[
-                                    "-i",
-                                    "HOME=" + os.environ["HOME"],
-                                    "PATH=" + os.environ["PATH"],
-                                    "ALPHAFOLD_CFG=" + os.environ["ALPHAFOLD_CFG"],
-                                    "/bin/bash","-l","-c","./" + scriptf
-                                ],logType="Main",quitOnError=False )
 
         nModels = 0
 
@@ -176,8 +193,9 @@ class StructurePrediction(basic.TaskDriver):
             self.putMessage ( "<b>Execution errors</b>" )
         else:
             
-            fpaths = []   #  create a empty object list
-            xyzs   = []   #  output data objects
+            fpaths  = []   #  relaxed structures
+            fpaths0 = []   #  unrelaxed structures
+            xyzs    = []   #  output data objects
 
             coverage_png = []
             PAE_png      = []
@@ -197,14 +215,20 @@ class StructurePrediction(basic.TaskDriver):
 
             else:
                 for file in os.listdir(dirName):
-                    if file.endswith(".pdb") and (engine=="colabfold" or file.endswith("_relaxed.pdb")):
+                    if file.endswith(".pdb") and (engine=="colabfold" or\
+                       file.endswith("_relaxed.pdb") or ("_relaxed_" in file)):
                         fpaths.append ( os.path.join(dirName,file) )
+                    elif file.endswith("_unrelaxed.pdb") or ("_unrelaxed_" in file):
+                        fpaths0.append ( os.path.join(dirName,file) )
                     elif file.endswith("coverage.png"):
                         coverage_png.append ( "../" + dirName + "/" + file )
                     elif file.endswith("PAE.png"):
                         PAE_png.append ( "../" + dirName + "/" + file )
                     elif file.endswith("plddt.png"):
                         plddt_png.append ( "../" + dirName + "/" + file )
+
+            if len(fpaths)<=0:
+                fpaths = fpaths0  # depends on alphafold configuration
 
             if len(fpaths)<=0: # Result page in case of no models are generated
 
@@ -387,3 +411,70 @@ if __name__ == "__main__":
 
     drv = StructurePrediction ( "",os.path.basename(__file__) )
     drv.start()
+
+
+"""
+================================================================================================================
+ALPHAFOLD_CFG for openfold:
+
+{
+    "engine" : "openfold",
+    "path_to_run_alphafold_py": "/home/ccp4/alphafold/run_alphafold.py",
+    "path_to_run_docker": "/home/ccp4/alphafold/docker/run_docker.py",
+    "path_to_colabfold_batch": "colabfold_batch",
+    "path_to_run_openfold": "/home/ccp4/openfold/run_openfold.sh",
+    "max_template_date": "2020-05-14",
+    "data_dir": "/data/alphafold/db",
+    "db_preset": "full_dbs",
+    "pdb70_database_path": "/data/alphafold/db/pdb70/pdb70",
+    "uniref90_database_path": "/data/alphafold/db/uniref90/uniref90.fasta",
+    "mgnify_database_path": "/data/alphafold/db/mgnify/mgy_clusters_2018_12.fa",
+    "template_mmcif_dir": "/data/alphafold/db/pdb_mmcif/mmcif_files/",
+    "obsolete_pdbs_path": "/data/alphafold/db/pdb_mmcif/obsolete.dat",
+    "bfd_database_path": "/data/alphafold/db/bfd/bfd_metaclust_clu_complete_id30_c90_final_seq.sorted_opt",
+    "uniclust30_database_path": "/data/alphafold/db/uniclust30/uniclust30_2018_08/uniclust30_2018_08",
+    "pdb_seqres_database_path": "/data/alphafold/db/pdb_seqres/pdb_seqres.txt",
+    "uniprot_database_path": "/data/alphafold/db/uniprot/uniprot.fasta",
+    "use_gpu_relax": "False",
+    "colabfold_use_cpu": "1",
+    "openfold_device": "cpu",
+    "hhblits_binary_path": "hhblits",
+    "hhsearch_binary_path": "hhsearch",
+    "hmmbuild_binary_path": "hmmbuild",
+    "hmmsearch_binary_path": "hmmsearch",
+    "jackhmmer_binary_path": "jackhmmer",
+    "kalign_binary_path": "kalign",
+    "run_this_cmd_before_af2": "",
+    "run_this_cmd_before_cf": "",
+    "run_this_cmd_before_of": ""
+}
+=================================================================================================================
+
+================================================================================================================
+ALPHAFOLD_CFG for generic script:
+
+{ "engine"       : "script"
+  "script_path"  : "/path/to/script/template.sh"
+}
+
+where template.sh is invoked as below:
+
+template.sh /path/to/seq.fasta Nmodels /path/to/output.dir
+
+Example for template.sh:
+
+-------------------------------------------------------------------------------------
+#!/bin/bash
+#
+#SBATCH --job-name=test
+#SBATCH --output=res.txt
+#SBATCH --gres=gpu:1
+#SBATCH --clusters=gpu4_cluster
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+
+apptainer exec --nv /cvmfs/unpacked.cern.ch/registry.hub.docker.com/ville761/af2:latest af2start --seqin $1 --output $3 --colabfold # --relax --num_models $2 --templates
+-------------------------------------------------------------------------------------
+
+=================================================================================================================
+"""

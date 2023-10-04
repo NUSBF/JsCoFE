@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.09.23   <--  Date of Last Modification.
+ *    04.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -918,7 +918,6 @@ var cfg = conf.getServerConfig();
 
     // if (code==1001)  {
     if (code)  {
-      // console.log ( '  >>> was stopped ');
       log.standard ( 101,'removing symlinks after stopped task, job_token=' + job_token );
       utils.removeSymLinks ( jobEntry.jobDir );
     }
@@ -970,18 +969,6 @@ var cfg = conf.getServerConfig();
 
         } else  {
 
-          // console.log ( ' >>>>> stageNo=' + stageNo );
-          // console.log ( ' >>>>> isErrObject? ' + comut.isObject(errcode) );
-          // console.log ( ' >>>>> errcode = ' + errcode );
-          // console.log ( ' >>>>> cmd.fe_retcode.fileErrors = ' + cmd.fe_retcode.fileErrors );
-          // console.log ( ' >>>>> errcode.status            = ' + errcode.status );
-          // **** what to do??? clean NC storage, the job was a waste.
-          //removeJobDelayed ( job_token,task_t.job_code.finished );
-          //log.error ( 4,'cannot send task ' + task.id +
-          //              ' back to FE. TASK DELETED.' );
-          // ****
-
-          // jobEntry.sendTrials = 0;
           log.error ( 5,'job ' + task.id + ' is put in zombi state, token:' +
                          job_token );
 
@@ -1027,7 +1014,7 @@ function ncRunJob ( job_token,meta )  {
 
   function getJobName()  {
     //return 'cofe_' + ncJobRegister.launch_count;
-    var jname = 'ccp4cloud-' + ncJobRegister.launch_count;
+    let jname = 'ccp4cloud-' + ncJobRegister.launch_count;
     if (meta.user_id)   jname += '.' + meta.user_id + '.' + task.project + '.' + task.id;
     if (meta.setup_id)  jname += '.' + meta.setup_id;
     return jname;
@@ -1051,8 +1038,10 @@ function ncRunJob ( job_token,meta )  {
     if (task.fasttrack)
       jobEntry.exeType = 'SHELL';
 
+    let jobName = getJobName();
+
     var command = task.getCommandLine ( ncConfig.jobManager,jobDir );
-    command.push ( 'jscofe_version=' + cmd.appVersion() );
+    command.push ( '"jscofe_version=' + cmd.appVersion() + '"' );
     command.push ( 'end_signal=' + cmd.endJobFName );
 
     switch (jobEntry.exeType)  {
@@ -1112,11 +1101,10 @@ function ncRunJob ( job_token,meta )  {
       case 'SGE'   :  command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       command.push ( 'nproc=' + nproc.toString() );
-                      var jname = getJobName();
                       var qsub_params = ncConfig.exeData.concat ([
                         '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
-                        '-N',jname
+                        '-N',jobName
                       ]);
                       var job = utils.spawn ( 'qsub',qsub_params.concat(command),{} );
                       // in this mode, we DO NOT put job listener on the spawn
@@ -1135,7 +1123,7 @@ function ncRunJob ( job_token,meta )  {
                             jobEntry.pid = parseInt(w[2]);
                         }
                         log.standard ( 6,'task '  + task.id + ' qsubbed, '  +
-                                         'name='  + jname   +
+                                         'name='  + jobName +
                                          ', pid=' + jobEntry.pid +
                                          ', token:' + job_token );
                       });
@@ -1151,15 +1139,29 @@ function ncRunJob ( job_token,meta )  {
       case 'SLURM' :  command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       command.push ( 'nproc=' + nproc.toString() );
-                      var jname = getJobName();
+
+                      let sbatch_params = ncConfig.exeData.concat ([
+                        '--export=ALL',
+                        '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
+                        '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
+                        '-J',jobName,
+                        '-c',ncores
+                      ]);
+                      let sbatch_cmd = sbatch_params.concat(command);
+                      var job = utils.spawn ( 'sbatch',sbatch_cmd );
+
+                      /*
                       var script_params = [
                         '--export=ALL',
                         '-o',path.join(jobDir,'_job.stdo'),  // qsub stdout
                         '-e',path.join(jobDir,'_job.stde'),  // qsub stderr
-                        '-J',jname,
+                        '-J',jobName,
                         '-c',ncores
                       ];
-                      var job = utils.spawn ( 'sbatch',script_params.concat(command),{} );
+                      let sbatch_cmd = script_params.concat(command);
+                      var job = utils.spawn ( 'sbatch',sbatch_cmd );
+                      */
+                      // var job = utils.spawn ( 'sbatch',script_params.concat(command),{} );
                       // sbatch --export=ALL -o "$2" -e "$3" -J "$4" -c "$5" "${@:6}" | cut -d " " -f 4
 
                       // in this mode, we DO NOT put job listener on the spawn
@@ -1175,9 +1177,12 @@ function ncRunJob ( job_token,meta )  {
                         // escape just in case
                         try {
                           var slurm_output_split = slurm_output.split(' ');
-                          jobEntry.pid = parseInt(slurm_output_split[slurm_output_split.length-1]);
+                          jobEntry.pid = -1;
+                          for (let i=0;(i<slurm_output_split.length) && (jobEntry.pid<0);i++)
+                            if (comut.isInteger(slurm_output_split[i]))
+                              jobEntry.pid = parseInt ( slurm_output_split[i] );
                           log.standard ( 7,'task '    + task.id + ' submitted, ' +
-                                           'name='    + jname   +
+                                           'name='    + jobName +
                                            ', pid='   + jobEntry.pid +
                                            ', token:' + job_token );
                         }
@@ -1198,12 +1203,11 @@ function ncRunJob ( job_token,meta )  {
       case 'SCRIPT' : command.push ( 'queue=' + ncConfig.getQueueName() );
                       //command.push ( Math.max(1,Math.floor(ncConfig.capacity/4)).toString() );
                       command.push ( 'nproc=' + nproc.toString() );
-                      var jname = getJobName();
                       var script_params = [
                         'start',
                         path.join(jobDir,'_job.stdo'),  // qsub stdout
                         path.join(jobDir,'_job.stde'),  // qsub stderr
-                        jname,
+                        jobName,
                         ncores
                       ];
                       var job = utils.spawn ( ncConfig.exeData,script_params.concat(command),{} );
@@ -1222,7 +1226,7 @@ function ncRunJob ( job_token,meta )  {
                         try {
                           jobEntry.pid = parseInt(job_output);
                           log.standard ( 7,'task '  + task.id + ' submitted, ' +
-                                           'name='  + jname   +
+                                           'name='  + jobName +
                                            ', pid=' + jobEntry.pid +
                                            ', token:' + job_token );
                         }
@@ -1497,7 +1501,6 @@ var job_tokens = post_data_obj.job_tokens;
 // *** for debugging
 //__use_fake_fe_url = false;
 
-  // console.log ( ' >>>>>> tokens = ' + JSON.stringify(job_tokens) );
   var nzombies = 0;
   if (job_tokens[0]=='*')  {  // take all
     // nzombies = ncWakeAllZombiJobs();
