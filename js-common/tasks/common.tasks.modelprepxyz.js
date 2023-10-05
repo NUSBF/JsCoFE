@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    05.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -46,7 +46,8 @@ function TaskModelPrepXYZ()  {
       tooltip     : 'Specify macromolecular sequence to be associated with the ' +
                     'resulting models.',
       inputId     : 'seq',      // input Id for referencing input fields
-      min         : 1,          // minimum acceptable number of data instances
+      min         : 0,          // minimum acceptable number of data instances
+      force       : 1,          // show sequence wherever possible
       max         : 1           // maximum acceptable number of data instances
     },{
       data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz'],
@@ -84,43 +85,73 @@ function TaskModelPrepXYZ()  {
                                      'P|Polyalanine'
                                    ],
                         value    : 'M',
+                        hideon   : { seq:[-1,0] },
                         position : [0,0,1,1]
                       },
+                MODNOSEQ_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'none',
+                        label    : 'Modification protocol:',
+                        tooltip  : 'Choose trim option',
+                        range    : [ 'U|Unmodified',
+                                     'D|PDB Clip',
+                                     'P|Polyalanine'
+                                   ],
+                        value    : 'D',
+                        showon   : { seq:[-1,0] },
+                        position : [0,0,1,1]
+                      },
+
+
                 LEGEND_SEQ_U : {
                         type     : 'label',  // just a separator
                         label    : '<i>(models are not changed)</i>',
                         position : [0,3,1,1],
-                        showon   : { 'MODIFICATION_SEL':['U'] }
+                        showon   : {_:'||',
+                                      C1:{_:'&&',seq:[1],'MODIFICATION_SEL':['U'] },
+                                      C2:{_:'&&',seq:[-1,0],'MODNOSEQ_SEL':['U'] }
+                                   }
                       },
                 LEGEND_SEQ_D : {
                         type     : 'label',  // just a separator
                         label    : '<i>(remove solvent, hydrogens, and select most probable conformations)</i>',
                         position : [0,3,1,1],
-                        showon   : { 'MODIFICATION_SEL':['D'] }
+                        showon   : {_:'||',
+                                      C1:{_:'&&',seq:[1],'MODIFICATION_SEL':['D'] },
+                                      C2:{_:'&&',seq:[-1,0],'MODNOSEQ_SEL':['D'] }
+                                   }
+                        // showon   : { 'MODIFICATION_SEL':['D'] }
                       },
                 LEGEND_SEQ_M : {
                         type     : 'label',  // just a separator
                         label    : '<i>(side chain truncation based on Molrep)</i>',
                         position : [0,3,1,1],
-                        showon   : { 'MODIFICATION_SEL':['M'] }
+                        showon   : {_:'&&',seq:[1],'MODIFICATION_SEL':['M'] }
+                        // showon   : { 'MODIFICATION_SEL':['M'] }
                       },
                 LEGEND_SEQ_C : {
                         type     : 'label',  // just a separator
                         label    : '<i>(side chain truncation based on Chainsaw)</i>',
                         position : [0,3,1,1],
-                        showon   : { 'MODIFICATION_SEL':['C'] }
+                        showon   : {_:'&&',seq:[1],'MODIFICATION_SEL':['C'] }
+                        // showon   : { 'MODIFICATION_SEL':['C'] }
                       },
                 LEGEND_SEQ_S : {
                         type     : 'label',  // just a separator
                         label    : '<i>(side chain truncation based on Phaser.Sculptor)</i>',
                         position : [0,3,1,1],
-                        showon   : { 'MODIFICATION_SEL':['S'] }
+                        showon   : {_:'&&',seq:[1],'MODIFICATION_SEL':['S'] }
+                        // showon   : { 'MODIFICATION_SEL':['S'] }
                       },
                 LEGEND_SEQ_P : {
                         type     : 'label',  // just a separator
                         label    : '<i>(removal of all side chains)</i>',
                         position : [0,3,1,1],
-                        showon   : { 'MODIFICATION_SEL':['P'] }
+                        showon   : {_:'||',
+                                      C1:{_:'&&',seq:[1],'MODIFICATION_SEL':['P'] },
+                                      C2:{_:'&&',seq:[-1,0],'MODNOSEQ_SEL':['P'] }
+                                   }
+                        // showon   : { 'MODIFICATION_SEL':['P'] }
                       },
 
                 SCULPTOR_PROTOCOL_SEL : {
@@ -143,7 +174,7 @@ function TaskModelPrepXYZ()  {
                                      '13|#13'
                                    ],
                         value    : '1',
-                        showon   : { 'MODIFICATION_SEL':['S'] },
+                        showon   : { _:'&&',seq:[1],'MODIFICATION_SEL':['S'] },
                         position : [1,0,1,1]
                       },
 
@@ -157,7 +188,7 @@ function TaskModelPrepXYZ()  {
                                      'MAXI|last common atom'
                                    ],
                         value    : 'MIXS',
-                        showon   : { 'MODIFICATION_SEL':['C'] },
+                        showon   : { _:'&&',seq:[1],'MODIFICATION_SEL':['C'] },
                         position : [1,0,1,1]
                       }
 
@@ -192,7 +223,7 @@ TaskModelPrepXYZ.prototype.desc_title     = function()  {
 
 
 TaskModelPrepXYZ.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -219,56 +250,63 @@ if (!__template)  {
 
       var typeMask  = 0x00;
       if (seq && (seq.length>0))  {
+        typeMask = 0x08;
         if (seq[0].subtype.indexOf('protein')>=0)  typeMask += 0x01;
         if (seq[0].subtype.indexOf('dna')>=0)      typeMask += 0x02;
         if (seq[0].subtype.indexOf('rna')>=0)      typeMask += 0x04;
       }
 
-      var modSel = this.parameters.sec1.contains.MODIFICATION_SEL.value;
-      if (((typeMask & 0x01)==0x00) && (['U','D'].indexOf(modSel)<0))
-        msg_list.push ( this.invalidParamMessage (
-                    'incompatible modification protocol',
-                    'making nucleic acid MR models is possible only for ' +
-                    '"Unmodified" and<br>"PDB Clip" modification protocols' ) );
-      else
-        for (var i=0;i<xyz.length;i++)  {
-          var tMask  = 0x00;
-          if (xyz[i].chainSel=='(none)')  {
-            msg_list.push ( this.invalidParamMessage (
-                    'no suitable chain selected in ' + xyz[i].dname,
-                    'no chains suitable for making MR model with chosen ' +
-                    'target sequence<br>are found in coordinate data' ) );
-          } else if (xyz[i].chainSel=='(all)')  {
-            if (['U','D'].indexOf(modSel)>=0)  {
-              // just check that there are no incompatible chains
-              if (xyz[i].subtype.indexOf('protein')>=0)  tMask += 0x01;
-              if (xyz[i].subtype.indexOf('dna')>=0)      tMask += 0x02;
-              if (xyz[i].subtype.indexOf('rna')>=0)      tMask += 0x04;
-            } else
+      if (typeMask)  {
+
+        var modSel = this.parameters.sec1.contains.MODIFICATION_SEL.value;
+        if (((typeMask & 0x01)==0x00) && (['U','D'].indexOf(modSel)<0))  {
+          msg_list.push ( this.invalidParamMessage (
+                      'incompatible modification protocol',
+                      'making nucleic acid MR models is possible only for ' +
+                      '"Unmodified" and<br>"PDB Clip" modification protocols' ) );
+        } else  {
+          for (var i=0;i<xyz.length;i++)  {
+            var tMask  = 0x00;
+            if (xyz[i].chainSel=='(none)')  {
               msg_list.push ( this.invalidParamMessage (
-                    'chain is not selected in ' + xyz[i].dname,
-                    'selecting all chains is possible only for "Unmodified" ' +
-                    'and "PDB Clip"<br>modification protocols' ) );
-          } else  {
-            // check chain type for the selected chain
-            if (xyz[i].chainSelType=='protein')  tMask = 0x01;
-            else if (xyz[i].chainSelType=='dna') tMask = 0x02;
-            else if (xyz[i].chainSelType=='rna') tMask = 0x04;
-            else if (xyz[i].chainSelType=='na')  tMask = 0x06;
-            else if (xyz[i].chainSelType=='lig')
+                      'no suitable chain selected in ' + xyz[i].dname,
+                      'no chains suitable for making MR model with chosen ' +
+                      'target sequence<br>are found in coordinate data' ) );
+            } else if (xyz[i].chainSel=='(all)')  {
+              if (['U','D'].indexOf(modSel)>=0)  {
+                // just check that there are no incompatible chains
+                if (xyz[i].subtype.indexOf('protein')>=0)  tMask += 0x01;
+                if (xyz[i].subtype.indexOf('dna')>=0)      tMask += 0x02;
+                if (xyz[i].subtype.indexOf('rna')>=0)      tMask += 0x04;
+              } else
+                msg_list.push ( this.invalidParamMessage (
+                      'chain is not selected in ' + xyz[i].dname,
+                      'selecting all chains is possible only for "Unmodified" ' +
+                      'and "PDB Clip"<br>modification protocols' ) );
+            } else  {
+              // check chain type for the selected chain
+              if (xyz[i].chainSelType=='protein')  tMask = 0x01;
+              else if (xyz[i].chainSelType=='dna') tMask = 0x02;
+              else if (xyz[i].chainSelType=='rna') tMask = 0x04;
+              else if (xyz[i].chainSelType=='na')  tMask = 0x06;
+              else if (xyz[i].chainSelType=='lig')
+                msg_list.push ( this.invalidParamMessage (
+                      'not allowed chain type in ' + xyz[i].dname,
+                      'ligands cannot be used as MR search models' ) );
+            }
+            if ((tMask & typeMask)==0x00)
               msg_list.push ( this.invalidParamMessage (
-                    'not allowed chain type in ' + xyz[i].dname,
-                    'ligands cannot be used as MR search models' ) );
+                      'incompatible chain type in ' + xyz[i].dname,
+                      'the type of MR model chain must coincide with ' +
+                      'the type of target sequence' ) );
           }
-          if ((tMask & typeMask)==0x00)
-            msg_list.push ( this.invalidParamMessage (
-                    'incompatible chain type in ' + xyz[i].dname,
-                    'the type of MR model chain must coincide with ' +
-                    'the type of target sequence' ) );
+
         }
 
-      if (msg_list.length>0)
-        msg = msg_list.join('|');
+        if (msg_list.length>0)
+          msg = msg_list.join('|');
+
+      }
 
     }
 
