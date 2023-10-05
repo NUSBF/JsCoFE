@@ -79,6 +79,7 @@ export namespace moorhen {
     }
     
     interface Molecule {
+        getNumberOfAtoms(): Promise<number>;
         checkHasGlycans(): Promise<boolean>;
         fitLigandHere(mapMolNo: number, ligandMolNo: number, redraw?: boolean, useConformers?: boolean, conformerCount?: number): Promise<Molecule[]>;
         isLigand(): boolean;
@@ -92,7 +93,7 @@ export namespace moorhen {
         hideCid(cid: string): Promise<void>;
         unhideAll(): Promise<void>;
         drawUnitCell(): void;
-        gemmiAtomsForCid: (cid: string) => Promise<AtomInfo[]>;
+        gemmiAtomsForCid: (cid: string, omitExcludedCids?: boolean) => Promise<AtomInfo[]>;
         mergeMolecules(otherMolecules: Molecule[], doHide?: boolean): Promise<void>;
         setBackgroundColour(backgroundColour: [number, number, number, number]): void;
         addDict(fileContent: string): Promise<void>;
@@ -121,7 +122,7 @@ export namespace moorhen {
         clearBuffersOfStyle: (style: string) => void;
         loadToCootFromURL: (inputFile: string, molName: string) => Promise<Molecule>;
         applyTransform: () => Promise<void>;
-        getAtoms(format?: string): Promise<WorkerResponse>;
+        getAtoms(format?: string): Promise<string>;
         hide: (style: string, cid?: string) => void;
         redraw: () => Promise<void>;
         setAtomsDirty: (newVal: boolean) => void;
@@ -140,9 +141,10 @@ export namespace moorhen {
         gemmiStructure: gemmi.Structure;
         sequences: Sequence[];
         ligands: LigandInfo[];
+        atomCount: number;
         ligandDicts: {[comp_id: string]: string};
         connectedToMaps: number[];
-        excludedSegments: string[];
+        excludedSelections: string[];
         symmetryOn: boolean;
         symmetryRadius : number;
         symmetryMatrices: number[][][];
@@ -514,6 +516,7 @@ export namespace moorhen {
         setDoShadowDepthDebug: React.Dispatch<React.SetStateAction<boolean>>;
         setDefaultBackgroundColor: React.Dispatch<React.SetStateAction<[number, number, number, number]>>;
         setDoShadow: React.Dispatch<React.SetStateAction<boolean>>;
+        setDoSSAO: React.Dispatch<React.SetStateAction<boolean>>;
         setDoOutline: React.Dispatch<React.SetStateAction<boolean>>;
         setDoSpinTest: React.Dispatch<React.SetStateAction<boolean>>;
         setClipCap: React.Dispatch<React.SetStateAction<boolean>>;
@@ -521,6 +524,8 @@ export namespace moorhen {
         setUseOffScreenBuffers: React.Dispatch<React.SetStateAction<boolean>>;
         setDepthBlurRadius: React.Dispatch<React.SetStateAction<number>>;
         setDepthBlurDepth: React.Dispatch<React.SetStateAction<number>>;
+        setSsaoRadius: React.Dispatch<React.SetStateAction<number>>;
+        setSsaoBias: React.Dispatch<React.SetStateAction<number>>;
         setDoPerspectiveProjection: React.Dispatch<React.SetStateAction<boolean>>;
         setDrawInteractions: React.Dispatch<React.SetStateAction<boolean>>;
         setDrawMissingLoops: React.Dispatch<React.SetStateAction<boolean>>;
@@ -576,8 +581,11 @@ export namespace moorhen {
         useOffScreenBuffers: boolean; 
         depthBlurRadius: number; 
         depthBlurDepth: number; 
+        ssaoBias: number; 
+        ssaoRadius: number; 
         doShadowDepthDebug: boolean; 
         doShadow: boolean; 
+        doSSAO: boolean; 
         doOutline: boolean; 
         GLLabelsFontFamily: string;
         GLLabelsFontSize: number;
@@ -608,6 +616,7 @@ export namespace moorhen {
     type ContextButtonProps = {
         mode: 'context';
         monomerLibraryPath: string;
+        windowWidth: number;
         shortCuts: string | { [label: string]: Shortcut; };
         urlPrefix: string;
         commandCentre: React.RefObject<CommandCentre>
@@ -631,6 +640,7 @@ export namespace moorhen {
         changeMolecules: (arg0: MolChange<Molecule>) => void
         defaultActionButtonSettings: actionButtonSettings;
         setDefaultActionButtonSettings: (arg0: {key: string; value: string}) => void;     
+        setHoveredAtom: React.Dispatch<React.SetStateAction<HoveredAtom>>;
     }
     
     type MolChange<T extends Molecule | Map> = {
