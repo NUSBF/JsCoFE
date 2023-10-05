@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.10.23   <--  Date of Last Modification.
+#    05.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -215,16 +215,17 @@ class StructurePrediction(basic.TaskDriver):
 
             else:
                 for file in os.listdir(dirName):
-                    if file.endswith(".pdb") and (engine=="colabfold" or\
-                       file.endswith("_relaxed.pdb") or ("_relaxed_" in file)):
+                    fnlow = file.lower()
+                    if fnlow.endswith(".pdb") and (engine=="colabfold" or\
+                       fnlow.endswith("_relaxed.pdb") or ("_relaxed_" in fnlow)):
                         fpaths.append ( os.path.join(dirName,file) )
-                    elif file.endswith("_unrelaxed.pdb") or ("_unrelaxed_" in file):
+                    elif fnlow.endswith("_unrelaxed.pdb") or ("_unrelaxed_" in fnlow):
                         fpaths0.append ( os.path.join(dirName,file) )
-                    elif file.endswith("coverage.png"):
+                    elif fnlow.endswith("coverage.png"):
                         coverage_png.append ( "../" + dirName + "/" + file )
-                    elif file.endswith("PAE.png"):
+                    elif fnlow.endswith("pae.png"):
                         PAE_png.append ( "../" + dirName + "/" + file )
-                    elif file.endswith("plddt.png"):
+                    elif fnlow.endswith("plddt.png"):
                         plddt_png.append ( "../" + dirName + "/" + file )
 
             if len(fpaths)<=0:
