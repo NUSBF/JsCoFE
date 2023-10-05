@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    04.10.22   <--  Date of Last Modification.
+#    05.10.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -89,12 +89,13 @@ def register ( sequence,modelFilePath,dataSerialNo,job_id,outDataBox,outputDir )
         model = DType ( job_id )
         fname = model.lessDataId ( os.path.basename(modelFilePath) )
         model.setXYZFile ( fname )
-        if type(sequence) == list:
-            model.addSubtypes ( sequence )
-        elif type(sequence) == str:
-            model.setSubtype  ( sequence )
-        else:
-            model.putSequence ( sequence )
+        if sequence:
+            if type(sequence) == list:
+                model.addSubtypes ( sequence )
+            elif type(sequence) == str:
+                model.setSubtype  ( sequence )
+            else:
+                model.putSequence ( sequence )
         model.makeDName ( dataSerialNo )
         newFileName = model.dataId + "_" + fname
         model.setXYZFile ( newFileName )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.07.23   <--  Date of Last Modification.
+#    05.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -2037,7 +2037,7 @@ class TaskDriver(object):
             self.file_stderr.write ( "  NONE MODEL DATA\n" )
             self.file_stderr.flush()
         else:
-            if type(sequence)!=str and type(sequence)!=list:
+            if sequence and type(sequence)!=str and type(sequence)!=list:
                 shutil.copy ( sequence.getSeqFilePath(self.inputDir()),
                               self.outputDir() )
             model.putXYZMeta ( self.outputDir(),self.file_stdout1,
