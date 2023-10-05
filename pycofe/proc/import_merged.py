@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.05.23   <--  Date of Last Modification.
+#    04.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -156,7 +156,7 @@ def run ( body,   # body is reference to the main Import class
     for f_orig, f_fmt in files_mtz:
 
         p_orig  = os.path.join ( body.importDir(),f_orig )
-        p_mtzin = p_orig
+        p_mtzin = os.path.splitext(p_orig)[0] + ".mtz"
 
         if f_fmt==import_filetype.ftype_CIFMerged():
             # p_mtzin = os.path.splitext(f_orig)[0] + '.mtz'
@@ -342,9 +342,11 @@ def run ( body,   # body is reference to the main Import class
                             cmd += ["-colin",cols+"]"]
 
                         anomCols  = hkl.getAnomalousColumns()
-                        anomalous = False
+                        # anomalous = False
                         if anomCols[4] != "X":
-                            anomalous = True
+                            # anomalous = True
+                            if meanCols[2] == "X" and anomCols[4] == "I":
+                                cmd += ["-Imean"]
                             cols = "/*/*/["
                             for i in range(0,4):
                                 if anomCols[i] != None:
