@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.10.23   <--  Date of Last Modification.
+ *    06.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,15 +41,6 @@ function TaskModelPrepXYZ()  {
   //this.helpURL = './html/jscofe_task_modelprepxyz.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)
-      label       : 'Sequence',          // label for input dialog
-      tooltip     : 'Specify macromolecular sequence to be associated with the ' +
-                    'resulting models.',
-      inputId     : 'seq',      // input Id for referencing input fields
-      min         : 0,          // minimum acceptable number of data instances
-      force       : 1,          // show sequence wherever possible
-      max         : 1           // maximum acceptable number of data instances
-    },{
       data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz'],
                      'DataXYZ':[]},  // data type(s) and subtype(s)
       label       : 'Coordinates',   // label for input dialog
@@ -61,6 +52,15 @@ function TaskModelPrepXYZ()  {
       customInput : 'chain-sel-poly', // lay custom fields next to the selection
       min         : 1,           // minimum acceptable number of data instances
       max         : 1000         // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)
+      label       : 'Sequence',          // label for input dialog
+      tooltip     : 'Specify macromolecular sequence to be associated with the ' +
+                    'resulting models.',
+      inputId     : 'seq',      // input Id for referencing input fields
+      min         : 0,          // minimum acceptable number of data instances
+      force       : 1,          // show sequence wherever possible
+      max         : 1           // maximum acceptable number of data instances
     }
   ];
 
@@ -71,6 +71,13 @@ function TaskModelPrepXYZ()  {
               open     : true,  // true for the section to be initially open
               position : [0,0,1,5],
               contains : {
+
+                LEGEND_NOSEQ : {
+                        type     : 'label',  // just a separator
+                        label    : '<b><i style="font-size:85%">Note: modification protocols are limited because sequence is not provided<br>&nbsp;</i></b>',
+                        position : [0,0,1,5],
+                        showon   : { seq:[-1,0] }
+                      },
 
                 MODIFICATION_SEL : {
                         type     : 'combobox',
@@ -86,7 +93,7 @@ function TaskModelPrepXYZ()  {
                                    ],
                         value    : 'M',
                         hideon   : { seq:[-1,0] },
-                        position : [0,0,1,1]
+                        position : [1,0,1,1]
                       },
                 MODNOSEQ_SEL : {
                         type     : 'combobox',
@@ -99,14 +106,13 @@ function TaskModelPrepXYZ()  {
                                    ],
                         value    : 'D',
                         showon   : { seq:[-1,0] },
-                        position : [0,0,1,1]
+                        position : [1,0,1,1]
                       },
-
 
                 LEGEND_SEQ_U : {
                         type     : 'label',  // just a separator
                         label    : '<i>(models are not changed)</i>',
-                        position : [0,3,1,1],
+                        position : [1,3,1,1],
                         showon   : {_:'||',
                                       C1:{_:'&&',seq:[1],'MODIFICATION_SEL':['U'] },
                                       C2:{_:'&&',seq:[-1,0],'MODNOSEQ_SEL':['U'] }
@@ -115,7 +121,7 @@ function TaskModelPrepXYZ()  {
                 LEGEND_SEQ_D : {
                         type     : 'label',  // just a separator
                         label    : '<i>(remove solvent, hydrogens, and select most probable conformations)</i>',
-                        position : [0,3,1,1],
+                        position : [1,3,1,1],
                         showon   : {_:'||',
                                       C1:{_:'&&',seq:[1],'MODIFICATION_SEL':['D'] },
                                       C2:{_:'&&',seq:[-1,0],'MODNOSEQ_SEL':['D'] }
@@ -125,28 +131,28 @@ function TaskModelPrepXYZ()  {
                 LEGEND_SEQ_M : {
                         type     : 'label',  // just a separator
                         label    : '<i>(side chain truncation based on Molrep)</i>',
-                        position : [0,3,1,1],
+                        position : [1,3,1,1],
                         showon   : {_:'&&',seq:[1],'MODIFICATION_SEL':['M'] }
                         // showon   : { 'MODIFICATION_SEL':['M'] }
                       },
                 LEGEND_SEQ_C : {
                         type     : 'label',  // just a separator
                         label    : '<i>(side chain truncation based on Chainsaw)</i>',
-                        position : [0,3,1,1],
+                        position : [1,3,1,1],
                         showon   : {_:'&&',seq:[1],'MODIFICATION_SEL':['C'] }
                         // showon   : { 'MODIFICATION_SEL':['C'] }
                       },
                 LEGEND_SEQ_S : {
                         type     : 'label',  // just a separator
                         label    : '<i>(side chain truncation based on Phaser.Sculptor)</i>',
-                        position : [0,3,1,1],
+                        position : [1,3,1,1],
                         showon   : {_:'&&',seq:[1],'MODIFICATION_SEL':['S'] }
                         // showon   : { 'MODIFICATION_SEL':['S'] }
                       },
                 LEGEND_SEQ_P : {
                         type     : 'label',  // just a separator
                         label    : '<i>(removal of all side chains)</i>',
-                        position : [0,3,1,1],
+                        position : [1,3,1,1],
                         showon   : {_:'||',
                                       C1:{_:'&&',seq:[1],'MODIFICATION_SEL':['P'] },
                                       C2:{_:'&&',seq:[-1,0],'MODNOSEQ_SEL':['P'] }
@@ -175,7 +181,7 @@ function TaskModelPrepXYZ()  {
                                    ],
                         value    : '1',
                         showon   : { _:'&&',seq:[1],'MODIFICATION_SEL':['S'] },
-                        position : [1,0,1,1]
+                        position : [2,0,1,1]
                       },
 
                 CHAINSAW_MODE_SEL : {
@@ -189,7 +195,7 @@ function TaskModelPrepXYZ()  {
                                    ],
                         value    : 'MIXS',
                         showon   : { _:'&&',seq:[1],'MODIFICATION_SEL':['C'] },
-                        position : [1,0,1,1]
+                        position : [2,0,1,1]
                       }
 
               }
