@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.09.23   <--  Date of Last Modification.
+ *    06.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -660,7 +660,7 @@ TaskRefmac.prototype.icon           = function()  { return 'task_refmac'; }
 TaskRefmac.prototype.clipboard_name = function()  { return '"Refmac"';    }
 
 TaskRefmac.prototype.currentVersion = function()  {
-let version = 5;
+let version = 6;  // change to refmacat
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
