@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    03.02.23   <--  Date of Last Modification.
+#    06.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -225,12 +225,12 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
         base.putMessage (
             "&nbsp;<br><span style=\"font-size:100%;color:maroon;\">" +\
             "<b>NOTE:</b> no sequences are specified in the Asymmetric Unit, " +\
-            "because of which it is unsuitable for some automatic structure " +\
-            "solvers and model builders. Should you have sequence information, " +\
-            "consider importing it and using for the redefoinition of ASU " +\
-            "content <b><u>now</u></b>. Sequence data can " +\
-            "also be added to ASU definition on later stages using the <i>Edit " +\
-            "Structure Revision<i> task."
+            "which makes it unsuitable for some automatic structure solvers " +\
+            "and model builders. Should you have sequence files, consider " +\
+            "importing them in a parallel Project branch and redefining ASU using " +\
+            "sequences. This will help developing your Project in the most neat " +\
+            "and logical way. Alternatively, sequences can be added to ASU later " +\
+            "using the <i>\"Edit Structure Revision\"<i> task."
         )
 
     base.write_stdin (
@@ -546,8 +546,6 @@ class ASUDef(basic.TaskDriver):
         seq  = []
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
             seq = self.input_data.data.seq
-
-        #self.putVerdict ( 50,"message" )
 
         revision = makeRevision ( self,hkl,seq,
                                   self.getParameter(sec1.COMPOSITION_SEL),

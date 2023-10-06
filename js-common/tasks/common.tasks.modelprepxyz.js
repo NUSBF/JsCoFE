@@ -57,6 +57,7 @@ function TaskModelPrepXYZ()  {
       label       : 'Sequence',          // label for input dialog
       tooltip     : 'Specify macromolecular sequence to be associated with the ' +
                     'resulting models.',
+      unchosen_label : 'sequence unknown',
       inputId     : 'seq',      // input Id for referencing input fields
       min         : 0,          // minimum acceptable number of data instances
       force       : 1,          // show sequence wherever possible

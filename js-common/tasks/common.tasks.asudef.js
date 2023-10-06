@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.08.23   <--  Date of Last Modification.
+ *    06.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -95,11 +95,31 @@ function TaskASUDef()  {
            },
 
     sec1 : {  type      : 'section',
-              title     : 'Parameters',
+              title     : 'ASU Composition',
               open      : true,  // true for the section to be initially open
               position  : [3,0,1,5],
               showon    : {seq:[-1,0]},
               contains  : {
+
+                LEGEND_NOSEQ_1 : {
+                  type     : 'label',  // just a separator
+                  label    : '<b><i style="font-size:85%">Note: project development is easier '  +
+                             'if ASU is defined using expected sequences; this is the ' +
+                             'recommended way.<br>&nbsp;</i></b>',
+                  position : [0,0,1,5],
+                  showon   : { seq:[0] }
+                },
+
+                LEGEND_NOSEQ_2 : {
+                  type     : 'label',  // just a separator
+                  label    : '<b><i style="font-size:85%">Note: project development is easier '  +
+                             'if ASU is defined using expected sequences; this is the ' +
+                             'recommended way.<br>If you have sequence files, import them before ' +
+                             'running this task.<br>&nbsp;</i></b>',
+                  position : [0,0,1,5],
+                  showon   : { seq:[-1] }
+                },
+
                 ESTIMATE_SEL : {
                       type      : 'combobox',  // the real keyword for job input stream
                       keyword   : 'estimate',
@@ -115,7 +135,7 @@ function TaskASUDef()  {
                                    'MW|molecular weight'
                                   ],
                       value     : 'NR',
-                      position  : [0,0,1,1],
+                      position  : [1,0,1,1],
                       showon    : {seq:[-1,0]}
                     },
                 NRES : {
@@ -133,7 +153,7 @@ function TaskASUDef()  {
                                               //   [min,'*']  : limited from bottom
                                               //   [min,max]  : limited from top and bottom
                       value     : '',         // value to be paired with the keyword
-                      position  : [0,3,1,1],  // [row,col,rowSpan,colSpan]
+                      position  : [1,3,1,1],  // [row,col,rowSpan,colSpan]
                       showon    : {ESTIMATE_SEL:['NR'],seq:[-1,0]}
                     },
                 MOLWEIGHT : {
@@ -150,7 +170,7 @@ function TaskASUDef()  {
                                               //   [min,'*']  : limited from bottom
                                               //   [min,max]  : limited from top and bottom
                       value     : '',         // value to be paired with the keyword
-                      position  : [0,3,1,1],  // [row,col,rowSpan,colSpan]
+                      position  : [1,3,1,1],  // [row,col,rowSpan,colSpan]
                       showon    : {ESTIMATE_SEL:['MW'],seq:[-1,0]}
                     },
                 COMPOSITION_SEL : {
@@ -164,7 +184,7 @@ function TaskASUDef()  {
                                    'D|polynucletide only'
                                   ],
                       value     : 'P',
-                      position  : [1,0,1,1],
+                      position  : [2,0,1,1],
 //                      showon    : {seq:[-1,0]}
                       showon    : {ESTIMATE_SEL:['NR','MW'],seq:[-1,0]}
                     }
