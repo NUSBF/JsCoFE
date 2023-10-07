@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.10.23   <--  Date of Last Modification.
+ *    07.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -202,7 +202,7 @@ function TaskModelPrepXYZ()  {
               }
             }
 
-  }
+  };
 
   this.saveDefaultValues ( this.parameters );
 

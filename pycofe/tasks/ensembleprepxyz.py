@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    07.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -173,14 +171,17 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         #sec2 = self.task.parameters.sec2.contains
         #sec3 = self.task.parameters.sec3.contains
 
-        modeSel = ""
+        modSel = ""
+        csMode = None
         if seq:
-            if len(xyz)==1:
-                modSel = self.getParameter ( sec1.MODIFICATION_SEQ_SEL )
-            else:
-                modSel = self.getParameter ( sec1.MODIFICATION_SEQ_MXYZ_SEL )
+            modSel = self.getParameter ( sec1.MODIFICATION_SEL )
+            csMode = self.getParameter ( sec1.CHAINSAW_MODE_SEL     )
+            # if len(xyz)==1:
+            #     modSel = self.getParameter ( sec1.MODIFICATION_SEL )
+            # else:
+            #     modSel = self.getParameter ( sec1.MODIFICATION_SEQ_MXYZ_SEL )
         else:
-            modSel = self.getParameter ( sec1.MODIFICATION_NOSEQ_SEL )
+            modSel = self.getParameter ( sec1.MODNOSEQ_SEL )
 
         #  Use MrBump for ensemble preparation
         #  Make a file with input script for mrbump
@@ -374,7 +375,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         else:
             #  ensemble output
 
-            ensembles_found = False;
+            # ensembles_found = False;
             ensembleSerNo   = 0
             file_order      = ["BaseAlignment","100.0","75.0","50.0","25.0"]
 
@@ -396,8 +397,14 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                     if fo in filename:
 
                         if ensembleSerNo==0:
-                            ensembles_found = True
+                            # ensembles_found = True
                             self.putTitle ( "Ensembles generated" )
+                            if not seq:
+                                self.putMessage (
+                                    "&nbsp;<br><span style=\"font-size:100%;color:maroon;\">" +\
+                                    "<b>NOTE:</b> template sequence is not given; 100% "+\
+                                    "sequence identity assumed.</span>"
+                                )
 
                         ensembleSerNo += 1
                         if fo=="BaseAlignment":
@@ -411,7 +418,11 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                         align_meta = analyse_ensemble.align_seq_xyz ( self,
                                             seqPath,fout_name,seqtype="protein" )
 
-                        ensemble = self.registerEnsemble ( seq,fout_name,checkout=True )
+                        if seq:
+                            ensemble = self.registerEnsemble ( seq,fout_name,checkout=True )
+                        else:
+                            ensemble = self.registerEnsemble ( xyz[0].getSubtypes(),fout_name,checkout=True )
+
                         if ensemble:
 
                             self.putMessage ( "<h3>Ensemble #" + str(ensembleSerNo) + "</h3>" )
@@ -424,13 +435,16 @@ class EnsemblePrepXYZ(basic.TaskDriver):
                             self.rvrow += 1
                             if analyse_ensemble.run(self,alignSecId,ensemble):
 
-                                ensemble.addDataAssociation ( seq.dataId )
+                                if seq:
+                                    ensemble.addDataAssociation ( seq.dataId )
+                                    self.putMessage ( "&nbsp;<br><b>Associated with sequence:</b>&nbsp;" +\
+                                                      seq.dname + "<br>&nbsp;" )
 
-                                self.putMessage ( "&nbsp;<br><b>Associated with sequence:</b>&nbsp;" +\
-                                                  seq.dname + "<br>&nbsp;" )
-
-                                if align_meta["status"]=="ok":
-                                    ensemble.meta["seqId"] = align_meta["id_avg"]
+                                if seq:
+                                    if align_meta["status"]=="ok":
+                                        ensemble.meta["seqId"] = str(100.0*float(align_meta["id_avg"]))
+                                else:
+                                    ensemble.meta["seqId"] = "100.0"
                                 ensemble.seqId = ensemble.meta["seqId"]
                                 ensemble.rmsd  = ensemble.meta["rmsd" ]
 

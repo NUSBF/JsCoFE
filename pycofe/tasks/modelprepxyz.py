@@ -1,7 +1,5 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
@@ -230,7 +228,7 @@ class ModelPrepXYZ(basic.TaskDriver):
             if rc["code"]==0:
                 sid = str(round(100.0*rc["stat"]["seq_id"],1))
         else:
-            sid = "100"
+            sid = "100.0"
 
         fpath_out = xyz.getXYZFileName()
         if chainId!="(all)":  # this is correct
@@ -313,7 +311,7 @@ class ModelPrepXYZ(basic.TaskDriver):
                     self.putMessage ( "<h3>Model #" + str(len(models)+1) + ": " + model.dname + "</h3>" )
                     if seq:
                         model.addDataAssociation ( seq.dataId )
-                    model.meta  = { "rmsd" : "", "seqId" : sid, "eLLG" : "" }
+                    model.meta  = { "rmsd" : "1.2", "seqId" : sid, "eLLG" : "" }
                     model.seqId = model.meta["seqId"]
                     model.rmsd  = model.meta["rmsd" ]
 

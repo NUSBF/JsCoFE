@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.10.23   <--  Date of Last Modification.
+#    07.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -2110,7 +2110,7 @@ class TaskDriver(object):
 
         msg = "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" + ensemble.dname
         if ensemble.seqId:
-            msg += "<br><b>Estimated seqId :</b>&nbsp;&nbsp;&nbsp;" + str(ensemble.seqId)
+            msg += "<br><b>Estimated seqId :</b>&nbsp;&nbsp;&nbsp;" + str(ensemble.seqId) + "%"
 
         self.putMessage1 ( pageId,msg + "&nbsp;",row )
 

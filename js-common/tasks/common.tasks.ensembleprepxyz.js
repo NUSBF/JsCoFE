@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    07.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -18,18 +18,6 @@
  *  =================================================================
  *
  */
-
-//
-//  10.05.2020
-//
-//  THE POSSIBILITY OF CREATING ENESEMBLE WITHOUT SEQUENCE IS ELIMINATED.
-//  IF SUCH POSSIBILITY IS NOT REQUESTED, REMOVE EXTRA '_NOSEQ_' ITEMS IN
-//  THE PARAMETER SECTION, AND MAKE CORRESPONDING CHANGES IN THE REST OF THIS
-//  FILE AND IN THE CORRESPONDING PYTHIN DRIVER.
-//
-//  WHEN SEQUENCE IS "UNKNOWN", A SUITABLE ONE MAY BE SUGGESTED BY THE
-//  COORDINATE DATA USED IN THIS TASK. ** ADD SEQUENCE-FETCHING FUNCTION IN
-//  COORDINATE UTILITIES TASK FOR THIS **
 
 
 'use strict';
@@ -54,21 +42,6 @@ function TaskEnsemblePrepXYZ()  {
   //this.helpURL = './html/jscofe_task_ensembleprepxyz.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataSequence':['!protein']}, // data type(s) and subtype(s)
-      label       : 'Sequence',          // label for input dialog
-      /*
-      tooltip     : 'Specify optional sequence to associate the resulting ' +
-                    'model with. If no sequence is given, a void one will be ' +
-                    'created for reference using the name of leading coordinate ' +
-                    'set.',
-      */
-      tooltip     : 'Specify macromolecular sequence to be associated with the ' +
-                    'resulting ensemble.',
-      inputId     : 'seq',      // input Id for referencing input fields
-      force       : 1,          // show no sequence by default if zero
-      min         : 1,          // minimum acceptable number of data instances
-      max         : 1           // maximum acceptable number of data instances
-    },{
       data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz'],
                      'DataXYZ':[]},  // data type(s) and subtype(s)
       label       : 'Coordinates',   // label for input dialog
@@ -83,9 +56,160 @@ function TaskEnsemblePrepXYZ()  {
                                  // for this task
       min         : 2,           // minimum acceptable number of data instances
       max         : 1000         // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataSequence':['!protein']}, // data type(s) and subtype(s)
+      label       : 'Sequence',          // label for input dialog
+      tooltip     : 'Specify macromolecular sequence to be associated with the ' +
+                    'resulting ensemble.',
+      unchosen_label : 'sequence unknown',
+      inputId     : 'seq',      // input Id for referencing input fields
+      min         : 0,          // minimum acceptable number of data instances
+      force       : 1,          // show no sequence by default if zero
+      max         : 1           // maximum acceptable number of data instances
     }
   ];
 
+
+  this.parameters = { // input parameters
+
+    sec1 :  { type     : 'section',
+              title    : 'Model modification',
+              open     : true,  // true for the section to be initially open
+              position : [0,0,1,5],
+              contains : {
+
+                LEGEND_NOSEQ : {
+                        type     : 'label',  // just a separator
+                        label    : '<b><i style="font-size:85%">Note: modification protocols are limited because sequence is not provided<br>&nbsp;</i></b>',
+                        position : [0,0,1,5],
+                        showon   : { seq:[-1,0] }
+                      },
+
+                MODIFICATION_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'none',
+                        label    : 'Modification protocol:',
+                        tooltip  : 'Choose trim option',
+                        range    : [ 'U|Unmodified',
+                                     'D|PDB Clip',
+                                     'M|Molrep',
+                                     'S|Sculptor',
+                                     'C|Chainsaw',
+                                     'P|Polyalanine'
+                                   ],
+                        value    : 'M',
+                        hideon   : { seq:[-1,0] },
+                        position : [1,0,1,1]
+                      },
+                MODNOSEQ_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'none',
+                        label    : 'Modification protocol:',
+                        tooltip  : 'Choose trim option',
+                        range    : [ 'U|Unmodified',
+                                     'D|PDB Clip',
+                                     'P|Polyalanine'
+                                   ],
+                        value    : 'D',
+                        showon   : { seq:[-1,0] },
+                        position : [1,0,1,1]
+                      },
+
+                LEGEND_SEQ_U : {
+                        type     : 'label',  // just a separator
+                        label    : '<i>(models are not changed)</i>',
+                        position : [1,3,1,1],
+                        showon   : {_:'||',
+                                      C1:{_:'&&',seq:[1],'MODIFICATION_SEL':['U'] },
+                                      C2:{_:'&&',seq:[-1,0],'MODNOSEQ_SEL':['U'] }
+                                   }
+                      },
+                LEGEND_SEQ_D : {
+                        type     : 'label',  // just a separator
+                        label    : '<i>(remove solvent, hydrogens, and select most probable conformations)</i>',
+                        position : [1,3,1,1],
+                        showon   : {_:'||',
+                                      C1:{_:'&&',seq:[1],'MODIFICATION_SEL':['D'] },
+                                      C2:{_:'&&',seq:[-1,0],'MODNOSEQ_SEL':['D'] }
+                                   }
+                        // showon   : { 'MODIFICATION_SEL':['D'] }
+                      },
+                LEGEND_SEQ_M : {
+                        type     : 'label',  // just a separator
+                        label    : '<i>(side chain truncation based on Molrep)</i>',
+                        position : [1,3,1,1],
+                        showon   : {_:'&&',seq:[1],'MODIFICATION_SEL':['M'] }
+                        // showon   : { 'MODIFICATION_SEL':['M'] }
+                      },
+                LEGEND_SEQ_C : {
+                        type     : 'label',  // just a separator
+                        label    : '<i>(side chain truncation based on Chainsaw)</i>',
+                        position : [1,3,1,1],
+                        showon   : {_:'&&',seq:[1],'MODIFICATION_SEL':['C'] }
+                        // showon   : { 'MODIFICATION_SEL':['C'] }
+                      },
+                LEGEND_SEQ_S : {
+                        type     : 'label',  // just a separator
+                        label    : '<i>(side chain truncation based on Phaser.Sculptor)</i>',
+                        position : [1,3,1,1],
+                        showon   : {_:'&&',seq:[1],'MODIFICATION_SEL':['S'] }
+                        // showon   : { 'MODIFICATION_SEL':['S'] }
+                      },
+                LEGEND_SEQ_P : {
+                        type     : 'label',  // just a separator
+                        label    : '<i>(removal of all side chains)</i>',
+                        position : [1,3,1,1],
+                        showon   : {_:'||',
+                                      C1:{_:'&&',seq:[1],'MODIFICATION_SEL':['P'] },
+                                      C2:{_:'&&',seq:[-1,0],'MODNOSEQ_SEL':['P'] }
+                                   }
+                        // showon   : { 'MODIFICATION_SEL':['P'] }
+                      },
+
+                SCULPTOR_PROTOCOL_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'none',
+                        label    : 'Sculptor protocol:',
+                        tooltip  : 'Choose Sculptor processing protocol',
+                        range    : [ '1|#1',
+                                     '2|#2',
+                                     '3|#3',
+                                     '4|#4',
+                                     '5|#5',
+                                     '6|#6',
+                                     '7|#7',
+                                     '8|#8',
+                                     '9|#9',
+                                     '10|#10',
+                                     '11|#11',
+                                     '12|#12',
+                                     '13|#13'
+                                   ],
+                        value    : '1',
+                        showon   : { _:'&&',seq:[1],'MODIFICATION_SEL':['S'] },
+                        position : [2,0,1,1]
+                      },
+
+                CHAINSAW_MODE_SEL : {
+                        type     : 'combobox',
+                        keyword  : 'none',
+                        label    : 'Chainsaw protocol:',
+                        tooltip  : 'Choose Chainsaw processing protocol',
+                        range    : [ 'MIXS|gamma atom',
+                                     'MIXA|beta atom',
+                                     'MAXI|last common atom'
+                                   ],
+                        value    : 'MIXS',
+                        showon   : { _:'&&',seq:[1],'MODIFICATION_SEL':['C'] },
+                        position : [2,0,1,1]
+                      }
+
+              }
+            }
+
+  };
+
+  /*
   this.parameters = { // input parameters
 
     sec1 :  { type     : 'section',
@@ -226,12 +350,11 @@ function TaskEnsemblePrepXYZ()  {
             }
 
   };
+  */
 
   this.saveDefaultValues ( this.parameters );
 
 }
-
-
 
 if (__template)
       TaskEnsemblePrepXYZ.prototype = Object.create ( __template.TaskTemplate.prototype );
@@ -277,15 +400,15 @@ if (!__template)  {
       var isProtein = false;
       var isDNA     = false;
       var isRNA     = false;
-      var modSel = null;
+      var modSel    = null;
 
       if (seq && (seq.length>0))  {
         isProtein = (seq[0].subtype.indexOf('protein')>=0);
         isDNA     = (seq[0].subtype.indexOf('dna')>=0);
         isRNA     = (seq[0].subtype.indexOf('rna')>=0);
-        modSel = this.parameters.sec1.contains.MODIFICATION_SEQ_SEL.value;
+        modSel = this.parameters.sec1.contains.MODIFICATION_SEL.value;
       } else
-        modSel = this.parameters.sec1.contains.MODIFICATION_NOSEQ_SEL.value;
+        modSel = this.parameters.sec1.contains.MODNOSEQ_SEL.value;
 
       for (var i=0;i<xyz.length;i++)  {
         if (xyz[i].subtype.indexOf('protein')>=0)  nProteins++;
