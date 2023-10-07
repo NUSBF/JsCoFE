@@ -518,7 +518,7 @@ if (!dbx)  {
               'task requires secure internet connection',
               '<h3>Task requires secure internet connection</h3>' +
               'This task requires secure internet connection (https or<br>' +
-              'localhost-based setup.<p>Contact your ' + appName() +
+              'localhost-based setup).<p>Contact your ' + appName() +
               ' maintainer at<br>' +
                   '<a href="mailto:' + __maintainerEmail +
                     '?Subject=' + appName_html() + '%20Secure%20connection">' + 
