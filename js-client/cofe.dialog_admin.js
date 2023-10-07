@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.05.23   <--  Date of Last Modification.
+ *    07.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -63,7 +63,7 @@ function AnnounceDialog()  {
                   'received. For any questions, please contact ' + appName() +
                   ' maintainer at ' +
                   '<a href="mailto:' + __maintainerEmail +
-                    '?Subject=jsCoFE%20Question">' + __maintainerEmail +
+                    '?Subject=' + appName_html() + '%20Question">' + __maintainerEmail +
                   '</a>.<p>Kind regards<p>' + appName() + ' maintenance.',
                   row++,col,1,3 );
 

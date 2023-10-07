@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.10.23   <--  Date of Last Modification.
+ *    07.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -56,6 +56,7 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.parent_page  = parent_page;
   this.job_edited   = false;
   this.onClose_func = onClose_func;
+  this.nc_browser   = this.task.nc_type.startsWith('browser')
 
   this._created     = false;
 
@@ -106,7 +107,7 @@ function JobDialog ( params,          // data and task projections up the tree b
       height    : size[1],
       buttons   : {},
       // beforeClose : function(event, ui)  {
-      //   if ((dlg.task.nc_type=='browser') && 
+      //   if (dlg.nc_browser && 
       //       ((dlg.task.state==job_code.running) || 
       //        (dlg.task.state==job_code.ending)))  {
       //     new MessageBox ( 'WebCoot running',
@@ -233,7 +234,7 @@ JobDialog.prototype.delete = function()  {
   if (this.onClose_func)
     this.onClose_func ( this );
 
-  if ((this.task.nc_type=='browser') && (this.task.state==job_code.running))
+  if (this.nc_browser && (this.task.state==job_code.running))
     this.requestServer ( fe_reqtype.webappEndJob,function(rdata){});
 
   Widget.prototype.delete.call ( this );
@@ -326,14 +327,14 @@ JobDialog.prototype.setDlgState = function()  {
     var dlg = this;
       dlg.ind_timer = window.setTimeout ( function(){
         if (dlg.run_image) dlg.run_image.setVisible ( true );
-        if (dlg.stop_btn)  dlg.stop_btn .setVisible ( (dlg.task.nc_type!='browser') );
-        if (dlg.end_btn)   dlg.end_btn  .setVisible ( (dlg.task.nc_type!='browser') );
+        if (dlg.stop_btn)  dlg.stop_btn .setVisible ( !dlg.nc_browser );
+        if (dlg.end_btn)   dlg.end_btn  .setVisible ( !dlg.nc_browser );
       },1000 );
     // }(this));
   } else  {
     if (this.run_image) this.run_image.setVisible ( isRunning );
-    if (this.stop_btn)  this.stop_btn .setVisible ( isRunning && (this.task.nc_type!='browser') );
-    if (this.end_btn)   this.end_btn  .setVisible ( isRunning && (this.task.nc_type!='browser') );
+    if (this.stop_btn)  this.stop_btn .setVisible ( isRunning && (!this.nc_browser) );
+    if (this.end_btn)   this.end_btn  .setVisible ( isRunning && (!this.nc_browser) );
   }
 
   var title = '';
@@ -972,7 +973,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
                           return true;
                         });
 
-                    } else if (dlg.task.nc_type == 'browser')  {
+                    } else if (dlg.nc_browser)  {
 
                       dlg.task.job_dialog_data.job_token = rdata.job_token;
 

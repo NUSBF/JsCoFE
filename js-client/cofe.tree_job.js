@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    03.09.23   <--  Date of Last Modification.
+ *    07.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1572,7 +1572,7 @@ let c = 0;
       let job_state = this.dlg_map[p].task.state;
       if ((!ignore_completed) ||
           ((job_state==job_code.new) || 
-           ((this.dlg_map[p].task.nc_type=='browser') && (job_state==job_code.runnings))
+           (this.dlg_map[p].task.nc_type.startsWith('browser') && (job_state==job_code.runnings))
           ))
         c++;
     }

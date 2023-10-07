@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.05.23   <--  Date of Last Modification.
+ *    07.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -139,7 +139,6 @@ function LoginPage ( sceneId )  {
   login_btn.setWidth            ( '100%' );
   pwd_btn  .setWidth            ( '100%' );
   reg_btn  .setWidth            ( '100%' );
-
   panel.setWidget               ( login_btn,row++,0,1,3 );
   panel.setWidget               ( pwd_btn  ,row++,0,1,3 );
   panel.setWidget               ( reg_btn  ,row++,0,1,3 );
@@ -160,17 +159,6 @@ function LoginPage ( sceneId )  {
                                 )
          .setNoWrap();
 
-  /*
-  else if (!__local_service)
-    panel.setLabel              ( '&nbsp;<br><center><i>For best experience, access ' +
-                                  'this web site via<br>' + appName() + ' Client, ' +
-                                  'which can be obtained by installing<br>' +
-                                  '<a href="javascript:_ccp4_download()"> ' +
-                                  'the CCP4 Software Suite version 7.1 or higher</a>' +
-                                  '<br>(look for icon with wireless sign after ' +
-                                  'installation)</i></center>',
-                                  row++,0,1,3 )
-  */
   else if (!__local_service)
     panel.setLabel              ( '<div style="min-width:380px"><center><i>' +
                                   '<b>NOTE:</b> For using <span style="color:maroon">' +
@@ -182,12 +170,13 @@ function LoginPage ( sceneId )  {
                                   'style="height:36px;width:36px;padding-top:6px;"/>' +
                                   '</i></center></div>',
                                   row++,0,1,3 );
-//          .setTooltip           ( appName() + ' Client is necessary for running ' +
-//                                  'interactive graphical software, such as image ' +
-//                                  'processing (DUI, Mosflm, XDSGUI), Coot and ' +
-//                                  'some others.'
-//                                );
-//          .setNoWrap();
+
+  if (!isProtectedConnection())
+    panel.setLabel              ( '<div style="min-width:380px"><center><i>' +
+                                  'Connection is not secure – <span style="color:maroon">' +
+                                  '<b>Moorhen</b></span> will not work' +
+                                  '</i></center></div>',
+                                  row++,0,1,3 );
 
   panel.setLabel                ( '<center><i>Check ' + appName() +
                                   ' <a target="_blank" href="html/roadmap.html">' +

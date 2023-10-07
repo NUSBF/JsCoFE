@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.10.23   <--  Date of Last Modification.
+ *    07.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -37,7 +37,7 @@ function TaskWebCoot()  {
   this.name      = 'webcoot (interactive model building)';
   this.setOName ( 'webcoot' );  // default output file name template
   this.title     = 'Model Building with WebCoot/Moorhen';
-  this.nc_type   = 'browser';   // job runs in-browser
+  this.nc_type   = 'browser-secure';   // job runs in-browser
   this.fasttrack = true;  // forces immediate execution
 
   this.input_dtypes = [{        // input data types

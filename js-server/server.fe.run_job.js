@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    10.09.23   <--  Date of Last Modification.
+ *    07.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -714,7 +714,7 @@ function runJob ( loginData,data, callback_func )  {
 
   task.state      = task_t.job_code.running;
   var job_token   = crypto.randomBytes(20).toString('hex');
-  if ((task.nc_type=='client') || (task.nc_type=='browser'))
+  if ((task.nc_type=='client') || task.nc_type.startsWith('browser'))
     task.job_dialog_data.job_token = job_token;
   task.start_time = Date.now();
 
@@ -767,7 +767,7 @@ function runJob ( loginData,data, callback_func )  {
 
     // NOTE: we do not count client jobs against user rations (quotas)
 
-  } else if (task.nc_type=='browser')  {
+  } else if (task.nc_type.startsWith('browser'))  {
     // job for a web-application in browser, just prepare input data and inform client
   
     log.standard ( 5,'preparing job ' + task.id + ' for web-browser, token:' +

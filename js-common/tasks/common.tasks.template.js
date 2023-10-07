@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    08.09.23   <--  Date of Last Modification.
+ *    07.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -512,7 +512,19 @@ if (!dbx)  {
         }
       }
     }
-    
+
+    if ((this.nc_type=='browser-secure') && (!isProtectedConnection()))  {
+      return ['browser-secure',
+              'task requires secure internet connection',
+              '<h3>Task requires secure internet connection</h3>' +
+              'This task requires secure internet connection (https or<br>' +
+              'localhost-based setup.<p>Contact your ' + appName() +
+              ' maintainer at<br>' +
+                  '<a href="mailto:' + __maintainerEmail +
+                    '?Subject=' + appName_html() + '%20Secure%20connection">' + 
+                    __maintainerEmail +
+                  '</a>.'];
+    }
 
     if (startsWith(this.nc_type,'client'))  {
 
