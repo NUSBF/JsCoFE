@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.08.21   <--  Date of Last Modification.
+#    07.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,18 +21,18 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
 
 #  python native imports
 import os
-import sys
-import shutil
+# import sys
+# import shutil
 
 #  ccp4-python imports
-import gemmi
+# import gemmi
 
 #  application imports
 from . import basic
@@ -55,10 +55,13 @@ class Ensembler(basic.TaskDriver):
         # fetch input data
 
         models = self.input_data.data.models
-        seq    = self.makeClass ( self.input_data.data.seq[0] )
         sec1   = self.task.parameters.sec1.contains
 
-        fpath_seq = seq.getSeqFilePath ( self.inputDir() )
+        seq       = None
+        fpath_seq = None
+        if hasattr(self.input_data.data,"seq"):  # optional data parameter
+            seq       = self.makeClass ( self.input_data.data.seq[0] )
+            fpath_seq = seq.getSeqFilePath ( self.inputDir() )
 
         outputFile = self.getXYZOFName()
         if os.path.isfile(outputFile):
@@ -83,9 +86,16 @@ class Ensembler(basic.TaskDriver):
         have_results = False
 
         if len(fout_list)<=0:
-
             self.putMessage ( "<h3>Models are too dissimilar, " +
                               "no ensemble could be made</h3>" )
+        else:
+            self.putMessage (
+                "&nbsp;<br><span style=\"font-size:100%;color:maroon;\">" +\
+                "<b>NOTE:</b> some or all models are not associated with " +\
+                "template sequences. Therefore, generated ensembles were not " +\
+                "checked for consistency. Make sure that they present good " +\
+                "superpositions by visual inspection.</span>"
+            )
 
         for i in range(len(fout_list)):
 
@@ -94,7 +104,11 @@ class Ensembler(basic.TaskDriver):
             align_meta = analyse_ensemble.align_seq_xyz ( self,
                                             fpath_seq,fpath,seqtype="protein" )
 
-            ensemble = self.registerEnsemble ( seq,fpath,checkout=True )
+            if seq:
+                ensemble = self.registerEnsemble ( seq,fpath,checkout=True )
+            else:
+                ensemble = self.registerEnsemble ( models[0].getSubtypes(),fpath,checkout=True )
+
             if ensemble:
 
                 self.putMessage ( "<h3>" + fout_list[i][1] + "</h3>" )
@@ -104,10 +118,10 @@ class Ensembler(basic.TaskDriver):
 
                 if analyse_ensemble.run(self,alignSecId,ensemble):
 
-                    ensemble.addDataAssociation ( seq.dataId )
-
-                    self.putMessage ( "&nbsp;<br><b>Associated with sequence:</b>&nbsp;" +\
-                                      seq.dname + "<br>&nbsp;" )
+                    if seq:
+                        ensemble.addDataAssociation ( seq.dataId )
+                        self.putMessage ( "&nbsp;<br><b>Associated with sequence:</b>&nbsp;" +\
+                                          seq.dname + "<br>&nbsp;" )
 
                     if not ensemble.meta:
                         ensemble.meta = { "rmsd" : "", "seqId" : "", "eLLG" : "" }
