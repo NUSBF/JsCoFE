@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.08.23   <--  Date of Last Modification.
+ *    07.08.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -118,6 +118,13 @@ function checkBrowser()  {
   //   );
   __browser_checked = true;
   return;
+}
+
+function isProtectedConnection()  {
+let fe_url = __fe_url.toLowerCase();
+  return fe_url.startsWith('https://') ||
+         fe_url.startsWith('http://localhost') ||
+         (fe_url.indexOf('127.0.0.1') >= 0);
 }
 
 // ===========================================================================

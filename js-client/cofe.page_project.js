@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.09.23   <--  Date of Last Modification.
+ *    07.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1329,8 +1329,11 @@ ProjectPage.prototype.addTaskToSelected = function ( task,icon_uri,title )  {
           // if (key!=1)  // task was added or failed
           self._set_del_button_state();
           self.end_action();
-          if (dataSummary.status<=0)
+          if (avail_key[0]!='ok')  {
+            new MessageBox ( 'Task is not available',avail_key[2],'msg_stop' );
+          } else if (dataSummary.status<=0)  {
             new TaskDataDialog ( dataSummary,task,avail_key );
+          }
         });
     }
 
