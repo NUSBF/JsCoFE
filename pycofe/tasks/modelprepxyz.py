@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    05.10.23   <--  Date of Last Modification.
+#    07.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -292,7 +292,10 @@ class ModelPrepXYZ(basic.TaskDriver):
                                   xyz[i].dname + " (empty output)</h3>" )
                 ensOk = False
             else:
-                model = self.registerModel ( seq,fpath_out,checkout=True )
+                if seq:
+                    model = self.registerModel ( seq,fpath_out,checkout=True )
+                else:
+                    model = self.registerModel ( xyz[i].getSubtypes(),fpath_out,checkout=True )
                 if model:
                     #if ensNo<1:
                     if len(models)<1:
@@ -351,7 +354,6 @@ class ModelPrepXYZ(basic.TaskDriver):
             csMode  = self.getParameter ( sec1.CHAINSAW_MODE_SEL     )
         else:
             modSel  = self.getParameter ( sec1.MODNOSEQ_SEL )
-
 
         for i in range(len(xyz)):
             xyz[i] = self.makeClass ( xyz[i] )

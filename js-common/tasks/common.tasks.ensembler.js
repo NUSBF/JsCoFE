@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    07.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,8 +51,8 @@ function TaskEnsembler()  {
 
   this.input_dtypes = [{  // input data types
       data_type   : {'DataModel':[]}, // data type(s) and subtype(s)
-      label       : 'Models',          // label for input dialog
-      tooltip     : 'Specify models to be assembled in ensemble.',
+      label       : 'Model',          // label for input dialog
+      tooltip     : 'Specify models to be included in ensemble.',
       inputId     : 'models',     // input Id for referencing input fields
       force       : 2,          // show no sequence by default if zero
       min         : 2,          // minimum acceptable number of data instances
@@ -126,11 +126,16 @@ if (!__template)  {
 
     var msg    = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
     var models = this.input_data.getData ( 'models' );
-    var sname0 = models[0].sequence.dname;
+    var sname0 = null;
     var ok     = true;
 
-    for (var i=1;(i<models.length) && ok;i++)
-      ok = (models[i].sequence.dname==sname0);
+    if (models[0].sequence)
+      sname0 = models[0].sequence.dname;
+
+    if (sname0)
+      for (var i=1;(i<models.length) && ok;i++)
+        if (models[i].sequence)
+          ok = (models[i].sequence.dname==sname0);
     if (!ok)  {
       msg += '|<b>All models must be associated with the same sequence, ' +
              'but they are not.</b>';
@@ -164,8 +169,14 @@ if (!__template)  {
 
   TaskEnsembler.prototype.makeInputData = function ( loginData,jobDir )  {
   // add sequence to input data
-    var model0 = this.input_data.data['models'][0];
-    this.input_data.data['seq'] = [model0.sequence];
+    // var model0 = this.input_data.data['models'][0];
+    // this.input_data.data['seq'] = [model0.sequence];
+    let models   = this.input_data.data['models'];
+    let sequence = models[0].sequence;
+    for (let i=1;(i<models.length) && sequence;i++)
+      sequence = models[i].sequence;
+    if (sequence)
+      this.input_data.data['seq'] = [sequence];
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
   }
 

@@ -341,7 +341,7 @@ class Gesamt(basic.TaskDriver):
                 # register output data from temporary location (files will be moved
                 # to output directory by the registration procedure)
                 ensemble = self.registerEnsemble ( dtype_template.subtypeProtein(),
-                                                outFiles[0] )
+                                                   outFiles[0] )
                 if ensemble:
                     self.putMessage ( "<h3>Overall Alignment</h3>" )
                     self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),
@@ -351,13 +351,13 @@ class Gesamt(basic.TaskDriver):
 
                 for i in range(1,len(outFiles)):
                     ensemble = self.registerEnsemble ( dtype_template.subtypeProtein(),
-                                                    outFiles[i] )
+                                                       outFiles[i] )
                     if ensemble:
                         self.putMessage ( "&nbsp;" )
                         self.putMessage ( "<h3>Domain #" + str(i) + " Alignment</h3>" )
                         self.putEnsembleWidget ( self.getWidgetId("ensemble_"+str(i)+"_btn"),
-                                                "Superposed domain #" + str(i),
-                                                ensemble )
+                                                 "Superposed domain #" + str(i),
+                                                 ensemble )
                         have_results = True
 
             else:

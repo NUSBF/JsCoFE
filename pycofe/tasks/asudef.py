@@ -30,7 +30,7 @@
 import os
 from   xml.dom import minidom
 import json
-import math
+# import math
 
 #  ccp4-python imports
 #import pyrvapi
@@ -230,7 +230,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
             "importing them in a parallel Project branch and redefining ASU using " +\
             "sequences. This will help developing your Project in the most neat " +\
             "and logical way. Alternatively, sequences can be added to ASU later " +\
-            "using the <i>\"Edit Structure Revision\"<i> task."
+            "using the <i>\"Edit Structure Revision\"<i> task.</span>"
         )
 
     base.write_stdin (
