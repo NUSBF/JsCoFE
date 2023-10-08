@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.10.23   <--  Date of Last Modification.
+#    08.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -91,7 +91,7 @@ class StructurePrediction(basic.TaskDriver):
                     engine = configuration["engine"]
                     if "flavour" in configuration:
                         flavour = configuration["flavour"]
-                    else;
+                    else:
                         flavour = engine
             except:
                 self.putTitle   ( "Invalid or corrupt configuration" )
