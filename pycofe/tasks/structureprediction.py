@@ -79,14 +79,20 @@ class StructurePrediction(basic.TaskDriver):
 
         simulation = False
 
+        engine  = ""
+        flavour = ""
         if simulation:
-            engine = "alphafold"
+            engine  = "alphafold"
+            flavour = engine
         else:
-            engine = ""
             try:
                 with open(os.environ["ALPHAFOLD_CFG"],"r") as f:
                     configuration = json.load ( f )
                     engine = configuration["engine"]
+                    if "flavour" in configuration:
+                        flavour = configuration["flavour"]
+                    else;
+                        flavour = engine
             except:
                 self.putTitle   ( "Invalid or corrupt configuration" )
                 self.putMessage ( "Task configuration file is either missing or " +\
@@ -130,9 +136,9 @@ class StructurePrediction(basic.TaskDriver):
             else:
                 script += " --" + engine + "\n"
 
-            if engine=="alphafold":
+            if flavour=="alphafold":
                 self.putMessage ( "Using vanilla implementation of AlphaFold" )
-            elif engine=="colabfold":
+            elif flavour=="colabfold":
                 self.putMessage ( "Using ColabFold implementation of AlphaFold" )
             else:
                 self.putMessage ( "Using OpenFold implementation of AlphaFold" )
@@ -216,7 +222,7 @@ class StructurePrediction(basic.TaskDriver):
             else:
                 for file in os.listdir(dirName):
                     fnlow = file.lower()
-                    if fnlow.endswith(".pdb") and (engine=="colabfold" or\
+                    if fnlow.endswith(".pdb") and (flavour=="colabfold" or\
                        fnlow.endswith("_relaxed.pdb") or ("_relaxed_" in fnlow)):
                         fpaths.append ( os.path.join(dirName,file) )
                     elif fnlow.endswith("_unrelaxed.pdb") or ("_unrelaxed_" in fnlow):
@@ -243,17 +249,17 @@ class StructurePrediction(basic.TaskDriver):
                 plddt_png   .sort()
 
                 self.addCitation ( "alphafold" )
-                if engine=="colabfold":
+                if flavour=="colabfold":
                     self.addCitation ( "colabfold" )
                 else:
                     self.addCitation ( "openfold" )
 
-                if engine!="openfold":
+                if flavour!="openfold":
 
                     if len(PAE_png)>0:
                         self.putMessage  ( "<h3>PAE matrices</h3>" )
                         shift = 35
-                        if engine=="alphafold":
+                        if flavour=="alphafold":
                             shift = 0
                         self.putMessage1 (
                             self.report_page_id(),"<img src=\"" + PAE_png[0] +\
@@ -349,7 +355,7 @@ class StructurePrediction(basic.TaskDriver):
                                 self.putMessage ( "&nbsp;<br>&nbsp;" )
                             self.putMessage ( "<h2>Prediction #" + str(nModels) + "</h2>" )
 
-                        if engine=="openfold" and len(PAE_png)==len(fpaths) and len(plddt_png)==len(fpaths):
+                        if flavour=="openfold" and len(PAE_png)==len(fpaths) and len(plddt_png)==len(fpaths):
                             gridId = self.getWidgetId ( "graphs_grid" )
                             self.putGrid     ( gridId )
                             self.putMessage1 ( gridId,
@@ -399,7 +405,7 @@ class StructurePrediction(basic.TaskDriver):
                 }
 
             auto.makeNextTask ( self,{
-                "xyz" : xyzs,
+                "xyz" : xyzs
             }, log=self.file_stderr)
 
         self.success ( (nModels>0) )
