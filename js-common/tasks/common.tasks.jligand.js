@@ -39,14 +39,20 @@ function TaskJLigand()  {
   this.title   = 'Make Ligand and Covalent Links with jLigand';
   this.nc_type = 'client';   // the job may be run only on client NC
 
-  this.input_dtypes = [{  // input data types
+  this.input_dtypes = [{
       data_type   : {'DataRevision':[]},  // any revision will be passed
-      label       : 'Structure revision', // no label for void data entry
+      label       : 'Structure revision', // check label
       inputId     : 'revision', // prefix 'void' will hide entry in import dialog
       version     : 0,          // minimum data version allowed
-      // force       : 1,          // "show" all revisions available
-      min         : 1,          // minimum acceptable number of data instances
+      force       : 0,          // "show" all revisions available
+      min         : 0,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataLibrary':[],'DataLigand':[],'DataStructure':['ligands']},
+      label       : 'Ligand or Library', // label for input dialog
+      inputId     : 'ligand',      // input Id for referencing input fields
+      min         : 0,             // minimum acceptable number of data instances
+      max         : 19             // maximum acceptable number of data instances
     }
   ];
 

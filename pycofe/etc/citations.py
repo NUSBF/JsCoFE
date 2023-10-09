@@ -1274,6 +1274,27 @@ citations = {
                         }]
                   },
 
+    'jligand'        : { 'name'     : 'JLigand',
+                         'category' : 'primary',
+                         'refs'     : [{
+                            'authors' : 'Long, F., Nicholls, R.A., Emsley, P., Grazulis, S., Merkys, A., Vaitkusb, A., Murshudov, G.N.',
+                            'title'   : 'AceDRG: a stereochemical description generator for ligands',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D73',
+                            'year'    : '2017',
+                            'pages'   : '112-122',
+                            'doi'     : '10.1107/S2059798317000067'
+                         },{
+                            'authors' : 'Lebedev, A. A., Young, P., Isupov, M. N., Moroz, O. V., Vagin, A. A. and Murshudov, G. N.',
+                            'title'   : 'JLigand: a graphical tool for the CCP4 template-restraint library',
+                            'journal' : 'Acta Cryst.',
+                            'volume'  : 'D68', 
+                            'year'    : '2012',
+                            'pages'   : '431-440',
+                            'doi'     : '10.1107/S090744491200251X'
+                         }]
+                  },
+
 }
 
 #

@@ -635,7 +635,6 @@ var row      = 0;
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
       // new TaskPDBVal       (),
-      new TaskJLigand      (),
       new TaskFragon       (),
       new TaskMergeData    (),
       new TaskHelloWorld   ()
@@ -798,6 +797,7 @@ var row      = 0;
   // }
 
   this.makeSection ( 'Ligands',[
+    new TaskJLigand   (),
     new TaskMakeLigand(),
     new TaskFitLigand (),
     new TaskFitWaters ()
