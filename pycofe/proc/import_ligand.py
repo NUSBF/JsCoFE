@@ -65,17 +65,33 @@ def run ( body ):  # body is reference to the main Import class
         doc.parse_file ( fin )
         doc.check_for_missing_values()
         #doc.check_for_duplicates()  <-- DO NOT CHECK HERE
-        comp_list = doc["comp_list"]
-        comp_id   = None
-        if comp_list:
-            comp_id = comp_list.find_values ( "_chem_comp.id" )
-        if not comp_id or len(doc)<len(comp_id)+1:
+        comp_id = []
+        if "comp_list" in doc:
+            vv = doc["comp_list"].find_values("_chem_comp.id")
+            if vv:
+                for v in vv:
+                    if "comp_" + v in doc:
+                        comp_id.append(str(v))
+                    else:
+                        comp_id = None
+                        break
+        link_id = []
+        if "link_list" in doc:
+            vv = doc["link_list"].find_values("_chem_link.id")
+            if vv:
+                for v in vv:
+                    if "link_" + v in doc:
+                        link_id.append(str(v))
+                    else:
+                        link_id = None
+                        break
+        if comp_id is None or link_id is None or not (comp_id or link_id):
             body.putSummaryLine_red ( body.get_cloud_import_path(f),"UNKNOWN",
                                       "Not a ligand library file" )
             body.stdout ( "\n ***** file " + f +\
-                " does not contain _chem_comp loop or data_comp_list data block or both.\n\n"  )
+                " misses both data_comp_list and data_link_list or is misformatted.\n\n"  )
 
-        elif len(comp_id)==1:
+        elif len(comp_id)==1 and len(link_id)==0:
             # single ligand entry, import as a ligand object
 
             block = doc["comp_"+comp_id[0]]
@@ -154,6 +170,9 @@ def run ( body ):  # body is reference to the main Import class
                 library.codes = []
                 for i in range(len(comp_id)):
                     library.codes.append ( comp_id[i] )
+                links = []
+                for i in range(len(link_id)):
+                    links.append ( link_id[i] )
                 if not libSecId:
                     libSecId = body.getWidgetId ( "_lib_sec_" )
                     pyrvapi.rvapi_add_section ( libSecId,"Libraries",body.report_page_id(),
@@ -162,7 +181,7 @@ def run ( body ):  # body is reference to the main Import class
                 if librow:
                     body.putHR1 ( subSecId,librow )
                     librow += 1
-                body.putLibraryWidget1 ( subSecId,"Ligand library",library,librow,1 )
+                body.putLibraryWidget1 ( subSecId,"Ligand library",library,links,librow,1 )
                 body.putSummaryLine ( body.get_cloud_import_path(f),"LIBRARY",library.dname )
                 lib_imported.append ( library )
                 librow += 2
