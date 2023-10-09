@@ -435,6 +435,13 @@ class Coot(coot_ce.CootCE):
                 if ligand_coot:
                     revision.addLigandData ( ligand_coot )
                 self.registerRevision     ( revision )
+
+# uncomment the following after removing the block with "links = LinkLists(coot_xyz)"
+#
+#               # count ligands and links in lib and coords for revision inspector
+                self.countLigandsAndLinks(struct)
+#
+
                 have_results = True
                 summary_line = "model saved"
                 if restored:

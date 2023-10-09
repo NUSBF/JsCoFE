@@ -76,17 +76,25 @@ def getFileType ( fname,importDir,file_stdout ):
             doc.check_for_missing_values()
             #doc.check_for_duplicates()  <-- DO NOT CHECK HERE
             for block in doc:
+                if block.find_values("_chem_comp_atom.type_energy"):
+                    ftype = ftype_Ligand()
+                    break
+                ### libs containing only modifications or links
+                if block.find_values("_chem_mod_atom.new_type_energy"):
+                    ftype = ftype_Ligand()
+                    break
+            ### ftype_Ligand() is later converted to ftype_Library() if necessary
+            ### continue because xyz-type cif-file may contain ligand descriptions
+            for block in doc:
                 if block.find_values("_atom_site.label_asym_id"):
-                    ftype = ftype_XYZ()
+                    ### jligand output: not ftype_XYZ but has xyzs in the block xyz
+                    if block.name != "xyz":
+                        ftype = ftype_XYZ()
                     break
                 elif block.find_values("_refln.index_h"):
                     ftype = ftype_CIFMerged()
                     break
-            if ftype==ftype_Unknown():
-                for block in doc:
-                    if block.find_values("_chem_comp_atom.type_energy"):
-                        ftype = ftype_Ligand()
-                        break
+            ### ? extension of the mmcif-file with unmerged data produced by dials
         except:
             pass
         return ftype

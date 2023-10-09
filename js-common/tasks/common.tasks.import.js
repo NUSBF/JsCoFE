@@ -394,7 +394,7 @@ if (!__template)  {
       panel.upload = new Upload ( panel.customData,
         { 'type'   : 'project_data',
           'accept' : '.pdb,.ent,.seq,.fasta,.pir,.mtz,.sca,.cif,.mmcif,.doc,.docx,' +
-                     '.pdf,.txt,.jpg,.jpeg,.gif,.png,.html,.htm,.hkl,.hhr,.borges',
+                     '.pdf,.txt,.jpg,.jpeg,.gif,.png,.html,.htm,.hkl,.hhr,.borges,.lib',
           'gzip'   : true
         },
         function(e,onReady_func) {
