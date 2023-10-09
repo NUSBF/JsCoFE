@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    17.11.20   <--  Date of Last Modification.
+#    09.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
 #
 # ============================================================================
 #
@@ -30,7 +30,7 @@
 import os
 
 #  ccp4-python imports
-import gemmi
+# import gemmi
 
 #  application imports
 from . import modelprepxyz
@@ -102,24 +102,31 @@ class ModelPrepAlgn(modelprepxyz.ModelPrepXYZ):
         # Prepare task input
         # fetch input data
 
-        seq       = self.makeClass ( self.input_data.data.seq[0]       )
         alignment = self.makeClass ( self.input_data.data.alignment[0] )
         sec1      = self.task.parameters.sec1.contains
-        modSel    = self.getParameter ( sec1.MODIFICATION_SEL )
 
-        sclpSel   = self.getParameter ( sec1.SCULPTOR_PROTOCOL_SEL )
-        csMode    = self.getParameter ( sec1.CHAINSAW_MODE_SEL     )
+        seq     = None
+        sclpSel = None
+        csMode  = None
+        if hasattr(self.input_data.data,"seq"):  # optional data parameter
+            seq     = self.makeClass    ( self.input_data.data.seq[0] )
+            modSel  = self.getParameter ( sec1.MODIFICATION_SEL )
+            sclpSel = self.getParameter ( sec1.SCULPTOR_PROTOCOL_SEL )
+            csMode  = self.getParameter ( sec1.CHAINSAW_MODE_SEL     )
+        else:
+            modSel  = self.getParameter ( sec1.MODNOSEQ_SEL )
 
-        xyz       = self.get_pdb_entries ( alignment )
-        ensNo     = self.make_models  ( seq,xyz,modSel,sclpSel,csMode )
+        xyz    = self.get_pdb_entries ( alignment )
+        models = self.make_models     ( seq,xyz,modSel,sclpSel,csMode )
 
         # this will go in the project tree job's line
-        if len(ensNo)>0:
-            self.generic_parser_summary["modelprepxyz"] = {
-              "summary_line" : str(ensNo) + " model(s) generated"
+        nModels = len(models)
+        if nModels>0:
+            self.generic_parser_summary["modelprepalgn"] = {
+              "summary_line" : str(nModels) + " model(s) generated"
             }
 
-        self.success ( (len(ensNo)>0) )
+        self.success ( (nModels>0) )
         return
 
 

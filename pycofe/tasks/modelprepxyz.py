@@ -300,7 +300,7 @@ class ModelPrepXYZ(basic.TaskDriver):
                         if seq:
                             self.putMessage ( "<i><b>Prepared models are associated " +\
                                               "with sequence:&nbsp;" + seq.dname + "</b></i>" )
-                        else:
+                        elif not hasattr(xyz[i],"fpath_algn"):
                             self.putMessage ( "<i><b>Template sequence is not given, " +\
                                               "assumed 100% identity" )
                         self.putTitle ( "Results" )
