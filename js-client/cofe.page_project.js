@@ -176,6 +176,16 @@ function ProjectPage ( sceneId )  {
       });
     }
 
+    if (__user_role==role_code.developer)  {
+      self.addMenuItem ( 'Work team (dev)','workteam',function(){
+        if (self.jobTree)
+          new WorkTeamDialog ( self.jobTree.projectData.desc );
+        else
+          new MessageBox ( 'No project loaded','<h2>No Project Loaded</h2>' +
+                           'Please call later','msg_error' );
+      });
+    }
+
     self.addLogoutToMenu ( function(){
       self.confirmLeaving ( function(do_leave){
         if (do_leave)  {
