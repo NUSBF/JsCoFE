@@ -61,6 +61,7 @@ from pycofe.dtypes import dtype_sequence, dtype_model, dtype_library
 from pycofe.proc   import edmap,  import_filetype, import_merged
 from pycofe.varut  import signal, jsonut, command, zutils
 from pycofe.etc    import citations
+from pycofe.proc   import coor_counts
 
 
 # ============================================================================
@@ -1616,6 +1617,40 @@ class TaskDriver(object):
         return ligand
 
 
+    def countLigandsAndLinks ( self, structure, countfl = None ):
+
+        # count ligands and links in lib and coords for revision inspector
+        ddir = self.inputDir() if countfl else self.outputDir()
+        libfl = structure.getLibFilePath(ddir)
+        if libfl:
+            pdbfl = None
+            mmciffl = structure.getMMCIFFilePath(ddir)
+            if mmciffl:
+                if not os.path.isfile(mmciffl):
+                    mmciffl = None
+            if not mmciffl:
+                pdbfl = structure.getXYZFilePath(ddir)
+                if not os.path.isfile(pdbfl):
+                    pdbfl = None
+                if pdbfl:
+                    mmciffl = "_gemmi.mmcif"
+                    kwdargs = dict(logType="Service", quitOnError=False)
+                    self.runApp("gemmi", ["convert", pdbfl, mmciffl], **kwdargs)
+                    if not os.path.isfile(mmciffl):
+                        mmciffl = None
+            if mmciffl:
+                clu = coor_counts.UsrLibUsage(libfl, mmciffl)
+                if countfl:
+                    clu.jligandLocks(countfl)
+                else:
+                    kvv = clu.structCounts(self.file_stdout)
+                    structure.ligands = kvv['libcmp']
+                    structure.refmacLinks = kvv['liblnk']
+                    structure.links = kvv['unklnk'] + kvv['symlnk']
+                if pdbfl:
+                    os.unlink(mmciffl)
+
+
     # ============================================================================
 
     def putInspectButton ( self,dataObject,title,gridId,row,col ):
@@ -1963,14 +1998,24 @@ class TaskDriver(object):
         return row+2
 
 
-    def putLibraryWidget1 ( self,pageId,title_str,library,row,colSpan ):
+    def putLibraryWidget1 ( self,pageId,title_str,library,links,row,colSpan ):
         self.putMessage1 ( pageId,"<b>Assigned name:</b>&nbsp;" + library.dname +
                                   "<font size='+2'><sub>&nbsp;</sub></font>",row )
-        codes = "<b>Content:</b>&nbsp;"
-        for i in range(len(library.codes)):
-            if i>0:
-                codes += ", "
-            codes += library.codes[i]
+        codes = ""
+        if len(library.codes):
+            codes += "<b>Ligands:</b>&nbsp;"
+            for i in range(len(library.codes)):
+                if i>0:
+                    codes += ", "
+                codes += library.codes[i]
+        if len(library.codes) and len(links):
+            codes += "<br>"
+        if len(links):
+            codes += "<b>Links:</b>&nbsp;"
+            for i in range(len(links)):
+                if i>0:
+                    codes += ", "
+                codes += links[i]
         self.putMessage1 ( pageId,codes,row+1 )
         return row+2
 

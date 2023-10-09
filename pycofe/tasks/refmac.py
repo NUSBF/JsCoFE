@@ -433,6 +433,9 @@ class Refmac(basic.TaskDriver):
                                           "Structure and electron density",
                                           structure )
 
+                # count ligands and links in lib and coords for revision inspector
+                self.countLigandsAndLinks(structure)
+
                 # make anomolous ED map widget
                 if hkl.isAnomalous() and str(hkl.useHKLSet)!="TI":
 

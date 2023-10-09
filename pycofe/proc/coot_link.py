@@ -127,7 +127,7 @@ class LinkLists(object):
     respair_dict = dict()
     for link_obj in self._all_links:
       atom1, atom2, link_line, dist, link_id, kind = link_obj._get()
-      if kind == 'LINKR' and link_id == atom1[2] + '-' + atom2[2]:
+      if kind == 'LINKR' and link_id == atom1[2].strip() + '-' + atom2[2].strip():
         a1a2, r1r2 = link_obj._stripped_pairs()
         if r1r2 not in respair_dict:
           respair_dict[r1r2] = a1a2
