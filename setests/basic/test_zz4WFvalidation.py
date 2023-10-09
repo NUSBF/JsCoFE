@@ -55,7 +55,7 @@ def validate4DPL(driver, waitLong):
     ttts = sf.tasksTreeTexts(driver)
     #1 auto-DPL:[0001] Dimple Refinement and Ligand Fitting Workflow -- HKL (1), Sequences (1), XYZ (1), Ligands (1); workflow started
     print('Verifying WF task 0001 text... ')
-    assert ttts[1] == 'auto-DPL:[0002] Dimple Refinement and Ligand Fitting Workflow -- HKL (1), Sequences (1), XYZ (1), Ligands (1); workflow started'
+    assert ttts[1] == 'auto-DPL:[0001] Dimple Refinement and Ligand Fitting Workflow -- HKL (1), Sequences (1), XYZ (1), Ligands (1); workflow started'
 
     #2 auto-DPL:[0002] dimple -- R=0.2978 Rfree=0.3307
     print('Verifying DIMPLE  Rfree < 0.35... ')
