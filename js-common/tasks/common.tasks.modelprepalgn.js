@@ -40,7 +40,7 @@ function TaskModelPrepAlgn()  {
   this.title   = 'Prepare MR Model(s) from Alignment data';
   //this.helpURL = './html/jscofe_task_modelprepalgn.html';
 
-  this.input_dtypes[1] = {
+  this.input_dtypes[0] = {
     data_type   : {'DataAlignment':[]},  // data type(s) and subtype(s)
     label       : 'Alignment',   // label for input dialog
     tooltip     : 'Specify coordinate sets to be merged in an ensamble for ' +
@@ -75,7 +75,7 @@ TaskModelPrepAlgn.prototype.desc_title     = function()  {
 }
 
 TaskModelPrepAlgn.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskModelPrepXYZ.prototype.currentVersion.call ( this );
   else  return  version + TaskModelPrepXYZ.prototype.currentVersion.call ( this );
