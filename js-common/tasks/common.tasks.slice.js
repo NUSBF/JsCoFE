@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    11.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,6 +45,7 @@ function TaskSlice()  {
       label       : 'Template structure', // label for input dialog
       tooltip     : 'Specify template structure to be split into domains.',
       inputId     : 'xyz',       // input Id for referencing input fields
+      customInput : 'BF_correction', // lay custom fields next to the selection
       min         : 1,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
     }
@@ -100,7 +101,7 @@ TaskSlice.prototype.icon           = function()  { return 'task_slice'; }
 TaskSlice.prototype.clipboard_name = function()  { return '"Slice"';    }
 
 TaskSlice.prototype.currentVersion = function()  {
-  var version = 1;
+  var version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

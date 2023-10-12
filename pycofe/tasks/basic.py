@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.10.23   <--  Date of Last Modification.
+#    11.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -1287,6 +1287,26 @@ class TaskDriver(object):
                              source_key,self.log_parser )
         return [ filePrefix + edmap.file_map(),
                  filePrefix + edmap.file_dmap() ]
+    
+
+    def fixBFactors ( self,xyzs ):
+        for i in range(len(xyzs)):
+            xyzs[i].convertToPDB ( self.inputDir() )
+            if xyzs[i].BF_correction=="alphafold-suggested":
+                xyzs[i].fixBFactors ( self.inputDir(),"alphafold" )
+                self.stdoutln ( " ..... " + xyzs[i].getXYZFileName() +\
+                                ": B-factors re-calculated assuming Alphafold model" )
+                self.putMessage ( 
+                    "<span style=\"font-size:85%\"><b>** " + xyzs[i].dname +\
+                    "</b>: <i>B-factors re-calculated assuming Alphafold model</i></span>" )
+            elif xyzs[i].BF_correction=="rosetta-suggested":
+                xyzs[i].fixBFactors ( self.inputDir(),"rosetta" )
+                self.stdoutln ( " ..... " + xyzs[i].getXYZFileName() +\
+                                ": B-factors re-calculated assuming Rosetta model" )
+                self.putMessage ( 
+                    "<span style=\"font-size:85%\"><b>** " + xyzs[i].dname +\
+                    "</b>: <i>B-factors re-calculated assuming Rosetta model</i></span>" )
+        return
 
 
     # ----------------------------------------------------------------------

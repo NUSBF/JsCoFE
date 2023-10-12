@@ -1,5 +1,5 @@
 
-// temporary solution to keep existing projects alive
+// temporary solution only to keep existing projects alive
 // TO BE DELETED
 
 /*

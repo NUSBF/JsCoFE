@@ -55,7 +55,7 @@ function TaskFragon()  {
                     },  // data type(s) and subtype(s)
       label       : 'Custom fragment', // label for input dialog
       inputId     : 'fragment',        // input Id for referencing input fields
-      //customInput : 'chain-sel-protein', // lay custom fields next to the selection
+      //customInput : 'chain-sel-protein-MR', // lay custom fields next to the selection
       min         : 0,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     }

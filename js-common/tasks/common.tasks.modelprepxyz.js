@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.10.23   <--  Date of Last Modification.
+ *    11.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,7 +49,7 @@ function TaskModelPrepXYZ()  {
                     'will be named after the corresponding coordinate data ' +
                     'set(s).',
       inputId     : 'xyz',       // input Id for referencing input fields
-      customInput : 'chain-sel-poly', // lay custom fields next to the selection
+      customInput : 'chain-sel-MR', // lay custom fields next to the selection
       min         : 1,           // minimum acceptable number of data instances
       max         : 1000         // maximum acceptable number of data instances
     },{
@@ -67,10 +67,16 @@ function TaskModelPrepXYZ()  {
 
   this.parameters = { // input parameters
 
+    SPACER_LBL : {
+              type     : 'label',  // just a separator
+              label    : '&nbsp;',
+              position : [0,0,1,5]
+            },
+
     sec1 :  { type     : 'section',
               title    : 'Model modification',
               open     : true,  // true for the section to be initially open
-              position : [0,0,1,5],
+              position : [1,0,1,5],
               contains : {
 
                 LEGEND_NOSEQ : {
@@ -230,7 +236,7 @@ TaskModelPrepXYZ.prototype.desc_title     = function()  {
 
 
 TaskModelPrepXYZ.prototype.currentVersion = function()  {
-  var version = 1;
+  var version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

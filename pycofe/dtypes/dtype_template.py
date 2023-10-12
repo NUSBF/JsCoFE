@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    23.07.23   <--  Date of Last Modification.
+#    11.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -127,9 +127,16 @@ class DType(jsonut.jObject):
         return
 
     def setFile ( self,fname,fileKey ): # fname is file name as a string
+        # if fname:
+        #     self.files[fileKey] = fname
+        # return
         if fname:
-            self.files[fileKey] = fname
+            if isinstance(self.files,dict):
+                self.files[fileKey] = fname
+            else:
+                setattr ( self.files,fileKey,fname )
         return
+
 
     def removeFiles ( self ):
         self.files = {}

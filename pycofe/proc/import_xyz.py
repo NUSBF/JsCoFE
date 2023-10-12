@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    22.12.21   <--  Date of Last Modification.
+#    11.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -103,7 +103,8 @@ def run ( body ):  # body is reference to the main Import class
 
             os.rename ( fpath,os.path.join(body.outputDir(),f) )
             xyz.makeUniqueFNames ( body.outputDir() )
-            xyz.fixBFactors ( body.outputDir() )
+            # xyz.fixBFactors ( body.outputDir() )
+            xyz.checkBFactors ( body.outputDir() )
 
             body.outputDataBox.add_data ( xyz )
             xyz_imported.append ( xyz )
@@ -150,8 +151,9 @@ def run ( body ):  # body is reference to the main Import class
                                      "xyz",subSecId,1,0,1,1,-1 )
 
             note = ""
-            if xyz.BF_correction=="alphafold":
-                note = "Assuming AlphaFold model" + body.hotHelpLink (
+            if xyz.BF_correction=="alphafold-suggested":
+                note = "Can be an Alphafold model; consider recalculation of B-factors where needed" +\
+                       body.hotHelpLink (
                             "Using AlphaFold and Rosetta Models",
                             "jscofe_tips.AlphaFold"
                        )
@@ -159,7 +161,8 @@ def run ( body ):  # body is reference to the main Import class
                                                "Model for B-factors re-calculation",
                                                note,jrow+4 )
             elif xyz.BF_correction=="rosetta":
-                note = "Assuming Rosetta model" + body.hotHelpLink (
+                note = "Can be a Rosetta model, consider recalculation of B-factors where needed" +\
+                       body.hotHelpLink (
                             "Using AlphaFold and Rosetta Models",
                             "jscofe_tips.AlphaFold"
                        )

@@ -58,6 +58,12 @@ class ModelPrepMC(modelprepxyz.ModelPrepXYZ):
         sclpSel = self.getParameter ( sec1.SCULPTOR_PROTOCOL_SEL )
         csMode  = self.getParameter ( sec1.CHAINSAW_MODE_SEL     )
 
+        self.fixBFactors ( [xyz] )
+        # if xyz.BF_correction=="alphafold-suggested":
+        #    xyz.fixBFactors ( self.inputDir(),"alphafold" )
+        # elif xyz.BF_correction=="rosetta-suggested":
+        #    xyz.fixBFactors ( self.inputDir(),"rosetta" )
+
         # molWeight = 0.0
         nRes   = 0
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    12.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -64,7 +64,8 @@ function TaskXyzUtils()  {
                         range    : ['T|Transform structure',
                                     'S|Split structure in chains',
                                     'E|Extract sequences',
-                                    'P|Run PDBSET'
+                                    'P|Run PDBSET',
+                                    'B|Recalculate B-factors'
                                    ],
                         value    : 'T',
                         iwidth   : 260,
@@ -75,7 +76,7 @@ function TaskXyzUtils()  {
                         keyword  : 'none',
                         lwidth   : '80%',
                         label    : ' ',
-                        position : [0,3,1,2]
+                        position : [5,6,1,2]
                       },
                 SOLLIG_SEL : {
                         type     : 'combobox',
@@ -112,7 +113,7 @@ function TaskXyzUtils()  {
                         value     : '',
                         placeholder : 'A,B,...',
                         position  : [2,4,1,1],
-                        showon    : {CHAINS_SEL:['S']}
+                        showon    : {_:'&&',CHAINS_SEL:['S'],ACTION_SEL:['T','S','E','B']}
                       },
                 PDBSET_LBL : {
                         type     : 'label',
@@ -139,7 +140,20 @@ function TaskXyzUtils()  {
                         value    : '',           // mandatory
                         position : [4,0,1,5],    // mandatory
                         showon   : {ACTION_SEL:['P']}
-                      }       
+                      },
+                BFACTORS_SEL : {
+                        type     : 'combobox',
+                        label    : 'B-factor model:',
+                        tooltip  : '',
+                        range    : ['alphafold|Alphafold',
+                                    'rosetta|Rosetta'
+                                   ],
+                        value    : 'alphafold',
+                        iwidth   : 260,
+                        position : [0,4,1,1],
+                        showon   : {ACTION_SEL:['B']}
+                      },
+
 
                 /*
                 SEP_LBL : {
@@ -244,7 +258,7 @@ TaskXyzUtils.prototype.icon           = function()  { return 'task_xyzutils'; }
 TaskXyzUtils.prototype.clipboard_name = function()  { return '"XYZ Utils"';   }
 
 TaskXyzUtils.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

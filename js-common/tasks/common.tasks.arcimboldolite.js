@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.09.23   <--  Date of Last Modification.
+ *    12.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -48,6 +48,7 @@ function TaskArcimboldoLite()  {
     },{      // input data types
       data_type   : {'DataXYZ':['protein']},  // data type(s) and subtype(s)
       label       : 'Fragment',  // label for input dialog
+      customInput : 'BF_correction', // lay custom fields next to the selection
       inputId     : 'xyz',       // input Id for referencing input fields
       min         : 0,           // minimum acceptable number of data instances
       max         : 10           // maximum acceptable number of data instances
@@ -241,7 +242,7 @@ TaskArcimboldoLite.prototype.clipboard_name = function()  { return '"Arcimboldo-
 //TaskArcimboldoLite.prototype.requiredEnvironment = function() { return ['CCP4','ROSETTA_DIR']; }
 
 TaskArcimboldoLite.prototype.currentVersion = function()  {
-let version = 1;
+let version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

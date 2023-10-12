@@ -173,21 +173,19 @@ def run ( body,pdb_list,
         elif (len(code)>4) and (import_coordinates or import_sequences):
             # coordiinates are used for sequence annotation
             rc_xyz    = download_file ( get_afdb_file_url(ucode),fpath_xyz )
-            fname_seq = "afdb_" + ucode + ".fasta"
-            fpath_seq = os.path.join ( body.importDir(),fname_seq )
-            # note: assume that alphafold models contain single chains
-            st = gemmi.read_structure ( fpath_xyz )
-            st.setup_entities()
-            for model in st:
-                for chain in model:
-                    polymer = chain.get_polymer()
-                    seqline = str(polymer.make_one_letter_sequence())
-                    dtype_sequence.writeSeqFile ( fpath_seq,ucode,seqline )
-                    rc_seq = 0
-                    # body.putMessage ( "<h3 style=\"color:#4682B4;\"> Note: sequence(s) " +\
-                    #                   "restored from atomic coordinates </h3>" )
-                    
-                    body.putNote("sequence(s) restored from atomic coordinates")
+            if import_sequences:
+                fname_seq = "afdb_" + ucode + ".fasta"
+                fpath_seq = os.path.join ( body.importDir(),fname_seq )
+                # note: assume that alphafold models contain single chains
+                st = gemmi.read_structure ( fpath_xyz )
+                st.setup_entities()
+                for model in st:
+                    for chain in model:
+                        polymer = chain.get_polymer()
+                        seqline = str(polymer.make_one_letter_sequence())
+                        dtype_sequence.writeSeqFile ( fpath_seq,ucode,seqline )
+                        rc_seq = 0
+                        body.putNote ( "sequence(s) restored from atomic coordinates" )
 
         body.resetFileImport()
         asuComp = None
@@ -295,9 +293,6 @@ def run ( body,pdb_list,
                     body.putMessage ( "&nbsp;<br><h3>" + ucode + " Unit Cell</h3>" )
 
                     if rc_seq:
-                        # body.putMessage ( "<h3 style=\"color:#4682B4;\">Note: " +\
-                        #                   "sequence(s) restored from atomic coordinates" +\
-                        #                   "</h3>" )
                         body.putNote("sequence(s) restored from atomic coordinates")
 
                     seq_coor = []

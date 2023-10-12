@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.09.23   <--  Date of Last Modification.
+ *    12.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -49,6 +49,7 @@ function TaskArcimboldoShredder()  {
       data_type   : {'DataXYZ':['protein']},  // data type(s) and subtype(s)
       label       : 'Homology model', // label for input dialog
       inputId     : 'xyz',       // input Id for referencing input fields
+      customInput : 'BF_correction', // lay custom fields next to the selection
       min         : 1,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
     }
@@ -271,7 +272,7 @@ TaskArcimboldoShredder.prototype.clipboard_name = function()  { return '"Arcimbo
 //TaskArcimboldoShredder.prototype.requiredEnvironment = function() { return ['CCP4','ROSETTA_DIR']; }
 
 TaskArcimboldoShredder.prototype.currentVersion = function()  {
-let version = 1;
+let version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
