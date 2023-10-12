@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    11.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -133,10 +133,11 @@ class DType(dtype_template.DType):
         else:
             return self.xyzmeta.natoms
 
-    def fixBFactors ( self,dirPath ):
+
+    def checkBFactors ( self,dirPath ):
         self.BF_correction = "none"        # "none", "af2", "rosetta"
         fpath = self.getXYZFilePath ( dirPath )
-        if fpath and fpath.lower().endswith(".pdb"):
+        if fpath:
             st = gemmi.read_structure ( fpath )
             st.setup_entities()
             need_to_fix  = True
@@ -171,27 +172,108 @@ class DType(dtype_template.DType):
                 if not need_to_fix:
                     break
             if need_to_fix and max_bfactor!=min_bfactor and full_residue:
+                if max_bfactor>=5.0:
+                    self.BF_correction = "alphafold-suggested"
+                else:
+                    self.BF_correction = "rosetta-suggested"
+        return
+
+
+    def convertToPDB ( self,dirPath ):
+        fpath = self.getXYZFilePath ( dirPath )
+        if not fpath.lower().endswith(".pdb"):
+            st = gemmi.read_structure ( fpath )
+            fp,fe = os.path.splitext ( fpath )
+            st.write_pdb ( fp+".pdb" )
+            fp,fe = os.path.splitext ( self.getXYZFileName() )
+            self.setFile ( fp + ".pdb",dtype_template.file_key["xyz"] )
+        return
+
+
+    def fixBFactors ( self,dirPath,BF_correction ):
+        # BF_correction = "alphafold" or "rosetta"
+        if (self.BF_correction=="none" or self.BF_correction.endswith("-suggested")) and \
+           (BF_correction!=self.BF_correction):
+            fpath = self.getXYZFilePath ( dirPath )
+            if fpath and fpath.lower().endswith(".pdb"):
+                st = gemmi.read_structure ( fpath )
+                st.setup_entities()
                 for model in st:
                     for chain in model:
                         for res in chain:
                             for atom in res:
                                 rmsd_est = atom.b_iso
-                                if max_bfactor>=5.0:  # alphafold
+                                if BF_correction=="alphafold":  # alphafold
                                     lddt = atom.b_iso / 100.0
                                     # see Baek et al. (2021) Science 373:871–876
                                     rmsd_est = 1.5 * math.exp ( 4.0*(0.7-lddt) )
-                                    # Randy's earlier formula:
-                                    # if lddt <= 0.5:
-                                    #     rmsd_est = 5.0
-                                    # else:
-                                    #     rmsd_est = (0.6 / (lddt**3))
                                 atom.b_iso = min ( 999.99, 26.318945069571623*rmsd_est**2 )
                 st.write_pdb ( fpath )
-                if max_bfactor>=5.0:
-                    self.BF_correction = "alphafold"
-                else:
-                    self.BF_correction = "rosetta"
+                self.BF_correction = BF_correction
         return
+
+
+    #   Old (automatic) version 11.10.2023
+    # def fixBFactors ( self,dirPath ):
+    #     self.BF_correction = "none"        # "none", "af2", "rosetta"
+    #     fpath = self.getXYZFilePath ( dirPath )
+    #     if fpath and fpath.lower().endswith(".pdb"):
+    #         st = gemmi.read_structure ( fpath )
+    #         st.setup_entities()
+    #         need_to_fix  = True
+    #         max_bfactor  = 0.0
+    #         min_bfactor  = 1000000.0
+    #         full_residue = False
+    #         for model in st:
+    #             for chain in model:
+    #                 polymer = chain.get_polymer()
+    #                 t = polymer.check_polymer_type()
+    #                 if t in (gemmi.PolymerType.PeptideL, gemmi.PolymerType.PeptideD):
+    #                     for res in chain:
+    #                         if not full_residue:
+    #                             full_residue = (len(res)>1)
+    #                         bfactor = -1.0
+    #                         for atom in res:
+    #                             if bfactor>=0.0 and atom.b_iso!=bfactor:
+    #                                 need_to_fix = False
+    #                             else:
+    #                                 bfactor     = atom.b_iso
+    #                                 max_bfactor = max ( max_bfactor,bfactor )
+    #                                 min_bfactor = min ( min_bfactor,bfactor )
+    #                             if not need_to_fix:
+    #                                 break
+    #                         if not need_to_fix:
+    #                             break
+    #                     if not need_to_fix:
+    #                         break
+    #                 else:  # not a protein structure, cannot be alphafold
+    #                     need_to_fix = False
+    #                     break
+    #             if not need_to_fix:
+    #                 break
+    #         if need_to_fix and max_bfactor!=min_bfactor and full_residue:
+    #             for model in st:
+    #                 for chain in model:
+    #                     for res in chain:
+    #                         for atom in res:
+    #                             rmsd_est = atom.b_iso
+    #                             if max_bfactor>=5.0:  # alphafold
+    #                                 lddt = atom.b_iso / 100.0
+    #                                 # see Baek et al. (2021) Science 373:871–876
+    #                                 rmsd_est = 1.5 * math.exp ( 4.0*(0.7-lddt) )
+    #                                 # Randy's earlier formula:
+    #                                 # if lddt <= 0.5:
+    #                                 #     rmsd_est = 5.0
+    #                                 # else:
+    #                                 #     rmsd_est = (0.6 / (lddt**3))
+    #                             atom.b_iso = min ( 999.99, 26.318945069571623*rmsd_est**2 )
+    #             st.write_pdb ( fpath )
+    #             if max_bfactor>=5.0:
+    #                 self.BF_correction = "alphafold"
+    #             else:
+    #                 self.BF_correction = "rosetta"
+    #     return
+
 
     def setXYZFile ( self,fname ):
         self.setFile ( fname,dtype_template.file_key["xyz"] )

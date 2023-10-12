@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    11.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -47,7 +47,10 @@ function TaskMorda()  {
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
-      data_type   : {'DataXYZ':[],'DataModel':[],'DataEnsemble':[]},  // data type(s) and subtype(s)
+      data_type   : {'DataXYZ'      : ['!protein'],
+                     'DataModel'    : ['!protein'],
+                     'DataEnsemble' : ['!protein']
+                    },  // data type(s) and subtype(s)
       label       : 'Model(s)',     // label for input dialog
       inputId     : 'model',    // input Id for referencing input fields
       customInput : 'model',    // lay custom fields below the dropdown

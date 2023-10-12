@@ -75,11 +75,22 @@ if (!__template)  {
 
   DataXYZ.prototype.addToInspectData = function ( dsp )  {
     if (('BF_correction' in this) && (this.BF_correction!='none'))  {
-      var corr_model = null;
-      if (this.BF_correction=='alphafold')  corr_model = 'AlphaFold';
-                                      else  corr_model = 'Rosetta';
-      dsp.makeRow ( 'B-factor correction','Assuming ' + corr_model + ' model',
-                    'Model for B-factors re-calculation' );
+      let msg = null;
+      switch (this.BF_correction)  {
+        case 'alphafold' : msg = 'Alphafold model, B-factors are recalculated'; break;
+        case 'rosetta'   : msg = 'Rosetts model, B-factors are recalculated';   break;
+        case 'alphafold-suggested' : msg = 'Can be an Alphafold model; check ' +
+                                           'recalculation of B-factors where needed'; 
+                         break;
+        default:
+        case 'rosetta-suggested' : msg = 'Can be a Rosetta model, check ' +
+                                         'recalculation of B-factors where needed';
+      }
+      dsp.makeRow ( 'B-factor correction',msg,'Type of B-factors correction' );
+      // if (this.BF_correction=='alphafold')  corr_model = 'AlphaFold';
+      //                                 else  corr_model = 'Rosetta';
+      // dsp.makeRow ( 'B-factor correction','Assuming ' + corr_model + ' model',
+      //               'Model for B-factors re-calculation' );
       dsp.trow++;
     }
   }
@@ -254,7 +265,34 @@ if (!__template)  {
   }
 
 
-  DataXYZ.prototype.layCustomDropdownInput = function ( dropdown ) {
+  DataXYZ.prototype.__put_BF_correction_sel = function ( customGrid,row )  {
+    customGrid.BF_correction = null;
+    if (this.BF_correction=='alphafold')
+      customGrid.setLabel ( 'This is an Alphafold model (B-factors are recalcuated)',
+                            row,0,1,3 ).setFontItalic(true).setNoWrap();
+    else if (this.BF_correction=='rosetta')
+      customGrid.setLabel ( 'This is a Rosetta model (B-factors are recalcuated)',
+                            row,0,1,3 ).setFontItalic(true).setNoWrap();
+    else if (this.BF_correction!='pdb')  {
+      customGrid.setLabel ( 'Correct B-factors:',row,0,1,1 ).setFontItalic(true).setNoWrap();
+      customGrid.setVerticalAlignment ( row,0,'middle' );
+      customGrid.BF_correction = new Dropdown();
+      // customGrid.BF_correction.setWidth ( '250px' );
+      customGrid.BF_correction.addItem ( 'do not correct','','none',
+                                         this.BF_correction=='none' );
+      customGrid.BF_correction.addItem ( 'assuming Alphafold model','',
+                                         'alphafold-suggested',
+                                         this.BF_correction=='alphafold-suggested' );
+      customGrid.BF_correction.addItem ( 'assuming Rosetta model','',
+                                         'rosetta-suggested',
+                                         this.BF_correction=='rosetta-suggested' );
+      customGrid.setWidget ( customGrid.BF_correction, row,1,1,2 );
+      customGrid.BF_correction.make();
+    }
+  }
+
+
+  DataXYZ.prototype.layCustomDropdownInput = function ( dropdown )  {
 
     var customGrid = dropdown.customGrid;
 
@@ -313,9 +351,9 @@ if (!__template)  {
           var chains = xyz[i].chains;
           for (var j=0;j<chains.length;j++)
             if ((dropdown.layCustom=='chain-sel') ||
-                ((dropdown.layCustom=='chain-sel-protein') &&
+                (dropdown.layCustom.startsWith('chain-sel-protein') &&
                  (chains[j].type=='Protein'))     ||
-                (((dropdown.layCustom=='chain-sel-poly') ||
+                (((dropdown.layCustom=='chain-sel-MR') ||
                   (dropdown.layCustom=='chain-sel-poly-2')) &&
                  (['Protein','DNA','RNA','NA'].indexOf(chains[j].type)>=0)))  {
               var id = chains[j].id;
@@ -406,17 +444,25 @@ if (!__template)  {
         customGrid.setVerticalAlignment ( 0,0,'middle' );
 
         customGrid.chainSel = new Dropdown();
-        customGrid.chainSel.setWidth ( '160px' );
+        // customGrid.chainSel.setWidth ( '250px' );
 
         for (var j=0;j<labels.length;j++)
           customGrid.chainSel.addItem ( labels[j],'',ids[j],this.chainSel==ids[j] );
         customGrid.setWidget ( customGrid.chainSel, 0,1,1,2 );
         customGrid.chainSel.make();
 
-        customGrid.setLabel ( ' ',1,0,1,2 ).setHeight_px ( 8 );
+        if ((dropdown.layCustom=='chain-sel-MR') || 
+            (dropdown.layCustom=='chain-sel-protein-MR'))  {
+          this.__put_BF_correction_sel ( customGrid,1 );
+          customGrid.setLabel ( ' ',2,0,1,2 ).setHeight_px ( 8 );
+        } else
+          customGrid.setLabel ( ' ',1,0,1,2 ).setHeight_px ( 8 );
 
       }
 
+    } else if (startsWith(dropdown.layCustom,'BF_correction'))  {
+
+      this.__put_BF_correction_sel ( customGrid,0 );
 
     } else if (dropdown.layCustom=='texteditor')  {
       // just a place hoilder for keeping row height
@@ -445,6 +491,12 @@ if (!__template)  {
       if (lst.length>1)
             this.chainSelType = lst[1];
       else  this.chainSelType = '';
+
+      if (((dropdown.layCustom=='chain-sel-MR')         ||
+           (dropdown.layCustom=='chain-sel-protein-MR') || 
+           (dropdown.layCustom=='BF_correction')) && 
+          customGrid.BF_correction)
+        this.BF_correction = customGrid.BF_correction.getValue();
 
       if (dropdown.layCustom=='chain-sel-poly-2')  {
         this.chainSel2 = customGrid.chainSel2.getValue();

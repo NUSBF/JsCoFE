@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.10.23   <--  Date of Last Modification.
+ *    11.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -51,7 +51,7 @@ function TaskEnsemblePrepXYZ()  {
                     'length. The resulting ensemble will be named after the ' +
                     'leading coordinat set.',
       inputId     : 'xyz',       // input Id for referencing input fields
-      customInput : 'chain-sel-protein', // lay custom fields next to the selection
+      customInput : 'chain-sel-protein-MR', // lay custom fields next to the selection
                                  // enforce protein chains because of using MrBump
                                  // for this task
       min         : 2,           // minimum acceptable number of data instances
@@ -377,7 +377,7 @@ TaskEnsemblePrepXYZ.prototype.checkKeywords = function ( keywords )  {
 }
 
 TaskEnsemblePrepXYZ.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

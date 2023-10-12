@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.10.23   <--  Date of Last Modification.
+#    11.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -215,8 +215,8 @@ class ModelPrepXYZ(basic.TaskDriver):
         fpath_seq = None
         if seq:
             fpath_seq = seq.getSeqFilePath ( self.inputDir() )
-        fpath_in  = self.fetch_chain   ( chainId, # this is correct
-                                         xyz.getXYZFilePath(self.inputDir()) )
+        fpath_in  = self.fetch_chain ( chainId, # this is correct
+                                       xyz.getXYZFilePath(self.inputDir()) )
 
         if hasattr(xyz,"fpath_algn"):
             fpath_algn = xyz.fpath_algn
@@ -298,8 +298,8 @@ class ModelPrepXYZ(basic.TaskDriver):
                     #if ensNo<1:
                     if len(models)<1:
                         if seq:
-                            self.putMessage ( "<i><b>Prepared models are associated " +\
-                                              "with sequence:&nbsp;" + seq.dname + "</b></i>" )
+                            self.putMessage ( "<h3><i>Prepared models are associated " +\
+                                              "with sequence:&nbsp;" + seq.dname + "</i></h3>" )
                         elif not hasattr(xyz[i],"fpath_algn"):
                             self.putMessage ( "<i><b>Template sequence is not given, " +\
                                               "assumed 100% identity" )
@@ -355,6 +355,13 @@ class ModelPrepXYZ(basic.TaskDriver):
 
         for i in range(len(xyz)):
             xyz[i] = self.makeClass ( xyz[i] )
+            # xyz[i].convertToPDB ( self.inputDir() )
+            # if xyz[i].BF_correction=="alphafold-suggested":
+            #     xyz[i].fixBFactors ( self.inputDir(),"alphafold" )
+            # elif xyz[i].BF_correction=="rosetta-suggested":
+            #     xyz[i].fixBFactors ( self.inputDir(),"rosetta" )
+
+        self.fixBFactors ( xyz )
 
         models = self.make_models ( seq,xyz,modSel,sclpSel,csMode )
 

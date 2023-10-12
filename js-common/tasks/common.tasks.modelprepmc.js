@@ -44,9 +44,10 @@ function TaskModelPrepMC()  {
                      'DataXYZ':[]},  // data type(s) and subtype(s)
       label       : 'Template structure',   // label for input dialog
       tooltip     : 'Template multi-chain structure.',
-      inputId     : 'xyz',       // input Id for referencing input fields
-      min         : 1,           // minimum acceptable number of data instances
-      max         : 1            // maximum acceptable number of data instances
+      inputId     : 'xyz',           // input Id for referencing input fields
+      customInput : 'BF_correction', // lay custom fields next to the selection
+      min         : 1,               // minimum acceptable number of data instances
+      max         : 1                // maximum acceptable number of data instances
     },{
       data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)
       label       : 'Sequence',          // label for input dialog

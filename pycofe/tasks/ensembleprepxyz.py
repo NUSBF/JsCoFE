@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.10.23   <--  Date of Last Modification.
+#    11.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -139,6 +139,8 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         for i in range(len(xyz)):
             xyz[i]  = self.makeClass ( xyz[i] )
             nmodels = max ( nmodels,len(xyz[i].xyzmeta.xyz) )
+
+        self.fixBFactors ( xyz )
 
         if nmodels>1:
             self.putTitle   ( "Unsuitable coordinate data" )

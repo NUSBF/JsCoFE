@@ -78,42 +78,72 @@ WorkTeamDialog.prototype.makeLayout = function ( projectDesc,callback_func )  {
     owner  : owner
   },'Share Project Confirm',
     function(data){
-      let msg = 
+      let table = null;
+      let info  = 
         '<h2>Project "' + projectDesc.name + '" Work Team</h2>' +
         '<div style="max-height:200px;overflow-y:auto">' +
-        '<table>' +
-          '<tr><td><b><i>Author</i>:</b></td><td>' + data.author[1] +
+        '<table>';
+      if (data.author[0]==data.owner[0])  {
+        info += '<tr><td><b><i>Author & keeper</i> :</b></td><td>' + data.author[1] +
+              '</td><td>&nbsp;<b>[' + data.author[0] + ']</b>&nbsp;</td><td><i>' +
+              data.author[2] + '</i></td></tr>';
+      } else  {
+        info += '<tr><td><b><i>Author</i> :</b></td><td>' + data.author[1] +
               '</td><td>&nbsp;<b>[' + data.author[0] + ']</b>&nbsp;</td><td><i>' +
               data.author[2] + '</i></td></tr>' +
-          '<tr><td><b><i>Owner (keeper)</i>:&nbsp;</b></td><td>' + data.owner[1] +
+            '<tr><td><b><i>Keeper</i> :&nbsp;</b></td><td>' + data.owner[1] +
               '</td><td>&nbsp;<b>[' + data.owner[0] + ']</b>&nbsp;</td><td><i>' +
-              data.owner[2] + '</i></td></tr>' +
-          '<tr><td colspan=4 height="6px"> </td></tr>';
+              data.owner[2] + '</i></td></tr>';
+      }
+      info += '<tr><td colspan=4 height="6px"> </td></tr>';
       if (data.oldShared.length<=0)
-        msg += '<tr><td colSpan=2><b><i>Co-workers (shared)</i>:&nbsp;</b>' +
-               '<i>None</i></td><td></td></tr>';
+        info += '<tr><td colSpan=3><b><i>Co-workers (shared)</i>:&nbsp;</b>' +
+               '<i>None</i></td></tr>';
       else  {
-        msg += '<tr><td><b><i>Co-workers (shared)</i>:&nbsp;</b></td><td>' + 
-                data.oldShared[0][1] + '</td><td>&nbsp;<b>[' + 
-                data.oldShared[0][0] + ']</b>&nbsp;</td><td><i>' +
-                data.oldShared[0][2] + '</i></td></tr>';
-        for (let i=1;i<data.oldShared.length;i++)
-          msg += '<tr><td></td><td>' + 
-                data.oldShared[i][1] + '</td><td>&nbsp;<b>[' + 
-                data.oldShared[i][0] + ']</b>&nbsp;</td><td><i>' +
-                data.oldShared[i][2] + '</i></td></tr>';
-      }
-      if (data.unknown.length>0)  {
-        msg += '<tr><td colspan=3 height="6px"> </td></tr>' +
-               '<tr><td><b><i>Unknown</i>:&nbsp;</b></td><td colspan=3><b>[' + 
-               data.unknown[0] + ']</b></td></tr>';
-        for (let i=1;i<data.unknown.length;i++)
-          msg += '<tr><td></td><td colspan=3><b>[' + 
-                data.unknown[i] + ']</b></td></tr>';
-      }
-      msg += '</table></div>';
 
-      self.grid.setLabel    ( msg,0,2,2,1 );
+        info += '<tr><td colSpan=3><b><i>Co-workers (shared)</i></b></td></tr>';
+
+        table = new Table();
+        table.setHeaderRow ( 
+          ['##','Name','Login','E-mail','Access'],
+          ['','','','','']
+        );
+        let row = 0;
+        for (let i=0;i<data.oldShared.length;i++)  {
+          row++;
+          table.setRow ( '' + row,'',[
+            data.oldShared[i][1],
+            '<b>[' + data.oldShared[i][0] + ']</b>',
+            data.oldShared[i][2]
+          ],row,(row & 1)==1 );
+        }
+        for (let i=0;i<data.unknown.length;i++)  {
+          row++;
+          table.setRow ( '' + row,'',[
+            '<i>Unknown</i>',
+            '<b>[' + data.unknown[i] + ']</b>',
+            '<i>unknown</i>'
+          ],row,(row & 1)==1 );
+        }
+        table.setAllColumnCSS ({
+          'vertical-align' : 'middle',
+          'text-align'     : 'left',
+          'white-space'    : 'nowrap',
+          'font-family'    : 'arial'
+        },1,1 );
+
+        // if (data.unknown.length>0)  {
+        //   msg += '<tr><td colspan=3 height="6px"> </td></tr>' +
+        //         '<tr><td><b><i>Unknown</i>:&nbsp;</b></td><td colspan=3><b>[' + 
+        //         data.unknown[0] + ']</b></td></tr>';
+        //   for (let i=1;i<data.unknown.length;i++)
+        //     msg += '<tr><td></td><td colspan=3><b>[' + 
+        //           data.unknown[i] + ']</b></td></tr>';
+        // }
+      }
+      self.grid.setLabel ( info,0,2,2,1 );
+      if (table)
+        self.grid.setWidget ( table,2,2,1,1 );
       if (callback_func)
         callback_func();
       // self.grid.setVerticalAlignment ( 0,2,'middle' );

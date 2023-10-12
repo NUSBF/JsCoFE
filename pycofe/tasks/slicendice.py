@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.06.23    <--  Date of Last Modification.
+#    11.10.23    <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -70,11 +70,6 @@ class SliceNDice(basic.TaskDriver):
             plddt_threshold = self.getParameter ( sec1.PLDDT_THRESHOLD)
         except:
             plddt_threshold= None
-            
-        
-    
-        
-
 
         # prepare input MTZ file by selecting original reflection data
 
@@ -87,6 +82,8 @@ class SliceNDice(basic.TaskDriver):
                         "which were not found.",
                         "No reflection data." )
                 return
+            
+        self.fixBFactors ( [xyz] )
 
         labin_fo[2] = hkl.getFreeRColumn()
         input_mtz   = "_input.mtz"

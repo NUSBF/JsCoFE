@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    12.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -191,6 +191,13 @@ class XyzUtils(basic.TaskDriver):
         else:
             # make model transformations
 
+            if action_sel=="B":
+                ixyz.BF_correction = "none"  # hard ball
+                bfactor_sel = self.getParameter ( sec1.BFACTORS_SEL )
+                ixyz.fixBFactors ( self.inputDir(),bfactor_sel )
+                log.append ( "B-factors recalculated assuming " +\
+                             bfactor_sel.capitalize() + " model" )
+
             st = gemmi.read_structure ( xyzpath )
             st.setup_entities()
 
@@ -368,7 +375,7 @@ class XyzUtils(basic.TaskDriver):
                 import_sequence.run ( self )
                 self.addCitation ( "default" )
 
-        elif action_sel=="T":
+        elif action_sel=="T" or action_sel=="B":
 
             if len(log)>0:
 
@@ -391,76 +398,6 @@ class XyzUtils(basic.TaskDriver):
                         log    = ["all coordinates removed"]
 
                     have_results = self.makeXYZOutput ( istruct,ixyz,xyzout )
-
-                    # self.putTitle ( "Results" )
-
-                    # if istruct._type==dtype_xyz.dtype():
-                    #     oxyz = self.registerXYZ ( xyzout,checkout=True )
-                    #     if oxyz:
-                    #         oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
-                    #         self.putMessage (
-                    #             "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
-                    #             oxyz.dname )
-                    #         self.putXYZWidget ( self.getWidgetId("xyz_btn"),
-                    #                             "Edited coordinates",oxyz )
-                    #         have_results = True
-                    #     else:
-                    #         # close execution logs and quit
-                    #         self.fail ( "<h3>XYZ Data was not formed (error)</h3>",
-                    #                     "XYZ Data was not formed" )
-
-                    # elif istruct._type==dtype_ensemble.dtype():
-                    #     seq  = None
-                    #     if ixyz.sequence:
-                    #         seq = self.makeClass ( ixyz.sequence )
-                    #     oxyz = self.registerEnsemble ( seq,xyzout,checkout=True )
-                    #     if oxyz:
-                    #         self.putEnsembleWidget ( "ensemble_btn","Coordinates",oxyz )
-                    #         have_results = True
-                    #     else:
-                    #         # close execution logs and quit
-                    #         self.fail ( "<h3>Ensemble was not formed (error)</h3>",
-                    #                     "Ensemble was not formed" )
-
-                    # elif istruct._type==dtype_revision.dtype():
-                    #     if nchains<=0:
-                    #         xyzout = None
-                    #         log    = ["all coordinates removed"]
-                    #     oxyz = self.registerStructure ( xyzout,
-                    #                          ixyz.getSubFilePath(self.inputDir()),
-                    #                          ixyz.getMTZFilePath(self.inputDir()),
-                    #                          ixyz.getMapFilePath(self.inputDir()),
-                    #                          ixyz.getDMapFilePath(self.inputDir()),
-                    #                          libPath=ixyz.getLibFilePath(self.inputDir()),
-                    #                          leadKey=ixyz.leadKey,copy_files=False,
-                    #                          map_labels=ixyz.mapLabels,
-                    #                          refiner=ixyz.refiner )
-                    #     if oxyz:
-                    #         oxyz.copyAssociations   ( ixyz )
-                    #         oxyz.addDataAssociation ( ixyz.dataId )  # ???
-                    #         oxyz.copySubtype        ( ixyz )
-                    #         oxyz.copyLigands        ( ixyz )
-                    #         if not xyzout:
-                    #             oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
-                    #         #self.putMessage (
-                    #         #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
-                    #         #    oxyz.dname )
-                    #         self.putStructureWidget ( self.getWidgetId("structure_btn"),
-                    #                                   "Structure and electron density",
-                    #                                   oxyz )
-                    #         # update structure revision
-                    #         revision = self.makeClass ( istruct  )
-                    #         revision.setStructureData ( oxyz     )
-                    #         self.registerRevision     ( revision )
-                    #         have_results = True
-
-                    #         auto.makeNextTask(self, {
-                    #             "revision": revision }, log=self.file_stderr)
-
-                    #     else:
-                    #         # close execution logs and quit
-                    #         self.fail ( "<h3>Structure was not formed (error)</h3>",
-                    #                     "Structure was not formed" )
 
             else:
                 self.putMessage ( "&nbsp;<br><b>Data object <i>" + ixyz.dname +\

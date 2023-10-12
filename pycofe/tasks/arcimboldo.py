@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.09.23   <--  Date of Last Modification.
+#    12.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -465,6 +465,7 @@ class Arcimboldo(basic.TaskDriver):
             for i in range(len(self.input_data.data.xyz)):
                 if self.input_data.data.xyz[i]:
                     self.xyz.append(self.makeClass(self.input_data.data.xyz[i]))
+            self.fixBFactors ( self.xyz )
 
         self.fragments = None
         if hasattr(self.input_data.data, "fragments"):

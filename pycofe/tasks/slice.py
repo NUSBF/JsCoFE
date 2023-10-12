@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.04.23   <--  Date of Last Modification.
+#    11.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -57,6 +57,8 @@ class Slice(basic.TaskDriver):
         except:
             plddt_threshold= None
 
+        self.fixBFactors ( [xyz] )
+
         cmd = [
             "-xyzin"     ,xyz.getXYZFilePath(self.inputDir()),
             "-min_splits",nsplits,
@@ -65,10 +67,7 @@ class Slice(basic.TaskDriver):
         ]
 
         if plddt_threshold!=None:
-        
             cmd += ["-plddt_threshold", plddt_threshold]
-
-
 
         rc = self.runApp ( "slicendice",cmd,logType="Main",quitOnError=False )
 

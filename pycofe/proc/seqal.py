@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    24.03.21   <--  Date of Last Modification.
+#    11.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  SEQAL (SEQUENCE ALIGNMENT) MODULE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
 #
 # ============================================================================
 #
@@ -48,7 +48,7 @@ def run ( body,seqdata,fpath_align ):
             seqfile.write ( "\n>" + seqname  +
                             "\n"  + s.getSequence(body.inputDir()) + "\n" )
             stype = s.getType()
-            body.stdoutln ( " stype=" + str(stype) + ",  seqtype=" + str(seqtype) )
+            # body.stdoutln ( " stype=" + str(stype) + ",  seqtype=" + str(seqtype) )
             if not seqtype:
                 seqtype = stype
             #elif seqtype!=stype:
@@ -77,7 +77,7 @@ def run ( body,seqdata,fpath_align ):
                         seqfile.write ( "\n>" + seqname +\
                                         "\n"  + c.seq   + "\n" )
                         stype = c.type.lower()
-                        body.stdoutln ( " 2. stype=" + str(stype) + ",  seqtype=" + str(seqtype) )
+                        # body.stdoutln ( " 2. stype=" + str(stype) + ",  seqtype=" + str(seqtype) )
                         if not seqtype:
                             seqtype = stype
                         elif (seqtype!=stype) and \
