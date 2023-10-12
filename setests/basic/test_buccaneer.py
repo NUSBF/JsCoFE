@@ -173,10 +173,10 @@ def startModelcraft(driver):
             break
     time.sleep(1)
 
-    time.sleep(1)
+    time.sleep(4)
     # presing Close button
     sf.clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
-    time.sleep(1)
+    time.sleep(2)
 
     return()
 

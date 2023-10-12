@@ -125,9 +125,11 @@ def verifyLORESTR(driver):
     assert float(results[12]) < 0.21
     assert float(results[13]) < 0.5
     assert float(results[14]) > 95.0
+    time.sleep (3)
 
     # SWITCHING FRAME BACK!
     driver.switch_to.default_content()
+    time.sleep (3)
 
     return ()
 
