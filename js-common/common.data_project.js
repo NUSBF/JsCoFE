@@ -80,6 +80,21 @@ var folder_name = {
   tutorials     : 'Tutorials'
 };
 
+var share_permissions = {
+  view_only : 'view',
+  run_own   : 'run_own',
+  full      : 'full'
+};
+
+function share_permissions_desc ( permissions )  {
+  switch (permissions)  {
+    case share_permissions.view_only : return 'view only';    
+    case share_permissions.run_own   : return 'run and delete own jobs';
+    case share_permissions.full      : return 'full access';
+    default : ;     
+  }
+  return '';
+}
 
 // ===========================================================================
 
@@ -104,7 +119,7 @@ function ProjectDesc()  {
     //               'label1' : 1,
     //               'label2' : 1,
     //             },
-    //             permissions : 'rw'
+    //             permissions : 'view' // 'view' | 'runown' | 'full'
     //           }
   };
 
@@ -156,10 +171,10 @@ ProjectDesc.prototype.init = function ( name_str,title_str,startmode,time_str ) 
 }
 
 function isProjectAccessible ( login,projectDesc )  {
-  if (!('owner' in projectDesc))        return true;
-  if (!('login' in projectDesc.owner))  return true;
-  if (!projectDesc.owner.login)         return true;
-  if (projectDesc.owner.login==login)   return true;
+  if (!('owner' in projectDesc))            return true;
+  if (!('login' in projectDesc.owner))      return true;
+  if (!projectDesc.owner.login)             return true;
+  if (projectDesc.owner.login==login)       return true;
   if (projectDesc.owner.login=='localuser') return true;
   if (projectDesc.archive && projectDesc.archive.in_archive) return true;
   return (login in projectDesc.share);
@@ -861,23 +876,25 @@ function DockData()  {
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
-  module.exports.start_mode           = start_mode;
-  module.exports.tasklist_mode        = tasklist_mode;
-  module.exports.folder_type          = folder_type;
-  module.exports.folder_path          = folder_path;
-  module.exports.ProjectDesc          = ProjectDesc;
-  module.exports.ProjectList          = ProjectList;
-  module.exports.ProjectData          = ProjectData;
-  module.exports.getProjectNode       = getProjectNode;
-  module.exports.deleteProjectNode    = deleteProjectNode;
-  module.exports.printProjectTree     = printProjectTree;
-  module.exports.getProjectNodeBranch = getProjectNodeBranch;
-  module.exports.ProjectShare         = ProjectShare;
-  module.exports.DockData             = DockData;
-  module.exports.isProjectAccessible  = isProjectAccessible;
-  module.exports.isProjectJoined      = isProjectJoined;
-  module.exports.isProjectShared      = isProjectShared;
-  module.exports.getProjectAuthor     = getProjectAuthor;
-  module.exports.compareProjectLabels = compareProjectLabels;
-  module.exports.inArchive            = inArchive;
+  module.exports.start_mode             = start_mode;
+  module.exports.tasklist_mode          = tasklist_mode;
+  module.exports.folder_type            = folder_type;
+  module.exports.folder_path            = folder_path;
+  module.exports.share_permissions      = share_permissions;
+  module.exports.share_permissions_desc = share_permissions_desc;
+  module.exports.ProjectDesc            = ProjectDesc;
+  module.exports.ProjectList            = ProjectList;
+  module.exports.ProjectData            = ProjectData;
+  module.exports.getProjectNode         = getProjectNode;
+  module.exports.deleteProjectNode      = deleteProjectNode;
+  module.exports.printProjectTree       = printProjectTree;
+  module.exports.getProjectNodeBranch   = getProjectNodeBranch;
+  module.exports.ProjectShare           = ProjectShare;
+  module.exports.DockData               = DockData;
+  module.exports.isProjectAccessible    = isProjectAccessible;
+  module.exports.isProjectJoined        = isProjectJoined;
+  module.exports.isProjectShared        = isProjectShared;
+  module.exports.getProjectAuthor       = getProjectAuthor;
+  module.exports.compareProjectLabels   = compareProjectLabels;
+  module.exports.inArchive              = inArchive;
 }
