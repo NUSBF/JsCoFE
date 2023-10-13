@@ -454,24 +454,24 @@ function ProjectListPage ( sceneId )  {
                        'msg_error' );
   }
 
-  var sharePrj = function()  {
-    panel.click();  // get rid of context menu
-    var pno = getCurrentProjectNo();
-    if (pno>=0)  {
-      shareProject ( projectList.projects[pno],function(desc){
-        if (desc)  {
-          projectList.projects[pno] = desc;
-          projectList.resetFolders ( __login_id );
-          saveProjectList ( function(data){},null );
-        }
-      });
-    } else
-      new MessageBox ( 'No Project',
-                       '<h2>No Project is selected<h2>' +
-                       'This is likely to be a program error. ' +
-                       'Select project and try again.',
-                       'msg_error' );
-  }
+  // var sharePrj = function()  {
+  //   panel.click();  // get rid of context menu
+  //   var pno = getCurrentProjectNo();
+  //   if (pno>=0)  {
+  //     shareProject ( projectList.projects[pno],function(desc){
+  //       if (desc)  {
+  //         projectList.projects[pno] = desc;
+  //         projectList.resetFolders ( __login_id );
+  //         saveProjectList ( function(data){},null );
+  //       }
+  //     });
+  //   } else
+  //     new MessageBox ( 'No Project',
+  //                      '<h2>No Project is selected<h2>' +
+  //                      'This is likely to be a program error. ' +
+  //                      'Select project and try again.',
+  //                      'msg_error' );
+  // }
 
   var cloneProject = function()  {
     panel.click();  // get rid of context menu
@@ -905,9 +905,9 @@ function ProjectListPage ( sceneId )  {
             if (!archive_folder)
               contextMenu.addItem(del_label,image_path('remove')).addOnClickListener(deleteProject);
             contextMenu.addItem('Export',image_path('export')  ).addOnClickListener(exportProject);
-            if ((!archive_folder) && (__current_folder.type!=folder_type.joined) &&
-                (!__local_user))
-              contextMenu.addItem('Share',image_path('share')).addOnClickListener(sharePrj);
+            // if ((!archive_folder) && (__current_folder.type!=folder_type.joined) &&
+            //     (!__local_user))
+            //   contextMenu.addItem('Share',image_path('share')).addOnClickListener(sharePrj);
             contextMenu.addItem('Clone',image_path('cloneprj')).addOnClickListener(cloneProject );
             if (((__current_folder.type==folder_type.user) &&
                   __current_folder.path.startsWith(owners_folder)) ||

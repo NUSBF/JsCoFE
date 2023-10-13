@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.09.23   <--  Date of Last Modification.
+ *    12.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -259,11 +259,17 @@ var update = false;
         if (lst[i])
           projectDesc.share[lst[i]] = {
             labels      : {},   // not used at time of writing, safe to be empty
-            permissions : 'rw'  // not used, reserved for future
+            permissions : pd.share_permissions.run_own // run and delet own jobs by default
           };
       delete projectDesc.owner.share;
     }
     update = true;
+  } else  {
+    for (let slogin in projectDesc.share)
+      if (projectDesc.share[slogin].permissions=='rw')  {
+        projectDesc.share[slogin].permissions = pd.share_permissions.run_own;
+        update = true;
+      }
   }
   
   for (var login in projectDesc.share)
@@ -1583,8 +1589,8 @@ var oldShared = [];
       if (uLoginData)  {
         let userData = user.readUserData ( uLoginData );
         if (shareLogin in share0)
-              oldShared.push ( [shareLogin,userData.name,userData.email] );
-        else  newShared.push ( [shareLogin,userData.name,userData.email] );
+              oldShared.push ( [shareLogin,userData.name,userData.email,share[shareLogin]] );
+        else  newShared.push ( [shareLogin,userData.name,userData.email,share[shareLogin]] );
       } else
         unknown.push ( shareLogin );
     }
@@ -1594,7 +1600,7 @@ var oldShared = [];
       let uLoginData = user.getUserLoginData ( shareLogin );
       if (uLoginData)  {
         let userData = user.readUserData ( uLoginData );
-        unshared.push ( [shareLogin,userData.name,userData.email] );
+        unshared.push ( [shareLogin,userData.name,userData.email,share[shareLogin]] );
       }  // do not put into unknown as it is going to be unshared anyway
     }
 
@@ -1661,7 +1667,7 @@ var t_email   = 1000; //msec
     let uData_unshared = [];
     for (let shareLogin in share0)  // loop on the existing share state
       if (shareLogin && (!(shareLogin in share)))  {  // not found in the requested -- unshare
-        let uLoginData = user.getUserLoginData ( shareLogin );
+        let uLoginData    = user.getUserLoginData ( shareLogin );
         let unshared_user = [ shareLogin,'Unknown','Unknown' ];
         if (uLoginData)  {
           let pShare = readProjectShare ( uLoginData );
@@ -1672,7 +1678,8 @@ var t_email   = 1000; //msec
             uData_unshared.push ( '<b>' + userData.login + '</b> (' +
                                           userData.name  + '  <i>'  +
                                           userData.email + '</i>)' );
-            unshared_user = [ shareLogin,userData.name,userData.email ];
+            unshared_user = [ shareLogin,userData.name,userData.email,
+                              share0[shareLogin] ];
             (function(udata,mparams,delay){
               setTimeout ( function(){
                 emailer.sendTemplateMessage ( udata,
@@ -1702,12 +1709,11 @@ var t_email   = 1000; //msec
             writeProjectShare ( uLoginData,pShare );
             shared[shareLogin] = share[shareLogin];
             if (!(shareLogin in share1))  {
-              newShared.push ([ shareLogin,userData.name,userData.email ]);
-              // uData_newShared.push ( '<b>' + userData.login + '</b> (<i>' +
-              //                                userData.name + '</i>)' );
+              newShared.push ([ shareLogin,userData.name,userData.email,
+                                share[shareLogin] ]);
               uData_newShared.push ( '<b>' + userData.login + '</b> (' +
-                                            userData.name  + '  <i>'  +
-                                            userData.email + '</i>)' );
+                                             userData.name  + '  <i>'  +
+                                             userData.email + '</i>)' );
               (function(udata,mparams,delay ){
                 setTimeout ( function(){
                   emailer.sendTemplateMessage ( udata,
@@ -1717,12 +1723,25 @@ var t_email   = 1000; //msec
               }(userData,msg_params,n_email*t_email))
               n_email++;
             } else  {
-              oldShared.push ([ shareLogin,userData.name,userData.email ]);
-              // uData_oldShared.push ( '<b>' + userData.login + '</b> (<i>' +
-              //                                userData.name + '</i>)' );
+              if (share[shareLogin].permissions!=share1[shareLogin].permissions)  {
+                (function(udata,mparams,new_permissions,old_permissions,delay ){
+                  setTimeout ( function(){
+                    let mpars = mparams;
+                    mpars.old_permissions = pd.share_permissions_desc ( old_permissions );
+                    mpars.new_permissions = pd.share_permissions_desc ( new_permissions );
+                    emailer.sendTemplateMessage ( udata,
+                              cmd.appName() + ': Project access changed',
+                              'project_access_changed',mpars );
+                  },delay);
+                }(userData,msg_params,share1[shareLogin].permissions,
+                  share[shareLogin].permissions,n_email*t_email))
+                n_email++;
+              }
+              oldShared.push ([ shareLogin,userData.name,userData.email,
+                                share[shareLogin] ]);
               uData_oldShared.push ( '<b>' + userData.login + '</b> (' +
-                                            userData.name  + '  <i>'  +
-                                            userData.email + '</i>)' );
+                                             userData.name  + '  <i>'  +
+                                             userData.email + '</i>)' );
             }
           } else
             unknown.push ( shareLogin );

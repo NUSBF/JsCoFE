@@ -105,6 +105,22 @@ Table.prototype.setRow = function ( header,tooltip,cell_list,row,alt_bool )  {
 }
 
 
+Table.prototype.setWidget = function ( widget,row,col,alt_bool )  {
+let cell = this.getCell ( row,col );
+  cell.rowSpan = 1;
+  cell.colSpan = 1;
+  $(cell).empty();
+  if (alt_bool)
+        cell.setAttribute ( 'class','table-blue-alt' );
+  else  cell.setAttribute ( 'class','table-blue-td'  );
+  if (widget)  {
+    cell.appendChild ( widget.element );
+    widget.parent = this;
+  }
+  return cell;
+}
+
+
 Table.prototype.setColumnCSS = function ( css,col,start_row )  {
   for (var i=start_row;i<this.element.rows.length;i++)
     if (col<this.element.rows[i].cells.length)

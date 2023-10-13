@@ -163,21 +163,22 @@ function ProjectPage ( sceneId )  {
       else  new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
     });
 
+    // if (!__local_user)  {
+    //   self.addMenuItem ( 'Work team','workteam',function(){
+    //     if (self.jobTree)
+    //       showWorkTeam ( self.jobTree.projectData.desc );
+    //     else
+    //       new MessageBox ( 'No project loaded','<h2>No Project Loaded</h2>' +
+    //                        'Please call later','msg_error' );
+    //   });
+    //   self.addMenuItem ( 'Share Project','share',function(){
+    //     self.share_project();
+    //   });
+    // }
+
+    // if (__user_role==role_code.developer)  {
     if (!__local_user)  {
       self.addMenuItem ( 'Work team','workteam',function(){
-        if (self.jobTree)
-          showWorkTeam ( self.jobTree.projectData.desc );
-        else
-          new MessageBox ( 'No project loaded','<h2>No Project Loaded</h2>' +
-                           'Please call later','msg_error' );
-      });
-      self.addMenuItem ( 'Share Project','share',function(){
-        self.share_project();
-      });
-    }
-
-    if (__user_role==role_code.developer)  {
-      self.addMenuItem ( 'Work team (dev)','workteam',function(){
         if (self.jobTree)
           new WorkTeamDialog ( self.jobTree.projectData.desc );
         else
@@ -185,6 +186,7 @@ function ProjectPage ( sceneId )  {
                            'Please call later','msg_error' );
       });
     }
+    // }
 
     self.addLogoutToMenu ( function(){
       self.confirmLeaving ( function(do_leave){

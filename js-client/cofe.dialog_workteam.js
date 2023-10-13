@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.10.23   <--  Date of Last Modification.
+ *    13.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -31,29 +31,57 @@ function WorkTeamDialog ( projectDesc )  {
   this.element.setAttribute ( 'title','Work Team' );
   document.body.appendChild ( this.element );
 
-  this.grid = new Grid ( '' );
-  this.addWidget   ( this.grid );
+  this.grid = new Grid  ( '' );
+  this.addWidget        ( this.grid );
   this.grid.setLabel    ( ' ',0,0,1,1 );
   this.grid.setCellSize ( '','6px', 0,0 );
   this.grid.setImage    ( image_path('workteam'),'48px','48px', 1,0,1,1 );
   this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
 
+  this.archived    = projectDesc.archive && projectDesc.archive.in_archive;
+  this.joined      = isProjectJoined(__login_id,projectDesc);
+  this.can_share   = (!this.archived) && (!this.joined) && (!__local_user);
+  this.projectDesc = projectDesc;
+
   var self = this;
-  this.makeLayout ( projectDesc,function(){
-    $(self.element).dialog({
-      resizable : false,
-      height    : 'auto',
-      maxHeight : 600,
-      width     : 'auto',
-      modal     : true,
-      buttons   : [{
-        id    : 'ok_btn_' + __id_cnt++,
-        text  : 'Ok',
-        click : function() {
-                  $(this).dialog ( 'close' );
-                }
-      }]
-    });
+  this.makeLayout ( function(){
+    if (self.can_share)  {
+      $(self.element).dialog({
+        resizable : false,
+        height    : 'auto',
+        maxHeight : 600,
+        width     : 'auto',
+        modal     : true,
+        buttons   : [{
+          id    : 'share_btn_' + __id_cnt++,
+          text  : 'Add team member',
+          click : function() {
+                    self.addUser();
+                  }
+        },{
+          id    : 'ok_btn_' + __id_cnt++,
+          text  : 'Ok',
+          click : function() {
+                    $(this).dialog ( 'close' );
+                  }
+        }]
+      });
+    } else  {
+      $(self.element).dialog({
+        resizable : false,
+        height    : 'auto',
+        maxHeight : 600,
+        width     : 'auto',
+        modal     : true,
+        buttons   : [{
+          id    : 'ok_btn_' + __id_cnt++,
+          text  : 'Ok',
+          click : function() {
+                    $(this).dialog ( 'close' );
+                  }
+        }]
+      });
+    }
   });
 
 }
@@ -64,67 +92,151 @@ WorkTeamDialog.prototype.constructor = WorkTeamDialog;
 
 // ============================================================================
 
-WorkTeamDialog.prototype.makeLayout = function ( projectDesc,callback_func )  {
+WorkTeamDialog.prototype.access_desc = function ( permissions )  {
+  switch (permissions)  {
+    case share_permissions.view_only : return 'view only';  
+    case share_permissions.run_own   : return 'run and delete own jobs';
+    case share_permissions.full      : return 'full';
+    default : ;
+  }
+  return '';
+}
+
+
+WorkTeamDialog.prototype.makeLayout = function ( callback_func )  {
 
   var self   = this;
 
-  var author = getProjectAuthor ( projectDesc );
-  var owner  = getProjectOwner  ( projectDesc );
+  var author = getProjectAuthor ( this.projectDesc );
+  var owner  = getProjectOwner  ( this.projectDesc );
 
   serverRequest ( fe_reqtype.shareProjectConfirm,{
-    desc   : projectDesc,
-    share0 : projectDesc.share,
+    desc   : this.projectDesc,
+    share0 : this.projectDesc.share,
     author : author,
     owner  : owner
   },'Share Project Confirm',
     function(data){
-      let table = null;
       let info  = 
-        '<h2>Project "' + projectDesc.name + '" Work Team</h2>' +
+        '<h2>Project "' + self.projectDesc.name + '" Work Team</h2>' +
         '<div style="max-height:200px;overflow-y:auto">' +
         '<table>';
       if (data.author[0]==data.owner[0])  {
-        info += '<tr><td><b><i>Author & keeper</i> :</b></td><td>' + data.author[1] +
+        info += '<tr><td><b><i>Author & Owner</i> :</b></td><td>' + data.author[1] +
               '</td><td>&nbsp;<b>[' + data.author[0] + ']</b>&nbsp;</td><td><i>' +
               data.author[2] + '</i></td></tr>';
       } else  {
         info += '<tr><td><b><i>Author</i> :</b></td><td>' + data.author[1] +
               '</td><td>&nbsp;<b>[' + data.author[0] + ']</b>&nbsp;</td><td><i>' +
               data.author[2] + '</i></td></tr>' +
-            '<tr><td><b><i>Keeper</i> :&nbsp;</b></td><td>' + data.owner[1] +
+            '<tr><td><b><i>Owner</i> :&nbsp;</b></td><td>' + data.owner[1] +
               '</td><td>&nbsp;<b>[' + data.owner[0] + ']</b>&nbsp;</td><td><i>' +
               data.owner[2] + '</i></td></tr>';
       }
       info += '<tr><td colspan=4 height="6px"> </td></tr>';
-      if (data.oldShared.length<=0)
-        info += '<tr><td colSpan=3><b><i>Co-workers (shared)</i>:&nbsp;</b>' +
-               '<i>None</i></td></tr>';
-      else  {
+      if (data.oldShared.length<=0)  {
+        info += '<tr><td colSpan=3><b><i>Team members</i>:&nbsp;</b>' +
+                '<i>None</i></td></tr>';
+        self.grid.setLabel ( info,0,2,2,1 );
+      } else  {
 
-        info += '<tr><td colSpan=3><b><i>Co-workers (shared)</i></b></td></tr>';
+        info += '<tr><td colSpan=3><b><i>Team members:</i></b>';
+        if (self.archived)
+          info += '&nbsp;<span style="font-size:80%">(cannot be managed for archived projects)</span>';
+        else if (__local_user)
+          info += '&nbsp;<span style="font-size:80%">(cannot be managed in Desktop Mode)</span>';
+        else if (self.joined)
+          info += '&nbsp;<span style="font-size:80%">(can be managed only by Owner)</span>';
+        info += '</td></tr>';
+        self.grid.setLabel ( info,0,2,2,1 );
 
-        table = new Table();
+        let table = new Table();
+        self.grid.setWidget ( table,2,2,1,1 );
+
         table.setHeaderRow ( 
-          ['##','Name','Login','E-mail','Access'],
+          ['##','Name','Login','E-mail','Access level'],
           ['','','','','']
         );
+
         let row = 0;
-        for (let i=0;i<data.oldShared.length;i++)  {
-          row++;
-          table.setRow ( '' + row,'',[
-            data.oldShared[i][1],
-            '<b>[' + data.oldShared[i][0] + ']</b>',
-            data.oldShared[i][2]
-          ],row,(row & 1)==1 );
+        let alt = false;
+
+        if (self.can_share)  {
+          
+          for (let i=0;i<data.oldShared.length;i++)  {
+            row++;
+            let uname  = data.oldShared[i][1];
+            let slogin = data.oldShared[i][0];
+            table.setRow ( '' + row,'',[
+              uname,
+              '<b>[' + slogin + ']</b>',
+              data.oldShared[i][2]
+            ],row,alt );
+            let permissions = data.oldShared[i][3].permissions;
+            let roleCombo   = new Dropdown();
+            table.setWidget    ( roleCombo,row,4,alt );
+            roleCombo.setWidth ( '230px' );
+            roleCombo.addItem  ( 'view only','',share_permissions.view_only,
+                                 permissions==share_permissions.view_only );
+            roleCombo.addItem  ( 'run and delete own jobs','',share_permissions.run_own,
+                                 permissions==share_permissions.run_own );
+            roleCombo.addItem  ( 'full','',share_permissions.full,
+                                 permissions==share_permissions.full );
+            roleCombo.addItem  ( 'unshare','','unshare',false );
+            roleCombo.make();
+            roleCombo.addOnChangeListener ( function(text,value){
+              if (value=='unshare')
+                self.unshareUser ( slogin,uname );
+              else if (value!=permissions)
+                self.changePermissions ( slogin,uname,permissions,value );
+            });
+            alt = !alt;
+          }
+          
+          for (let i=0;i<data.unknown.length;i++)  {
+            row++;
+            let slogin = data.unknown[i];
+            table.setRow ( '' + row,'',[
+              '<i>Unknown</i>',
+              '<b>[' + slogin + ']</b>',
+              '<i>unknown</i>'
+            ],row,alt );
+            let unk_btn = new Button  ( 'unshare',image_path('unknown_user') );
+            table.setWidget  ( unk_btn,row,4,alt )
+            unk_btn.setWidth ( '230px' );
+            unk_btn.addOnClickListener ( function(){
+              self.unshareUser ( slogin,'Unknown' );
+            });
+            alt = !alt;
+          }
+
+        } else  {
+          
+          for (let i=0;i<data.oldShared.length;i++)  {
+            row++;
+            table.setRow ( '' + row,'',[
+              data.oldShared[i][1],
+              '<b>[' + data.oldShared[i][0] + ']</b>',
+              data.oldShared[i][2],
+              self.access_desc ( data.oldShared[i][3].permissions )
+            ],row,alt );
+            alt = !alt;
+          }
+
+          for (let i=0;i<data.unknown.length;i++)  {
+            row++;
+            let slogin = data.unknown[i];
+            table.setRow ( '' + row,'',[
+              '<i>Unknown</i>',
+              '<b>[' + slogin + ']</b>',
+              '<i>unknown</i>',
+              ''
+            ],row,alt );
+            alt = !alt;
+          }
+
         }
-        for (let i=0;i<data.unknown.length;i++)  {
-          row++;
-          table.setRow ( '' + row,'',[
-            '<i>Unknown</i>',
-            '<b>[' + data.unknown[i] + ']</b>',
-            '<i>unknown</i>'
-          ],row,(row & 1)==1 );
-        }
+
         table.setAllColumnCSS ({
           'vertical-align' : 'middle',
           'text-align'     : 'left',
@@ -132,25 +244,212 @@ WorkTeamDialog.prototype.makeLayout = function ( projectDesc,callback_func )  {
           'font-family'    : 'arial'
         },1,1 );
 
-        // if (data.unknown.length>0)  {
-        //   msg += '<tr><td colspan=3 height="6px"> </td></tr>' +
-        //         '<tr><td><b><i>Unknown</i>:&nbsp;</b></td><td colspan=3><b>[' + 
-        //         data.unknown[0] + ']</b></td></tr>';
-        //   for (let i=1;i<data.unknown.length;i++)
-        //     msg += '<tr><td></td><td colspan=3><b>[' + 
-        //           data.unknown[i] + ']</b></td></tr>';
-        // }
       }
-      self.grid.setLabel ( info,0,2,2,1 );
-      if (table)
-        self.grid.setWidget ( table,2,2,1,1 );
+
       if (callback_func)
         callback_func();
-      // self.grid.setVerticalAlignment ( 0,2,'middle' );
 
     },null,null );
 
 }
+
+
+WorkTeamDialog.prototype.addUser = function()  {
+
+  var self = this;
+
+  var inputBox = new InputBox ( 'Add team member' );
+  inputBox.setText ( '','share' );
+  var ibx_grid = inputBox.grid;
+  ibx_grid.setLabel ( '<h2>Share Project "' + this.projectDesc.name + '"</h2>',0,2,2,3 );
+  ibx_grid.setLabel ( 'Share the Project with&nbsp;',2,2,1,1 );
+  ibx_grid.setVerticalAlignment ( 2,2,'middle' );
+
+  var share_inp  = new InputText ( '' );
+  share_inp.setStyle      ( 'text',__regexp_login, //'^[A-Za-z][A-Za-z0-9\\-\\._-]+$',
+                            appName() + ' user login','' );
+  share_inp.setFontItalic ( true    );
+  ibx_grid .setWidget     ( share_inp,2,3,1,1 );
+  share_inp.setWidth      ( '200px' );
+  ibx_grid .setLabel      ( 'and allow them&nbsp;',3,2,1,1 ).setHorizontalAlignment('right');
+  ibx_grid .setVerticalAlignment ( 3,2,'middle' );
+  var roleCombo   = new Dropdown();
+  ibx_grid .addWidget     ( roleCombo,3,3,1,1 );
+  roleCombo.setWidth      ( '230px' );
+  roleCombo.addItem       ( 'only view the project'  ,'',share_permissions.view_only,false );
+  roleCombo.addItem       ( 'run and delete own jobs','',share_permissions.run_own,true );
+  roleCombo.addItem       ( 'full access'            ,'',share_permissions.full,false );
+  roleCombo.make();
+
+  ibx_grid.setLabel       ( '&nbsp;<br>The user will be notified about this action ' +
+                            'by e-mail.<br>Please confirm.',4,2,1,3 );
+
+  inputBox.launch ( 'Yes, share',function(){
+
+    if (share_inp.element.validity.patternMismatch)  {
+
+      new MessageBox ( 'Invalid login name',
+                       '<div style="width:350px"><h2>Invalid login name</h2>' +
+                       'Login name can contain only latin letters, numbers, ' +
+                       'underscores, dashes and dots, and must start with a ' +
+                       'letter.</div>','msg_excl' );
+      return false;
+
+    } else  {
+
+      let slogin      = share_inp.getValue();
+      let permissions = roleCombo.getValue();
+      
+      if (slogin in self.projectDesc.share)  {
+        new MessageBox ( 'Already in the team',
+                         '<div style="width:350px"><h2>User already in the team</h2>' +
+                         'User <b>' + slogin + '</b> is already in project\'s ' +
+                         'work team.</div>','msg_excl' );
+        return false;
+      }
+
+      let share = {};
+      share[slogin] = {
+        labels      : {},
+        permissions : permissions
+      };
+
+      serverRequest ( 
+        fe_reqtype.shareProjectConfirm,{
+          desc   : { share : share },
+          share0 : {}
+        },'Share Project',function(data){
+          let uspec = null;
+          for (let i=0;(i<data.newShared.length) && (!uspec);i++)
+            if (data.newShared[i][0]==slogin)
+              uspec = data.newShared[i];
+          if (uspec)  {
+            new QuestionBox ( 'Confirm sharing project',
+                '<h2>Share project "' + self.projectDesc.name + 
+                '"</h2>You are about to share the project '  +
+                'with the following user:<p><table><tr><td><i>Login name:</i></td><td><b>' +
+                uspec[0] + '</b></td></tr><tr><td><i>User name:</i></td><td><b>'     + 
+                uspec[1] + '</b></td></tr><tr><td><i>E-mail:</i></td><td><b>'        + 
+                uspec[2] + '</b></td></tr><tr><td><i>to be allowed:&nbsp;</i></td><td><b>' +
+                roleCombo.getText() + '</b></td></tr></table><p>' +
+                'The user will be notified about this action by e-mail.<br>' +
+                'Please confirm.',[{  
+                    name    : 'Please share',
+                    onclick : function(){ 
+                                self.share_request ( slogin,permissions );
+                              }
+                  },{
+                    name    : 'Cancel',
+                    onclick : function(){}
+                  }],'share' );
+          } else  {
+            new MessageBox ( 'Unrecognised login name',
+                '<h2>User not found</h2>User <b>' + slogin + '</b> not found.',
+                'msg_excl' );
+          }
+        },null,null
+      );
+
+      return true;
+
+    }
+  });
+
+}
+
+
+WorkTeamDialog.prototype.unshareUser = function ( slogin,uname )  {
+
+  var self = this;
+  new QuestionBox ( 'Unshare project',
+      '<div style="width:380px">' +
+      '<h2>Unshare project <i>"' + this.projectDesc.name + '"</i></h2>' +
+      'Project ' + this.projectDesc.name + ' will be unshared with user <b>' +
+      slogin + '</b> (<i>' + uname + '</i>). The user will lose access to ' +
+      'the project, including their data, jobs and results.' + 
+      '<p>The user will be notified about this action by e-mail. Please ' +
+      'confirm.',
+      [{
+        name    : 'Yes, unshare',
+        onclick : function(){
+                    self.share_request ( slogin,null );
+                  }
+       },{
+        name    : 'Cancel',
+        onclick : function(){}
+       }],
+       'share' );
+
+}
+
+
+WorkTeamDialog.prototype.changePermissions = function ( slogin,uname,
+                                            old_permissions,new_permissions )  {
+
+  var self = this;
+
+  new QuestionBox ( 'Change access permissions',
+      '<div style="width:400px">' +
+      '<h2>Change access permissions</h2>'  +
+      'Access permissions for user <b>'     + slogin + '</b> (<i>' + uname + 
+      '</i>) will change<p>&nbsp;&nbsp;&nbsp;&nbsp;from&nbsp;&nbsp;<b>"' + 
+      this.access_desc(old_permissions)     +
+      '"</b>&nbsp;&nbsp;to&nbsp;&nbsp;<b>"' + 
+      this.access_desc(new_permissions)     + '".</b>'  +
+      '<p>The user will be notified about this action by e-mail. Please ' +
+      'confirm.',
+      [{
+        name    : 'Yes, change',
+        onclick : function(){ 
+                    self.share_request ( slogin,new_permissions );
+                  }
+       },{
+        name    : 'Cancel',
+        onclick : function(){
+                    self.makeLayout ( null );
+                  }
+       }],
+       'share' );
+
+}
+
+WorkTeamDialog.prototype.share_request = function ( slogin,permissions )  {
+// null permissions mean that 'slogin' should be unshared
+
+  var share0 = {};
+  for (let ulogin in this.projectDesc.share)
+    share0[ulogin] = this.projectDesc.share[ulogin];
+
+  if (permissions)  {
+    this.projectDesc.share[slogin] = {
+      labels      : {},
+      permissions : permissions
+    }
+  } else  {
+    delete this.projectDesc.share[slogin];
+  }
+
+  var self = this;
+  serverRequest ( 
+    fe_reqtype.shareProject,{
+      desc   : this.projectDesc,
+      share0 : share0  // previous share state
+    },'Share Project',function(data){
+      if (data.desc)  {
+        self.projectDesc.share = data.desc.share;
+      } else  {
+        self.projectDesc.share = share0;
+        new MessageBox ( 'Share request denied',
+              '<h2>Sharing request denied</h2>' +
+              '<i>This may be indicative of a bug or service failure.</i>',
+              'msg_excl' );
+      }
+      self.makeLayout ( null );
+    },null,null
+  );
+}
+
+
 
 /*
 function ulist ( user_lst )  {
