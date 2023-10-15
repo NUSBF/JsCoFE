@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.09.23   <--  Date of Last Modification.
+ *    15.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -473,6 +473,26 @@ function ProjectListPage ( sceneId )  {
   //                      'msg_error' );
   // }
 
+  var prjWorkTeam = function()  {
+    panel.click();  // get rid of context menu
+    var pno = getCurrentProjectNo();
+    if (pno>=0)  {
+      new WorkTeamDialog ( projectList.projects[pno] );
+      // ,function(desc){
+      //   if (desc)  {
+      //     projectList.projects[pno] = desc;
+      //     projectList.resetFolders ( __login_id );
+      //     saveProjectList ( function(data){},null );
+      //   }
+      // });
+    } else
+      new MessageBox ( 'No Project',
+                       '<h2>No Project is selected<h2>' +
+                       'This is likely to be a program error. ' +
+                       'Select project and try again.',
+                       'msg_error' );
+  }
+
   var cloneProject = function()  {
     panel.click();  // get rid of context menu
 
@@ -905,9 +925,6 @@ function ProjectListPage ( sceneId )  {
             if (!archive_folder)
               contextMenu.addItem(del_label,image_path('remove')).addOnClickListener(deleteProject);
             contextMenu.addItem('Export',image_path('export')  ).addOnClickListener(exportProject);
-            // if ((!archive_folder) && (__current_folder.type!=folder_type.joined) &&
-            //     (!__local_user))
-            //   contextMenu.addItem('Share',image_path('share')).addOnClickListener(sharePrj);
             contextMenu.addItem('Clone',image_path('cloneprj')).addOnClickListener(cloneProject );
             if (((__current_folder.type==folder_type.user) &&
                   __current_folder.path.startsWith(owners_folder)) ||
@@ -920,6 +937,9 @@ function ProjectListPage ( sceneId )  {
             else if (__current_folder.type==folder_type.cloud_archive)
               contextMenu.addItem('Delist',image_path('folder_cloud_archive_delist') )
                          .addOnClickListener(function(){ delistProject(); });
+            if ((!archive_folder) && (__current_folder.type!=folder_type.joined) &&
+                (!__local_user))
+              contextMenu.addItem('Work team',image_path('workteam')).addOnClickListener(prjWorkTeam);
             if (__is_archive && pDesc.folderPath.startsWith(owners_folder))
               contextMenu.addItem('Archive',image_path('archive')).addOnClickListener(archiveProject);
             // contextMenu.addItem('Repair',image_path('repair')).addOnClickListener(repairProject);
