@@ -155,14 +155,6 @@ function ProjectPage ( sceneId )  {
 
     self.addMenuSeparator();
 
-    self.addMenuItem ( 'Project settings','project_settings',function(){
-      if (self.jobTree && self.jobTree.projectData)
-            new ProjectSettingsDialog ( self.jobTree,function(){
-              self.jobTree.saveProjectData ( [],[],true, null );
-            });
-      else  new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
-    });
-
     // if (!__local_user)  {
     //   self.addMenuItem ( 'Work team','workteam',function(){
     //     if (self.jobTree)
@@ -187,6 +179,14 @@ function ProjectPage ( sceneId )  {
       });
     }
     // }
+
+    self.addMenuItem ( 'Project settings','project_settings',function(){
+      if (self.jobTree && self.jobTree.projectData)
+            new ProjectSettingsDialog ( self.jobTree,function(){
+              self.jobTree.saveProjectData ( [],[],true, null );
+            });
+      else  new MessageBox ( 'No Project','No Project loaded', 'msg_warning' );
+    });
 
     self.addLogoutToMenu ( function(){
       self.confirmLeaving ( function(do_leave){
