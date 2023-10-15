@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    04.08.23   <--  Date of Last Modification.
+ *    15.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -242,6 +242,13 @@ function checkProjectLabel ( loginName,projectDesc,label )  {
          (label in projectDesc.share[loginName].labels);
 }
 
+function getProjectPermissions ( loginName,projectDesc )  {
+  if (loginName==projectDesc.owner.login)
+    return share_permissions.full;
+  if (loginName in projectDesc.share)
+    return projectDesc.share[loginName].permissions;
+  return share_permissions.view_only;
+}
 
 function compareProjectLabels ( login,projectDesc1,projectDesc2 )  {
 var labels1 = {};

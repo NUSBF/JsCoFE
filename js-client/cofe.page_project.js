@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.10.23   <--  Date of Last Modification.
+ *    15.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -808,7 +808,7 @@ ProjectPage.prototype._set_button_state = function() {
 var dsel = false;
 var task = this.jobTree.getSelectedTask();
 var node = this.jobTree.getSelectedNode();
-var not_in_archive = (!this.jobTree.in_archive);
+var not_view_only = (!this.jobTree.view_only);
 var child_tasks = this.jobTree.getChildTasks ( node );
 var has_remark  = false;
 
@@ -828,7 +828,7 @@ var has_remark  = false;
       if (tparent)
         add_enabled = (tparent.state==job_code.finished);
     }
-    var can_add = (!__dormant) && not_in_archive &&
+    var can_add = (!__dormant) && not_view_only &&
                   ((task.state==job_code.finished) || (is_remark && add_enabled));
     this.add_btn  .setEnabled ( can_add );
     this.del_btn  .setEnabled ( (!__dormant) && dsel && (!('archive_version' in task)) );
@@ -840,19 +840,19 @@ var has_remark  = false;
     this.stop_btn .setEnabled ( dsel && ((task.state==job_code.running) ||
                                          (task.state==job_code.ending)) );
     this.add_rem_btn.setEnabled ( (!__dormant) && (!has_remark) && (!is_remark) &&
-                                  not_in_archive );
+                                  not_view_only );
     if (is_remark)
           this.del_btn.setTooltip ( 'Delete remark' );
     else  this.del_btn.setTooltip ( 'Delete job' );
   } else  {  // root
-    this.add_btn  .setEnabled ( (!__dormant) && not_in_archive );
-    this.del_btn  .setEnabled ( (!__dormant) && not_in_archive && dsel );
-    this.dock     .setEnabled ( (!__dormant) && not_in_archive );
+    this.add_btn  .setEnabled ( (!__dormant) && not_view_only );
+    this.del_btn  .setEnabled ( (!__dormant) && not_view_only && dsel );
+    this.dock     .setEnabled ( (!__dormant) && not_view_only );
     this.clone_btn.setEnabled ( false );  // dsel ???
     if (this.moveup_btn)
       this.moveup_btn.setEnabled ( false );
     this.stop_btn    .setEnabled ( false );
-    this.add_rem_btn .setEnabled ( (!__dormant) && (!has_remark) && not_in_archive );
+    this.add_rem_btn .setEnabled ( (!__dormant) && (!has_remark) && not_view_only );
   }
   this.thlight_btn.setEnabled ( true );
 
@@ -1032,7 +1032,7 @@ ProjectPage.prototype.onTreeContextMenu = function() {
       };
     }
 
-    if (node.parentId && (!self.jobTree.in_archive) && crTask 
+    if (node.parentId && (!self.jobTree.view_only) && crTask 
                       && (crTask.state!=job_code.remark))  {
       let clipboard_name = crTask.clipboard_name();
       if (clipboard_name)
@@ -1054,7 +1054,7 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
 
   // these go first in all cases
   this.refresh_btn.setDisabled ( false );
-  this.selmode_btn.setDisabled ( job_tree.in_archive );
+  this.selmode_btn.setDisabled ( job_tree.view_only );
 
   if ((!job_tree) || (!job_tree.projectData))  {
     if (stayInProject)  {
