@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.10.23   <--  Date of Last Modification.
+ *    15.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -60,7 +60,7 @@ function JobDialog ( params,          // data and task projections up the tree b
 
   this._created     = false;
 
-  this.dlg_active   = (!__dormant) && (!this.tree.in_archive) && 
+  this.dlg_active   = (!__dormant) && (!this.tree.view_only) && 
                       (!('archive_version' in this.task));
 
   if ((this.task.state==job_code.remark) && (this.task.openWebLink()))  {
@@ -188,7 +188,7 @@ function JobDialog ( params,          // data and task projections up the tree b
 
     // Listen for input event, emitted when input data changes
     if ((dlg.task.state!=job_code.running) && dlg.inputPanel && 
-        (!dlg.tree.in_archive))  {
+        (!dlg.tree.view_only))  {
       dlg.inputPanel.element.addEventListener(cofe_signals.jobDlgSignal,function(e){
         onDlgSignal_func ( dlg,e.detail,null );
       },false );
@@ -305,7 +305,7 @@ JobDialog.prototype.setDlgState = function()  {
 
   if (this.inputPanel)  {
     this.inputPanel.setDisabledAll ( !isNew );
-    if (!this.tree.in_archive)
+    if (!this.tree.view_only)
       this.task.disableInputWidgets ( this.inputPanel,!isNew );
   }
   if (this.radioSet)
@@ -1095,7 +1095,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
         if ((dlg.task.state!=job_code.running) &&
             (dlg.task.state!=job_code.ending)  &&
             (dlg.task.state!=job_code.exiting) &&
-            (!dlg.tree.in_archive))  {
+            (!dlg.tree.view_only))  {
           dlg.collectTaskData ( true );
           dlg.requestServer   ( fe_reqtype.saveJobData,function(rdata){
             if (rdata.project_missing)  {

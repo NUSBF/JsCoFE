@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.10.23   <--  Date of Last Modification.
+ *    15.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -601,7 +601,7 @@ if (!dbx)  {
 
   TaskTemplate.prototype.canClone = function ( node,jobTree )  {
     return (this.isTaskAvailable()[0]=='ok') && jobTree && 
-           (!jobTree.in_archive);
+           (!jobTree.view_only);
     /*
     if ((this.nc_type=='client') && (!__local_service))
       return false;

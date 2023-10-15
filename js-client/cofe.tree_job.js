@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.10.23   <--  Date of Last Modification.
+ *    15.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -93,6 +93,7 @@ function JobTree()  {
 
   this.mode         = 'project';  //  'replay', 'select'
   this.in_archive   = false;
+  this.view_only    = false;
 //  this.replay_mode  = false;  // works with the replay project if true
 
 }
@@ -282,6 +283,9 @@ JobTree.prototype.readProjectData = function ( page_title,
         tree.projectData.desc.autorun = false;
 
         tree.in_archive = inArchive ( tree.projectData.desc );
+        tree.view_only  = tree.in_archive ||
+            (getProjectPermissions(__login_id,tree.projectData.desc)
+                                               == share_permissions.view_only);
 
         if (startmode)
           tree.projectData.desc.startmode = startmode;
@@ -886,7 +890,7 @@ JobTree.prototype.missingProject = function()  {
 
 JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
                                                callback_func )  {
-  if (this.in_archive)  {
+  if (this.view_only)  {
     if (callback_func)
       callback_func ( this,{ reload : 0 } );
   } else if (this.projectData)  {
@@ -2006,7 +2010,7 @@ JobTree.prototype.pasteJobFromClipboard = function ( callback_func ) {
 
 JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
 
-  if (this.in_archive)
+  if (this.view_only)
     return;
 
   if (this.selected_node_id)  {
