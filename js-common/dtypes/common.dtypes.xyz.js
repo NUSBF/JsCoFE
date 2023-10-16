@@ -163,22 +163,54 @@ if (!__template)  {
       for (var i=0;i<xyz.length;i++)
         n += xyz[i].chains.length;
 
+    dsp.table.setHeaderText ( 'Contents',dsp.trow,0, 1,1 );
+    dsp.table.setVerticalAlignment   ( dsp.trow,0,'top' );
+    dsp.table.setHorizontalAlignment ( dsp.trow,0,'left' );
+
+    let table = dsp.table.setTable ( dsp.trow,1, 1,1 );
+    $(table.element).css({'box-shadow':'none','width':'10%'});
+    dsp.trow++;
+
+    var trow = 0;
+    table.setHeaderText ( 'Model'   ,trow,0, 1,1 );
+    table.setHeaderText ( 'Chain'   ,trow,1, 1,1 );
+    table.setHeaderText ( 'Type'    ,trow,2, 1,1 );
+    table.setHeaderText ( 'Size'    ,trow,3, 1,1 );
+    // dsp.table.setLabel      ( ' '       ,dsp.trow,5, n,1 );
+    // dsp.table.setCellSize   ( '90%',''  ,dsp.trow,5 );
+    trow++;
+
+    if (xyz)
+      for (let i=0;i<xyz.length;i++)  {
+        var xyzi = xyz[i];
+        table.setLabel ( xyzi.model,trow,0,xyzi.chains.length,1 );
+        var col  = 1;
+        for (let j=0;j<xyzi.chains.length;j++)  {
+          table.setLabel ( xyzi.chains[j].id  ,trow,col  , 1,1 );
+          table.setLabel ( xyzi.chains[j].type,trow,col+1, 1,1 );
+          table.setLabel ( xyzi.chains[j].size,trow,col+2, 1,1 );
+          col = 0;
+          trow++;
+        }
+      }
+
+    /*
     dsp.table.setHeaderText ( 'Contents',dsp.trow,0, n,1 );
     dsp.table.setHorizontalAlignment ( dsp.trow,0,'left' );
     dsp.table.setHeaderText ( 'Model'   ,dsp.trow,1, 1,1 );
     dsp.table.setHeaderText ( 'Chain'   ,dsp.trow,2, 1,1 );
     dsp.table.setHeaderText ( 'Type'    ,dsp.trow,3, 1,1 );
     dsp.table.setHeaderText ( 'Size'    ,dsp.trow,4, 1,1 );
-    dsp.table.setLabel      ( ' '       ,dsp.trow,5, n,1 );
-    dsp.table.setCellSize   ( '90%',''  ,dsp.trow,5 );
+    // dsp.table.setLabel      ( ' '       ,dsp.trow,5, n,1 );
+    // dsp.table.setCellSize   ( '90%',''  ,dsp.trow,5 );
     dsp.trow++;
 
     if (xyz)
-      for (var i=0;i<xyz.length;i++)  {
+      for (let i=0;i<xyz.length;i++)  {
         var xyzi = xyz[i];
         var col  = 1;
         dsp.table.setLabel ( xyzi.model,dsp.trow,0,xyzi.chains.length,1 );
-        for (var j=0;j<xyzi.chains.length;j++)  {
+        for (let j=0;j<xyzi.chains.length;j++)  {
           dsp.table.setLabel ( xyzi.chains[j].id  ,dsp.trow,col  , 1,1 );
           dsp.table.setLabel ( xyzi.chains[j].type,dsp.trow,col+1, 1,1 );
           dsp.table.setLabel ( xyzi.chains[j].size,dsp.trow,col+2, 1,1 );
@@ -186,6 +218,7 @@ if (!__template)  {
           dsp.trow++;
         }
       }
+    */
 
   }
 
@@ -200,7 +233,7 @@ if (!__template)  {
         dsp.makeRow ( 'mmCIF file name',this.files[file_key.mmcif],
                       'Name of file with XYZ coordinates in mmCIF (deposition) format' );
     } else  {
-      for (var key in this.files)
+      for (let key in this.files)
         if (this.files.hasOwnProperty(key))
           dsp.makeRow ( 'File name',this.files[key],'Imported file name' );
     }
@@ -211,7 +244,9 @@ if (!__template)  {
     this.inspectXYZData   ( dsp  );
     this.addToInspectData ( dsp  );
     dsp .addUglyMolButton ( task );
+    
     return dsp;
+
   }
 
   var _agents = [
