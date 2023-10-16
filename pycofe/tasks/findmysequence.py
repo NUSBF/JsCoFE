@@ -162,10 +162,14 @@ class FindMySequence(basic.TaskDriver):
         else:
             self.putTitle ( "No plausible sequence matches found" )
 
-
-        self.generic_parser_summary["pisa"] = {
-            "summary_line" : str(nseq) + " sequences found"
-        }
+        if int(nseq) == 1:
+            self.generic_parser_summary["pisa"] = {
+                "summary_line" : str(nseq) + " sequence found"
+            }
+        else:
+            self.generic_parser_summary["pisa"] = {
+                "summary_line" : str(nseq) + " sequences found"
+            }
 
         # close execution logs and quit
         self.success ( (nseq>0) )
