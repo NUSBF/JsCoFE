@@ -184,12 +184,14 @@ if (!__template)  {
       for (let i=0;i<xyz.length;i++)  {
         var xyzi = xyz[i];
         table.setLabel ( xyzi.model,trow,0,xyzi.chains.length,1 );
-        var col  = 1;
+        var col  = 0;
         for (let j=0;j<xyzi.chains.length;j++)  {
-          table.setLabel ( xyzi.chains[j].id  ,trow,col  , 1,1 );
-          table.setLabel ( xyzi.chains[j].type,trow,col+1, 1,1 );
-          table.setLabel ( xyzi.chains[j].size,trow,col+2, 1,1 );
-          col = 0;
+          if (j>0)
+            table.setLabel ( '',trow,col, 1,1 );
+          table.setLabel ( xyzi.chains[j].id  ,trow,col+1, 1,1 );
+          table.setLabel ( xyzi.chains[j].type,trow,col+2, 1,1 );
+          table.setLabel ( xyzi.chains[j].size,trow,col+3, 1,1 );
+          // col = 0;
           trow++;
         }
       }
