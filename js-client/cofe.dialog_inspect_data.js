@@ -43,12 +43,12 @@ function DataSummaryPage ( data )  {
   this.table = this.grid.setTable ( 1,0, 1,1 );
 
   this.makeRow ( 'Producing job number',data.jobId,'Id of job produced this dataset' );
-  this.makeRow ( 'Version'     ,data.version.toString(),'Data object version number' );
+  this.makeRow ( 'Version',data.version.toString(),'Data object version number' );
 
   var type = data.title();
   if (data.subtype.length>0)
     type += ' (' + data.subtype.join(',') + ')';
-  type = type.replace(hkl_subtype.regular+',','').replace(','+hkl_subtype.regular,'');
+  type = type.replace ( hkl_subtype.regular+',','').replace(','+hkl_subtype.regular,'' );
 
   this.makeRow ( 'Type (subtypes)',type,'Data type and assigned subtypes' );
   this.makeRow ( 'Assigned name'  ,data.dname,'Assigned dataset name' );
@@ -64,13 +64,14 @@ DataSummaryPage.prototype.getTitle = function()  {
 
 DataSummaryPage.prototype.makeRow = function ( header,text,tooltip )  {
   this.table.setHeaderText ( header, this.trow,0, 1,1 )
-            .setTooltip ( tooltip ).setNoWrap();
-  if (text)
-    this.table.setLabel ( text, this.trow,1, 1,10 );
-  this.table.setHorizontalAlignment ( this.trow,0,'left'   );
-  this.table.setHorizontalAlignment ( this.trow,1,'left'   );
-  this.table.setCellSize  ( '10%','', this.trow,0 );
-  this.table.setCellSize  ( '90%','', this.trow,1 );
+            .setTooltip  ( tooltip ).setNoWrap();
+  this.table.setHorizontalAlignment ( this.trow,0,'left' );
+  this.table.setCellSize ( '10%','', this.trow,0 );
+  if (text)  {
+    this.table.setLabel    ( text, this.trow,1, 1,1 );
+    this.table.setHorizontalAlignment ( this.trow,1,'left' );
+    this.table.setCellSize ( '90%','', this.trow,1 );
+  }
   this.trow++;
 }
 

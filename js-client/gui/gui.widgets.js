@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    23.04.23   <--  Date of Last Modification.
+ *    16.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -640,9 +640,9 @@ Grid.prototype.getNCols = function()  {
 
 Grid.prototype.setWidget = function ( widget, row,col, rowSpan,colSpan )  {
 var cell = this.getCell ( row,col );
+  $(cell).empty();
   cell.rowSpan = rowSpan;
   cell.colSpan = colSpan;
-  $(cell).empty();
   if (widget)  {
     cell.appendChild ( widget.element );
     widget.parent = this;

@@ -42,10 +42,10 @@ Table.prototype.constructor = Table;
 
 Table.prototype.setHeaderWidget = function ( widget, row,col, rowSpan,colSpan ) {
 var cell = this.getCell ( row,col );
-  cell.rowSpan = rowSpan;
-  cell.colSpan = colSpan;
   $(cell).empty();
   cell.setAttribute ( 'class','table-blue-hh' );
+  cell.rowSpan = rowSpan;
+  cell.colSpan = colSpan;
   if (widget)  {
     cell.appendChild ( widget.element );
     widget.parent = this;
