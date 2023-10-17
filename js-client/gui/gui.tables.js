@@ -104,7 +104,7 @@ Table.prototype.setRow = function ( header,tooltip,cell_list,row,alt_bool )  {
 
 }
 
-Table.prototype.setLabel = function ( text,row,col,rowSpan,colSpan,alt_bool=false )  {
+Table.prototype.setText = function ( text,row,col,rowSpan,colSpan,alt_bool=false )  {
   var cell = this.getCell ( row,col );
   $(cell).empty();
   cell.rowSpan = rowSpan;
@@ -128,6 +128,20 @@ let cell = this.getCell ( row,col );
     widget.parent = this;
   }
   return cell;
+}
+
+Table.prototype.setLabel = function ( text,row,col,rowSpan,colSpan,alt_bool=false )  {
+let label = new Label ( text );
+let cell = this.getCell ( row,col );
+  $(cell).empty();
+  cell.rowSpan = rowSpan;
+  cell.colSpan = colSpan;
+  if (alt_bool)
+        cell.setAttribute ( 'class','table-blue-alt' );
+  else  cell.setAttribute ( 'class','table-blue-td'  );
+  cell.appendChild ( label.element );
+  label.parent = this;
+  return label;
 }
 
 
