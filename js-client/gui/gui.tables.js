@@ -91,11 +91,11 @@ Table.prototype.setRow = function ( header,tooltip,cell_list,row,alt_bool )  {
     col_cnt++;
   }
 
-  for (var i=0;i<cell_list.length;i++)  {
+  for (let i=0;i<cell_list.length;i++)  {
     var cell = this.getCell ( row,col_cnt++ );
+    $(cell).empty();
     cell.rowSpan = 1;
     cell.colSpan = 1;
-    $(cell).empty();
     if (alt_bool)
           cell.setAttribute ( 'class','table-blue-alt' );
     else  cell.setAttribute ( 'class','table-blue-td'  );
@@ -104,6 +104,16 @@ Table.prototype.setRow = function ( header,tooltip,cell_list,row,alt_bool )  {
 
 }
 
+Table.prototype.setLabel = function ( text,row,col,rowSpan,colSpan,alt_bool=false )  {
+  var cell = this.getCell ( row,col );
+  $(cell).empty();
+  cell.rowSpan = rowSpan;
+  cell.colSpan = colSpan;
+  if (alt_bool)
+        cell.setAttribute ( 'class','table-blue-alt' );
+  else  cell.setAttribute ( 'class','table-blue-td'  );
+  cell.innerHTML = text;
+}
 
 Table.prototype.setWidget = function ( widget,row,col,alt_bool )  {
 let cell = this.getCell ( row,col );
