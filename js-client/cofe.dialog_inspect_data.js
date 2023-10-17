@@ -67,11 +67,10 @@ DataSummaryPage.prototype.makeRow = function ( header,text,tooltip )  {
             .setTooltip  ( tooltip ).setNoWrap();
   this.table.setHorizontalAlignment ( this.trow,0,'left' );
   this.table.setCellSize ( '10%','', this.trow,0 );
-  if (text)  {
-    this.table.setLabel    ( text, this.trow,1, 1,1 );
-    this.table.setHorizontalAlignment ( this.trow,1,'left' );
-    this.table.setCellSize ( '90%','', this.trow,1 );
-  }
+  if (text)  this.table.setLabel    ( text, this.trow,1, 1,10 );
+       else  this.table.setLabel    ( ' ',  this.trow,1, 1,10 );
+  this.table.setHorizontalAlignment ( this.trow,1,'left' );
+  this.table.setCellSize ( '90%','', this.trow,1 );
   this.trow++;
 }
 

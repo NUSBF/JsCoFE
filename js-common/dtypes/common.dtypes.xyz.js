@@ -167,6 +167,7 @@ if (!__template)  {
     dsp.table.setVerticalAlignment   ( dsp.trow,0,'top' );
     dsp.table.setHorizontalAlignment ( dsp.trow,0,'left' );
 
+    /*
     let table = dsp.table.setTable ( dsp.trow,1, 1,1 );
     $(table.element).css({'box-shadow':'none','width':'10%'});
     dsp.trow++;
@@ -195,16 +196,16 @@ if (!__template)  {
           trow++;
         }
       }
-
-    /*
+    */
+    
     dsp.table.setHeaderText ( 'Contents',dsp.trow,0, n,1 );
     dsp.table.setHorizontalAlignment ( dsp.trow,0,'left' );
     dsp.table.setHeaderText ( 'Model'   ,dsp.trow,1, 1,1 );
     dsp.table.setHeaderText ( 'Chain'   ,dsp.trow,2, 1,1 );
     dsp.table.setHeaderText ( 'Type'    ,dsp.trow,3, 1,1 );
     dsp.table.setHeaderText ( 'Size'    ,dsp.trow,4, 1,1 );
-    // dsp.table.setLabel      ( ' '       ,dsp.trow,5, n,1 );
-    // dsp.table.setCellSize   ( '90%',''  ,dsp.trow,5 );
+    dsp.table.setLabel      ( ' '       ,dsp.trow,5, n,1 );
+    dsp.table.setCellSize   ( '90%',''  ,dsp.trow,5 );
     dsp.trow++;
 
     if (xyz)
@@ -220,7 +221,6 @@ if (!__template)  {
           dsp.trow++;
         }
       }
-    */
 
   }
 
