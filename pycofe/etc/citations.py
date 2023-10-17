@@ -570,14 +570,14 @@ citations = {
     'modelcraft': { 'name'     : 'Modelcraft',
                     'category' : 'primary',
                     'refs'     : [{
-                            'authors' : 'Bond, P.',
-                            'title'   : 'Next generation software for placing atoms into electron density maps',
-                            'journal' : 'PhD thesis',
-                            'volume'  : 'University of York',
-                            'year'    : '2021',
-                            'pages'   : '',
-                            'doi'     : '',
-                            'url'     : 'https://etheses.whiterose.ac.uk/29044/'
+                            'authors' : 'Bond, P. S., Cowtan, K. D.',
+                            'title'   : 'ModelCraft: an advanced automated model-building pipeline using Buccaneer',
+                            'journal' : 'Acta Cryst. D',
+                            'volume'  : '78',
+                            'year'    : '2022',
+                            'pages'   : '1090–1098',
+                            'doi'     : 'https://doi.org/10.1107/S2059798322007732'
+                          
                         }]
                   },
 

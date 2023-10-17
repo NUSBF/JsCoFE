@@ -266,5 +266,5 @@ if __name__ == "__main__":
                       password=parameters.password,  # Used to login into remote Cloud
                       remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
                       )
-    test_fms()
+ 
 
