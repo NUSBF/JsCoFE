@@ -30,7 +30,7 @@ import uuid
 
 #  application imports
 from . import basic
-from   pycofe.dtypes import dtype_template
+# from   pycofe.dtypes import dtype_template
 
 
 # ============================================================================
