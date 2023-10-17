@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    17.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2022-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2022-2023
 #
 # ============================================================================
 #
@@ -192,8 +192,7 @@ class ModelCraft(basic.TaskDriver):
         cmd += [
             "--cycles"          ,self.getParameter(sec1.NCYCLES_MAX),
             "--auto-stop-cycles",self.getParameter(sec1.NOIMPROVE_CYCLES),
-            "--directory"       ,self.modelcraft_tmp(),
-            "--disable-sheetbend"
+            "--directory"       ,self.modelcraft_tmp()
         ]
         if hkl.detwin:
             cmd += [ "--twinned" ]
