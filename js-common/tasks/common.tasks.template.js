@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.10.23   <--  Date of Last Modification.
+ *    17.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -521,7 +521,7 @@ if (!dbx)  {
               'localhost-based setup).<p>Contact your ' + appName() +
               ' maintainer at<br>' +
                   '<a href="mailto:' + __maintainerEmail +
-                    '?Subject=' + appName_html() + '%20Secure%20connection">' + 
+                    '?Subject=' + encodeURI(appName()) + '%20Secure%20connection">' + 
                     __maintainerEmail +
                   '</a>.'];
     }

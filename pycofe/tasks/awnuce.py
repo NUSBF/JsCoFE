@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    17.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -89,7 +89,7 @@ class AWNuce(basic.TaskDriver):
         #         cmd += [ "nucleotides",str(nas) ]
 
         self.putWaitMessageLF ( "Building in progress ..." )
-        self.rvrow -= 1
+        # self.rvrow -= 1
 
         self.runApp ( "auto_nuce.sh",cmd,logType="Main" )
 

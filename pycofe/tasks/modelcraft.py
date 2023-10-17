@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    17.11.23   <--  Date of Last Modification.
+#    17.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -36,7 +36,7 @@ import gemmi
 #  application imports
 from . import basic
 from   pycofe.dtypes   import dtype_template
-from   varut           import signal, rvapi_utils
+# from   varut           import signal, rvapi_utils
 from   pycofe.proc     import qualrep
 from   pycofe.verdicts import verdict_modelcraft
 from   pycofe.auto     import auto
@@ -226,10 +226,11 @@ class ModelCraft(basic.TaskDriver):
             "Build in progress",
             gridId,0,3
         )
-        self.rvrow -= 1
+        # self.rvrow -= 1
+        # self.rvrow += 1
 
         # prepare report parser
-        self.setGenericLogParser ( "modelcraft_report",True )
+        # self.setGenericLogParser ( "modelcraft_report",True )
 
         # start modelcraft
         # if sys.platform.startswith("win"):
@@ -237,13 +238,15 @@ class ModelCraft(basic.TaskDriver):
         # else:
         rc = self.runApp ( "modelcraft",cmd,logType="Main",quitOnError=False )
 
-        self.unsetLogParser()
+        # self.unsetLogParser()
 
         self.addCitations ([
             'modelcraft','refmac5','cbuccaneer','cparrot','coot'
         ])
 
         have_results = False
+
+        # self.rvrow -= 1
 
         if rc.msg:
             self.putTitle ( "Results" )
