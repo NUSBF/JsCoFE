@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    17.10.23   <--  Date of Last Modification.
+#    18.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -183,10 +183,18 @@ class ModelCraft(basic.TaskDriver):
                     "--phases", ",".join(labin_ph)
                 ]
             else:
-                cmd += [
-                    "--phases", ",".join(labin_ph),
-                    "--unbiased"
-                ]
+                if istruct.getXYZFilePath(self.inputDir()) != None:
+                    cmd += [
+                        "--model", istruct.getXYZFilePath(self.inputDir()),
+                        "--phases", ",".join(labin_ph),
+                        "--unbiased"
+                    ]
+                else: cmd += [
+                    
+                        "--phases", ",".join(labin_ph),
+                        "--unbiased"
+                    ]
+
         else:  #  molecular replacement
             if istruct.getXYZFilePath(self.inputDir()) != None:
                 cmd += [ "--model", istruct.getXYZFilePath(self.inputDir()) ]
@@ -248,6 +256,8 @@ class ModelCraft(basic.TaskDriver):
         #     rc = self.runApp ( "modelcraft.bat",cmd,logType="Main",quitOnError=False )
         # else:
         rc = self.runApp ( "modelcraft",cmd,logType="Main",quitOnError=False )
+
+        
 
         # self.unsetLogParser()
 
