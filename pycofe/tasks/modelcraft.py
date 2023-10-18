@@ -188,7 +188,18 @@ class ModelCraft(basic.TaskDriver):
                     "--unbiased"
                 ]
         else:  #  molecular replacement
-            cmd += [ "--model", istruct.getXYZFilePath(self.inputDir()) ]
+            if istruct.getXYZFilePath(self.inputDir()) != None:
+                cmd += [ "--model", istruct.getXYZFilePath(self.inputDir()) ]
+            else: 
+
+                labin_ph = [istruct.PHI,istruct.FOM]
+                self.makePhasesMTZ (
+                        hkl.getHKLFilePath(self.inputDir())    ,labin_fo,
+                        istruct.getMTZFilePath(self.inputDir()),labin_ph,
+                        input_mtz )
+                cmd += [
+                    "--phases", ",".join(labin_ph)
+                ]
         cmd += [
             "--cycles"          ,self.getParameter(sec1.NCYCLES_MAX),
             "--auto-stop-cycles",self.getParameter(sec1.NOIMPROVE_CYCLES),
@@ -241,7 +252,7 @@ class ModelCraft(basic.TaskDriver):
         # self.unsetLogParser()
 
         self.addCitations ([
-            'modelcraft','refmac5','cbuccaneer','cparrot','coot'
+            'modelcraft','refmacat','cbuccaneer','cparrot','coot'
         ])
 
         have_results = False

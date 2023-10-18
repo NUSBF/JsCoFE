@@ -364,9 +364,15 @@ var r = 0;  // grid row
 
   var task_list = [
     "Refinement",
-    new TaskRefmac (),
-    new TaskBuster (),
-    new TaskCootMB ()
+    new TaskRefmac       (),
+    new TaskBuster       (),
+    new TaskLorestr      (),
+    new TaskDimple       (),
+    new TaskCombStructure(),
+    new TaskSheetbend    (),  
+    new TaskPhaserRB     (),
+    new TaskPDBREDO      (),
+    new TaskPaiRef       ()
   ]
 
   // if (!isSafari())
@@ -393,18 +399,30 @@ var r = 0;  // grid row
     //new TaskImportSeqCP(),
 
     "Model Building",
+    new TaskCootMB (),
     new TaskParrot    (),
+    new TaskModelCraft (),
     new TaskCCP4Build (),
     new TaskBuccaneer (),
     new TaskArpWarp   (),
-    new TaskModelCraft(),
     new TaskNautilus  (),
 
     "Validation and Deposition",
-    new TaskPDBVal    ()
+    new TaskPDBVal    (),
+    new TaskPISA      (),
+    new TaskPrivateer (),
+
     // new TaskDeposition()
+    "Toolbox",
+    new TaskXyzUtils  (),
+    new TaskGesamt    (),
+    new TaskLsqKab    (),
+    new TaskSeqAlign  (),
+    new TaskSymMatch  ()
 
   ]);
+
+  
 
   for (var i=0;i<task_list.length;i++)
     if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
@@ -763,8 +781,20 @@ var row      = 0;
     new TaskShelxEMR()
   ],true);
 
-  this.makeSection ( 'Refinement and Model Building',[
-    'Refinement',
+  this.makeSection ( 'Model Building',[
+    'Model building -- polypeptides and polynucleotides',
+    new TaskModelCraft   (),
+    'Model building -- polypeptides',
+    new TaskCCP4Build    (),
+    new TaskBuccaneer    (),
+    new TaskArpWarp      (),
+    'Model building -- polynucleotides',
+    new TaskAWNuce       (),
+    new TaskNautilus     ()
+  ],true);
+
+
+  this.makeSection ( 'Refinement',[
     new TaskRefmac       (),
     new TaskBuster       (),
     new TaskLorestr      (),
@@ -774,14 +804,6 @@ var row      = 0;
     new TaskPhaserRB     (),
     new TaskPDBREDO      (),
     new TaskPaiRef       (),
-    'Model building -- polypeptides',
-    new TaskModelCraft   (),
-    new TaskCCP4Build    (),
-    new TaskBuccaneer    (),
-    new TaskArpWarp      (),
-    'Model building -- polynucleotides',
-    new TaskAWNuce       (),
-    new TaskNautilus     ()
   ],true);
 
   // if (isSafari())  {
