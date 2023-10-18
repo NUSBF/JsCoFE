@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.06.23   <--  Date of Last Modification.
+ *    18.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -240,6 +240,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   grid.setNoWrap            ( row,2 );
   grid.setVerticalAlignment ( row,2,'middle' );
   grid.setCellSize          ( '99%','',row,2 );
+  grid.setCursor('pointer');
 
   btn.dataSummary = dataSummary;
 
