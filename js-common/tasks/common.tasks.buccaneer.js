@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    18.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -360,7 +360,7 @@ TaskBuccaneer.prototype.currentVersion = function()  {
 function BuccaneerHotButton()  {
   return {
     'task'    : 'TaskBuccaneer',
-    'tooltip' : 'Automated model building with Buccaneer'
+    'tooltip' : 'Automatic model building with Buccaneer'
   };
 }
 
@@ -374,7 +374,7 @@ if (!__template)  {
 
   TaskBuccaneer.prototype.desc_title = function()  {
     // this appears under task title in the task list
-      return 'performs statistical Model Building';
+      return 'automatic statistical model building after MR or Experimental Phasing';
     };
 
   // hotButtons return list of buttons added in JobDialog's toolBar.

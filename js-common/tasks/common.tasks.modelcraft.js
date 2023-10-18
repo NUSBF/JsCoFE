@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    18.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -147,7 +147,7 @@ TaskModelCraft.prototype.icon           = function() { return 'task_modelcraft';
 TaskModelCraft.prototype.clipboard_name = function()  { return '"Modelcraft"';   }
 
 TaskModelCraft.prototype.desc_title     = function()  {
-  return 'performs automatic model building after MR or Experimental Phasing';
+  return 'automatic model building after MR or Experimental Phasing';
 }
 
 // TaskModelCraft.prototype.cleanJobDir = function ( jobDir )  {}

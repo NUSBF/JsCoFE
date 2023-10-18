@@ -248,6 +248,8 @@ class ModelCraft(basic.TaskDriver):
         # self.rvrow -= 1
         # self.rvrow += 1
 
+        self.flush()
+
         # prepare report parser
         # self.setGenericLogParser ( "modelcraft_report",True )
 
@@ -256,8 +258,6 @@ class ModelCraft(basic.TaskDriver):
         #     rc = self.runApp ( "modelcraft.bat",cmd,logType="Main",quitOnError=False )
         # else:
         rc = self.runApp ( "modelcraft",cmd,logType="Main",quitOnError=False )
-
-        
 
         # self.unsetLogParser()
 
@@ -373,8 +373,8 @@ class ModelCraft(basic.TaskDriver):
 
                     self.generic_parser_summary["modelcraft"] = {
                         "summary_line" : "Compl={0:.1f}%".format(Compl) +\
-                                        ", R=" + Rwork +\
-                                        " R<sub>free</sub>="  + Rfree,
+                                         ", R=" + Rwork +\
+                                         " R<sub>free</sub>="  + Rfree,
                         "R_factor"     : Rwork,
                         "R_free"       : Rfree
                     }
