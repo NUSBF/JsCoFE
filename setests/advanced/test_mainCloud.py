@@ -29,8 +29,16 @@ def startRefmac(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1.05)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-    time.sleep(1.05)
+    try:
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+    except:
+        pass
+    time.sleep(1)
+    try:
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
+    except:
+        pass
+    time.sleep(1)
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1.05)
