@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    18.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -64,7 +64,7 @@ TaskAWNuce.prototype.clipboard_name = function()  { return '"Nuce"';       }
 
 TaskAWNuce.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return 'traces nucleic acid chains in electron density';
+  return 'traces nucleic acid chains in electron density using original algorithm';
 }
 
 TaskAWNuce.prototype.currentVersion = function()  {

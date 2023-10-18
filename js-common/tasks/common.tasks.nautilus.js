@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    18.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -174,7 +174,7 @@ TaskNautilus.prototype.currentVersion = function()  {
 
 TaskNautilus.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return 'performs automated building of RNA/DNA from phases';
+  return 'automatic building of RNA/DNA chains after MR or Experimental Phasing';
 };
 
 TaskNautilus.prototype.checkKeywords = function ( keywords )  {

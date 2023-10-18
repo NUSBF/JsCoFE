@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    18.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,7 +36,7 @@ function TaskArpWarp()  {
   this._type   = 'TaskArpWarp';
   this.name    = 'arpwarp';
   this.setOName ( 'arpwarp' );  // default output file name template
-  this.title   = 'Automated Model Building with Arp/wArp';
+  this.title   = 'Automatic Model Building with Arp/wArp';
   if ((!__template) && (__licensed_tasks.indexOf(this._type)<0))
     this.nc_type = 'client';  // job may be run only on client NC with licensed Afrp/wArp
 
@@ -443,7 +443,7 @@ TaskArpWarp.prototype.authorisationID = function() {
 function ArpWarpHotButton()  {
   return {
     'task'    : 'TaskArpWarp',
-    'tooltip' : 'Automated model building with Arp/wArp'
+    'tooltip' : 'Automatic model building with Arp/wArp'
   };
 }
 
@@ -457,7 +457,7 @@ if (!__template)  {
 
   TaskArpWarp.prototype.desc_title = function()  {
     // this appears under task title in the task list
-      return 'builds macromolecular models';
+      return 'automatic model building after MR or EP using original algorithm';
     };
 
   // hotButtons return list of buttons added in JobDialog's toolBar.

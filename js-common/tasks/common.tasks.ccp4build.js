@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    18.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -406,7 +406,7 @@ TaskCCP4Build.prototype.clipboard_name = function()  { return '"CCP4Build"';    
 
 TaskCCP4Build.prototype.desc_title = function()  {
   // this appears under task title in the task list
-    return 'builds model with density modification, model trimming, side-chain reconstruction and real-space refinement';
+    return 'automatic model building after MR or EP with a combination of several CCP4 programs';
   };
 
 TaskCCP4Build.prototype.canEndGracefully = function() { return true; }
