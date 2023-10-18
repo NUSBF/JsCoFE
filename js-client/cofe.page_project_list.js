@@ -1052,6 +1052,7 @@ function ProjectListPage ( sceneId )  {
     self.tablesort_tbl.addSignalHandler ( 'row_dblclick',function(trow){
       openProject();
     });
+    self.tablesort_tbl.setCursor('pointer');
 
     // self.tablesort_tbl.addSignalHandler ( 'row_click',function(trow){
     //   __close_all_menus();
