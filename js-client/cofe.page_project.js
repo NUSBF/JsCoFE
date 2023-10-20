@@ -170,7 +170,7 @@ function ProjectPage ( sceneId )  {
 
     // if (__user_role==role_code.developer)  {
     if (!__local_user)  {
-      self.addMenuItem ( 'Work team','workteam',function(){
+      self.addMenuItem ( 'Work team & sharing','workteam',function(){
         if (self.jobTree)
           new WorkTeamDialog ( self.jobTree.projectData.desc );
         else
