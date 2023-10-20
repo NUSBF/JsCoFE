@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel,Maria Fando, Andrey Lebedev 2022
+#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2022
 #
 # ============================================================================
 #
