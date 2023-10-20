@@ -1265,11 +1265,15 @@ def startRefmac(driver, waitLong):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-    time.sleep(1.05)
-
-    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
-    time.sleep(1.05)
+    try:
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+    except:
+        pass
+    time.sleep(1)
+    try:
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
+    except:
+        pass
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
@@ -1331,8 +1335,15 @@ def startBuccaneer(driver):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
-    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+    try:
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+    except:
+        pass
     time.sleep(1)
+    try:
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+    except:
+        pass
 
     clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
     time.sleep(1)

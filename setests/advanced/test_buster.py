@@ -29,18 +29,21 @@ def startBusterAfterRevision(driver, waitLong):
 
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Buster Refinement')
+        time.sleep(2)
     except:
         pass
     time.sleep(1)
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Buster Refinement')
+        time.sleep(2)
     except:
         pass
     time.sleep(1)
 
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Buster Refinement')
-    time.sleep(2)
+    
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Auto TLS')
     time.sleep(1)

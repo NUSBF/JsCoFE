@@ -258,16 +258,25 @@ def startNautilus(driver):
 
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building of RNA/DNA with Nautilus')
+        time.sleep(1)
     except:
         pass
     time.sleep(1)
     try:
+        
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+        # textEl = driver.find_elements(By.XPATH, "//*[starts-with(text(), '%s')]" % 'Model Building')
+        driver.execute_script("window.scrollTo(0, 500)")
+        time.sleep(1)
+
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building of RNA/DNA with Nautilus')
+        time.sleep(1)
     except:
         pass
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building of RNA/DNA with Nautilus')
-    time.sleep(1)
+    
+
 
     try:
         sf.clickByXpath(driver, "//span[starts-with(text(), '%s')]" % 'consider fixed')
