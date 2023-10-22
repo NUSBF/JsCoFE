@@ -879,6 +879,26 @@ var response = null;  // must become a cmd.Response object to return
 
 
 // ===========================================================================
+/*
+function getJobMetas ( loginData,projectName )  {
+let projectDirPath = getProjectDirPath ( loginData,projectName );
+let jmetas = [];
+  if (utils.dirExists(projectDirPath))  {
+    var files = fs.readdirSync ( projectDirPath );
+    for (var i=0;i<files.length;i++)  {
+      var jm = utils.readObject ( path.join(projectDirPath,files[i],task_t.jobDataFName) );
+      if (jm)  {
+        if ((jm.state==task_t.job_code.running) ||
+            (jm.state==task_t.job_code.exiting))
+          rdata.code = 'Jobs are running -- not possible to change Project ID before they finish.';
+        else
+          jmeta.push ( [path.join(newPrjDirPath,files[i],task_t.jobDataFName),jm] );
+      }
+    }
+  }
+  return jmetas;
+}
+*/
 
 function prepareProjectExport ( loginData,projectList )  {
 
