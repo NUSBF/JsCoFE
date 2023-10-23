@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.10.23   <--  Date of Last Modification.
+ *    23.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -790,15 +790,22 @@ ProjectPage.prototype.addToDock = function() {
 }
 
 ProjectPage.prototype._set_del_button_state = function() {
-  var dsel = false;
-  var node = this.jobTree.getSelectedNode();
+  let dsel = false;
+  let node = this.jobTree.getSelectedNode();
   if (node)  {
     dsel = (node.parentId!=null);
+    let task = null;
     if (dsel && this.jobTree.projectData.desc.archive)  {
       // var task = this.jobTree.getTaskByNodeId ( node.id );
-      var task = this.jobTree.getSelectedTask();
+      task = this.jobTree.getSelectedTask();
       if (task)
         dsel = !('archive_version' in task);
+    }
+    if (dsel && (this.jobTree.permissions==share_permissions.run_own))  {
+      if (!task)
+        task = this.jobTree.getSelectedTask();
+      dsel = (task && ('submitter' in task) && task.submitter &&
+              (task.submitter==__login_id));
     }
   }
   this.del_btn.setEnabled ( dsel );
@@ -831,7 +838,12 @@ var has_remark  = false;
     var can_add = (!__dormant) && not_view_only &&
                   ((task.state==job_code.finished) || (is_remark && add_enabled));
     this.add_btn  .setEnabled ( can_add );
-    this.del_btn  .setEnabled ( (!__dormant) && dsel && (!('archive_version' in task)) );
+
+    let dsel1 = (this.jobTree.permissions==share_permissions.full) || 
+                (('submitter' in task) && task.submitter && 
+                 (task.submitter==__login_id));
+
+    this.del_btn  .setEnabled ( (!__dormant) && dsel && dsel1 && (!('archive_version' in task)) );
     this.dock     .setEnabled ( can_add );
     this.clone_btn.setEnabled ( (!__dormant) && dsel &&
                                 task.canClone(node,this.jobTree) );
