@@ -1465,8 +1465,11 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func )  {
 
       if (!canDelete)  {
         new MessageBoxF ( 'Insufficient privileges',
-          '<div style="width:350px;"><h2>Insufficient privileges</h2>' +
-          '</div>',
+          '<div style="width:380px;"><h2>Insufficient privileges</h2>' +
+          'You cannot delete selected jobs because some of them were added ' +
+          'by other members of project work team.<p><i>Your sharing ' +
+          'privileges let you delete only your own jobs; this may be ' +
+          'changed only by project owner.</i></div>',
           'Close',function(){
             for (var i=0;i<delNodeId.length;i++)
               if (tree.isRemark(delNodeId[i]))
