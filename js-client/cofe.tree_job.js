@@ -176,12 +176,13 @@ var nodeId = null;
 }
 
 
-var __deleteStyle     = 'color:#FF0000;text-decoration:line-through;';
-var __notViewedStyle  = 'color:#00A000;';
-var __remarkStyle     = 'color:#A00000;font-style:italic;';
-var __linkStyle       = 'color:#0000FF;font-style:italic;text-decoration:underline;';
-var __highlightStyle  = 'background-color:yellow;padding:4px 16px 4px 0px;';
-var __highlightStyleL = 'background-color:lime;padding:4px 16px 4px 0px;';
+const __deleteStyle     = 'color:#FF0000;text-decoration:line-through;';
+const __noDeleteStyle   = 'color:#0000FF;';
+const __notViewedStyle  = 'color:#00A000;';
+const __remarkStyle     = 'color:#A00000;font-style:italic;';
+const __linkStyle       = 'color:#0000FF;font-style:italic;text-decoration:underline;';
+const __highlightStyle  = 'background-color:yellow;padding:4px 16px 4px 0px;';
+const __highlightStyleL = 'background-color:lime;padding:4px 16px 4px 0px;';
 
 function __projectStyle ( text )  {
   return '<span style="color:blue;"><b>' + text  + '</b></span>';
@@ -282,10 +283,10 @@ JobTree.prototype.readProjectData = function ( page_title,
         tree.projectData.desc.dateLastUsed = getDateString();
         tree.projectData.desc.autorun = false;
 
-        tree.in_archive = inArchive ( tree.projectData.desc );
-        tree.view_only  = tree.in_archive ||
-            (getProjectPermissions(__login_id,tree.projectData.desc)
-                                               == share_permissions.view_only);
+        tree.in_archive  = inArchive ( tree.projectData.desc );
+        tree.permissions = getProjectPermissions ( __login_id,tree.projectData.desc );
+        tree.view_only   = tree.in_archive ||
+                           (tree.permissions == share_permissions.view_only);
 
         if (startmode)
           tree.projectData.desc.startmode = startmode;
@@ -1430,17 +1431,29 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func )  {
 
       // indicate deleted jobs in the tree and identify running jobs
       //var isRunning = false;
-      var delBranch = [];
-      var nDel      = 0;
-      var nRem      = 0;
+      let delBranch = [];
+      let nDel      = 0;
+      let nRem      = 0;
+      let canDelete = true;
       for (var i=0;i<delNodeId.length;i++)  {
-        var task = tree.task_map[delNodeId[i]];
-        var propagate = 1;
-        if (task && task.isRemark())  {
-          propagate = 0;
-          nRem++;
+        let deletable = (tree.permissions!=share_permissions.view_only);
+        let task = tree.task_map[delNodeId[i]];
+        let propagate = 1;
+        if (task)  {
+          if (task.isRemark())  {
+            propagate = 0;
+            nRem++;
+          }
+          if (deletable && (tree.permissions!=share_permissions.full))
+            deletable = ('submitter' in task) && task.submitter && 
+                        (task.submitter==__login_id);
         }
-        tree.setStyle ( tree.node_map[delNodeId[i]],__deleteStyle,propagate );
+        if (deletable)
+          tree.setStyle ( tree.node_map[delNodeId[i]],__deleteStyle  ,0 );
+        else  {
+          tree.setStyle ( tree.node_map[delNodeId[i]],__noDeleteStyle,0 );
+          canDelete = false;
+        }
         nDel++;
         if (propagate)  {
           // if (tree.hasRunningJobs(delNodeId[i]))
@@ -1448,6 +1461,22 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func )  {
           nDel += tree.node_map[delNodeId[i]].children.length;
         }
         delBranch.push ( propagate );
+      }
+
+      if (!canDelete)  {
+        new MessageBoxF ( 'Insufficient privileges',
+          '<div style="width:350px;"><h2>Insufficient privileges</h2>' +
+          '</div>',
+          'Close',function(){
+            for (var i=0;i<delNodeId.length;i++)
+              if (tree.isRemark(delNodeId[i]))
+                    tree.setRemarkStyle ( tree.node_map[delNodeId[i]],
+                                          tree.task_map[delNodeId[i]] );
+              else  tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
+            if (onDelete_func)
+              onDelete_func(false);
+          },true,'msg_stop' );
+        return;
       }
 
       var message = '';
@@ -1530,17 +1559,6 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func )  {
       if (silent_bool)
         yes_delete();
       else  {
-        // new QuestionBox ( title,message, 'Yes',yes_delete,'No',function(){
-        //   for (var i=0;i<delNodeId.length;i++)
-        //     if (tree.isRemark(delNodeId[i]))  {
-        //       tree.setRemarkStyle ( tree.node_map[delNodeId[i]],tree.task_map[delNodeId[i]] );
-        //       // tree.setStyle ( tree.node_map[delNodeId[i]],__remarkStyle,0 );
-        //     } else
-        //       tree.setStyle ( tree.node_map[delNodeId[i]],'',1 );
-        //   if (onDelete_func)
-        //     onDelete_func(false);
-        // },'msg_confirm');
-
         new QuestionBox ( title,message,[
           { name    : 'Yes',
             onclick : yes_delete
@@ -1557,7 +1575,6 @@ JobTree.prototype.deleteJob = function ( silent_bool,onDelete_func )  {
                           onDelete_func(false);
                       }
           }],'msg_confirm' );
-
       }
 
     }(this));
