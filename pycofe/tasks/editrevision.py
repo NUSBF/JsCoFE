@@ -3,11 +3,9 @@
 #
 # ============================================================================
 #
-#    31.08.22   <--  Date of Last Modification.
+#    24.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
-#
-#  MATTHEWS EXECUTABLE MODULE
 #
 #  Command-line:
 #     ccp4-python editrevision.py jobManager jobDir jobId
@@ -19,7 +17,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -60,8 +58,8 @@ class EditRevision(asudef.ASUDef):
             struct0 = self.makeClass ( self.input_data.data.struct0 [0] )
 
         #associated_data_list = []
-        change_list          = []  # receives a list of changes required
-        remove_list          = []  # receives a list of removals required
+        change_list = []  # receives a list of changes required
+        remove_list = []  # receives a list of removals required
 
         hkl = None
         if hasattr(self.input_data.data,"hkl"):  # optional data parameter
@@ -209,6 +207,8 @@ class EditRevision(asudef.ASUDef):
                 revision = rev[0]
         else:
             revision = revision0
+            if "hkl" in change_list:
+                revision.setReflectionData ( hkl )
 
         have_results = False
 
