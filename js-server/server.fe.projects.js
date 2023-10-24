@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.10.23   <--  Date of Last Modification.
+ *    24.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -879,26 +879,23 @@ var response = null;  // must become a cmd.Response object to return
 
 
 // ===========================================================================
-/*
+
 function getJobMetas ( loginData,projectName )  {
 let projectDirPath = getProjectDirPath ( loginData,projectName );
 let jmetas = [];
   if (utils.dirExists(projectDirPath))  {
-    var files = fs.readdirSync ( projectDirPath );
-    for (var i=0;i<files.length;i++)  {
-      var jm = utils.readObject ( path.join(projectDirPath,files[i],task_t.jobDataFName) );
-      if (jm)  {
-        if ((jm.state==task_t.job_code.running) ||
-            (jm.state==task_t.job_code.exiting))
-          rdata.code = 'Jobs are running -- not possible to change Project ID before they finish.';
-        else
-          jmeta.push ( [path.join(newPrjDirPath,files[i],task_t.jobDataFName),jm] );
+    let files = fs.readdirSync ( projectDirPath );
+    for (let i=0;i<files.length;i++)
+      if (files[i].startsWith(jobDirPrefix))  {
+        let fpath = path.join ( projectDirPath,files[i],task_t.jobDataFName );
+        jmetas.push ({
+          path : fpath,
+          meta : utils.readObject ( fpath )  // can be null
+        });
       }
-    }
   }
   return jmetas;
 }
-*/
 
 function prepareProjectExport ( loginData,projectList )  {
 
@@ -927,12 +924,20 @@ function prepareProjectExport ( loginData,projectList )  {
                           '[00034] Project metadata cannot be written.','' );
   }
 
+  let nrunning = 0;
+  let jmetas   = getJobMetas ( loginData,projectList.current );
+  for (let i=0;i<jmetas.length;i++)
+    if (jmetas[i].meta &&
+         ((jmetas[i].meta.state==task_t.job_code.running) || 
+          (jmetas[i].meta.state==task_t.job_code.exiting)))
+      nrunning++;
+
   send_dir.packDir ( projectDirPath,'*',null,function(code,jobballSize){
-    var pData = readProjectData ( loginData,projectList.current );
+    let pData = readProjectData ( loginData,projectList.current );
     pData.desc.share = share;
-    if (!writeProjectData(loginData,pData,false))
+    if (!writeProjectData(loginData,pData,true))
       log.error ( 11,'errors after packing at ' + projectDirPath + ' for export' );
-    var jobballPath = send_dir.getJobballPath ( projectDirPath );
+    let jobballPath = send_dir.getJobballPath ( projectDirPath );
     if (code)  {
       log.error ( 12,'errors at packing ' + projectDirPath + ' for export' );
       utils.removeFile ( jobballPath );  // export will never get ready!
@@ -942,7 +947,7 @@ function prepareProjectExport ( loginData,projectList )  {
     }
   });
 
-  return new cmd.Response ( cmd.fe_retcode.ok,'','' );
+  return new cmd.Response ( cmd.fe_retcode.ok,'',{ nrunning : nrunning } );
 
 }
 
@@ -2016,16 +2021,17 @@ var pData    = readProjectData ( loginData,data.name );
       var jmeta = [];
       if (utils.dirExists(projectDirPath))  {
         var files = fs.readdirSync ( projectDirPath );
-        for (var i=0;(i<files.length) && (rdata.code=='ok');i++)  {
-          var jm = utils.readObject ( path.join(projectDirPath,files[i],task_t.jobDataFName) );
-          if (jm)  {
-            if ((jm.state==task_t.job_code.running) ||
-                (jm.state==task_t.job_code.exiting))
-              rdata.code = 'Jobs are running -- not possible to change Project ID before they finish.';
-            else
-              jmeta.push ( [path.join(newPrjDirPath,files[i],task_t.jobDataFName),jm] );
+        for (var i=0;(i<files.length) && (rdata.code=='ok');i++)
+          if (files[i].startsWith(jobDirPrefix))  {
+            var jm = utils.readObject ( path.join(projectDirPath,files[i],task_t.jobDataFName) );
+            if (jm)  {
+              if ((jm.state==task_t.job_code.running) ||
+                  (jm.state==task_t.job_code.exiting))
+                rdata.code = 'Jobs are running -- not possible to change Project ID before they finish.';
+              else
+                jmeta.push ( [path.join(newPrjDirPath,files[i],task_t.jobDataFName),jm] );
+            }
           }
-        }
       }
       if (rdata.code=='ok')  {
         writeProjectData ( loginData,pData,true );
@@ -2220,42 +2226,6 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
                                         projectDesc.name );
       }
 
-      /*
-      switch (duplicate_key)  {
-
-        case 1  : // re-read project list because a new project was added
-                  var pList = readProjectList ( loginData );
-                  if (!pList)
-                    pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
-                  pList.current = projectDesc.name;        // make it current
-                  if (pList.currentFolder.path!=pd.folder_type.all_projects)
-                    pList.setCurrentFolder ( pList.findFolder(projectDesc.folderPath) );
-                  if (writeProjectList(loginData,pList))
-                        utils.writeString ( signal_path,'Success\n' + projectDesc.name );
-                  else  utils.writeString ( signal_path,'Cannot write project list\n' +
-                                                        projectDesc.name );
-                break;
-
-        case 2  : // rename project by indexing
-                  let new_name = '';
-                  let mod = 0;
-                  do {
-                    new_name   = projectDesc.name + '_(' + (++mod) + ')';
-                    projectDir = getProjectDirPath ( loginData,new_name );
-                  } while (utils.fileExists(projectDir));
-                  rename_project_0 ( tempdir,new_name,false );
-                  utils.writeString ( signal_path,'Renamed "' + new_name + '"\n' +
-                                      projectDesc.name );
-                break;
-
-        case 0  :
-        default : utils.writeString ( signal_path,'Project "' + projectDesc.name +
-                                      '" already exists (check all folders)\n' +
-                                      projectDesc.name );
-
-      }
-      */
-
     } else  {
 
       let placed   = true;
@@ -2299,6 +2269,18 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
               }
             }
           }
+
+          if (placed)  {
+            let jmetas = getJobMetas ( loginData,projectDesc.name );
+            for (let i=0;i<jmetas.length;i++)
+              if (jmetas[i].meta &&
+                  ((jmetas[i].meta.state==task_t.job_code.running) || 
+                  (jmetas[i].meta.state==task_t.job_code.exiting)))  {
+                jmetas[i].meta.state = task_t.job_code.stopped;
+                utils.writeObject ( jmetas[i].path,jmetas[i].meta );
+              }
+          }
+
         } else {
           utils.writeString ( signal_path,'Cannot copy to project ' +
                                           'directory (disk full?)\n' +
@@ -2310,21 +2292,6 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
       if (placed)  {
         // the project's content was moved to user's area, now
         // make the corresponding entry in project list
-
-        // var projects = pList.projects;
-        // pList.projects = [projectDesc];
-        // if (pd.inArchive(projectDesc))  {
-        //   for (var i=0;i<projects.length;i++)
-        //     if ((!pd.inArchive(projects[i])) || 
-        //         (projects[i].archive.id!=projectDesc.archive.id))
-        //       pList.projects.push ( projects[i] );
-        // } else  {
-        //   for (var i=0;i<projects.length;i++)
-        //     if ((projects[i].name!=projectDesc.name) || pd.inArchive(projects[i]))
-        //       pList.projects.push ( projects[i] );
-        // }
-
-        // //pList.projects.unshift ( projectDesc );  // put it first
 
         // re-read project list because a new project was added
         var pList = readProjectList ( loginData );
