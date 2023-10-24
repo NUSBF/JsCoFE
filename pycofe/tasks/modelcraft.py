@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    18.10.23   <--  Date of Last Modification.
+#    24.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -189,25 +189,28 @@ class ModelCraft(basic.TaskDriver):
                         "--phases", ",".join(labin_ph),
                         "--unbiased"
                     ]
-                else: cmd += [
-                    
+                else: 
+                    cmd += [
                         "--phases", ",".join(labin_ph),
                         "--unbiased"
                     ]
 
         else:  #  molecular replacement
-            if istruct.getXYZFilePath(self.inputDir()) != None:
-                cmd += [ "--model", istruct.getXYZFilePath(self.inputDir()) ]
-            else: 
+            cmd += [ "--model", istruct.getXYZFilePath(self.inputDir()) ]
 
-                labin_ph = [istruct.PHI,istruct.FOM]
-                self.makePhasesMTZ (
-                        hkl.getHKLFilePath(self.inputDir())    ,labin_fo,
-                        istruct.getMTZFilePath(self.inputDir()),labin_ph,
-                        input_mtz )
-                cmd += [
-                    "--phases", ",".join(labin_ph)
-                ]
+        # else:  #  molecular replacement
+        #     if istruct.getXYZFilePath(self.inputDir()) != None:
+        #         cmd += [ "--model", istruct.getXYZFilePath(self.inputDir()) ]
+        #     else: 
+
+        #         labin_ph = [istruct.PHI,istruct.FOM]
+        #         self.makePhasesMTZ (
+        #                 hkl.getHKLFilePath(self.inputDir())    ,labin_fo,
+        #                 istruct.getMTZFilePath(self.inputDir()),labin_ph,
+        #                 input_mtz )
+        #         cmd += [
+        #             "--phases", ",".join(labin_ph)
+        #         ]
         cmd += [
             "--cycles"          ,self.getParameter(sec1.NCYCLES_MAX),
             "--auto-stop-cycles",self.getParameter(sec1.NOIMPROVE_CYCLES),

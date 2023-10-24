@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    30.08.23   <--  Date of Last Modification.
+#    24.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -185,7 +185,9 @@ class Migrate(import_task.Import):
                 xyzPath = self.xyz.getXYZFilePath ( self.outputDir() )
             else:
                 subPath = self.xyz.getXYZFilePath ( self.outputDir() )
-                leadKey = 2
+                leadKey = 2  # only substructure in PDB, assume experimental phases!
+        else:
+            leadKey = 2  # no coordinates, phases to be treated as experimental!
 
         xyzid = ""  # used in revision naming
         if hasattr(self, 'task'):
