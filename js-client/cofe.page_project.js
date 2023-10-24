@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    23.10.23   <--  Date of Last Modification.
+ *    24.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -793,7 +793,7 @@ ProjectPage.prototype._set_del_button_state = function() {
   let dsel = false;
   let node = this.jobTree.getSelectedNode();
   if (node)  {
-    dsel = (node.parentId!=null);
+    dsel = (node.parentId!=null) && (this.jobTree.permissions!=share_permissions.view_only);
     let task = null;
     if (dsel && this.jobTree.projectData.desc.archive)  {
       // var task = this.jobTree.getTaskByNodeId ( node.id );
@@ -823,7 +823,7 @@ var has_remark  = false;
     has_remark = (child_tasks[0].state==job_code.remark);
 
   if (node)
-    dsel = (node.parentId!=null);
+    dsel = (node.parentId!=null) && (this.jobTree.permissions!=share_permissions.view_only);
   this.open_btn .setEnabled ( dsel );
   this.stack_btn.setEnabled ( (this.jobTree.selectStackJobs()[0]>0)  );
 
