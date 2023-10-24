@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.10.23   <--  Date of Last Modification.
+#    24.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -100,6 +100,8 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
     sol0      = -1
     ncopies1  = 0   # number of copies in the suggested ASU
 
+    content   = []  # composition (P,R,D) if sequences not given, or else derived
+
     if len(seq)>0:  # optional data parameter
 
         isProtein = False;
@@ -111,11 +113,17 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
             seqType = "dna"
             if seq[i].isProtein():
                 isProtein = True
-                seqType = "protein"
+                seqType   = "protein"
+                if not "P" in content:
+                    content.append ( "P" )
             if seq[i].isRNA():
                 isRNA = True
+                if not "R" in content:
+                    content.append ( "R" )
             if seq[i].isDNA():
                 isDNA = True
+                if not "D" in content:
+                    content.append ( "D" )
             ncopies = seq[i].ncopies
             if seq[i].ncopies_auto:
                 ncopies = 0
@@ -238,7 +246,17 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
     )
     if resLimit:
         base.write_stdin ( "RESO " + str(resLimit) + "\n" )
-    base.write_stdin ( "MODE " + composition )
+    if len(content)<=0:
+        base.write_stdin ( "MODE " + composition )
+    elif len(content)==1:
+        if content[0]=="P":
+            base.write_stdin ( "MODE P")
+        else:
+            base.write_stdin ( "MODE D")
+    elif "P" in content:
+        base.write_stdin ( "MODE C")
+    else:
+        base.write_stdin ( "MODE D")
 
     base.close_stdin()
 
@@ -363,7 +381,14 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
         revision.setReflectionData ( hkl )
         revision.setASUData ( base.job_id,seq,nRes,molWeight,dataKey,mc1,sol1,prb1 )
 
-        if composition:
+        if len(content)>0:
+            if "P" in content:
+                revision.addProteinType()
+            if "R" in content:
+                revision.addRNAType()
+            if "D" in content:
+                revision.addDNAType()
+        elif composition:
             if composition != "D":
                 revision.addProteinType()
             if composition != "P" and not revision.hasDNAType():
