@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.04.22   <--  Date of Last Modification.
+ *    24.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Export Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -31,27 +31,6 @@ function ExportProjectDialog ( projectList )  {
 
   this.startExport ( projectList );
 
-/*
-  var self = this;
-
-  var crProject = projectList.getProject ( projectList.current );
-  // alert ( crProject.name );
-
-  new QuestionBox ( 'Export Project',
-    '<h2>Project authorship</h2>',[{
-      name    : 'Keep authorship',
-      onclick : function(){
-        self.startExport ( projectList );
-      }
-    },{
-      name    : 'Remove authorship',
-      onclick : function(){
-        self.startExport ( projectList );
-      }
-    }],
-    'msg_question' );
-*/
-
 }
 
 ExportProjectDialog.prototype = Object.create ( InputBox.prototype );
@@ -63,7 +42,7 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
   (function(dlg){
 
     serverRequest ( fe_reqtype.preparePrjExport,projectList,
-                    'Prepare Project Export',function(){  // on success
+                    'Prepare Project Export',function(rdata){  // on success
 
       InputBox.call ( dlg,'Export Project' );
 
@@ -71,8 +50,19 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
       var grid = dlg.grid;
       grid.setLabel ( '<h2>Export Project "' + projectList.current + '"</h2>',0,2,2,3 );
 
-      var msgLabel = new Label ( 'Project <b>"' + projectList.current + '"</b> is being ' +
-                                 'prepared for download ....' );
+      let msg = 'Project <b>"' + projectList.current + 
+                '"</b> is being prepared for download';
+      if (rdata.nrunning==1)
+        msg += '.<p><i style="font-size:85%">There is an unfinished job in the project; ' +
+               'it will be shown<br>as "terminated" when project is ' +
+               're-imported.</i></p>';
+      else if (rdata.nrunning>1)
+        msg += '.<p><i style="font-size:85%">There are ' + rdata.nrunning + 
+               ' unfinished jobs in the project; they will be shown<br>as ' +
+               '"terminated" when project is re-imported.</i></p>';
+      else
+        msg += ' ....';
+      var msgLabel = new Label ( msg );
       grid.setWidget ( msgLabel, 2,2,1,3 );
 
       var progressBar = new ProgressBar ( 0 );

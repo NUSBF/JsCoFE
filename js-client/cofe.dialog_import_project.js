@@ -34,12 +34,14 @@ function ImportProjectDialog ( onSuccess_func )  {
   var grid = this.grid;
   grid.setLabel ( '<h2>Import Project</h2>',0,2,2,3 );
 
-  var msgLabel = new Label ( 'Use "<i>Select ...</i>" button to select archive file ' +
-                             '(project_name' + projectFileExt +
-                             ')<br>with previously exported project. ' +
-                             'The import will commence<br>automatically once '  +
-                             'the upload is completed -- <b><i>do not close<br>' +
-                             'this dialog until then</i></b>.<br>&nbsp;' );
+  var msgLabel = new Label ( '<div style="width:420px">Use "<i>Select ...</i>" ' +
+                             'button to select file <i>(*' + projectFileExt +
+                             ')</i> with previously exported ' + appName() + 
+                             ' project. ' +
+                             'The import will commence automatically once '  +
+                             'the upload is completed<p style="text-align:right">' +
+                             '-- <b><i>do not close this dialog until then.' +
+                             '</i></b>.</p></div>' );
   grid.setWidget ( msgLabel, 2,2,1,3 );
 
   var customData = {};
@@ -71,12 +73,21 @@ function ImportProjectDialog ( onSuccess_func )  {
             progressBar.hide();
             $( "#cancel_btn" ).button ( "option","label","Close" );
             if (data.signal=='Success')  {
+              let pnames = data.name.split(' ');
               if (__current_folder.type==folder_type.all_projects)  {
-                msgLabel.setText (
-                  'Project "<i>' + data.name + '</i>" is imported, ' +
-                  'you may close this dialog now.' );
+                if (pnames.length<2)  {
+                  msgLabel.setText (
+                    'Project "<i>' + data.name + '</i>" is imported,<br>' +
+                    'you may close this dialog now.' );
+                } else  {
+                  msgLabel.setText (
+                    '<div style="width:450px;">Project "<i>'        + pnames[1] + 
+                    '</i>" is imported, but it was renamed to "<i>' + pnames[0] + 
+                    '</i>" because another project with same name exists in ' +
+                    'your account. You can rename either project to your liking.' +
+                    '<p>You may close this dialog now.</p></div>' );
+                }
               } else  {
-                let pnames = data.name.split(' ');
                 if (pnames.length<2)  {
                   msgLabel.setText (
                     'Project "<i>' + data.name + '</i>" is imported.' +
@@ -88,8 +99,8 @@ function ImportProjectDialog ( onSuccess_func )  {
                   msgLabel.setText (
                     '<div style="width:450px;">Project "<i>'        + pnames[1] + 
                     '</i>" is imported, but it was renamed to "<i>' + pnames[0] + 
-                    '</i>" because another project with same name was found in the ' +
-                    'list. You can rename either project to your liking.' +
+                    '</i>" because another project with same name exists in ' +
+                    'your account. You can rename either project to your liking.' +
                     '<p><b>Note that you are now in the original project\'s '+
                     'folder.<br>To navigate back to your folder(s), click on the ' +
                     '<br>page title or use Main Menu.</b>' +
