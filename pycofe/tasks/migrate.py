@@ -179,10 +179,11 @@ class Migrate(import_task.Import):
 
         xyzPath = None
         subPath = None
-        leadKey = 1
+        leadKey = 0
         if self.xyz:
             if self.xyz.getNofPolymers()>0:
                 xyzPath = self.xyz.getXYZFilePath ( self.outputDir() )
+                leadKey = 1  # assume that phases derived from polymers' coordinates, i.e. MR!
             else:
                 subPath = self.xyz.getXYZFilePath ( self.outputDir() )
                 leadKey = 2  # only substructure in PDB, assume experimental phases!

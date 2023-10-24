@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.10.23   <--  Date of Last Modification.
+ *    24.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -123,24 +123,21 @@ WorkTeamDialog.prototype.makeLayout = function ( callback_func )  {
         '<table>';
       if (data.author[0]==data.owner[0])  {
         info += '<tr><td><b><i>Author & Owner</i> :</b></td><td>' + data.author[1] +
-              '</td><td>&nbsp;<b>[' + data.author[0] + ']</b>&nbsp;</td><td><i>' +
-              data.author[2] + '</i></td></tr>';
+              '</td><td>&nbsp;<b>[' + data.author[0] + ']</b>&nbsp;</td></tr>';
       } else  {
         info += '<tr><td><b><i>Author</i> :</b></td><td>' + data.author[1] +
-              '</td><td>&nbsp;<b>[' + data.author[0] + ']</b>&nbsp;</td><td><i>' +
-              data.author[2] + '</i></td></tr>' +
+              '</td><td>&nbsp;<b>[' + data.author[0] + ']</b>&nbsp;</td></tr>' +
             '<tr><td><b><i>Owner</i> :&nbsp;</b></td><td>' + data.owner[1] +
-              '</td><td>&nbsp;<b>[' + data.owner[0] + ']</b>&nbsp;</td><td><i>' +
-              data.owner[2] + '</i></td></tr>';
+              '</td><td>&nbsp;<b>[' + data.owner[0] + ']</b>&nbsp;</td></tr>';
       }
-      info += '<tr><td colspan=4 height="6px"> </td></tr>';
+      info += '<tr><td colspan=3 height="6px"> </td></tr>';
       if (data.oldShared.length<=0)  {
-        info += '<tr><td colSpan=3><b><i>Team members</i>:&nbsp;</b>' +
+        info += '<tr><td colSpan=2><b><i>Team members</i>:&nbsp;</b>' +
                 '<i>None</i></td></tr>';
         self.grid.setLabel ( info,0,2,2,1 );
       } else  {
 
-        info += '<tr><td colSpan=3><b><i>Team members:</i></b>';
+        info += '<tr><td colSpan=2><b><i>Team members:</i></b>';
         if (self.archived)
           info += '&nbsp;<span style="font-size:80%">(cannot be managed for archived projects)</span>';
         else if (__local_user)
@@ -154,8 +151,8 @@ WorkTeamDialog.prototype.makeLayout = function ( callback_func )  {
         self.grid.setWidget ( table,2,2,1,1 );
 
         table.setHeaderRow ( 
-          ['##','Name','Login','E-mail','Access level'],
-          ['','','','','']
+          ['##','Name','Login','Access level'],
+          ['','','','']
         );
 
         let row = 0;
@@ -169,12 +166,11 @@ WorkTeamDialog.prototype.makeLayout = function ( callback_func )  {
             let slogin = data.oldShared[i][0];
             table.setRow ( '' + row,'',[
               uname,
-              '<b>[' + slogin + ']</b>',
-              data.oldShared[i][2]
+              '<b>[' + slogin + ']</b>'
             ],row,alt );
             let permissions = data.oldShared[i][3].permissions;
             let roleCombo   = new Dropdown();
-            table.setWidget    ( roleCombo,row,4,alt );
+            table.setWidget    ( roleCombo,row,3,alt );
             roleCombo.setWidth ( '230px' );
             roleCombo.addItem  ( 'view only','',share_permissions.view_only,
                                  permissions==share_permissions.view_only );
@@ -198,11 +194,10 @@ WorkTeamDialog.prototype.makeLayout = function ( callback_func )  {
             let slogin = data.unknown[i];
             table.setRow ( '' + row,'',[
               '<i>Unknown</i>',
-              '<b>[' + slogin + ']</b>',
-              '<i>unknown</i>'
+              '<b>[' + slogin + ']</b>'
             ],row,alt );
             let unk_btn = new Button  ( 'unshare',image_path('unknown_user') );
-            table.setWidget  ( unk_btn,row,4,alt )
+            table.setWidget  ( unk_btn,row,3,alt )
             unk_btn.setWidth ( '230px' );
             unk_btn.addOnClickListener ( function(){
               self.unshareUser ( slogin,'Unknown' );
@@ -217,7 +212,6 @@ WorkTeamDialog.prototype.makeLayout = function ( callback_func )  {
             table.setRow ( '' + row,'',[
               data.oldShared[i][1],
               '<b>[' + data.oldShared[i][0] + ']</b>',
-              data.oldShared[i][2],
               self.access_desc ( data.oldShared[i][3].permissions )
             ],row,alt );
             alt = !alt;
@@ -229,7 +223,6 @@ WorkTeamDialog.prototype.makeLayout = function ( callback_func )  {
             table.setRow ( '' + row,'',[
               '<i>Unknown</i>',
               '<b>[' + slogin + ']</b>',
-              '<i>unknown</i>',
               ''
             ],row,alt );
             alt = !alt;
@@ -329,8 +322,7 @@ WorkTeamDialog.prototype.addUser = function()  {
                 '"</h2>You are about to share the project '  +
                 'with the following user:<p><table><tr><td><i>Login name:</i></td><td><b>' +
                 uspec[0] + '</b></td></tr><tr><td><i>User name:</i></td><td><b>'     + 
-                uspec[1] + '</b></td></tr><tr><td><i>E-mail:</i></td><td><b>'        + 
-                uspec[2] + '</b></td></tr><tr><td><i>to be allowed:&nbsp;</i></td><td><b>' +
+                uspec[1] + '</b></td></tr><tr><td><i>to be allowed:&nbsp;</i></td><td><b>' +
                 roleCombo.getText() + '</b></td></tr></table><p>' +
                 'The user will be notified about this action by e-mail.<br>' +
                 'Please confirm.',[{  
