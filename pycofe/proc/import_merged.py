@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    04.10.23   <--  Date of Last Modification.
+#    11.05.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -156,7 +156,7 @@ def run ( body,   # body is reference to the main Import class
     for f_orig, f_fmt in files_mtz:
 
         p_orig  = os.path.join ( body.importDir(),f_orig )
-        p_mtzin = os.path.splitext(p_orig)[0] + ".mtz"
+        p_mtzin = p_orig
 
         if f_fmt==import_filetype.ftype_CIFMerged():
             # p_mtzin = os.path.splitext(f_orig)[0] + '.mtz'
@@ -165,6 +165,13 @@ def run ( body,   # body is reference to the main Import class
             # body.close_stdin()
             # rc = body.runApp ( "cif2mtz",["HKLIN",p_orig,"HKLOUT",p_mtzin],
             #                    quitOnError=False )
+
+            #### Copied from below:
+            body.file_stdin = None  # not clear why this is not None at
+                                    # this point and needs to be forced,
+                                    # or else runApp looks for input script
+            #### There could be more places like this, check all gemmi calls?
+
             rc = body.runApp ( "gemmi",["cif2mtz",p_orig,p_mtzin],
                                quitOnError=False )
             if rc.msg or not os.path.isfile(p_mtzin):
@@ -342,11 +349,9 @@ def run ( body,   # body is reference to the main Import class
                             cmd += ["-colin",cols+"]"]
 
                         anomCols  = hkl.getAnomalousColumns()
-                        # anomalous = False
+                        anomalous = False
                         if anomCols[4] != "X":
-                            # anomalous = True
-                            if meanCols[2] == "X" and anomCols[4] == "I":
-                                cmd += ["-Imean"]
+                            anomalous = True
                             cols = "/*/*/["
                             for i in range(0,4):
                                 if anomCols[i] != None:
