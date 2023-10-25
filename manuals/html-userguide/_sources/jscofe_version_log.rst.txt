@@ -2,9 +2,32 @@
 CCP4 Cloud Version Log
 ======================
 
+
+
+**Version 1.7.0017** 
+
+    *Released on --.--.2023 with CCP4 8.0.017*
+
+    #. Imported projects are renamed automatically if project name is already used
+
+    #. Moorhen jobs, where no modifications to model were done, are automatically deleted
+
+    #. It is now possible to create MR models and ensembles without sequence
+
+    #. Twin settings automatically propagate to subsequent jobs
+
+    #. Recalculation of B-factors for Alphafold/Rosetta models is now placed in MR model preparation tasks
+
+    #. Project sharing is redesigned and now allows various levels of access
+
+    #. Fixed bug not letting replacing HKL data with EditRevision if there is no ASU or sequences
+
+    #. Unfinished jobs in exported projects are marked as abandoned when project is re-imported
+
+
 **Version 1.7.0016** 
 
-    *Released on __.__.2023 with CCP4 8.0.016*
+    *Released on 02.10.2023 with CCP4 8.0.016*
 
     #. Added new parameters for ``Arcimboldo Shredder`` and ``Arcimboldo Borges``
 
@@ -33,12 +56,6 @@ CCP4 Cloud Version Log
     #. Job despatch mechanism can be now configured to optimise communications in Cloud or NC loads
 
     #. Refmac5 replaced by `Refmacat <https://doi.org/10.1107/S2059798323002413>`_
-
-
-
-    #. Imported projects are renamed automatically if project name is already used
-
-    #. Moorhen jobs, where no modifications to model were done, are automatically deleted
 
 
 **Version 1.7.0015** 
