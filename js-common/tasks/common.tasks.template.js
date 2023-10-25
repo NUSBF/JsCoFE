@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.10.23   <--  Date of Last Modification.
+ *    25.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -2828,7 +2828,7 @@ if (!dbx)  {
             case 'z01'      : S += '<u>SpG=' + d.SpaceGroup  + '</u> ';
                         break;
             case 'z02'      : if ('Ncopies' in d)  {
-                                if (S.length>0)
+                                if ((S.length>0) && (!S.endsWith(': ')))
                                   S += ', ';
                                 if (d.Ncopies==1)
                                   S += '1 molecule in ASU, ';
