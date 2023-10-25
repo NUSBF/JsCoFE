@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.10.23   <--  Date of Last Modification.
+ *    25.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -53,13 +53,13 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
       let msg = 'Project <b>"' + projectList.current + 
                 '"</b> is being prepared for download';
       if (rdata.nrunning==1)
-        msg += '.<p><i style="font-size:85%">There is an unfinished job in the project; ' +
-               'it will be shown<br>as "terminated" when project is ' +
-               're-imported.</i></p>';
+        msg += '.<p><i style="font-size:85%">There is an unfinished job in '   +
+               'the project; it will be shown<br>as "abandoned" when project ' +
+               'is re-imported.</i></p>';
       else if (rdata.nrunning>1)
-        msg += '.<p><i style="font-size:85%">There are ' + rdata.nrunning + 
+        msg += '.<p><i style="font-size:85%">There are ' + rdata.nrunning   + 
                ' unfinished jobs in the project; they will be shown<br>as ' +
-               '"terminated" when project is re-imported.</i></p>';
+               '"abandoned" when project is re-imported.</i></p>';
       else
         msg += ' ....';
       var msgLabel = new Label ( msg );
@@ -123,8 +123,7 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
             msgLabel.setText ( 'Project <b>"' + projectList.current + '"</b> is prepared ' +
                                'for download. The total download<br>size is ' +
                                round(data.size/1000000,3) + ' MB. Push the ' +
-                               '<i>Download</i> button to begin<br>the project ' +
-                               'export. ' +
+                               '<i>Download</i> button to start<br>exporting. ' +
                                '<p><b><i>Do not close this dialog until the ' +
                                'download has finished.</i></b>' );
             $('#download_btn').show();
