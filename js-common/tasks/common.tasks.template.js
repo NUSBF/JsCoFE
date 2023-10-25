@@ -223,15 +223,15 @@ TaskTemplate.prototype.isRunning = function()  {
 }
 
 TaskTemplate.prototype.isComplete = function()  {
-  return ((this.state!=job_code.new) && (this.state!=job_code.running) &&
-          (this.state!=job_code.ending) &&(this.state!=job_code.exiting));
+  return ((this.state!=job_code.new)    && (this.state!=job_code.running) &&
+          (this.state!=job_code.ending) && (this.state!=job_code.exiting));
 }
 
 TaskTemplate.prototype.isSuccessful = function()  {
 // true if can attach next job
-  return ((this.state!=job_code.new) && (this.state!=job_code.running) &&
-          (this.state!=job_code.ending) &&(this.state!=job_code.exiting) &&
-          (this.state!=job_code.failed) &&(this.state!=job_code.stopped) &&
+  return ((this.state!=job_code.new)    && (this.state!=job_code.running) &&
+          (this.state!=job_code.ending) && (this.state!=job_code.exiting) &&
+          (this.state!=job_code.failed) && (this.state!=job_code.stopped) &&
           (this.state!=job_code.retired)
          );
 }
@@ -2873,7 +2873,8 @@ if (!dbx)  {
                                            else  resind += ' (failed).';
                                 break;
 
-      case job_code.stopped   : resind = 'terminated.';
+      case job_code.stopped   : resind = this.score_string();
+                                if (resind=='')  resind = 'terminated.';
                                 break;
 
       default: ;

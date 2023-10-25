@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.10.23   <--  Date of Last Modification.
+ *    26.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -2276,8 +2276,21 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
               if (jmetas[i].meta &&
                   ((jmetas[i].meta.state==task_t.job_code.running) || 
                   (jmetas[i].meta.state==task_t.job_code.exiting)))  {
-                jmetas[i].meta.state = task_t.job_code.stopped;
+                jmetas[i].meta.state  = task_t.job_code.stopped;
+                jmetas[i].meta.scores = {
+                  [jmetas[i].meta._type.slice(4).toLowerCase()] : {
+                    "summary_line": "abandoned (project exported before finished)"
+                  }
+                };
                 utils.writeObject ( jmetas[i].path,jmetas[i].meta );
+                utils.writeJobReportMessage ( 
+                  path.dirname(jmetas[i].path),
+                  '<h2>Task abandoned</h2>The task was abandoned because the project '  +
+                  'was exported before it finished. For task results, look ' +
+                  'into original project. Alternatively, clone this task and run '  +
+                  'again.', 
+                  false 
+                );
               }
           }
 
