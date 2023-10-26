@@ -106,8 +106,12 @@ function Communicate ( server_request )  {
   var url_path   = url_parse.pathname.substr(1);
   this.command   = url_path.toLowerCase();
   this.search    = url_parse.search;
-// console.log ( "requested " + server_request.url );
-// console.log ( "parsed    " + JSON.stringify(url_parse) );
+
+// this.doprint = server_request.url.endsWith('.mmcif');
+// if (this.doprint)  {
+// console.log ( " >>>>>> requested " + server_request.url );
+// console.log ( " >>>>>> parsed    " + JSON.stringify(url_parse) );
+// }
 
   if ((this.command=='') || (this.command==cmd.fe_command.cofe))  {
     this.filePath = this.fe_server.bootstrapHTML;
@@ -143,13 +147,10 @@ function Communicate ( server_request )  {
   if (ix>=0)  {  // request for jsrview library file, load it from js-lib
                 // REGARDLESS the actual path requested
     this.filePath = path.join ( 'js-lib',this.filePath.substr(ix) );
-    log.debug2 ( 2,"calculated path " + this.filePath);
-    // console.log ( ' >>>>>> fpath=' + this.filePath );
-  }
+    log.debug2 ( 2,"calculated path " + this.filePath);  }
   if (ix<0) {
     var rtag = cmd.__special_url_tag + '-fe/';
     ix = this.filePath.lastIndexOf(rtag);
-// console.log ( 'rtag=' + rtag + ',  file=' + this.filePath + ', ix=' + ix );
     if (ix>=0)  {
       this.filePath = this.filePath.substr(ix+rtag.length);
       log.debug2 ( 4,"calculated path " + this.filePath);
@@ -161,7 +162,6 @@ function Communicate ( server_request )  {
     if (ix>=0)  {
       this.filePath = ustats.getUsageReportFilePath ( this.filePath.substr(ix+utag.length) );
       log.debug2 ( 3,"calculated path " + this.filePath);
-    // console.log ( ' >>>>>> fpath=' + this.filePath );
     }
   }
   if (ix<0) {
@@ -169,7 +169,6 @@ function Communicate ( server_request )  {
     if (ix>=0)  {
       this.filePath = this.fe_server.getJobsSafePath() + '/' +
                       this.filePath.substr(ix+cmd.__special_fjsafe_tag.length);
-      //console.log ( ' fpath=' + this.filePath );
       log.debug2 ( 3,"calculated path " + this.filePath);
     }
   }
@@ -200,7 +199,6 @@ function Communicate ( server_request )  {
     ix = this.filePath.indexOf('js-lib')
     if (ix>cmd.__special_url_tag.length)  {
       this.filePath = this.filePath.substr(ix);
-// console.log ( ' >>>>>> fpath=' + this.filePath );
     } else if (this.filePath.startsWith('js-lib/webCoot/baby-gru/monomers'))  {
       if (process.env.CLIBD_MON.endsWith('/'))
         this.filePath = this.filePath.replace ( 'js-lib/webCoot/baby-gru/monomers/',
@@ -211,10 +209,8 @@ function Communicate ( server_request )  {
     } else
       ix = -1;
   }
-  if (ix<0) {
 
-    //if (this.filePath.startsWith(cmd.__special_url_tag))  { // special access to files not
-    //                                             // supposed to be on http path
+  if (ix<0) {
 
     ix = this.filePath.lastIndexOf ( cmd.__special_url_tag );
     if (ix>=0)  {
@@ -236,7 +232,6 @@ function Communicate ( server_request )  {
         else // file in a project directory
           this.filePath = path.join ( prj.getProjectDirPath(loginData,flist[2]),
                                       flist[3] );
-        // console.log ( ' fp='+this.filePath );
 
         // now check whether the job is currently running, in which case the
         // requested file should be fetched from the respective number cruncher
@@ -264,30 +259,10 @@ function Communicate ( server_request )  {
   if (ix<0) {
     ix = this.filePath.indexOf('manual');
     if (ix>=0)  {  // request for documentation file
-      /*
-      console.log ( ' ---- ' + this.filePath );
-      var flst = this.filePath.substr(ix).split('?');
-      if (!utils.fileExists(flst[0]))
-            this.filePath = flst[0];
-      else  this.filePath = flst[flst.length-1];
-      console.log ( ' === ' + this.filePath );
-      */
       this.filePath = this.filePath.substr(ix);
-      // if (this.filePath.endsWith('.html'))
-      //   anl.getFEAnalytics().logDocument ( this.filePath );
-      // console.log ( "requested manual " + this.filePath);
       log.debug2 ( 2,"calculated path " + this.filePath);
     }
   }
-  // if (ix<0)  {
-  //   if (this.filePath.startsWith('archive'))  {
-  //     this.filePath = 'archive.html';
-  //     ix = 0;
-  //   }
-  // }
-
-  // if (this.filePath.endsWith('.cif'))
-  //   console.log ( "calculated path " + this.filePath);
 
   this.mimeType = utils.getMIMEType ( this.filePath );
 
@@ -335,6 +310,11 @@ Communicate.prototype.sendFile = function ( server_response )  {
 
 //console.log ( 'send file = ' + this.filePath + ',  mtype=' + mtype );
 
+// if (this.doprint)  {
+//   console.log ( ' >>>>> FPATH ' + this.filePath );
+//   console.log ( ' >>>>> URL ' + this.ncURL );
+// }
+
   if (this.ncURL.length>0)  {
     // the file is on an NC, fetch it from there through a temporary file on FE
 
@@ -344,14 +324,13 @@ Communicate.prototype.sendFile = function ( server_response )  {
           log.error ( 10,'cannot create temporary storage for file ' +
                         'request redirection' );
         } else  {
+
           log.debug2 ( 11,'tmp file ' + fpath );
           let errors = false;
           request
             .get ( ncURL )
-            .on('response', function(response) {
+            .on('response', function(response)  {
               if (response.statusCode!=200)  {
-                // if (ncURL.endsWith('.mtz'))
-                //   console.log ( ' >>>> statusCode ' + response.statusCode );
                 server_response.writeHead ( response.statusCode, {
                     'Content-Type':response.headers['content-type']
                 });
@@ -373,8 +352,6 @@ Communicate.prototype.sendFile = function ( server_response )  {
               errors = true;
             })
             .on('close',function(){   // finish,end,
-              // if (ncURL.endsWith('.cif'))
-              //   console.log ( ' >>>> obtained ' + ncURL );
               if (!errors)
                 utils.send_file ( fpath,server_response,mimeType,true,0,0,null );
             });

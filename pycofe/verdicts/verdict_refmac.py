@@ -1,17 +1,15 @@
 #!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    16.12.22   <--  Date of Last Modification.
+#    26.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  VERDICT FUNCTION FOR REFMAC
 #
-#  Copyright (C) Oleg Kovalevskiy, Eugene Krissinel, Andrey Lebedev 2020-2022
+#  Copyright (C) Oleg Kovalevskiy, Eugene Krissinel, Andrey Lebedev 2020-2023
 #
 # ============================================================================
 #

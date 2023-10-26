@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.10.23   <--  Date of Last Modification.
+ *    26.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -278,10 +278,12 @@ ServerConfig.prototype.getJobsSafe = function()  {
 
 
 ServerConfig.prototype.isFilePathAllowed = function ( fpath )  {
-let rpath = fs.realpathSync(fpath);
-let ok    = false;
-  for (let i=0;(i<this.allowedPaths.length) && (!ok);i++)
-    ok = rpath.startsWith ( this.allowedPaths[i] );
+let ok = false;
+  try {
+    let rpath = fs.realpathSync(fpath);
+    for (let i=0;(i<this.allowedPaths.length) && (!ok);i++)
+      ok = rpath.startsWith ( this.allowedPaths[i] );
+  } catch(e) {}
   return ok;
 }
 
