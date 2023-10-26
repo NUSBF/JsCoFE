@@ -568,10 +568,12 @@ def calculate ( meta ) :
     if rmsBondDistance < 0.01:
         suggestChangingGeomWeight = True
         suggestIncreasingGeomWeight = True
-        if suggestVDW:
-            distRatio = 0.01 / rmsBondDistance
-        else:
-            distRatio = 0.015 / rmsBondDistance
+        distRatio = 0.0
+        if rmsBondDistance>0.0:
+            if suggestVDW:
+                distRatio = 0.01 / rmsBondDistance
+            else:
+                distRatio = 0.015 / rmsBondDistance
         if distRatio != 0.0:
             newWeight = weight * calculateWeightRatio(distRatio)
         else:
