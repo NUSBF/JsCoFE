@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    03.05.23   <--  Date of Last Modification.
+ *    27.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -60,7 +60,7 @@ let bcopy = [];
 
 const exitCallback = (viewSettings,molData) => {
 // moldata = [{molName: string, pdbData: string}]
-  var edata = {
+  let edata = {
       'command' : 'saveFiles',
       'files'   : [{ 'fpath'  : 'view_settings.json',
                      'data'   : JSON.stringify(viewSettings),
@@ -216,13 +216,19 @@ function runWebCoot ( params )  {
 
   sf_meta = params.sf_meta;
 
+  BACKUPS = [];
+
   if (params.wdirURL)  {
     // work directory URL given, find and load backups
 
     fetchFile ( params.wdirURL + '/' + backupsFPath,
       function(text){
         // Get the backups list
-        BACKUPS = JSON.parse ( text );
+        try {
+          BACKUPS = JSON.parse ( text );
+        } catch(e) {
+          BACKUPS = [];
+        }
         // Load backups in the background, without waiting. Slightly risky but 
         // should work given webcoot start-up times. Rewrite this in case of
         // problems
