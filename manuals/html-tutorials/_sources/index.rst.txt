@@ -17,12 +17,14 @@ Tutorials
    doc.tutorial.T2_002
    doc.tutorial.T2_003
    doc.tutorial.T2_005
+   doc.tutorial.T2_006
    doc.tutorial.T3_004
    doc.tutorial.T4_001
    doc.tutorial.T4_002
    doc.tutorial.T4_003
    doc.tutorial.T4_004
    doc.demo.PISA_start
+   doc.tutorial.T5_002
 
 
 ======
