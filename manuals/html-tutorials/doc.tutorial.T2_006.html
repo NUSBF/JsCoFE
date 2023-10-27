@@ -1,0 +1,634 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#00020a">
+  <script src="_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>7. Determining the Structure of Twinned Crystals Using Molecular Replacement &#8212; CCP4 Cloud 1.7 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/material.css" />
+    <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/contentui.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="8. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms" href="doc.tutorial.T3_004.html" />
+    <link rel="prev" title="6. MR with predicted model" href="doc.tutorial.T2_005.html" />
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=#005BBB data-md-color-accent=yellow>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#doc.tutorial.T2_006" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="index.html" title="CCP4 Cloud 1.7 documentation"
+           class="md-header-nav__button md-logo">
+          
+            <i class="md-icon">cloud</i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">CCP4 Cloud 1.7 documentation</span>
+          <span class="md-header-nav__topic"> 7. Determining the Structure of Twinned Crystals Using Molecular Replacement </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="search.html" method="get" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder=""Search""
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+      
+  
+  <script src="_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "_static/versions.json",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="index.html" class="md-tabs__link">CCP4 Cloud 1.7 documentation</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="index.html" title="CCP4 Cloud 1.7 documentation" class="md-nav__button md-logo">
+      
+        <i class="md-icon">cloud</i>
+      
+    </a>
+    <a href="index.html"
+       title="CCP4 Cloud 1.7 documentation">CCP4 Cloud 1.7 documentation</a>
+  </label>
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T0_001.html" class="md-nav__link">1. Work with CCP4 Cloud</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T1_001.html" class="md-nav__link">2. Data processing and SAD phasing</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T2_001.html" class="md-nav__link">3. Creating MR Search Ensembles with CCP4MG/MrBUMP</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T2_002.html" class="md-nav__link">4. The multi-domain Molecular Replacement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T2_003.html" class="md-nav__link">5. Structure prediction for Molecular Replacement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T2_005.html" class="md-nav__link">6. MR with predicted model</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> 7. Determining the Structure of Twinned Crystals Using Molecular Replacement </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">7. Determining the Structure of Twinned Crystals Using Molecular Replacement</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#doc-tutorial-t2-006--page-root" class="md-nav__link">7. Determining the Structure of Twinned Crystals Using Molecular Replacement</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#step-1-merge-data-with-aimless" class="md-nav__link">7.1. Step 1: Merge Data with Aimless</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-2-resolution-cut-off" class="md-nav__link">7.2. Step 2: Resolution Cut-off</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-3-define-asymmetric-unit-content" class="md-nav__link">7.3. Step 3: Define Asymmetric Unit Content</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-4-prepare-mr-model" class="md-nav__link">7.4. Step 4: Prepare MR Model</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-5-run-molecular-replacement" class="md-nav__link">7.5. Step 5: Run Molecular Replacement</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-6-refinement" class="md-nav__link">7.6. Step 6: Refinement</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-7-analyze-r-factors" class="md-nav__link">7.7. Step 7: Analyze R Factors</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-8-check-data-for-twinning" class="md-nav__link">7.8. Step 8: Check data for twinning</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-9-identify-the-correct-space-group" class="md-nav__link">7.9. Step 9: Identify the correct space group</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-10-process-data-in-correct-space-group" class="md-nav__link">7.10. Step 10: Process Data in Correct Space Group</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-10-repeat-steps-4-8-in-new-space-group" class="md-nav__link">7.11. Step 10: Repeat Steps 4-8 in New Space Group</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-11-twin-refinement" class="md-nav__link">7.12. Step 11: Twin refinement</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="#step-1-merge-data-with-aimless" class="md-nav__link">7.1. Step 1: Merge Data with Aimless</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#step-2-resolution-cut-off" class="md-nav__link">7.2. Step 2: Resolution Cut-off</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#step-3-define-asymmetric-unit-content" class="md-nav__link">7.3. Step 3: Define Asymmetric Unit Content</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#step-4-prepare-mr-model" class="md-nav__link">7.4. Step 4: Prepare MR Model</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#step-5-run-molecular-replacement" class="md-nav__link">7.5. Step 5: Run Molecular Replacement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#step-6-refinement" class="md-nav__link">7.6. Step 6: Refinement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#step-7-analyze-r-factors" class="md-nav__link">7.7. Step 7: Analyze R Factors</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#step-8-check-data-for-twinning" class="md-nav__link">7.8. Step 8: Check data for twinning</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#step-9-identify-the-correct-space-group" class="md-nav__link">7.9. Step 9: Identify the correct space group</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#step-10-process-data-in-correct-space-group" class="md-nav__link">7.10. Step 10: Process Data in Correct Space Group</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#step-10-repeat-steps-4-8-in-new-space-group" class="md-nav__link">7.11. Step 10: Repeat Steps 4-8 in New Space Group</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#step-11-twin-refinement" class="md-nav__link">7.12. Step 11: Twin refinement</a>
+      
+    
+    </li></ul>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T3_004.html" class="md-nav__link">8. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T4_001.html" class="md-nav__link">9. Refinement using REFMAC5 - Part 1: Simple Refinement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T4_002.html" class="md-nav__link">10. Refinement using REFMAC5 - Part 2: Twin Refinement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T4_003.html" class="md-nav__link">11. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T4_004.html" class="md-nav__link">12. Paired refinement with PAIREF in CCP4Cloud</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.demo.PISA_start.html" class="md-nav__link">13. Using PISA in CCP4 Cloud</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T5_002.html" class="md-nav__link">14. Automated model building in CCP4 Cloud</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">"Contents"</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#doc-tutorial-t2-006--page-root" class="md-nav__link">7. Determining the Structure of Twinned Crystals Using Molecular Replacement</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#step-1-merge-data-with-aimless" class="md-nav__link">7.1. Step 1: Merge Data with Aimless</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-2-resolution-cut-off" class="md-nav__link">7.2. Step 2: Resolution Cut-off</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-3-define-asymmetric-unit-content" class="md-nav__link">7.3. Step 3: Define Asymmetric Unit Content</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-4-prepare-mr-model" class="md-nav__link">7.4. Step 4: Prepare MR Model</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-5-run-molecular-replacement" class="md-nav__link">7.5. Step 5: Run Molecular Replacement</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-6-refinement" class="md-nav__link">7.6. Step 6: Refinement</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-7-analyze-r-factors" class="md-nav__link">7.7. Step 7: Analyze R Factors</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-8-check-data-for-twinning" class="md-nav__link">7.8. Step 8: Check data for twinning</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-9-identify-the-correct-space-group" class="md-nav__link">7.9. Step 9: Identify the correct space group</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-10-process-data-in-correct-space-group" class="md-nav__link">7.10. Step 10: Process Data in Correct Space Group</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-10-repeat-steps-4-8-in-new-space-group" class="md-nav__link">7.11. Step 10: Repeat Steps 4-8 in New Space Group</a>
+        </li>
+        <li class="md-nav__item"><a href="#step-11-twin-refinement" class="md-nav__link">7.12. Step 11: Twin refinement</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  
+<h1 id="doc-tutorial-t2-006--page-root"><span class="section-number">7. </span>Determining the Structure of Twinned Crystals Using Molecular Replacement<a class="headerlink" href="#doc-tutorial-t2-006--page-root" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, we will guide you through the process of determining the structure of twinned crystals using Molecular Replacement. We will use the SH3-like domain from the <em>Penicillium virgatum</em> muramidase as an example (<a class="reference external" href="https://www.rcsb.org/structure/8B2G" rel="noopener noreferrer" target="_blank">PDB_ID 8B2G</a>).</p>
+<p><em>All data required for this tutorial were already imported into the project. Please look at the import’s task output.</em></p>
+
+<h2 id="step-1-merge-data-with-aimless"><span class="section-number">7.1. </span>Step 1: Merge Data with Aimless<a class="headerlink" href="#step-1-merge-data-with-aimless" title="Permalink to this headline">¶</a></h2>
+<p>Since we are dealing with unmerged data, the first step is to merge them using the “Merging and Scaling with Aimless” task:</p>
+<ul class="simple">
+<li>Click on “Add Task.”</li>
+<li><dl class="first docutils">
+<dt>Go to “All Tasks” &gt; “Data Processing” &gt; “Merging and Scaling with</dt><dd>Aimless.”</dd>
+</dl>
+</li>
+<li>Use default parameters and click the “Run” button.</li>
+</ul>
+<p>Once the task is finished you can find lots of useful information about the tasks performance in the output tab.</p>
+<p>For the purpose of this tutorial, we will pay close attention to the <strong>Anisotropy analysis of CC(1/2) and I/sd, 1</strong> graph (can be found in
+<strong>4. Scaling and merging section, AIMLESS</strong> version number). As shown below</p>
+<img alt="_images/image_1.png" class="align-center" src="_images/image_1.png"/>
+<p>Scroll down to Graph Data. Here we want to look at <strong>Anisotropy analysis
+of CC(1/2) and I/sd, 1</strong></p>
+<img alt="_images/image_2.png" class="align-center" src="_images/image_2.png"/>
+<p>And <strong>CC1/2 vs resolution</strong> graphs.</p>
+<img alt="_images/image_3.png" class="align-center" src="_images/image_3.png"/>
+<p>CC1/2 is a correlation coefficient between two halves of the original dataset with multiple observations distributed randomly between the two
+halves. This is independent of estimates of σ(I). CC1/2 = 1 means signal, CC1/2 = 0 means noise. Resolution cut off is usually chosen where CC1/2 is between 0.2 and 0.5.</p>
+
+
+<h2 id="step-2-resolution-cut-off"><span class="section-number">7.2. </span>Step 2: Resolution Cut-off<a class="headerlink" href="#step-2-resolution-cut-off" title="Permalink to this headline">¶</a></h2>
+<p>Determine an appropriate resolution cut-off based on the Anisotropy analysis of CC(1/2) and I/sd, 1. Clone the existing “<strong>Merging and
+Scaling with Aimless”</strong> task and set the <strong>high-resolution cut-off to 1.5 Å</strong> in the Basic options menu, as shown below</p>
+<img alt="_images/image_4.png" class="align-center" src="_images/image_4.png"/>
+<p>Then, run the task.</p>
+
+
+<h2 id="step-3-define-asymmetric-unit-content"><span class="section-number">7.3. </span>Step 3: Define Asymmetric Unit Content<a class="headerlink" href="#step-3-define-asymmetric-unit-content" title="Permalink to this headline">¶</a></h2>
+<p>Define the Asymmetric Unit content:</p>
+<ul class="simple">
+<li>Click on “Add Task.”</li>
+<li>Go to “All Tasks” &gt; “Asymmetric Unit and Structure Revision” &gt; “Asymmetric Unit Contents.”</li>
+<li>Run the task.</li>
+</ul>
+<p>Note: you can also find tasks by typing <em>Asymmetric Unit Contents</em> in the search bar in the <strong>A-Z tab</strong>.</p>
+
+
+<h2 id="step-4-prepare-mr-model"><span class="section-number">7.4. </span>Step 4: Prepare MR Model<a class="headerlink" href="#step-4-prepare-mr-model" title="Permalink to this headline">¶</a></h2>
+<p>Since you already have a homology structure, create a Molecular Replacement (MR) model using the “Prepare Single-Chain MR Model(s) from Coordinate Data” task:</p>
+<ul class="simple">
+<li>Click on “Add Task.”</li>
+<li>Go to “All Tasks” &gt; “Molecular Replacement” &gt; “Prepare Single-Chain MR Model(s) from Coordinate Data.”</li>
+<li>Use default parameters (<strong>Modification protocol: Molrep</strong>)</li>
+<li>Run the task.</li>
+</ul>
+
+
+<h2 id="step-5-run-molecular-replacement"><span class="section-number">7.5. </span>Step 5: Run Molecular Replacement<a class="headerlink" href="#step-5-run-molecular-replacement" title="Permalink to this headline">¶</a></h2>
+<p>Created models can now be used in
+<a class="reference external" href="../html-taskref/doc.task.Phaser.html" rel="noopener noreferrer" target="_blank">Phaser</a> or <a class="reference external" href="../html-taskref/doc.task.Molrep.html" rel="noopener noreferrer" target="_blank">Molrep</a> tasks.</p>
+<p>In this tutorial we will use Molrep for Molecular Replacement:</p>
+<ul class="simple">
+<li>Click on “Add Next Job.”</li>
+<li>Go to “All Tasks” &gt; “Molecular Replacement” &gt; “Molecular Replacement with Molrep.”</li>
+</ul>
+
+
+<h2 id="step-6-refinement"><span class="section-number">7.6. </span>Step 6: Refinement<a class="headerlink" href="#step-6-refinement" title="Permalink to this headline">¶</a></h2>
+<p>After finding the MR solution, refine the positioned model with Refmac.</p>
+<p>In the early stages of refinement (e.g. straight after MR) it’s advised to run many cycles (up to 200 with jelly body restraints) of refinement. We will run 100 cycles, as shown below</p>
+<ul class="simple">
+<li>Add the next job.</li>
+<li>Go to “All Tasks” &gt; “Refinement and Model Building” &gt; “Refinement with Refmac.”</li>
+<li>Run 100 cycles of refinement with jelly-body restrains.</li>
+</ul>
+<img alt="_images/image_5.png" class="align-center" src="_images/image_5.png"/>
+
+
+<h2 id="step-7-analyze-r-factors"><span class="section-number">7.7. </span>Step 7: Analyze R Factors<a class="headerlink" href="#step-7-analyze-r-factors" title="Permalink to this headline">¶</a></h2>
+<p>Once the Refmac task is finished, check the R factors. If they remain high, it indicates an issue with the data.</p>
+<img alt="_images/image_6.png" class="align-center" src="_images/image_6.png"/>
+<p>To investigate further, return to the Aimless task results.</p>
+
+
+<h2 id="step-8-check-data-for-twinning"><span class="section-number">7.8. </span>Step 8: Check data for twinning<a class="headerlink" href="#step-8-check-data-for-twinning" title="Permalink to this headline">¶</a></h2>
+<p>Now we will more carefully examine the data to check for the presence of twinning. During the data processing phase, twinning has the potential to hinder us in accurately determining the appropriate space group. If the space group is assumed wrong, the structure cannot be solved and therefore it’s important to identify twinning in the early stages. In some cases, individual crystals of the twin have pseudosymmetry, whose rotational component nearly coincides with the twin operation. In such cases, a pseudosolution in a wrong higher symmetry space group is possible, which might have a high contrast in the MR search, but will eventually fail to refine to reasonable stats (as we have just observed).</p>
+<p><strong>L-Test Analysis</strong>: The L-test is a statistical test based on experimental merged data and designed to identify twinning without guessing the twin operation. It is nearly insensitive to pseudotranslation and anisotropy of the data and is the most frequently used twinning test in MX. In its “manual” version, we have to compare the experimental cumulative distribution of the statistic L with its theoretical distribution for untwinned data (a straight line). Even a minor deviation from untwinned statistics is a warning sign. The theoretical distribution for perfect twins is usually provided as a reference as well.</p>
+<img alt="_images/image_7.png" class="align-center" src="_images/image_7.png"/>
+<ul class="simple">
+<li><strong>Summary Warning</strong>: If the L-test indicates that the data may be twinned, you may encounter a warning in the summary section of the Aimless result.</li>
+</ul>
+<p>That means that we probably should reconsider the space group of our
+crystal.</p>
+<img alt="_images/image_8.png" class="align-center" src="_images/image_8.png"/>
+
+
+<h2 id="step-9-identify-the-correct-space-group"><span class="section-number">7.9. </span>Step 9: Identify the correct space group<a class="headerlink" href="#step-9-identify-the-correct-space-group" title="Permalink to this headline">¶</a></h2>
+<p>In this step, we will determine the most appropriate space group for the crystal based on the presence of screw axes and the information from symmetry determination tables in the Aimless report.</p>
+<p>Axial reflections, axis c (lattice frame) screw axis 2(1) graph suggest the presence of Screw Axes</p>
+<img alt="_images/image_9.png" class="align-center" src="_images/image_9.png"/>
+<p>Navigate to the Aimless report page and locate the symmetry determination tables. These tables provide valuable information about the probability of different symmetry elements being present in the crystal.</p>
+<img alt="_images/image_10.png" class="align-center" src="_images/image_10.png"/>
+<p>Data suggest that the 2-fold l (0 0 1) {-h,-k,l} operator (2) is likely to be a crystallographic operation, while the 2-fold k (0 1 0) {-h,k,-l} and 2-fold h (1 0 0) {h,-k,-l} with noticeably lower CC and higher Rs are likely to be two equivalent twin operation.</p>
+<p>This led us to the P 1 2/m 1 Laue group and P 1 21 1 space group</p>
+<p>Identifying the correct space group is crucial for crystallographic analysis because it defines the symmetry elements and constraints that will be applied during data processing and refinement. Selecting the correct space group ensures that the crystallographic model accurately reflects the crystal’s true symmetry and leads to a more accurate determination of the crystal structure.</p>
+<img alt="_images/image_11.png" class="align-center" src="_images/image_11.png"/>
+<a class="reference internal image-reference" href="_images/image_12.png"><img alt="_images/image_12.png" class="align-center" src="_images/image_12.png" style="width: 253.0px; height: 43.0px;"/></a>
+
+
+<h2 id="step-10-process-data-in-correct-space-group"><span class="section-number">7.10. </span>Step 10: Process Data in Correct Space Group<a class="headerlink" href="#step-10-process-data-in-correct-space-group" title="Permalink to this headline">¶</a></h2>
+<p>Clone the Aimless task with resolution cut-off and Select <strong>P 1 2/m 1 as the Patterson group and</strong> <strong>P1 21 1 as the space group.</strong> As shown below.</p>
+<img alt="_images/image_13.png" class="align-center" src="_images/image_13.png"/>
+<p>Run the task</p>
+
+
+<h2 id="step-10-repeat-steps-4-8-in-new-space-group"><span class="section-number">7.11. </span>Step 10: Repeat Steps 4-8 in New Space Group<a class="headerlink" href="#step-10-repeat-steps-4-8-in-new-space-group" title="Permalink to this headline">¶</a></h2>
+<p>Repeat Steps 4 to 8 in the new space group (P 1 21 1). Check if the R factors have improved:</p>
+<img alt="_images/image_14.png" class="align-center" src="_images/image_14.png"/>
+<p>As you can see, in the P1 21 1 space group R factors dropped to 0.3, which allows us to perform twin refinement. It is highly advised not to start twin refinement before R drops below 0.4. The reason is that, according to theoretical estimates, switching to twin refinement before this point will likely result in a drop in R-free even if the crystal was not actually a twin crystal.</p>
+<img alt="_images/image_15.png" class="align-center" src="_images/image_15.png"/>
+
+
+<h2 id="step-11-twin-refinement"><span class="section-number">7.12. </span>Step 11: Twin refinement<a class="headerlink" href="#step-11-twin-refinement" title="Permalink to this headline">¶</a></h2>
+<p>Run 100 cycles of refinement with jelly-body restrains + change the <strong>Refine using</strong> the field to <strong>Mean Amplitudes assuming twinning</strong>.</p>
+<a class="reference internal image-reference" href="_images/image_16.png"><img alt="_images/image_16.png" class="align-center" src="_images/image_16.png" style="width: 743.0px; height: 243.0px;"/></a>
+<p>While the job is running, the results page will be updated. Summary information will be displayed in the <strong>Report</strong> tab.</p>
+<p>Twinning information can be found in the REFMAC5 log file, which is displayed in the <strong>Main Log</strong> tab.</p>
+<ul class="simple">
+<li>Once the job is finished, select the <strong>Main Log</strong> tab and use your web browser’s search facility (e.g. ctrl+F, cmd+F, Edit-&gt;Find,etc.) in order to search for the word <strong>twin</strong> in the log file. Cycle through the results in order to find information about potential twinning in this dataset.</li>
+</ul>
+
+
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="doc.tutorial.T2_005.html" title="6. MR with predicted model"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> "Previous" </span> <span class="section-number">6. </span>MR with predicted model </span>
+              </div>
+            </a>
+          
+          
+            <a href="doc.tutorial.T3_004.html" title="8. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> "Next" </span> <span class="section-number">8. </span>Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>
