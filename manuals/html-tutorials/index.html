@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -218,42 +219,56 @@
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T3_004.html" class="md-nav__link">7. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</a>
+      <a href="doc.tutorial.T2_006.html" class="md-nav__link">7. Determining the Structure of Twinned Crystals Using Molecular Replacement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_001.html" class="md-nav__link">8. Refinement using REFMAC5 - Part 1: Simple Refinement</a>
+      <a href="doc.tutorial.T3_004.html" class="md-nav__link">8. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_002.html" class="md-nav__link">9. Refinement using REFMAC5 - Part 2: Twin Refinement</a>
+      <a href="doc.tutorial.T4_001.html" class="md-nav__link">9. Refinement using REFMAC5 - Part 1: Simple Refinement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_003.html" class="md-nav__link">10. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</a>
+      <a href="doc.tutorial.T4_002.html" class="md-nav__link">10. Refinement using REFMAC5 - Part 2: Twin Refinement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.tutorial.T4_004.html" class="md-nav__link">11. Paired refinement with PAIREF in CCP4Cloud</a>
+      <a href="doc.tutorial.T4_003.html" class="md-nav__link">11. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting & Refinement</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="doc.demo.PISA_start.html" class="md-nav__link">12. Using PISA in CCP4 Cloud</a>
+      <a href="doc.tutorial.T4_004.html" class="md-nav__link">12. Paired refinement with PAIREF in CCP4Cloud</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.demo.PISA_start.html" class="md-nav__link">13. Using PISA in CCP4 Cloud</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="doc.tutorial.T5_002.html" class="md-nav__link">14. Automated model building in CCP4 Cloud</a>
       
     
     </li>
@@ -286,8 +301,8 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="tutorials">
-<h1 id="index--page-root">Tutorials<a class="headerlink" href="#index--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="index--page-root">Tutorials<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T0_001.html">1. Work with CCP4 Cloud</a><ul>
@@ -300,49 +315,65 @@
 <li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T2_002.html">4. The multi-domain Molecular Replacement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T2_003.html">5. Structure prediction for Molecular Replacement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T2_005.html">6. MR with predicted model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T3_004.html">7. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T4_001.html">8. Refinement using REFMAC5 - Part 1: Simple Refinement</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_001.html#preliminary-notes">8.1. Preliminary notes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_001.html#tutorial">8.2. Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T2_006.html">7. Determining the Structure of Twinned Crystals Using Molecular Replacement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T2_006.html#step-1-merge-data-with-aimless">7.1. Step 1: Merge Data with Aimless</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T2_006.html#step-2-resolution-cut-off">7.2. Step 2: Resolution Cut-off</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T2_006.html#step-3-define-asymmetric-unit-content">7.3. Step 3: Define Asymmetric Unit Content</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T2_006.html#step-4-prepare-mr-model">7.4. Step 4: Prepare MR Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T2_006.html#step-5-run-molecular-replacement">7.5. Step 5: Run Molecular Replacement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T2_006.html#step-6-refinement">7.6. Step 6: Refinement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T2_006.html#step-7-analyze-r-factors">7.7. Step 7: Analyze R Factors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T2_006.html#step-8-check-data-for-twinning">7.8. Step 8: Check data for twinning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T2_006.html#step-9-identify-the-correct-space-group">7.9. Step 9: Identify the correct space group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T2_006.html#step-10-process-data-in-correct-space-group">7.10. Step 10: Process Data in Correct Space Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T2_006.html#step-10-repeat-steps-4-8-in-new-space-group">7.11. Step 10: Repeat Steps 4-8 in New Space Group</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T2_006.html#step-11-twin-refinement">7.12. Step 11: Twin refinement</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T4_002.html">9. Refinement using REFMAC5 - Part 2: Twin Refinement</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_002.html#preliminary-notes">9.1. Preliminary notes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_002.html#tutorial">9.2. Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T3_004.html">8. Solving Beta-Lactamase Structure with Experimental Phasing on Zn atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T4_001.html">9. Refinement using REFMAC5 - Part 1: Simple Refinement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_001.html#preliminary-notes">9.1. Preliminary notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_001.html#tutorial">9.2. Tutorial</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T4_003.html">10. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting &amp; Refinement</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_003.html#preliminary-notes">10.1. Preliminary notes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_003.html#tutorial">10.2. Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T4_002.html">10. Refinement using REFMAC5 - Part 2: Twin Refinement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_002.html#preliminary-notes">10.1. Preliminary notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_002.html#tutorial">10.2. Tutorial</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T4_004.html">11. Paired refinement with PAIREF in CCP4Cloud</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_004.html#results">11.1. Results</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_004.html#data">11.2. Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_004.html#further-reading">11.3. Further reading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T4_003.html">11. Refinement using REFMAC5 - Part 3: Ligand Dictionary Generation, Fitting &amp; Refinement</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_003.html#preliminary-notes">11.1. Preliminary notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_003.html#tutorial">11.2. Tutorial</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="doc.demo.PISA_start.html">12. Using PISA in CCP4 Cloud</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T4_004.html">12. Paired refinement with PAIREF in CCP4Cloud</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_004.html#results">12.1. Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_004.html#data">12.2. Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="doc.tutorial.T4_004.html#further-reading">12.3. Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="doc.demo.PISA_start.html">13. Using PISA in CCP4 Cloud</a></li>
+<li class="toctree-l1"><a class="reference internal" href="doc.tutorial.T5_002.html">14. Automated model building in CCP4 Cloud</a></li>
 </ul>
 </div>
-</section>
-<section id="search">
-<h1 id="search">Search<a class="headerlink" href="#search" title="Permalink to this heading">¶</a></h1>
+
+
+<h1 id="search">Search<a class="headerlink" href="#search" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
 </ul>
-</section>
-<section id="authors-and-contributors">
-<h1 id="authors-and-contributors">Authors and Contributors<a class="headerlink" href="#authors-and-contributors" title="Permalink to this heading">¶</a></h1>
+
+
+<h1 id="authors-and-contributors">Authors and Contributors<a class="headerlink" href="#authors-and-contributors" title="Permalink to this headline">¶</a></h1>
 <p>Tutorials for CCP4 Cloud were prepared by:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p><em>Maria Fando (CCP4, STFC, Harwell, UK)</em></p></li>
-<li><p><em>Eugene Krissinel (CCP4, STFC, Harwell, UK)</em></p></li>
+<li><em>Maria Fando (CCP4, STFC, Harwell, UK)</em></li>
+<li><em>Eugene Krissinel (CCP4, STFC, Harwell, UK)</em></li>
 </ul>
 </div></blockquote>
 <p>Please send questions and suggestions to: <a class="reference external" href="mailto:ccp4_cloud%40listserv.stfc.ac.uk?Subject=CCP4%20Cloud%20question" rel="noopener noreferrer" target="_blank">CCP4 Cloud Reception</a> .</p>
-</section>
+
 
 
           </article>
@@ -374,7 +405,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
