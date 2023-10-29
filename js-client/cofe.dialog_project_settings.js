@@ -10,7 +10,7 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Task Data Dialog (shows data availability for given task)
+ *  **** Content :  Project Settings Dialog
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, A. Lebedev 2019-2023
