@@ -487,6 +487,21 @@ var r = 0;  // grid row
 }
 
 
+TaskListDialog.prototype.makeMyWorkflowsList = function()  {
+
+  if (__my_workflows.length<=0)
+    return new Label ( 'None defined' ).setFontItalic(true);
+
+  let grid = new Grid ( '-compact' );
+  for (let i=0;i<__my_workflows.length;i++)  {
+    let task = new TaskWorkflow ( __my_workflows[i] );
+  }
+
+  return grid;
+
+}
+
+
 TaskListDialog.prototype.makeWorkflowsList = function ( grid )  {
 var r = 0;  // grid row
 
@@ -520,11 +535,11 @@ var r = 0;  // grid row
     new TaskWFlowREL()
   ];
 
-  for (var i=0;i<task_list.length;i++)  {
+  for (let i=0;i<task_list.length;i++)  {
     if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
       grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
       grid.setLabel ( '<hr/>',r,0,1,1 );
-      var grid1 = grid.setGrid ( '',r++,1,1,2 );
+      let grid1 = grid.setGrid ( '',r++,1,1,2 );
       grid1.setLabel ( '&nbsp;' + task_list[i] + '&nbsp;',0,0,1,1 )
            .setFontItalic(true).setFontBold(true).setNoWrap();
       grid1.setLabel ( '<hr/>',0,1,1,1 );
@@ -538,6 +553,24 @@ var r = 0;  // grid row
         this.listAtoZ.push ( task_list[i] );
       }
     }
+  }
+
+  if (__user_role==role_code.developer)  {
+
+    grid.setLabel ( '&nbsp;',r++,0,1,3 );
+    grid.setHLine ( 2, r++,0,1,3 );
+    grid.setLabel ( 'My Workflows',r++,0,1,3 ).setFontSize('140%').setFontBold(true);
+    grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
+
+    grid.setWidget ( this.makeMyWorkflowsList(),r++,0,1,3 );
+
+    grid.setLabel  ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
+    grid.setButton ( 'Add workflow',image_path('add'), r++,0,1,3 )
+        .setWidth_px ( 120 )
+        .addOnClickListener ( function(){
+          new EditWorkflowDialog ( function(){} );
+        })
+    
   }
 
   this._setting_wf = false;

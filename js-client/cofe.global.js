@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.08.23   <--  Date of Last Modification.
+ *    28.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -61,6 +61,7 @@ var __auth_software   = null;   // software authorisation data
 var __user_authorisation = null;  // user authorisation data
 var __environ_server  = [];     // list of key environmental variables on NCs
 var __environ_client  = [];     // list of key environmental variables on Client
+var __my_workflows    = [];     // user defined workflows
 
 var __clipboard       = { task: null };     // clipboard for copy-paste
 

@@ -2,18 +2,18 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    29.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
- *  **** Module  :  js-common/cofe.tasks.wflowsmr.js
+ *  **** Module  :  js-common/cofe.tasks.workflow.js
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Single Model MR Workflow Task Class
+ *  **** Content :  Generic Workflow Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2023
  *
  *  =================================================================
  *
@@ -29,16 +29,23 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 // ===========================================================================
 
-function TaskWFlowSMR()  {
+function TaskWorkflow ( workflowDesc )  {
+//
+//  workflowDesc = { id: workflow_id, script: workflow_script }
+//
 
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type       = 'TaskWFlowSMR';
-  this.name        = 'Simple MR workflow';
-  this.setOName ( 'ccp4go_simplemr' );  // default output file name template
-  this.title       = 'Workflow: Simple Molecular Replacement with Search Model';
-  this.autoRunId   = 'simple-MR';
+  this._type       = 'TaskWorkflow';
+  this.name        = 'Workflow';
+  this.setOName ( 'workflow' );  // default output file name template
+  this.title       = 'Workflow';
+  this.autoRunId   = workflowDesc.id;
+
+  this.icon_name       = 'workflow';
+  this.task_desc       = 'generic workflow';
+  this.search_keywords = ['workflow'];
 
   //this.ha_type = '';
 
@@ -145,44 +152,67 @@ function TaskWFlowSMR()  {
 //                }
   };
 
+  this.parseWorkflowScript ( workflowDesc.script );
+
 }
 
 if (__template)
-      TaskWFlowSMR.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskWFlowSMR.prototype = Object.create ( TaskTemplate.prototype );
-TaskWFlowSMR.prototype.constructor = TaskWFlowSMR;
+      TaskWorkflow.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskWorkflow.prototype = Object.create ( TaskTemplate.prototype );
+TaskWorkflow.prototype.constructor = TaskWorkflow;
 
 
 // ===========================================================================
 
-TaskWFlowSMR.prototype.icon           = function()  { return 'task_wflowsmr';  }
-TaskWFlowSMR.prototype.clipboard_name = function()  { return '"SMR Workflow"'; }
+TaskWorkflow.prototype.parseWorkflowScript = function ( script )  {
+let lines = script.trim().split ( /\r?\n/ );
 
-TaskWFlowSMR.prototype.desc_title     = function()  {
-  return 'data import, ASU definition, phaser MR, refinement, ligand fitting and PDB deposition';
+  for (let i=0;i<lines.length;i++)  {
+    let line  = lines[i];
+    let ihash = line.indexOf('#');
+    if (ihash>=0)  // remove comment
+      line = line.slice ( 0,ihash );
+    line = line.trim();
+    if (line.length>0)  {
+      let words = lines[i].split(' ').filter(Boolean);
+      switch (words[0].toUpperCase())  {
+        case 'NAME'     : this.name      = words[1];                  break;
+        case 'ONAME'    : this.setOName ( words[1] );                 break;
+        case 'ICON'     : this.icon_name = words[1];                  break;
+        case 'TITLE'    : this.title     = words.slice(1).join(' ');  break;
+        case 'DESC'     : this.task_desc = words.slice(1).join(' ');  break;
+        case 'KEYWORDS' : this.search_keywords = words.slice(1);      break;
+        default : ;
+      }
+    }
+  }
+
 }
 
-//TaskWFlowSMR.prototype.canRunInAutoMode = function() { return true; }
+TaskWorkflow.prototype.icon           = function()  { return this.icon_name;   }
+TaskWorkflow.prototype.clipboard_name = function()  { return this.autoRunId;   }
+
+TaskWorkflow.prototype.desc_title     = function()  { return this.task_desc;   }
+
+//TaskWorkflow.prototype.canRunInAutoMode = function() { return true; }
 
 // task.platforms() identifies suitable platforms:
 //   'W"  : Windows
 //   'L'  : Linux
 //   'M'  : Mac
 //   'U'  : Unix ( = Linux + Mac)
-//TaskWFlowSMR.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
+//TaskWorkflow.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
-TaskWFlowSMR.prototype.currentVersion = function()  {
+TaskWorkflow.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-TaskWFlowSMR.prototype.checkKeywords = function ( keywords )  {
+TaskWorkflow.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,[
-                'workflow','molecular', 'replacement', 'model','simple','refinement','auto',
-                'automation','automatic','automatization','automatisation', 'mr'] );
+  return this.__check_keywords ( keywords,this.search_keywords );
 }
 
 // export such that it could be used in both node and a browser
@@ -191,23 +221,23 @@ if (!__template)  {
 
   // This function is called at cloning jobs and should do copying of all
   // custom class fields not found in the Template class
-  TaskWFlowSMR.prototype.customDataClone = function ( cloneMode,task )  {
+  TaskWorkflow.prototype.customDataClone = function ( cloneMode,task )  {
     this.autoRunId0 = '';   // for Job Dialog
     //this.ha_type = task.ha_type;
   }
 
   // reserved function name
-  //TaskWFlowSMR.prototype.runButtonName = function()  { return 'Import'; }
+  //TaskWorkflow.prototype.runButtonName = function()  { return 'Import'; }
 
 } else  {
   // for server side
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskWFlowSMR.prototype.getCommandLine = function ( jobManager,jobDir )  {
+  TaskWorkflow.prototype.getCommandLine = function ( jobManager,jobDir )  {
     return [conf.pythonName(), '-m', 'pycofe.tasks.wflow_smr', jobManager, jobDir, this.id];
   }
 
-  module.exports.TaskWFlowSMR = TaskWFlowSMR;
+  module.exports.TaskWorkflow = TaskWorkflow;
 
 }
