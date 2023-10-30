@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.23   <--  Date of Last Modification.
+ *    30.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -172,6 +172,9 @@ KEYWORDS my workflow first
 ALLOW_UPLOAD
 
 DATA HKL UNMERGED TYPES anomalous
+DATA XYZ          TYPES protein dna rna
+DATA SEQ          TYPES protein dna rna
+DATA LIGAND
 */
 
 TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
@@ -203,7 +206,7 @@ let lines = workflowDesc.script.trim().split ( /\r?\n/ );
       switch (words[0].toUpperCase())  {
         
         case 'NAME'     : this.name      = words[1];                  break;
-        case 'ONAME'    : this.setOName ( words[1] );                 break;
+        case 'ONAME'    : this.setOName  ( words[1] );                break;
         case 'ICON'     : this.icon_name = words[1];                  break;
         case 'TITLE'    : this.title     = words.slice(1).join(' ');  break;
         case 'DESC'     : this.task_desc = words.slice(1).join(' ');  break;
@@ -218,39 +221,77 @@ let lines = workflowDesc.script.trim().split ( /\r?\n/ );
                             max         : 1    // maximum acceptable number of data instances
                           };
                           let sec  = words.slice(1).join(' ').toUpperCase().split('TYPES');
-                          let dsec = sec[0].split(' ');
+                          let dsec = sec[0].split(' ').filter(Boolean);
                           let tsec = [];
                           if (sec.length>1)
-                            tsec = sec[1].toLowerCase().split(' ');
-                          for (let j=0;j<dsec.length;j++)
+                            tsec = sec[1].toLowerCase().split(' ').filter(Boolean);
+                          for (let j=0;j<dsec.length;j++)  {
+                            dtype.inputId = dsec[j].toLowerCase();
                             switch (dsec[j])  {
                               case 'HKL'      : dtype.data_type.DataHKL = tsec;
-                                                dtype.label   = 'Reflection Data';
-                                                dtype.inputId = 'hkl';
+                                                dtype.label   = 'Reflection data';
                                             break;
                               case 'UNMERGED' : dtype.data_type.DataUnmerged = [];
-                                                dtype.label   = 'Reflection Data';
-                                                dtype.inputId = 'hkl';
+                                                dtype.label   = 'Reflection data';
+                                                dtype.inputId = 'hkl';  // special case
+                                            break;
+                              case 'XYZ'      : dtype.data_type.DataXYZ = tsec;
+                                                dtype.label   = 'Template structure';
+                                            break;
+                              case 'SEQ'      : dtype.data_type.DataSequence = tsec;
+                                                dtype.label   = 'Sequence';
+                                                dtype.tooltip = 'Macromolecular ' +
+                                                        'sequence expected in ASU.';
+                                            break;
+                              case 'LIGAND'   : dtype.data_type.DataLigand = [];
+                                                dtype.label   = 'Ligand description';
+                                                dtype.tooltip = 'Specify ligand to '+
+                                                        'be fit in electron density.';
+                                                dtype.max     = this.input_ligands.length;
                                             break;
                               default : ;
                             }
+                          }
                           this.input_dtypes.push ( dtype );
                           if (allow_upload)  {
-                            if (dtype.inputId=='hkl')
-                              this.file_select.push ({
-                                file_types  : '.mtz,.sca', // data type(s) and subtype(s)
-                                label       : dtype.label, // label for input dialog
-                                tooltip     : 'Provide a path to MTZ file with merged or unmerged ' +
-                                              'reflections.',
-                                inputId     : 'fhkl',      // input Id for referencing input fields
-                                annotate    : false,
-                                path        : '',
-                                min         : 1            // minimum acceptable number of data instances
-                              });
+                            let fdesc = {
+                              file_types  : '',  // data type(s) and subtype(s)
+                              label       : dtype.label, // label for input dialog
+                              tooltip     : '',
+                              inputId     : 'f' + dtype.inputId, // input Id for referencing input fields
+                              path        : '',
+                              min         : 1    // minimum acceptable number of data instances
+                            };
+                            switch (dtype.inputId)  {
+                              case 'hkl' :
+                                  fdesc.file_types  = '.mtz,.sca';
+                                  fdesc.tooltip     = 'Provide path to MTZ file ' +
+                                          'with merged or unmerged reflections.';
+                                  fdesc.annotate    = false;
+                                break;
+                              case 'xyz' : 
+                                  fdesc.file_types  = '.pdb,.mmcif';
+                                  fdesc.tooltip     = 'Provide path to PDB/mmCIF '+
+                                          'file with a search model';
+                                break;
+                              case 'seq' : 
+                                  fdesc.file_types  = '.pir,.seq,.fasta';
+                                  fdesc.tooltip     = 'Provide path to sequence ' +
+                                          'file in .fasta or .pir format. For importing ' +
+                                          'several sequences put them all in a ' +
+                                          'single file.';
+                                break;
+                              case 'ligand' : 
+                                  fdesc.file_types  = '.cif';
+                                  fdesc.tooltip     = 'Provide path to CIF file ' +
+                                          'with your ligand definition.';
+                                break;
+                              default : ;
+                            }
+                            if (fdesc.file_types)
+                              this.file_select.push ( fdesc );
                           }
                         break;
-
-
         default : ;
       }
     
