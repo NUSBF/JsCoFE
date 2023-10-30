@@ -329,12 +329,12 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
   var tabf_suggested = this.tabs_full.addTab ( 'Suggested tasks',true  );
   var tabf_fulllist  = this.tabs_full.addTab ( 'All tasks',false );
   var tabf_workflows = this.tabs_full.addTab ( 'Workflows',false );
-  var tabf_AtoZ      = this.tabs_full.addTab ( 'A-Z',false );
+  this.tabf_AtoZ     = this.tabs_full.addTab ( 'A-Z',false );
   this._setting_wf = false;
   this.makeSuggestedList ( tabf_suggested.grid );
   this.makeFullList      ( tabf_fulllist .grid );
   this.makeWorkflowsList ( tabf_workflows.grid );
-  this.makeAtoZList      ( tabf_AtoZ     .grid );
+  this.makeAtoZList      ( this.tabf_AtoZ.grid );
 
 }
 
@@ -422,8 +422,6 @@ var r = 0;  // grid row
 
   ]);
 
-  
-
   for (var i=0;i<task_list.length;i++)
     if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
       grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
@@ -487,14 +485,50 @@ var r = 0;  // grid row
 }
 
 
-TaskListDialog.prototype.makeMyWorkflowsList = function()  {
+TaskListDialog.prototype.makeMyWorkflowsList = function ( grid0,r0 )  {
 
   if (__my_workflows.length<=0)
     return new Label ( 'None defined' ).setFontItalic(true);
 
+  let self = this;
+
   let grid = new Grid ( '-compact' );
   for (let i=0;i<__my_workflows.length;i++)  {
-    let task = new TaskWorkflow ( __my_workflows[i] );
+    let task = new TaskWorkflow();
+    task.setWorkflow ( __my_workflows[i] );
+    if (this.dataBox.isEmpty() && (task.file_select.length>0))
+      task.inputMode = 'root'; // force 'at root mode' for the task
+    if (this.setTask(task,grid,i,true))  {
+      (function(wDesc){
+        grid.setButton  ( '',image_path('edit'),i,3, 1,1 )
+            .setSize    ( '32px','32px'   )
+            .setTooltip ( 'Edit workflow' )
+            .setVerticalAlignment ( 'middle' )
+            .addOnClickListener ( function(){
+              new EditWorkflowDialog ( wDesc,function(){
+                grid0.setWidget   ( self.makeMyWorkflowsList(grid0,r0),r0,0,1,3 );
+                self.makeAtoZList ( self.tabf_AtoZ.grid );
+              });
+            });
+        grid.setButton  ( '',image_path('delete'),i,4, 1,1 )
+            .setSize    ( '32px','32px'     )
+            .setTooltip ( 'Delete workflow' )
+            .setVerticalAlignment ( 'middle' )
+            .addOnClickListener ( function(){
+              removeMyWorkflow ( wDesc.id );
+              saveMyWorkflows();
+              grid0.setWidget   ( self.makeMyWorkflowsList(grid0,r0),r0,0,1,3 );
+              self.makeAtoZList ( self.tabf_AtoZ.grid );
+            });
+      }(__my_workflows[i]))
+      grid.setCellSize ( '90%','',i,2 );
+      let n = -1;
+      for (let j=0;(j<this.listAtoZ.length) && (n<0);j++)
+        if (this.listAtoZ[i].autoRunId==__my_workflows[i].id)
+          n = i;
+      if (n>=0)  this.listAtoZ[n] = task;
+           else  this.listAtoZ.push ( task );
+    }
   }
 
   return grid;
@@ -562,13 +596,17 @@ var r = 0;  // grid row
     grid.setLabel ( 'My Workflows',r++,0,1,3 ).setFontSize('140%').setFontBold(true);
     grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
 
-    grid.setWidget ( this.makeMyWorkflowsList(),r++,0,1,3 );
+    let r0 = r;
+    grid.setWidget ( this.makeMyWorkflowsList(grid,r0),r++,0,1,3 );
 
     grid.setLabel  ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
+    let self = this;
     grid.setButton ( 'Add workflow',image_path('add'), r++,0,1,3 )
         .setWidth_px ( 120 )
         .addOnClickListener ( function(){
-          new EditWorkflowDialog ( function(){} );
+          new EditWorkflowDialog ( null,function(){
+            grid.setWidget ( self.makeMyWorkflowsList(grid,r0),r0,0,1,3 );
+          });
         })
     
   }

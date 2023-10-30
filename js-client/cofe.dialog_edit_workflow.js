@@ -27,7 +27,7 @@
 // -------------------------------------------------------------------------
 // EditWorkflowDialog class
 
-function EditWorkflowDialog ( callback_func )  {
+function EditWorkflowDialog ( workflowDesc,callback_func )  {
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title','Workflow creator' );
@@ -58,6 +58,10 @@ function EditWorkflowDialog ( callback_func )  {
   wid_inp.setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'',name_tooltip )
          .setFontItalic ( true    )
          .setWidth      ( '100pt' );
+  if (workflowDesc)  {
+    wid_inp.setValue    ( workflowDesc.id );
+    wid_inp.setReadOnly ( true );
+  }
 
   this.grid.setVerticalAlignment ( 2,2,'middle' );
   this.grid.setVerticalAlignment ( 2,3,'middle' );
@@ -83,6 +87,8 @@ function EditWorkflowDialog ( callback_func )  {
   this.editor.init  ( '',
     '# Put workflow script here'
   );
+  if (workflowDesc)
+    this.editor.setText ( workflowDesc.script );
 
   var self = this;
 
@@ -93,37 +99,39 @@ function EditWorkflowDialog ( callback_func )  {
     modal     : true,
     buttons   : {
       "Save": function() {
-                let workflow_id     = wid_inp.getValue().trim();
-                let workflow_script = self.editor.getText().trim();
-                let msg = '';
-                if (workflow_id.length<=0)
-                  msg += '<li><b>Workflow name</b> must be provided.</li>';
-                else if (wid_inp.element.validity.patternMismatch)
-                  msg += '<li>Workflow name can contain only latin letters, ' +
-                         'numbers,\n underscores, dashes and dots, and ' +
-                         'must start with a letter.</li>';
-                if (workflow_name.length<0)
-                  msg += '<li>Workflow script</b> must be provided.</li>';
-                if (msg)
-                  new MessageBox ( 'Invalid input',
-                       '<div style="width:400px"><h2>Invalid input</h2>' +
-                       'Please correct the following:<ul>' + msg + '</ul>', 
-                       'msg_stop' );
-                else  {
-                  let n = -1;
-                  for (let i=0;(i<__my_workflows.length) && (n<0);i++)
-                    if (__my_workflows[i].id==workflow_id)
-                      n = i;
-                  if (n<0)  {
-                    __my_workflows.push({
-                      'id'     : workflow_id,
-                      'script' : workflow_script
-                    });
-                  } else  {
-                    __my_workflows[n].script = workflow_script;
-                  }
-                }
-                $( this ).dialog( "close" );
+        let workflow_id     = wid_inp.getValue().trim();
+        let workflow_script = self.editor.getText().trim();
+        let msg = '';
+        if (workflow_id.length<=0)
+          msg += '<li><b>Workflow name</b> must be provided.</li>';
+        else if (wid_inp.element.validity.patternMismatch)
+          msg += '<li><b>Workflow name</b> can contain only latin letters, ' +
+                  'numbers, underscores, dashes and dots, and must start' +
+                  'with a letter.</li>';
+        if (workflow_script.length<=0)
+          msg += '<li><b>Workflow script</b> must be provided.</li>';
+        if (msg)
+          new MessageBox ( 'Invalid input',
+                '<div style="width:400px"><h2>Invalid input</h2>' +
+                'Please correct the following:<ul>' + msg + '</ul>', 
+                'msg_stop' );
+        else  {
+          let n = -1;
+          for (let i=0;(i<__my_workflows.length) && (n<0);i++)
+            if (__my_workflows[i].id==workflow_id)
+              n = i;
+          if (n<0)  {
+            __my_workflows.push({
+              'id'     : workflow_id,
+              'script' : workflow_script
+            });
+          } else  {
+            __my_workflows[n].script = workflow_script;
+          }
+          saveMyWorkflows();
+          callback_func();
+          $( this ).dialog( "close" );
+        }
       },
       "Cancel": function() {
         $( this ).dialog( "close" );

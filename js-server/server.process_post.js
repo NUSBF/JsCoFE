@@ -84,7 +84,7 @@ function processPOSTData ( server_request,server_response,process_data_function,
         } else  {
           cmd.sendResponse ( server_response, cmd.fe_retcode.corruptDO,
                              'corrupt data object found','' );
-          // console.log ( ' >>>> ' + data );
+          log.error ( 1,'corrupt object ' + JSON.stringify(data,null,2) );
         }
 
       }
