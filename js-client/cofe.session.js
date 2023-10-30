@@ -182,7 +182,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __jobs_safe          = response.data.jobs_safe;
               __demo_projects      = response.data.demo_projects;
               __environ_server     = response.data.environ_server;
-              // console.log ( JSON.stringify(__environ_server))
+              __my_workflows       = response.data.my_workflows;
               __login_user         = userData.name;
               __user_settings      = userData.settings;
               __user_role          = userData.role;

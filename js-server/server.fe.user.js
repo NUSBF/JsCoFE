@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.08.23   <--  Date of Last Modification.
+ *    30.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -43,6 +43,7 @@
  *    function resetUser_admin  ( loginData,userData )
  *    function sendAnnouncement ( loginData,message )
  *    function manageDormancy   ( loginData,params )
+ *    function saveMyWorkflows  ( loginData,params )
  *    function getInfo          ( inData,callback_func )
  *    function authResponse     ( server_request,server_response )
  *
@@ -77,6 +78,7 @@ const log = require('./server.log').newLog(10);
 // ===========================================================================
 
 const __userDataExt       = '.user';
+const __workflowsDataExt  = '.workflows';
 const __userLoginHashFile = 'login.hash';
 
 const day_ms              = 86400000;  // milliseconds in a day
@@ -90,6 +92,10 @@ function hashPassword ( pwd )  {
 
 function getUserDataFName ( loginData )  {
   return path.join ( conf.getFEConfig().userDataPath,loginData.login + __userDataExt );
+}
+
+function getWorkflowsFName ( loginData )  {
+  return path.join ( conf.getFEConfig().userDataPath,loginData.login + __workflowsDataExt );
 }
 
 function _make_new_user ( userData,callback_func )  {  // gets UserData object
@@ -641,6 +647,10 @@ var fe_server = conf.getFEConfig();
         if (fe_server.hasOwnProperty('description'))
               rData.setup_desc = fe_server.description;
         else  rData.setup_desc = null;
+
+        rData.my_workflows    = utils.readObject ( getWorkflowsFName(userData) );
+        if (!rData.my_workflows)
+          rData.my_workflows = [];
 
         adm.getNCData ( [],function(ncInfo){
           rData.environ_server = [];
@@ -1745,6 +1755,14 @@ var ddata = { 'status' : 'ok' };
 
 // ===========================================================================
 
+function saveMyWorkflows ( loginData,params )  {
+let workflowsFPath = getWorkflowsFName ( loginData );
+  utils.writeObject ( workflowsFPath,params );
+  return new cmd.Response ( cmd.fe_retcode.ok,'','' );
+}
+
+// ===========================================================================
+
 function getInfo ( inData,callback_func )  {
 var response  = null;  // must become a cmd.Response object to return
 var fe_server = conf.getFEConfig();
@@ -1929,5 +1947,6 @@ module.exports.retireUser_admin     = retireUser_admin;
 module.exports.resetUser_admin      = resetUser_admin;
 module.exports.sendAnnouncement     = sendAnnouncement;
 module.exports.manageDormancy       = manageDormancy;
+module.exports.saveMyWorkflows      = saveMyWorkflows;
 module.exports.getInfo              = getInfo;
 module.exports.authResponse         = authResponse;

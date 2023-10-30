@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    28.10.23   <--  Date of Last Modification.
+ *    30.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -336,8 +336,8 @@ function doNotShowAgain ( key,url )  {
       __doNotShowList.push ( topic );
       var userData = {};
       userData.helpTopics = __doNotShowList;
-      serverRequest ( fe_reqtype.saveHelpTopics,userData,'Do not show again',null,null,
-                      'persist' );
+      serverRequest ( fe_reqtype.saveHelpTopics,userData,'Do not show again',
+                      null,null,'persist' );
     }
 
   }
@@ -346,6 +346,22 @@ function doNotShowAgain ( key,url )  {
 
 }
 
+
+// ===========================================================================
+
+function saveMyWorkflows()  {
+  serverRequest ( fe_reqtype.saveMyWorkflows,__my_workflows,'Save my workflows',
+                  null,null,'persist' );
+}
+
+function removeMyWorkflow ( workflowId )  {
+  let n = -1;
+  for (let i=0;(i<__my_workflows.length) && (n<0);i++)
+    if (__my_workflows[i].id==workflowId)
+      n = i;
+  if (n>=0)
+    __my_workflows.splice(n,1);
+}
 
 // ===========================================================================
 // allow HTML markup in tooltips

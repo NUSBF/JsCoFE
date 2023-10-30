@@ -29,19 +29,15 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 // ===========================================================================
 
-function TaskWorkflow ( workflowDesc )  {
-//
-//  workflowDesc = { id: workflow_id, script: workflow_script }
-//
+function TaskWorkflow()  {
 
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type       = 'TaskWorkflow';
-  this.name        = 'Workflow';
+  this._type  = 'TaskWorkflow';
+  this.name   = 'Workflow';
   this.setOName ( 'workflow' );  // default output file name template
-  this.title       = 'Workflow';
-  this.autoRunId   = workflowDesc.id;
+  this.title  = 'Workflow';
 
   this.icon_name       = 'workflow';
   this.task_desc       = 'generic workflow';
@@ -49,6 +45,7 @@ function TaskWorkflow ( workflowDesc )  {
 
   //this.ha_type = '';
 
+  /*
   this.file_select = [{
       file_types  : '.mtz,.sca', // data type(s) and subtype(s)
       label       : 'Reflection Data', // label for input dialog
@@ -125,7 +122,7 @@ function TaskWorkflow ( workflowDesc )  {
     }
   ];
 
-  this.parameters = { // no input parameters to mak user's life easier
+  this.parameters = { // no input parameters to make user's life easier
 //    MR_ENGINE : { type     : 'combobox',
 //                  keyword  : '',
 //                  label    : '<b><i>Auto-MR solver</i></b>',
@@ -151,8 +148,9 @@ function TaskWorkflow ( workflowDesc )  {
 //                  position : [1,0,1,3]
 //                }
   };
+  */
 
-  this.parseWorkflowScript ( workflowDesc.script );
+  // this.parseWorkflowScript ( workflowDesc.script );
 
 }
 
@@ -164,27 +162,100 @@ TaskWorkflow.prototype.constructor = TaskWorkflow;
 
 // ===========================================================================
 
-TaskWorkflow.prototype.parseWorkflowScript = function ( script )  {
-let lines = script.trim().split ( /\r?\n/ );
+/*
+#  workflow script keywords
+NAME  my_workflow
+ONAME wflow1
+TITLE My own Workflow
+DESC  This is first template for custom workflow script 
+KEYWORDS my workflow first
+ALLOW_UPLOAD
+
+DATA HKL UNMERGED TYPES anomalous
+*/
+
+TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
+//
+//  workflowDesc = { id: workflow_id, script: workflow_script }
+//
+let lines = workflowDesc.script.trim().split ( /\r?\n/ );
+
+  this.autoRunId = workflowDesc.id;
+  this.script    = workflowDesc.script;
+
+  this.file_select   = [];
+  this.input_ligands = [];
+  this.input_dtypes  = [];
+  this.parameters    = {};
+
+  let allow_upload = (workflowDesc.script.toUpperCase().indexOf('ALLOW_UPLOAD')>=0);
 
   for (let i=0;i<lines.length;i++)  {
     let line  = lines[i];
     let ihash = line.indexOf('#');
     if (ihash>=0)  // remove comment
       line = line.slice ( 0,ihash );
+  
     line = line.trim();
     if (line.length>0)  {
+      
       let words = lines[i].split(' ').filter(Boolean);
       switch (words[0].toUpperCase())  {
+        
         case 'NAME'     : this.name      = words[1];                  break;
         case 'ONAME'    : this.setOName ( words[1] );                 break;
         case 'ICON'     : this.icon_name = words[1];                  break;
         case 'TITLE'    : this.title     = words.slice(1).join(' ');  break;
         case 'DESC'     : this.task_desc = words.slice(1).join(' ');  break;
         case 'KEYWORDS' : this.search_keywords = words.slice(1);      break;
+
+        case 'DATA'     : let dtype = {        // input data type
+                            data_type   : {},  // data type(s) and subtype(s)
+                            label       : '',  // label for input dialog
+                            inputId     : '',  // input Id for referencing input fields
+                            version     : 0,   // minimum data version allowed
+                            min         : 1,   // minimum acceptable number of data instances
+                            max         : 1    // maximum acceptable number of data instances
+                          };
+                          let sec  = words.slice(1).join(' ').toUpperCase().split('TYPES');
+                          let dsec = sec[0].split(' ');
+                          let tsec = [];
+                          if (sec.length>1)
+                            tsec = sec[1].toLowerCase().split(' ');
+                          for (let j=0;j<dsec.length;j++)
+                            switch (dsec[j])  {
+                              case 'HKL'      : dtype.data_type.DataHKL = tsec;
+                                                dtype.label   = 'Reflection Data';
+                                                dtype.inputId = 'hkl';
+                                            break;
+                              case 'UNMERGED' : dtype.data_type.DataUnmerged = [];
+                                                dtype.label   = 'Reflection Data';
+                                                dtype.inputId = 'hkl';
+                                            break;
+                              default : ;
+                            }
+                          this.input_dtypes.push ( dtype );
+                          if (allow_upload)  {
+                            if (dtype.inputId=='hkl')
+                              this.file_select.push ({
+                                file_types  : '.mtz,.sca', // data type(s) and subtype(s)
+                                label       : dtype.label, // label for input dialog
+                                tooltip     : 'Provide a path to MTZ file with merged or unmerged ' +
+                                              'reflections.',
+                                inputId     : 'fhkl',      // input Id for referencing input fields
+                                annotate    : false,
+                                path        : '',
+                                min         : 1            // minimum acceptable number of data instances
+                              });
+                          }
+                        break;
+
+
         default : ;
       }
+    
     }
+  
   }
 
 }

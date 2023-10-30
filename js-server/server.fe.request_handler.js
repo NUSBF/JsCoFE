@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.05.23   <--  Date of Last Modification.
+ *    30.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -90,6 +90,10 @@ var response = null;
 
     case cmd.fe_reqtype.manageDormancy :
           response = user.manageDormancy ( loginData,data );
+       break;
+
+    case cmd.fe_reqtype.saveMyWorkflows :
+          response = user.saveMyWorkflows ( loginData,data );
        break;
 
     case cmd.fe_reqtype.getProjectList :
@@ -294,7 +298,7 @@ var response = null;
       case cmd.fe_reqtype.wakeZombieJobs   :
       case cmd.fe_reqtype.archiveProject   :
             break;
-      default:  console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
+      default : console.log ( ' <<<<<>>>>> null response to ' + request_cmd );
     }
   }
 
