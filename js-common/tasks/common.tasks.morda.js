@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.10.23   <--  Date of Last Modification.
+ *    30.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -161,6 +161,22 @@ if (!__template)  {
   //  for server side
 
   var conf = require('../../js-server/server.configuration');
+
+  TaskMorda.prototype.cleanJobDir = function ( jobDir )  {
+
+    __template.TaskTemplate.prototype.cleanJobDir.call ( this,jobDir );
+
+    // paranoid piece of code, but just in case
+    ['tmp_local','morda'].forEach((suspect) => {
+      let badDirPath = path.join ( jobDir,suspect );
+      if (utils.fileExists(badDirPath))  {
+        console.log ( ' +++ remove stray directory ' + badDirPath +
+                      ' from MoRDa job' );
+        utils.removePath ( badDirPath );
+      }
+    });
+
+  }
 
   TaskMorda.prototype.makeInputData = function ( loginData,jobDir )  {
 

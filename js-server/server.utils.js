@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.08.23   <--  Date of Last Modification.
+ *    30.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -758,7 +758,7 @@ var code   = 0;
 var signal = readString ( path.join(jobDir,signal_file_name) );
   if (signal)  {
     var sigl = signal.split('\n');
-    if (sigl.length>1)  code = parseInt(sigl[1]);
+    if (sigl.length>1)  code = parseInt(sigl[sigl.length-1]);
                   else  code = 300;
   } else
     code = 301;
