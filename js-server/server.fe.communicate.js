@@ -147,7 +147,9 @@ function Communicate ( server_request )  {
   if (ix>=0)  {  // request for jsrview library file, load it from js-lib
                 // REGARDLESS the actual path requested
     this.filePath = path.join ( 'js-lib',this.filePath.substr(ix) );
-    log.debug2 ( 2,"calculated path " + this.filePath);  }
+    log.debug2 ( 2,"calculated path " + this.filePath);  
+//    console.log ( ' >>>>>> 1 ' + this.filePath );
+  }
   if (ix<0) {
     var rtag = cmd.__special_url_tag + '-fe/';
     ix = this.filePath.lastIndexOf(rtag);

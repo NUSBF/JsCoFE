@@ -206,6 +206,8 @@ function start ( callback_func )  {
 
     var command = url.parse(server_request.url).pathname.substr(1);
 
+    // console.log ( ' >>>>client ' + command );
+
     switch (command.toLowerCase())  {
 
       case cmd.fe_command.getClientInfo :
@@ -241,7 +243,7 @@ function start ( callback_func )  {
                 return false;  // no standard processing
               });
             } else if (proxy_client && command.startsWith(cmd.__special_client_tag)) {
-              //console.log ( ' >>>>1 ' + command );
+              // console.log ( ' >>>>1 ' + command );
               // proxy_client.web ( server_request,server_response, options_web );
               proxy_client.web ( server_request,server_response, options_proxy_client );
             } else
