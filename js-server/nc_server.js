@@ -182,7 +182,7 @@ function start()  {
       if (command.startsWith(cmd.__special_url_tag))  {  // special access to files not
                                         // supposed to be on http(s) path --
                                         // download from job directory
-
+                                        
         jm.ncSendFile ( command,server_response,url_parse.search );
 
       } else  {

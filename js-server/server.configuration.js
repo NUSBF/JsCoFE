@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.10.23   <--  Date of Last Modification.
+ *    30.10.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -283,7 +283,11 @@ let ok = false;
     let rpath = fs.realpathSync(fpath);
     for (let i=0;(i<this.allowedPaths.length) && (!ok);i++)
       ok = rpath.startsWith ( this.allowedPaths[i] );
-  } catch(e) {}
+    if (!ok)
+      log.error ( 41,'rpath not found: ' + rpath );
+  } catch(e) {
+      log.error ( 42,'fpath not found: ' + fpath );
+  }
   return ok;
 }
 
@@ -905,6 +909,8 @@ function readConfiguration ( confFilePath,serverType )  {
         if (fe_proxy && (!fe_proxy.storage))
           fe_proxy.storage = client_server.storage;
       }
+      nc_server.allowedPaths.push ( fs.realpathSync('js-lib')     );
+      nc_server.allowedPaths.push ( fs.realpathSync('images_png') );
       try {
         nc_server.allowedPaths.push ( fs.realpathSync(nc_server.storage) );
         if (nc_server.hasOwnProperty('jobs_safe'))
