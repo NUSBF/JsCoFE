@@ -71,7 +71,7 @@ function TaskWFlowDPL()  {
                     'single file.',
       inputId     : 'fseq',   // input Id for referencing input fields
       path        : '',
-      min         : 1         // minimum acceptable number of data instances
+      min         : 0         // minimum acceptable number of data instances
     }
   ];
 
