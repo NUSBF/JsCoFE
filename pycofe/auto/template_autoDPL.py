@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    31.08.23   <--  Date of Last Modification.
+#    31.10.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -41,35 +41,20 @@ from   pycofe.auto   import  auto_api
 def makeNextTask ( crTask,data ):
 
     if crTask._type=="TaskWFlowDPL":
-        auto_tasks.store(data["unm"], data["hkl"], data["seq"], data["lig"], data["ligdesc"])
+        auto_tasks.store_dpl(data["unm"], data["hkl"], data["lig"], data["ligdesc"])
         auto_api.addContext("xyz", data["xyz"])
-        auto_tasks.editrevision ("TaskEditRevision", data["revision"], crTask.autoRunName )
-        # auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
-        return
-        # if len(data["unm"]) > 0:
-        #     auto_tasks.aimless ( "aimless", crTask.autoRunName )
-        #     return
-        # else:
-        #     auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
-        #     return
+        if len(data["seq"])>0:
+            auto_api.addContext("seq", data["seq"])
 
-    # elif crTask._type=="TaskAimless":
-    #     auto_api.addContext ( "hkl",data["hkl"][0] )
-    #     auto_tasks.asu("asu", crTask.autoRunName)  # auto_api.getContext("hkl_node"),"autoEP" )
-    #     return
-    #
-    #
-    # elif crTask._type=="TaskASUDef":
-    #     auto_tasks.editrevision('editrevision', data["revision"], crTask.autoRunName)
-    #     return
-    #
-    #
-    # elif crTask._type=="TaskEditRevision":
-    #     auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
-    #     return
+            auto_tasks.editrevision ("TaskEditRevision", data["revision"], crTask.autoRunName )
+        else:
+            auto_api.getContext("revision")
+            auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
+        return
+       
     elif crTask._type=="TaskEditRevision":
         auto_api.getContext("revision")
-        # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
+
         auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
 
 
