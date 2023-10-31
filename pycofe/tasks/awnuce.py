@@ -109,6 +109,9 @@ class AWNuce(basic.TaskDriver):
                 st.setup_entities()
             else:
                 st = gemmi.Structure()
+                st.spacegroup_hm= hkl.getSpaceGroup()
+                parameters = hkl.getCellParameters()
+                st.cell = gemmi.UnitCell(parameters[0], parameters[1], parameters[2], parameters[3], parameters[4], parameters[5])
                 st.add_model ( gemmi.Model("1") )  # structure with empty model
 
             stnuce = gemmi.read_structure ( os.path.join(awnuceDir,nuceout[0]) )
@@ -166,6 +169,7 @@ class AWNuce(basic.TaskDriver):
                     structure.copySubtype      ( istruct )
                     structure.copyLabels       ( istruct )
                     structure.copyLigands      ( istruct )
+                    structure.setXYZSubtype    ()
                     if nRNAbuilt:
                         structure.addRNASubtype()
                     if nDNAbuilt:
