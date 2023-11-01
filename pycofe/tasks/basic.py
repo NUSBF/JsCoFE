@@ -2189,7 +2189,7 @@ class TaskDriver(object):
 
     # ============================================================================
 
-    def checkSpaceGroupChanged ( self,sol_spg,hkl,mtzfilepath ):
+    def checkSpaceGroupChanged ( self,sol_spg,hkl,mtzfilepath,title=None ):
         # Parameters:
         #  sol_spg      a string with space group obtained from solution's XYZ file
         #  hkl          HKL class of reflection data used to produce the XYZ file
@@ -2206,6 +2206,8 @@ class TaskDriver(object):
         solSpg = sol_spg.replace(" ", "")
         if solSpg and (solSpg!=hkl.getSpaceGroup().replace(" ", "")):
 
+            if title:
+                self.putTitle ( title )
             self.putMessage ( "<font style='font-size:120%;'><b>Space Group changed to " +\
                               sol_spg + "</b></font>" )
             rvrow0      = self.rvrow

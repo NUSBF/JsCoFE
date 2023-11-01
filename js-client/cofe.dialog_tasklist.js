@@ -718,6 +718,7 @@ var row      = 0;
     // */
 
     this.makeSection ( 'Tasks in Development',[
+      new TaskDimpleMR(),
       // new TaskCootUtils    (),
       // ccp4go2_task,
       // new TaskStructurePrediction(),
