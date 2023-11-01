@@ -3,14 +3,14 @@
 #
 # ============================================================================
 #
-#    08.06.21   <--  Date of Last Modification.
+#    01.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  DIMPLE EXECUTABLE MODULE
+#  DIMPLE-MR EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.dimple jobManager jobDir jobId
+#     ccp4-python -m pycofe.tasks.dimplemr jobManager jobDir jobId
 #
 #  where:
 #    jobManager  is either SHELL or SGE
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2020
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2023
 #
 # ============================================================================
 #
@@ -29,7 +29,8 @@ import os
 import sys
 
 #  application imports
-from . import basic
+# from . import basic
+from   pycofe.tasks     import basic, asudef
 from   pycofe.dtypes    import dtype_structure
 from   pycofe.proc      import qualrep
 from   pycofe.verdicts  import verdict_refmac
@@ -37,30 +38,37 @@ from   pycofe.auto      import auto
 
 
 # ============================================================================
-# Make Dimple driver
+# Make DimpleMR driver
 
-class Dimple(basic.TaskDriver):
+class DimpleMR(basic.TaskDriver):
+
+    # the following will provide for import of generated sequences
+    def importDir        (self):  return "./"   # import from working directory
+    def import_summary_id(self):  return None   # don't make import summary table
 
     # redefine name of input script file
-    def file_stdin_path(self):  return "dimple.script"
+    def file_stdin_path(self):  return "dimplemr.script"
+
+    # definition used in import_pdb
+    def getXMLFName (self):  return "matthews.xml"
 
     # ------------------------------------------------------------------------
 
-    def runDimple ( self,hkl,istruct ):
+    def runDimpleMR ( self,hkl,xyz,lig ):
 
         sec1 = self.task.parameters.sec1.contains
 
         # if not hkl.hasMeanIntensities():
         #     self.putTitle   ( "Unsuitable Data" )
         #     self.putMessage ( "Dimple requires reflection data with mean intensities, " +\
-        #                       "which is not found in this case." )
+        #                       "which is not found in the provided reflection dataset." )
         #     # this will go in the project tree line
-        #     self.generic_parser_summary["editrevision_asu"] = {
+        #     self.generic_parser_summary["dimplemr"] = {
         #       "summary_line" : "no mean intensity data, therefore stop"
         #     }
         #     # close execution logs and quit
         #     self.success ( False )
-        #     return
+        #     return (None,None)
 
         cols = hkl.getMeanColumns()
         if cols[2]=="X":
@@ -69,11 +77,11 @@ class Dimple(basic.TaskDriver):
                               "the reflection dataset." )
             # this will go in the project tree line
             self.generic_parser_summary["dimple"] = {
-              "summary_line" : "no mean intensity data, therefore stop"
+              "summary_line" : "no reflection data, therefore stop"
             }
             # close execution logs and quit
             self.success ( False )
-            return
+            return (None,None)
 
         reflections_mtz = "__reflections.mtz"
         if cols[2]=="F":
@@ -103,7 +111,7 @@ class Dimple(basic.TaskDriver):
         cmd = [
             # hkl.getHKLFilePath(self.inputDir()),
             reflections_mtz,
-            istruct.getXYZFilePath(self.inputDir()),
+            xyz.getXYZFilePath(self.inputDir()),
             "./",
             "--free-r-flags","-",
             "--freecolumn",hkl.getMeta("FREE","")
@@ -120,10 +128,12 @@ class Dimple(basic.TaskDriver):
 
         #  make this check because function can be used also with DataXYZ
         libin = None
-        if istruct._type==dtype_structure.dtype():
-            libin = istruct.getLibFilePath ( self.inputDir() )
-            if libin:
-                cmd += [ "--libin",libin ]
+        if xyz._type==dtype_structure.dtype():
+            libin = xyz.getLibFilePath ( self.inputDir() )
+        elif lig:
+            libin = lig.getLibFilePath ( self.inputDir() )
+        if libin:
+            cmd += [ "--libin",libin ]
 
         mr_prog = self.getParameter ( sec1.MRPROG )
 
@@ -172,6 +182,8 @@ class Dimple(basic.TaskDriver):
         # ================================================================
         # make output structure and register it
 
+        sol_hkl = hkl
+
         if os.path.isfile(self.getXYZOFName()) and os.path.isfile(self.getMTZOFName()):
 
             files = [f for f in os.listdir(".") if f.lower().endswith("refmac5_restr.log")]
@@ -187,6 +199,15 @@ class Dimple(basic.TaskDriver):
                 self.refmac_log  = files[0]
                 self.verdict_row = self.rvrow
                 self.rvrow += 4
+
+
+            if os.path.exists("reindexed.mtz"):
+                spg_change = self.checkSpaceGroupChanged ( xyz.getSpaceGroup(),
+                                hkl,"reindexed.mtz",title="Space Group Change" )
+                if spg_change:
+                    # mtzfile = spg_change[0]
+                    sol_hkl = spg_change[1]
+                    # revision.setReflectionData ( sol_hkl )
 
             # Register output data. This moves needful files into output directory
             # and puts the corresponding metadata into output databox
@@ -205,36 +226,41 @@ class Dimple(basic.TaskDriver):
                 self.putStructureWidget ( self.getWidgetId("structure_btn_"),
                                           "Structure and electron density",
                                           structure )
-            return structure
+            return (structure,sol_hkl)
 
         else:
             self.putTitle ( "No Solution Found" )
-            return None
+            return (None,None)
 
 
     def run(self):
 
         # Prepare dimple input -- script file
 
-        revision = self.makeClass ( self.input_data.data.revision[0] )
-        istruct  = self.makeClass ( self.input_data.data.istruct [0] )
-        hkl      = self.makeClass ( revision.HKL )   # note that 'hkl' was added
-                                  # to input databox by TaskDimple.makeInputData(),
-                                  # therefore, hkl=self.input_data.data.hkl[0]
-                                  # would also work
+        hkl = self.makeClass ( self.input_data.data.hkl[0] )
+        xyz = self.makeClass ( self.input_data.data.xyz[0] )
+        lig = None
+        if hasattr(self.input_data.data,"ligand"):  # optional data parameter
+            lig = self.makeClass ( self.input_data.data.ligand[0] )
 
-        self.refmac_log = None  # calculated in runDimple()
 
-        structure = self.runDimple ( hkl,istruct )
+        self.refmac_log = None  # calculated in runDimpleМР()
+
+        structure, sol_hkl = self.runDimpleMR ( hkl,xyz,lig )
 
         have_results = False
 
         if structure:
-            # update structure revision
-            revision = self.makeClass  ( self.input_data.data.revision[0] )
-            revision.setReflectionData ( hkl       )
-            revision.setStructureData  ( structure )
-            self.registerRevision      ( revision  )
+            # make structure revision
+
+            revision = asudef.revisionFromStructure ( self,sol_hkl,structure,
+                                self.outputFName,secId="0",make_verdict=False )
+
+
+            # revision = self.makeClass  ( self.input_data.data.revision[0] )
+            # revision.setReflectionData ( hkl       )
+            # revision.setStructureData  ( structure )
+            # self.registerRevision      ( revision  )
             have_results = True
 
             rvrow0 = self.rvrow
@@ -252,8 +278,9 @@ class Dimple(basic.TaskDriver):
                     "molprobity" : meta,
                     "xyzmeta"    : structure.xyzmeta
                 }
-                suggestedParameters = verdict_refmac.putVerdictWidget ( self,verdict_meta,self.verdict_row,
-                                                  refmac_log=self.refmac_log )
+                suggestedParameters = verdict_refmac.putVerdictWidget ( 
+                                            self,verdict_meta,self.verdict_row,
+                                            refmac_log=self.refmac_log )
 
                 auto.makeNextTask(self, {
                     "revision": revision,
@@ -271,5 +298,5 @@ class Dimple(basic.TaskDriver):
 
 if __name__ == "__main__":
 
-    drv = Dimple ( "Refinement and optional MR with Dimple",os.path.basename(__file__) )
+    drv = DimpleMR ( "Molecular Replacement with Dimple",os.path.basename(__file__) )
     drv.start()

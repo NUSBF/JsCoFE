@@ -451,10 +451,10 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
     annotation = {"rename":{}, "annotation":[] }
     base.resetFileImport()
     for i in range(len(seq)):
-        fname = ""
+        fname = name
         if base.outputFName and base.outputFName!="*":
-            fname = base.outputFName +  "_"
-        fname += name + "_" + id[i] + ".fasta"
+            fname = base.outputFName
+        fname += "_" + id[i] + ".fasta"
         dtype_sequence.writeSeqFile ( os.path.join(base.importDir(),fname),
                                       name + "_" + id[i],seq[i] )
         base.addFileImport ( fname,import_filetype.ftype_Sequence() )

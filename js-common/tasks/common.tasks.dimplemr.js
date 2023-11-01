@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.01.23   <--  Date of Last Modification.
+ *    01.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -10,10 +10,10 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  Dimple Refinement Task Class
+ *  **** Content :  DimpleMR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2023
  *
  *  =================================================================
  *
@@ -28,24 +28,43 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 // ===========================================================================
 
-function TaskDimple()  {
+function TaskDimpleMR()  {
 
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type   = 'TaskDimple';
-  this.name    = 'dimple';
-  this.setOName ( 'dimple' );  // default output file name template
-  this.title   = 'Dimple refinement';
+  this._type   = 'TaskDimpleMR';
+  this.name    = 'dimple-MR';
+  this.setOName ( 'dimple_mr' );  // default output file name template
+  this.title   = 'Dimple Molecular Replacement';
   //this.helpURL = './html/jscofe_task_dimple.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':['!hkl','!xyz']}, // data type(s) and subtype(s)
-      label       : 'Structure revision',     // label for input dialog
-      inputId     : 'revision', // input Id for referencing input fields
-      version     : 0,          // minimum data version allowed
-      min         : 1,          // minimum acceptable number of data instances
-      max         : 1           // maximum acceptable number of data instances
+      data_type   : {'DataHKL':[]},  // data type(s) and subtype(s)
+      label       : 'Reflections',   // label for input dialog
+      tooltip     : 'Reflection dataset, which will be used for phasing and '    +
+                    'refinement in the follow-up tasks. Reflection intensities ' +
+                    'must be provided.',
+      inputId     : 'hkl',           // input Id for referencing input fields
+      min         : 1,               // minimum acceptable number of data instances
+      max         : 1                // maximum acceptable number of data instances
+    }, {
+      data_type   : { 'DataXYZ'       : [],
+                      'DataModel'     : [],
+                      'DataStructure' : ['~substructure','~substructure-am','!xyz'],
+                     },  // data type(s) and subtype(s)
+      label       : 'Template structure',   // label for input dialog
+      tooltip     : '100% or very close to 100% structure homolog to be fit in ' +
+                    'reflection data.',
+      inputId     : 'xyz',       // input Id for referencing input fields
+      min         : 1,           // minimum acceptable number of data instances
+      max         : 1            // maximum acceptable number of data instances
+    }, {
+      data_type   : {'DataLigand':[],'DataLibrary':[]},  // data type(s) and subtype(s)
+      label       : 'Ligand data', // label for input dialog
+      inputId     : 'ligand',      // input Id for referencing input fields
+      min         : 0,             // minimum acceptable number of data instances
+      max         : 1              // maximum acceptable number of data instances
     }
   ];
 
@@ -202,41 +221,43 @@ function TaskDimple()  {
 
 
 if (__template)
-      TaskDimple.prototype = Object.create ( __template.TaskTemplate.prototype );
-else  TaskDimple.prototype = Object.create ( TaskTemplate.prototype );
-TaskDimple.prototype.constructor = TaskDimple;
+      TaskDimpleMR.prototype = Object.create ( __template.TaskTemplate.prototype );
+else  TaskDimpleMR.prototype = Object.create ( TaskTemplate.prototype );
+TaskDimpleMR.prototype.constructor = TaskDimpleMR;
 
 
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
-TaskDimple.prototype.icon           = function()  { return 'task_dimple'; }
-TaskDimple.prototype.clipboard_name = function()  { return '"Dimple"';    }
+TaskDimpleMR.prototype.icon           = function()  { return 'task_dimplemr'; }
+TaskDimpleMR.prototype.clipboard_name = function()  { return '"DimpleMR"';      }
 
-TaskDimple.prototype.desc_title     = function()  {
+TaskDimpleMR.prototype.desc_title     = function()  {
   // this appears under task title in the task list
-    return 'makes positional and coordinate adjustments to improve structure quality';
+    return 'allows quick assessment of crystal data to see if a ligand has bound to the structure';
   };
 
-TaskDimple.prototype.currentVersion = function()  {
+TaskDimpleMR.prototype.currentVersion = function()  {
   var version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-//TaskDimple.prototype.cleanJobDir = function ( jobDir )  {}
+// TaskDimpleMR.prototype.cleanJobDir = function ( jobDir )  {}
 
-TaskDimple.prototype.checkKeywords = function ( keywords )  {
+TaskDimpleMR.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['dimple','refinement', 'ligand', 'finding', 'difference', 'map'] );
+    return this.__check_keywords ( keywords,['dimple', 'molecular', 'replacement',
+                                             'mr', 'ligand', 'finding', 
+                                             'difference', 'map'] );
   }
 
 if (!__template)  {
   //  for client side
 
   // hotButtons return list of buttons added in JobDialog's toolBar.
-  TaskDimple.prototype.hotButtons = function() {
+  TaskDimpleMR.prototype.hotButtons = function() {
     return [CootMBHotButton()];
   }
 
@@ -245,28 +266,28 @@ if (!__template)  {
 
   var conf = require('../../js-server/server.configuration');
 
-  TaskDimple.prototype.makeInputData = function ( loginData,jobDir )  {
+  // TaskDimpleMR.prototype.makeInputData = function ( loginData,jobDir )  {
 
-    // put hkl and structure data in input databox for copying their files in
-    // job's 'input' directory
+  //   // put hkl and structure data in input databox for copying their files in
+  //   // job's 'input' directory
 
-    if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
-      this.input_data.data['hkl'] = [revision.HKL];
-      if (revision.subtype.indexOf('xyz')>=0)
-        this.input_data.data['istruct'] = [revision.Structure];
-    }
+  //   if ('revision' in this.input_data.data)  {
+  //     var revision = this.input_data.data['revision'][0];
+  //     this.input_data.data['hkl'] = [revision.HKL];
+  //     if (revision.subtype.indexOf('xyz')>=0)
+  //       this.input_data.data['istruct'] = [revision.Structure];
+  //   }
 
-    __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
+  //   __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
-  }
+  // }
 
-  TaskDimple.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.dimple', jobManager, jobDir, this.id];
+  TaskDimpleMR.prototype.getCommandLine = function ( jobManager,jobDir )  {
+    return [conf.pythonName(), '-m', 'pycofe.tasks.dimplemr', jobManager, jobDir, this.id];
   }
 
   // -------------------------------------------------------------------------
 
-  module.exports.TaskDimple = TaskDimple;
+  module.exports.TaskDimpleMR = TaskDimpleMR;
 
 }
