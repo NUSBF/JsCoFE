@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.23   <--  Date of Last Modification.
+ *    01.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -462,7 +462,6 @@ var r = 0;  // grid row
     new TaskWFlowAFMR(),
     new TaskWFlowSMR (),
     new TaskWFlowAEP (),
-    new TaskWFlowDPL (),
   ];
 
   for (var i=0;i<task_list.length;i++)  {
@@ -564,8 +563,8 @@ var r = 0;  // grid row
     new TaskWFlowAFMR(),
     new TaskWFlowSMR (),
     new TaskWFlowAEP (),
-    new TaskWFlowDPL (),
     "Workflows for using within a Project",
+    new TaskWFlowDPL (),
     new TaskWFlowREL()
   ];
 

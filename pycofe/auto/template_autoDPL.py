@@ -5,13 +5,12 @@
 #
 # ============================================================================
 #
-#    31.10.23   <--  Date of Last Modification.
+#    01.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  AUTOMATIC WORKFLOW FRAMEWORK API
 #
-#  Auto-EP workflow template
 #
 #  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, Maria Fando 2021-2023
 #
@@ -40,16 +39,25 @@ from   pycofe.auto   import  auto_api
 
 def makeNextTask ( crTask,data ):
 
-    if crTask._type=="TaskWFlowDPL":
-        auto_tasks.store_dpl(data["unm"], data["hkl"], data["lig"], data["ligdesc"])
-        auto_api.addContext("xyz", data["xyz"])
-        if len(data["seq"])>0:
-            auto_api.addContext("seq", data["seq"])
+    # if crTask._type=="TaskWFlowDPL":
+    #     auto_tasks.store_dpl(data["unm"], data["hkl"], data["lig"], data["ligdesc"])
+    #     auto_api.addContext("xyz", data["xyz"])
+    #     if len(data["seq"])>0:
+    #         auto_api.addContext("seq", data["seq"])
 
-            auto_tasks.editrevision ("TaskEditRevision", data["revision"], crTask.autoRunName )
-        else:
-            auto_api.getContext("revision")
-            auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
+    #         auto_tasks.editrevision ("TaskEditRevision", data["revision"], crTask.autoRunName )
+    #     else:
+    #         auto_api.getContext("revision")
+    #         auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
+    #     return
+    
+    if crTask._type in ["TaskWFlowDPL","TaskMigrate"]:
+        if len(data["lig"]) > 0:
+            auto_api.addContext("lig", data["lig"][0])
+        if len(data["ligdesc"]) > 0:
+            auto_api.addContext("ligdesc", data["ligdesc"][0])
+        auto_api.getContext("revision")
+        auto_tasks.dimple("dimple", data["revision"], crTask.autoRunName)
         return
        
     elif crTask._type=="TaskEditRevision":
@@ -176,7 +184,7 @@ def makeNextTask ( crTask,data ):
                             'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
                     auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
                     # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
-                    auto_tasks.refmac_vdw("refmacAfterLigand",auto_api.getContext("makeLigand1_revision"), auto_api.getContext("makeLigand1"))
+                    # auto_tasks.refmac_vdw("refmacAfterLigand",auto_api.getContext("makeLigand1_revision"), auto_api.getContext("makeLigand1"))
                     return
                 else:
                     strTree = 'Sorry, could not fit a ligand (look inside for comments)'
@@ -239,54 +247,4 @@ def makeNextTask ( crTask,data ):
 
     return
 
-    # debugging: send 3rd parameter of makeNextTask as in pycofe/tasks/crank2.py, after that auto_api.log("text") will print into Error tab.
-
-    # Old code archive
-
-    # elif crTask._type=="TaskMakeLigand":
-    #     if data["ligand"]:
-    #         auto_api.addContext ( "lig",data["ligand"] )
-    #         if not auto_tasks.aimless("aimless",crTask.autoRunName):
-    #             auto_tasks.simbad ( "simbad","L",crTask.autoRunName,"simbad" )
-    #     elif not auto_tasks.aimless("aimless","_root"):
-    #         auto_tasks.simbad ( "simbad","L","_root","simbad" )
-
-    # elif crTask._type in ["TaskCCP4Build","TaskBuccaneer"]:
-    #     if (auto_api.getContext("branch")=="simbad") and\
-    #        (not data["revision"] or (float(data["Rfree"])>0.3)):
-    #         auto_tasks.asu ( "asu",auto_api.getContext("hkl_node"),"autoEP" )
-    #     if data["revision"] and (float(data["Rfree"])<0.4):
-    #         if not auto_tasks.fit_ligand("fitligand",data["revision"],crTask.autoRunName):
-    #             auto_tasks.refmac_jelly ( "refmac-jelly",data["revision"],crTask.autoRunName )
-
-    #        auto_tasks.simbad ( "simbad","L",crTask.autoRunName,"simbad" )
-
-    # elif crTask._type=="TaskSimbad":
-    #     if not data["revision"] or (float(data["Rfree"])>0.45):
-    #         auto_tasks.asu ( "asu",auto_api.getContext("hkl_node"),"autoEP" )
-    #     else:
-    #         auto_tasks.build ( "simbad_mb",data["revision"],crTask.autoRunName )
-
-    # elif crTask._type=="TaskFitLigand":
-    #     auto_tasks.refmac_jelly ( "refmac-jelly",data["revision"],crTask.autoRunName )
-
-    # elif crTask._type=="TaskFitWaters":
-    #     auto_tasks.refmac ( "refmac2",data["revision"],crTask.autoRunName )
-    #
-    # elif crTask._type=="TaskRefmac":
-    #     if crTask.autoRunName=="refmac-jelly":
-    #         if float(data["Rfree"])<0.4:
-    #             auto_tasks.fit_waters ( "fitwaters",data["revision"],crTask.autoRunName )
-    #     else:
-    #         auto_tasks.deposition ( "deposition",data["revision"],crTask.autoRunName )
-
-
-    # except Exception as inst:
-    #     self.putMessage(str(type(inst)))  # the exception instance
-    #     self.putMessage(str(inst.args))  # arguments stored in .args
-    #     self.putMessage(str(inst))  # __str__ allows args to be printed directly,
-
-
-# self.file_stderr.write(str(revision[0].__dict__))
-# self.file_stderr.write(str(revision[0].HKL.dataset.RESO[1]))
-# self.file_stderr.flush()
+   

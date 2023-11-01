@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    31.10.23   <--  Date of Last Modification.
+#    01.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,7 +30,7 @@
 import os
 
 #  application imports
-from . import migrate
+from . import basic
 from   pycofe.auto   import auto
 
 
@@ -45,7 +45,7 @@ class ligandCarrier():
         self.code = code
 
 
-class WFlowDPL(migrate.Migrate):
+class WFlowDPL(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
@@ -53,127 +53,51 @@ class WFlowDPL(migrate.Migrate):
 
     # ------------------------------------------------------------------------
 
-    def importData(self):
-        # import uploaded data - DPL method, overriding parent
-        super ( WFlowDPL,self ).import_all()
-
-        # -------------------------------------------------------------------
-        # fetch data for the Migrate pipeline
-
-        self.hkl = []    # all reflections dataset (given and in map mtzs)
-        self.xyz = []  # coordinates
-        self.map = []    # maps/phases
-        self.lib = None  # ligand descriptions
-        self.unm = []
-        self.seq = []
-
-        if "DataUnmerged" in self.outputDataBox.data:
-            self.unm = self.outputDataBox.data["DataUnmerged"]
-
-        if "DataSequence" in self.outputDataBox.data:
-            self.seq = self.outputDataBox.data["DataSequence"]
-
-        if "DataHKL" in self.outputDataBox.data:
-            self.hkl = self.outputDataBox.data["DataHKL"]
-
-
-        # if len(self.unm)<1:
-        #     hasI = False
-        #     ids = None
-        #     for dd in self.hkl:
-        #         if dd.hasIntensities():
-        #             hasI = True
-        #             ids = dd
-        #     if hasI:
-        #         self.hkl = [ids]
-        #     else:
-        #         self.putMessage("<h3>Dimple Workflow requires intensities present in the diffraction data; terminating</h3>")
-        #         self.generic_parser_summary["wflowdpl"] = {
-        #             "summary_line" : "no intensities in the data"
-        #         }
-        #         self.have_results = False
-        #         self.success ( self.have_results )
-        #         return False
-        # else:
-        #     self.putMessage(
-        #         "<h3>Dimple Workflow requires merged diffraction data; terminating</h3>")
-        #     self.generic_parser_summary["wflowdpl"] = {
-        #         "summary_line": "merged data required"
-        #     }
-        #     self.have_results = False
-        #     self.success(self.have_results)
-        #     return False
-
-        if len(self.unm):
-            self.putMessage(
-                "<h3>Dimple Workflow requires merged diffraction data; terminating</h3>")
-            self.generic_parser_summary["wflowdpl"] = {
-                "summary_line": "merged data required"
-            }
-            self.have_results = False
-            self.success ( self.have_results )
-            return False
-
-        if "DataXYZ" in self.outputDataBox.data:
-            self.xyz = self.outputDataBox.data["DataXYZ"][0]
-
-        if "DataLibrary" in self.outputDataBox.data:
-            self.lib = self.outputDataBox.data["DataLibrary"][0]
-        elif "DataLigand" in self.outputDataBox.data:
-            self.lib = self.outputDataBox.data["DataLigand"][0]
-
-        self.ligdesc = []
-        ldesc = getattr ( self.task,"input_ligands",[] )
-        for i in range(len(ldesc)):
-            if ldesc[i].source!='none':
-                self.ligdesc.append ( ldesc[i] )
-
-        return True
-
-
     def run(self):
 
+        self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
-        self.lig = []
-        self.lib = None
-        self.have_results = False
 
-        importSuccess = self.importData()
-        if not importSuccess:
-            return # all output and registrations already done in the upstream code
+        revision = self.makeClass(self.input_data.data.revision[0])
+        revision.register(self.outputDataBox)
 
-        # successfullDataCheck =  self.checkData()
-        # if not successfullDataCheck:
-        #     return # all preparations already done in the upstream code
+        ligMessage = ''
 
-        (revisionSerialNo, revision) = self.makeStructures()
+        if hasattr(self.input_data.data,"ligand"):  # optional data parameter
+            self.lig = self.input_data.data.ligand
+            ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
+
+        
+
+
+        ldesc = getattr ( self.task.parameters.sec1,"contains" )
+        if ldesc.SMILES.value or ldesc.CODE3.value:
+            if ldesc.SOURCE_SEL.value == 'S':
+                code = ldesc.CODE.value.strip().upper()
+                if (not code) or (code in self.ligand_exclude_list):
+                    exclude_list = []
+                    ligands = revision.Ligands
+                    for j in range(len(ligands)):
+                        exclude_list.append(ligands[j]["code"])
+                    code = self.get_ligand_code(exclude_list)
+
+                newLig =ligandCarrier(ldesc.SOURCE_SEL.value, ldesc.SMILES.value, code)
+                if len(ligMessage) >1:
+                    ligMessage = ligMessage + ' and ligand from SMILES string: ' + str(newLig.smiles)
+                else:
+                    ligMessage = 'Workflow will generate ligand from SMILES string: ' + str(newLig.smiles)
+            elif ldesc.SOURCE_SEL.value == 'M':
+                newLig =ligandCarrier(ldesc.SOURCE_SEL.value, ldesc.SMILES.value, ldesc.CODE3.value)
+                if len(ligMessage) >1:
+                    ligMessage = ligMessage + ' and ligand from monomer library: ' + str(newLig.code)
+                else:
+                    ligMessage = 'Workflow will use ligand from monomer library: ' + str(newLig.code)
+            self.ligdesc.append ( newLig )
+
 
         summary_line = ""
         ilist = []
 
-        # ligand library CIF has been provided
-        if self.lib:
-            ligand = self.makeClass(self.lib)
-            self.lig.append(ligand)
-
-        # checking whether ligand codes were provided
-        for i in range(len(self.ligdesc)):
-            code = self.ligdesc[i].code.strip().upper()
-            if (not code) or (code in self.ligand_exclude_list):
-                exclude_list = []
-                ligands = revision.Ligands
-                for j in range(len(ligands)):
-                    exclude_list.append(ligands[j]["code"])
-                self.ligdesc[i].code = self.get_ligand_code(exclude_list)
-
-        if self.unm:
-            ilist.append ( "Unmerged" )
-        if len(self.hkl)>0:
-            ilist.append ( "HKL (" + str(len(self.hkl)) + ")" )
-        if len(self.seq)>0:
-            ilist.append ( "Sequences (" + str(len(self.seq)) + ")" )
-        if self.xyz:
-            ilist.append ( "XYZ (1)" )
         nligs = len(self.lig) + len(self.ligdesc)
         if nligs>0:
             ilist.append ( "Ligands (" + str(nligs) + ")" )
@@ -181,31 +105,27 @@ class WFlowDPL(migrate.Migrate):
             summary_line += ", ".join(ilist) + "; "
 
         self.putMessage("<h3>Starting Automatic Refinement and Ligand Fitting Workflow</h3>")
-        if nligs>0:
-            self.putMessage("<i>%d ligand(s) supplied, Workflow will try to fit it</i>" % nligs)
+        if ligMessage:
+            self.putMessage("<i>" + ligMessage + "</i>")
         else:
             self.putMessage("<i>No ligands supplied, Workflow will just refine the structure and fit waters</i>")
 
         self.task.autoRunName = "_root"
-        self.have_results = False
+        have_results = False
         if auto.makeNextTask ( self, {
-            "unm": self.unm,
-            "revision" : revision,
-             "hkl": self.hkl,
-             "seq": self.seq,
-             "xyz": self.xyz,
-             "lig": self.lig,
-             "ligdesc": self.ligdesc,
+             "revision" : revision,
+             "lig"      : self.lig,
+             "ligdesc"  : self.ligdesc
            }):
             summary_line += "workflow started"
-            self.have_results = True
+            have_results  = True
         else:
             summary_line += "workflow start failed"
 
         self.generic_parser_summary["import_autorun"] = {
             "summary_line": summary_line
         }
-        self.success ( self.have_results )
+        self.success ( have_results )
 
         return
 
