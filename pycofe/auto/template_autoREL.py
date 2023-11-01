@@ -26,10 +26,7 @@ from   pycofe.auto   import  auto_api
 
 # ============================================================================
 # Meta parameters used for communication with different tasks
-#
-# heavy atom - also pick it up from non-auto tasks like shelx?
-# auto_api.addContext ( "hatom",data["hatom"] )
-#
+
 # ligand
 # auto_api.addContext("lig", lig[0])
 # auto_api.addContext("ligdesc", ligdesc[0])
@@ -219,54 +216,4 @@ def makeNextTask ( crTask,data ):
 
     return
 
-    # debugging: send 3rd parameter of makeNextTask as in pycofe/tasks/crank2.py, after that auto_api.log("text") will print into Error tab.
-
-    # Old code archive
-
-    # elif crTask._type=="TaskMakeLigand":
-    #     if data["ligand"]:
-    #         auto_api.addContext ( "lig",data["ligand"] )
-    #         if not auto_tasks.aimless("aimless",crTask.autoRunName):
-    #             auto_tasks.simbad ( "simbad","L",crTask.autoRunName,"simbad" )
-    #     elif not auto_tasks.aimless("aimless","_root"):
-    #         auto_tasks.simbad ( "simbad","L","_root","simbad" )
-
-    # elif crTask._type in ["TaskCCP4Build","TaskBuccaneer"]:
-    #     if (auto_api.getContext("branch")=="simbad") and\
-    #        (not data["revision"] or (float(data["Rfree"])>0.3)):
-    #         auto_tasks.asu ( "asu",auto_api.getContext("hkl_node"),"autoEP" )
-    #     if data["revision"] and (float(data["Rfree"])<0.4):
-    #         if not auto_tasks.fit_ligand("fitligand",data["revision"],crTask.autoRunName):
-    #             auto_tasks.refmac_jelly ( "refmac-jelly",data["revision"],crTask.autoRunName )
-
-    #        auto_tasks.simbad ( "simbad","L",crTask.autoRunName,"simbad" )
-
-    # elif crTask._type=="TaskSimbad":
-    #     if not data["revision"] or (float(data["Rfree"])>0.45):
-    #         auto_tasks.asu ( "asu",auto_api.getContext("hkl_node"),"autoEP" )
-    #     else:
-    #         auto_tasks.build ( "simbad_mb",data["revision"],crTask.autoRunName )
-
-    # elif crTask._type=="TaskFitLigand":
-    #     auto_tasks.refmac_jelly ( "refmac-jelly",data["revision"],crTask.autoRunName )
-
-    # elif crTask._type=="TaskFitWaters":
-    #     auto_tasks.refmac ( "refmac2",data["revision"],crTask.autoRunName )
-    #
-    # elif crTask._type=="TaskRefmac":
-    #     if crTask.autoRunName=="refmac-jelly":
-    #         if float(data["Rfree"])<0.4:
-    #             auto_tasks.fit_waters ( "fitwaters",data["revision"],crTask.autoRunName )
-    #     else:
-    #         auto_tasks.deposition ( "deposition",data["revision"],crTask.autoRunName )
-
-
-    # except Exception as inst:
-    #     self.putMessage(str(type(inst)))  # the exception instance
-    #     self.putMessage(str(inst.args))  # arguments stored in .args
-    #     self.putMessage(str(inst))  # __str__ allows args to be printed directly,
-
-
-# self.file_stderr.write(str(revision[0].__dict__))
-# self.file_stderr.write(str(revision[0].HKL.dataset.RESO[1]))
-# self.file_stderr.flush()
+   
