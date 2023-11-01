@@ -263,9 +263,11 @@ class Migrate(import_task.Import):
         revisionSerialNo = 1
         revision         = None
         try: 
-            singleMTZ        = (self.task.file_hkl == self.task.file_mtz)
+            singleMTZ    = (self.task.file_hkl == self.task.file_mtz)
         except:
             pass
+        
+        # what is this?
         try: singleMTZ = self.hkl
         except: pass
 

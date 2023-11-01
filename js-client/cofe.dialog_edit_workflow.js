@@ -122,11 +122,13 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
               n = i;
           if (n<0)  {
             __my_workflows.push({
-              'id'     : workflow_id,
-              'script' : workflow_script
+              'id'      : workflow_id,
+              'version' : jsCoFE_version,
+              'script'  : workflow_script
             });
           } else  {
-            __my_workflows[n].script = workflow_script;
+            __my_workflows[n].version = jsCoFE_version;
+            __my_workflows[n].script  = workflow_script;
           }
           saveMyWorkflows();
           callback_func();
