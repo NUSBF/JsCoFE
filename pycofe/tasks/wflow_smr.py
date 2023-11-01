@@ -37,6 +37,7 @@ from   pycofe.auto   import auto
 # Make CCP4go driver
 
 # simulates ligand data structure that is normally coming from JS part
+
 class ligandCarrier():
     def __init__(self, source, smiles, code):
         self.source = source
@@ -108,7 +109,7 @@ class WFlowSMR(import_task.Import):
             self.seq = self.input_data.data.seq
             # for i in range(len(self.input_data.data.seq)):
             #     self.seq.append ( self.makeClass(self.input_data.data.seq[i]) )
-        ligMessage = ''
+        # ligMessage = ''
 
 
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
@@ -117,12 +118,13 @@ class WFlowSMR(import_task.Import):
         if hasattr(self.input_data.data,"ligand"):  # optional data parameter
             self.lig = self.input_data.data.ligand
 
-            ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
+            # ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
 
             # for i in range(len(self.input_data.data.ligand)):
             #     self.ligands.append ( self.makeClass(self.input_data.data.ligand[i]) )
 
         return
+
 
     # ------------------------------------------------------------------------
 
