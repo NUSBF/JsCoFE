@@ -160,8 +160,9 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  const conf = require('../../js-server/server.configuration');
-  const path = require('path');
+  const conf  = require('../../js-server/server.configuration');
+  const utils = require('../../js-server/server.utils');
+  const path  = require('path');
 
   TaskMorda.prototype.cleanJobDir = function ( jobDir )  {
 
