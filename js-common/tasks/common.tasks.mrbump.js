@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    20.09.23   <--  Date of Last Modification.
+ *    02.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -24,10 +24,10 @@ var __template = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-  var path  = require('path');
-  var fs    = require('fs-extra');
-  var conf  = require('../../js-server/server.configuration');
-  var utils = require('../../js-server/server.utils');
+  const path  = require('path');
+  const fs    = require('fs-extra');
+  const conf  = require('../../js-server/server.configuration');
+  const utils = require('../../js-server/server.utils');
 }
 
 
