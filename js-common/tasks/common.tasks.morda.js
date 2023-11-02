@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.10.23   <--  Date of Last Modification.
+ *    02.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -160,7 +160,8 @@ if (!__template)  {
 } else  {
   //  for server side
 
-  var conf = require('../../js-server/server.configuration');
+  const conf = require('../../js-server/server.configuration');
+  const path = require('path');
 
   TaskMorda.prototype.cleanJobDir = function ( jobDir )  {
 
