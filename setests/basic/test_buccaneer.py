@@ -29,15 +29,19 @@ def refmacAfterRevision(driver, waitLong):
 
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+        time.sleep(3)
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     except:
         pass
     time.sleep(1)
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
+        time.sleep(3)
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     except:
         pass
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+   
     time.sleep(6)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -53,7 +57,7 @@ def refmacAfterRevision(driver, waitLong):
         wait.until(EC.presence_of_element_located
                    ((By.XPATH,"//*[@class='ui-dialog-title' and contains(text(), 'completed') and contains(text(), '[0004]')]")))
     except:
-        print('Apparently tha task refmacAfterRevision has not been completed in time; terminating')
+        print('Apparently the task refmacAfterRevision has not been completed in time; terminating')
         sys.exit(1)
 
     time.sleep(10)
