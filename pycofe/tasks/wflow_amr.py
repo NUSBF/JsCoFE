@@ -9,7 +9,7 @@
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  CCP4go EXECUTABLE MODULE
+#  AUTOMATIC MR WORKFLOW EXECUTABLE MODULE
 #
 #  Command-line:
 #     ccp4-python -m pycofe.tasks.wflow_amr jobManager jobDir jobId

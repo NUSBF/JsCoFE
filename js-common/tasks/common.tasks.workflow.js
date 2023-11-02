@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.10.23   <--  Date of Last Modification.
+ *    02.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -347,7 +347,7 @@ if (!__template)  {
   var conf = require('../../js-server/server.configuration');
 
   TaskWorkflow.prototype.getCommandLine = function ( jobManager,jobDir )  {
-    return [conf.pythonName(), '-m', 'pycofe.tasks.wflow_smr', jobManager, jobDir, this.id];
+    return [conf.pythonName(), '-m', 'pycofe.tasks.workflow', jobManager, jobDir, this.id];
   }
 
   module.exports.TaskWorkflow = TaskWorkflow;

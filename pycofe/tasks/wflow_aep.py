@@ -9,7 +9,7 @@
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  CCP4go EXECUTABLE MODULE
+#  AUTOMATIC EP WORKFLOW EXECUTABLE MODULE
 #
 #  Command-line:
 #     ccp4-python -m pycofe.tasks.autowf_mr jobManager jobDir jobId

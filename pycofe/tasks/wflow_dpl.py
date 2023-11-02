@@ -1,7 +1,5 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
@@ -13,7 +11,6 @@
 #  Command-line:
 #     ccp4-python -m pycofe.tasks.autowf_mr jobManager jobDir jobId
 #
-
 #  where:
 #    jobManager  is either SHELL, SGE or SCRIPT
 #    jobDir   is path to job directory, having:
