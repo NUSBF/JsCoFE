@@ -24,10 +24,10 @@ var __template = null;
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
   __template = require ( './common.tasks.template' );
-  const path  = require('path');
-  const fs    = require('fs-extra');
-  const conf  = require('../../js-server/server.configuration');
-  const utils = require('../../js-server/server.utils');
+  var path  = require('path');
+  var fs    = require('fs-extra');
+  var conf  = require('../../js-server/server.configuration');
+  var utils = require('../../js-server/server.utils');
 }
 
 
