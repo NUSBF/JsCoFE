@@ -9,7 +9,7 @@
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  CCP4go EXECUTABLE MODULE
+#  ALPHAFOLD ME WORKFLOW EXECUTABLE MODULE
 #
 #  Command-line:
 #     ccp4-python -m pycofe.tasks.wflow_smr jobManager jobDir jobId

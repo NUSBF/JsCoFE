@@ -5,14 +5,14 @@
 #
 # ============================================================================
 #
-#    11.04.23   <--  Date of Last Modification.
+#    02.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
-#  SIMPLE MR WORKFLOW EXECUTABLE MODULE
+#  CUSTOM WORKFLOW EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.wflow_smr jobManager jobDir jobId
+#     ccp4-python -m pycofe.tasks.workflow jobManager jobDir jobId
 #
 #  where:
 #    jobManager  is either SHELL, SGE or SCRIPT
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, Maria Fando 2021-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2023
 #
 # ============================================================================
 #
@@ -44,7 +44,7 @@ class ligandCarrier():
         self.smiles = smiles
         self.code = code
 
-class WFlowSMR(import_task.Import):
+class Workflow(import_task.Import):
 
     import_dir = "uploads"
     def importDir(self):  return self.import_dir       # import directory
@@ -57,7 +57,7 @@ class WFlowSMR(import_task.Import):
         super ( WFlowSMR,self ).import_all()
 
         # -------------------------------------------------------------------
-        # fetch data for CCP4go pipeline
+        # fetch data for Custom Workflow pipeline
 
         if "DataUnmerged" in self.outputDataBox.data:
             self.unm = self.outputDataBox.data["DataUnmerged"]
@@ -98,19 +98,19 @@ class WFlowSMR(import_task.Import):
 
 
     def prepareData(self):
-        #  works with imported data from the project
+        #  works with pre-imported data from the project
 
-        if self.input_data.data.hkldata[0]._type=="DataUnmerged":
-            self.unm = self.input_data.data.hkldata
-        else:
-            self.hkl = self.input_data.data.hkldata
+        if hasattr(self.input_data.data,"hkl"):  # optional data parameter
+            if self.input_data.data.hkl[0]._type=="DataUnmerged":
+                self.unm = self.input_data.data.hkl
+            else:
+                self.hkl = self.input_data.data.hkl
 
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
             self.seq = self.input_data.data.seq
             # for i in range(len(self.input_data.data.seq)):
             #     self.seq.append ( self.makeClass(self.input_data.data.seq[i]) )
         # ligMessage = ''
-
 
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
             self.xyz = self.input_data.data.xyz
@@ -143,13 +143,13 @@ class WFlowSMR(import_task.Import):
         ilist = []
 
         # ligand library CIF has been provided
-        if self.lib:
-            ligand = self.makeClass(self.lib)
-            self.lig.append(ligand)
+        # if self.lib:
+        #     ligand = self.makeClass(self.lib)
+        #     self.lig.append(ligand)
 
-        fileDir = self.outputDir()
+        # fileDir = self.outputDir()
         if hasattr(self.input_data.data,"hkldata"):
-            fileDir = self.inputDir()
+            # fileDir = self.inputDir()
             self.prepareData()  #  pre-imported data provided
             summary_line = "received "
         else:
@@ -171,6 +171,7 @@ class WFlowSMR(import_task.Import):
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
 
+        """
         seqHasNA      = False
         seqHasProtein = False
         xyzHasNA      = False
@@ -217,9 +218,11 @@ class WFlowSMR(import_task.Import):
             self.fail('', 'SMR_WF')
 
         self.flush()
+        """
 
         have_results = True
 
+        """
         if ((len(self.unm)>0) or (len(self.hkl)>0)) and (len(self.seq)>0) and (len(self.xyz)>0):
             self.task.autoRunName = "_root"
             if auto.makeNextTask ( self,{
@@ -239,6 +242,7 @@ class WFlowSMR(import_task.Import):
                 summary_line += "workflow start failed"
         else:
             summary_line += "insufficient input"
+        """
 
         self.generic_parser_summary["import_autorun"] = {
           "summary_line" : summary_line
@@ -256,5 +260,5 @@ class WFlowSMR(import_task.Import):
 
 if __name__ == "__main__":
 
-    drv = WFlowSMR ( "",os.path.basename(__file__),{} )
+    drv = Workflow ( "",os.path.basename(__file__),{} )
     drv.start()
