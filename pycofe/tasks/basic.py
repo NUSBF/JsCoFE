@@ -61,7 +61,6 @@ from pycofe.dtypes import dtype_sequence, dtype_model, dtype_library
 from pycofe.proc   import edmap,  import_filetype, import_merged
 from pycofe.varut  import signal, jsonut, command, zutils
 from pycofe.etc    import citations
-from pycofe.proc   import coor_counts
 
 
 # ============================================================================
@@ -1635,40 +1634,6 @@ class TaskDriver(object):
 
         self.widget_no += 1
         return ligand
-
-
-    def countLigandsAndLinks ( self, structure, countfl = None ):
-
-        # count ligands and links in lib and coords for revision inspector
-        ddir = self.inputDir() if countfl else self.outputDir()
-        libfl = structure.getLibFilePath(ddir)
-        if libfl:
-            pdbfl = None
-            mmciffl = structure.getMMCIFFilePath(ddir)
-            if mmciffl:
-                if not os.path.isfile(mmciffl):
-                    mmciffl = None
-            if not mmciffl:
-                pdbfl = structure.getXYZFilePath(ddir)
-                if not os.path.isfile(pdbfl):
-                    pdbfl = None
-                if pdbfl:
-                    mmciffl = "_gemmi.mmcif"
-                    kwdargs = dict(logType="Service", quitOnError=False)
-                    self.runApp("gemmi", ["convert", pdbfl, mmciffl], **kwdargs)
-                    if not os.path.isfile(mmciffl):
-                        mmciffl = None
-            if mmciffl:
-                clu = coor_counts.UsrLibUsage(libfl, mmciffl)
-                if countfl:
-                    clu.jligandLocks(countfl)
-                else:
-                    kvv = clu.structCounts(self.file_stdout)
-                    structure.ligands = kvv['libcmp']
-                    structure.refmacLinks = kvv['liblnk']
-                    structure.links = kvv['unklnk'] + kvv['symlnk']
-                if pdbfl:
-                    os.unlink(mmciffl)
 
 
     # ============================================================================

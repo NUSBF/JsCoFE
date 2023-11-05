@@ -39,6 +39,7 @@ from   pycofe.dtypes    import dtype_template
 from   pycofe.proc      import qualrep
 from   pycofe.verdicts  import verdict_refmac
 from   pycofe.auto      import auto
+from   pycofe.proc      import covlinks
 
 # ============================================================================
 # Make Refmac driver
@@ -433,9 +434,6 @@ class Refmac(basic.TaskDriver):
                                           "Structure and electron density",
                                           structure )
 
-                # count ligands and links in lib and coords for revision inspector
-                self.countLigandsAndLinks(structure)
-
                 # make anomolous ED map widget
                 if hkl.isAnomalous() and str(hkl.useHKLSet)!="TI":
 
@@ -499,6 +497,20 @@ class Refmac(basic.TaskDriver):
 
                 # self.stdoutln ( " >>>>> 5 " + str(revision.citations) )
                 # self.stdoutln ( " >>>>> 6 " + str(self.citation_list) )
+
+                # show link counts in revision inspector
+                try:
+                    cvl = covlinks.CovLinks(
+                        structure.getLibFilePath(self.outputDir()),
+                        structure.getXYZFilePath(self.outputDir()))
+                    cvl.prep_lists()
+                    link_counts = dict(cvl.counts(self.file_stdout))
+                    structure.ligands     = link_counts['comps_usr']
+                    structure.refmacLinks = link_counts['links_usr']
+                    structure.links       = link_counts['links_std']
+                    structure.links      += link_counts['links_unk']
+                except:
+                    self.file_stdout.write(">>> Link counter failed <<<\n")
 
                 # update structure revision
                 revision.setStructureData ( substructure )
