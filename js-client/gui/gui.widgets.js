@@ -977,9 +977,9 @@ InputText.prototype = Object.create ( Widget.prototype );
 InputText.prototype.constructor = InputText;
 
 InputText.prototype.setStyle = function ( type,pattern,placeholder,tooltip )  {
-  if (placeholder) this.element.setAttribute ( 'placeholder',placeholder );
-  if (tooltip)     this.setTooltip ( tooltip );
-  if (type)        this.element.setAttribute ( 'type',type );
+  if (placeholder)  this.element.setAttribute ( 'placeholder',placeholder );
+  if (tooltip)      this.setTooltip ( tooltip );
+  if (type)         this.element.setAttribute ( 'type',type );
   if (pattern)     {
     if ((pattern=='integer') || (pattern=='integer_'))
       this.element.setAttribute ( 'pattern','^(-?[0-9]+\d*)$|^0$' );

@@ -2054,7 +2054,9 @@ if (!dbx)  {
       item_label  = item.label;
     if (item.hasOwnProperty('label2'))
       item_label2 = item.label2;
-    if (item.hasOwnProperty('default_value') && (item.value!=item.default_value))  {
+    if (item.hasOwnProperty('default_value') && (item.value!=item.default_value) &&
+        ((!item.hasOwnProperty('default')) || 
+         ((item.default_value=='') && (item.value!=item.default))))  {
       item_label  = '<font style=\'color:darkblue\'><i>' + item_label  + '</i></font>';
       item_label2 = '<font style=\'color:darkblue\'><i>' + item_label2 + '</i></font>';
     }

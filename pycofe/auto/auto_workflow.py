@@ -75,10 +75,11 @@ def nextTask ( body,data,log=None ):
                 crTask.script_pointer = crTask.script_pointer + 1
 
             if nextTaskType:
-                auto_api.addTask ( nextRunName,nextTaskType,crTask.autoRunName )
-                for dtype in data:
+                task = auto_api.addTask ( nextRunName,nextTaskType,crTask.autoRunName )
+                for dtype in data["data"]:
                     if dtype in ["unm","hkl","xyz","seq","lig","lib","revision"]:
-                        auto_api.addTaskData ( nextRunName,dtype,data[dtype] )
+                        data_type = data["data"][dtype]["_type"]
+                        auto_api.addTaskData ( nextRunName,dtype,data["data"][dtype] )
 
             # raise ValueError('From auto.py:makeNextTask got unknown crTask.autoRunId: %s .' \
             #                     % body.task.autoRunId)

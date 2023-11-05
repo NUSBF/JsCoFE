@@ -71,7 +71,7 @@ def addTask ( taskName,taskClassName,parentName ):
     task.parentName = parentName
     auto_meta.set_field ( taskName,task )
     log('calling addTask: "%s", "%s", "%s"' % (taskName,taskClassName,parentName))
-    return
+    return task
 
 def noteTask ( taskName,notedName ):
     task = auto_meta.get_field ( taskName )
