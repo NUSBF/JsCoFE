@@ -268,6 +268,7 @@ class CovLinks(object):
           self.monlib_mods[m0] = c0
       assert not mod_used
 
+    self.monlib_monomers = []
     if 'comp_list' in ciflib:
       kuu = ciflib['comp_list'].get_mmcif_category('_chem_comp.')
       self.monlib_monomers = kuu['id']
