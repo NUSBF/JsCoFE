@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.11.23   <--  Date of Last Modification.
+ *    05.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -106,7 +106,7 @@ function TaskDimpleMR()  {
                                              //   [min,'*']  : limited from bottom
                                              //   [min,max]  : limited from top and bottom
                         value    : '',       // value to be paired with the keyword
-                        default  : 0,
+                        default  : '0',
                         position : [2,0,1,1] // [row,col,rowSpan,colSpan]
                       },
                 NRESTR : {
@@ -121,7 +121,7 @@ function TaskDimpleMR()  {
                                              //   [min,'*']  : limited from bottom
                                              //   [min,max]  : limited from top and bottom
                         value    : '',       // value to be paired with the keyword
-                        default  : 8,
+                        default  : '8',
                         position : [3,0,1,1] // [row,col,rowSpan,colSpan]
                       },
                 RESLIMIT : {
@@ -168,7 +168,7 @@ function TaskDimpleMR()  {
                                               //   [min,'*']  : limited from bottom
                                               //   [min,max]  : limited from top and bottom
                         value    : '',        // value to be paired with the keyword
-                        default  : 0.4,
+                        default  : '0.4',
                         position : [7,0,1,1] // [row,col,rowSpan,colSpan]
                       },
                 MRPROG : {
@@ -208,7 +208,7 @@ function TaskDimpleMR()  {
                                               //   [min,'*']  : limited from bottom
                                               //   [min,max]  : limited from top and bottom
                         value    : '',        // value to be paired with the keyword
-                        default  : 3.25,
+                        default  : '3.25',
                         position : [10,0,1,1] // [row,col,rowSpan,colSpan]
                       }
              }

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.10.23   <--  Date of Last Modification.
+#    05.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -888,8 +888,15 @@ class TaskDriver(object):
 
 
     def getParameter ( self,item,checkVisible=True ):
-        if getattr(item,"visible",True) or not checkVisible:
-            return str(item.value)
+        if getattr(item,"visible",True) or not checkVisible or self.task.autoRunName:
+            value = str(item.value)
+            if not self.task.autoRunName:
+                return value
+            else:  # in workflow
+                defval = getattr ( item,"default",False )
+                if value=="" and defval:
+                    return defval
+                return value
         return ""
         """
             if (item.type == "integer" or item.type == "real"):
