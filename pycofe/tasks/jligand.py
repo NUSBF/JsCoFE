@@ -168,7 +168,7 @@ class JLigand(basic.TaskDriver):
             elif istruct:
                 cl = None
                 if pdbfl:
-                    cl = covlinks.CovLinks(libin, pdbfl)
+                    cl = covlinks.CovLinks(cifout, pdbfl)
                     msg_llist = cl.suggest_changes()
                     cl.update(mode = 3, xyzout = pdbfl_2)
                     if os.path.isfile(pdbfl_2):
