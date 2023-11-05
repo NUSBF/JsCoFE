@@ -39,7 +39,7 @@ from   pycofe.tasks   import basic
 # except:
 #     messagebox = None
 
-# from pycofe.proc.coot_link import LinkLists
+from   pycofe.proc    import  covlinks
 
 # ============================================================================
 # Make WebCoot driver
@@ -426,32 +426,12 @@ class WebCoot(basic.TaskDriver):
             # calculate maps for UglyMol using final mtz from temporary location
             #fnames = self.calcCCP4Maps ( coot_mtz,fn )
 
-            # add covalent links from coot to restraint dictionary, modify output pdb-file
-            links  = None
-            libout = "links.lib"
-            pdbout = "links.pdb"
             try:
-                exe_obj = self, [], dict(logType='Service')
-                links = LinkLists(coot_xyz)
-                links.add_coot_links ( exe_obj, '.', libPath, coot_xyz, libout,
-                                       pdbout, using_libcheck=True )
-                links.prn(self.file_stdout)
+                cvl = covlinks.CovLinks(libPath, coot_xyz)
+                cvl.prep_lists()
+                link_counts = dict(cvl.counts(self.file_stdout))
             except:
-                if os.path.isfile(pdbout):
-                    os.remove(pdbout)
-                if os.path.isfile(libout):
-                    os.remove(libout)
-            else:
-                if os.path.isfile(pdbout):
-                    if os.path.isfile(coot_xyz):  # fix for windows
-                        os.remove(coot_xyz)
-                    os.rename(pdbout, coot_xyz)
-                if os.path.isfile(libout):
-                    if not libPath:
-                        libPath = self.outputFName + ".lib"
-                    if os.path.isfile(libPath):    # fix for windows
-                        os.remove(libPath)
-                    os.rename ( libout,libPath )
+                link_counts = None
 
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
@@ -473,9 +453,10 @@ class WebCoot(basic.TaskDriver):
                 struct.setLigands       ( ligList )
 
                 # add link formulas and counts to struct metadata
-                if links:
-                    struct.links = links.count_links(['LINK', 'SYMLINK'])
-                    struct.refmacLinks = links.count_links(['LINKR'])
+                if link_counts:
+                    struct.refmacLinks = link_counts['links_usr']
+                    struct.links       = link_counts['links_std']
+                    struct.links      += link_counts['links_unk']
 
                 # create output data widget in the report page
                 self.putTitle ( "Output Structure" )
