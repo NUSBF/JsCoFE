@@ -43,6 +43,9 @@ function TaskWorkflow()  {
   this.task_desc       = 'generic workflow';
   this.search_keywords = ['workflow'];
 
+  this.script          = [];  // script to execute
+  this.script_pointer  = 0;   // current script line
+
   //this.ha_type = '';
 
   /*
@@ -171,20 +174,22 @@ DESC  This is first template for custom workflow script
 KEYWORDS my workflow first
 ALLOW_UPLOAD
 
-DATA HKL UNMERGED TYPES anomalous
-DATA XYZ          TYPES protein dna rna
+!DATA HKL UNMERGED TYPES anomalous
+!DATA XYZ          TYPES protein dna rna
 DATA SEQ          TYPES protein dna rna
 DATA LIGAND
+
+@STEP1 TaskDimpleMR
+
 */
 
 TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
 //
 //  workflowDesc = { id: workflow_id, script: workflow_script }
 //
-let lines = workflowDesc.script.trim().split ( /\r?\n/ );
+  this.script    = workflowDesc.script.trim().split ( /\r?\n/ );
 
   this.autoRunId = workflowDesc.id;
-  this.script    = workflowDesc.script;
 
   this.file_select   = [];
   this.input_ligands = [];
@@ -193,8 +198,9 @@ let lines = workflowDesc.script.trim().split ( /\r?\n/ );
 
   let allow_upload = (workflowDesc.script.toUpperCase().indexOf('ALLOW_UPLOAD')>=0);
 
-  for (let i=0;i<lines.length;i++)  {
-    let line  = lines[i];
+  for (let i=0;i<this.script.length;i++)  {
+    let line  = this.script[i].trim();
+    this.script[i] = line;
     let ihash = line.indexOf('#');
     if (ihash>=0)  // remove comment
       line = line.slice ( 0,ihash );
@@ -202,8 +208,9 @@ let lines = workflowDesc.script.trim().split ( /\r?\n/ );
     line = line.trim();
     if (line.length>0)  {
       
-      let words = lines[i].split(' ').filter(Boolean);
-      switch (words[0].toUpperCase())  {
+      let words = this.script[i].split(' ').filter(Boolean);
+      let word0 = words[0].toUpperCase();
+      switch (word0)  {
         
         case 'NAME'     : this.name      = words[1];                  break;
         case 'ONAME'    : this.setOName  ( words[1] );                break;
@@ -212,14 +219,17 @@ let lines = workflowDesc.script.trim().split ( /\r?\n/ );
         case 'DESC'     : this.task_desc = words.slice(1).join(' ');  break;
         case 'KEYWORDS' : this.search_keywords = words.slice(1);      break;
 
+        case '!DATA'    : // means the data is mandatory
         case 'DATA'     : let dtype = {        // input data type
                             data_type   : {},  // data type(s) and subtype(s)
                             label       : '',  // label for input dialog
                             inputId     : '',  // input Id for referencing input fields
                             version     : 0,   // minimum data version allowed
-                            min         : 1,   // minimum acceptable number of data instances
+                            min         : 0,   // minimum acceptable number of data instances
                             max         : 1    // maximum acceptable number of data instances
                           };
+                          if (word0=='!DATA')
+                            dtype.min = 1;
                           let sec  = words.slice(1).join(' ').toUpperCase().split('TYPES');
                           let dsec = sec[0].split(' ').filter(Boolean);
                           let tsec = [];
@@ -252,6 +262,7 @@ let lines = workflowDesc.script.trim().split ( /\r?\n/ );
                               default : ;
                             }
                           }
+                          // console.log ( " >>>> " + JSON.stringify(dtype) );
                           this.input_dtypes.push ( dtype );
                           if (allow_upload)  {
                             let fdesc = {
@@ -260,7 +271,7 @@ let lines = workflowDesc.script.trim().split ( /\r?\n/ );
                               tooltip     : '',
                               inputId     : 'f' + dtype.inputId, // input Id for referencing input fields
                               path        : '',
-                              min         : 1    // minimum acceptable number of data instances
+                              min         : dtype.min  // minimum acceptable number of data instances
                             };
                             switch (dtype.inputId)  {
                               case 'hkl' :

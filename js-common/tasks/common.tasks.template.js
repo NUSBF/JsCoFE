@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    25.10.23   <--  Date of Last Modification.
+ *    05.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1425,6 +1425,7 @@ if (!dbx)  {
               if (p<0)  p = data_title.indexOf ( '/ensemble/'  );
               if (p<0)  p = data_title.indexOf ( '/structure/' );
               if (p<0)  p = data_title.indexOf ( '/substructure/' );
+              if (p<0)  p = data_title.indexOf ( '/ligand/' );
               if (p>0)  data_title  = data_title.substr(0,p) + cast1;
                   else  data_title += ' ' + cast1;
             }
