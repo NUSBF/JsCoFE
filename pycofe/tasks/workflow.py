@@ -30,8 +30,8 @@
 import os
 
 #  application imports
-from   pycofe.tasks  import import_task
-from   pycofe.auto   import auto
+from   pycofe.tasks   import import_task
+from   pycofe.auto    import auto_workflow
 
 # ============================================================================
 # Make CCP4go driver
@@ -54,7 +54,7 @@ class Workflow(import_task.Import):
     def importData(self):
         #  works with uploaded data from the top of the project
 
-        super ( WFlowSMR,self ).import_all()
+        super ( Workflow,self ).import_all()
 
         # -------------------------------------------------------------------
         # fetch data for Custom Workflow pipeline
@@ -76,8 +76,9 @@ class Workflow(import_task.Import):
 
         if "DataXYZ" in self.outputDataBox.data:
             self.xyz = self.outputDataBox.data["DataXYZ"]
+
         if "DataLibrary" in self.outputDataBox.data:
-            self.lib = self.outputDataBox.data["DataLibrary"][0]
+            self.lib = self.outputDataBox.data["DataLibrary"]
 
         if "DataLigand" in self.outputDataBox.data:
             self.lig = self.outputDataBox.data["DataLigand"]
@@ -136,8 +137,7 @@ class Workflow(import_task.Import):
         self.xyz = []  # coordinates (model/apo)
         self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
-        self.lib = None
-
+        self.lib = []
 
         summary_line = ""
         ilist = []
@@ -148,7 +148,7 @@ class Workflow(import_task.Import):
         #     self.lig.append(ligand)
 
         # fileDir = self.outputDir()
-        if hasattr(self.input_data.data,"hkldata"):
+        if self.task.inputMode=="standard":
             # fileDir = self.inputDir()
             self.prepareData()  #  pre-imported data provided
             summary_line = "received "
@@ -157,7 +157,7 @@ class Workflow(import_task.Import):
             summary_line = "imported "
             self.putMessage ( "&nbsp;" )
 
-        if self.unm:
+        if len(self.unm)>0:
             ilist.append ( "Unmerged" )
         if len(self.hkl)>0:
             ilist.append ( "HKL (" + str(len(self.hkl)) + ")" )
@@ -170,6 +170,27 @@ class Workflow(import_task.Import):
             ilist.append ( "Ligands (" + str(nligs) + ")" )
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
+
+        have_results = (len(ilist)>0)
+
+        if have_results:
+            self.task.autoRunName = "@ROOT"   # step identifier
+            if auto_workflow.nextTask ( self,{
+                    "unm"       : self.unm,
+                    "hkl"       : self.hkl,
+                    "seq"       : self.seq,
+                    "xyz"       : self.xyz,
+                    "lig"       : self.lig,
+                    "lib"       : self.lib,
+                    "ligdesc"   : self.ligdesc
+               },self.file_stderr):
+                summary_line += "workflow started"
+                self.putMessage ( "<h3>Workflow started</hr>" )
+            else:
+                summary_line += "workflow start failed"
+        else:
+            summary_line += "insufficient input"
+
 
         """
         seqHasNA      = False
@@ -220,7 +241,6 @@ class Workflow(import_task.Import):
         self.flush()
         """
 
-        have_results = True
 
         """
         if ((len(self.unm)>0) or (len(self.hkl)>0)) and (len(self.seq)>0) and (len(self.xyz)>0):

@@ -141,6 +141,8 @@ TaskPDBVal.prototype.constructor = TaskPDBVal;
 // ===========================================================================
 // export such that it could be used in both node and a browser
 
+// TaskPDBVal.prototype.cleanJobDir = function ( jobDir )  {}
+
 TaskPDBVal.prototype.icon             = function()  { return 'task_pdbval';      }
 TaskPDBVal.prototype.clipboard_name   = function()  { return '"PDB Validation"'; }
 TaskPDBVal.prototype.canEndGracefully = function()  { return true;               }

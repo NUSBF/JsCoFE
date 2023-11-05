@@ -349,9 +349,9 @@ def run ( body,   # body is reference to the main Import class
                             cmd += ["-colin",cols+"]"]
 
                         anomCols  = hkl.getAnomalousColumns()
-                        anomalous = False
+                        # anomalous = False
                         if anomCols[4] != "X":
-                            anomalous = True
+                            # anomalous = True
                             cols = "/*/*/["
                             for i in range(0,4):
                                 if anomCols[i] != None:
