@@ -43,6 +43,7 @@ function TaskJLigand()  {
       data_type   : {'DataRevision':[]},  // any revision will be passed
       label       : 'Structure revision', // check label
       inputId     : 'revision', // prefix 'void' will hide entry in import dialog
+      customInput : 'jligand',  // lay custom fields below the dropdown
       version     : 0,          // minimum data version allowed
       force       : 0,          // "show" all revisions available
       min         : 0,          // minimum acceptable number of data instances

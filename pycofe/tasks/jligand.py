@@ -34,50 +34,50 @@ import shutil
 
 #  ccp4-python imports
 import pyrvapi
-from gemmi import cif
+
+import gemmi
 
 #  application imports
 from  pycofe.tasks  import basic
 from  pycofe.varut  import signal
+from  pycofe.proc   import covlinks
 try:
     from pycofe.varut import messagebox
 except:
     messagebox = None
 
-#from pycofe.proc.coot_link import LinkLists
-
 # ============================================================================
-# Make Coot driver
+
 
 class JLigand(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
     def run(self):
-
-        # Prepare coot job
-
-        #self.putMessage ( "<h3><i>Make sure that you save your work from Coot " +\
-        #                  "<u>without changing directory and file name offered</u></i></h3>" )
-        #self.flush
-
-        # fetch input data
-        flock    = None
-        istruct  = None
-        lib_list = []
+        lockfl_1 = "_str_ligands.txt"
+        lockfl = None
+        pdbfl_1 = "jligand1.pdb"
+        pdbfl_2 = "jligand2.pdb"
+        pdbfl = None
+        libin = None
+        istruct = None
         if 'revision' in vars(self.input_data.data):
             revision = self.makeClass ( self.input_data.data.revision[0] )
             if revision.Structure:
                 istruct = self.makeClass ( revision.Structure )
-                libin   = istruct.getLibFilePath ( self.inputDir() )
-                if libin and os.path.isfile(libin):
-                    lib_list.append(libin)
-                    # count ligands and links in lib and coords for revision inspector
-                    flock = "lig_content.txt"
-                    self.countLigandsAndLinks(istruct, flock)
-                    if not os.path.isfile(flock):
-                        flock = None
+                libin = istruct.getLibFilePath ( self.inputDir() )
+                pdbfl = istruct.getXYZFilePath ( self.inputDir() )
+                if not (libin and os.path.isfile(libin)):
+                    libin = None
+                if not (pdbfl and os.path.isfile(pdbfl)):
+                    pdbfl = None
+                if libin and pdbfl:
+                    cl = covlinks.CovLinks(libin, pdbfl)
+                    cl.usage(lockfl_1)
+                    if os.path.isfile(lockfl_1):
+                        lockfl = lockfl_1
 
+        lib_list = []
         if 'ligand' in vars(self.input_data.data):
             for l in self.input_data.data.ligand:
                 if 'files' in vars(l) and 'lib' in vars(l.files):
@@ -88,12 +88,44 @@ class JLigand(basic.TaskDriver):
         cifout = self.getCIFOFName()
 
         # make command line arguments
-        args = ["-out",cifout]
-        if flock:
-            args += ["-lock", flock]
+        args = ["-out", cifout]
+#       args += ["-v_print"]
+        if lockfl:
+            args += ["-lock", lockfl]
+        if libin and os.path.isfile(libin):
+            args += [libin]
         if lib_list:
             args += lib_list
 
+        """
+        if libin and lib_list:
+            self.putMessage(
+                '''<p>The library from the input rvision will appear in Tab 1.\n
+                and the finalised ligands and links from Tab 1 will be saved in
+                the library of the output revision. The contents of other tabs
+                and the drafts from Tab 1 will not be saved.</p>''')
+        elif libin:
+            self.putMessage(
+                '''<p>The library from the input rvision will appear in Tab 1.\n
+                and the finalised ligands and links from Tab 1 will be saved in
+                the library of the output revision. The contents of other tabs
+                and the drafts from Tab 1 will not be saved.</p>''')
+        elif lib_list:
+            self.putMessage(
+                '''<p>The library from the input rvision will appear in Tab 1.\n
+                and the finalised ligands and links from Tab 1 will be saved in
+                the library of the output revision. The contents of other tabs
+                and the drafts from Tab 1 will not be saved.</p>''')
+        else:
+            self.putMessage(
+                '''<p>The library from the input rvision will appear in Tab 1.\n
+                and the finalised ligands and links from Tab 1 will be saved in
+                the library of the output revision. The contents of other tabs
+                and the drafts from Tab 1 will not be saved.</p>''')
+        self.flush
+        """
+
+        self.file_stdin = None
         rc = self.runApp ( "jligand",args,logType="Main",quitOnError=False )
 
         summary_line = " no output"
@@ -103,7 +135,7 @@ class JLigand(basic.TaskDriver):
  
             comp_id = link_id = None
             if os.path.isfile(cifout):
-                doc = cif.read(cifout)
+                doc = gemmi.cif.read(cifout)
                 comp_id = []
                 if "comp_list" in doc:
                     vv = doc["comp_list"].find_values("_chem_comp.id")
@@ -124,15 +156,55 @@ class JLigand(basic.TaskDriver):
                             else:
                                 link_id = None
                                 break
+
+            struct = None
+            cifreg = None
+            dname = None
+            msg_llist = None
             if comp_id is None or link_id is None or not (comp_id or link_id):
                 self.stdout ( "No valid output" )
+                istruct = None
 
-            elif not istruct and len(comp_id)==1 and len(link_id)==0:
+            elif istruct:
+                cl = None
+                if pdbfl:
+                    cl = covlinks.CovLinks(libin, pdbfl)
+                    msg_llist = cl.suggest_changes()
+                    cl.update(mode = 3, xyzout = pdbfl_2)
+                    if os.path.isfile(pdbfl_2):
+                        pdbfl = pdbfl_2
+
+                struct = self.registerStructure ( pdbfl,
+                            istruct.getSubFilePath(self.inputDir()),
+                            istruct.getMTZFilePath(self.inputDir()),
+                            None,None,libPath=cifout,leadKey=istruct.leadKey,
+                            refiner=istruct.refiner )
+
+                if struct:
+                    cifreg = struct.getLibFilePath(self.outputDir())
+                    dname = struct.dname
+                    have_results = True
+
+                    struct.copy_refkeys_parameters ( istruct )
+                    struct.copyAssociations ( istruct )
+                    struct.copySubtype      ( istruct )
+                    struct.copyLabels       ( istruct )
+                    if cl:
+                        cl.prep_lists()
+                        counts = dict(cl.counts(self.file_stdout))
+                        struct.ligands     = counts['comps_usr']
+                        struct.refmacLinks = counts['links_usr']
+                        struct.links       = counts['links_std'] + counts['links_unk']
+
+                    self.putTitle ( "Output Structure" )
+
+            elif len(comp_id)==1 and len(link_id)==0:
                 pdbout = os.path.splitext(cifout)[0] + ".pdb"
                 code = comp_id[0]
                 args = ["convert", "--from=mmcif", cifout, pdbout]
                 self.runApp("gemmi", args, logType="Main", quitOnError=True)
                 ligand = self.finaliseLigand ( code,pdbout,cifout )
+                del pdbout
                 if ligand:
                     have_results = True
                     summary_line = "library with ligand " + code
@@ -140,105 +212,121 @@ class JLigand(basic.TaskDriver):
             else:
                 library = self.registerLibrary ( cifout,copy_files=False )
                 if library:
-                    ins = " Revision" if istruct else ""
-                    self.putTitle ( "Output" + ins + " Library" )
-                    library.codes = comp_id
-                    links = link_id
-
+                    cifreg = '/'.join([self.outputDir(), library.getLibFileName()])
+                    dname = library.dname
                     have_results = True
-                    summary_line = ("revision " if istruct else "") + "library with "
-                    ncomp = len(comp_id)
-                    if ncomp:
-                        summary_line += str(ncomp) + " ligand"
-                        if ncomp > 1:
-                            summary_line += "s"
-                        if link_id:
-                            summary_line += " and "
-                    nlink = len(link_id)
-                    if nlink:
-                        summary_line += str(nlink) + " link"
-                        if nlink > 1:
-                            summary_line += "s"
 
-                    vspace = "<font size='+2'><sub>&nbsp;</sub></font>"
+                    library.codes = comp_id
+
+                    self.putTitle ( "Output Library" )
+
+            if have_results and cifreg:
+                have_results = True
+                summary_line = ("revision " if struct else "") + "library with "
+                ncomp = len(comp_id)
+                if ncomp:
+                    summary_line += str(ncomp) + " ligand"
+                    if ncomp > 1:
+                        summary_line += "s"
+                    if link_id:
+                        summary_line += " and "
+                nlink = len(link_id)
+                if nlink:
+                    summary_line += str(nlink) + " link"
+                    if nlink > 1:
+                        summary_line += "s"
+
+                vspace = "<font size='+2'><sub>&nbsp;</sub></font>"
+                self.putMessage1(
+                    self.report_page_id(),
+                    "<b>Assigned name:</b>&nbsp;" + dname + vspace,
+                    self.rvrow)
+                self.rvrow += 1
+
+                colSpan = 1
+                openState = -1
+#               openState = 0
+
+                if struct:
+                    pyrvapi.rvapi_add_data(
+                        "_lib_wgt_",
+                        "Associated Library",
+                        "/".join(["..", cifreg]),
+                        "LIB",
+                        self.report_page_id(),
+                        self.rvrow, 0, 1, colSpan, openState)
+                    self.rvrow += 1
+                if comp_id:
+                    ending = "s" if len(comp_id) > 1 else ""
                     self.putMessage1(
                         self.report_page_id(),
-                        "<b>Assigned name:</b>&nbsp;" +
-                            library.dname + vspace,
+                        "<b>Ligand" + ending + ":</b>&nbsp;" +
+                            ", ".join(comp_id) + vspace,
                         self.rvrow)
                     self.rvrow += 1
 
-                    if comp_id:
-                        ending = "s" if len(comp_id) > 1 else ""
-                        self.putMessage1(
-                            self.report_page_id(),
-                            "<b>Ligand" + ending + ":</b>&nbsp;" +
-                                ", ".join(comp_id) + vspace,
-                            self.rvrow)
-                        self.rvrow += 1
-
-                    if link_id:
-                        ending = "s" if len(link_id) > 1 else ""
-                        self.putMessage1(
-                            self.report_page_id(),
-                            "<b>Link" + ending + ":</b>&nbsp;" +
-                                ", ".join(link_id) + vspace,
-                            self.rvrow)
-                        self.rvrow += 1
-
-                    cifreg = '/'.join([self.outputDir(), library.getLibFileName()])
-                    pdbreg = os.path.splitext(cifreg)[0] + ".pdb"
-                    args = ["convert", "--from=mmcif", cifreg, pdbreg]
-                    self.runApp("gemmi", args, logType="Main", quitOnError=True)
-
-                    colSpan = 1
-                    openState = -1
-                    pyrvapi.rvapi_add_data(
-                        "_lib_wgt_",
-                        "",
-                        "/".join(["..", pdbreg]),
-                        "xyz",
+                if link_id:
+                    ending = "s" if len(link_id) > 1 else ""
+                    self.putMessage1(
                         self.report_page_id(),
-                        self.rvrow, 0, 1, colSpan, openState)
-                    pyrvapi.rvapi_append_to_data(
-                        "_lib_wgt_",
-                        "/".join(["..", cifreg]),
-                        "LIB")
+                        "<b>Link" + ending + ":</b>&nbsp;" +
+                            ", ".join(link_id) + vspace,
+                        self.rvrow)
                     self.rvrow += 1
 
-            struct = None
-            if istruct:
-                struct = self.registerStructure (
-                            istruct.getXYZFilePath(self.inputDir()),
-                            istruct.getSubFilePath(self.inputDir()),
-                            istruct.getMTZFilePath(self.inputDir()),
-                            None,None,libPath=cifout,leadKey=istruct.leadKey,
-                            refiner=istruct.refiner )
+                if not struct:
+                    pyrvapi.rvapi_add_data(
+                        "_lib_wgt_",
+                        "Library of Ligands and Links",
+                        "/".join(["..", cifreg]),
+                        "LIB",
+                        self.report_page_id(),
+                        self.rvrow, 0, 1, colSpan, openState)
+                    self.rvrow += 1
+
+                if struct:
+                    msg_list = cl.ambiguous_links()
+                    if msg_list:
+                        self.putMessage1(
+                            self.report_page_id(), "",
+                            self.rvrow)
+                        self.rvrow += 1
+                        self.putMessage1(
+                            self.report_page_id(), "",
+                            self.rvrow)
+                        self.rvrow += 1
+                        msg_list.insert(0,
+                            "<b>WARNING: multiple definitions:</b>")
+                        self.putMessage1(
+                            self.report_page_id(),
+                            '<br>'.join(msg_list) + vspace,
+                            self.rvrow)
+                        self.rvrow += 1
+
+                    msg_list = msg_llist[0] + msg_llist[1]
+                    if msg_list:
+                        self.putMessage1(
+                            self.report_page_id(), "",
+                            self.rvrow)
+                        self.rvrow += 1
+                        self.putMessage1(
+                            self.report_page_id(), "",
+                            self.rvrow)
+                        self.rvrow += 1
+                        ending = "s" if len(msg_list) > 1 else ""
+                        msg_list.insert(0,
+                            "<b>Added LINKR record" +
+                            ending + ":</b>")
+                        self.putMessage1(
+                            self.report_page_id(),
+                            '<br>'.join(msg_list) + vspace,
+                            self.rvrow)
+                        self.rvrow += 1
 
             if struct:
-                struct.copy_refkeys_parameters ( istruct )
-                struct.copyAssociations ( istruct )
-                struct.copySubtype      ( istruct )
-                struct.copyLabels       ( istruct )
-                #struct.copyLigands      ( istruct )
-                #struct.setLigands       ( ligList )
-
-                # create output data widget in the report page
-                self.putTitle ( "Output Structure" )
-                self.putStructureWidget ( "structure_btn","Output Structure",struct )
-
                 # update structure revision
                 revision.setStructureData ( struct )
-                #if ligand:
-                #    revision.addLigandData ( ligand      )
-                #if ligand_coot:
-                #    revision.addLigandData ( ligand_coot )
                 self.registerRevision ( revision )
-
-                # count ligands and links in lib and coords for revision inspector
-                self.countLigandsAndLinks(struct)
-
-                have_results = True
 
         self.generic_parser_summary["jligand"] = {
             "summary_line" : summary_line

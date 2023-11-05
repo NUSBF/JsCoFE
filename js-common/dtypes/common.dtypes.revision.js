@@ -431,6 +431,15 @@ if (!__template)  {
   }
 
 
+  DataRevision.prototype._layCDI_JLigand = function ( dropdown )  {
+  var customGrid = dropdown.customGrid;
+    if (this.Structure && this.Structure.hasXYZ()) {
+      customGrid.setLabel ( 'Matching LINKR records will be added automatically',0,0,1,1 )
+        .setFontItalic(true).setNoWrap();
+    }
+  }
+
+
   DataRevision.prototype._layCDI_Molrep1 = function ( dropdown )  {
   var customGrid = dropdown.customGrid;
   var row0       = customGrid.getNRows();
@@ -868,6 +877,9 @@ if (!__template)  {
           break;
       case 'molrep1'    :  // new version 
             this._layCDI_Molrep1 ( dropdown );
+          break;
+      case 'jligand'    :
+            this._layCDI_JLigand ( dropdown );
           break;
       case 'phaser-mr'  :   case 'phaser-mr-fixed' :
             this._layCDI_PhaserMR ( dropdown );
