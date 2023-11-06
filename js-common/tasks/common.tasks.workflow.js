@@ -181,6 +181,12 @@ DATA LIGAND
 
 @STEP1 TaskDimpleMR
 
+@STEP2 PARAMETER SIGMA 2.0
+@STEP2 RUN TaskFitWaters
+
+@STEP3 USE_SUGGESTED_PARAMETERS
+@STEP3 RUN TaskRefmac
+
 */
 
 TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {

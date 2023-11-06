@@ -14,7 +14,7 @@
 # ============================================================================
 #
 
-#import json
+import json
 #from   pycofe.varut  import jsonut
 
 # from   pycofe.auto   import template_autoMR
@@ -65,7 +65,25 @@ def nextTask ( body,data,log=None ):
             # auto_api.log ( " --- " + str(data) )
 
             # put data in context
-            auto_api.addContext  ( crTask.autoRunName,data )
+            # auto_api.addContext  ( crTask.autoRunName,data )
+
+            # update scores
+            scores = auto_api.getContext ( "scores" )
+            if not scores:
+                scores = {}
+            if "scores" in data:
+                for key in data["scores"]:
+                    scores[key] = data["scores"][key]
+                auto_api.addContext ( "scores",scores )
+
+            # update suggestions
+            suggestedParameters = auto_api.getContext ( "suggestedParameters" )
+            if not suggestedParameters:
+                suggestedParameters = {}
+            if "suggestedParameters" in data:
+                for key in data["suggestedParameters"]:
+                    suggestedParameters[key] = data["suggestedParameters"][key]
+                auto_api.addContext ( "suggestedParameters",suggestedParameters )
 
             nextRunName  = crTask.autoRunName
             nextTaskType = None
@@ -90,6 +108,14 @@ def nextTask ( body,data,log=None ):
                         auto_api.addTaskData ( nextRunName,dtype,data["data"][dtype] )
 
                 # add task parameters (can be anywhere in script)
+
+                if nextTaskType in suggestedParameters:
+                    for line in crTask.script:
+                        words = line.split()
+                        if len(words)>1 and words[0]==nextRunName and words[1]=="USE_SUGGESTED_PARAMETERS":
+                            for key in suggestedParameters[nextTaskType]:
+                                auto_api.addTaskParameter ( nextRunName,key,suggestedParameters[nextTaskType][key] )
+
                 for line in crTask.script:
                     words = line.split()
                     if len(words)>3 and words[0]==nextRunName and words[1]=="PARAMETER":
