@@ -97,6 +97,8 @@ function TaskTemplate()  {
   this.inputMode    = input_mode.standard;  // 'standard', 'root'
   this.autoRunName  = '';     // job id in automatic workflow
   this.autoRunId    = '';     // automatic workflow Id
+  this.script       = [];     // workflow script to execute
+  this.script_pointer = 0;    // current position in the workflow script script
   this.informFE     = true;   // end of job and results are sent back to FE
 
   this.upload_files = [];   // list of uploaded files

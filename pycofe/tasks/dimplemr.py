@@ -34,7 +34,7 @@ from   pycofe.tasks     import basic, asudef
 from   pycofe.dtypes    import dtype_structure
 from   pycofe.proc      import qualrep
 from   pycofe.verdicts  import verdict_refmac
-from   pycofe.auto      import auto
+from   pycofe.auto      import auto,auto_workflow
 
 
 # ============================================================================
@@ -253,6 +253,7 @@ class DimpleMR(basic.TaskDriver):
         if structure:
             # make structure revision
 
+            self.putMessage ( "&nbsp;" )
             revision = asudef.revisionFromStructure ( self,sol_hkl,structure,
                                 self.outputFName,secId="0",make_verdict=False )
 
@@ -282,12 +283,26 @@ class DimpleMR(basic.TaskDriver):
                                             self,verdict_meta,self.verdict_row,
                                             refmac_log=self.refmac_log )
 
-                auto.makeNextTask(self, {
-                    "revision": revision,
-                    "Rfactor": self.generic_parser_summary["refmac"]["R_factor"],
-                    "Rfree": self.generic_parser_summary["refmac"]["R_free"],
-                    "suggestedParameters": suggestedParameters
-                }, log=self.file_stderr)
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision"  : revision
+                            },
+                            "suggestedParameters" : {
+                                "TaskRefmac" : suggestedParameters
+                            }
+                    }, log=self.file_stderr )
+                        # summary_line += "workflow started"
+                        # self.putMessage ( "<h3>Workflow started</hr>" )
+
+                else:  # pre-coded workflow framework
+                    auto.makeNextTask(self, {
+                        "revision": revision,
+                        "Rfactor": self.generic_parser_summary["refmac"]["R_factor"],
+                        "Rfree": self.generic_parser_summary["refmac"]["R_free"],
+                        "suggestedParameters": suggestedParameters
+                    }, log=self.file_stderr)
 
         # close execution logs and quit
         self.success ( have_results )
