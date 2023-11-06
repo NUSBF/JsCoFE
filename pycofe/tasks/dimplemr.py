@@ -289,6 +289,10 @@ class DimpleMR(basic.TaskDriver):
                             "data" : {
                                 "revision"  : revision
                             },
+                            "scores" :  {
+                                "Rfactor" : self.generic_parser_summary["refmac"]["R_factor"],
+                                "Rfree"   : self.generic_parser_summary["refmac"]["R_free"]
+                            },
                             "suggestedParameters" : {
                                 "TaskRefmac" : suggestedParameters
                             }
@@ -298,9 +302,9 @@ class DimpleMR(basic.TaskDriver):
 
                 else:  # pre-coded workflow framework
                     auto.makeNextTask(self, {
-                        "revision": revision,
-                        "Rfactor": self.generic_parser_summary["refmac"]["R_factor"],
-                        "Rfree": self.generic_parser_summary["refmac"]["R_free"],
+                        "revision" : revision,
+                        "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                        "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
                         "suggestedParameters": suggestedParameters
                     }, log=self.file_stderr)
 

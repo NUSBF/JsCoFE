@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    06.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,13 +30,13 @@ import sys
 import uuid
 
 import pyrvapi
-import gemmi
+# import gemmi
 
 #  application imports
 from . import basic
 from   pycofe.proc   import coor
 from   pycofe.proc   import qualrep
-from   pycofe.auto   import auto
+from   pycofe.auto   import auto,auto_workflow
 
 # ============================================================================
 # Make Refmac driver
@@ -434,10 +434,26 @@ class FitWaters(basic.TaskDriver):
                     self.stderr ( " *** validation tools or molprobity failure" )
                     self.rvrow = rvrow0 + 4
 
-                auto.makeNextTask ( self,{
-                    "revision" : revision,
-                    "nwaters"  : str(nwaters)
-                })
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision"  : revision
+                            },
+                            "scores" :  {
+                                "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                                "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
+                                "Nwaters"  : str(nwaters)
+                            }
+                    }, log=self.file_stderr )
+                        # summary_line += "workflow started"
+                        # self.putMessage ( "<h3>Workflow started</hr>" )
+
+                else:  # pre-coded workflow framework
+                    auto.makeNextTask ( self,{
+                        "revision" : revision,
+                        "nwaters"  : str(nwaters)
+                    })
 
         else:
             self.putTitle ( "No water molecules were found and fitted." )

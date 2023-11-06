@@ -132,14 +132,17 @@ def addTaskField ( taskName,fieldName,fieldValue ):
 
 def addContext ( contextName,context ):
     global auto_meta
-    auto_meta.context.custom.set_field ( contextName,context )
+    auto_meta.context.custom.set_field ( contextName,json.dumps(context) )
     log('calling addContext: "%s", "%s"' % (contextName, context))
     return
 
 def getContext ( contextName ):
     global auto_meta
     log('calling getContext: "%s"' % (contextName))
-    return auto_meta.context.custom.get_field ( contextName )
+    field = auto_meta.context.custom.get_field ( contextName )
+    if field:
+        field = json.loads(field)
+    return field
 
 # def loadContext():
 #     global auto_meta

@@ -38,7 +38,7 @@ from . import basic
 from   pycofe.dtypes    import dtype_template
 from   pycofe.proc      import qualrep
 from   pycofe.verdicts  import verdict_refmac
-from   pycofe.auto      import auto
+from   pycofe.auto      import auto,auto_workflow
 from   pycofe.proc      import covlinks
 
 # ============================================================================
@@ -555,6 +555,21 @@ class Refmac(basic.TaskDriver):
                         self.task.suggestedParameters = suggestedParameters
                         self.putCloneJobButton ( "Clone job with suggested parameters",
                                                  self.report_page_id(),verdict_row+3,0 )
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision"  : revision
+                            },
+                            "scores" :  {
+                                "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                                "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                            }
+                    }, log=self.file_stderr )
+                        # summary_line += "workflow started"
+                        # self.putMessage ( "<h3>Workflow started</hr>" )
+
+                else:  # pre-coded workflow framework
 
                     auto.makeNextTask ( self,{
                         "revision" : revision,
