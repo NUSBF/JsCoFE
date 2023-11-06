@@ -346,7 +346,10 @@ if (!__template)  {
   // custom class fields not found in the Template class
   TaskWorkflow.prototype.customDataClone = function ( cloneMode,task )  {
     this.autoRunId0 = '';   // for Job Dialog
-    //this.ha_type = task.ha_type;
+    this.setWorkflow ({
+      id     : task.autoRunId,
+      script : task.script.join('\n')
+    });
   }
 
   // reserved function name

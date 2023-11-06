@@ -1,17 +1,15 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    04.05.21   <--  Date of Last Modification.
+#    06.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  AUTOMATIC WORKFLOW FRAMEWORK API
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021-2023
 #
 # ============================================================================
 #

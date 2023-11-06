@@ -1320,7 +1320,7 @@ var auto_meta   = utils.readObject  ( path.join(pJobDir,'auto.meta') );
                     task.autoRunId            = jobClass.autoRunId;
                     if (task.autoRunName.startsWith('@'))  {
                       task.script         = jobClass.script;
-                      task.script_pointer = jobClass.script_pointer;
+                      task.script_pointer = jobClass.script_end_pointer;
                     }
                     task.submitter            = loginData.login;
                     task.input_data.data      = auto_meta[key].data;

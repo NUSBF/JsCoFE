@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.11.23   <--  Date of Last Modification.
+#    06.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -40,7 +40,6 @@ def nextTask ( body,data,log=None ):
 #    }    
 #  }
 #
-    
 
     try:
 
@@ -70,12 +69,15 @@ def nextTask ( body,data,log=None ):
 
             nextRunName  = crTask.autoRunName
             nextTaskType = None
-            while (crTask.script_pointer<len(crTask.script)) and (nextRunName==crTask.autoRunName):
-                words = crTask.script[crTask.script_pointer].split()
+            # auto_api.log ( " >>>>>1 " + str(crTask.script_pointer ) )
+            crTask.script_end_pointer = crTask.script_pointer
+            while (crTask.script_end_pointer<len(crTask.script)) and (nextRunName==crTask.autoRunName):
+                words = crTask.script[crTask.script_end_pointer].split()
                 if len(words)>2 and words[0].startswith("@") and words[1]=="RUN":
                     nextRunName  = words[0]
                     nextTaskType = words[2]
-                crTask.script_pointer = crTask.script_pointer + 1
+                crTask.script_end_pointer = crTask.script_end_pointer + 1
+            # auto_api.log ( " >>>>>2 " + str(crTask.script_end_pointer ) )
 
             if nextTaskType:
 

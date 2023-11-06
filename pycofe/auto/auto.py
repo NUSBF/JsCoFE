@@ -67,8 +67,9 @@ def makeNextTask ( body,data,log=None ):
                 template_afMR.makeNextTask ( body.task,data )
 
             else:
-                raise ValueError('From auto.py:makeNextTask got unknown crTask.autoRunId: %s .' \
-                                  % body.task.autoRunId)
+                return False
+                # raise ValueError('From auto.py:makeNextTask got unknown crTask.autoRunId: %s .' \
+                #                   % body.task.autoRunId)
 
             auto_api.writeAutoMeta()
             return True
