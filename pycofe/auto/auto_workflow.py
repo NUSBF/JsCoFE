@@ -57,7 +57,10 @@ def nextTask ( body,data,log=None ):
                 if hasattr(data[key],"citations"):
                     data[key].citations = body.citation_list
 
-            auto_api.setLog ( body.file_stdout ) # auto_api.setLog ( log )
+            if log:
+                auto_api.setLog ( log )
+            else:
+                auto_api.setLog ( body.file_stdout )
             auto_api.initAutoMeta()
 
             # auto_api.log ( " --- " + str(data) )
@@ -69,17 +72,26 @@ def nextTask ( body,data,log=None ):
             nextTaskType = None
             while (crTask.script_pointer<len(crTask.script)) and (nextRunName==crTask.autoRunName):
                 words = crTask.script[crTask.script_pointer].split()
-                if len(words)>1 and words[0].startswith("@"):
+                if len(words)>2 and words[0].startswith("@") and words[1]=="RUN":
                     nextRunName  = words[0]
-                    nextTaskType = words[1]
+                    nextTaskType = words[2]
                 crTask.script_pointer = crTask.script_pointer + 1
 
             if nextTaskType:
-                task = auto_api.addTask ( nextRunName,nextTaskType,crTask.autoRunName )
+
+                # form new task
+                auto_api.addTask ( nextRunName,nextTaskType,crTask.autoRunName )
+
+                # add task data
                 for dtype in data["data"]:
                     if dtype in ["unm","hkl","xyz","seq","lig","lib","revision"]:
-                        data_type = data["data"][dtype]["_type"]
                         auto_api.addTaskData ( nextRunName,dtype,data["data"][dtype] )
+
+                # add task parameters (can be anywhere in script)
+                for line in crTask.script:
+                    words = line.split()
+                    if len(words)>3 and words[0]==nextRunName and words[1]=="PARAMETER":
+                         auto_api.addTaskParameter ( nextRunName,words[2],words[3] )
 
             # raise ValueError('From auto.py:makeNextTask got unknown crTask.autoRunId: %s .' \
             #                     % body.task.autoRunId)
