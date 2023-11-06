@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.10.23   <--  Date of Last Modification.
+ *    06.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -2065,6 +2065,11 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
       else if (task.autoRunId.length>0)
         task.autoRunId0 = task0.autoRunId;
       task.autoRunName = task0.autoRunName;
+      if (task.autoRunName.startsWith('@'))  {
+        task.script         = task0.script;
+        task.script_pointer = task0.script_pointer;
+        // console.log ( ' >>>>>> b1 ' + task.script_pointer );
+      }
       task.inputMode   = task0.inputMode;
       task.nc_type     = task0.nc_type;
 
