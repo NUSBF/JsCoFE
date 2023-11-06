@@ -259,16 +259,20 @@ def dimple_06(driver, waitLong):
 
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Dimple refinement')
     except:
         pass
     time.sleep(1)
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Dimple refinement')
     except:
         pass
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Dimple refinement')
-    time.sleep(1)
+
+    
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )

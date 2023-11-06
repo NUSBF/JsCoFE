@@ -1343,16 +1343,19 @@ def startBuccaneer(driver):
 
     try:
         clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+        time.sleep(1)
+        clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
+        
     except:
         pass
     time.sleep(1)
     try:
         clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+        time.sleep(1)
+        clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
+        time.sleep(1)
     except:
         pass
-
-    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
-    time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )

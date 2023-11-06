@@ -196,15 +196,17 @@ def startModelcraft(driver):
 
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
+        time.sleep(1)
         sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
-        time.sleep(6)
+        time.sleep(3)
     except:
         pass
     time.sleep(1)
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
+        time.sleep(1)
         sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
-        time.sleep(6)
+        time.sleep(3)
     except:
         pass
 
