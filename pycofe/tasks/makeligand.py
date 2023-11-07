@@ -51,11 +51,11 @@ class MakeLigand(basic.TaskDriver):
     def run(self):
 
         # copy pre-existing revisions into output first
-        nrevisions0 = 0
+        # nrevisions0 = 0
         revisions    = []
         if hasattr(self.input_data.data,"void1"):
             revisions    = self.input_data.data.void1
-            nrevisions0 = len(revisions)
+            # nrevisions0 = len(revisions)
             for i in range(len(revisions)):
                 revisions[i] = self.makeClass ( revisions[i] )
                 revisions[i].register ( self.outputDataBox )

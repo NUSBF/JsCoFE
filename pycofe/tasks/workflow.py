@@ -175,13 +175,13 @@ class Workflow(import_task.Import):
             self.task.autoRunName = "@ROOT"   # step identifier
             if auto_workflow.nextTask ( self,{
                     "data" : {
-                        "unm"     : self.unm,
-                        "hkl"     : self.hkl,
-                        "seq"     : self.seq,
-                        "xyz"     : self.xyz,
-                        "lig"     : self.lig,
-                        "lib"     : self.lib,
-                        "ligdesc" : self.ligdesc
+                        "unmerged"  : self.unm,
+                        "hkl"       : self.hkl,
+                        "seq"       : self.seq,
+                        "xyz"       : self.xyz,
+                        "ligand"    : self.lig,
+                        "lib"       : self.lib,
+                        "ligdesc"   : self.ligdesc
                     }
                },self.file_stderr):
                 summary_line += "workflow started"

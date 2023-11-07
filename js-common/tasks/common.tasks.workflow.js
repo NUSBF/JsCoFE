@@ -176,16 +176,23 @@ ALLOW_UPLOAD
 
 !DATA HKL UNMERGED TYPES anomalous
 !DATA XYZ          TYPES protein dna rna
-DATA SEQ          TYPES protein dna rna
+DATA SEQ           TYPES protein dna rna
 DATA LIGAND
 
 @STEP1 TaskDimpleMR
 
-@STEP2 PARAMETER SIGMA 2.0
-@STEP2 RUN TaskFitWaters
+@STEP2 IFDATA ligdesc
+@STEP2 RUN TaskMakeLigand
 
-@STEP3 USE_SUGGESTED_PARAMETERS
-@STEP3 RUN TaskRefmac
+@STEP3 IFDATA lig
+@STEP3 RUN TaskFitLigand
+
+@STEP4 PARAMETER SIGMA 2.0
+@STEP4 RUN TaskFitWaters
+
+@STEP5 USE_SUGGESTED_PARAMETERS
+@STEP5 RUN TaskRefmac
+
 
 */
 
@@ -302,6 +309,7 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
                                   fdesc.file_types  = '.cif';
                                   fdesc.tooltip     = 'Provide path to CIF file ' +
                                           'with your ligand definition.';
+                                  this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'' }];
                                 break;
                               default : ;
                             }

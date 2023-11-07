@@ -438,7 +438,7 @@ class FitWaters(basic.TaskDriver):
                     # scripted workflow framework
                     auto_workflow.nextTask ( self,{
                             "data" : {
-                                "revision"  : revision
+                                "revision"  : [revision]
                             },
                             "scores" :  {
                                 "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
