@@ -65,7 +65,23 @@ def nextTask ( body,data,log=None ):
             # auto_api.log ( " --- " + str(data) )
 
             # put data in context
-            # auto_api.addContext  ( crTask.autoRunName,data )
+            idata = auto_api.getContext ( "data" )
+            if not idata:
+                idata = {}
+            if "data" in data:
+                is_data = False
+                for d in data["data"]:
+                    if len(d)>0 and d!="revision":
+                        is_data  = True
+                        if not d in idata:
+                            idata[d] = []
+                        for obj in data["data"][d]:
+                            if type(obj) == dict:
+                                idata[d].append ( obj )
+                            else:
+                                idata[d].append ( json.loads ( obj.to_JSON() ) )
+                if is_data:
+                    auto_api.addContext  ( crTask.autoRunName,idata )
 
             # update scores
             scores = auto_api.getContext ( "scores" )
@@ -99,13 +115,17 @@ def nextTask ( body,data,log=None ):
 
             if nextTaskType:
 
+                # ifdata = []
+
+
                 # form new task
                 auto_api.addTask ( nextRunName,nextTaskType,crTask.autoRunName )
 
                 # add task data
                 for dtype in data["data"]:
-                    if dtype in ["unm","hkl","xyz","seq","lig","lib","revision"]:
-                        auto_api.addTaskData ( nextRunName,dtype,data["data"][dtype] )
+                    if dtype in ["unmerged","hkl","xyz","seq","ligand","lib","revision"] and\
+                                len(data["data"][dtype])>0:
+                        auto_api.addTaskData ( nextRunName,dtype,data["data"][dtype][0] )
 
                 # add task parameters (can be anywhere in script)
 

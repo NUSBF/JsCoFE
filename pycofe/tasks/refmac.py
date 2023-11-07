@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.09.23   <--  Date of Last Modification.
+#    06.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -559,7 +559,7 @@ class Refmac(basic.TaskDriver):
                     # scripted workflow framework
                     auto_workflow.nextTask ( self,{
                             "data" : {
-                                "revision"  : revision
+                                "revision"  : [revision]
                             },
                             "scores" :  {
                                 "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
