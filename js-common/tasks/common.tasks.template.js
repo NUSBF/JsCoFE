@@ -1117,7 +1117,7 @@ if (!dbx)  {
 
     for (var i=0;i<this.input_ligands.length;i++)  {
 
-      var label = 'Ligand';
+      var label = 'Ligand to fit';
       if (i>0)
         label += ' #' + (i+1);
       var lbl = div.grid.setLabel ( label,row,0,1,1 )

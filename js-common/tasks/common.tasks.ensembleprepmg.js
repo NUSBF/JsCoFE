@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    07.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -131,7 +131,7 @@ TaskEnsemblePrepMG.prototype.desc_title     = function()  {
 TaskEnsemblePrepMG.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2019]'; }
 
 TaskEnsemblePrepMG.prototype.currentVersion = function()  {
-  var version = 0;
+var version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -141,7 +141,9 @@ TaskEnsemblePrepMG.prototype.currentVersion = function()  {
 
 TaskEnsemblePrepMG.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['ensemble','ensembles','model', 'preparation','mr', 'molecular', 'replacement', 'sequence'] );
+  return this.__check_keywords ( keywords,['ensemble','ensembles','model',
+                        'preparation','mr', 'molecular', 'replacement', 'sequence',
+                        'ccp4mg','mg','mrbump'] );
 }
 
 if (__template)  {

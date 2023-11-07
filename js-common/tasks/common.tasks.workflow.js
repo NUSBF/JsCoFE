@@ -181,7 +181,7 @@ DATA LIGAND
 
 @STEP1 TaskDimpleMR
 
-@STEP2 IFDATA ligdesc
+@STEP2 IFDATA ligdesc hkl  # requires all listed data types
 @STEP2 RUN TaskMakeLigand
 
 @STEP3 IFDATA lig
@@ -200,9 +200,9 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
 //
 //  workflowDesc = { id: workflow_id, script: workflow_script }
 //
-  this.script    = workflowDesc.script.trim().split ( /\r?\n/ );
 
   this.autoRunId = workflowDesc.id;
+  this.script    = workflowDesc.script.trim().split ( /\r?\n/ );
 
   this.file_select   = [];
   this.input_ligands = [];
@@ -212,13 +212,14 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
   let allow_upload = (workflowDesc.script.toUpperCase().indexOf('ALLOW_UPLOAD')>=0);
 
   for (let i=0;i<this.script.length;i++)  {
+    
     let line  = this.script[i].trim();
-    this.script[i] = line;
     let ihash = line.indexOf('#');
     if (ihash>=0)  // remove comment
       line = line.slice ( 0,ihash );
-  
     line = line.trim();
+    this.script[i] = line;
+
     if (line.length>0)  {
       
       let words = this.script[i].split(' ').filter(Boolean);
@@ -267,7 +268,7 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
                                                         'sequence expected in ASU.';
                                             break;
                               case 'LIGAND'   : dtype.data_type.DataLigand = [];
-                                                dtype.label   = 'Ligand description';
+                                                dtype.label   = 'Ligand library';
                                                 dtype.tooltip = 'Specify ligand to '+
                                                         'be fit in electron density.';
                                                 dtype.max     = this.input_ligands.length;

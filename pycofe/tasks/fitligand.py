@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    07.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,7 +31,7 @@ import sys
 #  application imports
 from . import basic
 from   pycofe.proc  import coor
-from   pycofe.auto  import auto
+from   pycofe.auto  import auto, auto_workflow
 
 # ============================================================================
 # Make Refmac driver
@@ -158,11 +158,23 @@ class FitLigand(basic.TaskDriver):
                 revision.setStructureData ( structure )
                 revision.addLigandData    ( ligand    )
                 self.registerRevision     ( revision  )
+
                 have_results = True
-                auto.makeNextTask ( self,{
-                    "revision" : revision,
-                    "nfitted"  : str(nligs)
-                })
+
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision"  : [revision]
+                            }
+                    }, log=self.file_stderr )
+                        # self.putMessage ( "<h3>Workflow started</hr>" )
+
+                else:  # pre-coded workflow framework
+                    auto.makeNextTask ( self,{
+                        "revision" : revision,
+                        "nfitted"  : str(nligs)
+                    })
 
         else:
             self.putTitle ( "Ligand " + ligand.code + " could not be fit in density" )
