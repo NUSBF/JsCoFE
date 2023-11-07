@@ -129,13 +129,13 @@ class Workflow(import_task.Import):
 
     def run(self):
 
-        self.unm = []  # unmerged dataset
-        self.hkl = []  # selected merged dataset
-        self.seq = []  # list of sequence objects
-        self.xyz = []  # coordinates (model/apo)
-        self.lig = []  # not used in this function but must be initialised
+        self.unm     = []  # unmerged dataset
+        self.hkl     = []  # selected merged dataset
+        self.seq     = []  # list of sequence objects
+        self.xyz     = []  # coordinates (model/apo)
+        self.lig     = []  # not used in this function but must be initialised
         self.ligdesc = []
-        self.lib = []
+        self.lib     = []
 
         summary_line = ""
         ilist = []
@@ -173,15 +173,17 @@ class Workflow(import_task.Import):
 
         if have_results:
             self.task.autoRunName = "@ROOT"   # step identifier
+            # self.stdoutln ( " >>>> into workflow " + str(len(self.ligdesc)) )
+            self.flush()
             if auto_workflow.nextTask ( self,{
                     "data" : {
-                        "unmerged"  : self.unm,
-                        "hkl"       : self.hkl,
-                        "seq"       : self.seq,
-                        "xyz"       : self.xyz,
-                        "ligand"    : self.lig,
-                        "lib"       : self.lib,
-                        "ligdesc"   : self.ligdesc
+                        "unmerged" : self.unm,
+                        "hkl"      : self.hkl,
+                        "seq"      : self.seq,
+                        "xyz"      : self.xyz,
+                        "ligand"   : self.lig,
+                        "lib"      : self.lib,
+                        "ligdesc"  : self.ligdesc
                     }
                },self.file_stderr):
                 summary_line += "workflow started"

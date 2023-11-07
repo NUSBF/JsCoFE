@@ -20,7 +20,7 @@
 
 import os
 
-from   pycofe.varut  import  jsonut
+# from   pycofe.varut  import  jsonut
 from   pycofe.auto   import  auto_tasks
 from   pycofe.auto   import  auto_api
 from   pycofe.auto   import  template_autoREL

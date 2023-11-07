@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    02.06.23   <--  Date of Last Modification.
+#    07.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -37,7 +35,7 @@ from   gemmi   import  cif
 
 #  application imports
 from . import basic
-from  pycofe.auto  import auto
+from  pycofe.auto  import auto,auto_workflow
 
 # ============================================================================
 # Make Refmac driver
@@ -146,10 +144,22 @@ class MakeLigand(basic.TaskDriver):
                 elif hasattr(self.input_data.data,"revision"):
                     revNext = self.makeClass(self.input_data.data.revision[0])
 
-                auto.makeNextTask ( self,{
-                    "ligand" : ligand,
-                    'revision' : revNext
-                })
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    wdata = { "ligand" : [ligand] }
+                    if len(revisions)>0:
+                        wdata["revision"] = revisions
+                    auto_workflow.nextTask ( self,{
+                        "data"  : wdata
+                    }, log=self.file_stderr )
+                    # self.putMessage ( "<h3>Workflow started</hr>" )
+
+                else:  # pre-coded workflow framework
+                    auto.makeNextTask ( self,{
+                        "ligand" : ligand,
+                        'revision' : revNext
+                    })
+
                 summary_line = "ligand \"" + code + "\" prepared"
 
         else:

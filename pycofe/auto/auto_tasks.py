@@ -83,9 +83,9 @@ def asu ( name,parentName ):
 def editrevision ( name, revision, parentName ):
     seq = auto_api.getContext("seq")
     if seq:
-        auto_api.addTask     ( name,"TaskEditRevision",parentName )
-        auto_api.addTaskData ( name, "seq", seq)
-        auto_api.addTaskData(name, "revision", revision)
+        auto_api.addTask     ( name,"TaskEditRevision", parentName )
+        auto_api.addTaskData ( name, "seq"            , seq        )
+        auto_api.addTaskData ( name, "revision"       , revision   )
     return
 
 def dimple ( name,revision,parentName ):
@@ -131,12 +131,19 @@ def xyzWaters ( name,revision,parentName ):
 
 
 def make_ligand ( name, ligdesc, revision, parentName ):
-    auto_api.addTask          ( name,"TaskMakeLigand",parentName )
-    auto_api.addTaskData      ( name, "revision" , revision      )
-    auto_api.addTaskParameter ( name,"SOURCE_SEL",ligdesc.source )
-    auto_api.addTaskParameter ( name,"SMILES"    ,ligdesc.smiles )
-    auto_api.addTaskParameter ( name,"CODE"      ,ligdesc.code   )
-    auto_api.addTaskParameter ( name,"CODE3"     ,ligdesc.code   )
+    auto_api.addTask          ( name,"TaskMakeLigand",parentName     )
+    if revision:
+        auto_api.addTaskData  ( name,"revision"      ,revision       )
+    if type(ligdesc) == dict:
+        auto_api.addTaskParameter ( name,"SOURCE_SEL"    ,ligdesc["source"] )
+        auto_api.addTaskParameter ( name,"SMILES"        ,ligdesc["smiles"] )
+        auto_api.addTaskParameter ( name,"CODE"          ,ligdesc["code"]   )
+        auto_api.addTaskParameter ( name,"CODE3"         ,ligdesc["code"]   )
+    else:
+        auto_api.addTaskParameter ( name,"SOURCE_SEL"    ,ligdesc.source )
+        auto_api.addTaskParameter ( name,"SMILES"        ,ligdesc.smiles )
+        auto_api.addTaskParameter ( name,"CODE"          ,ligdesc.code   )
+        auto_api.addTaskParameter ( name,"CODE3"         ,ligdesc.code   )
     return
 
 

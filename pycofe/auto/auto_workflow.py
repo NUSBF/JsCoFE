@@ -24,9 +24,10 @@ import json
 # from   pycofe.auto   import template_simpleMR
 # from   pycofe.auto   import template_afMR
 
-from   pycofe.auto   import auto_api
+from   pycofe.auto   import  auto_api
+from   pycofe.auto   import  auto_tasks
 import traceback
-from   pycofe.etc    import citations
+from   pycofe.etc    import  citations
 
 
 # ============================================================================
@@ -62,16 +63,18 @@ def nextTask ( body,data,log=None ):
                 auto_api.setLog ( body.file_stdout )
             auto_api.initAutoMeta()
 
-            # auto_api.log ( " --- " + str(data) )
+            # auto_api.log ( " --- " + str(data["data"]["ligdesc"]) )
 
             # put data in context
-            idata = auto_api.getContext ( "data" )
+            idata = auto_api.getContext ( "input_data" )
             if not idata:
                 idata = {}
             if "data" in data:
                 is_data = False
                 for d in data["data"]:
-                    if len(d)>0 and d!="revision":
+                    auto_api.log ( " --- 1. " + d )
+                    if len(data["data"][d])>0 and d!="revision":
+                        auto_api.log ( " --- 2. " + d )
                         is_data  = True
                         if not d in idata:
                             idata[d] = []
@@ -81,7 +84,7 @@ def nextTask ( body,data,log=None ):
                             else:
                                 idata[d].append ( json.loads ( obj.to_JSON() ) )
                 if is_data:
-                    auto_api.addContext  ( crTask.autoRunName,idata )
+                    auto_api.addContext  ( "input_data",idata )
 
             # update scores
             scores = auto_api.getContext ( "scores" )
@@ -101,34 +104,58 @@ def nextTask ( body,data,log=None ):
                     suggestedParameters[key] = data["suggestedParameters"][key]
                 auto_api.addContext ( "suggestedParameters",suggestedParameters )
 
-            nextRunName  = crTask.autoRunName
-            nextTaskType = None
+            nextRunName   = crTask.autoRunName
+            crAutoRunName = nextRunName
+            nextTaskType  = None
             # auto_api.log ( " >>>>>1 " + str(crTask.script_pointer ) )
             crTask.script_end_pointer = crTask.script_pointer
-            while (crTask.script_end_pointer<len(crTask.script)) and (nextRunName==crTask.autoRunName):
+            while crTask.script_end_pointer<len(crTask.script) and nextRunName==crAutoRunName:
+                # auto_api.log ( " # line " + str(crTask.script_end_pointer) + " " + crTask.script[crTask.script_end_pointer] )
                 words = crTask.script[crTask.script_end_pointer].split()
                 if len(words)>2 and words[0].startswith("@") and words[1]=="RUN":
                     nextRunName  = words[0]
                     nextTaskType = words[2]
+                    # check that the setap is not conditional to availabilitgy of data
+                    i = 0
+                    while i<len(crTask.script) and nextTaskType:
+                        w = crTask.script[i].split()
+                        if len(w)>2 and w[0]==nextRunName and w[1]=="IFDATA":
+                            j  = 2
+                            ok = True
+                            while j<len(w) and ok:
+                                ok = w[j] in idata
+                                j  = j + 1
+                            if not ok:
+                                crAutoRunName = nextRunName
+                                nextTaskType  = None
+                        i = i + 1
+                # auto_api.log ( "       " + crAutoRunName + " " + nextRunName + " " + str(nextTaskType) )
                 crTask.script_end_pointer = crTask.script_end_pointer + 1
-            # auto_api.log ( " >>>>>2 " + str(crTask.script_end_pointer ) )
+                
+            # auto_api.log ( " >>>>>2 " + str(crTask.script_end_pointer) + " " + str(nextTaskType) )
 
             if nextTaskType:
 
-                # ifdata = []
-
-
                 # form new task
-                auto_api.addTask ( nextRunName,nextTaskType,crTask.autoRunName )
+                if nextTaskType=="TaskMakeLigand":
+                    auto_tasks.make_ligand ( nextRunName, idata["ligdesc"][0], 
+                                             idata["revision"] if "revision" in idata else None,
+                                             crTask.autoRunName )
+                else:
+                    auto_api.addTask ( nextRunName,nextTaskType,crTask.autoRunName )
 
-                # add task data
-                for dtype in data["data"]:
-                    if dtype in ["unmerged","hkl","xyz","seq","ligand","lib","revision"] and\
-                                len(data["data"][dtype])>0:
-                        auto_api.addTaskData ( nextRunName,dtype,data["data"][dtype][0] )
+                # add task data, revision from the previous task only
+                if "data" in data:
+                    cdata = data["data"]
+                    if "revision" in cdata and len(cdata["revision"])>0:
+                        auto_api.addTaskData ( nextRunName,"revision",cdata["revision"][0] )
 
-                # add task parameters (can be anywhere in script)
+                for dtype in idata:
+                    if dtype in ["unmerged","hkl","xyz","seq","ligand","lib"] and\
+                                len(idata[dtype])>0:
+                        auto_api.addTaskData ( nextRunName,dtype,idata[dtype][0] )
 
+                # add suggested task parameters (can be anywhere in script)
                 if nextTaskType in suggestedParameters:
                     for line in crTask.script:
                         words = line.split()
@@ -136,15 +163,21 @@ def nextTask ( body,data,log=None ):
                             for key in suggestedParameters[nextTaskType]:
                                 auto_api.addTaskParameter ( nextRunName,key,suggestedParameters[nextTaskType][key] )
 
+                # add specified task parameters (can be anywhere in script)
                 for line in crTask.script:
                     words = line.split()
                     if len(words)>3 and words[0]==nextRunName and words[1]=="PARAMETER":
                          auto_api.addTaskParameter ( nextRunName,words[2],words[3] )
 
+
+            else:
+                auto_api.log ( " ***** WORKFLOW ERROR: next task type not identified" )
+
             # raise ValueError('From auto.py:makeNextTask got unknown crTask.autoRunId: %s .' \
             #                     % body.task.autoRunId)
 
             auto_api.writeAutoMeta()
+            auto_api.log ( " >>>>>10 written" )
             return True
 
 
