@@ -33,7 +33,7 @@ import shutil
 #  application imports
 from . import coot_ce
 from   pycofe.varut   import  signal
-from   pycofe.proc    import  covlinks
+from   pycofe.proc    import  covlinks, mergeone
 try:
     from pycofe.varut import messagebox
 except:
@@ -91,6 +91,7 @@ class Coot(coot_ce.CootCE):
         if ligCode in ligList:  # no need to include
             return (libPath,ligList)
 
+        """
         self.open_stdin()
         self.write_stdin (
             "_Y"          +\
@@ -101,6 +102,8 @@ class Coot(coot_ce.CootCE):
         self.close_stdin()
 
         self.runApp ( "libcheck",[],logType="Service" )
+        """
+        mergeone.add_one_comp(ligPath, libPath, self.outputFName + ".lib")
 
         return (self.outputFName+".lib",ligList+[ligCode])
 
@@ -143,6 +146,7 @@ class Coot(coot_ce.CootCE):
         libPath, ligList = self.addLigandToLibrary (
                                     istruct.getLibFilePath(self.inputDir()),
                                     ligCode,ligPath,istruct.ligands )
+        libin = libPath
 
         # make command line arguments
         args = []
@@ -291,10 +295,15 @@ class Coot(coot_ce.CootCE):
                 if f.endswith(".cif"):
 
                     exclude_list = []
+                    '''
                     if hasattr(self.input_data.data,"void1"):
                         ligands = self.input_data.data.void1
                         for i in range(len(ligands)):
                             exclude_list.append ( ligands[i].code )
+                    '''
+                    if istruct.ligands:
+                        sep = '('
+                        exclude_list = [(tt + sep).split(sep)[0] for tt in istruct.ligands]
 
                     newLigCode = self.get_ligand_code ( ligList+exclude_list )
                     if newLigCode:
@@ -379,10 +388,25 @@ class Coot(coot_ce.CootCE):
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
+            libContents0 = ""
+            if libin and os.path.isfile(libin):
+                with open(libin) as f:
+                    libContents0 = f.read()
+            libContents1 = ""
+            if libin and os.path.isfile(libPath):
+                with open(libin) as f:
+                    libContents1 = f.read()
+            library = None
+            if libContents0 != libContents1:
+                library = self.registerLibrary ( libPath,copy_files=False )
+            if library:
+                libPath = library.getLibFilePath(self.outputDir())
             struct = self.registerStructure ( coot_xyz,None,coot_mtz,
                                               None,None,libPath=libPath,
                                               leadKey=lead_key,
                                               refiner=istruct.refiner )
+            if struct and library:
+                assert libPath == struct.getLibFilePath(self.outputDir())
 
             if struct:
                 struct.copy_refkeys_parameters ( istruct )
@@ -398,6 +422,7 @@ class Coot(coot_ce.CootCE):
 
                 # add link formulas and counts to struct metadata
                 if link_counts:
+                    struct.ligands     = link_counts['comps_usr']
                     struct.refmacLinks = link_counts['links_usr']
                     struct.links       = link_counts['links_std']
                     struct.links      += link_counts['links_unk']

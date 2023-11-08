@@ -49,10 +49,10 @@ function TaskJLigand()  {
       min         : 0,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
-      data_type   : {'DataLibrary':[],'DataLigand':[],'DataStructure':['ligands']},
+      data_type   : {'DataLibrary':[],'DataLigand':[]}, //,'DataStructure':['ligands']
       label       : 'Ligand or Library', // label for input dialog
       inputId     : 'ligand',      // input Id for referencing input fields
-      cast        : 'library',     // will replace data type names in comboboxes
+//    cast        : 'library',     // will replace data type names in comboboxes
       min         : 0,             // minimum acceptable number of data instances
       max         : 19             // maximum acceptable number of data instances
     }
