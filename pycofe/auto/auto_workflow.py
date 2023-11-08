@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.11.23   <--  Date of Last Modification.
+#    08.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -71,14 +71,15 @@ def nextTask ( body,data,log=None ):
                 idata = {}
             if "data" in data:
                 is_data = False
-                for d in data["data"]:
-                    auto_api.log ( " --- 1. " + d )
-                    if len(data["data"][d])>0 and d!="revision":
-                        auto_api.log ( " --- 2. " + d )
+                ddata   = data["data"]
+                for d in ddata:
+                    # auto_api.log ( " --- 1. " + d )
+                    if len(ddata[d])>0 and d!="revision":
+                        # auto_api.log ( " --- 2. " + d )
                         is_data  = True
                         if not d in idata:
                             idata[d] = []
-                        for obj in data["data"][d]:
+                        for obj in ddata[d]:
                             if type(obj) == dict:
                                 idata[d].append ( obj )
                             else:
@@ -144,30 +145,64 @@ def nextTask ( body,data,log=None ):
                 else:
                     auto_api.addTask ( nextRunName,nextTaskType,crTask.autoRunName )
 
+                # hover script for all step-related instructions
+                parameters = {}
+                aliases    = {}
+                tdata      = {}  # specific task data from context
+                use_suggested_parameters = False
+                for line in crTask.script:
+                    words = line.split()
+                    if len(words)>0 and words[0]==nextRunName:
+                        if len(words)==4:
+                            if words[1]=="PARAMETER":
+                                parameters[words[2]] = words[3]
+                            elif words[1]=="ALIAS": 
+                                aliases[words[2]] = words[3]
+                            elif words[1]=="DATA": 
+                                tdata[words[2]] = words[3]
+                        if len(words)==2 and words[1]=="USE_SUGGESTED_PARAMETERS":
+                            use_suggested_parameters = True
+
+                # auto_api.log ( " >>> parameters " + str(parameters) )
+                # auto_api.log ( " >>> aliases    " + str(aliases)    )
+
                 # add task data, revision from the previous task only
                 if "data" in data:
                     cdata = data["data"]
                     if "revision" in cdata and len(cdata["revision"])>0:
-                        auto_api.addTaskData ( nextRunName,"revision",cdata["revision"][0] )
+                        auto_api.addTaskData ( nextRunName,
+                            aliases["revision"] if "revision" in aliases else "revision",
+                            cdata["revision"] )
 
                 for dtype in idata:
                     if dtype in ["unmerged","hkl","xyz","seq","ligand","lib"] and\
                                 len(idata[dtype])>0:
-                        auto_api.addTaskData ( nextRunName,dtype,idata[dtype][0] )
+                        auto_api.addTaskData ( nextRunName,
+                            aliases[dtype] if dtype in aliases else dtype,
+                            idata[dtype] )
+
+                for dtype in tdata:
+                    auto_api.addTaskData ( nextRunName,dtype,idata[tdata[dtype]] )
 
                 # add suggested task parameters (can be anywhere in script)
-                if nextTaskType in suggestedParameters:
-                    for line in crTask.script:
-                        words = line.split()
-                        if len(words)>1 and words[0]==nextRunName and words[1]=="USE_SUGGESTED_PARAMETERS":
-                            for key in suggestedParameters[nextTaskType]:
-                                auto_api.addTaskParameter ( nextRunName,key,suggestedParameters[nextTaskType][key] )
+                if nextTaskType in suggestedParameters and use_suggested_parameters:
+                    for key in suggestedParameters[nextTaskType]:
+                        auto_api.addTaskParameter ( nextRunName,key,suggestedParameters[nextTaskType][key] )
+                # if nextTaskType in suggestedParameters:
+                #     for line in crTask.script:
+                #         words = line.split()
+                #         if len(words)>1 and words[0]==nextRunName and words[1]=="USE_SUGGESTED_PARAMETERS":
+                #             for key in suggestedParameters[nextTaskType]:
+                #                 auto_api.addTaskParameter ( nextRunName,key,suggestedParameters[nextTaskType][key] )
 
                 # add specified task parameters (can be anywhere in script)
-                for line in crTask.script:
-                    words = line.split()
-                    if len(words)>3 and words[0]==nextRunName and words[1]=="PARAMETER":
-                         auto_api.addTaskParameter ( nextRunName,words[2],words[3] )
+                for p in parameters:
+                    auto_api.addTaskParameter ( nextRunName,p,parameters[p] )
+
+                # for line in crTask.script:
+                #     words = line.split()
+                #     if len(words)>3 and words[0]==nextRunName and words[1]=="PARAMETER":
+                #          auto_api.addTaskParameter ( nextRunName,words[2],words[3] )
 
 
             else:

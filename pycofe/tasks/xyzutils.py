@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.10.23   <--  Date of Last Modification.
+#    08.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,7 +35,7 @@ from  pycofe.tasks  import basic
 from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble,dtype_model
 from  pycofe.dtypes import dtype_sequence, dtype_revision
 from  pycofe.proc   import import_sequence,import_filetype
-from  pycofe.auto   import auto
+from  pycofe.auto   import auto, auto_workflow
 
 
 # ============================================================================
@@ -142,9 +142,19 @@ class XyzUtils(basic.TaskDriver):
                 self.registerRevision     ( revision )
                 results = True
 
-                auto.makeNextTask(self, {
-                        "revision": revision 
-                    }, log=self.file_stderr)
+
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision"  : [revision]
+                            }
+                    }, log=self.file_stderr )
+                        # self.putMessage ( "<h3>Workflow started</hr>" )
+                else:  # pre-coded workflow framework
+                    auto.makeNextTask(self, {
+                            "revision": revision 
+                        }, log=self.file_stderr)
 
             else:
                 # close execution logs and quit
