@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# python-3 ready
+
 #
 # ============================================================================
 #
@@ -157,16 +159,92 @@ class JLigand(basic.TaskDriver):
 
             struct = None
             cifreg = None
-            dname = None
-            msg_llist = None
+            have_results = False
+
+            colSpan = 1
+            openState = -1
+#           openState = 0
+
             if comp_id is None or link_id is None or not (comp_id or link_id):
                 self.stdout ( "No valid output" )
                 istruct = None
 
-            elif istruct:
+            elif len(comp_id)==1 and len(link_id)==0:
+                pdbout = os.path.splitext(cifout)[0] + ".pdb"
+                code = comp_id[0]
+                args = ["convert", "--from=mmcif", cifout, pdbout]
+                self.runApp("gemmi", args, logType="Main", quitOnError=True)
+                ligand = self.finaliseLigand ( code,pdbout,cifout )
+                del pdbout
+                if ligand:
+                    cifreg = '/'.join([self.outputDir(), ligand.getLibFileName()])
+                    have_results = True
+
+                    summary_line = "library with ligand " + code
+
+            else:
+                library = self.registerLibrary ( cifout,copy_files=False )
+                if library:
+                    cifreg = '/'.join([self.outputDir(), library.getLibFileName()])
+                    have_results = True
+
+                    library.codes = comp_id
+
+                    self.putTitle ( "Output Library" )
+
+                    summary_line = ("revision " if struct else "") + "library with "
+                    ncomp = len(comp_id)
+                    if ncomp:
+                        summary_line += str(ncomp) + " ligand"
+                        if ncomp > 1:
+                            summary_line += "s"
+                        if link_id:
+                            summary_line += " and "
+                    nlink = len(link_id)
+                    if nlink:
+                        summary_line += str(nlink) + " link"
+                        if nlink > 1:
+                            summary_line += "s"
+
+                    vspace = "<font size='+2'><sub>&nbsp;</sub></font>"
+                    self.putMessage1(
+                        self.report_page_id(),
+                        "<b>Assigned name:</b>&nbsp;" + library.dname + vspace,
+                        self.rvrow)
+                    self.rvrow += 1
+
+                    pyrvapi.rvapi_add_data(
+                        "_lib_wgt_",
+                        "Library of Ligands and Links",
+                        "/".join(["..", cifreg]),
+                        "LIB",
+                        self.report_page_id(),
+                        self.rvrow, 0, 1, colSpan, openState)
+                    self.rvrow += 1
+
+                    if comp_id:
+                        ending = "s" if len(comp_id) > 1 else ""
+                        self.putMessage1(
+                            self.report_page_id(),
+                            "<b>Ligand" + ending + ":</b>&nbsp;" +
+                                ", ".join(comp_id) + vspace,
+                            self.rvrow)
+                        self.rvrow += 1
+
+                    if link_id:
+                        ending = "s" if len(link_id) > 1 else ""
+                        self.putMessage1(
+                            self.report_page_id(),
+                            "<b>Link" + ending + ":</b>&nbsp;" +
+                                ", ".join(link_id) + vspace,
+                            self.rvrow)
+                        self.rvrow += 1
+
+            if istruct and have_results and cifreg:
                 cl = None
+                msg_llist = None
                 if pdbfl:
-                    cl = covlinks.CovLinks(cifout, pdbfl)
+                    cl = covlinks.CovLinks(cifreg, pdbfl)
                     msg_llist = cl.suggest_changes()
                     cl.update(mode = 3, xyzout = pdbfl_2)
                     if os.path.isfile(pdbfl_2):
@@ -175,13 +253,13 @@ class JLigand(basic.TaskDriver):
                 struct = self.registerStructure ( pdbfl,
                             istruct.getSubFilePath(self.inputDir()),
                             istruct.getMTZFilePath(self.inputDir()),
-                            None,None,libPath=cifout,leadKey=istruct.leadKey,
+                            None,None,
+                            libPath=cifreg,
+                            leadKey=istruct.leadKey,
                             refiner=istruct.refiner )
 
                 if struct:
-                    cifreg = struct.getLibFilePath(self.outputDir())
-                    dname = struct.dname
-                    have_results = True
+                    assert cifreg == struct.getLibFilePath(self.outputDir())
 
                     struct.copy_refkeys_parameters ( istruct )
                     struct.copyAssociations ( istruct )
@@ -194,95 +272,8 @@ class JLigand(basic.TaskDriver):
                         struct.refmacLinks = counts['links_usr']
                         struct.links       = counts['links_std'] + counts['links_unk']
 
-                    self.putTitle ( "Output Structure" )
+#                   self.putTitle ( "Output Structure" )
 
-            elif len(comp_id)==1 and len(link_id)==0:
-                pdbout = os.path.splitext(cifout)[0] + ".pdb"
-                code = comp_id[0]
-                args = ["convert", "--from=mmcif", cifout, pdbout]
-                self.runApp("gemmi", args, logType="Main", quitOnError=True)
-                ligand = self.finaliseLigand ( code,pdbout,cifout )
-                del pdbout
-                if ligand:
-                    have_results = True
-                    summary_line = "library with ligand " + code
-
-            else:
-                library = self.registerLibrary ( cifout,copy_files=False )
-                if library:
-                    cifreg = '/'.join([self.outputDir(), library.getLibFileName()])
-                    dname = library.dname
-                    have_results = True
-
-                    library.codes = comp_id
-
-                    self.putTitle ( "Output Library" )
-
-            if have_results and cifreg:
-                have_results = True
-                summary_line = ("revision " if struct else "") + "library with "
-                ncomp = len(comp_id)
-                if ncomp:
-                    summary_line += str(ncomp) + " ligand"
-                    if ncomp > 1:
-                        summary_line += "s"
-                    if link_id:
-                        summary_line += " and "
-                nlink = len(link_id)
-                if nlink:
-                    summary_line += str(nlink) + " link"
-                    if nlink > 1:
-                        summary_line += "s"
-
-                vspace = "<font size='+2'><sub>&nbsp;</sub></font>"
-                self.putMessage1(
-                    self.report_page_id(),
-                    "<b>Assigned name:</b>&nbsp;" + dname + vspace,
-                    self.rvrow)
-                self.rvrow += 1
-
-                colSpan = 1
-                openState = -1
-#               openState = 0
-
-                if struct:
-                    pyrvapi.rvapi_add_data(
-                        "_lib_wgt_",
-                        "Associated Library",
-                        "/".join(["..", cifreg]),
-                        "LIB",
-                        self.report_page_id(),
-                        self.rvrow, 0, 1, colSpan, openState)
-                    self.rvrow += 1
-                if comp_id:
-                    ending = "s" if len(comp_id) > 1 else ""
-                    self.putMessage1(
-                        self.report_page_id(),
-                        "<b>Ligand" + ending + ":</b>&nbsp;" +
-                            ", ".join(comp_id) + vspace,
-                        self.rvrow)
-                    self.rvrow += 1
-
-                if link_id:
-                    ending = "s" if len(link_id) > 1 else ""
-                    self.putMessage1(
-                        self.report_page_id(),
-                        "<b>Link" + ending + ":</b>&nbsp;" +
-                            ", ".join(link_id) + vspace,
-                        self.rvrow)
-                    self.rvrow += 1
-
-                if not struct:
-                    pyrvapi.rvapi_add_data(
-                        "_lib_wgt_",
-                        "Library of Ligands and Links",
-                        "/".join(["..", cifreg]),
-                        "LIB",
-                        self.report_page_id(),
-                        self.rvrow, 0, 1, colSpan, openState)
-                    self.rvrow += 1
-
-                if struct:
                     msg_list = cl.ambiguous_links()
                     if msg_list:
                         self.putMessage1(
@@ -301,7 +292,8 @@ class JLigand(basic.TaskDriver):
                             self.rvrow)
                         self.rvrow += 1
 
-                    msg_list = msg_llist[0] + msg_llist[1]
+                    if msg_llist:
+                        msg_list = msg_llist[0] + msg_llist[1]
                     if msg_list:
                         self.putMessage1(
                             self.report_page_id(), "",
