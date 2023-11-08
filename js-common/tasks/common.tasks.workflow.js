@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.11.23   <--  Date of Last Modification.
+ *    08.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -226,7 +226,7 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
       let word0 = words[0].toUpperCase();
       switch (word0)  {
         
-        case 'NAME'     : this.name      = words[1];                  break;
+        case 'NAME'     : this.name      = words.slice(1).join(' ');  break;
         case 'ONAME'    : this.setOName  ( words[1] );                break;
         case 'ICON'     : this.icon_name = words[1];                  break;
         case 'TITLE'    : this.title     = words.slice(1).join(' ');  break;

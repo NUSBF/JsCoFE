@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.08.23   <--  Date of Last Modification.
+#    08.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,9 +34,9 @@ import pyrvapi
 
 #  application imports
 from . import basic
-from  pycofe.dtypes    import  dtype_template
-from  pycofe.proc      import  datred_utils, import_filetype, import_merged
-from  pycofe.auto      import  auto
+from  pycofe.dtypes  import  dtype_template
+from  pycofe.proc    import  datred_utils, import_filetype, import_merged
+from  pycofe.auto    import  auto, auto_workflow
 
 # ============================================================================
 # Make Aimless driver
@@ -275,6 +275,7 @@ class Aimless(basic.TaskDriver):
         # close execution logs and quit
 
         if output_ok:
+            
             if "aimless" in self.generic_parser_summary:
                 dsum = self.generic_parser_summary["aimless"]
                 dsum["summary_line"] = "Compl="                 + str(dsum["Completeness"]) + "%" +\
@@ -283,10 +284,22 @@ class Aimless(basic.TaskDriver):
                                        " R<sub>meas_ano</sub>=" + str(dsum["R_meas_ano"])   +\
                                        " Res=" + str(dsum["res_high"])  + "-" + str(dsum["res_low"]) +\
                                        " SpG=" + dsum["Space_group"]
-            auto.makeNextTask ( self,{
-                "hkl" : hkl
-            })
+
+            if self.task.autoRunName.startswith("@"):
+                # scripted workflow framework
+                auto_workflow.nextTask ( self,{
+                    "data"  : {
+                        "hkl"   : hkl
+                    }
+                }, log=self.file_stderr )
+                # self.putMessage ( "<h3>Workflow started</hr>" )
+            else:
+                auto.makeNextTask ( self,{
+                    "hkl" : hkl
+                })
+
             self.success ( True )
+
         else:
             self.file_stdout.write ( "Aimless failed, see above." )
             self.fail ( "<p>&nbsp;Aimless failed, see Log and Error tabs for details",

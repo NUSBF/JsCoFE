@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    07.11.23   <--  Date of Last Modification.
+#    08.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -50,9 +50,9 @@ class MakeLigand(basic.TaskDriver):
 
         # copy pre-existing revisions into output first
         # nrevisions0 = 0
-        revisions    = []
+        revisions = []
         if hasattr(self.input_data.data,"void1"):
-            revisions    = self.input_data.data.void1
+            revisions = self.input_data.data.void1
             # nrevisions0 = len(revisions)
             for i in range(len(revisions)):
                 revisions[i] = self.makeClass ( revisions[i] )
@@ -146,18 +146,17 @@ class MakeLigand(basic.TaskDriver):
 
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework
-                    wdata = { "ligand" : [ligand] }
-                    if len(revisions)>0:
-                        wdata["revision"] = revisions
                     auto_workflow.nextTask ( self,{
-                        "data"  : wdata
+                        "data"  : {
+                            "ligand"   : [ligand],
+                            "revision" : [revNext]
+                        }
                     }, log=self.file_stderr )
                     # self.putMessage ( "<h3>Workflow started</hr>" )
-
                 else:  # pre-coded workflow framework
                     auto.makeNextTask ( self,{
-                        "ligand" : ligand,
-                        'revision' : revNext
+                        "ligand"   : ligand,
+                        "revision" : revNext
                     })
 
                 summary_line = "ligand \"" + code + "\" prepared"
