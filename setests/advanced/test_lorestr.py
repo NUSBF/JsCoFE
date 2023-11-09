@@ -27,22 +27,12 @@ def startLORESTRAfterRevision(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
-    try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-        time.sleep(3)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Low-Resolution Refinement with Lorestr')
-        time.sleep(3)
-    except:
-        pass
-    time.sleep(1)
     
-    try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
-        time.sleep(3)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Low-Resolution Refinement with Lorestr')
-        time.sleep(3)
-    except:
-        pass
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
+    time.sleep(3)
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Low-Resolution Refinement with Lorestr')
+    time.sleep(3)
+
     time.sleep(1)
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Low-Resolution Refinement with Lorestr')
