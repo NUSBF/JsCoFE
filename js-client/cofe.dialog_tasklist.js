@@ -24,6 +24,7 @@
 
 'use strict';
 
+
 // -------------------------------------------------------------------------
 // TaskListDialog class
 
@@ -461,7 +462,8 @@ var r = 0;  // grid row
     new TaskWFlowAMR (),
     new TaskWFlowAFMR(),
     new TaskWFlowSMR (),
-    new TaskWFlowAEP (),
+    new TaskWFlowDPLMR(),
+    new TaskWFlowAEP ()
   ];
 
   for (var i=0;i<task_list.length;i++)  {
@@ -562,6 +564,7 @@ var r = 0;  // grid row
     new TaskWFlowAMR (),
     new TaskWFlowAFMR(),
     new TaskWFlowSMR (),
+    new TaskWFlowDPLMR(),
     new TaskWFlowAEP (),
     "Workflows for using within a Project",
     new TaskWFlowDPL (),
@@ -719,6 +722,7 @@ var row      = 0;
 
     this.makeSection ( 'Tasks in Development',[
       new TaskDimpleMR(),
+      
       // new TaskCootUtils    (),
       // ccp4go2_task,
       // new TaskStructurePrediction(),

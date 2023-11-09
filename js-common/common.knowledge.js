@@ -60,8 +60,9 @@ var _taskIndex = {
   'E2' : { type: 'TaskWFlowAMR'           , after: ['0','B'] },
   'E3' : { type: 'TaskWFlowAEP'           , after: ['0','B'] },
   'E4' : { type: 'TaskWFlowDPL'           , after: ['0','B'] },
-  'E5' : { type: 'TaskWFlowSMR'           , after: ['0','B'] },
-  'E6' : { type: 'TaskWFlowAFMR'          , after: ['0','B'] },
+  'E5' : { type: 'TaskWFlowDPLMR'           , after: ['0','B'] },
+  'E6' : { type: 'TaskWFlowSMR'           , after: ['0','B'] },
+  'E7' : { type: 'TaskWFlowAFMR'          , after: ['0','B'] },
 
   // suggest Aimless, Simbad and ASUDef after Import or Model Preparation in
   // the specified order; do not suggest them after themselves (user should
