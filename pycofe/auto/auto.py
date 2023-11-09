@@ -76,11 +76,11 @@ def makeNextTask ( body,data,log=None ):
 
 
     except Exception as inst:
-        body.putMessage(str(type(inst)))  # the exception instance
-        body.putMessage(str(inst.args))  # arguments stored in .args
-        body.putMessage(str(inst))  # __str__ allows args to be printed directly,
+        body.stderrln ( str(type(inst)))  # the exception instance
+        body.stderrln ( str(inst.args))  # arguments stored in .args
+        body.stderrln ( str(inst))  # __str__ allows args to be printed directly,
         tb = traceback.format_exc()
-        body.putMessage(str(tb))
-        body.putMessage ( "<i>automatic workflow excepted</i>" )
+        body.stderrln ( str(tb))
+        body.putMessage ( "<h3><i>automatic workflow excepted</i></h3>" )
 
     return False
