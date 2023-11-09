@@ -21,20 +21,28 @@ def startDPL_mdm2(driver, dirName, waitShort=90):
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Workflows')
     time.sleep(2)
-
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Dimple Refinement')
-    time.sleep(2)
-
-    mtzFileName = os.path.join(dirName, 'mdm2_nolig', 'mdm2_merged.mtz')
-    seqFileName = os.path.join(dirName, 'mdm2_nolig', '4hg7.fasta')
-    pdbFileName = os.path.join(dirName, 'mdm2_nolig', '4hg7_nolig.pdb')
-    cifFileName = os.path.join(dirName, 'mdm2_nolig', 'nut.cif')
-
-    projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
-    projectInputs[-4].send_keys(mtzFileName)
-    projectInputs[-3].send_keys(pdbFileName)
-    projectInputs[-2].send_keys(cifFileName)
-    projectInputs[-1].send_keys(seqFileName)
+    if d.cloud == "https://ccp4serv6.rc-harwell.ac.uk/jscofe-pre/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Dimple Refinement')
+        time.sleep(2)
+        mtzFileName = os.path.join(dirName, 'mdm2_nolig', 'mdm2_merged.mtz')
+        seqFileName = os.path.join(dirName, 'mdm2_nolig', '4hg7.fasta')
+        pdbFileName = os.path.join(dirName, 'mdm2_nolig', '4hg7_nolig.pdb')
+        cifFileName = os.path.join(dirName, 'mdm2_nolig', 'nut.cif')
+        projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
+        projectInputs[-4].send_keys(mtzFileName)
+        projectInputs[-3].send_keys(pdbFileName)
+        projectInputs[-2].send_keys(cifFileName)
+        projectInputs[-1].send_keys(seqFileName)
+    else:
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Dimple Molecular Replacement')
+        time.sleep(2)
+        mtzFileName = os.path.join(dirName, 'mdm2_nolig', 'mdm2_merged.mtz')
+        pdbFileName = os.path.join(dirName, 'mdm2_nolig', '4hg7_nolig.pdb')
+        cifFileName = os.path.join(dirName, 'mdm2_nolig', 'nut.cif')
+        projectInputs = driver.find_elements_by_xpath("//input[contains(@id,'input') and @type='file' and contains(@name,'uploads[]')]")
+        projectInputs[-3].send_keys(mtzFileName)
+        projectInputs[-2].send_keys(pdbFileName)
+        projectInputs[-1].send_keys(cifFileName)
 
     time.sleep(2)
     sf.clickByXpath(driver, "//button[normalize-space()='Apply & Upload']")

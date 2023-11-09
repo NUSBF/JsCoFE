@@ -28,16 +28,9 @@ def refmacAfterRevision(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
-    try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-    except:
-        pass
-    time.sleep(1)
-    try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
-    except:
-        pass
 
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
+   
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
@@ -92,19 +85,11 @@ def startCootcomb(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
-    try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Comb Structure with Coot')
-        time.sleep(2)
-    except:
-        pass
-    time.sleep(1)
-    try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Comb Structure with Coot')
-        time.sleep(2)
-    except:
-        pass
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Comb Structure with Coot')
+    time.sleep(2)
+    
 
 
     inputTitle = driver.find_element_by_xpath("//input[@title='Number of 2nd comb passes']")

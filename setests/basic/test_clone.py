@@ -219,21 +219,11 @@ def refmacAfterBuccaner(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
-    try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-        time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
-    except:
-        pass
-    time.sleep(1)
-    try:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
-        time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
-    except:
-        pass
-
     
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
+    time.sleep(1)
+    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+  
     
 
     # There are several forms - active and inactive. We need one displayed.
