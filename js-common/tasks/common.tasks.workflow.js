@@ -166,33 +166,57 @@ TaskWorkflow.prototype.constructor = TaskWorkflow;
 // ===========================================================================
 
 /*
-#  workflow script keywords
-NAME  my_workflow
-ONAME wflow1
-TITLE My own Workflow
-DESC  This is first template for custom workflow script 
-KEYWORDS my workflow first
-ALLOW_UPLOAD
 
+#
+# -----------------------------------------------------
+# Simple Dimple-with-ligand workflow example
+# -----------------------------------------------------
+#
+
+# General workflow descriptors
+NAME     dimple workflow
+ONAME    dimple_wflow 
+TITLE    Dimple MR Workflow with ligand fitting
+DESC     custom DIMPLE workflow for high-homology cases 
+KEYWORDS dimple workflow  # for using in A-Z keyword search
+
+ALLOW_UPLOAD  # create file upload widgets if started from project root
+
+# List all data required, "!" specifies mandatory items
 !DATA HKL UNMERGED TYPES anomalous
 !DATA XYZ          TYPES protein dna rna
 DATA SEQ           TYPES protein dna rna
 DATA LIGAND
 
-@STEP1 TaskDimpleMR
+# Workflow itself
 
-@STEP2 IFDATA ligdesc hkl  # requires all listed data types
-@STEP2 RUN TaskMakeLigand
+@AIMLESS       IFDATA    unmerged
+@AIMLESS       DATA      ds0        unmerged
+@AIMLESS       RUN       TaskAimless
 
-@STEP3 IFDATA lig
-@STEP3 RUN TaskFitLigand
+@DIMPLE        RUN       TaskDimpleMR
 
-@STEP4 PARAMETER SIGMA 2.0
-@STEP4 RUN TaskFitWaters
+@MAKE_LIGAND   IFDATA    ligdesc  # can be a list of required data types
+@MAKE_LIGAND   RUN       TaskMakeLigand
 
-@STEP5 USE_SUGGESTED_PARAMETERS
-@STEP5 RUN TaskRefmac
+@REMOVE_WATERS IFDATA    ligand
+@REMOVE_WATERS ALIAS     revision   istruct
+@REMOVE_WATERS PARAMETER SOLLIG_SEL W
+@REMOVE_WATERS RUN       TaskXyzUtils
 
+@FIT_LIGAND    IFDATA    ligand
+@FIT_LIGAND    PARAMETER SAMPLES 500
+@FIT_LIGAND    RUN       TaskFitLigand
+
+@FIT_WATERS    PARAMETER SIGMA 2.0
+@FIT_WATERS    RUN       TaskFitWaters
+
+@REFINE        USE_SUGGESTED_PARAMETERS
+@REFINE        RUN       TaskRefmac
+
+@VALIDATION    RUN       TaskPDBVal
+
+#
 
 */
 
@@ -214,11 +238,11 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
   for (let i=0;i<this.script.length;i++)  {
     
     let line  = this.script[i].trim();
+    this.script[i] = line;
     let ihash = line.indexOf('#');
     if (ihash>=0)  // remove comment
       line = line.slice ( 0,ihash );
     line = line.trim();
-    this.script[i] = line;
 
     if (line.length>0)  {
       

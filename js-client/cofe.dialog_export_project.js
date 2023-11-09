@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    25.10.23   <--  Date of Last Modification.
+ *    09.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -68,6 +68,11 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
       var progressBar = new ProgressBar ( 0 );
       grid.setWidget ( progressBar, 3,2,1,3 );
 
+      grid.setLabel ( '<i style="font-size:90%;">' +
+                      '(!) closing this dialog will terminate export, ' +
+                      'please wait ....</i>',4,2,1,3 );
+      grid.setHorizontalAlignment ( 4,2,"right" );
+
       dlg.projectSize = -2;
 
     //  w = 3*$(window).width()/5 + 'px';
@@ -126,6 +131,7 @@ ExportProjectDialog.prototype.startExport = function ( projectList )  {
                                '<i>Download</i> button to start<br>exporting. ' +
                                '<p><b><i>Do not close this dialog until the ' +
                                'download has finished.</i></b>' );
+            grid.hideRow ( 4 )
             $('#download_btn').show();
           }
         },null,function(){ // depress error messages in this case!
