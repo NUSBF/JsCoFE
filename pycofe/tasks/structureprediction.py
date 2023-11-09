@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.10.23   <--  Date of Last Modification.
+#    09.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -233,6 +233,8 @@ class StructurePrediction(basic.TaskDriver):
                         PAE_png.append ( "../" + dirName + "/" + file )
                     elif fnlow.endswith("plddt.png"):
                         plddt_png.append ( "../" + dirName + "/" + file )
+                    elif fnlow.endswith(".pkl"):
+                        os.remove ( os.path.join(dirName,file) )
 
             if len(fpaths)<=0:
                 fpaths = fpaths0  # depends on alphafold configuration
