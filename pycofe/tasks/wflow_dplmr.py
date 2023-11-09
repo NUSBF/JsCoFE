@@ -5,15 +5,15 @@
 #
 # ============================================================================
 #
-#    31.10.23   <--  Date of Last Modification.
+#    09.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
+#  SIMPLE MR WORKFLOW EXECUTABLE MODULE
 #
 #  Command-line:
-#     ccp4-python -m pycofe.tasks.autowf_mr jobManager jobDir jobId
+#     ccp4-python -m pycofe.tasks.wflow_dplmr jobManager jobDir jobId
 #
-
 #  where:
 #    jobManager  is either SHELL, SGE or SCRIPT
 #    jobDir   is path to job directory, having:
@@ -21,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2023
+#  Copyright (C) Maria Fando, Eugene Krissinel,Andrey Lebedev  2023
 #
 # ============================================================================
 #
@@ -30,97 +30,51 @@
 import os
 
 #  application imports
-from . import migrate
+from   pycofe.tasks  import import_task
 from   pycofe.auto   import auto
-
 
 # ============================================================================
 # Make CCP4go driver
 
 # simulates ligand data structure that is normally coming from JS part
+
 class ligandCarrier():
     def __init__(self, source, smiles, code):
         self.source = source
         self.smiles = smiles
         self.code = code
 
+class WFlowDPLMR(import_task.Import):
 
-class WFlowDPLMR(migrate.Migrate):
-
-    # ------------------------------------------------------------------------
-
-    def smiles_file_path(self): return "smiles.smi"
+    import_dir = "uploads"
+    def importDir(self):  return self.import_dir       # import directory
 
     # ------------------------------------------------------------------------
 
     def importData(self):
-        # import uploaded data - DPL method, overriding parent
+        #  works with uploaded data from the top of the project
+
         super ( WFlowDPLMR,self ).import_all()
 
         # -------------------------------------------------------------------
-        # fetch data for the Migrate pipeline
-
-        self.hkl = []    # all reflections dataset (given and in map mtzs)
-        self.xyz = []  # coordinates
-        self.map = []    # maps/phases
-        self.lib = None  # ligand descriptions
-        self.unm = []
-        self.seq = []
+        # fetch data for CCP4go pipeline
 
         if "DataUnmerged" in self.outputDataBox.data:
             self.unm = self.outputDataBox.data["DataUnmerged"]
 
-        if "DataSequence" in self.outputDataBox.data:
-            self.seq = self.outputDataBox.data["DataSequence"]
-
         if "DataHKL" in self.outputDataBox.data:
             self.hkl = self.outputDataBox.data["DataHKL"]
 
-
-        # if len(self.unm)<1:
-        #     hasI = False
-        #     ids = None
-        #     for dd in self.hkl:
-        #         if dd.hasIntensities():
-        #             hasI = True
-        #             ids = dd
-        #     if hasI:
-        #         self.hkl = [ids]
-        #     else:
-        #         self.putMessage("<h3>Dimple Workflow requires intensities present in the diffraction data; terminating</h3>")
-        #         self.generic_parser_summary["WFlowDPLMR"] = {
-        #             "summary_line" : "no intensities in the data"
-        #         }
-        #         self.have_results = False
-        #         self.success ( self.have_results )
-        #         return False
-        # else:
-        #     self.putMessage(
-        #         "<h3>Dimple Workflow requires merged diffraction data; terminating</h3>")
-        #     self.generic_parser_summary["WFlowDPLMR"] = {
-        #         "summary_line": "merged data required"
-        #     }
-        #     self.have_results = False
-        #     self.success(self.have_results)
-        #     return False
-
-        if len(self.unm):
-            self.putMessage(
-                "<h3>Dimple Workflow requires merged diffraction data; terminating</h3>")
-            self.generic_parser_summary["WFlowDPLMR"] = {
-                "summary_line": "merged data required"
-            }
-            self.have_results = False
-            self.success ( self.have_results )
-            return False
+        # if "DataSequence" in self.outputDataBox.data:
+        #     self.seq = self.outputDataBox.data["DataSequence"]
 
         if "DataXYZ" in self.outputDataBox.data:
-            self.xyz = self.outputDataBox.data["DataXYZ"][0]
-
+            self.xyz = self.outputDataBox.data["DataXYZ"]
         if "DataLibrary" in self.outputDataBox.data:
             self.lib = self.outputDataBox.data["DataLibrary"][0]
-        elif "DataLigand" in self.outputDataBox.data:
-            self.lib = self.outputDataBox.data["DataLigand"][0]
+
+        if "DataLigand" in self.outputDataBox.data:
+            self.lig = self.outputDataBox.data["DataLigand"]
 
         self.ligdesc = []
         ldesc = getattr ( self.task,"input_ligands",[] )
@@ -128,25 +82,48 @@ class WFlowDPLMR(migrate.Migrate):
             if ldesc[i].source!='none':
                 self.ligdesc.append ( ldesc[i] )
 
-        return True
+        # checking whether ligand codes were provided
+        for i in range(len(self.ligdesc)):
+            code = self.ligdesc[i].code.strip().upper()
+            if (not code) or (code in self.ligand_exclude_list):
+                self.ligdesc[i].code = self.get_ligand_code([])
 
+        return
+
+
+    def prepareData(self):
+        #  works with imported data from the project
+
+        if self.input_data.data.hkldata[0]._type=="DataUnmerged":
+            self.unm = self.input_data.data.hkldata
+        else:
+            self.hkl = self.input_data.data.hkldata
+
+        if hasattr(self.input_data.data,"seq"):  # optional data parameter
+            self.seq = self.input_data.data.seq
+
+
+        if hasattr(self.input_data.data,"xyz"):  # optional data parameter
+            self.xyz = self.input_data.data.xyz
+
+        if hasattr(self.input_data.data,"ligand"):  # optional data parameter
+            self.lig = self.input_data.data.ligand
+
+        return
+
+
+    # ------------------------------------------------------------------------
 
     def run(self):
 
+        self.unm = []  # unmerged dataset
+        self.hkl = []  # selected merged dataset
+        self.seq = []  # list of sequence objects
+        self.xyz = []  # coordinates (model/apo)
+        self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
-        self.lig = []
         self.lib = None
-        self.have_results = False
 
-        importSuccess = self.importData()
-        if not importSuccess:
-            return # all output and registrations already done in the upstream code
-
-        # successfullDataCheck =  self.checkData()
-        # if not successfullDataCheck:
-        #     return # all preparations already done in the upstream code
-
-        (revisionSerialNo, revision) = self.makeStructures()
 
         summary_line = ""
         ilist = []
@@ -156,15 +133,15 @@ class WFlowDPLMR(migrate.Migrate):
             ligand = self.makeClass(self.lib)
             self.lig.append(ligand)
 
-        # checking whether ligand codes were provided
-        for i in range(len(self.ligdesc)):
-            code = self.ligdesc[i].code.strip().upper()
-            if (not code) or (code in self.ligand_exclude_list):
-                exclude_list = []
-                ligands = revision.Ligands
-                for j in range(len(ligands)):
-                    exclude_list.append(ligands[j]["code"])
-                self.ligdesc[i].code = self.get_ligand_code(exclude_list)
+        fileDir = self.outputDir()
+        if hasattr(self.input_data.data,"hkldata"):
+            fileDir = self.inputDir()
+            self.prepareData()  #  pre-imported data provided
+            summary_line = "received "
+        else:
+            self.importData()   #  data was uploaded
+            summary_line = "imported "
+            self.putMessage ( "&nbsp;" )
 
         if self.unm:
             ilist.append ( "Unmerged" )
@@ -172,14 +149,15 @@ class WFlowDPLMR(migrate.Migrate):
             ilist.append ( "HKL (" + str(len(self.hkl)) + ")" )
         if len(self.seq)>0:
             ilist.append ( "Sequences (" + str(len(self.seq)) + ")" )
-        if self.xyz:
-            ilist.append ( "XYZ (1)" )
+        if len(self.xyz)>0:
+            ilist.append ( "XYZ (" + str(len(self.xyz)) + ")" )
         nligs = len(self.lig) + len(self.ligdesc)
         if nligs>0:
             ilist.append ( "Ligands (" + str(nligs) + ")" )
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
 
+        # self.flush()
         self.putMessage("<h3>Starting Automatic Refinement and Ligand Fitting Workflow</h3>")
         if nligs>0:
             self.putMessage("<i>%d ligand(s) supplied, Workflow will try to fit it</i>" % nligs)
@@ -190,7 +168,6 @@ class WFlowDPLMR(migrate.Migrate):
         self.have_results = False
         if auto.makeNextTask ( self, {
             "unm": self.unm,
-            "revision" : revision,
              "hkl": self.hkl,
              "seq": self.seq,
              "xyz": self.xyz,
