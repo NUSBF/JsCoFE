@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.10.23    <--  Date of Last Modification.
+#    09.11.23    <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -143,22 +143,13 @@ class SliceNDice(basic.TaskDriver):
                         lowest_rfree=results['dice'][split]['final_r_free']
                         best_split=split
 
-                r_free = float(results["dice"][best_split]["final_r_free"])
-                r_fact = float(results["dice"][best_split]["final_r_fact"])
-                llg = float(results["dice"][best_split]["phaser_llg"])
-                tfz = float(results["dice"][best_split]["phaser_tfz"])
-                splitId = best_split.split()[-1]
+                r_free     = float(results["dice"][best_split]["final_r_free"])
+                r_fact     = float(results["dice"][best_split]["final_r_fact"])
+                llg        = float(results["dice"][best_split]["phaser_llg"])
+                tfz        = float(results["dice"][best_split]["phaser_tfz"])
+                splitId    = best_split.split()[-1]
                 refmac_pdb = results["dice"][best_split]["xyzout"]
                 refmac_mtz = results["dice"][best_split]["hklout"]
-
-            # dirName    = os.path.join ( "slicendice_0","output" )
-            # outFiles   = [f for f in os.listdir(dirName)]
-            # for fname in outFiles:
-            #     fpath = os.path.join ( dirName,fname )
-            #     if fname.endswith(".pdb"):
-            #         refmac_pdb = fpath
-            #     elif fname.endswith(".mtz"):
-            #         refmac_mtz = fpath
 
             if not refmac_pdb or not refmac_mtz:
                 self.putTitle ( "No solution generated" )
