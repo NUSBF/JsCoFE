@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.11.23   <--  Date of Last Modification.
+ *    09.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -57,7 +57,7 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   // console.log ( '  l=' + branch_task_list.length );
 
   this.dlg_width  = window.innerWidth;
-  this.dlg_width  = Math.min ( Math.max(700,4*this.dlg_width/9),6*this.dlg_width/8 );
+  this.dlg_width  = Math.min ( Math.max(740,4*this.dlg_width/9),6*this.dlg_width/8 );
   this.dlg_height = 6*window.innerHeight/8;
 
   this.listAtoZ     = [];
@@ -200,7 +200,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   //if ((!__local_service) && (task_obj.nc_type=='client'))
   //  return null;
 
-  if (task_obj.state==job_code.retired)
+  if ((!task_obj) || (task_obj.state==job_code.retired))
     return null;
 
   var avail_key = task_obj.isTaskAvailable();
@@ -666,22 +666,24 @@ var row      = 0;
     var cnt = 0;
     var r   = 0;
     for (var n=0;n<task_list.length;n++)
-      if (typeof task_list[n] === 'string' || task_list[n] instanceof String) {
-        section.grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
-        section.grid.setLabel ( '<hr/>',r,0,1,1 );
-        var grid1 = section.grid.setGrid ( '',r++,1,1,2 );
-        grid1.setLabel ( '&nbsp;' + task_list[n] + '&nbsp;',0,0,1,1 )
-             .setFontItalic(true).setFontBold(true).setNoWrap();
-        grid1.setLabel ( '<hr/>',0,1,1,1 );
-        grid1.setCellSize ( '10%','8px',0,0 );
-        grid1.setCellSize ( '90%','8px',0,1 );
-      } else  {
-        var btn = this.setTask ( task_list[n],section.grid,r++,true );
-        if (btn)  {
-          if (btn.dataSummary.status>0)
-            cnt++;
-          if (addToAtoZ)
-            this.listAtoZ.push ( task_list[n] );
+      if (task_list[n])  {
+        if (typeof task_list[n] === 'string' || task_list[n] instanceof String) {
+          section.grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
+          section.grid.setLabel ( '<hr/>',r,0,1,1 );
+          var grid1 = section.grid.setGrid ( '',r++,1,1,2 );
+          grid1.setLabel ( '&nbsp;' + task_list[n] + '&nbsp;',0,0,1,1 )
+              .setFontItalic(true).setFontBold(true).setNoWrap();
+          grid1.setLabel ( '<hr/>',0,1,1,1 );
+          grid1.setCellSize ( '10%','8px',0,0 );
+          grid1.setCellSize ( '90%','8px',0,1 );
+        } else  {
+          var btn = this.setTask ( task_list[n],section.grid,r++,true );
+          if (btn)  {
+            if (btn.dataSummary.status>0)
+              cnt++;
+            if (addToAtoZ)
+              this.listAtoZ.push ( task_list[n] );
+          }
         }
       }
     section.setTitle ( title + ' <b>(' + cnt + ')</b>' );
@@ -721,8 +723,6 @@ var row      = 0;
     // */
 
     this.makeSection ( 'Tasks in Development',[
-      new TaskDimpleMR(),
-      
       // new TaskCootUtils    (),
       // ccp4go2_task,
       // new TaskStructurePrediction(),
@@ -748,32 +748,7 @@ var row      = 0;
   if (__cloud_storage)
     data_import_tasks.splice ( 3,0,new TaskCloudImport() );
 
-  /*
-  if (__cloud_storage)
-    var data_import_tasks = [
-      new TaskImport        (),
-      new TaskImportSeqCP   (),
-      new TaskImportPDB     (),
-      new TaskCloudImport   (),
-      new TaskFacilityImport()
-    ];
-  } else  {
-    var data_import_tasks = [
-      new TaskImport        (),
-      new TaskImportSeqCP   (),
-      new TaskImportPDB     (),
-      new TaskFacilityImport()
-    ];
-  }
-  */
-
   this.makeSection ( 'Data Import',data_import_tasks,true );
-  /*
-  this.makeSection ( 'Data Import',data_import_tasks.concat([
-    'Utilities',
-    new TaskXyz2Revision()
-  ]),true);
-  */
 
   this.makeSection ( 'Structure Prediction',[
     new TaskStructurePrediction()
@@ -804,6 +779,8 @@ var row      = 0;
   ],true);
 
   this.makeSection ( 'Automated Molecular Replacement',[
+    'High homology MR for ligand screening',
+    new TaskDimpleMR  (),
     'Conventional Auto-MR',
     new TaskMorda     (),
     new TaskMrBump    (),
@@ -914,6 +891,10 @@ var row      = 0;
     new TaskRampage   ()
   ],true);
 
+  let gemmi_task = null;
+  if (__local_setup)
+    gemmi_task = new TaskGemmi();
+
   this.makeSection ( 'Toolbox',[
     'Reflection data tools',
     new TaskAuspex    (),
@@ -924,7 +905,7 @@ var row      = 0;
     new TaskOmitMap   (),
     'Coordinate data tools',
     new TaskXyzUtils  (),
-    new TaskGemmi     (),
+    gemmi_task,
     new TaskTextEditor(),
     'Alignment and comparison tools',
     new TaskGesamt    (),
@@ -932,7 +913,7 @@ var row      = 0;
     new TaskSeqAlign  (),
     new TaskSymMatch  ()
   ],true);
-
+  __local_setup
   if (navail==1)
     section0.open();
   else if (section1)

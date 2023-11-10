@@ -21,22 +21,29 @@ from   pycofe.auto   import  auto_api
 from   pycofe.auto   import  auto_tasks
 import traceback
 from   pycofe.etc    import  citations
+from   pycofe.varut  import  jsonut
 
 
 # ============================================================================
 
 # Workflow context variables
 
-class Variables:
+# class Variables:
+#     def __init__(self):
+#         return
+#     def from_dict ( self,dict ):
+#         for key in dict:
+#             self.key = dict[key]
+#         return
+#     def to_dict ( self ):
+#         return self.__dict__
+#     def set_value ( self,vname,value ):
+
+class Variables(jsonut.jObject):
     def __init__(self):
         return
-    def from_dict ( self,dict ):
-        for key in dict:
-            self.key = dict[key]
-        return
-    def to_dict ( self ):
-        return self.__dict__
-    
+
+
 # Main function
 
 def nextTask ( body,data,log=None ):
@@ -173,19 +180,33 @@ def nextTask ( body,data,log=None ):
                 aliases    = {}
                 tdata      = {}  # specific task data from context
                 use_suggested_parameters = False
-                for line in script:
-                    words = line.split()
-                    if len(words)>0 and words[0]==nextRunName:
+                for lno in range(len(script)):
+                    line   = script[lno]
+                    words  = line.split()
+                    nwords = len(words)
+                    if nwords>0 and words[0]==nextRunName:
+                        w0u = words[0].upper()
                         w1u = words[1].upper()
-                        if len(words)==4:
+                        if nwords==4:
                             if w1u=="PARAMETER":
                                 parameters[words[2]] = words[3]
                             elif w1u=="ALIAS": 
                                 aliases[words[2]] = words[3]
                             elif w1u=="DATA": 
                                 tdata[words[2]] = words[3]
-                        if len(words)==2 and words[1]=="USE_SUGGESTED_PARAMETERS":
+                        elif nwords==2 and w1u=="USE_SUGGESTED_PARAMETERS":
                             use_suggested_parameters = True
+                        elif nwords>1 and w0u=="LET":
+                            expression = "".join(words[1:])
+                            eqi = expression.index('=')
+                            if eqi<=0:
+                                body.stderrln   ( " *** error in LET statement in workflow line " + str(lno) )
+                                body.putMessage ( "<h3><i>Workflow error</i></h3><i>See error log</i>"       )
+                                return
+                            vname = expression[:eqi]
+                            if "." in vname:
+                                vname = vname.split('.')[1]
+                            w.set_field ( vname,eval(expression[eqi+1:]) )
 
                 # auto_api.log ( " >>> parameters " + str(parameters) )
                 # auto_api.log ( " >>> aliases    " + str(aliases)    )
