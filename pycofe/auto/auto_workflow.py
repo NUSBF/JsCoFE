@@ -21,6 +21,7 @@ from   pycofe.auto   import  auto_api
 from   pycofe.auto   import  auto_tasks
 import traceback
 from   pycofe.etc    import  citations
+from   pycofe.etc.py_expression_eval import Parser
 from   pycofe.varut  import  jsonut
 
 
@@ -106,7 +107,7 @@ def nextTask ( body,data,log=None ):
                             else:
                                 wdata[d].append ( json.loads ( obj.to_JSON() ) )
 
-            # update scores
+            # update scores and put them in variables 
             scores = auto_api.getContext ( "scores" )
             if not scores:
                 scores = {}
@@ -114,6 +115,8 @@ def nextTask ( body,data,log=None ):
                 for key in data["scores"]:
                     scores[key] = data["scores"][key]
                 auto_api.addContext ( "scores",scores )
+            for key in scores:
+                w.set_field ( key,scores[key] )
 
             # update suggestions
             suggestedParameters = auto_api.getContext ( "suggestedParameters" )
@@ -204,9 +207,8 @@ def nextTask ( body,data,log=None ):
                                 body.putMessage ( "<h3><i>Workflow error</i></h3><i>See error log</i>"       )
                                 return
                             vname = expression[:eqi]
-                            if "." in vname:
-                                vname = vname.split('.')[1]
-                            w.set_field ( vname,eval(expression[eqi+1:]) )
+                            value = eval.parser.parse(expression[eqi+1:]).evaluate(w.to_dict())
+                            w.set_field ( vname,value )
 
                 # auto_api.log ( " >>> parameters " + str(parameters) )
                 # auto_api.log ( " >>> aliases    " + str(aliases)    )
@@ -253,8 +255,8 @@ def nextTask ( body,data,log=None ):
 
     except Exception as inst:
         body.stderrln ( str(type(inst)))  # the exception instance
-        body.stderrln ( str(inst.args))  # arguments stored in .args
-        body.stderrln ( str(inst))  # __str__ allows args to be printed directly,
+        body.stderrln ( str(inst.args))   # arguments stored in .args
+        body.stderrln ( str(inst))        # __str__ allows args to be printed directly,
         tb = traceback.format_exc()
         body.stderrln ( str(tb))
         body.putMessage ( "<h3><i>automatic workflow excepted</i></h3>" )
