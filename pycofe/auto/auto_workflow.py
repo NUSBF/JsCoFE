@@ -17,8 +17,8 @@
 import json
 #from   pycofe.varut  import jsonut
 
-from   pycofe.auto   import  auto_api
-from   pycofe.auto   import  auto_tasks
+from   pycofe.auto   import  auto_api2
+from   pycofe.auto   import  auto_tasks2
 import traceback
 from   pycofe.etc    import  citations
 from   pycofe.etc.py_expression_eval import Parser
@@ -76,10 +76,10 @@ def nextTask ( body,data,log=None ):
                     data[key].citations = body.citation_list
 
             if log:
-                auto_api.setLog ( log )
+                auto_api2.setLog ( log )
             else:
-                auto_api.setLog ( body.file_stdout )
-            auto_api.initAutoMeta()
+                auto_api2.setLog ( body.file_stdout )
+            auto_api2.initAutoMeta()
 
             # auto_api.log ( " --- " + str(data["data"]["ligdesc"]) )
 
@@ -87,23 +87,20 @@ def nextTask ( body,data,log=None ):
             w = {}
 
             # put data in context
-            wdata = auto_api.getContext_dict ( "input_data" )
+            wdata = auto_api2.getContext ( "input_data" )
             if not wdata:
                 wdata = {
                     "variables" : w
                 }
-            elif "variables" in wdata:
-                if type(wdata["variables"])==dict:
-                    w = wdata["variables"]
-                else:
-                    w = wdata["variables"].to_dict()
+            else:
+                w = wdata["variables"]
 
             if "data" in data:
                 ddata = data["data"]
                 for d in ddata:
-                    # auto_api.log ( " --- 1. " + d )
+                    # auto_api2.log ( " --- 1. " + d )
                     if len(ddata[d])>0 and d!="revision":
-                        # auto_api.log ( " --- 2. " + d )
+                        # auto_api2.log ( " --- 2. " + d )
                         if not d in wdata:
                             wdata[d] = []
                         for obj in ddata[d]:
@@ -113,18 +110,18 @@ def nextTask ( body,data,log=None ):
                                 wdata[d].append ( json.loads ( obj.to_JSON() ) )
 
             # update scores and put them in variables 
-            scores = auto_api.getContext_dict ( "scores" )
+            scores = auto_api2.getContext ( "scores" )
             if not scores:
                 scores = {}
             if "scores" in data:
                 for key in data["scores"]:
                     scores[key] = data["scores"][key]
-                auto_api.addContext ( "scores",scores )
+                auto_api2.addContext ( "scores",scores )
             for key in scores:
                 w[key] = scores[key]
 
             # update suggestions
-            suggestedParameters = auto_api.getContext_dict ( "suggestedParameters" )
+            suggestedParameters = auto_api2.getContext ( "suggestedParameters" )
             w["suggested"] = 0
             if not suggestedParameters:
                 suggestedParameters = {}
@@ -132,7 +129,7 @@ def nextTask ( body,data,log=None ):
                 for key in data["suggestedParameters"]:
                     suggestedParameters[key] = data["suggestedParameters"][key]
                     w["suggested"] = w["suggested"] + 1
-                auto_api.addContext ( "suggestedParameters",suggestedParameters )
+                auto_api2.addContext ( "suggestedParameters",suggestedParameters )
 
             # make comment-less copy of the script
             script = []
@@ -156,7 +153,7 @@ def nextTask ( body,data,log=None ):
             repeat_task   = False
             parse_error   = ""
 
-            auto_api.log ( " --- " + str(crTask.script_pointer) )
+            auto_api2.log ( " --- " + str(crTask.script_pointer) )
 
             if lno<=0:
                 # scroll script to the first RUN NAME
@@ -211,7 +208,15 @@ def nextTask ( body,data,log=None ):
                             if nwords<3:
                                 parse_error = perr
                             else:
-                                parameters[words[1]] = words[2]
+                                p = " ".join(words[2:]).strip()
+                                if (p.startswith('"') and p.endswith('"')) or\
+                                   (p.startswith("'") and p.endswith("'")):
+                                    parameters[words[1]] = p[1:len(p)-1]
+                                else:
+                                    try:
+                                        parameters[words[1]] = eval_parser.parse(p).evaluate(w)
+                                    except:
+                                        parse_error = perr
                         elif w0u=="ALIAS": 
                             if nwords<3:
                                 parse_error = perr
@@ -268,8 +273,8 @@ def nextTask ( body,data,log=None ):
 
             crTask.script_end_pointer = lno
 
-            auto_api.log ( " --- " + str(crTask.script_end_pointer) )
-            auto_api.log ( " --- " + str(w) )
+            auto_api2.log ( " --- " + str(crTask.script_end_pointer) )
+            auto_api2.log ( " --- " + str(w) )
 
             if parse_error=="end":
                 body.putMessage ( "<h3>Workflow finished</h3>" )
@@ -291,43 +296,43 @@ def nextTask ( body,data,log=None ):
 
                 # form new task
                 if nextTaskType=="TaskMakeLigand":
-                    auto_tasks.make_ligand ( nextRunName, wdata["ligdesc"][0], 
-                                             wdata["revision"] if "revision" in wdata else None,
-                                             crTask.autoRunName )
+                    auto_tasks2.make_ligand ( nextRunName, wdata["ligdesc"][0], 
+                                              wdata["revision"] if "revision" in wdata else None,
+                                              crTask.autoRunName )
                 else:
-                    auto_api.addTask ( nextRunName,nextTaskType,crTask.autoRunName )
+                    auto_api2.addTask ( nextRunName,nextTaskType,crTask.autoRunName )
 
                 # add task data, revision from the previous task only
                 if "data" in data:
                     cdata = data["data"]
                     if "revision" in cdata and len(cdata["revision"])>0:
-                        auto_api.addTaskData ( nextRunName,
+                        auto_api2.addTaskData ( nextRunName,
                             aliases["revision"] if "revision" in aliases else "revision",
                             cdata["revision"] )
 
                 for dtype in wdata:
                     if dtype in ["unmerged","hkl","xyz","seq","ligand","lib"] and\
                                 len(wdata[dtype])>0:
-                        auto_api.addTaskData ( nextRunName,
+                        auto_api2.addTaskData ( nextRunName,
                             aliases[dtype] if dtype in aliases else dtype,
                             wdata[dtype] )
 
                 for dtype in tdata:
-                    auto_api.addTaskData ( nextRunName,dtype,wdata[tdata[dtype]] )
+                    auto_api2.addTaskData ( nextRunName,dtype,wdata[tdata[dtype]] )
 
                 # add suggested task parameters
                 if nextTaskType in suggestedParameters and use_suggested_parameters:
                     for key in suggestedParameters[nextTaskType]:
-                        auto_api.addTaskParameter ( nextRunName,key,suggestedParameters[nextTaskType][key] )
+                        auto_api2.addTaskParameter ( nextRunName,key,suggestedParameters[nextTaskType][key] )
 
                 # add specified task parameters
                 for p in parameters:
-                    auto_api.addTaskParameter ( nextRunName,p,parameters[p] )
+                    auto_api2.addTaskParameter ( nextRunName,p,parameters[p] )
 
                 wdata["variables"] = w
-                auto_api.addContext ( "input_data",wdata )
+                auto_api2.addContext ( "input_data",wdata )
 
-                auto_api.writeAutoMeta()
+                auto_api2.writeAutoMeta()
                 return True
 
             return False
@@ -602,7 +607,7 @@ DATA LIGAND
 @REMOVE_WATERS 
     IFDATA    ligand
     ALIAS     revision   istruct
-    PARAMETER SOLLIG_SEL W
+    PARAMETER SOLLIG_SEL "W"
     RUN       TaskXyzUtils
 
 @FIT_LIGAND    
