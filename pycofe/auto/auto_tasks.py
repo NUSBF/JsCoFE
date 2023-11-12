@@ -83,9 +83,9 @@ def asu ( name,parentName ):
 def editrevision ( name, revision, parentName ):
     seq = auto_api.getContext("seq")
     if seq:
-        auto_api.addTask     ( name,"TaskEditRevision", parentName )
-        auto_api.addTaskData ( name, "seq"            , seq        )
-        auto_api.addTaskData ( name, "revision"       , revision   )
+        auto_api.addTask     ( name,"TaskEditRevision",parentName )
+        auto_api.addTaskData ( name, "seq", seq)
+        auto_api.addTaskData(name, "revision", revision)
     return
 
 def dimple ( name,revision,parentName ):
@@ -96,34 +96,6 @@ def dimple ( name,revision,parentName ):
     auto_api.addTaskParameter ( name, "MRTHRESHOLD", "0.4"     )
     auto_api.addTaskParameter ( name, "MRRESO"     , "3.25"    )
     auto_api.addTaskParameter ( name, "MRPROG"     , "phaser"  )
-    return
-
-def dimplemr ( name,parentName ):
-    hkl = auto_api.getContext ( "hkl" )
-    xyz = auto_api.getContext ( "xyz" )
-    try:
-        lig=auto_api.getContext ( "lig" )
-    except:
-        pass
-
-    if hkl and xyz:
-        auto_api.addTask     ( name,"TaskDimpleMR",parentName )
-        auto_api.addTaskData ( name, "hkl", hkl)
-        auto_api.addTaskData ( name, "xyz", xyz)
-        if lig:
-            auto_api.addTaskData ( name, "lig", lig)
-   
-    return
-
-def store_dplmr ( unm,hkl,lig,ligdesc ):
-    if len(unm)>0:
-        auto_api.addContext  ( "unm",unm[0] )
-    if len(hkl)>0:
-        auto_api.addContext  ( "hkl",hkl[0] )
-    if len(lig)>0:
-        auto_api.addContext  ( "lig",lig[0] )
-    if ligdesc!=None and len(ligdesc)>0:
-        auto_api.addContext  ( "ligdesc",ligdesc[0] )
     return
 
 def buccaneer ( name,revision,parentName ):
@@ -159,19 +131,12 @@ def xyzWaters ( name,revision,parentName ):
 
 
 def make_ligand ( name, ligdesc, revision, parentName ):
-    auto_api.addTask          ( name,"TaskMakeLigand",parentName     )
-    if revision:
-        auto_api.addTaskData  ( name,"revision"      ,revision       )
-    if type(ligdesc) == dict:
-        auto_api.addTaskParameter ( name,"SOURCE_SEL"    ,ligdesc["source"] )
-        auto_api.addTaskParameter ( name,"SMILES"        ,ligdesc["smiles"] )
-        auto_api.addTaskParameter ( name,"CODE"          ,ligdesc["code"]   )
-        auto_api.addTaskParameter ( name,"CODE3"         ,ligdesc["code"]   )
-    else:
-        auto_api.addTaskParameter ( name,"SOURCE_SEL"    ,ligdesc.source )
-        auto_api.addTaskParameter ( name,"SMILES"        ,ligdesc.smiles )
-        auto_api.addTaskParameter ( name,"CODE"          ,ligdesc.code   )
-        auto_api.addTaskParameter ( name,"CODE3"         ,ligdesc.code   )
+    auto_api.addTask          ( name,"TaskMakeLigand",parentName )
+    auto_api.addTaskData      ( name, "revision", revision)
+    auto_api.addTaskParameter ( name,"SOURCE_SEL",ligdesc.source )
+    auto_api.addTaskParameter ( name,"SMILES"    ,ligdesc.smiles )
+    auto_api.addTaskParameter ( name,"CODE"      ,ligdesc.code   )
+    auto_api.addTaskParameter ( name,"CODE3"     ,ligdesc.code   )
     return
 
 

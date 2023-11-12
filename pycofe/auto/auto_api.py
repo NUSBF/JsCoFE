@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    06.11.23   <--  Date of Last Modification.
+#    04.05.21   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  AUTOMATIC WORKFLOW FRAMEWORK API
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021-2023
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev 2021
 #
 # ============================================================================
 #
@@ -50,9 +50,9 @@ def initAutoMeta():
     except:
         auto_meta.context = None
     if not auto_meta.context:
-        auto_meta.context              = jsonut.jObject()
-        auto_meta.context.custom       = jsonut.jObject()
-        auto_meta.context.tasks        = jsonut.jObject()
+        auto_meta.context = jsonut.jObject()
+        auto_meta.context.custom = jsonut.jObject()
+        auto_meta.context.tasks  = jsonut.jObject()
         auto_meta.context.job_register = jsonut.jObject()
     return
 
@@ -69,7 +69,7 @@ def addTask ( taskName,taskClassName,parentName ):
     task.parentName = parentName
     auto_meta.set_field ( taskName,task )
     log('calling addTask: "%s", "%s", "%s"' % (taskName,taskClassName,parentName))
-    return task
+    return
 
 def noteTask ( taskName,notedName ):
     task = auto_meta.get_field ( taskName )
@@ -132,26 +132,29 @@ def addTaskField ( taskName,fieldName,fieldValue ):
 
 def addContext ( contextName,context ):
     global auto_meta
-    log('calling addContext: "%s", "%s"' % (contextName, context))
-    # auto_meta.context.custom.set_field ( contextName,json.dumps(context) )
     auto_meta.context.custom.set_field ( contextName,context )
+    log('calling addContext: "%s", "%s"' % (contextName, context))
     return
 
 def getContext ( contextName ):
     global auto_meta
     log('calling getContext: "%s"' % (contextName))
-    field = auto_meta.context.custom.get_field ( contextName )
-    # if field:
-    #     field = json.loads(field)
-    return field
+    return auto_meta.context.custom.get_field ( contextName )
 
-def getContext_dict ( contextName ):
-    global auto_meta
-    log('calling getContext: "%s"' % (contextName))
-    field = auto_meta.context.custom.get_field ( contextName )
-    if field:
-        field = field.to_dict()
-    return field
+# def loadContext():
+#     global auto_meta
+#     try:
+#         if os.path.isfile(auto_context_fname()):
+#             auto_meta.context = jsonut.readjObject ( auto_context_fname() )
+#         else:
+#             auto_meta.context = None
+#     except:
+#         auto_meta.context = None
+#     if not auto_meta.context:
+#         auto_meta.context = jsonut.jObject()
+#         auto_meta.context.custom = jsonut.jObject()
+#         auto_meta.context.job_register = jsonut.jObject()
+#     return
 
 def writeAutoMeta():
     global auto_meta
