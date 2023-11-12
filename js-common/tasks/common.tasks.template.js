@@ -1770,12 +1770,12 @@ if (!dbx)  {
 
 
   TaskTemplate.prototype.collectFileSelects = function ( inputPanel )  {
-    var msg = '';  // Ok if stays empty
+  let msg = '';  // Ok if stays empty
 
-    for (var i=0;i<this.file_select.length;i++)  {
+    for (let i=0;i<this.file_select.length;i++)  {
       this.file_select[i].path = '';
       if (inputPanel.file_system=='local')  {
-        var files = inputPanel[this.file_select[i].inputId].getFiles();
+        let files = inputPanel[this.file_select[i].inputId].getFiles();
         if (files.length>0)
           this.file_select[i].path = files[0].name;
       } else

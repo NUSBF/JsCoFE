@@ -46,6 +46,8 @@ function TaskWorkflow()  {
   this.script          = [];  // script to execute
   this.script_pointer  = 0;   // current script line
 
+  this.input_ligands   = [{ 'source':'none', 'smiles':'', 'code':'' }];
+
   //this.ha_type = '';
 
   /*
@@ -266,7 +268,7 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
                             min         : 0,   // minimum acceptable number of data instances
                             max         : 1    // maximum acceptable number of data instances
                           };
-                          if (word0=='!DATA')
+                          if (word0=='!DATA')  // mandatory data item
                             dtype.min = 1;
                           let sec  = words.slice(1).join(' ').toUpperCase().split('TYPES');
                           let dsec = sec[0].split(' ').filter(Boolean);
@@ -295,7 +297,7 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
                                                 dtype.label   = 'Ligand library';
                                                 dtype.tooltip = 'Specify ligand to '+
                                                         'be fit in electron density.';
-                                                dtype.max     = this.input_ligands.length;
+                                                dtype.max     = 1; // this.input_ligands.length;
                                             break;
                               default : ;
                             }
