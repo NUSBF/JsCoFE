@@ -103,7 +103,6 @@ def dimplemr ( name,parentName ):
     xyz = auto_api.getContext ( "xyz" )
     try:
         lig=auto_api.getContext ( "lig" )
-        
     except:
         pass
 

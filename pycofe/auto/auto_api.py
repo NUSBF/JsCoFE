@@ -145,6 +145,14 @@ def getContext ( contextName ):
     #     field = json.loads(field)
     return field
 
+def getContext_dict ( contextName ):
+    global auto_meta
+    log('calling getContext: "%s"' % (contextName))
+    field = auto_meta.context.custom.get_field ( contextName )
+    if field:
+        field = field.to_dict()
+    return field
+
 def writeAutoMeta():
     global auto_meta
     if auto_meta:
