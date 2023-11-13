@@ -29,12 +29,10 @@ def refmacAfterRevision(driver, waitLong):
 
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
-    time.sleep(3)
+    time.sleep(2)
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
-
-
    
-    time.sleep(6)
+    time.sleep(2)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )

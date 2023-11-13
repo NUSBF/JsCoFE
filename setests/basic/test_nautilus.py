@@ -194,6 +194,7 @@ def refmacAfterRevision(driver, waitLong):
 
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
+    time.sleep(1)
 
 
     sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
