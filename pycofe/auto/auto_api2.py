@@ -73,8 +73,16 @@ def getContext ( contextName ):
 def addContext ( contextName,context ):
     global auto_meta
     log('calling addContext: "%s", "%s"' % (contextName, context))
-    # auto_meta.context.custom.set_field ( contextName,json.dumps(context) )
     auto_meta["context"]["custom"][contextName] = context
+    return
+
+def removeContext ( contextName ):
+    global auto_meta
+    log('calling removeContext: "%s"' % (contextName))
+    try:
+        del auto_meta["context"]["custom"][contextName]
+    except:
+        log('removeContext excepted: "%s"' % (contextName))
     return
 
 def addTask ( taskName,taskClassName,parentName ):
@@ -118,20 +126,44 @@ def addTaskParameter ( taskName,parameterName,parameterValue ):
         log('calling addTaskParameter: "%s", "%s", "%s"' % (taskName, parameterName, parameterValue))
     return
 
+def noteTask ( taskName ):
+    if taskName in auto_meta:
+        auto_meta["context"]["tasks"][taskName] = auto_meta[taskName]
+        log('calling noteTask: "%s"' % (taskName))
+        return True
+    else:
+        log('calling noteTask failed: "%s"' % (taskName))
+    return False
+
+def cloneTask ( clonedTaskName,taskName ):
+    global auto_meta
+    if taskName in auto_meta["context"]["tasks"]:
+        task = auto_meta["context"]["tasks"][taskName]
+        parameters = {}
+        for key in task["parameters"]:
+            parameters[key] = task["parameters"][key]
+        fields     = {}
+        for key in task["fields"]:
+            fields[key] = task["fields"][key]
+        auto_meta[clonedTaskName] = {
+            "_type"      : task["_type"],
+            "data"       : task["data"],  # data is not supposed to change in cloned task
+            "parameters" : parameters,
+            "fields"     : fields,
+            "parentName" : task["parentName"]
+        }
+        log('calling cloneTask: "%s", "%s"' % (clonedTaskName, taskName))
+        return True
+    else:
+        log ( "task " + taskName + " not found for cloning" )
+    return False
+
 
 """
 
 
 
 # ----------------------------------------------------------------------------
-
-def noteTask ( taskName,notedName ):
-    task = auto_meta.get_field ( taskName )
-    if task:
-        auto_meta.context.tasks.set_field ( notedName,task )
-        log('calling noteTask: "%s", "%s"' % (taskName, notedName))
-        return True
-    return False
 
 def cloneTask ( clonedTaskName,notedName ):
     global auto_meta

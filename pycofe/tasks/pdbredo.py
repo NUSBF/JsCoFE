@@ -41,10 +41,7 @@ from   zipfile import ZipFile
 
 #  application imports
 from .               import basic
-# from pycofe.dtypes   import dtype_template
 from pycofe.proc     import qualrep
-# from pycofe.proc     import PDBRedoAPIAuth
-# from pycofe.verdicts import verdict_refmac
 
 # ============================================================================
 # Make PDB-REDO driver

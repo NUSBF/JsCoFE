@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.11.23   <--  Date of Last Modification.
+ *    13.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -237,7 +237,8 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
 
   let allow_upload = (workflowDesc.script.toUpperCase().indexOf('ALLOW_UPLOAD')>=0);
 
-  for (let i=0;i<this.script.length;i++)  {
+  let done = false;
+  for (let i=0;(i<this.script.length) && (!done);i++)  {
     
     let line  = this.script[i].trim();
     this.script[i] = line;
@@ -344,7 +345,8 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
                               this.file_select.push ( fdesc );
                           }
                         break;
-        default : ;
+        case 'LET'      : done = true;  break;
+        default         : done = word0.startsWith('@');
       }
     
     }
