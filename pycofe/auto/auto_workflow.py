@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.11.23   <--  Date of Last Modification.
+#    13.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -47,6 +47,22 @@ from   pycofe.varut  import  jsonut
 #         for key in dict:
 #             self.key = dict[key]
 #         return
+
+
+def scrollToRunName ( script,runName ):
+    lno = 0
+    nextRunName = None
+    while lno<len(script) and not nextRunName:
+        words = script[lno].split()
+        if len(words)>0 and \
+                ( not runName and (words[0].startswith("@") or \
+                                   words[0].upper() in ["LET","REPEAT"]) or \
+                  runName==words[0]
+                ):
+            nextRunName = words[0]
+        else:
+            lno = lno + 1
+    return (lno,nextRunName)
 
 
 # Main function
@@ -150,21 +166,23 @@ def nextTask ( body,data,log=None ):
             aliases       = {}  # data aliasess
             tdata         = {}  # specific task data from context
             use_suggested_parameters = False
-            repeat_task   = False
+            repeat_task   = False  # no task repeat mode (default)
             parse_error   = ""
 
-            auto_api2.log ( " --- " + str(crTask.script_pointer) )
+            # auto_api2.log ( " --- " + str(crTask.script_pointer) )
+
+            branch_points = []
+            for line in script:
+                words = line.split()
+                if len(words)>2 and words[0].upper() in ["REPEAT","BRANCH"]:
+                    branch_points.append ( words[1] )
+            auto_api2.log ( " --- branch_points=" + str(branch_points) )
 
             if lno<=0:
                 # scroll script to the first RUN NAME
-                while lno<len(script) and not nextRunName:
-                    words = script[lno].split()
-                    if len(words)>0:
-                        if words[0].startswith("@"):
-                            nextRunName = words[0]
-                            if len(nextRunName)<2:
-                                parse_error = " *** LINE " + str(lno) + ": empty RUN NAMES are not allowed"
-                    lno = lno + 1
+                lno,nextRunName = scrollToRunName ( script,"" )
+                if nextRunName and len(nextRunName)<2:
+                    parse_error = " *** LINE " + str(lno) + ": empty RUN NAMES are not allowed"
 
             while lno<len(script) and not nextTaskType and not parse_error:
                 words  = script[lno].split()
@@ -222,7 +240,7 @@ def nextTask ( body,data,log=None ):
                                 parse_error = perr
                             else:
                                 aliases[words[1]] = words[2]
-                        elif w0u=="IDATA":
+                        elif w0u=="DATA":
                             if nwords<3:
                                 parse_error = perr
                             else:
@@ -242,26 +260,25 @@ def nextTask ( body,data,log=None ):
                                     try:
                                         value    = eval_parser.parse(expression[eqi+1:]).evaluate(w)
                                         w[vname] = value
+                                        auto_api2.log ( "LET '" + expression[eqi+1:] + "' = " + str(value) )
                                     except:
                                         parse_error = perr
                         elif w0u=="REPEAT":
                             if nwords<4 or not words[1].startswith("@") or words[2].upper()!="WHILE":
                                 parse_error = perr
                             else:
-                                repeat_task = False
+                                repeat_task = False  # end repeat task mode
                                 try:
                                     repeat_task = eval_parser.parse(" ".join(words[3:])).evaluate(w)
+                                    auto_api2.log ( "repeat evaluated: '" + " ".join(words[3:]) + "' as " + str(repeat_task) )
                                 except:
                                     parse_error = perr
                                 if repeat_task:
-                                    lno = 0
-                                    nextRunName = None
-                                    while lno<len(script) and not nextRunName:
-                                        ws = script[lno].split()
-                                        if len(ws)>0 and ws[0]==words[1]:
-                                            nextRunName = words[1]
-                                        else:
-                                            lno = lno + 1
+                                    # scroll script up
+                                    lno,nextRunName = scrollToRunName ( script,words[1] )
+                                    auto_api2.log ( " --- repeat pointer: " + str(lno) )
+                                else:
+                                    auto_api2.removeContext ( words[1] + "_rno" )
                         elif w0u=="RUN":
                             if nwords<2:
                                 parse_error = perr
@@ -273,8 +290,8 @@ def nextTask ( body,data,log=None ):
 
             crTask.script_end_pointer = lno
 
-            auto_api2.log ( " --- " + str(crTask.script_end_pointer) )
-            auto_api2.log ( " --- " + str(w) )
+            # auto_api2.log ( " --- end pointer: " + str(crTask.script_end_pointer) )
+            # auto_api2.log ( " --- " + str(w) )
 
             if parse_error=="end":
                 body.putMessage ( "<h3>Workflow finished</h3>" )
@@ -295,39 +312,55 @@ def nextTask ( body,data,log=None ):
                     return False
 
                 # form new task
-                if nextTaskType=="TaskMakeLigand":
-                    auto_tasks2.make_ligand ( nextRunName, wdata["ligdesc"][0], 
-                                              wdata["revision"] if "revision" in wdata else None,
-                                              crTask.autoRunName )
+                if repeat_task:
+                    # clone specified task
+                    repeat_no = auto_api2.getContext ( nextRunName + "_rno" )
+                    if not repeat_no:
+                        repeat_no = 1
+                    else:
+                        repeat_no = repeat_no + 1
+                    auto_api2.addContext ( nextRunName + "_rno",repeat_no )
+                    runName = nextRunName + "_" + str(repeat_no)
+                    auto_api2.cloneTask ( runName,nextRunName )
+
                 else:
-                    auto_api2.addTask ( nextRunName,nextTaskType,crTask.autoRunName )
+                    runName = nextRunName
+                    if nextTaskType=="TaskMakeLigand":
+                        auto_tasks2.make_ligand ( runName, wdata["ligdesc"][0], 
+                                                  wdata["revision"] if "revision" in wdata else None,
+                                                  crTask.autoRunName )
+                    else:
+                        auto_api2.addTask ( runName,nextTaskType,crTask.autoRunName )
 
-                # add task data, revision from the previous task only
-                if "data" in data:
-                    cdata = data["data"]
-                    if "revision" in cdata and len(cdata["revision"])>0:
-                        auto_api2.addTaskData ( nextRunName,
-                            aliases["revision"] if "revision" in aliases else "revision",
-                            cdata["revision"] )
+                        # add task data, revision from the previous task only
+                        if "data" in data:
+                            cdata = data["data"]
+                            if "revision" in cdata and len(cdata["revision"])>0:
+                                auto_api2.addTaskData ( runName,
+                                    aliases["revision"] if "revision" in aliases else "revision",
+                                    cdata["revision"] )
 
-                for dtype in wdata:
-                    if dtype in ["unmerged","hkl","xyz","seq","ligand","lib"] and\
-                                len(wdata[dtype])>0:
-                        auto_api2.addTaskData ( nextRunName,
-                            aliases[dtype] if dtype in aliases else dtype,
-                            wdata[dtype] )
+                        for dtype in wdata:
+                            if dtype in ["unmerged","hkl","xyz","seq","ligand","lib"] and\
+                                        len(wdata[dtype])>0:
+                                auto_api2.addTaskData ( runName,
+                                    aliases[dtype] if dtype in aliases else dtype,
+                                    wdata[dtype] )
 
-                for dtype in tdata:
-                    auto_api2.addTaskData ( nextRunName,dtype,wdata[tdata[dtype]] )
+                        for dtype in tdata:
+                            auto_api2.addTaskData ( runName,dtype,wdata[tdata[dtype]] )
+                    
+                    if runName in branch_points:
+                        auto_api2.noteTask ( runName )
 
                 # add suggested task parameters
                 if nextTaskType in suggestedParameters and use_suggested_parameters:
                     for key in suggestedParameters[nextTaskType]:
-                        auto_api2.addTaskParameter ( nextRunName,key,suggestedParameters[nextTaskType][key] )
+                        auto_api2.addTaskParameter ( runName,key,suggestedParameters[nextTaskType][key] )
 
                 # add specified task parameters
                 for p in parameters:
-                    auto_api2.addTaskParameter ( nextRunName,p,parameters[p] )
+                    auto_api2.addTaskParameter ( runName,p,parameters[p] )
 
                 wdata["variables"] = w
                 auto_api2.addContext ( "input_data",wdata )

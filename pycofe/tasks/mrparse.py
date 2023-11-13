@@ -28,15 +28,10 @@
 import os
 import sys
 import json
-# import shutil
 
 #  application imports
 from . import basic
-# from   pycofe.proc    import qualrep
 from   pycofe.varut   import rvapi_utils
-# from   pycofe.dtypes    import dtype_structure
-# from   pycofe.verdicts  import verdict_refmac
-# from   pycofe.auto      import auto
 
 
 # ============================================================================

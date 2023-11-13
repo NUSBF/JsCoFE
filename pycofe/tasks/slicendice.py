@@ -37,7 +37,6 @@ import json
 from . import basic
 from   pycofe.proc      import qualrep, xyzmeta
 from   pycofe.verdicts  import verdict_refmac
-# from   pycofe.auto      import template_afMR
 
 from   pycofe.auto   import auto
 

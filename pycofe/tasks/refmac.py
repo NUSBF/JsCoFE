@@ -564,6 +564,9 @@ class Refmac(basic.TaskDriver):
                             "scores" :  {
                                 "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
                                 "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                            },
+                            "suggestedParameters" : {
+                                "TaskRefmac" : suggestedParameters
                             }
                     }, log=self.file_stderr )
                         # summary_line += "workflow started"
