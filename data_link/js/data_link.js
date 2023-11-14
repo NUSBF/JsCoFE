@@ -8,9 +8,9 @@ const path = require('path');
 const logger = require('pino')();
 
 const { tools, status } = require('./tools.js');
+const config = require('./config.js');
 
 const SOURCES_DIR = path.join(__dirname, 'sources');
-const CATALOGS_DIR = path.join(__dirname, 'catalogs');;
 
 const DATA_SOURCES = [
   'pdbj',
@@ -22,9 +22,11 @@ class dataLink {
 
   constructor() {
     this.source = {};
-    for (let i in DATA_SOURCES) {
-      let source = new (require(path.join(SOURCES_DIR, DATA_SOURCES[i])));
-      this.source[source.name] = source;
+    for (let name of DATA_SOURCES) {
+      if (config.get('data_sources.' + name + '.enabled')) {
+        let source = new (require(path.join(SOURCES_DIR, name)));
+        this.source[source.name] = source;
+      }
     }
     this.catalog = {};
     this.loadLocalCatalogs();

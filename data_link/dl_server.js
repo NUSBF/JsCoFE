@@ -12,8 +12,7 @@ const app = express();
 
 const { tools, status } = require('./js/tools.js');
 const datalink = require('./js/data_link.js');
-
-const PORT = 8000;
+const config = require('./js/config.js');
 
 class server {
 
@@ -94,7 +93,7 @@ class server {
     this.jsonResponse(res, this.datalink.dataInUse(req.params.user, req.params.source, req.params.id, req.params.value));
   }
 
-  start(port) {
+  start(port = 8900, host = '') {
     app.use((req, res, next) => this.middleware(req, res, next));
 
     app.use(bodyparser.json());
@@ -130,7 +129,7 @@ class server {
       res.send(app._router.stack.map( r => r.route?.path ));
     });
 
-    app.listen(port, function(e) {
+    app.listen( port, host, function(e) {
       if (e) console.log('Error: ' +  e)
       console.log('Listening on Port', port);
     });
@@ -145,5 +144,8 @@ class server {
 
 }
 
+const PORT = config.get('server.port');
+const HOST = config.get('server.host');
+
 server = new server();
-server.start(PORT);
+server.start(PORT, HOST);
