@@ -531,6 +531,8 @@ class Refmac(basic.TaskDriver):
                     self.stderr ( " *** validation tools or molprobity failure" )
                     self.rvrow = rvrow0 + 4
 
+                suggestedParameters = {}
+
                 if meta:
                     verdict_meta = {
                         "data"   : { "resolution" : hkl.getHighResolution(raw=True) },
@@ -555,8 +557,10 @@ class Refmac(basic.TaskDriver):
                         self.task.suggestedParameters = suggestedParameters
                         self.putCloneJobButton ( "Clone job with suggested parameters",
                                                  self.report_page_id(),verdict_row+3,0 )
+                        
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework
+                    # self.stderrln ( " **** sp0=" + str(suggestedParameters) )
                     auto_workflow.nextTask ( self,{
                             "data" : {
                                 "revision"  : [revision]
