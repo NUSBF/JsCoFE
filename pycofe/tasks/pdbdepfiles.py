@@ -99,8 +99,10 @@ class PDBDepFiles(basic.TaskDriver):
             "b) Start new deposition session at " +\
             "<a href='https://deposit.wwpdb.org' style='color:blue;' target='_blank'>wwPDB " +\
             "Deposition Site</a></b> <i>(link opens in new tab/window)</i><p><b>" +\
-            "c) Follow instructions in the wwPDB deposition site and upload " +\
-            "the files downloaded when prompted.</b>"
+            "c) Follow instructions in the wwPDB deposition site and upload" +\
+            "the files downloaded when prompted.<p>" +\
+            "d) Consider archiving your Project</b> (find more information " +\
+            "<a href='../../../../../manuals/html-userguide/jscofe_archive.html' style='color:blue;' target='_blank'>here</a>)<p>"
         )
 
         if revision.deposition_pdb:
