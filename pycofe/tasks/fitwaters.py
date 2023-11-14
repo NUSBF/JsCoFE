@@ -460,7 +460,7 @@ class FitWaters(basic.TaskDriver):
 
         # this will go in the project tree job's line
         self.generic_parser_summary["fitwaters"] = {
-          "summary_line" : "N<sub>waters</sub>=" + str(nwaters)
+            "summary_line" : "N<sub>waters</sub>=" + str(nwaters)
         }
 
         # close execution logs and quit

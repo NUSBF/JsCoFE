@@ -144,7 +144,7 @@ def nextTask ( body,data,log=None ):
             if "suggestedParameters" in data:
                 for key in data["suggestedParameters"]:
                     suggestedParameters[key] = data["suggestedParameters"][key]
-                    w["suggested"] = w["suggested"] + 1
+                    w["suggested"] = w["suggested"] + len(data["suggestedParameters"][key])
                 auto_api2.addContext ( "suggestedParameters",suggestedParameters )
 
             # make comment-less copy of the script
@@ -312,6 +312,7 @@ def nextTask ( body,data,log=None ):
                     return False
 
                 # form new task
+                runName = nextRunName
                 if repeat_task:
                     # clone specified task
                     repeat_no = auto_api2.getContext ( nextRunName + "_rno" )
@@ -320,11 +321,13 @@ def nextTask ( body,data,log=None ):
                     else:
                         repeat_no = repeat_no + 1
                     auto_api2.addContext ( nextRunName + "_rno",repeat_no )
-                    runName = nextRunName + "_" + str(repeat_no)
-                    auto_api2.cloneTask ( runName,nextRunName )
+                    runName  = nextRunName + "_" + str(repeat_no)
+                    runName0 = nextRunName
+                    if repeat_no>1:
+                        runName0 = nextRunName + "_" + str(repeat_no-1)
+                    auto_api2.cloneTask ( runName,runName0 )
 
                 else:
-                    runName = nextRunName
                     if nextTaskType=="TaskMakeLigand":
                         auto_tasks2.make_ligand ( runName, wdata["ligdesc"][0], 
                                                   wdata["revision"] if "revision" in wdata else None,
@@ -350,8 +353,8 @@ def nextTask ( body,data,log=None ):
                         for dtype in tdata:
                             auto_api2.addTaskData ( runName,dtype,wdata[tdata[dtype]] )
                     
-                    if runName in branch_points:
-                        auto_api2.noteTask ( runName )
+                    # if runName in branch_points:
+                    #     auto_api2.noteTask ( runName )
 
                 # add suggested task parameters
                 if nextTaskType in suggestedParameters and use_suggested_parameters:
@@ -365,6 +368,7 @@ def nextTask ( body,data,log=None ):
                 wdata["variables"] = w
                 auto_api2.addContext ( "input_data",wdata )
 
+                auto_api2.noteTask ( runName )
                 auto_api2.writeAutoMeta()
                 return True
 
