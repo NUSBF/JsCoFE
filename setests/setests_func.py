@@ -819,7 +819,7 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort, task='0002'):
     time.sleep(1)
     # presing Close button
     clickByXpath(driver, "//button[contains(@style, 'images_png/close.png')]")
-    time.sleep(1)
+    time.sleep(3)
 
     return()
 
