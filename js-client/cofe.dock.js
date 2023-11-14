@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    26.12.22   <--  Date of Last Modification.
+ *    14.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Dock panel
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2022
+ *  (C) E. Krissinel, A. Lebedev 2020-2023
  *
  *  ==========================================================================
  *
@@ -51,7 +51,8 @@ function Dock ( parent,onClick_func,onRightClick_func,addTask_func )  {
 
   this.dock.setVisible ( false );  // in order to prevent blinking
 
-  (function(self){
+  var self = this;
+  // (function(self){
     self.sortable = new Sortable ( 26,24,
       function(itemId,tooltip,icon_uri){
         //alert ( itemId + ' selected' );
@@ -68,14 +69,14 @@ function Dock ( parent,onClick_func,onRightClick_func,addTask_func )  {
         self.saveDockData();
       }
     );
-  }(this));
+  // }(this));
 
   this.dock.addWidget ( this.sortable );
   this.sortable.setWidth_px ( 256 );
 
   this.addTask_func = addTask_func;
 
-  this.loadDockData();
+  // this.loadDockData();
 
   /*
   var contextMenu = new ContextMenu ( this.dock,null );
@@ -95,7 +96,8 @@ Dock.prototype.constructor = Dock;
 
 
 Dock.prototype.loadDockData = function()  {
-  (function(self){
+  var self = this;
+  // (function(self){
     window.setTimeout ( function(){
       serverRequest ( fe_reqtype.getDockData,{},'Task Dock',function(data){
         if (('_type' in data) && (data._type=='DockData'))  {
@@ -110,8 +112,8 @@ Dock.prototype.loadDockData = function()  {
         self.dock.setVisible ( data.opened );
       },function(){
       },'persist');
-    },1);
-  }(this));
+    },0);
+  // }(this));
 }
 
 

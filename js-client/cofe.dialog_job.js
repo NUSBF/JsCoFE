@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.10.23   <--  Date of Last Modification.
+ *    14.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1099,14 +1099,16 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
           dlg.collectTaskData ( true );
           dlg.requestServer   ( fe_reqtype.saveJobData,function(rdata){
             if (rdata.project_missing)  {
-              new MessageBox ( 'Project not found',
+              new MessageBoxF ( 'Project not found',
                   '<h3>Project "' + dlg.tree.projectData.desc.name +
                      '" is not found on server</h3>' +
                   'Project "' + dlg.tree.projectData.desc.name +
                      '" was shared with you, please check<br>' +
-                  'whether it was deleted by project owner.', 'msg_error'
+                  'whether it was deleted by project owner.',
+                  'Ok',function(){
+                      dlg.tree.emitSignal ( cofe_signals.makeProjectList,rdata );
+                  },false,'msg_error'
               );
-              dlg.tree.emitSignal ( cofe_signals.makeProjectList,rdata );
             }
           });
         }

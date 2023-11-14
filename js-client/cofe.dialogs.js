@@ -206,16 +206,19 @@ function MessageProxyError ( title )  {
 }
 
 function MessageProjectAccess ( title )  {
-  new MessageBox ( title,
-    '<h2>Project Access Denied</h2>' +
-    '<p>The Project is no longer available to you. Most probably, it was<br>' +
-    'unshared with you by the project owner. You may delete this<br>' +
-    'project from your <i>Project List</i> now.' +
-    '<p>If problem persists, please report to ' +
-    report_problem(
-      'CCP4 Cloud Report: D0004',
-      'Report code: D0004','' ) +
-    '.','msg_error' );
+  window.setTimeout ( function(){
+    new MessageBox ( title,
+      '<div style="width:350px;"><h2>Project Access Denied</h2>' +
+      '<p>The Project is no longer available to you. Most probably, it was ' +
+      'unshared with you by the project owner. You may delete this ' +
+      'project from your <i>Project List</i> now.' +
+      '<p>If you think that this message is incorrect, please report this ' +
+      'as a bug to ' +
+      report_problem(
+        'CCP4 Cloud Report: D0004',
+        'Report code: D0004','' ) +
+      '.</div>','msg_error' );
+  },0);
 }
 
 function MessageServerInactive()  {

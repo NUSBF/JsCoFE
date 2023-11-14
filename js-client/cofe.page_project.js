@@ -375,6 +375,7 @@ function ProjectPage ( sceneId )  {
     self.jobTree.readProjectData ( 'Project',true,-1,
       function(){
         if (self.onTreeLoaded(false,self.jobTree))  {
+          self.dock.loadDockData();
           // add button listeners
           self.add_btn.addOnClickListener ( function(){ self.addJob(); } );
           if (self.moveup_btn)
@@ -1085,7 +1086,7 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
           'in the toolbar. If problem persists, check your ' +
           'Internet connection.', 'msg_system' );
     } else
-      makeProjectListPage ( sceneId );
+      makeProjectListPage ( __current_page.sceneId );
     return false;
   }
 
@@ -1123,7 +1124,7 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
       self.reloadTree ( false,false,rdata );  // multiple = false?
     });
     job_tree.addSignalHandler ( cofe_signals.makeProjectList,function(rdata){
-      makeProjectListPage ( sceneId );
+      makeProjectListPage ( __current_page.sceneId );
     });
 
     if ((job_tree.root_nodes.length==1) &&
@@ -1197,6 +1198,10 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
       job_tree_1.multiple = self.jobTree.multiple;  // needed for tree creation
       job_tree_1.readProjectData ( 'Project',false,timestamp,
         function(){
+          if ('no_access' in job_tree_1)  {
+            makeProjectListPage ( __current_page.sceneId );
+            return;
+          }
           if (job_tree_1.projectData)  {
             job_tree_1.multiple = self.jobTree.multiple;
             if (self.onTreeLoaded(true,job_tree_1))  {
