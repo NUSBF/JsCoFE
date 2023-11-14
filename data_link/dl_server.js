@@ -10,6 +10,7 @@ const app = express();
 const { tools, status } = require('./js/tools.js');
 const datalink = require('./js/data_link.js');
 const config = require('./js/config.js');
+const log = require('./js/log.js');
 
 class server {
 
@@ -126,9 +127,12 @@ class server {
       res.send(app._router.stack.map( r => r.route?.path ));
     });
 
-    app.listen( port, host, function(e) {
-      if (e) console.log('Error: ' +  e)
-      console.log('Listening on Port', port);
+    app.listen( port, host, function(err) {
+      if (err) {
+        log.info(err)
+      } else {
+        log.info(`Data Link Server - Running on ${host}:${port}`);
+      }
     });
   }
 
