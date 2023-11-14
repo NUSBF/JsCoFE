@@ -1,7 +1,5 @@
 'use strict';
 
-const CATALOGS_DIR = 'catalogs';
-
 const fs = require('fs');
 const path = require('path');
 
@@ -9,6 +7,9 @@ const logger = require('pino')();
 const rsync = require('rsync2');
 
 const { tools, status } = require('./tools.js');
+const config = require('./config.js');
+
+const CATALOG_DIR = config.get('storage.catalog_dir');
 
 class dataSource {
 
@@ -18,7 +19,7 @@ class dataSource {
   has_catalog = true;
 
   constructor() {
-    this.catalog_file = path.join(CATALOGS_DIR, this.name + '.json');
+    this.catalog_file = path.join(CATALOG_DIR, this.name + '.json');
     this.catalog = null;
     this.catalog_size = 0;
     this.status = status.unavailable;
@@ -58,9 +59,9 @@ class dataSource {
     this.addCatalog(files);
     let json = JSON.stringify(files);
     try {
-      fs.mkdirSync(CATALOGS_DIR, { recursive: true });
+      fs.mkdirSync(CATALOG_DIR, { recursive: true });
     } catch (err) {
-      logger.info(`${this.name} - Unable to create ${CATALOGS_DIR} - ${err}`);
+      logger.info(`${this.name} - Unable to create ${CATALOG_DIR} - ${err}`);
     }
     let file = fs.writeFile(this.catalog_file, json, (err) => {
       if (err) {

@@ -5,8 +5,10 @@ const logger = require('pino')();
 const path = require('path');
 const https = require('https');
 
-const USER_DIR = path.join(__dirname, '..', 'users');
-const DATA_DIR = path.join(__dirname, '..', 'data');
+const config = require('./config.js');
+
+const USER_DIR = config.get('storage.user_dir');
+const DATA_DIR = config.get('storage.data_dir');
 
 const status = {
   completed: 'completed',
