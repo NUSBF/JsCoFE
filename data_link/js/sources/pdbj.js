@@ -6,6 +6,7 @@ const fs = require('fs');
 
 const dataSource = require('../data_source.js');
 const { tools } = require('../tools.js');
+const log = require('../log.js');
 
 const URL_JSON = 'https://xrda.pdbj.org/rest/public/entries/search'
 const URL_RSYNC = 'data.pdbjbk1.pdbj.org::rsync/xrda/';

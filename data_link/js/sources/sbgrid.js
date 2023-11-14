@@ -3,11 +3,11 @@
 'use strict';
 
 const fs = require('fs');
-const logger = require('pino')();
 const cheerio = require('cheerio');
 
 const dataSource = require('../data_source.js');
 const { tools } = require('../tools.js');
+const log = require('../log.js');
 
 const URL_CAT = 'https://data.sbgrid.org/data/';
 const URL_RSYNC = 'data.sbgrid.org::10.15785/SBGRID/';
@@ -23,10 +23,10 @@ class sbgrid extends dataSource {
   async getCatalog() {
     let entries = {};
     let pages, page = 1;
-    logger.info(`${this.name} - Scraping entries...`);
+    log.debug(`${this.name} - Scraping entries...`);
     while (true) {
       let url = URL_CAT + '?page=' + page;
-      logger.info(url);
+      log.debug(url);
 
       let pdbid = [];
       let data = [];

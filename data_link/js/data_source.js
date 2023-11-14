@@ -3,11 +3,11 @@
 const fs = require('fs');
 const path = require('path');
 
-const logger = require('pino')();
 const rsync = require('rsync2');
 
 const { tools, status } = require('./tools.js');
 const config = require('./config.js');
+const log = require('./log.js');
 
 const CATALOG_DIR = config.get('storage.catalog_dir');
 
@@ -51,21 +51,21 @@ class dataSource {
     this.catalog = files;
     this.catalog_size = Object.keys(files).length;
     this.status = status.completed;
-    logger.info(`${this.name} - Added catalog ${this.catalog_file}: ${this.catalog_size} entries`);
+    log.info(`${this.name} - Added catalog ${this.catalog_file}: ${this.catalog_size} entries`);
   }
 
   saveCatalog(files) {
-    logger.info(`${this.name} - Saving catalog to ${this.catalog_file}`);
+    log.info(`${this.name} - Saving catalog to ${this.catalog_file}`);
     this.addCatalog(files);
     let json = JSON.stringify(files);
     try {
       fs.mkdirSync(CATALOG_DIR, { recursive: true });
     } catch (err) {
-      logger.info(`${this.name} - Unable to create ${CATALOG_DIR} - ${err}`);
+      log.info(`${this.name} - Unable to create ${CATALOG_DIR} - ${err}`);
     }
     let file = fs.writeFile(this.catalog_file, json, (err) => {
       if (err) {
-        logger.error(`${this.name} - Unable to save ${this.catalog_file} - ${err}`);
+        log.error(`${this.name} - Unable to save ${this.catalog_file} - ${err}`);
       } else {
         this.status = status.completed;
       }
@@ -77,7 +77,7 @@ class dataSource {
     if (fs.existsSync(this.catalog_file)) {
       fs.readFile(this.catalog_file, (err, data) => {
         if (err) {
-          logger.error(`${this.name} - Unable to load ${this.catalog_file} - ${err}`);
+          log.error(`${this.name} - Unable to load ${this.catalog_file} - ${err}`);
         } else {
           // TODO Error checking
           this.addCatalog(JSON.parse(data));
@@ -90,7 +90,7 @@ class dataSource {
 
   updateCatalog() {
     if (this.hasCatalog()) {
-      logger.info(`${this.name} - Updating Catalog`);
+      log.info(`${this.name} - Updating Catalog`);
       this.status = status.inProgress;
       this.getCatalog();
     } else {
@@ -103,12 +103,12 @@ class dataSource {
   aquire(user, id, catalog) {
     // add a catalog entry for the user setting the status to in_progress
     if (catalog.addCatalogEntry(user, this.name, id, status.inProgress)) {
-      logger.info(`${this.name} - Aquiring ${user}/${this.name}/${id} - size ${this.getCatalogIdSize(id)}`);
+      log.info(`${this.name} - Aquiring ${user}/${this.name}/${id} - size ${this.getCatalogIdSize(id)}`);
       try {
         fs.mkdirSync(tools.getDataDest(user, this.name, id), { recursive: true });
         this.getData(user, id, catalog);
       } catch (err) {
-        logger.error(`${this.name} - ${err}`);
+        log.error(`${this.name} - ${err}`);
         return false;
       }
     } else {
@@ -123,7 +123,7 @@ class dataSource {
     try {
       fs.rmSync(dest, { recursive: true, force: true });
     } catch (err) {
-      logger.error(`${this.name} - Unable to remove ${dest}: ${err}`);
+      log.error(`${this.name} - Unable to remove ${dest}: ${err}`);
       return false;
     }
     return true;
@@ -142,19 +142,19 @@ class dataSource {
       'size': catalog.getLocalDataSize(user, this.name, id)
     }
     if (! catalog.updateCatalogEntry(user, this.name, id, fields)) {
-      logger.error(`${this.name} - Unable to update catalog entry for ${user}/${this.name}/${id}`);
+      log.error(`${this.name} - Unable to update catalog entry for ${user}/${this.name}/${id}`);
     }
 
-    logger.info(`${this.name} - Downloaded ${user}/${this.name}/${id} - size ${this.getCatalogIdSize(id)}`);
+    log.info(`${this.name} - Downloaded ${user}/${this.name}/${id} - size ${this.getCatalogIdSize(id)}`);
   }
 
   dataError(user, id, catalog, error) {
-    logger.error(`${this.name} - Unable to download data: ${error}`);
+    log.error(`${this.name} - Unable to download data: ${error}`);
     catalog.addCatalogEntry(user, this.name, id, status.failed)
   }
 
   catalogError(error) {
-    logger.error(`${this.name} - Unable to retrieve catalog: ${error}`);
+    log.error(`${this.name} - Unable to retrieve catalog: ${error}`);
     return false;
   }
 
