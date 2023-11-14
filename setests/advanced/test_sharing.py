@@ -138,29 +138,51 @@ def shareProject(driver, login):
     menuButton.click()
     time.sleep(1.05)
 
-    sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Share Project')
-    time.sleep(1.05)
+    if d.cloud == "https://ccp4serv6.rc-harwell.ac.uk/jscofe-pre/":
 
-    projectSharing = driver.find_element_by_xpath("//input[@placeholder='%s']" % 'login1,login2,...')
-    projectSharing.click()
-    projectSharing.clear()
-    projectSharing.send_keys(login)
-    time.sleep(1.05)
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Share Project')
+        time.sleep(1.05)
 
-    sf.clickByXpath(driver, "//button[contains(text(), '%s')]" % 'Share Project')
-    time.sleep(1.05)
+        projectSharing = driver.find_element_by_xpath("//input[@placeholder='%s']" % 'login1,login2,...')
+        projectSharing.click()
+        projectSharing.clear()
+        projectSharing.send_keys(login)
+        time.sleep(1.05)
+
+        sf.clickByXpath(driver, "//button[contains(text(), '%s')]" % 'Share Project')
+        time.sleep(1.05)
 
 
-    sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Apply')
-    time.sleep(1.05)
+        sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Apply')
+        time.sleep(1.05)
 
-    try:
-        sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Confirm')
-    except:
-        pass
+        try:
+            sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Confirm')
+        except:
+            pass
 
-    sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Ok')
-    time.sleep(1.05)
+        sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Ok')
+        time.sleep(1.05)
+    else:
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Work team & sharing')
+        time.sleep(1.05)
+
+        sf.clickByXpath(driver, "//button[contains(text(), '%s')]" % 'Add team member')
+        time.sleep(1.05)
+
+        projectSharing = driver.find_element_by_xpath("//input[@placeholder='%s']" % 'CCP4 Cloud user login')
+        projectSharing.click()
+        projectSharing.clear()
+        projectSharing.send_keys(login)
+        time.sleep(1.05)
+        sf.clickByXpath(driver, "//button[contains(text(), '%s')]" % 'Yes, share')
+        time.sleep(1.05)
+
+        sf.clickByXpath(driver, "//button[contains(text(), '%s')]" % 'Please share')
+        time.sleep(1.05)
+        sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Ok')
+        time.sleep(1.05)
+
 
 
     return ()
