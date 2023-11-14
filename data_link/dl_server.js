@@ -2,13 +2,10 @@
 
 'use strict';
 
-const logger = require('pino-http')
 const express = require('express');
 const bodyparser = require('body-parser');
 
 const app = express();
-
-//app.use(logger());
 
 const { tools, status } = require('./js/tools.js');
 const datalink = require('./js/data_link.js');

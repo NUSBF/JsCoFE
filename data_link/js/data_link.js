@@ -5,10 +5,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const logger = require('pino')();
-
 const { tools, status } = require('./tools.js');
 const config = require('./config.js');
+const log = require('./log.js');
 
 const SOURCES_DIR = path.join(__dirname, 'sources');
 
@@ -48,7 +47,7 @@ class dataLink {
         if (err.code == "ENOENT") {
           this.rebuildLocalCatalog(user);
         } else {
-          logger.error(err);
+          log.error(err);
         }
       }
     }
@@ -67,9 +66,9 @@ class dataLink {
       let ids = tools.getSubDirs(path.join(data_dir, source));
       for (let j in ids) {
         if (this.source[source] && this.addCatalogEntry(user, source, ids[j], 'ready', catalog)) {
-          logger.info(`Added ${user}/${source}/${ids[j]} to the catalog`);
+          log.info(`Added ${user}/${source}/${ids[j]} to the catalog`);
         } else {
-          logger.error(`Unable to rebuild catalog for ${user}/${source}/${ids[j]}`);
+          log.error(`Unable to rebuild catalog for ${user}/${source}/${ids[j]}`);
         }
       }
     }
@@ -197,7 +196,7 @@ class dataLink {
 
       // check if already downloaded
       if (! force && st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
-        logger.info(`${source} - ${user}/${source}/${id} is already downloaded`);
+        log.info(`${source} - ${user}/${source}/${id} is already downloaded`);
         return tools.successMsg(`${source}: ${user}/${source}/${id} is already downloaded`);
       }
 
@@ -320,7 +319,7 @@ class dataLink {
         return 0;
       }
     } catch (err) {
-      logger.error(err);
+      log.error(err);
       return 0;
     }
   }

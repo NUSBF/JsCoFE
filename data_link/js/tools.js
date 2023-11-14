@@ -1,11 +1,11 @@
 'use strict';
 
 const fs = require('fs');
-const logger = require('pino')();
 const path = require('path');
 const https = require('https');
 
 const config = require('./config.js');
+const log = require('./log.js');
 
 const USER_DIR = config.get('storage.user_dir');
 const DATA_DIR = config.get('storage.data_dir');
@@ -19,7 +19,7 @@ const status = {
 class tools {
 
   static errorMsg(msg) {
-    logger.error(msg);
+    log.error(msg);
     return { error: true, msg: msg };
   }
 
@@ -93,7 +93,7 @@ class tools {
       }
       fs.writeFileSync(tools.getUserCatalogFile(user), json);
     } catch (err) {
-      logger.error(`Error saving user catalog ${err}`);
+      log.error(`Error saving user catalog ${err}`);
       return false;
     }
     return true;
@@ -114,7 +114,7 @@ class tools {
       }
       return false;
     } catch (err) {
-        logger.error(`getUserCloudId: ${err}`);
+        log.error(`getUserCloudId: ${err}`);
       return false;
     }
   }

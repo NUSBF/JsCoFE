@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const logger = require('pino')();
+const log = require('./log.js');
 
 class config {
 
@@ -9,12 +9,12 @@ class config {
   }
 
   load() {
-    logger.info('Loading config');
     let config = path.join(process.cwd(), 'config.json');
+    log.info(`Loading config ${config}`);
     config = config.replace(/\s*\/\//,'');
     this.config = this.loadJSON(config);
     if (! this.config) {
-      logger.error(`Unable to load config ${config}`);
+      log.error(`Unable to load config ${config}`);
       process.exit(1);
     }
   }
@@ -26,7 +26,7 @@ class config {
       json = json.toString().replace(/\s*\/\/.*/g,'');
       return JSON.parse(json);
     } catch (err) {
-      logger.error(err);
+      log.error(err);
       return false;
     }
   }

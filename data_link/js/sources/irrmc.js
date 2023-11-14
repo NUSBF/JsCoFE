@@ -6,11 +6,11 @@ const spawn = require('child_process').spawn;
 const fs = require('fs');
 const path = require('path');
 
-const logger = require('pino')();
 const cheerio = require('cheerio');
 
-const { tools, status } = require('../tools.js');
 const dataSource = require('../data_source.js');
+const { tools, status } = require('../tools.js');
+const log = require('../log.js');
 
 const URL_CAT = 'https://proteindiffraction.org/browse/';
 const URL_DATA = 'https://data.proteindiffraction.org/';
@@ -30,10 +30,10 @@ class irrmc extends dataSource {
   async getCatalog() {
     let entries = {};
     let pages, page = 1;
-    logger.info(`${this.name} - Scraping entries...`);
+    log.debug(`${this.name} - Scraping entries...`);
     while (true) {
       let url = URL_CAT + '?show=' + PAGE_SIZE + '&page=' + page;
-      logger.info(url);
+      log.debug(url);
 
       let pdbid = [];
       let data = [];
@@ -112,7 +112,7 @@ class irrmc extends dataSource {
 
     await tools.httpRequest(url, dest_file, entry);
 
-    logger.info(`${this.name} - Unpacking ${user}/${this.name}/${id}/${path.basename(url_path)}`);
+    log.info(`${this.name} - Unpacking ${user}/${this.name}/${id}/${path.basename(url_path)}`);
     let sp = spawn('tar', [ '-x', '-C', dest_dir, '-f', dest_file, '--strip-components', 1]);
     sp.on('close', (code) => {
       if (code == 0) {
@@ -120,7 +120,7 @@ class irrmc extends dataSource {
           fs.rmSync(dest_file, { force: true });
           this.dataComplete(user, id, catalog);
         } catch (err) {
-          logger.error(`${this.name} - getData ${err}`);
+          log.error(`${this.name} - getData ${err}`);
           entry.status = status.failed;
         }
       }
