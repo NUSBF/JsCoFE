@@ -1129,7 +1129,8 @@ function getProjectData ( loginData,data )  {
   if (pData)  {
     if (!pd.isProjectAccessible(loginData.login,pData.desc))
       return new cmd.Response ( cmd.fe_retcode.projectAccess,
-                                 '[00035] Project access denied.','' );
+                                '[00035] Project access denied.',
+                                { access_denied : true } );
     var d = {};
     d.meta      = pData;
     d.tasks_add = [];
@@ -1443,6 +1444,20 @@ var projectName = projectDesc.name;
     }
 
   } else  {
+
+    let ownerLoginData = user.getUserLoginData ( projectDesc.owner.login );
+    if (ownerLoginData)  {
+      if (!utils.dirExists(getProjectDirPath(ownerLoginData,projectName)))  {
+        rdata.reload  = -11111;
+        rdata.deleted = true;
+        return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+      }
+    } else if (pd.isProjectShared('',projectDesc))  {
+      rdata.reload  = -11112;
+      rdata.noowner = true;
+      return new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
+    }
+
     log.error ( 32,'cannot read project description ' + loginData.login + ':' +
                    projectName  );
     emailer.send ( conf.getEmailerConfig().maintainerEmail,

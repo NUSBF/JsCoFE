@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.06.22   <--  Date of Last Modification.
+ *    14.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Shared Project Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -144,7 +144,7 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
                                'folder. To navigate back to your folder(s), click on ' +
                                'the page title or use Main Menu.</b>';
                       msg_lbl.setText (
-                          '<div style="width:440px">' +
+                          '<div style="width:640px">' +
                           'Project "' + data.name + '" is now joined, ' +
                           'and you may work on it simultaneously with ' +
                           'the project owner and other users, with whom the ' +
@@ -155,7 +155,7 @@ ImportSharedProjectDialog.prototype.makeProjectSelectPage = function (
                         onSuccess_func();
                     } else  {
                       dlg.grid.setLabel ( '<h2>Join Shared Project Failed</h2>',0,2,2,3 );
-                      var msg2 = '<div style="width:440px">Project "'  + data.name  +
+                      var msg2 = '<div style="width:640px">Project "'  + data.name  +
                                  '" was not joined, the reason being:<p><b>*** <i>' +
                                  data.signal + '</i></b>';
                       if (data.signal.indexOf('already exists')>=0)

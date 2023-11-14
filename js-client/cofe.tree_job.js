@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    06.11.23   <--  Date of Last Modification.
+ *    14.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -254,10 +254,11 @@ JobTree.prototype.readProjectData = function ( page_title,
       if ('missing' in data)  {
 
         tree.projectData = null;
+        tree.no_access   = true;
         new MessageBox ( 'Missing Project',
           '<div style="width:400px"><h2>Missing Project</h2>' +
           'Project <i>"' + data.project + '"</i> does not exist. ' +
-          'If it was shared with you, check that it is not deleted ' +
+          'If it was shared with you, check whether it was deleted ' +
           'by owner.</div>',
           'msg_error'
         );
@@ -267,9 +268,6 @@ JobTree.prototype.readProjectData = function ( page_title,
         MessageDataReadError ( page_title,data['message'] );
 
       } else if (data.meta.desc.timestamp>timestamp)  {
-//        console.log ( ' >>>>>>>> tree timestamp='+data.meta.desc.timestamp);
-
-// console.log ( 'loaded' );
 
         tree.task_map = {};  // map[nodeId]==task of all tasks in the tree
         tree.run_map  = {};  // map[taskId]==nodeId of all running tasks
@@ -291,11 +289,6 @@ JobTree.prototype.readProjectData = function ( page_title,
         if (startmode)
           tree.projectData.desc.startmode = startmode;
 
-//printProjectTree ( ' >>>getProjectData',tree.projectData );
-
-        // var author = tree.projectData.desc.owner.login;
-        // if ('author' in tree.projectData.desc.owner)
-        //   author = tree.projectData.desc.owner.author;
         var author = '';
         if (author!=__login_id)
           author = getProjectAuthor ( tree.projectData.desc );
@@ -315,10 +308,8 @@ JobTree.prototype.readProjectData = function ( page_title,
         } else  {
 
           // enforce title of root node just in case it was renamed
-          // tree.projectData.tree[0].text = root_title;
           data.meta.tree[0].text = root_title;
 
-          //tree.setNodes ( tree.projectData.tree );
           tree.setNodes ( data.meta.tree,allow_selection );
 
           var t_map = {};
@@ -351,9 +342,6 @@ JobTree.prototype.readProjectData = function ( page_title,
           for (var key in tree.task_map)  {
             if (tree.task_map[key].isRemark())  {
               tree.setRemarkStyle ( tree.node_map[key],tree.task_map[key] );
-              //   if (tree.task_map[key].isLink())
-              //        tree.setStyle ( tree.node_map[key],__linkStyle,0 );
-              //   else tree.setStyle ( tree.node_map[key],__remarkStyle,0 );
             } else if (!tree.task_map[key].job_dialog_data.viewed)
               tree.setStyle ( tree.node_map[key],__notViewedStyle,0 );
           }
@@ -378,12 +366,18 @@ JobTree.prototype.readProjectData = function ( page_title,
 
       }
 
-    },function(){
-//      onLoaded_func();
-      tree.startTaskLoop();
+    },function(code,rdata){
+      if ('access_denied' in rdata)  {
+        tree.projectData = null;
+        tree.no_access   = true;
+        // tree.emitSignal ( cofe_signals.makeProjectList,{} );
+        onLoaded_func();
+        // window.setTimeout ( function(){
+        //   tree.emitSignal ( cofe_signals.makeProjectList,{} );
+        // },100);
+      } else  
+        tree.startTaskLoop();
     },'persist');
-
-  // }(this));
 
 }
 
@@ -857,15 +851,19 @@ JobTree.prototype.checkReload = function ( rdata,details )  {
   return true;  // proceed
 }
 
-JobTree.prototype.missingProject = function()  {
-  new MessageBox ( 'Project not found',
-      '<div style="width:400px"><h2>Project not found on server</h2>' +
-      'Project "' + this.projectData.desc.name + '" was not found on server. ' +
-      'This project was shared with you, please check whether it was deleted ' +
-      'by project owner.</div>',
-      'msg_error'
-  );
-  this.emitSignal ( cofe_signals.makeProjectList,{} );
+JobTree.prototype.missingProject = function ( code )  {
+let msg = '<div style="width:400px"><h2>Project not found on server</h2>' +
+          'Project "' + this.projectData.desc.name + 
+          '" was not found on server. ';
+  if (code==-11111)
+    msg += 'If this project was shared with you, please check whether it ' +
+           'was deleted by project owner.</div>';
+  else if (code==-11112)
+    msg += 'It is likely that this project was shared with you by somebody, ' +
+           'who has their ' + appName() + ' account deleted.</div>';
+  new MessageBoxF ( 'Project not found',msg,'Ok',function(){ 
+    this.emitSignal ( cofe_signals.makeProjectList,{} );  
+  },false,'msg_error' );
 }
 
 // JobTree.prototype.advanceJobCounter = function ( onDone_func )  {
@@ -906,8 +904,8 @@ JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
     (function(tree){
       serverRequest ( fe_reqtype.saveProjectData,data,'Project',
         function(rdata){
-          if (rdata.reload==-11111)  {
-            tree.missingProject();
+          if ((rdata.reload==-11111) || (rdata.reload==-11112))  {
+            tree.missingProject ( rdata.reload );
           } else if (rdata.reload>0)  {
             // tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
             if (callback_func)
