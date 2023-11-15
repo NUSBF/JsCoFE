@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.11.23   <--  Date of Last Modification.
+ *    15.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -175,6 +175,8 @@ TaskWorkflow.prototype.constructor = TaskWorkflow;
 # -----------------------------------------------------
 #
 
+VERSION 1.0  # script version for backward compatibility
+
 # General workflow descriptors
 NAME     dimple workflow
 ONAME    dimple_wflow 
@@ -190,33 +192,63 @@ ALLOW_UPLOAD  # create file upload widgets if started from project root
 DATA SEQ           TYPES protein dna rna
 DATA LIGAND
 
+# List all parameters required, "!" specifies mandatory items
+PAR_REAL resHigh
+    LABEL     High resolution cut-off (Å) 
+    TOOLTIP   High resolution cut-off, angstrom
+    RANGE     0.1 5.0
+    DEFAULT   1.5
+
+
 # Workflow itself
 
-@AIMLESS       IFDATA    unmerged
-@AIMLESS       DATA      ds0        unmerged
-@AIMLESS       RUN       TaskAimless
+@AIMLESS       
+    IFDATA    unmerged
+    DATA      ds0  unmerged
+    PARAMETER RESO_HIGH resHigh
+    RUN       TaskAimless
 
-@DIMPLE        RUN       TaskDimpleMR
+@DIMPLE        
+    RUN       TaskDimpleMR
 
-@MAKE_LIGAND   IFDATA    ligdesc  # can be a list of required data types
-@MAKE_LIGAND   RUN       TaskMakeLigand
+@MAKE_LIGAND   
+    IFDATA    ligdesc  # can be a list of required data types
+    RUN       TaskMakeLigand
 
-@REMOVE_WATERS IFDATA    ligand
-@REMOVE_WATERS ALIAS     revision   istruct
-@REMOVE_WATERS PARAMETER SOLLIG_SEL W
-@REMOVE_WATERS RUN       TaskXyzUtils
+@REMOVE_WATERS 
+    IFDATA    ligand
+    ALIAS     revision   istruct
+    PARAMETER SOLLIG_SEL "W"
+    RUN       TaskXyzUtils
 
-@FIT_LIGAND    IFDATA    ligand
-@FIT_LIGAND    PARAMETER SAMPLES 500
-@FIT_LIGAND    RUN       TaskFitLigand
+@FIT_LIGAND    
+    IFDATA    ligand
+    PARAMETER SAMPLES 750
+    RUN       TaskFitLigand
 
-@FIT_WATERS    PARAMETER SIGMA 2.0
-@FIT_WATERS    RUN       TaskFitWaters
+@REFINE1
+    PARAMETER VDW_VAL  2.0
+    PARAMETER MKHYDR   "ALL"
+    RUN       TaskRefmac
 
-@REFINE        USE_SUGGESTED_PARAMETERS
-@REFINE        RUN       TaskRefmac
+@FIT_WATERS
+    PARAMETER SIGMA 3.0
+    RUN       TaskFitWaters
 
-@VALIDATION    RUN       TaskPDBVal
+let cnt = 1
+
+@REFINE2
+    USE_SUGGESTED_PARAMETERS
+    RUN       TaskRefmac
+
+let cnt = cnt + 1
+repeat @REFINE2 while suggested>0 and cnt<5
+
+# let cnt = cnt + 1
+# repeat @REFINE if cnt<3
+
+# @VALIDATION
+#     RUN       TaskPDBVal
 
 #
 
@@ -235,9 +267,13 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
   this.input_dtypes  = [];
   this.parameters    = {};
 
+  let version = '1.0';
+
   let allow_upload = (workflowDesc.script.toUpperCase().indexOf('ALLOW_UPLOAD')>=0);
 
-  let done = false;
+  let prow  = 0;
+  let pitem = null;
+  let done  = false;
   for (let i=0;(i<this.script.length) && (!done);i++)  {
     
     let line  = this.script[i].trim();
@@ -253,6 +289,10 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
       let word0 = words[0].toUpperCase();
       switch (word0)  {
         
+        case 'VERSION'  : if (words.length>1)
+                            version = words[1];
+                        break;
+
         case 'NAME'     : this.name      = words.slice(1).join(' ');  break;
         case 'ONAME'    : this.setOName  ( words[1] );                break;
         case 'ICON'     : this.icon_name = words[1];                  break;
@@ -345,8 +385,64 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
                               this.file_select.push ( fdesc );
                           }
                         break;
+
+        case '!PAR_REAL' :
+        case 'PAR_REAL' : if (words.length>1)  {
+                            if (!pitem)  {
+                              this.parameters = { // input parameters
+                                sec1  : { type     : 'section',
+                                          title    : 'Parameters',
+                                          open     : true,  // true for the section to be initially open
+                                          position : [0,0,1,8],
+                                          contains : {}
+                                        }
+                              };
+                            }
+                            pitem = {
+                              type      : 'real_',
+                              keyword   : '',  
+                              label     : '',
+                              tooltip   : '',
+                              range     : ['*','*'],
+                              value     : '',
+                              position  : [prow,0,1,1]
+                            };
+                            if (word0.startsWith('!'))
+                              pitem.type = 'real';
+                            this.parameters.sec1.contains[words[1]] = pitem;
+                            prow++;
+                          }
+                        break;
+        case 'LABEL'   :  if (pitem)
+                            pitem.label   = words.slice(1).join(' ');
+                        break;
+        case 'TOOLTIP' :  if (pitem)
+                            pitem.tooltip = words.slice(1).join(' ');
+                        break;
+        case 'RANGE'   :  if (pitem && (words.length>2))  {
+                            if (words[1]=='*')
+                              pitem.range = ['*'];
+                            else if (pitem.type.startsWith('real'))
+                              pitem.range = [parseFloat(words[1])];
+                            if (words[2]=='*')
+                              pitem.range.push ( '*' );
+                            else if (pitem.type.startsWith('real'))
+                              pitem.range.push ( parseFloat(words[2]) );
+                          }
+                        break;
+        case 'DEFAULT' :  if (pitem && (words.length>1))  {
+                            if (pitem.type.startsWith('real'))  {
+                              pitem.default = parseFloat(words[1])
+                              if (pitem.type=='real')
+                                pitem.value = pitem.default;
+                            }
+                          }
+                        break;
+
         case 'LET'      : done = true;  break;
+      
         default         : done = word0.startsWith('@');
+      
       }
     
     }

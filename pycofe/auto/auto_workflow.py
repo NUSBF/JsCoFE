@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.11.23   <--  Date of Last Modification.
+#    15.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -110,6 +110,10 @@ def nextTask ( body,data,log=None ):
                 }
             else:
                 w = wdata["variables"]
+
+            if "variables" in data:
+                for v in data["variables"]:
+                    w[v] = data["variables"][v]
 
             if "data" in data:
                 ddata = data["data"]
