@@ -128,12 +128,12 @@ class tools {
   }
 
   static httpRequest(url, dest = '', entry = null) {
+    log.debug(`httpRequest - requesting ${url}`);
     return new Promise ((resolve, reject) => {
       let request = https.get(url, (res) => {
         if (res.statusCode !== 200) {
-          log.error(`${url} statusCode: ${res.statusCode}`);
           res.resume();
-          reject();
+          reject(`${url} statusCode: ${res.statusCode}`);
           return;
         }
 
@@ -170,6 +170,22 @@ class tools {
 
       });
     });
+  }
+
+  static getFileCache(file, age) {
+    try {
+      if (fs.existsSync(file)) {
+        let file_date = new Date(fs.statSync(file).mtime);
+        if (file_date > (Date.now() - age)) {
+          return fs.readFileSync(file);
+        }
+      }
+    } catch (err) {
+      if (e.code !== 'ENOENT') {
+        log.error(`getFileCache - ${err}`);
+      }
+    }
+    return false;
   }
 }
 
