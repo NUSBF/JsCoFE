@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.11.23   <--  Date of Last Modification.
+#    15.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -171,6 +171,14 @@ class Workflow(import_task.Import):
 
         have_results = (len(ilist)>0)
 
+        variables = {}
+
+        if hasattr(self.task.parameters,"sec1"):
+            sec1 = self.task.parameters.sec1.contains
+            for key in vars(sec1):
+                variables[key] = self.getParameter ( getattr(sec1,key) )
+            self.stderrln ( " variables="+str(variables) )
+
         if have_results:
             self.task.autoRunName = "@ROOT"   # step identifier
             # self.stdoutln ( " >>>> into workflow " + str(len(self.ligdesc)) )
@@ -184,7 +192,8 @@ class Workflow(import_task.Import):
                         "ligand"   : self.lig,
                         "lib"      : self.lib,
                         "ligdesc"  : self.ligdesc
-                    }
+                    },
+                    "variables" : variables
                },self.file_stderr):
                 summary_line += "workflow started"
                 self.putMessage ( "<h3>Workflow started</hr>" )
