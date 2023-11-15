@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.10.23   <--  Date of Last Modification.
+ *    15.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -25,7 +25,7 @@
 'use strict';
 
 
-function WorkTeamDialog ( projectDesc )  {
+function WorkTeamDialog ( projectDesc,jobTree=null )  {
 
   Widget.call ( this,'div' );
   this.element.setAttribute ( 'title','Work Team' );
@@ -42,6 +42,7 @@ function WorkTeamDialog ( projectDesc )  {
   this.joined      = isProjectJoined(__login_id,projectDesc);
   this.can_share   = (!this.archived) && (!this.joined) && (!__local_user);
   this.projectDesc = projectDesc;
+  this.jobTree     = jobTree;
 
   var self = this;
   this.makeLayout ( function(){
@@ -368,7 +369,9 @@ WorkTeamDialog.prototype.unshareUser = function ( slogin,uname )  {
                   }
        },{
         name    : 'Cancel',
-        onclick : function(){}
+        onclick : function(){
+                    self.makeLayout ( null );
+                  }
        }],
        'share' );
 
@@ -437,6 +440,10 @@ WorkTeamDialog.prototype.share_request = function ( slogin,permissions )  {
               'msg_excl' );
       }
       self.makeLayout ( null );
+      if (self.jobTree)  {
+        self.jobTree.stopTaskLoop ();
+        self.jobTree.startTaskLoop();
+      }
     },null,null
   );
 }

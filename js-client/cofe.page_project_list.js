@@ -393,26 +393,30 @@ function ProjectListPage ( sceneId )  {
   }
 
   var deleteProject = function()  {
+
     panel.click();  // get rid of context menu
-    var delName    = currentProjectName();
-    var delMessage = '';
-    var btnName    = 'Yes, delete';
-    var dlgTitle   = 'Delete Project';
+    
+    if (isCurrentProjectShared())  {
+      let msg = '<div style="width:450px"><h2>Delete Project</h2>';
+      if (isCurrentProjectAuthored(true))  {
+        msg += 'This project cannot be deleted because it is shared with other ' +
+               'users.<p>Use "Work Team" dialog (right-click on project line) ' +
+               'to unshare project before deletion.';
+        new MessageBox ( 'Delete Project',msg,'msg_stop' );
+        return;
+      }
+    }
+
+    let delName    = currentProjectName();
+    let delMessage = '';
+    let btnName    = 'Yes, delete';
+    let dlgTitle   = 'Delete Project';
     if (isCurrentProjectAuthored(false))  {
       delMessage = '<h2>Delete Project</h2>' +
                    'Project <b>"' + delName +
                    '"</b> will be deleted. All project ' +
                    'structure and data will be lost.'    +
                    '<p>Please confirm your choice.';
-    // } else if (__current_folder.type==folder_type.custom_list)  {
-    //   delMessage = '<h2>Delist Project</h2>' +
-    //                'Project <b>"' + delName  +
-    //                '"</b> will be removed from list <i>"'   +
-    //                __current_folder.path     + '"</i>. The project will ' +
-    //                'remain intact in its folder.' +
-    //                '<p>Please confirm.';
-    //   btnName    = 'Please delist';
-    //   dlgTitle   = 'Delist Project';
     } else  {
       delMessage = '<h2>Unjoin Project</h2>' +
                    'Project <b>"' + delName  + '"</b>, shared with you, ' +
@@ -422,23 +426,18 @@ function ProjectListPage ( sceneId )  {
       btnName    = 'Please unjoin';
       dlgTitle   = 'Unjoin Project';
     }
-    var inputBox = new InputBox ( dlgTitle );
+
+    let inputBox = new InputBox ( dlgTitle );
     inputBox.setText ( '<div style="width:400px;">' + delMessage + '</div>',
                        'msg_confirm' );
     inputBox.launch  ( btnName,function(){
-      // if (__current_folder.type==folder_type.custom_list)  {
-      //   saveProjectList ( function(rdata){
-      //     // loadProjectList();
-      //     // makeProjectListTable();
-      //   },null );
-      // } else  {
-        serverRequest ( fe_reqtype.deleteProject,delName,dlgTitle,
-          function(data){
-            self.loadProjectList1();
-          },null,'persist' );
-      // }
+      serverRequest ( fe_reqtype.deleteProject,delName,dlgTitle,
+        function(data){
+          self.loadProjectList1();
+        },null,'persist' );
       return true;  // close dialog
     });
+
   }
 
   var exportProject = function() {

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.10.23   <--  Date of Last Modification.
+ *    15.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -697,12 +697,12 @@ function delete_project ( loginData,projectName,disk_space,projectDirPath )  {
 }
 
 function unshare_project ( pDesc )  {
-  var unshared = [];
-  for (var shareLogin in pDesc.share)  {
-    var uLoginData = user.getUserLoginData ( shareLogin );
+let unshared = [];
+  for (let shareLogin in pDesc.share)  {
+    let uLoginData = user.getUserLoginData ( shareLogin );
     if (uLoginData)  {
       unshared.push ( uLoginData );
-      var pShare = readProjectShare ( uLoginData );
+      let pShare = readProjectShare ( uLoginData );
       pShare.removeShare ( pDesc );
       writeProjectShare  ( uLoginData,pShare );
     }
@@ -1704,6 +1704,7 @@ var t_email   = 1000; //msec
     };
 
     // unshare by comparison of share0 and share
+
     let uData_unshared = [];
     for (let shareLogin in share0)  // loop on the existing share state
       if (shareLogin && (!(shareLogin in share)))  {  // not found in the requested -- unshare

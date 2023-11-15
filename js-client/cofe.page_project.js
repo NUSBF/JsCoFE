@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.11.23   <--  Date of Last Modification.
+ *    15.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -172,7 +172,7 @@ function ProjectPage ( sceneId )  {
     if (!__local_user)  {
       self.addMenuItem ( 'Work team & sharing','workteam',function(){
         if (self.jobTree)
-          new WorkTeamDialog ( self.jobTree.projectData.desc );
+          new WorkTeamDialog ( self.jobTree.projectData.desc,self.jobTree );
         else
           new MessageBox ( 'No project loaded','<h2>No Project Loaded</h2>' +
                            'Please call later','msg_error' );
