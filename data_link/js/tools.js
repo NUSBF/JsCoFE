@@ -131,8 +131,9 @@ class tools {
     return new Promise ((resolve, reject) => {
       let request = https.get(url, (res) => {
         if (res.statusCode !== 200) {
-          console.error(`Error: ${res.statusCode}`);
+          log.error(`${url} statusCode: ${res.statusCode}`);
           res.resume();
+          reject();
           return;
         }
 
@@ -152,6 +153,7 @@ class tools {
           res.on('close', () => {
             file.close();
             resolve();
+            return;
           });
         } else {
           let out = '';
@@ -162,6 +164,7 @@ class tools {
 
           res.on('close', () => {
             resolve(out);
+            return;
           });
         }
 

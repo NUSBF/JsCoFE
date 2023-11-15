@@ -53,8 +53,8 @@ class server {
     this.jsonResponse(res, response);
   }
 
-  searchSourceCatalog(req, res) {
-    this.jsonResponse(res, this.datalink.searchSourceCatalog(req.params.id.toLowerCase()));
+  async searchSourceCatalog(req, res) {
+    this.jsonResponse(res, await this.datalink.searchSourceCatalog(req.params.id.toLowerCase()));
   }
 
   updateSourceCatalog(req, res) {
