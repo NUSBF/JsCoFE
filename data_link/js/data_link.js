@@ -8,6 +8,7 @@ const path = require('path');
 const { tools, status } = require('./tools.js');
 const config = require('./config.js');
 const log = require('./log.js');
+const rcsb = require('./rcsb.js');
 
 const SOURCES_DIR = path.join(__dirname, 'sources');
 
@@ -116,16 +117,17 @@ class dataLink {
     return catalogs;
   }
 
-  searchSourceCatalog(pdb) {
-    let matches = [];
+  async searchSourceCatalog(pdb) {
+    let results = [];
     for (const [, source] of Object.entries(this.source)) {
       for (const [id, e] of Object.entries(source.catalog)) {
         if (e.pdb == pdb ) {
-          matches.push({ source: source.name, id: id, doi: e.doi, desc: e.desc });
+          results.push({ source: source.name, id: id, doi: e.doi, desc: e.desc });
         }
       }
     }
-    return matches;
+    let pdb_info = await rcsb.getEntry(pdb);
+    return { results: results, pdb: pdb_info };
   }
 
   updateSourceCatalog(name) {
