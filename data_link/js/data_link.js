@@ -118,6 +118,11 @@ class dataLink {
   }
 
   async searchSourceCatalog(pdb) {
+    // check if id matches pdb indentifier format (4 alphanumberic characters)
+    if (! pdb.match(/^[a-z0-9]{4}$/)) {
+      return tools.errorMsg(`Invalid PDB identifier`);
+    }
+
     let results = [];
     for (const [, source] of Object.entries(this.source)) {
       for (const [id, e] of Object.entries(source.catalog)) {
