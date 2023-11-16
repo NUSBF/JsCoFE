@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    16.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -214,11 +214,11 @@ if (!__template)  {
       }
 
       //  check symmetry compatibility
-      console.log ( ' 1. input_ready=' + input_ready)
+      // console.log ( ' 1. input_ready=' + input_ready)
       check_object ( 'hkl'    );
       check_object ( 'xyz'    );
       check_object ( 'phases' );
-      console.log ( ' 2. input_ready=' + input_ready)
+      // console.log ( ' 2. input_ready=' + input_ready)
 
       if (!input_ready)
             this.sendTaskStateSignal ( inpParamRef.grid.inputPanel,'hide_run_button' );

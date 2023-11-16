@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.11.23   <--  Date of Last Modification.
+#    16.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +22,7 @@ from   pycofe.auto   import  auto_tasks2
 import traceback
 from   pycofe.etc    import  citations
 from   pycofe.etc.py_expression_eval import Parser
-from   pycofe.varut  import  jsonut
+# from   pycofe.varut  import  jsonut
 
 
 # ============================================================================
@@ -199,16 +199,21 @@ def nextTask ( body,data,log=None ):
                     else:
                         w0u  = words[0].upper()
                         perr = " *** LINE " + str(lno) + ": " + w0u + " declared but not correctly defined"
-                        if w0u=="IFDATA":
+                        if w0u=="IFDATA" or w0u=="IFNOTDATA":
                             #  run is conditional to data availability
                             if len(words)<2:
                                 parse_error = perr
                             else:
                                 j  = 1
                                 ok = True
-                                while j<len(words) and ok:
-                                    ok = words[j] in wdata
-                                    j  = j + 1
+                                if w0u=="IFDATA":
+                                    while j<len(words) and ok:
+                                        ok = words[j].lower() in wdata
+                                        j  = j + 1
+                                else:
+                                    while j<len(words) and ok:
+                                        ok = words[j].lower() not in wdata
+                                        j  = j + 1
                                 if not ok:
                                     # some data is not available, scroll script to the next RUN
                                     lno = lno + 1
@@ -238,7 +243,26 @@ def nextTask ( body,data,log=None ):
                                     try:
                                         parameters[words[1]] = eval_parser.parse(p).evaluate(w)
                                     except:
-                                        parse_error = perr
+                                        parse_error = perr + " (value)"
+                        elif w0u=="PROPERTY":
+                            if nwords<4:
+                                parse_error = perr
+                            else:
+                                dtype = words[1].lower()
+                                if dtype not in wdata:
+                                    parse_error = " *** LINE " + str(lno) + \
+                                                  ": data type " + words[1] + \
+                                                  " not found"
+                                else:
+                                    p = " ".join(words[3:]).strip()
+                                    if (p.startswith('"') and p.endswith('"')) or\
+                                       (p.startswith("'") and p.endswith("'")):
+                                        wdata[dtype][words[2]] = p[1:len(p)-1]
+                                    # try:
+                                    wdata[dtype][0][words[2]] = \
+                                            eval_parser.parse(p).evaluate(w)
+                                    # except:
+                                    #     parse_error = perr + " (value)"
                         elif w0u=="ALIAS": 
                             if nwords<3:
                                 parse_error = perr
@@ -378,171 +402,6 @@ def nextTask ( body,data,log=None ):
 
             return False
 
-
-            """  ===========================================
-
-            l1          = -1
-            l2          = len(script)-1
-            while lno<len(script):
-                words = script[lno].split()
-                if len(words)>0 and words[0].startswith("@") and words[0]!=crAutoRunName:
-                    if not nextRunName:
-                        nextRunName = words[0]
-                        l1 = lno 
-                    else:
-                        l2 = lno - 1
-                        break
-                if nextRunName and len(words)>1:
-                    w1u = words[0].upper()
-                    if w1u=="IFDATA":
-                        j  = 1
-                        ok = True
-                        while j<len(words) and ok:
-                            ok = words[j] in wdata
-                            j  = j + 1
-                        if not ok:
-                            crAutoRunName = nextRunName
-                            nextRunName   = None
-                            nextTaskType  = None
-                            l1 = -1
-                    elif w1u=="RUN":
-                        nextTaskType = words[2]
-                lno = lno +1
-
-            if not nextRunName:  # no next step in the script
-                return
-            
-            lend = lstart + 1
-            n2   = nextRunName
-            while lend<len(script) and n2==nextRunName:
-                words = script[lend].split()
-                if len(words)>0 and words[0].startswith("@"):
-                    n2 = words[0]
-                else:
-                    lend = lend + 1
-
-
-
-
-
-
-
-
-
-            lno = crTask.script_pointer
-            while lno<len(script) and nextRunName==crAutoRunName:
-                # auto_api.log ( " # line " + str(crTask.lno) + " " + crTask.script[crTask.lno] )
-                words = script[lno].split()
-                if len(words)>2 and words[0].startswith("@") and words[1].upper()=="RUN":
-                    nextRunName  = words[0]
-                    nextTaskType = words[2]
-                    # check that the setap is not conditional to availabilitgy of data
-                    i = 0
-                    while i<len(script) and nextTaskType:
-                        w1 = script[i].split()
-                        if len(w1)>2 and w1[0]==nextRunName and w1[1].upper()=="IFDATA":
-                            j  = 2
-                            ok = True
-                            while j<len(w1) and ok:
-                                ok = w1[j] in wdata
-                                j  = j + 1
-                            if not ok:
-                                crAutoRunName = nextRunName
-                                nextTaskType  = None
-                        i = i + 1
-                # elif words[0].lower()
-                # auto_api.log ( "       " + crAutoRunName + " " + nextRunName + " " + str(nextTaskType) )
-                lno = lno + 1
-
-            crTask.script_end_pointer = lno
-
-            # auto_api.log ( " >>>>>2 " + str(crTask.script_end_pointer) + " " + str(nextTaskType) )
-
-            if nextTaskType:
-
-                # form new task
-                if nextTaskType=="TaskMakeLigand":
-                    auto_tasks.make_ligand ( nextRunName, wdata["ligdesc"][0], 
-                                             wdata["revision"] if "revision" in wdata else None,
-                                             crTask.autoRunName )
-                else:
-                    auto_api.addTask ( nextRunName,nextTaskType,crTask.autoRunName )
-
-                # hover script for all step-related instructions
-                parameters = {}
-                aliases    = {}
-                tdata      = {}  # specific task data from context
-                use_suggested_parameters = False
-                for lno in range(len(script)):
-                    line   = script[lno]
-                    words  = line.split()
-                    nwords = len(words)
-                    if nwords>0 and words[0]==nextRunName:
-                        w0u = words[0].upper()
-                        w1u = words[1].upper()
-                        if nwords==4:
-                            if w1u=="PARAMETER":
-                                parameters[words[2]] = words[3]
-                            elif w1u=="ALIAS": 
-                                aliases[words[2]] = words[3]
-                            elif w1u=="DATA": 
-                                tdata[words[2]] = words[3]
-                        elif nwords==2 and w1u=="USE_SUGGESTED_PARAMETERS":
-                            use_suggested_parameters = True
-                        elif nwords>1 and w0u=="LET":
-                            expression = "".join(words[1:])
-                            eqi = expression.index('=')
-                            if eqi<=0:
-                                body.stderrln   ( " *** error in LET statement in workflow line " + str(lno) )
-                                body.putMessage ( "<h3><i>Workflow error</i></h3><i>See error log</i>"       )
-                                return
-                            vname = expression[:eqi]
-                            value = eval.parser.parse(expression[eqi+1:]).evaluate(w.to_dict())
-                            w.set_field ( vname,value )
-
-                # auto_api.log ( " >>> parameters " + str(parameters) )
-                # auto_api.log ( " >>> aliases    " + str(aliases)    )
-
-                # add task data, revision from the previous task only
-                if "data" in data:
-                    cdata = data["data"]
-                    if "revision" in cdata and len(cdata["revision"])>0:
-                        auto_api.addTaskData ( nextRunName,
-                            aliases["revision"] if "revision" in aliases else "revision",
-                            cdata["revision"] )
-
-                for dtype in wdata:
-                    if dtype in ["unmerged","hkl","xyz","seq","ligand","lib"] and\
-                                len(wdata[dtype])>0:
-                        auto_api.addTaskData ( nextRunName,
-                            aliases[dtype] if dtype in aliases else dtype,
-                            wdata[dtype] )
-
-                for dtype in tdata:
-                    auto_api.addTaskData ( nextRunName,dtype,wdata[tdata[dtype]] )
-
-                # add suggested task parameters (can be anywhere in script)
-                if nextTaskType in suggestedParameters and use_suggested_parameters:
-                    for key in suggestedParameters[nextTaskType]:
-                        auto_api.addTaskParameter ( nextRunName,key,suggestedParameters[nextTaskType][key] )
-
-                # add specified task parameters (can be anywhere in script)
-                for p in parameters:
-                    auto_api.addTaskParameter ( nextRunName,p,parameters[p] )
-
-            else:
-                auto_api.log ( " ***** WORKFLOW ERROR: next task type not identified" )
-
-            # raise ValueError('From auto.py:makeNextTask got unknown crTask.autoRunId: %s .' \
-            #                     % body.task.autoRunId)
-
-            wdata["variables"] = w.to_dict()
-            auto_api.addContext ( "input_data",wdata )
-
-            auto_api.writeAutoMeta()
-            return True
-            """
-
     except Exception as inst:
         body.stderrln ( str(type(inst)))  # the exception instance
         body.stderrln ( str(inst.args))   # arguments stored in .args
@@ -555,14 +414,13 @@ def nextTask ( body,data,log=None ):
 
 
 """
-========== OLD SCRIPT SAMPLE
-
-
 #
 # -----------------------------------------------------
 # Simple Dimple-with-ligand workflow example
 # -----------------------------------------------------
 #
+
+VERSION 1.0  # script version for backward compatibility
 
 # General workflow descriptors
 NAME     dimple workflow
@@ -579,64 +437,26 @@ ALLOW_UPLOAD  # create file upload widgets if started from project root
 DATA SEQ           TYPES protein dna rna
 DATA LIGAND
 
-# Workflow itself
+# List all parameters required, "!" specifies mandatory items
+PAR_REAL resHigh
+    LABEL     High resolution cut-off (Å) 
+    TOOLTIP   High resolution cut-off, angstrom
+    RANGE     0.1 5.0
+    DEFAULT   1.5
 
-@AIMLESS       IFDATA    unmerged
-@AIMLESS       DATA      ds0        unmerged
-@AIMLESS       RUN       TaskAimless
-
-@DIMPLE        RUN       TaskDimpleMR
-
-@MAKE_LIGAND   IFDATA    ligdesc  # can be a list of required data types
-@MAKE_LIGAND   RUN       TaskMakeLigand
-
-@REMOVE_WATERS IFDATA    ligand
-@REMOVE_WATERS ALIAS     revision   istruct
-@REMOVE_WATERS PARAMETER SOLLIG_SEL W
-@REMOVE_WATERS RUN       TaskXyzUtils
-
-@FIT_LIGAND    IFDATA    ligand
-@FIT_LIGAND    PARAMETER SAMPLES 500
-@FIT_LIGAND    RUN       TaskFitLigand
-
-@FIT_WATERS    PARAMETER SIGMA 2.0
-@FIT_WATERS    RUN       TaskFitWaters
-
-@REFINE        USE_SUGGESTED_PARAMETERS
-@REFINE        RUN       TaskRefmac
-
-@VALIDATION    RUN       TaskPDBVal
-
-
-========================================================================================================
-
-#
-# -----------------------------------------------------
-# Simple Dimple-with-ligand workflow example
-# -----------------------------------------------------
-#
-
-# General workflow descriptors
-NAME     dimple workflow
-ONAME    dimple_wflow 
-TITLE    Dimple MR Workflow with ligand fitting
-DESC     custom DIMPLE workflow for high-homology cases 
-KEYWORDS dimple workflow  # for using in A-Z keyword search
-
-ALLOW_UPLOAD  # create file upload widgets if started from project root
-
-# List all data required, "!" specifies mandatory items
-!DATA HKL UNMERGED TYPES anomalous
-!DATA XYZ          TYPES protein dna rna
-DATA SEQ           TYPES protein dna rna
-DATA LIGAND
 
 # Workflow itself
 
 @AIMLESS       
     IFDATA    unmerged
-    IDATA     ds0  unmerged
+    DATA      ds0  unmerged
+    PARAMETER RESO_HIGH resHigh+0.01
     RUN       TaskAimless
+    
+@CHANGERESO
+    IFNOTDATA unmerged
+    PROPERTY  HKL res_high resHigh+0.1
+    RUN       TaskChangeReso
 
 @DIMPLE        
     RUN       TaskDimpleMR
@@ -653,34 +473,33 @@ DATA LIGAND
 
 @FIT_LIGAND    
     IFDATA    ligand
-    PARAMETER SAMPLES 500
+    PARAMETER SAMPLES 750
     RUN       TaskFitLigand
 
+@REFINE1
+    IFDATA    ligand
+    PARAMETER VDW_VAL  2.0
+    PARAMETER MKHYDR   "ALL"
+    RUN       TaskRefmac
+
 @FIT_WATERS
-    PARAMETER SIGMA 2.0
+    PARAMETER SIGMA 3.0
     RUN       TaskFitWaters
-    
-@REFINE
-    USE_SUGGESTED_PARAMETERS
-    OPTIMIZE  TaskRefmac
 
 let cnt = 1
 
-@REFINE
+@REFINE2
     USE_SUGGESTED_PARAMETERS
     RUN       TaskRefmac
 
 let cnt = cnt + 1
-#jumpto @VALIDATION if cnt>4
-repeat @REFINE while suggested>0 and cnt<5
+repeat @REFINE2 while suggested>0 and cnt<5
 
 # let cnt = cnt + 1
 # repeat @REFINE if cnt<3
 
-@VALIDATION
-    RUN       TaskPDBVal
-
-#
+# @VALIDATION
+#     RUN       TaskPDBVal
 
 #
 

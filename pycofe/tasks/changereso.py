@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    29.01.23   <--  Date of Last Modification.
+#    16.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -31,8 +29,9 @@ import os
 
 #  application imports
 from . import basic
-from   pycofe.dtypes import dtype_template
-from   pycofe.proc   import import_filetype, import_merged
+from   pycofe.dtypes  import dtype_template
+from   pycofe.proc    import import_filetype, import_merged
+from   pycofe.auto    import auto_workflow
 
 
 # ============================================================================
@@ -50,19 +49,20 @@ class ChangeReso(basic.TaskDriver):
 
         # fetch input data
         revision = None
-        hkl      = None
-        idata    = self.makeClass ( self.input_data.data.idata[0] )
-        if idata._type=="DataRevision":
-            revision = idata
-            hkl = self.makeClass ( self.input_data.data.hkl[0] )
-        else:
-            hkl = idata
+        hkl      = self.makeClass ( self.input_data.data.hkl[0] )
+        # hkl      = None
+        # idata    = self.makeClass ( self.input_data.data.idata[0] )
+        # if idata._type=="DataRevision":
+        #     revision = idata
+        #     hkl = self.makeClass ( self.input_data.data.hkl[0] )
+        # else:
+        #     hkl = idata
 
         res_high = hkl.res_high
         res_low  = hkl.res_low
-        if (len(res_high)<=0):
+        if (res_high==''):
             res_high = hkl.getHighResolution()
-        if (len(res_low)<=0):
+        if (res_low==''):
             res_low  = hkl.getLowResolution()
 
         self.putMessage ( "<b>New resolution limits: " + str(res_high) + " &mdash; " +\
@@ -127,9 +127,19 @@ class ChangeReso(basic.TaskDriver):
                     #revision = self.makeClass  ( self.input_data.data.revision[0] )
                     revision.setReflectionData ( new_hkl[0] )
                     self.registerRevision      ( revision   )
+
                 self.generic_parser_summary["change_reso"] = {'SpaceGroup':hkl.new_spg}
-                summary_line = "new resolution limits: Res=" + res_high +\
-                               "&mdash;" + res_low + " &Aring;"
+
+                summary_line = "new resolution limits: Res=" + str(res_high) +\
+                               "&mdash;" + str(res_low) + " &Aring;"
+                
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    awdata = { "data" : { "hkl" : new_hkl } }
+                    if revision:
+                        awdata["data"]["revision"] = [revision]
+                    auto_workflow.nextTask ( self,awdata,log=self.file_stderr )
+
 
         if not have_results:
             self.putTitle ( "No Output Generated" )

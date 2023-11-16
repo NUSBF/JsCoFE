@@ -561,11 +561,15 @@ if (!__template)  {
     this.modelcraftLayout = function()  {
       if (!('detwin' in this))
         this.detwin = false;
-      var col = 0;
-      if (customGrid.getNRows()>0)
-        col = 1;
+      // var col = 0;
+      // if (customGrid.getNRows()>0)
+      //   col = 1;
+      // customGrid.detwin = customGrid.setCheckbox ( 'Use twinned refinement',
+      //                                              this.detwin, r,col,1,1 )
+      //           .setTooltip ( 'Check for twinned refinement. Only use this ' +
+      //                         'option if you are sure your crystal is twinned.' );
       customGrid.detwin = customGrid.setCheckbox ( 'Use twinned refinement',
-                                                   this.detwin, 0,col,1,1 )
+                                                   this.detwin, r,0,1,3 )
                 .setTooltip ( 'Check for twinned refinement. Only use this ' +
                               'option if you are sure your crystal is twinned.' );
     }

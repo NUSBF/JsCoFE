@@ -38,7 +38,7 @@ function TaskModelCraft()  {
   this.name    = 'modelcraft';
   this.setOName ( 'modelcraft' );  // default output file name template
   this.title   = 'Automatic Model Building with ModelCraft';
-``
+
   this.input_dtypes = [{      // input data types
       data_type   : {'DataRevision':['!seq',['phases','xyz']]}, // data type(s) and subtype(s)
       label       : 'Structure revision',   // label for input dialog

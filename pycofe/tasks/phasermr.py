@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.09.22   <--  Date of Last Modification.
+#    16.11.22   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -203,14 +203,26 @@ class PhaserMR(basic.TaskDriver):
 
         self.write_stdin ( "\nCOMPOSITION BY ASU" )
         for i in range(len(seq)):
+            seqfpath = seq[i].getSeqFilePath ( self.inputDir() )
+            with open(seqfpath,"r") as seqfile:
+                seqcont = seqfile.read().upper().replace("-","").replace("*","")
             if (seq[i].isNucleotide()):
                 self.write_stdin ( "\nCOMPOSITION NUCLEIC SEQ" )
+                # do this because phaser is lazy
+                seqcont = seqcont.replace("B","C").replace("D","A") \
+                                 .replace("H","A").replace("K","G") \
+                                 .replace("M","A").replace("N","A") \
+                                 .replace("R","A").replace("S","C") \
+                                 .replace("V","A").replace("W","A") \
+                                 .replace("Y","C").replace("U","T")
             else:
                 self.write_stdin ( "\nCOMPOSITION PROTEIN SEQ" )
-            self.write_stdin ( " \"" +\
-                seq[i].getSeqFilePath(self.inputDir()) +\
-                "\" NUMBER " + str(seq[i].ncopies)
-            )
+            seqfpath, fext = os.path.splitext ( seqfpath )
+            seqfpath       = seqfpath + ".m" + fext
+            self.stdoutln ( seqcont )
+            with open(seqfpath,"w") as seqfile:
+                seqfile.write ( seqcont )
+            self.write_stdin ( " \"" + seqfpath + "\" NUMBER " + str(seq[i].ncopies) )
 
         for i in range(len(ens)):
             self.write_stdin (
