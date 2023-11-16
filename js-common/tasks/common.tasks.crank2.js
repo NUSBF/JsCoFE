@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    16.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -142,7 +142,7 @@ function TaskCrank2()  {
               SOLVENT_CONTENT : {
                     type      : 'real_', // blank value is allowed
                     keyword   : 'solvent_content=', // the real keyword for job input stream
-                    label     : 'Efective solvent content',
+                    label     : 'Effective solvent content',
                     tooltip   : 'Solvent content to be used in calculations (must ' +
                                 'be between 0.01 and 0.99). If left blank, ' +
                                 'solvent fraction from asymmetric unit definition ' +
@@ -154,7 +154,7 @@ function TaskCrank2()  {
                                              //   [min,'*']  : limited from bottom
                                              //   [min,max]  : limited from top and bottom
                     value     : '',          // value to be paired with the keyword
-                    default   : 'auto',
+                    placeholder : 'auto',
                     position  : [1,0,1,1],   // [row,col,rowSpan,colSpan]
                     hideon    : {sec1:['shelx-substr']} // from this and input data section
                   }

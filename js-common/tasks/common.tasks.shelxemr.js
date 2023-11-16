@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    16.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -81,7 +81,7 @@ function TaskShelxEMR()  {
               SOLVENT_CONTENT: {
                     type     : 'real_', // blank value is allowed
                     keyword  : '-s',    // the real keyword for job input stream
-                    label    : 'Efective solvent content',
+                    label    : 'Effective solvent content',
                     tooltip  : 'Solvent content to be used in calculations (must ' +
                                'be between 0.01 and 0.99). If left blank, ' +
                                'solvent fraction from asymmetric unit definition ' +
