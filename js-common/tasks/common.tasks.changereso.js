@@ -57,7 +57,7 @@ function TaskChangeReso()  {
   this.input_dtypes = [{    // input data types
       data_type   : {'DataHKL':[]},    // data type(s) and subtype(s)
       label       : 'Reflection data', // label for input dialog
-      inputId     : 'idata',      // input Id for referencing input fields
+      inputId     : 'hkl',        // input Id for referencing input fields
       customInput : 'changereso', // lay custom fields next to the selection
                                   // dropdown for anomalous data
       version     : 0,            // minimum data version allowed

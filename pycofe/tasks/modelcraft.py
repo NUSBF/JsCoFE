@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.10.23   <--  Date of Last Modification.
+#    16.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -93,6 +93,10 @@ class ModelCraft(basic.TaskDriver):
         else:
             isubstruct = istruct
 
+        build_sel = "all"
+        if hasattr(revision.Options,"build_sel"):
+            build_sel = revision.Options.build_sel
+
         # If starting from experimental phases:
         #
         # modelcraft --contents sequences.fasta --data data.mtz --unbiased
@@ -161,9 +165,12 @@ class ModelCraft(basic.TaskDriver):
                 "sequence"      : s1.getSequence(self.inputDir()),
                 "stoichiometry" : s1.ncopies
             }
-            if s1.isProtein():  contents["proteins"].append(item)
-            elif s1.isDNA()  :  contents["dnas"    ].append(item)
-            elif s1.isRNA()  :  contents["rnas"    ].append(item)
+            if s1.isProtein() and build_sel in ["all","protein"]:
+                contents["proteins"].append(item)
+            elif s1.isDNA() and build_sel in ["all","dna"]:
+                contents["dnas"].append(item)
+            elif s1.isRNA() and build_sel in ["all","rna"]:
+                contents["rnas"].append(item)
 
         with open(self.contents_json(),"w") as contfile:
             json.dump ( contents,contfile )

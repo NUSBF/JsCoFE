@@ -176,7 +176,10 @@ class Workflow(import_task.Import):
         if hasattr(self.task.parameters,"sec1"):
             sec1 = self.task.parameters.sec1.contains
             for key in vars(sec1):
-                variables[key] = self.getParameter ( getattr(sec1,key) )
+                item = getattr(sec1,key)
+                if item:
+                    if item.type.startswith("real"):
+                        variables[key] = item.value
             self.stderrln ( " variables="+str(variables) )
 
         if have_results:

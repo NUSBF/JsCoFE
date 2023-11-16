@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    27.12.22   <--  Date of Last Modification.
+ *    16.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Revision Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  ==========================================================================
  *
@@ -28,17 +28,17 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 
 // ===========================================================================
 
-var revision_subtype = {
-  asu          : 'asu',
-  hkl          : 'hkl',
-  seq          : 'seq',
-  anomalous    : 'anomalous',
-  xyz          : 'xyz',
-  substructure : 'substructure',
-  phases       : 'phases',
-  ligands      : 'ligands',
-  waters       : 'waters'
-}
+// var revision_subtype = {
+//   asu          : 'asu',
+//   hkl          : 'hkl',
+//   seq          : 'seq',
+//   anomalous    : 'anomalous',
+//   xyz          : 'xyz',
+//   substructure : 'substructure',
+//   phases       : 'phases',
+//   ligands      : 'ligands',
+//   waters       : 'waters'
+// }
 
 // Data classes MUST BE named as 'DataSomething' AND put in file named
 // ./js-common/dtypes/common.dtypes.something.js . This convention is used
@@ -74,7 +74,8 @@ function DataRevision()  {
     'ncsmodel_sel'      : 'do-not-use',   // for parrot
     'seqNo'             : 0,              // selected sequence number (not used?)
     'load_all'          : false,          // for Coot-MB
-    'useSubstruct'      : false           // used by modelcraft
+    'useSubstruct'      : false,          // used by modelcraft
+    'build_sel'         : 'protein'       // 'all','protein','rna','dna' for modelcraft
   };
 
   this.backtrace      = false;  // take data only from the latest job
@@ -740,11 +741,31 @@ if (!__template)  {
   var row        = customGrid.getNRows();
     if (!('useSubstruct' in this.Options))
       this.Options.useSubstruct = false;
+    if (!('build_sel' in this.Options))
+      this.Options.build_sel = 'protein';
     if (this.Substructure)
       customGrid.use_substruct_cbx = customGrid.setCheckbox (
-                        'Use substructure',this.Options.useSubstruct,row,0, 1,1 )
+                        'Use substructure',this.Options.useSubstruct,row++,0, 1,1 )
                 .setTooltip ( 'Check if substructure atoms should be taken into ' +
                               'account as fixed model.' );
+    let is_protein = this.hasSubtype('protein');
+    let is_rna     = this.hasSubtype('rna');
+    let is_dna     = this.hasSubtype('dna');
+    if ((is_protein && is_rna) || (is_protein && is_dna) || (is_rna && is_dna))  {
+      customGrid.setLabel ( 'Build structure:',row,0,1,1 )
+                .setFontItalic(true).setNoWrap();
+      customGrid.setVerticalAlignment ( row,0,'middle' );
+      customGrid.build_sel = new Dropdown();
+      if (is_protein)
+        customGrid.build_sel.addItem ( 'Protein','','protein',this.Options.build_sel=='protein' );
+      if (is_rna)
+        customGrid.build_sel.addItem ( 'RNA','','rna',this.Options.build_sel=='rna' );
+      if (is_dna)
+        customGrid.build_sel.addItem ( 'DNA','','dna',this.Options.build_sel=='dna' );
+      customGrid.build_sel.addItem ( 'All','','all',this.Options.build_sel=='all' );
+      customGrid.setWidget ( customGrid.build_sel, row,1,1,1 );
+      customGrid.build_sel.make();
+    } 
   }
 
 
@@ -782,7 +803,7 @@ if (!__template)  {
           fname : '',
           stype : ''
         };
-      for (var i=0;i<flist.length;i++)  {
+      for (let i=0;i<flist.length;i++)  {
         flist[i].push ( 'fid_'+i );
         customGrid.textedit_sel.addItem ( flist[i][1] + ' : ' + flist[i][0],
                               '',i,this.Options.texteditor.fname==flist[i][1] );
@@ -962,6 +983,10 @@ if (!__template)  {
       case 'modelcraft' :
           if (this.Substructure)
             this.Options.useSubstruct = dropdown.customGrid.use_substruct_cbx.getValue();
+          if ('build_sel' in dropdown.customGrid)
+            this.Options.build_sel = dropdown.customGrid.build_sel.getValue();
+          else
+            this.Options.build_sel = 'all';
           msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
 
