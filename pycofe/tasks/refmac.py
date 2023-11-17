@@ -560,10 +560,9 @@ class Refmac(basic.TaskDriver):
                         
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework
-                    # self.stderrln ( " **** sp0=" + str(suggestedParameters) )
                     auto_workflow.nextTask ( self,{
                             "data" : {
-                                "revision"  : [revision]
+                                "revision" : [revision]
                             },
                             "scores" :  {
                                 "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
@@ -573,8 +572,7 @@ class Refmac(basic.TaskDriver):
                                 "TaskRefmac" : suggestedParameters
                             }
                     }, log=self.file_stderr )
-                        # summary_line += "workflow started"
-                        # self.putMessage ( "<h3>Workflow started</hr>" )
+                    # self.putMessage ( "<h3>Workflow started</hr>" )
 
                 else:  # pre-coded workflow framework
 
