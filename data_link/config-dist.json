@@ -9,7 +9,9 @@
   "storage": {
     "data_dir": "data",
     "user_dir": "users",
-    "catalog_dir": "catalogs"
+    "catalog_dir": "catalogs",
+    // amount of disk space to try keep free - older data not in use will be pruned
+    "data_free_gb": 100
   },
   // data source configuration
   "data_sources": {

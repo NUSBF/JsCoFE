@@ -207,6 +207,9 @@ class dataLink {
         return tools.successMsg(`${source}: ${user}/${source}/${id} is already downloaded`);
       }
 
+      // prune old data if required
+      this.dataPrune(config.get('storage.data_free_gb'));
+
       // aquire the data from the data source
       if (this.source[source].aquire(user, id, this, force)) {
         return tools.successMsg(`${source}: Downloading ${user}/${source}/${id}`);
@@ -250,6 +253,52 @@ class dataLink {
     } else {
       return result;
     }
+  }
+
+  async dataPrune(min_free_gb) {
+    let free_gb = tools.getFreeSpace(tools.getDataDir(), '1G');
+    if (free_gb === false) {
+      return;
+    }
+
+    if (free_gb > min_free_gb) {
+      return;
+    }
+
+    let size_to_free = min_free_gb - free_gb;
+
+    let entries = [];
+    // build up list of data that is not in use by age
+    for (const user in this.catalog) {
+      for (const source in this.catalog[user]) {
+        for (const id in this.catalog[user][source]) {
+          let e = this.catalog[user][source][id];
+          if (! e.in_use && e.status === status.completed) {
+            entries.push( {
+              date: e.last_access,
+              user: user,
+              source: source,
+              id: id,
+              size: e.size
+            });
+          }
+        }
+      }
+    }
+
+    entries.sort(function(a,b) {
+      return new Date(a.date) - new Date(b.date);
+    });
+
+    let size = 0;
+    for (const e of entries) {
+      this.dataRemove(e.user, e.source, e.id);
+      size += Math.floor(e.size / (1024 * 1024 * 1024));
+      if (size >= size_to_free) {
+        break;
+      }
+    }
+    log.info(`dataPrune - Removed ${size} of required ${size_to_free}`);
   }
 
   getCatalogStatus(user, source, id) {

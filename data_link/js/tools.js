@@ -3,6 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
+const process = require('child_process');
 
 const config = require('./config.js');
 const log = require('./log.js');
@@ -186,6 +187,17 @@ class tools {
       }
     }
     return false;
+  }
+
+  static getFreeSpace(dir, size) {
+    let res;
+    try {
+      res = process.execSync(`df --block-size ${size} --output=avail ${dir} | tail -n1`).toString().trim();
+    } catch (err) {
+      log.error(`tools.getFreeSpace - ${err}`)
+      return false;
+    }
+    return res;
   }
 }
 
