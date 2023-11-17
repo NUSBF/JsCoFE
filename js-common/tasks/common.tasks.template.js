@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    05.11.23   <--  Date of Last Modification.
+ *    17.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -1659,22 +1659,24 @@ if (!dbx)  {
               while ((j<dn.length) && (dt[dn[j]].dataId!=inp_data[n].dataId))
                 j++;
   // console.log ( ' >>> j='+ j );
-              if (j<dn.length)  {
-                var layCustom = dropdown[i][n].layCustom;
-                dropdown[i][n].layCustom = '';
-                // dropdown[i][n].selectItem ( dn[j] );
-                _fill_optimized ( dropdown[i][n],dn[j] );
-                dropdown[i][n].inspect_btn.setVisible ( true );
-                if (layCustom)  {
-                  dropdown[i][n].layCustom = layCustom;
-                  dropdown[i][n].customGrid.clear();
-                  dt[dn[j]].layCustomDropdownInput ( dropdown[i][n] );
-                  dropdown[i][n].grid.setRowVisible ( dropdown[i][n].row+1,true );
-                  dropdown[i][n].customGrid.setVisible ( true );
-                }
-                //console.log ( dropdown[i][n].getContent() );
-              } else
-                _fill_dropdown ( dropdown[i][n] );
+              if (n<dropdown[i].length)  {
+                if (j<dn.length)  {
+                  let layCustom = dropdown[i][n].layCustom;
+                  dropdown[i][n].layCustom = '';
+                  // dropdown[i][n].selectItem ( dn[j] );
+                  _fill_optimized ( dropdown[i][n],dn[j] );
+                  dropdown[i][n].inspect_btn.setVisible ( true );
+                  if (layCustom)  {
+                    dropdown[i][n].layCustom = layCustom;
+                    dropdown[i][n].customGrid.clear();
+                    dt[dn[j]].layCustomDropdownInput ( dropdown[i][n] );
+                    dropdown[i][n].grid.setRowVisible ( dropdown[i][n].row+1,true );
+                    dropdown[i][n].customGrid.setVisible ( true );
+                  }
+                  //console.log ( dropdown[i][n].getContent() );
+                } else
+                  _fill_dropdown ( dropdown[i][n] );
+              }
             }
 
             // fill remaining menus (up to specified max value), which remain 

@@ -1,0 +1,88 @@
+#
+# -----------------------------------------------------
+# Simple Dimple-with-ligand workflow
+# -----------------------------------------------------
+#
+
+VERSION 1.0  # script version for backward compatibility
+
+# ==========================================================================
+# Workflow header and input
+
+# General workflow descriptors
+NAME     dimple workflow
+ONAME    dimple_wflow 
+TITLE    Dimple MR Workflow with ligand fitting
+DESC     custom DIMPLE workflow for high-homology cases 
+KEYWORDS dimple workflow  # for using in A-Z keyword search
+
+ALLOW_UPLOAD  # create file upload widgets if started from project root
+
+# List all data required, "!" specifies mandatory items
+!DATA HKL UNMERGED TYPES anomalous
+!DATA XYZ          TYPES protein dna rna
+DATA SEQ           TYPES protein dna rna
+DATA LIGAND
+
+# List all parameters required, "!" specifies mandatory items
+PAR_REAL resHigh
+    LABEL     High resolution cut-off (Å) 
+    TOOLTIP   High resolution cut-off, angstrom
+    RANGE     0.1 5.0
+    DEFAULT   1.5
+
+
+# ==========================================================================
+# Workflow itself
+
+@AIMLESS       
+    IFDATA    unmerged
+    DATA      ds0  unmerged
+    PARAMETER RESO_HIGH resHigh+0.01
+    RUN       TaskAimless
+    
+@CHANGERESO
+    IFNOTDATA unmerged
+    PROPERTY  HKL res_high resHigh+0.1
+    RUN       TaskChangeReso
+
+@DIMPLE        
+    RUN       TaskDimpleMR
+
+@MAKE_LIGAND   
+    IFDATA    ligdesc  # can be a list of required data types
+    RUN       TaskMakeLigand
+
+@REMOVE_WATERS 
+    IFDATA    ligand
+    ALIAS     revision   istruct
+    PARAMETER SOLLIG_SEL "W"
+    RUN       TaskXyzUtils
+
+@FIT_LIGAND    
+    IFDATA    ligand
+    PARAMETER SAMPLES 750
+    RUN       TaskFitLigand
+
+@REFINE1
+    PARAMETER VDW_VAL  2.0
+    PARAMETER MKHYDR   "ALL"
+    RUN       TaskRefmac
+
+@FIT_WATERS
+    PARAMETER SIGMA 3.0
+    RUN       TaskFitWaters
+
+let cnt = 1
+
+@REFINE2
+    USE_SUGGESTED_PARAMETERS
+    RUN       TaskRefmac
+
+let cnt = cnt + 1
+repeat @REFINE2 while suggested>0 and cnt<5
+
+@VALIDATION
+    RUN       TaskPDBVal
+
+#

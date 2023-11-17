@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.11.22   <--  Date of Last Modification.
+#    17.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -34,7 +34,7 @@ import re
 from . import basic
 from   pycofe.dtypes   import dtype_template
 from   pycofe.verdicts import verdict_phasermr
-from   pycofe.auto     import auto
+from   pycofe.auto     import auto, auto_workflow
 
 
 # ============================================================================
@@ -482,13 +482,28 @@ class PhaserMR(basic.TaskDriver):
                 }
                 verdict_phasermr.putVerdictWidget ( self,verdict_meta,row0 )
 
-                auto.makeNextTask(self, {
-                    "revision" : revision,
-                    "Rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] ),
-                    "nfitted0" : nfitted0, # number of polymers before run
-                    "nfitted"  : structure.getNofPolymers(), # number of polymers after run
-                    "nasu"     : revision.getNofASUMonomers(), # number of predicted subunits
-                }, log=self.file_stderr)
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision"  : [revision]
+                            },
+                            "scores" :  {
+                                "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                                "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
+                                "nfitted0" : nfitted0,         # number of polymers before run
+                                "nfitted"  : structure.getNofPolymers()  # number of polymers after run
+                            }
+                    }, log=self.file_stderr )
+
+                else:  # pre-coded workflow framework
+                    auto.makeNextTask(self, {
+                        "revision" : revision,
+                        "Rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] ),
+                        "nfitted0" : nfitted0,    # number of polymers before run
+                        "nfitted"  : structure.getNofPolymers(),  # number of polymers after run
+                        "nasu"     : revision.getNofASUMonomers() # number of predicted subunits
+                    }, log=self.file_stderr)
 
         else:
             self.putTitle ( "No solution was obtained" )

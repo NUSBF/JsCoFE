@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.10.23   <--  Date of Last Modification.
+#    17.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,7 +35,7 @@ import gemmi
 #  application imports
 from . import basic
 from   pycofe.proc   import seqal
-from   pycofe.auto   import auto
+from   pycofe.auto   import auto, auto_workflow
 
 # ============================================================================
 # Model preparation driver
@@ -387,10 +387,18 @@ class ModelPrepXYZ(basic.TaskDriver):
               "summary_line" : str(len(models)) + " model(s) generated " + protocol
             }
 
-            auto.makeNextTask ( self,{
-                "model" : models[0]
-            })
-
+            if self.task.autoRunName.startswith("@"):
+                # scripted workflow framework
+                auto_workflow.nextTask ( self,{
+                    "data" : {
+                        "model" : models
+                    }
+                }, log=self.file_stderr )
+                # self.putMessage ( "<h3>Workflow started</hr>" )
+            else:  # pre-coded workflow framework
+                auto.makeNextTask ( self,{
+                    "model" : models[0]
+                })
 
         self.success ( (len(models)>0) )
         return

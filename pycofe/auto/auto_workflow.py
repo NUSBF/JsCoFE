@@ -170,7 +170,7 @@ def nextTask ( body,data,log=None ):
             aliases       = {}  # data aliasess
             tdata         = {}  # specific task data from context
             use_suggested_parameters = False
-            repeat_task   = False  # no task repeat mode (default)
+            repeat_mode   = ""  # no task repeat mode (default)
             parse_error   = ""
 
             # auto_api2.log ( " --- " + str(crTask.script_pointer) )
@@ -219,8 +219,7 @@ def nextTask ( body,data,log=None ):
                                     lno = lno + 1
                                     ok  = True
                                     while lno<len(script) and ok:
-                                        w0 = script[lno].split()[0].upper()
-                                        if w0=="RUN":
+                                        if script[lno].strip().upper().startswith("RUN "):
                                             ok = False
                                         else:
                                             lno   = lno + 1
@@ -291,17 +290,20 @@ def nextTask ( body,data,log=None ):
                                         auto_api2.log ( "LET '" + expression[eqi+1:] + "' = " + str(value) )
                                     except:
                                         parse_error = perr
-                        elif w0u=="REPEAT":
+                        elif w0u=="REPEAT" or w0u=="CONTINUE":
                             if nwords<4 or not words[1].startswith("@") or words[2].upper()!="WHILE":
                                 parse_error = perr
                             else:
-                                repeat_task = False  # end repeat task mode
+                                repeat_mode = ""  # end repeat task mode
                                 try:
-                                    repeat_task = eval_parser.parse(" ".join(words[3:])).evaluate(w)
-                                    auto_api2.log ( "repeat evaluated: '" + " ".join(words[3:]) + "' as " + str(repeat_task) )
+                                    expr = " ".join(words[3:]);
+                                    if eval_parser.parse(expr).evaluate(w):
+                                        repeat_mode = w0u
+                                    auto_api2.log ( "repeat evaluated: '" + expr + "' as [" + \
+                                                    str(repeat_mode) + "]" )
                                 except:
                                     parse_error = perr
-                                if repeat_task:
+                                if repeat_mode:
                                     # scroll script up
                                     lno,nextRunName = scrollToRunName ( script,words[1] )
                                     auto_api2.log ( " --- repeat pointer: " + str(lno) )
@@ -312,6 +314,10 @@ def nextTask ( body,data,log=None ):
                                 parse_error = perr
                             else:
                                 nextTaskType = words[1]
+                        elif w0u=="PRINT_VAR":
+                            if nwords>1:
+                                expr = " ".join(words[1:])
+                                auto_api2.log ( " PRINT: " + expr + " = " +  str(eval_parser.parse(expr).evaluate(w)) )
                         elif w0u=="END" or w0u=="STOP":
                             parse_error = "end"  # just sinal end of play
                 lno = lno + 1
@@ -341,7 +347,7 @@ def nextTask ( body,data,log=None ):
 
                 # form new task
                 runName = nextRunName
-                if repeat_task:
+                if repeat_mode=="REPEAT":
                     # clone specified task
                     repeat_no = auto_api2.getContext ( nextRunName + "_rno" )
                     if not repeat_no:
@@ -372,7 +378,7 @@ def nextTask ( body,data,log=None ):
                                     cdata["revision"] )
 
                         for dtype in wdata:
-                            if dtype in ["unmerged","hkl","xyz","seq","ligand","lib"] and\
+                            if dtype in ["unmerged","hkl","xyz","model","seq","ligand","lib"] and\
                                         len(wdata[dtype])>0:
                                 auto_api2.addTaskData ( runName,
                                     aliases[dtype] if dtype in aliases else dtype,

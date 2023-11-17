@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.11.23   <--  Date of Last Modification.
+#    17.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -37,7 +37,7 @@ from   pycofe.dtypes   import dtype_template
 # from   varut           import signal, rvapi_utils
 from   pycofe.proc     import qualrep
 from   pycofe.verdicts import verdict_modelcraft
-from   pycofe.auto     import auto
+from   pycofe.auto     import auto, auto_workflow
 
 
 # ============================================================================
@@ -386,21 +386,29 @@ class ModelCraft(basic.TaskDriver):
                         "R_factor"     : Rwork,
                         "R_free"       : Rfree
                     }
+                        
+                    if self.task.autoRunName.startswith("@"):
+                        # scripted workflow framework
+                        auto_workflow.nextTask ( self,{
+                                "data" : {
+                                    "revision" : [revision]
+                                },
+                                "scores" :  {
+                                    "Rfactor"  : float(Rwork),
+                                    "Rfree"    : float(Rfree)
+                                }
+                        }, log=self.file_stderr )
+                        # self.putMessage ( "<h3>Workflow started</hr>" )
 
-                    # auto.makeNextTask ( self,{
-                    #     "revision" : revision,
-                    #     "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                    #     "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
-                    # })
-
-                    auto.makeNextTask ( self,{
-                        "revision"     : revision,
-                        "summary_line" : "Compl={0:.1f}%".format(Compl) +\
-                                         ", R=" + Rwork +\
-                                         " R<sub>free</sub>="  + Rfree,
-                        "Rfactor"      : Rwork,
-                        "Rfree"        : Rfree
-                    }, log=self.file_stderr)
+                    else:  # pre-coded workflow framework
+                        auto.makeNextTask ( self,{
+                            "revision"     : revision,
+                            "summary_line" : "Compl={0:.1f}%".format(Compl) +\
+                                            ", R=" + Rwork +\
+                                            " R<sub>free</sub>="  + Rfree,
+                            "Rfactor"      : Rwork,
+                            "Rfree"        : Rfree
+                        }, log=self.file_stderr)
 
             else:
                 self.putTitle ( "No Output Generated" )

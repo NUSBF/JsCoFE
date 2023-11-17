@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.10.23   <--  Date of Last Modification.
+#    17.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -39,7 +39,7 @@ from   pycofe.dtypes   import dtype_revision, dtype_sequence
 from   pycofe.proc     import import_filetype, import_sequence, asucomp
 from   pycofe.varut    import rvapi_utils
 from   pycofe.verdicts import verdict_asudef
-from   pycofe.auto     import auto
+from   pycofe.auto     import auto, auto_workflow
 
 
 # ============================================================================
@@ -590,9 +590,21 @@ class ASUDef(basic.TaskDriver):
             self.registerRevision ( revision[0],revisionName=revName )
             have_results = True
 
-            auto.makeNextTask ( self,{
-                "revision" : revision[0]
-            })
+            if self.task.autoRunName.startswith("@"):
+                # scripted workflow framework
+                auto_workflow.nextTask ( self,{
+                    "data" : {
+                        "revision" : [revision[0]]
+                    },
+                    "scores" :  {
+                        "nasu" : revision[0].getNofASUMonomers()  # number of predicted subunits
+                    }
+                }, log=self.file_stderr )
+                # self.putMessage ( "<h3>Workflow started</hr>" )
+            else:  # pre-coded workflow framework
+                auto.makeNextTask ( self,{
+                    "revision" : revision[0]
+                })
 
         # close execution logs and quit
         self.success ( have_results )
