@@ -831,7 +831,7 @@ function fetchFile ( furl,function_success,function_always,function_fail )  {
 
   oReq.overrideMimeType ( "text/plain; charset=x-user-defined" );
   // oReq.responseType = 'arraybuffer';
-  oReq.timeout      = 9999999;
+  oReq.timeout = 9999999;
   oReq.open ( 'POST',furl,true );
 
   try {
