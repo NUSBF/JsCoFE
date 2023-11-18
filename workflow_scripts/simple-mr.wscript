@@ -14,6 +14,7 @@ NAME     SMR workflow
 ONAME    smr_wflow 
 TITLE    Simple MR Workflow with ligand fitting
 DESC     simple MR with given templatem water/ligand fitting and refinement 
+ICON Maraschino  # added automatically
 KEYWORDS simple MR workflow  # for using in A-Z keyword search
 
 ALLOW_UPLOAD  # create file upload widgets if started from project root
@@ -72,7 +73,7 @@ continue @MOLECULAR_REPLACEMENT  while  nfitted0<nfitted and nfitted<nasu
     RUN       TaskFitLigand
 
 @REFINE-1
-    #IFDATA    ligand
+    IFDATA    ligand
     PARAMETER VDW_VAL  2.0
     PARAMETER MKHYDR   "ALL"
     RUN       TaskRefmac
