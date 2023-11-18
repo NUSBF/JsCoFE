@@ -39,7 +39,7 @@ function TaskWorkflow()  {
   this.setOName ( 'workflow' );  // default output file name template
   this.title  = 'Workflow';
 
-  this.icon_name       = 'workflow';
+  this.icon_name       = 'workflow_aqua';
   this.task_desc       = 'generic workflow';
   this.search_keywords = ['workflow'];
 
@@ -295,10 +295,11 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
 
         case 'NAME'     : this.name      = words.slice(1).join(' ');  break;
         case 'ONAME'    : this.setOName  ( words[1] );                break;
-        case 'ICON'     : this.icon_name = words[1];                  break;
         case 'TITLE'    : this.title     = words.slice(1).join(' ');  break;
         case 'DESC'     : this.task_desc = words.slice(1).join(' ');  break;
         case 'KEYWORDS' : this.search_keywords = words.slice(1);      break;
+        case 'ICON'     : this.icon_name = 'workflow_' + words[1].toLowerCase();
+                        break;
 
         case '!DATA'    : // means the data is mandatory
         case 'DATA'     : let dtype = {        // input data type
