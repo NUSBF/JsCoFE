@@ -261,12 +261,13 @@ var item = this.getItem ( 'FacilityDataset',this.selected_node_id );
 // =========================================================================
 // StorageTree class
 
-function StorageTree ( treeType,rootPath,fileKey,dirDesc_lbl )  {
+function StorageTree ( treeType,rootPath,topPath,fileKey,dirDesc_lbl )  {
 
   Tree.call ( this,'_____' );
 
   this.tree_type = treeType;
   this.tree_root = rootPath;
+  this.tree_top  = topPath;
   this.file_key  = fileKey;    // 0: do not show images
                                // 1: show images
                                // 2: show only images
@@ -320,7 +321,8 @@ var icon_ext = {
   'fasta'     : 'file_seq',
   'pir'       : 'file_seq',
   'hhr'       : 'file_hhpred',
-  'borges'    : 'file_borges'
+  'borges'    : 'file_borges',
+  'wscript'   : 'file_wscript'
 };
 
 var importable_ext = [
@@ -338,7 +340,7 @@ StorageTree.prototype.readStorageData = function ( page_title,
                                                    onDblClick_func,
                                                    onSelect_func )  {
 
-  this.item_map   = {};  // map[nodeId]==item of all items in the tree
+  this.item_map = {};  // map[nodeId]==item of all items in the tree
   if (extFilter && (extFilter.length>0))  {
     this.ext_filter = [];
     for (var i=0;i<extFilter.length;i++)  {
@@ -351,7 +353,8 @@ StorageTree.prototype.readStorageData = function ( page_title,
 
   var meta = {
     'type' : this.tree_type,
-    'path' : this.tree_root
+    'path' : this.tree_root,
+    'root' : this.tree_top
   };
 
   (function(tree){
@@ -387,25 +390,30 @@ StorageTree.prototype.readStorageData = function ( page_title,
           for (var i=0;i<tree.storageList.dirs.length;i++)  {
             var sdir = tree.storageList.dirs[i];
             var name = sdir.name;
-            if (name=='..')  {
-              name += ' (&#8593; <i>upper directory</i>)';
+            if (name=='**top**')  {
               if (sdir.hasOwnProperty('fullDesc'))
                 tree.dirdesc_lbl.setText ( sdir.fullDesc + '<hr/>&nbsp;<br>' );
+            } else  {
+              if (name=='..')  {
+                name += ' (&#8593; <i>upper directory</i>)';
+                if (sdir.hasOwnProperty('fullDesc'))
+                  tree.dirdesc_lbl.setText ( sdir.fullDesc + '<hr/>&nbsp;<br>' );
+              }
+              var icon   = 'folder';
+              var nlower = name.toLowerCase();
+              if (nlower.indexOf('my computer'  )>=0) icon = 'folder_mycomputer';
+              else if (nlower.indexOf('home'    )>=0) icon = 'folder_home';
+              else if (nlower.indexOf('ccp4'    )>=0) icon = 'folder_ccp4';
+              else if (nlower.indexOf('demo'    )>=0) icon = 'folder_ccp4';
+              else if (nlower.indexOf('tutorial')>=0) icon = 'folder_tutorials';
+              else if (nlower.indexOf('workshop')>=0) icon = 'folder_workshops';
+              if ((nlower.indexOf('howto')>=0) || (nlower.indexOf('how ')>=0) ||
+                  (nlower.indexOf('?')>=0))  icon = 'folder_howto';
+              var dnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
+              if ((name!='..') && sdir.hasOwnProperty('shortDesc'))
+                dnode.setTooltip ( sdir.shortDesc );
+              tree.item_map[dnode.id] = sdir;
             }
-            var icon   = 'folder';
-            var nlower = name.toLowerCase();
-            if (nlower.indexOf('my computer'  )>=0) icon = 'folder_mycomputer';
-            else if (nlower.indexOf('home'    )>=0) icon = 'folder_home';
-            else if (nlower.indexOf('ccp4'    )>=0) icon = 'folder_ccp4';
-            else if (nlower.indexOf('demo'    )>=0) icon = 'folder_ccp4';
-            else if (nlower.indexOf('tutorial')>=0) icon = 'folder_tutorials';
-            else if (nlower.indexOf('workshop')>=0) icon = 'folder_workshops';
-            if ((nlower.indexOf('howto')>=0) || (nlower.indexOf('how ')>=0) ||
-                (nlower.indexOf('?')>=0))  icon = 'folder_howto';
-            var dnode = tree.addRootNode ( name,image_path(icon),tree.customIcon() );
-            if ((name!='..') && sdir.hasOwnProperty('shortDesc'))
-              dnode.setTooltip ( sdir.shortDesc );
-            tree.item_map[dnode.id] = sdir;
           }
 
           for (var i=0;i<tree.storageList.files.length;i++)  {

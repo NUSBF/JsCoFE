@@ -507,7 +507,10 @@ function CloudFileBrowser ( inputPanel,task,fileKey,extFilter,onSelect_func,onCl
   this.storageTree = null;
 
   this.tree_loading = false;
-  this.loadStorageTree ( this.task.currentCloudPath );
+  this.tree_top     = '/';
+  if ('rootCloudPath' in this.task)
+    this.tree_top = this.task.rootCloudPath;
+  this.loadStorageTree ( this.task.currentCloudPath,this.tree_top );
 
   var dlg_options = {
     resizable : true,
@@ -559,13 +562,13 @@ CloudFileBrowser.prototype.setButtonLabel = function ( btn_no,label_text )  {
   $('#' + this.btn_ids[btn_no]).button ( 'option','label',label_text );
 }
 
-CloudFileBrowser.prototype.loadStorageTree = function ( cloudPath )  {
+CloudFileBrowser.prototype.loadStorageTree = function ( cloudPath,topPath )  {
 
   (function(browser){
 
     browser.tree_loading = true;
 
-    var storageTree = new StorageTree ( browser.tree_type,cloudPath,
+    var storageTree = new StorageTree ( browser.tree_type,cloudPath,topPath,
                                                 browser.file_key,browser.dir_desc );
 
     storageTree.element.style.paddingTop    = '0px';
@@ -606,7 +609,7 @@ CloudFileBrowser.prototype.loadStorageTree = function ( cloudPath )  {
             browser.storageTree = storageTree;
             browser.onTreeItemSelect();
             //browser.onTreeLoaded();
-          } else  {
+          } else if (browser.tree_type!='abspath') {
             $(browser.element).dialog ( 'option','width' ,600 );
             $(browser.element).dialog ( 'option','height',330 );
             $(browser.element).dialog ( 'option','buttons',[
@@ -662,7 +665,7 @@ CloudFileBrowser.prototype.openItem = function()  {
         cloudPath = items[0].name;
       (function(browser){
         window.setTimeout ( function(){
-          browser.loadStorageTree ( cloudPath );
+          browser.loadStorageTree ( cloudPath,browser.tree_top );
         },0);
       }(this))
     } else if (this.file_key==2)  {
@@ -690,7 +693,7 @@ CloudFileBrowser.prototype.getStorageList = function ( path,callback_func )  {
 
   } else  {
 
-    var storageTree = new StorageTree ( 'files',path,this.file_key,this.dir_desc );
+    var storageTree = new StorageTree ( 'files',path,'/',this.file_key,this.dir_desc );
     storageTree.tree_type = this.tree_type;
     storageTree.readStorageData ( 'Cloud File Storage',this.ext_filter,
       function(){
@@ -751,16 +754,16 @@ CloudFileBrowser.prototype.onTreeItemSelect = function()  {
     for (var i=0;i<items.length;i++)
       if (items[i]._type=='FacilityDir')  {
         n_dirs++;
-        if (items[i].name=='..')
+        if ((items[i].name=='..') || (items[i].name=='**top**'))
           parent_dir = true;
       } else
         n_files++;
     if (this.file_key==3)  {
-      var disable = (n_dirs!=1) || (n_files>0);
+      let disable = (n_dirs!=1) || (n_files>0);
       this.disableButton  ( 0,disable );
       this.disableButton  ( 1,disable || parent_dir );
     } else if (this.file_key==2)  {
-      var disable = (n_dirs!=1) || (n_files>0);
+      let disable = (n_dirs!=1) || (n_files>0);
       this.disableButton  ( 0,disable );
       this.disableButton  ( 1,disable );
     } else if ((n_dirs==1) && (n_files==0))  {

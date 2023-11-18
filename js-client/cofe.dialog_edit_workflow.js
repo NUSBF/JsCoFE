@@ -95,6 +95,10 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
 
   this.setIcon ( -1 );
 
+  this.currentCloudPath = 'workflow_scripts';
+  this.rootCloudPath    = 'workflow_scripts';
+  this.tree_type        = 'abspath';
+
   var self = this;
 
   $(this.element).dialog({
@@ -103,6 +107,12 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
     width     : '800px',
     modal     : true,
     buttons   : {
+      "Library" : function(){
+        new CloudFileBrowser ( null,self,0,['wscript'],function(items){
+          console.log ( ' >>>>>>>here' );
+          return 1;  // do close browser window
+        },null );
+      },
       "Save": function() {
         let workflow_id     = wid_inp.getValue().trim();
         let workflow_script = self.editor.getText().trim();
