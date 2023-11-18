@@ -260,7 +260,7 @@ function readDirMeta ( dirpath,facilityDir )  {
 //  -------------------------------------------------------------------------
 //  Short description of directory content (will be used as tooltip)
 //  [[[]]]
-//  Full description of dircetory content (will be displayed in browser)
+//  Full description of directory content (will be displayed in browser)
 //  -------------------------------------------------------------------------
 //
   var jscofe_meta = utils.readString ( path.join(dirpath,facilityDir.name,cloudDirMetaFName) );
@@ -288,6 +288,62 @@ var slist = new fcl.StorageList()
   }
   return slist;
 }
+
+
+function getDirListing ( spath,sroot )  {
+let slist = new fcl.StorageList()
+
+  function add_file ( filename,size )  {
+    var sfile  = new fcl.FacilityFile();
+    sfile.name = filename;
+    sfile.size = size;
+    slist.files.push ( sfile );
+    return sfile;
+  }
+
+  slist.path = spath;
+  let rpath = null;
+  let rroot = null
+  try {
+    rpath = fs.realpathSync(spath);
+    rroot = fs.realpathSync(sroot);
+  } catch (e)  {
+    log.error ( 5,'error in taking absolute paths of "' + spath + 
+                  '" and/or "' + sroot + '"' );
+    return slist;
+  }
+  if (utils.dirExists(rpath))  {
+    let sdir  = null;
+    sdir      = new fcl.FacilityDir();
+    sdir      = readDirMeta ( rpath,sdir );
+    if (rpath!=rroot)  sdir.name = '..';
+                 else  sdir.name = '**top**';
+    slist.dirs.push ( sdir );
+    slist.sectors = [];
+    let file_list = dirpath2sectors ( rpath,slist.sectors,[] );
+    for (let file_tuple of file_list) {
+      let fstr0 = file_tuple[0];
+      let fstr1 = file_tuple[1];
+      let fpath = path.join ( rpath,fstr0 );
+      let stat  = utils.fileExists(fpath);
+      if (stat) {
+        if (fstr1 == 'dir') {
+          sdir      = new fcl.FacilityDir();
+          sdir.name = fstr0;
+          sdir      = readDirMeta ( rpath,sdir );
+          slist.dirs.push(sdir);
+        } else  {
+          let sfile = add_file(fstr0, stat.size);
+          if (fstr1 == 'seq') {
+            sfile.contents = utils.readString(fpath);
+          }
+        }
+      }
+    }
+  }
+  return slist;
+}
+
 
 function getCloudDirListing ( cloudMounts,spath )  {
 var slist = null;
@@ -372,7 +428,7 @@ var slist = null;
               if (fstr1 == 'seq') {
                 sfile.contents = utils.readString(fpath);
               }
-            }
+            } 
             else {
               if (fstr0.split('.').pop().toLowerCase() == 'h5') {
                 add_file(fstr0, 0).h5 = 1;
@@ -494,6 +550,9 @@ function getCloudFileTree ( loginData,data,callback_func )  {
     callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',
                         getCloudDirListing ( getJobSafeMount(),data['path']
                                              ) ) );
+  } else if (data['type']=='abspath')  {
+    callback_func ( new cmd.Response ( cmd.fe_retcode.ok,'',
+                              getDirListing(data['path'],data['root']) ) );
   } else  {
     get_user_facility_list ( loginData,callback_func );
   }
