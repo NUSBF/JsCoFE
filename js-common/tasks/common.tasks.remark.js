@@ -214,7 +214,7 @@ if (!__template)  {
 
   TaskRemark.prototype.makeThemeMenu = function ( suffix,inputPanel )  {
 
-    var icon_menu = new Menu ( '', image_path(__remark_icon[this.theme_no][0]+suffix) );
+    let icon_menu = new Menu ( '', image_path(__remark_icon[this.theme_no][0]+suffix) );
 
     icon_menu.button.setWidth  ( '80px' );
     icon_menu.button.setHeight ( '80px' );
@@ -229,7 +229,7 @@ if (!__template)  {
       icon_menu.setMaxHeight ( (inputPanel.height_px()-90) + 'px' );
     });
 
-    for (var i=0;i<__remark_icon.length;i++)
+    for (let i=0;i<__remark_icon.length;i++)
       (function(themeNo,task){
         icon_menu.addItem ( __remark_icon[themeNo][1],
                             image_path(__remark_icon[themeNo][0]+suffix) )

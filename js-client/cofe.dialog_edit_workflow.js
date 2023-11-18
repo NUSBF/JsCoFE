@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.23   <--  Date of Last Modification.
+ *    18.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -38,7 +38,8 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
 
   this.grid.setLabel    ( ' ',0,0,1,1 );
   this.grid.setCellSize ( '','6px', 0,0 );
-  this.grid.setImage    ( image_path('workflow'),'80px','80px', 1,0,2,1 );
+  this.setIconMenu      ();
+
   this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
   this.grid.setLabel    ( 'Workflow Creator',1,2,1,2 )
            .setFontBold ( true  )
@@ -87,8 +88,12 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
   this.editor.init  ( '',
     '# Put workflow script here'
   );
-  if (workflowDesc)
+  if (workflowDesc)  {
+    this.setIcon ( workflowDesc.script );
     this.editor.setText ( workflowDesc.script );
+  }
+
+  this.setIcon ( -1 );
 
   var self = this;
 
@@ -146,6 +151,10 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
     "restore"  : function(evt,d){ self.onWindowResize(); }
   });
 
+  // this.icon_btn.addOnClickListener ( function(){
+
+  // });
+
   $(this.element).on ( 'dialogresize', function(event,ui){
       self.onWindowResize();
       // dlg.task.job_dialog_data.width  = dlg.width_px();
@@ -162,6 +171,96 @@ EditWorkflowDialog.prototype = Object.create ( Widget.prototype );
 EditWorkflowDialog.prototype.constructor = EditWorkflowDialog;
 
 
+const __workflow_icon = [
+  'Aqua','Asparagus','Black','Gold','Grape','Lavender','Maraschino','Maroon',
+  'Mocha','Pink','Salmon','Spring','Tangerine','Teal','Tin'
+];
+
 EditWorkflowDialog.prototype.onWindowResize = function()  {
   this.editor.setSize_px ( this.width_px()-40,this.height_px()-162 );
+}
+
+EditWorkflowDialog.prototype.getIconPath = function ( iconNo )  {
+  return  image_path ( 'workflow_' + __workflow_icon[iconNo].toLowerCase() );
+}
+
+EditWorkflowDialog.prototype.setIconMenu = function()  {
+
+  this.icon_no  = 0;
+  // this.icon_btn = this.grid.setImageButton ( image_path('workflow_aqua'),
+  //                                            '80px','80px', 1,0,2,1 );
+  this.icon_menu = new Menu ( '', this.getIconPath(this.icon_no) );
+  this.grid.setWidget ( this.icon_menu,1,0,2,1 );
+
+  this.icon_menu.button.setWidth  ( '80px' );
+  this.icon_menu.button.setHeight ( '80px' );
+  this.icon_menu.setTooltip ( 'Click on icon to change theme' );
+  $(this.icon_menu.button.element).css({
+      'background-size'    :'80px',
+      'padding'            :'0px',
+      'background-position':'0.0em center'
+  });
+
+  // let self = this;
+  // this.icon_menu.setOnClickCustomFunction ( function(){
+  //   icon_menu.setMaxHeight ( (inputPanel.height_px()-90) + 'px' );
+  // });
+
+  for (let i=0;i<__workflow_icon.length;i++)
+    (function(themeNo,task){
+      task.icon_menu.addItem ( __workflow_icon[themeNo],task.getIconPath(i) )
+          .addOnClickListener ( function(){
+        task.setIcon ( themeNo );
+      });
+    }(i,this))
+
+}
+
+
+EditWorkflowDialog.prototype.setIcon = function ( iconNo )  {
+let script = this.editor.getText().trim();
+let lines  = script.split(/\r?\n/);
+
+  let lno    = -1;
+  let l0     = 0;
+  let iname  = 'Aqua';
+  let iname0 = null;
+  for (let i=0;(i<lines.length) && (lno<0);i++)  {
+    let words = lines[i].split(' ').filter(Boolean);
+    if (words.length>1)  {
+      let w0  = words[0].toUpperCase();
+      if (['NAME','ONAME','VERSION','TITLE','DESC','KEYWORDS'].indexOf(w0)>=0)
+        l0 = i;
+      else if (w0=='ICON')  {
+        lno    = i;
+        iname0 = words[1];
+        iname  = words[1].charAt(0).toUpperCase() + words[1].slice(1).toLowerCase();
+      }
+    }
+  }
+
+  this.icon_no = -1;
+  if (iconNo>=0)  {
+    this.icon_no = iconNo;
+  } else if (lno>=0)  {
+    // icon statement find, verify icon name
+    for (let i=0;(i<__workflow_icon.length) && (this.icon_no <0);i++)
+      if (iname==__workflow_icon[i])
+        this.icon_no = i;
+  }
+  if (this.icon_no<0)
+    this.icon_no = 0;
+
+  this.icon_menu.button.setBackground ( this.getIconPath(this.icon_no) );
+
+  if (iconNo>=0)  {
+    // set icon in the script
+    if (lno>=0)
+      lines[lno] = lines[lno].replace ( iname0,__workflow_icon[this.icon_no] );
+    else
+      lines.splice ( l0,0,'ICON ' + __workflow_icon[this.icon_no] +
+                          '  # added automatically' );
+    this.editor.setText ( lines.join('\n') );
+  }
+
 }
