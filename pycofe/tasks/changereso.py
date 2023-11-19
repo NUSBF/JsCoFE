@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.11.23   <--  Date of Last Modification.
+#    19.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -130,12 +130,20 @@ class ChangeReso(basic.TaskDriver):
 
                 self.generic_parser_summary["change_reso"] = {'SpaceGroup':hkl.new_spg}
 
-                summary_line = "new resolution limits: Res=" + str(res_high) +\
+                summary_line = "new resolution limits: Res=" + \
+                               new_hkl[0].getHighResolution()   + \
                                "&mdash;" + str(res_low) + " &Aring;"
                 
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework
-                    awdata = { "data" : { "hkl" : new_hkl } }
+                    awdata = { 
+                        "data" : { 
+                            "hkl"   : new_hkl 
+                        },
+                        "variables" : {
+                            "reso_high" : new_hkl[0].getHighResolution(raw=True)
+                        }
+                    }
                     if revision:
                         awdata["data"]["revision"] = [revision]
                     auto_workflow.nextTask ( self,awdata,log=self.file_stderr )

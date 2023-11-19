@@ -27,72 +27,102 @@ DATA LIGAND
 
 
 # List all parameters required, "!" specifies mandatory items
-#PAR_REAL resHigh
-#    LABEL     High resolution cut-off (Å) 
-#    TOOLTIP   High resolution cut-off, angstrom
-#    DEFAULT   1.5
-#    RANGE     0.1 5.0
+PAR_REAL resHigh
+    LABEL     High resolution cut-off (&Aring;) 
+    TOOLTIP   High resolution cut-off, angstrom
+    DEFAULT   1.5
+    RANGE     0.1 5.0
 
 # ==========================================================================
 # Workflow itself
 
+PRINT_VAR reso_high
+
 @SCALE_AND_MERGE       
     IFDATA    unmerged
     DATA      ds0  unmerged
-    #PARAMETER RESO_HIGH resHigh+0.01
-    RUN       TaskAimless
+    PARAMETER RESO_HIGH resHigh
+    RUN       Aimless
+
+# If unmerged file was not provided, cut resolution of merged dataset
+@CHANGERESO
+    IFNOTDATA unmerged
+    IF        reso_high < resHigh
+    PROPERTY  HKL res_high resHigh
+    RUN       ChangeReso
 
 @PREPARE_MR_MODEL
-    RUN       TaskModelPrepXYZ
+    RUN       ModelPrepXYZ
 
 @DEFINE_ASU
-    RUN       TaskASUDef
+    RUN       ASUDef
+
 
 @MOLECULAR_REPLACEMENT
-    RUN       TaskPhaserMR
+    RUN       PhaserMR
 
-PRINT_VAR nfitted
+#PRINT_VAR nfitted
 continue @MOLECULAR_REPLACEMENT  while  nfitted0<nfitted and nfitted<nasu
 
 @REBUILD
-    RUN       TaskModelCraft
+    RUN       ModelCraft
 
+# Make ligand if ligand description was provided
 @MAKE_LIGAND   
     IFDATA    ligdesc  # can be a list of required data types
-    RUN       TaskMakeLigand
+    ALIAS     revision   void1
+    RUN       MakeLigand
 
+# If ligand is given or generated, remove waters after Modelcraft and 
+# refine again so that water density residuals are not found in ligand
+# blobs
 @REMOVE_WATERS 
-    #IFDATA    ligand
+    IFDATA    ligand
     ALIAS     revision   istruct
     PARAMETER SOLLIG_SEL "W"
-    RUN       TaskXyzUtils
-
-@FIT_LIGAND    
-    IFDATA    ligand
-    PARAMETER SAMPLES 750
-    RUN       TaskFitLigand
+    RUN       XyzUtils
 
 @REFINE-1
     IFDATA    ligand
     PARAMETER VDW_VAL  2.0
     PARAMETER MKHYDR   "ALL"
-    RUN       TaskRefmac
+    RUN       Refmac
 
-@FIT_WATERS
-    #IFDATA    ligand
-    #PARAMETER SIGMA 3.0
-    RUN       TaskFitWaters
+# Fit ligand and refine
+@FIT_LIGAND    
+    IFDATA    ligand
+    PARAMETER SAMPLES 750
+    RUN       FitLigand
 
+# give it refinement with parameter optiimsation now
+let suggested = 0    # need in case if ligand was not given
 let cnt = 1
-
 @REFINE-2
+    IFDATA    ligand
     USE_SUGGESTED_PARAMETERS
-    RUN       TaskRefmac
+    RUN       Refmac
 
 let cnt = cnt + 1
 repeat @REFINE-2 while suggested>0 and cnt<5
 
-@VALIDATION
-    RUN       TaskPDBVal
+
+# If ligand was given or generated, waters were removed after Modelcraft.
+# Therefore, find and fit waters again
+@FIT_WATERS
+    IFDATA     ligand
+    #PARAMETER  SIGMA 3.0   # will optiise SIGMA if this parameter is not given
+    RUN        FitWaters
+
+let cnt = 1
+@REFINE-3
+    USE_SUGGESTED_PARAMETERS
+    RUN        Refmac
+
+let cnt = cnt + 1
+repeat @REFINE-3 while suggested>0 and cnt<5
+
+
+#@VALIDATION
+#    RUN        PDBVal
 
 #

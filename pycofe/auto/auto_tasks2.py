@@ -22,19 +22,19 @@ from pycofe.auto import auto_api2
 # ============================================================================
 
 def make_ligand ( name, ligdesc, revision, parentName ):
-    auto_api2.addTask          ( name,"TaskMakeLigand",parentName     )
+    auto_api2.addTask ( name,"TaskMakeLigand",parentName )
     if revision:
-        auto_api2.addTaskData  ( name,"revision"      ,revision       )
+        auto_api2.addTaskData  ( name,"void1",revision )
     if type(ligdesc) == dict:
-        auto_api2.addTaskParameter ( name,"SOURCE_SEL"    ,ligdesc["source"] )
-        auto_api2.addTaskParameter ( name,"SMILES"        ,ligdesc["smiles"] )
-        auto_api2.addTaskParameter ( name,"CODE"          ,ligdesc["code"]   )
-        auto_api2.addTaskParameter ( name,"CODE3"         ,ligdesc["code"]   )
+        auto_api2.addTaskParameter ( name,"SOURCE_SEL",ligdesc["source"] )
+        auto_api2.addTaskParameter ( name,"SMILES"    ,ligdesc["smiles"] )
+        auto_api2.addTaskParameter ( name,"CODE"      ,ligdesc["code"]   )
+        auto_api2.addTaskParameter ( name,"CODE3"     ,ligdesc["code"]   )
     else:
-        auto_api2.addTaskParameter ( name,"SOURCE_SEL"    ,ligdesc.source )
-        auto_api2.addTaskParameter ( name,"SMILES"        ,ligdesc.smiles )
-        auto_api2.addTaskParameter ( name,"CODE"          ,ligdesc.code   )
-        auto_api2.addTaskParameter ( name,"CODE3"         ,ligdesc.code   )
+        auto_api2.addTaskParameter ( name,"SOURCE_SEL",ligdesc.source )
+        auto_api2.addTaskParameter ( name,"SMILES"    ,ligdesc.smiles )
+        auto_api2.addTaskParameter ( name,"CODE"      ,ligdesc.code   )
+        auto_api2.addTaskParameter ( name,"CODE3"     ,ligdesc.code   )
     return
 
 

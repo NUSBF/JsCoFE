@@ -43,7 +43,6 @@ class DType(dtype_template.DType):
             self.version    += 0    # versioning increments from parent to children
         return
 
-
     def importUnmergedData ( self,mtzf,dataset ):
 
         mtzf.MTZ = os.path.basename(mtzf.MTZ)
@@ -55,7 +54,6 @@ class DType(dtype_template.DType):
         self.dataset = dict2obj(**dataset)
 
         return
-
 
     def makeDName ( self,serialNo ):
         if serialNo > 0:
@@ -69,6 +67,17 @@ class DType(dtype_template.DType):
                 self.dname = fname
             break
         return
+
+    def getHighResolution ( self, raw=False ):
+        if hasattr(self.dataset,"reso"):
+            if raw:
+                return self.dataset.reso
+            else:
+                return "{0:.2f}".format(self.dataset.reso)
+        elif raw:
+            return None
+        else:
+            return "not given"
 
     def setUnmergedFileName ( self,fname ):
         self.files[dtype_template.file_key["mtz"]] = fname

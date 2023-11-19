@@ -141,16 +141,16 @@ class MakeLigand(basic.TaskDriver):
                 revNext = None
                 if len(revisions) > 0:
                     revNext = revisions[0]
-                elif hasattr(self.input_data.data,"revision"):
-                    revNext = self.makeClass(self.input_data.data.revision[0])
-
+                elif hasattr(self.input_data.data,"void1"):
+                    revNext = self.makeClass(self.input_data.data.void1[0])
+                self.stderrln ( " >>>>>>> 3 " + str(revNext) )
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework
+                    rdata = { "ligand" : [ligand] }
+                    if revNext:
+                        rdata["revision"] = [revNext]
                     auto_workflow.nextTask ( self,{
-                        "data"  : {
-                            "ligand"   : [ligand],
-                            "revision" : [revNext]
-                        }
+                        "data"  : rdata
                     }, log=self.file_stderr )
                     # self.putMessage ( "<h3>Workflow started</hr>" )
                 else:  # pre-coded workflow framework
