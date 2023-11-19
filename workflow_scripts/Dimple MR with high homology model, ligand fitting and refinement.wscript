@@ -39,19 +39,19 @@ PAR_REAL resHigh
     IFDATA    unmerged
     DATA      ds0  unmerged
     PARAMETER RESO_HIGH resHigh+0.01
-    RUN       TaskAimless
+    RUN       Aimless
     
 @CHANGERESO
     IFNOTDATA unmerged
     PROPERTY  HKL res_high resHigh+0.1
-    RUN       TaskChangeReso
+    RUN       ChangeReso
 
 @DIMPLE        
-    RUN       TaskDimpleMR
+    RUN       DimpleMR
 
 @MAKE_LIGAND   
     IFDATA    ligdesc  # can be a list of required data types
-    RUN       TaskMakeLigand
+    RUN       MakeLigand
 
 @REMOVE_WATERS 
     IFDATA    ligand
@@ -62,27 +62,27 @@ PAR_REAL resHigh
 @FIT_LIGAND    
     IFDATA    ligand
     PARAMETER SAMPLES 750
-    RUN       TaskFitLigand
+    RUN       FitLigand
 
 @REFINE1
     PARAMETER VDW_VAL  2.0
     PARAMETER MKHYDR   "ALL"
-    RUN       TaskRefmac
+    RUN       Refmac
 
 @FIT_WATERS
     PARAMETER SIGMA 3.0
-    RUN       TaskFitWaters
+    RUN       FitWaters
 
 let cnt = 1
 
 @REFINE2
     USE_SUGGESTED_PARAMETERS
-    RUN       TaskRefmac
+    RUN       Refmac
 
 let cnt = cnt + 1
 repeat @REFINE2 while suggested>0 and cnt<5
 
 @VALIDATION
-    RUN       TaskPDBVal
+    RUN       PDBVal
 
 #

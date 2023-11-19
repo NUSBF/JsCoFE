@@ -268,7 +268,8 @@ class FitWaters(basic.TaskDriver):
         rc0   = None
         while (sigma<self.sigma_max+step/2) and (ninc<6):
             rc = self.try_sigma(sigma)
-            if not rc0 or (rc["rfactor"]<rc0["rfactor"]):
+            # if not rc0 or (rc["rfactor"]<rc0["rfactor"]):
+            if not rc0 or (rc["rfree"]<rc0["rfree"]):
                 rc0  = rc
                 ninc = 0
             elif rc0:
@@ -446,8 +447,7 @@ class FitWaters(basic.TaskDriver):
                                 "Nwaters"  : str(nwaters)
                             }
                     }, log=self.file_stderr )
-                        # summary_line += "workflow started"
-                        # self.putMessage ( "<h3>Workflow started</hr>" )
+                    # self.putMessage ( "<h3>Workflow started</hr>" )
 
                 else:  # pre-coded workflow framework
                     auto.makeNextTask ( self,{

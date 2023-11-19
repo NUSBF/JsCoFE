@@ -172,6 +172,10 @@ class Workflow(import_task.Import):
         have_results = (len(ilist)>0)
 
         variables = {}
+        if self.unm:
+            variables["reso_high"] = self.unm[0].getHighResolution(raw=True)
+        elif self.hkl:
+            variables["reso_high"] = self.hkl[0].getHighResolution(raw=True)
 
         if hasattr(self.task.parameters,"sec1"):
             sec1 = self.task.parameters.sec1.contains

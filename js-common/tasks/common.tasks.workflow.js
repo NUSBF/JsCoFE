@@ -440,7 +440,9 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
                           }
                         break;
 
-        case 'LET'      : done = true;  break;
+        case 'PRINT_VAR':
+        case 'LET'      : done = true;  
+                        break;
       
         default         : done = word0.startsWith('@');
       

@@ -116,6 +116,8 @@ def addTaskData ( taskName,inputId,dataClass ):
         else:
             task["data"][inputId].append ( dataClass.to_dict() )
         log('calling addTaskData: "%s", "%s", "%s"' % (taskName, inputId, dataClass))
+    else:
+        log('task name not found in addTaskData: "%s", "%s", "%s"' % (taskName, inputId, dataClass))
     return
 
 def addTaskParameter ( taskName,parameterName,parameterValue ):

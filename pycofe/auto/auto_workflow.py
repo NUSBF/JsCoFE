@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    16.11.23   <--  Date of Last Modification.
+#    19.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -56,7 +56,7 @@ def scrollToRunName ( script,runName ):
         words = script[lno].split()
         if len(words)>0 and \
                 ( not runName and (words[0].startswith("@") or \
-                                   words[0].upper() in ["LET","REPEAT"]) or \
+                     words[0].upper() in ["LET","REPEAT","PRINT_VAR","END","STOP"] ) or \
                   runName==words[0]
                 ):
             nextRunName = words[0]
@@ -124,10 +124,11 @@ def nextTask ( body,data,log=None ):
                         if not d in wdata:
                             wdata[d] = []
                         for obj in ddata[d]:
-                            if type(obj) == dict:
-                                wdata[d].append ( obj )
-                            else:
-                                wdata[d].append ( json.loads ( obj.to_JSON() ) )
+                            if obj:
+                                if type(obj) == dict:
+                                    wdata[d].append ( obj )
+                                else:
+                                    wdata[d].append ( json.loads ( obj.to_JSON() ) )
 
             # update scores and put them in variables 
             scores = auto_api2.getContext ( "scores" )
@@ -175,12 +176,12 @@ def nextTask ( body,data,log=None ):
 
             # auto_api2.log ( " --- " + str(crTask.script_pointer) )
 
-            branch_points = []
-            for line in script:
-                words = line.split()
-                if len(words)>2 and words[0].upper() in ["REPEAT","BRANCH"]:
-                    branch_points.append ( words[1] )
-            auto_api2.log ( " --- branch_points=" + str(branch_points) )
+            # branch_points = []
+            # for line in script:
+            #     words = line.split()
+            #     if len(words)>2 and words[0].upper() in ["REPEAT","BRANCH"]:
+            #         branch_points.append ( words[1] )
+            # auto_api2.log ( " --- branch_points=" + str(branch_points) )
 
             if lno<=0:
                 # scroll script to the first RUN NAME
@@ -199,7 +200,7 @@ def nextTask ( body,data,log=None ):
                     else:
                         w0u  = words[0].upper()
                         perr = " *** LINE " + str(lno) + ": " + w0u + " declared but not correctly defined"
-                        if w0u=="IFDATA" or w0u=="IFNOTDATA":
+                        if w0u in ["IFDATA","IFNOTDATA","IF"]:
                             #  run is conditional to data availability
                             if len(words)<2:
                                 parse_error = perr
@@ -210,10 +211,17 @@ def nextTask ( body,data,log=None ):
                                     while j<len(words) and ok:
                                         ok = words[j].lower() in wdata
                                         j  = j + 1
-                                else:
+                                elif w0u=="IFNOTDATA":
                                     while j<len(words) and ok:
                                         ok = words[j].lower() not in wdata
                                         j  = j + 1
+                                else:
+                                    try:
+                                        p  = " ".join(words[1:]).strip()
+                                        ok = eval_parser.parse(p).evaluate(w)
+                                    except:
+                                        parse_error = perr + " (value)"
+                                        ok = True
                                 if not ok:
                                     # some data is not available, scroll script to the next RUN
                                     lno = lno + 1
@@ -313,11 +321,11 @@ def nextTask ( body,data,log=None ):
                             if nwords<2:
                                 parse_error = perr
                             else:
-                                nextTaskType = words[1]
+                                nextTaskType = words[1] if words[1].startswith("Task") else "Task"+words[1]
                         elif w0u=="PRINT_VAR":
                             if nwords>1:
                                 expr = " ".join(words[1:])
-                                auto_api2.log ( " PRINT: " + expr + " = " +  str(eval_parser.parse(expr).evaluate(w)) )
+                                auto_api2.log ( " PRINT: " + expr + " = " + str(eval_parser.parse(expr).evaluate(w)) )
                         elif w0u=="END" or w0u=="STOP":
                             parse_error = "end"  # just sinal end of play
                 lno = lno + 1
@@ -362,20 +370,29 @@ def nextTask ( body,data,log=None ):
                     auto_api2.cloneTask ( runName,runName0 )
 
                 else:
+                    
+                    revision = None
+                    if "data" in data:
+                        cdata = data["data"]
+                        if "revision" in cdata and len(cdata["revision"])>0 and cdata["revision"][0]:
+                            revision = cdata["revision"][0]
+
                     if nextTaskType=="TaskMakeLigand":
                         auto_tasks2.make_ligand ( runName, wdata["ligdesc"][0], 
-                                                  wdata["revision"] if "revision" in wdata else None,
-                                                  crTask.autoRunName )
+                                                  revision,crTask.autoRunName )
                     else:
                         auto_api2.addTask ( runName,nextTaskType,crTask.autoRunName )
 
                         # add task data, revision from the previous task only
-                        if "data" in data:
-                            cdata = data["data"]
-                            if "revision" in cdata and len(cdata["revision"])>0:
-                                auto_api2.addTaskData ( runName,
-                                    aliases["revision"] if "revision" in aliases else "revision",
-                                    cdata["revision"] )
+                        if revision:
+                            auto_api2.addTaskData ( runName,
+                                aliases["revision"] if "revision" in aliases else "revision",
+                                revision )
+                            # cdata = data["data"]
+                            # if "revision" in cdata and len(cdata["revision"])>0 and cdata["revision"][0]:
+                            #     auto_api2.addTaskData ( runName,
+                            #         aliases["revision"] if "revision" in aliases else "revision",
+                            #         cdata["revision"] )
 
                         for dtype in wdata:
                             if dtype in ["unmerged","hkl","xyz","model","seq","ligand","lib"] and\
@@ -417,96 +434,3 @@ def nextTask ( body,data,log=None ):
         body.putMessage ( "<h3><i>automatic workflow excepted</i></h3>" )
 
     return False
-
-
-"""
-#
-# -----------------------------------------------------
-# Simple Dimple-with-ligand workflow example
-# -----------------------------------------------------
-#
-
-VERSION 1.0  # script version for backward compatibility
-
-# General workflow descriptors
-NAME     dimple workflow
-ONAME    dimple_wflow 
-TITLE    Dimple MR Workflow with ligand fitting
-DESC     custom DIMPLE workflow for high-homology cases 
-KEYWORDS dimple workflow  # for using in A-Z keyword search
-
-ALLOW_UPLOAD  # create file upload widgets if started from project root
-
-# List all data required, "!" specifies mandatory items
-!DATA HKL UNMERGED TYPES anomalous
-!DATA XYZ          TYPES protein dna rna
-DATA SEQ           TYPES protein dna rna
-DATA LIGAND
-
-# List all parameters required, "!" specifies mandatory items
-PAR_REAL resHigh
-    LABEL     High resolution cut-off (Å) 
-    TOOLTIP   High resolution cut-off, angstrom
-    RANGE     0.1 5.0
-    DEFAULT   1.5
-
-
-# Workflow itself
-
-@AIMLESS       
-    IFDATA    unmerged
-    DATA      ds0  unmerged
-    PARAMETER RESO_HIGH resHigh+0.01
-    RUN       TaskAimless
-    
-@CHANGERESO
-    IFNOTDATA unmerged
-    PROPERTY  HKL res_high resHigh+0.1
-    RUN       TaskChangeReso
-
-@DIMPLE        
-    RUN       TaskDimpleMR
-
-@MAKE_LIGAND   
-    IFDATA    ligdesc  # can be a list of required data types
-    RUN       TaskMakeLigand
-
-@REMOVE_WATERS 
-    IFDATA    ligand
-    ALIAS     revision   istruct
-    PARAMETER SOLLIG_SEL "W"
-    RUN       TaskXyzUtils
-
-@FIT_LIGAND    
-    IFDATA    ligand
-    PARAMETER SAMPLES 750
-    RUN       TaskFitLigand
-
-@REFINE1
-    IFDATA    ligand
-    PARAMETER VDW_VAL  2.0
-    PARAMETER MKHYDR   "ALL"
-    RUN       TaskRefmac
-
-@FIT_WATERS
-    PARAMETER SIGMA 3.0
-    RUN       TaskFitWaters
-
-let cnt = 1
-
-@REFINE2
-    USE_SUGGESTED_PARAMETERS
-    RUN       TaskRefmac
-
-let cnt = cnt + 1
-repeat @REFINE2 while suggested>0 and cnt<5
-
-# let cnt = cnt + 1
-# repeat @REFINE if cnt<3
-
-# @VALIDATION
-#     RUN       TaskPDBVal
-
-#
-
-"""
