@@ -137,6 +137,7 @@ def makeNextTask ( crTask,data ):
                             'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
                     auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
                     # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
+
                     auto_tasks.refmac_vdw("refmacAfterLigand",auto_api.getContext("makeLigand1_revision"), auto_api.getContext("makeLigand1"))
                     return
                 else:
@@ -164,7 +165,7 @@ def makeNextTask ( crTask,data ):
                         'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
                 auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
                 # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
-                auto_tasks.refmac_vdw("refmacAfterLigand",auto_api.getContext("makeLigand1_revision"), auto_api.getContext("makeLigand1"))
+                auto_tasks.refmac_vdw("refmacAfterLigand", data["revision"], crTask.autoRunName)
                 return
             else:
                 strTree = 'Sorry, could not fit a ligand (look inside for comments)'
