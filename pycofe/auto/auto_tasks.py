@@ -162,7 +162,7 @@ def xyzWaters ( name,revision,parentName ):
 
 def make_ligand ( name, ligdesc, revision, parentName ):
     auto_api.addTask          ( name,"TaskMakeLigand",parentName )
-    auto_api.addTaskData      ( name, "revision", revision)
+    auto_api.addTaskData      ( name, "void1", revision)
     auto_api.addTaskParameter ( name,"SOURCE_SEL",ligdesc.source )
     auto_api.addTaskParameter ( name,"SMILES"    ,ligdesc.smiles )
     auto_api.addTaskParameter ( name,"CODE"      ,ligdesc.code   )
