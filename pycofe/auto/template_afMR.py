@@ -225,7 +225,10 @@ def makeNextTask ( crTask,data ):
                         'you can re-run the task for fitting ligand by cloning and then enetering correct parameters.\n'
                 # auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
                 # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
-                auto_tasks.refmac_vdw("refmacAfterLigand",auto_api.getContext("makeLigand1_revision"), auto_api.getContext("makeLigand1"))
+                parentTask = auto_api.getContext("xyz_taskName")
+                revision = auto_api.getContext("xyz_revision")
+                auto_tasks.refmac_vdw("refmacAfterLigand", revision, parentTask)
+                # auto_tasks.refmac_vdw("refmacAfterLigand",auto_api.getContext("makeLigand1_revision"), auto_api.getContext("makeLigand1"))
                 return
             else:
                 strTree = 'Sorry, could not fit a ligand (look inside for comments)'
@@ -247,8 +250,8 @@ def makeNextTask ( crTask,data ):
         auto_tasks.refligWF("ref_afterLig_", data["revision"], crTask.autoRunName)
 
     elif crTask._type == "TaskXyzUtils":
-        parentTask = crTask.autoRunName
-        revision = data["revision"]
+        auto_api.addContext("xyz_taskName", crTask.autoRunName)
+        auto_api.addContext("xyz_revision", data["revision"])
         resHi = float(data["revision"].HKL.dataset.RESO[1])  # RESO[0] is low res limit
         # excludedTasks = auto_api.getContext('excludedTasks')
         ligand = auto_api.getContext("lig")
@@ -259,7 +262,7 @@ def makeNextTask ( crTask,data ):
 
         ligdesc = auto_api.getContext("ligdesc")
         if ligdesc:
-            auto_tasks.make_ligand('makeLigand1', ligdesc, data["revision"], crTask.autoRunName)
+            auto_tasks.make_ligand('makeLigand1', ligdesc,data["revision"], crTask.autoRunName)
             return
             
         auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)

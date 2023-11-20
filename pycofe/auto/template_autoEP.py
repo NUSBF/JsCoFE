@@ -93,6 +93,7 @@ def makeNextTask ( crTask,data ):
         auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
 
         return
+    
 
 
     else:
