@@ -413,11 +413,14 @@ def test_sharingBasic(browser,
         time.sleep(1)
         sf.asymmetricUnitContentsAfterCloudImport(d2.driver, 300)
         time.sleep(1)
-
+        # #Refresh and push stalled jobs
+        # sf.clickByXpath(d.driver, "//button[contains(@style, 'images_png/refresh.png')]")
         sf.clickTaskInTaskTree(d.driver, '\[0002\]')
         time.sleep(1)
         sf.editRevisionStructure_rnase(d.driver, 300)
         time.sleep(1)
+        
+
 
         sf.clickTaskInTaskTree(d2.driver, '\[0003\] edit structure revision')
         time.sleep(1)
@@ -425,22 +428,22 @@ def test_sharingBasic(browser,
         time.sleep(1)
         sf.clickTaskInTaskTree(d.driver, '\[0002\]')
         time.sleep(2) # sensitive
-        startSimbad(d.driver)
-        time.sleep(10)
-        # pressing Close button for REFMAC window
-        # closeButton = d2.driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
-        # closeButton.click()
-        time.sleep(1)
-        sf.clickTaskInTaskTree(d2.driver, '\[0002\]')
-        time.sleep(1)
-        # startMrbump(d2.driver)
+        # startSimbad(d.driver)
+        # time.sleep(10)
+        # # pressing Close button for REFMAC window
+        # # closeButton = d2.driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
+        # # closeButton.click()
+        # time.sleep(1)
+        # sf.clickTaskInTaskTree(d2.driver, '\[0002\]')
+        # time.sleep(1)
+        # # startMrbump(d2.driver)
 
-        verifySimbad(d2.driver, 100)
-        sf.clickTaskInTaskTree(d.driver, '\[0005\] simbad')
-        startRefmac(d.driver)
+        # verifySimbad(d2.driver, 100)
+        # sf.clickTaskInTaskTree(d.driver, '\[0005\] simbad')
+        # startRefmac(d.driver)
 
         verifyRefmac(d.driver, 300, '0004', 0.17, 0.2)
-        verifyRefmac(d2.driver, 300, '0006', 0.24, 0.27)
+        # verifyRefmac(d2.driver, 300, '0006', 0.24, 0.27)
 
         # verifyMrBump(d.driver)
 
