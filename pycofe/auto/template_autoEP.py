@@ -68,10 +68,24 @@ def makeNextTask ( crTask,data ):
             if resHi > 3.0:
                 auto_tasks.lorestr("lorestr", data["revision"], crTask.autoRunName)
             else:
-                # auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
-                auto_api.addContext("build_parent", crTask.autoRunName)
-                auto_api.addContext("build_revision", data["revision"])
-                auto_tasks.modelcraft( "modelcraftAfterSimbad",data["revision"],crTask.autoRunName )
+                # # auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+                # auto_api.addContext("build_parent", crTask.autoRunName)
+                # auto_api.addContext("build_revision", data["revision"])
+                # auto_tasks.modelcraft( "modelcraftAfterSimbad",data["revision"],crTask.autoRunName )
+
+                ligand = auto_api.getContext("lig")
+                if ligand:
+                    auto_tasks.fit_ligand("fitligand1", ligand, data["revision"], crTask.autoRunName)
+                    return
+                # ligand description present? we shall make a ligand
+
+                ligdesc = auto_api.getContext("ligdesc")
+                if ligdesc:
+                    auto_tasks.make_ligand('makeLigand1', ligdesc, data["revision"], crTask.autoRunName)
+                    return
+                    
+                auto_tasks.refligWF("refligWF_", data["revision"], crTask.autoRunName)
+
         else: # Rfree > 0.4
             strTree = 'Sorry, automated phasing seems to fail as Rfree is only %0.3f (look inside for more comments)' % rFree
             strText = 'Although automated phasing seems to fail on your structure, there is chance you can solve the structure manually.\n' + \
