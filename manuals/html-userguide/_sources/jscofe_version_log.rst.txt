@@ -24,6 +24,13 @@ CCP4 Cloud Version Log
 
     #. Unfinished jobs in exported projects are marked as abandoned when project is re-imported
 
+    #. ModelCraft and ArpWArp NUCE can build polynucleotides *de novo*
+
+    #. Added `Dimple MR <../html-taskref/doc.task.DimpleMR.html>`_ task
+
+    #. Added Dimple MR workflows
+    #. ModelCraft removed from Automated Experimental Phasing with Crank-2 workflow
+
 
 **Version 1.7.0016** 
 
