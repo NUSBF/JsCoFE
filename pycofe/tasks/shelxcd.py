@@ -26,8 +26,8 @@
 
 #  python native imports
 import os
-import sys
-import shutil
+# import sys
+# import shutil
 
 #  ccp4-python imports
 import pyrvapi
