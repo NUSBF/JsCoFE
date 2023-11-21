@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    21.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -34,7 +32,8 @@ import shutil
 
 #  application imports
 from . import basic
-from   pycofe.dtypes import dtype_sequence
+# from   pycofe.dtypes import dtype_sequence
+from   pycofe.auto   import auto_workflow
 
 
 # ============================================================================
@@ -307,6 +306,19 @@ class Parrot(basic.TaskDriver):
                 revision.setStructureData  ( structure )
                 self.registerRevision      ( revision  )
                 have_results = True
+
+                if self.task.autoRunName.startswith("@") and FOM:
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision" : [revision]
+                            },
+                            "scores" :  {
+                                "FOM"   : FOM,
+                                "Fcorr" : Fcorr
+                            }
+                    }, log=self.file_stderr )
+                    # self.putMessage ( "<h3>Workflow started</hr>" )
 
                 if FOM:
                     self.generic_parser_summary["parrot"] = {

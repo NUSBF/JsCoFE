@@ -84,6 +84,7 @@ class DType(dtype_template.DType):
             self.Options.structure_sel     = "fixed-model"  # for mr-phases -- to delete
             self.Options.ncsmodel_sel      = "do-not-use"   # for parrot
             self.Options.load_all          = False          # for Coot-MB
+            self.Options.useSubstruct      = False          # for Modelcraft
         return
 
     def setLeadXYZ ( self ):

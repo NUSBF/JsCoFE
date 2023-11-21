@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    28.02.23   <--  Date of Last Modification.
+#    21.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,17 +30,18 @@
 
 #  python native imports
 import os
-import sys
+# import sys
 #import shutil
 
 #  ccp4-python imports
-import pyrvapi
+# import pyrvapi
 import gemmi
 
 #  application imports
 from . import basic
 from   pycofe.dtypes   import dtype_template
 from   pycofe.verdicts import verdict_phaserep
+from   pycofe.auto     import auto_workflow
 
 
 # ============================================================================
@@ -242,10 +243,15 @@ class PhaserEP(basic.TaskDriver):
                         substr.getSubFilePath(self.inputDir()) + "\""
             )
 
+        wavelength = hkl.wavelength
+        if not wavelength:
+            wavelength = hkl.getWavelength()
+        self.stderrln ( " >>>> wlen = " + str(wavelength) )
+
         self.write_stdin (
             "\nCRYSTAL crystal1 DATASET dataset1 LABIN &" +\
             "\n    "          + hkl_labin                 +\
-            "\nWAVELENGTH "   + str(hkl.wavelength)
+            "\nWAVELENGTH "   + str(wavelength)
             #"\nRESOLUTION "   + str(hkl.res_low) + " " + str(hkl.res_high)
         )
 
@@ -376,11 +382,16 @@ class PhaserEP(basic.TaskDriver):
         self.file_stdout = open ( self.file_stdout_path(),"a" )
 
         self.putTitle ( "Results" )
-        sol = self.process_solution ( ".1","<h3><i>Original Hand</i></h3>",hkl,seq,1 )
+        revout = []
+        sol    = self.process_solution ( ".1","<h3><i>Original Hand</i></h3>",hkl,seq,1 )
+        if sol[2]:
+            revout = [sol[2]]
         have_results = sol[2] is not None
         self.putMessage ( "&nbsp;"  )
         if not self.xmodel:
             sol = self.process_solution ( ".1.hand","<h3><i>Inverted Hand</i></h3>",hkl,seq,2 )
+            if sol[2]:
+                revout.append ( sol[2] )
             have_results = have_results or (sol[2] is not None)
             self.putMessage ( "&nbsp;<p>" )
 
@@ -393,6 +404,18 @@ class PhaserEP(basic.TaskDriver):
             verdict_phaserep.putVerdictWidget ( self,verdict_meta,self.rvrow-1 )
             self.rvrow += 3
 
+        if self.task.autoRunName.startswith("@") and len(revout)>0:
+            # scripted workflow framework
+            auto_workflow.nextTask ( self,{
+                    "data" : {
+                        "revision" : revout
+                    },
+                    "scores" :  {
+                        "LLG" : LLG,
+                        "FOM" : FOM
+                    }
+            }, log=self.file_stderr )
+            # self.putMessage ( "<h3>Workflow started</hr>" )
 
         if have_results and FOM>=0.0:
             self.generic_parser_summary["phasewr-ep"] = {
