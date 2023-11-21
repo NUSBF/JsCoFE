@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    08.08.23   <--  Date of Last Modification.
+#    21.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -138,7 +138,7 @@ def makeNextTask ( crTask,data ):
                     auto_tasks.remark("rem_sorry_FL", strTree, 9, strText, crTask.autoRunName) # 9 - Red
                     # auto_tasks.deposition("deposition", data["revision"], crTask.autoRunName)
 
-                    auto_tasks.refmac_vdw("refmacAfterLigand",auto_api.getContext("makeLigand1_revision"), auto_api.getContext("makeLigand1"))
+                    auto_tasks.refmac_vdw("refmacAfterLigand",data["revision"], crTask.autoRunName)
                     return
                 else:
                     strTree = 'Sorry, could not fit a ligand (look inside for comments)'
