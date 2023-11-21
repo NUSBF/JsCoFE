@@ -66,6 +66,29 @@ PRINT_VAR reso_high
     PROPERTY  REVISION.HKL wtype "peak"
     RUN       ShelxCD
 
+@PHASING
+    RUN       PhaserEP
+
+let hand = 0
+@DENSITY_MODIFICATION
+    USE REVISION hand
+    RUN       Parrot
+let hand = hand + 1
+repeat @DENSITY_MODIFICATION while hand<2
+
+END
+
+@MODEL_BUILDING
+    RUN       ModelCraft
+
+# give it refinement with parameter optiimsation
+let cnt = 1
+@REFINE
+    USE_SUGGESTED_PARAMETERS
+    RUN       Refmac
+let cnt = cnt + 1
+repeat @REFINE while suggested>0 and cnt<5
+
 END
 
 #PRINT_VAR nfitted

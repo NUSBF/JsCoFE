@@ -119,7 +119,7 @@ def nextTask ( body,data,log=None ):
                 ddata = data["data"]
                 for d in ddata:
                     # auto_api2.log ( " --- 1. " + d )
-                    if len(ddata[d])>0 and d!="revision":
+                    if len(ddata[d])>0:  # and d!="revision":
                         # auto_api2.log ( " --- 2. " + d )
                         if not d in wdata:
                             wdata[d] = []
@@ -153,12 +153,21 @@ def nextTask ( body,data,log=None ):
                 auto_api2.addContext ( "suggestedParameters",suggestedParameters )
 
             # revision needs to be identified before script parsing
-            revision = None
-            if "data" in data:
-                cdata = data["data"]
-                if "revision" in cdata and len(cdata["revision"])>0 and cdata["revision"][0]:
-                    revision = cdata["revision"][0].to_dict()
-                    wdata["revision.hkl"] = [revision["HKL"]]
+            def choose_revision ( revNo ):
+                if "data" in data:
+                    cdata = data["data"]
+                    if "revision" in cdata:
+                        if len(cdata["revision"])<=revNo or not cdata["revision"][revNo]:
+                            auto_api2.log ( "requested revision no. (" + str(revNo) + \
+                                            ") does not exist (" + str(len(cdata["revision"])) +\
+                                            " total)" )
+                        else:
+                            rev = cdata["revision"][revNo].to_dict()
+                            wdata["revision.hkl"] = [rev["HKL"]]
+                            return rev
+                return None
+
+            revision = choose_revision ( 0 )
 
             # make comment-less copy of the script
             script = []
@@ -184,12 +193,12 @@ def nextTask ( body,data,log=None ):
 
             # auto_api2.log ( " --- " + str(crTask.script_pointer) )
 
-            # branch_points = []
-            # for line in script:
-            #     words = line.split()
-            #     if len(words)>2 and words[0].upper() in ["REPEAT","BRANCH"]:
-            #         branch_points.append ( words[1] )
-            # auto_api2.log ( " --- branch_points=" + str(branch_points) )
+            branch_points = []
+            for line in script:
+                words = line.split()
+                if len(words)>2 and words[0].upper() in ["REPEAT","BRANCH"]:
+                    branch_points.append ( words[1] )
+            auto_api2.log ( " --- branch_points=" + str(branch_points) )
 
             if lno<=0:
                 # scroll script to the first RUN NAME
@@ -297,9 +306,23 @@ def nextTask ( body,data,log=None ):
                                 parse_error = perr
                             else:
                                 tdata[words[1]] = words[2]
+
+                        elif w0u=="USE":
+                            if nwords<3 or words[1].upper()!="REVISION":
+                                parse_error = perr
+                            else:
+                                try:
+                                    revno = eval_parser.parse("".join(words[2:])).evaluate(w)
+                                    auto_api2.log ( "USE REVISION '" + str(revno) + "'" )
+                                    revision = choose_revision ( revno )
+                                    if not revision:
+                                        return False
+                                except:
+                                    parse_error = perr
                     
                         elif w0u=="USE_SUGGESTED_PARAMETERS":
                             use_suggested_parameters = True
+
                         elif w0u=="LET":
                             if nwords<2:
                                 parse_error = perr

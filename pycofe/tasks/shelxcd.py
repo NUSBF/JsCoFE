@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    21.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -35,8 +35,9 @@ import pyrvapi
 import gemmi
 
 #  application imports
-from pycofe.dtypes import dtype_template, dtype_revision
-from pycofe.tasks  import basic
+from pycofe.dtypes  import dtype_template, dtype_revision
+from pycofe.tasks   import basic
+from pycofe.auto    import auto_workflow
 
 
 # ============================================================================
@@ -322,6 +323,7 @@ class ShelxCD(basic.TaskDriver):
             anom_structure.setSubFile ( xyz_file )
             anom_structure.removeSubtype ( dtype_template.subtypePhases() )
 
+            revout = []
             for i in range(len(hkl_all)):
 
                 # make structure revision
@@ -341,7 +343,20 @@ class ShelxCD(basic.TaskDriver):
                         " dataset:",ri )
 
                 ri.register ( self.outputDataBox )
+                revout.append ( ri )
                 have_results = True
+
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision" : revout
+                            },
+                            "scores" :  {
+                                "Nsubs" : anom_structure.getNofAtoms()
+                            }
+                    }, log=self.file_stderr )
+                    # self.putMessage ( "<h3>Workflow started</hr>" )
 
             if have_results:
                 self.generic_parser_summary["shelxcd"] = {
