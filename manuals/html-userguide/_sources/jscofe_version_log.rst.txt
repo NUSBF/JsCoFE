@@ -20,6 +20,8 @@ CCP4 Cloud Version Log
 
     #. ModelCraft removed from Automated Experimental Phasing with Crank-2 workflow
 
+    #. Moorhen updated to version 0.6.1
+
 
 **Version 1.7.017** 
 
