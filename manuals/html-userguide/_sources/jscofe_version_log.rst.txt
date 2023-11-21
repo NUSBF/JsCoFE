@@ -4,9 +4,26 @@ CCP4 Cloud Version Log
 
 
 
-**Version 1.7.0017** 
+**Version 1.7.018** 
 
-    *Released on --.--.2023 with CCP4 8.0.017*
+    *Released on --.11.2023 with CCP4 8.0.017*
+
+    #. Fixed bug not letting replacing HKL data with EditRevision if there is no ASU or sequences
+
+    #. Unfinished jobs in exported projects are marked as abandoned when project is re-imported
+
+    #. ModelCraft can build amino acid and nucleic acid chains separately
+
+    #. Added `Dimple MR <../html-taskref/doc.task.DimpleMR.html>`_ task
+
+    #. Added Dimple MR workflows
+
+    #. ModelCraft removed from Automated Experimental Phasing with Crank-2 workflow
+
+
+**Version 1.7.017** 
+
+    *Released on 02.11.2023 with CCP4 8.0.016*
 
     #. Imported projects are renamed automatically if project name is already used
 
@@ -20,19 +37,10 @@ CCP4 Cloud Version Log
 
     #. Project sharing is redesigned and now allows various levels of access
 
-    #. Fixed bug not letting replacing HKL data with EditRevision if there is no ASU or sequences
-
-    #. Unfinished jobs in exported projects are marked as abandoned when project is re-imported
-
     #. ModelCraft and ArpWArp NUCE can build polynucleotides *de novo*
 
-    #. Added `Dimple MR <../html-taskref/doc.task.DimpleMR.html>`_ task
 
-    #. Added Dimple MR workflows
-    #. ModelCraft removed from Automated Experimental Phasing with Crank-2 workflow
-
-
-**Version 1.7.0016** 
+**Version 1.7.016** 
 
     *Released on 02.10.2023 with CCP4 8.0.016*
 
@@ -65,7 +73,7 @@ CCP4 Cloud Version Log
     #. Refmac5 replaced by `Refmacat <https://doi.org/10.1107/S2059798323002413>`_
 
 
-**Version 1.7.0015** 
+**Version 1.7.015** 
 
     *Released on 16.08.2023 with CCP4 8.0.015*
 
@@ -87,7 +95,7 @@ CCP4 Cloud Version Log
     #. Added graceful termination of open tasks when leaving *Project Page*
 
 
-**Version 1.7.0014** 
+**Version 1.7.014** 
 
     *Released on 19.07.2023 with CCP4 8.0.013*
 
@@ -107,7 +115,7 @@ CCP4 Cloud Version Log
 
 
 
-**Version 1.7.0013** 
+**Version 1.7.013** 
 
     *Released on 13.06.2023 with CCP4 8.0.012*
 
@@ -135,7 +143,7 @@ CCP4 Cloud Version Log
     #. Fixed bug not letting to rename projects right after unsharing
 
 
-**Version 1.7.0012** 
+**Version 1.7.012** 
 
     *Released on 04.04.2023 with CCP4 8.0.011*
 
@@ -158,7 +166,7 @@ CCP4 Cloud Version Log
     #. Fixed project ownership bug at importing projects
     
 
-**Version 1.7.0011** 
+**Version 1.7.011** 
 
     *Released on 29.03.2023 with CCP4 8.0.010*
 
@@ -177,7 +185,7 @@ CCP4 Cloud Version Log
     #. Fixed bug in zombi job management, which locked zombies in case of file read errors
 
 
-**Version 1.7.0010** 
+**Version 1.7.010** 
     
     *Released on 02.02.2023 with CCP4 8.0.009*
 
