@@ -100,27 +100,28 @@ class Workflow(import_task.Import):
         #  works with pre-imported data from the project
 
         if hasattr(self.input_data.data,"hkl"):  # optional data parameter
+            hkldata = []
+            for i in range(len( self.input_data.data.hkl)):
+                hkldata.append ( self.makeClass ( self.input_data.data.hkl[i] ) )
             if self.input_data.data.hkl[0]._type=="DataUnmerged":
-                self.unm = self.input_data.data.hkl
+                self.unm = hkldata
             else:
-                self.hkl = self.input_data.data.hkl
+                self.hkl = hkldata
 
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
-            self.seq = self.input_data.data.seq
-            # for i in range(len(self.input_data.data.seq)):
-            #     self.seq.append ( self.makeClass(self.input_data.data.seq[i]) )
-        # ligMessage = ''
+            self.seq = []
+            for i in range(len(self.input_data.data.seq)):
+                self.seq.append ( self.makeClass(self.input_data.data.seq[i]) )
 
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
-            self.xyz = self.input_data.data.xyz
+            self.xyz = []
+            for i in range(len(self.input_data.data.xyz)):
+                self.xyz.append ( self.makeClass(self.input_data.data.xyz[i]) )
 
         if hasattr(self.input_data.data,"ligand"):  # optional data parameter
-            self.lig = self.input_data.data.ligand
-
-            # ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
-
-            # for i in range(len(self.input_data.data.ligand)):
-            #     self.ligands.append ( self.makeClass(self.input_data.data.ligand[i]) )
+            self.lig = []
+            for i in range(len(self.input_data.data.ligand)):
+                self.lig.append ( self.makeClass(self.input_data.data.ligand[i]) )
 
         return
 
@@ -182,8 +183,8 @@ class Workflow(import_task.Import):
             for key in vars(sec1):
                 item = getattr(sec1,key)
                 if item:
-                    if item.type.startswith("real"):
-                        variables[key] = item.value
+                    # if item.type.startswith("real"):
+                    variables[key] = item.value
             self.stderrln ( " variables="+str(variables) )
 
         if have_results:

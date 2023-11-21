@@ -414,11 +414,45 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
                             prow++;
                           }
                         break;
+
+        case '!PAR_STRING' :
+        case 'PAR_STRING' : if (words.length>1)  {
+                            if (!pitem)  {
+                              this.parameters = { // input parameters
+                                sec1  : { type     : 'section',
+                                          title    : 'Parameters',
+                                          open     : true,  // true for the section to be initially open
+                                          position : [0,0,1,8],
+                                          contains : {}
+                                        }
+                              };
+                            }
+                            pitem = {
+                              type      : 'string_',
+                              keyword   : '',  
+                              label     : '',
+                              tooltip   : '',
+                              value     : '',
+                              position  : [prow,0,1,1]
+                            };
+                            if (word0.startsWith('!'))
+                              pitem.type = 'string';
+                            this.parameters.sec1.contains[words[1]] = pitem;
+                            prow++;
+                          }
+                        break;
+
         case 'LABEL'   :  if (pitem)
                             pitem.label   = words.slice(1).join(' ');
                         break;
         case 'TOOLTIP' :  if (pitem)
                             pitem.tooltip = words.slice(1).join(' ');
+                        break;
+        case 'MAXLENGTH': if (pitem)
+                            pitem.maxlength = words[1];
+                        break;
+        case 'IWIDTH'  :  if (pitem)
+                            pitem.iwidth = words[1];
                         break;
         case 'RANGE'   :  if (pitem && (words.length>2))  {
                             if (words[1]=='*')

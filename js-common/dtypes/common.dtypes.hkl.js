@@ -234,7 +234,7 @@ if (!__template)  {
       customGrid.wtype_lbl = setLabel ( 'wavelength type:',r,0 );
       customGrid.wtype = new Dropdown();
       customGrid.wtype.setWidth ( '180px' );
-      customGrid.wtype.addItem ( '[must be chosen]' ,'','choose-one' ,this.wtype=='choose-one'  );
+      customGrid.wtype.addItem ( '[must be chosen]' ,'','choose-one',this.wtype=='choose-one' );
       customGrid.wtype.addItem ( 'low remote' ,'','low-remote' ,this.wtype=='low-remote'  );
       customGrid.wtype.addItem ( 'inflection' ,'','inflection' ,this.wtype=='inflection'  );
       customGrid.wtype.addItem ( 'peak'       ,'','peak'       ,this.wtype=='peak'        );

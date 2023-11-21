@@ -152,6 +152,14 @@ def nextTask ( body,data,log=None ):
                     w["suggested"] = w["suggested"] + len(data["suggestedParameters"][key])
                 auto_api2.addContext ( "suggestedParameters",suggestedParameters )
 
+            # revision needs to be identified before script parsing
+            revision = None
+            if "data" in data:
+                cdata = data["data"]
+                if "revision" in cdata and len(cdata["revision"])>0 and cdata["revision"][0]:
+                    revision = cdata["revision"][0].to_dict()
+                    wdata["revision.hkl"] = [revision["HKL"]]
+
             # make comment-less copy of the script
             script = []
             for line in crTask.script:
@@ -241,6 +249,12 @@ def nextTask ( body,data,log=None ):
                         elif w0u=="PARAMETER":
                             if nwords<3:
                                 parse_error = perr
+                            elif words[2].startswith("$"):
+                                vname = words[2][1:]
+                                if vname in w:
+                                    parameters[words[1]] = w[vname]
+                                else:
+                                    parse_error = perr + " (variable " + vname + " not found)"
                             else:
                                 p = " ".join(words[2:]).strip()
                                 if (p.startswith('"') and p.endswith('"')) or\
@@ -250,7 +264,8 @@ def nextTask ( body,data,log=None ):
                                     try:
                                         parameters[words[1]] = eval_parser.parse(p).evaluate(w)
                                     except:
-                                        parse_error = perr + " (value)"
+                                        parse_error = perr + " (value does not compute)"
+
                         elif w0u=="PROPERTY":
                             if nwords<4:
                                 parse_error = perr
@@ -264,22 +279,25 @@ def nextTask ( body,data,log=None ):
                                     p = " ".join(words[3:]).strip()
                                     if (p.startswith('"') and p.endswith('"')) or\
                                        (p.startswith("'") and p.endswith("'")):
-                                        wdata[dtype][words[2]] = p[1:len(p)-1]
-                                    # try:
-                                    wdata[dtype][0][words[2]] = \
-                                            eval_parser.parse(p).evaluate(w)
-                                    # except:
-                                    #     parse_error = perr + " (value)"
+                                        wdata[dtype][0][words[2]] = p[1:len(p)-1]
+                                    else:
+                                        try:
+                                            wdata[dtype][0][words[2]] = eval_parser.parse(p).evaluate(w)
+                                        except:
+                                            parse_error = perr + " (value does not compute)"
+
                         elif w0u=="ALIAS": 
                             if nwords<3:
                                 parse_error = perr
                             else:
                                 aliases[words[1]] = words[2]
+
                         elif w0u=="DATA":
                             if nwords<3:
                                 parse_error = perr
                             else:
                                 tdata[words[1]] = words[2]
+                    
                         elif w0u=="USE_SUGGESTED_PARAMETERS":
                             use_suggested_parameters = True
                         elif w0u=="LET":
@@ -298,6 +316,7 @@ def nextTask ( body,data,log=None ):
                                         auto_api2.log ( "LET '" + expression[eqi+1:] + "' = " + str(value) )
                                     except:
                                         parse_error = perr
+
                         elif w0u=="REPEAT" or w0u=="CONTINUE":
                             if nwords<4 or not words[1].startswith("@") or words[2].upper()!="WHILE":
                                 parse_error = perr
@@ -317,6 +336,7 @@ def nextTask ( body,data,log=None ):
                                     auto_api2.log ( " --- repeat pointer: " + str(lno) )
                                 else:
                                     auto_api2.removeContext ( words[1] + "_rno" )
+
                         elif w0u=="RUN":
                             if nwords<2:
                                 parse_error = perr
@@ -328,6 +348,7 @@ def nextTask ( body,data,log=None ):
                                 auto_api2.log ( " PRINT: " + expr + " = " + str(eval_parser.parse(expr).evaluate(w)) )
                         elif w0u=="END" or w0u=="STOP":
                             parse_error = "end"  # just sinal end of play
+                            
                 lno = lno + 1
 
             crTask.script_end_pointer = lno
@@ -371,11 +392,11 @@ def nextTask ( body,data,log=None ):
 
                 else:
                     
-                    revision = None
-                    if "data" in data:
-                        cdata = data["data"]
-                        if "revision" in cdata and len(cdata["revision"])>0 and cdata["revision"][0]:
-                            revision = cdata["revision"][0]
+                    # revision = None
+                    # if "data" in data:
+                    #     cdata = data["data"]
+                    #     if "revision" in cdata and len(cdata["revision"])>0 and cdata["revision"][0]:
+                    #         revision = cdata["revision"][0]
 
                     if nextTaskType=="TaskMakeLigand":
                         auto_tasks2.make_ligand ( runName, wdata["ligdesc"][0], 
@@ -384,19 +405,16 @@ def nextTask ( body,data,log=None ):
                         auto_api2.addTask ( runName,nextTaskType,crTask.autoRunName )
 
                         # add task data, revision from the previous task only
+                        dtypes = ["xyz","model","ligand","lib"]
                         if revision:
                             auto_api2.addTaskData ( runName,
                                 aliases["revision"] if "revision" in aliases else "revision",
                                 revision )
-                            # cdata = data["data"]
-                            # if "revision" in cdata and len(cdata["revision"])>0 and cdata["revision"][0]:
-                            #     auto_api2.addTaskData ( runName,
-                            #         aliases["revision"] if "revision" in aliases else "revision",
-                            #         cdata["revision"] )
+                        else:
+                            dtypes += ["unmerged","hkl","seq"]
 
                         for dtype in wdata:
-                            if dtype in ["unmerged","hkl","xyz","model","seq","ligand","lib"] and\
-                                        len(wdata[dtype])>0:
+                            if dtype in dtypes and len(wdata[dtype])>0:
                                 auto_api2.addTaskData ( runName,
                                     aliases[dtype] if dtype in aliases else dtype,
                                     wdata[dtype] )
