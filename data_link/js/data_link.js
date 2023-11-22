@@ -352,6 +352,7 @@ class dataLink {
       for (let [key, value] of Object.entries(fields)) {
         entry[key] = value;
       }
+      entry.last_access = new Date().toISOString();
       return tools.saveUserCatalog(user, this.catalog[user]);
     }
     return false;
