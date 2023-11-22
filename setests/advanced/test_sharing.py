@@ -186,6 +186,61 @@ def shareProject(driver, login):
 
 
     return ()
+    
+def unshareProject(driver):
+    print('unsharing test project')
+    
+
+    if d.cloud == "https://ccp4serv6.rc-harwell.ac.uk/jscofe-pre/":
+
+        # sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Share Project')
+        # time.sleep(1.05)
+
+        # projectSharing = driver.find_element_by_xpath("//input[@placeholder='%s']" % 'login1,login2,...')
+        # projectSharing.click()
+        # projectSharing.clear()
+        # projectSharing.send_keys('')
+        # time.sleep(1.05)
+
+        # sf.clickByXpath(driver, "//button[contains(text(), '%s')]" % 'Share Project')
+        # time.sleep(1.05)
+
+
+        # sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Apply')
+        # time.sleep(1.05)
+
+        # try:
+        #     sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Confirm')
+        # except:
+        #     pass
+
+        # sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Ok')
+        # time.sleep(1.05)
+        pass
+    else:
+
+        menuButton = driver.find_element(By.XPATH, "//div[contains(@style, 'images_png/menu.png')]")
+        menuButton.click()
+        time.sleep(1.05)
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Work team & sharing')
+        time.sleep(2.05)
+        print('click on table (run and delete own jobs)')
+
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'run and delete own jobs')
+        time.sleep(1.05)
+        print('click unshare')
+        sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'unshare')
+        time.sleep(1.05)
+
+        sf.clickByXpath(driver, "//button[contains(text(), '%s')]" % 'Yes, unshare')
+        time.sleep(1.05)
+
+        sf.clickByXpath(driver, "//button[normalize-space()='%s']" % 'Ok')
+        time.sleep(1.05)
+
+
+
+    return ()
 
 
 def joinSharedProject(driver, testName):
@@ -399,9 +454,12 @@ def test_sharingBasic(browser,
         assert "CCP4 Cloud" in d2.driver.title
         if not nologin:
             sf.loginToCloud(d2.driver, login+'2', password)
+        try:
+            unjoinProject(d2.driver, '[' + login + ']:' + d.testName)
 
-        unjoinProject(d2.driver, '[' + login + ']:' + d.testName)
-        sf.removeProject(d.driver, d.testName)
+            sf.removeProject(d.driver, d.testName)
+        except:
+            pass
 
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
@@ -446,9 +504,11 @@ def test_sharingBasic(browser,
         # verifyRefmac(d2.driver, 300, '0006', 0.24, 0.27)
 
         # verifyMrBump(d.driver)
+        unshareProject(d.driver)
+        
 
         #cant rename shared projects anymore
-        #sf.renameProject(d.driver, d.testName)
+        sf.renameProject(d.driver, d.testName)
         try:
             d.driver.quit()
         except: 
