@@ -5,7 +5,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    22.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,6 +30,7 @@
 import os
 import sys
 import json
+import shutil
 
 #  application imports
 from . import basic
@@ -192,13 +193,22 @@ class Lorestr(basic.TaskDriver):
                     #self.copyTaskMetrics ( "lorestr","R_free"  ,"rfree"   )
 
                     auto.makeNextTask ( self, {
-                        "revision": revision,
-                        "R_factor": str(verdict_meta['lorestr']["rfact"][1]),
-                        "R_free": str(verdict_meta['lorestr']["rfree"][1])
+                        "revision" : revision,
+                        "R_factor" : str(verdict_meta['lorestr']["rfact"][1]),
+                        "R_free"   : str(verdict_meta['lorestr']["rfree"][1])
                     }, self.file_stderr)
 
         else:
             self.putTitle ( "No Output Generated" )
+
+
+        try:
+            shutil.rmtree ( "lorestr_Output" )
+        except:
+            # self.stderrln ( "\n ***** could not delete residual directory at " +\
+            #                 search_dir + "\n" )
+            pass
+
 
         # close execution logs and quit
         self.success ( have_results )
