@@ -62,7 +62,7 @@ class dataLink {
 
     for (let i in sources) {
       let source = sources[i];
-      while (this.source[source].hasCatalog && ! this.source[source].catalog) {
+      while (! this.source[source].catalog) {
         await new Promise(r => setTimeout(r, 2000));
       }
       let ids = tools.getSubDirs(path.join(data_dir, source));
@@ -86,11 +86,9 @@ class dataLink {
   getSources() {
     let sources = {};
     for (let i in this.source) {
-      let has_catalog = 0;
       sources[this.source[i].name] = {
         'description': this.source[i].description,
         'url': this.source[i].url,
-        'has_catalog': this.source[i].hasCatalog(),
         'catalog_size': this.source[i].catalog_size,
         'status': this.source[i].status
       };
@@ -145,10 +143,6 @@ class dataLink {
       return tools.successMsg(`${name} - Catalog download already in progress`);
     }
 
-    if (! this.source[name].hasCatalog()) {
-      return tools.errorMsg(`No catalog available`);
-    }
-
     if (this.source[name].updateCatalog()) {
       return tools.successMsg(`Updating catalog: ${name}`);
     } else {
@@ -160,7 +154,7 @@ class dataLink {
   updateAllSourceCatalogs() {
     let sources = [];
     for (const [name, source] of Object.entries(this.source)) {
-      if (source.hasCatalog() && source.status !== status.inProgress) {
+      if (source.status !== status.inProgress) {
         if (source.updateCatalog()) {
           sources.push(name);
         }
@@ -179,7 +173,7 @@ class dataLink {
   async dataResume () {
     for (let user in this.catalog) {
       for (let source in this.catalog[user]) {
-        while (this.source[source].hasCatalog() && ! this.source[source].catalog) {
+        while (! this.source[source].catalog) {
           await new Promise(r => setTimeout(r, 2000));
         }
         for (let id in this.catalog[user][source]) {
