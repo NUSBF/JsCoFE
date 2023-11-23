@@ -246,7 +246,7 @@ class PhaserEP(basic.TaskDriver):
         wavelength = hkl.wavelength
         if not wavelength:
             wavelength = hkl.getWavelength()
-        self.stderrln ( " >>>> wlen = " + str(wavelength) )
+        # self.stderrln ( " >>>> wlen = " + str(wavelength) )
 
         self.write_stdin (
             "\nCRYSTAL crystal1 DATASET dataset1 LABIN &" +\

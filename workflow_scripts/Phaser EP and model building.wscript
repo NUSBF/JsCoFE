@@ -69,11 +69,16 @@ PRINT_VAR reso_high
 @PHASING
     RUN       PhaserEP
 
-let hand = 0
-@DENSITY_MODIFICATION
+let hand  = 0
+let hand0 = 0
+let FOM0  = 0
+
+@DENSITY_MODIFICATION[hand]
     USE REVISION hand
     RUN       Parrot
-let hand = hand + 1
+
+let hand0 = hand; FOM0 = FOM   if   FOM>FOM0
+let hand  = hand + 1
 repeat @DENSITY_MODIFICATION while hand<2
 
 END
