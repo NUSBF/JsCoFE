@@ -16,7 +16,6 @@ class dataSource {
   name = this.constructor.name;
   description = '';
   url = '';
-  has_catalog = true;
 
   constructor() {
     this.catalog_file = path.join(CATALOG_DIR, this.name + '.json');
@@ -26,20 +25,7 @@ class dataSource {
     this.jobs = {};
   }
 
-  hasCatalog() {
-    return this.has_catalog;
-  }
-
   hasCatalogId(id) {
-    // check if the source supports a catalog
-    if (! this.hasCatalog())
-      return true;
-
-    // if there is no catalog allow any id
-    if (! this.catalog) {
-      return true;
-    }
-
     if (this.catalog[id]) {
       return true;
     }
@@ -73,7 +59,6 @@ class dataSource {
   }
 
   loadCatalog() {
-    if (! this.hasCatalog()) return false;
     if (fs.existsSync(this.catalog_file)) {
       fs.readFile(this.catalog_file, (err, data) => {
         if (err) {
@@ -89,14 +74,9 @@ class dataSource {
   }
 
   updateCatalog() {
-    if (this.hasCatalog()) {
-      log.info(`${this.name} - Updating Catalog`);
-      this.status = status.inProgress;
-      this.getCatalog();
-    } else {
-      return false;
-    }
-
+    log.info(`${this.name} - Updating Catalog`);
+    this.status = status.inProgress;
+    this.getCatalog();
     return true;
   }
 
