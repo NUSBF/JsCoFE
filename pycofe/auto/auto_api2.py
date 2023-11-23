@@ -98,11 +98,11 @@ def addTask ( taskName,taskClassName,parentName ):
     log('calling addTask: "%s", "%s", "%s"' % (taskName,taskClassName,parentName))
     return task
 
-def addTaskData ( taskName,inputId,dataClass ):
+def addTaskData ( taskName,inputId,dataClass,append=True ):
     global auto_meta
     if taskName in auto_meta:
         task = auto_meta[taskName]
-        if not inputId in task["data"]:
+        if not inputId in task["data"] or not append:
             task["data"][inputId] = []
         #dataClass.visible = True
         if type(dataClass) in [list,tuple]:

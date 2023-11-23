@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.11.23   <--  Date of Last Modification.
+#    22.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,28 +26,6 @@ from   pycofe.etc.py_expression_eval import Parser
 
 
 # ============================================================================
-
-# Workflow context variables
-
-# class Variables:
-#     def __init__(self):
-#         return
-#     def from_dict ( self,dict ):
-#         for key in dict:
-#             self.key = dict[key]
-#         return
-#     def to_dict ( self ):
-#         return self.__dict__
-#     def set_value ( self,vname,value ):
-
-# class Variables(jsonut.jObject):
-#     def __init__(self):
-#         return
-#     def from_dict ( self,dict ):
-#         for key in dict:
-#             self.key = dict[key]
-#         return
-
 
 def scrollToRunName ( script,runName ):
     lno = 0
@@ -102,7 +80,7 @@ def nextTask ( body,data,log=None ):
             # initialize workflow variables
             w = {}
 
-            # put data in context
+            # get workflow data from context
             wdata = auto_api2.getContext ( "input_data" )
             if not wdata:
                 wdata = {
@@ -152,22 +130,16 @@ def nextTask ( body,data,log=None ):
                     w["suggested"] = w["suggested"] + len(data["suggestedParameters"][key])
                 auto_api2.addContext ( "suggestedParameters",suggestedParameters )
 
-            # revision needs to be identified before script parsing
-            def choose_revision ( revNo ):
-                if "data" in data:
-                    cdata = data["data"]
-                    if "revision" in cdata:
-                        if len(cdata["revision"])<=revNo or not cdata["revision"][revNo]:
-                            auto_api2.log ( "requested revision no. (" + str(revNo) + \
-                                            ") does not exist (" + str(len(cdata["revision"])) +\
-                                            " total)" )
-                        else:
-                            rev = cdata["revision"][revNo].to_dict()
-                            wdata["revision.hkl"] = [rev["HKL"]]
-                            return rev
-                return None
-
-            revision = choose_revision ( 0 )
+            rev_list = [] 
+            revision = None
+            if "data" in data:
+                cdata = data["data"]
+                if "revision" in cdata and len(cdata["revision"])>0:
+                    rev_list = cdata["revision"]
+                    for i in range(len(rev_list)):
+                        rev_list[i] = rev_list[i].to_dict()
+                    revision = rev_list[0]
+                    wdata["revision.hkl"] = [revision["HKL"]]
 
             # make comment-less copy of the script
             script = []
@@ -193,6 +165,7 @@ def nextTask ( body,data,log=None ):
 
             # auto_api2.log ( " --- " + str(crTask.script_pointer) )
 
+            # identify runs where project loops or branches
             branch_points = []
             for line in script:
                 words = line.split()
@@ -255,7 +228,8 @@ def nextTask ( body,data,log=None ):
                                     aliases       = {}  # data aliasess
                                     tdata         = {}  # specific task data from context
                                     use_suggested_parameters = False
-                        elif w0u=="PARAMETER":
+
+                        elif w0u=="PARAMETER":  # task parameter
                             if nwords<3:
                                 parse_error = perr
                             elif words[2].startswith("$"):
@@ -275,7 +249,7 @@ def nextTask ( body,data,log=None ):
                                     except:
                                         parse_error = perr + " (value does not compute)"
 
-                        elif w0u=="PROPERTY":
+                        elif w0u=="PROPERTY":  # data property
                             if nwords<4:
                                 parse_error = perr
                             else:
@@ -295,7 +269,7 @@ def nextTask ( body,data,log=None ):
                                         except:
                                             parse_error = perr + " (value does not compute)"
 
-                        elif w0u=="ALIAS": 
+                        elif w0u=="ALIAS":   #  data alias if "inputId" is non-standard
                             if nwords<3:
                                 parse_error = perr
                             else:
@@ -307,38 +281,73 @@ def nextTask ( body,data,log=None ):
                             else:
                                 tdata[words[1]] = words[2]
 
-                        elif w0u=="USE":
+                        elif w0u=="USE":  # choose from multiple data
                             if nwords<3 or words[1].upper()!="REVISION":
                                 parse_error = perr
                             else:
-                                try:
+                                # try:
+                                if True:
                                     revno = eval_parser.parse("".join(words[2:])).evaluate(w)
                                     auto_api2.log ( "USE REVISION '" + str(revno) + "'" )
-                                    revision = choose_revision ( revno )
-                                    if not revision:
-                                        return False
-                                except:
-                                    parse_error = perr
-                    
+                                    if rev_list and revno<len(rev_list):
+                                        revision = rev_list[revno]
+                                        wdata["revision.hkl"] = [revision["HKL"]]
+                                    else:
+                                        auto_api2.log ( 
+                                            "requested revision no. (" + str(revno)   + \
+                                            ") does not exist (" + str(len(rev_list)) + \
+                                            " total)" 
+                                        )
+                                        parse_error = perr + " (revision " + str(revno) +\
+                                                             " not found)"
+                                # except:
+                                #     parse_error = perr + " (revision number not parsed)"
+
                         elif w0u=="USE_SUGGESTED_PARAMETERS":
                             use_suggested_parameters = True
 
                         elif w0u=="LET":
+                            #  Examples:
+                            #  let x = a+1
+                            #  let x = a*2; y = b+c; z = 10+d etc
+                            #  let x = x0;  y = y0 if x0<y0
                             if nwords<2:
                                 parse_error = perr
                             else:
-                                expression = "".join(words[1:])
-                                eqi = expression.index('=')
-                                if eqi<=0:
-                                    parse_error = perr
-                                else:
-                                    vname = expression[:eqi]
-                                    try:
-                                        value    = eval_parser.parse(expression[eqi+1:]).evaluate(w)
-                                        w[vname] = value
-                                        auto_api2.log ( "LET '" + expression[eqi+1:] + "' = " + str(value) )
-                                    except:
-                                        parse_error = perr
+                                try:
+                                    line      = script[lno].strip()[3:].strip() # remove 'let'
+                                    condition = True
+                                    k         = line.upper().find(" IF ")
+                                    if k>0:  # condition is present
+                                        condition  = eval_parser.parse(line[k+4:]).evaluate(w)
+                                        line       = line[:k]  # remove "IF ...."
+                                    if condition:
+                                        line       = "".join(line.split())  # remove spaces
+                                        statements = line.split(";")
+                                        for i in range(len(statements)):
+                                            vname,expr = statements[i].split('=')
+                                            value      = eval_parser.parse(expr).evaluate(w)
+                                            w[vname]   = value
+                                            auto_api2.log ( "LET " + vname + " = '" + \
+                                                            expr + "' (== " + \
+                                                            str(value) + ")" )
+                                except:
+                                    parse_error = perr + " (evaluation errors)"
+
+                                # expression = "".join(words[1:])
+                                # eqi = expression.index('=')
+                                # if eqi<=0:
+                                #     parse_error = perr
+                                # else:
+                                #     vname = expression[:eqi]
+                                #     try:
+                                #         value    = eval_parser.parse(expression[eqi+1:]).evaluate(w)
+                                #         w[vname] = value
+                                #         auto_api2.log ( "LET " + vname + " = '" + \
+                                #                        expression[eqi+1:] + "' (== " + \
+                                #                        str(value) + ")" )
+                                #     except:
+                                #         parse_error = perr
 
                         elif w0u=="REPEAT" or w0u=="CONTINUE":
                             if nwords<4 or not words[1].startswith("@") or words[2].upper()!="WHILE":
@@ -357,6 +366,20 @@ def nextTask ( body,data,log=None ):
                                     # scroll script up
                                     lno,nextRunName = scrollToRunName ( script,words[1] )
                                     auto_api2.log ( " --- repeat pointer: " + str(lno) )
+                                    # restore initial branch data
+                                    rundata  = auto_api2.getContext ( nextRunName + "_rundata" )
+                                    rev_list = rundata["rev_list"]
+                                    if len(rev_list)>0:
+                                        # take 0th revision by default; if this need to be 
+                                        # changed, instructions will be read in due course 
+                                        # from RUN description
+                                        revision = rev_list[0]
+                                        wdata["revision.hkl"] = [revision["HKL"]]
+                                    # restore wdata such as not to change variables
+                                    for key in rundata["wdata"]:
+                                        if key!="variables":
+                                            wdata[key] = rundata["wdata"][key]
+                                    tdata = rundata["tdata"]
                                 else:
                                     auto_api2.removeContext ( words[1] + "_rno" )
 
@@ -407,20 +430,18 @@ def nextTask ( body,data,log=None ):
                     else:
                         repeat_no = repeat_no + 1
                     auto_api2.addContext ( nextRunName + "_rno",repeat_no )
-                    runName  = nextRunName + "_" + str(repeat_no)
+                    runName  = nextRunName + "[" + str(repeat_no) + "]"
                     runName0 = nextRunName
                     if repeat_no>1:
-                        runName0 = nextRunName + "_" + str(repeat_no-1)
+                        runName0 = nextRunName + "[" + str(repeat_no-1) + "]"
                     auto_api2.cloneTask ( runName,runName0 )
+                    if revision:
+                        auto_api2.addTaskData ( runName,
+                            aliases["revision"] if "revision" in aliases else "revision",
+                            revision,append=False )
 
                 else:
                     
-                    # revision = None
-                    # if "data" in data:
-                    #     cdata = data["data"]
-                    #     if "revision" in cdata and len(cdata["revision"])>0 and cdata["revision"][0]:
-                    #         revision = cdata["revision"][0]
-
                     if nextTaskType=="TaskMakeLigand":
                         auto_tasks2.make_ligand ( runName, wdata["ligdesc"][0], 
                                                   revision,crTask.autoRunName )
@@ -447,6 +468,13 @@ def nextTask ( body,data,log=None ):
                     
                     # if runName in branch_points:
                     #     auto_api2.noteTask ( runName )
+
+                    if runName in branch_points:
+                        auto_api2.addContext ( nextRunName + "_rundata",{
+                            "rev_list" : rev_list,
+                            "wdata"    : wdata,
+                            "tdata"    : tdata
+                        })
 
                 # add suggested task parameters
                 if nextTaskType in suggestedParameters and use_suggested_parameters:
