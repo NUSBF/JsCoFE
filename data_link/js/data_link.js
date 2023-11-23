@@ -35,6 +35,7 @@ class dataLink {
   }
 
   loadLocalCatalogs() {
+    log.info(`Loading local catalogs`);
     let data_dir = tools.getDataDir();
     let users = tools.getSubDirs(data_dir);
 
@@ -66,7 +67,7 @@ class dataLink {
       }
       let ids = tools.getSubDirs(path.join(data_dir, source));
       for (let j in ids) {
-        if (this.source[source] && this.addCatalogEntry(user, source, ids[j], 'ready', catalog)) {
+        if (this.source[source] && this.addCatalogEntry(user, source, ids[j], status.completed)) {
           log.info(`Added ${user}/${source}/${ids[j]} to the catalog`);
         } else {
           log.error(`Unable to rebuild catalog for ${user}/${source}/${ids[j]}`);
