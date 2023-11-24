@@ -565,8 +565,8 @@ class Refmac(basic.TaskDriver):
                                 "revision" : [revision]
                             },
                             "scores" :  {
-                                "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                                "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                                "Rfactor"  : float(self.generic_parser_summary["refmac"]["R_factor"]),
+                                "Rfree"    : float(self.generic_parser_summary["refmac"]["R_free"])
                             },
                             "suggestedParameters" : {
                                 "TaskRefmac" : suggestedParameters

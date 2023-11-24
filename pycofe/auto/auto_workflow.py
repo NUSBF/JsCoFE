@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.11.23   <--  Date of Last Modification.
+#    23.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -27,17 +27,36 @@ from   pycofe.etc.py_expression_eval import Parser
 
 # ============================================================================
 
+
+def scrollToWorkflowDesc ( script ):
+    lno = 0
+    key = None
+    while lno<len(script) and not key:
+        words = script[lno].split()
+        if len(words)>0 and ( \
+                    words[0].startswith("@") or \
+                    words[0].upper() in ["LET","REPEAT","PRINT_VAR","END","STOP"]
+                ):
+            key = words[0]
+        else:
+            lno = lno + 1
+    return (lno,key)
+
+def makeRunName ( word ):
+    runName = word.split("[")
+    if len(runName)<2:
+        runName.append ( "" )
+    elif runName[1].endswith("]"):
+        runName[1] = runName[1][:-1]
+    return runName    
+
 def scrollToRunName ( script,runName ):
     lno = 0
     nextRunName = None
     while lno<len(script) and not nextRunName:
         words = script[lno].split()
-        if len(words)>0 and \
-                ( not runName and (words[0].startswith("@") or \
-                     words[0].upper() in ["LET","REPEAT","PRINT_VAR","END","STOP"] ) or \
-                  runName==words[0]
-                ):
-            nextRunName = words[0]
+        if len(words)>0 and runName==words[0].split("[")[0]:
+            nextRunName = makeRunName ( words[0] )
         else:
             lno = lno + 1
     return (lno,nextRunName)
@@ -53,7 +72,6 @@ def nextTask ( body,data,log=None ):
 #    }    
 #  }
 #
-
     try:
 
         crTask = body.task
@@ -173,19 +191,30 @@ def nextTask ( body,data,log=None ):
                     branch_points.append ( words[1] )
             auto_api2.log ( " --- branch_points=" + str(branch_points) )
 
+            parentRunName = crTask.autoRunName
+            if parentRunName.split("[")[0] in branch_points:
+                auto_api2.addContext ( parentRunName + "_outdata",{
+                    "rev_list" : rev_list,
+                    "wdata"    : wdata
+                })
+
+
             if lno<=0:
-                # scroll script to the first RUN NAME
-                lno,nextRunName = scrollToRunName ( script,"" )
-                if nextRunName and len(nextRunName)<2:
-                    parse_error = " *** LINE " + str(lno) + ": empty RUN NAMES are not allowed"
+                # scroll script to the first workflow key
+                lno,key = scrollToWorkflowDesc ( script )
+                # if key and len(key)<2:
+                #     parse_error = " *** LINE " + str(lno) + ": empty RUN NAMES are not allowed"
 
             while lno<len(script) and not nextTaskType and not parse_error:
+                
                 words  = script[lno].split()
                 nwords = len(words)
+                
                 if nwords>0:
+                
                     if words[0].startswith("@"):
-                        nextRunName = words[0]
-                        if len(nextRunName)<2:
+                        nextRunName = makeRunName ( words[0] )
+                        if len(nextRunName[0])<2:
                             parse_error = " *** LINE " + str(lno) + ": empty RUN NAMES are not allowed"
                     else:
                         w0u  = words[0].upper()
@@ -325,12 +354,13 @@ def nextTask ( body,data,log=None ):
                                         line       = "".join(line.split())  # remove spaces
                                         statements = line.split(";")
                                         for i in range(len(statements)):
-                                            vname,expr = statements[i].split('=')
-                                            value      = eval_parser.parse(expr).evaluate(w)
-                                            w[vname]   = value
-                                            auto_api2.log ( "LET " + vname + " = '" + \
-                                                            expr + "' (== " + \
-                                                            str(value) + ")" )
+                                            if statements[i]:
+                                                (vname,expr) = statements[i].split('=')
+                                                value        = eval_parser.parse(expr).evaluate(w)
+                                                w[vname]     = value
+                                                auto_api2.log ( "LET " + vname + " = '" + \
+                                                                expr + "' (== " + \
+                                                                str(value) + ")" )
                                 except:
                                     parse_error = perr + " (evaluation errors)"
 
@@ -349,26 +379,39 @@ def nextTask ( body,data,log=None ):
                                 #     except:
                                 #         parse_error = perr
 
-                        elif w0u=="REPEAT" or w0u=="CONTINUE":
-                            if nwords<4 or not words[1].startswith("@") or words[2].upper()!="WHILE":
+                        elif w0u in ["REPEAT","CONTINUE"]:
+                            if nwords<2 or not words[1].startswith("@"):
                                 parse_error = perr
                             else:
-                                repeat_mode = ""  # end repeat task mode
-                                try:
-                                    expr = " ".join(words[3:]);
-                                    if eval_parser.parse(expr).evaluate(w):
-                                        repeat_mode = w0u
-                                    auto_api2.log ( "repeat evaluated: '" + expr + "' as [" + \
-                                                    str(repeat_mode) + "]" )
-                                except:
-                                    parse_error = perr
+                                repeat_mode = w0u
+                                if nwords>=4 and words[2].upper() in ["WHILE","IF"]:
+                                    try:
+                                        expr = " ".join(words[3:]);
+                                        if not eval_parser.parse(expr).evaluate(w):
+                                            repeat_mode = ""
+                                        auto_api2.log ( w0u.lower() + " evaluated: '" + \
+                                                        expr + "' as [" + \
+                                                        str(repeat_mode) + "]" )
+                                    except:
+                                        repeat_mode = ""
+                                        parse_error = perr
                                 if repeat_mode:
                                     # scroll script up
-                                    lno,nextRunName = scrollToRunName ( script,words[1] )
-                                    auto_api2.log ( " --- repeat pointer: " + str(lno) )
-                                    # restore initial branch data
-                                    rundata  = auto_api2.getContext ( nextRunName + "_rundata" )
-                                    rev_list = rundata["rev_list"]
+                                    if repeat_mode=="REPEAT":
+                                        (lno,nextRunName) = scrollToRunName ( script,words[1] )
+                                        auto_api2.log ( " --- repeat pointer:  " + str(lno) )
+                                        auto_api2.log ( " --- repeat run name: " + str(nextRunName) )
+                                        # restore initial branch data
+                                        rdata = auto_api2.getContext ( nextRunName[0] + "_rundata" )
+                                        tdata = rdata["tdata"]
+                                    else:
+                                        pRunName      = makeRunName ( words[1] )
+                                        parentRunName = pRunName[0]
+                                        if pRunName[1]:
+                                            parentRunName += "[" + str(w[pRunName[1]]) + "]"
+                                        rdata = auto_api2.getContext ( parentRunName + "_outdata" )
+                                        tdata = {}
+                                    rev_list = rdata["rev_list"]
                                     if len(rev_list)>0:
                                         # take 0th revision by default; if this need to be 
                                         # changed, instructions will be read in due course 
@@ -376,12 +419,11 @@ def nextTask ( body,data,log=None ):
                                         revision = rev_list[0]
                                         wdata["revision.hkl"] = [revision["HKL"]]
                                     # restore wdata such as not to change variables
-                                    for key in rundata["wdata"]:
+                                    for key in rdata["wdata"]:
                                         if key!="variables":
-                                            wdata[key] = rundata["wdata"][key]
-                                    tdata = rundata["tdata"]
-                                else:
-                                    auto_api2.removeContext ( words[1] + "_rno" )
+                                            wdata[key] = rdata["wdata"][key]
+                                # else:
+                                #     auto_api2.removeContext ( words[1] + "_rno" )
 
                         elif w0u=="RUN":
                             if nwords<2:
@@ -421,19 +463,33 @@ def nextTask ( body,data,log=None ):
                     return False
 
                 # form new task
-                runName = nextRunName
-                if repeat_mode=="REPEAT":
-                    # clone specified task
-                    repeat_no = auto_api2.getContext ( nextRunName + "_rno" )
-                    if not repeat_no:
-                        repeat_no = 1
+                runName = nextRunName[0]
+                if nextRunName[1]:
+                    if not nextRunName[1] in w:
+                        auto_api2.log ( " RUN NAME repeat counter is not defined" )
+                        body.putMessage ( "<h3>Workflow script error</h3>RUN NAME " +\
+                                          "repeat counter is not defined" )
+                        return False
                     else:
-                        repeat_no = repeat_no + 1
-                    auto_api2.addContext ( nextRunName + "_rno",repeat_no )
-                    runName  = nextRunName + "[" + str(repeat_no) + "]"
-                    runName0 = nextRunName
-                    if repeat_no>1:
-                        runName0 = nextRunName + "[" + str(repeat_no-1) + "]"
+                        runName += "[" + str(w[nextRunName[1]]) + "]"
+
+                if repeat_mode=="REPEAT":  
+                    # clone task
+                    if not nextRunName[1] or nextRunName[1] not in w:
+                        auto_api2.log   ( " RUN NAME repeat counter is not defined" )
+                        body.putMessage ( "<h3>Workflow script error</h3>RUN NAME " +\
+                                          "repeat counter is not defined" )
+                        return False
+
+                    repeat_no = int(w[nextRunName[1]])
+                    if repeat_no<1:
+                        auto_api2.log   ( " RUN NAME repeat counter does not advance" )
+                        body.putMessage ( "<h3>Workflow script error</h3>RUN NAME " +\
+                                          "repeat counter does not advance" )
+                        return False
+                        
+                    # runName   = nextRunName[0] + "[" + str(repeat_no)   + "]"
+                    runName0  = nextRunName[0] + "[" + str(repeat_no-1) + "]"
                     auto_api2.cloneTask ( runName,runName0 )
                     if revision:
                         auto_api2.addTaskData ( runName,
@@ -441,12 +497,12 @@ def nextTask ( body,data,log=None ):
                             revision,append=False )
 
                 else:
-                    
+
                     if nextTaskType=="TaskMakeLigand":
                         auto_tasks2.make_ligand ( runName, wdata["ligdesc"][0], 
-                                                  revision,crTask.autoRunName )
+                                                  revision,parentRunName )
                     else:
-                        auto_api2.addTask ( runName,nextTaskType,crTask.autoRunName )
+                        auto_api2.addTask ( runName,nextTaskType,parentRunName )
 
                         # add task data, revision from the previous task only
                         dtypes = ["xyz","model","ligand","lib"]
@@ -469,8 +525,8 @@ def nextTask ( body,data,log=None ):
                     # if runName in branch_points:
                     #     auto_api2.noteTask ( runName )
 
-                    if runName in branch_points:
-                        auto_api2.addContext ( nextRunName + "_rundata",{
+                    if nextRunName[0] in branch_points:
+                        auto_api2.addContext ( nextRunName[0] + "_rundata",{
                             "rev_list" : rev_list,
                             "wdata"    : wdata,
                             "tdata"    : tdata
@@ -495,9 +551,9 @@ def nextTask ( body,data,log=None ):
             return False
 
     except Exception as inst:
-        body.stderrln ( str(type(inst)))  # the exception instance
-        body.stderrln ( str(inst.args))   # arguments stored in .args
-        body.stderrln ( str(inst))        # __str__ allows args to be printed directly,
+        body.stderrln ( str(type(inst)) )  # the exception instance
+        body.stderrln ( str(inst.args)  )  # arguments stored in .args
+        body.stderrln ( str(inst)       )  # __str__ allows args to be printed directly,
         tb = traceback.format_exc()
         body.stderrln ( str(tb))
         body.putMessage ( "<h3><i>automatic workflow excepted</i></h3>" )

@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    23.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -37,7 +35,7 @@ from . import basic
 from   pycofe.dtypes  import dtype_template
 from   varut          import signal
 from   pycofe.proc    import qualrep
-from   pycofe.auto    import auto
+from   pycofe.auto    import auto, auto_workflow
 
 # ============================================================================
 # Make Buccaneer driver
@@ -285,7 +283,7 @@ class Buccaneer(basic.TaskDriver):
                 self.putMessage ( "<h3>Failed to build structure</h3>" )
             else:
                 self.putMessage ( "<h3>Buccaneer failure</h3>" )
-                raise signal.JobFailure ( rc.msg )
+                # raise signal.JobFailure ( rc.msg )
 
         # check solution and register data
         elif os.path.isfile(self.buccaneer_xyz()):
@@ -344,14 +342,38 @@ class Buccaneer(basic.TaskDriver):
                     self.stderr ( " *** molprobity failure" )
                     self.rvrow = rvrow0
 
-                auto.makeNextTask ( self,{
-                    "revision" : revision,
-                    "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                    "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
-                })
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision" : [revision]
+                            },
+                            "scores" :  {
+                                "Compl"   : float(self.generic_parser_summary["cbuccaneer"]["percentage"]),
+                                "Rfactor" : float(self.generic_parser_summary["refmac"]["R_factor"]),
+                                "Rfree"   : float(self.generic_parser_summary["refmac"]["R_free"])
+                            }
+                    }, log=self.file_stderr )
+                    # self.putMessage ( "<h3>Workflow started</hr>" )
+
+                else:
+                    auto.makeNextTask ( self,{
+                        "revision" : revision,
+                        "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                        "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                    })
 
         else:
             self.putTitle ( "No Output Generated" )
+
+        if not have_results:
+            if self.task.autoRunName.startswith("@"):
+                # scripted workflow framework
+                auto_workflow.nextTask ( self,{
+                        "scores" :  {
+                            "Compl" : 0.0
+                        }
+                }, log=self.file_stderr )
 
         # close execution logs and quit
         self.success ( have_results )
