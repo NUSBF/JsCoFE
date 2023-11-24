@@ -1,7 +1,5 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
@@ -31,8 +29,7 @@ import os
 
 #  application imports
 from . import basic
-from   pycofe.proc   import coor, import_filetype, import_merged
-from   pycofe.dtypes import dtype_revision
+from   pycofe.proc   import import_filetype, import_merged
 
 
 # ============================================================================

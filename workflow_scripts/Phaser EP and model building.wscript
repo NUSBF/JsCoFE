@@ -23,7 +23,6 @@ ALLOW_UPLOAD  # create file upload widgets if started from project root
 !DATA HKL UNMERGED TYPES anomalous
 !DATA SEQ          TYPES protein dna rna
 
-
 # List all parameters required, "!" specifies mandatory items
 !PAR_STRING anomScatterer
     LABEL     Anomalous scatterer 
@@ -69,32 +68,58 @@ PRINT_VAR reso_high
 @PHASING
     RUN       PhaserEP
 
-let hand  = 0
-let hand0 = 0
-let FOM0  = 0
+let hand   = 0
+let hand0  = -1
+let FOM0   = -1
+let Compl0 = -1
 
 @DENSITY_MODIFICATION[hand]
     USE REVISION hand
     RUN       Parrot
 
-let hand0 = hand; FOM0 = FOM   if   FOM>FOM0
+@QUICK_BUILD_CHECK[hand]
+    PARAMETER NCYCLES 1
+    RUN       Buccaneer
+
+let hand0 = hand; FOM0 = FOM; Compl0 = Compl if  Compl>Compl0
+
+# let hand0 = hand; FOM0 = FOM; if  FOM>FOM0
 let hand  = hand + 1
 repeat @DENSITY_MODIFICATION while hand<2
 
-END
+PRINT_VAR  hand0
+PRINT_VAR  FOM0
+PRINT_VAR  Compl0
+
+continue @DENSITY_MODIFICATION[hand0]
 
 @MODEL_BUILDING
     RUN       ModelCraft
 
-# give it refinement with parameter optiimsation
-let cnt = 1
-@REFINE
+
+# give it more refinement with parameter optiimsation
+
+let cnt    = 1
+let cnt0   = 0
+let Rfree0 = 1.0
+
+@REFINE[cnt]
     USE_SUGGESTED_PARAMETERS
     RUN       Refmac
-let cnt = cnt + 1
+
+let cnt0 = cnt; Rfree0 = Rfree  if  Rfree<Rfree0
+let cnt  = cnt + 1
 repeat @REFINE while suggested>0 and cnt<5
 
+
+continue @REFINE[cnt0]
+
+@VALIDATION
+    RUN        PDBVal
+
+
 END
+
 
 #PRINT_VAR nfitted
 continue @MOLECULAR_REPLACEMENT  while  nfitted0<nfitted and nfitted<nasu

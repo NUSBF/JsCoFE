@@ -28,7 +28,7 @@
 import os, copy
 
 #  ccp4-python imports
-import pyrvapi
+# import pyrvapi
 
 #  application imports
 from   pycofe.dtypes import dtype_template, dtype_revision
@@ -275,26 +275,8 @@ class Migrate(import_task.Import):
             for i in range(len(hkls)):
                 for j in range(len(structures)):
                     if structures[j]:
-
-                        # self.stderrln ( ' 1 >>>>> ' + hkls[i].dataset.Fmean.value +\
-                        #            '  ' + hkls[i].dataset.Fmean.sigma +\
-                        #            '  ' + hkls[i].dataset.FREE )
-
-                        # if hasattr(hkls[i].dataset,"Fmean"):
-                        #     self.stderrln ( "  -- Fmean" )
-                        # if hasattr(hkls[i].dataset,"FREE"):
-                        #     self.stderrln ( "  -- FREE" )
-
                         if singleMTZ:
                             structures[j].setHKLLabels ( hkls[i] )
-
-                        # self.stderrln ( ' S >>>>> ' + structures[j].FP +\
-                        #            '  ' + structures[j].SigFP +\
-                        #            '  ' + structures[j].FreeR_flag )
-
-
-                        # structures[j].FP         = "FP"
-                        # structures[j].SigFP      = "SIGFP"
                         self.outputFName = outFName + " " +\
                                            hkls[i].getDataSetName() + xyzid
                         r = dtype_revision.DType ( -1 )
@@ -309,18 +291,9 @@ class Migrate(import_task.Import):
                         if not revision:
                             revision = copy.deepcopy(r)
 
-                        # self.stderrln ( ' S >>>>> ' + revision.Structure.FP +\
-                        #            '  ' + revision.Structure.SigFP +\
-                        #            '  ' + revision.Structure.FreeR_flag )
-
         else:
             for j in range(len(structures)):
                 if structures[j]:
-                    
-                    # self.stderrln ( ' 2 >>>>> ' + self.hkl[j].dataset.Fmean.value +\
-                    #                '  ' + self.hkl[j].dataset.Fmean.sigma +\
-                    #                '  ' + self.hkl[j].dataset.FREE )
-
                     if singleMTZ:
                         structures[j].setHKLLabels ( self.hkl[j] )
                     self.outputFName = outFName + " " +\

@@ -314,8 +314,8 @@ class Parrot(basic.TaskDriver):
                                 "revision" : [revision]
                             },
                             "scores" :  {
-                                "FOM"   : FOM,
-                                "Fcorr" : Fcorr
+                                "FOM"   : float(FOM),
+                                "Fcorr" : float(Fcorr)
                             }
                     }, log=self.file_stderr )
                     # self.putMessage ( "<h3>Workflow started</hr>" )
