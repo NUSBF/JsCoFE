@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -397,7 +397,7 @@ class ModelCraft(basic.TaskDriver):
                                     "Rfactor"  : float(Rwork),
                                     "Rfree"    : float(Rfree)
                                 }
-                        }, log=self.file_stderr )
+                        })
                         # self.putMessage ( "<h3>Workflow started</hr>" )
 
                     else:  # pre-coded workflow framework

@@ -1,10 +1,12 @@
 #
 # -----------------------------------------------------
-# Simple MR with given model including ligand fitting
+# Experimental Phasing with SHELXCD and Phaser-EP
 # -----------------------------------------------------
 #
 
-VERSION 1.0  # script version for backward compatibility
+VERSION  1.0  # script version for backward compatibility
+DEBUG    OFF  # ON/OFF
+COMMENTS ON   # ON/OFF
 
 # ==========================================================================
 # Workflow header and input
@@ -91,7 +93,7 @@ PRINT_VAR  hand0
 PRINT_VAR  FOM0
 PRINT_VAR  Compl0
 
-continue @DENSITY_MODIFICATION[hand0]
+branch @DENSITY_MODIFICATION[hand0]
 
 @MODEL_BUILDING
     RUN       ModelCraft
@@ -111,8 +113,7 @@ let cnt0 = cnt; Rfree0 = Rfree  if  Rfree<Rfree0
 let cnt  = cnt + 1
 repeat @REFINE while suggested>0 and cnt<5
 
-
-continue @REFINE[cnt0]
+branch @REFINE[cnt0]
 
 @VALIDATION
     RUN        PDBVal
@@ -122,7 +123,7 @@ END
 
 
 #PRINT_VAR nfitted
-continue @MOLECULAR_REPLACEMENT  while  nfitted0<nfitted and nfitted<nasu
+branch @MOLECULAR_REPLACEMENT  while  nfitted0<nfitted and nfitted<nasu
 
 @REBUILD
     RUN       ModelCraft

@@ -4,7 +4,9 @@
 # -----------------------------------------------------
 #
 
-VERSION 1.0  # script version for backward compatibility
+VERSION  1.0  # script version for backward compatibility
+DEBUG    OFF  # ON/OFF
+COMMENTS ON   # ON/OFF
 
 # ==========================================================================
 # Workflow header and input
@@ -12,8 +14,8 @@ VERSION 1.0  # script version for backward compatibility
 # General workflow descriptors
 NAME     SMR workflow
 ONAME    smr_wflow 
-TITLE    Simple MR Workflow with ligand fitting
-DESC     simple MR with given templatem water/ligand fitting and refinement 
+TITLE    Phaser MR Workflow with ligand fitting
+DESC     phaser-MR with given templatem water/ligand fitting and refinement 
 ICON Maraschino  # added automatically
 KEYWORDS simple MR workflow  # for using in A-Z keyword search
 
@@ -57,15 +59,17 @@ PRINT_VAR reso_high
 @DEFINE_ASU
     RUN       ASUDef
 
-
-@MOLECULAR_REPLACEMENT
+let cnt = 1
+@MOLECULAR_REPLACEMENT[cnt]
     RUN       PhaserMR
-
+let cnt = cnt + 1
 #PRINT_VAR nfitted
-continue @MOLECULAR_REPLACEMENT  while  nfitted0<nfitted and nfitted<nasu
+continue @MOLECULAR_REPLACEMENT[cnt]  while  nfitted0<nfitted and nfitted<nasu and cnt<=nasu
 
 @REBUILD
-    RUN       ModelCraft
+    RUN       Buccaneer
+
+#    RUN       ModelCraft
 
 # Make ligand if ligand description was provided
 @MAKE_LIGAND   
@@ -94,16 +98,24 @@ continue @MOLECULAR_REPLACEMENT  while  nfitted0<nfitted and nfitted<nasu
     PARAMETER SAMPLES 750
     RUN       FitLigand
 
+
 # give it refinement with parameter optiimsation now
+
 let suggested = 0    # need in case if ligand was not given
-let cnt = 1
-@REFINE-2
+let cnt       = 1
+let cnt0      = 0
+let Rfree0    = 1.0
+
+@REFINE-2[cnt]
     IFDATA    ligand
     USE_SUGGESTED_PARAMETERS
     RUN       Refmac
 
-let cnt = cnt + 1
+let cnt0 = cnt; Rfree0 = Rfree  if  Rfree<Rfree0
+let cnt  = cnt + 1
 repeat @REFINE-2 while suggested>0 and cnt<5
+
+branch @REFINE-2[cnt0]  pass   # pass works when @REFINE-2 was not run
 
 
 # If ligand was given or generated, waters were removed after Modelcraft.
@@ -113,16 +125,22 @@ repeat @REFINE-2 while suggested>0 and cnt<5
     #PARAMETER  SIGMA 3.0   # will optiise SIGMA if this parameter is not given
     RUN        FitWaters
 
-let cnt = 1
-@REFINE-3
-    USE_SUGGESTED_PARAMETERS
-    RUN        Refmac
 
-let cnt = cnt + 1
+let cnt    = 1
+let cnt0   = 0
+let Rfree0 = 1.0
+
+@REFINE-3[cnt]
+    USE_SUGGESTED_PARAMETERS
+    RUN       Refmac
+
+let cnt0 = cnt; Rfree0 = Rfree  if  Rfree<Rfree0
+let cnt  = cnt + 1
 repeat @REFINE-3 while suggested>0 and cnt<5
 
+branch @REFINE-3[cnt0]
 
-#@VALIDATION
-#    RUN        PDBVal
+@VALIDATION
+    RUN        PDBVal
 
 #

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -353,7 +353,7 @@ class Buccaneer(basic.TaskDriver):
                                 "Rfactor" : float(self.generic_parser_summary["refmac"]["R_factor"]),
                                 "Rfree"   : float(self.generic_parser_summary["refmac"]["R_free"])
                             }
-                    }, log=self.file_stderr )
+                    })
                     # self.putMessage ( "<h3>Workflow started</hr>" )
 
                 else:
@@ -373,7 +373,7 @@ class Buccaneer(basic.TaskDriver):
                         "scores" :  {
                             "Compl" : 0.0
                         }
-                }, log=self.file_stderr )
+                })
 
         # close execution logs and quit
         self.success ( have_results )

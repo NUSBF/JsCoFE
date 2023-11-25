@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -355,7 +355,7 @@ class ShelxCD(basic.TaskDriver):
                             "scores" :  {
                                 "Nsubs" : anom_structure.getNofAtoms()
                             }
-                    }, log=self.file_stderr )
+                    })
                     # self.putMessage ( "<h3>Workflow started</hr>" )
 
             if have_results:

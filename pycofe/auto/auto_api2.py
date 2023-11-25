@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -25,19 +25,67 @@ from   pycofe.varut  import jsonut
 def auto_meta_fname   ():  return "auto.meta"
 def auto_context_fname():  return "auto.context"
 
-auto_meta  = None
-log_stream = None
+auto_meta    = None
+log_stream   = None
+debug_out    = False
+comments_out = False
+
+# ----------------------------------------------------------------------------
 
 def setLog ( log ):
     global log_stream
     log_stream = log
+    if log_stream:
+        log_stream.write (
+            "\n" +\
+            " **********************************\n" +\
+            " ***   AUTOMATIC WORKFLOW LOG   ***\n" +\
+            " **********************************\n" +\
+            "\n"
+        )
     return
 
-def log ( message ):
+def setDebugOutput ( print_debug ):
+    global debug_out
+    debug_out = print_debug
+    return
+
+def setCommentsOutput ( print_comments ):
+    global comments_out
+    comments_out = print_comments
+    return
+
+def log_line ( lineNo,line ):
     global log_stream
     if log_stream:
-        log_stream.write ( " >>> auto-workflow: " + message + "\n" )
+        log_stream.write ( " %03d| " % lineNo + line + "\n" )
     return
+
+def log_error ( message ):
+    global log_stream
+    if log_stream:
+        log_stream.write ( " *** Error: " + message + "\n" )
+    return
+
+def log_message ( message ):
+    global log_stream
+    if log_stream:
+        log_stream.write ( " ... " + message + "\n" )
+    return
+
+def log_debug ( message ):
+    global log_stream,debug_out
+    if log_stream and debug_out:
+        log_stream.write ( " >>> " + message + "\n" )
+    return
+
+def log_comment ( message ):
+    global log_stream,comments_out
+    if log_stream and comments_out:
+        log_stream.write ( " ::: " + message + "\n" )
+    return
+
+# ----------------------------------------------------------------------------
 
 def initAutoMeta():
     global auto_meta
@@ -65,24 +113,24 @@ def writeAutoMeta():
 
 def getContext ( contextName ):
     global auto_meta
-    log('calling getContext: "%s"' % (contextName))
+    log_debug ( 'getContext: "%s"' % (contextName) )
     if contextName in auto_meta["context"]["custom"]:
         return auto_meta["context"]["custom"][contextName]
     return None
 
 def addContext ( contextName,context ):
     global auto_meta
-    log('calling addContext: "%s", "%s"' % (contextName, context))
+    log_debug ( 'addContext: "%s", "%s"' % (contextName, context) )
     auto_meta["context"]["custom"][contextName] = context
     return
 
 def removeContext ( contextName ):
     global auto_meta
-    log('calling removeContext: "%s"' % (contextName))
+    log_debug ( 'removeContext: "%s"' % (contextName) )
     try:
         del auto_meta["context"]["custom"][contextName]
     except:
-        log('removeContext excepted: "%s"' % (contextName))
+        log_error ('removeContext excepted: "%s"' % (contextName) )
     return
 
 def addTask ( taskName,taskClassName,parentName ):
@@ -95,7 +143,7 @@ def addTask ( taskName,taskClassName,parentName ):
         "parentName" : parentName
     }
     auto_meta[taskName] = task
-    log('calling addTask: "%s", "%s", "%s"' % (taskName,taskClassName,parentName))
+    log_debug ( 'addTask: "%s", "%s", "%s"' % (taskName,taskClassName,parentName) )
     return task
 
 def addTaskData ( taskName,inputId,dataClass,append=True ):
@@ -115,9 +163,10 @@ def addTaskData ( taskName,inputId,dataClass,append=True ):
             task["data"][inputId].append ( dataClass )
         else:
             task["data"][inputId].append ( dataClass.to_dict() )
-        log('calling addTaskData: "%s", "%s", "%s"' % (taskName, inputId, dataClass))
+        log_debug ( 'addTaskData: "%s", "%s", "%s"' % (taskName, inputId, dataClass) )
     else:
-        log('task name not found in addTaskData: "%s", "%s", "%s"' % (taskName, inputId, dataClass))
+        log_error ( 'task name not found in addTaskData: "%s", "%s", "%s"' \
+                    % (taskName, inputId, dataClass) )
     return
 
 def addTaskParameter ( taskName,parameterName,parameterValue ):
@@ -125,16 +174,20 @@ def addTaskParameter ( taskName,parameterName,parameterValue ):
     if taskName in auto_meta:
         task = auto_meta[taskName]
         task["parameters"][parameterName] = parameterValue
-        log('calling addTaskParameter: "%s", "%s", "%s"' % (taskName, parameterName, parameterValue))
+        log_debug ( 'addTaskParameter: "%s", "%s", "%s"' \
+                    % (taskName, parameterName, parameterValue))
+    else:
+        log_error ( 'task name not found in addTaskParameter: "%s", "%s", "%s"' \
+                    % (taskName, parameterName, parameterValue) )
     return
 
 def noteTask ( taskName ):
     if taskName in auto_meta:
         auto_meta["context"]["tasks"][taskName] = auto_meta[taskName]
-        log('calling noteTask: "%s"' % (taskName))
+        log_debug ( 'noteTask: "%s"' % (taskName) )
         return True
     else:
-        log('calling noteTask failed: "%s"' % (taskName))
+        log_error ( ' noteTask failed: "%s"' % (taskName) )
     return False
 
 def cloneTask ( clonedTaskName,taskName ):
@@ -154,10 +207,10 @@ def cloneTask ( clonedTaskName,taskName ):
             "fields"     : fields,
             "parentName" : task["parentName"]
         }
-        log('calling cloneTask: "%s", "%s"' % (clonedTaskName, taskName))
+        log_debug ( 'cloneTask: "%s", "%s"' % (clonedTaskName, taskName) )
         return True
     else:
-        log ( "task " + taskName + " not found for cloning" )
+        log_error ( "task " + taskName + " not found for cloning" )
     return False
 
 

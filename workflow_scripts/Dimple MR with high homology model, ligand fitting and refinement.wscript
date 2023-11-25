@@ -4,7 +4,9 @@
 # -----------------------------------------------------
 #
 
-VERSION 1.0  # script version for backward compatibility
+VERSION  1.0  # script version for backward compatibility
+DEBUG    OFF  # ON/OFF
+COMMENTS ON   # ON/OFF
 
 # ==========================================================================
 # Workflow header and input
@@ -26,7 +28,7 @@ DATA LIGAND
 
 # List all parameters required, "!" specifies mandatory items
 PAR_REAL resHigh
-    LABEL     High resolution cut-off (Å) 
+    LABEL     High resolution cut-off (&Aring;) 
     TOOLTIP   High resolution cut-off, angstrom
     RANGE     0.1 5.0
     DEFAULT   1.5
@@ -73,14 +75,20 @@ PAR_REAL resHigh
     PARAMETER SIGMA 3.0
     RUN       FitWaters
 
-let cnt = 1
 
-@REFINE2
+let cnt    = 1
+let cnt0   = 0
+let Rfree0 = 1.0
+
+@REFINE2[cnt]
     USE_SUGGESTED_PARAMETERS
     RUN       Refmac
 
-let cnt = cnt + 1
+let cnt0 = cnt; Rfree0 = Rfree  if  Rfree<Rfree0
+let cnt  = cnt + 1
 repeat @REFINE2 while suggested>0 and cnt<5
+
+branch @REFINE2[cnt0]
 
 @VALIDATION
     RUN       PDBVal

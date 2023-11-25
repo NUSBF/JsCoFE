@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.07.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -73,7 +73,7 @@ class DType(dtype_xyz.DType):
             self.removeNonAnom  = False; # for use in Crank-2
 
             #self.useForNCS      = True  # for use in Parrot
-            self.useModelSel    = ""     # for use in Buccaneer and Nautilus
+            self.useModelSel    = "N"    # for use in Buccaneer and Nautilus
             self.BFthresh       = 3.0
             self.phaseBlur      = 1.0    # used in arpwarp
             self.mapSel         = "diffmap" # map selection ('diffmap','directmap') for coot tasks

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -414,7 +414,7 @@ class PhaserEP(basic.TaskDriver):
                         "LLG" : LLG,
                         "FOM" : FOM
                     }
-            }, log=self.file_stderr )
+            })
             # self.putMessage ( "<h3>Workflow started</hr>" )
 
         if have_results and FOM>=0.0:

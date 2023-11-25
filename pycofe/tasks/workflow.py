@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -202,7 +202,7 @@ class Workflow(import_task.Import):
                         "ligdesc"  : self.ligdesc
                     },
                     "variables" : variables
-               },self.file_stderr):
+               }):
                 summary_line += "workflow started"
                 self.putMessage ( "<h3>Workflow started</hr>" )
             else:

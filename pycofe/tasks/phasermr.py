@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -494,7 +494,7 @@ class PhaserMR(basic.TaskDriver):
                                 "nfitted0" : nfitted0,         # number of polymers before run
                                 "nfitted"  : structure.getNofPolymers()  # number of polymers after run
                             }
-                    }, log=self.file_stderr )
+                    })
 
                 else:  # pre-coded workflow framework
                     auto.makeNextTask(self, {
