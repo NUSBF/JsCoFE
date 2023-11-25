@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -291,7 +291,7 @@ class Aimless(basic.TaskDriver):
                     "data"  : {
                         "hkl"   : hkl
                     }
-                }, log=self.file_stderr )
+                })
                 # self.putMessage ( "<h3>Workflow started</hr>" )
             else:
                 auto.makeNextTask ( self,{

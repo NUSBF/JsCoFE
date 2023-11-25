@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -146,7 +146,7 @@ class ChangeReso(basic.TaskDriver):
                     }
                     if revision:
                         awdata["data"]["revision"] = [revision]
-                    auto_workflow.nextTask ( self,awdata,log=self.file_stderr )
+                    auto_workflow.nextTask ( self,awdata )
 
 
         if not have_results:

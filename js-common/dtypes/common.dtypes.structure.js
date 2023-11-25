@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.06.23   <--  Date of Last Modification.
+ *    24.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -78,7 +78,7 @@ function DataStructure()  {
 
   this.removeNonAnom  = false; // for use in Crank-2
 
-  this.useModelSel    = '';    // for use in Buccaneer and Nautilus
+  this.useModelSel    = 'N';   // for use in Buccaneer and Nautilus
   this.initPhaseSel   = structure_subtype.XYZ;  // for use in Acorn and ArpWarp
   this.BFthresh       = 3.0;
   this.phaseBlur      = 1.0;   // used in arpwarp

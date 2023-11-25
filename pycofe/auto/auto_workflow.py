@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -78,6 +78,34 @@ def nextTask ( body,data,log=None ):
 
         if crTask.autoRunId: # else workflow does not run
 
+            if log:
+                auto_api2.setLog ( log )
+            else:
+                auto_api2.setLog ( body.file_stdout1 )
+            auto_api2.initAutoMeta()
+
+            # make comment-less copy of the script
+            version = "1.0"
+            script  = []
+            for i in range(len(crTask.script)):
+                line = crTask.script[i].strip()
+                if "#" in line:
+                    line = line[:line.index("#")].strip()
+                script.append ( line )
+                words = line.split()
+                if len(words)>=2:
+                    if words[0].upper()=="VERSION":
+                        version = words[1]
+                        auto_api2.log_line ( i+1,crTask.script[i] )
+                    elif words[0].upper()=="DEBUG":
+                        auto_api2.setDebugOutput ( words[1].upper()=="ON" )
+                        auto_api2.log_line ( i+1,crTask.script[i] )
+                    elif words[0].upper()=="COMMENTS":
+                        auto_api2.setCommentsOutput ( words[1].upper()=="ON" )
+                        auto_api2.log_line ( i+1,crTask.script[i] )
+            auto_api2.log_message ( " " )
+
+
             # prepare citation lists for passing down the project tree; this
             # must be done here because in general framework, citations are
             # put in place when task finishes
@@ -86,14 +114,6 @@ def nextTask ( body,data,log=None ):
             for key in data:
                 if hasattr(data[key],"citations"):
                     data[key].citations = body.citation_list
-
-            if log:
-                auto_api2.setLog ( log )
-            else:
-                auto_api2.setLog ( body.file_stdout )
-            auto_api2.initAutoMeta()
-
-            # auto_api.log ( " --- " + str(data["data"]["ligdesc"]) )
 
             # initialize workflow variables
             w = {}
@@ -114,9 +134,7 @@ def nextTask ( body,data,log=None ):
             if "data" in data:
                 ddata = data["data"]
                 for d in ddata:
-                    # auto_api2.log ( " --- 1. " + d )
                     if len(ddata[d])>0:  # and d!="revision":
-                        # auto_api2.log ( " --- 2. " + d )
                         if not d in wdata:
                             wdata[d] = []
                         for obj in ddata[d]:
@@ -159,13 +177,6 @@ def nextTask ( body,data,log=None ):
                     revision = rev_list[0]
                     wdata["revision.hkl"] = [revision["HKL"]]
 
-            # make comment-less copy of the script
-            script = []
-            for line in crTask.script:
-                if "#" in line:
-                    script.append ( line[:line.index("#")].strip() )
-                else:
-                    script.append ( line.strip() )
 
             # parse the script
 
@@ -181,15 +192,13 @@ def nextTask ( body,data,log=None ):
             repeat_mode   = ""  # no task repeat mode (default)
             parse_error   = ""
 
-            # auto_api2.log ( " --- " + str(crTask.script_pointer) )
-
             # identify runs where project loops or branches
             branch_points = []
             for line in script:
                 words = line.split()
-                if len(words)>2 and words[0].upper() in ["REPEAT","BRANCH"]:
-                    branch_points.append ( words[1] )
-            auto_api2.log ( " --- branch_points=" + str(branch_points) )
+                if len(words)>2 and words[0].upper() in ["REPEAT","CONTINUE","BRANCH"]:
+                    branch_points.append ( words[1].split("[")[0] )
+            auto_api2.log_debug ( "branch_points=" + str(branch_points) )
 
             parentRunName = crTask.autoRunName
             if parentRunName.split("[")[0] in branch_points:
@@ -198,27 +207,162 @@ def nextTask ( body,data,log=None ):
                     "wdata"    : wdata
                 })
 
-
             if lno<=0:
                 # scroll script to the first workflow key
                 lno,key = scrollToWorkflowDesc ( script )
                 # if key and len(key)<2:
                 #     parse_error = " *** LINE " + str(lno) + ": empty RUN NAMES are not allowed"
 
+            scope = "flow"
+
             while lno<len(script) and not nextTaskType and not parse_error:
-                
+
+                auto_api2.log_line ( lno+1,crTask.script[lno] )
+
                 words  = script[lno].split()
                 nwords = len(words)
                 
                 if nwords>0:
-                
-                    if words[0].startswith("@"):
-                        nextRunName = makeRunName ( words[0] )
-                        if len(nextRunName[0])<2:
-                            parse_error = " *** LINE " + str(lno) + ": empty RUN NAMES are not allowed"
-                    else:
-                        w0u  = words[0].upper()
-                        perr = " *** LINE " + str(lno) + ": " + w0u + " declared but not correctly defined"
+
+                    w0u  = words[0].upper()
+                    perr = w0u + " declared but not correctly defined"
+
+                    if scope=="flow":
+                        
+                        if words[0].startswith("@"):
+                            nextRunName = makeRunName ( words[0] )
+                            scope = "run"
+                            if len(nextRunName[0])<2:
+                                parse_error = "empty RUN NAMES are not allowed"
+
+                        elif w0u=="LET":
+                            #  Examples:
+                            #  let x = a+1
+                            #  let x = a*2; y = b+c; z = 10+d etc
+                            #  let x = x0;  y = y0 if x0<y0
+                            if nwords<2:
+                                parse_error = perr
+                            else:
+                                line      = script[lno].strip()[3:].strip() # remove 'let'
+                                condition = True
+                                k         = line.upper().find(" IF ")
+                                if k>0:  # condition is present
+                                    try:
+                                        condition = eval_parser.parse(line[k+4:]).evaluate(w)
+                                        auto_api2.log_comment ( "condition : " + str(condition) )
+                                        line      = line[:k]  # remove "IF ...."
+                                    except:
+                                        condition   = False
+                                        parse_error = "incomputable expression \"" + \
+                                                      line[k+4:] + "\""
+                                if condition:
+                                    line       = "".join(line.split())  # remove spaces
+                                    statements = line.split(";")
+                                    for i in range(len(statements)):
+                                        if statements[i]:
+                                            (vname,expr) = statements[i].split('=')
+                                            try:
+                                                value    = eval_parser.parse(expr).evaluate(w)
+                                                w[vname] = value
+                                                auto_api2.log_comment (
+                                                    vname + " = " + str(value)
+                                                )
+                                            except:
+                                                parse_error = "incomputable expression \"" +\
+                                                                expr + "\""
+                                                break
+                                            # auto_api2.log_debug ( 
+                                            #     "LET " + vname + " = '" + \
+                                            #     expr + "' (== " + \
+                                            #     str(value) + ")" 
+                                            # )
+
+                        elif w0u in ["REPEAT","CONTINUE","BRANCH"]:
+                            if nwords<2 or not words[1].startswith("@"):
+                                parse_error = perr
+                            else:
+                                repeat_mode = w0u
+                                
+                                pass_error = nwords>=3 and words[2].upper()=="PASS"
+                                k = 3 if pass_error else 2
+
+                                if nwords>=k+2:
+                                    if words[k].upper() in ["WHILE","IF"]:
+                                        expr = " ".join(words[k+1:]);
+                                        try:
+                                            condition = eval_parser.parse(expr).evaluate(w)
+                                            if not condition:
+                                                repeat_mode = ""
+                                            auto_api2.log_comment ( "condition : " + str(condition) )
+                                        except:
+                                            repeat_mode = ""
+                                            parse_error = "incomputable expression \"" +\
+                                                        expr + "\""
+                                    else:
+                                        repeat_mode = ""
+                                        parse_error = "unparseable statement"
+                                
+                                if repeat_mode:
+                                    # scroll script up
+                                    if repeat_mode=="REPEAT":
+                                        # restore initial branch data
+                                        rdata = auto_api2.getContext ( words[1] + "_rundata" )
+                                        if rdata:
+                                            (lno,nextRunName) = scrollToRunName ( script,words[1] )
+                                            tdata = rdata["tdata"]
+                                            scope = "run"
+                                        elif pass_error:
+                                            auto_api2.log_comment ( "PASS executed" )
+                                        else:
+                                            parse_error = "run name " + words[1] + " is not defined"
+                                    else:
+                                        parRunName0   = parentRunName
+                                        pRunName      = makeRunName ( words[1] )
+                                        parentRunName = pRunName[0]
+                                        if pRunName[1]:
+                                            repeatNo = int(w[pRunName[1]])
+                                            if repeat_mode=="CONTINUE":
+                                                repeatNo = repeatNo - 1
+                                            parentRunName += "[" + str(repeatNo) + "]"
+                                        rdata = auto_api2.getContext ( parentRunName + "_outdata" )
+                                        if rdata and repeat_mode=="CONTINUE":
+                                            (lno,nextRunName) = scrollToRunName ( script,pRunName[0] )
+                                            scope = "run"
+                                        elif not rdata:
+                                            if pass_error:
+                                                parentRunName = parRunName0
+                                                auto_api2.log_comment ( "PASS executed" )
+                                            else:
+                                                parse_error = "run name " + parentRunName + " is not defined"
+                                        tdata = {}
+                                    if rdata:
+                                        rev_list = rdata["rev_list"]
+                                        if len(rev_list)>0:
+                                            # take 0th revision by default; if this need to be 
+                                            # changed, instructions will be read in due course 
+                                            # from RUN description
+                                            revision = rev_list[0]
+                                            wdata["revision.hkl"] = [revision["HKL"]]
+                                        # restore wdata such as not to change variables
+                                        for key in rdata["wdata"]:
+                                            if key!="variables":
+                                                wdata[key] = rdata["wdata"][key]
+
+                        elif w0u=="PRINT_VAR":
+                            if nwords>1:
+                                expr = " ".join(words[1:])
+                                auto_api2.log_message ( 
+                                    expr + " = " + str(eval_parser.parse(expr).evaluate(w))
+                                )
+                        elif w0u=="END" or w0u=="STOP":
+                            parse_error = "end"  # just sinal end of play
+
+                        else:
+                            parse_error = "statement out of scope"
+
+
+                    elif scope=="run":
+
                         if w0u in ["IFDATA","IFNOTDATA","IF"]:
                             #  run is conditional to data availability
                             if len(words)<2:
@@ -235,11 +379,11 @@ def nextTask ( body,data,log=None ):
                                         ok = words[j].lower() not in wdata
                                         j  = j + 1
                                 else:
+                                    p = " ".join(words[1:]).strip()
                                     try:
-                                        p  = " ".join(words[1:]).strip()
                                         ok = eval_parser.parse(p).evaluate(w)
                                     except:
-                                        parse_error = perr + " (value)"
+                                        parse_error = "incomputable expression \"" + p + "\""
                                         ok = True
                                 if not ok:
                                     # some data is not available, scroll script to the next RUN
@@ -257,6 +401,7 @@ def nextTask ( body,data,log=None ):
                                     aliases       = {}  # data aliasess
                                     tdata         = {}  # specific task data from context
                                     use_suggested_parameters = False
+                                    scope         = "flow"
 
                         elif w0u=="PARAMETER":  # task parameter
                             if nwords<3:
@@ -266,7 +411,7 @@ def nextTask ( body,data,log=None ):
                                 if vname in w:
                                     parameters[words[1]] = w[vname]
                                 else:
-                                    parse_error = perr + " (variable " + vname + " not found)"
+                                    parse_error = "variable \"" + vname + "\" not found"
                             else:
                                 p = " ".join(words[2:]).strip()
                                 if (p.startswith('"') and p.endswith('"')) or\
@@ -276,7 +421,7 @@ def nextTask ( body,data,log=None ):
                                     try:
                                         parameters[words[1]] = eval_parser.parse(p).evaluate(w)
                                     except:
-                                        parse_error = perr + " (value does not compute)"
+                                        parse_error = "incomputable expression \"" + p + "\""
 
                         elif w0u=="PROPERTY":  # data property
                             if nwords<4:
@@ -285,8 +430,8 @@ def nextTask ( body,data,log=None ):
                                 dtype = words[1].lower()
                                 if dtype not in wdata:
                                     parse_error = " *** LINE " + str(lno) + \
-                                                  ": data type " + words[1] + \
-                                                  " not found"
+                                                    ": data type " + words[1] + \
+                                                    " not found"
                                 else:
                                     p = " ".join(words[3:]).strip()
                                     if (p.startswith('"') and p.endswith('"')) or\
@@ -296,7 +441,7 @@ def nextTask ( body,data,log=None ):
                                         try:
                                             wdata[dtype][0][words[2]] = eval_parser.parse(p).evaluate(w)
                                         except:
-                                            parse_error = perr + " (value does not compute)"
+                                            parse_error = "incomputable expression \"" + p + "\""
 
                         elif w0u=="ALIAS":   #  data alias if "inputId" is non-standard
                             if nwords<3:
@@ -314,161 +459,68 @@ def nextTask ( body,data,log=None ):
                             if nwords<3 or words[1].upper()!="REVISION":
                                 parse_error = perr
                             else:
-                                # try:
-                                if True:
-                                    revno = eval_parser.parse("".join(words[2:])).evaluate(w)
-                                    auto_api2.log ( "USE REVISION '" + str(revno) + "'" )
+                                p = "".join ( words[2:] )
+                                try:
+                                    revno = eval_parser.parse(p).evaluate(w)
+                                    auto_api2.log_comment ( "use revision '" + str(revno) + "' now" )
                                     if rev_list and revno<len(rev_list):
                                         revision = rev_list[revno]
                                         wdata["revision.hkl"] = [revision["HKL"]]
                                     else:
-                                        auto_api2.log ( 
-                                            "requested revision no. (" + str(revno)   + \
-                                            ") does not exist (" + str(len(rev_list)) + \
-                                            " total)" 
-                                        )
-                                        parse_error = perr + " (revision " + str(revno) +\
-                                                             " not found)"
-                                # except:
-                                #     parse_error = perr + " (revision number not parsed)"
+                                        # auto_api2.log_error ( 
+                                        #     "requested revision no. (" + str(revno)   + \
+                                        #     ") does not exist (" + str(len(rev_list)) + \
+                                        #     " total)" 
+                                        # )
+                                        parse_error = "revision " + str(revno) +\
+                                                        " not found (total " + str(len(rev_list)) + \
+                                                        " revisions available)"
+                                except:
+                                    parse_error = "incomputable revision number \"" + p + "\""
 
                         elif w0u=="USE_SUGGESTED_PARAMETERS":
                             use_suggested_parameters = True
-
-                        elif w0u=="LET":
-                            #  Examples:
-                            #  let x = a+1
-                            #  let x = a*2; y = b+c; z = 10+d etc
-                            #  let x = x0;  y = y0 if x0<y0
-                            if nwords<2:
-                                parse_error = perr
-                            else:
-                                try:
-                                    line      = script[lno].strip()[3:].strip() # remove 'let'
-                                    condition = True
-                                    k         = line.upper().find(" IF ")
-                                    if k>0:  # condition is present
-                                        condition  = eval_parser.parse(line[k+4:]).evaluate(w)
-                                        line       = line[:k]  # remove "IF ...."
-                                    if condition:
-                                        line       = "".join(line.split())  # remove spaces
-                                        statements = line.split(";")
-                                        for i in range(len(statements)):
-                                            if statements[i]:
-                                                (vname,expr) = statements[i].split('=')
-                                                value        = eval_parser.parse(expr).evaluate(w)
-                                                w[vname]     = value
-                                                auto_api2.log ( "LET " + vname + " = '" + \
-                                                                expr + "' (== " + \
-                                                                str(value) + ")" )
-                                except:
-                                    parse_error = perr + " (evaluation errors)"
-
-                                # expression = "".join(words[1:])
-                                # eqi = expression.index('=')
-                                # if eqi<=0:
-                                #     parse_error = perr
-                                # else:
-                                #     vname = expression[:eqi]
-                                #     try:
-                                #         value    = eval_parser.parse(expression[eqi+1:]).evaluate(w)
-                                #         w[vname] = value
-                                #         auto_api2.log ( "LET " + vname + " = '" + \
-                                #                        expression[eqi+1:] + "' (== " + \
-                                #                        str(value) + ")" )
-                                #     except:
-                                #         parse_error = perr
-
-                        elif w0u in ["REPEAT","CONTINUE"]:
-                            if nwords<2 or not words[1].startswith("@"):
-                                parse_error = perr
-                            else:
-                                repeat_mode = w0u
-                                if nwords>=4 and words[2].upper() in ["WHILE","IF"]:
-                                    try:
-                                        expr = " ".join(words[3:]);
-                                        if not eval_parser.parse(expr).evaluate(w):
-                                            repeat_mode = ""
-                                        auto_api2.log ( w0u.lower() + " evaluated: '" + \
-                                                        expr + "' as [" + \
-                                                        str(repeat_mode) + "]" )
-                                    except:
-                                        repeat_mode = ""
-                                        parse_error = perr
-                                if repeat_mode:
-                                    # scroll script up
-                                    if repeat_mode=="REPEAT":
-                                        (lno,nextRunName) = scrollToRunName ( script,words[1] )
-                                        auto_api2.log ( " --- repeat pointer:  " + str(lno) )
-                                        auto_api2.log ( " --- repeat run name: " + str(nextRunName) )
-                                        # restore initial branch data
-                                        rdata = auto_api2.getContext ( nextRunName[0] + "_rundata" )
-                                        tdata = rdata["tdata"]
-                                    else:
-                                        pRunName      = makeRunName ( words[1] )
-                                        parentRunName = pRunName[0]
-                                        if pRunName[1]:
-                                            parentRunName += "[" + str(w[pRunName[1]]) + "]"
-                                        rdata = auto_api2.getContext ( parentRunName + "_outdata" )
-                                        tdata = {}
-                                    rev_list = rdata["rev_list"]
-                                    if len(rev_list)>0:
-                                        # take 0th revision by default; if this need to be 
-                                        # changed, instructions will be read in due course 
-                                        # from RUN description
-                                        revision = rev_list[0]
-                                        wdata["revision.hkl"] = [revision["HKL"]]
-                                    # restore wdata such as not to change variables
-                                    for key in rdata["wdata"]:
-                                        if key!="variables":
-                                            wdata[key] = rdata["wdata"][key]
-                                # else:
-                                #     auto_api2.removeContext ( words[1] + "_rno" )
 
                         elif w0u=="RUN":
                             if nwords<2:
                                 parse_error = perr
                             else:
                                 nextTaskType = words[1] if words[1].startswith("Task") else "Task"+words[1]
-                        elif w0u=="PRINT_VAR":
-                            if nwords>1:
-                                expr = " ".join(words[1:])
-                                auto_api2.log ( " PRINT: " + expr + " = " + str(eval_parser.parse(expr).evaluate(w)) )
-                        elif w0u=="END" or w0u=="STOP":
-                            parse_error = "end"  # just sinal end of play
-                            
+                            scope = "flow"
+
+                        else:
+                            parse_error = "statement out of scope"
+
                 lno = lno + 1
 
             crTask.script_end_pointer = lno
 
-            # auto_api2.log ( " --- end pointer: " + str(crTask.script_end_pointer) )
-            # auto_api2.log ( " --- " + str(w) )
-
             if parse_error=="end":
+                auto_api2.log_message ( "workflow stops here." )
                 body.putMessage ( "<h3>Workflow finished</h3>" )
                 return False
 
             if parse_error:
-                body.stderrln   ( " *** WORKFLOW SCRIPT ERROR:" )
-                body.stderrln   ( parse_error )
-                body.putMessage ( "<h3>Workflow script error</h3>" + parse_error )
+                auto_api2.log_error ( parse_error )
+                body.putMessage ( "<h3>Workflow script error</h3><i>" + \
+                                  parse_error + "</i>" )
                 return False
 
             if nextTaskType:
 
                 if not nextRunName:
-                    body.stderrln   ( " *** WORKFLOW SCRIPT ERROR:" )
-                    body.stderrln   ( " RUN NAME is not defined"    )
-                    body.putMessage ( "<h3>Workflow script error</h3>RUN NAME is not defined" )
+                    auto_api2.log_error ( " RUN NAME is not defined" )
+                    body.putMessage ( "<h3>Workflow script error</h3><i>" +\
+                                      "RUN NAME is not defined</i>" )
                     return False
 
                 # form new task
                 runName = nextRunName[0]
                 if nextRunName[1]:
                     if not nextRunName[1] in w:
-                        auto_api2.log ( " RUN NAME repeat counter is not defined" )
-                        body.putMessage ( "<h3>Workflow script error</h3>RUN NAME " +\
-                                          "repeat counter is not defined" )
+                        auto_api2.log_error ( " RUN NAME repeat counter is not defined" )
+                        body.putMessage ( "<h3>Workflow script error</h3><i>RUN NAME " +\
+                                          "repeat counter is not defined</i>" )
                         return False
                     else:
                         runName += "[" + str(w[nextRunName[1]]) + "]"
@@ -476,16 +528,16 @@ def nextTask ( body,data,log=None ):
                 if repeat_mode=="REPEAT":  
                     # clone task
                     if not nextRunName[1] or nextRunName[1] not in w:
-                        auto_api2.log   ( " RUN NAME repeat counter is not defined" )
-                        body.putMessage ( "<h3>Workflow script error</h3>RUN NAME " +\
-                                          "repeat counter is not defined" )
+                        auto_api2.log_error ( "RUN NAME repeat counter is not defined" )
+                        body.putMessage ( "<h3>Workflow script error</h3><i>RUN NAME " +\
+                                          "repeat counter is not defined</i>" )
                         return False
 
                     repeat_no = int(w[nextRunName[1]])
                     if repeat_no<1:
-                        auto_api2.log   ( " RUN NAME repeat counter does not advance" )
-                        body.putMessage ( "<h3>Workflow script error</h3>RUN NAME " +\
-                                          "repeat counter does not advance" )
+                        auto_api2.log_error ( "RUN NAME repeat counter does not advance" )
+                        body.putMessage ( "<h3>Workflow script error</h3><i>RUN NAME " +\
+                                          "repeat counter does not advance</i>" )
                         return False
                         
                     # runName   = nextRunName[0] + "[" + str(repeat_no)   + "]"

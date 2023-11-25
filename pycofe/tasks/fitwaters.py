@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -446,7 +446,7 @@ class FitWaters(basic.TaskDriver):
                                 "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
                                 "Nwaters"  : str(nwaters)
                             }
-                    }, log=self.file_stderr )
+                    })
                     # self.putMessage ( "<h3>Workflow started</hr>" )
 
                 else:  # pre-coded workflow framework

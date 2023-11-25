@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -599,7 +599,7 @@ class ASUDef(basic.TaskDriver):
                     "scores" :  {
                         "nasu" : revision[0].getNofASUMonomers()  # number of predicted subunits
                     }
-                }, log=self.file_stderr )
+                })
                 # self.putMessage ( "<h3>Workflow started</hr>" )
             else:  # pre-coded workflow framework
                 auto.makeNextTask ( self,{

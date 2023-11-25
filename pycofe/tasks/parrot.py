@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.11.23   <--  Date of Last Modification.
+#    24.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -317,7 +317,7 @@ class Parrot(basic.TaskDriver):
                                 "FOM"   : float(FOM),
                                 "Fcorr" : float(Fcorr)
                             }
-                    }, log=self.file_stderr )
+                    })
                     # self.putMessage ( "<h3>Workflow started</hr>" )
 
                 if FOM:
