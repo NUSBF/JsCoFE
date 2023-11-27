@@ -26,7 +26,6 @@ class sbgrid extends dataSource {
     log.debug(`${this.name} - Scraping entries...`);
     while (true) {
       let url = URL_CAT + '?page=' + page;
-      log.debug(url);
 
       let pdbid = [];
       let data = [];
@@ -73,12 +72,13 @@ class sbgrid extends dataSource {
 
         }
 
-        entries[proj] = {};
-        entries[proj].path = proj;
-        entries[proj].pdb = pdb;
-        entries[proj].desc = desc;
-        entries[proj].doi = doi;
+        const e = {};
+        e.path = proj;
+        e.pdb = pdb;
+        e.desc = desc;
+        e.doi = doi;
 
+        entries[proj] = e;
       });
 
       if (page == pages) {

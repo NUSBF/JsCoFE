@@ -44,16 +44,19 @@ class pdbj extends dataSource {
     let obj = JSON.parse(json);
     for (const r of obj.results) {
       let id = r[res.pdb];
+
       // if there is no pdb entry, use the id
       if (! id) {
         id = r[res.id];
       }
-      let e = {};
+
+      const e = {};
       e.path = id.toString();
       e.pdb = r[res.pdb];
       e.doi = r[res.doi];
       e.desc = r[res.desc];
       e.auth = r[res.auth];
+
       entries[id] = e;
     }
     this.saveCatalog(entries);

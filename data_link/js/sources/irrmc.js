@@ -33,7 +33,6 @@ class irrmc extends dataSource {
     log.debug(`${this.name} - Scraping entries...`);
     while (true) {
       let url = URL_CAT + '?show=' + PAGE_SIZE + '&page=' + page;
-      log.debug(url);
 
       let pdbid = [];
       let data = [];
@@ -86,12 +85,13 @@ class irrmc extends dataSource {
 
         }
 
-        entries[id] = {};
-        entries[id].pdb = pdb;
-        entries[id].path = path;
-        entries[id].desc = desc;
-        entries[id].doi = doi;
+        const e = {};
+        e.pdb = pdb;
+        e.path = path;
+        e.desc = desc;
+        e.doi = doi;
 
+        entries[id] = e;
       });
 
       if (page == pages) {
