@@ -70,7 +70,6 @@ class MakeLigand(basic.TaskDriver):
         if sourceKey == "S":
             smiles  = self.getParameter ( self.task.parameters.SMILES )
             code    = self.getParameter ( self.task.parameters.CODE ).strip().upper()
-            self.stdoutln ( " >>>>>> code=" + code )
 
             if not code:
                 exclude_list = []

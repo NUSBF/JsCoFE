@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.10.23   <--  Date of Last Modification.
+#    27.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -77,11 +77,13 @@ class Migrate(import_task.Import):
             self._addFileImport ( self.task.file_mtz )
         if self.task.file_xyz:
             self._addFileImport ( self.task.file_xyz )
+        ligand_library = []
         if self.task.file_lib:
             self._addFileImport ( self.task.file_lib )
+            ligand_library.append ( self.task.file_lib.split("/")[-1] )
         self.mtz_imported = import_merged.run ( self,importPhases="phases-ds only" )
         self.xyz_imported = import_xyz   .run ( self )
-        self.lib_imported = import_ligand.run ( self )
+        self.lib_imported = import_ligand.run ( self,ligand_libraries=ligand_library )
 
         # -------------------------------------------------------------------
         # fetch data for the Migrate pipeline
@@ -286,6 +288,8 @@ class Migrate(import_task.Import):
                         r.setStructureData    ( structures[j]    )
                         self.registerRevision ( r,serialNo=revisionSerialNo,
                                                   title=None,message="" )
+                        if self.lib:
+                            r.addLigandData   ( self.lib )
                         revisionSerialNo += 1
                         self.have_results = True
                         if not revision:
@@ -303,6 +307,8 @@ class Migrate(import_task.Import):
                     r.setReflectionData   ( self.hkl[j]      )
                     r.setASUData          ( self.job_id,[],0,0.0,0,1.0,50.0,0.0 )
                     r.setStructureData    ( structures[j]    )
+                    if self.lib:
+                        r.addLigandData   ( self.lib )
                     self.registerRevision ( r,serialNo=revisionSerialNo,
                                               title=None,message="" )
                     revisionSerialNo += 1
