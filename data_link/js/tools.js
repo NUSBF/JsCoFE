@@ -199,6 +199,11 @@ class tools {
     }
     return res;
   }
+
+  static sleep(ms) {
+    return new Promise(r => setTimeout(r, ms));
+  }
+
 }
 
 module.exports = {

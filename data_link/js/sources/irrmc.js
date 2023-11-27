@@ -99,6 +99,8 @@ class irrmc extends dataSource {
       }
 
       page ++;
+      // 2 second delay before next request
+      await tools.sleep(2000);
     }
     this.saveCatalog(entries);
   }
