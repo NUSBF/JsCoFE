@@ -1131,6 +1131,7 @@ if (!dbx)  {
       sel.addItem ( 'None'  ,'','none',this.input_ligands[i].source=='none' );
       sel.addItem ( 'SMILES','','S'   ,this.input_ligands[i].source=='S'    );
       sel.addItem ( 'Code'  ,'','M'   ,this.input_ligands[i].source=='M'    );
+      // sel.addItem ( 'File'  ,'','F'   ,this.input_ligands[i].source=='F'    );
       sel.make();
       var code   = div.grid.setInputText ( this.input_ligands[i].code,row,3,1,1 )
                            .setWidth_px(50).setNoWrap().setMaxInputLength(3)
@@ -1146,7 +1147,7 @@ if (!dbx)  {
       div.ligands.push ( {'label':lbl, 'selection':sel, 'smiles':smiles, 'code':code} );
       sel.sno = i;
       sel.addOnChangeListener ( function(text,value){
-        div.ligands[this.sno].code  .setVisible ( value!='none'   );
+        div.ligands[this.sno].code  .setVisible ( value=='S' || value=='M' );
         div.ligands[this.sno].smiles.setVisible ( value=='S' );
         showLigands();
       });

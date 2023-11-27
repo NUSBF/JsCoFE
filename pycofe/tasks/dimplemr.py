@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    26.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -54,7 +54,7 @@ class DimpleMR(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
-    def runDimpleMR ( self,hkl,xyz,lig ):
+    def runDimpleMR ( self,hkl,xyz,lib ):
 
         sec1 = self.task.parameters.sec1.contains
 
@@ -130,8 +130,8 @@ class DimpleMR(basic.TaskDriver):
         libin = None
         if xyz._type==dtype_structure.dtype():
             libin = xyz.getLibFilePath ( self.inputDir() )
-        elif lig:
-            libin = lig.getLibFilePath ( self.inputDir() )
+        elif lib:
+            libin = lib.getLibFilePath ( self.inputDir() )
         if libin:
             cmd += [ "--libin",libin ]
 
@@ -239,14 +239,14 @@ class DimpleMR(basic.TaskDriver):
 
         hkl = self.makeClass ( self.input_data.data.hkl[0] )
         xyz = self.makeClass ( self.input_data.data.xyz[0] )
-        lig = None
-        if hasattr(self.input_data.data,"ligand"):  # optional data parameter
-            lig = self.makeClass ( self.input_data.data.ligand[0] )
+        lib = None
+        if hasattr(self.input_data.data,"lib"):  # optional data parameter
+            lib = self.makeClass ( self.input_data.data.lib[0] )
 
 
         self.refmac_log = None  # calculated in runDimpleМР()
 
-        structure, sol_hkl = self.runDimpleMR ( hkl,xyz,lig )
+        structure, sol_hkl = self.runDimpleMR ( hkl,xyz,lib )
 
         have_results = False
 
@@ -257,6 +257,8 @@ class DimpleMR(basic.TaskDriver):
             revision = asudef.revisionFromStructure ( self,sol_hkl,structure,
                                 self.outputFName,secId="0",make_verdict=False )
 
+            if lib:
+                revision.addLigandData ( lib )
 
             # revision = self.makeClass  ( self.input_data.data.revision[0] )
             # revision.setReflectionData ( hkl       )

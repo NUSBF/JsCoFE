@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    24.07.22   <--  Date of Last Modification.
+#    27.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  LIGAND DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2023
 #
 # ============================================================================
 #
@@ -24,7 +24,7 @@ import gemmi
 from   gemmi         import  cif
 
 #  application imports
-from   pycofe.dtypes import dtype_ligand
+# from   pycofe.dtypes import dtype_ligand
 from   pycofe.varut  import command
 from   pycofe.proc   import import_filetype
 
@@ -32,7 +32,7 @@ from   pycofe.proc   import import_filetype
 # ============================================================================
 # import coordinate files function
 
-def run ( body ):  # body is reference to the main Import class
+def run ( body,ligand_libraries=[] ):  # body is reference to the main Import class
 
     files_lig = []
     for f in body.files_all:
@@ -44,7 +44,7 @@ def run ( body ):  # body is reference to the main Import class
 
     for f in files_lig:
         body.files_all.remove ( f )
-    files_xyz = body.despaceFileNames ( files_lig,body.importDir() )
+    body.despaceFileNames ( files_lig,body.importDir() )
 
     body.file_stdout.write ( "\n" + "%"*80 + "\n"  )
     body.file_stdout.write ( "%%%%%  IMPORT OF LIGAND COORDINATES AND RESTRAINTS\n" )
@@ -91,7 +91,7 @@ def run ( body ):  # body is reference to the main Import class
             body.stdout ( "\n ***** file " + f +\
                 " misses both data_comp_list and data_link_list or is misformatted.\n\n"  )
 
-        elif len(comp_id)==1 and len(link_id)==0:
+        elif len(comp_id)==1 and len(link_id)==0 and f not in ligand_libraries:
             # single ligand entry, import as a ligand object
 
             block = doc["comp_"+comp_id[0]]

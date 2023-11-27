@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.11.23   <--  Date of Last Modification.
+ *    26.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -60,9 +60,9 @@ function TaskDimpleMR()  {
       min         : 1,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
     }, {
-      data_type   : {'DataLigand':[],'DataLibrary':[]},  // data type(s) and subtype(s)
-      label       : 'Ligand data', // label for input dialog
-      inputId     : 'ligand',      // input Id for referencing input fields
+      data_type   : {'DataLibrary':[],'DataLigand':[]},  // data type(s) and subtype(s)
+      label       : 'Ligand library', // label for input dialog
+      inputId     : 'lib',         // input Id for referencing input fields
       min         : 0,             // minimum acceptable number of data instances
       max         : 1              // maximum acceptable number of data instances
     }

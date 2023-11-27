@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    26.10.21   <--  Date of Last Modification.
+#    27.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +20,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -41,16 +39,19 @@ from proc import (import_xrayimages, import_unmerged, import_merged,
 from proc import import_pdb, import_seqcp
 
 importers = [import_xrayimages, import_unmerged, import_merged,
-             import_xyz, import_ligand, import_sequence, import_doc,
+             import_xyz, import_sequence, import_doc,
              import_alignment,import_borges]
 
+#
+# LEFTOVER CODE FROM CCPEM SCOPE. LEAVE IT IN FOR NOW
 # import_map can fail if the mrcfile package is not available. Once mrcfile is
 # properly included in CCP4 builds, this can be changed to a normal import.
-try:
-    from proc import import_map
-    importers.append(import_map)
-except Exception:
-    pass
+# try:
+#     from proc import import_map
+#     importers.append(import_map)
+# except Exception:
+#     pass
+#
 
 # ============================================================================
 # Make Import driver
@@ -63,9 +64,10 @@ class Import(basic.TaskDriver):
     # definition used in import_pdb
     def getXMLFName (self):  return "matthews.xml"
 
-    def run_importers ( self ):
+    def run_importers ( self,ligand_libraries=[] ):
         for importer in importers:
             importer.run ( self )
+        import_ligand.run ( self,ligand_libraries=ligand_libraries )
         return
 
     def make_summary_table ( self,summaryTitle ):
@@ -84,27 +86,13 @@ class Import(basic.TaskDriver):
         return
 
 
-    def import_all ( self,summaryTitle="Import Summary" ):
+    def import_all ( self,summaryTitle="Import Summary",ligand_libraries=[] ):
+        # ligand_libraries force library type for listed file names.
 
         # ====================================================================
         # start page construction: summary table
 
         self.make_summary_table ( summaryTitle )
-
-        """
-        pyrvapi.rvapi_add_table ( self.import_summary_id(),
-                                  "<font size='+1'>" + summaryTitle + "</font>",
-                                  self.report_page_id(),self.rvrow+1,0,1,1, 0 )
-        pyrvapi.rvapi_set_table_style ( self.import_summary_id(),"table-blue","text-align:left;" )
-        pyrvapi.rvapi_set_text ( "&nbsp;",self.report_page_id(),self.rvrow+2,0,1,1 )
-        self.rvrow += 3
-
-        pyrvapi.rvapi_put_horz_theader ( self.import_summary_id(),"Imported file",
-                                                          "Name of imported file",0 )
-        pyrvapi.rvapi_put_horz_theader ( self.import_summary_id(),"Type","Dataset type",1 )
-        pyrvapi.rvapi_put_horz_theader ( self.import_summary_id(),"Generated dataset(s)",
-                                                          "List of generated datasets",2 )
-        """
 
         # ====================================================================
         # get list of uploaded files
@@ -121,7 +109,7 @@ class Import(basic.TaskDriver):
         # do individual data type imports
 
         self.nImportedDocs = 0
-        self.run_importers()
+        self.run_importers ( ligand_libraries=ligand_libraries )
 
         #for importer in importers:
         #    if importer is import_merged:
