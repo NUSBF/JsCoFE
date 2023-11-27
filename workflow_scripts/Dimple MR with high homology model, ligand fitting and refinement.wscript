@@ -2,6 +2,7 @@
 # -----------------------------------------------------
 # Simple Dimple-with-ligand workflow
 # -----------------------------------------------------
+# 25.11.2023
 #
 
 VERSION  1.0  # script version for backward compatibility
@@ -23,6 +24,7 @@ ALLOW_UPLOAD  # create file upload widgets if started from project root
 # List all data required, "!" specifies mandatory items
 !DATA HKL UNMERGED TYPES anomalous
 !DATA XYZ          TYPES protein dna rna
+DATA LIBRARY
 DATA SEQ           TYPES protein dna rna
 DATA LIGAND
 
@@ -32,6 +34,11 @@ PAR_REAL resHigh
     TOOLTIP   High resolution cut-off, angstrom
     RANGE     0.1 5.0
     DEFAULT   1.5
+
+PAR_CHECK reqValReport
+    LABEL     Request PDB Validation Report
+    TOOLTIP   Check if deposition files should be prepared and PDB validation report obtained
+    DEFAULT   Unchecked
 
 
 # ==========================================================================
@@ -91,6 +98,7 @@ repeat @REFINE2 while suggested>0 and cnt<5
 branch @REFINE2[cnt0]
 
 @VALIDATION
+    IF        reqValReport
     RUN       PDBVal
 
 #

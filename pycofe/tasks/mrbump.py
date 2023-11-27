@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.08.22   <--  Date of Last Modification.
+#    25.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -37,7 +37,7 @@ import shutil
 #  application imports
 from . import basic
 from   pycofe.proc    import xyzmeta
-from   pycofe.auto    import auto
+from   pycofe.auto    import auto, auto_workflow
 
 # ============================================================================
 # Make MrBump driver
@@ -239,12 +239,27 @@ class MrBump(basic.TaskDriver):
                     revision.setStructureData  ( structure )
                     self.registerRevision      ( revision  )
                     have_results = True
-                    auto.makeNextTask ( self,{
-                        "revision" : revision,
-                        "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                        "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
-                    })
-                    have_results = True
+
+                    if self.task.autoRunName.startswith("@"):
+                        # scripted workflow framework
+                        auto_workflow.nextTask ( self,{
+                                "data" : {
+                                    "revision" : [revision],
+                                    "hkl"      : [sol_hkl]
+                                },
+                                "scores" :  {
+                                    "Rfactor"  : float(self.generic_parser_summary["refmac"]["R_factor"]),
+                                    "Rfree"    : float(self.generic_parser_summary["refmac"]["R_free"])
+                                }
+                        })
+                        # self.putMessage ( "<h3>Workflow started</hr>" )
+                    else:
+                        auto.makeNextTask ( self,{
+                            "revision" : revision,
+                            "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                            "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                        })
+
                 else:
                     self.putMessage ( "<h3>Structure cannot be formed</h3>" )
 
@@ -256,15 +271,30 @@ class MrBump(basic.TaskDriver):
 
         # this will go in the project tree job's line
         if not have_results:
+
             self.generic_parser_summary["mrbump"] = {
               "summary_line" : "solution not found"
             }
             
-            auto.makeNextTask ( self,{
-                "revision" : None,
-                "Rfactor"  :"1",
-                "Rfree"    :"1"
-            })
+            if self.task.autoRunName.startswith("@"):
+                # scripted workflow framework
+                auto_workflow.nextTask ( self,{
+                        "data" : {
+                            "revision" : [None]
+                        },
+                        "scores" :  {
+                            "Rfactor"  : 1.0,
+                            "Rfree"    : 1.0
+                        }
+                })
+                # self.putMessage ( "<h3>Workflow started</hr>" )
+
+            else:
+                auto.makeNextTask ( self,{
+                    "revision" : None,
+                    "Rfactor"  :"1",
+                    "Rfree"    :"1"
+                })
 
         # apparently log parser completes action when stdout is closed. this
         # may happen after STOP_POLL is issued, in which case parser's report

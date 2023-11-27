@@ -2,6 +2,7 @@
 # -----------------------------------------------------
 # Simple MR with given model including ligand fitting
 # -----------------------------------------------------
+# 25.11.2023
 #
 
 VERSION  1.0  # script version for backward compatibility
@@ -15,7 +16,7 @@ COMMENTS ON   # ON/OFF
 NAME     SMR workflow
 ONAME    smr_wflow 
 TITLE    Phaser MR Workflow with ligand fitting
-DESC     phaser-MR with given templatem water/ligand fitting and refinement 
+DESC     phaser-MR with given model, water/ligand fitting and refinement 
 ICON Maraschino  # added automatically
 KEYWORDS simple MR workflow  # for using in A-Z keyword search
 
@@ -34,6 +35,11 @@ PAR_REAL resHigh
     TOOLTIP   High resolution cut-off, angstrom
     DEFAULT   1.5
     RANGE     0.1 5.0
+
+PAR_CHECK reqValReport
+    LABEL     Request PDB Validation Report
+    TOOLTIP   Check if deposition files should be prepared and PDB validation report obtained
+    DEFAULT   Unchecked
 
 # ==========================================================================
 # Workflow itself
@@ -67,9 +73,8 @@ let cnt = cnt + 1
 continue @MOLECULAR_REPLACEMENT[cnt]  while  nfitted0<nfitted and nfitted<nasu and cnt<=nasu
 
 @REBUILD
-    RUN       Buccaneer
-
-#    RUN       ModelCraft
+    # RUN       Buccaneer
+    RUN       ModelCraft
 
 # Make ligand if ligand description was provided
 @MAKE_LIGAND   
@@ -141,6 +146,7 @@ repeat @REFINE-3 while suggested>0 and cnt<5
 branch @REFINE-3[cnt0]
 
 @VALIDATION
+    IF         reqValReport
     RUN        PDBVal
 
 #

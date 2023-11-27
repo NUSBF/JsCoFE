@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    27.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -70,13 +70,18 @@ class MakeLigand(basic.TaskDriver):
         if sourceKey == "S":
             smiles  = self.getParameter ( self.task.parameters.SMILES )
             code    = self.getParameter ( self.task.parameters.CODE ).strip().upper()
+            self.stdoutln ( " >>>>>> code=" + code )
 
             if not code:
                 exclude_list = []
                 for i in range(len(revisions)):
                     ligands = revisions[i].Ligands
                     for j in range(len(ligands)):
-                        exclude_list.append ( ligands[i].code )
+                        if ligands[j]._type=="DataLigand":
+                            exclude_list.append ( ligands[j].code )
+                        else:  # it's a library
+                            for code in ligands[j].codes:
+                                exclude_list.append ( code )
                 code = self.get_ligand_code ( exclude_list )
 
             if code:
@@ -143,7 +148,6 @@ class MakeLigand(basic.TaskDriver):
                     revNext = revisions[0]
                 elif hasattr(self.input_data.data,"void1"):
                     revNext = self.makeClass(self.input_data.data.void1[0])
-                self.stderrln ( " >>>>>>> 3 " + str(revNext) )
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework
                     rdata = { "ligand" : [ligand] }

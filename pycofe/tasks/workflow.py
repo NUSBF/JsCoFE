@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    27.11.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,6 +26,7 @@
 
 #  python native imports
 import os
+import shutil
 
 #  application imports
 from   pycofe.tasks   import import_task
@@ -52,7 +53,13 @@ class Workflow(import_task.Import):
     def importData(self):
         #  works with uploaded data from the top of the project
 
-        super ( Workflow,self ).import_all()
+        library_files = []
+        for i in range(len(self.task.file_select)):
+            if self.task.file_select[i].inputId=="flibrary":
+                # this gives only file name but not the full path on client
+                library_files = self.task.file_select[i].path
+
+        super ( Workflow,self ).import_all(ligand_libraries=library_files)
 
         # -------------------------------------------------------------------
         # fetch data for Custom Workflow pipeline
@@ -80,6 +87,31 @@ class Workflow(import_task.Import):
 
         if "DataLigand" in self.outputDataBox.data:
             self.lig = self.outputDataBox.data["DataLigand"]
+            # """
+            # if not self.lib or len(self.lib)<=0:
+            #     # check whether this is actually upload for library rather than ligand
+            #     lig1     = self.lig
+            #     self.lib = []
+            #     self.lig = []
+            #     for i in range(len(lig1)):
+            #         ligfname = lig1[i].lessDataId ( lig1[i].getLibFileName() )
+            #         for j in range(len(self.task.file_select)):
+            #             if self.task.file_select[j].inputId=="flibrary" and \
+            #                self.task.file_select[j].path==ligfname:
+            #                 libfname = os.path.splitext(ligfname)[0] + ".lib"
+            #                 shutil.copyfile ( lig1[i].getLibFilePath(self.outputDir()),
+            #                                   libfname )
+            #                 library = self.registerLibrary ( libfname,copy_files=False )
+            #                 self.lib.append ( library )
+            #                 ligfname = None
+            #                 break
+            #         if ligfname:
+            #             # remove from ligand list as it is not supposed 
+            #             # to be used for fitting        
+            #             self.lig.append ( lig1[i] )
+            #     # self.outputDataBox.data["DataLigand"]  = self.lig
+            #     # self.outputDataBox.data["DataLibrary"] = self.lib
+            # """
 
         self.ligdesc = []
         ldesc = getattr ( self.task,"input_ligands",[] )
@@ -88,10 +120,10 @@ class Workflow(import_task.Import):
                 self.ligdesc.append ( ldesc[i] )
 
         # checking whether ligand codes were provided
-        for i in range(len(self.ligdesc)):
-            code = self.ligdesc[i].code.strip().upper()
-            if (not code) or (code in self.ligand_exclude_list):
-                self.ligdesc[i].code = self.get_ligand_code([])
+        # for i in range(len(self.ligdesc)):
+        #     code = self.ligdesc[i].code.strip().upper()
+        #     if (not code) or (code in self.ligand_exclude_list):
+        #         self.ligdesc[i].code = self.get_ligand_code([])
 
         return
 
@@ -117,6 +149,11 @@ class Workflow(import_task.Import):
             self.xyz = []
             for i in range(len(self.input_data.data.xyz)):
                 self.xyz.append ( self.makeClass(self.input_data.data.xyz[i]) )
+
+        if hasattr(self.input_data.data,"library"):  # optional data parameter
+            self.lib = []
+            for i in range(len(self.input_data.data.library)):
+                self.lib.append ( self.makeClass(self.input_data.data.library[i]) )
 
         if hasattr(self.input_data.data,"ligand"):  # optional data parameter
             self.lig = []
@@ -164,6 +201,8 @@ class Workflow(import_task.Import):
             ilist.append ( "Sequences (" + str(len(self.seq)) + ")" )
         if len(self.xyz)>0:
             ilist.append ( "XYZ (" + str(len(self.xyz)) + ")" )
+        if len(self.lib)>0:
+            ilist.append ( "Library (" + str(len(self.lib)) + ")" )
         nligs = len(self.lig) + len(self.ligdesc)
         if nligs>0:
             ilist.append ( "Ligands (" + str(nligs) + ")" )
@@ -185,7 +224,7 @@ class Workflow(import_task.Import):
                 if item:
                     # if item.type.startswith("real"):
                     variables[key] = item.value
-            self.stderrln ( " variables="+str(variables) )
+            # self.stderrln ( " variables="+str(variables) )
 
         if have_results:
             self.task.autoRunName = "@ROOT"   # step identifier
