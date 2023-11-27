@@ -57,7 +57,8 @@ class Workflow(import_task.Import):
         for i in range(len(self.task.file_select)):
             if self.task.file_select[i].inputId=="flibrary":
                 # this gives only file name but not the full path on client
-                library_files = self.task.file_select[i].path
+                if self.task.file_select[i].path:
+                    library_files = self.task.file_select[i].path
 
         super ( Workflow,self ).import_all(ligand_libraries=library_files)
 
