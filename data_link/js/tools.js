@@ -100,7 +100,7 @@ class tools {
     return true;
   }
 
-  static getUserCloudId(user) {
+  static getUserCloudRunId(user) {
     let file = this.getUserPath(user);
     try {
       if (! fs.existsSync(file)) {
@@ -120,9 +120,9 @@ class tools {
     }
   }
 
-  static validCloudId(user, id) {
-    let cloud_id = this.getUserCloudId(user);
-    if (cloud_id && id === cloud_id) {
+  static validCloudRunId(user, id) {
+    let cloudrun_id = this.getUserCloudRunId(user);
+    if (cloudrun_id && id === cloudrun_id) {
       return true;
     }
     return false;
