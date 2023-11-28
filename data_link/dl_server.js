@@ -27,8 +27,8 @@ class server {
     next();
   }
 
-  checkCloudId(req, res, next) {
-    if (tools.validCloudId(req.params.user, req.body.cloud_id)) {
+  checkCloudRunId(req, res, next) {
+    if (tools.validCloudRunId(req.body.user_id, req.body.cloudrun_id)) {
       next();
     } else {
       this.jsonResponse(res, tools.errorMsg('Invalid User or Cloud Run ID'));
@@ -76,19 +76,19 @@ class server {
     if (req.query.force == 1) {
       force = true;
     }
-    this.jsonResponse(res, this.datalink.dataAquire(req.params.user, req.params.source, req.params.id, force));
+    this.jsonResponse(res, this.datalink.dataAquire(req.body.user_id, req.params.source, req.params.id, force));
   }
 
   dataStatus(req, res) {
-    this.jsonResponse(res, this.datalink.dataStatus(req.params.user, req.params.source, req.params.id));
+    this.jsonResponse(res, this.datalink.dataStatus(req.body.user_id, req.params.source, req.params.id));
   }
 
   dataRemove(req, res) {
-    this.jsonResponse(res, this.datalink.dataRemove(req.params.user, req.params.source, req.params.id));
+    this.jsonResponse(res, this.datalink.dataRemove(req.body.user_id, req.params.source, req.params.id));
   }
 
   dataInUse(req, res) {
-    this.jsonResponse(res, this.datalink.dataInUse(req.params.user, req.params.source, req.params.id, req.params.value));
+    this.jsonResponse(res, this.datalink.dataInUse(req.body.user_id, req.params.source, req.params.id, req.params.value));
   }
 
   start(port = 8900, host = '') {
@@ -109,18 +109,18 @@ class server {
     app.get(['/local/catalog'], (req, res) => this.getLocalCatalog(req, res) );
 
     // data retrieval endpoints
-    app.put(['/data/aquire/:user/:source/:id'],
-      (req, res, next) => this.checkCloudId(req, res, next),
+    app.put(['/data/aquire/:source/:id'],
+      (req, res, next) => this.checkCloudRunId(req, res, next),
       (req, res) => this.dataAquire(req, res) );
-    app.put(['/data/remove/:user/:source/:id'],
-      (req, res, next) => this.checkCloudId(req, res, next),
+    app.put(['/data/remove/:source/:id'],
+      (req, res, next) => this.checkCloudRunId(req, res, next),
       (req, res) => this.dataRemove(req, res) );
-    app.put(['/data/status/:user', '/data/status/:user/:source/:id', ],
-      (req, res, next) => this.checkCloudId(req, res, next),
+    app.put(['/data/status', '/data/status/:source/:id', ],
+      (req, res, next) => this.checkCloudRunId(req, res, next),
       (req, res) => this.dataStatus(req, res) );
 
-    app.patch(['/data/inuse/:value/:user/:source/:id'],
-      (req, res, next) => this.checkCloudId(req, res, next),
+    app.patch(['/data/inuse/:value/:source/:id'],
+      (req, res, next) => this.checkCloudRunId(req, res, next),
       (req, res) => this.dataInUse(req, res) );
 
     app.get('/', function(req,res) {
