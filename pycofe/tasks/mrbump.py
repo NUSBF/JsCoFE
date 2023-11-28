@@ -158,7 +158,7 @@ class MrBump(basic.TaskDriver):
                 "SGALL " + str(sgmode),
                 "USEE False",
                 "SCOP False",
-                "DEBUG True",
+                "DEBUG False",
                 rlevel,
                 aflevel,
                 "GESE False",
