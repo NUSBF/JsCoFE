@@ -16,10 +16,13 @@
   // data source configuration
   "data_sources": {
     "pdbj": {
-      "enabled": true
+      "enabled": true,
+      // get the data size via rsync
+      "rsync_size": true
     },
     "sbgrid": {
-      "enabled": true
+      "enabled": true,
+      "rsync_size": true
     },
     "irrmc": {
       "enabled": true

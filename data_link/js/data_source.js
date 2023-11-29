@@ -138,28 +138,29 @@ class dataSource {
     return false;
   }
 
-  rsyncGetCatalog(url) {
+  async rsyncGetCatalog(url, catalog) {
+    if (! config.get('data_sources.' + this.name + '.rsync_size')) {
+      return;
+    }
     const cmd = rsync()
       .setFlags('rz')
       .source(url);
 
     let out = '';
-    let entries = {};
 
-    cmd.execute({
+    await cmd.execute({
       stdoutHandler: (stdoutHandle) => {
         out += stdoutHandle.toString();
       },
       sterrHandler: (sterrHandle) => {
-        console.log(sterrHandle.toString());
+        log.error(sterrHandle.toString());
       }})
       .then(() => {
         let lines = out.split("\n");
-        this.rsyncParseLines(entries, lines);
-        this.saveCatalog(entries);
+        this.rsyncParseLines(catalog, lines);
       })
       .catch(err => {
-        console.log(err);
+        log.error(err);
         this.catalogError(err);
       });
   }
@@ -170,7 +171,6 @@ class dataSource {
     // rsync -rzv --include 'ID/***' --exclude '*' data.pdbjbk1.pdbj.org::rsync/xrda/
     const cmd = rsync()
       .setFlags('rzq')
-      //.set('delay-updates')
       .include(id + '/***')
       .exclude('*')
       .source(url)
@@ -190,19 +190,14 @@ class dataSource {
 
   }
 
-  //let out = fs.readFileSync('rsync.txt');
   // parse rsync listing
   // -rw-r--r--    178,407,270 2022/10/28 11:50:05 100/diffractions/Camera Ceta 1903 670 mm 0001.emd
-  //let lines = out.toString().split("\n");
-
-  // parse rsync listing
-  // -rw-r--r--    178,407,270 2022/10/28 11:50:05 100/diffractions/Camera Ceta 1903 670 mm 0001.emd
-  rsyncParseLines(entries, lines) {
+  rsyncParseLines(catalog, lines) {
     let last_id = null;
     let id_size = 0;
-    for (let i in lines) {
+    for (const line of lines) {
       // split by one or more spaces
-      let f = lines[i].split(/\s+/);
+      let f = line.split(/\s+/);
 
       // get the first character to determine if it's a folder/file
       let st = f[0].slice(0,1);
@@ -220,36 +215,29 @@ class dataSource {
 
       let date = Date.parse(f[2] + ' ' + f[3]);
 
-      // if it's a top level directory, add it to the entries object
+      // if it's a top level directory, add it to the catalog object
       if (st == 'd' && id == pth) {
-        entries[id] = {};
-        entries[id].date = date;
+        if (catalog[id]) {
+          catalog[id].date = date;
+        }
         // if we have a previous entry, then update it with the size
-        if (last_id) {
-          entries[last_id].size = id_size;
+        if (last_id && catalog[last_id]) {
+          catalog[last_id].size = id_size;
           id_size = 0;
         }
-        // entries[id].files = [];
         // save the last id, to add the accumilated file sizes
         last_id = id;
       // only consider lines that contain files (starting with -)
       } else if (f[0].slice(0,1) == '-') {
         // extract the size as an integer
         let size = parseInt(f[1].replaceAll(',', ''));
-        // extract fields
-        let e = {
-          // add the path without the id
-          'path': pth.slice(pth.indexOf("/", 1) +1),
-          'date': date,
-          'size': size
-        };
         id_size += size;
       }
-      //entries[id].files.push(e);
+    }
+    if (last_id && catalog[last_id]) {
+      catalog[last_id].size = id_size;
     }
   }
-
-
 
 }
 
