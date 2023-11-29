@@ -39,7 +39,7 @@ class pdbj extends dataSource {
   url = 'https://xrda.pdbjbk1.pdbj.org/';
 
   async getCatalog() {
-    let entries = {};
+    let catalog = {};
     let json = await tools.httpRequest(URL_JSON);
     let obj = JSON.parse(json);
     for (const r of obj.results) {
@@ -57,9 +57,10 @@ class pdbj extends dataSource {
       e.desc = r[res.desc];
       e.auth = r[res.auth];
 
-      entries[id] = e;
+      catalog[id] = e;
     }
-    this.saveCatalog(entries);
+    await this.rsyncGetCatalog(URL_RSYNC, catalog)
+    this.saveCatalog(catalog);
   }
 
   getData(user, id, catalog) {

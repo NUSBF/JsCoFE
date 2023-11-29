@@ -21,9 +21,9 @@ class sbgrid extends dataSource {
   url = 'https://data.sbgrid.org'
 
   async getCatalog() {
-    let entries = {};
+    let catalog = {};
     let pages, page = 1;
-    log.debug(`${this.name} - Scraping entries...`);
+    log.debug(`${this.name} - Scraping catalog...`);
     while (true) {
       let url = URL_CAT + '?page=' + page;
 
@@ -78,7 +78,7 @@ class sbgrid extends dataSource {
         e.desc = desc;
         e.doi = doi;
 
-        entries[proj] = e;
+        catalog[proj] = e;
       });
 
       if (page == pages) {
@@ -89,11 +89,8 @@ class sbgrid extends dataSource {
       // 2 second delay before next request
       await tools.sleep(2000);
     }
-    this.saveCatalog(entries);
-  }
-
-  getCatalogOld() {
-    this.rsyncGetCatalog(URL_RSYNC);
+    await this.rsyncGetCatalog(URL_RSYNC, catalog)
+    this.saveCatalog(catalog);
   }
 
   getData(user, id, catalog) {
