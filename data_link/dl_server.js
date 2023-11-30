@@ -48,7 +48,13 @@ class server {
   }
 
   getSources(req, res) {
-    this.jsonResponse(res, this.datalink.getSources());
+    let data;
+    if (req.params.id) {
+      data = this.datalink.getSource(req.params.id);
+    } else {
+      data = this.datalink.getSources();
+    }
+    this.jsonResponse(res, data);
   }
 
   getSourceCatalog(req, res) {
@@ -107,7 +113,7 @@ class server {
     // app.use(bodyparser.urlencoded({ extended: true }));
 
     // data source info/catalog endpoints
-    app.get(['/sources'], (req, res) => this.getSources(req, res) );
+    app.get(['/sources', '/sources/:id'], (req, res) => this.getSources(req, res) );
     app.get(['/source/catalog', '/source/catalog/:id'], (req, res) => this.getSourceCatalog(req, res) );
     app.get(['/source/search/:id'], (req, res) => this.searchSourceCatalog(req, res) );
 

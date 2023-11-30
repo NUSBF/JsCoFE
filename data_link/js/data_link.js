@@ -85,15 +85,23 @@ class dataLink {
 
   getSources() {
     let sources = {};
-    for (let i in this.source) {
-      sources[this.source[i].name] = {
-        'description': this.source[i].description,
-        'url': this.source[i].url,
-        'catalog_size': this.source[i].catalog_size,
-        'status': this.source[i].status
-      };
+    for (const source of Object.keys(this.source)) {
+      sources[source] = this.getSource(source);
     }
     return sources;
+  }
+
+  getSource(id) {
+    if (! this.source[id]) {
+      return tools.errorMsg(`No such data source ${id}`, 404);
+    }
+    const source = this.source[id];
+    return {
+      'description': source.description,
+      'url': source.url,
+      'catalog_size': source.catalog_size,
+      'status': source.status
+    };
   }
 
   getSourceCatalog(name) {
