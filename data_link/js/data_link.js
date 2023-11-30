@@ -101,7 +101,7 @@ class dataLink {
       if (this.source[name].catalog) {
         return this.source[name].catalog;
       } else {
-        return tools.infoMsg('No catalog available');
+        return tools.errorMsg('No catalog available', 404);
       }
     } else {
       return tools.errorMsgNoSource();
@@ -119,7 +119,7 @@ class dataLink {
   async searchSourceCatalog(pdb) {
     // check if id matches pdb indentifier format (4 alphanumberic characters)
     if (! pdb.match(/^[a-z0-9]{4}$/)) {
-      return tools.errorMsg(`Invalid PDB identifier`);
+      return tools.errorMsg(`Invalid PDB identifier`, 400);
     }
 
     let results = [];
@@ -146,7 +146,7 @@ class dataLink {
     if (this.source[name].updateCatalog()) {
       return tools.successMsg(`Updating catalog: ${name}`);
     } else {
-      return tools.errorMsg(`${name}: Error updating catalog`);
+      return tools.errorMsg(`${name}: Error updating catalog`, 500);
     }
 
   }
@@ -165,7 +165,7 @@ class dataLink {
 
   isValidRequest(user, source, id) {
     if (! this.source[source].hasCatalogId(id)) {
-      return tools.errorMsg(`${source} - ${id} not found in catalog`);
+      return tools.errorMsg(`${source} - ${id} not found in catalog`, 404);
     }
     return true;
   }
@@ -193,7 +193,7 @@ class dataLink {
       let st = this.getCatalogStatus(user, source, id);
       // check if in progress
       if (st == status.inProgress) {
-        return tools.errorMsg(`${source} - Data download for ${user}/${source}/${id} already in progress`);
+        return tools.successMsg(`${source} - Data download for ${user}/${source}/${id} already in progress`);
       }
 
       // check if already downloaded
@@ -209,7 +209,7 @@ class dataLink {
       if (this.source[source].aquire(user, id, this, force)) {
         return tools.successMsg(`${source}: Downloading ${user}/${source}/${id}`);
       } else {
-        return tools.errorMsg(`${source}: Error initialising download`);
+        return tools.errorMsg(`${source}: Error initialising download`, 500);
       }
     } else {
       return result;
@@ -243,7 +243,7 @@ class dataLink {
           this.removeCatalogEntry(user, source, id);
           return tools.successMsg(`${source}: Removed ${id} for ${user}`);
       } else {
-          return tools.errorMsg(`${source}: Unable to remove ${id} for ${user}`);
+          return tools.errorMsg(`${source}: Unable to remove ${id} for ${user}`, 405);
       }
     } else {
       return result;
@@ -381,7 +381,7 @@ class dataLink {
     if (this.updateCatalogEntry(user, source, id, { 'in_use': bool })) {
       return this.dataStatus(user, source, id);
     } else {
-      return tools.errorMsg(`Unable to update catalog entry for ${user}/${source}/$id`);
+      return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
     }
   }
 

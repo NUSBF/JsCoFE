@@ -20,7 +20,11 @@ class server {
 
   jsonResponse(res, data) {
     res.set('Content-Type', 'application/json');
-    res.send(tools.jsonMessage(data));
+    let code = 200;
+    if (data.code) {
+      code = data.code;
+    }
+    res.status(code).send(tools.jsonMessage(data));
   }
 
   middleware(req, res, next) {
@@ -31,7 +35,7 @@ class server {
     if (tools.validCloudRunId(req.params.user, req.headers.cloudrun_id)) {
       next();
     } else {
-      this.jsonResponse(res, tools.errorMsg('Invalid User or Cloud Run ID'));
+      this.jsonResponse(res, tools.errorMsg('Invalid User or Cloud Run ID'), 403);
     }
   }
 
@@ -39,7 +43,7 @@ class server {
     if (req.headers.admin_key == config.get('server.admin_key')) {
       next();
     } else {
-      this.jsonResponse(res, tools.errorMsg('Invalid Admin Key'));
+      this.jsonResponse(res, tools.errorMsg('Invalid Admin Key'), 403);
     }
   }
 
@@ -48,17 +52,13 @@ class server {
   }
 
   getSourceCatalog(req, res) {
-    let response = {};
+    let data;
     if (req.params.id) {
-      response = this.datalink.getSourceCatalog(req.params.id);
-      if (response.error) {
-        res.status(404).send(response);
-        return;
-      }
+      data = this.datalink.getSourceCatalog(req.params.id);
     } else {
-      response = this.datalink.getAllSourceCatalogs();
+      data = this.datalink.getAllSourceCatalogs();
     }
-    this.jsonResponse(res, response);
+    this.jsonResponse(res, data);
   }
 
   async searchSourceCatalog(req, res) {

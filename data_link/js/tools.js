@@ -19,21 +19,17 @@ const status = {
 
 class tools {
 
-  static errorMsg(msg) {
+  static errorMsg(msg, code = 200) {
     log.error(msg);
-    return { error: true, msg: msg };
+    return { error: true, code: code, msg: msg };
   }
 
-  static infoMsg(msg) {
-    return { info: true, msg: msg };
-  }
-
-  static successMsg(msg) {
-    return { success: true, msg: msg };
+  static successMsg(msg, code = 200) {
+    return { success: true, code: code, msg: msg };
   }
 
   static errorMsgNoSource() {
-    return this.errorMsg('No such data source');
+    return this.errorMsg('No such data source', 404);
   }
 
   static getDataDir() {
