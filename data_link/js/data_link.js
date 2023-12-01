@@ -92,9 +92,11 @@ class dataLink {
   }
 
   getSource(id) {
-    if (! this.source[id]) {
-      return tools.errorMsg(`No such data source ${id}`, 404);
+    let result = this.hasSource(id);
+    if (result !== true) {
+      return result;
     }
+
     const source = this.source[id];
     return {
       'description': source.description,
@@ -104,16 +106,17 @@ class dataLink {
     };
   }
 
-  getSourceCatalog(name) {
-    if (this.source[name]) {
-      if (this.source[name].catalog) {
-        return this.source[name].catalog;
-      } else {
-        return tools.errorMsg('No catalog available', 404);
-      }
-    } else {
-      return tools.errorMsgNoSource();
+  getSourceCatalog(id) {
+    let result = this.hasSource(id);
+    if (result !== true) {
+      return result;
     }
+
+    if (this.source[id].catalog) {
+      return this.source[id].catalog;
+    }
+
+    return tools.errorMsg('No catalog available', 404);
   }
 
   getAllSourceCatalogs() {
@@ -143,8 +146,9 @@ class dataLink {
   }
 
   updateSourceCatalog(name) {
-    if (! this.source[name]) {
-      return tools.errorMsgNoSource();
+    let result = this.hasSource(name);
+    if (result !== true) {
+      return result;
     }
 
     if (this.source[name].status === status.inProgress) {
@@ -153,10 +157,9 @@ class dataLink {
 
     if (this.source[name].updateCatalog()) {
       return tools.successMsg(`Updating catalog: ${name}`);
-    } else {
-      return tools.errorMsg(`${name}: Error updating catalog`, 500);
     }
 
+    return tools.errorMsg(`${name}: Error updating catalog`, 500);
   }
 
   updateAllSourceCatalogs() {
@@ -171,8 +174,21 @@ class dataLink {
     return tools.successMsg(`Updating catalog(s): ${sources.join(', ')}`);
   }
 
-  isValidRequest(user, source, id) {
-    if (! this.source[source].hasCatalogId(id)) {
+  hasSource(source) {
+    if (! this.source[source]) {
+      return tools.errorMsg(`${source} data source not found`, 404);
+    }
+    return true;
+  }
+
+  hasSourceEntry(source, id) {
+    // check if the source exists
+    let result = this.hasSource(source);
+    if (result !== true) {
+      return result;
+    }
+    // check if the source catalog entry exists
+    if (! this.source[source].catalog[id]) {
       return tools.errorMsg(`${source} - ${id} not found in catalog`, 404);
     }
     return true;
@@ -196,66 +212,64 @@ class dataLink {
 
   dataAquire(user, source, id, force = false) {
     id = id.toLowerCase();
-    let result = this.isValidRequest(user, source, id);
-    if (result === true) {
-      let st = this.getCatalogStatus(user, source, id);
-      // check if in progress
-      if (st == status.inProgress) {
-        return tools.successMsg(`${source} - Data download for ${user}/${source}/${id} already in progress`);
-      }
+    let result = this.hasSourceEntry(source, id);
 
-      // check if already downloaded
-      if (! force && st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
-        log.info(`${source} - ${user}/${source}/${id} is already downloaded`);
-        return tools.successMsg(`${source}: ${user}/${source}/${id} is already downloaded`);
-      }
-
-      // prune old data if required
-      this.dataPrune(config.get('storage.data_free_gb'));
-
-      // aquire the data from the data source
-      if (this.source[source].aquire(user, id, this, force)) {
-        return tools.successMsg(`${source}: Downloading ${user}/${source}/${id}`);
-      } else {
-        return tools.errorMsg(`${source}: Error initialising download`, 500);
-      }
-    } else {
+    if (result !== true) {
       return result;
     }
+
+    let st = this.getCatalogStatus(user, source, id);
+    // check if in progress
+    if (st == status.inProgress) {
+      return tools.successMsg(`${source} - Data download for ${user}/${source}/${id} already in progress`);
+    }
+
+    // check if already downloaded
+    if (! force && st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
+      log.info(`${source} - ${user}/${source}/${id} is already downloaded`);
+      return tools.successMsg(`${source}: ${user}/${source}/${id} is already downloaded`);
+    }
+
+    // prune old data if required
+    this.dataPrune(config.get('storage.data_free_gb'));
+
+    // aquire the data from the data source
+    if (this.source[source].aquire(user, id, this, force)) {
+      return tools.successMsg(`${source}: Downloading ${user}/${source}/${id}`);
+    }
+
+    return tools.errorMsg(`${source}: Error initialising download`, 500);
   }
 
   dataStatus(user, source, id) {
-    let result = this.isValidRequest(user, source, id);
-    if (result === true) {
-      if (this.hasCatalogEntry(user, source, id)) {
-        let entry = this.catalog[user][source][id];
-        if (entry.size < entry.source_size) {
-          let size = this.getLocalDataSize(user, source, id);
-          this.updateCatalogEntry(user, source, id, { 'size': size });
-        }
-        return entry;
+    if (this.hasCatalogEntry(user, source, id)) {
+      let entry = this.catalog[user][source][id];
+      if (entry.size < entry.source_size) {
+        let size = this.getLocalDataSize(user, source, id);
+        this.updateCatalogEntry(user, source, id, { 'size': size });
       }
-    } else {
-      return result;
+      return entry;
     }
+    return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
   }
 
   dataRemove(user, source, id) {
-    let result = this.isValidRequest(user, source, id);
-    if (result === true) {
-      let st = this.getCatalogStatus(user, source, id);
-      if (st === status.inProgress) {
-        return tools.errorMsg(`${source}: Can't remove as download for ${user}/${source}/${id} is in progress`);
-      }
-      if (this.source[source].remove(user, id, this.catalog)) {
-          this.removeCatalogEntry(user, source, id);
-          return tools.successMsg(`${source}: Removed ${id} for ${user}`);
-      } else {
-          return tools.errorMsg(`${source}: Unable to remove ${id} for ${user}`, 405);
-      }
-    } else {
+    let result = this.hasCatalogEntry(user, source, id);
+    if (this.hasCatalogEntry(user, source, id) !== true) {
       return result;
     }
+
+    let st = this.getCatalogStatus(user, source, id);
+    if (st === status.inProgress) {
+      return tools.errorMsg(`${source}: Can't remove as download for ${user}/${source}/${id} is in progress`);
+    }
+
+    if (this.source[source].remove(user, id, this.catalog)) {
+        this.removeCatalogEntry(user, source, id);
+        return tools.successMsg(`${source}: Removed ${id} for ${user}`);
+    }
+
+    return tools.errorMsg(`${source}: Unable to remove ${id} for ${user}`, 405);
   }
 
   async dataPrune(min_free_gb) {
@@ -344,9 +358,8 @@ class dataLink {
   hasCatalogEntry(user, source, id) {
     if (this.catalog[user] && this.catalog[user][source] && this.catalog[user][source][id]) {
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   updateCatalogEntry(user, source, id, fields) {

@@ -28,10 +28,6 @@ class tools {
     return { success: true, code: code, msg: msg };
   }
 
-  static errorMsgNoSource() {
-    return this.errorMsg('No such data source', 404);
-  }
-
   static getDataDir() {
     return DATA_DIR;
   }
@@ -119,6 +115,13 @@ class tools {
   static validCloudRunId(user, id) {
     let cloudrun_id = this.getUserCloudRunId(user);
     if (cloudrun_id && id === cloudrun_id) {
+      return true;
+    }
+    return false;
+  }
+
+  static validAdminKey(key) {
+    if (key === config.get('server.admin_key')) {
       return true;
     }
     return false;
