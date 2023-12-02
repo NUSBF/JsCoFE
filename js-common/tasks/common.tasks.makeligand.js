@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.11.23   <--  Date of Last Modification.
+ *    02.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -96,7 +96,7 @@ function TaskMakeLigand()  {
           label     : '<i>Ligand Code</i>',
           tooltip   : '3-letter ligand code for identification',
           default   : '',
-          iwidth    : 40,
+          iwidth    : 60,
           value     : '',
           maxlength : 5,       // maximum input length
           label2    : '<span style="font-size:85%;color:maroon;"><i>if no code ' +
