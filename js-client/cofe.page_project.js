@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.11.23   <--  Date of Last Modification.
+ *    02.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -40,7 +40,7 @@ function ProjectPage ( sceneId )  {
   //this.replay_job_tree = null;  // for external references
   // *******************************
 
-  var title_lbl       = null;
+  this.title_lbl      = null;
   this.jobTree        = null;    // == this.job_tree, for internal references
   this.can_reload     = false;   // tree reload semaphore
   this.pending_act    = '';      // action pending because of reload
@@ -87,18 +87,13 @@ function ProjectPage ( sceneId )  {
       });
     });
 
-  title_lbl = this.headerPanel.setLabel ( '',0,2,1,1 );
-  title_lbl.setFont  ( 'times','150%',true,true )
-          //  .setNoWrap()
-           .setHorizontalAlignment ( 'left' );
+  this.title_lbl = this.headerPanel.setLabel ( '',0,2,1,1 );
+  this.title_lbl.setFont  ( 'times','150%',true,true )
+                .setNoWrap()
+                .setHorizontalAlignment ( 'left' );
 
-  this.headerPanel.setCellSize ( '99%','',0,2 );
-  this.headerPanel.setCellSize ( '0px','',0,12 );
-
-  // $(title_lbl.element).css ( {
-  //   // 'width' : window.width-500 + 'px',
-  //   'overflow' : 'hidden',
-  //    'text-overflow' :'ellipsis' } );
+  // this.headerPanel.setCellSize ( '99%','',0,2 );
+  // this.headerPanel.setCellSize ( '0px','',0,12 );
 
   this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
 
@@ -155,20 +150,6 @@ function ProjectPage ( sceneId )  {
 
     self.addMenuSeparator();
 
-    // if (!__local_user)  {
-    //   self.addMenuItem ( 'Work team','workteam',function(){
-    //     if (self.jobTree)
-    //       showWorkTeam ( self.jobTree.projectData.desc );
-    //     else
-    //       new MessageBox ( 'No project loaded','<h2>No Project Loaded</h2>' +
-    //                        'Please call later','msg_error' );
-    //   });
-    //   self.addMenuItem ( 'Share Project','share',function(){
-    //     self.share_project();
-    //   });
-    // }
-
-    // if (__user_role==role_code.developer)  {
     if (!__local_user)  {
       self.addMenuItem ( 'Work team & sharing','workteam',function(){
         if (self.jobTree)
@@ -178,7 +159,6 @@ function ProjectPage ( sceneId )  {
                            'Please call later','msg_error' );
       });
     }
-    // }
 
     self.addMenuItem ( 'Project settings','project_settings',function(){
       if (self.jobTree && self.jobTree.projectData)
@@ -367,6 +347,11 @@ function ProjectPage ( sceneId )  {
 
   this.makeLogoPanel ( 2,0,3 );
 
+  for (let i=0;i<this.headerPanel.getNCols();i++)
+    if (i==2)  this.headerPanel.setCellSize ( '90%' ,'',0,i );
+         else  this.headerPanel.setCellSize ( 'auto','',0,i );
+
+  // this.trimPageTitle();
   // this.onResize ( window.innerWidth,window.innerHeight );
 
   //  Read project data from server first time
@@ -387,7 +372,8 @@ function ProjectPage ( sceneId )  {
           self.clone_btn  .addOnClickListener ( function(){ self.cloneJob   (); } );
           self.add_rem_btn.addOnClickListener ( function(){ self.addRemark  (); } );
           self.thlight_btn.addOnClickListener ( function(){ self.toggleBranchHighlight(); } );
-          title_lbl       .setText ( self.jobTree.projectData.desc.title );
+          self.trimPageTitle();
+          self.title_lbl  .setText ( self.jobTree.projectData.desc.title );
           self.can_reload  = true;
           self.pending_act = '';
           if (self.jobTree.hasRunningJobs(0))
@@ -1491,10 +1477,22 @@ ProjectPage.prototype.makeDock = function()  {
 
 }
 
+ProjectPage.prototype.trimPageTitle = function()  {
+  let wt = window.innerWidth - 60;
+  for (let i=0;i<this.headerPanel.getNCols();i++)
+    if (i!=2)
+      wt -= this.headerPanel.getCellSize(0,i)[0];
+  wt = Math.max(100,wt);
+  $(this.title_lbl.element).css({
+    'width'         : wt + 'px',
+    'overflow'      : 'hidden',
+    'text-overflow' : 'ellipsis' 
+  });
+}
 
 ProjectPage.prototype.onResize = function ( width,height )  {
-  var h = (height - 108) + 'px';
-  var w = (width  - 110) + 'px';
+  let h = (height - 108) + 'px';
+  let w = (width  - 110) + 'px';
   this.toolbar_div.element.style.height = h;
   this.tree_div.element.style.height    = h;
   // ***** development code, dormant
@@ -1509,6 +1507,7 @@ ProjectPage.prototype.onResize = function ( width,height )  {
   //  this.tree_div.element.style.width = w;
   // *******************************
   this.tree_div.element.style.width = w;
+  this.trimPageTitle();
 }
 
 ProjectPage.prototype.getJobTree = function()  {

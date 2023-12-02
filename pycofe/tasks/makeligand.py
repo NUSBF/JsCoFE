@@ -35,7 +35,8 @@ from   gemmi   import  cif
 
 #  application imports
 from . import basic
-from  pycofe.auto  import auto,auto_workflow
+from  pycofe.auto   import auto,auto_workflow
+from  pycofe.dtypes import dtype_template
 
 # ============================================================================
 # Make Refmac driver
@@ -64,8 +65,10 @@ class MakeLigand(basic.TaskDriver):
         sourceKey = self.getParameter ( self.task.parameters.SOURCE_SEL )
         cmd       = []
         xyzPath   = None
+        mmcifPath = None
         cifPath   = None
         lig_path  = None
+        code0     = None
 
         if sourceKey == "S":
             smiles  = self.getParameter ( self.task.parameters.SMILES )
@@ -84,6 +87,11 @@ class MakeLigand(basic.TaskDriver):
                 code = self.get_ligand_code ( exclude_list )
 
             if code:
+                
+                if len(code)>3:
+                    code0 = code
+                    code  = "LIG"
+
                 xyzPath = code + ".pdb"
                 cifPath = code + ".cif"
 
@@ -139,7 +147,33 @@ class MakeLigand(basic.TaskDriver):
                 # copy ORIGINAL restraints in place
                 shutil.copyfile ( lig_path,cifPath )
 
+            if code0: # long ligand code, hack output
+                with open(cifPath,"r") as fin:
+                    cifdata = fin.read().replace ( code,code0 )
+                    cifPath = code0 + ".cif"
+                    with open (cifPath,"w") as fout:
+                        fout.write ( cifdata )
+                with open(xyzPath,"r") as fin:
+                    xyzdata = fin.read().replace ( code,code0[:3] )
+                    xyzPath = code0 + ".pdb"
+                    with open (xyzPath,"w") as fout:
+                        fout.write ( xyzdata )
+                block = cif.read(cifPath)[-1]
+                if block.find_values('_chem_comp_atom.x'):
+                    mmcifPath = code0 + ".mmcif"
+                    # XYZ coordinates are found in dictionary, just copy
+                    # them over
+                    st = gemmi.make_structure_from_chemcomp_block ( block )
+                    st[0][0][0].seqid = gemmi.SeqId('1')
+                    st.make_mmcif_document().write_file ( mmcifPath )
+                    # shutil.copy ( mmcifPath,xyzPath )
+                code = code0
+    
             ligand = self.finaliseLigand ( code,xyzPath,cifPath )
+            # if mmcifPath:
+            #     fname = os.path.splitext(ligand.getLibFileName())[0] + ".mmcif"
+            #     ligand.setFile ( fname,dtype_template.file_key["mmcif"] )
+            #     os.rename ( mmcifPath, os.path.join(self.outputDir(),fname) )
 
             if ligand:
                 revNext = None

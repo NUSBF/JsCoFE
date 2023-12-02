@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    29.10.23   <--  Date of Last Modification.
+ *    02.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -855,6 +855,10 @@ var cell = this.getCell ( row,col );
   return this;
 }
 
+Grid.prototype.getCellSize = function ( row,col )  {
+let cell = this.getCell ( row,col );
+  return [$(cell).outerWidth(),$(cell).outerHeight()];
+}
 
 Grid.prototype.setFontFamily = function ( row,col,family )  {
   var cell = this.getCell ( row,col );
