@@ -115,6 +115,19 @@ class WebCoot(basic.TaskDriver):
         # mtzfile   = istruct.getMTZFilePath ( self.inputDir() )
         # lead_key  = istruct.leadKey
 
+        ligand  = None
+        ligCode = None
+        ligPath = None
+        if hasattr(self.input_data.data,"ligand"):
+            ligand  = self.makeClass ( self.input_data.data.ligand[0] )
+            ligCode = ligand.code
+            ligPath = ligand.getLibFilePath ( self.inputDir() )
+            self.stderrln ( " >>>> ligand " + str(ligand.code) + " found" )
+
+        libPath, ligList = self.addLigandToLibrary (
+                                    istruct.getLibFilePath(self.inputDir()),
+                                    ligCode,ligPath,istruct.ligands )
+
         # Check for PDB files left by Coot and make the corresponding output revisions
 
         pdbout     = [f for f in os.listdir('./') if f.lower().endswith(".pdb")]
@@ -149,7 +162,7 @@ class WebCoot(basic.TaskDriver):
                                     istruct.getMTZFilePath(self.inputDir()),
                                     istruct.getMapFilePath(self.inputDir()),
                                     istruct.getDMapFilePath(self.inputDir()),
-                                    libPath=istruct.getLibFilePath(self.inputDir()),
+                                    libPath=libPath,
                                     leadKey=istruct.leadKey,copy_files=False,
                                     map_labels=istruct.mapLabels,
                                     refiner=istruct.refiner )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.22   <--  Date of Last Modification.
+#    02.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #    expire      is timeout for removing coot backup directories
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -33,7 +33,7 @@ import shutil
 #  application imports
 from . import coot_ce
 from   pycofe.varut   import  signal
-from   pycofe.proc    import  covlinks, mergeone
+from   pycofe.proc    import  covlinks #, mergeone
 try:
     from pycofe.varut import messagebox
 except:
@@ -79,33 +79,33 @@ class Coot(coot_ce.CootCE):
 
     # ------------------------------------------------------------------------
 
-    def addLigandToLibrary ( self,libPath,ligCode,ligPath,ligList ):
-        # returns path to ligand library whith new ligand included
+    # def addLigandToLibrary ( self,libPath,ligCode,ligPath,ligList ):
+    #     # returns path to ligand library whith new ligand included
 
-        if not ligPath:  # nothing to include
-            return (libPath,ligList)
+    #     if not ligPath:  # nothing to include
+    #         return (libPath,ligList)
 
-        if not libPath:  # nowhere to include
-            return (ligPath,ligList+[ligCode])
+    #     if not libPath:  # nowhere to include
+    #         return (ligPath,ligList+[ligCode])
 
-        if ligCode in ligList:  # no need to include
-            return (libPath,ligList)
+    #     if ligCode in ligList:  # no need to include
+    #         return (libPath,ligList)
 
-        """
-        self.open_stdin()
-        self.write_stdin (
-            "_Y"          +\
-            "\n_FILE_L  " + libPath +\
-            "\n_FILE_L2 " + ligPath +\
-            "\n_FILE_O  " + self.outputFName +\
-            "\n_END\n" )
-        self.close_stdin()
+    #     """
+    #     self.open_stdin()
+    #     self.write_stdin (
+    #         "_Y"          +\
+    #         "\n_FILE_L  " + libPath +\
+    #         "\n_FILE_L2 " + ligPath +\
+    #         "\n_FILE_O  " + self.outputFName +\
+    #         "\n_END\n" )
+    #     self.close_stdin()
 
-        self.runApp ( "libcheck",[],logType="Service" )
-        """
-        mergeone.add_one_comp(ligPath, libPath, self.outputFName + ".lib")
+    #     self.runApp ( "libcheck",[],logType="Service" )
+    #     """
+    #     mergeone.add_one_comp(ligPath, libPath, self.outputFName + ".lib")
 
-        return (self.outputFName+".lib",ligList+[ligCode])
+    #     return (self.outputFName+".lib",ligList+[ligCode])
 
     # ------------------------------------------------------------------------
 

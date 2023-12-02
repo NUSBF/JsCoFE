@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    05.11.23   <--  Date of Last Modification.
+#    02.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -58,7 +58,7 @@ from pycofe.parsers import refmac_parser, edstats_parser, baver_parser
 from pycofe.dtypes import dtype_template, dtype_xyz,   dtype_structure, databox
 from pycofe.dtypes import dtype_ensemble, dtype_hkl,   dtype_ligand
 from pycofe.dtypes import dtype_sequence, dtype_model, dtype_library
-from pycofe.proc   import edmap,  import_filetype, import_merged
+from pycofe.proc   import edmap,  import_filetype, import_merged, mergeone
 from pycofe.varut  import signal, jsonut, command, zutils
 from pycofe.etc    import citations
 
@@ -1642,6 +1642,35 @@ class TaskDriver(object):
         self.widget_no += 1
         return ligand
 
+
+    def addLigandToLibrary ( self,libPath,ligCode,ligPath,ligList ):
+        # returns path to ligand library whith new ligand included
+
+        if not ligPath:  # nothing to include
+            return (libPath,ligList)
+
+        if not libPath:  # nowhere to include
+            return (ligPath,ligList+[ligCode])
+
+        if ligCode in ligList:  # no need to include
+            return (libPath,ligList)
+
+        """
+        self.open_stdin()
+        self.write_stdin (
+            "_Y"          +\
+            "\n_FILE_L  " + libPath +\
+            "\n_FILE_L2 " + ligPath +\
+            "\n_FILE_O  " + self.outputFName +\
+            "\n_END\n" )
+        self.close_stdin()
+
+        self.runApp ( "libcheck",[],logType="Service" )
+        """
+
+        mergeone.add_one_comp ( ligPath, libPath, self.outputFName + ".lib" )
+
+        return (self.outputFName+".lib",ligList+[ligCode])
 
     # ============================================================================
 
