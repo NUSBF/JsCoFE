@@ -72,9 +72,9 @@ class Refmac(basic.TaskDriver):
                 mmcifout = self.getMMCIFOFName()
                 if os.path.isfile(mmcifout):
                     structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
-                structure.copySubtype        ( istruct )
-                structure.copyLigands        ( istruct )
-            structure.addPhasesSubtype   ()
+                structure.copySubtype  ( istruct )
+                structure.copyLigands  ( istruct )
+            structure.addPhasesSubtype ()
         return structure
 
 
@@ -115,9 +115,9 @@ class Refmac(basic.TaskDriver):
         hkl      = self.makeClass ( self.input_data.data.hkl     [0] )
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
-        hmodel  = None
+        hmodel = None
         if hasattr(self.input_data.data,"hmodel"):
-            hmodel  = self.input_data.data.hmodel
+            hmodel = self.input_data.data.hmodel
             for i in range(len(hmodel) ):
                 hmodel[i] = self.makeClass ( hmodel[i] )
 
@@ -369,7 +369,14 @@ class Refmac(basic.TaskDriver):
         #self.file_stdin = 1 # a trick necessary because of using 'print' above
 
         # make command-line parameters for bare morda run on a SHELL-type node
+
+        # xyzin  = istruct.getMMCIFFilePath ( self.inputDir() )
+        # if not xyzin:
+        #     self.stderrln ( " ***** mmCIF is not found" )
+        #     xyzin  = istruct.getXYZFilePath ( self.inputDir() )
+
         xyzin  = istruct.getXYZFilePath ( self.inputDir() )
+
         xyzout = self.getXYZOFName()
         xmlOutRefmac = self.getOFName (".xml")
         cmd = [ "hklin" ,hklin,

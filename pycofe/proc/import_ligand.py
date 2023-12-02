@@ -110,7 +110,8 @@ def run ( body,ligand_libraries=[] ):  # body is reference to the main Import cl
                     shutil.copyfile ( fin,fileCIF )
                     st = gemmi.make_structure_from_chemcomp_block ( block )
                     st[0][0][0].seqid = gemmi.SeqId('1')
-                    st.write_pdb    ( fileXYZ )
+                    st.write_pdb ( fileXYZ )
+                    # st.make_mmcif_document().write_file ( fileMMCIF )
                 else:
                     # generate coordinates with AceDrg
                     # firstly write out temporary document

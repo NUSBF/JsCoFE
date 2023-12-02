@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.10.23   <--  Date of Last Modification.
+ *    30.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -209,7 +209,10 @@ if (!__template)  {
         });
       }
       if (file_key.xyz in istruct.files)  {
-        var pdbURL = this.getURL ( 'input/' + istruct.files[file_key.xyz] );
+        let pdbURL = 'input/';
+        if (file_key.mmcif in istruct.files)
+              pdbURL = this.getURL ( pdbURL + istruct.files[file_key.mmcif] );
+        else  pdbURL = this.getURL ( pdbURL + istruct.files[file_key.xyz]   );
         inputFiles.push ({
           type : 'pdb',
           args : [ pdbURL,'molecule' ]
@@ -330,6 +333,8 @@ if (!__template)  {
                      },
       wdirURL      : this.getURL('')
     };
+
+    // console.log ( JSON.stringify(inputFiles) );
 
     // console.log (  JSON.stringify(inputFiles) );
 

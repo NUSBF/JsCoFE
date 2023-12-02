@@ -28,6 +28,9 @@
 import os
 import sys
 
+import gemmi
+from   gemmi        import  cif
+
 #  application imports
 from . import basic
 from   pycofe.proc  import coor
@@ -51,6 +54,12 @@ class FitLigand(basic.TaskDriver):
 
         # make command-line parameters
         pdbin   = istruct.getXYZFilePath ( self.inputDir() )
+
+        # pdbin  = istruct.getMMCIFFilePath ( self.inputDir() )
+        # if not pdbin:
+        #     self.stderrln ( " ***** mmCIF is not found" )
+        #     pdbin  = istruct.getXYZFilePath ( self.inputDir() )
+
         mtzin   = istruct.getMTZFilePath ( self.inputDir() )
         libin   = ligand .getLibFilePath ( self.inputDir() )
         cmd = [ "--pdbin"       ,pdbin,
@@ -79,6 +88,22 @@ class FitLigand(basic.TaskDriver):
         if self.getParameter(sec1.FLEXIBLE_CBX)=="True":
             cmd +=["--flexible","--samples",self.getParameter(sec1.SAMPLES)]
 
+        # mmCIF version of atomic coordinates file
+        # fin = ligand.getLibFilePath ( self.inputDir() )
+        # doc = cif.Document()
+        # doc.source = fin
+        # doc.parse_file ( fin )
+        # doc.check_for_missing_values()
+
+        # block = doc["comp_"+ligand.code]
+        # st = gemmi.make_structure_from_chemcomp_block ( block )
+        # st[0][0][0].seqid = gemmi.SeqId('1')
+        # # st.write_pdb ( fileXYZ )
+        # mmCIFin = ligand.code + '.mmcif'
+        # st.make_mmcif_document().write_file ( mmCIFin )
+        # cmd += [mmCIFin]
+
+        # PDBIN version
         cmd += [ligand.getXYZFilePath(self.inputDir())]
 
         """
