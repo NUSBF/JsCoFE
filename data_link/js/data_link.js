@@ -151,7 +151,7 @@ class dataLink {
     }
 
     if (this.source[name].updateCatalog()) {
-      return tools.successMsg(`Updating catalog: ${name}`);
+      return tools.successMsg(`${name} - Updating catalog`);
     }
 
     return tools.errorMsg(`${name}: Error updating catalog`, 500);
