@@ -130,7 +130,7 @@ def calcEDMap ( xyzin,hklin,libin,hkl_dataset,output_file_prefix,job_dir,
         "REFI BREF ISOT\n" +\
         "SCALE TYPE SIMPLE\n" +\
         "SOLVENT YES\n" +\
-        "NCSR LOCAL\n" +\
+        # "NCSR LOCAL\n" +\
         # "REFI RESO 49.97 2.5" +\
         "MAKE NEWLIGAND EXIT\n" +\
         "Pdbout keep true\n"
