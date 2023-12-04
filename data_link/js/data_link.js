@@ -83,7 +83,7 @@ class dataLink {
     }
   }
 
-  getSources() {
+  getAllSources() {
     let sources = {};
     for (const source of Object.keys(this.source)) {
       sources[source] = this.getSource(source);
@@ -213,7 +213,6 @@ class dataLink {
   dataAquire(user, source, id, force = false) {
     id = id.toLowerCase();
     let result = this.hasSourceEntry(source, id);
-
     if (result !== true) {
       return result;
     }
@@ -241,15 +240,36 @@ class dataLink {
     return tools.errorMsg(`${source}: Error initialising download`, 500);
   }
 
-  dataStatus(user, source, id) {
-    if (this.hasCatalogEntry(user, source, id)) {
-      let entry = this.catalog[user][source][id];
-      if (entry.size < entry.source_size) {
-        let size = this.getLocalDataSize(user, source, id);
-        this.updateCatalogEntry(user, source, id, { 'size': size });
+  dataStatus(user = '', source = '', id = '') {
+    let catalog = this.catalog;
+
+    // Check if user, source and id are set and valid and return correct part of local data catalog
+    if (user) {
+      if (this.catalog[user]) {
+        catalog = catalog[user];
+        if (source) {
+          if (catalog[source]) {
+            catalog = catalog[source];
+          } else {
+            catalog = null;
+          }
+          if (id) {
+            if (catalog[id]) {
+              catalog = catalog[id];
+            } else {
+              catalog = null;
+            }
+          }
+        }
+      } else {
+        catalog = null;
       }
-      return entry;
     }
+
+    if (catalog) {
+      return catalog;
+    }
+
     return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
   }
 
@@ -319,11 +339,10 @@ class dataLink {
   }
 
   getCatalogStatus(user, source, id) {
-    if (this.hasCatalogEntry(user, source, id)) {
-      return this.catalog[user][source][id].status;
-    } else {
+    if (this.hasCatalogEntry(user, source, id) !== true) {
       return false;
     }
+    return this.catalog[user][source][id].status;
   }
 
   createUserEntry(user, source) {
@@ -359,28 +378,32 @@ class dataLink {
     if (this.catalog[user] && this.catalog[user][source] && this.catalog[user][source][id]) {
       return true;
     }
-    return false;
+    return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
   }
 
   updateCatalogEntry(user, source, id, fields) {
-    if (this.hasCatalogEntry(user, source, id)) {
-      let entry = this.catalog[user][source][id];
-      for (let [key, value] of Object.entries(fields)) {
-        entry[key] = value;
-      }
-      entry.last_access = new Date().toISOString();
-      return tools.saveUserCatalog(user, this.catalog[user]);
+    let result = this.hasCatalogEntry(user, source, id);
+    if (this.hasCatalogEntry(user, source, id) !== true) {
+      return result;
     }
-    return false;
+
+    let entry = this.catalog[user][source][id];
+    for (let [key, value] of Object.entries(fields)) {
+      entry[key] = value;
+    }
+    entry.last_access = new Date().toISOString();
+    return tools.saveUserCatalog(user, this.catalog[user]);
   }
 
   removeCatalogEntry(user, source, id) {
-    if (this.hasCatalogEntry(user, source, id)) {
-      delete this.catalog[user][source][id];
-      tools.saveUserCatalog(user, this.catalog[user]);
-      return true;
+    let result = this.hasCatalogEntry(user, source, id);
+    if (this.hasCatalogEntry(user, source, id) !== true) {
+      return result;
     }
-    return false;
+
+    delete this.catalog[user][source][id];
+    tools.saveUserCatalog(user, this.catalog[user]);
+    return true;
   }
 
   getLocalDataSize(user, source, id) {
@@ -397,13 +420,29 @@ class dataLink {
     }
   }
 
-  dataInUse(user, source, id, value) {
-    let bool = ( value === 'true' );
-    if (this.updateCatalogEntry(user, source, id, { 'in_use': bool })) {
-      return this.dataStatus(user, source, id);
-    } else {
-      return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
+  dataUpdate(user, source, id, obj) {
+    let valid = {};
+    for (const [key, value] of Object.entries(obj)) {
+      switch(key) {
+        case 'in_use':
+          if (typeof value !== 'boolean') {
+            return tools.errorMsg(`${key} should be set to true or false`, 400);
+          }
+          break;
+        default:
+          return tools.errorMsg(`${key} is not a valid field`, 400);
+          break;
+      }
+      valid[key] = value;
     }
+
+    let result = this.updateCatalogEntry(user, source, id, valid)
+    if (result !== true) {
+      return result;
+    }
+
+    const fields = Object.keys(valid).join(',');
+    return tools.successMsg(`Updated fields ${fields}`);
   }
 
 }
