@@ -77,21 +77,6 @@ class tools {
     return path.join(DATA_DIR, user, 'catalog.json');
   }
 
-  static saveUserCatalog(user, catalog) {
-    let json = JSON.stringify(catalog);
-    let user_data_dir = tools.getDataDest(user);
-    try {
-      if (! fs.existsSync(user_data_dir)) {
-        fs.mkdirSync(user_data_dir, { recursive: true });
-      }
-      fs.writeFileSync(tools.getUserCatalogFile(user), json);
-    } catch (err) {
-      log.error(`Error saving user catalog ${err}`);
-      return false;
-    }
-    return true;
-  }
-
   static getUserCloudRunId(user) {
     let file = this.getUserPath(user);
     try {

@@ -1,10 +1,9 @@
-#!/usr/bin/env node
-
 'use strict';
 
 const fs = require('fs');
 const path = require('path');
 
+const data_catalog = require('./data_catalog.js');
 const { tools, status } = require('./tools.js');
 const config = require('./config.js');
 const log = require('./log.js');
@@ -28,29 +27,21 @@ class dataLink {
         this.source[source.name] = source;
       }
     }
-    this.catalog = {};
-    this.loadLocalCatalogs();
+    this.catalog = new data_catalog(tools.getDataDir());
+    this.loadAllUserCatalogs();
+
     this.loadSourceCatalogs();
     this.dataResume();
   }
 
-  loadLocalCatalogs() {
+  loadAllUserCatalogs() {
     log.info(`Loading local catalogs`);
-    let data_dir = tools.getDataDir();
-    let users = tools.getSubDirs(data_dir);
-
-    for (let i in users) {
-      let user = users[i];
-      try {
-        let json = fs.readFileSync(tools.getUserCatalogFile(user));
-        this.catalog[user] = JSON.parse(json);
-      } catch (err) {
-        // if the file isn't found then regenerate it as best we can
-        if (err.code == "ENOENT") {
-          this.rebuildLocalCatalog(user);
-        } else {
-          log.error(err);
-        }
+    let users = tools.getSubDirs(tools.getDataDir());
+    const catalog = this.catalog.getCatalog();
+    for (const user of users) {
+      catalog[user] = {};
+      if (! this.catalog.loadUserCatalog(user, tools.getUserCatalogFile(user))) {
+        this.rebuildLocalCatalog(user);
       }
     }
   }
@@ -67,7 +58,11 @@ class dataLink {
       }
       let ids = tools.getSubDirs(path.join(data_dir, source));
       for (let j in ids) {
-        if (this.source[source] && this.addCatalogEntry(user, source, ids[j], status.completed)) {
+        const fields = {
+          source_size: this.source[source].getEntrySize(id),
+          status: status.completed
+        };
+        if (this.source[source] && this.catalog.addEntry(user, source, ids[j], fields)) {
           log.info(`Added ${user}/${source}/${ids[j]} to the catalog`);
         } else {
           log.error(`Unable to rebuild catalog for ${user}/${source}/${ids[j]}`);
@@ -195,15 +190,15 @@ class dataLink {
   }
 
   async dataResume () {
-    for (let user in this.catalog) {
-      for (let source in this.catalog[user]) {
+    for (let user in this.catalog.getCatalog()) {
+      for (let source in this.catalog.getCatalog()[user]) {
         while (! this.source[source].catalog) {
           await new Promise(r => setTimeout(r, 2000));
         }
-        for (let id in this.catalog[user][source]) {
-          let entry = this.catalog[user][source][id];
+        for (let id in this.catalog.getCatalog()[user][source]) {
+          let entry = this.catalog.getCatalog()[user][source][id];
           if (entry.status == status.inProgress) {
-            this.source[source].aquire(user, id, this, true);
+            this.source[source].aquire(user, id, this.catalog, true);
           }
         }
       }
@@ -217,7 +212,7 @@ class dataLink {
       return result;
     }
 
-    let st = this.getCatalogStatus(user, source, id);
+    let st = this.catalog.getStatus(user, source, id);
     // check if in progress
     if (st == status.inProgress) {
       return tools.successMsg(`${source} - Data download for ${user}/${source}/${id} already in progress`);
@@ -232,20 +227,28 @@ class dataLink {
     // prune old data if required
     this.dataPrune(config.get('storage.data_free_gb'));
 
-    // aquire the data from the data source
-    if (this.source[source].aquire(user, id, this, force)) {
-      return tools.successMsg(`${source}: Downloading ${user}/${source}/${id}`);
+    // add a catalog entry for the user setting the status to in_progress
+    const fields = {
+      source_size: this.source[source].getEntrySize(id),
+      status: status.inProgress
+    }
+    if (this.catalog.addEntry(user, source, id, fields)) {
+      log.info(`${source} - Aquiring ${user}/${source}/${id} - size ${this.source[source].getEntrySize(id)}`);
+      // aquire the data from the data source
+      if (this.source[source].aquire(user, id, this.catalog, force)) {
+        return tools.successMsg(`${source}: Downloading ${user}/${source}/${id}`);
+      }
     }
 
     return tools.errorMsg(`${source}: Error initialising download`, 500);
   }
 
   dataStatus(user = '', source = '', id = '') {
-    let catalog = this.catalog;
+    let catalog = this.catalog.getCatalog();
 
     // Check if user, source and id are set and valid and return correct part of local data catalog
     if (user) {
-      if (this.catalog[user]) {
+      if (this.catalog.getCatalog()[user]) {
         catalog = catalog[user];
         if (source) {
           if (catalog[source]) {
@@ -274,18 +277,18 @@ class dataLink {
   }
 
   dataRemove(user, source, id) {
-    let result = this.hasCatalogEntry(user, source, id);
-    if (this.hasCatalogEntry(user, source, id) !== true) {
+    let result = this.catalog.hasEntry(user, source, id);
+    if (this.catalog.hasEntry(user, source, id) !== true) {
       return result;
     }
 
-    let st = this.getCatalogStatus(user, source, id);
+    let st = this.catalog.getStatus(user, source, id);
     if (st === status.inProgress) {
       return tools.errorMsg(`${source}: Can't remove as download for ${user}/${source}/${id} is in progress`);
     }
 
-    if (this.source[source].remove(user, id, this.catalog)) {
-        this.removeCatalogEntry(user, source, id);
+    if (this.source[source].remove(user, id, this.catalog.getCatalog())) {
+        this.catalog.removeEntry(user, source, id);
         return tools.successMsg(`${source}: Removed ${id} for ${user}`);
     }
 
@@ -305,11 +308,12 @@ class dataLink {
     let size_to_free = min_free_gb - free_gb;
 
     let entries = [];
+    const catalog = this.catalog.getCatalog();
     // build up list of data that is not in use by age
-    for (const user in this.catalog) {
-      for (const source in this.catalog[user]) {
-        for (const id in this.catalog[user][source]) {
-          let e = this.catalog[user][source][id];
+    for (const user in catalog) {
+      for (const source in catalog[user]) {
+        for (const id in catalog[user][source]) {
+          const e = catalog[user][source][id];
           if (! e.in_use && e.status === status.completed) {
             entries.push( {
               date: e.last_access,
@@ -338,88 +342,6 @@ class dataLink {
     log.info(`dataPrune - Removed ${size} of required ${size_to_free}`);
   }
 
-  getCatalogStatus(user, source, id) {
-    if (this.hasCatalogEntry(user, source, id) !== true) {
-      return false;
-    }
-    return this.catalog[user][source][id].status;
-  }
-
-  createUserEntry(user, source) {
-    // if there is no catalog for the user, create one
-    if (!this.catalog[user]) {
-      this.catalog[user] = {};
-    }
-
-    // if source doesn't exist for the user, create it
-    if (!this.catalog[user][source]) {
-      this.catalog[user][source] = {};
-    }
-  }
-
-  addCatalogEntry(user, source, id, status) {
-    this.createUserEntry(user, source);
-
-    let entry = {
-      'last_access': new Date().toISOString(),
-      'size': this.getLocalDataSize(user, source, id),
-      'source_size': this.source[source].getCatalogIdSize(id),
-      'status': status,
-      'in_use': false
-    }
-
-    // add the catalog entry
-    this.catalog[user][source][id] = entry;
-
-    return tools.saveUserCatalog(user, this.catalog[user]);
-  }
-
-  hasCatalogEntry(user, source, id) {
-    if (this.catalog[user] && this.catalog[user][source] && this.catalog[user][source][id]) {
-      return true;
-    }
-    return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
-  }
-
-  updateCatalogEntry(user, source, id, fields) {
-    let result = this.hasCatalogEntry(user, source, id);
-    if (this.hasCatalogEntry(user, source, id) !== true) {
-      return result;
-    }
-
-    let entry = this.catalog[user][source][id];
-    for (let [key, value] of Object.entries(fields)) {
-      entry[key] = value;
-    }
-    entry.last_access = new Date().toISOString();
-    return tools.saveUserCatalog(user, this.catalog[user]);
-  }
-
-  removeCatalogEntry(user, source, id) {
-    let result = this.hasCatalogEntry(user, source, id);
-    if (this.hasCatalogEntry(user, source, id) !== true) {
-      return result;
-    }
-
-    delete this.catalog[user][source][id];
-    tools.saveUserCatalog(user, this.catalog[user]);
-    return true;
-  }
-
-  getLocalDataSize(user, source, id) {
-    let dir = path.join(tools.getDataDir(), user, source, id);
-    try {
-      if (fs.existsSync(dir)) {
-        return tools.getDirSize(dir);
-      } else {
-        return 0;
-      }
-    } catch (err) {
-      log.error(err);
-      return 0;
-    }
-  }
-
   dataUpdate(user, source, id, obj) {
     let valid = {};
     for (const [key, value] of Object.entries(obj)) {
@@ -436,7 +358,7 @@ class dataLink {
       valid[key] = value;
     }
 
-    let result = this.updateCatalogEntry(user, source, id, valid)
+    let result = this.catalog.updateEntry(user, source, id, valid)
     if (result !== true) {
       return result;
     }

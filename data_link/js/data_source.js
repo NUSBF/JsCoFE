@@ -81,17 +81,11 @@ class dataSource {
   }
 
   aquire(user, id, catalog) {
-    // add a catalog entry for the user setting the status to in_progress
-    if (catalog.addCatalogEntry(user, this.name, id, status.inProgress)) {
-      log.info(`${this.name} - Aquiring ${user}/${this.name}/${id} - size ${this.getCatalogIdSize(id)}`);
-      try {
-        fs.mkdirSync(tools.getDataDest(user, this.name, id), { recursive: true });
-        this.getData(user, id, catalog);
-      } catch (err) {
-        log.error(`${this.name} - ${err}`);
-        return false;
-      }
-    } else {
+    try {
+      fs.mkdirSync(tools.getDataDest(user, this.name, id), { recursive: true });
+      this.getData(user, id, catalog);
+    } catch (err) {
+      log.error(`${this.name} - ${err}`);
       return false;
     }
 
@@ -109,7 +103,7 @@ class dataSource {
     return true;
   }
 
-  getCatalogIdSize(id) {
+  getEntrySize(id) {
     if (this.catalog && this.catalog[id] && this.catalog[id].size) {
       return this.catalog[id].size;
     }
@@ -119,18 +113,18 @@ class dataSource {
   dataComplete(user, id, catalog) {
     let fields = {
       'status': status.completed,
-      'size': catalog.getLocalDataSize(user, this.name, id)
+      'size': catalog.getStorageSize(user, this.name, id)
     }
-    if (! catalog.updateCatalogEntry(user, this.name, id, fields)) {
+    if (! catalog.updateEntry(user, this.name, id, fields)) {
       log.error(`${this.name} - Unable to update catalog entry for ${user}/${this.name}/${id}`);
     }
 
-    log.info(`${this.name} - Downloaded ${user}/${this.name}/${id} - size ${this.getCatalogIdSize(id)}`);
+    log.info(`${this.name} - Downloaded ${user}/${this.name}/${id} - size ${this.getEntrySize(id)}`);
   }
 
   dataError(user, id, catalog, error) {
     log.error(`${this.name} - Unable to download data: ${error}`);
-    catalog.addCatalogEntry(user, this.name, id, status.failed)
+    catalog.updateEntry(user, this.name, id, { status: status.failed })
   }
 
   catalogError(error) {
