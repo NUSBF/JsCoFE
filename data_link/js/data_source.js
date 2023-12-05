@@ -80,7 +80,7 @@ class dataSource {
     return true;
   }
 
-  aquire(user, id, catalog) {
+  acquire(user, id, catalog) {
     try {
       fs.mkdirSync(tools.getDataDest(user, this.name, id), { recursive: true });
       this.getData(user, id, catalog);
@@ -119,7 +119,7 @@ class dataSource {
       log.error(`${this.name} - Unable to update catalog entry for ${user}/${this.name}/${id}`);
     }
 
-    log.info(`${this.name} - Downloaded ${user}/${this.name}/${id} - size ${this.getEntrySize(id)}`);
+    log.info(`${this.name} - Acquired ${user}/${this.name}/${id} - size ${this.getEntrySize(id)}`);
   }
 
   dataError(user, id, catalog, error) {

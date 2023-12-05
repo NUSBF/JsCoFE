@@ -198,14 +198,14 @@ class dataLink {
         for (let id in this.catalog.getCatalog()[user][source]) {
           let entry = this.catalog.getCatalog()[user][source][id];
           if (entry.status == status.inProgress) {
-            this.source[source].aquire(user, id, this.catalog, true);
+            this.source[source].acquire(user, id, this.catalog, true);
           }
         }
       }
     }
   }
 
-  dataAquire(user, source, id, force = false) {
+  dataAcquire(user, source, id, force = false) {
     id = id.toLowerCase();
     let result = this.hasSourceEntry(source, id);
     if (result !== true) {
@@ -220,8 +220,8 @@ class dataLink {
 
     // check if already downloaded
     if (! force && st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
-      log.info(`${source} - ${user}/${source}/${id} is already downloaded`);
-      return tools.successMsg(`${source}: ${user}/${source}/${id} is already downloaded`);
+      log.info(`${source} - ${user}/${source}/${id} already exists`);
+      return tools.successMsg(`${source}: ${user}/${source}/${id} already exists`);
     }
 
     // prune old data if required
@@ -233,10 +233,10 @@ class dataLink {
       status: status.inProgress
     }
     if (this.catalog.addEntry(user, source, id, fields)) {
-      log.info(`${source} - Aquiring ${user}/${source}/${id} - size ${this.source[source].getEntrySize(id)}`);
-      // aquire the data from the data source
-      if (this.source[source].aquire(user, id, this.catalog, force)) {
-        return tools.successMsg(`${source}: Downloading ${user}/${source}/${id}`);
+      log.info(`${source} - Acquiring ${user}/${source}/${id} - size ${this.source[source].getEntrySize(id)}`);
+      // acquire the data from the data source
+      if (this.source[source].acquire(user, id, this.catalog, force)) {
+        return tools.successMsg(`${source}: Acquiring ${user}/${source}/${id}`);
       }
     }
 
