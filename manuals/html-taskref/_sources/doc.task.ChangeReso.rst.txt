@@ -1,5 +1,0 @@
-=========================
-Change Dataset Resolution
-=========================
-
-The task allows defining the resolution range of the dataset.
