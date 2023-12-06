@@ -370,12 +370,12 @@ class Refmac(basic.TaskDriver):
 
         # make command-line parameters for bare morda run on a SHELL-type node
 
-        # xyzin  = istruct.getMMCIFFilePath ( self.inputDir() )
-        # if not xyzin:
-        #     self.stderrln ( " ***** mmCIF is not found" )
-        #     xyzin  = istruct.getXYZFilePath ( self.inputDir() )
+        xyzin  = istruct.getMMCIFFilePath ( self.inputDir() )
+        if not xyzin:
+            self.stderrln ( " ***** mmCIF is not found" )
+            xyzin  = istruct.getXYZFilePath ( self.inputDir() )
 
-        xyzin  = istruct.getXYZFilePath ( self.inputDir() )
+        # xyzin  = istruct.getXYZFilePath ( self.inputDir() )
 
         xyzout = self.getXYZOFName()
         xmlOutRefmac = self.getOFName (".xml")
