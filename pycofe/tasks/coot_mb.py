@@ -374,6 +374,7 @@ class Coot(coot_ce.CootCE):
             coot_mtz = istruct.getMTZFileName()
             shutil.copy2 ( fname  ,coot_xyz )
             shutil.copy2 ( mtzfile,coot_mtz )
+            # shutil.copy2 ( "mol0.mmcif",os.path.join(self.outputDir(),"mol0.mmcif") )
 
             # calculate maps for UglyMol using final mtz from temporary location
             #fnames = self.calcCCP4Maps ( coot_mtz,fn )
@@ -419,6 +420,8 @@ class Coot(coot_ce.CootCE):
                 #if ligand:
                 #    struct.addLigand ( ligand.code )
                 struct.setLigands       ( ligList )
+
+                struct.add_file ( "mol0.mmcif",self.outputDir(),"mmcif",copy_bool=False )
 
                 # add link formulas and counts to struct metadata
                 if link_counts:

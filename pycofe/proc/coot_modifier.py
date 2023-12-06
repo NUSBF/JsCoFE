@@ -65,6 +65,7 @@ if (have_coot_python):
             return
 
         def exit_and_signal ( signal ):
+            write_cif_file ( 0,"mol0.mmcif" )
             if signal:
                 f = open ( "task_chain.cmd","w" )
                 f.write ( signal )
