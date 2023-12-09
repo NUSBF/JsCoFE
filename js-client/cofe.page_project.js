@@ -763,6 +763,83 @@ ProjectPage.prototype.openJob = function() {
   this.jobTree.openJob ( null,this );
 }
 
+ProjectPage.prototype.sendJobResults = function() {
+
+  // dlg.requestServer   ( fe_reqtype.saveJobData,function(rdata){
+  //   if (rdata.project_missing)  {
+  //     new MessageBoxF ( 'Project not found',
+  //         '<h3>Project "' + dlg.tree.projectData.desc.name +
+  //            '" is not found on server</h3>' +
+  //         'Project "' + dlg.tree.projectData.desc.name +
+  //            '" was shared with you, please check<br>' +
+  //         'whether it was deleted by project owner.',
+  //         'Ok',function(){
+  //             dlg.tree.emitSignal ( cofe_signals.makeProjectList,rdata );
+  //         },false,'msg_error'
+  //     );
+  //   }
+  // });
+
+  __close_all_menus();
+
+  let node   = this.jobTree.getSelectedNode();
+  let crTask = this.jobTree.getTaskByNodeId ( node.id );
+
+  if (!crTask)  {
+    new MessageBox ( 'Task not found',
+      '<div style="width:300px"><h2>Task not found</h2>' +
+      '<i>This is a bug, please report</i>',
+      'msg_error' );
+      return;
+  }
+
+  // let self = this;
+
+  let data  = {
+    meta     : crTask,
+    base_url : base_url.substring ( 0,base_url.lastIndexOf('/') )
+  };
+
+  localCommand ( nc_command.sendJobResults,data,'Send job results',
+    function(response){
+      if (!response)
+        return false;  // issue standard AJAX failure message
+      // if (response.status!=nc_retcode.ok)
+      //   new MessageBox ( 'Local service',
+      //     '<p>Launching local application ' + command +
+      //     ' failed due to:<p><i>' + response.message +
+      //     '</i><p>Please report this as a bug to <a href="mailto:' +
+      //     __maintainerEmail + '">' + __maintainerEmail + '</a>' );
+      return true;
+    });
+
+/*
+
+
+  var self = this;
+
+  var data  = {
+    meta : crTask
+  };
+  // data.meta = this.task;
+  // data.ancestors = [];
+  // if (this.tree.projectData)  data.is_shared = this.tree.isShared();
+  //                       else  data.is_shared = false;
+  // for (var i=1;i<this.ancestors.length;i++)
+  //   data.ancestors.push ( this.ancestors[i]._type );
+  // if (!this.task.job_dialog_data.viewed)  {
+  //   this.onDlgSignal_func ( this,job_dialog_reason.reset_node,null );
+  //   this.task.job_dialog_data.viewed = true;
+  //   this.job_edited = true;
+  // }
+  // data.update_tree = this.job_edited && data.is_shared;
+  serverRequest ( fe_reqtype.sendJobResults,data,crTask.title,function(rdata){
+
+  },null,null );
+*/
+
+}
+
 ProjectPage.prototype.stopJob = function() {
   this.jobTree.stopJob ( '',false,null );  // 'false' means immediate termination
 }
@@ -976,7 +1053,16 @@ ProjectPage.prototype.onTreeContextMenu = function() {
     }
 
     if (!$(self.open_btn.element).button('option','disabled'))  {
-      if (crTask && (crTask.state==job_code.remark) && (crTask.isWebLink()))  {
+      if (__local_service && crTask && crTask.canSendJobResults())  {
+        if ((__user_role==role_code.developer) || (__user_role==role_code.admin))  {
+          items.senfJobDataItem = { // The "Open job" menu item
+            label : "Send job data",
+            icon  : image_path('send_data'),
+            action: function(){ self.sendJobResults(); }
+          };
+        }
+      }
+      if (crTask && (crTask.state==job_code.remark) && crTask.isWebLink())  {
         items.openJobItem = { // The "Open job" menu item
           label : "Open link",
           icon  : image_path('openjob'),

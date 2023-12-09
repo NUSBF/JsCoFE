@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    17.11.23   <--  Date of Last Modification.
+ *    09.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -180,10 +180,21 @@ TaskTemplate.prototype.canEndGracefully    = function() { return false;    }
 // TaskTemplate.prototype.canRunInAutoMode    = function() { return false;    }
 
 TaskTemplate.prototype.sendsOut = function()  {
-  // return ['seq','xyz','lig','hkl']; 
+// Lists data which tasks may send to external web-servers, such as PDB, AFDB, PDB-REDO
+// and others. Example:
+//       return ['seq','xyz','lig','hkl']; 
   return [];
 }
 
+TaskTemplate.prototype.canSendJobResults = function()  {
+  return this.isSuccessful() &&
+         (('DataRevision'  in this.output_data.data) ||
+          ('DataStructure' in this.output_data.data) ||
+          ('DataModel'     in this.output_data.data) ||
+          ('DataXYZ'       in this.output_data.data) ||
+          ('DataLigand'    in this.output_data.data) ||
+          ('DataLibrary'   in this.output_data.data));
+}
 
 TaskTemplate.prototype.getHelpURL = function()  {
   return __task_reference_base_url + 'doc.task.' + this._type.substr(4) + '.html';

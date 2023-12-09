@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.02.23   <--  Date of Last Modification.
+ *    09.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -249,6 +249,10 @@ function start()  {
 
           case cmd.nc_command.runRVAPIApp :
               pp.processPOSTData ( server_request,server_response,jm.ncRunRVAPIApp,srvConfig.state );
+            break;
+
+          case cmd.nc_command.sendJobResults :
+              pp.processPOSTData ( server_request,server_response,jm.ncSendJobResults,srvConfig.state );
             break;
 
           case cmd.nc_command.runClientJob :

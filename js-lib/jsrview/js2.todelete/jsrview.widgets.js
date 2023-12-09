@@ -1,7 +1,7 @@
 //
 //  ===========================================================================
 //
-//    24.04.18   <--  Date of Last Modification.
+//    09.12.23   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  ---------------------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  Report widgets
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2013-2018
+//  (C) E. Krissinel 2013-2023
 //
 //  ===========================================================================
 //
@@ -190,7 +190,7 @@ RVAPIReportWidgets.prototype.addIconButtonGrid = function ( btnId,button_class,t
 
 
 RVAPIReportWidgets.prototype.addIconButton = function ( btnId,button_class,tooltip,
-                                                 command,data,rvOnly,holderId ) {
+                                                        command,data,rvOnly,holderId )  {
 
   /*
   if (command=='{coot}')  {
@@ -441,7 +441,7 @@ var ddbody = document.getElementById ( ddnId );
 }
 
 
-RVAPIReportWidgets.prototype.addDropDown ( ddnId,ddnTitle,holderId,
+RVAPIReportWidgets.prototype.addDropDown = function ( ddnId,ddnTitle,holderId,
                                            row,col,rowSpan,colSpan, foldState ) {
 
   if (document.getElementById(ddnId))
@@ -663,8 +663,8 @@ var pbr = document.getElementById ( progBarId );
 //  SECTION
 // ----------------------------------------------------------------------------
 
-RVAPIReportWidgets.prototype.addSection ( secId,secTitle,holderId,
-                                          row,col,rowSpan,colSpan, isOpen )  {
+RVAPIReportWidgets.prototype.addSection = function ( secId,secTitle,holderId,
+                                                     row,col,rowSpan,colSpan, isOpen )  {
 
   if (!document.getElementById(holderId+"-grid"))
     return;
@@ -700,7 +700,7 @@ RVAPIReportWidgets.prototype.addSection ( secId,secTitle,holderId,
 }
 
 
-RVAPIReportWidgets.prototype.setSectionState ( secId,isOpen )  {
+RVAPIReportWidgets.prototype.setSectionState = function ( secId,isOpen )  {
   if (isOpen)
     $("#"+secId+"-accordion").accordion ( "option","active",true );
   else
