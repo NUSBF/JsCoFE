@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    02.12.23   <--  Date of Last Modification.
+ *    09.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
 
 // const jsCoFE_version = '1.7.018 [24.11.2023]';   // for the main server
-const jsCoFE_version = '1.7.019 [02.12.2023]';   // for update
+const jsCoFE_version = '1.7.019 [09.12.2023]';   // for update
 
 
 function appVersion()  {
@@ -224,7 +224,8 @@ var nc_command = {
   runRVAPIApp    : '-runRVAPIApp',    // run RVAPI helper application (local service)
   runClientJob   : '-runClientJob',   // run client job (local service)
   getNCInfo      : '-getNCInfo',      // get NC config and other info
-  getNCCapacity  : '-getNCCapacity'   // get NC current capacity
+  getNCCapacity  : '-getNCCapacity',  // get NC current capacity
+  sendJobResults : '-sendJobResults'  // request to send job results to 3rd party application
 };
 
 

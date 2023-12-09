@@ -63,7 +63,7 @@ var __environ_server  = [];     // list of key environmental variables on NCs
 var __environ_client  = [];     // list of key environmental variables on Client
 var __my_workflows    = [];     // user defined workflows
 
-var __clipboard       = { task: null };     // clipboard for copy-paste
+var __clipboard       = { task: null };     // clipboard for copy-pasting jobs
 
 var __tips            = null;   // tips loaded from FE (optional), used in login page
 

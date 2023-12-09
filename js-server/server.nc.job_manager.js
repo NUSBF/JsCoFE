@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    04.10.23   <--  Date of Last Modification.
+ *    09.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1526,7 +1526,151 @@ var job_tokens = post_data_obj.job_tokens;
 
 }
 
+
 // ===========================================================================
+
+function make_local_job ( files,base_url,destDir,job_token,callback_func )  {
+
+  function prepare_job ( ix )  {
+
+    if (ix<files.length)  {  // process ixth argument
+
+    // compute full download url
+    let url   = base_url + '/' + files[ix];
+    // compute full local path to accept the download
+    let fpath = path.join ( destDir,url.substring(url.lastIndexOf('/')+1) );
+
+    let get_options = {
+      url                : url,
+      rejectUnauthorized : conf.getServerConfig().rejectUnauthorized
+    };
+
+    console.log ( '\n >>>>> url  ='+url )
+    console.log ( ' >>>>> fpath='+fpath +'\n' )
+
+    request  // issue the download request
+      .get ( get_options )
+      .on('error', function(err) {
+        log.error ( 17,'Download errors from ' + url );
+        log.error ( 17,'Error: ' + err );
+        // remove job
+        if (job_token)  {
+          ncJobRegister.removeJob ( job_token );
+          writeNCJobRegister      ();
+        }
+        callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
+                                '[00115] Download errors: ' + err,{} ) );
+      })
+      // .pipe(fs.createWriteStream(path.join(jobDir,fpath)))
+      .pipe(fs.createWriteStream(fpath))
+      .on('error', function(err) {
+        log.error ( 22,'Download errors from ' + url );
+        log.error ( 22,'Error: ' + err );
+        // remove job
+        if (job_token)  {
+          ncJobRegister.removeJob ( job_token );
+          writeNCJobRegister      ();
+        }
+        callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
+                                '[00120] Download errors: ' + err,{} ) );
+      })
+      .on('close',function(){   // finish,end,
+        // successful download, note file path and move to next argument
+        files[ix] = fpath;
+        prepare_job ( ix+1 );
+      });
+
+    } else  {
+      // all argument list is processed, data files downloaded in subdirectory
+      // 'input' of the job directory; prepare job metadata and start the
+      // job
+      callback_func();
+    }
+
+  }
+
+  // invoke preparation recursion
+  prepare_job ( 0 );
+
+}
+
+
+/*
+function make_local_job ( args,exts,base_url,jobDir,job_token,callback_func )  {
+
+  function prepare_job ( ix )  {
+
+    if (ix<args.length)  {  // process ixth argument
+
+      var ip = args[ix].lastIndexOf('.');  // is there a file extension?
+
+      if (ip>=0)  {
+
+        var ext = args[ix].substring(ip).toLowerCase();
+
+        if (exts.indexOf(ext)>=0)  {  // file extension is recognised
+
+          // compute full download url
+          var url   = base_url + '/' + args[ix];
+          // compute full local path to accept the download
+          var fpath = path.join ( 'input',url.substring(url.lastIndexOf('/')+1) );
+
+          var get_options = {
+            url                : url,
+            rejectUnauthorized : conf.getServerConfig().rejectUnauthorized
+          };
+
+          request  // issue the download request
+            .get ( get_options )
+            .on('error', function(err) {
+              log.error ( 17,'Download errors from ' + url );
+              log.error ( 17,'Error: ' + err );
+              // remove job
+              if (job_token)  {
+                ncJobRegister.removeJob ( job_token );
+                writeNCJobRegister      ();
+              }
+              callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
+                                     '[00115] Download errors: ' + err,{} ) );
+            })
+            .pipe(fs.createWriteStream(path.join(jobDir,fpath)))
+            .on('error', function(err) {
+              log.error ( 22,'Download errors from ' + url );
+              log.error ( 22,'Error: ' + err );
+              // remove job
+              if (job_token)  {
+                ncJobRegister.removeJob ( job_token );
+                writeNCJobRegister      ();
+              }
+              callback_func ( new cmd.Response ( cmd.nc_retcode.downloadErrors,
+                                     '[00120] Download errors: ' + err,{} ) );
+            })
+            .on('close',function(){   // finish,end,
+              // successful download, note file path and move to next argument
+              args[ix] = fpath;
+              prepare_job ( ix+1 );
+            });
+
+        } else  // extension is not recognised, just move to next argument
+          prepare_job ( ix+1 );
+
+      } else // no extension, just move to next argument
+        prepare_job ( ix+1 );
+
+    } else  {
+      // all argument list is processed, data files downloaded in subdirectory
+      // 'input' of the job directory; prepare job metadata and start the
+      // job
+      callback_func();
+    }
+
+  }
+
+  // invoke preparation recursion
+  prepare_job ( 0 );
+
+}
+*/
 
 function ncRunRVAPIApp ( post_data_obj,callback_func )  {
 
@@ -1535,12 +1679,12 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
   readNCJobRegister ( 1 );
   ncJobRegister.launch_count++; // this provides unique numbering of jobs
 
-  var jobDir = ncGetJobDir ( ncJobRegister.launch_count );
+  let jobDir = ncGetJobDir ( ncJobRegister.launch_count );
   // make new entry in job registry
-  var job_token = ncJobRegister.addJob ( jobDir ); // assigns 'new' status
+  let job_token = ncJobRegister.addJob ( jobDir ); // assigns 'new' status
   writeNCJobRegister();
 
-  var ok = utils.mkDir(jobDir) && utils.mkDir(path.join(jobDir,'input')) &&
+  let ok = utils.mkDir(jobDir) && utils.mkDir(path.join(jobDir,'input')) &&
                                   utils.mkDir(path.join(jobDir,'report'));
   if (!ok)  {
     log.error ( 15,'job directory "' + jobDir + '" cannot be created.' );
@@ -1556,9 +1700,44 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
 
   // 2. Download files
 
-  var args = post_data_obj.data.split('*');  // argument list for RVAPI application
-  var exts = ['.pdb','.cif','.mtz','.map'];  // recognised file extensions for download
+  let exts  = ['.pdb','.cif','.mtz','.map'];  // recognised file extensions for download
+  let args  = post_data_obj.data.split('*');  // argument list for RVAPI application
+  let files = [];
+  for (let i=0;i<args.length;i++)  {
+    console.log ( ' >>>>> args = ' + args[i] );
+    let ip = args[i].lastIndexOf('.');  // is there a file extension?
+    if (ip>=0)  {
+        let ext = args[i].substring(ip).toLowerCase();
+        if (exts.indexOf(ext)>=0)  // file extension is recognised
+          files.push ( args[i] );
+    }
+  }
 
+  let destDir = path.join(jobDir,'input');
+  make_local_job ( files,post_data_obj.base_url,destDir,job_token,function(){
+  
+    let taskRVAPIApp = new task_rvapiapp.TaskRVAPIApp();
+    taskRVAPIApp.id            = ncJobRegister.launch_count;
+    taskRVAPIApp.rvapi_command = post_data_obj.command;
+    taskRVAPIApp.rvapi_args    = [];
+    for (let i=0;i<files.length;i++)
+      taskRVAPIApp.rvapi_args.push ( files[i].replace(destDir,'input') );
+    utils.writeObject ( path.join(jobDir,task_t.jobDataFName),taskRVAPIApp );
+
+    ncRunJob ( job_token,{
+      'sender'   : '',
+      'setup_id' : '',
+      'nc_name'  : 'client-rvapi',
+      'user_id'  : ''
+    });
+
+    // signal 'ok' to client
+    callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00115] Ok',{} ) );
+  
+  });
+
+
+  /*
   function prepare_job ( ix )  {
 
     if (ix<args.length)  {  // process ixth argument
@@ -1641,6 +1820,24 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
 
   // invoke preparation recursion
   prepare_job ( 0 );
+
+  */
+
+}
+
+
+// ===========================================================================
+
+function ncSendJobResults ( post_data_obj,callback_func )  {
+let crTask      = post_data_obj.meta;
+let output_data = crTask.output_data.data;
+
+  make_local_job ( args,exts,post_data_obj.base_url,jobDir,job_token,function(){
+  
+    // signal 'ok' to client
+    callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00122] Ok',{} ) );
+  
+  });
 
 }
 
@@ -1772,6 +1969,7 @@ module.exports.ncMakeJob          = ncMakeJob;
 module.exports.ncStopJob          = ncStopJob;
 module.exports.ncWakeZombieJobs   = ncWakeZombieJobs;
 module.exports.ncRunRVAPIApp      = ncRunRVAPIApp;
+module.exports.ncSendJobResults   = ncSendJobResults;
 module.exports.ncRunClientJob     = ncRunClientJob;
 module.exports.ncGetJobsDir       = ncGetJobsDir;
 module.exports.readNCJobRegister  = readNCJobRegister;
