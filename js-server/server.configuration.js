@@ -366,6 +366,11 @@ ServerConfig.prototype.isArchive = function()  {
   return ('archivePath' in fe_server) && fe_server.archivePath;
 }
   
+ServerConfig.prototype.getExchangeDirectory = function()  {
+  if ('exchangeDir' in this)
+    return this.exchangeDir;
+  return null; // not a client server
+}
 
 // ===========================================================================
 // Config service functions
@@ -643,6 +648,7 @@ function CCP4DirName()  {
       "only_tasks"       : [],
       "fasttrack"        : 1,
       "storage"          : "./cofe-client-storage",
+      "exchangeDir"      : "$HOME/.ccp4cloud_exchange",
       "exeType"          : "CLIENT",
       "exeData"          : "",
       "jobCheckPeriod"   : 2000,
@@ -906,6 +912,12 @@ function readConfiguration ( confFilePath,serverType )  {
       if (nc_server.exeType=='CLIENT')  {
         client_server = nc_server;
         client_server.state = 'active';  // server state: 'active', 'inactive'
+        if (!("exchangeDir" in client_server))
+          client_server.exchangeDir = '$HOME/.ccp4cloud_exchange';
+        if (client_server.exchangeDir.startsWith('$HOME'))
+          client_server.exchangeDir = client_server.exchangeDir.replace (
+             '$HOME',process.env.HOME
+          );
         if (fe_proxy && (!fe_proxy.storage))
           fe_proxy.storage = client_server.storage;
       }

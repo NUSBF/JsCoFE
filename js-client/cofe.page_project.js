@@ -797,11 +797,12 @@ ProjectPage.prototype.sendJobResults = function() {
 
   let data  = {
     meta     : crTask,
-    base_url : base_url.substring ( 0,base_url.lastIndexOf('/') )
+    base_url : window.location.href + '/' + getJobFileURL ( crTask.id,'' )
   };
 
   localCommand ( nc_command.sendJobResults,data,'Send job results',
     function(response){
+      alert ( 'response ' + JSON.stringify(response))
       if (!response)
         return false;  // issue standard AJAX failure message
       // if (response.status!=nc_retcode.ok)

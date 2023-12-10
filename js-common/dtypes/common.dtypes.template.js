@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    24.07.23   <--  Date of Last Modification.
+ *    10.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -23,7 +23,7 @@
 
 // ===========================================================================
 
-var file_key = {
+const file_key = {
   'xyz'    : 'xyz',     // atomic coordinates
   'mmcif'  : 'mmcif',   // atomic coordinates in mmCIF format
   'sol'    : 'sol',     // phaser's sol file
@@ -268,4 +268,8 @@ function getRefKeys ( data_obj,taskType )  {
   if (('refkeys' in data_obj) && (taskType in data_obj.refkeys))
     return data_obj.refkeys[taskType];
   return null;
+}
+
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
+  module.exports.file_key = file_key;
 }
