@@ -1125,10 +1125,10 @@ var snode = this.getSelectedNode();
 
 
 Tree.prototype.addSiblingToSelected = function ( text,icon_uri,treeNodeCustomIcon )  {
-var snode = this.getSelectedNode();
+let snode = this.getSelectedNode();
   if (snode)  {
     if (snode.parentId && (snode.parentId in this.node_map))  {
-      var pnode = this.node_map[snode.parentId];
+      let pnode = this.node_map[snode.parentId];
       return this.addNode ( pnode,text,icon_uri,treeNodeCustomIcon );
     } else
       console.log ( ' >>>> parentId ' + snode.parentId + ' not found' );
@@ -1138,7 +1138,7 @@ var snode = this.getSelectedNode();
 
 
 Tree.prototype.deleteSelectedNode = function()  {
-var snode = this.getSelectedNode();
+let snode = this.getSelectedNode();
   if (snode)
     this.deleteBranch ( snode );
 }

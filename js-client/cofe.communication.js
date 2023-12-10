@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    03.10.23   <--  Date of Last Modification.
+ *    10.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -10,10 +10,41 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  validateUserData()
- *       ~~~~~~~~~  makeCommErrorMessage()
- *                  serverCommand()
- *                  serverRequest()
+ *  **** Content :  Communicartion functions
+ *       ~~~~~~~~~  
+ * 
+ *   function validateUserData ( user_inp,email_inp,login_inp )
+ *   function makeCommErrorMessage ( title,request_type,response )  {
+ *   function checkVersionMatch ( response,localServer_bool )  {
+ *   function makeJSONString ( data_obj )  {
+ *   function clearNetworkIndicators()  {
+ *   function __process_network_indicators()  {
+ *   function processServerQueue()  {
+ *   function processLocalQueue()  {
+ *   function printServerQueueState ( checkPoint)  {
+ *   function __server_command ( cmd,data_obj,page_title,function_response,
+ *                               function_always,function_fail,sqid )  {
+ *   function __server_request ( request_type,data_obj,page_title,function_ok,
+ *                                function_always,function_fail,sqid )  {
+ *   function local_command ( cmd,data_obj,command_title,function_response )  {
+ *   function promptSessionCheck ( cmd )  {
+ *   function serverCommand ( cmd,data_obj,page_title,function_response,
+ *                              function_always,function_fail )  {
+ *   function serverRequest ( request_type,data_obj,page_title,function_ok,
+ *                              function_always,function_fail )  {
+ *   function localCommand ( cmd,data_obj,command_title,function_response )  {
+ *   function downloadFile ( uri )  {
+ *   function fetchFile ( furl,function_success,function_always,function_fail )  {
+ *   function fetchJobFile ( task,fname,function_success,function_always,function_fail )  {
+ *   function fetchJobOutputFile ( task,fname,function_success,function_always,function_fail )  {
+ *   function getJobFileURL ( jobId,filePath )  {
+ *   function downloadJobFile ( jobId,filePath )  {
+ *   function setCommunicatingIFrame ( holder,iframe )  {
+ *   function setCommunicationFrameData ( fid,dataName,data )  {
+ *   function getCommunicationFrameData ( fid,dataName )  {
+ *   function removeCommunicatingIFrame ( fid )
+ *   function getNofCommunicatingIFrames()
+ *   function onWindowMessage ( event )
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
@@ -856,7 +887,6 @@ function fetchJobOutputFile ( task,fname,function_success,function_always,functi
   fetchFile ( task.getProjectURL(parseInt(fname.split('-')[0],10),'output/'+fname),
               function_success,function_always,function_fail );
 }
-  
 
 
 function getJobFileURL ( jobId,filePath )  {

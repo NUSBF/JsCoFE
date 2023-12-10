@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.12.23   <--  Date of Last Modification.
+ *    10.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,6 +39,7 @@ const conf          = require('./server.configuration');
 const send_dir      = require('./server.send_dir');
 const utils         = require('./server.utils');
 const task_t        = require('../js-common/tasks/common.tasks.template');
+const data_t        = require('../js-common/dtypes/common.dtypes.template');
 const task_rvapiapp = require('../js-common/tasks/common.tasks.rvapiapp');
 const cmd           = require('../js-common/common.commands');
 const ud            = require('../js-common/common.data_user');
@@ -1545,9 +1546,6 @@ function make_local_job ( files,base_url,destDir,job_token,callback_func )  {
       rejectUnauthorized : conf.getServerConfig().rejectUnauthorized
     };
 
-    console.log ( '\n >>>>> url  ='+url )
-    console.log ( ' >>>>> fpath='+fpath +'\n' )
-
     request  // issue the download request
       .get ( get_options )
       .on('error', function(err) {
@@ -1584,7 +1582,7 @@ function make_local_job ( files,base_url,destDir,job_token,callback_func )  {
       // all argument list is processed, data files downloaded in subdirectory
       // 'input' of the job directory; prepare job metadata and start the
       // job
-      callback_func();
+      callback_func ( null );
     }
 
   }
@@ -1704,7 +1702,6 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
   let args  = post_data_obj.data.split('*');  // argument list for RVAPI application
   let files = [];
   for (let i=0;i<args.length;i++)  {
-    console.log ( ' >>>>> args = ' + args[i] );
     let ip = args[i].lastIndexOf('.');  // is there a file extension?
     if (ip>=0)  {
         let ext = args[i].substring(ip).toLowerCase();
@@ -1714,25 +1711,34 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
   }
 
   let destDir = path.join(jobDir,'input');
-  make_local_job ( files,post_data_obj.base_url,destDir,job_token,function(){
+  make_local_job ( files,post_data_obj.base_url,destDir,job_token,
+    function(response){
+
+      if (response)  {  // errors
+
+        callback_func ( response );
+      
+      } else  {
   
-    let taskRVAPIApp = new task_rvapiapp.TaskRVAPIApp();
-    taskRVAPIApp.id            = ncJobRegister.launch_count;
-    taskRVAPIApp.rvapi_command = post_data_obj.command;
-    taskRVAPIApp.rvapi_args    = [];
-    for (let i=0;i<files.length;i++)
-      taskRVAPIApp.rvapi_args.push ( files[i].replace(destDir,'input') );
-    utils.writeObject ( path.join(jobDir,task_t.jobDataFName),taskRVAPIApp );
+        let taskRVAPIApp = new task_rvapiapp.TaskRVAPIApp();
+        taskRVAPIApp.id            = ncJobRegister.launch_count;
+        taskRVAPIApp.rvapi_command = post_data_obj.command;
+        taskRVAPIApp.rvapi_args    = [];
+        for (let i=0;i<files.length;i++)
+          taskRVAPIApp.rvapi_args.push ( files[i].replace(destDir,'input') );
+        utils.writeObject ( path.join(jobDir,task_t.jobDataFName),taskRVAPIApp );
 
-    ncRunJob ( job_token,{
-      'sender'   : '',
-      'setup_id' : '',
-      'nc_name'  : 'client-rvapi',
-      'user_id'  : ''
-    });
+        ncRunJob ( job_token,{
+          'sender'   : '',
+          'setup_id' : '',
+          'nc_name'  : 'client-rvapi',
+          'user_id'  : ''
+        });
 
-    // signal 'ok' to client
-    callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00115] Ok',{} ) );
+        // signal 'ok' to client
+        callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00115] Ok',{} ) );
+
+      }
   
   });
 
@@ -1828,16 +1834,77 @@ function ncRunRVAPIApp ( post_data_obj,callback_func )  {
 
 // ===========================================================================
 
+
+const send_file_key = [
+  data_t.file_key.xyz,
+  data_t.file_key.mmcif,
+  data_t.file_key.mtz,
+  data_t.file_key.lib,
+  data_t.file_key.seq
+];
+
 function ncSendJobResults ( post_data_obj,callback_func )  {
+// writes out job results into exchange directory (pseudo-clipboard) from where
+// it can be picked by 3rd party applications such as Doppio
 let crTask      = post_data_obj.meta;
 let output_data = crTask.output_data.data;
+let destDir     = conf.getServerConfig().getExchangeDirectory();
+let struct      = null;
 
-  make_local_job ( args,exts,post_data_obj.base_url,jobDir,job_token,function(){
+  if ('DataRevision' in output_data)
+    struct = output_data.DataRevision[0].Structure
+
+  if (!struct)  {
+    callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00122] No data',{
+        code    : 1,
+        message : 'No data to send found'
+      })
+    );
+    return;
+  }
+
+  let meta = {
+    creator : cmd.appName() + ' ' + cmd.appVersion(),
+    date    : new Date().toISOString(),
+    task    : crTask._type,
+    user    : post_data_obj.login,
+    project : crTask.project,
+    jobId   : crTask.id,
+    data    : {
+      // hkl    : '',
+      // phases : '',
+      // xyz    : '',
+      // lib    : ''
+    }
+  };
+
+  let files = [];
+  for (let key in struct.files)
+    if (send_file_key.includes(key))  {
+      meta.data[key] = struct.files[key];
+      files.push ( path.join('output',meta.data[key]) );
+    }
+
+  if (utils.dirExists(destDir))  utils.cleanDir ( destDir );
+                           else  utils.mkPath   ( destDir );
+
+  make_local_job ( files,post_data_obj.base_url,destDir,null,
+    function(response){
   
-    // signal 'ok' to client
-    callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00122] Ok',{} ) );
+      if (response)  {  // errors
+
+        callback_func ( response );
+    
+      } else  {
+
+        utils.writeObject ( path.join(destDir,'meta.json'),meta );
+
+        // signal 'ok' to client
+        callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00122] Ok',{} ) );
+
+      }  
   
-  });
+    });
 
 }
 
