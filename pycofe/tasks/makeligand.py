@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.11.23   <--  Date of Last Modification.
+#    11.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -70,6 +70,8 @@ class MakeLigand(basic.TaskDriver):
         lig_path  = None
         code0     = None
 
+        
+
         if sourceKey == "S":
             smiles  = self.getParameter ( self.task.parameters.SMILES )
             code    = self.getParameter ( self.task.parameters.CODE ).strip().upper()
@@ -127,9 +129,12 @@ class MakeLigand(basic.TaskDriver):
                         # st[0][0][0].seqid = gemmi.SeqId('1')
                         st.write_pdb ( xyzPath )
                         cmd = []  # do not use AceDrg
+                
             else:
                 self.putMessage ( "<h3>Ligand \"" + code + "\" is not found in CCP4 Monomer Library.</h3>" )
                 code = None  # signal not to continue with making ligand
+        if self.getParameter ( self.task.parameters.NOPROT)=="True":
+                    cmd += ["-K"]
 
         summary_line = "no ligand created (errors)"
         if code:  # can continue

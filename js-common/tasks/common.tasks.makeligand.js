@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.12.23   <--  Date of Last Modification.
+ *    11.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -137,7 +137,18 @@ function TaskMakeLigand()  {
                        __coot_reserved_codes.join(', ') +
                      '<br>are reserved by Coot and cannot be used here.</i></span>',
           position : [4,4,1,5]
-        }
+        },
+    NOPROT  : {
+          type      : 'checkbox',
+          label     : 'Suppress protonation/deprotonation by AceDrg',
+          align     : 'right',
+          
+          tooltip   : 'No further protonation/deprotonation will be done by Acedrg. By default AceDRG can re-evaluate the protonation',
+          value     : false,
+          iwidth    : 350,
+          position  : [6,2,0,7],
+
+            },
 
   };
 
