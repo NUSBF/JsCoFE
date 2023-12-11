@@ -133,8 +133,13 @@ class MakeLigand(basic.TaskDriver):
             else:
                 self.putMessage ( "<h3>Ligand \"" + code + "\" is not found in CCP4 Monomer Library.</h3>" )
                 code = None  # signal not to continue with making ligand
-        if self.getParameter ( self.task.parameters.NOPROT)=="True":
+        sec2        = self.task.parameters.sec2.contains
+        if self.getParameter (sec2.NOPROT)=="True":
                     cmd += ["-K"]
+
+
+        if self.getParameter (sec2.NUMINITCONFORMERS)!="":
+            cmd += ["-j", self.getParameter(sec2.NUMINITCONFORMERS)]
 
         summary_line = "no ligand created (errors)"
         if code:  # can continue
