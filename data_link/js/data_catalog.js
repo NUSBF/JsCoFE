@@ -43,6 +43,53 @@ class dataCatalog {
     return true;
   }
 
+  removeUserCatalog(user) {
+    let file = tools.getUserCatalogFile(user);
+    try {
+      fs.rmSync(file);
+    } catch (err) {
+      log.error(`Error removing catalog file for ${user} - ${err}`);
+      return false;
+    }
+    return true;
+  }
+
+  removeUserData(user, source, id) {
+    let dir = path.join(tools.getUserDataDir(user), source, id);
+    try {
+      fs.rmSync(dir, { recursive: true });
+    } catch (err) {
+      log.error(`Error removing ${user}/${source}/${id} - ${err}`)
+      return false;
+    }
+    return true;
+  }
+
+  removeUserSource(user, source) {
+    let dir = path.join(tools.getUserDataDir(user), source);
+    try {
+      fs.rmdirSync(dir);
+    } catch (err) {
+      log.error(`Error removing ${user}/${source} - ${err}`)
+      return false;
+    }
+    return true;
+  }
+
+  removeUser(user) {
+    let dir = tools.getUserDataDir(user);
+    if (! this.removeUserCatalog(user)) {
+      return false;
+    }
+    try {
+      fs.rmdirSync(dir);
+    } catch (err) {
+      log.error(`Error removing ${user} - ${err}`);
+      return false;
+    }
+    return true;
+  }
+
   addEntry(user, source, id, fields) {
     // if there is no catalog for the user, create one
     if (!this.catalog[user]) {
@@ -101,9 +148,33 @@ class dataCatalog {
       return result;
     }
 
+    // remove the user data
+    if (! this.removeUserData(user, source, id)) {
+      return false;
+    }
+
+    // remove the user data from the catalog
     delete this.catalog[user][source][id];
-    this.saveUserCatalog(user, this.catalog[user]);
-    return true;
+
+    // if the user has no more entries for the source, remove the source entry and directory
+    if (Object.keys(this.catalog[user][source]).length == 0) {
+      delete this.catalog[user][source];
+      if (! this.removeUserSource(user, source)) {
+        return false;
+      }
+    }
+
+    // if the user has no other sources, remove the user entry and directory
+    if (Object.keys(this.catalog[user]).length == 0) {
+      delete this.catalog[user];
+      if (! this.removeUser(user)) {
+        return false;
+      }
+      return true;
+    }
+
+    // save the catalog
+    return this.saveUserCatalog(user, this.catalog[user]);
   }
 
   getStorageSize(user, source, id) {
