@@ -139,7 +139,7 @@ class MakeLigand(basic.TaskDriver):
 
 
         if self.getParameter (sec2.NUMINITCONFORMERS)!="":
-            cmd += ["-j", self.getParameter(sec2.NUMINITCONFORMERS)]
+            cmd += ["-j",self.getParameter(sec2.NUMINITCONFORMERS)]
 
         summary_line = "no ligand created (errors)"
         if code:  # can continue
