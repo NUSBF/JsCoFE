@@ -1,8 +1,0 @@
-{
-    "workbench.colorTheme": "Monokai",
-    "workbench.preferredDarkColorTheme": "Visual Studio Dark",
-    "window.autoDetectColorScheme": false,
-    "workbench.preferredLightColorTheme": "Visual Studio Light",
-    "cmake.configureOnOpen": true,
-    "python.analysis.typeCheckingMode": "off"
-}
