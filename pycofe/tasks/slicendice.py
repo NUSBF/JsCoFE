@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.11.23    <--  Date of Last Modification.
+#    11.12.23    <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -65,10 +65,9 @@ class SliceNDice(basic.TaskDriver):
         sec1        = self.task.parameters.sec1.contains
         min_nsplits = self.getParameter ( sec1.MIN_NSPLITS )
         max_nsplits = self.getParameter ( sec1.MAX_NSPLITS )
-        try: 
-            plddt_threshold = self.getParameter ( sec1.PLDDT_THRESHOLD)
-        except:
-            plddt_threshold= None
+        no_mols    =  self.getParameter ( sec1.NO_MOLS)
+        plddt_threshold = self.getParameter ( sec1.PLDDT_THRESHOLD)
+       
 
         # prepare input MTZ file by selecting original reflection data
 
@@ -98,15 +97,19 @@ class SliceNDice(basic.TaskDriver):
             "-xyzin"     ,xyz.getXYZFilePath(self.inputDir()),
             "-hklin"     ,input_mtz,
             "-seqin"     ,input_seq,
-            "-no_mols"   ,str(revision.getNofASUMonomers()),
             "-min_splits",min_nsplits,
             "-max_splits",max_nsplits,
             "-xyz_source","alphafold_bfactor",
             "-sga"       ,"all",
             "-nproc"     ,str(min(6,int(max_nsplits)))
         ]
-        if plddt_threshold!=None:
-        
+
+        if no_mols=="":
+             cmd += ["-no_mols"   ,str(revision.getNofASUMonomers())]
+        else:
+            cmd += ["-no_mols"   ,no_mols]
+
+        if int(plddt_threshold)!=0:
             cmd += ["-plddt_threshold", plddt_threshold]
 
         self.putWaitMessageLF ( "Solution in progress ..." )
