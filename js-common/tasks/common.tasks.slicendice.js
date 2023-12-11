@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    11.10.23    <--  Date of Last Modification.
+ *    11.12.23    <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -95,11 +95,22 @@ function TaskSliceNDice()  {
                             keyword  : 'plddt_threshold',
                             label    : 'pLDDT threshold',
                             tooltip  : 'Removes residues from Alphafold models below this pLDDT threshold (default: 70)',
-                            range    : ['90|90','85|85', '80|80', '75|75','70|70','65|65','60|60', '50|50', '40|40', '30|30', '20|20', '10|10', '5|5', '0|0'],
+                            range    : ['0|Off','90|90','85|85', '80|80', '75|75','70|70','65|65','60|60', '50|50', '40|40', '30|30', '20|20', '10|10', '5|5'],
                             value    : 70,
                             iwidth   : 100,
                             position : [3,0,1,1]
-                              }
+                              },
+                NO_MOLS : { 
+                            type     : 'real_',
+                            keyword  : 'NO_MOLS',
+                            label    : 'Number of search molecules',
+                            tooltip  : 'Number of search molecules in ASU',
+                            range    : [1,'*'],
+                            value    : "",
+                            iwidth   : 40,
+                            position : [4,0,1,1]
+                              },
+                
               }
             }
   };
