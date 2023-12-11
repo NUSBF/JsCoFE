@@ -1,11 +1,11 @@
 *.pyc
 __pycache__
-.vscode
+.vscode/
 .DS_Store
 *.bak
 .gitignore
-webCoot
-webCoot.bak
+webCoot/
+webCoot.bak/
 package-lock.json
-node_modules
+node_modules/
 settings.json
