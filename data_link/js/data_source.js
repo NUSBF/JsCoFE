@@ -25,14 +25,6 @@ class dataSource {
     this.jobs = {};
   }
 
-  hasCatalogId(id) {
-    if (this.catalog[id]) {
-      return true;
-    }
-
-    return false;
-  }
-
   addCatalog(files) {
     this.catalog = files;
     this.catalog_size = Object.keys(files).length;
@@ -89,17 +81,6 @@ class dataSource {
       return false;
     }
 
-    return true;
-  }
-
-  remove(user, id, catalog) {
-    let dest = tools.getDataDest(user, this.name, id);
-    try {
-      fs.rmSync(dest, { recursive: true, force: true });
-    } catch (err) {
-      log.error(`${this.name} - Unable to remove ${dest}: ${err}`);
-      return false;
-    }
     return true;
   }
 

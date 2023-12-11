@@ -73,8 +73,12 @@ class tools {
     return path.join(USER_DIR, user + '.user');
   }
 
+  static getUserDataDir(user) {
+    return path.join(DATA_DIR, user);
+  }
+
   static getUserCatalogFile(user) {
-    return path.join(DATA_DIR, user, 'catalog.json');
+    return path.join(this.getUserDataDir(user), 'catalog.json');
   }
 
   static getUserCloudRunId(user) {

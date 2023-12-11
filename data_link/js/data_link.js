@@ -287,9 +287,8 @@ class dataLink {
       return tools.errorMsg(`${source}: Can't remove as download for ${user}/${source}/${id} is in progress`);
     }
 
-    if (this.source[source].remove(user, id, this.catalog.getCatalog())) {
-        this.catalog.removeEntry(user, source, id);
-        return tools.successMsg(`${source}: Removed ${id} for ${user}`);
+    if (this.catalog.removeEntry(user, source, id)) {
+      return tools.successMsg(`${source}: Removed ${id} for ${user}`);
     }
 
     return tools.errorMsg(`${source}: Unable to remove ${id} for ${user}`, 405);
