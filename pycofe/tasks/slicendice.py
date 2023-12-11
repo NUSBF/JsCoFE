@@ -105,9 +105,9 @@ class SliceNDice(basic.TaskDriver):
         ]
 
         if no_mols=="":
-             cmd += ["-no_mols"   ,str(revision.getNofASUMonomers())]
+            cmd += ["-no_mols",str(revision.getNofASUMonomers())]
         else:
-            cmd += ["-no_mols"   ,no_mols]
+            cmd += ["-no_mols",no_mols]
 
         if int(plddt_threshold)!=0:
             cmd += ["-plddt_threshold", plddt_threshold]
