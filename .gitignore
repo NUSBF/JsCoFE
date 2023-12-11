@@ -4,6 +4,7 @@ __pycache__
 .DS_Store
 *.bak
 .gitignore
+webCoot
 webCoot.bak
 package-lock.json
 node_modules
