@@ -3,7 +3,6 @@ __pycache__
 .vscode/
 .DS_Store
 *.bak
-webCoot/
 webCoot.bak/
 package-lock.json
 node_modules/
