@@ -104,7 +104,7 @@ class dataSource {
   }
 
   dataError(user, id, catalog, error) {
-    log.error(`${this.name} - Unable to download data: ${error}`);
+    log.error(`${this.name} - Unable to acquire data: ${error}`);
     catalog.updateEntry(user, this.name, id, { status: status.failed })
   }
 
