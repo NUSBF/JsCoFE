@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.10.23   <--  Date of Last Modification.
+#    12.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -52,10 +52,8 @@ class Slice(basic.TaskDriver):
         xyz     = self.makeClass ( self.input_data.data.xyz[0] )
         sec1    = self.task.parameters.sec1.contains
         nsplits = self.getParameter ( sec1.NSPLITS )
-        try: 
-            plddt_threshold = self.getParameter ( sec1.PLDDT_THRESHOLD)
-        except:
-            plddt_threshold= None
+        plddt_threshold = self.getParameter ( sec1.PLDDT_THRESHOLD)
+
 
         self.fixBFactors ( [xyz] )
 
@@ -66,8 +64,8 @@ class Slice(basic.TaskDriver):
             "-xyz_source","alphafold_bfactor"
         ]
 
-        if plddt_threshold!=None:
-            cmd += ["-plddt_threshold", plddt_threshold]
+        if int(plddt_threshold)!=0:
+            cmd += ["-plddt_threshold",plddt_threshold]
 
         rc = self.runApp ( "slicendice",cmd,logType="Main",quitOnError=False )
 
