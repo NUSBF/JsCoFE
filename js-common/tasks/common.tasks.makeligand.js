@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.23   <--  Date of Last Modification.
+ *    12.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -70,21 +70,16 @@ function TaskMakeLigand()  {
   ];
 
   this.parameters = { // input parameters
-    SEP_LBL : {
-      type     : 'label',
-      label    : '&nbsp;',
-      position : [0,0,1,5]
-    },
-        SOURCE_SEL : {
-            type     : 'combobox',
-            label    : '<b>Use</b>',
-            tooltip  : 'Source of data for making a ligand',
-            range    : ['S|SMILES string',
-                        'M|Monomer library'
-                      ],
-            value    : 'S',
-            position : [0,0,1,5]
-          },
+    SOURCE_SEL : {
+        type     : 'combobox',
+        label    : '<b>Use</b>',
+        tooltip  : 'Source of data for making a ligand',
+        range    : ['S|SMILES string',
+                    'M|Monomer library'
+                  ],
+        value    : 'S',
+        position : [0,0,1,5]
+      },
     SMILES : {
           type      : 'string',   // empty string not allowed
           keyword   : 'smiles',
