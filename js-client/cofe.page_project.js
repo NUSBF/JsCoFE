@@ -788,12 +788,10 @@ ProjectPage.prototype.sendJobResults = function() {
   if (!crTask)  {
     new MessageBox ( 'Task not found',
       '<div style="width:300px"><h2>Task not found</h2>' +
-      '<i>This is a bug, please report</i>',
+      '<i>This is a bug, please report</i></div>',
       'msg_error' );
       return;
   }
-
-  // let self = this;
 
   let data  = {
     meta     : crTask,
@@ -802,17 +800,28 @@ ProjectPage.prototype.sendJobResults = function() {
 
   localCommand ( nc_command.sendJobResults,data,'Send job results',
     function(response){
-      alert ( 'response ' + JSON.stringify(response))
-      if (!response)
+      if ((!response) || (response.status!=nc_retcode.ok))  {
+        new MessageBox ( 'Communication failure',
+          '<div style="width:380px"><h2>Communication failure</h2>' +
+          '<i>Expected answer was not received; possible problems with ' +
+          appName() + 'server.</i></div>',
+          'msg_error' );
         return false;  // issue standard AJAX failure message
-      // if (response.status!=nc_retcode.ok)
-      //   new MessageBox ( 'Local service',
-      //     '<p>Launching local application ' + command +
-      //     ' failed due to:<p><i>' + response.message +
-      //     '</i><p>Please report this as a bug to <a href="mailto:' +
-      //     __maintainerEmail + '">' + __maintainerEmail + '</a>' );
+      }
+      if (response.data.code==1)
+        new MessageBox ( 'Send job results',
+          '<div style="width:380px"><h2>No data to send</h2>' +
+          '<i>No sendable data is found in job results.</i></div>',
+          'msg_stop' );
+      else
+        new MessageBox ( 'Send job results',
+          '<h2>Job results sent for exchange</h2>' +
+          'Job results have been sent for exchange through directory<p><i>' +
+          response.data.message + '</i><p>on your machine.',
+          'msg_ok' );
       return true;
-    });
+    }
+  );
 
 /*
 
