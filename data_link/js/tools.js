@@ -8,8 +8,8 @@ const process = require('child_process');
 const config = require('./config.js');
 const log = require('./log.js');
 
-const USER_DIR = config.get('storage.user_dir');
-const DATA_DIR = config.get('storage.data_dir');
+const USER_DIR = config.get('storage.user_dir', 'users');
+const DATA_DIR = config.get('storage.data_dir', 'data');
 
 const status = {
   completed: 'completed',
