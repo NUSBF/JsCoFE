@@ -190,15 +190,21 @@ class dataLink {
   }
 
   async dataResume () {
-    for (let user in this.catalog.getCatalog()) {
-      for (let source in this.catalog.getCatalog()[user]) {
+    const catalog = this.catalog.getCatalog();
+    for (const user in catalog) {
+      for (const source in catalog[user]) {
+        // skip if the data source is not available
+        if (! this.source[source]) {
+          continue;
+        }
+        // wait for the data source catalog to become available
         while (! this.source[source].catalog) {
           await new Promise(r => setTimeout(r, 2000));
         }
-        for (let id in this.catalog.getCatalog()[user][source]) {
-          let entry = this.catalog.getCatalog()[user][source][id];
-          if (entry.status == status.inProgress) {
-            this.source[source].acquire(user, id, this.catalog, true);
+        // check if any entries are in progress, and reacquire/continue
+        for (const [id, entry] of Object.entries(catalog[user][source])) {
+          if (entry.status === status.inProgress) {
+            this.dataAcquire(user, source, id, true);
           }
         }
       }
@@ -212,15 +218,15 @@ class dataLink {
       return result;
     }
 
-    if (this.catalog.hasEntry(user, source, id)) {
+    if (this.catalog.hasEntry(user, source, id) && ! force) {
       let st = this.catalog.getStatus(user, source, id);
       // check if in progress
-      if (st == status.inProgress) {
+      if (st === status.inProgress) {
         return tools.successMsg(`${source} - Data acquire for ${user}/${source}/${id} already in progress`);
       }
 
       // check if already acquired
-      if (! force && st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
+      if (st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
         log.info(`${source} - ${user}/${source}/${id} already exists`);
         return tools.successMsg(`${source}: ${user}/${source}/${id} already exists`);
       }
