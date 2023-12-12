@@ -243,7 +243,7 @@ class dataLink {
     return tools.errorMsg(`${source}: Error initialising download`, 500);
   }
 
-  dataStatus(user = '', source = '', id = '') {
+  dataStatus(user, source, id) {
     let catalog = this.catalog.getCatalog();
 
     // Check if user, source and id are set and valid and return correct part of local data catalog
@@ -254,26 +254,22 @@ class dataLink {
           if (catalog[source]) {
             catalog = catalog[source];
           } else {
-            catalog = null;
+            return tools.errorMsg(`User data ${user}/${source} not found`, 404);
           }
           if (id) {
             if (catalog[id]) {
               catalog = catalog[id];
             } else {
-              catalog = null;
+              return tools.errorMsg(`User data ${user}/${source}/${id} not found`, 404);
             }
           }
         }
       } else {
-        catalog = null;
+        return tools.errorMsg(`User data ${user} not found`, 404);
       }
     }
 
-    if (catalog) {
-      return catalog;
-    }
-
-    return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
+    return catalog;
   }
 
   dataRemove(user, source, id) {
