@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    09.08.22   <--  Date of Last Modification.
+ *    12.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  Initiation of Cloud projects from command line
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2021-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2023
  *
  *  =================================================================
  *
@@ -54,8 +54,8 @@
  *                                           # given, 'import' is assumed
  *   HA_TYPE     Se                          # used only for auto-ep
  *   FILE        /path/to/file.[mtz|pdb|seq|fasta|pir|cif]  # generic import
- *   HKL         /path/to/file.mtz   # the file should be used as hkl in hop-on
- *   PHASES      /path/to/file.mtz   # the file should be used as phases in hop-on
+ *   HKL         /path/to/file.mtz           # the file should be used as hkl in hop-on
+ *   PHASES      /path/to/file.mtz           # the file should be used as phases in hop-on
  *   SEQ_PROTEIN /path/to/file.[seq|fasta|pir]
  *   SEQ_DNA     /path/to/file.[seq|fasta|pir]
  *   SEQ_RNA     /path/to/file.[seq|fasta|pir]
@@ -81,13 +81,13 @@ var send_dir = require('../js-server/server.send_dir');
 var utils    = require('../js-server/server.utils');
 var cmd      = require('../js-common/common.commands');
 
-var task_t         = require('../js-common/tasks/common.tasks.template' );
-var task_import    = require('../js-common/tasks/common.tasks.import'   );
-var task_wflowafmr = require('../js-common/tasks/common.tasks.wflowafmr');
-var task_wflowamr  = require('../js-common/tasks/common.tasks.wflowamr' );
-var task_wflowaep  = require('../js-common/tasks/common.tasks.wflowaep' );
-var task_wflowdpl  = require('../js-common/tasks/common.tasks.wflowdpl' );
-var task_hopon     = require('../js-common/tasks/common.tasks.migrate'  );
+var task_t         = require('../js-common/tasks/common.tasks.template'   );
+var task_import    = require('../js-common/tasks/common.tasks.import'     );
+var task_wflowafmr = require('../js-common/tasks/common.tasks.wflowafmr'  );
+var task_wflowamr  = require('../js-common/tasks/common.tasks.wflowamr'   );
+var task_wflowaep  = require('../js-common/tasks/common.tasks.wflowaep'   );
+var task_wflowdpl  = require('../js-common/tasks/common.tasks.wflowdplmr' );
+var task_hopon     = require('../js-common/tasks/common.tasks.migrate'    );
 
 // var conf   = require('../js-server/server.configuration');
 // var cmd    = require('../js-common/common.commands');
@@ -805,7 +805,7 @@ switch (meta.task)  {
                   break;
 
   case cloudrun_code.dimple :
-                    task = new task_wflowdpl.TaskWFlowDPL();
+                    task = new task_wflowdpl.TaskWFlowDPLMR();
                     task.inputMode = task_t.input_mode.root;
                     task.file_select[0].path = path.parse(files.hkl[0]).base;
                     task.file_select[1].path = path.parse(files.xyz[0]).base;

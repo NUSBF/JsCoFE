@@ -193,7 +193,11 @@ TaskTemplate.prototype.canSendJobResults = function()  {
           ('DataModel'     in this.output_data.data) ||
           ('DataXYZ'       in this.output_data.data) ||
           ('DataLigand'    in this.output_data.data) ||
-          ('DataLibrary'   in this.output_data.data));
+          ('DataLibrary'   in this.output_data.data) ||
+          ('DataSequence'  in this.output_data.data) ||
+          ('DataHKL'       in this.output_data.data) ||
+          ('DataUnmerged'  in this.output_data.data)
+         );
 }
 
 TaskTemplate.prototype.getHelpURL = function()  {

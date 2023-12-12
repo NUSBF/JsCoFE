@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.12.23   <--  Date of Last Modification.
+ *    11.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,10 +13,31 @@
  *  **** Content :  Number Cruncher Server -- Job Manager
  *       ~~~~~~~~~
  *
- *        function ncGetJobsDir()
- *        function ncGetJobDir ( jobNo )
- *        class NCJobRegister()
- *
+ *    function ncGetJobsDir()
+ *    function ncGetJobDir ( jobNo )
+ *    class  NCJobRegister
+ *    function readNCJobRegister ( readKey )
+ *    function writeNCJobRegister()
+ *    function removeJobDelayed  ( job_token,jobStatus )
+ *    function cleanNC           ( cleanDeadJobs_bool )
+ *    function writeJobDriverFailureMessage ( code,stdout,stderr,jobDir )
+ *    function checkJobsOnTimer  ()
+ *    function startJobCheckTimer()
+ *    function stopJobCheckTimer ()
+ *    function ncSendFile        ( url,server_response,url_search )
+ *    function calcCapacity      ( onFinish_func )
+ *    function copyToSafe        ( task,jobEntry )
+ *    function ncJobFinished     ( job_token,code )
+ *    function ncRunJob          ( job_token,meta )
+ *    function ncMakeJob         ( server_request,server_response )
+ *    function _stop_job         ( jobEntry )
+ *    function ncStopJob         ( post_data_obj,callback_func )
+ *    function ncWakeZombieJobs  ( post_data_obj,callback_func )
+ *    function make_local_job    ( files,base_url,destDir,job_token,callback_func )
+ *    function ncRunRVAPIApp     ( post_data_obj,callback_func )
+ *    function ncSendJobResults  ( post_data_obj,callback_func )
+ *    function ncRunClientJob1   ( post_data_obj,callback_func,attemptNo )
+ *    function ncRunClientJob    ( post_data_obj,callback_func )
  *
  *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
@@ -1849,15 +1870,31 @@ function ncSendJobResults ( post_data_obj,callback_func )  {
 let crTask      = post_data_obj.meta;
 let output_data = crTask.output_data.data;
 let destDir     = conf.getServerConfig().getExchangeDirectory();
-let struct      = null;
+let data_obj    = [];
 
   if ('DataRevision' in output_data)
-    struct = output_data.DataRevision[0].Structure
+    data_obj.push ( output_data.DataRevision[0].Structure );
+  else if ('DataStructure' in output_data)
+    data_obj = data_obj.concat ( оutput_data.DataStructure );
+  if ('DataModel' in output_data)
+    data_obj = data_obj.concat ( output_data.DataModel );
+  if ('DataXYZ' in output_data)
+    data_obj = data_obj.concat ( output_data.DataXYZ );
+  if ('DataHKL' in output_data)
+    data_obj = data_obj.concat ( output_data.DataHKL );
+  if ('DataSequence' in output_data)
+    data_obj = data_obj.concat ( output_data.DataSequence );
+  if ('DataLigand' in output_data)
+    data_obj = data_obj.concat ( output_data.DataLigand );
 
-  if (!struct)  {
+  let ndata = 0;
+  for (let i=0;i<data_obj.length;i++)
+    if (data_obj[i])
+      ndata++;
+  if (ndata<=0)  {
     callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00122] No data',{
         code    : 1,
-        message : 'No data to send found'
+        message : 'Found no data to send'
       })
     );
     return;
@@ -1871,18 +1908,23 @@ let struct      = null;
     project : crTask.project,
     jobId   : crTask.id,
     data    : {
-      // hkl    : '',
-      // phases : '',
-      // xyz    : '',
-      // lib    : ''
+      // hkl    : [],
+      // xyz    : [],
+      // lib    : [],
+      // seq    : []
     }
   };
 
   let files = [];
-  for (let key in struct.files)
-    if (send_file_key.includes(key))  {
-      meta.data[key] = struct.files[key];
-      files.push ( path.join('output',meta.data[key]) );
+  for (let i=0;i<data_obj.length;i++)
+    for (let key in data_obj[i].files)  {
+      let fpath = path.join ( 'output',data_obj[i].files[key] )
+      if (send_file_key.includes(key) && (!files.includes(fpath)) )  {
+        if (!(key in meta.data))
+          meta.data[key] = [];
+        meta.data[key].push ( data_obj[i].files[key] );
+        files.push ( fpath );
+      }
     }
 
   if (utils.dirExists(destDir))  utils.cleanDir ( destDir );
@@ -1900,7 +1942,11 @@ let struct      = null;
         utils.writeObject ( path.join(destDir,'meta.json'),meta );
 
         // signal 'ok' to client
-        callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00122] Ok',{} ) );
+        callback_func ( new cmd.Response ( cmd.nc_retcode.ok,'[00122] Ok',{
+            code    : 0,
+            message : destDir
+          })
+        );
 
       }  
   
