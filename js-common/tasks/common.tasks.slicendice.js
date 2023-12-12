@@ -103,8 +103,8 @@ function TaskSliceNDice()  {
                 NO_MOLS : { 
                             type     : 'real_',
                             keyword  : 'NO_MOLS',
-                            label    : 'Number of search molecules',
-                            tooltip  : 'Number of search molecules in ASU',
+                            label    : 'Number of copies to search for',
+                            tooltip  : 'Number of copies of template structure to search for in ASU',
                             range    : [1,'*'],
                             value    : "",
                             iwidth   : 40,
