@@ -21,7 +21,7 @@ class dataSource {
     this.catalog_file = path.join(CATALOG_DIR, this.name + '.json');
     this.catalog = null;
     this.catalog_size = 0;
-    this.status = status.unavailable;
+    this.status = null;
     this.jobs = {};
   }
 
@@ -56,8 +56,12 @@ class dataSource {
         if (err) {
           log.error(`${this.name} - Unable to load ${this.catalog_file} - ${err}`);
         } else {
-          // TODO Error checking
-          this.addCatalog(JSON.parse(data));
+          try {
+            const obj = JSON.parse(data);
+            this.addCatalog(obj);
+          } catch (err) {
+            log.error(`${this.name} - Unable to parse ${this.catalog_file} - ${err}`);
+          }
         }
       });
     } else {
