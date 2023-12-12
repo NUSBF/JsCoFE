@@ -244,6 +244,7 @@ class dataLink {
       log.info(`${source} - Acquiring ${user}/${source}/${id} - size ${this.source[source].getEntrySize(id)}`);
       // acquire the data from the data source
       if (this.source[source].acquire(user, id, this.catalog, force)) {
+        this.dataSizeProgress(user, source, id);
         return tools.successMsg(`${source}: Acquiring ${user}/${source}/${id}`);
       }
     }
@@ -295,6 +296,14 @@ class dataLink {
     }
 
     return tools.errorMsg(`${source}: Unable to remove ${id} for ${user}`, 405);
+  }
+
+  async dataSizeProgress(user, source, id) {
+    const entry = this.catalog.getEntry(user, source, id);
+    while (entry.status === status.inProgress) {
+      this.catalog.updateEntry(user, source, id, { size: this.catalog.getStorageSize(user, source, id) });
+      await new Promise(r => setTimeout(r, 30000));
+    }
   }
 
   async dataPrune(min_free_gb) {
