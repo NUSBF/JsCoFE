@@ -6,6 +6,20 @@ const path = require('path');
 const { tools, status } = require('./tools.js');
 const log = require('./log.js');
 
+class dataEntry {
+
+  constructor(fields = {}) {
+    this.last_access = new Date().toISOString();
+    this.size = 0;
+    this.source_size = 0;
+    this.in_use = false;
+    this.status = status.inProgress;
+
+    Object.assign(this, fields);
+  }
+
+}
+
 class dataCatalog {
 
   constructor(data_dir) {
@@ -18,9 +32,10 @@ class dataCatalog {
   }
 
   loadUserCatalog(user, file) {
+    const catalog = this.getCatalog();
     try {
       let json = fs.readFileSync(file);
-      this.catalog[user] = JSON.parse(json);
+      catalog[user] = JSON.parse(json);
     } catch (err) {
       log.error(err);
       return false
@@ -28,7 +43,8 @@ class dataCatalog {
     return true;
   }
 
-  saveUserCatalog(user, catalog) {
+  saveUserCatalog(user) {
+    const catalog = this.getCatalog()[user];
     let json = JSON.stringify(catalog);
     let user_data_dir = tools.getDataDest(user);
     try {
@@ -90,70 +106,71 @@ class dataCatalog {
     return true;
   }
 
+  getEntry(user, source, id) {
+    const catalog = this.getCatalog();
+    return catalog[user][source][id];
+  }
+
   addEntry(user, source, id, fields) {
+    const catalog = this.getCatalog();
     // if there is no catalog for the user, create one
-    if (!this.catalog[user]) {
-      this.catalog[user] = {};
+    if (! catalog[user]) {
+      catalog[user] = {};
     }
 
     // if source doesn't exist for the user, create it
-    if (!this.catalog[user][source]) {
-      this.catalog[user][source] = {};
+    if (! catalog[user][source]) {
+      catalog[user][source] = {};
     }
-
-    let entry = {
-      'last_access': new Date().toISOString(),
-      'size': 0,
-      'in_use': false
-    }
-
-    Object.assign(entry, fields);
 
     // add the catalog entry
-    this.catalog[user][source][id] = entry;
-    return this.saveUserCatalog(user, this.catalog[user]);
+    catalog[user][source][id] = new dataEntry(fields);
+    return this.saveUserCatalog(user);
   }
 
   hasEntry(user, source, id) {
-    if (this.catalog[user] && this.catalog[user][source] && this.catalog[user][source][id]) {
+    const catalog = this.getCatalog();
+    if (catalog[user] && catalog[user][source] && catalog[user][source][id]) {
       return true;
     }
     return false;
   }
 
   getStatus(user, source, id) {
-    return this.catalog[user][source][id].status;
+    return this.getEntry(user, source, id).status;
   }
 
   updateEntry(user, source, id, fields) {
-    let entry = this.catalog[user][source][id];
+    const entry = this.getEntry(user, source, id);
 
     Object.assign(entry, fields);
 
     entry.last_access = new Date().toISOString();
-    return this.saveUserCatalog(user, this.catalog[user]);
+    return this.saveUserCatalog(user);
   }
 
   removeEntry(user, source, id) {
+    const catalog = this.getCatalog();
+
     // remove the user data
     if (! this.removeUserData(user, source, id)) {
       return false;
     }
 
     // remove the user data from the catalog
-    delete this.catalog[user][source][id];
+    delete catalog[user][source][id];
 
     // if the user has no more entries for the source, remove the source entry and directory
-    if (Object.keys(this.catalog[user][source]).length == 0) {
-      delete this.catalog[user][source];
+    if (Object.keys(catalog[user][source]).length == 0) {
+      delete catalog[user][source];
       if (! this.removeUserSource(user, source)) {
         return false;
       }
     }
 
     // if the user has no other sources, remove the user entry and directory
-    if (Object.keys(this.catalog[user]).length == 0) {
-      delete this.catalog[user];
+    if (Object.keys(catalog[user]).length == 0) {
+      delete catalog[user];
       if (! this.removeUser(user)) {
         return false;
       }
@@ -161,7 +178,7 @@ class dataCatalog {
     }
 
     // save the catalog
-    return this.saveUserCatalog(user, this.catalog[user]);
+    return this.saveUserCatalog(user);
   }
 
   getStorageSize(user, source, id) {
