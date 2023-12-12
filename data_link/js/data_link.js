@@ -136,8 +136,13 @@ class dataLink {
         }
       }
     }
-    let pdb_info = await rcsb.getEntry(pdb);
-    return { results: results, pdb: pdb_info };
+    let obj = {}, pdb_info;
+    obj.results = results;
+    if (config.get('other.rcsb_results', true)) {
+      pdb_info = await rcsb.getEntry(pdb);
+      obj.pdb = pdb_info;
+    }
+    return obj;
   }
 
   updateSourceCatalog(name) {
