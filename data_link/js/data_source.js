@@ -9,7 +9,7 @@ const { tools, status } = require('./tools.js');
 const config = require('./config.js');
 const log = require('./log.js');
 
-const CATALOG_DIR = config.get('storage.catalog_dir');
+const CATALOG_DIR = config.get('storage.catalog_dir', 'catalog');
 
 class dataSource {
 
@@ -118,7 +118,7 @@ class dataSource {
   }
 
   async rsyncGetCatalog(url, catalog) {
-    if (! config.get('data_sources.' + this.name + '.rsync_size')) {
+    if (! config.get('data_sources.' + this.name + '.rsync_size', true)) {
       return;
     }
     const cmd = rsync()

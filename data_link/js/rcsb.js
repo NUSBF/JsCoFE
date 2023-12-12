@@ -6,7 +6,7 @@ const config = require('./config.js');
 const log = require('./log.js');
 
 const URL_ENTRY = 'https://data.rcsb.org/rest/v1/core/entry';
-const CACHE_DIR = path.join(config.get('storage.catalog_dir'), 'rcsb');
+const CACHE_DIR = path.join(config.get('storage.catalog_dir', 'catalogs'), 'rcsb');
 
 // 28 days cache time
 const CACHE_TIME_MS = 1000 * 60 * 60 * 24 * 28;

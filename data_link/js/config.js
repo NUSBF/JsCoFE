@@ -31,10 +31,18 @@ class config {
     }
   }
 
-  get(config_path, obj = this.config) {
+  get(config_path, def) {
+    let config = this.getRecurse(config_path, this.config);
+    if (config === undefined) {
+      config = def;
+    }
+    return config;
+  }
+
+  getRecurse(config_path, obj = this.config) {
     let keys = config_path.split('.');
     if (keys.length > 1 && obj[keys[0]]) {
-      return this.get(keys.slice(1).join('.'), obj[keys[0]])
+      return this.getRecurse(keys.slice(1).join('.'), obj[keys[0]])
     }
     return obj[keys[0]];
   }

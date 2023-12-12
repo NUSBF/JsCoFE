@@ -22,7 +22,7 @@ class dataLink {
   constructor() {
     this.source = {};
     for (let name of DATA_SOURCES) {
-      if (config.get('data_sources.' + name + '.enabled')) {
+      if (config.get('data_sources.' + name + '.enabled', true)) {
         let source = new (require(path.join(SOURCES_DIR, name)));
         this.source[source.name] = source;
       }
@@ -233,7 +233,7 @@ class dataLink {
     }
 
     // prune old data if required
-    this.dataPrune(config.get('storage.data_free_gb'));
+    this.dataPrune(config.get('storage.data_free_gb', 100));
 
     // add a catalog entry for the user setting the status to in_progress
     const fields = {

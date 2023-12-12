@@ -169,8 +169,8 @@ class server {
 
 }
 
-const PORT = config.get('server.port');
-const HOST = config.get('server.host');
+const PORT = config.get('server.port', 8900);
+const HOST = config.get('server.host', 'localhost');
 
 server = new server();
 server.start(PORT, HOST);
