@@ -147,7 +147,7 @@ class dataLink {
     }
 
     if (this.source[name].status === status.inProgress) {
-      return tools.successMsg(`${name} - Catalog download already in progress`);
+      return tools.successMsg(`${name} - Catalog update already in progress`);
     }
 
     if (this.source[name].updateCatalog()) {
@@ -215,10 +215,10 @@ class dataLink {
     let st = this.catalog.getStatus(user, source, id);
     // check if in progress
     if (st == status.inProgress) {
-      return tools.successMsg(`${source} - Data download for ${user}/${source}/${id} already in progress`);
+      return tools.successMsg(`${source} - Data acquire for ${user}/${source}/${id} already in progress`);
     }
 
-    // check if already downloaded
+    // check if already acquired
     if (! force && st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
       log.info(`${source} - ${user}/${source}/${id} already exists`);
       return tools.successMsg(`${source}: ${user}/${source}/${id} already exists`);
@@ -240,7 +240,7 @@ class dataLink {
       }
     }
 
-    return tools.errorMsg(`${source}: Error initialising download`, 500);
+    return tools.errorMsg(`${source}: Error acquiring ${user}/${source}/${id}`, 500);
   }
 
   dataStatus(user, source, id) {
