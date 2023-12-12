@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.23   <--  Date of Last Modification.
+ *    12.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -57,7 +57,7 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   // console.log ( '  l=' + branch_task_list.length );
 
   this.dlg_width  = window.innerWidth;
-  this.dlg_width  = Math.min ( Math.max(740,4*this.dlg_width/9),6*this.dlg_width/8 );
+  this.dlg_width  = Math.min ( Math.max(840,4*this.dlg_width/9),6*this.dlg_width/8 );
   this.dlg_height = 6*window.innerHeight/8;
 
   this.listAtoZ     = [];
@@ -655,43 +655,80 @@ var r         = 0;  // grid row
 
 }
 
-
-TaskListDialog.prototype.makeFullList = function ( grid )  {
-var section0 = null;
-var navail   = 0;
-var row      = 0;
-
-  this.makeSection = function ( title,task_list,addToAtoZ )  {
-    var section = grid.setSection ( title,false, row++,0,1,3 );
-    var cnt = 0;
-    var r   = 0;
-    for (var n=0;n<task_list.length;n++)
-      if (task_list[n])  {
-        if (typeof task_list[n] === 'string' || task_list[n] instanceof String) {
-          section.grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
-          section.grid.setLabel ( '<hr/>',r,0,1,1 );
-          var grid1 = section.grid.setGrid ( '',r++,1,1,2 );
-          grid1.setLabel ( '&nbsp;' + task_list[n] + '&nbsp;',0,0,1,1 )
-              .setFontItalic(true).setFontBold(true).setNoWrap();
-          grid1.setLabel ( '<hr/>',0,1,1,1 );
-          grid1.setCellSize ( '10%','8px',0,0 );
-          grid1.setCellSize ( '90%','8px',0,1 );
-        } else  {
-          var btn = this.setTask ( task_list[n],section.grid,r++,true );
-          if (btn)  {
-            if (btn.dataSummary.status>0)
-              cnt++;
-            if (addToAtoZ)
-              this.listAtoZ.push ( task_list[n] );
-          }
+TaskListDialog.prototype.makeSection = function ( grid,title,task_list,addToAtoZ )  {
+let row     = grid.getNRows();
+let section = grid.setSection ( title,false, row,0,1,3 );
+let r       = 0;
+  this.task_cnt = 0;
+  for (var n=0;n<task_list.length;n++)
+    if (task_list[n])  {
+      if (typeof task_list[n] === 'string' || task_list[n] instanceof String) {
+        section.grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
+        section.grid.setLabel ( '<hr/>',r,0,1,1 );
+        let grid1 = section.grid.setGrid ( '',r++,1,1,2 );
+        grid1.setLabel ( '&nbsp;' + task_list[n] + '&nbsp;',0,0,1,1 )
+             .setFontItalic(true).setFontBold(true).setNoWrap();
+        grid1.setLabel ( '<hr/>',0,1,1,1 );
+        grid1.setCellSize ( '10%','8px',0,0 );
+        grid1.setCellSize ( '90%','8px',0,1 );
+      } else  {
+        let btn = this.setTask ( task_list[n],section.grid,r++,true );
+        if (btn)  {
+          if (btn.dataSummary.status>0)
+            this.task_cnt++;
+          if (addToAtoZ)
+            this.listAtoZ.push ( task_list[n] );
         }
       }
-    section.setTitle ( title + ' <b>(' + cnt + ')</b>' );
-    if (cnt>0)  {
-      navail++;
-      section0 = section;
     }
+  section.setTitle ( title + ' <b>(' + this.task_cnt + ')</b>' );
+  if (this.task_cnt>0)  {
+    this.navail++;
+    this.section0 = section;
   }
+  return section;
+}
+
+
+TaskListDialog.prototype.makeFullList = function ( grid )  {
+  this.section0 = null;
+  this.navail   = 0;
+  this.task_cnt = 0;
+// var row      = 0;
+
+  // this.makeSection = function ( grid,title,task_list,addToAtoZ )  {
+  //   let row     = grid.getNRows();
+  //   let section = grid.setSection ( title,false, row,0,1,3 );
+  //   let cnt = 0;
+  //   let r   = 0;
+  //   for (var n=0;n<task_list.length;n++)
+  //     if (task_list[n])  {
+  //       if (typeof task_list[n] === 'string' || task_list[n] instanceof String) {
+  //         section.grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
+  //         section.grid.setLabel ( '<hr/>',r,0,1,1 );
+  //         var grid1 = section.grid.setGrid ( '',r++,1,1,2 );
+  //         grid1.setLabel ( '&nbsp;' + task_list[n] + '&nbsp;',0,0,1,1 )
+  //             .setFontItalic(true).setFontBold(true).setNoWrap();
+  //         grid1.setLabel ( '<hr/>',0,1,1,1 );
+  //         grid1.setCellSize ( '10%','8px',0,0 );
+  //         grid1.setCellSize ( '90%','8px',0,1 );
+  //       } else  {
+  //         var btn = this.setTask ( task_list[n],section.grid,r++,true );
+  //         if (btn)  {
+  //           if (btn.dataSummary.status>0)
+  //             cnt++;
+  //           if (addToAtoZ)
+  //             this.listAtoZ.push ( task_list[n] );
+  //         }
+  //       }
+  //     }
+  //   section.setTitle ( title + ' <b>(' + cnt + ')</b>' );
+  //   if (cnt>0)  {
+  //     navail++;
+  //     section0 = section;
+  //   }
+  //   return section;
+  // }
 
 //   var ccp4go_task = new TaskCCP4go();
 //   if (this.dataBox.isEmpty())
@@ -702,11 +739,11 @@ var row      = 0;
 //       'Recommended as first attempt or in easy cases',
 //       ccp4go_task
 //     ],true);
-  var section1 = section0;
+  var section1 = this.section0;
 
   if (__user_role==role_code.developer)  {
 
-    this.makeSection ( 'Documentation tools',[
+    this.makeSection ( grid,'Documentation tools',[
       new TaskDocDev()
     ],false);
 
@@ -722,7 +759,7 @@ var row      = 0;
     //   ],true);
     // */
 
-    this.makeSection ( 'Tasks in Development',[
+    this.makeSection ( grid,'Tasks in Development',[
       // new TaskCootUtils    (),
       // ccp4go2_task,
       // new TaskStructurePrediction(),
@@ -748,13 +785,13 @@ var row      = 0;
   if (__cloud_storage)
     data_import_tasks.splice ( 3,0,new TaskCloudImport() );
 
-  this.makeSection ( 'Data Import',data_import_tasks,true );
+  this.makeSection ( grid,'Data Import',data_import_tasks,true );
 
-  this.makeSection ( 'Structure Prediction',[
+  this.makeSection ( grid,'Structure Prediction',[
     new TaskStructurePrediction()
   ],true);
 
-  this.makeSection ( 'Data Processing',[
+  this.makeSection ( grid,'Data Processing',[
     new TaskXia2        (),
     new TaskXDSGUI      (),
     new TaskDUI         (),
@@ -766,7 +803,7 @@ var row      = 0;
     new TaskFreeRFlag   ()
   ],true);
 
-  this.makeSection ( 'Asymmetric Unit and Structure Revision',[
+  this.makeSection ( grid,'Asymmetric Unit and Structure Revision',[
     new TaskASUDef            (),
     new TaskChangeSpGASU      (),
     //new TaskASUDefStruct(),
@@ -778,7 +815,10 @@ var row      = 0;
     //new TaskEditRevisionSubstr()
   ],true);
 
-  this.makeSection ( 'Automated Molecular Replacement',[
+  let secMR     = this.makeSection ( grid,'Molecular Replacement',[],false );
+  let secMR_cnt = 0;
+
+  this.makeSection ( secMR.grid,'Automated Molecular Replacement',[
     'High homology MR for ligand screening',
     new TaskDimpleMR  (),
     'Conventional Auto-MR',
@@ -793,31 +833,58 @@ var row      = 0;
     'Sequence reconstruction',
     new TaskFindMySequence (),
   ],true);
+  secMR_cnt += this.task_cnt;
 
-  this.makeSection ( 'Molecular Replacement',[
-    'MR model preparation',
+  this.makeSection ( secMR.grid,'MR Model Preparation',[
     new TaskMrParse        (),
     new TaskModelPrepXYZ   (),
     new TaskModelPrepMC    (),
     new TaskSlice          (),
-    new TaskModelPrepAlgn  (),
+    new TaskModelPrepAlgn  ()
+  ],true );
+  secMR_cnt += this.task_cnt;
+
+  this.makeSection ( secMR.grid,'MR Ensemble Preparation',[
     'MR ensemble preparation',
     new TaskEnsembler      (),
     new TaskEnsemblePrepSeq(),
     new TaskEnsemblePrepXYZ(),
-    new TaskEnsemblePrepMG (),
-    'Fundamental MR',
+    new TaskEnsemblePrepMG ()
+  ],true );
+  secMR_cnt += this.task_cnt;
+
+  this.makeSection ( secMR.grid,'MR Solvers',[
     new TaskPhaserMR       (),
     new TaskMolrep         ()
   ],true);
+  secMR_cnt += this.task_cnt;
 
-  this.makeSection ( 'Fragment-Based Molecular Replacement',[
+  // this.makeSection ( grid,'Molecular Replacement',[
+  //   'MR model preparation',
+  //   new TaskMrParse        (),
+  //   new TaskModelPrepXYZ   (),
+  //   new TaskModelPrepMC    (),
+  //   new TaskSlice          (),
+  //   new TaskModelPrepAlgn  (),
+  //   'MR ensemble preparation',
+  //   new TaskEnsembler      (),
+  //   new TaskEnsemblePrepSeq(),
+  //   new TaskEnsemblePrepXYZ(),
+  //   new TaskEnsemblePrepMG (),
+  //   'Fundamental MR',
+  //   new TaskPhaserMR       (),
+  //   new TaskMolrep         ()
+  // ],true);
+
+  this.makeSection ( secMR.grid,'Fragment-Based Molecular Replacement',[
     new TaskArcimboldoLite(),
     new TaskArcimboldoBorges(),
     new TaskArcimboldoShredder()
   ],true);
+  secMR_cnt += this.task_cnt;
+  secMR.setTitle ( 'Molecular Replacement <b>(' + secMR_cnt + ')</b>' );
 
-  this.makeSection ( 'Experimental Phasing',[
+  this.makeSection ( grid,'Experimental Phasing',[
     'Automated EP',
     new TaskCrank2     (),
     new TaskShelxAuto  (),
@@ -827,13 +894,13 @@ var row      = 0;
     new TaskPhaserEP   ()
   ],true);
 
-  this.makeSection ( 'Density Modification',[
+  this.makeSection ( grid,'Density Modification',[
     new TaskParrot  (),
     new TaskAcorn   (),
     new TaskShelxEMR()
   ],true);
 
-  this.makeSection ( 'Model Building',[
+  this.makeSection ( grid,'Model Building',[
     'Model building -- polypeptides and polynucleotides',
     new TaskModelCraft   (),
     'Model building -- polypeptides',
@@ -846,7 +913,7 @@ var row      = 0;
   ],true);
 
 
-  this.makeSection ( 'Refinement',[
+  this.makeSection ( grid,'Refinement',[
     new TaskRefmac       (),
     new TaskBuster       (),
     new TaskLorestr      (),
@@ -858,27 +925,20 @@ var row      = 0;
     new TaskPaiRef       (),
   ],true);
 
-  // if (isSafari())  {
-  //   this.makeSection ( 'Coot',[
-  //     new TaskCootMB (),
-  //     new TaskCootCE ()
-  //   ],true);
-  // } else  {
-    this.makeSection ( 'Coot',[
-      new TaskCootMB (),
-      new TaskCootCE (),
-      new TaskWebCoot()
-    ],true );
-  // }
+  this.makeSection ( grid,'Coot',[
+    new TaskCootMB (),
+    new TaskCootCE (),
+    new TaskWebCoot()
+  ],true );
 
-  this.makeSection ( 'Ligands',[
+  this.makeSection ( grid,'Ligands',[
     new TaskJLigand   (),
     new TaskMakeLigand(),
     new TaskFitLigand (),
     new TaskFitWaters ()
   ],true);
 
-  this.makeSection ( 'Validation, Analysis and Deposition',[
+  this.makeSection ( grid,'Validation, Analysis and Deposition',[
     new TaskZanuda    (),
     new TaskPrivateer (),
     new TaskPISA      (),
@@ -895,7 +955,7 @@ var row      = 0;
   if (__local_setup)
     gemmi_task = new TaskGemmi();
 
-  this.makeSection ( 'Toolbox',[
+  this.makeSection ( grid,'Toolbox',[
     'Reflection data tools',
     new TaskAuspex    (),
     new TaskSRF       (),
@@ -914,8 +974,8 @@ var row      = 0;
     new TaskSymMatch  ()
   ],true);
   __local_setup
-  if (navail==1)
-    section0.open();
+  if (this.navail==1)
+    this.section0.open();
   else if (section1)
     section1.open();
 
