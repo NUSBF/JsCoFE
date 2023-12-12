@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    02.12.23   <--  Date of Last Modification.
+ *    12.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1682,6 +1682,7 @@ IFrame.prototype.getWindow = function()  {
 
 function Section ( title_str,open_bool )  {
   Widget.call ( this,'div' );
+  this._type   = 'Section';
   this.header  = new Widget ( 'h3' );
   this.titleId = this.id + '_title';
   this.header.element.innerHTML = '<span id="' + this.titleId + '">' + title_str + '</span>';
@@ -1690,7 +1691,7 @@ function Section ( title_str,open_bool )  {
   this.addWidget ( this.body );
   this.grid = new Grid ('');
   this.body.addWidget ( this.grid );
-  var options = {
+  let options = {
       collapsible : true,
       heightStyle : "content"
   };
