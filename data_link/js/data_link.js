@@ -212,16 +212,18 @@ class dataLink {
       return result;
     }
 
-    let st = this.catalog.getStatus(user, source, id);
-    // check if in progress
-    if (st == status.inProgress) {
-      return tools.successMsg(`${source} - Data acquire for ${user}/${source}/${id} already in progress`);
-    }
+    if (this.catalog.hasEntry(user, source, id)) {
+      let st = this.catalog.getStatus(user, source, id);
+      // check if in progress
+      if (st == status.inProgress) {
+        return tools.successMsg(`${source} - Data acquire for ${user}/${source}/${id} already in progress`);
+      }
 
-    // check if already acquired
-    if (! force && st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
-      log.info(`${source} - ${user}/${source}/${id} already exists`);
-      return tools.successMsg(`${source}: ${user}/${source}/${id} already exists`);
+      // check if already acquired
+      if (! force && st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
+        log.info(`${source} - ${user}/${source}/${id} already exists`);
+        return tools.successMsg(`${source}: ${user}/${source}/${id} already exists`);
+      }
     }
 
     // prune old data if required
@@ -273,9 +275,8 @@ class dataLink {
   }
 
   dataRemove(user, source, id) {
-    let result = this.catalog.hasEntry(user, source, id);
-    if (this.catalog.hasEntry(user, source, id) !== true) {
-      return result;
+    if (! this.catalog.hasEntry(user, source, id)) {
+      return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
     }
 
     let st = this.catalog.getStatus(user, source, id);
@@ -338,6 +339,10 @@ class dataLink {
   }
 
   dataUpdate(user, source, id, obj) {
+    if (! this.catalog.hasEntry(user, source, id)) {
+      return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
+    }
+
     let valid = {};
     for (const [key, value] of Object.entries(obj)) {
       switch(key) {
