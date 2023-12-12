@@ -118,22 +118,14 @@ class dataCatalog {
     if (this.catalog[user] && this.catalog[user][source] && this.catalog[user][source][id]) {
       return true;
     }
-    return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
+    return false;
   }
 
   getStatus(user, source, id) {
-    if (this.hasEntry(user, source, id) !== true) {
-      return false;
-    }
     return this.catalog[user][source][id].status;
   }
 
   updateEntry(user, source, id, fields) {
-    let result = this.hasEntry(user, source, id);
-    if (this.hasEntry(user, source, id) !== true) {
-      return result;
-    }
-
     let entry = this.catalog[user][source][id];
 
     Object.assign(entry, fields);
@@ -143,11 +135,6 @@ class dataCatalog {
   }
 
   removeEntry(user, source, id) {
-    let result = this.hasEntry(user, source, id);
-    if (this.hasEntry(user, source, id) !== true) {
-      return result;
-    }
-
     // remove the user data
     if (! this.removeUserData(user, source, id)) {
       return false;
