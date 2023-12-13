@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.12.23   <--  Date of Last Modification.
+ *    13.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,6 +27,15 @@
 
 // -------------------------------------------------------------------------
 // TaskListDialog class
+
+
+var __task_dialog_state = {
+  sections : {},
+  tabs     : {
+    full  : {},
+    basic : {}
+  }
+};
 
 function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
 
@@ -63,7 +72,7 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   this.listAtoZ     = [];
   this.tabs_basic   = null;
   this.tabs_full    = null;
-  this.tabs_AtoZ    = null;
+  // this.tabs_AtoZ    = null;
   this.combobox     = null;
   this.combobox_lbl = null;
   var help_link     = __user_guide_base_url + 'jscofe_tasklist.html';
@@ -139,8 +148,9 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
             new HelpBox ( '',help_link,null );
           }
         },
-        { text  : 'Cancel',
+        { text  : 'Close',
           click : function() {
+            self.saveDialogState();
             if (self.combobox)
                   self.onSelect_func ( null,self.combobox.getValue() );
             else  self.onSelect_func ( null,null );
@@ -162,6 +172,10 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
         self.tabs_full.refresh();
       }
     });
+
+    // $(self.element).on( "dialogclose",function(event,ui){
+    //   self.saveDialogState();
+    // });
 
     if (self.combobox)  {
       self.combobox.addOnChangeListener ( function(value,text){
@@ -195,6 +209,36 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
 TaskListDialog.prototype = Object.create ( Widget.prototype );
 TaskListDialog.prototype.constructor = TaskListDialog;
 
+
+// ===========================================================================
+
+TaskListDialog.prototype.setDockMenu = function ( task_obj,grid,row )  {
+let self    = this;
+let in_dock = __current_page.dock.inDock ( task_obj );
+let dockMenu;
+  if (in_dock)  {
+    dockMenu = new Menu('',image_path('dock_ind_sel'));
+    dockMenu.addItem('Remove task from dock',image_path('remove'))
+            .addOnClickListener(function(){
+      __current_page.dock.removeTask ( task_obj._type );
+      __current_page.dock.show();
+      dockMenu.setMenuIcon ( image_path('dock_ind') );
+      self.setDockMenu ( task_obj,grid,row );
+    });
+  } else  {
+    dockMenu = new Menu('',image_path('dock_ind'));
+    dockMenu.addItem('Add task to dock',image_path('add'))
+            .addOnClickListener(function(){
+      __current_page.dock.addTaskClass ( task_obj );
+      __current_page.dock.show();
+      dockMenu.setMenuIcon ( image_path('dock_ind_sel') );
+      self.setDockMenu ( task_obj,grid,row );
+    });
+  }
+  grid.setWidget ( dockMenu,row,0,1,1 )
+}
+
+
 TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
 
   //if ((!__local_service) && (task_obj.nc_type=='client'))
@@ -203,7 +247,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   if ((!task_obj) || (task_obj.state==job_code.retired))
     return null;
 
-  var avail_key = task_obj.isTaskAvailable();
+  let avail_key = task_obj.isTaskAvailable();
 
   /*   example just in case:
   if (['ok','client','server-excluded','windows-excluded','client-storage']
@@ -211,17 +255,22 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
     return null;
   */
 
-  var dataSummary = this.dataBox.getDataSummary ( task_obj );
+  let dataSummary = this.dataBox.getDataSummary ( task_obj );
   if (avail_key[0]!='ok')
     dataSummary.status = -1;
 
   if ((!setall) && (dataSummary.status<=0))
     return null;
 
-  var btn = grid.setButton  ( '',image_path(task_obj.icon()),row,0,1,1 )
+  // let dock_btn = grid.setIconLabel ( '',image_path('dock_small'),row,0,1,1 )
+  //               .setSize_px ( 54,40 );
+
+  this.setDockMenu ( task_obj,grid,row );
+
+  let btn = grid.setButton  ( '',image_path(task_obj.icon()),row,1,1,1 )
                 .setSize_px ( 54,40 );
-  grid.setLabel             ( ' ', row,1,1,1 );
-  var title = task_obj.title;
+  grid.setLabel             ( '&nbsp;&nbsp;',row,2,1,1 );
+  let title = task_obj.title;
   if (this._setting_wf)
     title = title.replace ( 'Workflow: ','' );
   if (avail_key[0]!='ok')  {
@@ -231,16 +280,16 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
             '<br><span style="font-size:13px;"><i>** ' + avail_key[1] +
             '</i></span></div>';
   } else  {
-    var desc_title = task_obj.desc_title();
+    let desc_title = task_obj.desc_title();
     if (desc_title)
       title = '<div style="line-height:16px;padding-top:4px;">' + title  +
               '<br><span style="font-size:13px;color:gray;">&nbsp;&nbsp;<i>-- ' + desc_title +
               '</i></span></div>';
   }
-  var lbl = grid.setLabel   ( title,row,2,1,1 );
-  grid.setNoWrap            ( row,2 );
-  grid.setVerticalAlignment ( row,2,'middle' );
-  grid.setCellSize          ( '99%','',row,2 );
+  let lbl = grid.setLabel   ( title,row,3,1,1 );
+  grid.setNoWrap            ( row,3 );
+  grid.setVerticalAlignment ( row,3,'middle' );
+  grid.setCellSize          ( '99%','',row,3 );
   grid.setCursor('pointer');
 
   btn.dataSummary = dataSummary;
@@ -255,14 +304,15 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
     case 2 : $(btn.element).css({'border':'2px solid #03C03C'}); break; // green
   }
 
-  (function(dlg){
+  (function(dlg,ibtn){
 
     function taskClicked() {
-      if (btn.dataSummary.status>0)  {
+      if (ibtn.dataSummary.status>0)  {
         dlg.selected_task = task_obj;
         if (dlg.combobox)
               dlg.onSelect_func ( task_obj,dlg.combobox.getValue() );
         else  dlg.onSelect_func ( task_obj,null );
+        dlg.saveDialogState();
         $(dlg.element).dialog ( 'close' );
       // } else if (avail_key[0]=='private')  {
       //   new MessageBox ( 'Confidentiality conflict',avail_key[2],'msg_stop' );
@@ -270,14 +320,28 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
         new MessageBox ( 'Task is not available',avail_key[2],'msg_stop' );
       } else  {
         // insufficient data
-        new TaskDataDialog ( btn.dataSummary,task_obj,avail_key );
+        new TaskDataDialog ( ibtn.dataSummary,task_obj,avail_key );
       }
     }
 
-    btn.addOnClickListener ( taskClicked );
+    ibtn.addOnClickListener ( taskClicked );
+
+    // ibtn.addOnRightClickListener ( function(){ alert ('right click'); });
+
     lbl.addOnClickListener ( taskClicked );
 
-  }(this));
+    // var contextMenu = new Menu('',image_path('dock'),true);
+    // grid.setWidget   ( contextMenu,row,1,1,1 )
+
+    // var contextMenu = new ContextMenu ( ibtn,null );
+    // contextMenu.setZIndex ( 600 );
+    // contextMenu.addItem('Add task to dock',image_path('add'))
+    //            .addOnClickListener(function(){
+    //             console.log ( 'add' );
+    //   // alert('add')
+    // });
+
+  }(this,btn));
 
   return btn;
 
@@ -289,7 +353,7 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
   if (key==20)  {
     // initial choice for autostart
     this.element.setAttribute ( 'title','Autostart' );
-    var grid = new Grid ( '-compact' );
+    let grid = new Grid ( '-compact' );
     this.addWidget ( grid );
     this.makeAutostartList ( grid );
     this.dlg_height = 'auto';
@@ -297,46 +361,102 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
   }
 
   if (key>10)  {
+
     this.tabs_basic = new Tabs();
     this.addWidget ( this.tabs_basic );
-    var tabb_workflows = null;
-    var tabb_shortlist = null;
+    
+    let tabb_workflows = null;
+    let tabb_shortlist = null;
+
+    let active_tab = '';
+    if ('active_tab' in __task_dialog_state.tabs.basic)
+      active_tab = __task_dialog_state.tabs.basic.active_tab;
+
     if (key==21)  {
-      tabb_workflows = this.tabs_basic.addTab ( 'Workflows',true );
-      tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',false );
+      if (!active_tab)
+        active_tab = 'Workflows';
+      tabb_workflows = this.tabs_basic.addTab ( 'Workflows',
+                                                'Workflows'==active_tab );
+      tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',
+                                                'Essential tasks'==active_tab );
     } else if (key=22)  {
-      tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',true );
-      tabb_workflows = this.tabs_basic.addTab ( 'Workflows',false );
+      if (!active_tab)
+        active_tab = 'Essential tasks';
+      tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',
+                                                'Essential tasks'==active_tab );
+      tabb_workflows = this.tabs_basic.addTab ( 'Workflows',
+                                                'Workflows'==active_tab );
     } else
       tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',true );
 
     this.makeBasicList ( tabb_shortlist.grid,key );
+  
     if (tabb_workflows)
       this.makeWorkflowsList ( tabb_workflows.grid );
-
-    // if (key<30)  {
-    //   var tabb_workflows = this.tabs_basic.addTab ( 'Workflows',true );
-    //   this.makeWorkflowsList ( tabb_workflows.grid );
-    // }
-    // var tabb_shortlist = this.tabs_basic.addTab ( 'Essential tasks',(key==30) );
-    // this.makeBasicList ( tabb_shortlist.grid,key );
-
+  
   }
 
   this.tabs_full = new Tabs();
   this.addWidget ( this.tabs_full );
-  this.tabs_AtoZ = new Tabs();
-  this.addWidget ( this.tabs_AtoZ );
-  var tabf_suggested = this.tabs_full.addTab ( 'Suggested tasks',true  );
-  var tabf_fulllist  = this.tabs_full.addTab ( 'All tasks',false );
-  var tabf_workflows = this.tabs_full.addTab ( 'Workflows',false );
-  this.tabf_AtoZ     = this.tabs_full.addTab ( 'A-Z',false );
+  // this.tabs_AtoZ = new Tabs();
+  // this.addWidget ( this.tabs_AtoZ );
+
+  let active_tab = 'Suggested tasks';
+  if ('active_tab' in __task_dialog_state.tabs.full)
+    active_tab = __task_dialog_state.tabs.full.active_tab;
+
+  let tabf_suggested = this.tabs_full.addTab ( 'Suggested tasks',
+                                                     'Suggested tasks'==active_tab );
+  let tabf_fulllist  = this.tabs_full.addTab ( 'All tasks','All tasks'==active_tab );
+  let tabf_workflows = this.tabs_full.addTab ( 'Workflows','Workflows'==active_tab );
+  this.tabf_AtoZ     = this.tabs_full.addTab ( 'A-Z'      ,'A-Z'      ==active_tab );
   this._setting_wf = false;
   this.makeSuggestedList ( tabf_suggested.grid );
   this.makeFullList      ( tabf_fulllist .grid );
   this.makeWorkflowsList ( tabf_workflows.grid );
   this.makeAtoZList      ( this.tabf_AtoZ.grid );
 
+
+  // Wire up tab scrolling: trace and restore
+
+  let self = this;
+
+  if (this.tabs_full)  {
+    let tabs = this.tabs_full.tabs;
+    for (let tabName in tabs)
+      tabs[tabName].setScrollListener ( function(pos){
+        __task_dialog_state.tabs.full[tabName] = pos;
+      });
+    this.tabs_full.setTabChangeListener ( function(ui){
+      self.scrollActiveTab ( self.tabs_full,__task_dialog_state.tabs.full );
+    });
+  }
+
+  if (this.tabs_basic)  {
+    let tabs = this.tabs_basic.tabs;
+    for (let tabName in tabs)
+      tabs[tabName].setScrollListener ( function(pos){
+        __task_dialog_state.tabs.basic[tabName] = pos;
+      });
+    this.tabs_basic.setTabChangeListener ( function(ui){
+      self.scrollActiveTab ( self.tabs_basic,__task_dialog_state.tabs.basic );
+    });
+  }
+
+  window.setTimeout ( function(){
+    if (self.tabs_full)
+      self.scrollActiveTab ( self.tabs_full,__task_dialog_state.tabs.full );
+    if (self.tabs_basic)
+      self.scrollActiveTab ( self.tabs_basic,__task_dialog_state.tabs.basic );
+  },1);
+
+}
+
+
+TaskListDialog.prototype.scrollActiveTab = function ( tabs,tabsData )  {
+let tabName = tabs.getActiveTab().name;
+  if (tabName in tabsData)
+    tabs.tabs[tabName].setScrollPosition ( tabsData[tabName] );
 }
 
 
@@ -348,9 +468,9 @@ var r = 0;  // grid row
   //    .setFontItalic(true).setFontSize('85%');
 
 
-  grid.setLabel ( 'Essential Tasks',r++,0,1,3 )
+  grid.setLabel ( 'Essential Tasks',r++,0,1,4 )
       .setFontSize('140%').setFontBold(true);
-  grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
+  grid.setLabel ( '&nbsp;',r++,0,1,4 ).setFontSize('40%');
   var infotip = '<i>This list contains ' + appName() +
                 ' tasks commonly used for structure completion after running ' +
                 'structure solution workflows. For full set of tasks, switch ' +
@@ -360,8 +480,8 @@ var r = 0;  // grid row
               ' tasks commonly used for structure completion after importing ' +
               'partially solved structures. For full set of tasks, switch to ' +
               '</i>"Full task list"<i> below.</i>';
-  grid.setLabel ( infotip,r++,0,1,3 ).setFontSize('90%');
-  grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('20%');
+  grid.setLabel ( infotip ,r++,0,1,4 ).setFontSize('90%');
+  grid.setLabel ( '&nbsp;',r++,0,1,4 ).setFontSize('20%');
 
   var task_list = [
     "Refinement",
@@ -425,8 +545,8 @@ var r = 0;  // grid row
 
   for (var i=0;i<task_list.length;i++)
     if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
-      grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
-      grid.setLabel ( '<hr/>',r,0,1,1 );
+      grid.setLabel ( '&nbsp;',r++,0,1,4 ).setHeight_px(4);
+      grid.setLabel ( '<hr/>',r,0,1,2 );
       var grid1 = grid.setGrid ( '',r++,1,1,2 );
       grid1.setLabel ( '&nbsp;' + task_list[i] + '&nbsp;',0,0,1,1 )
            .setFontItalic(true).setFontBold(true).setNoWrap();
@@ -501,28 +621,28 @@ TaskListDialog.prototype.makeMyWorkflowsList = function ( grid0,r0 )  {
       task.inputMode = 'root'; // force 'at root mode' for the task
     if (this.setTask(task,grid,i,true))  {
       (function(wDesc){
-        grid.setButton  ( '',image_path('edit'),i,3, 1,1 )
+        grid.setButton  ( '',image_path('edit'),i,4, 1,1 )
             .setSize    ( '32px','32px'   )
             .setTooltip ( 'Edit workflow' )
             .setVerticalAlignment ( 'middle' )
             .addOnClickListener ( function(){
               new EditWorkflowDialog ( wDesc,function(){
-                grid0.setWidget   ( self.makeMyWorkflowsList(grid0,r0),r0,0,1,3 );
+                grid0.setWidget   ( self.makeMyWorkflowsList(grid0,r0),r0,0,1,4 );
                 self.makeAtoZList ( self.tabf_AtoZ.grid );
               });
             });
-        grid.setButton  ( '',image_path('delete'),i,4, 1,1 )
+        grid.setButton  ( '',image_path('delete'),i,5, 1,1 )
             .setSize    ( '32px','32px'     )
             .setTooltip ( 'Delete workflow' )
             .setVerticalAlignment ( 'middle' )
             .addOnClickListener ( function(){
               removeMyWorkflow ( wDesc.id );
               saveMyWorkflows();
-              grid0.setWidget   ( self.makeMyWorkflowsList(grid0,r0),r0,0,1,3 );
+              grid0.setWidget   ( self.makeMyWorkflowsList(grid0,r0),r0,0,1,4 );
               self.makeAtoZList ( self.tabf_AtoZ.grid );
             });
       }(__my_workflows[i]))
-      grid.setCellSize ( '90%','',i,2 );
+      grid.setCellSize ( '90%','',i,3 );
       let n = -1;
       for (let j=0;(j<this.listAtoZ.length) && (n<0);j++)
         if (this.listAtoZ[i].autoRunId==__my_workflows[i].id)
@@ -542,15 +662,15 @@ var r = 0;  // grid row
 
   this._setting_wf = true;
 
-  grid.setLabel ( 'Automatic Workflows',r++,0,1,3 )
+  grid.setLabel ( 'Automatic Workflows',r++,0,1,4 )
       .setFontSize('140%').setFontBold(true);
   grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
   grid.setLabel ( 'Each workflow will run a series of tasks, see details ' +
                   '<a href="javascript:launchHelpBox1(\'Automatic Workflows\',' +
                   '\'' + __user_guide_base_url +
-                  'jscofe_workflows.html\',null,10)">here</a>.',r++,0,1,3 )
+                  'jscofe_workflows.html\',null,10)">here</a>.',r++,0,1,4 )
       .setFontSize('90%').setFontItalic(true);
-  grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
+  grid.setLabel ( '&nbsp;',r++,0,1,4 ).setFontSize('40%');
 
 
 //'manuals/html-userguide/jscofe_workflows.html'
@@ -574,7 +694,7 @@ var r = 0;  // grid row
   for (let i=0;i<task_list.length;i++)  {
     if (typeof task_list[i] === 'string' || task_list[i] instanceof String) {
       grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
-      grid.setLabel ( '<hr/>',r,0,1,1 );
+      grid.setLabel ( '<hr/>',r,0,1,2 );
       let grid1 = grid.setGrid ( '',r++,1,1,2 );
       grid1.setLabel ( '&nbsp;' + task_list[i] + '&nbsp;',0,0,1,1 )
            .setFontItalic(true).setFontBold(true).setNoWrap();
@@ -593,21 +713,21 @@ var r = 0;  // grid row
 
   if (__user_role==role_code.developer)  {
 
-    grid.setLabel ( '&nbsp;',r++,0,1,3 );
-    grid.setHLine ( 2, r++,0,1,3 );
-    grid.setLabel ( 'My Workflows',r++,0,1,3 ).setFontSize('140%').setFontBold(true);
-    grid.setLabel ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
+    grid.setLabel ( '&nbsp;',r++,0,1,4 );
+    grid.setHLine ( 2, r++,0,1,4 );
+    grid.setLabel ( 'My Workflows',r++,0,1,4 ).setFontSize('140%').setFontBold(true);
+    grid.setLabel ( '&nbsp;',r++,0,1,4 ).setFontSize('40%');
 
     let r0 = r;
-    grid.setWidget ( this.makeMyWorkflowsList(grid,r0),r++,0,1,3 );
+    grid.setWidget ( this.makeMyWorkflowsList(grid,r0),r++,0,1,4 );
 
-    grid.setLabel  ( '&nbsp;',r++,0,1,3 ).setFontSize('40%');
+    grid.setLabel  ( '&nbsp;',r++,0,1,4 ).setFontSize('40%');
     let self = this;
-    grid.setButton ( 'Add workflow',image_path('add'), r++,0,1,3 )
+    grid.setButton ( 'Add workflow',image_path('add'), r++,0,1,4 )
         .setWidth_px ( 120 )
         .addOnClickListener ( function(){
           new EditWorkflowDialog ( null,function(){
-            grid.setWidget ( self.makeMyWorkflowsList(grid,r0),r0,0,1,3 );
+            grid.setWidget ( self.makeMyWorkflowsList(grid,r0),r0,0,1,4 );
           });
         })
     
@@ -655,6 +775,7 @@ var r         = 0;  // grid row
 
 }
 
+
 TaskListDialog.prototype.makeSection = function ( grid,title,task_list,addToAtoZ )  {
 let row     = grid.getNRows();
 let section = grid.setSection ( title,false, row,0,1,3 );
@@ -664,7 +785,7 @@ let r       = 0;
     if (task_list[n])  {
       if (typeof task_list[n] === 'string' || task_list[n] instanceof String) {
         section.grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
-        section.grid.setLabel ( '<hr/>',r,0,1,1 );
+        section.grid.setLabel ( '<hr/>',r,0,1,2 );
         let grid1 = section.grid.setGrid ( '',r++,1,1,2 );
         grid1.setLabel ( '&nbsp;' + task_list[n] + '&nbsp;',0,0,1,1 )
              .setFontItalic(true).setFontBold(true).setNoWrap();
@@ -686,7 +807,32 @@ let r       = 0;
     this.navail++;
     this.section0 = section;
   }
+  let secId = section.title.split('(')[0];
+  if (secId in __task_dialog_state.sections)  {
+    __task_dialog_state.sections[secId].section = section;
+    section.setOpenState ( __task_dialog_state.sections[secId].openState )
+  } else  {
+    __task_dialog_state.sections[secId] = {
+      section   : section,
+      openState : section.isOpen()
+    };
+  }
   return section;
+}
+
+
+TaskListDialog.prototype.saveDialogState = function()  {
+
+  for (let secId in __task_dialog_state.sections)
+    __task_dialog_state.sections[secId].openState = 
+                        __task_dialog_state.sections[secId].section.isOpen();
+
+  if (this.tabs_full)
+    __task_dialog_state.tabs.full.active_tab = this.tabs_full.getActiveTab().name;
+
+  if (this.tabs_basic)
+    __task_dialog_state.tabs.basic.active_tab = this.tabs_basic.getActiveTab().name;
+
 }
 
 

@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    29.06.19   <--  Date of Last Modification.
+//    13.12.23   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  Tabs module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2017-2019
+//  (C) E. Krissinel 2017-2023
 //
 //  =================================================================
 //
@@ -25,6 +25,7 @@ function Tabs()  {
 
   this.tabbar = new Widget ( 'ul' );
   this.addWidget ( this.tabbar );
+  this.tabs   = {};
   $(this.element).tabs ( {heightStyle:'fill'} );
 
 }
@@ -57,6 +58,9 @@ Tabs.prototype.addTab = function ( name,open_bool )  {
   if (open_bool)
     $(this.element).tabs ( 'option', 'active', this.child.length-2 );
 
+  tab.name = name;
+  this.tabs[name] = tab;
+
   return tab;
 
 }
@@ -73,7 +77,6 @@ Tabs.prototype.numberOfTabs = function()  {
   return this.child.length - 1;
 }
 
-
 Tabs.prototype.refresh = function()  {
   $(this.element).tabs ( 'refresh' );
 }
@@ -86,8 +89,14 @@ Tabs.prototype.getActiveTabNo = function()  {
   return $(this.element).tabs ( "option", "active" );
 }
 
+Tabs.prototype.getActiveTab = function()  {
+  // child[0] keeps this.tabbar, therefore tabNo + 1
+  return this.child [ this.getActiveTabNo()+1 ];
+}
+
+
 Tabs.prototype.setActiveTab = function ( tab )  {
-  $(this.element).tabs ( "option", "active",this.getTabNo(tab) );
+  $(this.element).tabs ( "option","active",this.getTabNo(tab) );
 }
 
 Tabs.prototype.setActiveTabByNo = function ( tabNo )  {

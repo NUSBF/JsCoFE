@@ -299,6 +299,7 @@ BasePage.prototype._setConnectionIcons = function ( colNo )  {
   this.headerPanel.setVerticalAlignment ( 0,colNo+1,'top' );
 }
 
+
 BasePage.prototype._setModeIcon = function ( colNo )  {
   var icon_path;
   var tooltip  = '<i>' + appName();
