@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.11.23   <--  Date of Last Modification.
+ *    13.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -79,10 +79,10 @@ function Dock ( parent,onClick_func,onRightClick_func,addTask_func )  {
   // this.loadDockData();
 
   /*
-  var contextMenu = new ContextMenu ( this.dock,null );
-  contextMenu.addItem('Add task to dock'  ,image_path('go')    ).addOnClickListener(function(){});
-  contextMenu.addItem('Rename',image_path('rename')).addOnClickListener(function(){});
-  this.dock.insertWidget ( contextMenu,0 );
+  // var contextMenu = new ContextMenu ( this.dock,null );
+  // contextMenu.addItem('Add task to dock'  ,image_path('go')    ).addOnClickListener(function(){});
+  // contextMenu.addItem('Rename',image_path('rename')).addOnClickListener(function(){});
+  // this.dock.insertWidget ( contextMenu,0 );
   */
 
   //this.sortable.addLast ( image_path('add'),'Add new task','add_new' );
@@ -128,6 +128,10 @@ Dock.prototype._add_button = function ( icon,title,task )  {
     });
     this.saveDockData();
   }
+}
+
+Dock.prototype.inDock = function ( task )  {
+  return this.sortable.hasItem ( task._type );
 }
 
 Dock.prototype.addTask = function ( taskData )  {

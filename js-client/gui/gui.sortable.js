@@ -1,7 +1,7 @@
 //
 //  =================================================================
 //
-//    01.01.21   <--  Date of Last Modification.
+//    13.12.23   <--  Date of Last Modification.
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //  -----------------------------------------------------------------
 //
@@ -12,7 +12,7 @@
 //  **** Content :  Sortable module
 //       ~~~~~~~~~
 //
-//  (C) E. Krissinel 2021
+//  (C) E. Krissinel 2021-2023
 //
 //  =================================================================
 //
@@ -53,11 +53,21 @@ Sortable.prototype = Object.create ( Widget.prototype );
 Sortable.prototype.constructor = Sortable;
 
 
+Sortable.prototype.hasItem = function ( itemId )  {
+let found = false;
+  for (let i=0;(i<this.child.length) && (!found);i++)
+    found = (this.child[i].itemId==itemId);
+  return found;
+}
+
 Sortable.prototype.addItem = function ( icon_uri,tooltip,itemId )  {
 
-  for (var i=0;i<this.child.length;i++)
-    if (this.child[i].itemId==itemId)
-      return null;
+  // for (var i=0;i<this.child.length;i++)
+  //   if (this.child[i].itemId==itemId)
+  //     return null;
+
+  if (this.hasItem(itemId))
+    return null;
 
   var button = new ImageButton ( icon_uri,this.cellwidth,this.cellheight );
   var item   = new Widget ( 'li' );

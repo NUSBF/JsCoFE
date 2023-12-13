@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    12.12.23   <--  Date of Last Modification.
+ *    13.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -338,6 +338,14 @@ Widget.prototype.setScrollPosition = function ( scrollPos )  {
   this.element.scrollLeft = scrollPos[0];
   this.element.scrollTop  = scrollPos[1];
 }
+
+Widget.prototype.setScrollListener = function ( callback_func )  {
+  let self = this;
+  $(this.element).scroll(function () { 
+    callback_func ( [self.element.scrollLeft,self.element.scrollTop] );
+  });
+}
+
 
 Widget.prototype.setHorizontalAlignment = function ( alignment )  {
   $(this.element).css ({"text-align":alignment});
@@ -947,7 +955,8 @@ IconLabel.prototype.constructor = IconLabel;
 
 IconLabel.prototype.setIconLabel = function ( text,icon_uri )  {
 //  this.setText ( text );
-  this.element.innerHTML = text.toString();
+  if (text)
+    this.element.innerHTML = text.toString();
   // if (text)  this.element.innerHTML = text;
   //      else  this.element.innerHTML = '&nbsp;';  // Safari 14 fix, ' ' does not work
   if (icon_uri.length>0)  {
@@ -957,8 +966,12 @@ IconLabel.prototype.setIconLabel = function ( text,icon_uri )  {
       'background-image'   :'url("' + icon_uri + '")',
       'background-repeat'  :'no-repeat',
       'background-size'    :'22px',
-      'background-position':'0.5em center'
+      'background-position':'center'
     });
+    if (text)
+      $(this.element).css({
+        'background-position':'0.5em center'
+      });
   }
 }
 
@@ -1232,7 +1245,8 @@ Button.prototype._set_button = function ( text,icon_uri )  {
        'background-size'    :'22px',
       //  'vertical-align'     : 'middle',
       //  'margin' : '0px 0px 0px 0px',
-       'background-position':'0.5em center'});
+       'background-position':'0.5em center'
+      });
   }
   $(this.element).button();
 }
@@ -1691,6 +1705,7 @@ function Section ( title_str,open_bool )  {
   this.addWidget ( this.body );
   this.grid = new Grid ('');
   this.body.addWidget ( this.grid );
+  this.title = title_str;
   let options = {
       collapsible : true,
       heightStyle : "content"
@@ -1706,12 +1721,11 @@ Section.prototype.constructor = Section;
 
 Section.prototype.isOpen = function()  {
   try {
-    var active = $( this.element ).accordion( "option", "active" );
-    if (active==0)  return true;
+    let active = $( this.element ).accordion( "option", "active" );
+    if (active===0)  return true;
   } catch(e) {}
   return false;
 }
-
 
 Section.prototype.open = function()  {
   try {
@@ -1725,7 +1739,13 @@ Section.prototype.close = function()  {
   } catch(e) {}
 }
 
+Section.prototype.setOpenState = function ( open_bool )  {
+  if (open_bool)  this.open ();
+            else  this.close();
+}
+
 Section.prototype.setTitle = function ( title_str )  {
+  this.title = title_str;
   $( '#'+this.titleId ).html ( title_str );
 }
 

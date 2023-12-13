@@ -116,7 +116,7 @@ document.onclick = function(event)  {
 // -------------------------------------------------------------------------
 // Menu class
 
-function Menu ( text,icon_uri )  {
+function Menu ( text,icon_uri,right_click=false )  {
   Widget.call ( this,'div' );
   this.addClass ( 'menu-dropdown' );
   this.disabled = false;
@@ -135,18 +135,33 @@ function Menu ( text,icon_uri )  {
     }
     this.addWidget ( this.button );
     (function(menu){
-      menu.button.addOnClickListener ( function(e){
-      //menu.addOnClickListener ( function(){
-        __close_all_menus();
-        if (!menu.disabled)  {
-          if (menu.onclick_custom_function)
-            menu.onclick_custom_function();
-          if (__onclick_ignore_counter<0)
-                __onclick_ignore_counter = 1;
-          else  __onclick_ignore_counter++;
-          menu.dropdown.toggleClass ( 'menu-show' );
-        }
-      });
+      if (right_click)  {
+        menu.button.addOnRightClickListener ( function(e){
+        //menu.addOnClickListener ( function(){
+          __close_all_menus();
+          if (!menu.disabled)  {
+            if (menu.onclick_custom_function)
+              menu.onclick_custom_function();
+            if (__onclick_ignore_counter<0)
+                  __onclick_ignore_counter = 1;
+            else  __onclick_ignore_counter++;
+            menu.dropdown.toggleClass ( 'menu-show' );
+          }
+        });
+      } else  {
+        menu.button.addOnClickListener ( function(e){
+        //menu.addOnClickListener ( function(){
+          __close_all_menus();
+          if (!menu.disabled)  {
+            if (menu.onclick_custom_function)
+              menu.onclick_custom_function();
+            if (__onclick_ignore_counter<0)
+                  __onclick_ignore_counter = 1;
+            else  __onclick_ignore_counter++;
+            menu.dropdown.toggleClass ( 'menu-show' );
+          }
+        });
+      }
     }(this));
   } else {
     this.button = null;
@@ -182,7 +197,7 @@ var mi = new MenuItem ( text,icon_uri );
 
 Menu.prototype.addSeparator = function ()  {
 var mi = new MenuItem ( '<hr/>','' );
-  this.dropdown.addWidget ( mi   );
+  this.dropdown.addWidget ( mi );
   this.n_items++;
   return mi;
 }
@@ -235,7 +250,7 @@ function ContextMenu ( widget,custom_func )  {
       if (custom_func)
         custom_func();
       if (!menu.disabled)  {
-        // __onclick_ignore_counter++;
+        __onclick_ignore_counter++;
         if (__onclick_ignore_counter<0)
           __onclick_ignore_counter = 0;
         menu.dropdown.element.classList.toggle ( 'menu-show' );

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    13.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -128,12 +128,13 @@ TaskPISA.prototype.currentVersion = function()  {
 
 TaskPISA.prototype.desc_title = function()  {
 // this appears under task title in the task list
-  return 'calculates macromolecular surfaces, interfaces and their various properties, and predicts macromolecular assemblies';
+  return 'calculates macromolecular surfaces, interfaces and assemblies';
 }
 
 TaskPISA.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['pisa', 'surface','interfaces','assembly', 'analysis','assemblies','complexes', 'toolbox','interaction'] );
+  return this.__check_keywords ( keywords,['pisa', 'surface','interfaces','assembly',
+                        'analysis','assemblies','complexes', 'toolbox','interaction'] );
 }
 
 if (!__template)  {
