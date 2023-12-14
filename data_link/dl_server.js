@@ -25,7 +25,8 @@ class server {
       code = data.code;
       delete data.code;
     }
-    res.status(code).send(tools.jsonMessage(data));
+    let json = JSON.stringify(data);
+    res.status(code).send(json);
   }
 
   middleware(req, res, next) {
