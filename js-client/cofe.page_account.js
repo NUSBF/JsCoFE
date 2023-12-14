@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.05.23   <--  Date of Last Modification.
+ *    14.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -279,7 +279,7 @@ function AccountPage ( sceneId )  {
   ];
   dgrid.setLabel ( '&nbsp;',5,0,1,3 ).setFontSize('50%');
 
-  var fprefix_cbx = spanel.setCheckbox ( 'Use project name as default file prefix',
+  let fprefix_cbx = spanel.setCheckbox ( 'Use project name as default file prefix',
                                          __user_settings.project_prefix,
                                          prfrow++,0,1,2 )
                           .setWidth    ( '300px' )
@@ -289,7 +289,18 @@ function AccountPage ( sceneId )  {
                                          'project settings'
                                        );
 
-  var gimport_cbx = spanel.setCheckbox ( 'Guide through data import',
+  let tasklst_cbx = spanel.setCheckbox ( 'Remember Task List state',
+                                         __user_settings.tasklist_state,
+                                         prfrow++,0,1,2 )
+                          .setWidth    ( '300px' )
+                          .setTooltip  ( 'If selected, repeat openings of Task '   +
+                                         'List will restore its last state (open ' +
+                                         'tabs, sections and scroll positions '    +
+                                         'preserved). Otherwise, Task List will '  +
+                                         'always open in the default state.'
+                                       );
+
+  let gimport_cbx = spanel.setCheckbox ( 'Guide through data import',
                                          __user_settings.guided_import,
                                          prfrow++,0,1,2 )
                           .setWidth    ( '300px' )
@@ -297,7 +308,7 @@ function AccountPage ( sceneId )  {
                                          'data import procedure will be given.'
                                        );
 
-  var jnotify_cbx = spanel.setCheckbox ( 'Send end-of-job notifications',
+  let jnotify_cbx = spanel.setCheckbox ( 'Send end-of-job notifications',
                                          __user_settings.notifications.end_of_job.send,
                                          prfrow++,0,1,2 )
                           .setWidth    ( '300px' )
@@ -305,7 +316,7 @@ function AccountPage ( sceneId )  {
                                          'be sent for jobs that take longer than ' +
                                          'the specified time period.'
                                        );
-  var jngrid = spanel.setGrid ( '-compact', prfrow++,0,1,2 );
+  let jngrid = spanel.setGrid ( '-compact', prfrow++,0,1,2 );
   jngrid.setLabel ( '&nbsp;&nbsp; ',0,0,1,1 ).setWidth_px ( 45 );
   jngrid.setLabel ( 'for jobs taking longer than',0,1,1,1 )
          .setFontSize ( '90%' ).setFontItalic(true);
@@ -473,6 +484,7 @@ function AccountPage ( sceneId )  {
       __user_settings.jobdlg_size    = [ defsize[0][2],defsize[1][2] ];
       __user_settings.viewers_size   = [ defsize[2][2],defsize[3][2] ];
       __user_settings.project_prefix = fprefix_cbx.getValue();
+      __user_settings.tasklist_state = tasklst_cbx.getValue();
       __user_settings.guided_import  = gimport_cbx.getValue();
       __user_settings.notifications.end_of_job.send  = jnotify_cbx.getValue();
       __user_settings.notifications.end_of_job.lapse = jntime.getValue();

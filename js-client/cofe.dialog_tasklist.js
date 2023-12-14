@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    13.12.23   <--  Date of Last Modification.
+ *    14.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -369,7 +369,8 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
     let tabb_shortlist = null;
 
     let active_tab = '';
-    if ('active_tab' in __task_dialog_state.tabs.basic)
+    if (__user_settings.tasklist_state && 
+        ('active_tab' in __task_dialog_state.tabs.basic))
       active_tab = __task_dialog_state.tabs.basic.active_tab;
 
     if (key==21)  {
@@ -402,7 +403,8 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
   // this.addWidget ( this.tabs_AtoZ );
 
   let active_tab = 'Suggested tasks';
-  if ('active_tab' in __task_dialog_state.tabs.full)
+  if (__user_settings.tasklist_state && 
+      ('active_tab' in __task_dialog_state.tabs.full))
     active_tab = __task_dialog_state.tabs.full.active_tab;
 
   let tabf_suggested = this.tabs_full.addTab ( 'Suggested tasks',
@@ -416,39 +418,41 @@ TaskListDialog.prototype.makeLayout = function ( key )  {
   this.makeWorkflowsList ( tabf_workflows.grid );
   this.makeAtoZList      ( this.tabf_AtoZ.grid );
 
+  if (__user_settings.tasklist_state)  {
+    // Wire up tab scrolling: trace and restore
 
-  // Wire up tab scrolling: trace and restore
+    let self = this;
 
-  let self = this;
-
-  if (this.tabs_full)  {
-    let tabs = this.tabs_full.tabs;
-    for (let tabName in tabs)
-      tabs[tabName].setScrollListener ( function(pos){
-        __task_dialog_state.tabs.full[tabName] = pos;
+    if (this.tabs_full)  {
+      let tabs = this.tabs_full.tabs;
+      for (let tabName in tabs)
+        tabs[tabName].setScrollListener ( function(pos){
+          __task_dialog_state.tabs.full[tabName] = pos;
+        });
+      this.tabs_full.setTabChangeListener ( function(ui){
+        self.scrollActiveTab ( self.tabs_full,__task_dialog_state.tabs.full );
       });
-    this.tabs_full.setTabChangeListener ( function(ui){
-      self.scrollActiveTab ( self.tabs_full,__task_dialog_state.tabs.full );
-    });
-  }
+    }
 
-  if (this.tabs_basic)  {
-    let tabs = this.tabs_basic.tabs;
-    for (let tabName in tabs)
-      tabs[tabName].setScrollListener ( function(pos){
-        __task_dialog_state.tabs.basic[tabName] = pos;
+    if (this.tabs_basic)  {
+      let tabs = this.tabs_basic.tabs;
+      for (let tabName in tabs)
+        tabs[tabName].setScrollListener ( function(pos){
+          __task_dialog_state.tabs.basic[tabName] = pos;
+        });
+      this.tabs_basic.setTabChangeListener ( function(ui){
+        self.scrollActiveTab ( self.tabs_basic,__task_dialog_state.tabs.basic );
       });
-    this.tabs_basic.setTabChangeListener ( function(ui){
-      self.scrollActiveTab ( self.tabs_basic,__task_dialog_state.tabs.basic );
-    });
-  }
+    }
 
-  window.setTimeout ( function(){
-    if (self.tabs_full)
-      self.scrollActiveTab ( self.tabs_full,__task_dialog_state.tabs.full );
-    if (self.tabs_basic)
-      self.scrollActiveTab ( self.tabs_basic,__task_dialog_state.tabs.basic );
-  },1);
+    window.setTimeout ( function(){
+      if (self.tabs_full)
+        self.scrollActiveTab ( self.tabs_full,__task_dialog_state.tabs.full );
+      if (self.tabs_basic)
+        self.scrollActiveTab ( self.tabs_basic,__task_dialog_state.tabs.basic );
+    },1);
+
+  }
 
 }
 
@@ -780,7 +784,9 @@ TaskListDialog.prototype.makeSection = function ( grid,title,task_list,addToAtoZ
 let row     = grid.getNRows();
 let section = grid.setSection ( title,false, row,0,1,3 );
 let r       = 0;
+
   this.task_cnt = 0;
+
   for (var n=0;n<task_list.length;n++)
     if (task_list[n])  {
       if (typeof task_list[n] === 'string' || task_list[n] instanceof String) {
@@ -802,22 +808,28 @@ let r       = 0;
         }
       }
     }
+
   section.setTitle ( title + ' <b>(' + this.task_cnt + ')</b>' );
   if (this.task_cnt>0)  {
     this.navail++;
     this.section0 = section;
   }
-  let secId = section.title.split('(')[0];
-  if (secId in __task_dialog_state.sections)  {
-    __task_dialog_state.sections[secId].section = section;
-    section.setOpenState ( __task_dialog_state.sections[secId].openState )
-  } else  {
-    __task_dialog_state.sections[secId] = {
-      section   : section,
-      openState : section.isOpen()
-    };
+  
+  if (__user_settings.tasklist_state)  {
+    let secId = section.title.split('(')[0];
+    if (secId in __task_dialog_state.sections)  {
+      __task_dialog_state.sections[secId].section = section;
+      section.setOpenState ( __task_dialog_state.sections[secId].openState )
+    } else  {
+      __task_dialog_state.sections[secId] = {
+        section   : section,
+        openState : section.isOpen()
+      };
+    }
   }
+
   return section;
+
 }
 
 

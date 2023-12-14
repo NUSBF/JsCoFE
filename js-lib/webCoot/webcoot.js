@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    27.10.23   <--  Date of Last Modification.
+ *    14.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,20 +32,24 @@ let moorhenWrapper = null;
 
 function saveBackupList()  {
 let bcopy = [];
+
   for (let i=0;i<BACKUPS.length;i++)  {
     let obj = JSON.parse ( JSON.stringify(BACKUPS[i]) );
     if (obj.data && (obj.data.length>100))
       obj.data = null;
     bcopy.push ( obj );
   }
+
+  // post received in cofe.communication.js:onWindowMessage(...)
   window.parent.postMessage ({
     'command' : 'saveFiles',
-    'files'   : [{ 'fpath'   : backupsFPath,
-                   'data'    : JSON.stringify(bcopy)
+    'files'   : [{ 'fpath' : backupsFPath,
+                   'data'  : JSON.stringify(bcopy)
                 }],
     'confirm' : false,
     'meta'    : sf_meta
   }, window.location );
+
 }
 
 // const exportToCloudCallback = (molName,molData) => {
@@ -59,7 +63,7 @@ let bcopy = [];
 // }
 
 const exitCallback = (viewSettings,molData) => {
-// moldata = [{molName: string, pdbData: string}]
+// moldata = [{molName: string, pdbData: string; mmcifData: string}]
   let edata = {
       'command' : 'saveFiles',
       'files'   : [{ 'fpath'  : 'view_settings.json',
@@ -70,11 +74,15 @@ const exitCallback = (viewSettings,molData) => {
       'meta'    : sf_meta
   };
   for (let i=0;i<molData.length;i++)
-    edata.files.push ({
-      'fpath' : molData[i].molName + '.pdb',
-      'data'  : molData[i].pdbData
-    });
+    edata.files.push ( molData[i] );
+    // edata.files.push ({
+    //   'fpath' : molData[i].molName + '.pdb',
+    //   'data'  : molData[i].pdbData
+    // });
+
+  // post received in cofe.communication.js:onWindowMessage(...)
   window.parent.postMessage ( edata,window.location );
+
 }
 
 const savePreferencesCallback = (preferences) => {
