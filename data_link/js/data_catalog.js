@@ -76,7 +76,10 @@ class dataCatalog {
       fs.rmSync(dir, { recursive: true });
     } catch (err) {
       log.error(`Error removing ${user}/${source}/${id} - ${err}`)
-      return false;
+      // fail on any error except if the data wasn't found
+      if (err.code !== 'ENOENT') {
+        return false;
+      }
     }
     return true;
   }
