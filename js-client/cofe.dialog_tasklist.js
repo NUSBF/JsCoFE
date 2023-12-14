@@ -239,7 +239,7 @@ let dockMenu;
 }
 
 
-TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
+TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  {
 
   //if ((!__local_service) && (task_obj.nc_type=='client'))
   //  return null;
@@ -273,24 +273,43 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall )  {
   let title = task_obj.title;
   if (this._setting_wf)
     title = title.replace ( 'Workflow: ','' );
+
+  let desc_indent = '&nbsp;&nbsp;';
+  if (idlen>0)  {
+    let autoRunId = '[' + task_obj.autoRunId + ']';
+    let dn = idlen - autoRunId.length + 2;
+    for (let i=0;i<dn;i++)
+      autoRunId += '&nbsp;';
+    title = '<span style="white-space:pre"><b>' + autoRunId + 
+            '</b>&#9;</span>' + title;
+    /* doubtful alignment, just in case
+    for (let i=0;i<1.75*idlen;i++)
+      desc_indent += '&nbsp;';
+    desc_indent = '<span style="white-space:pre"><b>' + desc_indent +
+                  '</b>&#9;</span>';
+    */
+  }
+
   if (avail_key[0]!='ok')  {
-    // title += '<br><span style="font-size:14px;"><i>** ' + avail_key[1] + '</i></span>';
-    // title += '<br><i><font size="-1">** ' + avail_key[1] + '</font></i>';
-    title = '<div style="line-height:16px;">' + title  +
-            '<br><span style="font-size:13px;"><i>** ' + avail_key[1] +
-            '</i></span></div>';
+    title = '<span style="line-height:16px;">' + title  +
+            '<br>' + desc_indent + '<span style="font-size:13px;"><i>** ' + 
+            avail_key[1] + '</i></span></span>';
   } else  {
     let desc_title = task_obj.desc_title();
     if (desc_title)
-      title = '<div style="line-height:16px;padding-top:4px;">' + title  +
-              '<br><span style="font-size:13px;color:gray;">&nbsp;&nbsp;<i>-- ' + desc_title +
-              '</i></span></div>';
+      title = '<span style="line-height:16px;padding-top:4px;">' + title  +
+              '<br>' + desc_indent + 
+              '<span style="font-size:13px;color:gray;"><i>-- ' + desc_title + 
+              '</i></span></span>';
   }
   let lbl = grid.setLabel   ( title,row,3,1,1 );
   grid.setNoWrap            ( row,3 );
   grid.setVerticalAlignment ( row,3,'middle' );
-  grid.setCellSize          ( '99%','',row,3 );
-  grid.setCursor('pointer');
+  grid.setCellSize          ( 'auto','',row,0 );
+  grid.setCellSize          ( 'auto','',row,1 );
+  grid.setCellSize          ( 'auto','',row,2 );
+  grid.setCellSize          ( '99%' ,'',row,3 );
+  grid.setCursor            ( 'pointer' );
 
   btn.dataSummary = dataSummary;
 
@@ -557,7 +576,7 @@ var r = 0;  // grid row
       grid1.setLabel ( '<hr/>',0,1,1,1 );
       grid1.setCellSize ( '10%','8px',0,0 );
       grid1.setCellSize ( '90%','8px',0,1 );
-    } else if (this.setTask(task_list[i],grid,r,true))
+    } else if (this.setTask(task_list[i],grid,r,true,0))
       r++;
 
   return r;  // indicates whether the tab is empty or not
@@ -593,7 +612,7 @@ var r = 0;  // grid row
   for (var i=0;i<task_list.length;i++)  {
     if (task_list[i].file_select.length>0)
       task_list[i].inputMode = 'root'; // force 'at root mode' for the task
-    if (this.setTask(task_list[i],grid,r,true))
+    if (this.setTask(task_list[i],grid,r,true,0))
     r++;
   }
 
@@ -617,13 +636,25 @@ TaskListDialog.prototype.makeMyWorkflowsList = function ( grid0,r0 )  {
 
   let self = this;
 
-  let grid = new Grid ( '-compact' );
+  let grid = new Grid ( '' );
+
+  let idlen = 0;
+  let tasks = [];
   for (let i=0;i<__my_workflows.length;i++)  {
     let task = new TaskWorkflow();
     task.setWorkflow ( __my_workflows[i] );
     if (this.dataBox.isEmpty() && (task.file_select.length>0))
       task.inputMode = 'root'; // force 'at root mode' for the task
-    if (this.setTask(task,grid,i,true))  {
+    idlen = Math.max ( idlen,task.autoRunId.length );
+    tasks.push ( task );
+  }
+
+  for (let i=0;i<__my_workflows.length;i++)  {
+    // let task = new TaskWorkflow();
+    // task.setWorkflow ( __my_workflows[i] );
+    // if (this.dataBox.isEmpty() && (task.file_select.length>0))
+    //   task.inputMode = 'root'; // force 'at root mode' for the task
+    if (this.setTask(tasks[i],grid,i,true,idlen))  {
       (function(wDesc){
         grid.setButton  ( '',image_path('edit'),i,4, 1,1 )
             .setSize    ( '32px','32px'   )
@@ -646,13 +677,15 @@ TaskListDialog.prototype.makeMyWorkflowsList = function ( grid0,r0 )  {
               self.makeAtoZList ( self.tabf_AtoZ.grid );
             });
       }(__my_workflows[i]))
-      grid.setCellSize ( '90%','',i,3 );
+      grid.setCellSize ( '99%' ,'',i,3 );
+      grid.setCellSize ( 'auto','',i,4 );
+      grid.setCellSize ( 'auto','',i,5 );
       let n = -1;
       for (let j=0;(j<this.listAtoZ.length) && (n<0);j++)
         if (this.listAtoZ[i].autoRunId==__my_workflows[i].id)
           n = i;
-      if (n>=0)  this.listAtoZ[n] = task;
-           else  this.listAtoZ.push ( task );
+      if (n>=0)  this.listAtoZ[n] = tasks[i];
+           else  this.listAtoZ.push ( tasks[i] );
     }
   }
 
@@ -708,7 +741,7 @@ var r = 0;  // grid row
     } else {
       if (this.dataBox.isEmpty() && (task_list[i].file_select.length>0))
         task_list[i].inputMode = 'root'; // force 'at root mode' for the task
-      if (this.setTask(task_list[i],grid,r,true))  {
+      if (this.setTask(task_list[i],grid,r,true,0))  {
         r++;
         this.listAtoZ.push ( task_list[i] );
       }
@@ -770,7 +803,7 @@ var r         = 0;  // grid row
     if ((i<__suggested_task_nmin) || (ctotal>=cthresh))  {
       //console.log ( 'task=' + tasks[i] + ',  ctotal=' + ctotal );
       var task = eval ( 'new ' + tasks[i] + '()' );
-      if (this.setTask(task,grid,r,false))
+      if (this.setTask(task,grid,r,false,0))
         r++;
       ctotal -= counts[i];
     }
@@ -871,7 +904,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
   //         grid1.setCellSize ( '10%','8px',0,0 );
   //         grid1.setCellSize ( '90%','8px',0,1 );
   //       } else  {
-  //         var btn = this.setTask ( task_list[n],section.grid,r++,true );
+  //         var btn = this.setTask ( task_list[n],section.grid,r++,true,0 );
   //         if (btn)  {
   //           if (btn.dataSummary.status>0)
   //             cnt++;
@@ -1164,7 +1197,7 @@ var r = 0;  // grid row
   }
 
   for (var i=0;i<this.listAtoZ.length;i++)
-    if (this.setTask(this.listAtoZ[i],panel,r,true))
+    if (this.setTask(this.listAtoZ[i],panel,r,true,0))
       r++;
 
   // console.log ( ' >>>> Ntasks=' + this.listAtoZ.length );
