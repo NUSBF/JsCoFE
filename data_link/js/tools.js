@@ -61,14 +61,6 @@ class tools {
     return path.join(this.getDataDir(), 'catalog.json')
   }
 
-  static jsonMessage(data) {
-    return JSON.stringify(data);
-  }
-
-  static jsonError(error) {
-    return this.jsonMessage({ error: true, message: error });
-  }
-
   static getUserPath(user) {
     return path.join(USER_DIR, user + '.user');
   }
