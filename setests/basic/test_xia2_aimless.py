@@ -207,6 +207,7 @@ def simbad_05(driver, waitLong):
         time.sleep(1)
     else:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+        time.sleep(1)
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Lattice and Contaminants Search with Simbad')
     time.sleep(1)
 
