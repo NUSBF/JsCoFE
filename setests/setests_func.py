@@ -10,7 +10,7 @@ import time, sys, os, re
 
 
 def clickByXpath(driver, xpath):
-    textEls = driver.find_elements_by_xpath(xpath)
+    textEls = driver.find_elements(By.XPATH, xpath)
     #print('clckByXpath - "%s", %d elements' % (xpath, len(textEls)))
     for textEl in reversed(textEls):
 #        parentEl = textEl.find_element_by_xpath("..")
