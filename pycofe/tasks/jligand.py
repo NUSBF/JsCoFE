@@ -73,6 +73,7 @@ class JLigand(basic.TaskDriver):
                     pdbfl = None
                 if libin and pdbfl:
                     cl = covlinks.CovLinks(libin, pdbfl)
+                    cl.prep_lists()
                     cl.usage(lockfl_1)
                     if os.path.isfile(lockfl_1):
                         lockfl = lockfl_1
@@ -162,8 +163,9 @@ class JLigand(basic.TaskDriver):
             have_results = False
 
             colSpan = 1
-            openState = -1
+#           openState = -1
 #           openState = 0
+            openState = 1
 
             if comp_id is None or link_id is None or not (comp_id or link_id):
                 self.stdout ( "No valid output" )
