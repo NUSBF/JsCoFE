@@ -26,10 +26,17 @@ def mrbumpAfterASU(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
-    time.sleep(1)
+    if d.cloud=="http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Auto-MR with MrBump')
+        time.sleep(1)
+    else:
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Auto-MR with MrBump')
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Auto-MR with MrBump')
     time.sleep(2)
 
     inputNMod = driver.find_element_by_xpath("//input[@title='Maximum number of search models to test']")

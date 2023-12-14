@@ -30,17 +30,13 @@ def prepareMRmodelAfterASU(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    try:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Coordinate data')
-        
-    except:
-        pass
-    
-    try:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare Single-Chain MR Model(s) from Coordinate data')
-        
-    except:
-        print ('Seems like the task was renamed')
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Model Preparation')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare Single-Chain MR Model(s) from Coordinate data')
+        time.sleep(1)
+    else:
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare Single-Chain MR Model(s) from Coordinate data')
 
     time.sleep(3)
 
@@ -84,8 +80,14 @@ def molrepAfterMRmodel(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Molecular Replacement with Molrep')
-    time.sleep(1)
+    if d.cloud=="http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Solvers')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Molrep')
+        time.sleep(1)
+    else:
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Molrep')
+        time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )

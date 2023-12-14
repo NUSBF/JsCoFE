@@ -29,7 +29,15 @@ def addSlice(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Split MR model with')
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Model Preparation')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Split MR model with')
+        time.sleep(1)
+    else:
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Split MR model with')
+
+    
     time.sleep(6)
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
     for buttonRun in buttonsRun:
@@ -147,10 +155,19 @@ def addSliceNDice(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+    if d.cloud=="http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'MR with model splitting using')
+        time.sleep(1)
+    else:
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'MR with model splitting using')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'MR with model splitting using')
+    
     time.sleep(6)
 
     tasksInputs = driver.find_elements_by_xpath("//input[contains(@title, 'Maximum number of splits to try.')]")

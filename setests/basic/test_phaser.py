@@ -30,17 +30,13 @@ def prepareMRmodelCOORD(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(3)
 
-    try:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Coordinate data')
-        
-    except:
-        pass
-    
-    try:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare Single-Chain MR')
-        
-    except:
-        print ('Seems like the task was renamed')
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Model Preparation')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare Single-Chain MR Model(s) from Coordinate data')
+        time.sleep(1)
+    else:
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare Single-Chain MR Model(s) from Coordinate data')
 
     time.sleep(3)
 
@@ -83,8 +79,14 @@ def prepareMRmodelALIGN(driver, waitShort):
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Model Preparation')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Alignment data')
+        time.sleep(1)
+    else:
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Alignment data')
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Alignment data')
     time.sleep(3)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -127,7 +129,14 @@ def prepareMRensembleMODEL(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Models')
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Ensemble Preparation')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Models')
+        time.sleep(1)
+    else:
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Models')
+
     time.sleep(3)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -170,7 +179,14 @@ def prepareMRensembleSEQ(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Sequence')
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Ensemble Preparation')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Sequence')
+        time.sleep(1)
+    else:
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Sequence')
+
     time.sleep(3)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -213,7 +229,14 @@ def prepareMRensembleCOORD(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Coordinate Data')
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Ensemble Preparation')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Coordinate Data')
+        time.sleep(1)
+    else:
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Coordinate Data')
+
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -255,7 +278,15 @@ def prepareComplexModel(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare Multi-Chain MR Model')
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Model Preparation')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare Multi-Chain MR Model')
+        time.sleep(1)
+    else:
+        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare Multi-Chain MR Model')
+
+    
     time.sleep(1)
 
     tasksInputs = driver.find_elements_by_xpath("//input[contains(@title, 'Comma-separated list of chains from template structure corresponding to given sequence; put * for all chains in the model (homomeric complexes only')]")
@@ -303,7 +334,12 @@ def startPhaser(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Molecular Replacement with Phaser')
+    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Solvers')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Phaser')
+    else:
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Phaser')
     time.sleep(1)
 
     # 2 molecules in the ASU
@@ -342,7 +378,12 @@ def startPhaser1(driver):
             sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
             time.sleep(1)
 
-            sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Molecular Replacement with Phaser')
+            if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
+                sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Solvers')
+                time.sleep(1)
+                sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Phaser')
+            else:
+                sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Phaser')
             time.sleep(1)
 
             # There are several forms - active and inactive. We need one displayed.
