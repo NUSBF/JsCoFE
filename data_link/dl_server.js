@@ -23,6 +23,7 @@ class server {
     let code = 200;
     if (data.code) {
       code = data.code;
+      delete data.code;
     }
     res.status(code).send(tools.jsonMessage(data));
   }
