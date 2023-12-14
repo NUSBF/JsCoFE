@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.04.23   <--  Date of Last Modification.
+ *    14.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -78,6 +78,7 @@ function UserData()  {
     viewers_size   : [1.40,0.97],     // width, height
     jobdlg_size    : [1.25,0.85],     // width, height
     project_prefix : false,
+    tasklist_state : true,
     guided_import  : true,
     notifications  : {
       end_of_job : { send : true, lapse : 24.0 }  // hours
@@ -132,6 +133,9 @@ var msg = '';
       end_of_job : { send : true, lapse : 24.0 }  // hours
     }
   }
+
+  if (!uData.settings.hasOwnProperty('tasklist_state'))
+    uData.settings.tasklist_state = true;
 
   if (!uData.settings.hasOwnProperty('guided_import'))
     uData.settings.guided_import = true;

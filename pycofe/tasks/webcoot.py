@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.08.23   <--  Date of Last Modification.
+#    14.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -171,6 +171,11 @@ class WebCoot(basic.TaskDriver):
                 ostruct.store_refkeys_parameters ( self.task._type,self.task.id,refkeys )
                 ostruct.copyAssociations   ( istruct )
                 ostruct.addDataAssociation ( istruct.dataId )  # ???
+
+                mmcifout = os.path.splitext(fout)[0] + ".mmcif"
+                if os.path.isfile(mmcifout):
+                    ostruct.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
+
                 ostruct.copySubtype        ( istruct )
                 ostruct.copyLigands        ( istruct )
                 ostruct.copyLabels         ( istruct )

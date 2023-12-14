@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.11.23   <--  Date of Last Modification.
+ *    14.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -2663,11 +2663,11 @@ var jobId       = data.meta.id;
 function saveJobFiles ( loginData,data )  {
 //
 //   data : {
-//     meta   : task_obj, // only 'project' and 'id' fields are used
+//     meta  : task_obj, // only 'project' and 'id' fields are used
 //     files : [
 //       { fpath : file_path_in_task_directory
 //         data  : file_content
-//        },
+//       },
 //        ...
 //     ]
 //   }

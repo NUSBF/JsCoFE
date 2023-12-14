@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.12.23   <--  Date of Last Modification.
+ *    14.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1000,7 +1000,24 @@ function onWindowMessage ( event ) {
       if ( __comm_iframes[edata.meta.fid].holder)
         __comm_iframes[edata.meta.fid].holder.close();
     } else  {
-      serverRequest ( fe_reqtype.saveJobFiles,edata,'Save job file',
+      let edata1 = {
+        meta  : edata.meta,
+        files : []
+      }
+      for (let i=0;i<edata.files.length;i++)
+        if ('fpath' in edata.files[i])  {
+          edata1.files.push ( edata.files[i] );
+        } else  {
+          edata1.files.push ({
+            fpath : edata.files[i].molName + '.pdb',
+            data  : edata.files[i].pdbData
+          });
+          edata1.files.push ({
+            fpath : edata.files[i].molName + '.mmcif',
+            data  : edata.files[i].mmcifData
+          });
+        }
+      serverRequest ( fe_reqtype.saveJobFiles,edata1,'Save job file',
         function(rdata){
           if (rdata.project_missing)  {
             new MessageBox (  'Project not found',
@@ -1017,8 +1034,14 @@ function onWindowMessage ( event ) {
           // __comm_iframes[edata.meta.fid].iframe.getWindow().postMessage ({ message: 'done!'} );
             let flist = [];
             for (let i=0;i<edata.files.length;i++)
-              if (!('report' in edata.files[i]) || edata.files[i].report)
-                flist.push ( edata.files[i].fpath );
+              if (!('report' in edata.files[i]) || edata.files[i].report)  {
+                if ('fpath' in edata.files[i])  {
+                  flist.push ( edata.files[i].fpath );
+                } else  {
+                  flist.push ( edata.files[i].molName + '.pdb'   );
+                  flist.push ( edata.files[i].molName + '.mmcif' );
+                }
+              }
             if (flist.length<=0)  {
               if ( __comm_iframes[edata.meta.fid].holder)
                 __comm_iframes[edata.meta.fid].holder.close();
