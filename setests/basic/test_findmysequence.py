@@ -15,7 +15,7 @@ import setests_func as sf
 d = sf.driverHandler()
 
 
-def simbad(driver, waitLong):
+def  simbad(driver, waitLong):
     print('Running SIMBAD')
 
     addButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/add.png')]")
@@ -102,6 +102,7 @@ def findmyseq(driver, waitLong):
         time.sleep(1)
     else:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+        time.sleep(1)
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'FindMySequence')
     time.sleep(1)
 

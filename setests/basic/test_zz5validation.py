@@ -164,6 +164,7 @@ def addSliceNDice(driver):
         time.sleep(1)
     else:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+        time.sleep(1)
         sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'MR with model splitting using')
     time.sleep(1)
 
