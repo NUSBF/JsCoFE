@@ -312,16 +312,20 @@ class dataLink {
   }
 
   async dataPrune(min_free_gb) {
-    let free_gb = tools.getFreeSpace(tools.getDataDir(), '1G');
-    if (free_gb === false) {
+    const GB = 1000000000;
+    const MB = 1000000;
+    const min_free = min_free_gb * GB;
+    const free = tools.getFreeSpace(tools.getDataDir(), '1');
+
+    if (free === false) {
       return;
     }
 
-    if (free_gb > min_free_gb) {
+    if (free >= min_free) {
       return;
     }
 
-    let size_to_free = min_free_gb - free_gb;
+    const size_to_free = min_free - free;
 
     let entries = [];
     const catalog = this.catalog.getCatalog();
@@ -349,13 +353,19 @@ class dataLink {
 
     let size = 0;
     for (const e of entries) {
-      this.dataRemove(e.user, e.source, e.id);
-      size += Math.floor(e.size / (1024 * 1024 * 1024));
-      if (size >= size_to_free) {
-        break;
+      if (this.catalog.removeEntry(e.user, e.source, e.id)) {
+        log.info(`dataPrune - removed ${e.user}/${e.source}/${e.id} - size ${e.size}`);
+        size += e.size;
+        if (size >= size_to_free) {
+          break;
+        }
       }
     }
-    log.info(`dataPrune - Removed ${size} of required ${size_to_free}`);
+    const size_mb = Math.ceil(size / MB);
+    const size_to_free_mb = Math.ceil(size_to_free / MB);
+    if (size > 0) {
+      log.info(`dataPrune - Removed ${size_mb} MB of required ${size_to_free_mb} MB`);
+    }
   }
 
   dataUpdate(user, source, id, obj) {
