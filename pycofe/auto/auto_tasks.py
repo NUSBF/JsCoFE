@@ -45,7 +45,7 @@ def store_dpl ( unm,hkl,lig,ligdesc ):
         auto_api.addContext  ( "ligdesc",ligdesc[0] )
     return
 
-def store_dplmr ( unm,hkl,xyz,lib,ligdesc,seq ):
+def store_dplmr ( unm,hkl,xyz,lib,ligdesc,lig,seq ):
     if len(unm)>0:
         auto_api.addContext  ( "unm",unm[0] )
     if len(hkl)>0:
@@ -56,6 +56,8 @@ def store_dplmr ( unm,hkl,xyz,lib,ligdesc,seq ):
         auto_api.addContext  ( "lib",lib[0] )
     if ligdesc!=None and len(ligdesc)>0:
         auto_api.addContext  ( "ligdesc",ligdesc[0] )
+    if len(lig)>0:
+        auto_api.addContext  ( "lig",lig[0] )
     if len(seq)>0:
         auto_api.addContext  ( "seq",seq )
     return

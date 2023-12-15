@@ -108,6 +108,7 @@ function TaskTemplate()  {
 
   this.file_select   = [];  // list of file select widgets
   this.input_ligands = [];  // list of ligand description widgets
+  // this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'', 'fileinpID' : 'id' }];
 
   if (dbx)  {
     this.input_data  = new dbx.DataBox(); // actual input data, represented by DataBox
@@ -1014,11 +1015,11 @@ if (!dbx)  {
     else  div.customData.file_mod = {'rename':{},'annotation':[]};
     div.upload_files = [];
 
-    var row = div.grid.getNRows();
+    let row = div.grid.getNRows();
 
-    var lbl = div.grid.setLabel ( 'Import data from',row,0,1,1 )
-                      .setTooltip ( 'Specify data location' )
-                      .setFontItalic(true).setFontBold(true).setNoWrap();
+    div.grid.setLabel ( 'Import data from',row,0,1,1 )
+            .setTooltip ( 'Specify data location' )
+            .setFontItalic(true).setFontBold(true).setNoWrap();
     div.itext = [];
     div.source_select_ddn = new Dropdown();
     div.grid.addWidget ( div.source_select_ddn,row,2,1,2 );
@@ -1035,21 +1036,27 @@ if (!dbx)  {
     div.grid.setVerticalAlignment ( row++,0,'middle' );
     div.grid.setLabel ( '&nbsp;',row++,0,1,1 ).setHeight_px(8);
 
-    for (var i=0;i<this.file_select.length;i++)  {
-      var fsdesc = this.file_select[i];
+    div.file_select_rows = {};
 
-      var lbl = div.grid.setLabel ( fsdesc.label,row,0,1,1 )
-                        .setTooltip ( fsdesc.tooltip )
-                        .setFontItalic(true).setFontBold(true).setNoWrap();
+    for (let i=0;i<this.file_select.length;i++)  {
+
+      div.file_select_rows[this.file_select[i].inputId] = row;
+
+      let fsdesc = this.file_select[i];
+
+      div.grid.setLabel ( fsdesc.label,row,0,1,1 )
+              .setTooltip ( fsdesc.tooltip )
+              .setFontItalic(true).setFontBold(true).setNoWrap();
+
       div.grid.setVerticalAlignment ( row,0,'middle' );
 
-      var fsel = div.grid.setSelectFile ( false,fsdesc.file_types,row,2,1,1 );
+      let fsel = div.grid.setSelectFile ( false,fsdesc.file_types,row,2,1,1 );
       fsel.hide();
-      var btn  = div.grid.addButton ( 'Browse',image_path('open_file'),row,2,1,1 );
-      var filename = fsdesc.path;
+      let btn  = div.grid.addButton ( 'Browse',image_path('open_file'),row,2,1,1 );
+      let filename = fsdesc.path;
       if ((this.state==job_code.new) && (this.file_system!='cloud'))
         filename = '';
-      var itext = div.grid.setInputText ( filename,row,3,1,2 )
+      let itext = div.grid.setInputText ( filename,row,3,1,2 )
                           .setWidth_px(500).setReadOnly(true).setNoWrap();
       div.itext.push ( itext );
       div.grid.setVerticalAlignment ( row,2,'middle' );
@@ -1084,8 +1091,23 @@ if (!dbx)  {
 
   TaskTemplate.prototype.makeLigandsLayout = function ( div )  {
 
-    var row  = div.grid.getNRows();
-    var row0 = row;
+    let row  = div.grid.getNRows();
+    
+    let row0 = row + 10000;
+    for (let i=0;i<this.input_ligands.length;i++)
+      if ('file' in this.input_ligands[i])
+        row0 = Math.min ( row0,div.file_select_rows[this.input_ligands[i].file] );
+    
+    if (row0<=row)  {
+      let drow = this.input_ligands.length + 2;
+      div.grid.insertRows ( row0,drow );
+      for (let i=0;i<this.input_ligands.length;i++)
+        if ('file' in this.input_ligands[i])
+          div.file_select_rows[this.input_ligands[i].file] += drow;
+      row   = row0;
+      row0 += drow;
+    } else
+      row0 = row;
 
     div.code_lbl   = div.grid.setLabel ( '<b><i>Code</i></b>',row,3,1,1 )
                         .setTooltip ( '3-letter code to identify the ligand. ' +
@@ -1101,28 +1123,32 @@ if (!dbx)  {
     div.ligands = [];
 
     function showLigands()  {
-      var n = -1;
-      for (var i=0;i<div.ligands.length;i++)
+      let n = -1;
+      for (let i=0;i<div.ligands.length;i++)
         if (div.ligands[i].selection.getValue()!='none')
           n = i;
-      var code   = false;
-      var smiles = false;
+      let code   = false;
+      let smiles = false;
       for (var i=0;i<div.ligands.length;i++)  {
-        var visible = (i<=n+1);
-        var source  = div.ligands[i].selection.getValue();
+        let visible = (i<=n+1);
+        let source  = div.ligands[i].selection.getValue();
         div.ligands[i].label    .setVisible ( visible );
         div.ligands[i].selection.setVisible ( visible );
         div.ligands[i].smiles   .setVisible ( visible && (source=='S') );
-        div.ligands[i].code     .setVisible ( visible && (source!='none')   );
-        if (source=='S')    smiles = true;
-        if (source!='none') code   = true;
+        div.ligands[i].code     .setVisible ( visible && (source=='S' || source=='M') );
+        if (source=='S')  smiles = true;
+        if (source=='S' || source=='M') code   = true;
       }
+      // if (code)    div.code_lbl  .setText ( '<b><i>Code</i></b>' );
+      //      else    div.code_lbl  .setText ( '&nbsp;' );
+      // if (smiles)  div.smiles_lbl.setText ( '<b><i>SMILES String</i></b>' );
+      //        else  div.smiles_lbl.setText ( '&nbsp;' );
       div.code_lbl  .setVisible ( code   );
       div.smiles_lbl.setVisible ( smiles );
       div.lig_lbl   .setVisible ( code || smiles );
     }
 
-    var tooltip = '[Optional] Provide description of ligand to fit in electron ' +
+    let tooltip = '[Optional] Provide description of ligand to fit in electron ' +
                   'density, using either a SMILES string or 3-letter code. ' +
                   'It is advised not to specify the 3-letter code when SMILES ' +
                   'string is used; if left empty, a vacant code will be chosen ' +
@@ -1130,23 +1156,29 @@ if (!dbx)  {
     if (this.input_ligands.length>1)
       tooltip += ' Up to ' + this.input_ligands.length + ' ligands may be specified.'
 
-    for (var i=0;i<this.input_ligands.length;i++)  {
+    for (let i=0;i<this.input_ligands.length;i++)  {
 
-      var label = 'Ligand to fit';
+      let label = 'Ligand to fit';
       if (i>0)
         label += ' #' + (i+1);
-      var lbl = div.grid.setLabel ( label,row,0,1,1 )
+      let lbl = div.grid.setLabel ( label,row,0,1,1 )
                         .setTooltip ( tooltip )
                         .setFontItalic(true).setFontBold(true).setNoWrap();
       div.grid.setVerticalAlignment ( row,0,'middle' );
 
-      var sel = new Dropdown();
-      sel.setWidth ( '120px' ).setTooltip ( tooltip );
+      let sel = new Dropdown();
+      sel.setWidth ( '120px' ); //.setTooltip ( tooltip );
       div.grid.setWidget ( sel,row,2,1,1 );
       sel.addItem ( 'None'  ,'','none',this.input_ligands[i].source=='none' );
       sel.addItem ( 'SMILES','','S'   ,this.input_ligands[i].source=='S'    );
       sel.addItem ( 'Code'  ,'','M'   ,this.input_ligands[i].source=='M'    );
-      // sel.addItem ( 'File'  ,'','F'   ,this.input_ligands[i].source=='F'    );
+      if ('file' in this.input_ligands[i])  {
+        sel.fid = this.input_ligands[i].file;
+        sel.addItem ( 'File','',sel.fid,this.input_ligands[i].source==sel.fid );
+        div.grid.setRowVisible ( div.file_select_rows[sel.fid],
+                                 this.input_ligands[i].source==sel.fid );
+      } else
+        sel.fid = null;
       sel.make();
       var code   = div.grid.setInputText ( this.input_ligands[i].code,row,3,1,1 )
                            .setWidth_px(50).setNoWrap().setMaxInputLength(3)
@@ -1164,6 +1196,8 @@ if (!dbx)  {
       sel.addOnChangeListener ( function(text,value){
         div.ligands[this.sno].code  .setVisible ( value=='S' || value=='M' );
         div.ligands[this.sno].smiles.setVisible ( value=='S' );
+        if (this.fid)
+          div.grid.setRowVisible ( div.file_select_rows[this.fid],value==this.fid );
         showLigands();
       });
       row++;
@@ -1180,13 +1214,13 @@ if (!dbx)  {
 
     showLigands();
 
-    var ncols = div.grid.getNCols();
-    for (var i=1;i<ncols;i++)  {
-      div.grid.setLabel    ( ' ',row0,i,1,1   ).setHeight_px(8);
-      div.grid.setCellSize ( 'auto','',row0,i );
-    }
-    div.grid.setLabel    ( ' ',row0,ncols,1,1  ).setHeight_px(8);
-    div.grid.setCellSize ( '95%','',row0,ncols );
+    // var ncols = div.grid.getNCols();
+    // for (var i=1;i<ncols;i++)  {
+    //   div.grid.setLabel    ( ' ',row0,i,1,1   ).setHeight_px(8);
+    //   div.grid.setCellSize ( 'auto','',row0,i );
+    // }
+    // div.grid.setLabel    ( ' ',row0,ncols,1,1  ).setHeight_px(8);
+    // div.grid.setCellSize ( '95%','',row0,ncols );
 
   }
 

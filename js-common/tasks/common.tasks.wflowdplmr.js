@@ -73,10 +73,18 @@ function TaskWFlowDPLMR()  {
       inputId     : 'fseq',   // input Id for referencing input fields
       path        : '',
       min         : 0         // minimum acceptable number of data instances
+    },{
+      file_types  : '.cif', // data type(s) and subtype(s)
+      label       : '&nbsp;', // label for input dialog
+      tooltip     : '[Optional] Path to CIF file with description of ligand ' +
+                    'to be fitted in electron density blobs',
+      inputId     : 'flig', // input Id for referencing input fields
+      path        : '',
+      min         : 0         // minimum acceptable number of data instances
     }
   ];
 
-  this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'' }];
+  this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'', 'file' : 'flig' }];
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataUnmerged':[],'DataHKL':[]}, // data type(s) and subtype(s)
