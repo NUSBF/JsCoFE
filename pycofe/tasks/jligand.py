@@ -95,6 +95,9 @@ class JLigand(basic.TaskDriver):
             args += ["-lock", lockfl]
         if libin and os.path.isfile(libin):
             args += [libin]
+#       elif lib_list:
+        else:
+            args += ["-"]
         if lib_list:
             args += lib_list
 
@@ -127,7 +130,8 @@ class JLigand(basic.TaskDriver):
         """
 
         self.file_stdin = None
-        rc = self.runApp ( "jligand",args,logType="Main",quitOnError=False )
+        jligand_cmd = "jligand.bat" if sys.platform == 'win32' else "jligand"
+        rc = self.runApp ( jligand_cmd,args,logType="Main",quitOnError=False )
 
         summary_line = " no output"
         have_results = False
