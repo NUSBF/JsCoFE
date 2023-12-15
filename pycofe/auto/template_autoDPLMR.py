@@ -33,10 +33,11 @@ from   pycofe.auto   import  auto_api
 def makeNextTask ( crTask,data ):
 
     if crTask._type=="TaskWFlowDPLMR":
-        auto_tasks.store_dpl( data["unm"], data["hkl"],data["lig"],data["ligdesc"] )
-        auto_api.addContext("xyz", data["xyz"])
-        if len(data["seq"])>0:
-            auto_api.addContext("seq", data["seq"])
+        auto_tasks.store_dplmr ( data["unm"],data["hkl"],data["xyz"],
+                                 data["lib"],data["ligdesc"],data["seq"] )
+        # auto_api.addContext("xyz", data["xyz"])
+        # if len(data["seq"])>0:
+        #     auto_api.addContext("seq", data["seq"])
         # auto_tasks.asu("asu", crTask.autoRunName)
         if len(data["unm"]) > 0:
             auto_tasks.aimless ( "aimless", crTask.autoRunName )

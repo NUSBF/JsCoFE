@@ -63,6 +63,7 @@ function TaskDimpleMR()  {
       data_type   : {'DataLibrary':[],'DataLigand':[]},  // data type(s) and subtype(s)
       label       : 'Ligand library', // label for input dialog
       inputId     : 'lib',         // input Id for referencing input fields
+      force       : 1,
       min         : 0,             // minimum acceptable number of data instances
       max         : 1              // maximum acceptable number of data instances
     }

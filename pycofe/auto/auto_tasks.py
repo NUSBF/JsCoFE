@@ -45,15 +45,19 @@ def store_dpl ( unm,hkl,lig,ligdesc ):
         auto_api.addContext  ( "ligdesc",ligdesc[0] )
     return
 
-def store_dplmr ( unm,hkl,lig,ligdesc ):
+def store_dplmr ( unm,hkl,xyz,lib,ligdesc,seq ):
     if len(unm)>0:
         auto_api.addContext  ( "unm",unm[0] )
     if len(hkl)>0:
         auto_api.addContext  ( "hkl",hkl[0] )
-    if len(lig)>0:
-        auto_api.addContext  ( "lig",lig[0] )
+    if len(xyz)>0:
+        auto_api.addContext  ( "xyz",xyz[0] )
+    if len(lib)>0:
+        auto_api.addContext  ( "lib",lib[0] )
     if ligdesc!=None and len(ligdesc)>0:
         auto_api.addContext  ( "ligdesc",ligdesc[0] )
+    if len(seq)>0:
+        auto_api.addContext  ( "seq",seq )
     return
 
 def aimless ( name,parentName ):
@@ -112,17 +116,19 @@ def dimple ( name,revision,parentName ):
 def dimplemr ( name,parentName ):
     hkl = auto_api.getContext ( "hkl" )
     xyz = auto_api.getContext ( "xyz" )
-    try:
-        lig=auto_api.getContext ( "lig" )
-    except:
-        pass
+    lib = auto_api.getContext ( "lib" )
+    # try:
+    #     lib = auto_api.getContext ( "lib" )
+    # except:
+    #     lib = None
+    #     pass
 
     if hkl and xyz:
         auto_api.addTask     ( name,"TaskDimpleMR",parentName )
         auto_api.addTaskData ( name, "hkl", hkl)
         auto_api.addTaskData ( name, "xyz", xyz)
-        if lig:
-            auto_api.addTaskData ( name, "lig", lig)
+        if lib:
+            auto_api.addTaskData ( name, "lib", lib)
    
     return
 
