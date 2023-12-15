@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    09.11.23   <--  Date of Last Modification.
+#    15.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Maria Fando, Eugene Krissinel,Andrey Lebedev  2023
+#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev  2023
 #
 # ============================================================================
 #
@@ -38,11 +36,11 @@ from   pycofe.auto   import auto
 
 # simulates ligand data structure that is normally coming from JS part
 
-class ligandCarrier():
-    def __init__(self, source, smiles, code):
-        self.source = source
-        self.smiles = smiles
-        self.code = code
+# class ligandCarrier():
+#     def __init__(self, source, smiles, code):
+#         self.source = source
+#         self.smiles = smiles
+#         self.code = code
 
 class WFlowDPLMR(import_task.Import):
 
@@ -51,6 +49,49 @@ class WFlowDPLMR(import_task.Import):
 
     # ------------------------------------------------------------------------
 
+    def importData(self):
+        #  works with uploaded data from the top of the project
+
+        library_files = []
+        for i in range(len(self.task.file_select)):
+            if self.task.file_select[i].inputId=="flibrary":
+                # this gives only file name but not the full path on client
+                if self.task.file_select[i].path:
+                    library_files = self.task.file_select[i].path
+
+        super ( WFlowDPLMR,self ).import_all(ligand_libraries=library_files)
+
+        # -------------------------------------------------------------------
+        # fetch data for Custom Workflow pipeline
+
+        if "DataUnmerged" in self.outputDataBox.data:
+            self.unm = self.outputDataBox.data["DataUnmerged"]
+
+        if "DataHKL" in self.outputDataBox.data:
+            self.hkl = self.outputDataBox.data["DataHKL"]
+
+        if "DataXYZ" in self.outputDataBox.data:
+            self.xyz = self.outputDataBox.data["DataXYZ"]
+
+        if "DataLibrary" in self.outputDataBox.data:
+            self.lib = self.outputDataBox.data["DataLibrary"]
+
+        if "DataSequence" in self.outputDataBox.data:
+            self.seq = self.outputDataBox.data["DataSequence"]
+
+        # if "DataLigand" in self.outputDataBox.data:
+        #     self.lig = self.outputDataBox.data["DataLigand"]
+
+        self.ligdesc = []
+        ldesc = getattr ( self.task,"input_ligands",[] )
+        for i in range(len(ldesc)):
+            if ldesc[i].source!='none':
+                self.ligdesc.append ( ldesc[i] )
+
+        return
+
+
+    """
     def importData(self):
         #  works with uploaded data from the top of the project
 
@@ -90,6 +131,8 @@ class WFlowDPLMR(import_task.Import):
 
         return
 
+    """
+
 
     def prepareData(self):
         #  works with imported data from the project
@@ -99,15 +142,17 @@ class WFlowDPLMR(import_task.Import):
         else:
             self.hkl = self.input_data.data.hkldata
 
-        if hasattr(self.input_data.data,"seq"):  # optional data parameter
-            self.seq = self.input_data.data.seq
-
-
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
             self.xyz = self.input_data.data.xyz
 
-        if hasattr(self.input_data.data,"ligand"):  # optional data parameter
-            self.lig = self.input_data.data.ligand
+        if hasattr(self.input_data.data,"library"):  # optional data parameter
+            self.lib = self.input_data.data.library
+
+        if hasattr(self.input_data.data,"seq"):  # optional data parameter
+            self.seq = self.input_data.data.seq
+
+        # if hasattr(self.input_data.data,"ligand"):  # optional data parameter
+        #     self.lig = self.input_data.data.ligand
 
         return
 
@@ -122,20 +167,20 @@ class WFlowDPLMR(import_task.Import):
         self.xyz = []  # coordinates (model/apo)
         self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
-        self.lib = None
+        self.lib = []
 
 
         summary_line = ""
         ilist = []
 
         # ligand library CIF has been provided
-        if self.lib:
-            ligand = self.makeClass(self.lib)
-            self.lig.append(ligand)
+        # if self.lib:
+        #     ligand = self.makeClass(self.lib)
+        #     self.lig.append(ligand)
 
-        fileDir = self.outputDir()
+        # fileDir = self.outputDir()
         if hasattr(self.input_data.data,"hkldata"):
-            fileDir = self.inputDir()
+            # fileDir = self.inputDir()
             self.prepareData()  #  pre-imported data provided
             summary_line = "received "
         else:
@@ -147,10 +192,12 @@ class WFlowDPLMR(import_task.Import):
             ilist.append ( "Unmerged" )
         if len(self.hkl)>0:
             ilist.append ( "HKL (" + str(len(self.hkl)) + ")" )
-        if len(self.seq)>0:
-            ilist.append ( "Sequences (" + str(len(self.seq)) + ")" )
         if len(self.xyz)>0:
             ilist.append ( "XYZ (" + str(len(self.xyz)) + ")" )
+        if len(self.lib)>0:
+            ilist.append ( "Library (" + str(len(self.lib)) + ")" )
+        if len(self.seq)>0:
+            ilist.append ( "Sequences (" + str(len(self.seq)) + ")" )
         nligs = len(self.lig) + len(self.ligdesc)
         if nligs>0:
             ilist.append ( "Ligands (" + str(nligs) + ")" )
@@ -167,12 +214,13 @@ class WFlowDPLMR(import_task.Import):
         self.task.autoRunName = "_root"
         self.have_results = False
         if auto.makeNextTask ( self, {
-            "unm": self.unm,
-             "hkl": self.hkl,
-             "seq": self.seq,
-             "xyz": self.xyz,
-             "lig": self.lig,
-             "ligdesc": self.ligdesc,
+             "unm"     : self.unm,
+             "hkl"     : self.hkl,
+             "seq"     : self.seq,
+             "xyz"     : self.xyz,
+             "lig"     : self.lig,
+             "lib"     : self.lib,
+             "ligdesc" : self.ligdesc,
            }):
             summary_line += "workflow started"
             self.have_results = True

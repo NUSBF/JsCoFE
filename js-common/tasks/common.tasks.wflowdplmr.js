@@ -40,33 +40,41 @@ function TaskWFlowDPLMR()  {
   this.title       = 'Workflow: Dimple Molecular Replacement';
   this.autoRunId   = 'auto-DPLMR';
 
-  //this.ha_type = '';
-
   this.file_select = [{
-    file_types  : '.mtz,.sca', // data type(s) and subtype(s)
-    label       : 'Reflection Data', // label for input dialog
-    tooltip     : '[Mandatory] Provide a path to MTZ file with merged or unmerged ' +
-                  'reflections.',
-    inputId     : 'fhkldata',  // input Id for referencing input fields
-    annotate    : false,
-    path        : '',
-    min         : 1           // minimum acceptable number of data instances
-  },{
-    file_types  : '.pdb,.mmcif', // data type(s) and subtype(s)
-    label       : 'Template structure', // label for input dialog
-    tooltip     : '[Mandatory] Provide a path to PDB file with corresponding structure ',
-    inputId     : 'fpdb',   // input Id for referencing input fields
-    path        : '',
-    min         : 1         // minimum acceptable number of data instances
-  },{
-    file_types  : '.cif', // data type(s) and subtype(s)
-    label       : 'Ligand CIF definition', // label for input dialog
-    tooltip     : '[Optional] Provide a path to CIF file with your ligand definition ',
-    inputId     : 'fcif',   // input Id for referencing input fields
-    path        : '',
-    min         : 0         // minimum acceptable number of data instances
-  }
-];
+      file_types  : '.mtz,.sca', // data type(s) and subtype(s)
+      label       : 'Reflection Data', // label for input dialog
+      tooltip     : '[Mandatory] Path to MTZ file with merged or unmerged ' +
+                    'reflections.',
+      inputId     : 'fhkldata',  // input Id for referencing input fields
+      annotate    : false,
+      path        : '',
+      min         : 1           // minimum acceptable number of data instances
+    },{
+      file_types  : '.pdb,.mmcif', // data type(s) and subtype(s)
+      label       : 'Template structure', // label for input dialog
+      tooltip     : '[Mandatory] Path to PDB file with template structure',
+      inputId     : 'fxyz',   // input Id for referencing input fields
+      path        : '',
+      min         : 1         // minimum acceptable number of data instances
+    },{
+      file_types  : '.cif,.lib', // data type(s) and subtype(s)
+      label       : 'Ligand library', // label for input dialog
+      tooltip     : '[Optional] Path to CIF file with restraints for ' +
+                    'non-standard ligand found in Template structure, if any',
+      inputId     : 'flibrary', // input Id for referencing input fields
+      path        : '',
+      min         : 0         // minimum acceptable number of data instances
+    },{
+      file_types  : '.pir,.seq,.fasta', // data type(s) and subtype(s)
+      label       : 'Sequence(s)', // label for input dialog
+      tooltip     : '[Optional] Path to sequence file in .fasta or .pir ' +
+                    'format. For importing several sequences put them all in a ' +
+                    'single file.',
+      inputId     : 'fseq',   // input Id for referencing input fields
+      path        : '',
+      min         : 0         // minimum acceptable number of data instances
+    }
+  ];
 
   this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'' }];
 
@@ -77,33 +85,41 @@ function TaskWFlowDPLMR()  {
       version     : 0,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
+    },
+    //   data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
+    //   label       : 'Ligand data', // label for input dialog
+    //   tooltip     : '(Optional) Ligands to be fit in electron density.',
+    //   inputId     : 'ligand',      // input Id for referencing input fields
+    //   min         : 0,             // minimum acceptable number of data instances
+    //   max         : this.input_ligands.length // maximum acceptable number of data instances
+    // },
+    {
+      data_type   : {'DataXYZ':['protein','dna','rna'] },  // data type(s) and subtype(s)
+      label       : 'Template structure',    // label for input dialog
+      inputId     : 'xyz',    // input Id for referencing input fields
+      tooltip     : 'Template structure to be molecular replaced in reflection data',
+      min         : 1,            // minimum acceptable number of data instances
+      max         : 1            // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataLibrary':[],'DataLigand':[] },  // data type(s) and subtype(s)
+      label       : 'Ligand library',    // label for input dialog
+      inputId     : 'library',    // input Id for referencing input fields
+      tooltip     : 'Restraints library for non-standard ligand found in the ' +
+                    'Template structure, if any',
+      force       : 1,
+      min         : 0,            // minimum acceptable number of data instances
+      max         : 1            // maximum acceptable number of data instances
     },{
       data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)
       label       : 'Sequence',    // label for input dialog
-      //unchosen_label : 'sequence unknown',
       tooltip     : '(Optional) Macromolecular sequence(s) expected in ASU.',
       inputId     : 'seq',         // input Id for referencing input fields
-      //customInput : 'stoichiometry-wauto', // lay custom fields below the dropdown
       version     : 0,             // minimum data version allowed
       force       : 10,            // meaning choose, by default, n<=1 sequences if
                                    // available; otherwise, 0 (== do not use) will
                                    // be selected
       min         : 0,             // minimum acceptable number of data instances
       max         : 1              // maximum acceptable number of data instances
-    },{
-      data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
-      label       : 'Ligand data', // label for input dialog
-      tooltip     : '(Optional) Specify ligands to be fit in electron density.',
-      inputId     : 'ligand',      // input Id for referencing input fields
-      min         : 0,             // minimum acceptable number of data instances
-      max         : this.input_ligands.length // maximum acceptable number of data instances
-    },{
-      data_type   : {'DataXYZ':['protein','dna','rna'] },  // data type(s) and subtype(s)
-      label       : 'Template structure',    // label for input dialog
-      inputId     : 'xyz',    // input Id for referencing input fields
-      //customInput : 'chain-sel', // lay custom fields next to the selection
-      min         : 1,            // minimum acceptable number of data instances
-      max         : 1            // maximum acceptable number of data instances
     }
   ];
 
@@ -136,7 +152,7 @@ TaskWFlowDPLMR.prototype.desc_title     = function()  {
 //TaskWFlowDPLMR.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskWFlowDPLMR.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
