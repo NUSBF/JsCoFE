@@ -93,15 +93,7 @@ function TaskWFlowDPLMR()  {
       version     : 0,          // minimum data version allowed
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
-    },
-    //   data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
-    //   label       : 'Ligand data', // label for input dialog
-    //   tooltip     : '(Optional) Ligands to be fit in electron density.',
-    //   inputId     : 'ligand',      // input Id for referencing input fields
-    //   min         : 0,             // minimum acceptable number of data instances
-    //   max         : this.input_ligands.length // maximum acceptable number of data instances
-    // },
-    {
+    },{
       data_type   : {'DataXYZ':['protein','dna','rna'] },  // data type(s) and subtype(s)
       label       : 'Template structure',    // label for input dialog
       inputId     : 'xyz',    // input Id for referencing input fields
@@ -114,7 +106,6 @@ function TaskWFlowDPLMR()  {
       inputId     : 'library',    // input Id for referencing input fields
       tooltip     : 'Restraints library for non-standard ligand found in the ' +
                     'Template structure, if any',
-      force       : 1,
       min         : 0,            // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
     },{
@@ -128,6 +119,13 @@ function TaskWFlowDPLMR()  {
                                    // be selected
       min         : 0,             // minimum acceptable number of data instances
       max         : 1              // maximum acceptable number of data instances
+    },{
+      data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
+      label       : 'Ligand data', // label for input dialog
+      tooltip     : '(Optional) Ligands to be fit in electron density.',
+      inputId     : 'ligand',      // input Id for referencing input fields
+      min         : 0,             // minimum acceptable number of data instances
+      max         : this.input_ligands.length // maximum acceptable number of data instances
     }
   ];
 
