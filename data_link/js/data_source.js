@@ -43,7 +43,7 @@ class dataSource {
     }
     let file = fs.writeFile(this.catalog_file, json, (err) => {
       if (err) {
-        log.error(`${this.name} - Unable to save ${this.catalog_file} - ${err}`);
+        log.error(`${this.name} - Unable to save ${this.catalog_file} - ${err.message}`);
       } else {
         this.status = status.completed;
       }
@@ -54,13 +54,13 @@ class dataSource {
     if (fs.existsSync(this.catalog_file)) {
       fs.readFile(this.catalog_file, (err, data) => {
         if (err) {
-          log.error(`${this.name} - Unable to load ${this.catalog_file} - ${err}`);
+          log.error(`${this.name} - Unable to load ${this.catalog_file} - ${err.message}`);
         } else {
           try {
             const obj = JSON.parse(data);
             this.addCatalog(obj);
           } catch (err) {
-            log.error(`${this.name} - Unable to parse ${this.catalog_file} - ${err}`);
+            log.error(`${this.name} - Unable to parse ${this.catalog_file} - ${err.message}`);
           }
         }
       });
@@ -81,7 +81,7 @@ class dataSource {
       fs.mkdirSync(tools.getDataDest(user, this.name, id), { recursive: true });
       this.getData(user, id, catalog);
     } catch (err) {
-      log.error(`${this.name} - ${err}`);
+      log.error(`${this.name} - ${err.message}`);
       return false;
     }
 

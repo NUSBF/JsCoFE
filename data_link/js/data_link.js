@@ -65,7 +65,7 @@ class dataLink {
         if (this.source[source] && this.catalog.addEntry(user, source, ids[j], fields)) {
           log.info(`Added ${user}/${source}/${ids[j]} to the catalog`);
         } else {
-          log.error(`Unable to rebuild catalog for ${user}/${source}/${ids[j]}`);
+          log.error(`rebuildLocalCatalog - Unable to rebuild catalog for ${user}/${source}/${ids[j]}`);
         }
       }
     }

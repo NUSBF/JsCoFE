@@ -26,7 +26,7 @@ class config {
       json = json.toString().replace(/\s*\/\/.*/g,'');
       return JSON.parse(json);
     } catch (err) {
-      log.error(err);
+      log.error(err.message);
       return false;
     }
   }

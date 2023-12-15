@@ -37,7 +37,7 @@ class dataCatalog {
       let json = fs.readFileSync(file);
       catalog[user] = JSON.parse(json);
     } catch (err) {
-      log.error(err);
+      log.error(`loadUserCatalog (${user}) - ${err.message}`);
       return false
     }
     return true;
@@ -53,7 +53,7 @@ class dataCatalog {
       }
       fs.writeFileSync(tools.getUserCatalogFile(user), json);
     } catch (err) {
-      log.error(`Error saving user catalog ${err}`);
+      log.error(`saveUserCatalog (${user}) - ${err.message}`);
       return false;
     }
     return true;
@@ -64,7 +64,7 @@ class dataCatalog {
     try {
       fs.rmSync(file);
     } catch (err) {
-      log.error(`Error removing catalog file for ${user} - ${err}`);
+      log.error(`removeUserCatalog (${user}) - ${err.message}`);
       return false;
     }
     return true;
@@ -75,7 +75,7 @@ class dataCatalog {
     try {
       fs.rmSync(dir, { recursive: true });
     } catch (err) {
-      log.error(`Error removing ${user}/${source}/${id} - ${err}`)
+      log.error(`removeUserData (${user}/${source}/${id}) - ${err.message}`)
       // fail on any error except if the data wasn't found
       if (err.code !== 'ENOENT') {
         return false;
@@ -89,7 +89,7 @@ class dataCatalog {
     try {
       fs.rmdirSync(dir);
     } catch (err) {
-      log.error(`Error removing ${user}/${source} - ${err}`)
+      log.error(`removeUserSource (${user}/${source}) - ${err.message}`)
       return false;
     }
     return true;
@@ -103,7 +103,7 @@ class dataCatalog {
     try {
       fs.rmdirSync(dir);
     } catch (err) {
-      log.error(`Error removing ${user} - ${err}`);
+      log.error(`removeUser (${user}) - ${err.message}`);
       return false;
     }
     return true;
@@ -193,7 +193,7 @@ class dataCatalog {
         return 0;
       }
     } catch (err) {
-      log.error(err);
+      log.error(`getStorageSize (${user}/${source}/${id}) - ${err.message}`);
       return 0;
     }
   }
