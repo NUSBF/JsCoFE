@@ -151,8 +151,8 @@ class WFlowDPLMR(import_task.Import):
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
             self.seq = self.input_data.data.seq
 
-        # if hasattr(self.input_data.data,"ligand"):  # optional data parameter
-        #     self.lig = self.input_data.data.ligand
+        if hasattr(self.input_data.data,"ligand"):  # optional data parameter
+            self.lig = self.input_data.data.ligand
 
         return
 
