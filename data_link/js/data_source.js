@@ -197,7 +197,7 @@ class dataSource {
       // if it's a top level directory, add it to the catalog object
       if (st == 'd' && id == pth) {
         if (catalog[id]) {
-          catalog[id].date = date;
+          catalog[id].date = new Date(date).toISOString();
         }
         // if we have a previous entry, then update it with the size
         if (last_id && catalog[last_id]) {
