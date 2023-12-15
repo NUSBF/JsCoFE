@@ -571,6 +571,13 @@ Grid.prototype.setStyle = function ( style )  {
     this.element.setAttribute ( 'class','grid-layout'+style );
 }
 
+Grid.prototype.insertRows = function ( rowBefore,nRows )  {
+  while (this.element.rows.length<=rowBefore)
+    this.element.insertRow ( -1 ); // this adds a row
+  for (let i=0;i<nRows;i++)
+    this.element.insertRow ( rowBefore );
+}
+
 Grid.prototype.hideRow = function ( row )  {
   while (this.element.rows.length<=row)  {
     this.element.insertRow ( -1 ); // this adds a row

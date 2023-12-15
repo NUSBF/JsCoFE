@@ -79,8 +79,8 @@ class WFlowDPLMR(import_task.Import):
         if "DataSequence" in self.outputDataBox.data:
             self.seq = self.outputDataBox.data["DataSequence"]
 
-        # if "DataLigand" in self.outputDataBox.data:
-        #     self.lig = self.outputDataBox.data["DataLigand"]
+        if "DataLigand" in self.outputDataBox.data:
+            self.lig = self.outputDataBox.data["DataLigand"]
 
         self.ligdesc = []
         ldesc = getattr ( self.task,"input_ligands",[] )
@@ -198,6 +198,8 @@ class WFlowDPLMR(import_task.Import):
             ilist.append ( "Library (" + str(len(self.lib)) + ")" )
         if len(self.seq)>0:
             ilist.append ( "Sequences (" + str(len(self.seq)) + ")" )
+        if len(self.lig)>0:
+            self.ligdesc = []
         nligs = len(self.lig) + len(self.ligdesc)
         if nligs>0:
             ilist.append ( "Ligands (" + str(nligs) + ")" )

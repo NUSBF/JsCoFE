@@ -34,7 +34,8 @@ def makeNextTask ( crTask,data ):
 
     if crTask._type=="TaskWFlowDPLMR":
         auto_tasks.store_dplmr ( data["unm"],data["hkl"],data["xyz"],
-                                 data["lib"],data["ligdesc"],data["seq"] )
+                                 data["lib"],data["ligdesc"],
+                                 data["lig"],data["seq"] )
         # auto_api.addContext("xyz", data["xyz"])
         # if len(data["seq"])>0:
         #     auto_api.addContext("seq", data["seq"])
