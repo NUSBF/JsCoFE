@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.11.23   <--  Date of Last Modification.
+ *    17.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -52,7 +52,7 @@ function TaskWFlowDPLMR()  {
     },{
       file_types  : '.pdb,.mmcif', // data type(s) and subtype(s)
       label       : 'Template structure', // label for input dialog
-      tooltip     : '[Mandatory] Path to PDB file with template structure',
+      tooltip     : '[Mandatory] Path to PDB or mmCIF file with template structure',
       inputId     : 'fxyz',   // input Id for referencing input fields
       path        : '',
       min         : 1         // minimum acceptable number of data instances
@@ -121,8 +121,8 @@ function TaskWFlowDPLMR()  {
       max         : 1              // maximum acceptable number of data instances
     },{
       data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
-      label       : 'Ligand data', // label for input dialog
-      tooltip     : '(Optional) Ligands to be fit in electron density.',
+      label       : 'Ligand to fit', // label for input dialog
+      tooltip     : '(Optional) Ligand to be fit in electron density.',
       inputId     : 'ligand',      // input Id for referencing input fields
       min         : 0,             // minimum acceptable number of data instances
       max         : this.input_ligands.length // maximum acceptable number of data instances

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    17.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -54,24 +54,25 @@ function TaskWFlowSMR()  {
     },{
       file_types  : '.pdb,.mmcif', // data type(s) and subtype(s)
       label       : 'Template structure', // label for input dialog
-      tooltip     : '[Mandatory] Provide a path to PDB file with a search model',
+      tooltip     : '[Mandatory] Path to PDB or mmCIF file with template structure',
       inputId     : 'fpdb',   // input Id for referencing input fields
       path        : '',
       min         : 1         // minimum acceptable number of data instances
     },{
       file_types  : '.pir,.seq,.fasta', // data type(s) and subtype(s)
       label       : 'Sequence(s)', // label for input dialog
-      tooltip     : '[Desired] Provide a path to sequence file in .fasta or .pir ' +
-                    'format. For importing several sequences put them all in a ' +
+      tooltip     : '[Desired] Path to sequence file in .fasta or .pir format ' +
+                    'For importing several sequences put them all in a ' +
                     'single file.',
       inputId     : 'fseq',   // input Id for referencing input fields
       path        : '',
       min         : 1         // minimum acceptable number of data instances
     },{
       file_types  : '.cif', // data type(s) and subtype(s)
-      label       : 'Ligand CIF definition', // label for input dialog
-      tooltip     : '[Optional] Provide a path to CIF file with your ligand definition ',
-      inputId     : 'fcif',   // input Id for referencing input fields
+      label       : '&nbsp;', // label for input dialog
+      tooltip     : '[Optional] Path to CIF file with description of ligand ' +
+                    'to be fitted in electron density blobs',
+      inputId     : 'flig', // input Id for referencing input fields
       path        : '',
       min         : 0,         // minimum acceptable number of data instances
       max         : 1
@@ -79,7 +80,7 @@ function TaskWFlowSMR()  {
     
   ];
 
-  this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'' }];
+  this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'', 'file' : 'flig' }];
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataUnmerged':[],'DataHKL':[]}, // data type(s) and subtype(s)
@@ -89,17 +90,22 @@ function TaskWFlowSMR()  {
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
+      data_type   : {'DataXYZ':['protein','dna','rna'] },  // data type(s) and subtype(s)
+      label       : 'Template structure',    // label for input dialog
+      inputId     : 'xyz',    // input Id for referencing input fields
+      //customInput : 'chain-sel', // lay custom fields next to the selection
+      min         : 1,            // minimum acceptable number of data instances
+      max         : 1            // maximum acceptable number of data instances
+    },{
       data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)
       label       : 'Sequence',    // label for input dialog
-      //unchosen_label : 'sequence unknown',
       tooltip     : '(Optional) Macromolecular sequence(s) expected in ASU.',
       inputId     : 'seq',         // input Id for referencing input fields
-      //customInput : 'stoichiometry-wauto', // lay custom fields below the dropdown
       version     : 0,             // minimum data version allowed
       force       : 10,            // meaning choose, by default, n<=1 sequences if
                                    // available; otherwise, 0 (== do not use) will
                                    // be selected
-      min         : 1,             // minimum acceptable number of data instances
+      min         : 0,             // minimum acceptable number of data instances
       max         : 1              // maximum acceptable number of data instances
     },{
       data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
@@ -108,13 +114,6 @@ function TaskWFlowSMR()  {
       inputId     : 'ligand',      // input Id for referencing input fields
       min         : 0,             // minimum acceptable number of data instances
       max         : this.input_ligands.length // maximum acceptable number of data instances
-    },{
-      data_type   : {'DataXYZ':['protein','dna','rna'] },  // data type(s) and subtype(s)
-      label       : 'Template structure',    // label for input dialog
-      inputId     : 'xyz',    // input Id for referencing input fields
-      //customInput : 'chain-sel', // lay custom fields next to the selection
-      min         : 1,            // minimum acceptable number of data instances
-      max         : 1            // maximum acceptable number of data instances
     }
   ];
 

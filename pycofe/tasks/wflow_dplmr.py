@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.12.23   <--  Date of Last Modification.
+#    17.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -85,7 +85,7 @@ class WFlowDPLMR(import_task.Import):
         self.ligdesc = []
         ldesc = getattr ( self.task,"input_ligands",[] )
         for i in range(len(ldesc)):
-            if ldesc[i].source!='none':
+            if ldesc[i].source=='S' or ldesc[i].source=='M':
                 self.ligdesc.append ( ldesc[i] )
 
         return
@@ -132,7 +132,6 @@ class WFlowDPLMR(import_task.Import):
         return
 
     """
-
 
     def prepareData(self):
         #  works with imported data from the project

@@ -108,7 +108,7 @@ function TaskTemplate()  {
 
   this.file_select   = [];  // list of file select widgets
   this.input_ligands = [];  // list of ligand description widgets
-  // this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'', 'fileinpID' : 'id' }];
+  // this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'', 'file' : 'fileInpId' }];
 
   if (dbx)  {
     this.input_data  = new dbx.DataBox(); // actual input data, represented by DataBox

@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    18.04.23   <--  Date of Last Modification.
+#    17.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,8 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, Maria Fando 2021-2023
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskyi, Andrey Lebedev, 
+#                Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -34,15 +33,14 @@ from   pycofe.tasks  import import_task
 from   pycofe.auto   import auto
 
 # ============================================================================
-# Make CCP4go driver
-
+# Make WFlowAEP driver
 
 # simulates ligand data structure that is normally coming from JS part
-class ligandCarrier():
-    def __init__(self, source, smiles, code):
-        self.source = source
-        self.smiles = smiles
-        self.code = code
+# class ligandCarrier():
+#     def __init__(self, source, smiles, code):
+#         self.source = source
+#         self.smiles = smiles
+#         self.code = code
 
 class WFlowAEP(import_task.Import):
 
@@ -70,12 +68,6 @@ class WFlowAEP(import_task.Import):
 
         if "DataSequence" in self.outputDataBox.data:
             self.seq = self.outputDataBox.data["DataSequence"]
-
-        if "DataXYZ" in self.outputDataBox.data:
-            self.xyz = self.outputDataBox.data["DataXYZ"]
-
-        if "DataLibrary" in self.outputDataBox.data:
-            self.lib = self.outputDataBox.data["DataLibrary"][0]
         
         if "DataLigand" in self.outputDataBox.data:
             self.lig = self.outputDataBox.data["DataLigand"]
@@ -83,14 +75,14 @@ class WFlowAEP(import_task.Import):
         self.ligdesc = []
         ldesc = getattr ( self.task,"input_ligands",[] )
         for i in range(len(ldesc)):
-            if ldesc[i].source!='none':
+            if ldesc[i].source=='S' or ldesc[i].source=='M':
                 self.ligdesc.append ( ldesc[i] )
 
         # checking whether ligand codes were provided
-        for i in range(len(self.ligdesc)):
-            code = self.ligdesc[i].code.strip().upper()
-            if (not code) or (code in self.ligand_exclude_list):
-                self.ligdesc[i].code = self.get_ligand_code([])
+        # for i in range(len(self.ligdesc)):
+        #     code = self.ligdesc[i].code.strip().upper()
+        #     if (not code) or (code in self.ligand_exclude_list):
+        #         self.ligdesc[i].code = self.get_ligand_code([])
 
         return
 
@@ -109,17 +101,13 @@ class WFlowAEP(import_task.Import):
             self.seq = self.input_data.data.seq
             # for i in range(len(self.input_data.data.seq)):
             #     self.seq.append ( self.makeClass(self.input_data.data.seq[i]) )
-
-        if hasattr(self.input_data.data,"xyz"):  # optional data parameter
-            self.xyz = self.input_data.data.xyz
         
-        ligMessage = ''
-
+        # ligMessage = ''
 
         if hasattr(self.input_data.data,"ligand"):  # optional data parameter
             self.lig = self.input_data.data.ligand
 
-            ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
+            # ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
 
             # for i in range(len(self.input_data.data.ligand)):
             #     self.ligands.append ( self.makeClass(self.input_data.data.ligand[i]) )
@@ -133,23 +121,20 @@ class WFlowAEP(import_task.Import):
         self.unm = []  # unmerged dataset
         self.hkl = []  # selected merged dataset
         self.seq = []  # list of sequence objects
-        self.xyz = []  # coordinates (model/apo)
+        # self.xyz = []  # coordinates (model/apo)
         self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
-        self.lib = None
+        # self.lib = None
 
         # ligand library CIF has been provided
-        if self.lib:
-            ligand = self.makeClass(self.lib)
-            self.lig.append(ligand)
-
+        # if self.lib:
+        #     ligand = self.makeClass(self.lib)
+        #     self.lig.append(ligand)
 
         summary_line = ""
         ilist = []
 
-        fileDir = self.outputDir()
         if hasattr(self.input_data.data,"hkldata"):
-            fileDir = self.inputDir()
             self.prepareData()  #  pre-imported data provided
             summary_line = "received "
         else:
@@ -163,8 +148,6 @@ class WFlowAEP(import_task.Import):
             ilist.append ( "HKL (" + str(len(self.hkl)) + ")" )
         if len(self.seq)>0:
             ilist.append ( "Sequences (" + str(len(self.seq)) + ")" )
-        if len(self.xyz)>0:
-            ilist.append ( "XYZ (" + str(len(self.xyz)) + ")" )
         nligs = len(self.lig) + len(self.ligdesc)
         if nligs>0:
             ilist.append ( "Ligands (" + str(nligs) + ")" )
@@ -172,19 +155,6 @@ class WFlowAEP(import_task.Import):
             summary_line += ", ".join(ilist) + "; "
 
         ha_type = self.getParameter ( self.task.parameters.HATOM )
-
-        # mr_engine = self.getParameter ( self.task.parameters.MR_ENGINE )
-        # mb_engine = self.getParameter ( self.task.parameters.MB_ENGINE )
-        #
-        # if mr_engine=="mrbump":
-        #     self.putMessage ( "Automatic MR solver: <b>MrBump</b>" )
-        # else:
-        #     self.putMessage ( "Automatic MR solver: <b>MoRDa</b>" )
-        #
-        # if mb_engine=="ccp4build":
-        #     self.putMessage ( "Automatic model builder: <b>CCP4Build</b>" )
-        # else:
-        #     self.putMessage ( "Automatic model builder: <b>Buccaneer</b>" )
 
         have_results = False
         self.flush()
