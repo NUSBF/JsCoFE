@@ -183,7 +183,7 @@ class JLigand(basic.TaskDriver):
                 ligand = self.finaliseLigand ( code,pdbout,cifout )
                 del pdbout
                 if ligand:
-                    cifreg = '/'.join([self.outputDir(), ligand.getLibFileName()])
+                    cifreg = os.path.join(self.outputDir(), ligand.getLibFileName())
                     have_results = True
 
                     summary_line = "library with ligand " + code
@@ -191,7 +191,7 @@ class JLigand(basic.TaskDriver):
             else:
                 library = self.registerLibrary ( cifout,copy_files=False )
                 if library:
-                    cifreg = '/'.join([self.outputDir(), library.getLibFileName()])
+                    cifreg = os.path.join(self.outputDir(), library.getLibFileName())
                     have_results = True
 
                     library.codes = comp_id
@@ -222,7 +222,7 @@ class JLigand(basic.TaskDriver):
                     pyrvapi.rvapi_add_data(
                         "_lib_wgt_",
                         "Library of Ligands and Links",
-                        "/".join(["..", cifreg]),
+                        os.path.join("..", cifreg),
                         "LIB",
                         self.report_page_id(),
                         self.rvrow, 0, 1, colSpan, openState)
