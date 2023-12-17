@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    06.04.23   <--  Date of Last Modification.
+#    17.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,8 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, Maria Fando 2021-2023
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, 
+#                Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -34,14 +33,13 @@ from   pycofe.tasks  import import_task
 from   pycofe.auto   import auto
 
 # ============================================================================
-# Make CCP4go driver
 
 # simulates ligand data structure that is normally coming from JS part
-class ligandCarrier():
-    def __init__(self, source, smiles, code):
-        self.source = source
-        self.smiles = smiles
-        self.code = code
+# class ligandCarrier():
+#     def __init__(self, source, smiles, code):
+#         self.source = source
+#         self.smiles = smiles
+#         self.code = code
 
 class WFlowAMR(import_task.Import):
 
@@ -61,9 +59,6 @@ class WFlowAMR(import_task.Import):
         # -------------------------------------------------------------------
         # fetch data for CCP4go pipeline
 
-        # self.lib = None  # ligand descriptions
-
-
         if "DataUnmerged" in self.outputDataBox.data:
             self.unm = self.outputDataBox.data["DataUnmerged"]
 
@@ -78,12 +73,6 @@ class WFlowAMR(import_task.Import):
 
         if "DataSequence" in self.outputDataBox.data:
             self.seq = self.outputDataBox.data["DataSequence"]
-
-        if "DataXYZ" in self.outputDataBox.data:
-            self.xyz = self.outputDataBox.data["DataXYZ"]
-
-        if "DataLibrary" in self.outputDataBox.data:
-            self.lib = self.outputDataBox.data["DataLibrary"][0]
         
         if "DataLigand" in self.outputDataBox.data:
             self.lig = self.outputDataBox.data["DataLigand"]
@@ -92,14 +81,14 @@ class WFlowAMR(import_task.Import):
         self.ligdesc = []
         ldesc = getattr ( self.task,"input_ligands",[] )
         for i in range(len(ldesc)):
-            if ldesc[i].source!='none':
+            if ldesc[i].source=='S' or ldesc[i].source=='M':
                 self.ligdesc.append ( ldesc[i] )
 
         # checking whether ligand codes were provided
-        for i in range(len(self.ligdesc)):
-            code = self.ligdesc[i].code.strip().upper()
-            if (not code) or (code in self.ligand_exclude_list):
-                self.ligdesc[i].code = self.get_ligand_code([])
+        # for i in range(len(self.ligdesc)):
+        #     code = self.ligdesc[i].code.strip().upper()
+        #     if (not code) or (code in self.ligand_exclude_list):
+        #         self.ligdesc[i].code = self.get_ligand_code([])
 
         return
 
@@ -117,15 +106,12 @@ class WFlowAMR(import_task.Import):
             # for i in range(len(self.input_data.data.seq)):
             #     self.seq.append ( self.makeClass(self.input_data.data.seq[i]) )
 
-        if hasattr(self.input_data.data,"xyz"):  # optional data parameter
-            self.xyz = self.input_data.data.xyz
-
-        ligMessage = ''
+        # ligMessage = ''
 
         if hasattr(self.input_data.data,"ligand"):  # optional data parameter
             self.lig = self.input_data.data.ligand
 
-            ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
+            # ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
 
             # for i in range(len(self.input_data.data.lig)):
             #     self.lig.append ( self.makeClass(self.input_data.data.lig[i]) )
@@ -141,23 +127,15 @@ class WFlowAMR(import_task.Import):
         self.unm = []  # unmerged dataset
         self.hkl = []  # selected merged dataset
         self.seq = []  # list of sequence objects
-        self.xyz = []  # coordinates (model/apo)
+        # self.xyz = []  # coordinates (model/apo)
         self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
-        self.lib = None
+        # self.lib = None
 
         summary_line = ""
         ilist = []
 
-        # # ligand library CIF has been provided
-        if self.lib:
-            ligand = self.makeClass(self.lib)
-            self.lig.append(ligand)
-
-   
-        fileDir = self.outputDir()
         if hasattr(self.input_data.data,"hkldata"):
-            fileDir = self.inputDir()
             self.prepareData()  #  pre-imported data provided
             summary_line = "received "
         else:
@@ -171,15 +149,13 @@ class WFlowAMR(import_task.Import):
             ilist.append ( "HKL (" + str(len(self.hkl)) + ")" )
         if len(self.seq)>0:
             ilist.append ( "Sequences (" + str(len(self.seq)) + ")" )
-        if len(self.xyz)>0:
-            ilist.append ( "XYZ (" + str(len(self.xyz)) + ")" )
         nligs = len(self.lig) + len(self.ligdesc)
         if nligs>0:
             ilist.append ( "Ligands (" + str(nligs) + ")" )
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
 
-        seqHasNA = False
+        seqHasNA      = False
         seqHasProtein = False
         # for s in self.seq:
         #     if s.isDNA() or s.isRNA():
@@ -194,11 +170,12 @@ class WFlowAMR(import_task.Import):
             elif s.isProtein():
                 seqHasProtein = True
 
-
         if seqHasNA and not seqHasProtein:
-            fmsg = 'Sequence is provided for nucleic acid only; Automated MR Workflow can deal only with proteins or complexes\n'+ \
-                      '<p>Please try Simple Molecular Replacement Workflow or solve the structure manually in the Expert Mode.\n'
-            self.putMessage("<h3>%s</hr>" % fmsg)
+            fmsg = "Sequence is provided for nucleic acid only; Automated MR " +\
+                   "Workflow can deal only with proteins or complexes<br>"+ \
+                   "<p>Please try Simple Molecular Replacement Workflow or " +\
+                   "solve the structure manually in the Expert Mode."
+            self.putMessage("<h3>%s</h3></hr>" % fmsg)
             self.fail('','SMR_WF')
 
         self.flush()

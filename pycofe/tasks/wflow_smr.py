@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.04.23   <--  Date of Last Modification.
+#    17.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,8 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, Maria Fando 2021-2023
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev,
+#                Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -36,11 +37,11 @@ from   pycofe.auto   import auto
 
 # simulates ligand data structure that is normally coming from JS part
 
-class ligandCarrier():
-    def __init__(self, source, smiles, code):
-        self.source = source
-        self.smiles = smiles
-        self.code = code
+# class ligandCarrier():
+#     def __init__(self, source, smiles, code):
+#         self.source = source
+#         self.smiles = smiles
+#         self.code = code
 
 class WFlowSMR(import_task.Import):
 
@@ -49,6 +50,47 @@ class WFlowSMR(import_task.Import):
 
     # ------------------------------------------------------------------------
 
+    def importData(self):
+        #  works with uploaded data from the top of the project
+
+        # Do we really need ligand library for models? 
+        # library_files = []
+        # for i in range(len(self.task.file_select)):
+        #     if self.task.file_select[i].inputId=="flibrary":
+        #         # this gives only file name but not the full path on client
+        #         if self.task.file_select[i].path:
+        #             library_files = self.task.file_select[i].path
+        # super ( WFlowSMR,self ).import_all(ligand_libraries=library_files)
+
+        super ( WFlowSMR,self ).import_all()
+
+        # -------------------------------------------------------------------
+        # fetch data for Custom Workflow pipeline
+
+        if "DataUnmerged" in self.outputDataBox.data:
+            self.unm = self.outputDataBox.data["DataUnmerged"]
+
+        if "DataHKL" in self.outputDataBox.data:
+            self.hkl = self.outputDataBox.data["DataHKL"]
+
+        if "DataXYZ" in self.outputDataBox.data:
+            self.xyz = self.outputDataBox.data["DataXYZ"]
+
+        if "DataSequence" in self.outputDataBox.data:
+            self.seq = self.outputDataBox.data["DataSequence"]
+
+        if "DataLigand" in self.outputDataBox.data:
+            self.lig = self.outputDataBox.data["DataLigand"]
+
+        self.ligdesc = []
+        ldesc = getattr ( self.task,"input_ligands",[] )
+        for i in range(len(ldesc)):
+            if ldesc[i].source=='S' or ldesc[i].source=='M':
+                self.ligdesc.append ( ldesc[i] )
+
+        return
+
+    """
     def importData(self):
         #  works with uploaded data from the top of the project
 
@@ -93,6 +135,7 @@ class WFlowSMR(import_task.Import):
                 self.ligdesc[i].code = self.get_ligand_code([])
 
         return
+    """
 
 
     def prepareData(self):
@@ -103,23 +146,14 @@ class WFlowSMR(import_task.Import):
         else:
             self.hkl = self.input_data.data.hkldata
 
-        if hasattr(self.input_data.data,"seq"):  # optional data parameter
-            self.seq = self.input_data.data.seq
-            # for i in range(len(self.input_data.data.seq)):
-            #     self.seq.append ( self.makeClass(self.input_data.data.seq[i]) )
-        # ligMessage = ''
-
-
         if hasattr(self.input_data.data,"xyz"):  # optional data parameter
             self.xyz = self.input_data.data.xyz
 
+        if hasattr(self.input_data.data,"seq"):  # optional data parameter
+            self.seq = self.input_data.data.seq
+
         if hasattr(self.input_data.data,"ligand"):  # optional data parameter
             self.lig = self.input_data.data.ligand
-
-            # ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
-
-            # for i in range(len(self.input_data.data.ligand)):
-            #     self.ligands.append ( self.makeClass(self.input_data.data.ligand[i]) )
 
         return
 
@@ -134,20 +168,13 @@ class WFlowSMR(import_task.Import):
         self.xyz = []  # coordinates (model/apo)
         self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
-        self.lib = None
+        # self.lib = None
 
 
         summary_line = ""
         ilist = []
 
-        # ligand library CIF has been provided
-        if self.lib:
-            ligand = self.makeClass(self.lib)
-            self.lig.append(ligand)
-
-        fileDir = self.outputDir()
         if hasattr(self.input_data.data,"hkldata"):
-            fileDir = self.inputDir()
             self.prepareData()  #  pre-imported data provided
             summary_line = "received "
         else:

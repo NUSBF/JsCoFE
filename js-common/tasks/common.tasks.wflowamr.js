@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    17.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -10,7 +10,7 @@
  *       ~~~~~~~~~
  *  **** Project :  jsCoFE - javascript-based Cloud Front End
  *       ~~~~~~~~~
- *  **** Content :  CCP4go Task Class
+ *  **** Content :  Automatic MR Workflow Task Class
  *       ~~~~~~~~~
  *
  *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2023
@@ -35,11 +35,11 @@ function TaskWFlowAMR()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type       = 'TaskWFlowAMR';
-  this.name        = 'MR automatic workflow';
+  this._type      = 'TaskWFlowAMR';
+  this.name       = 'MR automatic workflow';
   this.setOName ( 'ccp4go_automr' );  // default output file name template
-  this.title       = 'Workflow: Automatic Molecular Replacement with MrBump or MoRDa';
-  this.autoRunId   = 'auto-MR';
+  this.title      = 'Workflow: Automatic Molecular Replacement with MrBump or MoRDa';
+  this.autoRunId  = 'auto-MR';
 
   //this.ha_type = '';
 
@@ -55,7 +55,7 @@ function TaskWFlowAMR()  {
     },{
       file_types  : '.pir,.seq,.fasta', // data type(s) and subtype(s)
       label       : 'Sequence(s)', // label for input dialog
-      tooltip     : '[Desired] Provide a path to sequence file in .fasta or .pir ' +
+      tooltip     : '[Desirable] Provide a path to sequence file in .fasta or .pir ' +
                     'format. For importing several sequences put them all in a ' +
                     'single file.',
       inputId     : 'fseq',   // input Id for referencing input fields
@@ -63,16 +63,17 @@ function TaskWFlowAMR()  {
       min         : 1         // minimum acceptable number of data instances
     },{
       file_types  : '.cif', // data type(s) and subtype(s)
-      label       : 'Ligand CIF definition', // label for input dialog
-      tooltip     : '[Optional] Provide a path to CIF file with your ligand definition ',
-      inputId     : 'fcif',   // input Id for referencing input fields
+      label       : '&nbsp;', // label for input dialog
+      tooltip     : '[Optional] Path to CIF file with description of ligand ' +
+                    'to be fitted in electron density blobs',
+      inputId     : 'flig', // input Id for referencing input fields
       path        : '',
       min         : 0,         // minimum acceptable number of data instances
       max         : 1
     }
   ];
 
-  this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'' }];
+  this.input_ligands = [{ 'source':'none', 'smiles':'', 'code':'', 'file' : 'flig' }];
 
   this.input_dtypes = [{    // input data types
       data_type   : {'DataUnmerged':[],'DataHKL':[]}, // data type(s) and subtype(s)
@@ -84,10 +85,8 @@ function TaskWFlowAMR()  {
     },{
       data_type   : {'DataSequence':[]}, // data type(s) and subtype(s)
       label       : 'Sequence',    // label for input dialog
-      //unchosen_label : 'sequence unknown',
       tooltip     : '(Optional) Macromolecular sequence(s) expected in ASU.',
       inputId     : 'seq',         // input Id for referencing input fields
-      //customInput : 'stoichiometry-wauto', // lay custom fields below the dropdown
       version     : 0,             // minimum data version allowed
       force       : 10,            // meaning choose, by default, n<=1 sequences if
                                    // available; otherwise, 0 (== do not use) will
@@ -96,8 +95,8 @@ function TaskWFlowAMR()  {
       max         : 10             // maximum acceptable number of data instances
     },{
       data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
-      label       : 'Ligand data', // label for input dialog
-      tooltip     : '(Optional) Specify ligands to be fit in electron density.',
+      label       : 'Ligand to fit', // label for input dialog
+      tooltip     : '(Optional) Ligand to be fit in electron density.',
       inputId     : 'ligand',      // input Id for referencing input fields
       min         : 0,             // minimum acceptable number of data instances
       max         : this.input_ligands.length // maximum acceptable number of data instances

@@ -53,8 +53,8 @@ function TaskWFlowDPL()  {
       max       : 1           // maximum acceptable number of data instances
     },{
       data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
-      label       : 'Ligand data', // label for input dialog
-      tooltip     : '(Optional) Specify ligands to be fit in electron density.',
+      label       : 'Ligand to fit', // label for input dialog
+      tooltip     : '(Optional) Ligand to be fit in electron density.',
       inputId     : 'ligand',      // input Id for referencing input fields
       force       : 1,             // force selecting ligand if found in Project
       min         : 0,             // minimum acceptable number of data instances

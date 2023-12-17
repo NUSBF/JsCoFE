@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    18.04.23   <--  Date of Last Modification.
+#    17.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,8 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, Maria Fando 2021-2023
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev, 
+#                Maria Fando 2021-2023
 #
 # ============================================================================
 #
@@ -34,17 +33,17 @@ from   pycofe.tasks  import import_task
 from   pycofe.auto   import auto
 
 # ============================================================================
-# Make CCP4go driver
+# Make WFlowAFMR driver
 
-class ligandCarrier():
-    def __init__(self, source, smiles, code):
-        self.source = source
-        self.smiles = smiles
-        self.code = code
+# class ligandCarrier():
+#     def __init__(self, source, smiles, code):
+#         self.source = source
+#         self.smiles = smiles
+#         self.code = code
 
 class WFlowAFMR(import_task.Import):
-    def smiles_file_path(self): return "smiles.smi"
-
+    
+    # def smiles_file_path(self): return "smiles.smi"
 
     import_dir = "uploads"
     def importDir(self):  return self.import_dir       # import directory
@@ -73,9 +72,6 @@ class WFlowAFMR(import_task.Import):
 
         if "DataSequence" in self.outputDataBox.data:
             self.seq = self.outputDataBox.data["DataSequence"]
-
-        if "DataLibrary" in self.outputDataBox.data:
-            self.lib = self.outputDataBox.data["DataLibrary"][0]
         
         if "DataLigand" in self.outputDataBox.data:
             self.lig = self.outputDataBox.data["DataLigand"]
@@ -83,14 +79,14 @@ class WFlowAFMR(import_task.Import):
         self.ligdesc = []
         ldesc = getattr ( self.task,"input_ligands",[] )
         for i in range(len(ldesc)):
-            if ldesc[i].source!='none':
+            if ldesc[i].source=='S' or ldesc[i].source=='M':
                 self.ligdesc.append ( ldesc[i] )
 
         # checking whether ligand codes were provided
-        for i in range(len(self.ligdesc)):
-            code = self.ligdesc[i].code.strip().upper()
-            if (not code) or (code in self.ligand_exclude_list):
-                self.ligdesc[i].code = self.get_ligand_code([])
+        # for i in range(len(self.ligdesc)):
+        #     code = self.ligdesc[i].code.strip().upper()
+        #     if (not code) or (code in self.ligand_exclude_list):
+        #         self.ligdesc[i].code = self.get_ligand_code([])
 
         return
 
@@ -125,20 +121,18 @@ class WFlowAFMR(import_task.Import):
         self.seq = []  # list of sequence objects
         self.lig = []  # not used in this function but must be initialised
         self.ligdesc = []
-        self.lib = None
+        # self.lib = None
 
 
         summary_line = ""
         ilist = []
 
         #  ligand library CIF has been provided
-        if self.lib:
-            ligand = self.makeClass(self.lib)
-            self.lig.append(ligand)
+        # if self.lib:
+        #     ligand = self.makeClass(self.lib)
+        #     self.lig.append(ligand)
 
-        fileDir = self.outputDir()
         if hasattr(self.input_data.data,"hkldata"):
-            fileDir = self.inputDir()
             self.prepareData()  #  pre-imported data provided
             summary_line = "received "
         else:
