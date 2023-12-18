@@ -168,7 +168,7 @@ TaskWFlowAEP.prototype.desc_title     = function()  {
 //TaskWFlowAEP.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskWFlowAEP.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

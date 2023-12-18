@@ -157,7 +157,7 @@ TaskWFlowAMR.prototype.desc_title     = function()  {
 //TaskWFlowAMR.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 
 TaskWFlowAMR.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );

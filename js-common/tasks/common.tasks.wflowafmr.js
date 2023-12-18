@@ -158,7 +158,7 @@ TaskWFlowAFMR.prototype.platforms = function()  { return 'LMU'; }  // UNIX only
 TaskWFlowAFMR.prototype.requiredEnvironment = function() { return ['CCP4','ALPHAFOLD_CFG']; }
 
 TaskWFlowAFMR.prototype.currentVersion = function()  {
-  var version = 0;
+  var version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
