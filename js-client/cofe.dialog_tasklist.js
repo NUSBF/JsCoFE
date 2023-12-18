@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.12.23   <--  Date of Last Modification.
+ *    18.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -43,11 +43,11 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   this.element.setAttribute ( 'title','Task List' );
   document.body.appendChild ( this.element );
 
-  var projectDesc = tree.projectData.desc;
+  let projectDesc = tree.projectData.desc;
   // console.log ( ' ntasks=' + tree.countTasks() );
 
   this.branch_tasks = [];
-  for (var i=0;i<branch_task_list.length;i++)
+  for (let i=0;i<branch_task_list.length;i++)
     if (!branch_task_list[i].isRemark())
       this.branch_tasks.push ( branch_task_list[i] );
 
@@ -72,127 +72,156 @@ function TaskListDialog ( dataBox,branch_task_list,tree,onSelect_func ) {
   this.listAtoZ     = [];
   this.tabs_basic   = null;
   this.tabs_full    = null;
-  // this.tabs_AtoZ    = null;
-  this.combobox     = null;
-  this.combobox_lbl = null;
-  var help_link     = __user_guide_base_url + 'jscofe_tasklist.html';
+  // this.combobox     = null;
+  // this.combobox_lbl = null;
+  this.checkbox     = null;
+  let help_link     = __user_guide_base_url + 'jscofe_tasklist.html';
   if (projectDesc.startmode==start_mode.migrate)  {
     this.makeLayout ( 30 );
-    this.combobox = new Combobox();
-    this.combobox
-        .addItem  ( 'Basic task list','basic',projectDesc.tasklistmode==tasklist_mode.basic )
-        .addItem  ( 'Full task list' ,'full' ,projectDesc.tasklistmode==tasklist_mode.full  )
-        .setWidth ( '180px' );
+    this.checkbox = new Checkbox ( 'Full list',projectDesc.tasklistmode==tasklist_mode.full );
+    this.checkbox .setWidth ( '100px' );
+    // this.combobox = new Combobox();
+    // this.combobox
+    //     .addItem  ( 'Basic task list','basic',projectDesc.tasklistmode==tasklist_mode.basic )
+    //     .addItem  ( 'Full task list' ,'full' ,projectDesc.tasklistmode==tasklist_mode.full  )
+    //     .setWidth ( '180px' );
   } else if (projectDesc.startmode==start_mode.auto)  {
     if (tree.countTasks()>0)  {
       if (branch_task_list.length<1)
             this.makeLayout ( 21 );
       else  this.makeLayout ( 22 );
-      this.combobox = new Combobox();
-      this.combobox
-          .addItem  ( 'Basic task list','basic',projectDesc.tasklistmode==tasklist_mode.basic )
-          .addItem  ( 'Full task list' ,'full' ,projectDesc.tasklistmode==tasklist_mode.full  )
-          .setWidth ( '180px' );
+      this.checkbox = new Checkbox ( 'Full list',projectDesc.tasklistmode==tasklist_mode.full );
+      this.checkbox .setWidth ( '100px' );
+      // this.combobox = new Combobox();
+      // this.combobox
+      //     .addItem  ( 'Basic task list','basic',projectDesc.tasklistmode==tasklist_mode.basic )
+      //     .addItem  ( 'Full task list' ,'full' ,projectDesc.tasklistmode==tasklist_mode.full  )
+      //     .setWidth ( '180px' );
     } else  {
       this.makeLayout ( 20 );
-      var help_link = __user_guide_base_url + 'jscofe_workflows.html';
+      help_link = __user_guide_base_url + 'jscofe_workflows.html';
     }
   } else
     this.makeLayout ( 10 );
 
-  if (this.combobox)  {
-    this.combobox_lbl = new Label ( 'Switch to full list<br>for more tasks' );
-    this.combobox_lbl.setFontSize('80%').setFontItalic(true).setWidth('150px');
-  }
+  // if (this.combobox)  {
+  //   this.combobox_lbl = new Label ( 'Switch to full list<br>for more tasks' );
+  //   this.combobox_lbl.setFontSize('80%').setFontItalic(true).setWidth('150px');
+  // }
 
   if (this.tabs_basic)  {
     this.tabs_basic  .setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
     this.tabs_full   .setVisible ( projectDesc.tasklistmode==tasklist_mode.full  );
-    this.combobox_lbl.setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
+    // this.combobox_lbl.setVisible ( projectDesc.tasklistmode==tasklist_mode.basic );
   }
 
-  var self = this;
-  // (function(self){
+  let self = this;
 
-    $(self.element).dialog({
-      resizable : true,
-      height    : self.dlg_height,
-      width     : self.dlg_width,
-      maxHeight : $(window).height()-20,
-      modal     : true,
-      create    : function (e, ui) {
-                    if (self.combobox)  {
-                      var pane = $(this).dialog("widget")
-                                        .find(".ui-dialog-buttonpane");
-                      var span = new Widget ( 'span' );
-                      $(span.element).prependTo(pane);
-                      span.addWidget ( self.combobox );
-                      self.combobox.make ();
-                      $(span.element).css({
-                        'position' : 'relative',
-                        'left'     : '10px',
-                        'top'      : '8px'
-                      });
-                      span.addWidget ( self.combobox_lbl );
-                      $(self.combobox_lbl.element).css({
-                        'position' : 'relative',
-                        'left'     : '200px',
-                        'top'      : '32px',
-                        'margin-top' : '-64px'
-                      });
-                    }
-                  },
-      buttons   : [
-        { text  : 'Help',
-          click : function() {
-            new HelpBox ( '',help_link,null );
-          }
-        },
-        { text  : 'Close',
-          click : function() {
-            self.saveDialogState();
-            if (self.combobox)
-                  self.onSelect_func ( null,self.combobox.getValue() );
-            else  self.onSelect_func ( null,null );
-            $( this ).dialog( "close" );
-          }
+  $(self.element).dialog({
+    resizable : true,
+    height    : self.dlg_height,
+    width     : self.dlg_width,
+    maxHeight : $(window).height()-20,
+    modal     : true,
+    create    : function (e, ui) {
+                  // if (self.combobox)  {
+                  //   var pane = $(this).dialog("widget")
+                  //                     .find(".ui-dialog-buttonpane");
+                  //   var span = new Widget ( 'span' );
+                  //   $(span.element).prependTo(pane);
+                  //   span.addWidget ( self.combobox );
+                  //   self.combobox.make ();
+                  //   $(span.element).css({
+                  //     'position' : 'relative',
+                  //     'left'     : '10px',
+                  //     'top'      : '8px'
+                  //   });
+                  //   span.addWidget ( self.combobox_lbl );
+                  //   $(self.combobox_lbl.element).css({
+                  //     'position' : 'relative',
+                  //     'left'     : '200px',
+                  //     'top'      : '32px',
+                  //     'margin-top' : '-64px'
+                  //   });
+                  // }
+                  if (self.checkbox)  {
+                    let pane = $(this).dialog("widget")
+                                      .find(".ui-dialog-buttonpane");
+                    let span = new Widget ( 'span' );
+                    $(span.element).prependTo(pane);
+                    span.addWidget ( self.checkbox );
+                    $(span.element).css({
+                      'position' : 'relative',
+                      'left'     : '10px',
+                      'top'      : '8px'
+                    });            
+                  }
+                },
+    buttons   : [
+      { text  : 'Help',
+        click : function() {
+          new HelpBox ( '',help_link,null );
         }
-      ]
-    });
-
-    $(self.element).on( "dialogresize", function(event,ui){
-      //self.onResize();
-      var height = self.element.innerHeight - 16;
-      if (self.tabs_basic)  {
-        $(self.tabs_basic.element).height ( height );
-        self.tabs_basic.refresh();
+      },
+      { text  : 'Close',
+        click : function() {
+          self.saveDialogState();
+          if (self.checkbox)
+                self.onSelect_func ( null,self.getListSwitchValue() );
+          else  self.onSelect_func ( null,null );
+          $( this ).dialog( "close" );
+        }
       }
-      if (self.tabs_full)  {
-        $(self.tabs_full.element).height ( height );
-        self.tabs_full.refresh();
-      }
-    });
+    ]
+  });
 
-    // $(self.element).on( "dialogclose",function(event,ui){
-    //   self.saveDialogState();
-    // });
-
-    if (self.combobox)  {
-      self.combobox.addOnChangeListener ( function(value,text){
-        self.tabs_basic  .setVisible ( value==tasklist_mode.basic );
-        self.tabs_full   .setVisible ( value==tasklist_mode.full  );
-        self.combobox_lbl.setVisible ( value==tasklist_mode.basic );
-        projectDesc.tasklistmode = value;
-        if (value=='full')  self.tabs_full.refresh();
-                      else  self.tabs_basic.refresh();
-      });
+  $(self.element).on( "dialogresize", function(event,ui){
+    //self.onResize();
+    let height = self.element.innerHeight - 16;
+    if (self.tabs_basic)  {
+      $(self.tabs_basic.element).height ( height );
+      self.tabs_basic.refresh();
     }
+    if (self.tabs_full)  {
+      $(self.tabs_full.element).height ( height );
+      self.tabs_full.refresh();
+    }
+  });
 
-  // }(this));
+  // $(self.element).on( "dialogclose",function(event,ui){
+  //   self.saveDialogState();
+  // });
+
+  // if (self.combobox)  {
+  //   self.combobox.addOnChangeListener ( function(value,text){
+  //     self.tabs_basic  .setVisible ( value==tasklist_mode.basic );
+  //     self.tabs_full   .setVisible ( value==tasklist_mode.full  );
+  //     self.combobox_lbl.setVisible ( value==tasklist_mode.basic );
+  //     projectDesc.tasklistmode = value;
+  //     if (value==tasklist_mode.full)  self.tabs_full.refresh();
+  //                               else  self.tabs_basic.refresh();
+  //   });
+  // }
+
+  if (self.checkbox)  {
+    self.checkbox.addOnClickListener ( function(){
+      let value = self.getListSwitchValue();
+      self.tabs_basic.setVisible ( value==tasklist_mode.basic );
+      self.tabs_full .setVisible ( value==tasklist_mode.full  );
+      projectDesc.tasklistmode = value;
+      if (value==tasklist_mode.full)  self.tabs_full .refresh();
+                                else  self.tabs_basic.refresh();
+    });
+  }
 
   $(this.element).css ( 'width:100%' );
 
-  if (this.combobox)  {
+  // if (this.combobox)  {
+  //   $(this.tabs_basic.element).height ( this.element.innerHeight-16 );
+  //   this.tabs_basic.refresh();
+  // }
+
+  if (this.checkbox)  {
     $(this.tabs_basic.element).height ( this.element.innerHeight-16 );
     this.tabs_basic.refresh();
   }
@@ -211,6 +240,11 @@ TaskListDialog.prototype.constructor = TaskListDialog;
 
 
 // ===========================================================================
+
+TaskListDialog.prototype.getListSwitchValue = function()  {
+  if (this.checkbox.getValue())  return tasklist_mode.full;
+  return tasklist_mode.basic;
+}
 
 TaskListDialog.prototype.setDockMenu = function ( task_obj,grid,row )  {
 let self    = this;
@@ -328,8 +362,11 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
     function taskClicked() {
       if (ibtn.dataSummary.status>0)  {
         dlg.selected_task = task_obj;
-        if (dlg.combobox)
-              dlg.onSelect_func ( task_obj,dlg.combobox.getValue() );
+        // if (dlg.combobox)
+        //       dlg.onSelect_func ( task_obj,dlg.combobox.getValue() );
+        // else  dlg.onSelect_func ( task_obj,null );
+        if (dlg.checkbox)
+              dlg.onSelect_func ( task_obj,dlg.getListSwitchValue() );
         else  dlg.onSelect_func ( task_obj,null );
         dlg.saveDialogState();
         $(dlg.element).dialog ( 'close' );
@@ -484,7 +521,7 @@ let tabName = tabs.getActiveTab().name;
 
 
 TaskListDialog.prototype.makeBasicList = function ( grid,key )  {
-var r = 0;  // grid row
+let r = 0;  // grid row
 
   //grid.setLabel ( '<h2>Basic tasks</h2>',r++,0,1,3 );
   //grid.setLabel ( 'Switch to full set for more tasks',r++,0,1,3 )
@@ -494,7 +531,7 @@ var r = 0;  // grid row
   grid.setLabel ( 'Essential Tasks',r++,0,1,4 )
       .setFontSize('140%').setFontBold(true);
   grid.setLabel ( '&nbsp;',r++,0,1,4 ).setFontSize('40%');
-  var infotip = '<i>This list contains ' + appName() +
+  let infotip = '<i>This list contains ' + appName() +
                 ' tasks commonly used for structure completion after running ' +
                 'structure solution workflows. For full set of tasks, switch ' +
                 'to </i>"Full task list"<i> below.</i>';
@@ -506,7 +543,7 @@ var r = 0;  // grid row
   grid.setLabel ( infotip ,r++,0,1,4 ).setFontSize('90%');
   grid.setLabel ( '&nbsp;',r++,0,1,4 ).setFontSize('20%');
 
-  var task_list = [
+  let task_list = [
     "Refinement",
     new TaskRefmac       (),
     new TaskBuster       (),
@@ -585,7 +622,7 @@ var r = 0;  // grid row
 
 
 TaskListDialog.prototype.makeAutostartList = function ( grid )  {
-var r = 0;  // grid row
+let r = 0;  // grid row
 
   // grid.setLabel ( 'Autostart Project',r++,0,1,3 )
   //     .setFontSize('140%').setFontBold(true);
@@ -601,7 +638,7 @@ var r = 0;  // grid row
   grid.setLabel ( '<h3>Choose project template from options below that matches ' +
                   'your data best:</h3>',r++,0,1,4 );
 
-  var task_list = [
+  let task_list = [
     new TaskWFlowAMR (),
     new TaskWFlowAFMR(),
     new TaskWFlowSMR (),
@@ -609,7 +646,7 @@ var r = 0;  // grid row
     new TaskWFlowAEP ()
   ];
 
-  for (var i=0;i<task_list.length;i++)  {
+  for (let i=0;i<task_list.length;i++)  {
     if (task_list[i].file_select.length>0)
       task_list[i].inputMode = 'root'; // force 'at root mode' for the task
     if (this.setTask(task_list[i],grid,r,true,0))
@@ -695,7 +732,7 @@ TaskListDialog.prototype.makeMyWorkflowsList = function ( grid0,r0 )  {
 
 
 TaskListDialog.prototype.makeWorkflowsList = function ( grid )  {
-var r = 0;  // grid row
+let r = 0;  // grid row
 
   this._setting_wf = true;
 
@@ -716,7 +753,7 @@ var r = 0;  // grid row
   // if (this.dataBox.isEmpty())
   //   ccp4go_autoMR.inputMode = 'root'; // force 'at root mode' for the task
 
-  var task_list = [
+  let task_list = [
     "Workflows for starting a Project",
     new TaskWFlowAMR (),
     new TaskWFlowAFMR(),
@@ -778,31 +815,31 @@ var r = 0;  // grid row
 
 
 TaskListDialog.prototype.makeSuggestedList = function ( grid )  {
-var knowledge = getWfKnowledge ( this.branch_tasks[2],this.branch_tasks[1],
+let knowledge = getWfKnowledge ( this.branch_tasks[2],this.branch_tasks[1],
                                  this.branch_tasks[0] );
-var tasks     = knowledge.tasks;
-var counts    = knowledge.counts;
-var ctotal    = 0;
-var r         = 0;  // grid row
+let tasks     = knowledge.tasks;
+let counts    = knowledge.counts;
+let ctotal    = 0;
+let r         = 0;  // grid row
 
 //console.log ( knowledge );
 
-  for (var i=0;i<counts.length;i++)  {
-    for (var j=i+1;j<counts.length;j++)
+  for (let i=0;i<counts.length;i++)  {
+    for (let j=i+1;j<counts.length;j++)
       if (counts[j]>counts[i])  {
-        var t = tasks [i];  tasks [i] = tasks [j];  tasks [j] = t;
-        var c = counts[i];  counts[i] = counts[j];  counts[j] = c;
+        let t = tasks [i];  tasks [i] = tasks [j];  tasks [j] = t;
+        let c = counts[i];  counts[i] = counts[j];  counts[j] = c;
       }
     ctotal += counts[i];
   }
 
-  var cthresh = ctotal*__suggested_task_prob;
+  let cthresh = ctotal*__suggested_task_prob;
 // console.log ( 'ctotal='+ctotal + ',  cthresh='+cthresh );
 
-  for (var i=0;i<tasks.length;i++)
+  for (let i=0;i<tasks.length;i++)
     if ((i<__suggested_task_nmin) || (ctotal>=cthresh))  {
       //console.log ( 'task=' + tasks[i] + ',  ctotal=' + ctotal );
-      var task = eval ( 'new ' + tasks[i] + '()' );
+      let task = eval ( 'new ' + tasks[i] + '()' );
       if (this.setTask(task,grid,r,false,0))
         r++;
       ctotal -= counts[i];
@@ -820,7 +857,7 @@ let r       = 0;
 
   this.task_cnt = 0;
 
-  for (var n=0;n<task_list.length;n++)
+  for (let n=0;n<task_list.length;n++)
     if (task_list[n])  {
       if (typeof task_list[n] === 'string' || task_list[n] instanceof String) {
         section.grid.setLabel ( '&nbsp;',r++,0,1,3 ).setHeight_px(4);
@@ -930,7 +967,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
 //       'Recommended as first attempt or in easy cases',
 //       ccp4go_task
 //     ],true);
-  var section1 = this.section0;
+  let section1 = this.section0;
 
   if (__user_role==role_code.developer)  {
 
@@ -964,7 +1001,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
 
   }
 
-  var data_import_tasks = [
+  let data_import_tasks = [
     new TaskImport        (),
     new TaskImportSeqCP   (),
     new TaskImportPDB     (),
@@ -1103,7 +1140,6 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskNautilus     ()
   ],true);
 
-
   this.makeSection ( grid,'Refinement',[
     new TaskRefmac       (),
     new TaskBuster       (),
@@ -1164,7 +1200,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
     new TaskSeqAlign  (),
     new TaskSymMatch  ()
   ],true);
-  __local_setup
+  
   if (this.navail==1)
     this.section0.open();
   else if (section1)
@@ -1174,29 +1210,29 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
 
 
 TaskListDialog.prototype.makeAtoZList = function ( grid )  {
-var r = 0;  // grid row
+let r = 0;  // grid row
 
   grid.setLabel ( '<b>Filter by keyword(s):&nbsp;</b>',0,0,1,1 )
       .setNoWrap().setWidth('20%');
-  var kwd_inp = grid.setInputText ( '',0,1,1,1 ).setWidth('350px');
+  let kwd_inp = grid.setInputText ( '',0,1,1,1 ).setWidth('350px');
   grid.setLabel ( ' ',0,2,1,1 );
   grid.setHLine ( 2,1,0,1,3 );
   grid.setCellSize ( '10%','',0,0 );
   grid.setCellSize ( '30%','',0,1 );
   grid.setCellSize ( '60%','',0,2 );
 
-  var panel = grid.setGrid ( '',2,0,1,3 );
+  let panel = grid.setGrid ( '',2,0,1,3 );
 
-  for (var i=0;i<this.listAtoZ.length;i++)  {
-    for (var j=i+1;j<this.listAtoZ.length;j++)
+  for (let i=0;i<this.listAtoZ.length;i++)  {
+    for (let j=i+1;j<this.listAtoZ.length;j++)
       if (this.listAtoZ[j].title<this.listAtoZ[i].title)  {
-        var task = this.listAtoZ[i];
+        let task = this.listAtoZ[i];
         this.listAtoZ[i] = this.listAtoZ[j];
         this.listAtoZ[j] = task;
       }
   }
 
-  for (var i=0;i<this.listAtoZ.length;i++)
+  for (let i=0;i<this.listAtoZ.length;i++)
     if (this.setTask(this.listAtoZ[i],panel,r,true,0))
       r++;
 
@@ -1205,8 +1241,8 @@ var r = 0;  // grid row
   (function(self){
     kwd_inp.addOnInputListener ( function(){
       // console.log ( kwd_inp.getValue() );
-      var keywords = kwd_inp.getValue().toLowerCase().replace(/,/g,' ').match(/[^ ]+/g);
-      for (var i=0;i<self.listAtoZ.length;i++)
+      let keywords = kwd_inp.getValue().toLowerCase().replace(/,/g,' ').match(/[^ ]+/g);
+      for (let i=0;i<self.listAtoZ.length;i++)
         panel.setRowVisible ( i,self.listAtoZ[i].checkKeywords(keywords) );
     });
   }(this))
@@ -1219,5 +1255,3 @@ var r = 0;  // grid row
 TaskListDialog.prototype.getSelectedTask = function()  {
   return this.selected_task;
 }
-
-
