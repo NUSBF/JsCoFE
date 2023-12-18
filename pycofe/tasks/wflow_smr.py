@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.12.23   <--  Date of Last Modification.
+#    18.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -260,6 +260,20 @@ class WFlowSMR(import_task.Import):
                },self.file_stderr):
                 summary_line += "workflow started"
                 self.putMessage ( "<h3>Simple Molecular Replacement workflow started</hr>" )
+                if len(self.lig)>0:
+                    self.putMessage ( "<i>" + str(len(self.lig)) +\
+                                    " ligand(s) supplied. Workflow will fit structure " +\
+                                    "in reflection data, refine, fit ligand, find and " +\
+                                    "fit water molecules</i>" )
+                elif len(self.ligdesc)>0:
+                    self.putMessage ( "<i>" + str(len(self.ligdesc)) +\
+                                    " ligand description(s) supplied. Workflow will " +\
+                                    "fit structure in reflection data, refine, make and " +\
+                                    "fit ligand, find and fit water molecules</i>" )
+                else:
+                    self.putMessage ( "<i>No ligands supplied. Workflow will only fit " +\
+                                    "structure in reflection data, refine, find and fit " +\
+                                    "water molecules</i>" )
             else:
                 summary_line += "workflow start failed"
         else:

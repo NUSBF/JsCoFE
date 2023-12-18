@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    01.11.23   <--  Date of Last Modification.
+#    18.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,9 +30,8 @@ import os
 from . import basic
 from   pycofe.auto   import auto
 
-
 # ============================================================================
-# Make CCP4go driver
+# Make WFlowDPL driver
 
 # simulates ligand data structure that is normally coming from JS part
 class ligandCarrier():
@@ -40,7 +39,6 @@ class ligandCarrier():
         self.source = source
         self.smiles = smiles
         self.code = code
-
 
 class WFlowDPL(basic.TaskDriver):
 
@@ -63,9 +61,6 @@ class WFlowDPL(basic.TaskDriver):
         if hasattr(self.input_data.data,"ligand"):  # optional data parameter
             self.lig = self.input_data.data.ligand
             ligMessage = 'Workflow will use previously generated ligand ' + str(self.lig[0].code)
-
-        
-
 
         ldesc = getattr ( self.task.parameters.sec1,"contains" )
         if ldesc.SMILES.value or ldesc.CODE3.value:
@@ -101,12 +96,6 @@ class WFlowDPL(basic.TaskDriver):
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
 
-        self.putMessage("<h3>Starting Automatic Refinement and Ligand Fitting Workflow</h3>")
-        if ligMessage:
-            self.putMessage("<i>" + ligMessage + "</i>")
-        else:
-            self.putMessage("<i>No ligands supplied, Workflow will just refine the structure and fit waters</i>")
-
         self.task.autoRunName = "_root"
         have_results = False
         if auto.makeNextTask ( self, {
@@ -116,6 +105,11 @@ class WFlowDPL(basic.TaskDriver):
            }):
             summary_line += "workflow started"
             have_results  = True
+            self.putMessage ( "<h3>Starting Automatic Refinement and Ligand Fitting Workflow</h3>" )
+            if ligMessage:
+                self.putMessage ( "<i>" + ligMessage + "</i>")
+            else:
+                self.putMessage ( "<i>No ligands supplied, Workflow will just refine the structure and fit waters</i>")
         else:
             summary_line += "workflow start failed"
 

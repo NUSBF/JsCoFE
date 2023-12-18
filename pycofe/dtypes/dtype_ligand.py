@@ -3,20 +3,21 @@
 #
 # ============================================================================
 #
-#    08.10.22   <--  Date of Last Modification.
+#    18.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  LIGAND DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
 
 #  python native imports
 import os
-import sys
+# import sys
+import shutil
 
 #  application imports
 from . import dtype_template

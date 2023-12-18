@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.12.23   <--  Date of Last Modification.
+#    18.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -59,22 +59,63 @@ class MakeLigand(basic.TaskDriver):
                 revisions[i] = self.makeClass ( revisions[i] )
                 revisions[i].register ( self.outputDataBox )
 
+        iligand = None
+        if hasattr(self.input_data.data, "ligand"):
+            iligand = self.makeClass ( self.input_data.data.ligand[0] )
+
         # Prepare makeligand input
         # fetch input data
 
-        sourceKey = self.getParameter ( self.task.parameters.SOURCE_SEL )
+        sec1 = self.task.parameters.sec1.contains
+        sec2 = self.task.parameters.sec2.contains
+
+        sourceKey = self.getParameter ( sec1.SOURCE_SEL )
         cmd       = []
         xyzPath   = None
         mmcifPath = None
         cifPath   = None
         lig_path  = None
         code0     = None
-
+        code      = None
         
+        if sourceKey=="M" or iligand:
 
-        if sourceKey == "S":
-            smiles  = self.getParameter ( self.task.parameters.SMILES )
-            code    = self.getParameter ( self.task.parameters.CODE ).strip().upper()
+            lig_path = ""
+            if iligand:
+                code     = iligand.code
+                lig_path = iligand.getLibFilePath ( self.inputDir() )
+            else:
+                code     = self.getParameter ( sec1.CODE3 ).upper()
+                lig_path = os.path.join ( os.environ["CCP4"],"lib","data","monomers",
+                                          code[0].lower(),code + ".cif" )
+            xyzPath  = code + ".pdb"
+            cifPath  = code + ".cif"
+
+            if os.path.isfile(lig_path):
+                # make AceDrg command line
+                cmd = [ "-c",lig_path,"-r",code,"-o",code ]
+                # check if we need to run AceDrg at all: is AceDrg forced and
+                # are XYZ coordinates found in Monomer Library Entry?
+                if self.getParameter(sec1.FORCE_ACEDRG_CBX)=="False":
+                    # AceDrg is not forced by user
+                    block = cif.read(lig_path)[-1]
+                    if block.find_values('_chem_comp_atom.x'):
+                        # XYZ coordinates are found in dictionary, just copy
+                        # them over
+                        st = gemmi.make_structure_from_chemcomp_block ( block )
+                        # st[0][0][0].seqid = gemmi.SeqId('1')
+                        st.write_pdb ( xyzPath )
+                        cmd = []  # do not use AceDrg
+                
+            else:
+                self.putMessage ( "<h3>Ligand \"" + code +\
+                                  "\" is not found in CCP4 Monomer Library.</h3>" )
+                code = None  # signal not to continue with making ligand
+
+        else:  # generate from SMILES string
+
+            smiles  = self.getParameter ( sec1.SMILES )
+            code    = self.getParameter ( sec1.CODE ).strip().upper()
 
             if not code:
                 exclude_list = []
@@ -108,35 +149,8 @@ class MakeLigand(basic.TaskDriver):
             else:
                 self.putMessage ( "<h3>Failed to generate ligand code.</h3>" )
 
-        else:
-            code     = self.getParameter ( self.task.parameters.CODE3 ).upper()
-            xyzPath  = code + ".pdb"
-            cifPath  = code + ".cif"
-            lig_path = os.path.join(os.environ["CCP4"],"lib","data","monomers",
-                                      code[0].lower(),code + ".cif" )
-            if os.path.isfile(lig_path):
-                # make AceDrg command line
-                cmd = [ "-c",lig_path,"-r",code,"-o",code ]
-                # check if we need to run AceDrg at all: is AceDrg forced and
-                # are XYZ coordinates found in Monomer Library Entry?
-                if self.getParameter(self.task.parameters.FORCE_ACEDRG_CBX)=="False":
-                    # AceDrg is not forced by user
-                    block = cif.read(lig_path)[-1]
-                    if block.find_values('_chem_comp_atom.x'):
-                        # XYZ coordinates are found in dictionary, just copy
-                        # them over
-                        st = gemmi.make_structure_from_chemcomp_block ( block )
-                        # st[0][0][0].seqid = gemmi.SeqId('1')
-                        st.write_pdb ( xyzPath )
-                        cmd = []  # do not use AceDrg
-                
-            else:
-                self.putMessage ( "<h3>Ligand \"" + code + "\" is not found in CCP4 Monomer Library.</h3>" )
-                code = None  # signal not to continue with making ligand
-        sec2        = self.task.parameters.sec2.contains
-        if self.getParameter (sec2.NOPROT)=="True":
-                    cmd += ["-K"]
-
+        if self.getParameter(sec2.NOPROT)=="True":
+            cmd += ["-K"]
 
         if self.getParameter (sec2.NUMINITCONFORMERS)!="":
             cmd += ["-j",self.getParameter(sec2.NUMINITCONFORMERS)]
@@ -206,7 +220,11 @@ class MakeLigand(basic.TaskDriver):
                         "revision" : revNext
                     })
 
-                summary_line = "ligand \"" + code + "\" prepared"
+                summary_line = "ligand \"" + code + "\" "
+                if sourceKey=="M" or iligand:
+                    summary_line += "reprocessed"
+                else:
+                    summary_line += "prepared"
 
         else:
             self.putTitle ( "No Ligand Structure Created" )
