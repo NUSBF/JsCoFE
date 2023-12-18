@@ -1881,7 +1881,7 @@ Checkbox.prototype.setValue = function ( checked_bool ) {
 Checkbox.prototype.setDisabled = function ( disabled_bool )  {
   if (disabled_bool)
         $(this.checkbox).checkboxradio( "disable" );
-  else  $(this.checkbox).checkboxradio( "enable" );
+  else  $(this.checkbox).checkboxradio( "enable"  );
   return this;
 }
 
