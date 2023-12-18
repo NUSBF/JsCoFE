@@ -1,0 +1,16 @@
+====================
+Contact calculations
+====================
+
+This task computes various types of contacts in protein structures using 
+CONTACT program from CCP4. It can also analyse water hydrogen bonding.
+
+The task requires a user to set up keyword-value pairs directly, using
+`CONTACT documentation <https://www.ccp4.ac.uk/html/contact.html>`_.
+
+.. note::
+        The task uses XYZ data from the chosen input object and does not create 
+        any output data objects. All output (which is list of contacts) is 
+        found in the *Main Log* tab and may be downloaded as a text file using 
+        the *Download* button provided in the main *Report* tab.
+

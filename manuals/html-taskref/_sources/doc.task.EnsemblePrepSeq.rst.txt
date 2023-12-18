@@ -1,0 +1,15 @@
+=================================
+Prepare MR Ensemble from Sequence
+=================================
+
+**MR Ensembles** are superposed sets of sufficiently similar MR models, corresponding to the same target sequence. Using ensembles instead of singe models often increases chances of successful Molecular Replacement. This task uses :doc:`MrBump <doc.task.MrBump>` software to prepare MR Ensembles for given target sequence. The process is completely automatic and includes finding suitable structure homologs in the PDB and, optionally, AlphaFold 2 database, trimming them and bringing in best superposition. 
+
+The task may prepare several MR Ensembles up to the specified number, depending on the quality of models found.
+
+**REFERENCES**
+
+`Keegan, R.M., McNicholas, S.J., Thomas, J.M.H., Simpkin, A.J., Simkovic, F., Uski, V., Ballard, C.C., Winn, M.D., Wilson, K.S., Rigden, D.J. (2018) Recent developments in MrBUMP: better search-model preparation, graphical interaction with search models, and solution improvement and assessment. Acta Cryst. D74: 167-182; <http://scripts.iucr.org/cgi-bin/paper?S2059798318003455>`_
+
+`Durbin, R., Eddy, S. R., Krogh, A., and Mitchison, G. J. (1998) Biological Sequence Analysis: Probabilistic Models of Proteins and Nucleic Acids. Cambridge University Press ; <https://www.cambridge.org/core/books/biological-sequence-analysis/921BB7B78B745198829EF96BC7E0F29D>`_
+
+`Jumper, J., Evans, R., Pritzel, A. et al. Highly accurate protein structure prediction with AlphaFold. Nature 596, 583–589 (2021). <https://doi.org/10.1038/s41586-021-03819-2>`_

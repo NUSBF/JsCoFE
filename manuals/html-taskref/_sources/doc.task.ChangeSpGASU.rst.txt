@@ -1,0 +1,23 @@
+======================
+Change ASU Space Group
+======================
+
+In case you need to change a space group you can use |changespgasu| **Change ASU Space Group** tool.
+
+
+.. |changespgasu| image:: images/task_changespgasu.png
+    :width: 16
+    :height: 16
+
+
+.. image:: images/changeASU.png
+         :scale: 60 %
+         :align: center
+
+
+There are 230 different ways to combine the allowed symmetry operations in a crystal, leading to 230 space groups. They can be found in the `International Tables for Crystallography <https://it.iucr.org/Ac/>`_
+
+You can also find space group diagrams `here <http://img.chem.ucl.ac.uk/sgp/mainmenu.htm>`_
+
+You can find out more about space group by reading `Crystallographic shelves: space-group hierarchy explained <https://journals.iucr.org/j/issues/2018/05/00/in5013/index.html>`_ article
+

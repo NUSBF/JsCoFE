@@ -251,11 +251,13 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#clientsetup--page-root" class="md-nav__link">10. CCP4 Cloud Client Setup</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#ms-windows" class="md-nav__link">10.1. MS Windows</a>
+        <li class="md-nav__item"><a href="#ms-windows" class="md-nav__link">10.1. MS Windows</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#linux" class="md-nav__link">10.1.1. Linux</a>
         </li>
-        <li class="md-nav__item"><a href="#linux" class="md-nav__link">10.2. Linux</a>
-        </li>
-        <li class="md-nav__item"><a href="#mac-osx" class="md-nav__link">10.3. Mac OSX</a>
+        <li class="md-nav__item"><a href="#mac-osx" class="md-nav__link">10.1.2. Mac OSX</a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -266,21 +268,21 @@
     
     
       <a href="#ms-windows" class="md-nav__link">10.1. MS Windows</a>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="#linux" class="md-nav__link">10.1.1. Linux</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="#linux" class="md-nav__link">10.2. Linux</a>
+      <a href="#mac-osx" class="md-nav__link">10.1.2. Mac OSX</a>
       
     
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="#mac-osx" class="md-nav__link">10.3. Mac OSX</a>
-      
+    </li></ul>
     
     </li></ul>
     
@@ -315,11 +317,13 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#clientsetup--page-root" class="md-nav__link">10. CCP4 Cloud Client Setup</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#ms-windows" class="md-nav__link">10.1. MS Windows</a>
+        <li class="md-nav__item"><a href="#ms-windows" class="md-nav__link">10.1. MS Windows</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#linux" class="md-nav__link">10.1.1. Linux</a>
         </li>
-        <li class="md-nav__item"><a href="#linux" class="md-nav__link">10.2. Linux</a>
-        </li>
-        <li class="md-nav__item"><a href="#mac-osx" class="md-nav__link">10.3. Mac OSX</a>
+        <li class="md-nav__item"><a href="#mac-osx" class="md-nav__link">10.1.2. Mac OSX</a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -334,6 +338,12 @@
             
   <section id="ccp4-cloud-client-setup">
 <h1 id="clientsetup--page-root"><span class="section-number">10. </span>CCP4 Cloud Client Setup<a class="headerlink" href="#clientsetup--page-root" title="Permalink to this heading">¶</a></h1>
+<hr class="docutils"/>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This article applies only to CCP4 Setups series 7.0; in later series,
+Client setup is automatic and does not require any manual intervention.</p>
+</div>
 <section id="ms-windows">
 <h2 id="ms-windows"><span class="section-number">10.1. </span>MS Windows<a class="headerlink" href="#ms-windows" title="Permalink to this heading">¶</a></h2>
 <p><strong>Installation</strong></p>
@@ -354,9 +364,8 @@ CCP4 Cloud – simply double-click on the <em>remote</em> or <em>local</em> icon
 <p>The <em>configuration</em> icon starts a configuration editor that allows you
 to change web-browser, switch to different CCP4 Cloud server (e.g. the one that
 might have been installed in your lab) and apply updates.</p>
-</section>
 <section id="linux">
-<h2 id="linux"><span class="section-number">10.2. </span>Linux<a class="headerlink" href="#linux" title="Permalink to this heading">¶</a></h2>
+<h3 id="linux"><span class="section-number">10.1.1. </span>Linux<a class="headerlink" href="#linux" title="Permalink to this heading">¶</a></h3>
 <p><strong>Installation</strong></p>
 <ol class="arabic simple">
 <li><p>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4-7.0-setup-linux.tar.gz" rel="noopener noreferrer" target="_blank">ccp4-7.0-setup-linux.tar.gz</a>.</p></li>
@@ -413,7 +422,7 @@ $ /path/to/ccp4cloud/bin/ccp4cloud-remote.sh
 </div>
 </section>
 <section id="mac-osx">
-<h2 id="mac-osx"><span class="section-number">10.3. </span>Mac OSX<a class="headerlink" href="#mac-osx" title="Permalink to this heading">¶</a></h2>
+<h3 id="mac-osx"><span class="section-number">10.1.2. </span>Mac OSX<a class="headerlink" href="#mac-osx" title="Permalink to this heading">¶</a></h3>
 <p><strong>Installation</strong></p>
 <ol class="arabic simple">
 <li><p>Download <a class="reference external" href="http://ccp4serv7.rc-harwell.ac.uk/jscofe-alpha/downloads/ccp4-7.0-setup.dmg" rel="noopener noreferrer" target="_blank">ccp4-7.0-setup.dmg</a>.</p></li>
@@ -479,6 +488,7 @@ and execute command <code class="docutils literal notranslate"><span class="pre"
 from p.2, and execute command <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">spctl</span> <span class="pre">--master-enable</span></code> (details may read
 <a class="reference external" href="http://osxdaily.com/2016/09/27/allow-apps-from-anywhere-macos-gatekeeper/" rel="noopener noreferrer" target="_blank">here</a>).</p></li>
 </ol>
+</section>
 </section>
 </section>
 

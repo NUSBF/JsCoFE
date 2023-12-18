@@ -1,0 +1,39 @@
+=====================
+Molecular Replacement
+=====================
+
+    **are efficient for model preparation and for those cases with an existed homolog of unknown structure**
+
+electron density in a crystal can be obtained by calculating the Fourier summation:
+
+.. image:: images/Fourier_transform.PNG
+         :scale: 50 %
+         :align: center
+
+in which **|F(h k l)|** is the structure factor amplitude of reflection (h k l), including the temperature factor, and **α(h k l)** is the phase angle. **x**, **y**, and **z** are coordinates in the unit cell. 
+
+From the diffraction pattern, the values of **I (h k l)** are obtained after applying the some correction factors. Because I(h k l) =|F(h k l)| :superscript:`2`, then amplitudes **|F(h k l)|** can be found. 
+
+**We can’t measure the phases X-ray detectors**. We can measure only the intensity of the X-rays (which is the amplitude squared). It's create a phase problem, and by solving this problem we can solved the crystal structure.
+
+You can find `here <http://www.cristal.org/DU-SDPD/nexus/teach/fourier/fourier.html>`_ how important the phase infomation is.
+
+**Molecular replacement** is the process of solving the phase problem for an unknown structure by placing the atomic model known structure in the unit cell of the unknown structure by trying all possible orientations and positions and picking the one which gives the best fit to the observed data. Once we do so we can calculate approximate structure factors phases which, in combination with the observed structure factors for the unknown structure, allow the model to be rebuilt and refined.
+
+Molecular Replacement is based on the assumption that target structure has a **highly similar structural homologue**, which may be found by, e.g. matching target's sequence to sequences of known PDB structures. You can create a model for Molecular Replacement by using **MR model preparation** tasks within CCP4 Cloud.
+
+.. note::
+        Molecular replacement can fail, if the model does not match the unknown structure (insufficiently homologous or changed conformation). 
+
+In case you have a homologous protein structure you can use: 
+
+
+.. toctree::
+    :maxdepth: 2
+    
+    doc.task.MR_model_preparation
+    doc.task.Phaser
+    doc.task.Molrep
+    
+.. hint::   
+        If you cannot create a suitable module, you can try programs for **Automated Molecular Replacement**.

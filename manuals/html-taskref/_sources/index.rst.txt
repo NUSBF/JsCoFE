@@ -1,0 +1,56 @@
+.. jscofe documentation master file, created by
+   sphinx-quickstart on Sat Nov  4 16:09:10 2017.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+==============
+Task Reference
+==============
+
+.. toctree::
+   :maxdepth: 2
+
+   Workflows
+   Data_Import
+   Structure_prediction
+   Data_Processing
+   Asymmetric_Unit_and_Structure_Revision
+   Automated_Molecular_Replacement
+   Molecular_Replacement
+   Fragment-Based_Molecular_Replacement
+   Experimental_Phasing
+   Density_Modification
+   Refinement_and_Model_Building
+   COOT
+   Ligands
+   Validation_Analysis_and_Deposition
+   Toolbox
+   
+
+======
+Search
+======
+
+* :ref:`search`
+
+========================
+Authors and Contributors
+========================
+
+Task Reference for CCP4 Cloud was prepared by
+    - *Maria Fando (CCP4, STFC, Harwell, UK)*
+    - *Eugene Krissinel (CCP4, STFC, Harwell, UK)*
+    
+with help and contributions from
+    - *Andrey Lebedev (CCP4, STFC, Harwell, UK)*
+    - *Robert Nicholls (MRC-LMB, Cambridge, UK)*
+    - *Garib Murshudov (MRC-LMB, Cambridge, UK)*
+    - *Pavol Skubak (Leiden University Medical Centre, Leiden, The Netherlands)*
+
+
+Please send documentation-related questions and suggestions to: `CCP4 Cloud Reception`_ .
+
+.. _CCP4 Cloud Reception: ccp4_cloud@listserv.stfc.ac.uk?Subject=CCP4%20Cloud%20question
+
+
+

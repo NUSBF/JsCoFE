@@ -1,0 +1,21 @@
+=======================================
+Find and prepare MR models with MrParse
+=======================================
+
+MrParse identifies structural homologs based on a target sequence, suitable for making MR search models. It searches both the PDB and AFDB (EBI AlphaFold Data Base) for hits. In addition, for sequences of of less than 350 residues, it will make use of the `ESMFold <https://esmatlas.com/>`_ API  to generate a prediction. Relevant structures are selected on the basis of sequence alignment with `PHMMER <http://hmmer.org/>`_ software. PHMMER implements methods using probabilistic models called profile hidden Markov Models, and is considered to be one of the most sensitive sequence-comparison software. 
+
+Found structure homologs are then trimmed to maximise their resemblance to the target sequence and increase the chance of success in Molecular Replacement. If reflection data set is provided (recommended), MrParse uses the Phaser software to calculate eLLG scores for MR models found `[Oeffner, 2018] <https://doi.org/10.1107/S2059798318004357>`_. MR models with higher eLLG are almost certainly better for Molecular Replacement than models with lower eLLG scores and should be tried first.
+
+MR search models, prepared by the MrParse task, may be used in Molecular Replacement tasks (Phaser-MR or Molrep) directly, or assembled in  :doc:`MR Ensembles <doc.task.Ensembler>` before phasing, which may increase chances for success.
+
+
+**REFERENCES**
+
+`Durbin, R., Eddy, S. R., Krogh, A., and Mitchison, G. J. (1998) Biological Sequence Analysis: Probabilistic Models of Proteins and Nucleic Acids. Cambridge University Press ; <https://www.cambridge.org/core/books/biological-sequence-analysis/921BB7B78B745198829EF96BC7E0F29D>`_
+
+
+`Söding J. (2005) Protein homology detection by HMM-HMM comparison. Bioinformatics 21: 951-960. PMID: 15531603 <https://www.ncbi.nlm.nih.gov/pubmed/15531603>`_
+
+`Zimmermann L, Stephens A, Nam SZ, Rau D, Kübler J, Lozajic M, Gabler F, Söding J, Lupas AN. (2018) A Completely Reimplemented MPI Bioinformatics Toolkit with a New HHpred Server at its Core. Alva V. J Mol Biol. S0022-2836(17)30587-9. <http://www.sciencedirect.com/science/article/pii/S0022283617305879>`_
+
+`Oeffner, R. D., Afonine, P. V., Millán, C., Sammito, M., Usón, I., Read, R. J., & McCoy, A. J. (2018). On the application of the expected log-likelihood gain to decision making in molecular replacement. Acta crystallographica. Section D, Structural biology, 74(Pt 4), 245–255. <https://doi.org/10.1107/S2059798318004357>`_

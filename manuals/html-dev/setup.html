@@ -517,9 +517,9 @@
 </section>
 <section id="setup-procedure">
 <h2 id="setup-procedure"><span class="section-number">1.2. </span>Setup procedure<a class="headerlink" href="#setup-procedure" title="Permalink to this heading">¶</a></h2>
-<p>All actions, except 1 and 9, should be done in the designated CCP4 Cloud account on respective hosts (excluding <a class="reference internal" href="#appendix-f"><span class="std std-ref">Apache configuration</span></a>).</p>
+<p>All actions, except 1 and 9, should be done in the designated CCP4 Cloud account on respective hosts (excluding <a class="reference internal" href="small_lab_setup.html#appendix-f"><span class="std std-ref">Apache configuration</span></a>).</p>
 <ol class="arabic">
-<li><p>Install CCP4 (see details in <a class="reference internal" href="#appendix-a"><span class="std std-ref">Appendix A</span></a>).</p></li>
+<li><p>Install CCP4 (see details in <a class="reference internal" href="small_lab_setup.html#appendix-a"><span class="std std-ref">Appendix A</span></a>).</p></li>
 <li><p>Download and unpack the CCP4 Cloud setup tarball (choose convenient disk area visible from all servers, or repeat the following command on every host):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span>
 <span class="n">cd</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span>
@@ -549,13 +549,13 @@
 </ol>
 <p>At list one disk must be allocated for user and project data. Additional disks (<code class="docutils literal notranslate"><span class="pre">disk2</span></code> in this example) may be added later.</p>
 <ol class="arabic" start="5">
-<li><p>Make necessary changes in <strong>NC</strong> configuration files (see details in <a class="reference internal" href="#appendix-b"><span class="std std-ref">Appendix B</span></a>):</p>
+<li><p>Make necessary changes in <strong>NC</strong> configuration files (see details in <a class="reference internal" href="small_lab_setup.html#appendix-b"><span class="std std-ref">Appendix B</span></a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">json</span>
 <span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">json</span>
 </pre></div>
 </div>
 </li>
-<li><p>Make necessary changes in <strong>FE</strong> configuration file (see details in <a class="reference internal" href="#appendix-c"><span class="std std-ref">Appendix C</span></a>):</p>
+<li><p>Make necessary changes in <strong>FE</strong> configuration file (see details in <a class="reference internal" href="small_lab_setup.html#appendix-c"><span class="std std-ref">Appendix C</span></a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">FE</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">json</span>
 </pre></div>
 </div>
@@ -568,18 +568,18 @@
 </div>
 </div></blockquote>
 <ol class="arabic" start="7">
-<li><p>Make necessary changes in <strong>NC(s)</strong> start script(s) (see details in <a class="reference internal" href="#appendix-d"><span class="std std-ref">Appendix D</span></a>):</p>
+<li><p>Make necessary changes in <strong>NC(s)</strong> start script(s) (see details in <a class="reference internal" href="small_lab_setup.html#appendix-d"><span class="std std-ref">Appendix D</span></a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
 <span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 </li>
-<li><p>Make necessary changes in <strong>FE</strong> start script (see details in <a class="reference internal" href="#appendix-e"><span class="std std-ref">Appendix E</span></a>):</p>
+<li><p>Make necessary changes in <strong>FE</strong> start script (see details in <a class="reference internal" href="small_lab_setup.html#appendix-e"><span class="std std-ref">Appendix E</span></a>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vi</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">FE</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">fe</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 </li>
-<li><p>Modify Apache configuration <em>on every host</em> (see details in <a class="reference internal" href="#appendix-f"><span class="std std-ref">Appendix F</span></a>)</p></li>
+<li><p>Modify Apache configuration <em>on every host</em> (see details in <a class="reference internal" href="small_lab_setup.html#appendix-f"><span class="std std-ref">Appendix F</span></a>)</p></li>
 <li><p>Start CCP4 Cloud servers:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC1</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
 <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">NC2</span><span class="o">/</span><span class="n">start</span><span class="o">-</span><span class="n">nc</span><span class="o">.</span><span class="n">sh</span>
@@ -593,8 +593,8 @@
 <p>you may receive a confusing message <em>‘’configuration file not found’’</em> here. This may be indeed due to a typo in configuration file paths within the scripts, but also because of misformatted configuration file(s). Typically, extra commas between JSON items are introduced or get omitted at manual editing.</p>
 </div>
 <ol class="arabic" start="11">
-<li><p>Perform checks and tests (see details in <a class="reference internal" href="#appendix-g"><span class="std std-ref">Appendix G</span></a>).</p></li>
-<li><p>Create CCP4 Cloud user with administrative privileges (see details in <a class="reference internal" href="#appendix-h"><span class="std std-ref">Appendix H</span></a>)</p></li>
+<li><p>Perform checks and tests (see details in <a class="reference internal" href="small_lab_setup.html#appendix-g"><span class="std std-ref">Appendix G</span></a>).</p></li>
+<li><p>Create CCP4 Cloud user with administrative privileges (see details in <a class="reference internal" href="small_lab_setup.html#appendix-h"><span class="std std-ref">Appendix H</span></a>)</p></li>
 <li><p>Delete the temporary setup directory (optional)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span>
 </pre></div>
@@ -869,7 +869,7 @@ exit
 </dd>
 <dt><strong>log_file</strong></dt><dd><p>this is optional but useful configuration, which is used to split excessively long log files in chunks.</p>
 </dd>
-<dt><strong>Emailer</strong></dt><dd><p>this configuration is the same as in <a class="reference internal" href="#ccp4-cloud-emailer"><span class="std std-ref">case of NC</span></a>.</p>
+<dt><strong>Emailer</strong></dt><dd><p>this configuration is the same as in <a class="reference internal" href="small_lab_setup.html#ccp4-cloud-emailer"><span class="std std-ref">case of NC</span></a>.</p>
 </dd>
 </dl>
 </section>
@@ -900,7 +900,7 @@ exit
 <span id="appendix-f"></span><h2 id="appendix-f-adjusting-apache-configuration-on-host-machines"><span class="section-number">1.11. </span>Appendix F. Adjusting Apache configuration on host machines<a class="headerlink" href="#appendix-f-adjusting-apache-configuration-on-host-machines" title="Permalink to this heading">¶</a></h2>
 <p>CCP4 Cloud’s Front-End Server listens to the specified port of the <em>localhost</em> service running on their host machines. External requests from users must be redirected to that port. In order to do that:</p>
 <ol class="arabic">
-<li><p>Note the port number and <code class="docutils literal notranslate"><span class="pre">externalURL's</span></code> path in <strong>FE</strong> <a class="reference internal" href="#appendix-c"><span class="std std-ref">configuration</span></a>. In this document, the suggested values are <code class="docutils literal notranslate"><span class="pre">8085</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;=ccp4cloud</span></code>, respectively.</p></li>
+<li><p>Note the port number and <code class="docutils literal notranslate"><span class="pre">externalURL's</span></code> path in <strong>FE</strong> <a class="reference internal" href="small_lab_setup.html#appendix-c"><span class="std std-ref">configuration</span></a>. In this document, the suggested values are <code class="docutils literal notranslate"><span class="pre">8085</span></code> and <code class="docutils literal notranslate"><span class="pre">&lt;path&gt;=ccp4cloud</span></code>, respectively.</p></li>
 <li><p>Identify site directory of your Apache setup. In Debian-based systems, this is typically <code class="docutils literal notranslate"><span class="pre">apache_site_dir=/etc/apache2/sites-enabled</span></code>, and in Redhat-based systems <code class="docutils literal notranslate"><span class="pre">apache_site_dir=/etc/httpd/conf.d</span></code></p></li>
 <li><p>Edit and install the provided template configuration module for Apache:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span><span class="o">/</span><span class="n">ccp4cloud</span><span class="o">-</span><span class="n">setup</span><span class="o">/</span><span class="n">apache</span><span class="o">.</span><span class="n">conf</span> <span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">setup</span><span class="o">-</span><span class="n">tmp</span><span class="o">/&lt;</span><span class="n">path</span><span class="o">&gt;.</span><span class="n">conf</span>

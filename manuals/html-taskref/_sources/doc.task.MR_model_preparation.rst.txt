@@ -1,0 +1,43 @@
+==========================================
+Molecular Replacement Models and Ensembles
+==========================================
+
+**MR Search Models** are structural templates prepared for use in molecular replacement programs (Phaser and Molrep). For the success of Molecular Replacement, MR model should be sufficiently similar to the target structure. As a rough guideline, MR models should be made from structural homologs with r.m.s.d. better than 2.5 angstrom (1.5 Å and better is desirable) from the target structure and sequence identity of more than 30%. If the homolog is highly similar to the target protein, it can be taken for MR model as a whole, unmodified. However, in many cases, the homolog should be trimmed by removing structural features that are distinctly different from the expected structure. Such trimming is done on the basis of sequence comparison. In CCP4 Cloud, MR search model is associated with the sequence it represents, which is used for informing MR programs on subsequent stages.
+
+A well-chosen and optimised search model has two key advantages:
+
+    1. Facilitates finding the correct position by MR program and hence more sensible initial phases
+
+    2. Facilitates quicker and easier model building and refinement post MR
+
+The success of Molecular Replacement may be noticeably increased if MR programs are given more than one model for each target sequence. This assumes that the models are derived from structure homologs with some degree of diversity, which gives MR programs more chances to choose the optimal orientation for their "average". In this approach, MR models, associated with the same target sequence, are superposed on each other and assembled in packs called **MR Ensembles**, which can be used in MR programs in exactly the same way as individual MR models. Like MR models, MR Ensembles are associated with the target sequence they represent, for further informing MR programs in a seamless way.
+
+MR Search Model(s) and/or MR Ensemble(s) must be prepared before molecular replacement with either Phaser or Molrep. CCP4 Cloud contains several tasks for this purpose.
+
+.. toctree::
+    :maxdepth: 2
+
+    doc.task.StructurePrediction
+    doc.task.MrParse
+    doc.task.ModelPrepXYZ
+    doc.task.ModelPrepAlgn
+    doc.task.ModelPrepMC
+    doc.task.Slice
+    doc.task.Ensembler
+    doc.task.EnsemblePrepSeq
+    doc.task.EnsemblePrepXYZ
+    doc.task.EnsemblePrepMG
+
+
+
+**References**
+
+`R. Schwarzenbacher et al., (2004) Acta Cryst. D60, 1229 - 1236. The importance of alignment accuracy for molecular replacement. <https://scripts.iucr.org/cgi-bin/paper?gx5015>`_
+
+`Lebedev A., Vagin A., Murshudov G. (2008).  Model preparation in MOLREP and examples of model improvement using X-ray data. pp. 33–39, Acta Cryst. D64 <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/>`_
+
+`Phaser Wiki <https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement>`_
+
+`N. Stein, (2008) J. Appl. Cryst. 41, 641 - 643. CHAINSAW: a program for mutating pdb files used as templates in molecular replacement. <https://scripts.iucr.org/cgi-bin/paper?dd5033>`_
+
+`Keegan, R. M., McNicholas, S. J., Thomas, J. M. H., Simpkin, A. J., Simkovic, F., Uski, V., Ballard, C. C., Winn, M. D., Wilson, K. S. & Rigden, D. J. (2018). Acta Cryst. D74, 167-182. <https://journals.iucr.org/d/issues/2018/03/00/rr5152/>`_

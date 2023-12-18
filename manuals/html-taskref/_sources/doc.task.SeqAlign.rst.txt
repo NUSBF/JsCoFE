@@ -1,0 +1,10 @@
+================================
+Sequence Alignment with ClustalW
+================================
+
+This task aligns two or more sequences using ``ClustalW`` software. The task can use sequences represented by sequence data objects and extracted from atomic coordinates (``XYZ`` and ``Structure`` data types). ``ClustalW`` is run with default parameters.
+
+
+**References**
+
+`Larkin, M.A., Blackshields, G., Brown, N.P., Chenna, R., McGettigan, P.A., McWilliam, H., Valentin, F., Wallace, I.M., Wilm, A., Lopez, R., Thompson, J.D., Gibson, T.J., Higgins, D.G. (2007) Clustal W and Clustal X version 2.0. Bioinformatics 23: 2947-2948; <https://academic.oup.com/bioinformatics/article/23/21/2947/371686>`_

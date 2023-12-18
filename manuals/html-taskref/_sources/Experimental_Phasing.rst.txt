@@ -1,0 +1,38 @@
+====================
+Experimental Phasing
+====================
+
+electron density in a crystal can be obtained by calculating the Fourier summation:
+
+.. image:: images/Fourier_transform.PNG
+         :scale: 50 %
+         :align: center
+
+in which **|F(h k l)|** is the structure factor amplitude of reflection (h k l), including the temperature factor, and **α(h k l)** is the phase angle. **x**, **y**, and **z** are coordinates in the unit cell. 
+
+From the diffraction pattern, the values of **I (h k l)** are obtained after applying the some correction factors. Because I(h k l) =|F(h k l)| :superscript:`2`, then amplitudes **|F(h k l)|** can be found. 
+
+In principle, five techniques exist for solving the phase problem in protein X-ray crystallography:
+
+1. The isomorphous replacement method, which requires the attachment of heavy atoms (atoms with high atomic number) to the protein molecules in the crystal.
+
+2. The multiple wavelength anomalous diffraction method. It depends on the presence of sufficiently strong anomalously scattering atoms in the protein structure itself. Anomalous scattering occurs if the electrons in an atom cannot be regarded as free electrons.
+
+3. The single-wavelength anomalous diffraction method
+
+4. The molecular replacement method, for which the similarity of the unknown structure to an already known structure is a prerequisite.
+ 
+5. Direct methods. In the context of macromolecular crystallography, this approach is used in substructure determination, and at very high resolution (beyond 1.2 Å)
+
+The multiple- and single-wavelength diffraction methods do not necessarily depend on the attachment of a heavy-atom-containing reagent to the protein, but they do require the presence of an anomalously scattering atom and this can be a heavy atom inherent to the protein. 
+
+Use `fprime <https://www.ccp4.ac.uk/fprime/>`_ to calculates anomalous scattering factors (f' and f") using the `Cromer-Liberman <https://scripts.iucr.org/cgi-bin/paper?S0567739481000600>`_ algorithm with corrections from `Kissel and Pratt <https://scripts.iucr.org/cgi-bin/paper?S0108767389010718>`_. 
+
+In case you have anomalous diffraction dataset use:
+
+.. toctree::
+    :maxdepth: 2
+    
+    doc.task.Crank2
+    doc.task.Phaser
+    doc.task.SHELX

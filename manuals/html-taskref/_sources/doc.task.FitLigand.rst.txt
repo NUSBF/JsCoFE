@@ -1,0 +1,18 @@
+=============================
+Find and Fit Ligand with Coot
+=============================
+
+This task is used for the automatic fitting of ligands into electron-density maps with `Coot <https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/>`_
+
+The user is offered a selection of `electron density maps <https://www.rcsb.org/docs/general-help/x-ray-electron-density-maps>`_ to search: map showing all features (**2Fo-Fc**) or difference map (**Fo-Fc**), which shows where the model fails to account for the map
+
+**Search level**: Can be set manually, **1 σ** in case of **2Fo-Fc** map search and **2 σ's** for **Fo-Fc** search are recommended.
+
+If the **Flexible fit** check button is activated, the task will generate a number of variable conformations (according to the value of samples box) by rotating around the rotatable bonds. Each of these conformations will be fitted to each of the potential ligand sites in the map and the best one will be selected (if it passes the fitting criteria).
+
+Please refer to the `The Coot User Manual <https://www2.mrc-lmb.cam.ac.uk/personal/pemsley/coot/web/docs/coot.html#Find-Ligands>`_ for further details.
+
+
+**References**
+
+`Emsley, P., Lohkamp, B., Scott, W.G., Cowtan, K. (2010) Features and development of Coot. Acta Cryst. D66: 486-501; doi:10.1107/S0907444910007493 <https://doi.org/10.1107/S0907444910007493>`_

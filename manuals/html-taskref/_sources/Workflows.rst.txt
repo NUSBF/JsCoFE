@@ -1,0 +1,17 @@
+===================
+Automatic workflows
+===================
+
+Automatic workflows feature structure solution scenarios, such as Molecular Replacement or Experimental Phasing, which include several elementary tasks. A workflow can start with data import and then attempt phasing, model building, refinement, ligand fitting, solvent modelling and preparing results for PDB deposition.
+
+A workflow will develop the *Project Tree* and perform all elementary steps automatically, exploring different ways of structure solution and using various tasks as appropriate. For data of sufficiently high resolution, completeness and quality (no crystal pathologies), automatic workflow can produce a reasonable approximation to final structure. The result may be further improved with elementary task in manual mode, allowing a finer control over tasks' parameters.
+
+Not only the workflows can reduced chore, but they may also be used for better understanding the structure solution strategy.
+
+.. toctree::
+    :maxdepth: 2
+        
+    doc.task.WFlowAEP
+    doc.task.WFlowAMR
+    doc.task.WFlowAFMR
+    doc.task.WFlowREL

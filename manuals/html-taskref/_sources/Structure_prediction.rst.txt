@@ -1,0 +1,8 @@
+====================
+Structure Prediction
+====================
+
+.. toctree::
+    :maxdepth: 2
+    
+    doc.task.StructurePrediction

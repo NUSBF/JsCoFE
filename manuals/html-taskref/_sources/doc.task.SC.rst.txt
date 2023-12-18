@@ -1,0 +1,25 @@
+==
+SC
+==
+
+  *- analyse shape complementarity*
+
+The shape correlation statistic Sc (`Lawrence and Colman, 1993 <https://doi.org/10.1006/jmbi.1993.1648>`_) can be used to quantify the shape complementarity of protein/protein interfaces and give an idea of the “goodness of fit” between two protein surfaces. The program SC will calculate values of Sc and related statistics for the interface region between two molecules in a Brookhaven coordinate file.
+
+SC also allows the normal products to be merged into GRASP surface files for display in GRASP (Nicholls, 1993).
+
+Read more `here <https://www.ccp4.ac.uk/html/sc.html>`_
+
+++++++++++++++
+Known Problems
+++++++++++++++
+
+It is essential to **remove ALL multiple conformations** from the input PDB file. **If multiple conformations are present in the file then the program may terminate with a message ERROR IN CHAIN CARD** - in which case it is recommended that you check that there are no remaining multiple confirmations.
+
+There also appear to be problems with H atoms in XYZIN. The program may stop with error message **SC: imaginary contain**. Stripping H atoms from XYZIN seems to cure it. 
+
+**References**
+
+Lawrence MC, Colman PM. Shape complementarity at protein/protein interfaces. J Mol Biol. 1993 Dec 20;234(4):946-50. doi: 10.1006/jmbi.1993.1648. PMID: 8263940.
+
+Nicholls, Anthony, R. Bharadwaj, and B. Honig. "GRASP: graphical representation and analysis of surface properties." Biophys. J 64.2 (1993): A166-A166.
