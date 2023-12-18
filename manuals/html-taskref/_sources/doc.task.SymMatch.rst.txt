@@ -1,0 +1,22 @@
+====================================================
+Symmetry Match to Reference Structure with CSymMatch
+====================================================
+
+**CSymMatch** is a tool for comparison and rearrangement of atomic models. It uses the crystal symmetry to move chains, ligands, and waters of a newly created atomic model to place them in the same part of the unit cell as a reference model. CSymMatch can optionally be used to change the origin on which the model is defined, for example for comparing different molecular replacement results.
+
+The task requires atomic models as input. The first atomic model (**Structure revision**) is the model to be moved. This model will be broken up into connected fragments. Each fragment will be moved using the crystal symmetry operations and allowed origin shifts to overlap best with the second model. The second atomic model (**Reference structure**) is the model to be matched to. This is fixed model (not moved or altered in any way).
+
+It is recommended to **try all possible origin shifts and hands**. Although, the change of hand is meaningless for most biological structures, but is useful when comparing heavy atom substructures which are typically subject to hand ambiguity.
+
+.. Note::
+          the origin shift is not restricted by symmetry constraints
+
+**Stiching radius** is used to determine which fragments form a contiguous unit, to be moved together (*default 2.0Å*). The model normally moves a chain at a time, however if monomers within the same chain are separated by more than the connectivity distance they are moved separately. This allows complete chains to remain intact while moving solvent molecules and ligands individually.
+
+.. Note::
+      Separate chains are always moved separately. Monomers within a chain which do not have close contiguity to their neighbours - e.g. waters, broken chains - are also moved separately.
+
+
+**References**
+
+`Collaborative Computational Project, Number 4 (2011) Overview of the CCP4 suite and current developments. Acta Cryst. D67: 235-242; <http://scripts.iucr.org/cgi-bin/paper?S0907444910045749>`_

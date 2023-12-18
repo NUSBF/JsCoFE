@@ -1,0 +1,13 @@
+=======================
+Edit Structure Revision
+=======================
+
+*Structure revision* is a combined data type, which contains a description of *crystal structure* achieved at the point where a particular *Structure revision* was created and can be viewed as a box with all sorts of data passing from task to task. 
+
+The minimal possible *Structure revision* includes only the basic knowledge about the crystal: reflection dataset (HKL) and the content of the asymmetric unit (ASU). As the structure solution project develops, *Structure revisions* are passed from one task to another, getting updated with new or improved data (such as atomic coordinates, phases, heavy-atom substructure, ligands etc.), until the structure is considered as solved. Every task takes the needed input data from *Structure revision* automatically, which helps to maintain data integrity throughout the project and keep task interfaces laconic.
+
+CCP4 Cloud maintains *Structure revisions* automatically, and, in most cases, there is no need to tamper with their content. There are, however, special cases where direct manipulation with data items in *Structure revision* is unavoidable. Usually, this happens in difficult cases, when various tricks are attempted. For example, an expert crystallographer may want to substitute reflection dataset for a higher-resolution one, or bring phases from isomorphous crystals, or adjust the composition of ASU after a number of jobs have been run after the initial ASU definition *etc.*. Replacing (or removing) data items in *Structure revision* is done with the **Edit Structure Revision** task. 
+
+.. Note::
+         not all of such operations would be legitimate, therefore, expert knowledge or advice may be necessary.
+

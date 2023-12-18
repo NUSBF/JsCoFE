@@ -1,0 +1,36 @@
+===============================================
+findMySequence: protein sequence identification
+===============================================
+
+The `findMySequence <https://gitlab.com/gchojnowski/findmysequence>`_ is a neural-network-based approach for the identification of unknown proteins in X-ray crystallography and cryo-EM. Given a protein model (side-chains are ignored) and corresponding crystallographic **2F** :subscript:`obs` **- F** :subscript:`calc` map the program will identify most likely sequence from a database.
+
+The findMySequeden can be used for
+
+• the identification of unknown proteins in your crystal (eg. contaminants) following structure determination with :doc:`SIMBAD <doc.task.Simbad>`
+
+• validating sequence of an existing model (finding a sequence that better fits the data)
+
+The findMySequence uses residue-type probability estimates and `HMMER <http://hmmer.org/>`_ suite for making queries. Hits are scored with E-value; the lower the E-value, the higher is the probability that a sequence is correct.
+
+.. Note::
+    There is usually no need to modify your model and map prior making queries; model-bias is already addressed in REFMAC's maximum likelihood **2F** :subscript:`obs` **- F** :subscript:`calc` maps. However, removing obvious tracing errors and gaps in the model followed by a quick restrained refinement may help to identify a correct sequence in difficult cases.
+
+----------
+Parameters
+----------
+
+**Model fragment selection** By default findMySequence will use complete input model for queries. Here, you can select specific chain or residue range.
+
+.. Note::
+    For heteromultimers chain sequences may be identified sequentially
+
+**UniProt proteome identifier**  Identifier (UPID) of a proteome for querying sequences (will be downloaded automatically from UniProt). By default the program uses a database of all PDB sequences from :doc:`MrBump <doc.task.MrBump>`.
+
+**Number of best sequence hits to show** By default 3 most plausible sequence hits are selected. This number can be increased if more hits are expected.
+
+    
+**REFERENCES**
+
+`Grzegorz Chojnowski, Adam J. Simpkin, Diego A. Leonardo, Wolfram Seifert-Davila, Dan E. Vivas-Ruiz, Ronan M. Keegan, Daniel J. Rigden (2022) findMySequence: a neural-network-based approach for identification of unknown proteins in X-ray crystallography and cryo-EM. IUCrJ 9, 86-97.; <https://journals.iucr.org/m/issues/2022/01/00/pw5018/>`_
+
+

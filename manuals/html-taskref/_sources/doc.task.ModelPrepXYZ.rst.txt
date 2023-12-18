@@ -1,0 +1,28 @@
+========================================
+Prepare MR Model(s) from Coordinate data
+========================================
+
+This task prepares MR search model(s) using the target sequence and atomic coordinates from either *XYZ* or *Structure* data (*XYZ* corresponds to a PDB or mmCIF file imported or obtained from the PDB, the `EBI-AFDB <https://alphafold.ebi.ac.uk/>`_, or predicted using a `Google Colab Alphafold server <https://colab.research.google.com/github/deepmind/alphafold/blob/main/notebooks/AlphaFold.ipynb>`_ or `RoseTTAFold <https://robetta.bakerlab.org/>`_, *Structure* is a part of *Structure revision* (*read more* about :doc:`file formats <doc.task.Import>`). The coordinates are usually modified (pruned) in order to remove parts that do not correspond to the target sequence. A few modification protocols are available:
+
+    * **Unmodified**: atomic coordinates are not altered in any way
+
+    * **Clip**: water molecules and ligands are removed
+
+    * **Molrep**: modification protocol, based on the comparison of the target sequence and atomic coordinates, used by
+      `Molrep <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394799/>`_
+
+    * **Sculptor**: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+      ``Phaser.Sculptor`` (*cf.* `here <https://www.phaser.cimr.cam.ac.uk/index.php/Molecular_Replacement>`_)
+
+    * **Chainsaw**: modification protocols, based on the comparison of the target sequence and atomic coordinates, provided by
+      `Chainsaw <https://doi.org/10.1107/S0021889808006985>`_
+
+    * **Polyalanine**: all residues are replaced with polyalanines
+
+The resulting models can be used in both :doc:`Phaser <doc.task.Phaser>` and :doc:`Molrep <doc.task.Molrep>` tasks, which may give different outcome, especially in difficult cases.
+
+.. Note::
+        the task can prepare several models, corresponding to the same sequence, at once, if several *XYZ* or *Structure* data objects are available for it.
+
+.. Note::
+        combining several models, corresponding to the same target sequence, into MR Ensemble(s) may increase chances for success. MR ensembles may be prepared from individual models using the :doc:`MR Ensembles <doc.task.Ensembler>` task

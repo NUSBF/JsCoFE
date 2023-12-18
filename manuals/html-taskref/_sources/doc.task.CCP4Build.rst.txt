@@ -1,0 +1,60 @@
+=======================================
+Automatic Model Building with CCP4Build
+=======================================
+
+CCP4Build is an automated model builder based on several applications: CParrot, CBuccaneer, Refmac, Coot and EDStats. In essence, CCP4Build combines conventional model building steps with density modification, model trimming, side-chain reconstruction and real-space refinement, trying to achieve the optimal combination by exploring several building scenarios in an iterative approach with rollbacks on all stages. CCP4Build employs different approaches to phase calculations depending on whether the initial phases were obtained in the course o molecular replacement or experimental phasing. In CCP4 Cloud, however, correct approach is chosen automatically from the logic of the overall project development.
+
+------------
+Main options
+------------
+
+**Minimum number of building cycles** may be set to more than 3 (default number) if the first attempt ends up with an incomplete model.
+
+**Maximum number of building cycles** should be more than the number of **minimum number of building cycles**, but can not be more than 50.
+
+**Anisotropy correction** attempts to remove directional dependence in diffraction data. *This should be used by default*
+
+**Build Selenomethionine (MSE instead of MET)** option should be chosen if selenomethionine residues are expected in the model.
+
+**Model solvent for phase improvement** option controls modelling the water molecules if Rfree falls below the given value in course of building.
+
+-------------------------
+Advanced Build Parameters
+-------------------------
+
+Refinement may be described as an iterative adjustment of atomic coordinates such that the calculated structure factors match the observations as nearly as possible while keeping structural elements such as bond lengths, angles, chirality, planarity of aromatic rings and some others in chemically sensible states. CCP4Build offers three **Refinement levels**, which differ in the number of refinement cycles being used and, as a consequence, provide a different balance between quality of results and speed of calculations. Note that higher levels of refinement are not unambiguously linked with building success and quality.
+
+  For the **"light"** level
+
+    **10** refinement cycles run at the beginning of the model building
+
+    **5** refinement circles at all intermediate stages
+
+    **10** refinement cycles at the end of the model-building procedure.
+
+  For the **"normal"** level
+
+    **20** refinement cycles run at the beginning of the model building,
+
+    **7** refinement cycles at all intermediate stages,
+
+    **15** refinement cycles at the end of the model-building procedure.
+
+  For the **"laborious"** level
+
+    **50** refinement cycles run at the beginning of the model building,
+
+    **10** refinement cycles at all intermediate stages,
+
+    **20** refinement cycles *at the end* of the model-building procedure.
+
+Density modification is performed by :doc:`Parrot <doc.task.Parrot>`. In automatic mode (*as required*), CCP4Build performs 2 building attempts: one with preliminary density modification and one without, and chooses the one with best R-factors.
+
+**Reconstruct side chains** uses Coot functions for the completion of side chains that were not fully built by CBuccaneer or trimmed out after CBuccaneer because of misfit with the electron density (as identified by EDStats). In automatic mode (*as required*), CCP4Build checks whether reconstruction of side chains results in lower R-factors, and if not, rolls back to model with incomplete side-chains.
+
+**Real Space Refinement** moves the atoms in positions such as to achieve the best agreement with the electron density (rather than observations, as in conventional refinement) while minimising geometrical distortions. In automatic mode (*as required*), CCP4Build checks whether R-factors have decreased after a run of real-space refinement, and rolls back to the unrefined model if they have not.
+
+**Trim built models** mode uses the ZEDCC (z-score electron density correlation coefficient) to decide whether it should trim the model or not. Backbone atoms and side chains are trimmed separately. If backbone ZEDCC is high then the whole residue is removed from the model. If, however, backbone ZEDCC of a residue is similar to ZEDCC of most other residues of the model, but side-chain ZEDCC is standing out, only side chain is removed.
+
+.. Note::
+      ZEDCC is not an absolute value it would vary in each particular case

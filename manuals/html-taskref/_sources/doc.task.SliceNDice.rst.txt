@@ -1,0 +1,43 @@
+==========================================
+MR with model splitting using Slice-n-Dice
+==========================================
+
+Slice-n-Dice is an automated MR pipeline designed to pre-process AlphaFold2 and RosettaFold  models by removing low confidence regions and converting confidence scores into predicted B-factors. It also slices predicted models into distinct structural units then automatically placing the slices using Phaser. The slicing step can use AlphaFold2’s predicted aligned error (PAE), or can operate via a variety of Cɑ atom clustering algorithms, extending applicability to structures of any origin. 
+
+Slice-n-Dice helps to deals with inaccuracy in domain-domain orientations of predicted models. 
+
+-----
+Slice
+-----
+
+Slice option in CCP4 cloud uses `Birch clustering algorithm <https://scikit-learn.org/stable/modules/clustering.html#birch>`_ based on the coordinates of the Cɑ atoms.
+
+
+The **number of splits** (clusters) can be specified. The large target protein needs to be modeled in several chunks. An increasing number of splits allows slice and dice to test a range of different splits.
+
+
+The default **pLDDT threshold** for AlphaFold2 models is **70** and the default **RMS threshold** for RosettaFold models is **1.75**.
+
+
+----
+Dice
+----
+
+Dice method performs molecular replacement on the individual slices produced by Slice by :doc:`Phaser <doc.task.Phaser>`. Phaser automatically place as many slices as possible.  
+
+:doc:`Molrep <doc.task.Molrep>` `Phased Translation Function (PTF) mode <http://journals.iucr.org/d/issues/2010/01/00/dz5175/>`_ is used to try and place the slices that could not be positioned in the initial Phaser job. After each MOLREP job, :doc:`REFMAC5 <doc.task.Refmac>` is used to assess if the placed slice has improved the solution. 
+
+**ACKNOWLEDGEMENTS**
+
+This article uses materials kindly provided by Dr. Adam Simpkin and Dr. Ronan Keegan, whose help is greatly appreciated.
+
+**References**
+
+`Simpkin, A. J., Elliott, L. G., Stevenson, K., Krissinel, E., Rigden, D. J., Keegan, R. M. (2022) Slice’N’Dice: Maximising the value of predicted models for structural biologists, bioRxiv 2022.06.30.497974; <https://doi.org/10.1101/2022.06.30.497974>`_
+
+`Vagin, A. & Teplyakov, A. (2010). Molecular replacement with MOLREP, pp. 22-25, Acta Cryst. D66 <http://journals.iucr.org/d/issues/2010/01/00/dz5175/>`_
+
+`Murshudov, G.N., Skubak, P., Lebedev, A.A., Pannu, N.S., Steiner, R.A., Nicholls, R.A., Winn, M.D., Long, F., and Vagin, A.A. (2011)  Acta Cryst. D67: 355-367; <https://doi.org/10.1107/S0907444911001314>`_
+
+`McCoy, A.J., Grosse-Kunstleve, R.W., Adams, P.D., Winn, M.D., Storoni, L.C., Read R.J. (2007) Phaser Crystallographic Software. J. Appl. Cryst. 40: 658-674; <https://doi.org/10.1107/S0021889807021206>`_
+

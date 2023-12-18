@@ -1,0 +1,36 @@
+============
+Optimise ASU
+============
+
+**Optimise ASU** utility tries to apply symmetry operations to the content of 
+Asymmetric Unit so to make it more compact. It also moves chains into (0,0,0) 
+Unit Cell (in fractional coordinates).
+
+You may want to use this tool if, *e.g.,* a molecular replacement or model 
+building task places chains at an uncomfortable distance between them.
+
+.. note::
+    **Optimise ASU** does not attempt to build a meaningful biological unit. 
+    Use **PISA** task for that purpose.
+
+**Optimise ASU** will move all chains as whole objects, except for water chains 
+made of residues named *HOH* or *WAT*. Water chains usually make contacts with all
+other chains in ASU, therefore, typically, no single suitable transformation 
+for all water molecules can be suggested. **Optimise ASU** moves all water molecules 
+individually -- please check results by visual inspection.
+
+In some cases, you may want ligand compounds to be moved individually, in a fashion 
+similar to waters. **Optimise ASU** won't do that, please exercise manual approach 
+with **Coot**.
+
+.. note::
+    Since **Optimise ASU** only applies crystal symmetry operations, there should
+    be no need to re-refine the result. However, check that making "new" contacts 
+    between chain does not give idea of "new" covalent links.
+
+-------
+Options
+-------
+
+**Optimise ASU** does not have any options or parameters to manipulate with.
+

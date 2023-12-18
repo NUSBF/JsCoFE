@@ -1,0 +1,48 @@
+===========================================
+Self-Rotation Function Analysis with Molrep
+===========================================
+
+    *A self-rotation function calculation and visualisation tool. It's used for preliminary analysis of X-Ray data*
+
+Many proteins function as macromolecular assemblies where monomers are often related to each other by `point-group symmetry <https://en.wikipedia.org/wiki/Crystallographic_point_group>`_. When such assemblies are crystallised, the point-group symmetry of the assembly may superimpose with the crystallographic symmetry such that the assemblies are located at special positions in the unit cell. In such cases, the point-group symmetry of the assembly exists within the asymmetric units of the crystal and thereby the symmetry of the assembly becomes `non-crystallographic symmetry (NCS) <https://dictionary.iucr.org/Noncrystallographic_symmetry>`_ in the crystal. The presence of NCS introduces significant constraints on structure solution by the molecular-replacement method (a correct solution from the MR calculation must obey the NCS of the assembly). When the crystal contains NCS, self-rotation functions are used to determine the orientations of the NCS elements in the crystal unit cell. Structural similarity found in different parts of the asymmetric unit of a crystal lattice's unit cell — could be exploited to recover the phases required for structure determination.
+
+Self-Rotation function (SRF) allows determining the internal symmetry of the native data by comparison the native `Patterson function <https://www.xtal.iqfr.csic.es/Cristalografia/parte_07_3-en.html>`_ against itself. This comparison result in showing up symmetry axes as peaks. In the application of the rotation method, it is important that all strong reflections be present because the calculation of the rotation function basically depends on the rotation of a Patterson map, which is mainly determined by the strong reflections.
+
+
+**SRF Analysis allows determine of oligomeric state of the protein in crystal which is useful for further selection of oligomeric search model**. Although SRF has following limitation:
+
+* No clear interpretation or even artefact peaks in high symmetry point groups (e.g. 622)
+
+* Can't distinguish different oligomers with the same symmetry
+
+
+-----
+Input
+-----
+
+**Expected molecule size** allows to define the radius of integration according the knowledge about molecule size.
+So the molecule size will define the radius of SRF sphere.
+
+If the point group of an assembly is known or can be assumed, then it is often possible to determine the orientation of the particle when the rotation-function peaks are otherwise hidden in noise. It is particularly important to know what range of angles needs to be explored before all independent rotation operations have been considered (angles selection depend on the point group of the rotated object). The task offers **Chi sections** at 180, 90, 120 and 60 (can be changed to any angle needed).
+
+Another point to consider is the **resolution range** of the data used in the calculation of the rotation function. Low-resolution data can be excluded because they are rather insensitive to rotation; moreover, they are determined to an appreciable extent by the solvent region. High-resolution data are more discriminating but are also more sensitive for the model. The best range is often found between **3 and 5Å**.
+
+------
+Output
+------
+
+For a better interpretation of task results, required to have a certain understanding of the theory of crystallographic symmetry. `Here <http://xrayweb.chem.ou.edu/notes/symmetry.html>`_ you can find a nice article covering this topic.
+
+One of the more informative output of the self-rotation function task is the `stereographic projection <https://en.wikipedia.org/wiki/Stereographic_projection>`_. This shows the values of the function at a given κ (axis rotation angle) for φ and ψ. However the plot is constructed to that it appears as if it were projected onto a hemisphere and viewed from above (from +z toward the origin).
+
+Crystallographic and noncrystallographic point groups are described  :download:`here <images/PointGroups.pdf>`
+
+
+
+**References**
+
+`Vagin, A., and Teplyakov, A. (1997) MOLREP: an automated program for molecular replacement. J. Appl. Cryst. 30: 1022-1025 <https://doi.org/10.1107/S0021889897006766>`_
+
+`Tong, L. (2001) How to take advantage of non-crystallographic symmetry in molecular replacement: `locked' rotation and translation functions Acta Cryst. D57, 1383-1389 <https://journals.iucr.org/d/issues/2001/10/00/ba5010/index.html>`_
+
+`International Tables for Crystallography (2016). Volume A, Space-group symmetry. <https://doi.org/10.1107/97809553602060000114>`_

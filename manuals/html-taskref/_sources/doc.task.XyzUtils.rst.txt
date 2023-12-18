@@ -1,0 +1,7 @@
+====================
+Coordinate Utilities
+====================
+
+Coordinate utilities task allows **selecting a limited set of atoms in a coordinate file and saving them to new files** (split the structure in chains; extract sequence), **removing parts of the model** such as polymeric chains, solvent, ligands.
+
+

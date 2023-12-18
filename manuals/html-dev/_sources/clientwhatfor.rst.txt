@@ -2,6 +2,12 @@
 What is CCP4 Cloud Client Software
 ==================================
 
+
+.. Note::
+   This article applies only to CCP4 Setups series 7.0; in later series,
+   Client setup is automatic and does not require any manual intervention.
+
+
 CCP4 Cloud Client is an optional package, which is installed on your local machine
 for:
 

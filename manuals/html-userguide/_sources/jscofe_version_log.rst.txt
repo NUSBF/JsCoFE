@@ -8,19 +8,36 @@ CCP4 Cloud Version Log
 
     *Released on --.11.2023 with CCP4 8.0.017*
 
-    #. Fixed bug not letting replacing HKL data with EditRevision if there is no ASU or sequences
+    #. Fixed bug not letting replacing HKL data with EditRevision if there is 
+       no ASU or sequences
 
-    #. Unfinished jobs in exported projects are marked as abandoned when project is re-imported
+    #. Unfinished jobs in exported projects are marked as abandoned when project 
+       is re-imported
 
     #. ModelCraft can build amino acid and nucleic acid chains separately
 
     #. Added `Dimple MR <../html-taskref/doc.task.DimpleMR.html>`_ task
 
-    #. Added Dimple MR workflows
+    #. Added Dimple MR workflow
 
     #. ModelCraft removed from Automated Experimental Phasing with Crank-2 workflow
 
     #. Moorhen updated to version 0.6.1
+
+
+
+    #. Fixed a bug in hop-on task causing neglect of the ligand library supplied
+
+    #. Task Dock can be now populated from Task List 
+
+    #. Task List re-organised
+
+    #. Task List state now persists during session
+
+    #. Basic and full Task List modes are now switched with a checknbox
+
+    #. Restraints library and fitted ligands are separated on input of all relevant 
+       workflows
 
 
 **Version 1.7.017** 
