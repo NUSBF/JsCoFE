@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.12.23   <--  Date of Last Modification.
+#    18.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -175,7 +175,6 @@ class WFlowAEP(import_task.Import):
 
             if suitable:
 
-                self.putMessage ( "<h3>Automatic Experimental Phasing (SAD) workflow started</h3>" )
                 self.task.autoRunName = "_root"
                 if auto.makeNextTask ( self,{
                     "unm"       : self.unm,
@@ -187,6 +186,22 @@ class WFlowAEP(import_task.Import):
                   }):
                     summary_line += "workflow started"
                     have_results  = True
+                    self.putMessage ( "<h3>Automatic Experimental Phasing (SAD) workflow started</h3>" )
+                    if len(self.lig)>0:
+                        self.putMessage ( "<i>" + str(len(self.lig)) +\
+                                          " ligand(s) supplied. Workflow will calculate experimental " +\
+                                          "phases, build structure, fit ligand, find and " +\
+                                          "fit water molecules</i>" )
+                    elif len(self.ligdesc)>0:
+                        self.putMessage ( "<i>" + str(len(self.ligdesc)) +\
+                                          " ligand description(s) supplied. Workflow will " +\
+                                          "calculate experimental phases, build structure, make and " +\
+                                          "fit ligand, find and fit water molecules</i>" )
+                    else:
+                        self.putMessage ( "<i>No ligands supplied. Workflow will only calculate " +\
+                                          "experimental phases, build structure, find and fit " +\
+                                          "water molecules</i>" )
+
                 else:
                     summary_line += "workflow start failed"
 

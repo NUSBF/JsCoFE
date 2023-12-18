@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.12.23   <--  Date of Last Modification.
+#    18.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -90,49 +90,6 @@ class WFlowDPLMR(import_task.Import):
 
         return
 
-
-    """
-    def importData(self):
-        #  works with uploaded data from the top of the project
-
-        super ( WFlowDPLMR,self ).import_all()
-
-        # -------------------------------------------------------------------
-        # fetch data for CCP4go pipeline
-
-        if "DataUnmerged" in self.outputDataBox.data:
-            self.unm = self.outputDataBox.data["DataUnmerged"]
-
-        if "DataHKL" in self.outputDataBox.data:
-            self.hkl = self.outputDataBox.data["DataHKL"]
-
-        # if "DataSequence" in self.outputDataBox.data:
-        #     self.seq = self.outputDataBox.data["DataSequence"]
-
-        if "DataXYZ" in self.outputDataBox.data:
-            self.xyz = self.outputDataBox.data["DataXYZ"]
-        if "DataLibrary" in self.outputDataBox.data:
-            self.lib = self.outputDataBox.data["DataLibrary"][0]
-
-        if "DataLigand" in self.outputDataBox.data:
-            self.lig = self.outputDataBox.data["DataLigand"]
-
-        self.ligdesc = []
-        ldesc = getattr ( self.task,"input_ligands",[] )
-        for i in range(len(ldesc)):
-            if ldesc[i].source!='none':
-                self.ligdesc.append ( ldesc[i] )
-
-        # checking whether ligand codes were provided
-        for i in range(len(self.ligdesc)):
-            code = self.ligdesc[i].code.strip().upper()
-            if (not code) or (code in self.ligand_exclude_list):
-                self.ligdesc[i].code = self.get_ligand_code([])
-
-        return
-
-    """
-
     def prepareData(self):
         #  works with imported data from the project
 
@@ -205,12 +162,21 @@ class WFlowDPLMR(import_task.Import):
         if len(ilist)>0:
             summary_line += ", ".join(ilist) + "; "
 
-        # self.flush()
-        self.putMessage("<h3>Starting Automatic Refinement and Ligand Fitting Workflow</h3>")
-        if nligs>0:
-            self.putMessage("<i>%d ligand(s) supplied, Workflow will try to fit it</i>" % nligs)
+        self.putMessage ( "<h3>Starting DIMPLE Molecuar Replacement Workflow</h3>" )
+        if len(self.lig)>0:
+            self.putMessage ( "<i>" + str(len(self.lig)) +\
+                              " ligand(s) supplied. Workflow will fit structure " +\
+                              "in reflection data, refine, fit ligand, find and " +\
+                              "fit water molecules</i>" )
+        elif len(self.ligdesc)>0:
+            self.putMessage ( "<i>" + str(len(self.ligdesc)) +\
+                              " ligand description(s) supplied. Workflow will " +\
+                              "fit structure in reflection data, refine, make and " +\
+                              "fit ligand, find and fit water molecules</i>" )
         else:
-            self.putMessage("<i>No ligands supplied, Workflow will just refine the structure and fit waters</i>")
+            self.putMessage ( "<i>No ligands supplied. Workflow will only fit " +\
+                              "structure in reflection data, refine, find and fit " +\
+                              "water molecules</i>" )
 
         self.task.autoRunName = "_root"
         self.have_results = False
