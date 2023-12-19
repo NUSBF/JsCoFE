@@ -125,9 +125,9 @@ if (!__template)  {
 
 
   DataSequence.prototype.layCustomDropdownInput = function ( dropdown )  {
-  var customGrid = dropdown.customGrid;
-  var row        = 0;
-  var grid       = null;
+  let customGrid = dropdown.customGrid;
+  let row        = 0;
+  let grid       = null;
 
     this.makeASUContentInput = function ( g )  {
       g.setLabel ( 'Number of copies in ASU:',0,0,1,1 ).setFontItalic ( true );
@@ -149,11 +149,18 @@ if (!__template)  {
       grid = customGrid.setGrid ( '-compact',row++,0,1,2 );
       grid.setLabel ( 'Number of copies in a.s.u.:',0,0,1,1 )
           .setFontItalic ( true ).setNoWrap ( true );
-      var nc_value = this.ncopies;
+      let nc_value = Math.max ( 1,this.ncopies );
+      /*
       if ((dropdown.layCustom=='stoichiometry-wauto') && this.ncopies_auto)
         nc_value = '';
       customGrid.ncopies_inp = grid.setInputText ( nc_value,0,1,1,1 )
                     .setStyle ( 'text','integer','auto',
+                      'Specify stoichiometric coefficent for given sequence ' +
+                      'in the crystal' )
+                    .setWidth_px ( 50 );
+      */
+      customGrid.ncopies_inp = grid.setInputText ( nc_value,0,1,1,1 )
+                    .setStyle ( 'text','integer','',
                       'Specify stoichiometric coefficent for given sequence ' +
                       'in the crystal' )
                     .setWidth_px ( 50 );
@@ -188,14 +195,21 @@ if (!__template)  {
 
   DataSequence.prototype.collectCustomDropdownInput = function ( dropdown ) {
 
-    var msg = '';   // Ok by default
-    var customGrid = dropdown.customGrid;
+    let msg = '';   // Ok by default
+    let customGrid = dropdown.customGrid;
 
     if (startsWith(dropdown.layCustom,'asu-content') ||
         startsWith(dropdown.layCustom,'stoichiometry'))  {
-      var nc_value = customGrid.ncopies_inp.getValue();
+      /*
+      let nc_value = customGrid.ncopies_inp.getValue();
       this.ncopies_auto = (nc_value.length<=0);
       if (!this.ncopies_auto)
+        this.ncopies = parseInt ( nc_value );
+      */
+      let nc_value = customGrid.ncopies_inp.getValue().trim();
+      if ((!nc_value) || customGrid.ncopies_inp.element.validity.patternMismatch)
+        msg = 'Number of copies must be positive integer';
+      else
         this.ncopies = parseInt ( nc_value );
     } else if (dropdown.layCustom=='chain-input-list')  {
       this.chain_list = customGrid.chain_list_inp.getValue();
