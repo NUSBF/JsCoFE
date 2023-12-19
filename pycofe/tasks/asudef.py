@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    19.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -65,7 +65,7 @@ from   pycofe.auto     import auto, auto_workflow
 #     return
 
 
-def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
+def makeRevision ( base,hkl,seq,target_sol,composition,altEstimateKey,altNRes,
                         altMolWeight,resLimit,
                         revision0=None,resultTitle="Results",secId="",
                         make_verdict=True ):
@@ -244,6 +244,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
         "AUTO\n"   +\
         "XMLO\n"
     )
+
     if resLimit:
         base.write_stdin ( "RESO " + str(resLimit) + "\n" )
     if len(content)<=0:
@@ -342,6 +343,10 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
         dsol0 = 100.0
         i0    = -1
 
+        tsol = 50.0
+        if target_sol:
+            tsol = float(target_sol)
+
         for i in range(len(items)):
             nc  = items[i].attributes["nmol_in_asu"].value.strip()
             mc  = float(items[i].attributes["matth_coef"].value.strip())
@@ -357,7 +362,7 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
                 mc1  = mc
                 sol1 = sol
                 prb1 = prb
-            dsol = abs ( sol - 50.0 );
+            dsol = abs ( sol - tsol );
             if dsol < dsol0:
                 nc0   = int(nc)
                 sol0  = sol
@@ -366,8 +371,15 @@ def makeRevision ( base,hkl,seq,composition,altEstimateKey,altNRes,
 
         if nc0 > 0:
             tdict2["rows"][i0]["data"][0] = "* " + str(nc0) + "&nbsp;"
+            k0 = 0
+            if target_sol:
+                nc1 = int(items[0].attributes["nmol_in_asu"].value.strip())
+                for i in range(len(seq)):
+                    seq[i].ncopies = nc0*(seq[i].ncopies/nc1)
+                k0   = i0
+                sol1 = sol0
             for i in range(4):
-                tdict2["rows"][0]["data"][i] = "<b>" + tdict2["rows"][0]["data"][i] + "</b>"
+                tdict2["rows"][k0]["data"][i] = "<b>" + tdict2["rows"][k0]["data"][i] + "</b>"
 
         rvapi_utils.makeTable ( tdict2, base.getWidgetId("res_table"),
                                 base.report_page_id(),
@@ -517,10 +529,10 @@ def revisionFromStructure ( base,hkl,structure,name,useSequences=None,
 
         base.putMessage ( "&nbsp;<br><h3>Asymmetric Unit Analysis</h3>" )
 
-        #revision = makeRevision ( base,hkl,seqs,composition,"NR","1","1",
+        #revision = makeRevision ( base,hkl,seqs,None,composition,"NR","1","1",
         #                                                    "",None,"" )
 
-        revision = makeRevision ( base,hkl,seqs,composition,"NR","1","1",
+        revision = makeRevision ( base,hkl,seqs,None,composition,"NR","1","1",
                                   "",revision0=None,resultTitle="",
                                   secId=secId,make_verdict=make_verdict )
 
@@ -565,12 +577,15 @@ class ASUDef(basic.TaskDriver):
             istruct = self.makeClass ( self.input_data.data.istruct[0] )
 
         hkl  = self.makeClass ( self.input_data.data.hkl[0] )
+
+        sec0 = self.task.parameters.sec0.contains
         sec1 = self.task.parameters.sec1.contains
         seq  = []
         if hasattr(self.input_data.data,"seq"):  # optional data parameter
             seq = self.input_data.data.seq
 
         revision = makeRevision ( self,hkl,seq,
+                                  self.getParameter(sec0.TARGET_SOL),
                                   self.getParameter(sec1.COMPOSITION_SEL),
                                   self.getParameter(sec1.ESTIMATE_SEL),
                                   self.getParameter(sec1.NRES),
@@ -582,7 +597,7 @@ class ASUDef(basic.TaskDriver):
         if revision[0]:
             if istruct:
                 revision[0].setStructureData ( istruct )
-            revision[0].ASU.ha_type = self.getParameter ( self.task.parameters.HATOM )
+            revision[0].ASU.ha_type = self.getParameter ( sec0.HATOM )
             revName = None
             if self.outputFName in ["*",""]:
                 revName = "asu [" + hkl.getDataSetName() + "]"

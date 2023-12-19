@@ -1066,7 +1066,7 @@ ProjectPage.prototype.onTreeContextMenu = function() {
       if (__local_service && crTask && crTask.canSendJobResults())  {
         if ((__user_role==role_code.developer) || (__user_role==role_code.admin))  {
           items.senfJobDataItem = { // The "Open job" menu item
-            label : "Send job data",
+            label : "Send job results to exchange buffer",
             icon  : image_path('send_data'),
             action: function(){ self.sendJobResults(); }
           };

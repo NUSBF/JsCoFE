@@ -75,7 +75,7 @@ class EditRevisionASU(asudef.ASUDef):
 
         #  redefine HKL and/or ASU
         self.putMessage  ( "<h2>Compose new Asummetric Unit</h2>" )
-        rev = asudef.makeRevision ( self,hkl,seq, "P","NR",1,1.0,"",
+        rev = asudef.makeRevision ( self,hkl,seq, None,"P","NR",1,1.0,"",
                                     revision0=revision0 )
         if rev:
             revision = rev[0]

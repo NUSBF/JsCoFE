@@ -1049,13 +1049,17 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
   this.makeSection ( secMR.grid,'Automated Molecular Replacement',[
     'High homology MR for ligand screening',
     new TaskDimpleMR  (),
+    'No-sequence methods',
+    new TaskSimbad    (),
     'Conventional Auto-MR',
     new TaskMorda     (),
     new TaskMrBump    (),
     new TaskBalbes    (),
     new TaskSliceNDice(),
-    'No-sequence methods',
-    new TaskSimbad    (),
+    'Fragment-Based Molecular Replacement',
+    new TaskArcimboldoLite(),
+    new TaskArcimboldoBorges(),
+    new TaskArcimboldoShredder(),
     // 'No-model methods',
     // new TaskAmple ()
     'Sequence reconstruction',
@@ -1104,12 +1108,13 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
   //   new TaskMolrep         ()
   // ],true);
 
-  this.makeSection ( secMR.grid,'Fragment-Based Molecular Replacement',[
-    new TaskArcimboldoLite(),
-    new TaskArcimboldoBorges(),
-    new TaskArcimboldoShredder()
-  ],true);
-  secMR_cnt += this.task_cnt;
+  // this.makeSection ( secMR.grid,'Fragment-Based Molecular Replacement',[
+  //   new TaskArcimboldoLite(),
+  //   new TaskArcimboldoBorges(),
+  //   new TaskArcimboldoShredder()
+  // ],true);
+  // secMR_cnt += this.task_cnt;
+
   secMR.setTitle ( 'Molecular Replacement <b>(' + secMR_cnt + ')</b>' );
 
   this.makeSection ( grid,'Experimental Phasing',[
