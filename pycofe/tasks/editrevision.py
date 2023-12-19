@@ -201,7 +201,7 @@ class EditRevision(asudef.ASUDef):
         if (("hkl" in change_list) and (revision0.isASUData())) or ("seq" in change_list):
             #  redefine HKL and ASU
             self.putTitle ( "New Asummetric Unit Composition" )
-            rev = asudef.makeRevision ( self,hkl,seq, "P","NR",1,1.0,"",
+            rev = asudef.makeRevision ( self,hkl,seq, None,"P","NR",1,1.0,"",
                                         revision0=revision0,resultTitle="" )
             if rev:
                 revision = rev[0]

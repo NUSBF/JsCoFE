@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    06.10.23   <--  Date of Last Modification.
+ *    19.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -68,36 +68,62 @@ function TaskASUDef()  {
 
   this.parameters = { // input parameters
 
-    HATOM : { type      : 'string_',   // empty string allowed
-              keyword   : 'atomtype=',
-              label     : '<b><i>Main anomalous<br>scatterer</i></b>',
-              tooltip   : 'Specify atom type of dominant anomalous scatterer ' +
-                          '(e.g., S, SE etc.), or leave blank if uncertain.',
-              iwidth    : 40,
-              value     : '',
-              emitting  : true,    // will emit 'onchange' signal
-              maxlength : 2,       // maximum input length
-              position  : [0,0,1,1],
-              showon    : {'hkl.subtype:anomalous':[1]}
-            },
+    sec0 : {  type      : 'section',
+              title     : '',
+              open      : true,  // true for the section to be initially open
+              position  : [0,0,1,5],
+              contains  : {
 
-    EPLBL : { type      : 'label',
-              label     : '<h3>Reflection data does not contain anomalous differences.</h3>' +
-                          '<font color="maroon"><i>Not suitable for Experimental Phasing.</i></font>',
-              position  : [1,0,1,5],
-              showon    : {'hkl.subtype:anomalous':[0,-1]}
-            },
+                TARGET_SOL : {
+                          type      : 'real_', // blank value is not allowed
+                          keyword   : 'target', // the real keyword for job input stream
+                          label     : 'Target solvent content, %',
+                          tooltip   : 'Target solvent content, typically 50%. If left blank, ' +
+                                      'solvent content will be calculated from given numbers '  +
+                                      'of copies (not given numbers will be optimised).',
+                          iwidth    : 40,
+                          range     : [1.0,99.0], // may be absent (no limits) or must
+                                                  // be one of the following:
+                                                  //   ['*',max]  : limited from top
+                                                  //   [min,'*']  : limited from bottom
+                                                  //   [min,max]  : limited from top and bottom
+                          value     : '50.0',     // value to be paired with the keyword
+                          placeholder : 'given',
+                          position  : [0,0,1,1]   // [row,col,rowSpan,colSpan]
+                        },
 
+                HATOM : { type      : 'string_',   // empty string allowed
+                          keyword   : 'atomtype=',
+                          label     : 'Main anomalous scatterer',
+                          tooltip   : 'Specify atom type of dominant anomalous scatterer ' +
+                                      '(e.g., S, SE etc.), or leave blank if uncertain.',
+                          iwidth    : 40,
+                          value     : '',
+                          emitting  : true,    // will emit 'onchange' signal
+                          maxlength : 2,       // maximum input length
+                          position  : [1,0,1,1],
+                          showon    : {'hkl.subtype:anomalous':[1]}
+                        },
 
-    NSPL : {  type      : 'label',
-              label     : '&nbsp',
-              position  : [2,0,1,5]
+                EPLBL : { type      : 'label',
+                          label     : '<h3>Reflection data does not contain anomalous differences.</h3>' +
+                                      '<font color="maroon"><i>Not suitable for Experimental Phasing.</i></font>',
+                          position  : [2,0,1,5],
+                          showon    : {'hkl.subtype:anomalous':[0,-1]}
+                        },
+
+                NSPL :  { type      : 'label',
+                          label     : '&nbsp',
+                          position  : [3,0,1,5]
+                        }
+
+              }
            },
 
     sec1 : {  type      : 'section',
               title     : 'ASU Composition',
               open      : true,  // true for the section to be initially open
-              position  : [3,0,1,5],
+              position  : [1,0,1,5],
               showon    : {seq:[-1,0]},
               contains  : {
 
@@ -206,7 +232,7 @@ function TaskASUDef()  {
                     }
                 */
               }
-    }
+          }
   };
 
   this.saveDefaultValues ( this.parameters );

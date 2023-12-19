@@ -303,7 +303,7 @@ def run ( body,pdb_list,
                     composition = "D"  # AA-NA comples
                     if nAA<=0:  composition = "D"  # NA only
                     if nNA<=0:  composition = "P"  # AA only
-                    revision = asudef.makeRevision ( body,hkl[0],seq_coor,
+                    revision = asudef.makeRevision ( body,hkl[0],seq_coor,None,
                                                      composition,"MW",0,0.0,None,
                                                      None,None,secId=subSecId )
 

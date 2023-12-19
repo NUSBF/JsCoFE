@@ -72,11 +72,11 @@ class ASUMod(asudef.ASUDef):
             nRes      = revision0.ASU.nRes
             molWeight = revision0.ASU.molWeight
 
-        revision = asudef.makeRevision ( self,hkl,seq,
-                                       self.getParameter(sec1.COMPOSITION_SEL),
-                                       altEstimateKey,nRes,molWeight,"",
-                                       #self.getParameter(sec1.RESLIMIT),
-                                       revision0 )
+        revision = asudef.makeRevision ( self,hkl,seq,None,
+                                         self.getParameter(sec1.COMPOSITION_SEL),
+                                         altEstimateKey,nRes,molWeight,"",
+                                         #self.getParameter(sec1.RESLIMIT),
+                                         revision0 )
 
         have_results = False
 

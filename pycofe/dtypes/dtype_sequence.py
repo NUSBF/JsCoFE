@@ -111,7 +111,7 @@ class DType(dtype_template.DType):
             self.weight   = 0.0
             self.ncopies  = 1    # expected number of copies in ASU
             self.nfind    = 1    # copies to find
-            self.ncopies_auto = True   # flag to find ncopies automatically
+            self.ncopies_auto = False   # flag to find ncopies automatically
         return
 
     def isProtein(self):
