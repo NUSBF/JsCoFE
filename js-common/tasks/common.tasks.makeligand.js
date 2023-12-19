@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.12.23   <--  Date of Last Modification.
+ *    19.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -66,27 +66,30 @@ function TaskMakeLigand()  {
       force       : 100,       // "show" all revisions available
       min         : 0,         // minimum acceptable number of data instances
       max         : 100        // maximum acceptable number of data instances
-    },{
-      data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
-      label       : 'Ligand', // label for input dialog
-      tooltip     : 'Ligand to be recalculated with AceDRG.',
-      inputId     : 'ligand',      // input Id for referencing input fields
-      min         : 0,             // minimum acceptable number of data instances
-      max         : 1              // maximum acceptable number of data instances
+    // ********* ligand
+    // },{
+    //   data_type   : {'DataLigand':[]},  // data type(s) and subtype(s)
+    //   label       : 'Ligand', // label for input dialog
+    //   tooltip     : 'Ligand to be recalculated with AceDRG.',
+    //   inputId     : 'ligand',      // input Id for referencing input fields
+    //   min         : 0,             // minimum acceptable number of data instances
+    //   max         : 1              // maximum acceptable number of data instances
     }
   ];
 
   this.parameters = { // input parameters
-    INFO1_LBL : { type     : 'label',
-                  label    : '&nbsp;<i>Ligand restraints will be recalculated with AceDRG</i>',
-                  showon   : {'ligand':[1,2,3,4,5]},
-                  position : [0,3,1,5]
-                },
+    // ********* ligand
+    // INFO1_LBL : { type     : 'label',
+    //               label    : '&nbsp;<i>Ligand restraints will be recalculated with AceDRG</i>',
+    //               showon   : {'ligand':[1,2,3,4,5]},
+    //               position : [0,3,1,5]
+    //             },
     sec1 :  { type     : 'section',
               title    : '',
               open     : true,  // true for the section to be initially open
               position : [1,0,1,8],
-              showon   : { 'ligand':[-1,0] },
+              // ********* ligand
+              // showon   : { 'ligand':[-1,0] },
               contains : {
                 SOURCE_SEL : {
                     type     : 'combobox',
