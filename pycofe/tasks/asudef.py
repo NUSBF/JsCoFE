@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.12.23   <--  Date of Last Modification.
+#    20.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -102,6 +102,9 @@ def makeRevision ( base,hkl,seq,target_sol,composition,altEstimateKey,altNRes,
 
     content   = []  # composition (P,R,D) if sequences not given, or else derived
 
+    tdict1    = None
+    content_desc = ""
+
     if len(seq)>0:  # optional data parameter
 
         isProtein = False;
@@ -161,7 +164,7 @@ def makeRevision ( base,hkl,seq,target_sol,composition,altEstimateKey,altNRes,
         tdict1 = {
             #"title": "<b>Content unit:</b> " + comp +\
             #         " molecule(s) with the following sequence(s)",
-            "title": "Suggested ASU contents",
+            "title": "User-suggested ASU contents (hypothesis)",
             "state": 0, "class": "table-blue", "css": "text-align:right;",
             "horzHeaders" :  [
                 { "label"  : "N<sub>copies</sub>",
@@ -189,9 +192,9 @@ def makeRevision ( base,hkl,seq,target_sol,composition,altEstimateKey,altNRes,
             tdict1["rows"].append ( trow )
 
         tdict1["rows"].append ({
-          "data" : [" ","<i><b>Total residues/weight:</b></i>","",
-                    "<i><b>" + str(nRes) + "</b></i>&nbsp;",
-                    "<i><b>" + ("%.1f" % molWeight) + "</b></i>&nbsp;"]
+            "data" : [" ","<i><b>Total residues/weight:</b></i>","",
+                        "<i><b>" + str(nRes) + "</b></i>&nbsp;",
+                        "<i><b>" + ("%.1f" % molWeight) + "</b></i>&nbsp;"]
         })
 
         rvapi_utils.makeTable ( tdict1, base.getWidgetId("seq_table"),
@@ -205,27 +208,29 @@ def makeRevision ( base,hkl,seq,target_sol,composition,altEstimateKey,altNRes,
             base.write_stdin ( "NRES " + str(nRes) + "\n" )
             dataKey = -1
             if composition == "P":
-                cnt = " aminoacid residues"
+                content_desc = " aminoacid residues"
                 molWeight = nRes*110 + 18
             elif composition == "C":
-                cnt = " aminoacid and nucleic acid residues"
+                content_desc = " aminoacid and nucleic acid residues"
             else:
-                cnt = " nucleic acid residues"
-            base.putMessage ( "<b>Content unit:</b> one or several molecules " +\
-                              "having " + str(nRes) + cnt + " in total" )
+                content_desc = " nucleic acid residues"
+            base.putMessage ( "<b>User-suggested ASU contents (hypothesis):</b> " +\
+                              "one or several molecules " +\
+                              "having " + str(nRes) + content_desc + " in total" )
 
         else:
             molWeight = float(altMolWeight)
             base.write_stdin ( "MOLWEIGHT " + str(molWeight) + "\n" )
             datakey = -2
             if composition == "P":
-                cnt  = " protein"
+                content_desc  = " protein"
                 nRes = int((molWeight-18)/110)
             elif composition == "C":
-                cnt = " protein and polynucletide"
+                content_desc = " protein and polynucletide"
             else:
-                cnt = " polynucleotide"
-            base.putMessage ( "<b>Content unit:</b> one or several " + cnt +\
+                content_desc = " polynucleotide"
+            base.putMessage ( "<b>User-suggested ASU contents (hypothesis):</b> one or several " +\
+                              content_desc +\
                               " molecules with the combined molecular weight of " +\
                               str(molWeight) + " Daltons" )
         base.putMessage (
@@ -325,8 +330,8 @@ def makeRevision ( base,hkl,seq,target_sol,composition,altEstimateKey,altNRes,
             "horzHeaders" :  [
                 #{ "label": "N<sub>units</sub>"   , "tooltip":
                 #   "Number of given content units placed in asymmetric unit" },
-                { "label"  : "N<sub>trial</sub>"   ,
-                  "tooltip": "Trial number of asymmetric units" },
+                { "label"  : "N<sub>mult</sub>"   ,
+                  "tooltip": "Multiplier applied to user-suggested asymmetric units" },
                 { "label"  : "Matthews"            ,
                   "tooltip": "Matthews coefficient" },
                 { "label"  : "% solvent"           ,
@@ -375,9 +380,11 @@ def makeRevision ( base,hkl,seq,target_sol,composition,altEstimateKey,altNRes,
             if target_sol:
                 nc1 = int(items[0].attributes["nmol_in_asu"].value.strip())
                 for i in range(len(seq)):
-                    seq[i].ncopies = nc0*(seq[i].ncopies/nc1)
-                k0   = i0
-                sol1 = sol0
+                    seq[i].ncopies = round(nc0*(seq[i].ncopies/nc1))
+                k0        = i0
+                sol1      = sol0
+                nRes      = nc0*nRes
+                molWeight = nc0*molWeight
             for i in range(4):
                 tdict2["rows"][k0]["data"][i] = "<b>" + tdict2["rows"][k0]["data"][i] + "</b>"
 
@@ -385,6 +392,48 @@ def makeRevision ( base,hkl,seq,target_sol,composition,altEstimateKey,altNRes,
                                 base.report_page_id(),
                                 base.rvrow,0,1,1 )
         base.rvrow += 1
+        base.putMessage ( "&nbsp;" )
+        if not target_sol:
+            base.putMessage ( "<b>Target solvent content is not given &mdash; " +\
+                              "user-suggested ASU composition is accepted</b>")
+            base.putMessage ( "&nbsp;" )
+
+        if tdict1:
+            tdict1["title"] = "Accepted ASU contents"
+            tdict1["rows"]  = []
+
+            for i in range(len(seq)):
+                trow = { "header":{ "label": str(i+1), "tooltip": ""}, "data": [
+                        str(seq[i].ncopies),
+                        seq[i].dname + "&nbsp;",
+                        seq[i].subtype[0].upper() + "&nbsp;",
+                        str(seq[i].size) + "&nbsp;",
+                        ("%.1f" % seq[i].weight) + "&nbsp;"
+                ]}
+                tdict1["rows"].append ( trow )
+
+            tdict1["rows"].append ({
+                "data" : [" ","<i><b>Total residues/weight:</b></i>","",
+                            "<i><b>" + str(nRes) + "</b></i>&nbsp;",
+                            "<i><b>" + ("%.1f" % molWeight) + "</b></i>&nbsp;"]
+            })
+
+            rvapi_utils.makeTable ( tdict1, base.getWidgetId("seq_table_1"),
+                                    base.report_page_id(),
+                                    base.rvrow,0,1,1 )
+            base.rvrow += 1
+
+        else:
+            if altEstimateKey == "NR":
+                base.putMessage ( "<b>Accepted ASU contents:</b> " +\
+                                  "one or several molecules " +\
+                                  "having " + str(nRes) + content_desc + " in total" )
+
+            else:
+                base.putMessage ( "<b>Accepted ASU contents:</b> one or several " +\
+                                  content_desc +\
+                                  " molecules with the combined molecular weight of " +\
+                                  str(molWeight) + " Daltons" )
 
         #  create initial structure revision
         revision = revision0
