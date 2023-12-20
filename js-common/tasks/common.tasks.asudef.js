@@ -88,7 +88,7 @@ function TaskASUDef()  {
                                                   //   [min,'*']  : limited from bottom
                                                   //   [min,max]  : limited from top and bottom
                           value     : '50.0',     // value to be paired with the keyword
-                          placeholder : 'given',
+                          // placeholder : 'given',
                           position  : [0,0,1,1]   // [row,col,rowSpan,colSpan]
                         },
 
