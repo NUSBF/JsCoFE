@@ -373,6 +373,11 @@ class dataLink {
       return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
     }
 
+    const entry = this.catalog.getEntry(user, source, id);
+    if (entry.status !== status.completed) {
+      return tools.errorMsg(`${user}/${source}/${id} is not completed so cannot update`, 405);
+    }
+
     let valid = {};
     for (const [key, value] of Object.entries(obj)) {
       switch(key) {
