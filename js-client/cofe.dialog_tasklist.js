@@ -785,7 +785,7 @@ let r = 0;  // grid row
     }
   }
 
-  if (__user_role==role_code.developer)  {
+  // if (__user_role==role_code.developer)  {
 
     grid.setLabel ( '&nbsp;',r++,0,1,4 );
     grid.setHLine ( 2, r++,0,1,4 );
@@ -805,7 +805,7 @@ let r = 0;  // grid row
           });
         })
     
-  }
+  // }
 
   this._setting_wf = false;
 
