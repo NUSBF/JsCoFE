@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.10.21   <--  Date of Last Modification.
+ *    21.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Menu and dropdwon comboboxes
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2023
  *
  *  =================================================================
  *
@@ -78,9 +78,9 @@ MenuItem.prototype.constructor = MenuItem;
 var __onclick_ignore_counter = -1;
 
 function __close_all_menus()  {
-  var dropdowns = document.getElementsByClassName("menu-dropdown-content");
-  for (var i=0;i<dropdowns.length;i++) {
-    var openDropdown = dropdowns[i];
+  let dropdowns = document.getElementsByClassName("menu-dropdown-content");
+  for (let i=0;i<dropdowns.length;i++) {
+    let openDropdown = dropdowns[i];
     if (openDropdown.classList.contains('menu-show')) {
       openDropdown.classList.remove('menu-show');
     }
@@ -137,27 +137,29 @@ function Menu ( text,icon_uri,right_click=false )  {
     (function(menu){
       if (right_click)  {
         menu.button.addOnRightClickListener ( function(e){
-        //menu.addOnClickListener ( function(){
+          let oic = __onclick_ignore_counter;
           __close_all_menus();
-          if (!menu.disabled)  {
+          if ((!menu.disabled) && oic)  {
             if (menu.onclick_custom_function)
               menu.onclick_custom_function();
-            if (__onclick_ignore_counter<0)
-                  __onclick_ignore_counter = 1;
-            else  __onclick_ignore_counter++;
+            // if (__onclick_ignore_counter<0)
+            //       __onclick_ignore_counter = 1;
+            // else  __onclick_ignore_counter++;
+            __onclick_ignore_counter = 1;
             menu.dropdown.toggleClass ( 'menu-show' );
           }
         });
       } else  {
         menu.button.addOnClickListener ( function(e){
-        //menu.addOnClickListener ( function(){
+          let oic = __onclick_ignore_counter;
           __close_all_menus();
-          if (!menu.disabled)  {
+          if ((!menu.disabled) && oic)  {
             if (menu.onclick_custom_function)
               menu.onclick_custom_function();
-            if (__onclick_ignore_counter<0)
-                  __onclick_ignore_counter = 1;
-            else  __onclick_ignore_counter++;
+            // if (__onclick_ignore_counter<0)
+            //       __onclick_ignore_counter = 1;
+            // else  __onclick_ignore_counter++;
+            __onclick_ignore_counter = 1;
             menu.dropdown.toggleClass ( 'menu-show' );
           }
         });
