@@ -108,6 +108,44 @@ class tools {
     return false;
   }
 
+  static doRsync(args, stdoutFunc = null, stderrFunc = null, spawnFunc = null) {
+    let options = {};
+
+    // if no stdout callback, then ignore all stdio
+    if (! stdoutFunc) {
+      options.stdio = 'ignore'
+    }
+
+    const cmd = 'rsync';
+    return new Promise((resolve, reject) => {
+      log.debug(`doRsync - Running ${cmd} ${args.join(" ")}`);
+      const rsync = process.spawn(cmd, args, options);
+
+      if (stderrFunc) {
+        rsync.stderr.on('data', stderrFunc);
+      }
+
+      if (stdoutFunc) {
+        rsync.stdout.on('data', stdoutFunc);
+      }
+
+      if (spawnFunc) {
+        rsync.on('spawn', () => spawnFunc(rsync) );
+      }
+
+      rsync.on('error', reject);
+
+      rsync.on('close', code => {
+        if (code) {
+          const err = new Error(`${cmd} exited with code ${code}`);
+          err.code = code;
+          return reject(err);
+        }
+        resolve(code);
+      });
+    });
+  };
+
   static httpRequest(url, dest = '', entry = null) {
     log.debug(`httpRequest - requesting ${url}`);
     return new Promise ((resolve, reject) => {

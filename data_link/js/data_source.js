@@ -3,8 +3,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const rsync = require('rsync2');
-
 const { tools, status } = require('./tools.js');
 const config = require('./config.js');
 const log = require('./log.js');
@@ -108,7 +106,7 @@ class dataSource {
   }
 
   dataError(user, id, catalog, error) {
-    log.error(`${this.name} - Unable to acquire data: ${error}`);
+    log.error(`${this.name} - Unable to acquire data: ${error.message}`);
     catalog.updateEntry(user, this.name, id, { status: status.failed })
   }
 
@@ -121,51 +119,47 @@ class dataSource {
     if (! config.get('data_sources.' + this.name + '.rsync_size', true)) {
       return;
     }
-    const cmd = rsync()
-      .setFlags('rz')
-      .source(url);
 
     let out = '';
 
-    await cmd.execute({
-      stdoutHandler: (stdoutHandle) => {
-        out += stdoutHandle.toString();
+    await tools.doRsync(
+      ['-rz', url],
+      (stdout) => {
+        out += stdout.toString();
       },
-      sterrHandler: (sterrHandle) => {
-        log.error(sterrHandle.toString());
-      }})
-      .then(() => {
-        let lines = out.split("\n");
-        this.rsyncParseLines(catalog, lines);
-      })
-      .catch(err => {
-        log.error(err);
-        this.catalogError(err);
-      });
+      (stderr) => {
+        log.error(stderr.toString());
+      }
+    ).then(() => {
+      let lines = out.split("\n");
+      this.rsyncParseLines(catalog, lines);
+    }).catch(err => {
+      log.error(`rsyncGetCatalog - Error: ${err.message}`);
+    });
   }
 
   rsyncGetData(url, user, id, catalog) {
     let dest = tools.getDataDest(user, this.name);
 
     // rsync -rzv --include 'ID/***' --exclude '*' data.pdbjbk1.pdbj.org::rsync/xrda/
-    const cmd = rsync()
-      .setFlags('rzq')
-      .include(id + '/***')
-      .exclude('*')
-      .source(url)
-      .destination(dest);
-
-    this.jobs[user + '/' + id] = cmd.execute({
-      stdoutHandler: (stdoutHandle) => {
-        out += stdoutHandle.toString();
+    tools.doRsync(
+      ['-rzq', '--include', id + '/***', '--exclude', '*', url, dest],
+      (stdout) => {
+        out += stdout.toString();
+      },
+      (stderr) => {
+        log.error(stderr.toString());
+      },
+      (process) => {
+        if (process.pid) {
+          this.jobs[user + '/' + id] = process.pid;
+        }
       }
-      })
-      .then(() => {
-        this.dataComplete(user, id, catalog);
-      })
-      .catch(error => {
-        this.dataError(user, id, catalog, error);
-      });
+    ).then(() => {
+      this.dataComplete(user, id, catalog);
+    }).catch(err => {
+      this.dataError(user, id, catalog, err);
+    });
 
   }
 
