@@ -18,7 +18,7 @@ A commandline tool will also be added to communicate with the API.
 
 The web service is written in JS and runs on node [https://nodejs.org/](https://nodejs.org/). It is developed as part of CCP4 Cloud and resides in the `data_link` folder on the jsCoFE repository [https://gitlab.com/CCP4/jsCoFE](https://gitlab.com/CCP4/jsCoFE).
 
-Data Link requires some additional node modules that can be installed with `npm`. Data Link currently uses express, cheerio, https, pino, and rsync2 npm modules. The dependencies are included as part of CCP4 Cloud (jsCoFE) and can be installed by running `npm install` from within the `jsCoFE` or `data_link` directory.
+Data Link requires some additional node modules that can be installed with `npm`. Data Link currently uses express, cheerio, https, and pino npm modules. The dependencies are included as part of CCP4 Cloud (jsCoFE) and can be installed by running `npm install` from within the `jsCoFE` or `data_link` directory.
 
 The default configuration `config-dist.json` should be copied to `config.json` and edited accordingly. 
 
