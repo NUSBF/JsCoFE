@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    12.12.23   <--  Date of Last Modification.
+ *    26.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -50,8 +50,8 @@
  *   PROJECT     project_id                  # mandatory
  *   LOAD_PROJECT [yes|no]                   # optional, default "no"
  *   TITLE       Optional Project Title      # used only if project is created
- *   TASK        [import|auto-af2|auto-mr|auto-ep|hop-on|auto-ref|dimple]  # if not
- *                                           # given, 'import' is assumed
+ *   TASK        [import|auto-af2|auto-mr|auto-ep|hop-on|auto-ref|dimple]
+ *                                           # if TASK is not given, 'import' is assumed
  *   HA_TYPE     Se                          # used only for auto-ep
  *   FILE        /path/to/file.[mtz|pdb|seq|fasta|pir|cif]  # generic import
  *   HKL         /path/to/file.mtz           # the file should be used as hkl in hop-on
@@ -63,7 +63,7 @@
  *   LIGAND      /path/to/file.cif   # ML or ligand library file
  *   SMILES      smiles-string       # ligand smiles string, not enquoted
  *
- *  Notes:
+ *  Note:
  *    - if sequence file is given by the FILE keyword, protein sequence is assumed
  *    - if project does not exist, it will be created
  *    - requested task will be always placed at project root
@@ -71,23 +71,23 @@
  */
 
 //  load system modules
-var fs      = require("fs-extra");
-var request = require('request' );
-var path    = require('path');
-var zl      = require('zip-lib');
+const fs      = require("fs-extra");
+const request = require('request' );
+const path    = require('path');
+const zl      = require('zip-lib');
 
 //  load application modules
-var send_dir = require('../js-server/server.send_dir');
-var utils    = require('../js-server/server.utils');
-var cmd      = require('../js-common/common.commands');
+const send_dir = require('../js-server/server.send_dir');
+const utils    = require('../js-server/server.utils');
+const cmd      = require('../js-common/common.commands');
 
-var task_t         = require('../js-common/tasks/common.tasks.template'   );
-var task_import    = require('../js-common/tasks/common.tasks.import'     );
-var task_wflowafmr = require('../js-common/tasks/common.tasks.wflowafmr'  );
-var task_wflowamr  = require('../js-common/tasks/common.tasks.wflowamr'   );
-var task_wflowaep  = require('../js-common/tasks/common.tasks.wflowaep'   );
-var task_wflowdpl  = require('../js-common/tasks/common.tasks.wflowdplmr' );
-var task_hopon     = require('../js-common/tasks/common.tasks.migrate'    );
+const task_t         = require('../js-common/tasks/common.tasks.template'   );
+const task_import    = require('../js-common/tasks/common.tasks.import'     );
+const task_wflowafmr = require('../js-common/tasks/common.tasks.wflowafmr'  );
+const task_wflowamr  = require('../js-common/tasks/common.tasks.wflowamr'   );
+const task_wflowaep  = require('../js-common/tasks/common.tasks.wflowaep'   );
+const task_wflowdpl  = require('../js-common/tasks/common.tasks.wflowdplmr' );
+const task_hopon     = require('../js-common/tasks/common.tasks.migrate'    );
 
 // var conf   = require('../js-server/server.configuration');
 // var cmd    = require('../js-common/common.commands');
@@ -95,7 +95,7 @@ var task_hopon     = require('../js-common/tasks/common.tasks.migrate'    );
 
 // ==========================================================================
 
-var cloudrun_code = {
+const cloudrun_code = {
   import   : 'import',
   auto_af2 : 'auto-af2',
   auto_mr  : 'auto-mr',
@@ -106,7 +106,7 @@ var cloudrun_code = {
 }
 
 function printInstructions()  {
-  var msg = [
+  let msg = [
     '',
     '========',
     'CloudRun',
@@ -130,7 +130,7 @@ function printInstructions()  {
     '',
     '    node js-utils/cloudrun.js -t task',
     '',
-    'where "task" is one of import, auto-af2, auto-mr, auto-ep, hop-on or dimple.',
+    'where "task" is one of import, auto-af2, auto-mr, auto-ep, hop-on, or dimple.',
     '',
     '    node js-utils/cloudrun.js -h',
     '',
@@ -146,26 +146,32 @@ function printInstructions()  {
 
 
 function printTemplate ( task )  {
-  var msg = [
+
+  let task_name = task + '                    # mandatory';
+  let msg = [
     '#',
-    '# Notes: a) hash indicates a comment b) line order is insignificant',
-    '#        c) CloudRun tasks are added at Project\'s root.',
+    '# Note: a) hash indicates a comment',
+    '#       b) line order is insignificant',
+    '#       c) CloudRun tasks are added at Project\'s root.',
     '#',
-    'URL         https://ccp4cloud.server    # mandatory',
+    '#  Edit instructions below this line as necessary:',
+    '# _____________________________________________________________________________',
+    '#',
+    'URL         https://ccp4cloud.server       # mandatory',
     '#',
     '# User authentication: either in-line specification',
     '#',
-    'USER        user_login                  # mandatory',
-    'CLOUDRUN_ID aaaa-bbbb-cccc-dddd         # mandatory, found in "My Account"',
+    'USER        user_login                     # mandatory',
+    'CLOUDRUN_ID aaaa-bbbb-cccc-dddd            # mandatory, found in "My Account"',
     '#',
     '# or reading user_login and aaaa-bbbb-cccc-dddd (in that order)',
     '# from a file:',
     '#',
-    '# AUTH_FILE   /path/to/auth.dat           # mandatory',
+    '# AUTH_FILE   /path/to/auth.dat            # mandatory',
     '#',
-    'PROJECT     project_id                  # mandatory',
-    'TITLE       Optional Project Title      # used only if project is created',
-    'TASK        ' + task + '                    # mandatory',
+    'PROJECT     project_id                     # mandatory',
+    'TITLE       Optional Project Title         # used only if project is created',
+    'TASK        ' + task_name,
     'TASK_NAME   Optional Task Name          # if not given, default name is used',
     '#'
   ];
@@ -174,14 +180,14 @@ function printTemplate ( task )  {
 
     default :
         msg = [
-          'Task code "' + task + '" is invalid. Acceptable tasks include:',
-          '   "' + cloudrun_code.import   + '" : generic data import',
+          'Task code "' + task + '" cannot be used in cloudrun. Acceptable tasks include:',
+          '   "' + cloudrun_code.import   + '"   : generic data import',
           '   "' + cloudrun_code.auto_af2 + '" : auto-AF2 workflow (uses AlphaFold-2 for model generation)',
-          '   "' + cloudrun_code.auto_mr  + '" : auto-MR workflow (uses PDB and AFDB as source of models)',
-          '   "' + cloudrun_code.auto_ep  + '" : auto-EP workflow',
-          '   "' + cloudrun_code.hop_on   + '" : project initiation from phased structure',
+          '   "' + cloudrun_code.auto_mr  + '"  : auto-MR workflow (uses PDB and AFDB as source of models)',
+          '   "' + cloudrun_code.auto_ep  + '"  : auto-EP workflow',
+          '   "' + cloudrun_code.hop_on   + '"   : project initiation from phased structure',
           '   "' + cloudrun_code.auto_ref + '" : auto_REL workflow (from phased structure)',
-          '   "' + cloudrun_code.dimple   + '" : fast phasing with 100% homolog for ligand blob identification'
+          '   "' + cloudrun_code.dimple   + '"   : fast phasing with 100% homolog for ligand blob identification'
         ];
         console.log (
           msg.join('\n')
@@ -291,7 +297,6 @@ function printTemplate ( task )  {
         ]);
       break;
 
-
     case cloudrun_code.dimple :
         msg = [
           '# The task uploads files specified, creates CCP4 Cloud Project (if it',
@@ -314,10 +319,15 @@ function printTemplate ( task )  {
         ]);
       break;
 
+
   }
 
   console.log (
-    '# CloudRun template command file for ' + task + ' task.\n#\n' +
+    '#\n' +
+    '# =================================================\n' +
+    '# CloudRun template command file for ' + task + ' task.\n' +
+    '# =================================================\n' +
+    '#\n' +
     msg.join('\n')
   );
   process.exit(0);
@@ -325,8 +335,8 @@ function printTemplate ( task )  {
 }
 
 function pickFile ( fnames,extList )  {
-  for (var i=0;i<fnames.length;i++)  {
-    var fext = path.parse(fnames[i]).ext.toLowerCase();
+  for (let i=0;i<fnames.length;i++)  {
+    let fext = path.parse(fnames[i]).ext.toLowerCase();
     if (extList.indexOf(fext)>=0)
       return [fnames[i]];
   }
@@ -336,13 +346,13 @@ function pickFile ( fnames,extList )  {
 
 function sendData ( filePath,metaData )  {
 
-  var formData = {};
-  for (key in metaData)
+  let formData = {};
+  for (let key in metaData)
     formData[key] = metaData[key];
 
   formData['file'] = fs.createReadStream ( filePath );
 
-  var post_options = {
+  let post_options = {
     url      : meta.url + '/' + cmd.fe_command.cloudRun,
     formData : formData,
     rejectUnauthorized : false
@@ -357,7 +367,7 @@ function sendData ( filePath,metaData )  {
       process.exitCode = 1;
     } else  {
       try {
-        var resp = JSON.parse ( response );
+        let resp = JSON.parse ( response );
         if (resp.status==cmd.fe_retcode.ok)  {
           console.log ( ' ... server replied: ' + resp.message + '\n' );
           console.log ( 'Note: list of projects and/or project will not update automatically\n' +
@@ -512,14 +522,14 @@ var ok        = true;
 var fnames    = [];
 var auth_file = '';
 console.log ( ' ========== COMMANDS:' );
-for (var i=0;i<commands.length;i++)  {
+for (let i=0;i<commands.length;i++)  {
   console.log ( ' \$ ' + commands[i] );
-  var command = commands[i].split('#')[0].trim();
+  let command = commands[i].split('#')[0].trim();
   if (command)  {
-    var lst = command.split(' ');
+    let lst = command.split(' ');
     if (lst.length>1)  {
-      var key = lst[0].toLowerCase();
-      var val = lst.slice(1).join(' ').trim();
+      let key = lst[0].toLowerCase();
+      let val = lst.slice(1).join(' ').trim();
       if (key in meta)
         meta[key] = val;
       else if (key in options)
@@ -527,22 +537,22 @@ for (var i=0;i<commands.length;i++)  {
       else if (key in files)  {
         if (utils.fileExists(val))  {
           files[key].push ( val );
-          var fext  = path.parse(val).ext;
-          var fname = path.parse(val).name;
+          let fext  = path.parse(val).ext;
+          let fname = path.parse(val).name;
           fnames.push ( fname + fext );
           if (['.seq','.fasta','.pir'].indexOf(fext.toLowerCase())>=0)  {
-            var fdata = utils.readString ( val );
+            let fdata = utils.readString ( val );
             if (fdata)  {
-              var annot = {
+              let annot = {
                 file   : fname + fext,
                 rename : fname + fext,
                 items  : []
               };
-              var content = fdata.split('>').filter(function(k){return k});
-              for (var j=0;j<content.length;j++)  {
+              let content = fdata.split('>').filter(function(k){return k});
+              for (let j=0;j<content.length;j++)  {
                 content[j] = content[j].trim();
                 if (content[j])  {
-                  var sfname = fname + fext;
+                  let sfname = fname + fext;
                   if (content.length>1)
                     sfname = fname + '_' + (j+1) + fext;
                   if (key.toLowerCase()=='file')
@@ -566,7 +576,7 @@ for (var i=0;i<commands.length;i++)  {
           ok = false;
         }
       } else if (key=='auth_file')  {
-        var auth_line = utils.readString ( val );
+        let auth_line = utils.readString ( val );
         if (!auth_line)  {
           console.log ( '\n  *** STOP: AUTH_FILE is absent or corrupt' );
           process.exit(1);
@@ -604,7 +614,7 @@ if (auth_file)
 // --------------------------------------------------------------------------
 // Check that input is sufficient
 
-for (var key in meta)
+for (let key in meta)
   if (!meta[key])  {
     ok = false;
     console.log ( ' *** ' + key.toUpperCase() + ' not specified' );
@@ -698,16 +708,16 @@ if (meta.title=='*')
 // --------------------------------------------------------------------------
 // Make template directory for upload
 
-var dirPath    = 'import_dir';
-var uploadsDir = path.join ( dirPath,'uploads' );
+const dirPath    = 'import_dir';
+const uploadsDir = path.join ( dirPath,'uploads' );
 
 utils.removePath ( dirPath );   // just in case
 utils.mkDir ( dirPath    );
 utils.mkDir ( uploadsDir );
 
-for (var key in files)  {
-  for (var i=0;i<files[key].length;i++)  {
-    var fpath = files[key][i];
+for (let key in files)  {
+  for (let i=0;i<files[key].length;i++)  {
+    let fpath = files[key][i];
     utils.copyFile ( fpath,path.join(uploadsDir,path.basename(fpath)) );
   }
 }
@@ -719,11 +729,11 @@ console.log ( ' ... files copied to temporary location' );
 // --------------------------------------------------------------------------
 // Make task object
 
-var task = null;
+let task = null;
 
 switch (meta.task)  {
 
-  default :
+  default : 
   case cloudrun_code.import :
                     task = new task_import.TaskImport  ();
                     task.upload_files = fnames;

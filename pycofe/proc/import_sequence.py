@@ -17,7 +17,7 @@
 #
 
 #  python native imports
-import os
+# import os
 
 #  ccp4-python imports
 import pyrvapi
