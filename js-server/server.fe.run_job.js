@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.10.23   <--  Date of Last Modification.
+ *    21.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -44,7 +44,7 @@
  *     addJobAuto           ( jobEntry,jobClass )
  *     getJobResults        ( job_token,server_request,server_response )
  *     checkJobs            ( loginData,data )
- *     wakeZombieJobs        ( loginData,data )
+ *     wakeZombieJobs       ( loginData,data )
  *     cloudRun             ( server_request,server_response )
  *
  *  ==========================================================================
@@ -1679,8 +1679,8 @@ function cloudRun ( server_request,server_response )  {
 
   // 1. Receive data and metadata
 
-  var tmpDir    = conf.getTmpFile();
-  var tmpJobDir = conf.getTmpFile();
+  let tmpDir    = conf.getTmpFile();
+  let tmpJobDir = conf.getTmpFile();
 
   if ((!utils.mkDir(tmpDir)) || (!utils.mkDir(tmpJobDir)))  {
     log.error ( 16,'cannot make temporary directory for cloud run' );
@@ -1694,8 +1694,8 @@ function cloudRun ( server_request,server_response )  {
   send_dir.receiveDir ( tmpJobDir,tmpDir,server_request,
     function(code,errs,meta){
 
-      var response = null;
-      var message  = '';
+      let response = null;
+      let message  = '';
 
       // remove temporary directory
       utils.removePath ( tmpDir );
@@ -1716,12 +1716,12 @@ function cloudRun ( server_request,server_response )  {
 
         // 2. Check that user exists and make loginData structure
 
-        var localSetup = conf.isLocalSetup();
+        let localSetup = conf.isLocalSetup();
         if (localSetup)
           meta.user = ud.__local_user_id;
-        var loginData = { login : meta.user, volume : null };
+        let loginData = { login : meta.user, volume : null };
 
-        var uData = user.readUserData ( loginData );
+        let uData = user.readUserData ( loginData );
         if (!uData)  {
 
           log.standard ( 60,'cloudrun request for unknown user (' + meta.user +
@@ -1740,7 +1740,7 @@ function cloudRun ( server_request,server_response )  {
 
           user.topupUserRation ( loginData,function(rdata){
 
-            var check_list = ration.checkUserRation ( loginData,true );
+            let check_list = ration.checkUserRation ( loginData,true );
             if (check_list.length>0)  {
 
               log.standard ( 62,'cloudrun rejected for user (' + meta.user + '): ' +
@@ -1752,9 +1752,9 @@ function cloudRun ( server_request,server_response )  {
 
               // 3. Check project Id and make new project if necessary
 
-              var pData = prj.readProjectData ( loginData,meta.project );
+              let pData = prj.readProjectData ( loginData,meta.project );
               if (!pData)  {
-                var pDesc = new pd.ProjectDesc();
+                let pDesc = new pd.ProjectDesc();
                 pDesc.init ( meta.project,meta.title,pd.start_mode.standard,
                             com_utils.getDateString() );
                 response = prj.makeNewProject ( loginData,pDesc );
@@ -1801,7 +1801,7 @@ function cloudRun ( server_request,server_response )  {
 
                 // 4. The project is either created or retrieved. Prepare task and run it
 
-                var task = utils.readClass ( path.join(tmpJobDir,task_t.jobDataFName) );
+                let task = utils.readClass ( path.join(tmpJobDir,task_t.jobDataFName) );
                 if (!task)  {
                   log.error ( 13,'error reading task meta in cloudRun: login ' +
                                  loginData.login + ', project ' + meta.project );
@@ -1813,7 +1813,7 @@ function cloudRun ( server_request,server_response )  {
 
                   // make job directory just to fix the task id
   
-                  var mjd = prj.make_job_directory ( loginData,meta.project,pData.desc.jobCount+1 );
+                  let mjd = prj.make_job_directory ( loginData,meta.project,pData.desc.jobCount+1 );
 
                   if (mjd[0]<0)  {
                     // job directory cannot be created because if errors
@@ -1831,7 +1831,7 @@ function cloudRun ( server_request,server_response )  {
                     task.job_dialog_data.panel = 'output';
                     prj.writeProjectData ( loginData,pData,true );  // fix job count promptly
 
-                    var jobDirPath = mjd[1];
+                    let jobDirPath = mjd[1];
                     // utils.moveDir ( tmpJobDir,jobDirPath,true );
                     // var tempJobDir = tmpJobDir;
                     // tmpJobDir      = null;  // essential
@@ -1844,7 +1844,7 @@ function cloudRun ( server_request,server_response )  {
                               'data from temporary area after upload.',{} );
                       } else  {
 
-                        var jobDataPath = prj.getJobDataPath ( loginData,meta.project,task.id );
+                        let jobDataPath = prj.getJobDataPath ( loginData,meta.project,task.id );
 
                         if (!utils.writeObject(jobDataPath,task))  {
                           log.error ( 14,'cannot write job metadata at ' + jobDataPath );
@@ -1868,10 +1868,10 @@ function cloudRun ( server_request,server_response )  {
 
                           // 7. Make project tree node
 
-                          var pnode = pData.tree[0];
-                          var pnode_json = JSON.stringify ( pnode );
+                          let pnode = pData.tree[0];
+                          let pnode_json = JSON.stringify ( pnode );
 
-                          var cnode = JSON.parse ( pnode_json );
+                          let cnode = JSON.parse ( pnode_json );
                           cnode.id       = pnode.id + '_' + crypto.randomBytes(20).toString('hex'); //key;
                           cnode.parentId = pnode.id;
                           cnode.dataId   = task.id;
@@ -1886,12 +1886,12 @@ function cloudRun ( server_request,server_response )  {
                           prj.writeProjectData ( loginData,pData,true );
 
                           // Run the job
-                          var job_token = crypto.randomBytes(20).toString('hex');
+                          let job_token = crypto.randomBytes(20).toString('hex');
                           log.standard ( 6,'cloudrun job ' + task.id + ' formed, login:' +
                                            loginData.login + ', token:' + job_token );
                           _run_job ( loginData,task,job_token,loginData,[],
                                     function(jtoken){
-                            var jobEntry = feJobRegister.getJobEntryByToken ( jtoken );
+                            let jobEntry = feJobRegister.getJobEntryByToken ( jtoken );
                             if (jobEntry)  {
                               jobEntry.cloudrun = true;
                               // we do not save job register here, which is a small sin

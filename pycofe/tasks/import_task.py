@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.11.23   <--  Date of Last Modification.
+#    26.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,15 +32,16 @@ import os
 import pyrvapi
 
 #  application imports
-from . import basic
-from proc import (import_xrayimages, import_unmerged, import_merged,
-                  import_xyz, import_ligand, import_sequence, import_doc,
-                  import_alignment,import_borges)
-from proc import import_pdb, import_seqcp
+from .            import basic
+from proc         import (import_xrayimages, import_unmerged, import_merged,
+                          import_xyz, import_ligand, import_sequence, import_doc,
+                          import_alignment,import_borges,import_wscript)
+from proc         import import_pdb, import_seqcp
+from pycofe.auto  import auto_workflow
 
 importers = [import_xrayimages, import_unmerged, import_merged,
              import_xyz, import_sequence, import_doc,
-             import_alignment,import_borges]
+             import_alignment,import_borges,import_wscript]
 
 #
 # LEFTOVER CODE FROM CCPEM SCOPE. LEAVE IT IN FOR NOW
@@ -179,6 +180,45 @@ class Import(basic.TaskDriver):
 
         return
 
+
+    def prepareWorkflowData(self):
+        #  works with pre-imported data from the project
+
+        self.unm     = []  # unmerged dataset
+        self.hkl     = []  # selected merged dataset
+        self.seq     = []  # list of sequence objects
+        self.xyz     = []  # coordinates (model/apo)
+        self.lig     = []  # ligand structures
+        self.ligdesc = []  # not used in this class, but used in derived classes
+        self.lib     = []
+
+        if "DataUnmerged" in self.outputDataBox.data:
+            self.unm = self.outputDataBox.data["DataUnmerged"]
+
+        if "DataHKL" in self.outputDataBox.data:
+            self.hkl = self.outputDataBox.data["DataHKL"]
+
+        if "DataSequence" in self.outputDataBox.data:
+            self.seq = self.outputDataBox.data["DataSequence"]
+
+        if "DataXYZ" in self.outputDataBox.data:
+            self.xyz = self.outputDataBox.data["DataXYZ"]
+
+        if "DataLibrary" in self.outputDataBox.data:
+            self.lib = self.outputDataBox.data["DataLibrary"]
+
+        if "DataLigand" in self.outputDataBox.data:
+            self.lig = self.outputDataBox.data["DataLigand"]
+
+        ldesc = getattr ( self.task,"input_ligands",[] )
+        for i in range(len(ldesc)):
+            if ldesc[i].source!='none':
+                self.ligdesc.append ( ldesc[i] )
+
+        return
+
+
+
     def run(self):
 
         self.cloud_import_path = {}
@@ -219,6 +259,37 @@ class Import(basic.TaskDriver):
                     nimported -= nrevisions0
                 if nimported>0:
                     ilist += key[4:] + " (" + str(nimported) + ") "
+
+            if len(self.task.script)>0:
+                
+                self.prepareWorkflowData()
+                variables = {}
+                if self.unm:
+                    variables["reso_high"] = self.unm[0].getHighResolution(raw=True)
+                elif self.hkl:
+                    variables["reso_high"] = self.hkl[0].getHighResolution(raw=True)
+
+                self.task.autoRunName = "@ROOT"   # step identifier
+                self.flush()
+
+                if auto_workflow.nextTask ( self,{
+                        "data" : {
+                            "unmerged" : self.unm,
+                            "hkl"      : self.hkl,
+                            "seq"      : self.seq,
+                            "xyz"      : self.xyz,
+                            "ligand"   : self.lig,
+                            "lib"      : self.lib,
+                            "ligdesc"  : self.ligdesc
+                        },
+                        "variables" : variables
+                   }):
+                    ilist += "Workflow (1) -- started"
+                    self.putMessage ( "<h3>Workflow [" + self.task.autoRunId +\
+                                      "] started</h3>" )
+                else:
+                    ilist += "Workflow (1) -- start failed"
+
             if ilist:
                 self.generic_parser_summary["import_task"] = {
                   "summary_line" : "imported: " + ilist
@@ -240,6 +311,7 @@ class Import(basic.TaskDriver):
               "summary_line" : "no data imported"
             }
         self.success ( have_results or self.task.state=="remdoc" )
+
         return
 
 

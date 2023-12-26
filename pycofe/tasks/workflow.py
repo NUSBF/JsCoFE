@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.11.23   <--  Date of Last Modification.
+#    26.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -26,7 +26,7 @@
 
 #  python native imports
 import os
-import shutil
+# import shutil
 
 #  application imports
 from   pycofe.tasks   import import_task
@@ -37,11 +37,11 @@ from   pycofe.auto    import auto_workflow
 
 # simulates ligand data structure that is normally coming from JS part
 
-class ligandCarrier():
-    def __init__(self, source, smiles, code):
-        self.source = source
-        self.smiles = smiles
-        self.code = code
+# class ligandCarrier():
+#     def __init__(self, source, smiles, code):
+#         self.source = source
+#         self.smiles = smiles
+#         self.code = code
 
 class Workflow(import_task.Import):
 
@@ -244,9 +244,10 @@ class Workflow(import_task.Import):
                     "variables" : variables
                }):
                 summary_line += "workflow started"
-                self.putMessage ( "<h3>Workflow started</hr>" )
+                self.putMessage ( "<h3>Workflow started</h3>" )
             else:
                 summary_line += "workflow start failed"
+                self.putMessage ( "<h3><i>Workflow start failed</i></h3>" )
         else:
             summary_line += "insufficient input"
 

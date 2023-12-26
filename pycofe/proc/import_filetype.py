@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    04.05.21   <--  Date of Last Modification.
+#    25.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  FILE TYPE DETECTION FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2023
 #
 # ============================================================================
 #
@@ -34,6 +34,7 @@ def ftype_XDSMerged    ():  return "xds_merged"
 def ftype_MTZMerged    ():  return "mtz_merged"
 def ftype_CIFMerged    ():  return "cif_merged"
 def ftype_XYZ          ():  return "xyz"
+def ftype_WScript      ():  return "wscript"
 def ftype_Ligand       ():  return "ligand"
 def ftype_Sequence     ():  return "sequence"
 def ftype_Alignment    ():  return "alignment"
@@ -99,13 +100,13 @@ def getFileType ( fname,importDir,file_stdout ):
             pass
         return ftype
 
-    if fext=='.lib':  return ftype_Ligand()
-
+    if fext=='.lib':                      return ftype_Ligand()
     if fext in ('.map','.mrc'):           return ftype_Map()
     if fext in ('.pdb','.mmcif','.ent'):  return ftype_XYZ()
     if fext in ('.seq','.fasta','.pir'):  return ftype_Sequence()
     if fext=='.hhr'   :                   return ftype_Alignment()
     if fext=='.borges':                   return ftype_Borges()
+    if fext=='.wscript':                  return ftype_WScript()
 
     if fext=='.txt' :
         fn1,fext1 = os.path.splitext(fn.lower())

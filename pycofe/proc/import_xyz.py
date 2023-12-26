@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.10.23   <--  Date of Last Modification.
+#    25.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,9 +21,8 @@ import os
 import pyrvapi
 
 #  application imports
-from   pycofe.dtypes import dtype_xyz
-from   pycofe.varut  import command
-from   pycofe.proc   import import_filetype, xyzmeta, coor
+from   pycofe.dtypes  import dtype_xyz
+from   pycofe.proc    import import_filetype, xyzmeta
 
 
 # ============================================================================

@@ -72,6 +72,7 @@ def nextTask ( body,data,log=None ):
 #    }    
 #  }
 #
+    
     try:
 
         crTask = body.task
@@ -104,6 +105,8 @@ def nextTask ( body,data,log=None ):
                         auto_api2.setCommentsOutput ( words[1].upper()=="ON" )
                         auto_api2.log_line ( i+1,crTask.script[i] )
             auto_api2.log_message ( " " )
+
+            body.stderrln ( " >>>>>> ")
 
 
             # prepare citation lists for passing down the project tree; this
