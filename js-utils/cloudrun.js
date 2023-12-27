@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    26.12.23   <--  Date of Last Modification.
+ *    27.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -744,18 +744,18 @@ switch (meta.task)  {
                     task.inputMode = task_t.input_mode.root;
                     task.file_select[0].path = path.parse(files.hkl[0]).base;
                     task.file_select[1].path = path.parse(files.seq[0]).base;
-                    if (options.smiles)
-                      task.input_ligands = [{
-                        source : 'S',
-                        smiles : options.smiles,
-                        code   : ''
-                      }];
-                    else if (options.lig_code)
-                      task.input_ligands = [{
-                        source : 'M',
-                        smiles : '',
-                        code   : options.lig_code
-                      }];
+                    // if (options.smiles)
+                    //   task.input_ligands = [{
+                    //     source : 'S',
+                    //     smiles : options.smiles,
+                    //     code   : ''
+                    //   }];
+                    // else if (options.lig_code)
+                    //   task.input_ligands = [{
+                    //     source : 'M',
+                    //     smiles : '',
+                    //     code   : options.lig_code
+                    //   }];
                   break;
 
   case cloudrun_code.auto_mr :
@@ -763,18 +763,18 @@ switch (meta.task)  {
                     task.inputMode = task_t.input_mode.root;
                     task.file_select[0].path = path.parse(files.hkl[0]).base;
                     task.file_select[1].path = path.parse(files.seq[0]).base;
-                    if (options.smiles)
-                      task.input_ligands = [{
-                        source : 'S',
-                        smiles : options.smiles,
-                        code   : ''
-                      }];
-                    else if (options.lig_code)
-                      task.input_ligands = [{
-                        source : 'M',
-                        smiles : '',
-                        code   : options.lig_code
-                      }];
+                    // if (options.smiles)
+                    //   task.input_ligands = [{
+                    //     source : 'S',
+                    //     smiles : options.smiles,
+                    //     code   : ''
+                    //   }];
+                    // else if (options.lig_code)
+                    //   task.input_ligands = [{
+                    //     source : 'M',
+                    //     smiles : '',
+                    //     code   : options.lig_code
+                    //   }];
                   break;
 
   case cloudrun_code.auto_ep :
@@ -826,6 +826,19 @@ switch (meta.task)  {
                   break;
 
 }
+
+if (options.smiles)
+  task.input_ligands = [{
+    source : 'S',
+    smiles : options.smiles,
+    code   : ''
+  }];
+else if (options.lig_code)
+  task.input_ligands = [{
+    source : 'M',
+    smiles : '',
+    code   : options.lig_code
+  }];
 
 task.file_mod   = annotation; // file modification and annotation
 task.project    = meta.project;
