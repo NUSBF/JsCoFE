@@ -809,37 +809,37 @@ var tree = new Tree ( rootName );
 }
 
 Grid.prototype.setProgressBar = function ( max_value, row,col, rowSpan,colSpan )  {
-var pBar = new ProgressBar ( max_value );
+let pBar = new ProgressBar ( max_value );
   this.setWidget ( pBar, row,col, rowSpan,colSpan );
   return pBar;
 }
 
 Grid.prototype.setSelectFile = function ( multiple_bool,accept_str, row,col, rowSpan,colSpan )  {
-var sfile = new SelectFile ( multiple_bool,accept_str );
+let sfile = new SelectFile ( multiple_bool,accept_str );
   this.setWidget ( sfile, row,col, rowSpan,colSpan );
   return sfile;
 }
 
 Grid.prototype.setSection = function ( title_str,open_bool, row,col, rowSpan,colSpan )  {
-var section = new Section ( title_str,open_bool );
+let section = new Section ( title_str,open_bool );
   this.setWidget ( section, row,col, rowSpan,colSpan );
   return section;
 }
 
 Grid.prototype.setCombobox = function ( row,col, rowSpan,colSpan )  {
-var combobox = new Combobox();
+let combobox = new Combobox();
   this.setWidget ( combobox, row,col, rowSpan,colSpan );
   return combobox;
 }
 
 Grid.prototype.setCheckbox = function ( label_txt, checked_bool, row,col, rowSpan,colSpan )  {
-var checkbox = new Checkbox ( label_txt,checked_bool );
+let checkbox = new Checkbox ( label_txt,checked_bool );
   this.setWidget ( checkbox, row,col, rowSpan,colSpan );
   return checkbox;
 }
 
 Grid.prototype.addCheckbox = function ( label_txt, checked_bool, row,col, rowSpan,colSpan )  {
-var checkbox = new Checkbox ( label_txt,checked_bool );
+let checkbox = new Checkbox ( label_txt,checked_bool );
   this.addWidget ( checkbox, row,col, rowSpan,colSpan );
   return checkbox;
 }

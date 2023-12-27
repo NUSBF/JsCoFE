@@ -310,6 +310,9 @@ if (!__template)  {
     this.uname        = '';
     this.file_mod     = {'rename':{},'annotation':[]}; // file modification and annotation
     this.upload_files = [];
+    this.autoRunId    = '';     // automatic workflow Id
+    this.script       = [];     // workflow script to execute
+    this.script_pointer = 0;    // current position in the workflow script script
     return;
   }
 

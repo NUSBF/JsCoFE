@@ -106,9 +106,6 @@ def nextTask ( body,data,log=None ):
                         auto_api2.log_line ( i+1,crTask.script[i] )
             auto_api2.log_message ( " " )
 
-            body.stderrln ( " >>>>>> ")
-
-
             # prepare citation lists for passing down the project tree; this
             # must be done here because in general framework, citations are
             # put in place when task finishes

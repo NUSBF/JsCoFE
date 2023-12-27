@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.11.23   <--  Date of Last Modification.
+ *    27.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -45,13 +45,12 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
            .setFontBold ( true  )
            .setFontSize ( '140%');
 
-  let name_tooltip = 'Workflow name should contain only latin ' +
-                     'letters, numbers, underscores, dashes '   +
-                     'and dots, and must start with a letter. ' +
-                     'The name will be used for workflow identification ' +
-                     'and must be unique';
+  let name_tooltip = 'Workflow ID should contain only latin letters, '  +
+                     'numbers, underscores, dashes and dots, and must ' +
+                     'start with a letter. The name will be used for '  +
+                     'workflow identification and must be unique';
 
-  this.grid.setLabel    ( '<i>Workflow name</i>:&nbsp;&nbsp;',2,2,1,1 )
+  this.grid.setLabel    ( '<i>Workflow ID</i>:&nbsp;&nbsp;',2,2,1,1 )
            .setTooltip  ( name_tooltip )
            .setNoWrap   ();
 
@@ -106,24 +105,64 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
     height    : 'auto',
     width     : '800px',
     modal     : true,
+    create    : function (e, ui) {
+                  let pane = $(this).dialog("widget")
+                                    .find(".ui-dialog-buttonpane");
+                  let span = new Widget ( 'span' );
+                  $(span.element).prependTo(pane);
+                  let library_btn = new Button ( 'Library',image_path('folder') );
+                  span.addWidget ( library_btn );
+                  $(span.element).css({
+                    'position' : 'relative',
+                    'left'     : '10px',
+                    'top'      : '0px'
+                  });
+                  library_btn.addOnClickListener ( function(){
+                    new CloudFileBrowser ( null,self,0,['wscript'],function(items){
+                      // console.log ( ' >>>>>>>here ' + JSON.stringify(items) );
+                      // items[0].name
+                      fetchFile ( self.rootCloudPath + '/' + items[0].name,
+                        function(text){
+                          self.editor.setText ( text );
+                          self.setIcon ( -1 );
+                        },
+                        null,
+                        function(errcode){
+                          new MessageBox ( 'File not found',
+                                            'file not found','msg_error' );
+                        });
+                      return 1;  // do close browser window
+                    },null );  
+                  });         
+                  let add_btn = new Button ( 'Add task',image_path('add') );
+                  span.addWidget ( add_btn );
+                  $(add_btn.element).css({
+                    'position' : 'relative',
+                    'left'     : '0px',
+                    'top'      : '0px'
+                  });
+                  add_btn.addOnClickListener ( function(){
+                    self.addTask();
+                  });
+                },
     buttons   : {
-      "Library" : function(){
-        new CloudFileBrowser ( null,self,0,['wscript'],function(items){
-          // console.log ( ' >>>>>>>here ' + JSON.stringify(items) );
-          // items[0].name
-          fetchFile ( self.rootCloudPath + '/' + items[0].name,
-            function(text){
-              self.editor.setText ( text );
-              self.setIcon ( -1 );
-            },
-            null,
-            function(errcode){
-              new MessageBox ( 'File not found',
-                               'file not found','msg_error' );
-            });
-          return 1;  // do close browser window
-        },null );
-      },
+      // "Library" : function(){
+      //   new CloudFileBrowser ( null,self,0,['wscript'],function(items){
+      //     // console.log ( ' >>>>>>>here ' + JSON.stringify(items) );
+      //     // items[0].name
+      //     fetchFile ( self.rootCloudPath + '/' + items[0].name,
+      //       function(text){
+      //         self.editor.setText ( text );
+      //         self.setIcon ( -1 );
+      //       },
+      //       null,
+      //       function(errcode){
+      //         new MessageBox ( 'File not found',
+      //                          'file not found','msg_error' );
+      //       });
+      //     return 1;  // do close browser window
+      //   },null );
+      // },
       "Save": function() {
         let workflow_id     = wid_inp.getValue().trim();
         let workflow_script = self.editor.getText().trim();
@@ -298,4 +337,68 @@ let lines  = script.split(/\r?\n/);
     this.editor.setText ( lines.join('\n') );
   }
 
+}
+
+
+EditWorkflowDialog.prototype.addTask = function()  {
+  
+  let dlg = new Dialog ( 'Add new task code' );
+
+  let grid = new Grid('');
+  dlg.addWidget ( grid );
+
+  grid.setLabel    ( ' ',0,0,1,1 );
+  grid.setCellSize ( '','6px', 0,0 );
+  grid.setImage    ( image_path('openjob'),'48px','48px', 1,0,2,1 );
+  grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
+  grid.setLabel    ( 'Add new Task Code',1,1,1,3 ).setFontBold(true).setFontSize('125%');
+  grid.setLabel    ( 'Add task:&nbsp;&nbsp;',2,1,1,1 ).setFontItalic(true);
+
+  let list_cbox = grid.setCombobox ( 2,2,1,1 );
+  list_cbox.addItem ( 'Select task','none',true );
+  list_cbox.addItem ( 'Aimless','TaskAimless',false );
+  list_cbox.addItem ( 'Refmac' ,'TaskRefmac' ,false );
+  window.setTimeout ( function(){
+    list_cbox.make();
+  },0);
+
+  grid.setVerticalAlignment ( 1,0,'middle' );
+  grid.setVerticalAlignment ( 2,1,'middle' );
+
+  grid.setHLine    ( 1, 3,0,1,5 );
+  grid.setLabel    ( 'xxxxx',4,0,1,5 );
+
+
+/*
+  this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
+  this.grid.setLabel    ( 'Workflow Creator',1,2,1,2 )
+           .setFontBold ( true  )
+           .setFontSize ( '140%');
+
+  let name_tooltip = 'Workflow ID should contain only latin letters, '  +
+                     'numbers, underscores, dashes and dots, and must ' +
+                     'start with a letter. The name will be used for '  +
+                     'workflow identification and must be unique';
+
+  this.grid.setLabel    ( '<i>Workflow ID</i>:&nbsp;&nbsp;',2,2,1,1 )
+           .setTooltip  ( name_tooltip )
+           .setNoWrap   ();
+
+  let wid_inp = this.grid.setInputText ( '', 2,3,1,1 );
+  wid_inp.setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'',name_tooltip )
+         .setFontItalic ( true    )
+         .setWidth      ( '100pt' );
+  if (workflowDesc)  {
+    wid_inp.setValue    ( workflowDesc.id );
+    wid_inp.setReadOnly ( true );
+  }
+
+  this.grid.setVerticalAlignment ( 2,2,'middle' );
+  this.grid.setVerticalAlignment ( 2,3,'middle' );
+
+  this.grid.setLabel    ( ' ',2,4,1,1 );
+  this.grid.setCellSize ( '90%','', 2,4 );
+*/
+
+  dlg.launch();
 }

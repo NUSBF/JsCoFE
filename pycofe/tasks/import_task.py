@@ -211,9 +211,12 @@ class Import(basic.TaskDriver):
             self.lig = self.outputDataBox.data["DataLigand"]
 
         ldesc = getattr ( self.task,"input_ligands",[] )
+        self.stderrln ( " >>>>> " + str(ldesc))
         for i in range(len(ldesc)):
             if ldesc[i].source!='none':
                 self.ligdesc.append ( ldesc[i] )
+
+        self.stderrln ( " >>>>> " + str(self.ligdesc))
 
         return
 
