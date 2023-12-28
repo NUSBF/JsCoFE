@@ -21,7 +21,7 @@
 
 'use strict';
 
-function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data )  {
+function calcDialogSize ( defW,defH, defWT,defHT, job_dialog_data=null )  {
 //
 //  defW  : default width as a fraction of window width; '0' means 'auto'
 //  defH  : default width as a fraction of window width; '0' means 'auto'

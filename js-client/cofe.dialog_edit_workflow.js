@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    27.11.23   <--  Date of Last Modification.
+ *    28.11.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -84,7 +84,41 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
        'mode'       : 'python'
   });
   this.grid.setWidget ( this.editor,5,0,1,6 );
-  this.editor.init  ( '',
+  this.editor.init  ( 
+    '#\n' +
+    '# -----------------------------------------------------\n' +
+    '# Workflow Title\n' +
+    '# -----------------------------------------------------\n' +
+    '# ' + new Date().toDateString() + '\n' +
+    '#\n' +
+    '\n' +
+    'VERSION  1.0    # script version for backward compatibility\n' +
+    'DEBUG    OFF    # ON/OFF\n' +
+    'COMMENTS ON     # ON/OFF\n' +
+    'WID      d-imp  # workflow ID for import mode\n' +
+    '\n' +
+    '# ==========================================================================\n' +
+    '# Workflow header -- EDIT AS NECESSARY\n' +
+    '\n' +
+    '# General workflow descriptors\n' +
+    'NAME     my workflow             # to show in Job Tree\n' +
+    'ONAME    my_wflow                # to use for naming output files\n' +
+    'TITLE    My Workflow Title       # to display in Task List\n' +
+    'DESC     my workflow description # to display in Task List\n' + 
+    'KEYWORDS my own workflow         # for using in A-Z keyword search\n' +
+    '\n' +
+    'ALLOW_UPLOAD       # create file upload widgets if started from project root\n' +
+    '\n' +
+    '# ==========================================================================\n' +
+    '# Input data section\n' +
+    '\n' +
+    '# ==========================================================================\n' +
+    '# Workflow parameters section\n' +
+    '\n' +
+    '# ==========================================================================\n' +
+    '# Workflow run body\n' +
+    '\n'
+    ,
     '# Put workflow script here'
   );
   if (workflowDesc)  {
@@ -341,64 +375,141 @@ let lines  = script.split(/\r?\n/);
 
 
 EditWorkflowDialog.prototype.addTask = function()  {
+
+  const task_list = [
+    [ 'Select task'          ,'none'             ],
+    [ 'Aimless'              ,'TaskAimless'      ],
+    // [ 'ASU Definition'       ,'TaskASUDef'       ],
+    [ 'Buccaneer'            ,'TaskBuccaneer'    ],
+    [ 'Change Resolution'    ,'TaskChangeReso'   ],
+    [ 'Dimple MR'            ,'TaskDimpleMR'     ],
+    [ 'Fit Ligand'           ,'TaskFitLigand'    ],
+    [ 'Fit Waters'           ,'TaskFitWaters'    ],
+    [ 'Make Ligand'          ,'TaskMakeLigand'   ],
+    [ 'Modelcraft'           ,'TaskModelCraft'   ],
+    [ 'Model Preparation XYZ','TaskModelPrepXYZ' ],
+    [ 'MrBump'               ,'TaskMrBump'       ],
+    [ 'Parrot'               ,'TaskParrot'       ],
+    [ 'Phaser EP'            ,'TaskPhaserEP'     ],
+    [ 'Phaser MR'            ,'TaskPhaserMR'     ],
+    [ 'MRefmac'              ,'TaskRefmac'       ],
+    [ 'SHELX C/D'            ,'TaskShelxCD'      ],
+    [ 'XYZ Utils'            ,'TaskXYZUtils'     ]
+  ];
   
   let dlg = new Dialog ( 'Add new task code' );
 
-  let grid = new Grid('');
+  let dlg_size = calcDialogSize (
+    __user_settings.jobdlg_size[0],__user_settings.jobdlg_size[1],
+    1,1, null
+  );
+
+  dlg._options.width   = dlg_size[0];
+  dlg._options.height  = dlg_size[1];
+
+  let grid = new Grid('-compact');
   dlg.addWidget ( grid );
 
   grid.setLabel    ( ' ',0,0,1,1 );
-  grid.setCellSize ( '','6px', 0,0 );
-  grid.setImage    ( image_path('openjob'),'48px','48px', 1,0,2,1 );
-  grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
-  grid.setLabel    ( 'Add new Task Code',1,1,1,3 ).setFontBold(true).setFontSize('125%');
-  grid.setLabel    ( 'Add task:&nbsp;&nbsp;',2,1,1,1 ).setFontItalic(true);
+  grid.setCellSize ( '64px','6px', 0,0 );
+  let dlg_icon = grid.setImage ( image_path('openjob'),'64px','64px', 1,0,2,1 );
+  grid.setLabel    ( ' ',1,1,2,1 );
+  grid.setCellSize ( '12px','', 0,0 );
+  grid.setLabel    ( 'Add new Task Code',1,2,1,2 ).setFontBold(true).setFontSize('125%');
+  grid.setLabel    ( 'Add task:&nbsp;&nbsp;',2,0,1,1 ).setNoWrap().setFontItalic(true);
 
-  let list_cbox = grid.setCombobox ( 2,2,1,1 );
-  list_cbox.addItem ( 'Select task','none',true );
-  list_cbox.addItem ( 'Aimless','TaskAimless',false );
-  list_cbox.addItem ( 'Refmac' ,'TaskRefmac' ,false );
+  let list_cbox = grid.setCombobox ( 2,1,1,1 );
+  for (let i=0;i<task_list.length;i++)
+    list_cbox.addItem ( task_list[i][0],task_list[i][1],i==0 );
   window.setTimeout ( function(){
     list_cbox.make();
   },0);
+  list_cbox.setWidth ( '200px' );
+  grid.setLabel    ( ' ',2,2,1,1 );
+  grid.setCellSize ( '90%','',2,2 );
 
   grid.setVerticalAlignment ( 1,0,'middle' );
-  grid.setVerticalAlignment ( 2,1,'middle' );
+  grid.setVerticalAlignment ( 2,0,'middle' );
 
-  grid.setHLine    ( 1, 3,0,1,5 );
-  grid.setLabel    ( 'xxxxx',4,0,1,5 );
+  grid.setHLine    ( 1, 3,0,1,5    );
+  grid.setCellSize ( '100%','',3,0 );
+  let panel_head = grid.setLabel ( 'Select task to be added to workflow',4,0,1,5 )
+                       .setFontItalic(true).setFontSize('87%');
+  grid.setCellSize ( '100%','', 4,0 );
 
+  let stask      = null;
+  let inputPanel = null;
+  let add_btn_id = 'add_btn_' + __id_cnt++;
 
-/*
-  this.grid.setLabel    ( '&nbsp;&nbsp;&nbsp;',0,1,2,1 );
-  this.grid.setLabel    ( 'Workflow Creator',1,2,1,2 )
-           .setFontBold ( true  )
-           .setFontSize ( '140%');
+  list_cbox.addOnChangeListener ( function(value,text){
+    inputPanel = grid.setPanel ( 5,0,1,5    );
+    inputPanel.panel = new Widget  ( 'div'      );
+    inputPanel.addWidget           ( inputPanel.panel  );
+    inputPanel.panel.setSize_px    ( dlg_size[0]-40,dlg_size[1]-252 );
+    if (value=='none')  {
+      stask = null;
+      dlg_icon.setImage  ( image_path('openjob')   );
+      panel_head.setText ( 'Select task to be added to workflow' );
+      $('#' + add_btn_id ).button('disable');
+    } else  {
+      stask = eval   ( 'new ' + value + '()'    );
+      dlg_icon.setImage  ( image_path(stask.icon()) );
+      panel_head.setText ( 'Choose task parameters and click "Add to workflow" button' );
+      // div.grid  = new Grid    ( '-compact' );
+      inputPanel.grid  = new Grid    ( '' );
+      inputPanel.panel.addWidget     ( inputPanel.grid   );
+      inputPanel.panel.setScrollable ( 'auto','auto' );
+      inputPanel.grid.inputPanel     = inputPanel;
+      inputPanel.fullVersionMismatch = false;  // important for data versioining
+      stask.layParameters ( inputPanel.grid,0,0 );
+      $('#' + add_btn_id ).button('enable');
+    }
+  });
 
-  let name_tooltip = 'Workflow ID should contain only latin letters, '  +
-                     'numbers, underscores, dashes and dots, and must ' +
-                     'start with a letter. The name will be used for '  +
-                     'workflow identification and must be unique';
+  dlg._options.buttons = [
+    {
+      id    : add_btn_id,
+      text  : 'Add to workflow',
+      click : function() {
+                let input_msg = stask.collectInput ( inputPanel );
+                if (input_msg)  {
+                  if (input_msg[0]=='#')  {
+                    new MessageBox ( 'Input errors','<div style="width:450px;">' +
+                                     input_msg.substring(1) + '</div>', 'msg_error' );
+                  } else  {
+                    // alert ( input_msg );
+                    let errlst  = input_msg.split('|');
+                    let errlst1 = [];
+                    for (let i=0;i<errlst.length;i++)  {
+                      let s = errlst[i].trim();
+                      if (s)
+                        errlst1.push(s);
+                    }
+                    if (errlst1.length>0)
+                      new MessageBox ( 'Input errors',
+                        '<div style="width:550px;"><h2>Input errors</h2>' +
+                        'The following errors occurred while processing task input:' +
+                        '<p><ul><li>' + errlst1.join('</li><li>') +
+                        '</li></ul><p>Please correct the task input as appropriate.</h2>',
+                        'msg_error' );
+                  }                
+                } else  {
+                  $(this).dialog ( 'close' );
+                }
+              }
+    }, {
+      id    : 'cancel_btn_' + __id_cnt++,
+      text  : 'Cancel',
+      click : function() {
+                $(this).dialog ( 'close' );
+              }
+    }
+  ];
 
-  this.grid.setLabel    ( '<i>Workflow ID</i>:&nbsp;&nbsp;',2,2,1,1 )
-           .setTooltip  ( name_tooltip )
-           .setNoWrap   ();
-
-  let wid_inp = this.grid.setInputText ( '', 2,3,1,1 );
-  wid_inp.setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'',name_tooltip )
-         .setFontItalic ( true    )
-         .setWidth      ( '100pt' );
-  if (workflowDesc)  {
-    wid_inp.setValue    ( workflowDesc.id );
-    wid_inp.setReadOnly ( true );
+  dlg._options.create = function(){
+    $('#' + add_btn_id ).button('disable');
   }
 
-  this.grid.setVerticalAlignment ( 2,2,'middle' );
-  this.grid.setVerticalAlignment ( 2,3,'middle' );
-
-  this.grid.setLabel    ( ' ',2,4,1,1 );
-  this.grid.setCellSize ( '90%','', 2,4 );
-*/
-
   dlg.launch();
+
 }

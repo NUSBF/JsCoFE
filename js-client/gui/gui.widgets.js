@@ -772,38 +772,38 @@ var input = new InputText ( text );
 
 Grid.prototype.setTextArea = function ( text, placeholder, nrows,ncols,
                                         row,col, rowSpan,colSpan )  {
-var textarea = new TextArea ( text,placeholder, nrows,ncols );
+let textarea = new TextArea ( text,placeholder, nrows,ncols );
   this.setWidget ( textarea, row,col, rowSpan,colSpan );
   return textarea;
 }
 
 Grid.prototype.addTextArea = function ( text, placeholder, nrows,ncols,
                                         row,col, rowSpan,colSpan )  {
-var textarea = new TextArea ( text,placeholder, nrows,ncols );
+let textarea = new TextArea ( text,placeholder, nrows,ncols );
   this.addWidget ( textarea, row,col, rowSpan,colSpan );
   return textarea;
 }
 
 Grid.prototype.setHLine = function ( size, row,col, rowSpan,colSpan )  {
-var hline = new HLine ( size );
+let hline = new HLine ( size );
   this.setWidget ( hline, row,col, rowSpan,colSpan );
   return hline;
 }
 
 Grid.prototype.setImageButton = function ( icon_uri,width,height, row,col, rowSpan,colSpan )  {
-var ibutton = new ImageButton ( icon_uri,width,height );
+let ibutton = new ImageButton ( icon_uri,width,height );
   this.setWidget ( ibutton, row,col, rowSpan,colSpan );
   return ibutton;
 }
 
 Grid.prototype.setImage = function ( icon_uri,width,height, row,col, rowSpan,colSpan )  {
-var image = new Image ( icon_uri,width,height );
+let image = new Image ( icon_uri,width,height );
   this.setWidget ( image, row,col, rowSpan,colSpan );
   return image;
 }
 
 Grid.prototype.setTree = function ( rootName, row,col, rowSpan,colSpan )  {
-var tree = new Tree ( rootName );
+let tree = new Tree ( rootName );
   this.setWidget ( tree, row,col, rowSpan,colSpan );
   return tree;
 }
