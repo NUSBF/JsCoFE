@@ -766,12 +766,12 @@ if (!dbx)  {
 
     function putInput ( text,prompt,row,col )  {
       //var txt = text.replace ( /<(?:.|\n)*?>/gm, '' );
-      var n = text.indexOf('<b>');
+      let n = text.indexOf('<b>');
       if (n<0)
         n = text.indexOf ( ' -- ' );
       if (n<0)
         n = text.length;
-      var inp = header.setInputText ( text.substring(0,n).trim(),row,col,1,1 )
+      let inp = header.setInputText ( text.substring(0,n).trim(),row,col,1,1 )
                       .setStyle     ( 'text','',prompt.replace(/<(?:.|\n)*?>/gm, '') );
                       //.setHeight    ( '1em' );
       header.setVerticalAlignment ( row,col,'middle' );
@@ -779,19 +779,19 @@ if (!dbx)  {
       return inp;
     }
 
-    var taskDesc = this.taskDescription();
-    var iconRows = 3;
-    var iconSize = '80px';
+    let taskDesc = this.taskDescription();
+    let iconRows = 3;
+    let iconSize = '80px';
     if (taskDesc)  {
       iconRows = 4;
       iconSize = '100px';
     }
-    var header = new Grid ( '' );
+    let header = new Grid ( '' );
     header.task_icon = header.setImage ( image_path(this.icon()),'',
                                          iconSize, 0,0, iconRows,1 );
     header.setLabel ( ' ', 0,1, iconRows,1 ).setWidth_px(20).setHeight ( '0.5em' );
-    var row = 0;
-    var t   = this.title;
+    let row = 0;
+    let t   = this.title;
     if (this.oname=='*')
       t += '<sup>&nbsp;</sup>'
     header.title = header.setLabel ( '<b>' + t + '</b>',row++,2, 1,2 )
@@ -2946,14 +2946,14 @@ if (!dbx)  {
 } else  {
   //  for server side
 
-  var fs    = require('fs-extra');
-  var path  = require('path');
+  const fs    = require('fs-extra');
+  const path  = require('path');
 
-  var utils = require('../../js-server/server.utils');
-  var prj   = require('../../js-server/server.fe.projects');
-  var conf  = require('../../js-server/server.configuration');
-  var uh    = require('../../js-server/server.fe.upload_handler');
-  var fcl   = require('../../js-server/server.fe.facilities');
+  const utils = require('../../js-server/server.utils');
+  const prj   = require('../../js-server/server.fe.projects');
+  const conf  = require('../../js-server/server.configuration');
+  const uh    = require('../../js-server/server.fe.upload_handler');
+  const fcl   = require('../../js-server/server.fe.facilities');
 
 
   TaskTemplate.prototype.setOName = function ( base_name )  {
@@ -3062,25 +3062,25 @@ if (!dbx)  {
   // sending the jobboll to NC. On NC, the dataBox is read in python
   // wrappers, an the metadata from it is used to specify input data (files)
   // for the actual job.
-    for (var dtype in this.input_data.data)  {
-      var td = this.input_data.data[dtype];
-      for (var i=0;i<td.length;i++)
+    for (let dtype in this.input_data.data)  {
+      let td = this.input_data.data[dtype];
+      for (let i=0;i<td.length;i++)
         if (td[i])  {
-          var srcJobDir = prj.getSiblingJobDirPath ( jobDir,td[i].jobId );
-          for (var fileKey in td[i].files) {
+          let srcJobDir = prj.getSiblingJobDirPath ( jobDir,td[i].jobId );
+          for (let fileKey in td[i].files) {
             if (td[i].files.hasOwnProperty(fileKey)) {
-              var fname = td[i].files[fileKey];
+              let fname = td[i].files[fileKey];
               if (fname)  {
-                var pack = true;
-                var doNotPackSuffixes = this.doNotPackSuffixes();
-                for (var k=0;(k<doNotPackSuffixes.length) && pack;k++)
+                let pack = true;
+                let doNotPackSuffixes = this.doNotPackSuffixes();
+                for (let k=0;(k<doNotPackSuffixes.length) && pack;k++)
                   pack = (!fname.endsWith(doNotPackSuffixes[k]));
-                var doPackSuffixes = this.doPackSuffixes();
-                for (var k=0;(k<doPackSuffixes.length) && (!pack);k++)
+                let doPackSuffixes = this.doPackSuffixes();
+                for (let k=0;(k<doPackSuffixes.length) && (!pack);k++)
                   pack = fname.endsWith(doPackSuffixes[k]);
                 if (pack)  {
-                  var src_file  = prj.getOutputFilePath ( srcJobDir,fname );
-                  var dest_file = prj.getInputFilePath  ( jobDir   ,fname );
+                  let src_file  = prj.getOutputFilePath ( srcJobDir,fname );
+                  let dest_file = prj.getInputFilePath  ( jobDir   ,fname );
                   try {
                     fs.copySync ( src_file,dest_file );
                   } catch (err) {
@@ -3105,7 +3105,7 @@ if (!dbx)  {
     if (this.inputMode==input_mode.root)
           this.__make_input_data_root     ( loginData,jobDir );
     else  this.__make_input_data_standard ( loginData,jobDir );
-    var dboxPath = path.join ( jobDir,'input','databox.meta' );
+    let dboxPath = path.join ( jobDir,'input','databox.meta' );
     utils.writeObject ( dboxPath,this.input_data );
   }
 
@@ -3121,8 +3121,8 @@ if (!dbx)  {
   // classes in python/dtypes and then adding them to datalist class
   // implemented in python/dtypes/datalist.py
 
-    var dboxPath = path.join ( jobDir,'output','databox.meta' );
-    var dbox     = utils.readClass ( dboxPath );
+    let dboxPath = path.join ( jobDir,'output','databox.meta' );
+    let dbox     = utils.readClass ( dboxPath );
     if (dbox)  this.output_data = dbox;
          else  this.output_data = new dbx.DataBox();
 
@@ -3132,9 +3132,9 @@ if (!dbx)  {
   // default post-job cleanup to save disk space
   TaskTemplate.prototype.cleanJobDir = function ( jobDir )  {
     // leave input metadata just in case
-    var inputDir = path.join ( jobDir  ,'input'        );
-    var dboxPath = path.join ( inputDir,'databox.meta' );
-    var dbox     = utils.readString ( dboxPath );
+    let inputDir = path.join ( jobDir  ,'input'        );
+    let dboxPath = path.join ( inputDir,'databox.meta' );
+    let dbox     = utils.readString ( dboxPath );
     utils.removePath   ( inputDir );
     utils.mkDir_anchor ( inputDir );
     utils.writeString  ( dboxPath,dbox );

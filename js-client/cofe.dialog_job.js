@@ -70,7 +70,7 @@ function JobDialog ( params,          // data and task projections up the tree b
 
   Widget.call ( this,'div' );
 
-  var title = '[' + padDigits(this.task.id,4) + '] ';
+  let title = '[' + padDigits(this.task.id,4) + '] ';
   if (this.task.uname.length>0)  title += this.task.uname;
                            else  title += this.task.name;
   title += this.statusLine();
@@ -89,7 +89,7 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.ind_timer   = null;
   this.hot_btn     = [];
 
-  var size = calcDialogSize (
+  let size = calcDialogSize (
     __user_settings.jobdlg_size[0],__user_settings.jobdlg_size[1],
     1,1, this.task.job_dialog_data
   );
@@ -97,53 +97,51 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.initialHeight = size[1];
 
   // var taskId = this.task.id;
-  // (function(dlg){
-  var dlg = this;
-    dlg.dialog_options = {
-      resizable : true,
-      //height    : 'auto',
-      //width     : w,
-      width     : size[0],
-      height    : size[1],
-      buttons   : {},
-      // beforeClose : function(event, ui)  {
-      //   if (dlg.nc_browser && 
-      //       ((dlg.task.state==job_code.running) || 
-      //        (dlg.task.state==job_code.ending)))  {
-      //     new MessageBox ( 'WebCoot running',
-      //       '<div style="width:400px"><h2>WebCoot is running</h2>' +
-      //       'This Job Dialog cannot be closed while <i>WebCoot</i> instance, ' +
-      //       'launched from it, is active. Please close <i>WebCoot</i> first.' +
-      //       '</div>','msg_stop' );
-      //     return false;
-      //   } else
-      //     return true;
-      // },
-      open      : function(event, ui)  {
-        if (__any_mobile_device)
-          $(this).siblings('.ui-dialog-titlebar').remove();
-        if (dlg.task.state==job_code.new)  {
-          window.setTimeout ( function(){
-            dlg.task.onJobDialogStart ( dlg );
-            dlg._created = true;
-            dlg.setDlgSize();  
-          },100);
-        } else  {
+  let dlg = this;
+  dlg.dialog_options = {
+    resizable : true,
+    //height    : 'auto',
+    //width     : w,
+    width     : size[0],
+    height    : size[1],
+    buttons   : {},
+    // beforeClose : function(event, ui)  {
+    //   if (dlg.nc_browser && 
+    //       ((dlg.task.state==job_code.running) || 
+    //        (dlg.task.state==job_code.ending)))  {
+    //     new MessageBox ( 'WebCoot running',
+    //       '<div style="width:400px"><h2>WebCoot is running</h2>' +
+    //       'This Job Dialog cannot be closed while <i>WebCoot</i> instance, ' +
+    //       'launched from it, is active. Please close <i>WebCoot</i> first.' +
+    //       '</div>','msg_stop' );
+    //     return false;
+    //   } else
+    //     return true;
+    // },
+    open      : function(event, ui)  {
+      if (__any_mobile_device)
+        $(this).siblings('.ui-dialog-titlebar').remove();
+      if (dlg.task.state==job_code.new)  {
+        window.setTimeout ( function(){
+          dlg.task.onJobDialogStart ( dlg );
           dlg._created = true;
           dlg.setDlgSize();  
-        }
-        // window.setTimeout ( function(){
-        //   dlg.setDlgSize();  
-        //   // dlg.task.inputPanelResize ( dlg.inputPanel,size[0]-30,size[1]-190 );
-        // },100);
-      },
-      focus     : function() {
-                    if (onDlgSignal_func)
-                      onDlgSignal_func ( dlg,job_dialog_reason.select_node,null );
-                      //onDlgSignal_func ( taskId,job_dialog_reason.select_node,null );
-                  }
-    };
-  // }(this))
+        },100);
+      } else  {
+        dlg._created = true;
+        dlg.setDlgSize();  
+      }
+      // window.setTimeout ( function(){
+      //   dlg.setDlgSize();  
+      //   // dlg.task.inputPanelResize ( dlg.inputPanel,size[0]-30,size[1]-190 );
+      // },100);
+    },
+    focus     : function() {
+                  if (onDlgSignal_func)
+                    onDlgSignal_func ( dlg,job_dialog_reason.select_node,null );
+                    //onDlgSignal_func ( taskId,job_dialog_reason.select_node,null );
+                }
+  };
 
   if (__any_mobile_device)
     this.dialog_options.position =  { my : 'left top',   // job dialog position reference
@@ -167,34 +165,29 @@ function JobDialog ( params,          // data and task projections up the tree b
   this.setDlgState();
   // this.setDlgSize ();
 
-  // (function(dlg){
-  var dlg = this;
+  $(dlg.element).on( "dialogclose",function(event,ui){
+    dlg.delete();
+    // //if (dlg.close_btn && (!dlg.task.job_dialog_data.viewed))
+    // //  dlg.close_btn.click();
+    // //else  {
+    //   dlg.outputPanel.clear();
+    //   //onClose_func(dlg.task.id);
+    //   window.setTimeout ( function(){
+    //     // $(dlg.element).dialog( "destroy" );
+    //     dlg.delete();
+    //   },10 );
+    // //}
+    // console.log ( '>>>> on close ' + dlg.task._type );
+    // onClose_func ( dlg );
+  });
 
-    $(dlg.element).on( "dialogclose",function(event,ui){
-      dlg.delete();
-      // //if (dlg.close_btn && (!dlg.task.job_dialog_data.viewed))
-      // //  dlg.close_btn.click();
-      // //else  {
-      //   dlg.outputPanel.clear();
-      //   //onClose_func(dlg.task.id);
-      //   window.setTimeout ( function(){
-      //     // $(dlg.element).dialog( "destroy" );
-      //     dlg.delete();
-      //   },10 );
-      // //}
-      // console.log ( '>>>> on close ' + dlg.task._type );
-      // onClose_func ( dlg );
-    });
-
-    // Listen for input event, emitted when input data changes
-    if ((dlg.task.state!=job_code.running) && dlg.inputPanel && 
-        (!dlg.tree.view_only))  {
-      dlg.inputPanel.element.addEventListener(cofe_signals.jobDlgSignal,function(e){
-        onDlgSignal_func ( dlg,e.detail,null );
-      },false );
-    }
-
-  // }(this))
+  // Listen for input event, emitted when input data changes
+  if ((dlg.task.state!=job_code.running) && dlg.inputPanel && 
+      (!dlg.tree.view_only))  {
+    dlg.inputPanel.element.addEventListener(cofe_signals.jobDlgSignal,function(e){
+      onDlgSignal_func ( dlg,e.detail,null );
+    },false );
+  }
 
   /*
   // Listen for input event, emitted when input data changes
@@ -269,10 +262,10 @@ JobDialog.prototype.displayInputErrors = function ( input_msg )  {
                      input_msg.substring(1) + '</div>', 'msg_error' );
   } else  {
     // alert ( input_msg );
-    var errlst  = input_msg.split('|');
-    var errlst1 = [];
-    for (var i=0;i<errlst.length;i++)  {
-      var s = errlst[i].trim();
+    let errlst  = input_msg.split('|');
+    let errlst1 = [];
+    for (let i=0;i<errlst.length;i++)  {
+      let s = errlst[i].trim();
       if (s)
         errlst1.push(s);
     }
@@ -486,7 +479,7 @@ JobDialog.prototype.reloadReport = function()  {
 
 JobDialog.prototype.collectTaskData = function ( ignore_bool )  {
   this.getDlgSize ();
-  var input_msg = '';
+  let input_msg = '';
   if ((this.task.state==job_code.new) || (this.task.state==job_code.remark) ||
       (this.task.state==job_code.remdet))  {
     input_msg = this.task.collectInput ( this.inputPanel );
