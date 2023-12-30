@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    13.12.23   <--  Date of Last Modification.
+ *    29.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1079,7 +1079,7 @@ function ACEditor ( width,height,options )  {
 
   Widget.call ( this,'div' );
 
-  var css1 = {
+  let css1 = {
     'position' : 'relative',
     'width'    : width,
     'height'   : height,
@@ -1095,7 +1095,7 @@ function ACEditor ( width,height,options )  {
   this.panel = new Widget ( 'div' );
   this.element.appendChild ( this.panel.element );
 
-  var css2 = {
+  let css2 = {
     'position'  : 'absolute',
     'top'       : 0,
     'right'     : 0,
