@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.02.23   <--  Date of Last Modification.
+ *    29.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -1160,7 +1160,7 @@ function TaskAimless()  {
                     range    : ['True|yes', 'False|no'],
                     iwidth   : 82,
                     label    : 'Tie B-factors to zero',
-                    value    : '',
+                    value    : 'True',
                     tooltip  : 'Restrain B-factors to zero'
                 },
                 TIE_BZERO_SD:
@@ -1204,16 +1204,25 @@ TaskAimless.prototype.icon           = function()  { return 'task_aimless'; }
 TaskAimless.prototype.clipboard_name = function()  { return '"Aimless"';    }
 
 TaskAimless.prototype.currentVersion = function()  {
-  var version = 0;
+let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
 TaskAimless.prototype.checkKeywords = function ( keywords )  {
-    // keywords supposed to be in low register
-      return this.__check_keywords ( keywords,['aimless','image', 'processing', 'data', 'reduction'] );
-    }
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['aimless','image', 'processing', 'data', 'reduction'] );
+}
+
+TaskAimless.prototype.getWorkflowScript = function ( serialNo )  {
+let wscript = [];
+  if (__template)
+        wscript = __template.TaskTemplate.prototype.getWorkflowScript.call ( this,serialNo );
+  else  wscript = TaskTemplate.prototype.getWorkflowScript.call ( this,serialNo );
+  wscript.splice ( 1,0,'    DATA      ds0  unmerged' );
+  return wscript;
+}
 
 if (!__template)  {
   //  for client side

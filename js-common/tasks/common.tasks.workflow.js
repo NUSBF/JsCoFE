@@ -223,6 +223,15 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
                           }
                         break;
 
+        case '!PAR_INTEGER' :
+        case 'PAR_INTEGER' : if (words.length>1)  {
+                            this.addParameter ( words[1],'integer_' );
+                            pitem.range = ['*','*'];
+                            if (word0.startsWith('!'))
+                              pitem.type = 'integer';
+                          }
+                        break;
+                  
         case '!PAR_REAL' :
         case 'PAR_REAL' : if (words.length>1)  {
                             this.addParameter ( words[1],'real_' );

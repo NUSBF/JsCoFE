@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.11.23   <--  Date of Last Modification.
+ *    30.12.23   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -87,7 +87,7 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
   this.editor.init  ( 
     '#\n' +
     '# -----------------------------------------------------\n' +
-    '# Workflow Title\n' +
+    '# Give Workflow Title here\n' +
     '# -----------------------------------------------------\n' +
     '# ' + new Date().toDateString() + '\n' +
     '#\n' +
@@ -110,10 +110,53 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
     'ALLOW_UPLOAD       # create file upload widgets if started from project root\n' +
     '\n' +
     '# ==========================================================================\n' +
-    '# Input data section\n' +
+    '# Input data section. List all data required, "!" specifies mandatory items.\n' +
+    '# Edit template statements below as necessary:\n' +
+    '\n' +
+    '# !DATA HKL UNMERGED TYPES anomalous\n' +
+    '# !DATA XYZ          TYPES protein dna rna\n' +
+    '# DATA LIBRARY\n' +
+    '# DATA SEQ           TYPES protein dna rna\n' +
+    '# DATA LIGAND\n'  +
     '\n' +
     '# ==========================================================================\n' +
-    '# Workflow parameters section\n' +
+    '# Workflow parameters section. List all parameters required, "!" specifies\n' +
+    '# mandatory items. Edit template statements below as necessary:\n' +
+    '\n' +
+    '# !PAR_INTEGER  nCycles  # variable name to be used in workflow\'s expressions\n' +
+    '#    LABEL     Number of cycles\n' +
+    '#    TOOLTIP   Number of refiniement cycles\n' +
+    '#    IWIDTH    40        # (optional) input field width is set to 40 pixels\n' +
+    '#    RANGE     0 50      # (optional) allowed min/max values\n' +
+    '#    DEFAULT   10        # (optional) default integer value\n' +
+    '\n' +
+    '# PAR_REAL     resHigh   # variable name to be used in workflow\'s expressions\n' +
+    '#    LABEL     High resolution cut-off (&Aring;)\n' +
+    '#    TOOLTIP   High resolution cut-off, angstrom\n' +
+    '#    IWIDTH    40        # input field width is set to 40 pixels\n' +
+    '#    RANGE     0.1 5.0   # allowed min/max values\n' +
+    '#    DEFAULT   1.5       # default real value\n' +
+    '\n' +
+    '# !PAR_STRING  atomType  # variable name to be used in workflow\'s expressions\n' +
+    '#    LABEL     Anomalous scatterer\n' +
+    '#    TOOLTIP   Expected main anomalous scatterer\n' +
+    '#    IWIDTH    20        # input field width is set to 20 pixels\n' +
+    '#    MAXLENGTH 2         # (optional) maximum 2 characters\n' +
+    '#    DEFAULT   Se        # (optional) default string value "Se"\n' +
+    '\n' +    
+    '# PAR_CHECK    reqValReport # variable name to be used in workflow\'s expressions\n' +
+    '#    LABEL     Request PDB Validation Report\n' +
+    '#    TOOLTIP   Check if deposition files should be prepared and PDB validation report obtained\n' +
+    '#    DEFAULT   Unchecked\n' +
+    '\n' +    
+    '# !PAR_COMBO    useBFactors # variable name to be used in workflow\'s expressions\n' +
+    '#    LABEL     Use isotropic B-factors\n' +
+    '#    TOOLTIP   B-factor mode for refinement\n' +
+    '#    IWIDTH    60        # input field width is set to 60 pixels\n' +
+    '#    OPTION    none  Select from list  # value "none" text "Select from list" \n' +
+    '#    OPTION    yes   Yes               # value "yes"  text "Yes"\n' +
+    '#    OPTION    no    No                # value "no"  text  "No"\n' +
+    '#    DEFAULT   none                    # default string value "none"\n' +
     '\n' +
     '# ==========================================================================\n' +
     '# Workflow run body\n' +
@@ -203,9 +246,9 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
         let msg = '';
 
         if (workflow_id.length<=0)
-          msg += '<li><b>Unique workflow name</b> must be provided.</li>';
+          msg += '<li><b>Unique Workflow ID</b> must be provided.</li>';
         else if (wid_inp.element.validity.patternMismatch)
-          msg += '<li><b>Workflow name</b> can contain only latin letters, ' +
+          msg += '<li><b>Workflow ID</b> can contain only latin letters, ' +
                   'numbers, underscores, dashes and dots, and must start' +
                   'with a letter.</li>';
         if (workflow_script.length<=0)
@@ -392,7 +435,7 @@ EditWorkflowDialog.prototype.addTask = function()  {
     [ 'Parrot'               ,'TaskParrot'       ],
     [ 'Phaser EP'            ,'TaskPhaserEP'     ],
     [ 'Phaser MR'            ,'TaskPhaserMR'     ],
-    [ 'MRefmac'              ,'TaskRefmac'       ],
+    [ 'Refmac'               ,'TaskRefmac'       ],
     [ 'SHELX C/D'            ,'TaskShelxCD'      ],
     [ 'XYZ Utils'            ,'TaskXYZUtils'     ]
   ];
@@ -440,6 +483,7 @@ EditWorkflowDialog.prototype.addTask = function()  {
   let stask      = null;
   let inputPanel = null;
   let add_btn_id = 'add_btn_' + __id_cnt++;
+  let self       = this;
 
   list_cbox.addOnChangeListener ( function(value,text){
     inputPanel = grid.setPanel ( 5,0,1,5    );
@@ -494,6 +538,12 @@ EditWorkflowDialog.prototype.addTask = function()  {
                         'msg_error' );
                   }                
                 } else  {
+                  let workflow_script = self.editor.getText();
+                  let serialNo    = workflow_script.split(
+                                      '@'+stask._type.slice(4).toUpperCase()).length-1;
+                  let task_script = stask.getWorkflowScript ( serialNo );
+                  self.editor.setText ( workflow_script + task_script.join('\n') +
+                                        '\n\n#\n\n' );
                   $(this).dialog ( 'close' );
                 }
               }

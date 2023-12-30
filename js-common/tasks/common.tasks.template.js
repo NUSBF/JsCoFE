@@ -296,6 +296,42 @@ TaskTemplate.prototype.saveDefaultValues = function ( parameters )  {
       this.saveDefaultValues ( parameters[item] );
 }
 
+TaskTemplate.prototype.getWorkflowScript = function ( serialNo )  {
+let wrun_name = this._type.slice(4);
+let wscript   = ['@' + wrun_name.toUpperCase()];
+
+  if (serialNo)
+    wscript[0] += '-' + serialNo;
+
+   let walkParameters = function ( obj ) {
+    for (let item in obj)
+      if (obj[item].hasOwnProperty('value')         && 
+          obj[item].hasOwnProperty('default_value') &&
+          obj[item].default_value!=obj[item].value)  {
+        let value = obj[item].value;
+        if (obj[item].type in ['string','string_','combobox'])
+          value = '"' + value + '"';
+        else if (obj[item].type=='checkbox')  {
+          if (value)  value = 1;
+                else  value = 0;
+        }
+        wscript.push ( '    PARAMETER ' + item + ' ' + value + '  # ' + obj[item].label );
+      } else if (comut)  {
+        if (comut.isObject(obj[item]))
+          walkParameters ( obj[item] );
+      } else if (isObject(obj[item]))
+        walkParameters ( obj[item] );
+  }
+
+  walkParameters ( this.parameters );
+
+  wscript.push ( '    RUN ' + wrun_name );
+
+  return wscript;
+
+}
+
+
 
 // highlight changed parameters
 // TaskTemplate.prototype._highlight_changed_parameters = function ( parameters )  {
