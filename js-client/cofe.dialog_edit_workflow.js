@@ -84,84 +84,89 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
        'mode'       : 'python'
   });
   this.grid.setWidget ( this.editor,5,0,1,6 );
-  this.editor.init  ( 
-    '#\n' +
-    '# -----------------------------------------------------\n' +
-    '# Give Workflow Title here\n' +
-    '# -----------------------------------------------------\n' +
-    '# ' + new Date().toDateString() + '\n' +
-    '#\n' +
-    '\n' +
-    'VERSION  1.0    # script version for backward compatibility\n' +
-    'DEBUG    OFF    # ON/OFF\n' +
-    'COMMENTS ON     # ON/OFF\n' +
-    'WID      d-imp  # workflow ID for import mode\n' +
-    '\n' +
-    '# ==========================================================================\n' +
-    '# Workflow header -- EDIT AS NECESSARY\n' +
-    '\n' +
-    '# General workflow descriptors\n' +
-    'NAME     my workflow             # to show in Job Tree\n' +
-    'ONAME    my_wflow                # to use for naming output files\n' +
-    'TITLE    My Workflow Title       # to display in Task List\n' +
-    'DESC     my workflow description # to display in Task List\n' + 
-    'KEYWORDS my own workflow         # for using in A-Z keyword search\n' +
-    '\n' +
-    'ALLOW_UPLOAD       # create file upload widgets if started from project root\n' +
-    '\n' +
-    '# ==========================================================================\n' +
-    '# Input data section. List all data required, "!" specifies mandatory items.\n' +
-    '# Edit template statements below as necessary:\n' +
-    '\n' +
-    '# !DATA HKL UNMERGED TYPES anomalous\n' +
-    '# !DATA XYZ          TYPES protein dna rna\n' +
-    '# DATA LIBRARY\n' +
-    '# DATA SEQ           TYPES protein dna rna\n' +
-    '# DATA LIGAND\n'  +
-    '\n' +
-    '# ==========================================================================\n' +
-    '# Workflow parameters section. List all parameters required, "!" specifies\n' +
-    '# mandatory items. Edit template statements below as necessary:\n' +
-    '\n' +
-    '# !PAR_INTEGER  nCycles  # variable name to be used in workflow\'s expressions\n' +
-    '#    LABEL     Number of cycles\n' +
-    '#    TOOLTIP   Number of refiniement cycles\n' +
-    '#    IWIDTH    40        # (optional) input field width is set to 40 pixels\n' +
-    '#    RANGE     0 50      # (optional) allowed min/max values\n' +
-    '#    DEFAULT   10        # (optional) default integer value\n' +
-    '\n' +
-    '# PAR_REAL     resHigh   # variable name to be used in workflow\'s expressions\n' +
-    '#    LABEL     High resolution cut-off (&Aring;)\n' +
-    '#    TOOLTIP   High resolution cut-off, angstrom\n' +
-    '#    IWIDTH    40        # input field width is set to 40 pixels\n' +
-    '#    RANGE     0.1 5.0   # allowed min/max values\n' +
-    '#    DEFAULT   1.5       # default real value\n' +
-    '\n' +
-    '# !PAR_STRING  atomType  # variable name to be used in workflow\'s expressions\n' +
-    '#    LABEL     Anomalous scatterer\n' +
-    '#    TOOLTIP   Expected main anomalous scatterer\n' +
-    '#    IWIDTH    20        # input field width is set to 20 pixels\n' +
-    '#    MAXLENGTH 2         # (optional) maximum 2 characters\n' +
-    '#    DEFAULT   Se        # (optional) default string value "Se"\n' +
-    '\n' +    
-    '# PAR_CHECK    reqValReport # variable name to be used in workflow\'s expressions\n' +
-    '#    LABEL     Request PDB Validation Report\n' +
-    '#    TOOLTIP   Check if deposition files should be prepared and PDB validation report obtained\n' +
-    '#    DEFAULT   Unchecked\n' +
-    '\n' +    
-    '# !PAR_COMBO    useBFactors # variable name to be used in workflow\'s expressions\n' +
-    '#    LABEL     Use isotropic B-factors\n' +
-    '#    TOOLTIP   B-factor mode for refinement\n' +
-    '#    IWIDTH    60        # input field width is set to 60 pixels\n' +
-    '#    OPTION    none  Select from list  # value "none" text "Select from list" \n' +
-    '#    OPTION    yes   Yes               # value "yes"  text "Yes"\n' +
-    '#    OPTION    no    No                # value "no"  text  "No"\n' +
-    '#    DEFAULT   none                    # default string value "none"\n' +
-    '\n' +
-    '# ==========================================================================\n' +
-    '# Workflow run body\n' +
-    '\n'
-    ,
+  this.editor.init ([
+      '',
+      '# * THIS IS A WORKFLOW SCRIPT TEMPLATE',
+      '# * DO NOT ASSUME THAT IT IS FUNCTIONAL WITHOUT EDITING',
+      '# * CONSULT DOCUMENTATION',
+      '',
+      '# -----------------------------------------------------',
+      '# Give Workflow Title here',
+      '# -----------------------------------------------------',
+      '# ' + new Date().toDateString(),
+      '#',
+      '',
+      'VERSION  1.0    # script version for backward compatibility',
+      'DEBUG    OFF    # ON/OFF',
+      'COMMENTS ON     # ON/OFF',
+      'WID      d-imp  # (optional) workflow ID for import mode',
+      '',
+      '# ==========================================================================',
+      '# Workflow header -- EDIT AS NECESSARY',
+      '',
+      '# General workflow descriptors',
+      'NAME     my workflow             # to show in Job Tree',
+      'ONAME    my_wflow                # to use for naming output files',
+      'TITLE    My Workflow Title       # to display in Task List',
+      'DESC     my workflow description # to display in Task List', 
+      'ICON     Maraschino              # (optional) workflow icon colour',
+      'KEYWORDS my own workflow         # for using in A-Z keyword search',
+      '',
+      'ALLOW_UPLOAD       # create file upload widgets if started from project root',
+      '',
+      '# ==========================================================================',
+      '# Input data section. List all data required, "!" specifies mandatory items.',
+      '# Edit template statements below as necessary:',
+      '',
+      '# !DATA HKL UNMERGED TYPES anomalous',
+      '# !DATA XYZ          TYPES protein dna rna',
+      '# DATA LIBRARY',
+      '# DATA SEQ           TYPES protein dna rna',
+      '# DATA LIGAND\n'  +
+      '',
+      '# ==========================================================================',
+      '# Workflow parameters section. List all parameters required, "!" specifies',
+      '# mandatory items. Edit template statements below as necessary:',
+      '',
+      '# !PAR_INTEGER nCycles  # variable name to be used in workflow\'s expressions',
+      '#    LABEL     Number of cycles',
+      '#    TOOLTIP   Number of refiniement cycles',
+      '#    IWIDTH    40        # (optional) input field width is set to 40 pixels',
+      '#    RANGE     0 50      # (optional) allowed min/max values',
+      '#    DEFAULT   10        # (optional) default integer value',
+      '',
+      '# PAR_REAL     resHigh   # variable name to be used in workflow\'s expressions',
+      '#    LABEL     High resolution cut-off (&Aring;)',
+      '#    TOOLTIP   High resolution cut-off, angstrom',
+      '#    IWIDTH    40        # input field width is set to 40 pixels',
+      '#    RANGE     0.1 5.0   # allowed min/max values',
+      '#    DEFAULT   1.5       # default real value',
+      '',
+      '# !PAR_STRING  atomType  # variable name to be used in workflow\'s expressions',
+      '#    LABEL     Anomalous scatterer',
+      '#    TOOLTIP   Expected main anomalous scatterer',
+      '#    IWIDTH    20        # input field width is set to 20 pixels',
+      '#    MAXLENGTH 2         # (optional) maximum 2 characters',
+      '#    DEFAULT   Se        # (optional) default string value "Se"',
+      '',    
+      '# PAR_CHECK    reqValReport # variable name to be used in workflow\'s expressions',
+      '#    LABEL     Request PDB Validation Report',
+      '#    TOOLTIP   Check if deposition files should be prepared and PDB validation report obtained',
+      '#    DEFAULT   Unchecked',
+      '',    
+      '# !PAR_COMBO   useBFactors # variable name to be used in workflow\'s expressions',
+      '#    LABEL     Use isotropic B-factors',
+      '#    TOOLTIP   B-factor mode for refinement',
+      '#    IWIDTH    60        # input field width is set to 60 pixels',
+      '#    OPTION    none  Select from list  # value "none" text "Select from list" ',
+      '#    OPTION    yes   Yes               # value "yes"  text "Yes"',
+      '#    OPTION    no    No                # value "no"  text  "No"',
+      '#    DEFAULT   none                    # default string value "none"',
+      '',
+      '# ==========================================================================',
+      '# Workflow run body',
+      ''
+    ].join('\n'),
     '# Put workflow script here'
   );
   if (workflowDesc)  {
