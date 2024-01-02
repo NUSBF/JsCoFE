@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.11.23   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -934,7 +934,6 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
                     addWfKnowledge ( dlg.task,dlg.ancestors.slice(1) );
                     dlg.tree.projectData.desc.timestamp = rdata.timestamp;
-                    // console.log ( ' >>>>> run timestamp='+dlg.tree.projectData.desc.timestamp );
 
                     if (dlg.task.nc_type=='client')  {
 

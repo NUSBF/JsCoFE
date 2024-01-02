@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.12.23   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Menu and dropdwon comboboxes
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -734,18 +734,18 @@ function ComboDropdown ( content,width_list,direction )  {
     this.headers   = [];
     this.dropdowns = [];
 
-    var data = this.content;
-    var i    = 0;
+    let data = this.content;
+    let i    = 0;
     while (data)  {
 
-      var dropdown = new Dropdown();
+      let dropdown = new Dropdown();
       dropdown.setTooltip1 ( data.tooltip,'slideDown',true,7000 );
       this.dropdowns.push  ( dropdown     );
       this.headers.push    ( data.title   );
 
       this.dropdowns[i].content = data;
       this.dropdowns[i].setWidth ( width_list[i] );
-      for (var j=0;j<data.items.length;j++)
+      for (let j=0;j<data.items.length;j++)
         this.dropdowns[i].addItem ( data.items[j].label,'',j,j==data.select );
       this.dropdowns[i].make();
 
@@ -761,7 +761,7 @@ function ComboDropdown ( content,width_list,direction )  {
           function(e){
             ddn.content.select = e.detail.item;
             comboddn.makeDropdowns();
-            var event = new CustomEvent ( 'state_changed',{
+            let event = new CustomEvent ( 'state_changed',{
               'detail' : {
                 'values' : comboddn.getValues()
               }
@@ -770,7 +770,7 @@ function ComboDropdown ( content,width_list,direction )  {
           },false );
       }(this,this.dropdowns[i]));
 
-      var item = data.items[this.dropdowns[i].getValue()];
+      let item = data.items[this.dropdowns[i].getValue()];
       if ('next' in item)
             data = item.next;
       else  data = null;

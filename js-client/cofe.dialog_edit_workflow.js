@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.12.23   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Edit Workflow Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2023
+ *  (C) E. Krissinel, A. Lebedev 2023-2024
  *
  *  =================================================================
  *
@@ -86,9 +86,11 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
   this.grid.setWidget ( this.editor,5,0,1,6 );
   this.editor.init ([
       '',
+      '#',
       '# * THIS IS A WORKFLOW SCRIPT TEMPLATE',
       '# * DO NOT ASSUME THAT IT IS FUNCTIONAL WITHOUT EDITING',
       '# * CONSULT DOCUMENTATION',
+      '#',
       '',
       '# -----------------------------------------------------',
       '# Give Workflow Title here',
@@ -201,8 +203,6 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
                   });
                   library_btn.addOnClickListener ( function(){
                     new CloudFileBrowser ( null,self,0,['wscript'],function(items){
-                      // console.log ( ' >>>>>>>here ' + JSON.stringify(items) );
-                      // items[0].name
                       fetchFile ( self.rootCloudPath + '/' + items[0].name,
                         function(text){
                           self.editor.setText ( text );
@@ -228,23 +228,6 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
                   });
                 },
     buttons   : {
-      // "Library" : function(){
-      //   new CloudFileBrowser ( null,self,0,['wscript'],function(items){
-      //     // console.log ( ' >>>>>>>here ' + JSON.stringify(items) );
-      //     // items[0].name
-      //     fetchFile ( self.rootCloudPath + '/' + items[0].name,
-      //       function(text){
-      //         self.editor.setText ( text );
-      //         self.setIcon ( -1 );
-      //       },
-      //       null,
-      //       function(errcode){
-      //         new MessageBox ( 'File not found',
-      //                          'file not found','msg_error' );
-      //       });
-      //     return 1;  // do close browser window
-      //   },null );
-      // },
       "Save": function() {
         let workflow_id     = wid_inp.getValue().trim();
         let workflow_script = self.editor.getText().trim();
@@ -427,7 +410,7 @@ EditWorkflowDialog.prototype.addTask = function()  {
   const task_list = [
     [ 'Select task'          ,'none'             ],
     [ 'Aimless'              ,'TaskAimless'      ],
-    // [ 'ASU Definition'       ,'TaskASUDef'       ],
+    [ 'ASU Definition'       ,'TaskASUDef'       ],
     [ 'Buccaneer'            ,'TaskBuccaneer'    ],
     [ 'Change Resolution'    ,'TaskChangeReso'   ],
     [ 'Dimple MR'            ,'TaskDimpleMR'     ],
@@ -436,13 +419,14 @@ EditWorkflowDialog.prototype.addTask = function()  {
     [ 'Make Ligand'          ,'TaskMakeLigand'   ],
     [ 'Modelcraft'           ,'TaskModelCraft'   ],
     [ 'Model Preparation XYZ','TaskModelPrepXYZ' ],
+    [ 'Molrep'               ,'TaskMolrep'       ],
     [ 'MrBump'               ,'TaskMrBump'       ],
     [ 'Parrot'               ,'TaskParrot'       ],
     [ 'Phaser EP'            ,'TaskPhaserEP'     ],
     [ 'Phaser MR'            ,'TaskPhaserMR'     ],
     [ 'Refmac'               ,'TaskRefmac'       ],
     [ 'SHELX C/D'            ,'TaskShelxCD'      ],
-    [ 'XYZ Utils'            ,'TaskXYZUtils'     ]
+    [ 'XYZ Utils'            ,'TaskXyzUtils'     ]
   ];
   
   let dlg = new Dialog ( 'Add new task code' );
@@ -472,7 +456,7 @@ EditWorkflowDialog.prototype.addTask = function()  {
   window.setTimeout ( function(){
     list_cbox.make();
   },0);
-  list_cbox.setWidth ( '200px' );
+  list_cbox.setWidth ( '240px' );
   grid.setLabel    ( ' ',2,2,1,1 );
   grid.setCellSize ( '90%','',2,2 );
 
@@ -490,6 +474,7 @@ EditWorkflowDialog.prototype.addTask = function()  {
   let add_btn_id = 'add_btn_' + __id_cnt++;
   let self       = this;
 
+/*
   list_cbox.addOnChangeListener ( function(value,text){
     inputPanel = grid.setPanel ( 5,0,1,5    );
     inputPanel.panel = new Widget  ( 'div'      );
@@ -511,6 +496,43 @@ EditWorkflowDialog.prototype.addTask = function()  {
       inputPanel.grid.inputPanel     = inputPanel;
       inputPanel.fullVersionMismatch = false;  // important for data versioining
       stask.layParameters ( inputPanel.grid,0,0 );
+      $('#' + add_btn_id ).button('enable');
+    }
+  });
+  */
+  
+  let dataBox  = new DataBox();
+  dataBox.addData ( new DataUnmerged().makeSample() );
+  dataBox.addData ( new DataHKL     ().makeSample() );
+  dataBox.addData ( new DataSequence().makeSample() );
+  dataBox.addData ( new DataXYZ     ().makeSample() );
+  dataBox.addData ( new DataRevision().makeSample() );
+
+  dataBox.data_n0 = {};
+  for (let dt in dataBox.data)
+    dataBox.data_n0[dt] = dataBox.data[dt].length;
+
+  list_cbox.addOnChangeListener ( function(value,text){
+    if (value=='none')  {
+      inputPanel = grid.setPanel ( 5,0,1,5 );
+      inputPanel.panel = new Widget  ( 'div'      );
+      inputPanel.addWidget           ( inputPanel.panel  );
+      inputPanel.panel.setSize_px    ( dlg_size[0]-40,dlg_size[1]-252 );
+      stask = null;
+      dlg_icon.setImage  ( image_path('openjob')   );
+      panel_head.setText ( 'Select task to be added to workflow' );
+      $('#' + add_btn_id ).button('disable');
+    } else  {
+      stask = eval ( 'new ' + value + '()' );
+      stask.makeSample();
+      dlg_icon.setImage  ( image_path(stask.icon()) );
+      panel_head.setText ( 'Choose task parameters and click "Add to workflow" ' +
+                           'button<br>&nbsp;' );
+      inputPanel = stask.makeInputPanel ( dataBox );
+      inputPanel.header.hide();
+      grid.setWidget ( inputPanel,5,0,1,5 );
+      // inputPanel.addWidget        ( inputPanel.panel  );
+      // inputPanel.panel.setSize_px ( dlg_size[0]-40,dlg_size[1]-252 );
       $('#' + add_btn_id ).button('enable');
     }
   });

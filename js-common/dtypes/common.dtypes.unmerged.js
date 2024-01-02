@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.12.21   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Unmerged Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -41,6 +41,7 @@ function DataUnmerged()  {
   this.ha_type     = '';     // heavy atom type
   this.symm_select = [];
   this.runs        = '';
+  this.dataset     = null;
 
 }
 
@@ -64,6 +65,14 @@ DataUnmerged.prototype.currentVersion = function()  {
         return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
 }
+
+// DataUnmerged.prototype.makeSample = function()  {
+// // this function created a fake data object for use in Workflow Creator
+//   this.dataset = {
+//     runs : [[ "0","1","60"]]
+//   };
+//   return this;
+// }
 
 
 // export such that it could be used in both node and a browser
@@ -103,23 +112,26 @@ if (!__template)  {
 
   DataUnmerged.prototype.layCustomDropdownInput = function ( dropdown ) {
 
-    var customGrid = dropdown.customGrid;
+    if (!this.dataset)
+      return;
+
+    let customGrid = dropdown.customGrid;
 
 //    if (dropdown.layCustom.startsWith('unmerged'))  {
     if (startsWith(dropdown.layCustom,'unmerged'))  {
 
-      var row = 0;
+      let row = 0;
       if (dropdown.layCustom=='unmerged-ref')  {
-        var symm = $.extend ( true,{},this.dataset.symm );
+        let symm = $.extend ( true,{},this.dataset.symm );
         customGrid.combosel = new ComboDropdown ( symm,[230,200,180],0 );
         customGrid.setWidget ( customGrid.combosel,row++,0,1,2 );
       } else  {
         customGrid.setLabel ( 'Batches:',row,0,1,1 ).setFontItalic(true).setWidth ( '70px' );
         customGrid.setVerticalAlignment ( row,0,'middle' );
-        var range_list = [];
-        for (var i=0;i<this.dataset.runs.length;i++)
+        let range_list = [];
+        for (let i=0;i<this.dataset.runs.length;i++)
           range_list.push(this.dataset.runs[i][1] + '-' + this.dataset.runs[i][2]);
-        var tooltip = 'Available batches: ' + range_list.join(', ');
+        let tooltip = 'Available batches: ' + range_list.join(', ');
         customGrid.runs = customGrid.setInputText ( this.runs,row,1,1,1 )
                                     .setTooltip1 ( tooltip,'slideDown',true,5000 )
                                     .setWidth ( '440px' );
@@ -133,6 +145,9 @@ if (!__template)  {
   }
 
   DataUnmerged.prototype.collectCustomDropdownInput = function ( dropdown ) {
+
+    if (!this.dataset)
+      return '';
 
     var msg = '';   // Ok by default
     var customGrid = dropdown.customGrid;

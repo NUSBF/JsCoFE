@@ -1,0 +1,220 @@
+.. _custom_workflows:
+
+=======================================
+Custom (user-created) project workflows
+=======================================
+
+CCP4 Cloud projects can be developed automatically, using one of pre-defined
+:ref:`automatic workflows <workflows_guide>`, as well as *custom workflows*,
+defined by user.
+
+--------------------------------------------------
+What are custom workflows and how one can use them
+--------------------------------------------------
+
+Custom workflow is a script (*WScript*) describing tasks that need to be 
+performed and the order of their invocation, *i.e.*, the workflow algorithm.
+The script is placed in a plain text file with extension ``.wscript``,
+which can be created by most text editors, such as *vim*, *nano*, *notepad*
+(Windows), *TextEdit* (Mac) and similar. Make sure that you save file as
+"plain text" when using advanced editors such as *MS Word*, *Libre Office*
+(not recommended).
+
+Custom workflow can be started in one of 3 ways:
+
+* Import ``.wscript`` file with other needed files, such as ``.mtz``
+  (reflections, phases), ``.pdb``, ``.mmcif`` (structure models),
+  ``.cif`` (ligand descriptions), ``.lib`` (restraint libraries),
+  ``.seq``, in a *single* import task. After importing, the task will
+  start workflow automatically if *WScript* is correct and all necessary 
+  data files are provided 
+
+* Add ``.wscript`` files to the set of data files in
+  :ref:`CloudRun command file <cloudrun>` (use generic :ref:`FILE <cloudrun_FILE>`
+  keyword), choose :ref:`import <cloudrun_TASK>` task and execute the
+  ``CloudRun`` utility. All file will be uploaded to CCP4 Cloud, project
+  created and workflow started automatically
+
+* Add *WScript* to the *My Workflows* list in the *Workflows* tab of the
+  *Task List*, after which it can be used as any other task in the
+  system.
+
+
+-------------------------------------
+Writing the Workflow script (WScript)
+-------------------------------------
+
+The main idea behind workflows is to automate operations when the same
+project (or branch of a project) needs to be repeated many (100s) times with 
+different input data, and **WScript** is limited to that purpose.
+
+The easiest way to create a **WScript** file is through using **Workflow Creator**
+in CCP4 Cloud. Login in your account and open **Task List** in any project.
+Then open tab **Workflows**, scroll it to section **My Workflows** in the end
+and push button **Add workflow**. This will launch **Workflow Creator** window
+with a template script loaded. It makes a good sense to save the newly created
+workflow in your personal library, therefore give it a unique *Workflow ID* on 
+top of the dialog window. For easier workflow identification in **My Workflows** 
+library, you may also change the colour of the workflow icon –– simply click on 
+it and choose from available options. Now you can save the script –– it will
+appear in the **My Workflows** section of the **Task List**. You can run it as
+any other task now, but doing so will result in an empty **Job Dialog**, because
+we only saved a template, which does nothing.
+
+Let's give it a useful content now. Click on **Edit** button on the right from 
+the just created workflow in **My Workflows**, this opens **Workflow Creator**
+again, with the previous content looking something like this: ::
+
+    #
+    # * THIS IS A WORKFLOW SCRIPT TEMPLATE
+    # * DO NOT ASSUME THAT IT IS FUNCTIONAL WITHOUT EDITING
+    # * CONSULT DOCUMENTATION
+    #
+
+    # -----------------------------------------------------
+    # Give Workflow Title here
+    # -----------------------------------------------------
+    # Sun Dec 31 2023
+    #
+
+    VERSION  1.0    # script version for backward compatibility
+    DEBUG    OFF    # ON/OFF
+    COMMENTS ON     # ON/OFF
+    WID      d-imp  # (optional) workflow ID for import mode
+
+    # ==========================================================================
+    # Workflow header -- EDIT AS NECESSARY
+
+    # General workflow descriptors
+    NAME     my workflow             # to show in Job Tree
+    ONAME    my_wflow                # to use for naming output files
+    TITLE    My Workflow Title       # to display in Task List
+    DESC     my workflow description # to display in Task List
+    ICON     Maraschino              # (optional) workflow icon colour
+    KEYWORDS my own workflow         # for using in A-Z keyword search
+
+    ALLOW_UPLOAD       # create file upload widgets if started from project root
+
+    # ==========================================================================
+    # Input data section. List all data required, "!" specifies mandatory items.
+    # Edit template statements below as necessary:
+
+    # !DATA HKL UNMERGED TYPES anomalous
+    # !DATA XYZ          TYPES protein dna rna
+    # DATA LIBRARY
+    # DATA SEQ           TYPES protein dna rna
+    # DATA LIGAND
+
+    # ==========================================================================
+    # Workflow parameters section. List all parameters required, "!" specifies
+    # mandatory items. Edit template statements below as necessary:
+
+    # !PAR_INTEGER nCycles  # variable name to be used in workflow's expressions
+    #    LABEL     Number of cycles
+    #    TOOLTIP   Number of refiniement cycles
+    #    IWIDTH    40        # (optional) input field width is set to 40 pixels
+    #    RANGE     0 50      # (optional) allowed min/max values
+    #    DEFAULT   10        # (optional) default integer value
+
+    # PAR_REAL     resHigh   # variable name to be used in workflow's expressions
+    #    LABEL     High resolution cut-off (&Aring;)
+    #    TOOLTIP   High resolution cut-off, angstrom
+    #    IWIDTH    40        # input field width is set to 40 pixels
+    #    RANGE     0.1 5.0   # allowed min/max values
+    #    DEFAULT   1.5       # default real value
+
+    # !PAR_STRING  atomType  # variable name to be used in workflow's expressions
+    #    LABEL     Anomalous scatterer
+    #    TOOLTIP   Expected main anomalous scatterer
+    #    IWIDTH    20        # input field width is set to 20 pixels
+    #    MAXLENGTH 2         # (optional) maximum 2 characters
+    #    DEFAULT   Se        # (optional) default string value "Se"
+
+    # PAR_CHECK    reqValReport # variable name to be used in workflow's expressions
+    #    LABEL     Request PDB Validation Report
+    #    TOOLTIP   Check if deposition files should be prepared and PDB validation report obtained
+    #    DEFAULT   Unchecked
+
+    # !PAR_COMBO   useBFactors # variable name to be used in workflow's expressions
+    #    LABEL     Use isotropic B-factors
+    #    TOOLTIP   B-factor mode for refinement
+    #    IWIDTH    60        # input field width is set to 60 pixels
+    #    OPTION    none  Select from list  # value "none" text "Select from list" 
+    #    OPTION    yes   Yes               # value "yes"  text "Yes"
+    #    OPTION    no    No                # value "no"  text  "No"
+    #    DEFAULT   none                    # default string value "none"
+
+    # ==========================================================================
+    # Workflow run body
+
+In **WScript** lines, everything on the right from the hash "#" sign is a comment
+and may be safely deleted. Perhaps you may want to delete first few lines from
+the template, but in general, the more comments you make in the script, the more 
+understandable and maintainable it is. You can use spaces to your aesthetic 
+preferences; where there must be a space separator, any number of spaces can be
+used. 
+
+**WScript** is based on single-line statements, containing keywords and values.
+Keywords, which normally start **WScript** statements, are case-insensitive.
+Values, on contrary, should be specified with respect to upper/lower case. Full
+list of keywords is given in the end of this document.
+
+We will create new workflow in several steps now.
+
+~~~~~~~~~~~~~~~~~~
+Simple MR Workflow
+~~~~~~~~~~~~~~~~~~ 
+
+As first example, let's write a simple workflow, which takes reflection data,
+structure template, sequence and solves structure with Molecular Replacement
+using Molrep.
+
+Firstly, remove unnecessary lines and put a reasonable annotation in the
+header section of the **WScript** file: ::
+
+    #
+    # -----------------------------------------------------
+    # Molecular Replacement with Molrep
+    # -----------------------------------------------------
+    # Sun Dec 31 2023
+    #
+
+    VERSION  1.0    # script version for backward compatibility
+    DEBUG    OFF    # ON/OFF
+    COMMENTS ON     # ON/OFF
+
+    # ==========================================================================
+    # Workflow header
+
+    # General workflow descriptors
+    NAME     molrep workflow         # to show in Job Tree
+    ONAME    mrp_wflow               # to use for naming output files
+    TITLE    Molrep-based Workflow   # to display in Task List
+    DESC     takes HKL, XYZ and SEQ and solves structure with Molrep # to display in Task List
+    ICON     Maraschino              # (optional) workflow icon colour
+    KEYWORDS molrep workflow         # for using in A-Z keyword search
+
+    ALLOW_UPLOAD       # create file upload widgets if started from project root
+
+You may save the workflow now and check how its description changed in
+**My Workflows** list. Re-open it again by pushing the relevant **Edit** button.
+
+Secondly, specify data, which workflow will use, in **WScript**'s' input data
+section (just append these statements to the script): ::
+
+    # ==========================================================================
+    # Input data section. List all data required, "!" specifies mandatory items.
+
+    !DATA HKL
+    !DATA XYZ  TYPES protein
+    !DATA SEQ  TYPES protein
+
+These statements mean that the workflow requires 3 mandatory items: reflection 
+data (HKL), search model (XYZ, must be protein chain(s)) and sequence (SEQ, 
+also of aminoacid type). In order to understand what these statements do, save 
+the script and create a new task with it from the root of your project –– you
+should see input fields for data files. To check further, run Cloud's 
+**File Import** task and import all needed files, then append your workflow as
+the next task –– you should see selectors for imported data. You can even run 
+the workflows now; but it will end immediately because we did not specify any 
+tasks in the **WScript** file yet.

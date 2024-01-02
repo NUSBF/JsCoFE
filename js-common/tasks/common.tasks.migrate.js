@@ -420,19 +420,17 @@ if (!__template)  {
   var fcl   = require('../../js-server/server.fe.facilities');
 
   TaskMigrate.prototype.prepare_file = function ( fpath,cloudMounts,uploads_dir )  {
-    //console.log ( ' >>>>> file ' + fpath );
     if (fpath.length>0)  {
-      var lst = fpath.split('/');
+      let lst = fpath.split('/');
       if (lst.length>2)  {
         if (lst[0]=='cloudstorage::')  {
-          var cfpath = null;
-          for (var j=0;(j<cloudMounts.length) && (!cfpath);j++)
+          let cfpath = null;
+          for (let j=0;(j<cloudMounts.length) && (!cfpath);j++)
             if (cloudMounts[j][0]==lst[1])
               cfpath = path.join ( cloudMounts[j][1],lst.slice(2).join('/') );
           if (cfpath)  {
-            var dest_file = path.join ( uploads_dir,lst[lst.length-1] );
+            let dest_file = path.join ( uploads_dir,lst[lst.length-1] );
             try {
-              //console.log ( ' >>>>> copy ' + cfpath + ' to ' + dest_file );
               fs.copySync ( cfpath,dest_file );
             } catch (err) {
               console.log ( ' ***** cannot copy file ' + cfpath +

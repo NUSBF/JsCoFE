@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    10.12.23   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Base Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -71,6 +71,11 @@ DataTemplate.prototype.title = function()  { return 'Template Data'; }
 DataTemplate.prototype.icon  = function()  { return 'data';          }
 
 DataTemplate.prototype.currentVersion = function()  { return 2; } // from 25.08.2018
+
+DataTemplate.prototype.makeSample = function()  {
+// this function created a fake data object for use in Workflow Creator
+  return this;
+}
 
 // export such that it could be used in both node and a browser
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {

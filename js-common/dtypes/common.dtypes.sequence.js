@@ -69,6 +69,12 @@ DataSequence.prototype.currentVersion = function()  {
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
 }
 
+DataSequence.prototype.makeSample = function()  {
+// this function created a fake data object for use in Workflow Creator
+  this.setSubtype ( 'protein' );
+  return this;
+}
+
 
 // export such that it could be used in both node and a browser
 

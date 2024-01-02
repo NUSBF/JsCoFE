@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.11.23   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Generic Workflow Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2023-2024
  *
  *  =================================================================
  *
@@ -112,7 +112,7 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
 
     if (line.length>0)  {
       
-      let words = this.script[i].split(' ').filter(Boolean);
+      let words = line.split(' ').filter(Boolean);
       let word0 = words[0].toUpperCase();
       switch (word0)  {
         

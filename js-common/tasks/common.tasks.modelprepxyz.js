@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    11.10.23   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Ensemble Preparation from Coordinates Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -278,7 +278,7 @@ if (!__template)  {
                       'making nucleic acid MR models is possible only for ' +
                       '"Unmodified" and<br>"PDB Clip" modification protocols' ) );
         } else  {
-          for (var i=0;i<xyz.length;i++)  {
+          for (let i=0;i<xyz.length;i++)  {
             var tMask  = 0x00;
             if (xyz[i].chainSel=='(none)')  {
               msg_list.push ( this.invalidParamMessage (
