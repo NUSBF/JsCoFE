@@ -221,6 +221,8 @@
         <li class="md-nav__item"><a href="#writing-the-workflow-script-wscript" class="md-nav__link">5.2. Writing the Workflow script (WScript)</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#simple-mr-workflow" class="md-nav__link">5.2.1. Simple MR Workflow</a>
+        </li>
+        <li class="md-nav__item"><a href="#conditional-statements" class="md-nav__link">5.2.2. Conditional statements</a>
         </li></ul>
             </nav>
         </li></ul>
@@ -245,6 +247,13 @@
     
     
       <a href="#simple-mr-workflow" class="md-nav__link">5.2.1. Simple MR Workflow</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#conditional-statements" class="md-nav__link">5.2.2. Conditional statements</a>
       
     
     </li></ul>
@@ -308,6 +317,8 @@
         <li class="md-nav__item"><a href="#writing-the-workflow-script-wscript" class="md-nav__link">5.2. Writing the Workflow script (WScript)</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#simple-mr-workflow" class="md-nav__link">5.2.1. Simple MR Workflow</a>
+        </li>
+        <li class="md-nav__item"><a href="#conditional-statements" class="md-nav__link">5.2.2. Conditional statements</a>
         </li></ul>
             </nav>
         </li></ul>
@@ -328,7 +339,7 @@
 <a class="reference internal" href="jscofe_automated_workflows.html#workflows-guide"><span class="std std-ref">automatic workflows</span></a>, as well as <em>custom workflows</em>,
 defined by user.</p>
 <section id="what-are-custom-workflows-and-how-one-can-use-them">
-<h2 id="what-are-custom-workflows-and-how-one-can-use-them"><span class="section-number">5.1. </span>What are custom workflows and how one can use them<a class="headerlink" href="#what-are-custom-workflows-and-how-one-can-use-them" title="Permalink to this heading">¶</a></h2>
+<span id="custom-workflows-use"></span><h2 id="what-are-custom-workflows-and-how-one-can-use-them"><span class="section-number">5.1. </span>What are custom workflows and how one can use them<a class="headerlink" href="#what-are-custom-workflows-and-how-one-can-use-them" title="Permalink to this heading">¶</a></h2>
 <p>Custom workflow is a script (<em>WScript</em>) describing tasks that need to be
 performed and the order of their invocation, <em>i.e.</em>, the workflow algorithm.
 The script is placed in a plain text file with extension <code class="docutils literal notranslate"><span class="pre">.wscript</span></code>,
@@ -366,8 +377,8 @@ and push button <strong>Add workflow</strong>. This will launch <strong>Workflow
 with a template script loaded. It makes a good sense to save the newly created
 workflow in your personal library, therefore give it a unique <em>Workflow ID</em> on
 top of the dialog window. For easier workflow identification in <strong>My Workflows</strong>
-library, you may also change the colour of the workflow icon –– simply click on
-it and choose from available options. Now you can save the script –– it will
+library, you may also change the colour of the workflow icon – simply click on
+it and choose from available options. Now you can save the script – it will
 appear in the <strong>My Workflows</strong> section of the <strong>Task List</strong>. You can run it as
 any other task now, but doing so will result in an empty <strong>Job Dialog</strong>, because
 we only saved a template, which does nothing.</p>
@@ -474,7 +485,8 @@ list of keywords is given in the end of this document.</p>
 structure template, sequence and solves structure with Molecular Replacement
 using Molrep.</p>
 <p>Firstly, remove unnecessary lines and put a reasonable annotation in the
-header section of the <strong>WScript</strong> file:</p>
+header section of the <strong>WScript</strong> file, so that it starts with this
+workflow header:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#</span>
 <span class="c1"># -----------------------------------------------------</span>
 <span class="c1"># Molecular Replacement with Molrep</span>
@@ -493,7 +505,7 @@ header section of the <strong>WScript</strong> file:</p>
 <span class="n">NAME</span>     <span class="n">molrep</span> <span class="n">workflow</span>         <span class="c1"># to show in Job Tree</span>
 <span class="n">ONAME</span>    <span class="n">mrp_wflow</span>               <span class="c1"># to use for naming output files</span>
 <span class="n">TITLE</span>    <span class="n">Molrep</span><span class="o">-</span><span class="n">based</span> <span class="n">Workflow</span>   <span class="c1"># to display in Task List</span>
-<span class="n">DESC</span>     <span class="n">takes</span> <span class="n">HKL</span><span class="p">,</span> <span class="n">XYZ</span> <span class="ow">and</span> <span class="n">SEQ</span> <span class="ow">and</span> <span class="n">solves</span> <span class="n">structure</span> <span class="k">with</span> <span class="n">Molrep</span> <span class="c1"># to display in Task List</span>
+<span class="n">DESC</span>     <span class="n">takes</span> <span class="n">HKL</span><span class="p">,</span> <span class="n">XYZ</span> <span class="ow">and</span> <span class="n">SEQ</span> <span class="ow">and</span> <span class="n">solves</span> <span class="n">structure</span> <span class="k">with</span> <span class="n">Molrep</span>
 <span class="n">ICON</span>     <span class="n">Maraschino</span>              <span class="c1"># (optional) workflow icon colour</span>
 <span class="n">KEYWORDS</span> <span class="n">molrep</span> <span class="n">workflow</span>         <span class="c1"># for using in A-Z keyword search</span>
 
@@ -515,12 +527,130 @@ section (just append these statements to the script):</p>
 <p>These statements mean that the workflow requires 3 mandatory items: reflection
 data (HKL), search model (XYZ, must be protein chain(s)) and sequence (SEQ,
 also of aminoacid type). In order to understand what these statements do, save
-the script and create a new task with it from the root of your project –– you
+the script and create a new task with it from the root of your project – you
 should see input fields for data files. To check further, run Cloud’s
 <strong>File Import</strong> task and import all needed files, then append your workflow as
-the next task –– you should see selectors for imported data. You can even run
-the workflows now; but it will end immediately because we did not specify any
-tasks in the <strong>WScript</strong> file yet.</p>
+the next task – you should see selectors for imported data. You can even run
+the workflows now; it will fail immediately though because we did not specify
+any tasks in the <strong>WScript</strong> file yet.</p>
+<p>We now want to make a sequence of at least 5 tasks:</p>
+<ul class="simple">
+<li><p>prepare MR model</p></li>
+<li><p>define ASU</p></li>
+<li><p>run Molrep</p></li>
+<li><p>re-build model with, e.g., Buccaneer</p></li>
+<li><p>refine with Refmac</p></li>
+</ul>
+<p>Re-open molrep workflow script in <strong>Workflow Cretor</strong> again. In the bottom of
+the dialog window, click button <strong>Add task</strong> and select <em>“Model Preparation XYZ”</em>
+in the combobox found in the header. This populates the dialog window with
+default task options like in original task interfaces. Choose options that you
+want to change, set their values, and push <strong>Add to workflow</strong> button. This
+will append the following construct:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@MODELPREPXYZ</span>
+    <span class="n">RUN</span> <span class="n">ModelPrepXYZ</span>
+</pre></div>
+</div>
+<p>to the end of the script if you did not change anything in task parameters.
+If a non-default parameter value were chosen, <em>e.g.</em>, if you changed
+<em>“Modification protocol”</em> for <em>“PDB Clip”</em>, then the construct would
+look slightly different:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@MODELPREPXYZ</span>
+    <span class="n">PARAMETER</span> <span class="n">MODIFICATION_SEL</span> <span class="n">D</span>  <span class="c1"># Modification protocol</span>
+    <span class="n">RUN</span> <span class="n">ModelPrepXYZ</span>
+</pre></div>
+</div>
+<p>These examples give an idea of how CCP4 Cloud tasks are described in custom
+workflows. Each task is represented by a block of lines, which starts with
+<em>RUN NAME</em> and finishes with <em>RUN</em> statement. <em>RUN NAME</em> must be a unique
+alphanumeric identifier starting with <em>“@”</em> symbol. Other lines between
+<em>RUN NAME</em> and <em>RUN</em> statements may contain values for task parameters,
+and only non-default parameters should be specified for brevity. See more
+details in Reference below.</p>
+<p>Similarly to the <em>“Model Preparation XYZ”</em> task, you can now add
+<em>“ASU Definition”</em>, <em>“Molrep”</em>, <em>“Buccaneer”</em> and <em>“Refmac”</em> tasks to the
+workflow, in that order. The resulting <strong>WScript</strong> will look like
+the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#
+# -----------------------------------------------------
+# Molecular Replacement with Molrep
+# -----------------------------------------------------
+# Sun Dec 31 2023
+#
+
+VERSION  1.0    # script version for backward compatibility
+DEBUG    OFF    # ON/OFF
+COMMENTS ON     # ON/OFF
+
+# ==========================================================================
+# Workflow header
+
+# General workflow descriptors
+NAME     molrep workflow         # to show in Job Tree
+ONAME    mrp_wflow               # to use for naming output files
+TITLE    Molrep-based Workflow   # to display in Task List
+DESC     takes HKL, XYZ and SEQ and solves structure with Molrep
+ICON     Maraschino              # (optional) workflow icon colour
+KEYWORDS molrep workflow         # for using in A-Z keyword search
+
+ALLOW_UPLOAD       # create file upload widgets if started from project root
+
+# ==========================================================================
+# Input data section. List all data required, "!" specifies mandatory items.
+
+!DATA HKL
+!DATA XYZ  TYPES protein
+!DATA SEQ  TYPES protein
+
+# ==========================================================================
+# Workflow parameters section. List all parameters required, "!" specifies
+# mandatory items.
+
+# ==========================================================================
+# Workflow run body
+
+@MODELPREPXYZ
+    RUN ModelPrepXYZ
+#
+
+@ASUDEF
+    RUN ASUDef
+#
+
+@MOLREP
+    RUN PhaserMR
+#
+
+@BUCCANEER
+    RUN Buccaneer
+#
+
+@REFMAC
+    RUN Refmac
+#
+</pre></div>
+</div>
+<p>This makes a completely functional workflow, which you can run now by any of
+the three methods described in <a class="reference internal" href="#custom-workflows-use"><span class="std std-ref">What are custom workflows and how one can use them</span></a> (you need to
+copy-paste <strong>WScript</strong> from <strong>Workflow Creator</strong> into external file with
+<code class="docutils literal notranslate"><span class="pre">.wscript</span></code> extension for using it with the <strong>Import</strong> task or <strong>CloudRun</strong>
+utility).</p>
+</section>
+<section id="conditional-statements">
+<h3 id="conditional-statements"><span class="section-number">5.2.2. </span>Conditional statements<a class="headerlink" href="#conditional-statements" title="Permalink to this heading">¶</a></h3>
+<p>At the moment, our molrep workflow is quite straightforward in respect to its
+input data and algorithm. We may wish to make it more flexible. For example,
+it would be good if can take both merged and unmerged reflection data on input,
+optimize refinement parameters and, optionally, prepare file for PDB deposition
+from best results achieved.</p>
+<p>Let’s start from optional unmerged reflections input. We can instruct the
+workflow to accept both merged and unmerged reflections by modifying the
+corresponding <code class="docutils literal notranslate"><span class="pre">DATA</span></code> statement as below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>!DATA HKL UNMERGED
+!DATA XYZ  TYPES protein
+!DATA SEQ  TYPES protein
+</pre></div>
+</div>
 </section>
 </section>
 </section>
