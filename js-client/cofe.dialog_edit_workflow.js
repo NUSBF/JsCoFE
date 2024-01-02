@@ -408,59 +408,6 @@ let lines  = script.split(/\r?\n/);
 }
 
 
-EditWorkflowDialog.prototype.putTaskScript = function ( stask,inputPanel,add_bool )  {
-
-  let input_msg = stask.collectInput ( inputPanel );
-  
-  if (input_msg)  {
-    if (input_msg[0]=='#')  {
-      new MessageBox ( 'Input errors','<div style="width:450px;">' +
-                        input_msg.substring(1) + '</div>', 'msg_error' );
-    } else  {
-      // alert ( input_msg );
-      let errlst  = input_msg.split('|');
-      let errlst1 = [];
-      for (let i=0;i<errlst.length;i++)  {
-        let s = errlst[i].trim();
-        if (s)
-          errlst1.push(s);
-      }
-      if (errlst1.length>0)
-        new MessageBox ( 'Input errors',
-          '<div style="width:550px;"><h2>Input errors</h2>' +
-          'The following errors occurred while processing task input:' +
-          '<p><ul><li>' + errlst1.join('</li><li>') +
-          '</li></ul><p>Please correct the task input as appropriate.</h2>',
-          'msg_error' );
-    }
-    return false;
-  }
-
-  let workflow_script = this.editor.getText();
-  if ((!workflow_script.endsWith('\n')) && 
-      (!workflow_script.endsWith('\n\r')))
-    workflow_script += '\n';
-
-  let serialNo    = workflow_script.split (
-                             '@'+stask._type.slice(4).toUpperCase()).length-1;
-  let task_script = stask.getWorkflowScript ( serialNo );
-
-  if (add_bool)  {
-    workflow_script += '\n' + task_script.join('\n') + '\n#\n';
-  } else  {
-    let lineNo  = this.editor.getCursorPosition().row;
-    let wslines = workflow_script.split('\n');
-    wslines.splice ( lineNo,0,'\n' + task_script.join('\n') +'\n#\n' );
-    workflow_script = wslines.join('\n');
-  }
-
-  this.editor.setText ( workflow_script );
-
-  return true;
-
-}
-
-
 EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
 
   const task_list = [
@@ -604,43 +551,21 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
     }
   });
 
-/*
-  list_cbox.addOnChangeListener ( function(value,text){
-    if (value=='none')  {
-      inputPanel = grid.setPanel ( 5,0,1,5 );
-      inputPanel.panel = new Widget  ( 'div'      );
-      inputPanel.addWidget           ( inputPanel.panel  );
-      inputPanel.panel.setSize_px    ( dlg_size[0]-40,dlg_size[1]-252 );
-      stask = null;
-      dlg_icon.setImage  ( image_path('openjob')   );
-      panel_head.setText ( 'Select task to be added to workflow' );
-      $('#' + add_btn_id ).button('disable');
-    } else  {
-      stask = eval ( 'new ' + value + '()' );
-      stask.makeSample();
-      dlg_icon.setImage  ( image_path(stask.icon()) );
-      panel_head.setText ( 'Choose task parameters and click "Add to workflow" ' +
-                           'button<br>&nbsp;' );
-      inputPanel = stask.makeInputPanel ( dataBox );
-      inputPanel.header.hide();
-      grid.setWidget ( inputPanel,5,0,1,5 );
-      // inputPanel.addWidget        ( inputPanel.panel  );
-      // inputPanel.panel.setSize_px ( dlg_size[0]-40,dlg_size[1]-252 );
-      $('#' + add_btn_id ).button('enable');
-    }
-  });
-  */
+  let button_text = 'Add to workflow';
+  if (!add_bool)
+    button_text = 'Insert in workflow';
 
   dlg._options.buttons = [
     {
       id    : add_btn_id,
-      text  : 'Add to workflow',
+      text  : button_text,
       click : function() {
                 let input_msg = stask.collectInput ( inputPanel );
                 if (input_msg)  {
                   if (input_msg[0]=='#')  {
                     new MessageBox ( 'Input errors','<div style="width:450px;">' +
-                                     input_msg.substring(1) + '</div>', 'msg_error' );
+                                     input_msg.substring(1) + '</div>',
+                                     'msg_error' );
                   } else  {
                     // alert ( input_msg );
                     let errlst  = input_msg.split('|');
@@ -675,16 +600,6 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
                     workflow_script = wslines.join('\n');
                   }
                   self.editor.setText ( workflow_script );
-
-                  // self.editor.setText ( 
-                  //   workflow_script.split('\n').splice ( lineNo,0,
-                  //                     '\n' + task_script.join('\n') +'\n#\n' )
-                  //                  .join('\n')
-                  // );
-
-                  // self.editor.setText ( 
-                  //           workflow_script + '\n' + task_script.join('\n') +
-                  //           '\n#\n' );
                   $(this).dialog ( 'close' );
                 }
               }
