@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    19.09.23   <--  Date of Last Modification.
+#    31.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,6 +30,7 @@ import uuid
 
 #  application imports
 from . import basic
+from   pycofe.auto     import auto, auto_workflow
 # from   pycofe.dtypes import dtype_template
 
 
@@ -59,11 +60,14 @@ class Molrep(basic.TaskDriver):
 
         revision = self.makeClass ( self.input_data.data.revision[0] )
         model    = self.makeClass ( self.input_data.data.model[0] )  # ensemble
-
         hkl      = self.makeClass ( revision.HKL )   # note that 'hkl' was added
                                   # to input databox by TaskMolrep.makeInputData(),
                                   # therefore, hkl=self.input_data.data.hkl[0]
                                   # will also work
+        istruct  = revision.Structure
+        if istruct:
+            istruct = self.makeClass ( istruct )
+
         #seq      = None
         #if model.sequence:
         #    seq = self.makeClass ( model.sequence )  # may work for DataEnsemble
@@ -170,6 +174,34 @@ class Molrep(basic.TaskDriver):
             revision.setStructureData ( structure )
             self.registerRevision     ( revision  )
             have_results = True
+
+            if self.task.autoRunName.startswith("@"):
+                nfitted0 = 0
+                if istruct:
+                    nfitted0 = istruct.getNofPolymers()
+                # scripted workflow framework
+                auto_workflow.nextTask ( self,{
+                    "data" : {
+                        "revision"  : [revision]
+                    },
+                    "scores" :  {
+                        "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                        "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
+                        "nfitted0" : nfitted0,                  # number of polymers before run
+                        "nfitted"  : structure.getNofPolymers() # number of polymers after run
+                    }
+                })
+
+            else:  # pre-coded workflow framework
+                auto.makeNextTask(self, {
+                    "revision" : revision,
+                    "Rfree"    : float ( self.generic_parser_summary["refmac"]["R_free"] ),
+                    "nfitted0" : nfitted0,                    # number of polymers before run
+                    "nfitted"  : structure.getNofPolymers(),  # number of polymers after run
+                    "nasu"     : revision.getNofASUMonomers() # number of predicted subunits
+                }, log=self.file_stderr)
+
+
 
         # close execution logs and quit
         self.success ( have_results )

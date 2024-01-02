@@ -152,6 +152,8 @@ Command file keywords
     
         TITLE   Auto-MR Project started with CloudRun utility
 
+.. _cloudrun_TASK:
+
 **TASK**
     *(optional)* 
     
@@ -174,6 +176,9 @@ Command file keywords
     
         HA_TYPE   Se
     
+
+.. _cloudrun_FILE:
+
 **FILE**
     *(required)* 
     

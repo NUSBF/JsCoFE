@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.12.23   <--  Date of Last Modification.
+#    31.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -266,7 +266,10 @@ class Import(basic.TaskDriver):
             if len(self.task.script)>0:
                 
                 self.prepareWorkflowData()
-                variables = {}
+                variables = {
+                    "True"  : True,
+                    "False" : False
+                }
                 if self.unm:
                     variables["reso_high"] = self.unm[0].getHighResolution(raw=True)
                 elif self.hkl:

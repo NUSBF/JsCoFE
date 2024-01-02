@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.12.23   <--  Date of Last Modification.
+#    31.12.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -212,7 +212,10 @@ class Workflow(import_task.Import):
 
         have_results = (len(ilist)>0)
 
-        variables = {}
+        variables = {
+            "True"  : True,
+            "False" : False
+        }
         if self.unm:
             variables["reso_high"] = self.unm[0].getHighResolution(raw=True)
         elif self.hkl:

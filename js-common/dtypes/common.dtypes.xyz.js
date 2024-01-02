@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.02.23   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  XYZ Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -62,10 +62,27 @@ DataXYZ.prototype.icon  = function()  { return 'data';            }
 // when data class version is changed here, change it also in python
 // constructors
 DataXYZ.prototype.currentVersion = function()  {
-  var version = 0;
+let version = 0;
   if (__template)
         return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
+}
+
+
+DataXYZ.prototype.makeSample = function()  {
+// this function created a fake data object for use in Workflow Creator
+  this.setSubtype ( 'protein' );
+  this.addSubtype ( 'rna'     );
+  this.addSubtype ( 'dna'     );
+  this.xyzmeta = {
+    "xyz": [{ "chains": [{"id": "A","type": "Protein"},
+                          {"id": "D","type": "RNA"},
+                          {"id": "E","type": "RNA"}
+                        ],
+              "model": 1
+            }]
+  };
+  return this;
 }
 
 
@@ -157,10 +174,10 @@ if (!__template)  {
       }
     }
 
-    var n   = 1;
-    var xyz = this.xyzmeta.xyz;
+    let n   = 1;
+    let xyz = this.xyzmeta.xyz;
     if (xyz)
-      for (var i=0;i<xyz.length;i++)
+      for (let i=0;i<xyz.length;i++)
         n += xyz[i].chains.length;
 
     dsp.table.setHeaderText ( 'Contents',dsp.trow,0, 1,1 );
@@ -210,8 +227,8 @@ if (!__template)  {
 
     if (xyz)
       for (let i=0;i<xyz.length;i++)  {
-        var xyzi = xyz[i];
-        var col  = 1;
+        let xyzi = xyz[i];
+        let col  = 1;
         dsp.table.setLabel ( xyzi.model,dsp.trow,0,xyzi.chains.length,1 );
         for (let j=0;j<xyzi.chains.length;j++)  {
           dsp.table.setLabel ( xyzi.chains[j].id  ,dsp.trow,col  , 1,1 );
@@ -225,7 +242,7 @@ if (!__template)  {
   }
 
   DataXYZ.prototype.makeDataSummaryPage = function ( task )  {
-  var dsp = new DataSummaryPage ( this );
+  let dsp = new DataSummaryPage ( this );
     if (this._type=='DataStructure')  {
       if (this.files.hasOwnProperty(file_key.xyz))
         dsp.makeRow ( 'XYZ file name',this.files[file_key.xyz],'Name of file with XYZ coordinates' );
@@ -251,7 +268,7 @@ if (!__template)  {
 
   }
 
-  var _agents = [
+  const _agents = [
       'BE7',  'MRD',  'MHA',  'BU3',  'EDO',  'PGO',  'BU2',  'PDO',
       'BU1',  'PG6',  '1BO',  'PE7',  'PG5',  'TFP',  'DHD',  'PEU',
       'TRS',  'TAU',  'SBT',  'SAL',  'MPD',  'IOH',  'IPA',  'PGE',
@@ -280,13 +297,13 @@ if (!__template)  {
 
 
   DataXYZ.prototype.getChainList = function()  {
-  var xyz  = this.xyzmeta.xyz;
-  var list = [];
+  let xyz  = this.xyzmeta.xyz;
+  let list = [];
     if (xyz)
-      for (var i=0;i<xyz.length;i++)  {
-        var chains = xyz[i].chains;
-        for (var j=0;j<chains.length;j++)  {
-          var item   = {};
+      for (let i=0;i<xyz.length;i++)  {
+        let chains = xyz[i].chains;
+        for (let j=0;j<chains.length;j++)  {
+          let item   = {};
           item.id    = chains[j].id;
           item.model = xyz[i].model;
           item.type  = chains[j].type;

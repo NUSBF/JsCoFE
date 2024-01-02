@@ -39,6 +39,9 @@ CCP4 Cloud Version Log
     #. Restraints library and fitted ligands are separated on input of all relevant 
        workflows
 
+    #. ASU definition task uses "1" as defaut for the number of copies of 
+       all chains
+
 
 **Version 1.7.017** 
 

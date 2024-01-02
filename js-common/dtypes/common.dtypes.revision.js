@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.11.23   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common Client/Server Modules -- Structure Revision Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -103,6 +103,23 @@ DataRevision.prototype.currentVersion = function()  {
 }
 
 
+DataRevision.prototype.makeSample = function()  {
+// this function created a fake data object for use in Workflow Creator
+  this.setSubtype ( 'asu'          );
+  this.addSubtype ( 'hkl'          );
+  this.addSubtype ( 'seq'          );
+  this.addSubtype ( 'protein'      );
+  this.addSubtype ( 'dna'          );
+  this.addSubtype ( 'rna'          );
+  this.addSubtype ( 'anomalous'    );
+  this.addSubtype ( 'substructure' );
+  this.addSubtype ( 'phases'       );
+  this.addSubtype ( 'ligands'      );
+  this.addSubtype ( 'waters'       );
+  return this;
+}
+
+
 // export such that it could be used in both node and a browser
 
 if (!__template)  {
@@ -116,7 +133,7 @@ if (!__template)  {
     if (this.HKL)
       revext.HKL = this.HKL.extend();
 
-    for (var i=0;i<revext.ASU.seq.length;i++)
+    for (let i=0;i<revext.ASU.seq.length;i++)
       revext.ASU.seq[i] = this.ASU.seq[i].extend();
 
     if (this.Structure)
@@ -125,7 +142,7 @@ if (!__template)  {
     if (this.Substructure)
       revext.Substructure = this.Substructure.extend();
 
-    for (var i=0;i<revext.Ligands.length;i++)
+    for (let i=0;i<revext.Ligands.length;i++)
       revext.Ligands[i] = this.Ligands[i].extend();
 
     return revext;
@@ -505,7 +522,10 @@ if (!__template)  {
   }
 
   DataRevision.prototype._layCDI_PhaserEP = function ( dropdown )  {
-  var customGrid = dropdown.customGrid;
+  let customGrid = dropdown.customGrid;
+
+    if ((!this.Structure) && (!this.Substructure))
+      return;
 
     customGrid.setLabel ( 'Phase using:',0,0,1,1 ).setFontItalic(true).setNoWrap();
     customGrid.setVerticalAlignment ( 0,0,'middle' );
@@ -532,15 +552,15 @@ if (!__template)  {
   }
 
   DataRevision.prototype._layCDI_PhaserMR = function ( dropdown )  {
-  var customGrid = dropdown.customGrid;
-  var row        = customGrid.getNRows();
-  var row0       = row;
+  let customGrid = dropdown.customGrid;
+  let row        = customGrid.getNRows();
+  let row0       = row;
 
     if (this.hasOwnProperty('phaser_meta'))  {
 
       customGrid.setLabel ( '<b>Prefitted models</b>:',row++,0,1,1 )
                 .setFontItalic(true).setNoWrap();
-      for (var ensname in this.phaser_meta['ensembles'])  {
+      for (let ensname in this.phaser_meta['ensembles'])  {
         customGrid.setLabel ( '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                    this.phaser_meta['ensembles'][ensname]['ncopies'] +
                    'x ' + ensname + ' :',row,0,1,1 )
@@ -572,7 +592,7 @@ if (!__template)  {
                   .setFontItalic(true).setNoWrap();
     }
 
-    for (var i=row0;i<row;i++)  {
+    for (let i=row0;i<row;i++)  {
       customGrid.setCellSize ( '','12pt',i,0 );
       customGrid.setVerticalAlignment ( i,0,'middle' );
       customGrid.setCellSize ( '','12pt',i,1 );
@@ -590,15 +610,15 @@ if (!__template)  {
 
 
   DataRevision.prototype._layCDI_PhaserMR1 = function ( dropdown )  {
-  var customGrid = dropdown.customGrid;
-  var row        = customGrid.getNRows();
-  var row0       = row;
+  let customGrid = dropdown.customGrid;
+  let row        = customGrid.getNRows();
+  let row0       = row;
 
     if (this.hasOwnProperty('phaser_meta'))  {
 
       customGrid.setLabel ( '<b>Prefitted models</b>:',row++,0,1,1 )
                 .setFontItalic(true).setNoWrap();
-      for (var ensname in this.phaser_meta['ensembles'])  {
+      for (let ensname in this.phaser_meta['ensembles'])  {
         customGrid.setLabel ( '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
                    this.phaser_meta['ensembles'][ensname]['ncopies'] +
                    'x ' + ensname + ' :',row,0,1,1 )
@@ -630,7 +650,7 @@ if (!__template)  {
                   .setFontItalic(true).setNoWrap();
     }
 
-    for (var i=row0;i<row;i++)  {
+    for (let i=row0;i<row;i++)  {
       customGrid.setCellSize ( '','12pt',i,0 );
       customGrid.setVerticalAlignment ( i,0,'middle' );
       customGrid.setCellSize ( '','12pt',i,1 );
@@ -642,9 +662,10 @@ if (!__template)  {
     if (this.Structure || this.Substructure)
       dropdown.layCustom = 'phaser-mr-fixed1';
 
-    this.HKL.layCustomDropdownInput ( dropdown );
+    if (this.HKL)
+      this.HKL.layCustomDropdownInput ( dropdown );
 
-    var crtype = null;
+    let crtype = null;
     if ('mr_type_sel' in customGrid)  {
       customGrid.mr_type_sel.addOnChangeListener(function (text,value) {
         dropdown.task.MRTypeChanged ( dropdown.grid.inpParamRef,value );
@@ -704,12 +725,13 @@ if (!__template)  {
                 .setFontBold(true).setFontItalic(true).setNoWrap();
     }
 
-    var structure = null;
+    let structure = null;
     if (key>0)  {
       if (this.Options.leading_structure=='substructure')
             structure = this.Substructure;
       else  structure = this.Structure;
-      structure.layCustomDropdownInput ( dropdown );
+      if (structure)
+        structure.layCustomDropdownInput ( dropdown );
       if ((key==2) && this.Structure &&
           (this.Options.leading_structure=='substructure'))
         this.Structure.layCustomDropdownInput ( dropdown );
@@ -862,7 +884,8 @@ if (!__template)  {
           break;
       case 'modelcraft' :
             this._layCDI_ModelCraft ( dropdown );
-            this.HKL.layCustomDropdownInput ( dropdown );
+            if (this.HKL)
+              this.HKL.layCustomDropdownInput ( dropdown );
           break;
       case 'parrot'     :
             this._layCDI_Parrot ( dropdown );
@@ -966,7 +989,7 @@ if (!__template)  {
   }
 
   DataRevision.prototype.collectCustomDropdownInput = function ( dropdown )  {
-  var msg = '';
+  let msg = '';
 
     switch (dropdown.layCustom)  {
 
@@ -987,7 +1010,9 @@ if (!__template)  {
             this.Options.build_sel = dropdown.customGrid.build_sel.getValue();
           else
             this.Options.build_sel = 'all';
-          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+          if (this.HKL)
+                msg = this.HKL.collectCustomDropdownInput ( dropdown );
+          else  msg = '';
         break;
 
       case 'phaser-mr'  :  case 'phaser-mr-fixed' :
@@ -1001,14 +1026,17 @@ if (!__template)  {
             this.Options.mr_type = dropdown.customGrid.mr_type_sel.getValue();
           if ('ds_protocol_sel' in dropdown.customGrid)
             this.Options.ds_protocol = dropdown.customGrid.ds_protocol_sel.getValue();
-          msg = this.HKL.collectCustomDropdownInput ( dropdown );
+          if (this.HKL)
+            msg = this.HKL.collectCustomDropdownInput ( dropdown );
         break;
 
       case 'phaser-ep'  :
-          msg = this.HKL.collectCustomDropdownInput ( dropdown );
-          this.Options.phasing_sel = dropdown.customGrid.phasing_sel.getValue();
-          if (this.Structure && (this.Options.phasing_sel=='model'))
-            msg += this.Structure.collectCustomDropdownInput ( dropdown );
+          if (this.Structure || this.Substructure)  {
+            msg = this.HKL.collectCustomDropdownInput ( dropdown );
+            this.Options.phasing_sel = dropdown.customGrid.phasing_sel.getValue();
+            if (this.Structure && (this.Options.phasing_sel=='model'))
+              msg += this.Structure.collectCustomDropdownInput ( dropdown );
+          }
         break;
 
       case 'parrot'     :

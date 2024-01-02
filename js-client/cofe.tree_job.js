@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    14.11.23   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Job Tree
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -907,17 +907,9 @@ JobTree.prototype.saveProjectData = function ( tasks_add,tasks_del,update_bool,
           if ((rdata.reload==-11111) || (rdata.reload==-11112))  {
             tree.missingProject ( rdata.reload );
           } else if (rdata.reload>0)  {
-            // tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
             if (callback_func)
                   callback_func ( tree,rdata );
             else  tree.emitSignal ( cofe_signals.reloadTree,rdata );
-
-            //   window.setTimeout ( function(){
-            //     console.log ( ' >>>>>>>>  reload triggered');
-            //     rdata.force_reload = true;
-            //     tree.emitSignal ( cofe_signals.reloadTree,rdata );
-            //   },10);
-
           } else  {
             tree.updateRation ( rdata );
             tree.projectData.desc.timestamp = rdata.pdesc.timestamp;
@@ -1609,9 +1601,9 @@ JobTree.prototype.closeAllJobDialogs = function()  {
 }
 
 JobTree.prototype.getJobDialogTaskParameters = function()  {
-  var taskParameters = [];
-  for (var delId in this.dlg_map)  {
-    var dlg = this.dlg_map[delId];
+  let taskParameters = [];
+  for (let delId in this.dlg_map)  {
+    let dlg = this.dlg_map[delId];
     taskParameters.push ({
       'id'              : dlg.task.id,
       'job_dialog_data' : dlg.task.job_dialog_data
@@ -1622,10 +1614,10 @@ JobTree.prototype.getJobDialogTaskParameters = function()  {
 
 JobTree.prototype.openJobs = function ( taskParameters,parent_page )  {
   if (taskParameters.length>0)  {
-    var crSel = this.getSelectedNodeId();
-    for (var i=0;i<taskParameters.length;i++)  {
+    let crSel = this.getSelectedNodeId();
+    for (let i=0;i<taskParameters.length;i++)  {
       this.selectSingleById ( this.getTaskNodeId(taskParameters[i].id) );
-      var task = this.task_map[this.getSelectedNodeId()];
+      let task = this.task_map[this.getSelectedNodeId()];
       if (task && (task.id==taskParameters[i].id))  {
         task.job_dialog_data = taskParameters[i].job_dialog_data;
         this.openJob ( null,parent_page );
@@ -2066,23 +2058,22 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
       if (task.autoRunName.startsWith('@'))  {
         task.script         = task0.script;
         task.script_pointer = task0.script_pointer;
-        // console.log ( ' >>>>>> b1 ' + task.script_pointer );
       }
       task.inputMode   = task0.inputMode;
       task.nc_type     = task0.nc_type;
 
       task.file_select = [];
-      for (var i=0;i<task0.file_select.length;i++)
+      for (let i=0;i<task0.file_select.length;i++)
         task.file_select.push ( $.extend(true,{},task0.file_select[i]) );
 
       task.input_ligands = [];
-      for (var i=0;i<task0.input_ligands.length;i++)
+      for (let i=0;i<task0.input_ligands.length;i++)
         task.input_ligands.push ( $.extend(true,{},task0.input_ligands[i]) );
 
       task.input_data = $.extend ( true,{},task0.input_data  );
       task.parameters = $.extend ( true,{},task0.parameters  );
 
-      for (var i=0;i<task0.harvestedTaskIds.length;i++)
+      for (let i=0;i<task0.harvestedTaskIds.length;i++)
         task.harvestedTaskIds.push ( task0.harvestedTaskIds[i] );
 
       if ('file_system' in task0)  {
@@ -2131,14 +2122,6 @@ JobTree.prototype.cloneJob = function ( cloneMode,parent_page,onAdd_func )  {
           tree.openJob ( null,parent_page );
           if (task.isRemark())
             tree.setRemarkStyle ( node,task );
-          // if (rdata.reload>0)  {
-          //   window.setTimeout ( function(){
-          //     console.log ( ' >>>>>>>>  reload triggered');
-          //     rdata.force_reload = true;
-          //     tree.emitSignal ( cofe_signals.reloadTree,rdata );
-          //   },10);
-          // }
-            //   tree.setStyle ( node,__remarkStyle,0 );
         }
       });
 
@@ -2312,7 +2295,7 @@ JobTree.prototype.harvestTaskData = function ( includeSelected_key,
 
 JobTree.prototype.getTaskDataBox = function ( task )  {
 
-  var dataBox = new DataBox();
+  let dataBox = new DataBox();
   dataBox.inp_assoc = {};  // created for future use in
                            //         TaskTemplate.setInputDataFields()
   dataBox.harvestedTaskIds = task.harvestedTaskIds;  // will keep ids of multiply selected tasks,
@@ -2321,7 +2304,7 @@ JobTree.prototype.getTaskDataBox = function ( task )  {
   dataBox.addTaskInputData ( task,true );
 
   dataBox.data_n0 = {};
-  for (var dt in dataBox.data)
+  for (let dt in dataBox.data)
     dataBox.data_n0[dt] = dataBox.data[dt].length;
 
   return dataBox;

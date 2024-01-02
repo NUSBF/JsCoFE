@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.22   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Change Space Group Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2024
  *
  *  =================================================================
  *
@@ -98,9 +98,14 @@ TaskChangeReso.prototype.currentVersion = function()  {
 }
 
 TaskChangeReso.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['change','resolution'] );
-  }
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['change','resolution'] );
+}
+
+TaskChangeReso.prototype.makeSample = function()  {
+  this.input_dtypes = [this.input_dtypes[0]];
+  return this;
+}
 
 
 if (!__template)  {

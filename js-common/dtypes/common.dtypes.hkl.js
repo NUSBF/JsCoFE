@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.09.23   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  HKL Data Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2022
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -32,7 +32,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 // ./js-common/dtypes/common.dtypes.something.js . This convention is used
 // for class reconstruction from json strings
 
-var hkl_subtype = {
+const hkl_subtype = {
   regular   : 'regular',
   anomalous : 'anomalous'
 }
@@ -44,6 +44,7 @@ function DataHKL()  {
 
   this._type         = 'DataHKL';
   this.wtype         = 'choose-one'; // 'low-remote', 'peak', 'native', 'high-remote'
+  this.dataset       = null;
   this.ha_type       = '';     // heavy atom type
   this.f_use_mode    = 'NO';   // 'NO','EDGE','ON','OFF' (Phaser-EP)
   this.f1            = '';     // amplitude shift  (Crank-2, Phaser-EP)
@@ -65,7 +66,6 @@ function DataHKL()  {
     'file_unm' : null    // reference to aimless unmerged file
   };
 
-
 }
 
 
@@ -82,25 +82,37 @@ DataHKL.prototype.icon  = function()  { return 'data';            }
 
 // change this synchronously with the version in dtype.hkl.py
 DataHKL.prototype.currentVersion = function()  {
-  var version = 1;
+  let version = 1;
   if (__template)
         return  version + __template.DataTemplate.prototype.currentVersion.call ( this );
   else  return  version + DataTemplate.prototype.currentVersion.call ( this );
 }
 
 
+DataHKL.prototype.makeSample = function()  {
+// this function created a fake data object for use in Workflow Creator
+  this.setSubtype ( hkl_subtype.anomalous );
+  this.dataset = {
+    RESO : [100.0,1.0]
+  };
+  return this;
+}
+
 // export such that it could be used in both node and a browser
 if (!__template)  {
   // for client side
 
   DataHKL.prototype.getMeta = function ( name,defVal )  {
-    var list = name.split('.');
-    var v    = this.dataset;
-    for (var i=0;i<list.length;i++)
-      if (list[i] in v)
-           v = v[list[i]];
-      else return defVal;
-    return v;
+    if (this.dataset)  {
+      let list = name.split('.');
+      let v    = this.dataset;
+      for (let i=0;i<list.length;i++)
+        if (list[i] in v)
+            v = v[list[i]];
+        else return defVal;
+      return v;
+    } else
+      return defVal;
   }
 
   DataHKL.prototype.getSpaceGroup = function()  {
@@ -108,8 +120,8 @@ if (!__template)  {
   }
 
   DataHKL.prototype.getCellParametersHTML = function()  {
-  var v = 'Not specified';
-    if (this.dataset.DCELL!='*')
+  let v = 'Not specified';
+    if (this.dataset && (this.dataset.DCELL!='*'))
       v = this.dataset.DCELL[0] + '&nbsp;&nbsp;' +
           this.dataset.DCELL[1] + '&nbsp;&nbsp;' +
           this.dataset.DCELL[2] + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' +
@@ -218,7 +230,7 @@ if (!__template)  {
   }
 
 
-  DataHKL.prototype.layCustomDropdownInput = function ( dropdown ) {
+  DataHKL.prototype.layCustomDropdownInput = function ( dropdown )  {
 
     var customGrid = dropdown.customGrid;
     var r          = customGrid.getNRows();

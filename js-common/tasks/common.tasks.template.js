@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    09.12.23   <--  Date of Last Modification.
+ *    01.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task Template Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -201,6 +201,12 @@ TaskTemplate.prototype.canSendJobResults = function()  {
          );
 }
 
+
+TaskTemplate.prototype.makeSample = function()  {
+  return this;
+}
+
+
 TaskTemplate.prototype.getHelpURL = function()  {
   return __task_reference_base_url + 'doc.task.' + this._type.substr(4) + '.html';
 }
@@ -289,6 +295,9 @@ TaskTemplate.prototype.saveDefaultValues = function ( parameters )  {
   for (let item in parameters)
     if (parameters[item].hasOwnProperty('value'))  {
       parameters[item].default_value = parameters[item].value;
+      if ((parameters[item].value=='') && 
+           parameters[item].hasOwnProperty('default'))
+        parameters[item].default_value = parameters[item].default;
     } else if (comut)  {
       if (comut.isObject(parameters[item]))
         this.saveDefaultValues ( parameters[item] );
@@ -307,6 +316,7 @@ let wscript   = ['@' + wrun_name.toUpperCase()];
     for (let item in obj)
       if (obj[item].hasOwnProperty('value')         && 
           obj[item].hasOwnProperty('default_value') &&
+          obj[item].visible &&
           obj[item].default_value!=obj[item].value)  {
         let value = obj[item].value;
         if (obj[item].type in ['string','string_','combobox'])
@@ -876,7 +886,7 @@ if (!dbx)  {
   // which is actually embedded in div.panel.
 
     // make panel with a standard header
-    var div    = new Widget ( 'div' );
+    let div    = new Widget ( 'div' );
     div.header = this.makeInputPanelHeader();
     div.addWidget     ( div.header );
     div.setScrollable ( 'hidden','hidden' );
@@ -914,7 +924,7 @@ if (!dbx)  {
 
     dataBox.data['DataRemove'] = [new DataRemove()];
 
-    var div = this.makeInputLayout();
+    let div = this.makeInputLayout();
 
     // will lay widget on invisible grid in order to avoid transient visual
     // effects; the grid will be made visible in this.layParameters()
@@ -1266,8 +1276,8 @@ if (!dbx)  {
   // starting from row 'row'
 
     function _fill_dropdown ( ddn )  {
-      var ddndata = ddn.ddndata;
-      for (var j=0;j<ddndata.length;j++)
+      let ddndata = ddn.ddndata;
+      for (let j=0;j<ddndata.length;j++)
         if (ddndata[j][0])  {
           ddn.addItem ( ddndata[j][0],'',ddndata[j][1],ddndata[j][2] );
           if (ddn.ddndata[j][3])
@@ -1277,29 +1287,29 @@ if (!dbx)  {
     }
 
     function _select_item ( ddn,itemId )  {
-      for (var j=0;j<ddn.ddndata.length;j++)
+      for (let j=0;j<ddn.ddndata.length;j++)
         if (ddn.ddndata[j][0])
           ddn.ddndata[j][2] = (ddn.ddndata[j][1]==itemId);
       return;
     }
 
     function _fill_optimized ( ddn,selItemId )  {
-      var ddndata = ddn.ddndata;
+      let ddndata = ddn.ddndata;
 
-      for (var j=0;j<ddndata.length;j++)
+      for (let j=0;j<ddndata.length;j++)
         if (ddndata[j][0])
           ddndata[j][2] = (ddndata[j][1]==selItemId);
 
-      for (var j=0;j<ddndata.length-1;j++)
+      for (let j=0;j<ddndata.length-1;j++)
         if (ddndata[j][0])
-          for (var k=j+1;k<ddndata.length;k++)
+          for (let k=j+1;k<ddndata.length;k++)
             if (ddndata[k][0] && (ddndata[k][0]==ddndata[j][0]))  {
               if (ddndata[k][2])
                 ddndata[j] = ddndata[k];
               ddndata[k] = [null];
             }
 
-      for (var j=0;j<ddndata.length;j++)
+      for (let j=0;j<ddndata.length;j++)
         if (ddndata[j][0])  {
           ddn.addItem ( ddndata[j][0],'',ddndata[j][1],ddndata[j][2] );
           if (ddndata[j][3])
@@ -1341,7 +1351,7 @@ if (!dbx)  {
 
     grid.void_data = {};  // collectes data from 'void' data entries
 
-    for (var i=0;i<this.input_dtypes.length;i++)  {
+    for (let i=0;i<this.input_dtypes.length;i++)  {
       // loop over input data structures in 'this' task
 
       var inp_item = this.input_dtypes[i];
@@ -1351,26 +1361,26 @@ if (!dbx)  {
 
       if (!startsWith(inp_item.inputId,'void'))  {
 
-        var k = 0;
-        for (var dtype in inp_item.data_type)
+        let k = 0;
+        for (let dtype in inp_item.data_type)
           if (dtype in dataBox.data)  {  // given data type is found in the data box
 
             if (dtype in dataBox.data_n0)
               df = true;
 
-            var dt1 = dataBox.data[dtype];
+            let dt1 = dataBox.data[dtype];
 
             if (('castTo' in inp_item) && (inp_item.castTo!=dtype))  {
-              for (var j=0;j<dt1.length;j++)
+              for (let j=0;j<dt1.length;j++)
                 dt.push ( dt1[j].cast(inp_item.castTo) );
             } else
               dt = dt.concat ( dt1 );
 
             if (inp_item.data_type[dtype].length<=0)  {
-              for (var j=0;j<dt1.length;j++)
+              for (let j=0;j<dt1.length;j++)
                 dn.push ( k++ );
             } else  {
-              for (var j=0;j<dt1.length;j++)  {
+              for (let j=0;j<dt1.length;j++)  {
                 // if (dataBox.compareSubtypes(inp_item.data_type[dtype],dt1[j].subtype))
                 if (dataBox.compareSubtypes(inp_item.data_type[dtype],dt1[j]))
                   dn.push ( k );
@@ -1383,10 +1393,10 @@ if (!dbx)  {
         // acquire currently selected data, corresponding to current data id,
         // from the task; this list is empty (zero-length) at first creation
         // of the interface
-        var inp_data = this.input_data.getData ( inp_item.inputId );
+        let inp_data = this.input_data.getData ( inp_item.inputId );
 
-        var j = -1;
-        for (var n=0;n<inp_data.length;n++)  {
+        let j = -1;
+        for (let n=0;n<inp_data.length;n++)  {
           j++;
           while ((j<dt.length) && (dt[j].dataId!=inp_data[n].dataId))
             j++;
@@ -1397,7 +1407,7 @@ if (!dbx)  {
       } else  {
 
         var void_data = [];
-        for (var dtype in inp_item.data_type)
+        for (let dtype in inp_item.data_type)
           if (dtype in dataBox.data)  // given data type is found in the data box
             void_data = void_data.concat ( dataBox.data[dtype] );
 
@@ -1418,7 +1428,7 @@ if (!dbx)  {
     grid.inputPanel.fullVersionMismatch = false;
 
     var r = row;
-    for (var i=0;i<this.input_dtypes.length;i++)  {
+    for (let i=0;i<this.input_dtypes.length;i++)  {
       // loop over input data structures in 'this' task
 
       var dt = ddt[i];
@@ -1451,7 +1461,7 @@ if (!dbx)  {
         if (inp_item.hasOwnProperty('force'))
           ndset = Math.max ( ndset,inp_item.force );
 
-        for (var n=0;n<nmax;n++)  {
+        for (let n=0;n<nmax;n++)  {
 
           dropdown[i].push ( new Dropdown() );
           var ddn     = dropdown[i][n];
@@ -1501,7 +1511,7 @@ if (!dbx)  {
 
           var ndisabled = 0;
           var ddndata   = [];
-          for (var j=0;j<dn.length;j++)  {
+          for (let j=0;j<dn.length;j++)  {
             var k = dn[j];
             var data_title = dt[k].dname;
             if (('cast' in inp_item) && (!dt[k].hasSubtype('proxy')))  {
@@ -1549,10 +1559,10 @@ if (!dbx)  {
           ddn.dt = dt;
           (function(dd,m){
             dd[m].addSignalHandler ( 'state_changed',function(data){
-              var visible = (data.item>=0) && (!dd[m].dt[data.item].hasSubtype('proxy'));
+              let visible = (data.item>=0) && (!dd[m].dt[data.item].hasSubtype('proxy'));
               dd[m].inspect_btn.setVisible ( visible );
               if (dd[m].layCustom)  {
-                for (var j=0;j<dd.length;j++)
+                for (let j=0;j<dd.length;j++)
                   if ((j!=m) && (dd[j].getValue()>=0))
                     dd[j].dt[dd[j].getValue()].collectCustomDropdownInput ( dd[j] );
                 if ((data.prev_item!==undefined) && (data.prev_item>=0))  {
@@ -1589,30 +1599,30 @@ if (!dbx)  {
       //     the previous job. These datasets are marked in dataBox.data_n0.
 
       // initiate collection of associated datasets
-      var associated_data = [];
+      let associated_data = [];
 
       // loop over input data structures in 'this' task
-      for (var i=0;i<this.input_dtypes.length;i++)
+      for (let i=0;i<this.input_dtypes.length;i++)
         if ((dropdown[i].length>0) && ddf[i])  {
 
-          var dt = ddt[i];
-          var dn = dsn[i];
+          let dt = ddt[i];
+          let dn = dsn[i];
 
           // check if given data type is present in the data box
           if (dn.length>0)  {
 
-            var inp_item = this.input_dtypes[i];
+            let inp_item = this.input_dtypes[i];
 
             // force>0 will force choosing N=force data items (if available)
             // at first data load
-            var force = 0;
+            let force = 0;
             if (inp_item.hasOwnProperty('force'))
               force = inp_item.force;
 
             // maximum number of datasets to display
-            var nmax = Math.min ( dn.length,Math.max(inp_item.min,force) );
+            let nmax = Math.min ( dn.length,Math.max(inp_item.min,force) );
 
-            for (var n=0;n<nmax;n++)  {
+            for (let n=0;n<nmax;n++)  {
               if (dn[n]>=0)
                 associated_data = associated_data.concat ( dt[dn[n]].associated );
               //dropdown[i][n].selectItem ( dn[n] );
@@ -1624,7 +1634,7 @@ if (!dbx)  {
 
           }
 
-          for (var n=0;n<dropdown[i].length;n++)
+          for (let n=0;n<dropdown[i].length;n++)
             _fill_dropdown ( dropdown[i][n] );
 
         }
@@ -1632,7 +1642,7 @@ if (!dbx)  {
       // set remaining datasets by associations
 
       // loop over input data structures in 'this' task
-      for (var i=0;i<this.input_dtypes.length;i++)
+      for (let i=0;i<this.input_dtypes.length;i++)
         if ((dropdown[i].length>0) && (!ddf[i]))  {
 
           var dt = ddt[i];
@@ -1653,7 +1663,7 @@ if (!dbx)  {
             if (inp_item.hasOwnProperty('force'))
               force = inp_item.force;
             else  {  // try to load all relevant associated data
-              for (var j=0;j<dn.length;j++)
+              for (let j=0;j<dn.length;j++)
                 if (associated_data.indexOf(dt[dn[j]].dataId)>=0)
                   force++;
             }
@@ -1663,7 +1673,7 @@ if (!dbx)  {
 
             var k = 0;
             var a = true;
-            for (var n=0;n<nmax;n++)  {
+            for (let n=0;n<nmax;n++)  {
               if (a)  {
                 while (k<dn.length)
                   if (associated_data.indexOf(dt[dn[k]].dataId)>=0)  break;
@@ -1692,7 +1702,7 @@ if (!dbx)  {
               if (dn[k]>=0)
                 associated_data = associated_data.concat ( dt[dn[k]].associated );
               if (n<dropdown[i].length)  {
-                var layCustom = dropdown[i][n].layCustom;
+                let layCustom = dropdown[i][n].layCustom;
                 dropdown[i][n].layCustom = '';
                 //dropdown[i][n].selectItem ( dn[k] );
                 _select_item ( dropdown[i][n],dn[n] );
@@ -1710,7 +1720,7 @@ if (!dbx)  {
 
           }
 
-          for (var n=0;n<dropdown[i].length;n++)
+          for (let n=0;n<dropdown[i].length;n++)
             _fill_dropdown ( dropdown[i][n] );
 
         }
@@ -1739,12 +1749,9 @@ if (!dbx)  {
 
             // ***before 09.03.2023 var j = -1;
             for (let n=0;n<inp_data.length;n++)  {
-  // console.log ( ' >>>>>> i:n=' + i + ':' + n + '\n"' + dropdown[i][n].getContent() + '"' );
-              // ***before 09.03.2023 j++;
               let j = 0;
               while ((j<dn.length) && (dt[dn[j]].dataId!=inp_data[n].dataId))
                 j++;
-  // console.log ( ' >>> j='+ j );
               if (n<dropdown[i].length)  {
                 if (j<dn.length)  {
                   let layCustom = dropdown[i][n].layCustom;
@@ -1830,7 +1837,7 @@ if (!dbx)  {
 
       var input = inpParamRef.grid.inpDataRef.input;
 
-      for (var i=0;i<input.length;i++)  {
+      for (let i=0;i<input.length;i++)  {
         var dropdown = input[i].dropdown;
         if (dropdown.length>1)  {
           var n0 = -1;
@@ -1846,7 +1853,7 @@ if (!dbx)  {
                 n0 = n;
             }
           if (n0>=0)  {
-            for (var n=0;n<input[i].dropdown.length;n++)
+            for (let n=0;n<input[i].dropdown.length;n++)
               inpParamRef.grid.setRowVisible ( dropdown[n].row,(n<=n0) );
           }
         }
@@ -1883,7 +1890,7 @@ if (!dbx)  {
   TaskTemplate.prototype.collectInputLigands = function ( inputPanel )  {
     var msg = '';  // Ok if stays empty
 
-    for (var i=0;i<this.input_ligands.length;i++)  {
+    for (let i=0;i<this.input_ligands.length;i++)  {
       this.input_ligands[i].source = inputPanel.ligands[i].selection.getValue();
       this.input_ligands[i].smiles = inputPanel.ligands[i].smiles.getValue();
       this.input_ligands[i].code   = inputPanel.ligands[i].code.getValue();
@@ -1896,9 +1903,9 @@ if (!dbx)  {
     }
 
     var unique = true;
-    for (var i=0;(i<this.input_ligands.length) && unique;i++)
+    for (let i=0;(i<this.input_ligands.length) && unique;i++)
       if ((this.input_ligands[i].source!='none') && (this.input_ligands[i].code))  {
-        for (var j=i+1;(j<this.input_ligands.length) && unique;j++)
+        for (let j=i+1;(j<this.input_ligands.length) && unique;j++)
           if ((this.input_ligands[j].source!='none') &&
               (this.input_ligands[i].code==this.input_ligands[j].code))  {
             unique = false;
@@ -1930,7 +1937,7 @@ if (!dbx)  {
         for (var i=0;i<input.length;i++)  {
           var dt       = input[i].dt;
           var dropdown = input[i].dropdown;
-          for (var j=0;j<dropdown.length;j++)  {
+          for (let j=0;j<dropdown.length;j++)  {
             var index = dropdown[j].getValue();
             if (index>=0)  { // this skips non-mandatory items selected as
                              // 'do not use'
@@ -2209,10 +2216,10 @@ if (!dbx)  {
 
   TaskTemplate.prototype._make_show_links = function ( inpParamRef )  {
 
-    var par = inpParamRef.parameters;
+    let par = inpParamRef.parameters;
 
-    for (var key in par)  {
-      var item = par[key].ref;
+    for (let key in par)  {
+      let item = par[key].ref;
 
       // make show/hide references
       if (item.hasOwnProperty('showon'))
@@ -2220,17 +2227,17 @@ if (!dbx)  {
       if (item.hasOwnProperty('hideon'))
         inpParamRef.hideon[key] = item.hideon;
 
-      var emId = [];
+      let emId = [];
       // set element's initial state
       if (item.hasOwnProperty('showon'))
-        for (var emitterId in item.showon)  {
+        for (let emitterId in item.showon)  {
           if (par.hasOwnProperty(emitterId))
                 this.inputChanged ( inpParamRef,emitterId,par[emitterId].ref.value );
           else  this.inputChanged ( inpParamRef,emitterId,-1 );  // input data missing or "[do not use]"
           emId.push ( emitterId );
         }
       if (item.hasOwnProperty('hideon'))
-        for (var emitterId in item.hideon)
+        for (let emitterId in item.hideon)
           if (emId.indexOf(emitterId)<0)  {
             if (par.hasOwnProperty(emitterId))
                   this.inputChanged ( inpParamRef,emitterId,par[emitterId].ref.value );
@@ -2246,7 +2253,7 @@ if (!dbx)  {
     if (item.hasOwnProperty('emitting'))  {
       if (item.emitting)
         (function(paramRef,Id,task){
-          var input = paramRef.parameters[Id].input;
+          let input = paramRef.parameters[Id].input;
           input.change_counter = 0;
           input.addOnInputListener ( function(){
             input.change_counter++;
@@ -2266,7 +2273,7 @@ if (!dbx)  {
   // internal recursive function, do not overwrite
   var iwidth,defval,tooltip;
 
-    for (var key in params) {
+    for (let key in params) {
 
       if (params.hasOwnProperty(key))  {
         var item = params[key];
@@ -2366,9 +2373,9 @@ if (!dbx)  {
                           break;
 
             case 'combobox' : c = _make_label ( inpParamRef,key,item,grid,r,c,rs,1 );
-                              var dropdown = new Dropdown();
-                              for (var i=0;i<item.range.length;i++)  {
-                                var choice = item.range[i].split('|');
+                              let dropdown = new Dropdown();
+                              for (let i=0;i<item.range.length;i++)  {
+                                let choice = item.range[i].split('|');
                                 if (choice.length<2)
                                   choice = [i.toString(),item.range[i]];
                                 dropdown.addItem ( choice[1],'',choice[0],
@@ -2603,15 +2610,15 @@ if (!dbx)  {
 
       // set listeners on all input data fields and connect them to
       // the general visibility controller (function _input_changed())
-      var input = grid.inpDataRef.input;
-      for (var i=0;i<input.length;i++)  {
-        var dropdown = input[i].dropdown;
-        for (var j=0;j<dropdown.length;j++)
+      let input = grid.inpDataRef.input;
+      for (let i=0;i<input.length;i++)  {
+        let dropdown = input[i].dropdown;
+        for (let j=0;j<dropdown.length;j++)
           (function(dropdownRef,paramRef,Id,task){
             dropdown[j].element.addEventListener('state_changed',
               function(e){
-                var n=0;  // signal value is the number of non-void selections
-                for (var k=0;k<dropdownRef.length;k++)
+                let n=0;  // signal value is the number of non-void selections
+                for (let k=0;k<dropdownRef.length;k++)
                   if ((!grid.wasRowHidden(dropdownRef[k].row)) &&
                       (dropdownRef[k].getValue()>=0))
                     n++;
@@ -3027,19 +3034,17 @@ if (!dbx)  {
 
 
   TaskTemplate.prototype.__prepare_file = function ( fpath,cloudMounts,uploads_dir )  {
-    //console.log ( ' >>>>> file ' + fpath );
     if (fpath.length>0)  {
-      var lst = fpath.split('/');
+      let lst = fpath.split('/');
       if (lst.length>2)  {
         if (lst[0]=='cloudstorage::')  {
-          var cfpath = null;
-          for (var j=0;(j<cloudMounts.length) && (!cfpath);j++)
+          let cfpath = null;
+          for (let j=0;(j<cloudMounts.length) && (!cfpath);j++)
             if (cloudMounts[j][0]==lst[1])
               cfpath = path.join ( cloudMounts[j][1],lst.slice(2).join('/') );
           if (cfpath)  {
-            var dest_file = path.join ( uploads_dir,lst[lst.length-1] );
+            let dest_file = path.join ( uploads_dir,lst[lst.length-1] );
             try {
-              //console.log ( ' >>>>> copy ' + cfpath + ' to ' + dest_file );
               fs.copySync ( cfpath,dest_file );
             } catch (err) {
               console.log ( ' ***** cannot copy file ' + cfpath +

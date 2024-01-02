@@ -54,7 +54,6 @@ let empty = true;
   for (let dtype in this.data)  {
     if (dtype=='___')
       empty = false;
-    //else if (this.data[dtype].length>0)  {
     else if ((this.data[dtype]!='undefined') && (this.data[dtype].length>0))  {
       let item = this.data[dtype][0];
       if (isObject(item))  {
@@ -66,14 +65,6 @@ let empty = true;
     if (!empty)
       break;
   }
-  /*
-    if ((dtype=='___') ||
-        ((this.data[dtype].length>0) && isObject(this.data[dtype][0]) &&
-         (!this.data[dtype][0].hasSubtype('proxy'))))  {
-      empty = false;
-      break;
-    }
-  */
 
   return empty;
 
