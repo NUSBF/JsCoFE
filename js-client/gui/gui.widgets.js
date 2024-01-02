@@ -1158,6 +1158,11 @@ ACEditor.prototype.addOnChangeListener = function ( listener_func )  {
   return this;
 }
 
+ACEditor.prototype.getCursorPosition = function()  {
+  if (this.editor)
+    return this.editor.getCursorPosition();  // .row,.col
+  return { row: 0, col: 0 };
+}
 
 ACEditor.prototype.setText = function ( text )  {
   if (this.editor)  {

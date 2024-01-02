@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.01.24   <--  Date of Last Modification.
+ *    02.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -1054,7 +1054,7 @@ if (!__template)  {
             msg = this.Substructure.collectCustomDropdownInput ( dropdown );
             if (this.Structure)
               msg = this.Structure.collectCustomDropdownInput ( dropdown );
-          } else
+          } else if (this.Structure)
             msg = this.Structure.collectCustomDropdownInput ( dropdown );
         break;
 

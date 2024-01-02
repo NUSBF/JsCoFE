@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    01.01.24   <--  Date of Last Modification.
+ *    02.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -325,7 +325,8 @@ let wscript   = ['@' + wrun_name.toUpperCase()];
           if (value)  value = 1;
                 else  value = 0;
         }
-        wscript.push ( '    PARAMETER ' + item + ' ' + value + '  # ' + obj[item].label );
+        wscript.push ( '    PARAMETER ' + item + ' ' + value + '  # ' + 
+                       obj[item].label.split(':')[0] );
       } else if (comut)  {
         if (comut.isObject(obj[item]))
           walkParameters ( obj[item] );

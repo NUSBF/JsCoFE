@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.01.24   <--  Date of Last Modification.
+ *    02.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -114,7 +114,7 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
       'ICON     Maraschino              # (optional) workflow icon colour',
       'KEYWORDS my own workflow         # for using in A-Z keyword search',
       '',
-      'ALLOW_UPLOAD       # create file upload widgets if started from project root',
+      'ALLOW_UPLOAD      # create file upload widgets if started from project root',
       '',
       '# ==========================================================================',
       '# Input data section. List all data required, "!" specifies mandatory items.',
@@ -133,34 +133,34 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
       '# !PAR_INTEGER nCycles  # variable name to be used in workflow\'s expressions',
       '#    LABEL     Number of cycles',
       '#    TOOLTIP   Number of refiniement cycles',
-      '#    IWIDTH    40        # (optional) input field width is set to 40 pixels',
-      '#    RANGE     0 50      # (optional) allowed min/max values',
-      '#    DEFAULT   10        # (optional) default integer value',
+      '#    IWIDTH    40       # (optional) input field width is set to 40 pixels',
+      '#    RANGE     0 50     # (optional) allowed min/max values',
+      '#    DEFAULT   10       # (optional) default integer value',
       '',
-      '# PAR_REAL     resHigh   # variable name to be used in workflow\'s expressions',
+      '# PAR_REAL     resHigh  # name to be used in workflow\'s expressions',
       '#    LABEL     High resolution cut-off (&Aring;)',
       '#    TOOLTIP   High resolution cut-off, angstrom',
-      '#    IWIDTH    40        # input field width is set to 40 pixels',
-      '#    RANGE     0.1 5.0   # allowed min/max values',
-      '#    DEFAULT   1.5       # default real value',
+      '#    IWIDTH    40       # input field width is set to 40 pixels',
+      '#    RANGE     0.1 5.0  # allowed min/max values',
+      '#    DEFAULT   1.5      # default real value',
       '',
-      '# !PAR_STRING  atomType  # variable name to be used in workflow\'s expressions',
+      '# !PAR_STRING  atomType # name to be used in workflow\'s expressions',
       '#    LABEL     Anomalous scatterer',
       '#    TOOLTIP   Expected main anomalous scatterer',
-      '#    IWIDTH    20        # input field width is set to 20 pixels',
-      '#    MAXLENGTH 2         # (optional) maximum 2 characters',
-      '#    DEFAULT   Se        # (optional) default string value "Se"',
+      '#    IWIDTH    20       # input field width is set to 20 pixels',
+      '#    MAXLENGTH 2        # (optional) maximum 2 characters',
+      '#    DEFAULT   Se       # (optional) default string value "Se"',
       '',    
-      '# PAR_CHECK    reqValReport # variable name to be used in workflow\'s expressions',
+      '# PAR_CHECK    reqValReport  # name to be used in workflow\'s expressions',
       '#    LABEL     Request PDB Validation Report',
-      '#    TOOLTIP   Check if deposition files should be prepared and PDB validation report obtained',
+      '#    TOOLTIP   Check to prepare PDB deposition files and validation report',
       '#    DEFAULT   Unchecked',
       '',    
-      '# !PAR_COMBO   useBFactors # variable name to be used in workflow\'s expressions',
+      '# !PAR_COMBO   useBFactors   # name to be used in workflow\'s expressions',
       '#    LABEL     Use isotropic B-factors',
       '#    TOOLTIP   B-factor mode for refinement',
       '#    IWIDTH    60        # input field width is set to 60 pixels',
-      '#    OPTION    none  Select from list  # value "none" text "Select from list" ',
+      '#    OPTION    none  Select from list  # value "none" text "Select from list"',
       '#    OPTION    yes   Yes               # value "yes"  text "Yes"',
       '#    OPTION    no    No                # value "no"  text  "No"',
       '#    DEFAULT   none                    # default string value "none"',
@@ -224,7 +224,17 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
                     'top'      : '0px'
                   });
                   add_btn.addOnClickListener ( function(){
-                    self.addTask();
+                    self.addTask ( true );
+                  });
+                  let insert_btn = new Button ( 'Insert task',image_path('insert') );
+                  span.addWidget ( insert_btn );
+                  $(insert_btn.element).css({
+                    'position' : 'relative',
+                    'left'     : '0px',
+                    'top'      : '0px'
+                  });
+                  insert_btn.addOnClickListener ( function(){
+                    self.addTask ( false );
                   });
                 },
     buttons   : {
@@ -326,8 +336,6 @@ EditWorkflowDialog.prototype.getIconPath = function ( iconNo )  {
 EditWorkflowDialog.prototype.setIconMenu = function()  {
 
   this.icon_no  = 0;
-  // this.icon_btn = this.grid.setImageButton ( image_path('workflow_aqua'),
-  //                                            '80px','80px', 1,0,2,1 );
   this.icon_menu = new Menu ( '', this.getIconPath(this.icon_no) );
   this.grid.setWidget ( this.icon_menu,1,0,2,1 );
 
@@ -339,11 +347,6 @@ EditWorkflowDialog.prototype.setIconMenu = function()  {
       'padding'            :'0px',
       'background-position':'0.0em center'
   });
-
-  // let self = this;
-  // this.icon_menu.setOnClickCustomFunction ( function(){
-  //   icon_menu.setMaxHeight ( (inputPanel.height_px()-90) + 'px' );
-  // });
 
   for (let i=0;i<__workflow_icon.length;i++)
     (function(themeNo,task){
@@ -405,7 +408,60 @@ let lines  = script.split(/\r?\n/);
 }
 
 
-EditWorkflowDialog.prototype.addTask = function()  {
+EditWorkflowDialog.prototype.putTaskScript = function ( stask,inputPanel,add_bool )  {
+
+  let input_msg = stask.collectInput ( inputPanel );
+  
+  if (input_msg)  {
+    if (input_msg[0]=='#')  {
+      new MessageBox ( 'Input errors','<div style="width:450px;">' +
+                        input_msg.substring(1) + '</div>', 'msg_error' );
+    } else  {
+      // alert ( input_msg );
+      let errlst  = input_msg.split('|');
+      let errlst1 = [];
+      for (let i=0;i<errlst.length;i++)  {
+        let s = errlst[i].trim();
+        if (s)
+          errlst1.push(s);
+      }
+      if (errlst1.length>0)
+        new MessageBox ( 'Input errors',
+          '<div style="width:550px;"><h2>Input errors</h2>' +
+          'The following errors occurred while processing task input:' +
+          '<p><ul><li>' + errlst1.join('</li><li>') +
+          '</li></ul><p>Please correct the task input as appropriate.</h2>',
+          'msg_error' );
+    }
+    return false;
+  }
+
+  let workflow_script = this.editor.getText();
+  if ((!workflow_script.endsWith('\n')) && 
+      (!workflow_script.endsWith('\n\r')))
+    workflow_script += '\n';
+
+  let serialNo    = workflow_script.split (
+                             '@'+stask._type.slice(4).toUpperCase()).length-1;
+  let task_script = stask.getWorkflowScript ( serialNo );
+
+  if (add_bool)  {
+    workflow_script += '\n' + task_script.join('\n') + '\n#\n';
+  } else  {
+    let lineNo  = this.editor.getCursorPosition().row;
+    let wslines = workflow_script.split('\n');
+    wslines.splice ( lineNo,0,'\n' + task_script.join('\n') +'\n#\n' );
+    workflow_script = wslines.join('\n');
+  }
+
+  this.editor.setText ( workflow_script );
+
+  return true;
+
+}
+
+
+EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
 
   const task_list = [
     [ 'Select task'          ,'none'             ],
@@ -447,8 +503,13 @@ EditWorkflowDialog.prototype.addTask = function()  {
   let dlg_icon = grid.setImage ( image_path('openjob'),'64px','64px', 1,0,2,1 );
   grid.setLabel    ( ' ',1,1,2,1 );
   grid.setCellSize ( '12px','', 0,0 );
-  grid.setLabel    ( 'Add new Task Code',1,2,1,2 ).setFontBold(true).setFontSize('125%');
-  grid.setLabel    ( 'Add task:&nbsp;&nbsp;',2,0,1,1 ).setNoWrap().setFontItalic(true);
+  if (add_bool)  {
+    grid.setLabel ( 'Add new Task Code',1,2,1,2 ).setFontBold(true).setFontSize('125%');
+    grid.setLabel ( 'Add task:&nbsp;&nbsp;',2,0,1,1 ).setNoWrap().setFontItalic(true);
+  } else  {
+    grid.setLabel ( 'Insert new Task Code',1,2,1,2 ).setFontBold(true).setFontSize('125%');
+    grid.setLabel ( 'Insert task:&nbsp;&nbsp;',2,0,1,1 ).setNoWrap().setFontItalic(true);
+  }
 
   let list_cbox = grid.setCombobox ( 2,1,1,1 );
   for (let i=0;i<task_list.length;i++)
@@ -456,9 +517,9 @@ EditWorkflowDialog.prototype.addTask = function()  {
   window.setTimeout ( function(){
     list_cbox.make();
   },0);
-  list_cbox.setWidth ( '240px' );
-  grid.setLabel    ( ' ',2,2,1,1 );
-  grid.setCellSize ( '90%','',2,2 );
+  list_cbox.setWidth ( '240px'      );
+  grid.setLabel      ( ' ',2,2,1,1  );
+  grid.setCellSize   ( '90%','',2,2 );
 
   grid.setVerticalAlignment ( 1,0,'middle' );
   grid.setVerticalAlignment ( 2,0,'middle' );
@@ -513,6 +574,38 @@ EditWorkflowDialog.prototype.addTask = function()  {
     dataBox.data_n0[dt] = dataBox.data[dt].length;
 
   list_cbox.addOnChangeListener ( function(value,text){
+    let panel = grid.setPanel ( 5,0,1,5 );
+    panel.setSize_px ( dlg_size[0]-40,dlg_size[1]-268 );
+    if (value=='none')  {
+      // inputPanel.panel = new Widget  ( 'div'      );
+      // inputPanel.addWidget           ( inputPanel.panel  );
+      stask = null;
+      dlg_icon.setImage  ( image_path('openjob')   );
+      panel_head.setText ( 'Select task to be added to workflow' );
+      $('#' + add_btn_id ).button('disable');
+      inputPanel = null;
+    } else  {
+      stask = eval ( 'new ' + value + '()' );
+      stask.makeSample();
+      dlg_icon.setImage  ( image_path(stask.icon()) );
+      panel_head.setText ( 'Choose task parameters and click "Add to workflow" ' +
+                           'button' );
+      inputPanel = stask.makeInputPanel ( dataBox );
+      inputPanel.header.hide();
+      inputPanel.setSize_px ( dlg_size[0]-56,dlg_size[1]-272 );
+      $(inputPanel.element).css({
+        'overflow'   : 'auto',
+        'border'     : '1px solid lightgray',
+        'box-shadow' : '6px 6px lightgray',
+        'padding'    : '8px'
+      });
+      panel.addWidget ( inputPanel );
+      $('#' + add_btn_id ).button('enable');
+    }
+  });
+
+/*
+  list_cbox.addOnChangeListener ( function(value,text){
     if (value=='none')  {
       inputPanel = grid.setPanel ( 5,0,1,5 );
       inputPanel.panel = new Widget  ( 'div'      );
@@ -536,6 +629,7 @@ EditWorkflowDialog.prototype.addTask = function()  {
       $('#' + add_btn_id ).button('enable');
     }
   });
+  */
 
   dlg._options.buttons = [
     {
@@ -566,11 +660,31 @@ EditWorkflowDialog.prototype.addTask = function()  {
                   }                
                 } else  {
                   let workflow_script = self.editor.getText();
-                  let serialNo    = workflow_script.split(
-                                      '@'+stask._type.slice(4).toUpperCase()).length-1;
-                  let task_script = stask.getWorkflowScript ( serialNo );
-                  self.editor.setText ( workflow_script + task_script.join('\n') +
-                                        '\n\n#\n\n' );
+                  if ((!workflow_script.endsWith('\n')) && 
+                      (!workflow_script.endsWith('\n\r')))
+                    workflow_script += '\n';
+                  if (add_bool)  {
+                    workflow_script += '\n' + task_script.join('\n') + '\n#\n';
+                  } else  {
+                    let serialNo = workflow_script.split(
+                                        '@'+stask._type.slice(4).toUpperCase()).length-1;
+                    let task_script = stask.getWorkflowScript ( serialNo );
+                    let lineNo  = self.editor.getCursorPosition().row;
+                    let wslines = workflow_script.split('\n');
+                    wslines.splice ( lineNo,0,'\n' + task_script.join('\n') +'\n#\n' );
+                    workflow_script = wslines.join('\n');
+                  }
+                  self.editor.setText ( workflow_script );
+
+                  // self.editor.setText ( 
+                  //   workflow_script.split('\n').splice ( lineNo,0,
+                  //                     '\n' + task_script.join('\n') +'\n#\n' )
+                  //                  .join('\n')
+                  // );
+
+                  // self.editor.setText ( 
+                  //           workflow_script + '\n' + task_script.join('\n') +
+                  //           '\n#\n' );
                   $(this).dialog ( 'close' );
                 }
               }
