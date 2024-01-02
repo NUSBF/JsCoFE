@@ -194,10 +194,10 @@ var plist;
     // paths in config file always to have '/' separator
     if (login)  plist = filepath.replace(/\$LOGIN/g,login).split('/');
           else  plist = filepath.split ( '/' );
-    var found = true;
-    for (var i=0;i<plist.length;i++)
+    let found = true;
+    for (let i=0;i<plist.length;i++)
       if (plist[i].startsWith('$'))  {
-        var env_name = plist[i].slice(1)
+        let env_name = plist[i].slice(1)
         if (process.env.hasOwnProperty(env_name))
           plist[i] = process.env[env_name];
         else
@@ -212,10 +212,10 @@ var plist;
 
 
 ServerConfig.prototype.getCloudMounts = function ( login )  {
-var paths = [];
+let paths = [];
   if ('cloud_mounts' in this)  {
-    for (var name in this.cloud_mounts)  {
-      var cloud_path = _make_path ( this.cloud_mounts[name],login );
+    for (let name in this.cloud_mounts)  {
+      let cloud_path = _make_path ( this.cloud_mounts[name],login );
       if (cloud_path)
         paths.push ( [name,cloud_path] );
     }
@@ -230,25 +230,25 @@ ServerConfig.prototype.getJobsSafePath = function()  {
 }
 
 ServerConfig.prototype.getDemoProjectsMount = function()  {
-  var mount = null;
+  let mount = null;
   if (this.hasOwnProperty('cloud_mounts'))  {
-    for (var name in this.cloud_mounts)  {
-      var lname = name.toLowerCase();
+    for (let name in this.cloud_mounts)  {
+      let lname = name.toLowerCase();
       if (lname.indexOf('tutorial')>=0)  {
         mount = name;
         break;
       }
     }
     if (!mount)
-      for (var name in this.cloud_mounts)  {
-        var lname = name.toLowerCase();
+      for (let name in this.cloud_mounts)  {
+        let lname = name.toLowerCase();
         if ((lname.indexOf('demo')>=0) && (lname.indexOf('projects')>=0))  {
           mount = name;
           break;
         }
       }
     if (mount)  {
-      var mpath = _make_path ( this.cloud_mounts[mount],'' );
+      let mpath = _make_path ( this.cloud_mounts[mount],'' );
       if (!utils.dirExists(mpath))
         mount = null;
     }
@@ -286,7 +286,7 @@ let ok = false;
     if (!ok)
       log.error ( 41,'rpath not found: ' + rpath );
   } catch(e) {
-      log.error ( 42,'fpath not found: ' + fpath );
+    log.error ( 42,'fpath not found: ' + fpath );
   }
   return ok;
 }
