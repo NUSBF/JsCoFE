@@ -222,7 +222,25 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#simple-mr-workflow" class="md-nav__link">5.2.1. Simple MR Workflow</a>
         </li>
-        <li class="md-nav__item"><a href="#conditional-statements" class="md-nav__link">5.2.2. Conditional statements</a>
+        <li class="md-nav__item"><a href="#conditional-statements-and-other-advanced-operations" class="md-nav__link">5.2.2. Conditional statements and other advanced operations</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#custom-workflow-library" class="md-nav__link">5.3. Custom Workflow Library</a>
+        </li>
+        <li class="md-nav__item"><a href="#wscript-reference" class="md-nav__link">5.4. WScript Reference</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#header-section" class="md-nav__link">5.4.1. Header section</a>
+        </li>
+        <li class="md-nav__item"><a href="#input-data-section" class="md-nav__link">5.4.2. Input data section</a>
+        </li>
+        <li class="md-nav__item"><a href="#input-parameters-section" class="md-nav__link">5.4.3. Input parameters section</a>
+        </li>
+        <li class="md-nav__item"><a href="#workflow-body-section" class="md-nav__link">5.4.4. Workflow body section</a>
+        </li>
+        <li class="md-nav__item"><a href="#pre-defined-variables" class="md-nav__link">5.4.5. Pre-defined variables</a>
+        </li>
+        <li class="md-nav__item"><a href="#mathematrical-expressions-syntax" class="md-nav__link">5.4.6. Mathematrical expressions syntax</a>
         </li></ul>
             </nav>
         </li></ul>
@@ -253,7 +271,63 @@
     <li class="md-nav__item">
     
     
-      <a href="#conditional-statements" class="md-nav__link">5.2.2. Conditional statements</a>
+      <a href="#conditional-statements-and-other-advanced-operations" class="md-nav__link">5.2.2. Conditional statements and other advanced operations</a>
+      
+    
+    </li></ul>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#custom-workflow-library" class="md-nav__link">5.3. Custom Workflow Library</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#wscript-reference" class="md-nav__link">5.4. WScript Reference</a>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="#header-section" class="md-nav__link">5.4.1. Header section</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#input-data-section" class="md-nav__link">5.4.2. Input data section</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#input-parameters-section" class="md-nav__link">5.4.3. Input parameters section</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#workflow-body-section" class="md-nav__link">5.4.4. Workflow body section</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#pre-defined-variables" class="md-nav__link">5.4.5. Pre-defined variables</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="#mathematrical-expressions-syntax" class="md-nav__link">5.4.6. Mathematrical expressions syntax</a>
       
     
     </li></ul>
@@ -318,7 +392,25 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#simple-mr-workflow" class="md-nav__link">5.2.1. Simple MR Workflow</a>
         </li>
-        <li class="md-nav__item"><a href="#conditional-statements" class="md-nav__link">5.2.2. Conditional statements</a>
+        <li class="md-nav__item"><a href="#conditional-statements-and-other-advanced-operations" class="md-nav__link">5.2.2. Conditional statements and other advanced operations</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#custom-workflow-library" class="md-nav__link">5.3. Custom Workflow Library</a>
+        </li>
+        <li class="md-nav__item"><a href="#wscript-reference" class="md-nav__link">5.4. WScript Reference</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#header-section" class="md-nav__link">5.4.1. Header section</a>
+        </li>
+        <li class="md-nav__item"><a href="#input-data-section" class="md-nav__link">5.4.2. Input data section</a>
+        </li>
+        <li class="md-nav__item"><a href="#input-parameters-section" class="md-nav__link">5.4.3. Input parameters section</a>
+        </li>
+        <li class="md-nav__item"><a href="#workflow-body-section" class="md-nav__link">5.4.4. Workflow body section</a>
+        </li>
+        <li class="md-nav__item"><a href="#pre-defined-variables" class="md-nav__link">5.4.5. Pre-defined variables</a>
+        </li>
+        <li class="md-nav__item"><a href="#mathematrical-expressions-syntax" class="md-nav__link">5.4.6. Mathematrical expressions syntax</a>
         </li></ul>
             </nav>
         </li></ul>
@@ -566,7 +658,7 @@ workflows. Each task is represented by a block of lines, which starts with
 alphanumeric identifier starting with <em>“@”</em> symbol. Other lines between
 <em>RUN NAME</em> and <em>RUN</em> statements may contain values for task parameters,
 and only non-default parameters should be specified for brevity. See more
-details in Reference below.</p>
+details in the <a class="reference internal" href="#wscript-reference"><span class="std std-ref">WScript Reference</span></a> below.</p>
 <p>Similarly to the <em>“Model Preparation XYZ”</em> task, you can now add
 <em>“ASU Definition”</em>, <em>“Molrep”</em>, <em>“Buccaneer”</em> and <em>“Refmac”</em> tasks to the
 workflow, in that order. The resulting <strong>WScript</strong> will look like
@@ -618,7 +710,7 @@ ALLOW_UPLOAD       # create file upload widgets if started from project root
 #
 
 @MOLREP
-    RUN PhaserMR
+    RUN Molrep
 #
 
 @BUCCANEER
@@ -635,14 +727,24 @@ the three methods described in <a class="reference internal" href="#custom-workf
 copy-paste <strong>WScript</strong> from <strong>Workflow Creator</strong> into external file with
 <code class="docutils literal notranslate"><span class="pre">.wscript</span></code> extension for using it with the <strong>Import</strong> task or <strong>CloudRun</strong>
 utility).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unlike in manually-developed CCP4 Cloud projects, where a user cannot
+create a task if there is no suitable data for it, workflows do not
+check or control that task order is correct from the data flow point of
+view. Therefore, you should have a good understanding of task order
+suitable for your purposes, or, better, take it from a manually developed
+project representing your workflow in design.</p>
+</div>
 </section>
-<section id="conditional-statements">
-<h3 id="conditional-statements"><span class="section-number">5.2.2. </span>Conditional statements<a class="headerlink" href="#conditional-statements" title="Permalink to this heading">¶</a></h3>
+<section id="conditional-statements-and-other-advanced-operations">
+<h3 id="conditional-statements-and-other-advanced-operations"><span class="section-number">5.2.2. </span>Conditional statements and other advanced operations<a class="headerlink" href="#conditional-statements-and-other-advanced-operations" title="Permalink to this heading">¶</a></h3>
 <p>At the moment, our molrep workflow is quite straightforward in respect to its
 input data and algorithm. We may wish to make it more flexible. For example,
 it would be good if can take both merged and unmerged reflection data on input,
 optimize refinement parameters and, optionally, prepare file for PDB deposition
 from best results achieved.</p>
+<p><strong>Conditions based on availability of data</strong></p>
 <p>Let’s start from optional unmerged reflections input. We can instruct the
 workflow to accept both merged and unmerged reflections by modifying the
 corresponding <code class="docutils literal notranslate"><span class="pre">DATA</span></code> statement as below:</p>
@@ -651,6 +753,590 @@ corresponding <code class="docutils literal notranslate"><span class="pre">DATA<
 !DATA SEQ  TYPES protein
 </pre></div>
 </div>
+<p>Now we need scale and merge unmerged reflections with <em>“Aimless”</em> task, which
+should be run before merged reflections are used, <em>i.e.</em>, before
+<em>“ASU Definition”</em> or even <em>“Model Preparation XYZ”</em>. To do that, open
+workflow’s <strong>WScript</strong> in <strong>Workflow Creator</strong>, place cursor on line just
+above the <code class="docutils literal notranslate"><span class="pre">@MODELPREPXYZ</span></code> line and push <strong>Insert task</strong> button, then select
+<em>“Aimless”</em> task in new window and push <strong>Insert in workflow</strong> button. This
+should modify the beginning of workflow body as below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># ==========================================================================</span>
+<span class="c1"># Workflow run body</span>
+
+<span class="nd">@AIMLESS</span>
+    <span class="n">DATA</span>      <span class="n">ds0</span>  <span class="n">unmerged</span>
+    <span class="n">RUN</span> <span class="n">Aimless</span>
+<span class="c1">#</span>
+
+<span class="nd">@MODELPREPXYZ</span>
+    <span class="n">RUN</span> <span class="n">ModelPrepXYZ</span>
+<span class="c1">#</span>
+
+<span class="nd">@ASUDEF</span>
+    <span class="n">RUN</span> <span class="n">ASUDef</span>
+<span class="c1">#</span>
+</pre></div>
+</div>
+<p>This fragment will work fine if workflow receives unmerged reflections on input.
+However, if, instead, already scaled and merged reflections are supplied,
+the <em>“Aimless”</em> task will fail and workflow stop. In order to skip invocation
+of <em>“Aimless”</em> task if no data is available, put <code class="docutils literal notranslate"><span class="pre">IFDATA</span></code> statement into
+task’s description:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@AIMLESS</span>
+    <span class="n">IFDATA</span>    <span class="n">unmerged</span>
+    <span class="n">DATA</span>      <span class="n">ds0</span>  <span class="n">unmerged</span>
+    <span class="n">RUN</span> <span class="n">Aimless</span>
+<span class="c1">#</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>in <code class="docutils literal notranslate"><span class="pre">IFDATA</span></code> statement, <code class="docutils literal notranslate"><span class="pre">unmerged</span></code> must be in lower case.</p>
+</div>
+<p>Now, the workflow will work with both merged and unmerged reflection data. If a
+task needs to be run when data <em>is not</em> available, use <code class="docutils literal notranslate"><span class="pre">IFNODATA</span></code> instead.
+For example, an equivalent (but less obvious) solution could be</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@AIMLESS</span>
+    <span class="n">IFNODATA</span>  <span class="n">hkl</span>
+    <span class="n">DATA</span>      <span class="n">ds0</span>  <span class="n">unmerged</span>
+    <span class="n">RUN</span> <span class="n">Aimless</span>
+<span class="c1">#</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>data names in <code class="docutils literal notranslate"><span class="pre">IFDATA</span></code> and <code class="docutils literal notranslate"><span class="pre">IFNODATA</span></code> statements are given by the
+lower-case versions of the corresponding data types used in <code class="docutils literal notranslate"><span class="pre">DATA</span></code>
+statements, i.e., <code class="docutils literal notranslate"><span class="pre">hkl</span></code>, <code class="docutils literal notranslate"><span class="pre">unmerged</span></code>, <code class="docutils literal notranslate"><span class="pre">xyz</span></code>, <code class="docutils literal notranslate"><span class="pre">seq</span></code> and so on.
+See <a class="reference internal" href="#wscript-reference"><span class="std std-ref">WScript Reference</span></a>  for details.</p>
+</div>
+<p><strong>Looping and Branching</strong></p>
+<p>Sometimes, a task needs to be run with same data but varying parameters. In
+CCP4 Cloud terms, this is equivalent to cloning task with suitable modification
+of parameter(s) of interest. For example, imagine that you wish to repeat
+<em>“Refmac”</em> task with suggested parameters until no suggestions are generated or
+number of runs exceeds a certain number (let’s say, 5). The following fragment
+gives an idea of how this may be programmed in <strong>WScript</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialise loop control parameters</span>
+
+<span class="n">let</span> <span class="nb">iter</span>   <span class="o">=</span> <span class="mi">1</span>     <span class="c1"># iteration serial number</span>
+<span class="n">let</span> <span class="n">iter0</span>  <span class="o">=</span> <span class="mi">0</span>     <span class="c1"># iteration number of result with the lowest Rfree</span>
+<span class="n">let</span> <span class="n">Rfree0</span> <span class="o">=</span> <span class="mf">1.0</span>   <span class="c1"># the lowest Rfree achieved</span>
+
+<span class="nd">@REFINE</span><span class="o">-</span><span class="n">OPT</span><span class="p">[</span><span class="nb">iter</span><span class="p">]</span>  <span class="c1"># [iter] modifies the RUN NAME implicitly to make it unique</span>
+    <span class="n">USE_SUGGESTED_PARAMETERS</span>   <span class="c1"># use suggested parameters or defaults if none</span>
+    <span class="n">RUN</span>       <span class="n">Refmac</span>
+
+<span class="c1"># capture iteration number with the lowest Rfree achieved</span>
+<span class="n">let</span> <span class="n">iter0</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">;</span> <span class="n">Rfree0</span> <span class="o">=</span> <span class="n">Rfree</span>  <span class="k">if</span>  <span class="n">Rfree</span><span class="o">&lt;</span><span class="n">Rfree0</span>
+<span class="n">let</span> <span class="nb">iter</span>  <span class="o">=</span> <span class="nb">iter</span> <span class="o">+</span> <span class="mi">1</span>
+
+<span class="c1"># keep iterating if conditions are met and pass otherwise</span>
+<span class="n">repeat</span> <span class="nd">@REFINE</span><span class="o">-</span><span class="n">OPT</span> <span class="k">while</span> <span class="n">suggested</span><span class="o">&gt;</span><span class="mi">0</span> <span class="ow">and</span> <span class="nb">iter</span><span class="o">&lt;</span><span class="mi">5</span>
+
+<span class="c1"># continue further down from iteration with the lowest Rfree</span>
+<span class="n">branch</span> <span class="nd">@REFINE</span><span class="o">-</span><span class="n">OPT</span><span class="p">[</span><span class="n">iter0</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>In this fragment, workflow allocates 3 variables <code class="docutils literal notranslate"><span class="pre">iter</span></code>, <code class="docutils literal notranslate"><span class="pre">iter0</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Rfree0</span></code> and uses predefined variables <code class="docutils literal notranslate"><span class="pre">Rfree</span></code> (achieved <em>R_free</em>) and
+<code class="docutils literal notranslate"><span class="pre">suggested</span></code> (the number of suggested changes to <em>Refmac</em> parameters).
+You may replace <code class="docutils literal notranslate"><span class="pre">@REFMAC</span></code> run construct with this entire fragment in our
+molrep workflow and re-run it to see the result.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">branch</span></code> statement specifies results from which particular task will be
+taken for further processing. In this example, results with lowest <em>R_free</em>
+will be chosen. To see this, append another task, such as
+<em>“PDB Validation Report”</em> to the workflow and re-run it.</p>
+<p><strong>Workflow parameters</strong></p>
+<p>Supose no that we want to introduce workflows parameters, which a user could
+manioulate with as in any other task. For example, let user to set a
+resolution cut-off in <em>Aimless</em> and decide whether to run <em>Buccaneer</em> task.
+For this, add input of real-number parameter and a checkbox in
+<a class="reference internal" href="#wscript-reference-input-parameters"><span class="std std-ref">Input parameters section</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># ==========================================================================</span>
+<span class="c1"># Workflow parameters section. List all parameters required, "!" specifies</span>
+<span class="c1"># mandatory items.</span>
+
+<span class="n">PAR_REAL</span>      <span class="n">resHigh</span>   <span class="c1"># variable name to be used in workflow's expressions</span>
+    <span class="n">LABEL</span>     <span class="n">High</span> <span class="n">resolution</span> <span class="n">cut</span><span class="o">-</span><span class="n">off</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">Aring</span><span class="p">;)</span>
+    <span class="n">TOOLTIP</span>   <span class="n">High</span> <span class="n">resolution</span> <span class="n">cut</span><span class="o">-</span><span class="n">off</span><span class="p">,</span> <span class="n">angstrom</span>
+    <span class="n">IWIDTH</span>    <span class="mi">40</span>        <span class="c1"># input field width is set to 40 pixels</span>
+    <span class="n">RANGE</span>     <span class="mf">0.1</span> <span class="mf">5.0</span>   <span class="c1"># allowed min/max values</span>
+    <span class="n">DEFAULT</span>   <span class="mf">1.5</span>       <span class="c1"># default value</span>
+
+<span class="n">PAR_CHECK</span>     <span class="n">runBuccaneer</span> <span class="c1"># variable name to be used in workflow's expressions</span>
+    <span class="n">LABEL</span>     <span class="n">Re</span><span class="o">-</span><span class="n">build</span> <span class="n">model</span>
+    <span class="n">TOOLTIP</span>   <span class="n">Check</span> <span class="k">if</span> <span class="n">phased</span> <span class="n">model</span> <span class="n">should</span> <span class="n">be</span> <span class="n">re</span><span class="o">-</span><span class="n">built</span>
+    <span class="n">DEFAULT</span>   <span class="n">Checked</span>
+</pre></div>
+</div>
+<p>Save <strong>WScript</strong>, create a new molrep workflow task and check how graphical
+widgets for parameters look like.</p>
+<p>When workflow is started, it assigns input parameters (either given by user or
+read from <em>DEFAULT</em> fields) to internal variables specified in <em>PAR_XXX</em>
+statements. In the above example, two variables: <em>resHigh</em> and <em>runBuccaneer</em>
+will be created for high-resolution cutoff (real) and flag for running
+<em>Buccaneer</em> (boolean <em>True/False</em>), respectively. In order to use these flags,
+remove <em>Aimless</em> task from the workflow and re-insert it in the same place
+with <strong>Workflow Creator</strong>. When selecting <em>Aimless</em> in the task menu, specify
+a non-default value for the high-resolution cut-off, for example, 1.4A. This
+will give code fragment as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@AIMLESS</span>
+    <span class="n">DATA</span>      <span class="n">ds0</span>  <span class="n">unmerged</span>
+    <span class="n">PARAMETER</span> <span class="n">RESO_HIGH</span> <span class="mf">1.4</span>  <span class="c1"># high resolution cut-off (&amp;Aring;)</span>
+    <span class="n">RUN</span> <span class="n">Aimless</span>
+</pre></div>
+</div>
+<p>Now specify place the internal variable from the resolution cut-off widget
+instead of “1.4” and restore the <code class="docutils literal notranslate"><span class="pre">IFDATA</span></code> statement:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@AIMLESS</span>
+    <span class="n">IFDATA</span>    <span class="n">unmerged</span>
+    <span class="n">DATA</span>      <span class="n">ds0</span>  <span class="n">unmerged</span>
+    <span class="n">PARAMETER</span> <span class="n">RESO_HIGH</span> <span class="n">resHigh</span>  <span class="c1"># high resolution cut-off (&amp;Aring;)</span>
+    <span class="n">RUN</span> <span class="n">Aimless</span>
+<span class="c1">#</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Where a variable is used, any function can be used as well. For example,
+one can put <code class="docutils literal notranslate"><span class="pre">2*resHigh</span></code>, <code class="docutils literal notranslate"><span class="pre">max(1.5,resHigh)</span></code> and similar expressions
+instead of <code class="docutils literal notranslate"><span class="pre">resHigh</span></code> in the above <strong>WScript</strong> fragment.</p>
+</div>
+<p>As for the <em>Buccaneer</em>, we need simply to indicate that the task should be
+run if <code class="docutils literal notranslate"><span class="pre">runBuccaneer</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@BUCCANEER</span>
+    <span class="n">IF</span> <span class="n">runBuccaneer</span>
+    <span class="n">RUN</span> <span class="n">Buccaneer</span>
+</pre></div>
+</div>
+<p>The final <strong>WScript</strong> for our molrep workflow reads as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#
+# -----------------------------------------------------
+# Molecular Replacement with Molrep
+# -----------------------------------------------------
+# Sun Dec 31 2023
+#
+
+VERSION  1.0    # script version for backward compatibility
+DEBUG    OFF    # ON/OFF
+COMMENTS ON     # ON/OFF
+
+# ==========================================================================
+# Workflow header
+
+# General workflow descriptors
+NAME     molrep workflow         # to show in Job Tree
+ONAME    mrp_wflow               # to use for naming output files
+TITLE    Molrep-based Workflow   # to display in Task List
+DESC     takes HKL, XYZ and SEQ and solves structure with Molrep # to display in Task List
+ICON     Maraschino              # (optional) workflow icon colour
+KEYWORDS molrep workflow         # for using in A-Z keyword search
+
+ALLOW_UPLOAD       # create file upload widgets if started from project root
+
+# ==========================================================================
+# Input data section. List all data required, "!" specifies mandatory items.
+
+!DATA HKL
+!DATA XYZ  TYPES protein
+!DATA SEQ  TYPES protein
+
+# ==========================================================================
+# Workflow parameters section. List all parameters required, "!" specifies
+# mandatory items.
+
+PAR_REAL     resHigh   # variable name to be used in workflow's expressions
+    LABEL     High resolution cut-off (&amp;Aring;)
+    TOOLTIP   High resolution cut-off, angstrom
+    IWIDTH    40        # input field width is set to 40 pixels
+    RANGE     0.1 5.0   # allowed min/max values
+    DEFAULT   1.5       # default real value
+
+PAR_CHECK     runBuccaneer # variable name to be used in workflow's expressions
+    LABEL     Re-build model
+    TOOLTIP   Check if phased model should be re-built
+    DEFAULT   Checked
+
+# ==========================================================================
+# Workflow run body
+
+@AIMLESS
+    IFDATA    unmerged
+    DATA      ds0  unmerged
+    PARAMETER RESO_HIGH resHigh  # high resolution cut-off (&amp;Aring;)
+    RUN Aimless
+#
+
+@MODELPREPXYZ
+    RUN ModelPrepXYZ
+#
+
+@ASUDEF
+    RUN ASUDef
+#
+
+@MOLREP
+    RUN Molrep
+#
+
+@BUCCANEER
+    IF runBuccaneer
+    RUN Buccaneer
+#
+
+# Initialise loop control parameters
+
+let iter   = 1     # iteration serial number
+let iter0  = 0     # iteration number of result with the lowest Rfree
+let Rfree0 = 1.0   # the lowest Rfree achieved
+
+@REFINE-OPT[iter]  # [iter] modifies the RUN NAME implicitly to make it unique
+    USE_SUGGESTED_PARAMETERS   # use suggested parameters or defaults if none
+    RUN       Refmac
+
+# capture iteration number with the lowest Rfree achieved
+let iter0 = iter; Rfree0 = Rfree  if  Rfree&lt;Rfree0
+let iter  = iter + 1
+
+# keep iterating if conditions are met and pass otherwise
+repeat @REFINE-OPT while suggested&gt;0 and iter&lt;5
+
+# continue further down from iteration with the lowest Rfree
+branch @REFINE-OPT[iter0]
+
+#
+
+@PDBVAL
+    RUN PDBVal
+#
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Workflows with input parameters cannot be used in <em>Import</em> task and in the
+<em>CloudRun</em> utility.</p>
+</div>
+</section>
+</section>
+<section id="custom-workflow-library">
+<h2 id="custom-workflow-library"><span class="section-number">5.3. </span>Custom Workflow Library<a class="headerlink" href="#custom-workflow-library" title="Permalink to this heading">¶</a></h2>
+<p>CCP4 Cloud comes with a library of custom workflows, which give <strong>WScript</strong>
+examples for few typiucal scenarios. They can be also used as templates for
+your own developments. Just open <strong>Workflow Creator</strong>, push <strong>Library</strong>
+button and select a suitable <strong>WScript</strong>. It can be further modified to your
+needs as any text file.</p>
+</section>
+<section id="wscript-reference">
+<span id="id1"></span><h2 id="wscript-reference"><span class="section-number">5.4. </span>WScript Reference<a class="headerlink" href="#wscript-reference" title="Permalink to this heading">¶</a></h2>
+<p><strong>WScript</strong> file consists of four <strong>sections</strong>, which must follow order presented
+in this Reference. Each section contains a specific set of <strong>WScript</strong>
+statements; no statement from one section can appear in another one. Section
+separators are not used; <strong>WScript</strong> recognises sections automatically. Only
+<a class="reference internal" href="#wscript-reference-input-parameters"><span class="std std-ref">Input parameters section</span></a> can be empty.</p>
+<p>All <strong>WScript</strong> <strong>statements</strong> occupy a single line. Statements start with a
+case-insensitive primary key, which may be followed by additional case-insensitive
+key(s) and values. Any number of consequuitive spaces is equivalent to one space,
+except when these spaces occur in string-type values. Part of line starting
+from hash sign “#” is considered as a comment and is ignored; empty lines are
+ignored, too.</p>
+<p>Some <strong>WScript</strong> constructs are made of several statements, which must be
+placed on consequitive lines (comments and empty lines ignored). Such constructs
+have mandatory leading and trailing statements, other statements can be placed
+in arbitrary order.</p>
+<p><strong>WScript</strong> supports pre-defined and user-defined variables, which can hold
+real, integer, boolean and string values. String literals must be double-quoted
+(<em>e.g.</em>, “this is a string literal”), boolean literals are case-sensitive
+<code class="docutils literal notranslate"><span class="pre">True</span></code> and <code class="docutils literal notranslate"><span class="pre">False</span></code>. Pre-defined variables get their values from completed
+tasks; see details in <a class="reference internal" href="#wscript-reference-predefined-variables"><span class="std std-ref">Pre-defined variables</span></a>.</p>
+<p>Wherever variable’s value is used, any in-line expression can be placed instead,
+which may also include other variables; reference to variable’s value should be
+viewed as a computable trivial expression made of a single variable. See
+available functions, constants and operators in
+<a class="reference internal" href="#wscript-reference-expression-syntax"><span class="std std-ref">Mathematrical expressions syntax</span></a>.</p>
+<section id="header-section">
+<h3 id="header-section"><span class="section-number">5.4.1. </span>Header section<a class="headerlink" href="#header-section" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="input-data-section">
+<h3 id="input-data-section"><span class="section-number">5.4.2. </span>Input data section<a class="headerlink" href="#input-data-section" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="input-parameters-section">
+<span id="wscript-reference-input-parameters"></span><h3 id="input-parameters-section"><span class="section-number">5.4.3. </span>Input parameters section<a class="headerlink" href="#input-parameters-section" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="workflow-body-section">
+<h3 id="workflow-body-section"><span class="section-number">5.4.4. </span>Workflow body section<a class="headerlink" href="#workflow-body-section" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="pre-defined-variables">
+<span id="wscript-reference-predefined-variables"></span><h3 id="pre-defined-variables"><span class="section-number">5.4.5. </span>Pre-defined variables<a class="headerlink" href="#pre-defined-variables" title="Permalink to this heading">¶</a></h3>
+</section>
+<section id="mathematrical-expressions-syntax">
+<span id="wscript-reference-expression-syntax"></span><h3 id="mathematrical-expressions-syntax"><span class="section-number">5.4.6. </span>Mathematrical expressions syntax<a class="headerlink" href="#mathematrical-expressions-syntax" title="Permalink to this heading">¶</a></h3>
+<p><strong>WScript</strong> allows almost full range of <em>Python</em> mathematical expressions in
+<em>LET</em> statements and conditional statements. Available functions and operators
+are listed in this section.</p>
+<table id="id2">
+<caption><span class="caption-text">Operator precedence</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 15.0%"/>
+<col style="width: 15.0%"/>
+<col style="width: 70.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Operator</p></th>
+<th class="head"><p>Associativity</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>(…)</p></td>
+<td><p>None</p></td>
+<td><p>Grouping</p></td>
+</tr>
+<tr class="row-odd"><td><p>f(), x.y, a[i]</p></td>
+<td><p>Left</p></td>
+<td><p>Function call, property access, array indexing</p></td>
+</tr>
+<tr class="row-even"><td><p>!</p></td>
+<td><p>Left</p></td>
+<td><p>Factorial</p></td>
+</tr>
+<tr class="row-odd"><td><p>^</p></td>
+<td><p>Right</p></td>
+<td><p>Exponentiation</p></td>
+</tr>
+<tr class="row-even"><td><p>+, -, not, sqrt, etc.</p></td>
+<td><p>Right</p></td>
+<td><p>Unary prefix operators (see below for the full list)</p></td>
+</tr>
+<tr class="row-odd"><td><p>*, /, %</p></td>
+<td><p>Left</p></td>
+<td><p>Multiplication, division, remainder</p></td>
+</tr>
+<tr class="row-even"><td><p>+, -, ||</p></td>
+<td><p>Left</p></td>
+<td><p>Addition, subtraction, array/list concatenation</p></td>
+</tr>
+<tr class="row-odd"><td><p>==, !=, &gt;=, &lt;=, &gt;, &lt;, in</p></td>
+<td><p>Left</p></td>
+<td><p>Equals, not equals, etc. “in” means “is the left operand included in the right array operand?”</p></td>
+</tr>
+<tr class="row-even"><td><p>and</p></td>
+<td><p>Left</p></td>
+<td><p>Logical AND</p></td>
+</tr>
+<tr class="row-odd"><td><p>or</p></td>
+<td><p>Left</p></td>
+<td><p>Logical OR</p></td>
+</tr>
+<tr class="row-even"><td><p>x ? y : z</p></td>
+<td><p>Right</p></td>
+<td><p>Ternary conditional (if x then y else z)</p></td>
+</tr>
+<tr class="row-odd"><td><p>=</p></td>
+<td><p>Right</p></td>
+<td><p>Variable assignment</p></td>
+</tr>
+<tr class="row-even"><td><p>;</p></td>
+<td><p>Left</p></td>
+<td><p>Expression separator</p></td>
+</tr>
+</tbody>
+</table>
+<table id="id3">
+<caption><span class="caption-text">Unary operators</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 15.0%"/>
+<col style="width: 85.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Operator</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>-x</p></td>
+<td><p>Negation</p></td>
+</tr>
+<tr class="row-odd"><td><p>+x</p></td>
+<td><p>Unary plus. This converts it’s operand to a number, but has no other effect.</p></td>
+</tr>
+<tr class="row-even"><td><p>x!</p></td>
+<td><p>Factorial (x * (x-1) * (x-2) * … * 2 * 1). gamma(x + 1) for non-integers.</p></td>
+</tr>
+<tr class="row-odd"><td><p>abs x</p></td>
+<td><p>Absolute value (magnitude) of x</p></td>
+</tr>
+<tr class="row-even"><td><p>acos x</p></td>
+<td><p>Arc cosine of x (in radians)</p></td>
+</tr>
+<tr class="row-odd"><td><p>acosh x</p></td>
+<td><p>Hyperbolic arc cosine of x (in radians)</p></td>
+</tr>
+<tr class="row-even"><td><p>asin x</p></td>
+<td><p>Arc sine of x (in radians)</p></td>
+</tr>
+<tr class="row-odd"><td><p>asinh x</p></td>
+<td><p>Hyperbolic arc sine of x (in radians)</p></td>
+</tr>
+<tr class="row-even"><td><p>atan x</p></td>
+<td><p>Arc tangent of x (in radians)</p></td>
+</tr>
+<tr class="row-odd"><td><p>atanh x</p></td>
+<td><p>Hyperbolic arc tangent of x (in radians)</p></td>
+</tr>
+<tr class="row-even"><td><p>cbrt x</p></td>
+<td><p>Cube root of x</p></td>
+</tr>
+<tr class="row-odd"><td><p>ceil x</p></td>
+<td><p>Ceiling of x — the smallest integer that’s &gt;= x</p></td>
+</tr>
+<tr class="row-even"><td><p>cos x</p></td>
+<td><p>Cosine of x (x is in radians)</p></td>
+</tr>
+<tr class="row-odd"><td><p>cosh x</p></td>
+<td><p>Hyperbolic cosine of x (x is in radians)</p></td>
+</tr>
+<tr class="row-even"><td><p>exp x</p></td>
+<td><p>e^x (exponential/antilogarithm function with base e)</p></td>
+</tr>
+<tr class="row-odd"><td><p>expm1 x</p></td>
+<td><p>e^x - 1</p></td>
+</tr>
+<tr class="row-even"><td><p>floor x</p></td>
+<td><p>Floor of x — the largest integer that’s &lt;= x</p></td>
+</tr>
+<tr class="row-odd"><td><p>length x</p></td>
+<td><p>String or array length of x</p></td>
+</tr>
+<tr class="row-even"><td><p>ln x</p></td>
+<td><p>Natural logarithm of x</p></td>
+</tr>
+<tr class="row-odd"><td><p>log x</p></td>
+<td><p>Natural logarithm of x (synonym for ln, not base-10)</p></td>
+</tr>
+<tr class="row-even"><td><p>log10 x</p></td>
+<td><p>Base-10 logarithm of x</p></td>
+</tr>
+<tr class="row-odd"><td><p>log2 x</p></td>
+<td><p>Base-2 logarithm of x</p></td>
+</tr>
+<tr class="row-even"><td><p>log1p x</p></td>
+<td><p>Natural logarithm of (1 + x)</p></td>
+</tr>
+<tr class="row-odd"><td><p>not x</p></td>
+<td><p>Logical NOT operator</p></td>
+</tr>
+<tr class="row-even"><td><p>round x</p></td>
+<td><p>X, rounded to the nearest integer, using “grade-school rounding”</p></td>
+</tr>
+<tr class="row-odd"><td><p>sign x</p></td>
+<td><p>Sign of x (-1, 0, or 1 for negative, zero, or positive respectively)</p></td>
+</tr>
+<tr class="row-even"><td><p>sin x</p></td>
+<td><p>Sine of x (x is in radians)</p></td>
+</tr>
+<tr class="row-odd"><td><p>sinh x</p></td>
+<td><p>Hyperbolic sine of x (x is in radians)</p></td>
+</tr>
+<tr class="row-even"><td><p>sqrt x</p></td>
+<td><p>Square root of x. Result is NaN (Not a Number) if x is negative.</p></td>
+</tr>
+<tr class="row-odd"><td><p>tan x</p></td>
+<td><p>Tangent of x (x is in radians)</p></td>
+</tr>
+<tr class="row-even"><td><p>tanh x</p></td>
+<td><p>Hyperbolic tangent of x (x is in radians)</p></td>
+</tr>
+<tr class="row-odd"><td><p>trunc x</p></td>
+<td><p>Integral part of a X, looks like floor(x) unless for negative number</p></td>
+</tr>
+</tbody>
+</table>
+<table id="id4">
+<caption><span class="caption-text">Pre-defined functions</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 17.0%"/>
+<col style="width: 83.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Function</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>random(n)</p></td>
+<td><p>Get a random number in the range [0, n). If n is zero, or not provided, it defaults to 1.</p></td>
+</tr>
+<tr class="row-odd"><td><p>fac(n)</p></td>
+<td><p>n! (factorial of n: “n * (n-1) * (n-2) * … * 2 * 1”) Deprecated. Use the ! operator instead.</p></td>
+</tr>
+<tr class="row-even"><td><p>min(a,b,…)</p></td>
+<td><p>Get the smallest (minimum) number in the list.</p></td>
+</tr>
+<tr class="row-odd"><td><p>max(a,b,…)</p></td>
+<td><p>Get the largest (maximum) number in the list.</p></td>
+</tr>
+<tr class="row-even"><td><p>hypot(a,b)</p></td>
+<td><p>Hypotenuse, i.e. the square root of the sum of squares of its arguments.</p></td>
+</tr>
+<tr class="row-odd"><td><p>pyt(a, b)</p></td>
+<td><p>Alias for hypot.</p></td>
+</tr>
+<tr class="row-even"><td><p>pow(x, y)</p></td>
+<td><p>Equivalent to x^y. For consistency with JavaScript’s Math object.</p></td>
+</tr>
+<tr class="row-odd"><td><p>atan2(y, x)</p></td>
+<td><p>Arc tangent of x/y. i.e. the angle between (0, 0) and (x, y) in radians.</p></td>
+</tr>
+<tr class="row-even"><td><p>roundTo(x, n)</p></td>
+<td><p>Rounds x to n places after the decimal point.</p></td>
+</tr>
+<tr class="row-odd"><td><p>map(f, a)</p></td>
+<td><p>Array map: Pass each element of <cite>a</cite> the function <cite>f</cite>, and return an array of the results.</p></td>
+</tr>
+<tr class="row-even"><td><p>fold(f, y, a)</p></td>
+<td><p>Array fold: Fold/reduce array <cite>a</cite> into a single value, <cite>y</cite> by setting <cite>y = f(y, x, index)</cite> for each element <cite>x</cite> of the array.</p></td>
+</tr>
+<tr class="row-odd"><td><p>filter(f, a)</p></td>
+<td><p>Array filter: Return an array containing only the values from <cite>a</cite> where <cite>f(x, index)</cite> is <cite>true</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p>indexOf(x, a)</p></td>
+<td><p>Return the first index of string or array <cite>a</cite> matching the value <cite>x</cite>, or <cite>-1</cite> if not found.</p></td>
+</tr>
+<tr class="row-odd"><td><p>join(sep, a)</p></td>
+<td><p>Concatenate the elements of <cite>a</cite>, separated by <cite>sep</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p>if(c, a, b)</p></td>
+<td><p>Function form of c ? a : b. Note: This always evaluates both <cite>a</cite> and <cite>b</cite>, regardless of whether <cite>c</cite> is <cite>true</cite> or not. Use <cite>c ? a : b</cite> instead if there are side effects, or if evaluating the branches could be expensive.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="id5">
+<caption><span class="caption-text">Constants</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 15.0%"/>
+<col style="width: 85.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Constant</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>E</p></td>
+<td><p>The value of <cite>Math.E</cite> from your JavaScript runtime</p></td>
+</tr>
+<tr class="row-odd"><td><p>PI</p></td>
+<td><p>The value of <cite>Math.PI</cite> from your JavaScript runtime</p></td>
+</tr>
+<tr class="row-even"><td><p>true</p></td>
+<td><p>Logical <cite>true</cite> value</p></td>
+</tr>
+<tr class="row-odd"><td><p>false</p></td>
+<td><p>Logical <cite>false</cite> value</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 </section>

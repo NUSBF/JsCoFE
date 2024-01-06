@@ -564,7 +564,7 @@ class Refmac(basic.TaskDriver):
                         self.task.suggestedParameters = suggestedParameters
                         self.putCloneJobButton ( "Clone job with suggested parameters",
                                                  self.report_page_id(),verdict_row+3,0 )
-                        
+ 
                 if self.task.autoRunName.startswith("@"):
                     # scripted workflow framework
                     auto_workflow.nextTask ( self,{
@@ -589,7 +589,6 @@ class Refmac(basic.TaskDriver):
                         "Rfree"    : self.generic_parser_summary["refmac"]["R_free"],
                         "suggestedParameters" : suggestedParameters
                     }, log=self.file_stderr)
-
 
         else:
             self.putTitle ( "No Output Generated" )

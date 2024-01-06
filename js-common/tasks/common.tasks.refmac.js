@@ -505,7 +505,7 @@ function TaskRefmac()  {
               tooltip  : 'Custom sharpening B-factor',
               range    : ['*','*'],
               value    : '',
-              default  : 'default (use overall B-factor)',
+              placeholder : 'default (use overall B-factor)',
               iwidth   : 220,
               showon   : {'MAP_SHARPEN':['yes']},
               position : [1,3,1,1]

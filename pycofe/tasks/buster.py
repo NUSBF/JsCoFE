@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.11.23   <--  Date of Last Modification.
+#    06.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
@@ -33,6 +33,7 @@ import gemmi
 #  application imports
 from . import basic
 from   pycofe.proc   import qualrep
+from   pycofe.auto   import auto,auto_workflow
 
 
 # ============================================================================
@@ -489,6 +490,25 @@ class Buster(basic.TaskDriver):
                 except:
                     self.stderr ( " *** molprobity failure" )
                     self.rvrow = rvrow0
+
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision" : [revision]
+                            },
+                            "scores" :  {
+                                "Rfactor"  : float(self.generic_parser_summary["buster"]["R_factor"]),
+                                "Rfree"    : float(self.generic_parser_summary["buster"]["R_free"])
+                            }
+                    })
+
+                else:  # pre-coded workflow framework
+                    auto.makeNextTask ( self,{
+                        "revision" : revision,
+                        "Rfactor"  : self.generic_parser_summary["buster"]["R_factor"],
+                        "Rfree"    : self.generic_parser_summary["buster"]["R_free"]
+                    }, log=self.file_stderr)
 
         # remove this because it contains soft links not good for copying
 
