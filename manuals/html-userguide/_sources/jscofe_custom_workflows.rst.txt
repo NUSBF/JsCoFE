@@ -255,7 +255,7 @@ workflows. Each task is represented by a block of lines, which starts with
 alphanumeric identifier starting with *"@"* symbol. Other lines between
 *RUN NAME* and *RUN* statements may contain values for task parameters,
 and only non-default parameters should be specified for brevity. See more
-details in Reference below.
+details in the :ref:`wscript_reference` below.
 
 Similarly to the *"Model Preparation XYZ"* task, you can now add 
 *"ASU Definition"*, *"Molrep"*, *"Buccaneer"* and *"Refmac"* tasks to the
@@ -309,7 +309,7 @@ the following: ::
     #
 
     @MOLREP
-        RUN PhaserMR
+        RUN Molrep
     #
 
     @BUCCANEER
@@ -326,16 +326,26 @@ copy-paste **WScript** from **Workflow Creator** into external file with
 ``.wscript`` extension for using it with the **Import** task or **CloudRun**
 utility).
 
+.. note::
+   Unlike in manually-developed CCP4 Cloud projects, where a user cannot
+   create a task if there is no suitable data for it, workflows do not
+   check or control that task order is correct from the data flow point of 
+   view. Therefore, you should have a good understanding of task order
+   suitable for your purposes, or, better, take it from a manually developed
+   project representing your workflow in design.
 
-~~~~~~~~~~~~~~~~~~~~~~
-Conditional statements
-~~~~~~~~~~~~~~~~~~~~~~
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Conditional statements and other advanced operations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 At the moment, our molrep workflow is quite straightforward in respect to its 
 input data and algorithm. We may wish to make it more flexible. For example,
 it would be good if can take both merged and unmerged reflection data on input,
 optimize refinement parameters and, optionally, prepare file for PDB deposition
 from best results achieved.
+
+**Conditions based on availability of data**
 
 Let's start from optional unmerged reflections input. We can instruct the
 workflow to accept both merged and unmerged reflections by modifying the
@@ -345,4 +355,530 @@ corresponding ``DATA`` statement as below: ::
     !DATA XYZ  TYPES protein
     !DATA SEQ  TYPES protein
 
+Now we need scale and merge unmerged reflections with *"Aimless"* task, which
+should be run before merged reflections are used, *i.e.*, before 
+*"ASU Definition"* or even *"Model Preparation XYZ"*. To do that, open
+workflow's **WScript** in **Workflow Creator**, place cursor on line just
+above the ``@MODELPREPXYZ`` line and push **Insert task** button, then select 
+*"Aimless"* task in new window and push **Insert in workflow** button. This
+should modify the beginning of workflow body as below: ::
 
+    # ==========================================================================
+    # Workflow run body
+
+    @AIMLESS
+        DATA      ds0  unmerged
+        RUN Aimless
+    #
+
+    @MODELPREPXYZ
+        RUN ModelPrepXYZ
+    #
+
+    @ASUDEF
+        RUN ASUDef
+    #
+
+This fragment will work fine if workflow receives unmerged reflections on input. 
+However, if, instead, already scaled and merged reflections are supplied,
+the *"Aimless"* task will fail and workflow stop. In order to skip invocation
+of *"Aimless"* task if no data is available, put ``IFDATA`` statement into
+task's description: ::
+
+    @AIMLESS
+        IFDATA    unmerged
+        DATA      ds0  unmerged
+        RUN Aimless
+    #
+
+.. note::
+   in ``IFDATA`` statement, ``unmerged`` must be in lower case.
+
+Now, the workflow will work with both merged and unmerged reflection data. If a
+task needs to be run when data *is not* available, use ``IFNODATA`` instead.
+For example, an equivalent (but less obvious) solution could be ::
+
+    @AIMLESS
+        IFNODATA  hkl
+        DATA      ds0  unmerged
+        RUN Aimless
+    #
+
+.. note::
+   data names in ``IFDATA`` and ``IFNODATA`` statements are given by the
+   lower-case versions of the corresponding data types used in ``DATA``
+   statements, i.e., ``hkl``, ``unmerged``, ``xyz``, ``seq`` and so on.
+   See :ref:`wscript_reference`  for details.
+
+**Looping and Branching**
+
+Sometimes, a task needs to be run with same data but varying parameters. In 
+CCP4 Cloud terms, this is equivalent to cloning task with suitable modification
+of parameter(s) of interest. For example, imagine that you wish to repeat
+*"Refmac"* task with suggested parameters until no suggestions are generated or
+number of runs exceeds a certain number (let's say, 5). The following fragment
+gives an idea of how this may be programmed in **WScript**: ::
+
+    # Initialise loop control parameters
+
+    let iter   = 1     # iteration serial number
+    let iter0  = 0     # iteration number of result with the lowest Rfree
+    let Rfree0 = 1.0   # the lowest Rfree achieved
+
+    @REFINE-OPT[iter]  # [iter] modifies the RUN NAME implicitly to make it unique
+        USE_SUGGESTED_PARAMETERS   # use suggested parameters or defaults if none
+        RUN       Refmac
+
+    # capture iteration number with the lowest Rfree achieved
+    let iter0 = iter; Rfree0 = Rfree  if  Rfree<Rfree0
+    let iter  = iter + 1
+
+    # keep iterating if conditions are met and pass otherwise
+    repeat @REFINE-OPT while suggested>0 and iter<5 
+
+    # continue further down from iteration with the lowest Rfree
+    branch @REFINE-OPT[iter0]
+
+In this fragment, workflow allocates 3 variables ``iter``, ``iter0`` and
+``Rfree0`` and uses predefined variables ``Rfree`` (achieved *R_free*) and
+``suggested`` (the number of suggested changes to *Refmac* parameters).
+You may replace ``@REFMAC`` run construct with this entire fragment in our
+molrep workflow and re-run it to see the result.
+
+The ``branch`` statement specifies results from which particular task will be 
+taken for further processing. In this example, results with lowest *R_free*
+will be chosen. To see this, append another task, such as 
+*"PDB Validation Report"* to the workflow and re-run it.
+
+
+**Workflow parameters**
+
+Supose no that we want to introduce workflows parameters, which a user could
+manioulate with as in any other task. For example, let user to set a
+resolution cut-off in *Aimless* and decide whether to run *Buccaneer* task.
+For this, add input of real-number parameter and a checkbox in
+:ref:`wscript_reference_input_parameters`: ::
+
+    # ==========================================================================
+    # Workflow parameters section. List all parameters required, "!" specifies
+    # mandatory items.
+
+    PAR_REAL      resHigh   # variable name to be used in workflow's expressions
+        LABEL     High resolution cut-off (&Aring;)
+        TOOLTIP   High resolution cut-off, angstrom
+        IWIDTH    40        # input field width is set to 40 pixels
+        RANGE     0.1 5.0   # allowed min/max values
+        DEFAULT   1.5       # default value
+
+    PAR_CHECK     runBuccaneer # variable name to be used in workflow's expressions
+        LABEL     Re-build model
+        TOOLTIP   Check if phased model should be re-built
+        DEFAULT   Checked
+
+Save **WScript**, create a new molrep workflow task and check how graphical
+widgets for parameters look like.
+
+When workflow is started, it assigns input parameters (either given by user or
+read from *DEFAULT* fields) to internal variables specified in *PAR_XXX* 
+statements. In the above example, two variables: *resHigh* and *runBuccaneer*
+will be created for high-resolution cutoff (real) and flag for running
+*Buccaneer* (boolean *True/False*), respectively. In order to use these flags,
+remove *Aimless* task from the workflow and re-insert it in the same place
+with **Workflow Creator**. When selecting *Aimless* in the task menu, specify
+a non-default value for the high-resolution cut-off, for example, 1.4A. This
+will give code fragment as follows: ::
+
+    @AIMLESS
+        DATA      ds0  unmerged
+        PARAMETER RESO_HIGH 1.4  # high resolution cut-off (&Aring;)
+        RUN Aimless
+
+Now specify place the internal variable from the resolution cut-off widget 
+instead of "1.4" and restore the ``IFDATA`` statement: ::
+
+    @AIMLESS
+        IFDATA    unmerged
+        DATA      ds0  unmerged
+        PARAMETER RESO_HIGH resHigh  # high resolution cut-off (&Aring;)
+        RUN Aimless
+    #
+
+.. note::
+   Where a variable is used, any function can be used as well. For example,
+   one can put ``2*resHigh``, ``max(1.5,resHigh)`` and similar expressions 
+   instead of ``resHigh`` in the above **WScript** fragment.
+
+As for the *Buccaneer*, we need simply to indicate that the task should be
+run if ``runBuccaneer`` is ``True``: ::
+
+    @BUCCANEER
+        IF runBuccaneer
+        RUN Buccaneer
+
+The final **WScript** for our molrep workflow reads as follows: ::
+
+    #
+    # -----------------------------------------------------
+    # Molecular Replacement with Molrep
+    # -----------------------------------------------------
+    # Sun Dec 31 2023
+    #
+
+    VERSION  1.0    # script version for backward compatibility
+    DEBUG    OFF    # ON/OFF
+    COMMENTS ON     # ON/OFF
+
+    # ==========================================================================
+    # Workflow header
+
+    # General workflow descriptors
+    NAME     molrep workflow         # to show in Job Tree
+    ONAME    mrp_wflow               # to use for naming output files
+    TITLE    Molrep-based Workflow   # to display in Task List
+    DESC     takes HKL, XYZ and SEQ and solves structure with Molrep # to display in Task List
+    ICON     Maraschino              # (optional) workflow icon colour
+    KEYWORDS molrep workflow         # for using in A-Z keyword search
+
+    ALLOW_UPLOAD       # create file upload widgets if started from project root
+
+    # ==========================================================================
+    # Input data section. List all data required, "!" specifies mandatory items.
+
+    !DATA HKL
+    !DATA XYZ  TYPES protein
+    !DATA SEQ  TYPES protein
+
+    # ==========================================================================
+    # Workflow parameters section. List all parameters required, "!" specifies
+    # mandatory items.
+
+    PAR_REAL     resHigh   # variable name to be used in workflow's expressions
+        LABEL     High resolution cut-off (&Aring;)
+        TOOLTIP   High resolution cut-off, angstrom
+        IWIDTH    40        # input field width is set to 40 pixels
+        RANGE     0.1 5.0   # allowed min/max values
+        DEFAULT   1.5       # default real value
+
+    PAR_CHECK     runBuccaneer # variable name to be used in workflow's expressions
+        LABEL     Re-build model
+        TOOLTIP   Check if phased model should be re-built
+        DEFAULT   Checked
+
+    # ==========================================================================
+    # Workflow run body
+
+    @AIMLESS
+        IFDATA    unmerged
+        DATA      ds0  unmerged
+        PARAMETER RESO_HIGH resHigh  # high resolution cut-off (&Aring;)
+        RUN Aimless
+    #
+
+    @MODELPREPXYZ
+        RUN ModelPrepXYZ
+    #
+
+    @ASUDEF
+        RUN ASUDef
+    #
+
+    @MOLREP
+        RUN Molrep
+    #
+
+    @BUCCANEER
+        IF runBuccaneer
+        RUN Buccaneer
+    #
+
+    # Initialise loop control parameters
+
+    let iter   = 1     # iteration serial number
+    let iter0  = 0     # iteration number of result with the lowest Rfree
+    let Rfree0 = 1.0   # the lowest Rfree achieved
+
+    @REFINE-OPT[iter]  # [iter] modifies the RUN NAME implicitly to make it unique
+        USE_SUGGESTED_PARAMETERS   # use suggested parameters or defaults if none
+        RUN       Refmac
+
+    # capture iteration number with the lowest Rfree achieved
+    let iter0 = iter; Rfree0 = Rfree  if  Rfree<Rfree0
+    let iter  = iter + 1
+
+    # keep iterating if conditions are met and pass otherwise
+    repeat @REFINE-OPT while suggested>0 and iter<5 
+
+    # continue further down from iteration with the lowest Rfree
+    branch @REFINE-OPT[iter0]
+
+    #
+
+    @PDBVAL
+        RUN PDBVal
+    #
+
+.. note::
+   Workflows with input parameters cannot be used in *Import* task and in the
+   *CloudRun* utility.
+
+
+-----------------------
+Custom Workflow Library
+-----------------------
+
+CCP4 Cloud comes with a library of custom workflows, which give **WScript** 
+examples for few typiucal scenarios. They can be also used as templates for
+your own developments. Just open **Workflow Creator**, push **Library**
+button and select a suitable **WScript**. It can be further modified to your
+needs as any text file.
+
+
+.. _wscript_reference:
+
+-----------------
+WScript Reference
+-----------------
+
+**WScript** file consists of four **sections**, which must follow order presented
+in this Reference. Each section contains a specific set of **WScript** 
+statements; no statement from one section can appear in another one. Section 
+separators are not used; **WScript** recognises sections automatically. Only
+:ref:`wscript_reference_input_parameters` can be empty.
+
+All **WScript** **statements** occupy a single line. Statements start with a 
+case-insensitive primary key, which may be followed by additional case-insensitive
+key(s) and values. Any number of consequuitive spaces is equivalent to one space,
+except when these spaces occur in string-type values. Part of line starting
+from hash sign "#" is considered as a comment and is ignored; empty lines are
+ignored, too.
+
+Some **WScript** constructs are made of several statements, which must be
+placed on consequitive lines (comments and empty lines ignored). Such constructs
+have mandatory leading and trailing statements, other statements can be placed
+in arbitrary order.
+
+**WScript** supports pre-defined and user-defined variables, which can hold
+real, integer, boolean and string values. String literals must be double-quoted
+(*e.g.*, "this is a string literal"), boolean literals are case-sensitive
+``True`` and ``False``. Pre-defined variables get their values from completed
+tasks; see details in :ref:`wscript_reference_predefined_variables`.
+
+Wherever variable's value is used, any in-line expression can be placed instead,
+which may also include other variables; reference to variable's value should be
+viewed as a computable trivial expression made of a single variable. See
+available functions, constants and operators in
+:ref:`wscript_reference_expression_syntax`.
+
+
+~~~~~~~~~~~~~~
+Header section
+~~~~~~~~~~~~~~
+
+
+~~~~~~~~~~~~~~~~~~
+Input data section
+~~~~~~~~~~~~~~~~~~
+
+
+.. _wscript_reference_input_parameters:
+
+~~~~~~~~~~~~~~~~~~~~~~~~
+Input parameters section
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+
+~~~~~~~~~~~~~~~~~~~~~
+Workflow body section
+~~~~~~~~~~~~~~~~~~~~~
+
+
+.. _wscript_reference_predefined_variables:
+
+~~~~~~~~~~~~~~~~~~~~~
+Pre-defined variables
+~~~~~~~~~~~~~~~~~~~~~
+
+
+
+.. _wscript_reference_expression_syntax:
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Mathematrical expressions syntax
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**WScript** allows almost full range of *Python* mathematical expressions in
+*LET* statements and conditional statements. Available functions and operators 
+are listed in this section.
+
+.. list-table:: Operator precedence
+   :widths: 15 15 70
+   :header-rows: 1
+
+   * - Operator
+     - Associativity
+     - Description
+   * - (...)
+     - None
+     - Grouping
+   * - f(), x.y, a[i]
+     - Left
+     - Function call, property access, array indexing
+   * - !
+     - Left
+     - Factorial
+   * - ^
+     - Right
+     - Exponentiation
+   * - +, -, not, sqrt, etc.
+     - Right
+     - Unary prefix operators (see below for the full list)
+   * - \*, /, %
+     - Left
+     - Multiplication, division, remainder
+   * - +, -, \|\|               
+     - Left
+     - Addition, subtraction, array/list concatenation
+   * - ==, !=, >=, <=, >, <, in 
+     - Left
+     - Equals, not equals, etc. "in" means "is the left operand included in the right array operand?"
+   * - and
+     - Left
+     - Logical AND
+   * - or
+     - Left
+     - Logical OR
+   * - x ? y : z
+     - Right
+     - Ternary conditional (if x then y else z)
+   * - =
+     - Right
+     - Variable assignment
+   * - ;
+     - Left
+     - Expression separator
+
+
+.. list-table:: Unary operators
+   :widths: 15 85
+   :header-rows: 1
+
+   * - Operator
+     - Description
+   * - -x
+     - Negation
+   * - +x
+     - Unary plus. This converts it's operand to a number, but has no other effect.
+   * - x!
+     - Factorial (x * (x-1) * (x-2) * … * 2 * 1). gamma(x + 1) for non-integers.
+   * - abs x
+     - Absolute value (magnitude) of x
+   * - acos x
+     - Arc cosine of x (in radians)
+   * - acosh x
+     - Hyperbolic arc cosine of x (in radians)
+   * - asin x
+     - Arc sine of x (in radians)
+   * - asinh x
+     - Hyperbolic arc sine of x (in radians)
+   * - atan x
+     - Arc tangent of x (in radians)
+   * - atanh x
+     - Hyperbolic arc tangent of x (in radians)
+   * - cbrt x
+     - Cube root of x
+   * - ceil x
+     - Ceiling of x — the smallest integer that’s >= x
+   * - cos x
+     - Cosine of x (x is in radians)
+   * - cosh x
+     - Hyperbolic cosine of x (x is in radians)
+   * - exp x
+     - e^x (exponential/antilogarithm function with base e)
+   * - expm1 x
+     - e^x - 1
+   * - floor x
+     - Floor of x — the largest integer that’s <= x
+   * - length x
+     - String or array length of x
+   * - ln x
+     - Natural logarithm of x
+   * - log x
+     - Natural logarithm of x (synonym for ln, not base-10)
+   * - log10 x
+     - Base-10 logarithm of x
+   * - log2 x
+     - Base-2 logarithm of x
+   * - log1p x
+     - Natural logarithm of (1 + x)
+   * - not x
+     - Logical NOT operator
+   * - round x
+     - X, rounded to the nearest integer, using "grade-school rounding"
+   * - sign x
+     - Sign of x (-1, 0, or 1 for negative, zero, or positive respectively)
+   * - sin x
+     - Sine of x (x is in radians)
+   * - sinh x
+     - Hyperbolic sine of x (x is in radians)
+   * - sqrt x
+     - Square root of x. Result is NaN (Not a Number) if x is negative.
+   * - tan x
+     - Tangent of x (x is in radians)
+   * - tanh x
+     - Hyperbolic tangent of x (x is in radians)
+   * - trunc x
+     - Integral part of a X, looks like floor(x) unless for negative number
+
+.. list-table:: Pre-defined functions
+   :widths: 17 83
+   :header-rows: 1
+
+   * - Function
+     - Description
+   * - random(n)
+     - Get a random number in the range [0, n). If n is zero, or not provided, it defaults to 1.
+   * - fac(n)
+     - n! (factorial of n: "n * (n-1) * (n-2) * … * 2 * 1") Deprecated. Use the ! operator instead.
+   * - min(a,b,…)
+     - Get the smallest (minimum) number in the list.
+   * - max(a,b,…)
+     - Get the largest (maximum) number in the list.
+   * - hypot(a,b)
+     - Hypotenuse, i.e. the square root of the sum of squares of its arguments.
+   * - pyt(a, b)
+     - Alias for hypot.
+   * - pow(x, y)
+     - Equivalent to x^y. For consistency with JavaScript's Math object.
+   * - atan2(y, x)
+     - Arc tangent of x/y. i.e. the angle between (0, 0) and (x, y) in radians.
+   * - roundTo(x, n)
+     - Rounds x to n places after the decimal point.
+   * - map(f, a)
+     - Array map: Pass each element of `a` the function `f`, and return an array of the results.
+   * - fold(f, y, a)
+     - Array fold: Fold/reduce array `a` into a single value, `y` by setting `y = f(y, x, index)` for each element `x` of the array.
+   * - filter(f, a)
+     - Array filter: Return an array containing only the values from `a` where `f(x, index)` is `true`.
+   * - indexOf(x, a)
+     - Return the first index of string or array `a` matching the value `x`, or `-1` if not found.
+   * - join(sep, a)
+     - Concatenate the elements of `a`, separated by `sep`.
+   * - if(c, a, b)
+     - Function form of c ? a : b. Note: This always evaluates both `a` and `b`, regardless of whether `c` is `true` or not. Use `c ? a : b` instead if there are side effects, or if evaluating the branches could be expensive.
+
+
+.. list-table:: Constants
+   :widths: 15 85
+   :header-rows: 1
+
+   * - Constant
+     - Description
+   * - E
+     - The value of `Math.E` from your JavaScript runtime
+   * - PI
+     - The value of `Math.PI` from your JavaScript runtime
+   * - true
+     - Logical `true` value
+   * - false
+     - Logical `false` value

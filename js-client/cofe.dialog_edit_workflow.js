@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.01.24   <--  Date of Last Modification.
+ *    06.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -182,7 +182,7 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
   this.rootCloudPath    = 'workflow_scripts';
   this.tree_type        = 'abspath';
 
-  var self = this;
+  let self = this;
 
   $(this.element).dialog({
     resizable : true,
@@ -415,7 +415,9 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
     [ 'Aimless'              ,'TaskAimless'      ],
     [ 'ASU Definition'       ,'TaskASUDef'       ],
     [ 'Buccaneer'            ,'TaskBuccaneer'    ],
+    [ 'Buster'               ,'TaskBuster'       ],
     [ 'Change Resolution'    ,'TaskChangeReso'   ],
+    [ 'Crank-2'              ,'TaskCrank2'       ],
     [ 'Dimple MR'            ,'TaskDimpleMR'     ],
     [ 'Fit Ligand'           ,'TaskFitLigand'    ],
     [ 'Fit Waters'           ,'TaskFitWaters'    ],
@@ -423,8 +425,12 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
     [ 'Modelcraft'           ,'TaskModelCraft'   ],
     [ 'Model Preparation XYZ','TaskModelPrepXYZ' ],
     [ 'Molrep'               ,'TaskMolrep'       ],
+    [ 'MoRDa'                ,'TaskMorda'        ],
     [ 'MrBump'               ,'TaskMrBump'       ],
+    [ 'Optimise ASU'         ,'TaskOptimiseASU'  ],
     [ 'Parrot'               ,'TaskParrot'       ],
+    [ 'PDB-REDO'             ,'TaskPDBREDO'      ],
+    [ 'PDB Validation Report','TaskPDBVal'       ],
     [ 'Phaser EP'            ,'TaskPhaserEP'     ],
     [ 'Phaser MR'            ,'TaskPhaserMR'     ],
     [ 'Refmac'               ,'TaskRefmac'       ],
@@ -465,15 +471,22 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
     list_cbox.make();
   },0);
   list_cbox.setWidth ( '240px'      );
-  grid.setLabel      ( ' ',2,2,1,1  );
-  grid.setCellSize   ( '90%','',2,2 );
+
+  grid.setLabel      ( '&nbsp;&nbsp;&nbsp;&nbsp;',2,2,1,1  );
+
+  let help_btn = grid.setButton ( '',image_path('reference'), 2,3, 1,1 )
+                      .setSize('40px','34px').setTooltip('Task doumentation')
+                      .hide();
+
+  grid.setLabel      ( ' ',2,4,1,1  );
+  grid.setCellSize   ( '90%','',2,4 );
 
   grid.setVerticalAlignment ( 1,0,'middle' );
   grid.setVerticalAlignment ( 2,0,'middle' );
 
-  grid.setHLine    ( 1, 3,0,1,5    );
+  grid.setHLine    ( 1, 3,0,1,7    );
   grid.setCellSize ( '100%','',3,0 );
-  let panel_head = grid.setLabel ( 'Select task to be added to workflow',4,0,1,5 )
+  let panel_head = grid.setLabel ( 'Select task to be added to workflow',4,0,1,7 )
                        .setFontItalic(true).setFontSize('87%');
   grid.setCellSize ( '100%','', 4,0 );
 
@@ -482,33 +495,11 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
   let add_btn_id = 'add_btn_' + __id_cnt++;
   let self       = this;
 
-/*
-  list_cbox.addOnChangeListener ( function(value,text){
-    inputPanel = grid.setPanel ( 5,0,1,5    );
-    inputPanel.panel = new Widget  ( 'div'      );
-    inputPanel.addWidget           ( inputPanel.panel  );
-    inputPanel.panel.setSize_px    ( dlg_size[0]-40,dlg_size[1]-252 );
-    if (value=='none')  {
-      stask = null;
-      dlg_icon.setImage  ( image_path('openjob')   );
-      panel_head.setText ( 'Select task to be added to workflow' );
-      $('#' + add_btn_id ).button('disable');
-    } else  {
-      stask = eval   ( 'new ' + value + '()'    );
-      dlg_icon.setImage  ( image_path(stask.icon()) );
-      panel_head.setText ( 'Choose task parameters and click "Add to workflow" button' );
-      // div.grid  = new Grid    ( '-compact' );
-      inputPanel.grid  = new Grid    ( '' );
-      inputPanel.panel.addWidget     ( inputPanel.grid   );
-      inputPanel.panel.setScrollable ( 'auto','auto' );
-      inputPanel.grid.inputPanel     = inputPanel;
-      inputPanel.fullVersionMismatch = false;  // important for data versioining
-      stask.layParameters ( inputPanel.grid,0,0 );
-      $('#' + add_btn_id ).button('enable');
-    }
+  help_btn.addOnClickListener ( function(){
+    if (stask)
+      new HelpBox ( '',stask.getHelpURL(),null );
   });
-  */
-  
+
   let dataBox  = new DataBox();
   dataBox.addData ( new DataUnmerged().makeSample() );
   dataBox.addData ( new DataHKL     ().makeSample() );
@@ -521,7 +512,7 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
     dataBox.data_n0[dt] = dataBox.data[dt].length;
 
   list_cbox.addOnChangeListener ( function(value,text){
-    let panel = grid.setPanel ( 5,0,1,5 );
+    let panel = grid.setPanel ( 5,0,1,7 );
     panel.setSize_px ( dlg_size[0]-40,dlg_size[1]-268 );
     if (value=='none')  {
       // inputPanel.panel = new Widget  ( 'div'      );
@@ -529,6 +520,7 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
       stask = null;
       dlg_icon.setImage  ( image_path('openjob')   );
       panel_head.setText ( 'Select task to be added to workflow' );
+      help_btn.hide();
       $('#' + add_btn_id ).button('disable');
       inputPanel = null;
     } else  {
@@ -547,6 +539,7 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
         'padding'    : '8px'
       });
       panel.addWidget ( inputPanel );
+      help_btn.show();
       $('#' + add_btn_id ).button('enable');
     }
   });
@@ -588,12 +581,13 @@ EditWorkflowDialog.prototype.addTask = function ( add_bool )  {
                   if ((!workflow_script.endsWith('\n')) && 
                       (!workflow_script.endsWith('\n\r')))
                     workflow_script += '\n';
+                  let serialNo    = workflow_script.split (
+                                        '@' + stask._type.slice(4).toUpperCase()
+                                    ).length - 1;
+                  let task_script = stask.getWorkflowScript ( serialNo );
                   if (add_bool)  {
                     workflow_script += '\n' + task_script.join('\n') + '\n#\n';
                   } else  {
-                    let serialNo = workflow_script.split(
-                                        '@'+stask._type.slice(4).toUpperCase()).length-1;
-                    let task_script = stask.getWorkflowScript ( serialNo );
                     let lineNo  = self.editor.getCursorPosition().row;
                     let wslines = workflow_script.split('\n');
                     wslines.splice ( lineNo,0,'\n' + task_script.join('\n') +'\n#\n' );

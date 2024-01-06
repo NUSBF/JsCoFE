@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    06.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2023-2024
 #
 # ============================================================================
 #
@@ -33,6 +33,7 @@ import gemmi
 from  pycofe.tasks  import basic
 from  pycofe.dtypes import dtype_xyz
 from  pycofe.proc   import optimize_xyz
+from  pycofe.auto   import auto,auto_workflow
 from  pycofe.varut  import rvapi_utils
 
 
@@ -172,6 +173,20 @@ class OptimiseASU(basic.TaskDriver):
                         self.registerRevision     ( revision )
                         summary_line = "ASU optimised"
                         have_results = True
+
+                        if self.task.autoRunName.startswith("@"):
+                            # scripted workflow framework
+                            auto_workflow.nextTask ( self,{
+                                    "data" : {
+                                        "revision" : [revision]
+                                    }
+                            })
+                            # self.putMessage ( "<h3>Workflow started</hr>" )
+
+                        else:  # pre-coded workflow framework
+                            auto.makeNextTask ( self,{
+                                "revision" : revision
+                            }, log=self.file_stderr)
 
                     else:
                         self.putTitle ( "No Output Structure Generated" )

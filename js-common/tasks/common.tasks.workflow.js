@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.01.24   <--  Date of Last Modification.
+ *    06.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -293,7 +293,7 @@ TaskWorkflow.prototype.setWorkflow = function ( workflowDesc )  {
                               if (pitem.type=='real')
                                 pitem.value = pitem.default;
                             } else if (pitem.type=='checkbox')  {
-                              pitem.value = (words[1].toUpperCase()=='TRUE');
+                              pitem.value = (words[1].toUpperCase()=='CHECKED');
                             } else if (pitem.type=='combobox')  {
                               pitem.value = words[1];
                             }

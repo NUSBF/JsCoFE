@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.08.22   <--  Date of Last Modification.
+#    06.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -38,9 +38,9 @@ import pyrvapi
 
 #  application imports
 from . import basic
-from   pycofe.proc   import edmap, xyzmeta, verdict
-from   pycofe.dtypes import dtype_template, dtype_revision, dtype_sequence
-from   pycofe.auto   import auto
+from   pycofe.proc    import edmap, xyzmeta, verdict
+from   pycofe.dtypes  import dtype_template, dtype_revision, dtype_sequence
+from   pycofe.auto    import auto,auto_workflow
 
 # ============================================================================
 # Make Crank2 driver
@@ -790,11 +790,30 @@ class Crank2(basic.TaskDriver):
                                      "</sub> substructure found"
                 }
 
-            auto.makeNextTask ( self,{
-                "revision" : revisions[0],
-                "Rfactor"  : Rfactor,
-                "Rfree"    : Rfree
-            }, self.file_stderr )
+            # auto.makeNextTask ( self,{
+            #     "revision" : revisions[0],
+            #     "Rfactor"  : Rfactor,
+            #     "Rfree"    : Rfree
+            # }, self.file_stderr )
+ 
+            if self.task.autoRunName.startswith("@"):
+                # scripted workflow framework
+                auto_workflow.nextTask ( self,{
+                        "data" : {
+                            "revision" : revisions
+                        },
+                        "scores" :  {
+                            "Rfactor"  : float(Rfactor),
+                            "Rfree"    : float(Rfree)
+                        }
+                })
+
+            else:  # pre-coded workflow framework
+                auto.makeNextTask ( self,{
+                    "revision" : revisions[0],
+                    "Rfactor"  : Rfactor,
+                    "Rfree"    : Rfree
+                }, log=self.file_stderr )
 
         # close execution logs and quit
         self.success ( (len(revisions)>0) )

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.05.23   <--  Date of Last Modification.
+#    06.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -32,7 +32,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -45,7 +45,7 @@ import shutil
 #  application imports
 from . import basic
 from   pycofe.proc  import xyzmeta
-from   pycofe.auto  import auto
+from   pycofe.auto  import auto,auto_workflow
 
 # ============================================================================
 # Make Morda driver
@@ -200,11 +200,32 @@ class Morda(basic.TaskDriver):
                 revision.setStructureData  ( structure )
                 self.registerRevision      ( revision  )
                 have_results = True
-                auto.makeNextTask ( self,{
-                    "revision" : revision,
-                    "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
-                    "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
-                })
+
+                # auto.makeNextTask ( self,{
+                #     "revision" : revision,
+                #     "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                #     "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                # })
+ 
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision" : [revision]
+                            },
+                            "scores" :  {
+                                "Rfactor"  : float(self.generic_parser_summary["refmac"]["R_factor"]),
+                                "Rfree"    : float(self.generic_parser_summary["refmac"]["R_free"])
+                            }
+                    })
+
+                else:  # pre-coded workflow framework
+                    auto.makeNextTask ( self,{
+                        "revision" : revision,
+                        "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                        "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                    }, log=self.file_stderr)
+
             else:
                 self.putMessage ( "<h3>Structure cannot be formed</h3>" )
 

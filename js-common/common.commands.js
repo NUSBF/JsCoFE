@@ -1,7 +1,7 @@
 /*
  *  ===========================================================================
  *
- *    02.01.24   <--  Date of Last Modification.
+ *    06.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -26,7 +26,7 @@
 function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
 
 // const jsCoFE_version = '1.7.018 [24.11.2023]';   // for the main server
-const jsCoFE_version = '1.7.18 [02.01.2024]';   // for update
+const jsCoFE_version = '1.7.18 [06.01.2024]';   // for update
 
 function appVersion()  {
   return jsCoFE_version;
@@ -35,10 +35,10 @@ function appVersion()  {
 function splitVersion ( version )  {
 // returns [main_version,major_version,minor_version,year,month,day],
 // all integers
-  var vsplit = version.replace('[','.').replace(']','')
+  let vsplit = version.replace('[','.').replace(']','')
                       .split('.').map(function(item){ return parseInt(item); });
   if (vsplit.length==6)  {
-    var year  = vsplit[5];
+    let year  = vsplit[5];
     vsplit[5] = vsplit[3];
     vsplit[3] = year;
   }
@@ -47,8 +47,8 @@ function splitVersion ( version )  {
 
 function compareVersions ( version1,version2 )  {
 // returns -1,0,1 if version1<,=,>version2, dates disregarded
-  var v1 = splitVersion ( version1 );
-  var v2 = splitVersion ( version2 );
+  let v1 = splitVersion ( version1 );
+  let v2 = splitVersion ( version2 );
   function _compare ( n )  {
     if ((n>=v1.length) || (n>=v2.length))
                            return  0;
@@ -61,10 +61,10 @@ function compareVersions ( version1,version2 )  {
 
 // ============================================================================
 
-var localhost_name = 'localhost';
-var projectFileExt = '.ccp4cloud';
-var endJobFName    = '__end_job';    // signal file name to end job gracefully
-var endJobFName1   = 'stop_file';    // signal file name to end job gracefully
+const localhost_name = 'localhost';
+const projectFileExt = '.ccp4cloud';
+const endJobFName    = '__end_job';    // signal file name to end job gracefully
+const endJobFName1   = 'stop_file';    // signal file name to end job gracefully
 
 // ============================================================================
 // Commands for client - FE Server AJAX exchange. Commands are passed as paths
@@ -72,7 +72,7 @@ var endJobFName1   = 'stop_file';    // signal file name to end job gracefully
 // request body. 'Commands' relate to actions which do not require a user to
 // be logged in.
 
-var fe_command = {
+const fe_command = {
   cofe              : 'cofe',            // load jsCoFE login page
   ignore            : 'ignore',          // special return code from Communicate module
   stop              : 'stop',            // quit the server
@@ -102,7 +102,7 @@ var fe_command = {
 // command, a stringified JS class 'Request' (below), which contains request
 // type as a field.
 
-var fe_reqtype = {
+const fe_reqtype = {
   logout              : '-logout',            // request to log out
   getUserData         : '-getUserData',       // request for user data
   saveHelpTopics      : '-saveHelpTopics',    // request to save list of help topics
@@ -170,7 +170,7 @@ var fe_reqtype = {
 // ============================================================================
 // Return codes for client - FE Server AJAX exchange
 
-var fe_retcode = {
+const fe_retcode = {
   ok             : 'ok',             // everything's good
   largeData      : 'largeData',      // data sent to server is too large
   noProjectData  : 'noProjectData',  // project metadata not found on server
@@ -211,7 +211,7 @@ var fe_retcode = {
 // ============================================================================
 // Commands for NC Server exchange.
 
-var nc_command = {
+const nc_command = {
   stop           : 'stop',            // quit the server
   countBrowser   : '-countBrowser',   // request to advance browser start counter
   runJob         : '-runJob',         // request to upload job data and run the job
@@ -231,7 +231,7 @@ var nc_command = {
 // ============================================================================
 // Return codes for NC Server exchange
 
-var nc_retcode = {
+const nc_retcode = {
   ok             : 'ok',             // everything's good
   unkCommand     : 'unkCommand',     // unknown command passed
   mkDirError     : 'mkDirError',     // directory cannot be created on server
@@ -265,9 +265,9 @@ function activityIcon()  {
 // ============================================================================
 // General Request/Response structures for communication with the Front End
 
-var __special_url_tag    = 'xxJsCoFExx';
-var __special_fjsafe_tag = 'xxFJSafexx';
-var __special_client_tag = 'xxClientxx';
+const __special_url_tag    = 'xxJsCoFExx';
+const __special_fjsafe_tag = 'xxFJSafexx';
+const __special_client_tag = 'xxClientxx';
 
 function Response ( status,message,data )  {
   this._type   = 'Response';
@@ -288,7 +288,7 @@ Response.prototype.send = function ( server_response )  {
 }
 
 function sendResponse ( server_response, status,message,data )  {
-var resp = new Response ( status,message,data );
+let resp = new Response ( status,message,data );
   resp.send ( server_response );
 }
 

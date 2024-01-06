@@ -521,7 +521,7 @@ JobDialog.prototype.requestServer = function ( request,callback_ok )  {
 JobDialog.prototype.addToolBarButton = function ( gap,icon,tooltip )  {
 //  if (gap)
 //    this.toolBar.setLabel ( '', 0,this.col++, 1,1 ).setWidth_px ( 1 );
-var btn = this.toolBar.setButton ( '',image_path(icon), 0,this.col++, 1,1 )
+let btn = this.toolBar.setButton ( '',image_path(icon), 0,this.col++, 1,1 )
                       .setSize('40px','34px').setTooltip(tooltip);
   if (gap)
     btn.setMargins ( '4px','','','' );
@@ -699,7 +699,7 @@ JobDialog.prototype.onWindowResize = function()  {
 
 JobDialog.prototype.makeLayout = function ( onRun_func )  {
 
-  var dlg = this;
+  let dlg = this;
 
   this.outputPanel = new IFrame ( '' );  // always initially empty
   //this.outputPanel.setWidth ( '100%' );

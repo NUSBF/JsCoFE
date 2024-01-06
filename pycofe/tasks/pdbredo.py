@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    06.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2023
+#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2024
 #
 # ============================================================================
 #
@@ -42,6 +42,7 @@ from   zipfile import ZipFile
 #  application imports
 from .               import basic
 from pycofe.proc     import qualrep
+from  pycofe.auto    import auto,auto_workflow
 
 # ============================================================================
 # Make PDB-REDO driver
@@ -579,6 +580,26 @@ class Pdbredo(basic.TaskDriver):
                     meta = None
                     self.stderr(" *** validation tools or molprobity failure")
                     self.rvrow = rvrow0 + 4
+
+                if self.task.autoRunName.startswith("@"):
+                    # scripted workflow framework
+                    auto_workflow.nextTask ( self,{
+                            "data" : {
+                                "revision" : [revision]
+                            },
+                            "scores" :  {
+                                "Rfactor"  : float(self.generic_parser_summary["refmac"]["R_factor"]),
+                                "Rfree"    : float(self.generic_parser_summary["refmac"]["R_free"])
+                            }
+                    })
+                    # self.putMessage ( "<h3>Workflow started</hr>" )
+
+                else:  # pre-coded workflow framework
+                    auto.makeNextTask ( self,{
+                        "revision" : revision,
+                        "Rfactor"  : self.generic_parser_summary["refmac"]["R_factor"],
+                        "Rfree"    : self.generic_parser_summary["refmac"]["R_free"]
+                    }, log=self.file_stderr)
 
                 # if meta:
                 #     verdict_meta = {
