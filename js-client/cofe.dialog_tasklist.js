@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    21.12.23   <--  Date of Last Modification.
+ *    06.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Task List Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -796,14 +796,31 @@ let r = 0;  // grid row
     grid.setWidget ( this.makeMyWorkflowsList(grid,r0),r++,0,1,4 );
 
     grid.setLabel  ( '&nbsp;',r++,0,1,4 ).setFontSize('40%');
-    let self = this;
-    grid.setButton ( 'Add workflow',image_path('add'), r++,0,1,4 )
+    let self  = this;
+    let grid2 = grid.setGrid ( '-compact',r++,0,1,4 );
+    grid2.setButton ( 'Add workflow',image_path('add'), 0,0,1,1 )
         .setWidth_px ( 120 )
+        .setTooltip  ( 'Add new custom workflow' )
         .addOnClickListener ( function(){
           new EditWorkflowDialog ( null,function(){
             grid.setWidget ( self.makeMyWorkflowsList(grid,r0),r0,0,1,4 );
           });
         })
+    grid2.addButton ( '',image_path('reference'), 0,1,1,1 )
+        .setSize    ( '40px','34px' )
+        .setTooltip ( 'Read how to write your own workflows' )
+        .addOnClickListener ( function(){
+          new HelpBox ( '',__user_guide_base_url + 'jscofe_custom_workflows.html',
+                        null );
+        })
+
+    // grid.setButton ( 'Add workflow',image_path('add'), r++,0,1,4 )
+    //     .setWidth_px ( 120 )
+    //     .addOnClickListener ( function(){
+    //       new EditWorkflowDialog ( null,function(){
+    //         grid.setWidget ( self.makeMyWorkflowsList(grid,r0),r0,0,1,4 );
+    //       });
+    //     })
     
   // }
 

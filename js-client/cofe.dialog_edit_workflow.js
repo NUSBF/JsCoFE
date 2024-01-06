@@ -195,6 +195,9 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
                   let span = new Widget ( 'span' );
                   $(span.element).prependTo(pane);
                   let library_btn = new Button ( 'Library',image_path('folder') );
+                  library_btn.setTooltip ( 'Load custom workflow from ' + appName() +
+                                           ' workflow library (can be used as a ' +
+                                           'template)' );
                   span.addWidget ( library_btn );
                   $(span.element).css({
                     'position' : 'relative',
@@ -217,6 +220,7 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
                     },null );  
                   });         
                   let add_btn = new Button ( 'Add task',image_path('add') );
+                  add_btn.setTooltip ( 'Add new task in the end of the workflow' );
                   span.addWidget ( add_btn );
                   $(add_btn.element).css({
                     'position' : 'relative',
@@ -227,6 +231,7 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
                     self.addTask ( true );
                   });
                   let insert_btn = new Button ( 'Insert task',image_path('insert') );
+                  insert_btn.setTooltip ( 'Add new task in the current cursor position' );
                   span.addWidget ( insert_btn );
                   $(insert_btn.element).css({
                     'position' : 'relative',
@@ -235,6 +240,20 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
                   });
                   insert_btn.addOnClickListener ( function(){
                     self.addTask ( false );
+                  });
+                  let ref_btn = new Button ( '',image_path('reference') );
+                  ref_btn.setTooltip ( 'Read how to write your own workflows' );
+                  span.addWidget ( ref_btn );
+                  $(ref_btn.element).css({
+                    'position' : 'relative',
+                    'left'     : '0px',
+                    'top'      : '0px',
+                    'width'    : '40px',
+                    'height'   : '34px'
+                  });
+                  ref_btn.addOnClickListener ( function(){
+                    new HelpBox ( '',__user_guide_base_url + 'jscofe_custom_workflows.html',
+                                  null );
                   });
                 },
     buttons   : {
