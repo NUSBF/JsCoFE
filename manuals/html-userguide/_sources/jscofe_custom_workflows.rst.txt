@@ -137,7 +137,7 @@ again, with the previous content looking something like this: ::
     #    TOOLTIP   Check if deposition files should be prepared and PDB validation report obtained
     #    DEFAULT   Unchecked
 
-    # !PAR_COMBO   useBFactors # variable name to be used in workflow's expressions
+    # PAR_COMBO   useBFactors # variable name to be used in workflow's expressions
     #    LABEL     Use isotropic B-factors
     #    TOOLTIP   B-factor mode for refinement
     #    IWIDTH    60        # input field width is set to 60 pixels
@@ -162,6 +162,8 @@ Values, on contrary, should be specified with respect to upper/lower case. Full
 list of keywords is given in the end of this document.
 
 We will create new workflow in several steps now.
+
+.. _simple_mr_workflow:
 
 ~~~~~~~~~~~~~~~~~~
 Simple MR Workflow
@@ -395,17 +397,17 @@ task's description: ::
    in ``IFDATA`` statement, ``unmerged`` must be in lower case.
 
 Now, the workflow will work with both merged and unmerged reflection data. If a
-task needs to be run when data *is not* available, use ``IFNODATA`` instead.
+task needs to be run when data *is not* available, use ``IFNOTDATA`` instead.
 For example, an equivalent (but less obvious) solution could be ::
 
     @AIMLESS
-        IFNODATA  hkl
+        IFNOTDATA hkl
         DATA      ds0  unmerged
         RUN Aimless
     #
 
 .. note::
-   data names in ``IFDATA`` and ``IFNODATA`` statements are given by the
+   data names in ``IFDATA`` and ``IFNOTDATA`` statements are given by the
    lower-case versions of the corresponding data types used in ``DATA``
    statements, i.e., ``hkl``, ``unmerged``, ``xyz``, ``seq`` and so on.
    See :ref:`wscript_reference`  for details.
@@ -833,7 +835,7 @@ Input parameters section
 
 Input parameters section is optional. If used, it must follow
 :ref:`wscript_reference_input_data`. The section is made of prinicpal
-statements ``PAR_*`` or ``!PAR_*`` followed by their specifiers. The leading 
+statements ``PAR_*`` or ``!PAR_*`` followed by their specificators. The leading 
 exclamation mark means that user's input is mandatory and the corresponding
 parameter cannot have a default value. On contrary, ``PAR_*`` statements must 
 have a default parameter specified. The exclamation mark cannot be applied in
@@ -848,29 +850,29 @@ default value.
      - Value
      - Description
    * - PAR_INTEGER
-     - variable name
+     - variable's name
      - Creates graphical widget for integer number input. The input is assigned
        to internal workflow variable with specified name, which is created
        automatically.
    * - PAR_REAL
-     - variable name
+     - variable's name
      - Creates graphical widget for real number input. The input is assigned to
        internal workflow variable with specified name, which is created
        automatically.
    * - PAR_STRING
-     - variable name
+     - variable's name
      - Creates graphical widget for string value input (such as atom name of
        anomalous scatterer). The input is assigned to internal workflow variable
        with specified name, which is created automatically.
    * - PAR_CHECK
-     - variable name
+     - variable's name
      - Creates graphical widget for a checkbox input. The input (``True/False`` 
-       for checked/unchecked state, respectively) is assigned to internal 
+       for checked/unchecked states, respectively) is assigned to internal 
        workflow variable with specified name, which is created automatically.
        PAR_CHECK cannot be preceded with the exclamation sign, and it always 
        has a default value (unchecked if not specified).
    * - PAR_COMBO
-     - variable name
+     - variable's name
      - Creates graphical widget for combobox input. The input (value associated
        with the seleted combobox item) is assigned to internal workflow variable
        with specified name, which is created automatically. PAR_COMBO cannot be
@@ -878,9 +880,232 @@ default value.
        (first item if not specified).
 
 
+.. list-table:: Input parameters specificators
+   :widths: 8 8 8 76
+   :header-rows: 1
+
+   * - Key
+     - Value
+     - Mandatory
+     - Description
+   * - LABEL
+     - String
+     - yes
+     - Descriptive label for input widget, could be several space-separated
+       words. Example: ``Number of refinement cycles``.
+   * - TOOLTIP
+     - String
+     - no
+     - Extend description for input widget, which appears on mouse hovering 
+       over widget's fields. Could be several space-separated words.
+   * - IWIDTH
+     - number
+     - no
+     - Width of input widget's active field, in pixels. Default values depend 
+       on the widget type and should be suitable in most cases.
+   * - MAXLENGTH
+     - number
+     - no
+     - Maximum number of input characters in ``PAR_STRING`` widget (unlimited
+       by default)
+   * - RANGE
+     - 2 numbers
+     - no
+     - Minimum and maximum acceptable values for ``PAR_INTEGER`` and
+       ``PAR_REAL`` widgets, space-separated. If only one limit should be used,
+       the other limit should be represented by asterisk ``*``. For example,
+       ``RANGE  1 *`` means that value cannot be less then 1 but no upper limit.
+   * - OPTION
+     - word and string
+     - yes
+     - Selection item for ``PAR_COMBO`` widget. Statement's value consists of a 
+       key and text string, which is displayed as a selectable string in the
+       combobox. If string is selected by user, widget's variable is assigned
+       the corresponding key. For example, ``OPTION A Choose option A`` will
+       put line ``Choose option A`` in the combobox. If this line is selected,
+       combobox's value is string ``"A"``.
+   * - DEFAULT
+     - String or number
+     - yes/no
+     - Default value for widget/parameter. This statement is mandatory if
+       widget is described with leading exclamation sign, *e.g.*, ``!PAR_REAL``.
+       For ``PAR_COMBO``, default value must be one of keys listed in
+       ``OPTION`` statements.
+
+Examples: ::
+
+    !PAR_REAL     resHigh  # name to be used in workflow's expressions
+        LABEL     High resolution cut-off (&Aring;)
+        TOOLTIP   High resolution cut-off, angstrom
+        IWIDTH    40       # input field width is set to 40 pixels
+        RANGE     0.1 5.0  # allowed min/max values
+        DEFAULT   1.5      # default real value
+
+    PAR_COMBO     useBFactors   # name to be used in workflow's expressions
+        LABEL     Use isotropic B-factors
+        TOOLTIP   B-factor mode for refinement
+        IWIDTH    60            # combobox width is set to 60 pixels
+        OPTION    none  Select from list  # value "none" text "Select from list"
+        OPTION    yes   Yes               # value "yes"  text "Yes"
+        OPTION    no    No                # value "no"  text  "No"
+        DEFAULT   none                    # default string value "none"
+
+    PAR_CHECK     reqValReport  # name to be used in workflow's expressions
+        LABEL     Request PDB Validation Report
+        TOOLTIP   Check to prepare PDB deposition files and validation report
+        DEFAULT   Unchecked
+
+
+.. _wscript_reference_workflow_body:
+
 ~~~~~~~~~~~~~~~~~~~~~
 Workflow body section
 ~~~~~~~~~~~~~~~~~~~~~
+
+Workflow body must be the last section in **WScript** file. It may contain
+task run instructions, variables and workflow control statements.
+
+Task run instructions represent a set of statements which starts with *Run Name*
+statement and finishes with *Run* statenment: ::
+
+    @RUN_NAME
+        # ... other optional statements ...
+        RUN  TaskName
+
+The most convenient way of making run instruction is through using the 
+**Workflow Creator**, as described in :ref:`simple_mr_workflow` with many
+examples and explanations. Therefore, here only the reference of relevant 
+statements is provided.
+
+.. list-table:: Task run statements
+   :widths: 8 18 74
+   :header-rows: 1
+
+   * - Key
+     - Parameters
+     - Description
+   * - @RUN_NAME
+     - None
+     - Unique name, which opens the set of relevant statements and is used 
+       for referencing task in looping and branching
+   * - @RUN_NAME[x]
+     - None
+     - Same as ``@RUN_NAME`` but modified with the value of variable ``x``.
+       Such modification is used in loops and branching, see examples in
+       :ref:`simple_mr_workflow`.
+   * - IF
+     - expression
+     - Instructs to run the task only if ``expression`` evaluates to ``True``,
+       for example, ``IF  Rfree<0.4``.
+   * - IFDATA
+     - data type
+     - Instructs to run the task only if data of specified type is present.
+       data type should be given as a lowercase of data types used in ``DATA``
+       statements in :ref:`wscript_reference_input_data`, for example,
+       ``hkl``, ``unmerged``, ``xyz``, ``seq``, ``library``, ``ligand``.
+   * - IFNOTDATA
+     - data type
+     - Instructs to run the task only if data of specified type is *NOT* present.
+       data type should be given as a lowercase of data types used in ``DATA``
+       statements in :ref:`wscript_reference_input_data`, for example,
+       ``hkl``, ``unmerged``, ``xyz``, ``seq``, ``library``, ``ligand``.
+   * - DATA
+     - data id and data name
+     - Forces placement of specified data in particular item of CCP4 Cloud task
+       interface with "not standard" data id. For example, *Aimless* task assumes
+       input of merged or unmerged reflections for symmetry reference in data
+       object with id ``ds0``. This id is not recognised automatically as a
+       recipient of reflection data, therefore, statement ``DATA ds0 unmerged`` 
+       or ``DATA ds0 hkl`` must be placed in task instructions for *Aimless*.
+   * - ALIAS
+     - standard data id and task data id
+     - Used in cases when data id, used in task interface, is not "standard",
+       such as ``revision``, ``hkl``, ``seq``, ``xyz`` and similar. Example:
+       ``ALIAS  revision istruct`` (for *XyzUtils*).
+   * - USE
+     - data name and number / variable / expression
+     - Used for data object specification in cases when several data objects
+       with given name are available. For example, *Crank-2* creates up to 4 
+       *Structure Revisions* after MAD phasing, and the following statement:
+       ``USE REVISION 2`` could be used in next task description in order to
+       force using 2nd revision produced.
+   * - PROPERTY
+     - data name, property id and property value
+     - Used for modifying properties of data objects. For example,
+       ``PROPERTY HKL res_high 1.4`` request cutting reflection dataset to 
+       1.4A in *Change Resolution* task; ``PROPERTY REVISION>HKL wtype "peak"``
+       sets string value ``"peak"`` (not to be mistaken with ``peak`` variable,
+       therefore, enquoted) for the wavelength type in *Crank-2* or *ShelxCD*. 
+   * - PARAMETER
+     - parameter id and value (expression)
+     - Assigns the specified value (or result of specified expression) to
+       task parameter with specified id. Parameters ids coincide with keys in
+       "parameters" structure of the corrsponding task class. Example:
+       ``PARAMETER VDW_VAL 2.0`` (for *Refmac*).
+   * - USE_SUGGESTED_PARAMETERS
+     - none
+     - Forces using parameters suggested based on results of previous task of
+       the same types. Currently, this is applicable only to *Refmac*.
+   * - RUN
+     - Task name
+     - Gives the name of CCP4 Cloud task that must be run, and finishes the set
+       of task run statements.
+
+
+.. list-table:: Workflow variables and control
+   :widths: 8 92
+   :header-rows: 1
+
+   * - Operator
+     - Description
+
+   * - let x = *expression* [if *condition*]
+     - Variable assignment, for example: ::
+
+           let x = 1
+
+       Several assignments can be placed in a single statement: ::
+
+           let x = 1; y = sin(PI/4); z = x+y
+
+       The whole statement may be made conditional: ::
+
+           let x = 1; y = sin(PI/4); z = x+y if Rfree<0.3
+
+   * - repeat @RUN_NAME while *condition*
+     - Instruction to repeat the specified task while *condition* evaluates to
+       *True*, for example: ::
+
+           repeat @REFINEMENT while Rfree>0.4 and iter<10
+
+       .. note::
+          Task, used in ``repeat`` statement, should be described with modificator,
+          *e.g.*, ``@REFINEMENT[iter]``, and modificator should be advanced
+          within the repeat loop scope, *e.g.*, ``let iter = iter + 1``. Always
+          limit the maximum number of repeats (10 in the above example) to avoid 
+          infinite looping. Note that ``@RUN_NAME`` is specified without 
+          modificator in ``repeat`` statement.
+
+   * - branch @RUN_NAME [if *condition*]
+     - Instruction to continue next task from the specified task, for example: ::
+
+           branch @MODEL_BUILDING-1
+
+       If task was described with modificator, it *must be* explicitly specified
+       as a variable with correct value: ::  
+
+           branch @DENSITY_MODIFICATION[hand0]
+
+       Branching may be subject to condition, evaluated to *True*::
+
+           branch @MODEL_BUILDING-2 if Rfree>0.4
+
+   * - PRINT_VAR
+     - Prints current values of all workflow variables in CCP4 Cloud task's log
+       file.
+
+   * - END or STOP
+     - Stops the workflow.
 
 
 .. _wscript_reference_predefined_variables:
@@ -889,6 +1114,32 @@ Workflow body section
 Pre-defined variables
 ~~~~~~~~~~~~~~~~~~~~~
 
+**WScript** has direct access to certain metrics produced by tasks through
+pre-defined variables. For example, *R_free* value produced by *Refmac* is
+assigned to variable ``Rfree``.
+
+.. list-table:: Pre-defined variables
+   :widths: 8 18 74
+   :header-rows: 1
+
+   * - Variable
+     - Producing tasks
+     - Description
+   * - nasu
+     - ASU Definition
+     - Predicted number of monomeric units in ASU.
+   * - nfitted
+     - PhaserMR Molrep
+     - Number of fitted (molecular replaced) monomeric units in ASU.
+   * - Rfree
+     - All tasks with refinement
+     - Free R-factor (varies between 0 and 1).
+   * - Rfactor
+     - All tasks with refinement
+     - Work R-factor (varies between 0 and 1).
+   * - suggested
+     - Refmac
+     - Number of suggested parameters to change.
 
 
 .. _wscript_reference_expression_syntax:

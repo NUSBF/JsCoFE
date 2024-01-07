@@ -269,6 +269,15 @@ TaskXyzUtils.prototype.checkKeywords = function ( keywords )  {
   return this.__check_keywords ( keywords,['xyz','utilities','coordinate','tool', 'toolbox', 'pdbset'] );
 }
 
+TaskXyzUtils.prototype.getWorkflowScript = function ( serialNo )  {
+let wscript = [];
+  if (__template)
+        wscript = __template.TaskTemplate.prototype.getWorkflowScript.call ( this,serialNo );
+  else  wscript = TaskTemplate.prototype.getWorkflowScript.call ( this,serialNo );
+  wscript.splice ( 1,0,'    ALIAS     revision   istruct' );
+  return wscript;
+}
+
 if (!__template)  {
   // client side
 
