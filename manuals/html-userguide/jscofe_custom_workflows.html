@@ -1055,13 +1055,254 @@ viewed as a computable trivial expression made of a single variable. See
 available functions, constants and operators in
 <a class="reference internal" href="#wscript-reference-expression-syntax"><span class="std std-ref">Mathematrical expressions syntax</span></a>.</p>
 <section id="header-section">
-<h3 id="header-section"><span class="section-number">5.4.1. </span>Header section<a class="headerlink" href="#header-section" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-header"></span><h3 id="header-section"><span class="section-number">5.4.1. </span>Header section<a class="headerlink" href="#header-section" title="Permalink to this heading">¶</a></h3>
+<p>Header section comes first in <strong>WScript</strong> and cannot be empty.</p>
+<table id="id2">
+<caption><span class="caption-text">Header section</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 8.0%"/>
+<col style="width: 6.0%"/>
+<col style="width: 6.0%"/>
+<col style="width: 80.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Mandatory</p></th>
+<th class="head"><p>Values</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>VERSION</p></td>
+<td><p>No</p></td>
+<td><p>Numeric</p></td>
+<td><p>Version number, dependent on CCP4 Cloud version, for backward compatibility.
+Outdated versions will be reported when workflow is used. Default value:
+<code class="docutils literal notranslate"><span class="pre">1.0</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>DEBUG</p></td>
+<td><p>No</p></td>
+<td><p>ON/OFF</p></td>
+<td><p>Flag to produce extended workflow log and diagnostics. Default value:
+<code class="docutils literal notranslate"><span class="pre">OFF</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>COMMENTS</p></td>
+<td><p>No</p></td>
+<td><p>ON/OFF</p></td>
+<td><p>Flag to produce additional comments such as results of <em>LET</em> statements
+in workflow log. Default value: <code class="docutils literal notranslate"><span class="pre">ON</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>WID</p></td>
+<td><p>Yes/No</p></td>
+<td><p>String</p></td>
+<td><p>Workflow ID which <strong>must be given</strong> when workflow is used in <em>Import</em> task
+or via <strong>CloudRun</strong> utility. Ignored if workflow is used as task included
+in <strong>My Workflows</strong> section of the <strong>Task List</strong>. Default value is not set.</p></td>
+</tr>
+<tr class="row-even"><td><p>NAME</p></td>
+<td><p>No</p></td>
+<td><p>String</p></td>
+<td><p>Workflow name which identifies workflow task in <strong>Job Tree</strong>; can contain
+several space-separated words if necessary. Default value: <code class="docutils literal notranslate"><span class="pre">Workflow</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ONAME</p></td>
+<td><p>No</p></td>
+<td><p>String</p></td>
+<td><p>Alphanumeric word used to name data objects created by the <em>Workflow</em> task.
+Default value: <code class="docutils literal notranslate"><span class="pre">workflow</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>TITLE</p></td>
+<td><p>No</p></td>
+<td><p>String</p></td>
+<td><p>Workflow title which identifies workflow task in <strong>Task List</strong> and
+report pages; can contain several space-separated words if necessary.
+Default value: <code class="docutils literal notranslate"><span class="pre">Workflow</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>DESC</p></td>
+<td><p>No</p></td>
+<td><p>String</p></td>
+<td><p>Workflow description which appears in small font under the workflow title
+in <strong>Task List</strong> and report pages; can contain several space-separated
+words if necessary. Default value: <code class="docutils literal notranslate"><span class="pre">custom</span> <span class="pre">workflow</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>ICON</p></td>
+<td><p>No</p></td>
+<td><p>String</p></td>
+<td><p>Colour code for workflow’s icon, which can help to organise
+<strong>My Workflows</strong> section in <strong>Task List</strong>. Available codes include:
+<code class="docutils literal notranslate"><span class="pre">Aqua</span></code>, <code class="docutils literal notranslate"><span class="pre">Asparagus</span></code>, <code class="docutils literal notranslate"><span class="pre">Black</span></code>, <code class="docutils literal notranslate"><span class="pre">Gold</span></code>, <code class="docutils literal notranslate"><span class="pre">Grape</span></code>, <code class="docutils literal notranslate"><span class="pre">Lavender</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Maraschino</span></code>, <code class="docutils literal notranslate"><span class="pre">Maroon</span></code>, <code class="docutils literal notranslate"><span class="pre">Mocha</span></code>, <code class="docutils literal notranslate"><span class="pre">Pink</span></code>, <code class="docutils literal notranslate"><span class="pre">Salmon</span></code>, <code class="docutils literal notranslate"><span class="pre">Spring</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Tangerine</span></code>, <code class="docutils literal notranslate"><span class="pre">Teal</span></code>, <code class="docutils literal notranslate"><span class="pre">Tin</span></code>. Default value: <code class="docutils literal notranslate"><span class="pre">Aqua</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>KEYWORDS</p></td>
+<td><p>No</p></td>
+<td><p>String</p></td>
+<td><p>Space-separated listr of keywords to be used in <strong>A-Z</strong> tab of
+<strong>Task List</strong> for keyword-based task searches. Default value:
+<code class="docutils literal notranslate"><span class="pre">workflow</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p>ALLOW_UPLOAD</p></td>
+<td><p>No</p></td>
+<td></td>
+<td><p>If given, this keyword creates file upload widgets, which are used
+instead of object selection widgets when workflow task is invoked from
+the root of <strong>Job Tree</strong>. This keyword should not be used if workflow
+cannot be run from the root (for example, if it uses <em>Structure Revision</em>
+as one input data type.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="input-data-section">
-<h3 id="input-data-section"><span class="section-number">5.4.2. </span>Input data section<a class="headerlink" href="#input-data-section" title="Permalink to this heading">¶</a></h3>
+<span id="wscript-reference-input-data"></span><h3 id="input-data-section"><span class="section-number">5.4.2. </span>Input data section<a class="headerlink" href="#input-data-section" title="Permalink to this heading">¶</a></h3>
+<p>Input data section must follow <a class="reference internal" href="#wscript-reference-header"><span class="std std-ref">Header section</span></a> and cannot
+be empty. The section may contain only <code class="docutils literal notranslate"><span class="pre">DATA</span></code> and <code class="docutils literal notranslate"><span class="pre">!DATA</span></code> statements, where
+exclamation mark means that data input is mandatory. One <code class="docutils literal notranslate"><span class="pre">DATA</span></code> statement
+creates a single graphical widget, which can take specified data objects. The
+statement has the following syntax:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DATA</span> <span class="nb">object</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="p">[</span><span class="n">TYPES</span> <span class="n">subtype</span><span class="p">(</span><span class="n">s</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>where the <code class="docutils literal notranslate"><span class="pre">TYPES</span></code> part is optional.</p>
+<table id="id3">
+<caption><span class="caption-text">Header section: data objects</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 15.0%"/>
+<col style="width: 85.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Object name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>UNMERGED</p></td>
+<td><p>Unmerged reflection dataset</p></td>
+</tr>
+<tr class="row-odd"><td><p>HKL</p></td>
+<td><p>Merged reflection dataset</p></td>
+</tr>
+<tr class="row-even"><td><p>XYZ</p></td>
+<td><p>Structure model coordinates</p></td>
+</tr>
+<tr class="row-odd"><td><p>SEQ</p></td>
+<td><p>Macromolecular sequence</p></td>
+</tr>
+<tr class="row-even"><td><p>LIBRARY</p></td>
+<td><p>Crystallographic restraints library for non-standard residues and
+ligands not found in CCP4 Monomer Library</p></td>
+</tr>
+<tr class="row-odd"><td><p>LIGAND</p></td>
+<td><p>Ligand descriptions for fitting in electron density. This will create
+graphical widgets for specifying either a SMILES string, 3-letter ligand
+code or upload a <code class="docutils literal notranslate"><span class="pre">.cif</span></code> file with ligand descriptions.</p></td>
+</tr>
+</tbody>
+</table>
+<table id="id4">
+<caption><span class="caption-text">Header section: data objects subtypes</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 15.0%"/>
+<col style="width: 85.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Subtype name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>anomalous</p></td>
+<td><p>Reflection dataset with anomalous scattering</p></td>
+</tr>
+<tr class="row-odd"><td><p>protein</p></td>
+<td><p>Structure coordinates or sequence corresponding to an amino acid chain</p></td>
+</tr>
+<tr class="row-even"><td><p>rna</p></td>
+<td><p>Structure coordinates or sequence corresponding to a ribonucleic acid
+chain</p></td>
+</tr>
+<tr class="row-odd"><td><p>dna</p></td>
+<td><p>Structure coordinates or sequence corresponding to a deoxyribonucleic
+acid chain</p></td>
+</tr>
+</tbody>
+</table>
+<p>Examples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Mandatory input of either unmerged or merged reflection dataset
+# containing anomalous signal
+!DATA UNMERGED HKL TYPES anomalous
+
+# Optional input of protein structure model
+DATA XYZ TYPES protein
+
+# Mandatory input of sequence of any type
+!DATA SEQ
+
+# Mandatory input of sequence of any type (alternative)
+!DATA SEQ TYPES protein dna rna
+</pre></div>
+</div>
 </section>
 <section id="input-parameters-section">
 <span id="wscript-reference-input-parameters"></span><h3 id="input-parameters-section"><span class="section-number">5.4.3. </span>Input parameters section<a class="headerlink" href="#input-parameters-section" title="Permalink to this heading">¶</a></h3>
+<p>Input parameters section is optional. If used, it must follow
+<a class="reference internal" href="#wscript-reference-input-data"><span class="std std-ref">Input data section</span></a>. The section is made of prinicpal
+statements <code class="docutils literal notranslate"><span class="pre">PAR_*</span></code> or <code class="docutils literal notranslate"><span class="pre">!PAR_*</span></code> followed by their specifiers. The leading
+exclamation mark means that user’s input is mandatory and the corresponding
+parameter cannot have a default value. On contrary, <code class="docutils literal notranslate"><span class="pre">PAR_*</span></code> statements must
+have a default parameter specified. The exclamation mark cannot be applied in
+case of <code class="docutils literal notranslate"><span class="pre">PAR_CHECK</span></code> and <code class="docutils literal notranslate"><span class="pre">PAR_COMBO</span></code> parameters, which always have a
+default value.</p>
+<table id="id5">
+<caption><span class="caption-text">Principal parameter statements</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 8.0%"/>
+<col style="width: 10.0%"/>
+<col style="width: 82.0%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>PAR_INTEGER</p></td>
+<td><p>variable name</p></td>
+<td><p>Creates graphical widget for integer number input. The input is assigned
+to internal workflow variable with specified name, which is created
+automatically.</p></td>
+</tr>
+<tr class="row-odd"><td><p>PAR_REAL</p></td>
+<td><p>variable name</p></td>
+<td><p>Creates graphical widget for real number input. The input is assigned to
+internal workflow variable with specified name, which is created
+automatically.</p></td>
+</tr>
+<tr class="row-even"><td><p>PAR_STRING</p></td>
+<td><p>variable name</p></td>
+<td><p>Creates graphical widget for string value input (such as atom name of
+anomalous scatterer). The input is assigned to internal workflow variable
+with specified name, which is created automatically.</p></td>
+</tr>
+<tr class="row-odd"><td><p>PAR_CHECK</p></td>
+<td><p>variable name</p></td>
+<td><p>Creates graphical widget for a checkbox input. The input (<code class="docutils literal notranslate"><span class="pre">True/False</span></code>
+for checked/unchecked state, respectively) is assigned to internal
+workflow variable with specified name, which is created automatically.
+PAR_CHECK cannot be preceded with the exclamation sign, and it always
+has a default value (unchecked if not specified).</p></td>
+</tr>
+<tr class="row-even"><td><p>PAR_COMBO</p></td>
+<td><p>variable name</p></td>
+<td><p>Creates graphical widget for combobox input. The input (value associated
+with the seleted combobox item) is assigned to internal workflow variable
+with specified name, which is created automatically. PAR_COMBO cannot be
+preceded with the exclamation sign, and it always has a default value
+(first item if not specified).</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="workflow-body-section">
 <h3 id="workflow-body-section"><span class="section-number">5.4.4. </span>Workflow body section<a class="headerlink" href="#workflow-body-section" title="Permalink to this heading">¶</a></h3>
@@ -1074,8 +1315,8 @@ available functions, constants and operators in
 <p><strong>WScript</strong> allows almost full range of <em>Python</em> mathematical expressions in
 <em>LET</em> statements and conditional statements. Available functions and operators
 are listed in this section.</p>
-<table id="id2">
-<caption><span class="caption-text">Operator precedence</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<table id="id6">
+<caption><span class="caption-text">Operator precedence</span><a class="headerlink" href="#id6" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 15.0%"/>
 <col style="width: 15.0%"/>
@@ -1142,8 +1383,8 @@ are listed in this section.</p>
 </tr>
 </tbody>
 </table>
-<table id="id3">
-<caption><span class="caption-text">Unary operators</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<table id="id7">
+<caption><span class="caption-text">Unary operators</span><a class="headerlink" href="#id7" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 15.0%"/>
 <col style="width: 85.0%"/>
@@ -1163,97 +1404,97 @@ are listed in this section.</p>
 <tr class="row-even"><td><p>x!</p></td>
 <td><p>Factorial (x * (x-1) * (x-2) * … * 2 * 1). gamma(x + 1) for non-integers.</p></td>
 </tr>
-<tr class="row-odd"><td><p>abs x</p></td>
+<tr class="row-odd"><td><p>abs(x)</p></td>
 <td><p>Absolute value (magnitude) of x</p></td>
 </tr>
-<tr class="row-even"><td><p>acos x</p></td>
+<tr class="row-even"><td><p>acos(x)</p></td>
 <td><p>Arc cosine of x (in radians)</p></td>
 </tr>
-<tr class="row-odd"><td><p>acosh x</p></td>
+<tr class="row-odd"><td><p>acosh(x)</p></td>
 <td><p>Hyperbolic arc cosine of x (in radians)</p></td>
 </tr>
-<tr class="row-even"><td><p>asin x</p></td>
+<tr class="row-even"><td><p>asin(x)</p></td>
 <td><p>Arc sine of x (in radians)</p></td>
 </tr>
-<tr class="row-odd"><td><p>asinh x</p></td>
+<tr class="row-odd"><td><p>asinh(x)</p></td>
 <td><p>Hyperbolic arc sine of x (in radians)</p></td>
 </tr>
-<tr class="row-even"><td><p>atan x</p></td>
+<tr class="row-even"><td><p>atan(x)</p></td>
 <td><p>Arc tangent of x (in radians)</p></td>
 </tr>
-<tr class="row-odd"><td><p>atanh x</p></td>
+<tr class="row-odd"><td><p>atanh(x)</p></td>
 <td><p>Hyperbolic arc tangent of x (in radians)</p></td>
 </tr>
-<tr class="row-even"><td><p>cbrt x</p></td>
+<tr class="row-even"><td><p>cbrt(x)</p></td>
 <td><p>Cube root of x</p></td>
 </tr>
-<tr class="row-odd"><td><p>ceil x</p></td>
+<tr class="row-odd"><td><p>ceil(x)</p></td>
 <td><p>Ceiling of x — the smallest integer that’s &gt;= x</p></td>
 </tr>
-<tr class="row-even"><td><p>cos x</p></td>
+<tr class="row-even"><td><p>cos(x)</p></td>
 <td><p>Cosine of x (x is in radians)</p></td>
 </tr>
-<tr class="row-odd"><td><p>cosh x</p></td>
+<tr class="row-odd"><td><p>cosh(x)</p></td>
 <td><p>Hyperbolic cosine of x (x is in radians)</p></td>
 </tr>
-<tr class="row-even"><td><p>exp x</p></td>
+<tr class="row-even"><td><p>exp(x)</p></td>
 <td><p>e^x (exponential/antilogarithm function with base e)</p></td>
 </tr>
-<tr class="row-odd"><td><p>expm1 x</p></td>
+<tr class="row-odd"><td><p>expm1(x)</p></td>
 <td><p>e^x - 1</p></td>
 </tr>
-<tr class="row-even"><td><p>floor x</p></td>
+<tr class="row-even"><td><p>floor(x)</p></td>
 <td><p>Floor of x — the largest integer that’s &lt;= x</p></td>
 </tr>
-<tr class="row-odd"><td><p>length x</p></td>
+<tr class="row-odd"><td><p>length(x)</p></td>
 <td><p>String or array length of x</p></td>
 </tr>
-<tr class="row-even"><td><p>ln x</p></td>
+<tr class="row-even"><td><p>ln(x)</p></td>
 <td><p>Natural logarithm of x</p></td>
 </tr>
-<tr class="row-odd"><td><p>log x</p></td>
+<tr class="row-odd"><td><p>log(x)</p></td>
 <td><p>Natural logarithm of x (synonym for ln, not base-10)</p></td>
 </tr>
-<tr class="row-even"><td><p>log10 x</p></td>
+<tr class="row-even"><td><p>log10(x)</p></td>
 <td><p>Base-10 logarithm of x</p></td>
 </tr>
-<tr class="row-odd"><td><p>log2 x</p></td>
+<tr class="row-odd"><td><p>log2(x)</p></td>
 <td><p>Base-2 logarithm of x</p></td>
 </tr>
-<tr class="row-even"><td><p>log1p x</p></td>
+<tr class="row-even"><td><p>log1p(x)</p></td>
 <td><p>Natural logarithm of (1 + x)</p></td>
 </tr>
 <tr class="row-odd"><td><p>not x</p></td>
 <td><p>Logical NOT operator</p></td>
 </tr>
-<tr class="row-even"><td><p>round x</p></td>
+<tr class="row-even"><td><p>round(x)</p></td>
 <td><p>X, rounded to the nearest integer, using “grade-school rounding”</p></td>
 </tr>
-<tr class="row-odd"><td><p>sign x</p></td>
+<tr class="row-odd"><td><p>sign(x)</p></td>
 <td><p>Sign of x (-1, 0, or 1 for negative, zero, or positive respectively)</p></td>
 </tr>
-<tr class="row-even"><td><p>sin x</p></td>
+<tr class="row-even"><td><p>sin(x)</p></td>
 <td><p>Sine of x (x is in radians)</p></td>
 </tr>
-<tr class="row-odd"><td><p>sinh x</p></td>
+<tr class="row-odd"><td><p>sinh(x)</p></td>
 <td><p>Hyperbolic sine of x (x is in radians)</p></td>
 </tr>
-<tr class="row-even"><td><p>sqrt x</p></td>
+<tr class="row-even"><td><p>sqrt(x)</p></td>
 <td><p>Square root of x. Result is NaN (Not a Number) if x is negative.</p></td>
 </tr>
-<tr class="row-odd"><td><p>tan x</p></td>
+<tr class="row-odd"><td><p>tan(x)</p></td>
 <td><p>Tangent of x (x is in radians)</p></td>
 </tr>
-<tr class="row-even"><td><p>tanh x</p></td>
+<tr class="row-even"><td><p>tanh(x)</p></td>
 <td><p>Hyperbolic tangent of x (x is in radians)</p></td>
 </tr>
-<tr class="row-odd"><td><p>trunc x</p></td>
+<tr class="row-odd"><td><p>trunc(x)</p></td>
 <td><p>Integral part of a X, looks like floor(x) unless for negative number</p></td>
 </tr>
 </tbody>
 </table>
-<table id="id4">
-<caption><span class="caption-text">Pre-defined functions</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<table id="id8">
+<caption><span class="caption-text">Pre-defined functions</span><a class="headerlink" href="#id8" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 17.0%"/>
 <col style="width: 83.0%"/>
@@ -1311,8 +1552,8 @@ are listed in this section.</p>
 </tr>
 </tbody>
 </table>
-<table id="id5">
-<caption><span class="caption-text">Constants</span><a class="headerlink" href="#id5" title="Permalink to this table">¶</a></caption>
+<table id="id9">
+<caption><span class="caption-text">Constants</span><a class="headerlink" href="#id9" title="Permalink to this table">¶</a></caption>
 <colgroup>
 <col style="width: 15.0%"/>
 <col style="width: 85.0%"/>
@@ -1329,10 +1570,10 @@ are listed in this section.</p>
 <tr class="row-odd"><td><p>PI</p></td>
 <td><p>The value of <cite>Math.PI</cite> from your JavaScript runtime</p></td>
 </tr>
-<tr class="row-even"><td><p>true</p></td>
+<tr class="row-even"><td><p>True</p></td>
 <td><p>Logical <cite>true</cite> value</p></td>
 </tr>
-<tr class="row-odd"><td><p>false</p></td>
+<tr class="row-odd"><td><p>False</p></td>
 <td><p>Logical <cite>false</cite> value</p></td>
 </tr>
 </tbody>

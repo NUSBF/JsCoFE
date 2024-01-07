@@ -669,15 +669,160 @@ viewed as a computable trivial expression made of a single variable. See
 available functions, constants and operators in
 :ref:`wscript_reference_expression_syntax`.
 
+.. _wscript_reference_header:
 
 ~~~~~~~~~~~~~~
 Header section
 ~~~~~~~~~~~~~~
 
+Header section comes first in **WScript** and cannot be empty.
+
+.. list-table:: Header section
+   :widths: 8 6 6 80
+   :header-rows: 1
+
+   * - Key
+     - Mandatory
+     - Values
+     - Description
+   * - VERSION
+     - No
+     - Numeric
+     - Version number, dependent on CCP4 Cloud version, for backward compatibility.
+       Outdated versions will be reported when workflow is used. Default value:
+       ``1.0``.
+   * - DEBUG
+     - No
+     - ON/OFF
+     - Flag to produce extended workflow log and diagnostics. Default value: 
+       ``OFF``.
+   * - COMMENTS
+     - No
+     - ON/OFF
+     - Flag to produce additional comments such as results of *LET* statements
+       in workflow log. Default value: ``ON``.
+   * - WID
+     - Yes/No
+     - String
+     - Workflow ID which **must be given** when workflow is used in *Import* task
+       or via **CloudRun** utility. Ignored if workflow is used as task included
+       in **My Workflows** section of the **Task List**. Default value is not set.
+   * - NAME
+     - No
+     - String
+     - Workflow name which identifies workflow task in **Job Tree**; can contain
+       several space-separated words if necessary. Default value: ``Workflow``.
+   * - ONAME
+     - No
+     - String
+     - Alphanumeric word used to name data objects created by the *Workflow* task.
+       Default value: ``workflow``.
+   * - TITLE
+     - No
+     - String
+     - Workflow title which identifies workflow task in **Task List** and
+       report pages; can contain several space-separated words if necessary.
+       Default value: ``Workflow``.
+   * - DESC
+     - No
+     - String
+     - Workflow description which appears in small font under the workflow title
+       in **Task List** and report pages; can contain several space-separated 
+       words if necessary. Default value: ``custom workflow``.
+   * - ICON
+     - No
+     - String
+     - Colour code for workflow's icon, which can help to organise 
+       **My Workflows** section in **Task List**. Available codes include:
+       ``Aqua``, ``Asparagus``, ``Black``, ``Gold``, ``Grape``, ``Lavender``,
+       ``Maraschino``, ``Maroon``, ``Mocha``, ``Pink``, ``Salmon``, ``Spring``,
+       ``Tangerine``, ``Teal``, ``Tin``. Default value: ``Aqua``.
+   * - KEYWORDS
+     - No
+     - String
+     - Space-separated listr of keywords to be used in **A-Z** tab of
+       **Task List** for keyword-based task searches. Default value:
+       ``workflow``.
+   * - ALLOW_UPLOAD
+     - No
+     - 
+     - If given, this keyword creates file upload widgets, which are used
+       instead of object selection widgets when workflow task is invoked from
+       the root of **Job Tree**. This keyword should not be used if workflow
+       cannot be run from the root (for example, if it uses *Structure Revision* 
+       as one input data type.
+
+
+.. _wscript_reference_input_data:
 
 ~~~~~~~~~~~~~~~~~~
 Input data section
 ~~~~~~~~~~~~~~~~~~
+
+Input data section must follow :ref:`wscript_reference_header` and cannot 
+be empty. The section may contain only ``DATA`` and ``!DATA`` statements, where
+exclamation mark means that data input is mandatory. One ``DATA`` statement
+creates a single graphical widget, which can take specified data objects. The
+statement has the following syntax: ::
+
+    DATA object(s) [TYPES subtype(s)]
+
+where the ``TYPES`` part is optional.
+
+.. list-table:: Header section: data objects
+   :widths: 15 85
+   :header-rows: 1
+
+   * - Object name
+     - Description
+   * - UNMERGED
+     - Unmerged reflection dataset
+   * - HKL
+     - Merged reflection dataset
+   * - XYZ
+     - Structure model coordinates
+   * - SEQ
+     - Macromolecular sequence
+   * - LIBRARY
+     - Crystallographic restraints library for non-standard residues and
+       ligands not found in CCP4 Monomer Library
+   * - LIGAND
+     - Ligand descriptions for fitting in electron density. This will create
+       graphical widgets for specifying either a SMILES string, 3-letter ligand
+       code or upload a ``.cif`` file with ligand descriptions.
+
+
+.. list-table:: Header section: data objects subtypes
+   :widths: 15 85
+   :header-rows: 1
+
+   * - Subtype name
+     - Description
+   * - anomalous
+     - Reflection dataset with anomalous scattering
+   * - protein
+     - Structure coordinates or sequence corresponding to an amino acid chain
+   * - rna
+     - Structure coordinates or sequence corresponding to a ribonucleic acid
+       chain
+   * - dna
+     - Structure coordinates or sequence corresponding to a deoxyribonucleic
+       acid chain
+
+Examples: ::
+
+    # Mandatory input of either unmerged or merged reflection dataset
+    # containing anomalous signal
+    !DATA UNMERGED HKL TYPES anomalous
+
+    # Optional input of protein structure model
+    DATA XYZ TYPES protein
+
+    # Mandatory input of sequence of any type
+    !DATA SEQ
+
+    # Mandatory input of sequence of any type (alternative)
+    !DATA SEQ TYPES protein dna rna
 
 
 .. _wscript_reference_input_parameters:
@@ -686,6 +831,51 @@ Input data section
 Input parameters section
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
+Input parameters section is optional. If used, it must follow
+:ref:`wscript_reference_input_data`. The section is made of prinicpal
+statements ``PAR_*`` or ``!PAR_*`` followed by their specifiers. The leading 
+exclamation mark means that user's input is mandatory and the corresponding
+parameter cannot have a default value. On contrary, ``PAR_*`` statements must 
+have a default parameter specified. The exclamation mark cannot be applied in
+case of ``PAR_CHECK`` and ``PAR_COMBO`` parameters, which always have a
+default value.
+
+.. list-table:: Principal parameter statements
+   :widths: 8 10 82
+   :header-rows: 1
+
+   * - Key
+     - Value
+     - Description
+   * - PAR_INTEGER
+     - variable name
+     - Creates graphical widget for integer number input. The input is assigned
+       to internal workflow variable with specified name, which is created
+       automatically.
+   * - PAR_REAL
+     - variable name
+     - Creates graphical widget for real number input. The input is assigned to
+       internal workflow variable with specified name, which is created
+       automatically.
+   * - PAR_STRING
+     - variable name
+     - Creates graphical widget for string value input (such as atom name of
+       anomalous scatterer). The input is assigned to internal workflow variable
+       with specified name, which is created automatically.
+   * - PAR_CHECK
+     - variable name
+     - Creates graphical widget for a checkbox input. The input (``True/False`` 
+       for checked/unchecked state, respectively) is assigned to internal 
+       workflow variable with specified name, which is created automatically.
+       PAR_CHECK cannot be preceded with the exclamation sign, and it always 
+       has a default value (unchecked if not specified).
+   * - PAR_COMBO
+     - variable name
+     - Creates graphical widget for combobox input. The input (value associated
+       with the seleted combobox item) is assigned to internal workflow variable
+       with specified name, which is created automatically. PAR_COMBO cannot be
+       preceded with the exclamation sign, and it always has a default value
+       (first item if not specified).
 
 
 ~~~~~~~~~~~~~~~~~~~~~
@@ -771,63 +961,63 @@ are listed in this section.
      - Unary plus. This converts it's operand to a number, but has no other effect.
    * - x!
      - Factorial (x * (x-1) * (x-2) * … * 2 * 1). gamma(x + 1) for non-integers.
-   * - abs x
+   * - abs(x)
      - Absolute value (magnitude) of x
-   * - acos x
+   * - acos(x)
      - Arc cosine of x (in radians)
-   * - acosh x
+   * - acosh(x)
      - Hyperbolic arc cosine of x (in radians)
-   * - asin x
+   * - asin(x)
      - Arc sine of x (in radians)
-   * - asinh x
+   * - asinh(x)
      - Hyperbolic arc sine of x (in radians)
-   * - atan x
+   * - atan(x)
      - Arc tangent of x (in radians)
-   * - atanh x
+   * - atanh(x)
      - Hyperbolic arc tangent of x (in radians)
-   * - cbrt x
+   * - cbrt(x)
      - Cube root of x
-   * - ceil x
+   * - ceil(x)
      - Ceiling of x — the smallest integer that’s >= x
-   * - cos x
+   * - cos(x)
      - Cosine of x (x is in radians)
-   * - cosh x
+   * - cosh(x)
      - Hyperbolic cosine of x (x is in radians)
-   * - exp x
+   * - exp(x)
      - e^x (exponential/antilogarithm function with base e)
-   * - expm1 x
+   * - expm1(x)
      - e^x - 1
-   * - floor x
+   * - floor(x)
      - Floor of x — the largest integer that’s <= x
-   * - length x
+   * - length(x)
      - String or array length of x
-   * - ln x
+   * - ln(x)
      - Natural logarithm of x
-   * - log x
+   * - log(x)
      - Natural logarithm of x (synonym for ln, not base-10)
-   * - log10 x
+   * - log10(x)
      - Base-10 logarithm of x
-   * - log2 x
+   * - log2(x)
      - Base-2 logarithm of x
-   * - log1p x
+   * - log1p(x)
      - Natural logarithm of (1 + x)
    * - not x
      - Logical NOT operator
-   * - round x
+   * - round(x)
      - X, rounded to the nearest integer, using "grade-school rounding"
-   * - sign x
+   * - sign(x)
      - Sign of x (-1, 0, or 1 for negative, zero, or positive respectively)
-   * - sin x
+   * - sin(x)
      - Sine of x (x is in radians)
-   * - sinh x
+   * - sinh(x)
      - Hyperbolic sine of x (x is in radians)
-   * - sqrt x
+   * - sqrt(x)
      - Square root of x. Result is NaN (Not a Number) if x is negative.
-   * - tan x
+   * - tan(x)
      - Tangent of x (x is in radians)
-   * - tanh x
+   * - tanh(x)
      - Hyperbolic tangent of x (x is in radians)
-   * - trunc x
+   * - trunc(x)
      - Integral part of a X, looks like floor(x) unless for negative number
 
 .. list-table:: Pre-defined functions
@@ -878,7 +1068,7 @@ are listed in this section.
      - The value of `Math.E` from your JavaScript runtime
    * - PI
      - The value of `Math.PI` from your JavaScript runtime
-   * - true
+   * - True
      - Logical `true` value
-   * - false
+   * - False
      - Logical `false` value
