@@ -29,7 +29,7 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
 // ===========================================================================
 
 
-var __coot_reserved_codes = [
+const __coot_reserved_codes = [
   "XXX","LIG","DRG","INH","LG0","LG1","LG2","LG3","LG4","LG5","LG6",
   "LG7","LG8","LG9"
 ];
@@ -224,6 +224,14 @@ TaskMakeLigand.prototype.checkKeywords = function ( keywords )  {
     return this.__check_keywords ( keywords,['acedrg', 'ligand','make', 'chemical', 'monomer', 'smile'] );
 }
 
+TaskMakeLigand.prototype.getWorkflowScript = function ( serialNo )  {
+let wscript = [];
+  if (__template)
+        wscript = __template.TaskTemplate.prototype.getWorkflowScript.call ( this,serialNo );
+  else  wscript = TaskTemplate.prototype.getWorkflowScript.call ( this,serialNo );
+  wscript.splice ( 1,0,'    ALIAS     revision   void1' );
+  return wscript;
+}
 
 if (!__template)  {
   // client side
