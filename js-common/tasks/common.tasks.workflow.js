@@ -40,7 +40,7 @@ function TaskWorkflow()  {
   this.title  = 'Workflow';
 
   this.icon_name       = 'workflow_aqua';
-  this.task_desc       = 'generic workflow';
+  this.task_desc       = 'custom workflow';
   this.search_keywords = ['workflow'];
 
   this.script          = [];  // script to execute
