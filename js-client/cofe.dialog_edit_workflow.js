@@ -156,7 +156,7 @@ function EditWorkflowDialog ( workflowDesc,callback_func )  {
       '#    TOOLTIP   Check to prepare PDB deposition files and validation report',
       '#    DEFAULT   Unchecked',
       '',    
-      '# !PAR_COMBO   useBFactors   # name to be used in workflow\'s expressions',
+      '# PAR_COMBO   useBFactors   # name to be used in workflow\'s expressions',
       '#    LABEL     Use isotropic B-factors',
       '#    TOOLTIP   B-factor mode for refinement',
       '#    IWIDTH    60        # input field width is set to 60 pixels',

@@ -348,7 +348,7 @@ if (!__template)  {
 
   DataXYZ.prototype.layCustomDropdownInput = function ( dropdown )  {
 
-    var customGrid = dropdown.customGrid;
+    let customGrid = dropdown.customGrid;
 
     if (dropdown.layCustom=='cell-info')  {
 
@@ -371,13 +371,13 @@ if (!__template)  {
               this.exclLigs.push ( this.xyzmeta.ligands[i] );
         }
 
-        var ncols = 6;
+        let ncols = 6;
         customGrid.setLabel ( 'Uncheck ligands that are not part of biochemical system:',
                               0,0,1,ncols+1 ).setFontItalic(true).setNoWrap();
         customGrid.cbxs = [];
-        var row = 1;
-        var col = 0;
-        for (var i=0;i<this.xyzmeta.ligands.length;i++)  {
+        let row = 1;
+        let col = 0;
+        for (let i=0;i<this.xyzmeta.ligands.length;i++)  {
           if (col>=ncols)  {
             col = 0;
             row++;
@@ -397,20 +397,20 @@ if (!__template)  {
 
     } else if (startsWith(dropdown.layCustom,'chain-sel')) {
 
-      var xyz    = this.xyzmeta.xyz;
-      var labels = [];
-      var ids    = [];
+      let xyz    = this.xyzmeta.xyz;
+      let labels = [];
+      let ids    = [];
       if (xyz)
-        for (var i=0;i<xyz.length;i++)  {
-          var chains = xyz[i].chains;
-          for (var j=0;j<chains.length;j++)
+        for (let i=0;i<xyz.length;i++)  {
+          let chains = xyz[i].chains;
+          for (let j=0;j<chains.length;j++)
             if ((dropdown.layCustom=='chain-sel') ||
                 (dropdown.layCustom.startsWith('chain-sel-protein') &&
                  (chains[j].type=='Protein'))     ||
                 (((dropdown.layCustom=='chain-sel-MR') ||
                   (dropdown.layCustom=='chain-sel-poly-2')) &&
                  (['Protein','DNA','RNA','NA'].indexOf(chains[j].type)>=0)))  {
-              var id = chains[j].id;
+              let id = chains[j].id;
               if (xyz.length>1)
                 id = '/' + xyz[i].model + '/' + id;
               labels.push ( id + ' (' + chains[j].type.toLowerCase() + ')' );
@@ -434,7 +434,7 @@ if (!__template)  {
 
           if ((!('chainSel2' in this)) || (!this.chainSel2))  {
             this.chainSel2 = '';
-            for (var j=0;(j<ids.length) && (!this.chainSel2);j++)
+            for (let j=0;(j<ids.length) && (!this.chainSel2);j++)
               if (ids[j]!=this.chainSel)
                 this.chainSel2 = ids[j];
           }
@@ -451,7 +451,7 @@ if (!__template)  {
           customGrid.chainSel2 = new Dropdown();
           customGrid.chainSel2.setWidth ( '160px' );
 
-          for (var j=0;j<labels.length;j++)  {
+          for (let j=0;j<labels.length;j++)  {
             customGrid.chainSel .addItem ( labels[j],'',ids[j],this.chainSel==ids[j]  );
             customGrid.chainSel2.addItem ( labels[j],'',ids[j],this.chainSel2==ids[j] );
           }
@@ -460,7 +460,7 @@ if (!__template)  {
           customGrid.setWidget ( customGrid.chainSel2,1,1,1,2 );
           customGrid.chainSel2.make();
 
-          var self = this;
+          let self = this;
           customGrid.chainSel.addOnChangeListener ( function(text,value){
             if (value==self.chainSel2)  {
               customGrid.chainSel.selectItem ( self.chainSel );
@@ -500,7 +500,7 @@ if (!__template)  {
         customGrid.chainSel = new Dropdown();
         // customGrid.chainSel.setWidth ( '250px' );
 
-        for (var j=0;j<labels.length;j++)
+        for (let j=0;j<labels.length;j++)
           customGrid.chainSel.addItem ( labels[j],'',ids[j],this.chainSel==ids[j] );
         customGrid.setWidget ( customGrid.chainSel, 0,1,1,2 );
         customGrid.chainSel.make();
