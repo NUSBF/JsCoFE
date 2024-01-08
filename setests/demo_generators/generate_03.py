@@ -145,7 +145,7 @@ def makingLigand(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Ligands')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Make Ligand with Acedrg')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Make Ligand with Acedrg')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'SMILES string')

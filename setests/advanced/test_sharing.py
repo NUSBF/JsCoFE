@@ -67,7 +67,7 @@ def startRefmac(driver):
     time.sleep(1.05)
 
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1.05)
 
     # There are several forms - active and inactive. We need one displayed.

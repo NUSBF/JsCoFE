@@ -32,10 +32,10 @@ def addSlice(driver):
     if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Model Preparation')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Split MR model with')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Split MR model with')
         time.sleep(1)
     else:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Split MR model with')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Split MR model with')
 
     
     time.sleep(6)
@@ -160,12 +160,12 @@ def addSliceNDice(driver):
         time.sleep(1)
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'MR with model splitting using')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR with model splitting using')
         time.sleep(1)
     else:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'MR with model splitting using')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR with model splitting using')
     time.sleep(1)
 
     

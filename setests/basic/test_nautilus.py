@@ -25,7 +25,7 @@ def importFromPDB(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Import from PDB')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Import from PDB')
     time.sleep(1)
 
     try:
@@ -93,7 +93,7 @@ def asymmetricUnitContents(driver, waitShort, task='0002'):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(2)
 
     # 2 molecules in the ASU
@@ -149,7 +149,7 @@ def editRevisionStructure(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Edit Structure Revision')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Edit Structure Revision')
     time.sleep(1)
 
     sf.clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
@@ -197,7 +197,7 @@ def refmacAfterRevision(driver, waitLong):
     time.sleep(1)
 
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -253,7 +253,7 @@ def startNautilus(driver):
 
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building of RNA/DNA with Nautilus')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building of RNA/DNA with Nautilus')
         time.sleep(1)
     except:
         pass
@@ -265,7 +265,7 @@ def startNautilus(driver):
         driver.execute_script("window.scrollTo(0, 500)")
         time.sleep(1)
 
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building of RNA/DNA with Nautilus')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building of RNA/DNA with Nautilus')
         time.sleep(1)
     except:
         pass
@@ -277,7 +277,7 @@ def startNautilus(driver):
         sf.clickByXpath(driver, "//span[starts-with(text(), '%s')]" % 'consider fixed')
         time.sleep(1)
 
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'ignore')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'ignore')
         time.sleep(1)
 
     except:

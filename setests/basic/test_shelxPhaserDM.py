@@ -241,7 +241,7 @@ def runParrot(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification')
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Density Modification with Parrot')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification with Parrot')
     time.sleep(2)
 
     # sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'R0004.01:')
@@ -477,7 +477,7 @@ def startBuccaneer(driver):
     except:
         pass
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
     time.sleep(1)
 
 

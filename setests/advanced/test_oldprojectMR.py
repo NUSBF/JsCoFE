@@ -81,7 +81,7 @@ def startRefmac(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
     time.sleep(1)
    
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//button[contains(@style, 'images_png/runjob.png')]" )
@@ -118,7 +118,7 @@ def startRefmacAniso(driver, waitLong):
     time.sleep(1)
 
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Basic options')

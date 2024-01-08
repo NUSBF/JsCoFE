@@ -29,7 +29,7 @@ def xyzutilsAfterImport(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Coordinate Utilities')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Coordinate Utilities')
     time.sleep(1)
 
 

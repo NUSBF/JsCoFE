@@ -159,7 +159,7 @@ def startModelCraft(driver, waitLong):
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
         time.sleep(2)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
         time.sleep(2)
     except:
         pass
@@ -230,7 +230,7 @@ def refmacAfterBuccaner(driver, waitLong):
     
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
     time.sleep(1)
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
   
     
@@ -289,7 +289,7 @@ def prepareMRensembleSEQ(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Sequence')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Sequence')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

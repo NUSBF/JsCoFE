@@ -28,7 +28,7 @@ def startStructurePrediction (driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Structure Prediction')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Structure Prediction')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Structure Prediction')
     time.sleep(6)
     
     # scoreInputs = driver.find_elements_by_xpath("//input[contains(@value,'80')]")
@@ -93,7 +93,7 @@ def addSliceNDice(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'MR with model splitting using')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR with model splitting using')
     time.sleep(6)
 
     tasksInputs = driver.find_elements_by_xpath("//input[contains(@title, 'Maximum number of splits to try.')]")

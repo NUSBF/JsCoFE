@@ -34,7 +34,7 @@ def startRefmac(driver, waitLong):
     
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1.05)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -175,7 +175,7 @@ def editRevisionStructure_rnase(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Edit Revision: Structure')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Edit Revision: Structure')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//span[normalize-space()='%s']" % '[do not change]')

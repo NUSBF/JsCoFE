@@ -29,7 +29,7 @@ def gesamtAfterRevision(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Structure Alignment and Superposition with Gesamt')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Structure Alignment and Superposition with Gesamt')
     time.sleep(1)
 
     try:
@@ -111,12 +111,12 @@ def lsqkabAfterGesamt(driver, wait):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(3)
     try:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Structure Superposition with LSQKab')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Structure Superposition with LSQKab')
         time.sleep(1)
     except:
         pass
     try:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Structure Superposition with LsqKab')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Structure Superposition with LsqKab')
         time.sleep(1)
     except:
         pass
@@ -195,7 +195,7 @@ def sequenceAlignment(driver, wait):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Sequence Alignment with ClustalW')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Sequence Alignment with ClustalW')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -249,7 +249,7 @@ def symmatch(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Symmetry Match to Reference Structure with CSymMatch')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Symmetry Match to Reference Structure with CSymMatch')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
