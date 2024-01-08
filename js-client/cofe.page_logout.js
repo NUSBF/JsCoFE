@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.02.23   <--  Date of Last Modification.
+ *    08.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Logout page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -120,14 +120,16 @@ function logout ( sceneId,reason_key,onLogout_func=null )  {
     serverRequest ( fe_reqtype.logout,0,'Logout',
       function(data){},
       function(){
-        makePage ( new LogoutPage(sceneId,reason_key),onLogout_func );
+        makePage ( function(){ new LogoutPage(sceneId,reason_key) },
+                   onLogout_func );
       },
       null
     );
 
   } else {
 
-    makePage ( new LogoutPage(sceneId,reason_key),onLogout_func );
+    makePage ( function(){ new LogoutPage(sceneId,reason_key) },
+               onLogout_func );
 
   }
 

@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.12.23   <--  Date of Last Modification.
+ *    08.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -34,7 +34,7 @@ function ProjectPage ( sceneId )  {
     return;
   }
 
-  this.dock          = null;  // dock widget
+  this.dock           = null;  // dock widget
 
   // ***** development code, dormant
   //this.replay_job_tree = null;  // for external references
@@ -68,7 +68,7 @@ function ProjectPage ( sceneId )  {
   //var replay_mode    = false;
   // *******************************
 
-  var self            = this;  // for referencing class's properties
+  let self            = this;  // for referencing class's properties
 
   // var setButtonState_timer = null;
 
@@ -98,6 +98,7 @@ function ProjectPage ( sceneId )  {
   this.headerPanel.setVerticalAlignment ( 0,2,'middle' );
 
   this.makeDock();
+  this.dock.loadDockData();
 
   // Make Main Menu
 
@@ -355,38 +356,36 @@ function ProjectPage ( sceneId )  {
   // this.onResize ( window.innerWidth,window.innerHeight );
 
   //  Read project data from server first time
-  // (function(self){
-    // takes project name from projectList.current
-    self.jobTree.readProjectData ( 'Project',true,-1,
-      function(){
-        if (self.onTreeLoaded(false,self.jobTree))  {
-          self.dock.loadDockData();
-          // add button listeners
-          self.add_btn.addOnClickListener ( function(){ self.addJob(); } );
-          if (self.moveup_btn)
-            self.moveup_btn.addOnClickListener ( function(){ self.moveJobUp();  } );
-          self.del_btn    .addOnClickListener ( function(){ self.deleteJob  (); } );
-          self.stack_btn  .addOnClickListener ( function(){ self.stackJobs  (); } );
-          self.open_btn   .addOnClickListener ( function(){ self.openJob    (); } );
-          self.stop_btn   .addOnClickListener ( function(){ self.stopJob    (); } );
-          self.clone_btn  .addOnClickListener ( function(){ self.cloneJob   (); } );
-          self.add_rem_btn.addOnClickListener ( function(){ self.addRemark  (); } );
-          self.thlight_btn.addOnClickListener ( function(){ self.toggleBranchHighlight(); } );
-          self.trimPageTitle();
-          self.title_lbl  .setText ( self.jobTree.projectData.desc.title );
-          self.can_reload  = true;
-          self.pending_act = '';
-          if (self.jobTree.hasRunningJobs(0))
-            self.wakeZombieJobs(null);
-        }
-      },function(node){
-        return self.onTreeContextMenu();
-      },function(){
-        self.openJob();
-      },function(){
-        self.onTreeItemSelect();
-      });
-  // }(this))
+  // takes project name from projectList.current
+  self.jobTree.readProjectData ( 'Project',true,-1,
+    function(){
+      if (self.onTreeLoaded(false,self.jobTree))  {
+        // self.dock.loadDockData();
+        // add button listeners
+        self.add_btn.addOnClickListener ( function(){ self.addJob(); } );
+        if (self.moveup_btn)
+          self.moveup_btn.addOnClickListener ( function(){ self.moveJobUp();  } );
+        self.del_btn    .addOnClickListener ( function(){ self.deleteJob  (); } );
+        self.stack_btn  .addOnClickListener ( function(){ self.stackJobs  (); } );
+        self.open_btn   .addOnClickListener ( function(){ self.openJob    (); } );
+        self.stop_btn   .addOnClickListener ( function(){ self.stopJob    (); } );
+        self.clone_btn  .addOnClickListener ( function(){ self.cloneJob   (); } );
+        self.add_rem_btn.addOnClickListener ( function(){ self.addRemark  (); } );
+        self.thlight_btn.addOnClickListener ( function(){ self.toggleBranchHighlight(); } );
+        self.trimPageTitle();
+        self.title_lbl  .setText ( self.jobTree.projectData.desc.title );
+        self.can_reload  = true;
+        self.pending_act = '';
+        if (self.jobTree.hasRunningJobs(0))
+          self.wakeZombieJobs(null);
+      }
+    },function(node){
+      return self.onTreeContextMenu();
+    },function(){
+      self.openJob();
+    },function(){
+      self.onTreeItemSelect();
+    });
 
 }
 
@@ -1188,58 +1187,52 @@ ProjectPage.prototype.onTreeLoaded = function ( stayInProject,job_tree )  {
   __current_project = job_tree.projectData.desc.name;
   // __current_folder  = findFolder ( job_tree.projectData.desc.folderPath );
 
-  var self = this;
-  // (function(self){
-    job_tree.addSignalHandler ( cofe_signals.jobDialogOpened,function(data){
-      self.setSelMode ( 1 );
-    });
-    job_tree.addSignalHandler ( cofe_signals.jobStarted,function(data){
-      self.setButtonState();
-    });
-    job_tree.addSignalHandler ( cofe_signals.treeUpdated,function(data){
-      self.updateUserRationDisplay ( job_tree.projectData.desc );
-      self.setButtonState();
-    });
-    job_tree.addSignalHandler ( cofe_signals.reloadTree,function(rdata){
-      if ('force_reload' in rdata)
-        self.can_reload = true;
-      self.reloadTree ( false,false,rdata );  // multiple = false?
-    });
-    job_tree.addSignalHandler ( cofe_signals.makeProjectList,function(rdata){
-      makeProjectListPage ( __current_page.sceneId );
-    });
+  let self = this;
 
-    if ((job_tree.root_nodes.length==1) &&
-        (job_tree.root_nodes[0].children.length<=0))  {
-      self.can_reload = true;   // tree reload semaphore
-      // enter empty project: first task to run or choose
-      switch (job_tree.projectData.desc.startmode)  {
-        case start_mode.auto    :
-                self.addJob();
-              break;
-        case start_mode.migrate :
-                if (self.start_action('add_job'))  {
-                  self.can_reload = true;
-                  self.jobTree.addTask ( new TaskMigrate(),false,false,self,
-                    function(key){
-                      self._set_del_button_state();
-                      self.end_action();
-                  });
-                }
-                // job_tree.addTask ( new TaskMigrate(),false,false,self,
-                //   function(key){
-                //     self._set_del_button_state();
-                //     //self.del_btn.setDisabled ( false );
-                //   });
-              break;
-        case start_mode.standard :
-        case start_mode.expert   :  // legacy
-        default : self.addJob();
-      }
+  job_tree.addSignalHandler ( cofe_signals.jobDialogOpened,function(data){
+    self.setSelMode ( 1 );
+  });
+  job_tree.addSignalHandler ( cofe_signals.jobStarted,function(data){
+    self.setButtonState();
+  });
+  job_tree.addSignalHandler ( cofe_signals.treeUpdated,function(data){
+    self.updateUserRationDisplay ( job_tree.projectData.desc );
+    self.setButtonState();
+  });
+  job_tree.addSignalHandler ( cofe_signals.reloadTree,function(rdata){
+    if ('force_reload' in rdata)
+      self.can_reload = true;
+    self.reloadTree ( false,false,rdata );  // multiple = false?
+  });
+  job_tree.addSignalHandler ( cofe_signals.makeProjectList,function(rdata){
+    makeProjectListPage ( __current_page.sceneId );
+  });
+
+  if ((job_tree.root_nodes.length==1) &&
+      (job_tree.root_nodes[0].children.length<=0))  {
+    __current_page = this;
+    self.can_reload = true;   // tree reload semaphore
+    // enter empty project: first task to run or choose
+    switch (job_tree.projectData.desc.startmode)  {
+      case start_mode.auto    :
+              self.addJob();
+            break;
+      case start_mode.migrate :
+              if (self.start_action('add_job'))  {
+                self.can_reload = true;
+                self.jobTree.addTask ( new TaskMigrate(),false,false,self,
+                  function(key){
+                    self._set_del_button_state();
+                    self.end_action();
+                });
+              }
+            break;
+      case start_mode.standard :
+      case start_mode.expert   :  // legacy
+      default :  self.addJob();
     }
-
-  // }(this))
-
+  }
+  
   this.updateUserRationDisplay ( job_tree.projectData.desc );
 
   return true;
@@ -1463,115 +1456,55 @@ ProjectPage.prototype.addTaskToSelected = function ( task,icon_uri,title )  {
 
 ProjectPage.prototype.makeDock = function()  {
 
-  var dock_btn = this.toolPanel
+  let dock_btn = this.toolPanel
                      .setImageButton ( image_path('dock'),'20px','20px',0,0,1,1 )
                      .setTooltip1    ( 'Toggle task dock','show',true,1000 )
                      .setFontSize    ( '90%' )
                      .setVerticalAlignment ( 'middle' );
 
-  var self = this;
+  let self = this;
 
-  // (function(self){
+  this.dock = new Dock ( this,
 
-    self.dock = new Dock ( self,
-
-      function(taskType,title,icon_uri){  // left click: add task to tree
-
-        if (!$(self.add_btn.element).button('option','disabled'))  {
-
-          var task = eval ( 'new ' + taskType + '()' );
-          self.addTaskToSelected ( task,icon_uri,title );
-
-          // if (task.state==job_code.retired)  {
-
-          //   new MessageBox ( 'Task retired',
-          //       '<div style="min-width:400px"><h2>Task retired</h2>Task<p>' +
-          //       '<div style="text-align:center"><img style="vertical-align:middle" src="' +
-          //       icon_uri +
-          //       '" width="26" height="24"><span style="vertical-align:middle">&nbsp;&nbsp;<b>' +
-          //       title + '</b></span></div><p>has been retired and cannot be added ' +
-          //       'to the Project. You may remove this task from the dock.</div>',
-          //       'msg_warning' );
-
-          // } else  {
-
-          //   self.selectRemark();
-
-          //   // var rc = self.jobTree.addTask ( task,false,false,self,
-          //   //                   function(){
-          //   //                     self._set_del_button_state();
-          //   //                     // self.del_btn.setDisabled ( false );
-          //   //                   });
-          //   // var avail_key   = rc[0];
-          //   // var dataSummary = rc[1];
-
-          //   // if (dataSummary.status<=0)
-          //   //   new TaskDataDialog ( dataSummary,task,avail_key );
-
-          //   if (self.start_action('add_job'))  {
-          //     self.can_reload = true;
-          //     self.jobTree.addTask ( task,false,false,self,
-          //       function(key,avail_key,dataSummary){
-          //         // if (key!=1)  // task was added or failed
-          //         self._set_del_button_state();
-          //         self.end_action();
-          //         // if (key>=0)  {
-          //           if (dataSummary.status<=0)
-          //             new TaskDataDialog ( dataSummary,task,avail_key );
-          //         // }
-          //       });
-          //   }
-
-          // }
-
-        }
-
-      },
-
-      function(taskType,title,icon_uri){  // right click: delete icon
-        // new QuestionBox ( 'Remove dock item',
-        //   '<div style="min-width:400px"><h2>Remove dock item</h2>Remove<p>' +
-        //   '<div style="text-align:center"><img style="vertical-align:middle" src="' +
-        //   icon_uri +
-        //   '" width="26" height="24"><span style="vertical-align:middle">&nbsp;&nbsp;<b>' +
-        //   title + '</b></span></div><p>from the dock?</div>',
-        //   'Yes, remove',function(){
-        //     self.dock.removeTask ( taskType );
-        //   },
-        //   'Cancel',function(){},'msg_confirm' );
-
-        new QuestionBox ( 'Remove dock item',
-          '<div style="min-width:400px"><h2>Remove dock item</h2>Remove<p>' +
-          '<div style="text-align:center"><img style="vertical-align:middle" src="' +
-          icon_uri +
-          '" width="26" height="24"><span style="vertical-align:middle">&nbsp;&nbsp;<b>' +
-          title + '</b></span></div><p>from the dock?</div>',[
-          { name    : 'Yes, remove',
-            onclick : function(){
-                        self.dock.removeTask ( taskType );
-                      }
-          },{
-            name    : 'Cancel',
-            onclick : function(){}
-          }],'msg_confirm' );
-
-        return 0;
-      },
-
-      function(){
-        //return { task:'TaskRefmac', title:'Refmac', icon:'task_refmac'};
-        return null;  // do not add task
+    function(taskType,title,icon_uri){  // left click: add task to tree
+      if (!$(self.add_btn.element).button('option','disabled'))  {
+        let task = eval ( 'new ' + taskType + '()' );
+        self.addTaskToSelected ( task,icon_uri,title );
       }
+    },
 
-    );
+    function(taskType,title,icon_uri){  // right click: delete icon
+      new QuestionBox ( 'Remove dock item',
+        '<div style="min-width:400px"><h2>Remove dock item</h2>Remove<p>' +
+        '<div style="text-align:center"><img style="vertical-align:middle" src="' +
+        icon_uri +
+        '" width="26" height="24"><span style="vertical-align:middle">&nbsp;&nbsp;<b>' +
+        title + '</b></span></div><p>from the dock?</div>',[
+        { name    : 'Yes, remove',
+          onclick : function(){
+                      self.dock.removeTask ( taskType );
+                    }
+        },{
+          name    : 'Cancel',
+          onclick : function(){}
+        }],'msg_confirm' );
 
-    dock_btn.addOnClickListener ( function(){
-      self.dock.toggle();
-    });
+      return 0;
+    },
 
-  // }(this))
+    function(){
+      //return { task:'TaskRefmac', title:'Refmac', icon:'task_refmac'};
+      return null;  // do not add task
+    }
+
+  );
+
+  dock_btn.addOnClickListener ( function(){
+    self.dock.toggle();
+  });
 
 }
+
 
 ProjectPage.prototype.trimPageTitle = function()  {
   let wt = window.innerWidth - 60;
@@ -1682,6 +1615,6 @@ function rvapi_runHotButtonJob ( jobId,task )  {
 // =========================================================================
 
 function makeProjectPage ( sceneId )  {
-  makePage ( new ProjectPage(sceneId) );
+  makePage ( function(){ new ProjectPage(sceneId); } );
   setHistoryState ( 'ProjectPage' );
 }

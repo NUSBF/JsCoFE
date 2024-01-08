@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    16.06.22   <--  Date of Last Modification.
+ *    08.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Import Annotation Dialog (to annotate data before upload)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -41,7 +41,7 @@ function ImportAnnotationDialog ( file_mod,onReady_func )  {
   if ('scalepack' in file_mod)
     this.scalepack = file_mod.scalepack;
 
-  this.makePage();
+  this.makeLayout();
 
   (function(self){
     var h = $(window).height()/2;
@@ -71,7 +71,7 @@ ImportAnnotationDialog.prototype = Object.create ( Widget.prototype );
 ImportAnnotationDialog.prototype.constructor = ImportAnnotationDialog;
 
 
-ImportAnnotationDialog.prototype.makePage = function()  {
+ImportAnnotationDialog.prototype.makeLayout = function()  {
   var proteinRes = [ "E","F","J","L","O","P","Q","X","Z" ];
 
   var row = 0;  // glogal grid

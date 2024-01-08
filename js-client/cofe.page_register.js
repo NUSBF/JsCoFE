@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    28.09.23   <--  Date of Last Modification.
+ *    08.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User registration page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2022
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -41,7 +41,7 @@ function RegisterPage ( sceneId )  {
   this.makeLogoPanel               ( 1,0,3 );
 
   // make login panel
-  var panel = new Grid('');
+  let panel = new Grid('');
   panel.setWidth      ( '300pt' );
   this.grid.setWidget ( panel,0,1,1,1 );
 
@@ -49,23 +49,23 @@ function RegisterPage ( sceneId )  {
   //                       '?Subject=CCP4%20Cloud%20Registration">' + 
   //                       __maintainerEmail + '</a>';
 
-  var reg_lbl      = new Label     ( 'Registration' );
-  var user_lbl     = new Label     ( 'User name:'   ).setNoWrap();
-  var email_lbl    = new Label     ( 'E-mail:'      ).setNoWrap();
-  var login_lbl    = new Label     ( 'Login name:'  ).setNoWrap();
-  var licence_lbl  = new Label     ( 'Licence agreement:&nbsp;&nbsp;&nbsp;' ).setNoWrap();
+  let reg_lbl      = new Label     ( 'Registration' );
+  let user_lbl     = new Label     ( 'User name:'   ).setNoWrap();
+  let email_lbl    = new Label     ( 'E-mail:'      ).setNoWrap();
+  let login_lbl    = new Label     ( 'Login name:'  ).setNoWrap();
+  let licence_lbl  = new Label     ( 'Licence agreement:&nbsp;&nbsp;&nbsp;' ).setNoWrap();
   //var licence_val  = new Label     ( '--/--/--/--'  ).setFontColor('darkred').setNoWrap();
-  var feedback_lbl = new Label     ( 'Feedback agreement:&nbsp;&nbsp;&nbsp;').setNoWrap();
+  let feedback_lbl = new Label     ( 'Feedback agreement:&nbsp;&nbsp;&nbsp;').setNoWrap();
   //var feedback_val = new Label     ( '--/--/--/--'  ).setFontColor('darkred').setNoWrap();
-  var user_inp     = new InputText ( '' );
-  var email_inp    = new InputText ( '' );
+  let user_inp     = new InputText ( '' );
+  let email_inp    = new InputText ( '' );
   // var email_warn   = new Label     ( '<b>GMail addresses cannot be used;</b> ' +
   //                                    'request custom registration from ' +
   //                                    maintainer_link +
   //                                    ' if you cannot use any other address' )
   //                                    .setFontItalic(true).setFontSize('80%')
   //                                    .setFontColor('maroon');
-  var login_inp    = new InputText ( '' );
+  let login_inp    = new InputText ( '' );
   user_inp   .setStyle         ( 'text',__regexp_uname, //"^[A-Za-z\\-\\.\\s]+$",
                                  'John Smith',
                                  'User name should only contain latin ' +
@@ -96,7 +96,7 @@ function RegisterPage ( sceneId )  {
   email_inp   .setFontSize     ( '112%' ).setFontItalic(true).setWidth('97%');
   login_inp   .setFontSize     ( '112%' ).setFontItalic(true).setWidth('97%');
 
-  var row = 0;
+  let row = 0;
   panel.setWidget              ( reg_lbl, row,0,1,4 );
   panel.setHorizontalAlignment ( row++  ,0,'center' );
   panel.setWidget              ( this.makeSetupNamePanel(), row++,0,1,4 );
@@ -104,7 +104,7 @@ function RegisterPage ( sceneId )  {
   panel.setWidget              ( user_lbl    ,row  ,0,1,1 );
   panel.setWidget              ( email_lbl   ,row+1,0,1,1 );
   panel.setWidget              ( login_lbl   ,row+2,0,1,1 );
-  for (var i=0;i<3;i++)
+  for (let i=0;i<3;i++)
     panel.setCellSize  ( '96pt','',row+i,0   );
   panel.setWidget              ( licence_lbl ,row+3,0,1,2 );
   panel.setWidget              ( feedback_lbl,row+4,0,1,2 );
@@ -113,7 +113,7 @@ function RegisterPage ( sceneId )  {
   panel.setWidget              ( login_inp   ,row+2,1,1,3 );
   //panel.setWidget              ( licence_val ,row+3,1,1,1 );
   //panel.setWidget              ( feedback_val,row+4,1,1,1 );
-  for (var i=0;i<5;i++)  {
+  for (let i=0;i<5;i++)  {
     panel.setVerticalAlignment ( row+i,0,'middle' );
     panel.setVerticalAlignment ( row+i,1,'middle' );
   }
@@ -124,7 +124,7 @@ function RegisterPage ( sceneId )  {
 
   row += 3;
   //var licence_btn = new Button ( 'Choose',image_path('licence') );
-  var licence_btn = new Button  ( 'choose',image_path('licence') );
+  let licence_btn = new Button  ( 'choose',image_path('licence') );
   licence_btn.setWidth          ( '100%' );
   licence_btn.setTooltip        ( 'Type of licence must be chosen' );
   panel.setWidget               ( licence_btn,row,1,1,2 );
@@ -134,7 +134,7 @@ function RegisterPage ( sceneId )  {
   //panel.setCellSize            ( '','40pt',row,2 );
 
   row++;
-  var feedback_btn = new Button ( 'choose',image_path('feedback') );
+  let feedback_btn = new Button ( 'choose',image_path('feedback') );
   feedback_btn.setWidth         ( '100%' );
   feedback_btn.setTooltip       ( 'Terms of feedback agremment must be chosen' );
   panel.setWidget               ( feedback_btn,row,1,1,2 );
@@ -148,9 +148,9 @@ function RegisterPage ( sceneId )  {
   panel.setWidget               ( new HLine('3pt'), row++,0,1,4 );
   panel.setCellSize             ( '','1pt',row++,0 );
 
-  var reg_btn  = new Button     ( 'Register and send password by e-mail',image_path('email') );
+  let reg_btn  = new Button     ( 'Register and send password by e-mail',image_path('email') );
 
-  var back_btn = null;
+  let back_btn = null;
   if (__login_token=='')  {
     back_btn = new Button       ( 'Back to User Login',image_path('login') );
     back_btn.addOnClickListener ( function(){ makeLoginPage(sceneId); } );
@@ -192,7 +192,7 @@ function RegisterPage ( sceneId )  {
   reg_btn.addOnClickListener  ( function(){
 
     // Validate the input
-    var msg = validateUserData ( user_inp,email_inp,login_inp );
+    let msg = validateUserData ( user_inp,email_inp,login_inp );
 
     if ([licence_code.academic,licence_code.commercial]
         .indexOf(licence_btn.getText())<0)
@@ -215,7 +215,7 @@ function RegisterPage ( sceneId )  {
 
     } else  {
 
-      var ud      = new UserData();
+      let ud      = new UserData();
       ud.name     = user_inp    .getValue();
       ud.email    = email_inp   .getValue();
       ud.login    = login_inp   .getValue();
@@ -292,6 +292,6 @@ RegisterPage.prototype.constructor = RegisterPage;
 
 
 function makeRegisterPage ( sceneId )  {
-  makePage ( new RegisterPage(sceneId) );
+  makePage ( function(){ new RegisterPage(sceneId); } );
   setHistoryState ( 'RegisterPage' );
 }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.12.23   <--  Date of Last Modification.
+ *    08.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,40 +13,43 @@
  *  **** Content :  Communicartion functions
  *       ~~~~~~~~~  
  * 
- *   function validateUserData ( user_inp,email_inp,login_inp )
- *   function makeCommErrorMessage ( title,request_type,response )  {
- *   function checkVersionMatch ( response,localServer_bool )  {
- *   function makeJSONString ( data_obj )  {
- *   function clearNetworkIndicators()  {
- *   function __process_network_indicators()  {
- *   function processServerQueue()  {
- *   function processLocalQueue()  {
- *   function printServerQueueState ( checkPoint)  {
- *   function __server_command ( cmd,data_obj,page_title,function_response,
- *                               function_always,function_fail,sqid )  {
- *   function __server_request ( request_type,data_obj,page_title,function_ok,
- *                                function_always,function_fail,sqid )  {
- *   function local_command ( cmd,data_obj,command_title,function_response )  {
- *   function promptSessionCheck ( cmd )  {
- *   function serverCommand ( cmd,data_obj,page_title,function_response,
- *                              function_always,function_fail )  {
- *   function serverRequest ( request_type,data_obj,page_title,function_ok,
- *                              function_always,function_fail )  {
- *   function localCommand ( cmd,data_obj,command_title,function_response )  {
- *   function downloadFile ( uri )  {
- *   function fetchFile ( furl,function_success,function_always,function_fail )  {
- *   function fetchJobFile ( task,fname,function_success,function_always,function_fail )  {
- *   function fetchJobOutputFile ( task,fname,function_success,function_always,function_fail )  {
- *   function getJobFileURL ( jobId,filePath )  {
- *   function downloadJobFile ( jobId,filePath )  {
- *   function setCommunicatingIFrame ( holder,iframe )  {
- *   function setCommunicationFrameData ( fid,dataName,data )  {
- *   function getCommunicationFrameData ( fid,dataName )  {
+ *   function validateUserData      ( user_inp,email_inp,login_inp )
+ *   function makeCommErrorMessage  ( title,request_type,response )
+ *   function checkVersionMatch     ( response,localServer_bool )  
+ *   function makeJSONString        ( data_obj )
+ *   function clearNetworkIndicators()
+ *   function __process_network_indicators()
+ *   function processServerQueue    ()
+ *   function processLocalQueue     ()
+ *   function printServerQueueState ( checkPoint)
+ *   function __server_command      ( cmd,data_obj,page_title,function_response,
+ *                                    function_always,function_fail,sqid )
+ *   function __server_request      ( request_type,data_obj,page_title,function_ok,
+ *                                    function_always,function_fail,sqid )
+ *   function local_command         ( cmd,data_obj,command_title,function_response )
+ *   function promptSessionCheck    ( cmd )
+ *   function serverCommand         ( cmd,data_obj,page_title,function_response,
+ *                                    function_always,function_fail )
+ *   function serverRequest         ( request_type,data_obj,page_title,function_ok,
+ *                                    function_always,function_fail )
+ *   function localCommand          ( cmd,data_obj,command_title,function_response )
+ *   function downloadFile          ( uri )
+ *   function fetchFile             ( furl,function_success,function_always,
+                                      function_fail )
+ *   function fetchJobFile          ( task,fname,function_success,function_always,
+                                      function_fail )
+ *   function fetchJobOutputFile    ( task,fname,function_success,function_always,
+                                      function_fail )
+ *   function getJobFileURL             ( jobId,filePath )
+ *   function downloadJobFile           ( jobId,filePath )
+ *   function setCommunicatingIFrame    ( holder,iframe )
+ *   function setCommunicationFrameData ( fid,dataName,data )
+ *   function getCommunicationFrameData ( fid,dataName )
  *   function removeCommunicatingIFrame ( fid )
  *   function getNofCommunicatingIFrames()
- *   function onWindowMessage ( event )
+ *   function onWindowMessage           ( event )
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -125,9 +128,6 @@ function makeCommErrorMessage ( title,request_type,response )  {
       break;
 
     case fe_retcode.notLoggedIn:
-        //makePage ( new LogoutPage(__current_page.element.id) );
-        // logout ( __current_page.element.id,0 );
-        // MessageNotLoggedIn ( title );
         if (request_type!=fe_reqtype.logout)
           logout ( __current_page.element.id,0,function(){
             MessageNotLoggedIn ( title );
@@ -334,11 +334,11 @@ function processServerQueue()  {
                         if (__current_page)  {
                           __server_queue = [];
                           __process_network_indicators();
-                          makePage (
+                          makePage ( function(){
                             eval (
                               'new ' + __current_page._type + ' ( "' + __current_page.sceneId + '" );'
-                            )
-                          );
+                            );
+                          });
                           makeSessionCheck ( __current_page.sceneId );
                         } else  {  // should never come to here
                           reloadBrowser();

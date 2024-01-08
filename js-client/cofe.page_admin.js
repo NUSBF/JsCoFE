@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.09.23   <--  Date of Last Modification.
+ *    08.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Admin page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -768,6 +768,6 @@ AdminPage.prototype.makeNodesInfoTab = function ( ndata )  {
 // -------------------------------------------------------------------------
 
 function makeAdminPage ( sceneId )  {
-  makePage ( new AdminPage(sceneId) );
+  makePage ( function(){ new AdminPage(sceneId); } );
   setHistoryState ( 'AdminPage' );
 }

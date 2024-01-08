@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    07.10.23   <--  Date of Last Modification.
+ *    08.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Login page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -278,7 +278,7 @@ LoginPage.prototype = Object.create ( BasePage.prototype );
 LoginPage.prototype.constructor = LoginPage;
 
 function makeLoginPage ( sceneId )  {
-  makePage ( new LoginPage(sceneId) );
+  makePage ( function() { new LoginPage(sceneId); } );
   setHistoryState ( 'LoginPage' );
 }
 

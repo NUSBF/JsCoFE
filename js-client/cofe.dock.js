@@ -51,25 +51,23 @@ function Dock ( parent,onClick_func,onRightClick_func,addTask_func )  {
 
   this.dock.setVisible ( false );  // in order to prevent blinking
 
-  var self = this;
-  // (function(self){
-    self.sortable = new Sortable ( 26,24,
-      function(itemId,tooltip,icon_uri){
-        //alert ( itemId + ' selected' );
-        window.setTimeout ( function(){
-          onClick_func ( itemId,tooltip,icon_uri );
-        },100);
-      },
-      function(itemId,tooltip,icon_uri){
-        //alert ( itemId + ' right clicked' );
-        return onRightClick_func ( itemId,tooltip,icon_uri );
-        //return 1;  // delete item
-      },
-      function(event,ui){
-        self.saveDockData();
-      }
-    );
-  // }(this));
+  let self = this;
+  this.sortable = new Sortable ( 26,24,
+    function(itemId,tooltip,icon_uri){
+      //alert ( itemId + ' selected' );
+      window.setTimeout ( function(){
+        onClick_func ( itemId,tooltip,icon_uri );
+      },100);
+    },
+    function(itemId,tooltip,icon_uri){
+      //alert ( itemId + ' right clicked' );
+      return onRightClick_func ( itemId,tooltip,icon_uri );
+      //return 1;  // delete item
+    },
+    function(event,ui){
+      self.saveDockData();
+    }
+  );
 
   this.dock.addWidget ( this.sortable );
   this.sortable.setWidth_px ( 256 );
@@ -78,17 +76,6 @@ function Dock ( parent,onClick_func,onRightClick_func,addTask_func )  {
 
   // this.loadDockData();
 
-  /*
-  // var contextMenu = new ContextMenu ( this.dock,null );
-  // contextMenu.addItem('Add task to dock'  ,image_path('go')    ).addOnClickListener(function(){});
-  // contextMenu.addItem('Rename',image_path('rename')).addOnClickListener(function(){});
-  // this.dock.insertWidget ( contextMenu,0 );
-  */
-
-  //this.sortable.addLast ( image_path('add'),'Add new task','add_new' );
-  //var button = new ImageButton ( image_path('add'),'28px','24px' );
-  //this.dock.addWidget ( button );
-
 }
 
 Dock.prototype = Object.create ( Widget.prototype );
@@ -96,29 +83,27 @@ Dock.prototype.constructor = Dock;
 
 
 Dock.prototype.loadDockData = function()  {
-  var self = this;
-  // (function(self){
-    window.setTimeout ( function(){
-      serverRequest ( fe_reqtype.getDockData,{},'Task Dock',function(data){
-        if (('_type' in data) && (data._type=='DockData'))  {
-          self.opened = data.opened;
-          for (var i=0;i<data.tasks.length;i++)
-            self._add_button ( data.tasks[i].icon,data.tasks[i].title,
-                               data.tasks[i].task );
-        }
-        self.dock.addOnRightClickListener ( function(){
-          self.addTask ( self.addTask_func() );
-        });
-        self.dock.setVisible ( data.opened );
-      },function(){
-      },'persist');
-    },0);
-  // }(this));
+  let self = this;
+  window.setTimeout ( function(){
+    serverRequest ( fe_reqtype.getDockData,{},'Task Dock',function(data){
+      if (('_type' in data) && (data._type=='DockData'))  {
+        self.opened = data.opened;
+        for (let i=0;i<data.tasks.length;i++)
+          self._add_button ( data.tasks[i].icon,data.tasks[i].title,
+                              data.tasks[i].task );
+      }
+      self.dock.addOnRightClickListener ( function(){
+        self.addTask ( self.addTask_func() );
+      });
+      self.dock.setVisible ( data.opened );
+    },function(){
+    },'persist');
+  },0);
 }
 
 
 Dock.prototype._add_button = function ( icon,title,task )  {
-  var button = this.sortable.addItem ( image_path(icon),title,task );
+  let button = this.sortable.addItem ( image_path(icon),title,task );
   if (button)  {
     $(button.item.element).addClass ( 'sortable-button' );
     $(button.item.element).css({
@@ -150,12 +135,12 @@ Dock.prototype.removeTask = function ( taskId )  {  // taskId == task._type
 }
 
 Dock.prototype.saveDockData = function()  {
-  var items    = this.sortable.getItems();
-  var dockData = new DockData();
+let items    = this.sortable.getItems();
+let dockData = new DockData();
 
   dockData.opened = this.opened;
 
-  for (var i=0;i<items.length;i++)
+  for (let i=0;i<items.length;i++)
     dockData.tasks.push ({
       task  : items[i][0],  //  task._type
       title : items[i][1],  //  task.title
