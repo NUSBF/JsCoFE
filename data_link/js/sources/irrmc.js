@@ -116,13 +116,22 @@ class irrmc extends dataSource {
 
     log.info(`${this.name} - Unpacking ${user}/${this.name}/${id}/${path.basename(url_path)}`);
     let sp = spawn('tar', [ '-x', '-C', dest_dir, '-f', dest_file, '--strip-components', 1]);
+    sp.on('spawn', () => {
+      log.debug(`${this.name}/getData - PID: ${sp.pid} = ${sp.spawnargs.join(' ')}`);
+      this.addJob(user, id, sp.pid);
+    });
+    sp.stderr.on('data', (data) => {
+      log.error(`${this.name}/getData - ${data}`);
+    });
     sp.on('close', (code) => {
-      if (code == 0) {
+      if (code !== 0) {
+        log.error(`${this.name}/getData - ${sp.spawnargs.join(' ')} exited with code ${code}`);
+      } else {
         try {
           fs.rmSync(dest_file, { force: true });
           this.dataComplete(user, id, catalog);
         } catch (err) {
-          log.error(`${this.name} - getData ${err}`);
+          log.error(`${this.name}/getData - ${err.message}`);
           entry.status = status.failed;
         }
       }

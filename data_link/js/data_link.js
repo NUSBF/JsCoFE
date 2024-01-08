@@ -293,7 +293,18 @@ class dataLink {
 
     let st = this.catalog.getStatus(user, source, id);
     if (st === status.inProgress) {
-      return tools.errorMsg(`${source}: Can't remove as download for ${user}/${source}/${id} is in progress`);
+      log.info(`dataRemove - Aborting ${user}/${source}/${id}`);
+      let pid = this.source[source].getJob(user, id);
+      if (pid) {
+        this.catalog.updateEntry(user, source, id, { status: status.failed });
+        try {
+          process.kill(pid);
+        } catch (err) {
+          log.error(`dataRemove - Unable to terminate ${pid} - ${err.message}`);
+        }
+      } else {
+         return tools.errorMsg(`${source}: Data acquire for ${user}/${source}/${id} cannot be deleted while in progress`);
+      }
     }
 
     if (this.catalog.removeEntry(user, source, id)) {
@@ -304,9 +315,11 @@ class dataLink {
   }
 
   async dataSizeProgress(user, source, id) {
-    const entry = this.catalog.getEntry(user, source, id);
-    while (entry.status === status.inProgress) {
-      this.catalog.updateEntry(user, source, id, { size: this.catalog.getStorageSize(user, source, id) });
+    const catalog = this.catalog;
+    while (catalog.hasEntry(user, source, id) && catalog.getStatus(user, source, id) === status.inProgress) {
+      this.catalog.updateEntry(user, source, id, {
+        size: this.catalog.getStorageSize(user, source, id)
+      });
       await new Promise(r => setTimeout(r, 30000));
     }
   }

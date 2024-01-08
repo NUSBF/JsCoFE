@@ -74,6 +74,27 @@ class dataSource {
     return true;
   }
 
+  getJobId(user, id) {
+    return user + '/' + id;
+  }
+
+  addJob(user, id, pid) {
+    let jid = this.getJobId(user, id);
+    this.jobs[jid] = pid;
+  }
+
+  getJob(user, id) {
+    let jid = this.getJobId(user, id);
+    return this.jobs[jid];
+  }
+
+  deleteJob(user, id) {
+    let jid = this.getJobId(user, id);
+    if (this.jobs[jid]) {
+      delete this.jobs[jid];
+    }
+  }
+
   acquire(user, id, catalog) {
     try {
       fs.mkdirSync(tools.getDataDest(user, this.name, id), { recursive: true });
@@ -102,12 +123,17 @@ class dataSource {
       log.error(`${this.name} - Unable to update catalog entry for ${user}/${this.name}/${id}`);
     }
 
+    this.deleteJob(user, id);
     log.info(`${this.name} - Acquired ${user}/${this.name}/${id} - size ${this.getEntrySize(id)}`);
   }
 
   dataError(user, id, catalog, error) {
     log.error(`${this.name} - Unable to acquire data: ${error.message}`);
-    catalog.updateEntry(user, this.name, id, { status: status.failed })
+    // check if we have an entry (eg. in case the acquire was aborted due to a catalog deletion)
+    if (catalog.hasEntry(user, this.name, id)) {
+      catalog.updateEntry(user, this.name, id, { status: status.failed });
+    }
+    this.deleteJob(user, id);
   }
 
   catalogError(error) {
@@ -152,7 +178,7 @@ class dataSource {
       },
       (process) => {
         if (process.pid) {
-          this.jobs[user + '/' + id] = process.pid;
+          this.addJob(user, id, process.pid);
         }
       }
     ).then(() => {

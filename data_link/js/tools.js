@@ -118,7 +118,6 @@ class tools {
 
     const cmd = 'rsync';
     return new Promise((resolve, reject) => {
-      log.debug(`doRsync - Running ${cmd} ${args.join(" ")}`);
       const rsync = process.spawn(cmd, args, options);
 
       if (stderrFunc) {
@@ -129,9 +128,12 @@ class tools {
         rsync.stdout.on('data', stdoutFunc);
       }
 
-      if (spawnFunc) {
-        rsync.on('spawn', () => spawnFunc(rsync) );
-      }
+      rsync.on('spawn', () => {
+        log.debug(`doRsync - PID: ${rsync.pid} = ${rsync.spawnargs.join(' ')}`);
+        if (spawnFunc) {
+          spawnFunc(rsync)
+        }
+      });
 
       rsync.on('error', reject);
 
