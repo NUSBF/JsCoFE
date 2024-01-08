@@ -82,10 +82,10 @@ def prepareMRmodelALIGN(driver, waitShort):
     if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Model Preparation')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Alignment data')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Alignment data')
         time.sleep(1)
     else:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Alignment data')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Alignment data')
 
     time.sleep(3)
 
@@ -132,10 +132,10 @@ def prepareMRensembleMODEL(driver, waitShort):
     if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Ensemble Preparation')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Models')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Models')
         time.sleep(1)
     else:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Models')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Models')
 
     time.sleep(3)
 
@@ -182,10 +182,10 @@ def prepareMRensembleSEQ(driver, waitShort):
     if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Ensemble Preparation')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Sequence')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Sequence')
         time.sleep(1)
     else:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Sequence')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Sequence')
 
     time.sleep(3)
 
@@ -232,10 +232,10 @@ def prepareMRensembleCOORD(driver, waitShort):
     if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Ensemble Preparation')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Coordinate Data')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Coordinate Data')
         time.sleep(1)
     else:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Coordinate Data')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare MR Ensemble from Coordinate Data')
 
     time.sleep(1)
 
@@ -281,10 +281,10 @@ def prepareComplexModel(driver, waitShort):
     if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Model Preparation')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare Multi-Chain MR Model')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare Multi-Chain MR Model')
         time.sleep(1)
     else:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare Multi-Chain MR Model')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare Multi-Chain MR Model')
 
     
     time.sleep(1)

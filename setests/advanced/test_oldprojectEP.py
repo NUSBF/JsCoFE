@@ -159,7 +159,7 @@ def runParrot(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification')
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Density Modification with Parrot')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification with Parrot')
     time.sleep(2)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -232,7 +232,7 @@ def startBuccaneer(driver):
         pass
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//span[normalize-space()='%s']" % 'Options')

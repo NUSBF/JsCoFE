@@ -61,7 +61,7 @@ def comb_07(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Comb Structure with Coot')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Comb Structure with Coot')
     time.sleep(2)
 
 
@@ -174,7 +174,7 @@ def refmac_09(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -262,7 +262,7 @@ def depositionAfterRefmac_10(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for deposition')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare data for deposition')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

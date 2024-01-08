@@ -30,12 +30,12 @@ def startLORESTRAfterRevision(driver):
     
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
     time.sleep(3)
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Low-Resolution Refinement with Lorestr')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Low-Resolution Refinement with Lorestr')
     time.sleep(3)
 
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Low-Resolution Refinement with Lorestr')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Low-Resolution Refinement with Lorestr')
     time.sleep(3)
 
     # sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Add structural homologues from the PDB')

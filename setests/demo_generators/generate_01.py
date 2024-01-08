@@ -93,7 +93,7 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort):
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(1)
 
     # 2 molecules in the ASU
@@ -229,7 +229,7 @@ def sequenceAlignment(driver, wait):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Sequence Alignment with ClustalW')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Sequence Alignment with ClustalW')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -342,7 +342,7 @@ def refmac_09(driver, waitLong):
     except:
         pass
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -398,7 +398,7 @@ def depositionAfterRefmac_10(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for deposition')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare data for deposition')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -458,7 +458,7 @@ def comb_12(driver):
     except:
         pass
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Comb Structure with Coot')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Comb Structure with Coot')
     time.sleep(2)
 
 
@@ -539,7 +539,7 @@ def refmac_14(driver, waitLong):
     except:
         pass
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(3)
 
 
@@ -616,7 +616,7 @@ def depositionAfterRefmac_15(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for deposition')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare data for deposition')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

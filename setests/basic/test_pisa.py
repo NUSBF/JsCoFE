@@ -29,7 +29,7 @@ def pisaAfterRevision(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Surface, Interfaces and Assembly Analysis with PISA')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Surface, Interfaces and Assembly Analysis with PISA')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

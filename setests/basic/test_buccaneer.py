@@ -30,7 +30,7 @@ def refmacAfterRevision(driver, waitLong):
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
     time.sleep(2)
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
    
     time.sleep(2)
 
@@ -88,7 +88,7 @@ def startBuccaneer(driver):
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
         time.sleep(1)
     except:
         pass
@@ -96,7 +96,7 @@ def startBuccaneer(driver):
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
         time.sleep(1)
         
     except:
@@ -135,7 +135,7 @@ def startCCP4Build(driver):
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with CCP4Build')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with CCP4Build')
         time.sleep(1)
     except:
         pass
@@ -143,7 +143,7 @@ def startCCP4Build(driver):
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with CCP4Build')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with CCP4Build')
         time.sleep(1)
     except:
         pass
@@ -187,7 +187,7 @@ def startModelcraft(driver):
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
         time.sleep(3)
     except:
         pass
@@ -195,7 +195,7 @@ def startModelcraft(driver):
     try:
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
         time.sleep(1)
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with ModelCraft')
         time.sleep(3)
     except:
         pass

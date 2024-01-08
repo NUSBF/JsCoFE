@@ -196,7 +196,7 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort, task='0004'):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(2)
 
     inputASU = driver.find_elements_by_xpath("//input[@title='Specify stoichiometric coefficent for given sequence in the crystal']")
@@ -340,7 +340,7 @@ def changeASUsg(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Change ASU Space Group')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Change ASU Space Group')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -447,7 +447,7 @@ def runParrot(driver, job):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification')
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Density Modification with Parrot')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification with Parrot')
     time.sleep(2)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -499,7 +499,7 @@ def runParrotInverted(driver, job):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification')
     time.sleep(2)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Density Modification with Parrot')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Density Modification with Parrot')
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[contains(text(), '%s')]" % 'original_hand')
@@ -557,7 +557,7 @@ def startBuccaneer(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Options')
@@ -697,7 +697,7 @@ def refmac_0015(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     inputASU = driver.find_element_by_xpath("//input[@title='Number of refinement cycles']")
@@ -759,7 +759,7 @@ def depositionAfterRefmac(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for deposition')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare data for deposition')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

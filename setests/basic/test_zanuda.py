@@ -29,7 +29,7 @@ def zanudaAfterRevision(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Validation, Analysis and Deposition')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Space Group Validation with Zanuda')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Space Group Validation with Zanuda')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

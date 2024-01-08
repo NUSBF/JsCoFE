@@ -224,7 +224,7 @@ def asymmetricUnitContents_SAD(driver, waitShort):
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(1)
 
     inputASU = driver.find_element_by_xpath("//input[@title='Specify atom type of dominant anomalous scatterer (e.g., S, SE etc.), or leave blank if uncertain.']")
@@ -266,7 +266,7 @@ def asymmetricUnitContents_MAD(driver, waitShort):
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(2)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % '[0008-01] gere_scaled_data [gere/gere/native] /hkl/') # looking by text
@@ -564,7 +564,7 @@ def refmac_14(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.

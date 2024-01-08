@@ -790,7 +790,7 @@ def asymmetricUnitContentsAfterCloudImport(driver, waitShort, task='0002'):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(1)
 
     # 2 molecules in the ASU
@@ -838,7 +838,7 @@ def editRevisionStructure_rnase(driver, waitShort):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Edit Structure Revision')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Edit Structure Revision')
     time.sleep(1)
 
     clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
@@ -885,7 +885,7 @@ def editRevisionStructure_any(driver, waitShort, name=''):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Edit Structure Revision')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Edit Structure Revision')
     time.sleep(1)
 
     clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
@@ -932,7 +932,7 @@ def editRevisionStructure_2fx0(driver, waitShort):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Edit Structure Revision')
+    clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Edit Structure Revision')
     time.sleep(1)
 
     clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements
@@ -974,7 +974,7 @@ def importFromPDB_2fx0(driver, waitShort):
     clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
     time.sleep(1)
 
-    clickByXpath(driver,"//div[starts-with(text(), '%s')]" % 'Import from PDB')
+    clickByXpath(driver,"//*[starts-with(text(), '%s')]" % 'Import from PDB')
     time.sleep(3)
     
     try:
@@ -1268,7 +1268,7 @@ def startRefmac(driver, waitLong):
     try:
         clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
         time.sleep(1)
-        clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
         time.sleep(1.05)
     except:
         pass
@@ -1276,7 +1276,7 @@ def startRefmac(driver, waitLong):
     try:
         clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
         time.sleep(1)
-        clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
         time.sleep(1.05)
     except:
         pass
@@ -1344,7 +1344,7 @@ def startBuccaneer(driver):
     try:
         clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
         time.sleep(1)
-        clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
         
     except:
         pass
@@ -1352,7 +1352,7 @@ def startBuccaneer(driver):
     try:
         clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Model Building')
         time.sleep(1)
-        clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
+        clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with Buccaneer')
         time.sleep(1)
     except:
         pass

@@ -378,7 +378,7 @@ def prepareMRmodelCOORD_0008(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Coordinate data')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare MR Model(s) from Coordinate data')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -422,7 +422,7 @@ def makingLigand_0009(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Ligands')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Make Ligand with Acedrg')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Make Ligand with Acedrg')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'SMILES string')
@@ -476,7 +476,7 @@ def asymmetricUnitContents_0010(driver, waitShort):
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit Contents') # looking by text
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -517,7 +517,7 @@ def molrep_0011(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Molecular Replacement with Molrep')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Molrep')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -574,7 +574,7 @@ def refmac_0012(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     inputASU = driver.find_element_by_xpath("//input[@title='Number of refinement cycles']")
@@ -639,7 +639,7 @@ def spaceGroup_0014(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Change ASU Space Group')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Change ASU Space Group')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -680,7 +680,7 @@ def molrep_0016(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Molecular Replacement with Molrep')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Molrep')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -737,7 +737,7 @@ def refmac_0017(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     inputASU = driver.find_element_by_xpath("//input[@title='Number of refinement cycles']")
@@ -800,7 +800,7 @@ def sequenceAlignment_0020(driver, wait):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Toolbox')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Sequence Alignment with ClustalW')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Sequence Alignment with ClustalW')
     time.sleep(3)
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % '[0008-01] ensemble')
@@ -862,7 +862,7 @@ def startCCP4build_0022(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Automatic Model Building with CCP4Build')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automatic Model Building with CCP4Build')
     time.sleep(3)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -986,7 +986,7 @@ def refmac_0024(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     inputASU = driver.find_element_by_xpath("//input[@title='Number of refinement cycles']")
@@ -1103,7 +1103,7 @@ def refmac_0026(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement and Model Building')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     inputASU = driver.find_element_by_xpath("//input[@title='Number of refinement cycles']")

@@ -29,14 +29,15 @@ def refmacTwin_fsigf(driver, waitLong):
 
 
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
+    time.sleep(1)
 
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(3)
 
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Mean Amplitudes only')
-    time.sleep(12)
+    time.sleep(2)
 
     sf.clickByXpath(driver, "//*[normalize-space()='%s']" % 'Mean Amplitudes assuming twinning')
     time.sleep(2)
@@ -96,7 +97,7 @@ def refmacTwin_isigi(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(3)
 
 
@@ -228,4 +229,5 @@ if __name__ == "__main__":
                password=parameters.password,  # Used to login into remote Cloud
                remote=parameters.remote  # 'http://130.246.213.187:4444/wd/hub' for Selenium Server hub
                )
+    
     test_2RefmacTwin_FSIGF()

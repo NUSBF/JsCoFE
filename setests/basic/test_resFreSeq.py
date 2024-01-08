@@ -36,7 +36,7 @@ GPLGSSQIPASEQETLVRPKPLLLKLLKSVGAQKDTYTMKEVLFYLGQYIMTKRLYDAAQQHIVYCSNDLLGDLFGVPSF
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Import')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Import Sequence(s) by Copy-Paste')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Import Sequence(s) by Copy-Paste')
     time.sleep(1)
 
     sf.clickByXpath(driver, "//span[normalize-space()='%s']" % '[must be chosen]')
@@ -186,7 +186,7 @@ def changeASUsg(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Change Dataset Space Group')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Change Dataset Space Group')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -242,7 +242,7 @@ def changeReso(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Change Dataset Resolution')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Change Dataset Resolution')
     time.sleep(1)
 
     inputASU = driver.find_elements_by_xpath("//input[contains(@title,'Low resolution limit')]")
@@ -312,7 +312,7 @@ def freeRflag(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Data Processing')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Free R-flag')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Free R-flag')
     time.sleep(1)
 
     inputASU = driver.find_elements_by_xpath("//input[@placeholder='0.05']")
@@ -359,7 +359,7 @@ def editRevisionStructure_08(driver, waitShort):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Asymmetric Unit and Structure Revision')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Edit Structure Revision')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Edit Structure Revision')
     time.sleep(1)
 
     sf.clickByXpathMultiple(driver, "//span[normalize-space()='%s']" % '[do not change]', 6) # 6 = 3*2, I have no idea why there are two times more elements

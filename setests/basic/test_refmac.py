@@ -31,7 +31,7 @@ def refmacAfterRevision(driver, waitLong):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement')
     time.sleep(1)
 
-    sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Refinement with Refmac')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Refinement with Refmac')
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
@@ -122,14 +122,14 @@ def depositionAfterRefmac(driver):
     time.sleep(1)
 
     try: 
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'PDB Validation Report')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'PDB Validation Report')
 
         time.sleep(1)
     except: 
         pass
     
     try:
-        sf.clickByXpath(driver, "//div[starts-with(text(), '%s')]" % 'Prepare data for PDB deposition')
+        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Prepare data for PDB deposition')
 
         time.sleep(1)
     except:
