@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.21   <--  Date of Last Modification.
+ *    08.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Restore user access page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2021
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -157,6 +157,6 @@ ForgottenLoginPage.prototype.constructor = ForgottenLoginPage;
 
 
 function makeForgottenLoginPage ( sceneId )  {
-  makePage ( new ForgottenLoginPage(sceneId) );
+  makePage ( function(){ new ForgottenLoginPage(sceneId); } );
   setHistoryState ( 'ForgottenLoginPage' );
 }

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.03.23   <--  Date of Last Modification.
+ *    08.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Base page class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -33,6 +33,8 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   checkBrowser();
   checkAnnouncement();
 
+  __current_page = this;  // do not move this line up!
+
   // clear the page first
   // $('#'+sceneId).empty();
   //  unsetDefaultButton ( null );
@@ -50,7 +52,7 @@ function BasePage ( sceneId,gridStyle,pageType )  {
         "background-size"     : "cover",
         "background-position" : "center center"
     };
-    var background_image = 'background_remote';
+    let background_image = 'background_remote';
     if (__local_setup)
       background_image = 'background_local';
     css['background-image'] = "url('" + image_path(background_image) + "')"
@@ -606,7 +608,7 @@ function replaceHistoryState ( stateName )  {
   }
 }
 
-
+/*
 function makePage ( new_page,onCreate_func=null )  {
 
   function launch()  {
@@ -614,7 +616,26 @@ function makePage ( new_page,onCreate_func=null )  {
       __current_page = new_page;
       if (onCreate_func)
         onCreate_func();
-    },50 );
+    },500 );
+  }
+
+  if (__current_page)  {
+    __current_page.destructor ( launch );
+  } else  {
+    launch();
+  }
+
+}
+*/
+
+function makePage ( new_page_func,onCreate_func=null )  {
+
+  function launch()  {
+    // window.setTimeout ( function(){
+      new_page_func();
+      if (onCreate_func)
+        onCreate_func();
+    // },50 );
   }
 
   if (__current_page)  {
@@ -630,7 +651,9 @@ function setHistoryListener ( sceneId )  {
   $(window).on('popstate', function(event) {
     //alert ( JSON.stringify(event.originalEvent.state) );
     if (event.originalEvent.state)  {
-      makePage ( eval ( 'new ' + event.originalEvent.state + ' ( "' + sceneId + '" );' ) );
+      makePage ( function(){
+        eval ( 'new ' + event.originalEvent.state + ' ( "' + sceneId + '" );' ); 
+      });
     } else if (__current_page)  {
       if ((__current_page._type!='LoginPage') && (__current_page._type!='LogoutPage'))
         new MessageBoxF ( 'Exit ' + appName(),

@@ -482,14 +482,14 @@ function readProjectList ( loginData )  {
 
 
 function writeDockData ( loginData,dockData )  {
-  var userDockDataPath = getUserDockDataPath ( loginData );
+  let userDockDataPath = getUserDockDataPath ( loginData );
   return utils.writeObject ( userDockDataPath,dockData );
 }
 
 
 function readDockData ( loginData )  {
-  var userDockDataPath = getUserDockDataPath ( loginData );
-  var dockData = utils.readObject ( userDockDataPath );
+  let userDockDataPath = getUserDockDataPath ( loginData );
+  let dockData = utils.readObject ( userDockDataPath );
   if (!dockData)  {
     dockData = new pd.DockData();
     dockData.tasks = [
@@ -543,9 +543,9 @@ var response = null;  // must become a cmd.Response object to return
 // ===========================================================================
 
 function getProjectList ( loginData )  {
-var response = null;  // must become a cmd.Response object to return
+let response = null;  // must become a cmd.Response object to return
   log.detailed ( 3,'get project list, login ' + loginData.login );
-  var pList = readProjectList ( loginData );
+  let pList = readProjectList ( loginData );
   if (pList)  {
     // ration.calculate_user_disk_space ( loginData,pList );
     // // ration.calculateUserDiskSpace ( loginData );
@@ -560,9 +560,9 @@ var response = null;  // must become a cmd.Response object to return
 // ===========================================================================
 
 function getDockData ( loginData )  {
-var response = null;  // must become a cmd.Response object to return
+let response = null;  // must become a cmd.Response object to return
   log.detailed ( 3,'get dock data, login ' + loginData.login );
-  var dockData = readDockData ( loginData );
+  let dockData = readDockData ( loginData );
   if (dockData)
         response = new cmd.Response ( cmd.fe_retcode.ok,'',dockData );
   else  response = new cmd.Response ( cmd.fe_retcode.readError,

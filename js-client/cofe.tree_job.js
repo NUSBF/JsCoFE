@@ -245,139 +245,138 @@ JobTree.prototype.readProjectData = function ( page_title,
 
   // this.checkLoop = false;  // true if job check loop is running
 
-  var tree = this;
+  let tree = this;
 
-  // (function(tree){
-    serverRequest ( fe_reqtype.getProjectData,{'mode':tree.mode},
-                    page_title,function(data){
+  serverRequest ( fe_reqtype.getProjectData,{'mode':tree.mode},
+                  page_title,function(data){
 
-      if ('missing' in data)  {
+    if ('missing' in data)  {
 
-        tree.projectData = null;
-        tree.no_access   = true;
-        new MessageBox ( 'Missing Project',
-          '<div style="width:400px"><h2>Missing Project</h2>' +
-          'Project <i>"' + data.project + '"</i> does not exist. ' +
-          'If it was shared with you, check whether it was deleted ' +
-          'by owner.</div>',
-          'msg_error'
-        );
+      tree.projectData = null;
+      tree.no_access   = true;
+      new MessageBox ( 'Missing Project',
+        '<div style="width:400px"><h2>Missing Project</h2>' +
+        'Project <i>"' + data.project + '"</i> does not exist. ' +
+        'If it was shared with you, check whether it was deleted ' +
+        'by owner.</div>',
+        'msg_error'
+      );
 
-      } else if ('message' in data)  {
+    } else if ('message' in data)  {
 
-        MessageDataReadError ( page_title,data['message'] );
+      MessageDataReadError ( page_title,data['message'] );
 
-      } else if (data.meta.desc.timestamp>timestamp)  {
+    } else if (data.meta.desc.timestamp>timestamp)  {
 
-        tree.task_map = {};  // map[nodeId]==task of all tasks in the tree
-        tree.run_map  = {};  // map[taskId]==nodeId of all running tasks
-        tree.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
+      tree.task_map = {};  // map[nodeId]==task of all tasks in the tree
+      tree.run_map  = {};  // map[taskId]==nodeId of all running tasks
+      tree.dlg_map  = {};  // map[taskId]==dialog of open job dialogs
 
-        var startmode = null;
-        if (tree.projectData)
-          startmode = tree.projectData.desc.startmode;
+      let startmode = null;
+      if (tree.projectData)
+        startmode = tree.projectData.desc.startmode;
 
-        tree.projectData = jQuery.extend ( true, new ProjectData(),data.meta );
-        tree.projectData.desc.dateLastUsed = getDateString();
-        tree.projectData.desc.autorun = false;
+      tree.projectData = jQuery.extend ( true, new ProjectData(),data.meta );
+      tree.projectData.desc.dateLastUsed = getDateString();
+      tree.projectData.desc.autorun = false;
 
-        tree.in_archive  = inArchive ( tree.projectData.desc );
-        tree.permissions = getProjectPermissions ( __login_id,tree.projectData.desc );
-        tree.view_only   = tree.in_archive ||
-                           (tree.permissions == share_permissions.view_only);
+      tree.in_archive  = inArchive ( tree.projectData.desc );
+      tree.permissions = getProjectPermissions ( __login_id,tree.projectData.desc );
+      tree.view_only   = tree.in_archive ||
+                          (tree.permissions == share_permissions.view_only);
 
-        if (startmode)
-          tree.projectData.desc.startmode = startmode;
+      if (startmode)
+        tree.projectData.desc.startmode = startmode;
 
-        var author = '';
-        if (author!=__login_id)
-          author = getProjectAuthor ( tree.projectData.desc );
-        if (author)  author = '(' + author + '):';
-        var archiveID = '';
-        var pName     = tree.projectData.desc.name;
-        if (tree.in_archive)  {
-          archiveID = ' <i>arch.ID:</i> ' + tree.projectData.desc.archive.id;
-          pName     = tree.projectData.desc.archive.project_name;
-        }
-        var root_title = __projectStyle ( author + '[' + pName  + ']' + archiveID );
+      let author = '';
+      if (author!=__login_id)
+        author = getProjectAuthor ( tree.projectData.desc );
+      if (author)  author = '(' + author + '):';
+      let archiveID = '';
+      let pName     = tree.projectData.desc.name;
+      if (tree.in_archive)  {
+        archiveID = ' <i>arch.ID:</i> ' + tree.projectData.desc.archive.id;
+        pName     = tree.projectData.desc.archive.project_name;
+      }
+      let root_title = __projectStyle ( author + '[' + pName  + ']' + archiveID );
 
-        if (tree.projectData.tree.length<=0)  {
+      if (tree.projectData.tree.length<=0)  {
 
-          tree.addRootNode ( root_title,image_path('project'),tree.customIcon() );
-
-        } else  {
-
-          // enforce title of root node just in case it was renamed
-          data.meta.tree[0].text = root_title;
-
-          tree.setNodes ( data.meta.tree,allow_selection );
-
-          var t_map = {};
-          for (var i=0;i<data.tasks_add.length;i++)
-            t_map[data.tasks_add[i].id] = data.tasks_add[i];
-          for (var key in tree.node_map)  {
-            var dataId = tree.node_map[key].dataId;  // dataId of tree node's data
-            if (dataId in t_map)  {
-              var json = JSON.stringify ( t_map[dataId] );
-              tree.task_map[key] = getObjectInstance ( json );
-              tree.task_map[key].treeItemId = key;
-              tree.task_map[key].project    = tree.projectData.desc.name;
-              if ((tree.task_map[key].state==job_code.running) ||
-                  (tree.task_map[key].state==job_code.ending)  ||
-                  (tree.task_map[key].state==job_code.exiting))  {
-                tree.run_map [dataId] = key;
-                if (tree.task_map[key].autoRunId)
-                  tree.projectData.desc.autorun = true;
-                tree.setNodeName ( key,false );
-                tree.node_map[key].setCustomIconVisible ( true );
-              } else  {
-                tree.setNodeName ( key,false );
-                tree.node_map[key].setCustomIconVisible ( false );
-              }
-            }
-          }
-        }
-
-        tree.createTree ( allow_selection,function(){
-          for (var key in tree.task_map)  {
-            if (tree.task_map[key].isRemark())  {
-              tree.setRemarkStyle ( tree.node_map[key],tree.task_map[key] );
-            } else if (!tree.task_map[key].job_dialog_data.viewed)
-              tree.setStyle ( tree.node_map[key],__notViewedStyle,0 );
-          }
-          if (!('R_free' in tree.projectData.desc.metrics) ||
-              (tree.projectData.desc.metrics.R_free>=1.0))  {
-            tree.calcMetrics();
-            if (('R_free' in tree.projectData.desc.metrics) &&
-                (tree.projectData.desc.metrics.R_free<1.0))
-              tree.saveProjectData ( [],[],true, function(tree,rdata){} );
-          }
-          onLoaded_func();
-        },onRightClick_func,onDblClick_func,onSelect_func );
-
-        var rdata = {};
-        rdata.pdesc = tree.projectData.desc;
-        tree.emitSignal ( cofe_signals.rationUpdated,rdata );
+        tree.addRootNode ( root_title,image_path('project'),tree.customIcon() );
 
       } else  {
 
-        tree.projectData = null;  // signal 'timestamp mismatch'
-        onLoaded_func();
+        // enforce title of root node just in case it was renamed
+        data.meta.tree[0].text = root_title;
 
+        tree.setNodes ( data.meta.tree,allow_selection );
+
+        let t_map = {};
+        for (let i=0;i<data.tasks_add.length;i++)
+          t_map[data.tasks_add[i].id] = data.tasks_add[i];
+        for (let key in tree.node_map)  {
+          let dataId = tree.node_map[key].dataId;  // dataId of tree node's data
+          if (dataId in t_map)  {
+            let json = JSON.stringify ( t_map[dataId] );
+            tree.task_map[key] = getObjectInstance ( json );
+            tree.task_map[key].treeItemId = key;
+            tree.task_map[key].project    = tree.projectData.desc.name;
+            if ((tree.task_map[key].state==job_code.running) ||
+                (tree.task_map[key].state==job_code.ending)  ||
+                (tree.task_map[key].state==job_code.exiting))  {
+              tree.run_map [dataId] = key;
+              if (tree.task_map[key].autoRunId)
+                tree.projectData.desc.autorun = true;
+              tree.setNodeName ( key,false );
+              tree.node_map[key].setCustomIconVisible ( true );
+            } else  {
+              tree.setNodeName ( key,false );
+              tree.node_map[key].setCustomIconVisible ( false );
+            }
+          }
+        }
       }
 
-    },function(code,rdata){
-      if ('access_denied' in rdata)  {
-        tree.projectData = null;
-        tree.no_access   = true;
-        // tree.emitSignal ( cofe_signals.makeProjectList,{} );
+      tree.createTree ( allow_selection,function(){
+        for (let key in tree.task_map)  {
+          if (tree.task_map[key].isRemark())  {
+            tree.setRemarkStyle ( tree.node_map[key],tree.task_map[key] );
+          } else if (!tree.task_map[key].job_dialog_data.viewed)
+            tree.setStyle ( tree.node_map[key],__notViewedStyle,0 );
+        }
+        if (!('R_free' in tree.projectData.desc.metrics) ||
+            (tree.projectData.desc.metrics.R_free>=1.0))  {
+          tree.calcMetrics();
+          if (('R_free' in tree.projectData.desc.metrics) &&
+              (tree.projectData.desc.metrics.R_free<1.0))
+            tree.saveProjectData ( [],[],true, function(tree,rdata){} );
+        }
         onLoaded_func();
-        // window.setTimeout ( function(){
-        //   tree.emitSignal ( cofe_signals.makeProjectList,{} );
-        // },100);
-      } else  
-        tree.startTaskLoop();
-    },'persist');
+      },onRightClick_func,onDblClick_func,onSelect_func );
+
+      let rdata = {};
+      rdata.pdesc = tree.projectData.desc;
+      tree.emitSignal ( cofe_signals.rationUpdated,rdata );
+
+    } else  {
+
+      tree.projectData = null;  // signal 'timestamp mismatch'
+      onLoaded_func();
+
+    }
+
+  },function(code,rdata){
+    if ('access_denied' in rdata)  {
+      tree.projectData = null;
+      tree.no_access   = true;
+      // tree.emitSignal ( cofe_signals.makeProjectList,{} );
+      onLoaded_func();
+      // window.setTimeout ( function(){
+      //   tree.emitSignal ( cofe_signals.makeProjectList,{} );
+      // },100);
+    } else  
+      tree.startTaskLoop();
+  },'persist');
 
 }
 
@@ -1133,8 +1132,8 @@ JobTree.prototype._copy_task_cloud_path = function ( task,branch_task_list )  {
 JobTree.prototype.addJob = function ( insert_bool,copy_params,parent_page,onAdd_func )  {
   if (this.projectData)  {
     (function(tree){
-      var dataBox = tree.harvestTaskData ( 1,[] );
-      var branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
+      let dataBox = tree.harvestTaskData ( 1,[] );
+      let branch_task_list = tree.getAllAncestors ( tree.getSelectedTask() );
       new TaskListDialog ( dataBox,branch_task_list,tree,
           function(task,tasklistmode){
             if (tasklistmode)

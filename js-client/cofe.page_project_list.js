@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.10.23   <--  Date of Last Modification.
+ *    08.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Project list page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -160,8 +160,8 @@ function ProjectListPage ( sceneId )  {
     if (self.tablesort_tbl.selectedRow)  {
       if (!crProjectName)
         projectList.current = currentProjectName();
-      for (var i=0;i<projectList.projects.length;i++)  {
-        var pDesc = projectList.projects[i];
+      for (let i=0;i<projectList.projects.length;i++)  {
+        let pDesc = projectList.projects[i];
         if (pDesc.name==projectList.current)  {
           pDesc.dateLastUsed = getDateString();
           break;
@@ -1464,6 +1464,6 @@ ProjectListPage.prototype.loadProject = function ( prjName )  {
 }
 
 function makeProjectListPage ( sceneId )  {
-  makePage ( new ProjectListPage(sceneId) );
+  makePage ( function(){ new ProjectListPage(sceneId); } );
   setHistoryState ( 'ProjectListPage' );
 }

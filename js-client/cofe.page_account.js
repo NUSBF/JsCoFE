@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.12.23   <--  Date of Last Modification.
+ *    08.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  User account settings page
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -627,6 +627,6 @@ AccountPage.prototype.constructor = AccountPage;
 
 
 function makeAccountPage ( sceneId )  {
-  makePage ( new AccountPage(sceneId) );
+  makePage ( function(){ new AccountPage(sceneId); } );
   setHistoryState ( 'AccountPage' );
 }
