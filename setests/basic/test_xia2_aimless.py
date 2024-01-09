@@ -405,8 +405,14 @@ def test_1xia2(browser,
         sf.removeProject(d.driver, d.testName)
         sf.makeTestProject(d.driver, d.testName, d.testName)
         sf.enterProject(d.driver, d.testName)
-
-        sf.clickByXpath(d.driver, "//button[normalize-space()='%s']" % 'Cancel')
+        try:
+            sf.clickByXpath(d.driver, "//button[normalize-space()='%s']" % 'Cancel')
+        except:
+            pass
+        try:
+            sf.clickByXpath(d.driver, "//button[normalize-space()='%s']" % 'Close')
+        except:
+            pass
         time.sleep(1)
 
         addRemark(d.driver, 'Test1 remark as first task', 'test1 details') # 1
