@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.01.24   <--  Date of Last Modification.
+ *    09.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -528,20 +528,20 @@ if (!__template)  {
 
   DataXYZ.prototype.collectCustomDropdownInput = function ( dropdown ) {
 
-    var msg = '';   // Ok by default
-    var customGrid = dropdown.customGrid;
+    let msg = '';   // Ok by default
+    let customGrid = dropdown.customGrid;
 
     if (dropdown.layCustom=='pisa')  {
 
       this.exclLigs = [];
-      for (var i=0;i<this.xyzmeta.ligands.length;i++)
+      for (let i=0;i<this.xyzmeta.ligands.length;i++)
         if (!customGrid.cbxs[i].getValue())
           this.exclLigs.push ( this.xyzmeta.ligands[i] );
 
     } else if (startsWith(dropdown.layCustom,'chain-sel') && ('chainSel' in customGrid))  {
 
       this.chainSel = customGrid.chainSel.getValue();
-      var lst = customGrid.chainSel.getText().replace('(','').replace(')','').split(' ');
+      let lst = customGrid.chainSel.getText().replace('(','').replace(')','').split(' ');
       if (lst.length>1)
             this.chainSelType = lst[1];
       else  this.chainSelType = '';
@@ -554,7 +554,7 @@ if (!__template)  {
 
       if (dropdown.layCustom=='chain-sel-poly-2')  {
         this.chainSel2 = customGrid.chainSel2.getValue();
-        var lst = customGrid.chainSel2.getText().replace('(','').replace(')','').split(' ');
+        lst = customGrid.chainSel2.getText().replace('(','').replace(')','').split(' ');
         if (lst.length>1)
               this.chainSel2Type = lst[1];
         else  this.chainSel2Type = '';
