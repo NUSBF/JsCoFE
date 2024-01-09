@@ -175,10 +175,11 @@ class Molrep(basic.TaskDriver):
             self.registerRevision     ( revision  )
             have_results = True
 
+            nfitted0 = 0
+            if istruct:
+                nfitted0 = istruct.getNofPolymers()
+
             if self.task.autoRunName.startswith("@"):
-                nfitted0 = 0
-                if istruct:
-                    nfitted0 = istruct.getNofPolymers()
                 # scripted workflow framework
                 auto_workflow.nextTask ( self,{
                     "data" : {
