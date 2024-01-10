@@ -124,11 +124,11 @@ class dataSource {
     }
 
     this.deleteJob(user, id);
-    log.info(`${this.name} - Acquired ${user}/${this.name}/${id} - size ${this.getEntrySize(id)}`);
+    log.info(`${this.name} - Acquired ${user}/${this.name}/${id} - size ${fields.size}`);
   }
 
   dataError(user, id, catalog, error) {
-    log.error(`${this.name} - Unable to acquire data: ${error.message}`);
+    log.error(`dataError - Failed to acquire ${user}/${this.name}/${id} - ${error}`);
     // check if we have an entry (eg. in case the acquire was aborted due to a catalog deletion)
     if (catalog.hasEntry(user, this.name, id)) {
       catalog.updateEntry(user, this.name, id, { status: status.failed });
@@ -139,6 +139,42 @@ class dataSource {
   catalogError(error) {
     log.error(`${this.name} - Unable to retrieve catalog: ${error}`);
     return false;
+  }
+
+  async httpGetData(url, user, id, catalog) {
+    let entry = catalog.getEntry(user, this.name, id);
+
+    // get content-size from http headers
+    let headers = await tools.httpGetHeaders(url);
+    if (headers['content-length']) {
+      entry.source_size = parseInt(headers['content-length'], 10);
+    }
+
+    let dest_dir = tools.getDataDest(user, this.name, id);
+    let dest_file = path.join(dest_dir, path.basename(url));
+
+    let options = {};
+
+    try {
+      if (fs.existsSync(dest_file)) {
+        let file_size = fs.statSync(dest_file).size;
+        if (file_size === entry.source_size) {
+          return dest_file;
+        } else if (headers['accept-ranges'] === 'bytes') {
+          options.headers = { 'range': `bytes=${file_size}-${entry.source_size}`}
+        }
+      }
+    } catch (err) {
+      log.error(`${this.name}/httpGetData - ${err.message}`);
+      dest_file = false;
+    }
+
+    await tools.httpRequest(url, options, dest_file).catch(err => {
+      log.error(`${this.name}/httpGetData - ${err}`);
+      dest_file = false;
+    });
+
+    return dest_file;
   }
 
   async rsyncGetCatalog(url, catalog) {
