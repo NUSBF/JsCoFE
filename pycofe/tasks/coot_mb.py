@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.12.23   <--  Date of Last Modification.
+#    10.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #    expire      is timeout for removing coot backup directories
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -29,6 +29,8 @@
 import os
 import sys
 import shutil
+
+import gemmi
 
 #  application imports
 from . import coot_ce
@@ -150,7 +152,9 @@ class Coot(coot_ce.CootCE):
 
         # make command line arguments
         args = []
-        pdbpath = istruct.getXYZFilePath ( self.inputDir() )
+        pdbpath = istruct.getMMCIFFilePath ( self.inputDir() )
+        if not pdbpath:
+            pdbpath = istruct.getXYZFilePath ( self.inputDir() )    
         if not pdbpath:
             pdbpath = istruct.getSubFilePath ( self.inputDir() )
         if pdbpath:
@@ -361,7 +365,9 @@ class Coot(coot_ce.CootCE):
             if newLigCode:
                 self.replace_ligand_code ( fname,"LIG",newLigCode,rename=False )
 
-            f = istruct.getXYZFileName()
+            f = istruct.getMMCIFFileName()
+            if not f:
+                f = istruct.getXYZFileName()
             if not f:
                 f = istruct.getSubFileName()
             fnprefix = f[:f.find("_")]
@@ -370,9 +376,20 @@ class Coot(coot_ce.CootCE):
                 fn,fext = os.path.splitext ( fname[fname.find("_")+1:] )
             else:
                 fn,fext = os.path.splitext ( f )
-            coot_xyz = self.getOFName ( fext )
+
+            # coot_xyz = self.getOFName ( fext )
+            coot_xyz = self.getOFName ( ".pdb" )
+            coot_mmcif = None
+            if fext.upper()!=".PDB":
+                coot_mmcif = self.getOFName ( ".mmcif" )
+                shutil.copy2 ( fname,coot_mmcif )
+                cif_block  = gemmi.cif.read(fname)[0]
+                st         = gemmi.make_structure_from_block(cif_block)
+                st.write_pdb ( coot_xyz )
+                # shutil.copy2 ( fname,os.path.join(self.outputDir(),coot_mmcif) )
+            else:        
+                shutil.copy2 ( fname,coot_xyz )
             coot_mtz = istruct.getMTZFileName()
-            shutil.copy2 ( fname  ,coot_xyz )
             shutil.copy2 ( mtzfile,coot_mtz )
             # shutil.copy2 ( "mol0.mmcif",os.path.join(self.outputDir(),"mol0.mmcif") )
 
@@ -421,7 +438,11 @@ class Coot(coot_ce.CootCE):
                 #    struct.addLigand ( ligand.code )
                 struct.setLigands       ( ligList )
 
-                struct.add_file ( "mol0.mmcif",self.outputDir(),"mmcif",copy_bool=False )
+                # struct.add_file ( "mol0.mmcif",self.outputDir(),"mmcif",copy_bool=False )
+                if coot_mmcif:
+                    struct.add_file ( coot_mmcif,self.outputDir(),"mmcif",copy_bool=False )
+
+
 
                 # add link formulas and counts to struct metadata
                 if link_counts:
