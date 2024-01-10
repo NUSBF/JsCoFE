@@ -106,16 +106,16 @@ class irrmc extends dataSource {
   }
 
   async getData(user, id, catalog) {
-    let entry = catalog.catalog[user][this.name][id];
-    let url_path = this.catalog[id].path;
-    let dest_dir = tools.getDataDest(user, this.name, id);
-    let dest_file = path.join(dest_dir, path.basename(url_path));
-    let url = path.join(URL_DATA, url_path);
+    let url = path.join(URL_DATA, this.catalog[id].path);
+    let file = await this.httpGetData(url, user, id, catalog);
 
-    await tools.httpRequest(url, dest_file, entry);
+    if (!file) {
+      this.dataError(user, id, catalog, `getData failed`);
+      return;
+    }
 
-    log.info(`${this.name} - Unpacking ${user}/${this.name}/${id}/${path.basename(url_path)}`);
-    let sp = spawn('tar', [ '-x', '-C', dest_dir, '-f', dest_file, '--strip-components', 1]);
+    log.info(`${this.name} - Unpacking ${user}/${this.name}/${id}/${file}`);
+    let sp = spawn('tar', [ '-x', '-C', path.dirname(file), '-f', file, '--strip-components', 1]);
     sp.on('spawn', () => {
       log.debug(`${this.name}/getData - PID: ${sp.pid} = ${sp.spawnargs.join(' ')}`);
       this.addJob(user, id, sp.pid);
@@ -124,16 +124,15 @@ class irrmc extends dataSource {
       log.error(`${this.name}/getData - ${data}`);
     });
     sp.on('close', (code) => {
-      if (code !== 0) {
-        log.error(`${this.name}/getData - ${sp.spawnargs.join(' ')} exited with code ${code}`);
-      } else {
+      if (code === 0) {
         try {
-          fs.rmSync(dest_file, { force: true });
+          fs.rmSync(file, { force: true });
           this.dataComplete(user, id, catalog);
         } catch (err) {
-          log.error(`${this.name}/getData - ${err.message}`);
-          entry.status = status.failed;
+          this.dataError(user, id, catalog, `${this.name}/getData - ${err.message}`);
         }
+      } else {
+        this.dataError(user, id, catalog, `${this.name}/getData - ${sp.spawnargs.join(' ')} exited with code ${code}`);
       }
     });
 

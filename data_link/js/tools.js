@@ -148,33 +148,40 @@ class tools {
     });
   };
 
-  static httpRequest(url, dest = '', entry = null) {
+  static httpGetHeaders(url) {
+    log.debug(`httpGetHeaders - requesting ${url}`);
+    return new Promise ((resolve, reject) => {
+      let req = https.request(url, { method: 'HEAD' }, (res) => {
+        resolve(res.headers);
+      });
+      req.end();
+    });
+  }
+
+  static httpRequest(url, options = {}, dest = null) {
+    if (! options.method) {
+      options.method = 'GET';
+    }
     log.debug(`httpRequest - requesting ${url}`);
     return new Promise ((resolve, reject) => {
-      let request = https.get(url, (res) => {
-        if (res.statusCode !== 200) {
+      let req = https.request(url, options, (res) => {
+        if (! [200, 206].includes(res.statusCode)) {
           res.resume();
-          reject(`${url} statusCode: ${res.statusCode}`);
+          reject(`httpRequest - unsupported statusCode ${res.statusCode}`);
           return;
         }
 
-        if (dest && entry) {
-          entry.source_size = parseInt(res.headers['content-length'], 10);
-
-          if (fs.existsSync(dest)) {
-            if (fs.statSync(dest).size == entry.source_size) {
-              resolve();
-              return;
-            }
+        if (dest) {
+          let flags = 'w';
+          // if we have a range set, add the append flag
+          if (options.headers && options.headers.range) {
+            flags = 'a';
           }
-
-          const file = fs.createWriteStream(dest);
+          const file = fs.createWriteStream(dest, { 'flags': flags });
           res.pipe(file);
-
           res.on('close', () => {
             file.close();
             resolve();
-            return;
           });
         } else {
           let out = '';
@@ -185,11 +192,13 @@ class tools {
 
           res.on('close', () => {
             resolve(out);
-            return;
           });
         }
-
       });
+      req.on('error', (err) => {
+        log.error(`httpRequest - ${err.message}`);
+      });
+      req.end();
     });
   }
 
