@@ -2,7 +2,6 @@
 
 'use strict';
 
-const spawn = require('child_process').spawn;
 const fs = require('fs');
 const path = require('path');
 
@@ -107,35 +106,7 @@ class irrmc extends dataSource {
 
   async getData(user, id, catalog) {
     let url = path.join(URL_DATA, this.catalog[id].path);
-    let file = await this.httpGetData(url, user, id, catalog);
-
-    if (!file) {
-      this.dataError(user, id, catalog, `getData failed`);
-      return;
-    }
-
-    log.info(`${this.name} - Unpacking ${user}/${this.name}/${id}/${file}`);
-    let sp = spawn('tar', [ '-x', '-C', path.dirname(file), '-f', file, '--strip-components', 1]);
-    sp.on('spawn', () => {
-      log.debug(`${this.name}/getData - PID: ${sp.pid} = ${sp.spawnargs.join(' ')}`);
-      this.addJob(user, id, sp.pid);
-    });
-    sp.stderr.on('data', (data) => {
-      log.error(`${this.name}/getData - ${data}`);
-    });
-    sp.on('close', (code) => {
-      if (code === 0) {
-        try {
-          fs.rmSync(file, { force: true });
-          this.dataComplete(user, id, catalog);
-        } catch (err) {
-          this.dataError(user, id, catalog, `${this.name}/getData - ${err.message}`);
-        }
-      } else {
-        this.dataError(user, id, catalog, `${this.name}/getData - ${sp.spawnargs.join(' ')} exited with code ${code}`);
-      }
-    });
-
+    this.httpGetData(url, user, id, catalog);
   }
 
 }

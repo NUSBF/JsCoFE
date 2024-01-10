@@ -154,27 +154,39 @@ class dataSource {
     let dest_file = path.join(dest_dir, path.basename(url));
 
     let options = {};
+    let file_size = 0;
 
     try {
       if (fs.existsSync(dest_file)) {
-        let file_size = fs.statSync(dest_file).size;
-        if (file_size === entry.source_size) {
-          return dest_file;
-        } else if (headers['accept-ranges'] === 'bytes') {
+        file_size = fs.statSync(dest_file).size;
+        if (file_size < entry.source_size && headers['accept-ranges'] === 'bytes') {
           options.headers = { 'range': `bytes=${file_size}-${entry.source_size}`}
         }
       }
     } catch (err) {
-      log.error(`${this.name}/httpGetData - ${err.message}`);
-      dest_file = false;
+      this.dataError(user, id, catalog, `${this.name}/httpGetData - ${err.message}`);
+      return;
     }
 
-    await tools.httpRequest(url, options, dest_file).catch(err => {
-      log.error(`${this.name}/httpGetData - ${err}`);
-      dest_file = false;
+    if (file_size < entry.source_size) {
+      await tools.httpRequest(url, options, dest_file).catch(err => {
+        this.dataError(user, id, catalog, `${this.name}/httpGetData - ${err}`);
+        return;
+      });
+    }
+
+    tools.unpack(dest_file, dest_dir,
+      (process) => {
+        if (process.pid) {
+          this.addJob(user, id, process.pid);
+        }
+      }
+    ).then(() => {
+      this.dataComplete(user, id, catalog);
+    }).catch(err => {
+      this.dataError(user, id, catalog, err);
     });
 
-    return dest_file;
   }
 
   async rsyncGetCatalog(url, catalog) {

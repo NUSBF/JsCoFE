@@ -202,6 +202,54 @@ class tools {
     });
   }
 
+  static unpack(file, dest, spawnFunc) {
+    log.info(`${this.name} - Unpacking ${file} to ${dest}`);
+
+    let ext = path.extname(file);
+    let cmd, args;
+
+    return new Promise((resolve, reject) => {
+      switch(ext) {
+        case '.tar':
+        case '.gz':
+        case '.bz2':
+        case '.xz':
+          cmd = 'tar';
+          args = [ '-x', '-C', dest, '-f', file, '--strip-components', 1];
+          break;
+        default:
+          reject(`Unsupported archive format ${ext}`);
+          return;
+      }
+
+      let sp = process.spawn(cmd, args);
+
+      sp.on('spawn', () => {
+        log.debug(`unpack - PID: ${sp.pid} = ${args.join(' ')}`);
+        if (spawnFunc) {
+          spawnFunc(sp);
+        }
+      });
+
+      sp.stderr.on('data', (data) => {
+        log.error(`unpack - ${file} - ${data}`);
+      });
+
+      sp.on('close', (code) => {
+        if (code === 0) {
+          try {
+            fs.rmSync(file, { force: true });
+            resolve();
+          } catch (err) {
+            reject(`unpack - ${err.message}`);
+          }
+        } else {
+          reject(`unpack - - ${args.join(' ')} exited with code ${code}`);
+        }
+      });
+    });
+  }
+
   static getFileCache(file, age) {
     try {
       if (fs.existsSync(file)) {
