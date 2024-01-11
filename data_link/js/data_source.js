@@ -169,17 +169,20 @@ class dataSource {
     }
 
     if (file_size < entry.source_size) {
-      await tools.httpRequest(url, options, dest_file).catch(err => {
+      try {
+        await tools.httpRequest(url, options, dest_file, (controller) => {
+        this.addJob(user, id, controller);
+      });
+      } catch (err) {
         this.dataError(user, id, catalog, `${this.name}/httpGetData - ${err}`);
         return;
-      });
+      };
     }
 
+    // unpack the archive
     tools.unpack(dest_file, dest_dir,
-      (process) => {
-        if (process.pid) {
-          this.addJob(user, id, process.pid);
-        }
+      (controller) => {
+        this.addJob(user, id, controller);
       }
     ).then(() => {
       this.dataComplete(user, id, catalog);
@@ -224,10 +227,8 @@ class dataSource {
       (stderr) => {
         log.error(stderr.toString());
       },
-      (process) => {
-        if (process.pid) {
-          this.addJob(user, id, process.pid);
-        }
+      (controller) => {
+        this.addJob(user, id, controller);
       }
     ).then(() => {
       this.dataComplete(user, id, catalog);

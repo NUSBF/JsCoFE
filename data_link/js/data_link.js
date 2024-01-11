@@ -294,16 +294,10 @@ class dataLink {
     let st = this.catalog.getStatus(user, source, id);
     if (st === status.inProgress) {
       log.info(`dataRemove - Aborting ${user}/${source}/${id}`);
-      let pid = this.source[source].getJob(user, id);
-      if (pid) {
+      let job = this.source[source].getJob(user, id);
+      if (job) {
         this.catalog.updateEntry(user, source, id, { status: status.failed });
-        try {
-          process.kill(pid);
-        } catch (err) {
-          log.error(`dataRemove - Unable to terminate ${pid} - ${err.message}`);
-        }
-      } else {
-         return tools.errorMsg(`${source}: Data acquire for ${user}/${source}/${id} cannot be deleted while in progress`);
+        job.abort();
       }
     }
 

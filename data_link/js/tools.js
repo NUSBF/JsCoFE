@@ -109,7 +109,7 @@ class tools {
   }
 
   static doRsync(args, stdoutFunc = null, stderrFunc = null, spawnFunc = null) {
-    let options = {};
+    const options = {};
 
     // if no stdout callback, then ignore all stdio
     if (! stdoutFunc) {
@@ -117,6 +117,11 @@ class tools {
     }
 
     const cmd = 'rsync';
+
+    // add an abortController signal so we can abort the process
+    const controller = new AbortController();
+    options.signal = controller.signal;
+
     return new Promise((resolve, reject) => {
       const rsync = process.spawn(cmd, args, options);
 
@@ -130,8 +135,9 @@ class tools {
 
       rsync.on('spawn', () => {
         log.debug(`doRsync - PID: ${rsync.pid} = ${rsync.spawnargs.join(' ')}`);
+        // if we have a callback function, pass the abortController to it
         if (spawnFunc) {
-          spawnFunc(rsync)
+          spawnFunc(controller)
         }
       });
 
@@ -158,17 +164,26 @@ class tools {
     });
   }
 
-  static httpRequest(url, options = {}, dest = null) {
+  static httpRequest(url, options = {}, dest = null, callbackFunc = null) {
     if (! options.method) {
       options.method = 'GET';
     }
+
     log.debug(`httpRequest - requesting ${url}`);
     return new Promise ((resolve, reject) => {
+      // add an abortController signal so we can abort requests
+      const controller = new AbortController();
+      options.signal = controller.signal;
       let req = https.request(url, options, (res) => {
         if (! [200, 206].includes(res.statusCode)) {
           res.resume();
           reject(`httpRequest - unsupported statusCode ${res.statusCode}`);
           return;
+        }
+
+        // if we have a callback function, pass the abortController to it
+        if (callbackFunc) {
+          callbackFunc(controller);
         }
 
         if (dest) {
@@ -196,13 +211,13 @@ class tools {
         }
       });
       req.on('error', (err) => {
-        log.error(`httpRequest - ${err.message}`);
+        reject(`${err.message}`);
       });
       req.end();
     });
   }
 
-  static unpack(file, dest, spawnFunc) {
+  static unpack(file, dest, spawnFunc = null) {
     log.info(`${this.name} - Unpacking ${file} to ${dest}`);
 
     let ext = path.extname(file);
@@ -222,12 +237,17 @@ class tools {
           return;
       }
 
-      let sp = process.spawn(cmd, args);
+      // add an abortController signal so we can abort the process
+      const controller = new AbortController();
+
+      let sp = process.spawn(cmd, args, { 'signal': controller.signal } );
 
       sp.on('spawn', () => {
         log.debug(`unpack - PID: ${sp.pid} = ${args.join(' ')}`);
+
+        // if we have a callback function, pass the abortController to it
         if (spawnFunc) {
-          spawnFunc(sp);
+          spawnFunc(controller);
         }
       });
 
@@ -244,9 +264,12 @@ class tools {
             reject(`unpack - ${err.message}`);
           }
         } else {
-          reject(`unpack - - ${args.join(' ')} exited with code ${code}`);
+          reject(`unpack - ${args.join(' ')} exited with code ${code}`);
         }
       });
+
+      sp.on('error', reject);
+
     });
   }
 
