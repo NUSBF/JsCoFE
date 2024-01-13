@@ -241,7 +241,7 @@ class EditRevision(asudef.ASUDef):
                                     xyz_fpath,
                                     sub_fpath,
                                     mtz_fpath,
-                                    lib_fpath,
+                                    libPath    = lib_fpath,
                                     mapPath    = map_fpath ,
                                     dmapPath   = dmap_fpath,
                                     leadKey    = lead_key,

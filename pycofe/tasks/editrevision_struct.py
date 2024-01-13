@@ -144,7 +144,7 @@ class EditRevisionStruct(basic.TaskDriver):
                         xyz_fpath,
                         sub_fpath,
                         mtz_fpath,
-                        lib_fpath,
+                        libPath    = lib_fpath,
                         mapPath    = map_fpath ,
                         dmapPath   = dmap_fpath,
                         leadKey    = 1 if phases is struct0 else 2,

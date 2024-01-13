@@ -455,7 +455,6 @@ class Crank2(basic.TaskDriver):
                                         xyzout,
                                         subout,
                                         self.hklout_fpath,
-                                        None,
                                         leadKey = 1,
                                         refiner = "refmac" 
                                     )
