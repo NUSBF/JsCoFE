@@ -476,7 +476,7 @@ class DType(dtype_xyz.DType):
         return
 
     def putXYZMeta ( self,fdir,file_stdout,file_stderr,log_parser=None ):
-        fpath = self.getXYZFilePath ( fdir )
+        fpath = self.getPDBFilePath ( fdir )
         if not fpath:
             fpath = self.getSubFilePath ( fdir )
         if fpath:
@@ -543,7 +543,7 @@ class DType(dtype_xyz.DType):
         self.setFile ( fname,dtype_template.file_key["molp"] )
         return
 
-    def getXYZFileName(self):
+    def getPDBFileName(self):
         return self.getFileName ( dtype_template.file_key["xyz"] )
 
     def getMMCIFFileName(self):
@@ -591,7 +591,7 @@ class DType(dtype_xyz.DType):
     def getMolProbityFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["molp"] )
 
-    def getXYZFilePath ( self,dirPath ):
+    def getPDBFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
 
     def getMMCIFFilePath ( self,dirPath ):
@@ -642,7 +642,7 @@ class DType(dtype_xyz.DType):
         return
 
     def adjust_dname ( self ):
-        if not self.getXYZFileName() and self.getSubFileName() or self.hasSubSubtype():
+        if not self.getPDBFileName() and self.getSubFileName() or self.hasSubSubtype():
             self.dname = self.dname.replace ( "/structure/","/substructure/" )
         return
 
@@ -664,7 +664,8 @@ def getValidFileName ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,
 def register ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,mapFilePath,
                dmapFilePath,libFilePath,dataSerialNo,job_id,leadKey,outDataBox,
                outputDir,copy_files=False,map_labels=None,refiner="" ):
-    fname0 = getValidFileName ( pdbFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath )
+    fname0 = getValidFileName ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,
+                                mapFilePath,dmapFilePath )
     if fname0 and os.path.isfile(fname0):
         structure = DType ( job_id )
         structure.leadKey = leadKey

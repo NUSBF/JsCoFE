@@ -127,9 +127,9 @@ class ImportReplace(migrate.Migrate):
         leadKey = 1
         if self.xyz:
             if self.xyz.getNofPolymers()>0:
-                xyzPath = self.xyz.getXYZFilePath ( self.outputDir() )
+                xyzPath = self.xyz.getPDBFilePath ( self.outputDir() )
             else:
-                subPath = self.xyz.getXYZFilePath ( self.outputDir() )
+                subPath = self.xyz.getPDBFilePath ( self.outputDir() )
                 leadKey = 2
 
         xyzid = ""  # used in revision naming
@@ -163,7 +163,7 @@ class ImportReplace(migrate.Migrate):
             if xyz_path or mtz_path or lib_path:
                 if istruct:
                     if not xyz_path:
-                        xyz_path = istruct.getXYZFilePath ( self.inputDir() )
+                        xyz_path = istruct.getPDBFilePath ( self.inputDir() )
                     if not mtz_path:
                         mtz_path = istruct.getMTZFilePath ( self.inputDir() )
                     if not lib_path:

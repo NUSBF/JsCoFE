@@ -63,7 +63,7 @@ class PISA(basic.TaskDriver):
         xyz  = self.makeClass ( self.input_data.data.xyz[0] )
         sec1 = self.task.parameters.sec1.contains
 
-        xyzPath   = xyz.getXYZFilePath ( self.inputDir() )
+        xyzPath   = xyz.getPDBFilePath ( self.inputDir() )
         reportDir = os.path.join ( os.getcwd(),self.reportDir() )
         shutil.copy ( xyzPath,reportDir )
 

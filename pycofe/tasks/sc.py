@@ -46,7 +46,7 @@ class SC(basic.TaskDriver):
 
         # make command-line parameters
 
-        cmd = ['XYZIN', xyz.getXYZFilePath(self.inputDir())]
+        cmd = ['XYZIN', xyz.getPDBFilePath(self.inputDir())]
 
         self.open_stdin()
         self.write_stdin([
@@ -62,7 +62,7 @@ class SC(basic.TaskDriver):
        
         # --------------------------------------------------------------------
 
-        # xyzin = xyz.getXYZFilePath(self.inputDir())
+        # xyzin = xyz.getPDBFilePath(self.inputDir())
 
         # keywords = self.getParameter(self.task.parameters.SC_INPUT).strip()
         

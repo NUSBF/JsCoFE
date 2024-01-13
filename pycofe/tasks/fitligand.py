@@ -53,12 +53,12 @@ class FitLigand(basic.TaskDriver):
         sec1    = self.task.parameters.sec1.contains
 
         # make command-line parameters
-        pdbin   = istruct.getXYZFilePath ( self.inputDir() )
+        pdbin   = istruct.getPDBFilePath ( self.inputDir() )
 
         # pdbin  = istruct.getMMCIFFilePath ( self.inputDir() )
         # if not pdbin:
         #     self.stderrln ( " ***** mmCIF is not found" )
-        #     pdbin  = istruct.getXYZFilePath ( self.inputDir() )
+        #     pdbin  = istruct.getPDBFilePath ( self.inputDir() )
 
         mtzin   = istruct.getMTZFilePath ( self.inputDir() )
         libin   = ligand .getLibFilePath ( self.inputDir() )
@@ -104,7 +104,7 @@ class FitLigand(basic.TaskDriver):
         # cmd += [mmCIFin]
 
         # PDBIN version
-        cmd += [ligand.getXYZFilePath(self.inputDir())]
+        cmd += [ligand.getPDBFilePath(self.inputDir())]
 
         """
         --pdbin pdb-in-filename --hklin mtz-filename

@@ -1300,14 +1300,14 @@ class TaskDriver(object):
             xyzs[i].convertToPDB ( self.inputDir() )
             if xyzs[i].BF_correction=="alphafold-suggested":
                 xyzs[i].fixBFactors ( self.inputDir(),"alphafold" )
-                self.stdoutln ( " ..... " + xyzs[i].getXYZFileName() +\
+                self.stdoutln ( " ..... " + xyzs[i].getPDBFileName() +\
                                 ": B-factors re-calculated assuming Alphafold model" )
                 self.putMessage ( 
                     "<span style=\"font-size:85%\"><b>** " + xyzs[i].dname +\
                     "</b>: <i>B-factors re-calculated assuming Alphafold model</i></span>" )
             elif xyzs[i].BF_correction=="rosetta-suggested":
                 xyzs[i].fixBFactors ( self.inputDir(),"rosetta" )
-                self.stdoutln ( " ..... " + xyzs[i].getXYZFileName() +\
+                self.stdoutln ( " ..... " + xyzs[i].getPDBFileName() +\
                                 ": B-factors re-calculated assuming Rosetta model" )
                 self.putMessage ( 
                     "<span style=\"font-size:85%\"><b>** " + xyzs[i].dname +\
@@ -1444,7 +1444,7 @@ class TaskDriver(object):
     # ----------------------------------------------------------------------
 
     def add_seqid_remark ( self,model,seqid_lst ):
-        ens_path = model.getXYZFilePath ( self.outputDir() )
+        ens_path = model.getPDBFilePath ( self.outputDir() )
         file = open ( ens_path,"r" )
         fcnt = file.read()
         file.close  ()
@@ -1893,7 +1893,7 @@ class TaskDriver(object):
             self.file_stderr.write ( "  NONE STRUCTURE\n" )
             self.file_stderr.flush()
         else:
-            self._move_file_to_output_dir ( xyzPath ,structure.getXYZFileName (),copy_files )
+            self._move_file_to_output_dir ( xyzPath ,structure.getPDBFileName (),copy_files )
             self._move_file_to_output_dir ( subPath ,structure.getSubFileName (),copy_files )
             self._move_file_to_output_dir ( mtzPath ,structure.getMTZFileName (),copy_files )
             self._move_file_to_output_dir ( mapPath ,structure.getMapFileName (),copy_files )
@@ -2010,7 +2010,7 @@ class TaskDriver(object):
         pyrvapi.rvapi_add_data ( wId,title_str,
                                  # always relative to job_dir from job_dir/html
                                  "/".join([ "..",self.outputDir(),
-                                            ligand.getXYZFileName()]),
+                                            ligand.getPDBFileName()]),
                                  "xyz",pageId,row+1,0,1,colSpan,openState )
         if ligand.getLibFileName():
             pyrvapi.rvapi_append_to_data ( wId,
@@ -2083,7 +2083,7 @@ class TaskDriver(object):
                              rowSpan=1,colSpan=1,openState=0 ):
         pyrvapi.rvapi_add_data ( self.getWidgetId(widgetId),title_str,
                     # always relative to job_dir from job_dir/html
-                    "/".join(["..",self.outputDir(),xyz.getXYZFileName()]),
+                    "/".join(["..",self.outputDir(),xyz.getPDBFileName()]),
                     "xyz",pageId,row,col,rowSpan,colSpan,openState )
         self.addCitations ( ["uglymol","ccp4mg"] )
         return
@@ -2163,7 +2163,7 @@ class TaskDriver(object):
 
         pyrvapi.rvapi_add_data ( widgetId,title_str,
                     # always relative to job_dir from job_dir/html
-                    "/".join(["..",self.outputDir(),model.getXYZFileName()]),
+                    "/".join(["..",self.outputDir(),model.getPDBFileName()]),
                     "xyz",pageId,row+1,0,1,colSpan,openState )
         self.addCitations ( ["uglymol","ccp4mg"] )
         return row+2
@@ -2185,7 +2185,7 @@ class TaskDriver(object):
 
         pyrvapi.rvapi_add_data ( widgetId,title_str,
                     # always relative to job_dir from job_dir/html
-                    "/".join(["..",self.outputDir(),ensemble.getXYZFileName()]),
+                    "/".join(["..",self.outputDir(),ensemble.getPDBFileName()]),
                     "xyz",pageId,row+1,0,1,colSpan,openState )
         self.addCitations ( ["uglymol","ccp4mg"] )
         return row+2

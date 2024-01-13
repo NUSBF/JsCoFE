@@ -111,7 +111,7 @@ class DimpleMR(basic.TaskDriver):
         cmd = [
             # hkl.getHKLFilePath(self.inputDir()),
             reflections_mtz,
-            xyz.getXYZFilePath(self.inputDir()),
+            xyz.getPDBFilePath(self.inputDir()),
             "./",
             "--free-r-flags","-",
             "--freecolumn",hkl.getMeta("FREE","")

@@ -46,7 +46,7 @@ class Areaimol(basic.TaskDriver):
 
         # --------------------------------------------------------------------
 
-        xyzin = ixyz.getXYZFilePath ( self.inputDir() )
+        xyzin = ixyz.getPDBFilePath ( self.inputDir() )
 
         # Prepare report parser
         self.setGenericLogParser ( "areaimol_report",False )

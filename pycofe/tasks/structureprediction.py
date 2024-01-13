@@ -40,7 +40,7 @@ from pycofe.auto   import auto
 class StructurePrediction(basic.TaskDriver):
 
     # def add_seqid_remark ( self,model,seqid_lst ):
-    #     ens_path = model.getXYZFilePath ( self.outputDir() )
+    #     ens_path = model.getPDBFilePath ( self.outputDir() )
     #     file = open ( ens_path,"r" )
     #     fcnt = file.read()
     #     file.close  ()

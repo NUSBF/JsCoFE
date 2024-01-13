@@ -95,8 +95,8 @@ class ShelxEMR(basic.TaskDriver):
         hklin = istruct.getHKLFilePath ( self.inputDir() )
         # shutil.copyfile ( istruct.getHKLFilePath(self.inputDir()),
         #                   self.shelxe_wrk_mtz() )
-        if istruct.getXYZFileName():
-            shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),
+        if istruct.getPDBFileName():
+            shutil.copyfile ( istruct.getPDBFilePath(self.inputDir()),
                               self.shelxe_wrk_pda() )
         else:
             shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),
@@ -108,8 +108,8 @@ class ShelxEMR(basic.TaskDriver):
 
         # shutil.copyfile ( istruct.getMTZFilePath(self.inputDir()),
         #                   self.shelxe_wrk_mtz() )
-        # if istruct.getXYZFileName():
-        #     shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),
+        # if istruct.getPDBFileName():
+        #     shutil.copyfile ( istruct.getPDBFilePath(self.inputDir()),
         #                       self.shelxe_wrk_pda() )
         # else:
         #     shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),
@@ -378,7 +378,7 @@ class ShelxEMR(basic.TaskDriver):
 
             elif istruct.hasXYZSubtype():
                 structure = self.registerStructure1 (
-                                None,istruct.getXYZFilePath(self.inputDir()),
+                                None,istruct.getPDBFilePath(self.inputDir()),
                                 None,mtzout,None,None,None,
                                 #None,mtzout,fnames[0],None,None,
                                 self.outputFName,leadKey=2,

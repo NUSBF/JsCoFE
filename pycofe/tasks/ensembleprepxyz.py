@@ -162,7 +162,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
             if seq:
                 self.outputFName = os.path.splitext(seq.getSeqFileName())[0]
             else:
-                self.outputFName = os.path.splitext(xyz[0].getXYZFileName())[0]
+                self.outputFName = os.path.splitext(xyz[0].getPDBFileName())[0]
 
         outputFile = self.getXYZOFName()
 
@@ -236,7 +236,7 @@ class EnsemblePrepXYZ(basic.TaskDriver):
         """
 
         for i in range(len(xyz)):
-            self.write_stdin ( "\nLOCALFILE " + xyz[i].getXYZFilePath(self.inputDir()) )
+            self.write_stdin ( "\nLOCALFILE " + xyz[i].getPDBFilePath(self.inputDir()) )
             if xyz[i].chainSel!="(all)" and xyz[i].chainSel.strip():
                 self.write_stdin ( " CHAIN " + xyz[i].chainSel )
 

@@ -165,7 +165,7 @@ if __name__ == "__main__":
     #         dtype_sequence.writeMultiSeqFile1 ( self.file_seq_path(),self.seq,fileDir )
     #         self.write_stdin ( "\nSEQIN " + self.file_seq_path() )
     #     if self.xyz:
-    #         self.write_stdin ( "\nXYZIN " + self.xyz.getXYZFilePath(fileDir) )
+    #         self.write_stdin ( "\nXYZIN " + self.xyz.getPDBFilePath(fileDir) )
     #     #if self.task.ha_type:
     #     #    self.write_stdin ( "\nHATOMS " + self.task.ha_type )
     #     if self.ha_type:
@@ -178,7 +178,7 @@ if __name__ == "__main__":
     #     for i in range(len(self.ligands)):
     #         self.write_stdin ( "\nLIGIN " + self.ligands[i].code + ";" +\
     #                            self.ligands[i].getLibFilePath(fileDir) + ";" +\
-    #                            self.ligands[i].getXYZFilePath(fileDir) )
+    #                            self.ligands[i].getPDBFilePath(fileDir) )
     #
     #     self.write_stdin ( "\n" )
     #     self.close_stdin()

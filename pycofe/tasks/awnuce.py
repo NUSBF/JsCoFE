@@ -53,7 +53,7 @@ class AWNuce(basic.TaskDriver):
         # make command-line parameters
         pdbin = None
         if not istruct.isSubstructure():
-            pdbin = istruct.getXYZFilePath ( self.inputDir() )
+            pdbin = istruct.getPDBFilePath ( self.inputDir() )
         mtzin = istruct.getMTZFilePath ( self.inputDir() )
 
         labin_fo = hkl.getMeanF()

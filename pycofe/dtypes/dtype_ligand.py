@@ -39,13 +39,13 @@ class DType(dtype_template.DType):
             self.version += 0      # versioning increments from parent to children
         return
 
-    def getXYZFileName(self):
+    def getPDBFileName(self):
         return self.getFileName ( dtype_template.file_key["xyz"] )
 
     def getLibFileName(self):
         return self.getFileName ( dtype_template.file_key["lib"] )
 
-    def getXYZFilePath ( self,dirPath ):
+    def getPDBFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
 
     def getLibFilePath ( self,dirPath ):

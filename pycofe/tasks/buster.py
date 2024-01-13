@@ -109,7 +109,7 @@ class Buster(basic.TaskDriver):
         istruct  = self.makeClass ( self.input_data.data.istruct [0] )
 
         libin    = istruct.getLibFilePath ( self.inputDir() )
-        xyzin    = istruct.getXYZFilePath ( self.inputDir() )
+        xyzin    = istruct.getPDBFilePath ( self.inputDir() )
         if istruct.refiner not in ["refmac","buster"]:
             self.stdoutln (
                 "=========================================\n" +\

@@ -171,7 +171,7 @@ class Zanuda(basic.TaskDriver):
         # make command-line parameters for bare morda run on a SHELL-type node
         cmd = [ os.path.join(os.environ["CCP4"],"bin","zanuda"),
                 "hklin"    ,cad_mtz,
-                "xyzin"    ,self.xyz.getXYZFilePath(self.inputDir()),
+                "xyzin"    ,self.xyz.getPDBFilePath(self.inputDir()),
                 "clouddir" ,zanuda_dir,
                 "cloudmode",mode
               ]

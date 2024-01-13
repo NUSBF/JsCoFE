@@ -201,7 +201,7 @@ class Parrot(basic.TaskDriver):
                 ncs_xyz = ncs_struct.getSubFilePath ( self.inputDir() )
                 ncs_kwd = "pdbin-wrk-ha"
             elif ncs_struct.hasXYZSubtype():
-                ncs_xyz = ncs_struct.getXYZFilePath ( self.inputDir() )
+                ncs_xyz = ncs_struct.getPDBFilePath ( self.inputDir() )
                 ncs_kwd = "pdbin-wrk-mr"
             ncycles = "10"
         if ncs_kwd:
@@ -275,9 +275,9 @@ class Parrot(basic.TaskDriver):
 
             parrot_xyz = None
             parrot_sub = None
-            if istruct.getXYZFileName():
+            if istruct.getPDBFileName():
                 parrot_xyz = self.getXYZOFName()
-                shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),parrot_xyz )
+                shutil.copyfile ( istruct.getPDBFilePath(self.inputDir()),parrot_xyz )
             if istruct.getSubFileName():
                 parrot_sub = self.getOFName ( ".ha.pdb" )
                 shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),parrot_sub )

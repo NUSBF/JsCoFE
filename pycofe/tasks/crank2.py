@@ -137,7 +137,7 @@ class Crank2(basic.TaskDriver):
             S  = "model "
             if self.getParameter(self.sec6.COMB_PHDMMB_NCS_DET_MR)=="True":
                 S += "custom=ncs "
-            S += "unknown \"file=" + self.pmodel.getXYZFilePath(self.inputDir()) +\
+            S += "unknown \"file=" + self.pmodel.getPDBFilePath(self.inputDir()) +\
                  "\" atomtype=" + ha_type
             self.config.append ( S )
 

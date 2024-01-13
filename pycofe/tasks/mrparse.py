@@ -44,7 +44,7 @@ class MrParse(basic.TaskDriver):
 
     # old version; apparently MrParse does all remarking by itself now (02.10.2023)
     # def add_seqid_remark ( self,model ):
-    #     fpath = model.getXYZFilePath ( self.outputDir() )
+    #     fpath = model.getPDBFilePath ( self.outputDir() )
     #     file = open ( fpath,"r" )
     #     fcnt = file.read()
     #     file.close  ()

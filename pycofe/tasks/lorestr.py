@@ -66,14 +66,14 @@ class Lorestr(basic.TaskDriver):
         # Prepare report parser
         #self.setGenericLogParser ( self.lorestr_report(),False )
 
-        cmd = [ "-p1",istruct.getXYZFilePath(self.inputDir()),
+        cmd = [ "-p1",istruct.getPDBFilePath(self.inputDir()),
                 "-f" ,hkl.getHKLFilePath(self.inputDir()) ]
 
         if len(rstruct)>0:
             cmd += ["-p2"]
             for s in rstruct:
                 cs = self.makeClass ( s )
-                cmd += [cs.getXYZFilePath(self.inputDir())]
+                cmd += [cs.getPDBFilePath(self.inputDir())]
 
         cmd += [ "-save_space",
                  "-xyzout",self.getXYZOFName(),

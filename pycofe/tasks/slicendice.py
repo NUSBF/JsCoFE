@@ -94,7 +94,7 @@ class SliceNDice(basic.TaskDriver):
         self.makeFullASUSequenceFile ( seq,"full_asu",input_seq )
 
         cmd = [
-            "-xyzin"     ,xyz.getXYZFilePath(self.inputDir()),
+            "-xyzin"     ,xyz.getPDBFilePath(self.inputDir()),
             "-hklin"     ,input_mtz,
             "-seqin"     ,input_seq,
             "-min_splits",min_nsplits,

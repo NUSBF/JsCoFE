@@ -102,7 +102,7 @@ class FindMySequence(basic.TaskDriver):
         mtzin   = istruct.getMTZFilePath   ( self.inputDir() )
         modelin = istruct.getMMCIFFilePath ( self.inputDir() )
         if not modelin:
-            modelin = istruct.getXYZFilePath ( self.inputDir() )
+            modelin = istruct.getPDBFilePath ( self.inputDir() )
         uid     = self.getParameter(self.task.parameters.sec1.contains.UPID)
         tophits = self.getParameter(self.task.parameters.sec1.contains.TOPHITS)
         selstr  = self.getParameter(self.task.parameters.sec1.contains.SELSTR)

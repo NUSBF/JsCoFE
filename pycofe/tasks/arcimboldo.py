@@ -159,7 +159,7 @@ class Arcimboldo(basic.TaskDriver):
 
         elif search_model == "CUSTOM":
             fragment_to_search = int(self.getParameter(self.sec1.SCOPIES1))  # integer
-            model_file = self.xyz[0].getXYZFilePath(
+            model_file = self.xyz[0].getPDBFilePath(
                 self.inputDir()
             )  # Absolute path to a .pdb
 
@@ -173,7 +173,7 @@ class Arcimboldo(basic.TaskDriver):
         elif search_model == "CUSTOMS":
             list_customs = []  # List of paths to a .pdb list_customs
             for i in range(len(self.xyz)):
-                list_customs.append(self.xyz[i].getXYZFilePath(self.inputDir()))
+                list_customs.append(self.xyz[i].getPDBFilePath(self.inputDir()))
 
         # pdbout_path = "./best.pdb"
         # logfile     = "./arcimboldo_out.log"
@@ -345,7 +345,7 @@ class Arcimboldo(basic.TaskDriver):
         multicopy = self.getParameter(self.sec1.MULTICOPY)
 
 
-        model_file = self.xyz[0].getXYZFilePath(self.inputDir())
+        model_file = self.xyz[0].getPDBFilePath(self.inputDir())
 
         rmsd_shredder = float(self.getParameter(self.sec1.RMSD))
         trim_to_polyala = self.getParameter(self.sec1.POLYALA_SEL)

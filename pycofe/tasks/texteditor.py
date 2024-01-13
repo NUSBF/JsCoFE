@@ -136,7 +136,7 @@ class TextEditor(basic.TaskDriver):
 
         elif object._type==dtype_ligand.dtype():
             self.putMessage ( "<b>Edited data:</b> ligand descriptions" )
-            olig = self.finaliseLigand ( object.code,object.getXYZFilePath(self.inputDir()),
+            olig = self.finaliseLigand ( object.code,object.getPDBFilePath(self.inputDir()),
                                          ufname,title="Ligand Structure" )
             if olig:
                 summary_line = "ligand descriptions edited"
@@ -209,7 +209,7 @@ class TextEditor(basic.TaskDriver):
             elif self.task.upload.fspec.stype=='structure' or self.task.upload.fspec.stype=='substructure':
 
                 ixyz   = self.makeClass ( self.input_data.data.ixyz[0] )
-                xyzout = ixyz.getXYZFilePath ( self.inputDir() )
+                xyzout = ixyz.getPDBFilePath ( self.inputDir() )
                 subout = ixyz.getSubFilePath ( self.inputDir() )
                 if self.task.upload.fspec.stype=='structure':
                     self.putMessage ( "<b>Edited data:</b> atomic coordinates in structure revision" )

@@ -103,7 +103,7 @@ class Dimple(basic.TaskDriver):
         cmd = [
             # hkl.getHKLFilePath(self.inputDir()),
             reflections_mtz,
-            istruct.getXYZFilePath(self.inputDir()),
+            istruct.getPDBFilePath(self.inputDir()),
             "./",
             "--free-r-flags","-",
             "--freecolumn",hkl.getMeta("FREE","")

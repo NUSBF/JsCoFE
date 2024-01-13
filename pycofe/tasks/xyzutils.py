@@ -169,7 +169,7 @@ class XyzUtils(basic.TaskDriver):
         # fetch input data
         istruct = self.makeClass ( self.input_data.data.istruct[0] )
         ixyz    = self.makeClass ( self.input_data.data.ixyz[0] )
-        xyzpath = ixyz.getXYZFilePath ( self.inputDir() )
+        xyzpath = ixyz.getPDBFilePath ( self.inputDir() )
         sec1    = self.task.parameters.sec1.contains
 
         #self.stdoutln ( ixyz.to_JSON() )
@@ -178,7 +178,7 @@ class XyzUtils(basic.TaskDriver):
 
         log = []
 
-        xyzout = ixyz.lessDataId ( ixyz.getXYZFileName() )
+        xyzout = ixyz.lessDataId ( ixyz.getPDBFileName() )
         self.outputFName = os.path.splitext(xyzout)[0]
 
         action_sel = self.getParameter ( sec1.ACTION_SEL )

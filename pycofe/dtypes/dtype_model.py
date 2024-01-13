@@ -71,13 +71,13 @@ class DType(dtype_xyz.DType):
         self.setFile ( fname,dtype_template.file_key["seq"] )
         return
 
-    def getXYZFileName(self):
+    def getPDBFileName(self):
         return self.getFileName ( dtype_template.file_key["xyz"] )
 
     def getSeqFileName(self):
         return self.getFileName ( dtype_template.file_key["seq"] )
 
-    def getXYZFilePath ( self,dirPath ):
+    def getPDBFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
 
     def getSeqFilePath ( self,dirPath ):

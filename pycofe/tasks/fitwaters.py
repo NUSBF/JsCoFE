@@ -310,7 +310,7 @@ class FitWaters(basic.TaskDriver):
         sec1    = self.task.parameters.sec1.contains
 
         # make command-line parameters
-        self.pdbin      = istruct.getXYZFilePath ( self.inputDir() )
+        self.pdbin      = istruct.getPDBFilePath ( self.inputDir() )
         mtzin           = istruct.getMTZFilePath ( self.inputDir() )
         self.fndwat_cmd = [ 
                 "--pdbin" ,self.pdbin,

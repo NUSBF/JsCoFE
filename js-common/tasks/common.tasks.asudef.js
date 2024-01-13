@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    19.12.23   <--  Date of Last Modification.
+ *    13.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ASU Definition Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -253,7 +253,7 @@ TaskASUDef.prototype.icon           = function()  { return 'task_asudef';    }
 TaskASUDef.prototype.clipboard_name = function()  { return '"ASU Contents"'; }
 
 TaskASUDef.prototype.currentVersion = function()  {
-  var version = 1;
+  let version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -293,11 +293,11 @@ if (!__template)  {
   TaskASUDef.prototype.inputChanged = function ( inpParamRef,emitterId,emitterValue )  {
 
     if (emitterId=='hkl')  {
-      var inpDataRef = inpParamRef.grid.inpDataRef;
-      var item       = this.getInputItem ( inpDataRef,'hkl' ).dropdown[0];
-      var hkl        = item.dt[item.getValue()];
+      let inpDataRef = inpParamRef.grid.inpDataRef;
+      let item       = this.getInputItem ( inpDataRef,'hkl' ).dropdown[0];
+      let hkl        = item.dt[item.getValue()];
       if (hkl.subtype.indexOf(hkl_subtype.anomalous)>=0)  {
-        var hatom = inpParamRef.parameters['HATOM'].input;
+        let hatom = inpParamRef.parameters['HATOM'].input;
         if (hkl.hasOwnProperty('ha_type') && hkl.ha_type)
           hatom.setValue ( hkl.ha_type );
       }

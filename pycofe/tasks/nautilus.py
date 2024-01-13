@@ -133,7 +133,7 @@ class Nautilus(basic.TaskDriver):
         self.addCmdLine ( "pdbout",self.nautilus_xyz()  )
 
         if isCoor and istruct.useModelSel!="N":
-            self.addCmdLine ( "pdbin",ixyz.getXYZFilePath(self.inputDir()) )
+            self.addCmdLine ( "pdbin",ixyz.getPDBFilePath(self.inputDir()) )
 
         #self.addCmdLine ( "pdbin-ref",reffile + ".pdb" )
         #self.addCmdLine ( "mtzin-ref",reffile + ".mtz" )
@@ -169,12 +169,12 @@ class Nautilus(basic.TaskDriver):
         smodel = None
         if hasattr(idata,"xmodel"):
             xmodel = self.makeClass(idata.xmodel[0])
-            self.addCmdLine ( "pdbin",xmodel.getXYZFilePath(self.inputDir()) )
+            self.addCmdLine ( "pdbin",xmodel.getPDBFilePath(self.inputDir()) )
 
         if hasattr(idata,"smodel"):
             smodel = self.makeClass(idata.smodel[0])
             self.addCmdLine ( "pdbin-sequence-prior",
-                              smodel.getXYZFilePath(self.inputDir()) )
+                              smodel.getPDBFilePath(self.inputDir()) )
 
         self.write_stdin (
             self.putKWParameter ( sec1.NCYCLES          ) + \
@@ -201,7 +201,7 @@ class Nautilus(basic.TaskDriver):
             self.addCmdLine ( "nautilus-keyword mr-model-filter-sigma",str(ixyz.BFthresh) )
 
         if isCoor:
-            self.addCmdLine ( "pdbin-mr",ixyz.getXYZFilePath(self.inputDir()) )
+            self.addCmdLine ( "pdbin-mr",ixyz.getPDBFilePath(self.inputDir()) )
             if istruct.useModelSel!="N":
                 self.addCmdLine ( "nautilus-keyword",ixyz.useModelSel )
 

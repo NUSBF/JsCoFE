@@ -182,21 +182,21 @@ class PhaserMR(basic.TaskDriver):
             if ens0[i].simtype=="seqid":
                 self.write_stdin (
                         "\nENSEMBLE " + ename + " &" +\
-                        "\n    PDB \"" + ens0[i].getXYZFilePath(self.inputDir()) +\
+                        "\n    PDB \"" + ens0[i].getPDBFilePath(self.inputDir()) +\
                         "\" IDENT " + str(ens0[i].seqId) +\
                         "\nENSEMBLE " + ename + " HETATM ON"
                     )
             elif ens0[i].simtype=="rmsd":
                 self.write_stdin (
                         "\nENSEMBLE " + ename + " &" +\
-                        "\n    PDB \"" + ens0[i].getXYZFilePath(self.inputDir()) +\
+                        "\n    PDB \"" + ens0[i].getPDBFilePath(self.inputDir()) +\
                         "\" RMS " + str(ens0[i].rmsd) +\
                         "\nENSEMBLE " + ename + " HETATM ON"
                     )
             else:  # "cardon"
                 self.write_stdin (
                         "\nENSEMBLE " + ename + " &" +\
-                        "\n    PDB \"" + ens0[i].getXYZFilePath(self.inputDir()) +\
+                        "\n    PDB \"" + ens0[i].getPDBFilePath(self.inputDir()) +\
                         "\" CARD ON" +\
                         "\nENSEMBLE " + ename + " HETATM ON"
                     )
@@ -236,7 +236,7 @@ class PhaserMR(basic.TaskDriver):
         elif xstruct:  # optional data parameter
             self.write_stdin (
                 "\nENSEMBLE " + xstruct.ensembleName() + " &" +\
-                "\n    PDB \"" + xstruct.getXYZFilePath(self.inputDir()) +\
+                "\n    PDB \"" + xstruct.getPDBFilePath(self.inputDir()) +\
                 "\" IDENT 0.9" +\
                 "\nSOLUTION ORIGIN ENSEMBLE " + str(xstruct.ensembleName())
             )

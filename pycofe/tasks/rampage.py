@@ -48,9 +48,9 @@ class Rampage(basic.TaskDriver):
         xyzin = None
         if ixyz._type==dtype_revision.dtype():
             istruct = self.makeClass ( self.input_data.data.istruct[0] )
-            xyzin = istruct.getXYZFilePath ( self.inputDir() )
+            xyzin = istruct.getPDBFilePath ( self.inputDir() )
         else:
-            xyzin = ixyz.getXYZFilePath ( self.inputDir() )
+            xyzin = ixyz.getPDBFilePath ( self.inputDir() )
 
         rapperDir = os.path.join ( os.environ["CCP4"],"share","rapper" )
         out_ps    = "_out.ps"

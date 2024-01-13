@@ -82,7 +82,7 @@ class Privateer(basic.TaskDriver):
                         ["F","SIGF",FreeRColumn] )
 
         # make command-line parameters for privateer
-        xyzin = istruct.getXYZFilePath ( self.inputDir() )
+        xyzin = istruct.getPDBFilePath ( self.inputDir() )
         cmd = [
             "-pdbin",xyzin,
             "-mtzin",reflections_mtz,

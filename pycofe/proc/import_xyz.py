@@ -146,7 +146,7 @@ def run ( body ):  # body is reference to the main Import class
             pyrvapi.rvapi_add_data ( xyzTableId + "_structure_btn",
                                      xyz.dname  + "&nbsp;&nbsp;&nbsp;&nbsp;",
                                      # always relative to job_dir from job_dir/html
-                                     "/".join(["..",body.outputDir(),xyz.getXYZFileName()]),
+                                     "/".join(["..",body.outputDir(),xyz.getPDBFileName()]),
                                      "xyz",subSecId,1,0,1,1,-1 )
 
             note = ""
