@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
@@ -222,7 +222,7 @@ class TextEditor(basic.TaskDriver):
                     subout = ufname
                     summary_line = "substructure coordinates edited"
                     title  = "Output Substructure"
-                oxyz = self.registerStructure ( xyzout,subout,
+                oxyz = self.registerStructure ( None,xyzout,subout,
                                         ixyz.getMTZFilePath(self.inputDir()),
                                         ixyz.getMapFilePath(self.inputDir()),
                                         ixyz.getDMapFilePath(self.inputDir()),

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2023
+#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2023-2024
 #
 # ============================================================================
 #
@@ -202,48 +202,6 @@ class PhaserRB(basic.TaskDriver):
             self.generic_parser_summary["phaser"] = {
                 "summary_line" : "solution not found"
             }
-
-
-
-
-
-
-
-
-        #     structure = self.registerStructure (
-        #         xyzout,
-        #         istruct.getSubFilePath(self.inputDir()),
-        #         istruct.getMTZFilePath(self.inputDir()),
-        #         None,None,
-        #         istruct.getLibFilePath(self.inputDir()),
-        #         leadKey=istruct.leadKey,
-        #         map_labels=istruct.mapLabels,
-        #         refiner=istruct.refiner
-        #     )
-        #     if structure:
-
-        #         #mmcifout = self.getMMCIFOFName()
-        #         #if os.path.isfile(mmcifout):
-        #         #    structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
-
-        #         structure.copyAssociations   ( istruct )
-        #         structure.addDataAssociation ( hkl.dataId     )
-        #         structure.addDataAssociation ( istruct.dataId )  # ???
-        #         structure.setRefmacLabels    ( None if str(hkl.useHKLSet) in ["Fpm","TI"] else hkl )
-        #         structure.copySubtype        ( istruct )
-        #         structure.copyLigands        ( istruct )
-        #         structure.addPhasesSubtype   ()
-        #         self.putStructureWidget      ( "structure_btn",
-        #                                        "Structure and electron density",
-        #                                        structure )
-        #         # update structure revision
-        #         revision = self.makeClass ( self.input_data.data.revision[0] )
-        #         revision.setStructureData ( structure )
-        #         self.registerRevision     ( revision  )
-        #         have_results = True
-
-        # else:
-        #     self.putTitle ( "No Output Generated" )
 
         # close execution logs and quit
         self.success ( have_results )

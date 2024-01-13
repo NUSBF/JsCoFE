@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#   10.09.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2017-2024
 #
 # ============================================================================
 #
@@ -157,7 +157,7 @@ class PDBVal(basic.TaskDriver):
                 shutil.copyfile ( libin,libout )
 
             # create output structure and visualisation widget
-            structure = self.registerStructure ( xyzout,None,mtzout,None,None,libout,
+            structure = self.registerStructure ( None,xyzout,None,mtzout,None,None,libout,
                                                  leadKey=istruct.leadKey,
                                                  refiner="refmac" )
             if structure:

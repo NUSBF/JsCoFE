@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.01.24   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -120,7 +120,8 @@ class Pdbredo(basic.TaskDriver):
     def formStructure(
         self, xyzout, subfile, mtzout, libin, hkl, istruct, maplabels, copyfiles
     ):
-        structure = self.registerStructure(
+        structure = self.registerStructure (
+            None,
             xyzout,
             subfile,
             mtzout,

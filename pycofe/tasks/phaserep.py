@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -125,9 +125,7 @@ class PhaserEP(basic.TaskDriver):
                 else:
                     self.outputFName += "-inverted_hand"
                 structure = self.registerStructure (
-                                #None,pdbfile,mtzfile,protein_map,None,None,
-                                #None,pdbfile,mtzfile,None,None,None,
-                                None,pdbfile,mtzfile,None,None,None,
+                                None,None,pdbfile,mtzfile,None,None,None,
                                 leadKey=2,copy_files=True,map_labels="FWT,PHWT",
                                 refiner="" )
 
@@ -150,8 +148,7 @@ class PhaserEP(basic.TaskDriver):
                         #fnames = self.calcCCP4Maps (
                         #        llgmapsfile,namepattern+".llgmap_"+stype,"phaser-ep:"+stype )
                         anom_struct = self.registerStructure (
-                                #None,pdbfile,llgmapsfile,protein_map,fnames[0],None,
-                                None,pdbfile,llgmapsfile,None,None,None,
+                                None,None,pdbfile,llgmapsfile,None,None,None,
                                 leadKey=2,copy_files=True,
                                 map_labels="FWT,PHWT,FLLG_"+stype+",PHLLG_"+stype,
                                 refiner="" )

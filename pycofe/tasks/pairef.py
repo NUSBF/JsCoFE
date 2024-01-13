@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    08.08.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2023
+#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2023-2024
 #
 # ============================================================================
 #
@@ -435,6 +435,7 @@ class PaiRef(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             structure = self.registerStructure (
+                None,
                 pdbout,
                 istruct.getSubFilePath(self.inputDir()),
                 mtzout,

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.10.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -17,7 +17,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -235,7 +235,8 @@ class EditRevision(asudef.ASUDef):
                     refiner = ""
                     if struct0:
                         refiner = struct0.refiner
-                    structure = self.registerStructure1 (
+                    structure = self.registerStructure1 ( ###
+                                    None,
                                     xyz_fpath ,
                                     sub_fpath ,
                                     mtz_fpath ,

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    10.01.24   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -419,7 +419,7 @@ class Coot(coot_ce.CootCE):
                 library = self.registerLibrary ( libPath,copy_files=False )
             if library:
                 libPath = library.getLibFilePath(self.outputDir())
-            struct = self.registerStructure ( coot_xyz,None,coot_mtz,
+            struct = self.registerStructure ( None,coot_xyz,None,coot_mtz,
                                               None,None,libPath=libPath,
                                               leadKey=lead_key,
                                               refiner=istruct.refiner )

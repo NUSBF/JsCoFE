@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
@@ -192,7 +190,7 @@ class ImportReplace(migrate.Migrate):
                 elif isub:
                     refiner = isub.refiner
 
-                sxyz = self.registerStructure1 ( xyz_path,None,mtz_path,
+                sxyz = self.registerStructure1 ( None,xyz_path,None,mtz_path,  ###
                                                  None,None,lib_path,self.outputFName,
                                                  leadKey=leadKey,refiner=refiner )
                 if sxyz:
@@ -263,7 +261,7 @@ class ImportReplace(migrate.Migrate):
                     if not mtz_path:
                         mtz_path = isub.getMTZFilePath ( self.inputDir() )
                     refiner = isub.refiner
-                sub = self.registerStructure1 ( None,sub_path,mtz_path,
+                sub = self.registerStructure1 ( None,None,sub_path,mtz_path,  ###
                                                 None,None,None,self.outputFName,
                                                 leadKey=2,refiner=refiner )
                 if sub:

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -399,7 +399,7 @@ class FitWaters(basic.TaskDriver):
             os.rename ( self.xyzout,pdbout )
             mtzout = self.outputFName + ".mtz"
             os.rename ( self.mtzout,mtzout )
-            structure = self.registerStructure ( pdbout,None,mtzout,
+            structure = self.registerStructure ( None,pdbout,None,mtzout,
                             istruct.getMapFilePath (self.inputDir()),
                             istruct.getDMapFilePath(self.inputDir()),
                             libin,

@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,7 +21,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2024
 #
 # ============================================================================
 #
@@ -329,7 +327,7 @@ class ArpWarp(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             structure = self.registerStructure (
-                                    pdbout,None,mtzout,
+                                    None,pdbout,None,mtzout,
                                     None,None,None,
                                     #fnames[0],fnames[1],None,  -- not needed for new UglyMol
                                     leadKey=1,refiner="refmac" )

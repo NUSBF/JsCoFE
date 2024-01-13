@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -160,7 +160,7 @@ class FitLigand(basic.TaskDriver):
             #shutil.copyfile ( pdbin,"pdbin.xxx" )
             #shutil.copyfile ( ligands[0],"ligandin.yyy" )
             nligs  = coor.mergeLigands ( pdbin,ligands,"X",pdbout )
-            structure = self.registerStructure ( pdbout,None,mtzin,
+            structure = self.registerStructure ( None,pdbout,None,mtzin,
                                 istruct.getMapFilePath (self.inputDir()),
                                 istruct.getDMapFilePath(self.inputDir()),
                                 libadd,leadKey=istruct.leadKey,

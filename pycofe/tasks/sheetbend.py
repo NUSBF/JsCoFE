@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -93,7 +93,7 @@ class Sheetbend(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             structure = self.registerStructure (
-                xyzout,
+                None,xyzout,
                 istruct.getSubFilePath(self.inputDir()),
                 istruct.getMTZFilePath(self.inputDir()),
                 None,None,

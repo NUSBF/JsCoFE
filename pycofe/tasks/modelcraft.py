@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2022-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2022-2024
 #
 # ============================================================================
 #
@@ -323,7 +323,7 @@ class ModelCraft(basic.TaskDriver):
                             self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
 
                 structure = self.registerStructure (
-                                        pdbout,None,mtzout,
+                                        None,pdbout,None,mtzout,
                                         None,None,None,
                                         leadKey=1,refiner="refmac" )
                 if structure:

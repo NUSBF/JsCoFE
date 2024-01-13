@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -22,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #    expire      is timeout for removing coot backup directories
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -256,7 +254,7 @@ class JLigand(basic.TaskDriver):
                     if os.path.isfile(pdbfl_2):
                         pdbfl = pdbfl_2
 
-                struct = self.registerStructure ( pdbfl,
+                struct = self.registerStructure ( None,pdbfl,
                             istruct.getSubFilePath(self.inputDir()),
                             istruct.getMTZFilePath(self.inputDir()),
                             None,None,

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +20,7 @@
 #      jobDir/report  : directory receiving HTML report
 #
 #  Copyright (C) Eugene Krissinel, Andrey Lebedev, Robert Nicholls,
-#                Oleg Kovalevskiy 2017-2023
+#                Oleg Kovalevskiy 2017-2024
 #
 # ============================================================================
 #
@@ -52,7 +52,7 @@ class Refmac(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def formStructure ( self,xyzout,subfile,mtzout,libin,hkl,istruct,maplabels,copyfiles ):
-        structure = self.registerStructure ( xyzout,subfile,mtzout,
+        structure = self.registerStructure ( None,xyzout,subfile,mtzout,
                                              None,None,libin,leadKey=1,
                                              map_labels=maplabels,
                                              copy_files=copyfiles,

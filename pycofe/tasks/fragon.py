@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
@@ -338,7 +336,7 @@ class Fragon(basic.TaskDriver):
                     self.runApp ( "cad",cmd,logType="Service" )
 
                     structure = self.registerStructure (
-                        fragon_xyz,None,tmp_mtz,None,None,None,
+                        None,fragon_xyz,None,tmp_mtz,None,None,None,
                         leadKey=2,refiner="refmac" ) # ,map_labels=cols[0] + ",acorn.PHI" )
 
                     if structure:

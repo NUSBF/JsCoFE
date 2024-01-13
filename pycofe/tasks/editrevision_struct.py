@@ -2,12 +2,10 @@
 
 # LEGACY CODE, ONLY USED IN OLD PROJECTS   05.09.20  v.1.4.014
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    22.05.21   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,7 +21,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2021
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -140,7 +138,8 @@ class EditRevisionStruct(basic.TaskDriver):
         refiner = ""
         if struct0:
             refiner = struct0.refiner
-        structure = self.registerStructure1 (
+        structure = self.registerStructure1 (  ###
+                        None,
                         xyz_fpath ,
                         sub_fpath ,
                         mtz_fpath ,

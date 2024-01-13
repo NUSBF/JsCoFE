@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready (MR good, check EP)
-
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2024
 #
 # ============================================================================
 #
@@ -29,9 +27,9 @@
 #  python native imports
 import os
 import sys
-import uuid
+# import uuid
 import json
-import shutil
+# import shutil
 
 #  ccp4-python imports
 import pyrvapi
@@ -406,7 +404,8 @@ class CCP4Build(basic.TaskDriver):
                     fname = outnames[i]
                     rev   = None
                     if build_no[i]>=0:
-                        structure = self.registerStructure1 (
+                        structure = self.registerStructure1 (  ###
+                                        None,
                                         os.path.join(self.outputDir(),fname + ".pdb"),
                                         None,
                                         os.path.join(self.outputDir(),fname + ".mtz"),

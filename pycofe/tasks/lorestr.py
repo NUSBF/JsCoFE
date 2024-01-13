@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    22.11.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Oleg Kovalevskiy, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -145,7 +145,7 @@ class Lorestr(basic.TaskDriver):
             # register output data from temporary location (files will be moved
             # to output directory by the registration procedure)
 
-            structure = self.registerStructure ( self.getXYZOFName(),None,
+            structure = self.registerStructure ( None,self.getXYZOFName(),None,
                                                  self.getMTZOFName(),
                                                  None,None,None,
                                                  #fnames[0],fnames[1],None,  -- not needed for new UglyMol

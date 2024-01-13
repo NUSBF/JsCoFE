@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  STRUCTURE DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -649,34 +649,37 @@ class DType(dtype_xyz.DType):
 
 # ============================================================================
 
-def getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath ):
-    if (xyzFilePath):  return xyzFilePath
-    if (subFilePath):  return subFilePath
-    if (mtzFilePath):  return mtzFilePath
-    if (mapFilePath):  return mapFilePath
+def getValidFileName ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,
+                       mapFilePath,dmapFilePath ):
+    if (mmcifFilePath):  return mmcifFilePath
+    if (pdbFilePath):    return pdbFilePath
+    if (subFilePath):    return subFilePath
+    if (mtzFilePath):    return mtzFilePath
+    if (mapFilePath):    return mapFilePath
     return dmapFilePath
 
 
 # ----------------------------------------------------------------------------
 
-def register ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
-               dataSerialNo,job_id,leadKey,outDataBox,outputDir,copy_files=False,
-               map_labels=None,refiner="" ):
-    fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath )
+def register ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,mapFilePath,
+               dmapFilePath,libFilePath,dataSerialNo,job_id,leadKey,outDataBox,
+               outputDir,copy_files=False,map_labels=None,refiner="" ):
+    fname0 = getValidFileName ( pdbFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath )
     if fname0 and os.path.isfile(fname0):
-        structure = DType   ( job_id )
+        structure = DType ( job_id )
         structure.leadKey = leadKey
         # note that, in the following line, file key may be any
         structure.setFile ( os.path.basename(fname0),dtype_template.file_key["xyz"] )
         structure.makeDName ( dataSerialNo )
         structure.removeFiles()
-        structure.add_file ( xyzFilePath ,outputDir,dtype_template.file_key["xyz" ],copy_files )
-        structure.add_file ( subFilePath ,outputDir,dtype_template.file_key["sub" ],copy_files )
-        structure.add_file ( mtzFilePath ,outputDir,dtype_template.file_key["mtz" ],copy_files )
-        structure.add_file ( mapFilePath ,outputDir,dtype_template.file_key["map" ],copy_files )
-        structure.add_file ( dmapFilePath,outputDir,dtype_template.file_key["dmap"],copy_files )
-        structure.add_file ( libFilePath ,outputDir,dtype_template.file_key["lib" ],copy_files )
-        if xyzFilePath:
+        structure.add_file ( mmcifFilePath,outputDir,dtype_template.file_key["mmcif"],copy_files )
+        structure.add_file ( pdbFilePath  ,outputDir,dtype_template.file_key["xyz"  ],copy_files )
+        structure.add_file ( subFilePath  ,outputDir,dtype_template.file_key["sub"  ],copy_files )
+        structure.add_file ( mtzFilePath  ,outputDir,dtype_template.file_key["mtz"  ],copy_files )
+        structure.add_file ( mapFilePath  ,outputDir,dtype_template.file_key["map"  ],copy_files )
+        structure.add_file ( dmapFilePath ,outputDir,dtype_template.file_key["dmap" ],copy_files )
+        structure.add_file ( libFilePath  ,outputDir,dtype_template.file_key["lib"  ],copy_files )
+        if mmcifFilePath or pdbFilePath:
             structure.addSubtype ( dtype_template.subtypeXYZ() )
         if subFilePath:
             structure.addSubtype ( dtype_template.subtypeSubstructure() )
@@ -701,24 +704,26 @@ def basename ( fpath ):
 
 #  register1() assumes that all files are in output directory and named
 #  properly -- so just checks them in
-def register1 ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath,libFilePath,
-                regName,dataSerialNo,job_id,leadKey,outDataBox,map_labels=None,
-                refiner="" ):
+def register1 ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,mapFilePath,
+                dmapFilePath,libFilePath,regName,dataSerialNo,job_id,leadKey,
+                outDataBox,map_labels=None,refiner="" ):
 
-    fname0 = getValidFileName ( xyzFilePath,subFilePath,mtzFilePath,mapFilePath,dmapFilePath )
+    fname0 = getValidFileName ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,
+                                mapFilePath,dmapFilePath )
     if fname0 and os.path.isfile(fname0):
-        structure = DType   ( job_id       )
+        structure = DType   ( job_id )
         structure.leadKey = leadKey
         structure.setFile   ( regName,dtype_template.file_key["xyz"] )
         structure.makeDName ( dataSerialNo )
         structure.removeFiles()
-        structure.setFile ( basename(xyzFilePath ),dtype_template.file_key["xyz" ] )
-        structure.setFile ( basename(subFilePath ),dtype_template.file_key["sub" ] )
-        structure.setFile ( basename(mtzFilePath ),dtype_template.file_key["mtz" ] )
-        structure.setFile ( basename(mapFilePath ),dtype_template.file_key["map" ] )
-        structure.setFile ( basename(dmapFilePath),dtype_template.file_key["dmap"] )
-        structure.setFile ( basename(libFilePath ),dtype_template.file_key["lib" ] )
-        if xyzFilePath:
+        structure.setFile ( basename(mmcifFilePath),dtype_template.file_key["mmcif"] )
+        structure.setFile ( basename(pdbFilePath  ),dtype_template.file_key["xyz"  ] )
+        structure.setFile ( basename(subFilePath  ),dtype_template.file_key["sub"  ] )
+        structure.setFile ( basename(mtzFilePath  ),dtype_template.file_key["mtz"  ] )
+        structure.setFile ( basename(mapFilePath  ),dtype_template.file_key["map"  ] )
+        structure.setFile ( basename(dmapFilePath ),dtype_template.file_key["dmap" ] )
+        structure.setFile ( basename(libFilePath  ),dtype_template.file_key["lib"  ] )
+        if mmcifFilePath or pdbFilePath:
             structure.addSubtype ( dtype_template.subtypeXYZ() )
         if subFilePath:
             structure.addSubtype ( dtype_template.subtypeSubstructure() )

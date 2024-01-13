@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.01.24   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -341,7 +341,7 @@ class Buster(basic.TaskDriver):
             self.putTitle ( "Output Structure" +\
                         self.hotHelpLink ( "Structure","jscofe_qna.structure") )
 
-            structure = self.registerStructure ( xyzout,None,mtzout,
+            structure = self.registerStructure ( None,xyzout,None,mtzout,
                                 None,None,libin,leadKey=1,
                                 map_labels="2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT",
                                 copy_files=True,refiner="buster" )
@@ -428,7 +428,7 @@ class Buster(basic.TaskDriver):
                             self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
 
                             self.putTitle ( "Structure, substructure and anomolous maps")
-                            struct_ano = self.registerStructure ( xyz_merged,None,anomtz,
+                            struct_ano = self.registerStructure ( None,xyz_merged,None,anomtz,
                                         None,None,libin,leadKey=1,
                                         map_labels="FAN,PHAN",
                                         copy_files=True,
@@ -452,7 +452,7 @@ class Buster(basic.TaskDriver):
                                         "Structure, substructure and anomalous maps",struct_ano )
 
                             substructure = self.registerStructure (
-                                            None,subfile,
+                                            None,None,subfile,
                                             structure.getMTZFilePath(self.outputDir()),
                                             None,None,None,
                                             leadKey=2,copy_files=False,
