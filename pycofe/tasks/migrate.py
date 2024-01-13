@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.11.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
@@ -209,7 +209,7 @@ class Migrate(import_task.Import):
         nstruct    = 0
         if len(self.map)>0:
             for i in range(len(self.map)):
-                s = self.registerStructure1 ( xyzPath,subPath,
+                s = self.registerStructure1 ( None,xyzPath,subPath, ###
                                     self.map[i].getMTZFilePath(self.outputDir()),
                                     None,None,libPath,self.outputFName,
                                     leadKey=leadKey,refiner="" )
@@ -223,7 +223,7 @@ class Migrate(import_task.Import):
                     nstruct += 1
                 structures.append ( s )   # indentation is correct
         else:
-            s = self.registerStructure1 ( xyzPath,subPath,None,
+            s = self.registerStructure1 ( None,xyzPath,subPath,None,  ###
                                           None,None,libPath,self.outputFName,
                                           leadKey=leadKey,refiner="" )
             if s:

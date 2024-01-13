@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -23,7 +21,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -313,7 +311,7 @@ class Acorn(basic.TaskDriver):
                 #     shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),acorn_sub )
 
                 structure = self.registerStructure (
-                        acorn_xyz,acorn_sub,acorn_map,None,None,None,
+                        None,acorn_xyz,acorn_sub,acorn_map,None,None,None,
                         leadKey=2,copy_files=True,
                         map_labels="acorn.EO.FWT,acorn.PHI,acorn.EC.FWT,acorn.PHI",
                         refiner=istruct.refiner )
@@ -339,7 +337,7 @@ class Acorn(basic.TaskDriver):
             self.runApp ( "sftools",[],logType="Service" )
 
             structure = self.registerStructure (
-                    acorn_xyz,acorn_sub,output_file,None,None,None,
+                    None,acorn_xyz,acorn_sub,output_file,None,None,None,
                     leadKey=2,map_labels=cols[0] + ",acorn.PHI",
                     refiner=istruct.refiner )
 

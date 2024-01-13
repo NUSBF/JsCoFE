@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    29.06.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -30,7 +30,7 @@
 #               even if job is run by SGE, so it should be checked upon using
 #               comman line length
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Oleg Kovalevskyi 2017-2024
 #
 # ============================================================================
 #
@@ -313,7 +313,7 @@ class Simbad(asudef.ASUDef):
 
                 # register structure data
                 structure = self.registerStructure (
-                                pdbfile,None,mtzfile,
+                                None,pdbfile,None,mtzfile,
                                 None,None,None,leadKey=1,copy_files=True,
                                 refiner="refmac" )
 

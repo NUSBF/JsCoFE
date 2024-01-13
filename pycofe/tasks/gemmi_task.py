@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    24.07.22   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
@@ -155,7 +153,7 @@ class Gemmi(basic.TaskDriver):
                     st0 = struct0.Substructure
                     xyzfname = None
                     subfname = outfname
-                xyz = self.registerStructure ( xyzfname,subfname,
+                xyz = self.registerStructure ( None,xyzfname,subfname,
                                      st0.getMTZFilePath(self.inputDir()),
                                      st0.getMapFilePath(self.inputDir()),
                                      st0.getDMapFilePath(self.inputDir()),
@@ -190,7 +188,7 @@ class Gemmi(basic.TaskDriver):
                 if struct0.hasSubtype(dtype_template.subtypeXYZ()):
                     xyzfname = outfname
                     subfname = None
-                xyz = self.registerStructure ( xyzfname,subfname,
+                xyz = self.registerStructure ( None,xyzfname,subfname,
                                      struct0.getMTZFilePath(self.inputDir()),
                                      struct0.getMapFilePath(self.inputDir()),
                                      struct0.getDMapFilePath(self.inputDir()),

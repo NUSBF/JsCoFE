@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -286,8 +286,7 @@ class Parrot(basic.TaskDriver):
             #                      fnames[1] )
 
             structure = self.registerStructure (
-                    #parrot_xyz,parrot_sub,output_file,fnames[0],None,None,leadKey=2,
-                    parrot_xyz,parrot_sub,output_file,None,None,None,leadKey=2,
+                    None,parrot_xyz,parrot_sub,output_file,None,None,None,leadKey=2,
                     map_labels="parrot.F_phi.F,parrot.F_phi.phi",
                     refiner=istruct.refiner )
 

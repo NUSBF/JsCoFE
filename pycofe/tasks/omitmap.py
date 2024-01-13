@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.05.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2020-2022
+#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
@@ -130,30 +130,6 @@ class OmitMap(basic.TaskDriver):
                     "MAPOUT",mapout_fpath],
             logType="Main"
         )
-        # mapout_fpath = os.path.join(self.outputDir(),mapout)
-        # os.rename ( mapout,mapout_fpath )
-
-
-        # structure = self.registerStructure ( None,None,None,
-        #                                      None,mapout,leadKey=1,
-        #                                      map_labels="",
-        #                                      copy_files=True,
-        #                                      refiner=istruct.refiner )
-        # if structure:
-        #     structure.copyAssociations   ( istruct )
-        #     structure.addDataAssociation ( hkl.dataId     )
-        #     structure.addDataAssociation ( istruct.dataId )  # ???
-        #     # structure.setRefmacLabels    ( None if str(hkl.useHKLSet) in ["Fpm","TI"] else hkl )
-        #     # if not subfile:
-        #     #     mmcifout = self.getMMCIFOFName()
-        #     #     if os.path.isfile(mmcifout):
-        #     #         structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
-        #     #     structure.copySubtype        ( istruct )
-        #     #     structure.copyLigands        ( istruct )
-        #     structure.addPhasesSubtype   ()
-        #     # self.putStructureWidget ( self.getWidgetId("omit_map"),
-        #     #                           "Omit map",
-        #     #                           structure )
 
         summary = "failed to calculate"
         if os.path.isfile(mapout_fpath):

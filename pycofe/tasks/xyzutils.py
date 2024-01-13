@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    24.11.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
@@ -112,7 +112,7 @@ class XyzUtils(basic.TaskDriver):
 
         elif istruct._type==dtype_revision.dtype():
             self.putTitle ( "Modified Structure" )
-            oxyz = self.registerStructure ( xyzout,
+            oxyz = self.registerStructure ( None,xyzout,
                                     ixyz.getSubFilePath(self.inputDir()),
                                     ixyz.getMTZFilePath(self.inputDir()),
                                     ixyz.getMapFilePath(self.inputDir()),

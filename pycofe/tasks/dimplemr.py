@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    26.11.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2023-2024
 #
 # ============================================================================
 #
@@ -212,7 +212,7 @@ class DimpleMR(basic.TaskDriver):
             # Register output data. This moves needful files into output directory
             # and puts the corresponding metadata into output databox
 
-            structure = self.registerStructure ( self.getXYZOFName(),None,
+            structure = self.registerStructure ( None,self.getXYZOFName(),None,
                                                  self.getMTZOFName(),None,
                                                  None,libin, leadKey=1,
                                                  refiner="refmac" )

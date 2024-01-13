@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    12.10.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +21,7 @@
 #    jobId      is job id assigned by jsCoFE (normally an integer but should
 #               be treated as a string with no assumptions)
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2022-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2022-2024
 #
 # ============================================================================
 #
@@ -614,7 +614,8 @@ class Arcimboldo(basic.TaskDriver):
             if arcimboldo_xyz != pdb_out:
                 shutil.copy2(pdb_out, arcimboldo_xyz)
 
-            structure = self.registerStructure(
+            structure = self.registerStructure (
+                None,
                 arcimboldo_xyz,
                 None,
                 arcimboldo_mtz,

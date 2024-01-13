@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    28.06.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -98,7 +96,7 @@ class Zanuda(basic.TaskDriver):
                     self.message.append ( "<u>SG confirmed as " + solSpg  + "</u>" )
 
             structure = self.registerStructure (
-                                subgroup["pdbout"],None,subgroup["mtzout"],
+                                None,subgroup["pdbout"],None,subgroup["mtzout"],
                                 None,None,None,leadKey=1,refiner="refmac" )
             if structure:
                 structure.setRefmacLabels ( hkl0     )
@@ -256,162 +254,6 @@ class Zanuda(basic.TaskDriver):
         else:
             self.putTitle ( "No results were produced" )
 
-
-        """
-        if os.path.isfile(self.getXYZOFName()):
-
-            self.unsetLogParser()
-
-            mtzfile = self.getMTZOFName()
-            sol_hkl = hkl
-
-            meta = xyzmeta.getXYZMeta ( self.getXYZOFName(),self.file_stdout,
-                                        self.file_stderr )
-            if "cryst" in meta:
-                sol_spg    = meta["cryst"]["spaceGroup"]
-                spg_change = self.checkSpaceGroupChanged ( sol_spg,hkl,mtzfile )
-                if spg_change:
-                    mtzfile = spg_change[0]
-                    sol_hkl = spg_change[1]
-                else:
-                    self.putMessage ( "<font size='+1'><b>Space Group confirmed as " +\
-                                      sol_spg + "</b></font>" )
-
-            # calculate maps for UglyMol using final mtz from temporary location
-            #fnames = self.calcCCP4Maps ( mtzfile,self.outputFName )
-
-            # register output data from temporary location (files will be moved
-            # to output directory by the registration procedure)
-
-            structure = self.registerStructure ( self.getXYZOFName(),None,mtzfile,
-                                                 None,None,None,
-                                                 #fnames[0],fnames[1],None,  -- not needed for new UglyMol
-                                                 leadKey=1,refiner="refmac" )
-            if structure:
-
-                self.putMessage ( "<h3>Output Structure" +\
-                        self.hotHelpLink ( "Structure","jscofe_qna.structure") +\
-                        "</h3>" )
-
-
-                #structure.addDataAssociations ( [hkl,xyz] )
-                structure.setRefmacLabels ( sol_hkl )
-                structure.copySubtype     ( xyz )
-
-                self.putStructureWidget   ( "structure_btn",
-                                            "Structure and electron density",
-                                            structure )
-                # update structure revision
-                revision = self.makeClass  ( self.input_data.data.revision[0] )
-                revision.setReflectionData ( sol_hkl   )
-                revision.setStructureData  ( structure )
-
-                self.putMessage ( "<h3>Structure Revision" +\
-                    self.hotHelpLink ( "Structure Revision",
-                                       "jscofe_qna.structure_revision") + "</h3>" )
-                self.registerRevision ( revision,title="" )
-                have_results = True
-
-            else:
-                self.putMessage ( "<h3>Failed to create Structure</h3>" +\
-                                  "This is likely to be a program bug, please " +\
-                                  "report to developer or maintainer" )
-
-        else:
-            self.putMessage ( "<h3>No Output Structure Generated</h3>" )
-
-        # Make revisions for acceptable space groups
-
-        if models:
-
-            self.putMessage ( "&nbsp;<br>&nbsp;" )
-
-            # self.putTitle ( "Models for Acceptable Space Groups" )
-            modelsSecId = self.getWidgetId ( "_models_sec_" )
-            pyrvapi.rvapi_add_section (
-                        modelsSecId,"Solutions in Possible Space Groups",
-                        self.report_page_id(),self.rvrow,0,1,1,False )
-            self.rvrow += 1
-            self.setReportWidget ( modelsSecId )
-
-            for i in range(len(models)):
-                # self.putMessage ( "<h3>" + models[i]["title"] + "</h3>" )
-                modSecId = self.getWidgetId ( "_mod_sec_" )
-                pyrvapi.rvapi_add_section ( modSecId,models[i]["title"],modelsSecId,
-                                            self.rvrow,0,1,1,False )
-                rvrow0     = self.rvrow
-                self.rvrow = 0
-                self._report_widget_id = modSecId
-
-                self.resetFileImport()
-                self.addFileImport ( models[i]["mtzin"],import_filetype.ftype_MTZMerged() )
-                hkli = import_merged.run ( self,"Reflection dataset details",importPhases="" )
-                if len(hkli)>0:
-                    hkli[0].dataStats    = hkl.dataStats
-                    hkli[0].aimless_meta = hkl.aimless_meta
-                    self.putMessage ( "<b>New reflection dataset created:</b> " +\
-                                      hkli[0].dname )
-                    structure = self.registerStructure (
-                                models[i]["pdbout"],None,models[i]["mtzout"],
-                                None,None,None,leadKey=1,refiner="refmac" )
-                    if structure:
-                        structure.setRefmacLabels ( hkli[0] )
-                        structure.copySubtype     ( xyz )
-                        self.putMessage ( "<h3>Structure" +\
-                            self.hotHelpLink ( "Structure","jscofe_qna.structure" ) +\
-                            "</h3>" )
-                        self.putStructureWidget   (
-                                "structure_btn","Structure and electron density",
-                                structure,legend="Assigned name" )
-                        # update structure revision
-                        # revision = self.makeClass  ( self.input_data.data.revision[0] )
-                        # revision.setReflectionData ( hkli[0]   )
-                        # revision.setStructureData  ( structure )
-                        # self.putMessage ( "<h3>Structure Revision" +\
-                        #     self.hotHelpLink ( "Structure Revision",
-                        #                        "jscofe_qna.structure_revision") + "</h3>" )
-                        # self.registerRevision ( revision,title="" )
-
-                        self.putMessage ( "<h3>Structure Revision" +\
-                            self.hotHelpLink ( "Structure Revision",
-                                               "jscofe_qna.structure_revision") +\
-                            "</h3>" )
-
-                        revision = dtype_revision.DType ( -1 )
-                        revision.copy ( self.input_data.data.revision[0] )
-                        revision.setReflectionData ( hkli[0]     )
-                        revision.setStructureData  ( structure )
-                        revision.makeRevDName  ( self.job_id,i+2,
-                            self.outputFName + "_sg" + str(models[i]["subgrp"]).zfill(3)  )
-
-                        sequences = revision.ASU.seq
-                        mult = float(models[i]["mult"][0])/float(models[i]["mult"][1])
-                        for j in range(len(sequences)):
-                            sequences[j].ncopies = int ( round ( mult*sequences[j].ncopies ) )
-
-                        gridId = self.getWidgetId ( "_revision" )
-                        pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),
-                                                 self.rvrow,0,1,1 )
-                        self.rvrow += 1
-
-                        self.putRevisionWidget ( gridId,0,"Name:",revision )
-                        revision.register ( self.outputDataBox )
-
-                        have_results = True
-
-                else:
-                    self.putMessage (
-                        "Data registration error -- report to developers." )
-
-                self.rvrow = rvrow0 + 1
-                self._report_widget_id = modelsSecId
-
-            self.resetReportPage()
-
-        else:
-            self.putTitle ( "No Models for Acceptable Space Groups Generated" )
-
-        """
 
         # close execution logs and quit
 

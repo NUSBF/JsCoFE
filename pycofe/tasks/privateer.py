@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2021-2024
 #
 # ============================================================================
 #
@@ -204,7 +204,7 @@ class Privateer(basic.TaskDriver):
                         self.hotHelpLink ( "Structure","jscofe_qna.structure") )
 
             structure = self.registerStructure (
-                                    xyzin,
+                                    None,xyzin,
                                     istruct.getSubFilePath(self.inputDir()),
                                     mtzout,None,None,libpath,
                                     leadKey=istruct.leadKey,

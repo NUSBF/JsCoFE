@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    31.10.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2022-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2022-2024
 #
 # ============================================================================
 #
@@ -157,7 +157,7 @@ class AWNuce(basic.TaskDriver):
                 optimize_xyz.optimizeXYZ ( st )
                 st.write_pdb ( pdbout )
 
-                structure = self.registerStructure ( pdbout,None,mtzin,
+                structure = self.registerStructure ( None,pdbout,None,mtzin,
                                 istruct.getMapFilePath (self.inputDir()),
                                 istruct.getDMapFilePath(self.inputDir()),
                                 istruct.getLibFilePath (self.inputDir()),

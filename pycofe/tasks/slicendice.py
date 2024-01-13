@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    11.12.23    <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2022
+#  Copyright (C) Eugene Krissinel, Maria Fando, Andrey Lebedev 2022-2024
 #
 # ============================================================================
 #
@@ -182,7 +182,7 @@ class SliceNDice(basic.TaskDriver):
 
                 shutil.copyfile ( refmac_pdb,self.getXYZOFName() )
                 shutil.copyfile ( refmac_mtz,self.getMTZOFName() )
-                structure = self.registerStructure ( self.getXYZOFName(),None,
+                structure = self.registerStructure ( None,self.getXYZOFName(),None,
                                                      self.getMTZOFName(),None,
                                                      None,None, leadKey=1,
                                                      refiner="refmac" )

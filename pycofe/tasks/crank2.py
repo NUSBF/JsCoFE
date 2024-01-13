@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.01.24   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -449,8 +449,8 @@ class Crank2(basic.TaskDriver):
 
             # register output data
             if not structure:
-                self.structure = self.registerStructure1 (
-                                            xyzout,subout,self.hklout_fpath,
+                self.structure = self.registerStructure1 (  ###
+                                            None,xyzout,subout,self.hklout_fpath,
                                             None,None,
                                             # self.hklout_fpath + ".map",
                                             # self.hklout_fpath + "_diff.map",

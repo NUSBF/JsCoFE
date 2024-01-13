@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.01.24   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -149,7 +149,7 @@ class OptimiseASU(basic.TaskDriver):
 
                     self.putTitle   ( "Results" )
 
-                    oxyz = self.registerStructure ( xyzout,
+                    oxyz = self.registerStructure ( None,xyzout,
                                             istruct.getSubFilePath(self.inputDir()),
                                             istruct.getMTZFilePath(self.inputDir()),
                                             istruct.getMapFilePath(self.inputDir()),

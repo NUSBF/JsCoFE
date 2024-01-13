@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.12.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -11,7 +11,7 @@
 #
 #  Command-line:  N/A
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev, Maria Fando 2017-2024
 #
 # ============================================================================
 #
@@ -1525,11 +1525,11 @@ class TaskDriver(object):
 
             if structureType==1:
                 structure = self.registerStructure (
-                                None,fnames[0],fnames[1],fnames[2],fnames[3],libPath,
+                                None,None,fnames[0],fnames[1],fnames[2],fnames[3],libPath,
                                 leadKey=leadKey,refiner="refmac" )
             else:
                 structure = self.registerStructure (
-                                fnames[0],None,fnames[1],fnames[2],fnames[3],libPath,
+                                None,fnames[0],None,fnames[1],fnames[2],fnames[3],libPath,
                                 leadKey=leadKey,refiner="refmac" )
             if structure:
                 structure.addDataAssociation ( hkl.dataId )
@@ -1836,9 +1836,9 @@ class TaskDriver(object):
     #    return
 
 
-    def registerStructure ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
-                            libPath=None,leadKey=1,copy_files=False,map_labels=None,
-                            refiner="" ):
+    def registerStructure ( self,mmcifPath,pdbPath,subPath,mtzPath,
+                            mapPath=None,dmapPath=None,libPath=None,leadKey=1,
+                            copy_files=False,map_labels=None,refiner="" ):
         self.dataSerialNo += 1
 
         #self.file_stderr.write ( "  xyzPath=" + str(xyzPath) + "\n" )
@@ -1849,7 +1849,8 @@ class TaskDriver(object):
         #    self.file_stderr.write ( "  does not exists\n" )
 
         structure = dtype_structure.register (
-                                    xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
+                                    mmcifPath,pdbPath,subPath,mtzPath,mapPath,
+                                    dmapPath,libPath,
                                     self.dataSerialNo ,self.job_id,leadKey,
                                     self.outputDataBox,self.outputDir(),
                                     copy_files=copy_files,map_labels=map_labels,
@@ -1877,12 +1878,14 @@ class TaskDriver(object):
         return False
 
 
-    def registerStructure1 ( self,xyzPath,subPath,mtzPath,mapPath,dmapPath,
-                                  libPath,regName,leadKey=1,copy_files=False,
+    def registerStructure1 ( self,mmcifPath,pdbPath,subPath,mtzPath,mapPath,
+                                  dmapPath,libPath,regName,
+                                  leadKey=1,copy_files=False,
                                   map_labels=None,refiner="" ):
         self.dataSerialNo += 1
         structure = dtype_structure.register1 (
-                                xyzPath,subPath,mtzPath,mapPath,dmapPath,libPath,
+                                mmcifPath,pdbPath,subPath,mtzPath,mapPath,
+                                dmapPath,libPath,
                                 regName,self.dataSerialNo,self.job_id,leadKey,
                                 self.outputDataBox,map_labels=map_labels,
                                 refiner=refiner )

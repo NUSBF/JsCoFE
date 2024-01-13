@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    11.05.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  MERGED MTZ DATA IMPORT FUNCTIONS
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -515,7 +515,7 @@ def run ( body,   # body is reference to the main Import class
                             leadKey = 2
                             if ds.FwPhi and (("FWT","PHWT") in ds.FwPhi):
                                 leadKey = 1
-                            structure = body.registerStructure1 ( None,None,
+                            structure = body.registerStructure1 ( None,None,None,  ###
                                         p_mtzout,None,None,None,
                                         os.path.splitext(f_orig)[0] + "-maps",
                                         leadKey=leadKey,refiner="" )
@@ -620,8 +620,9 @@ def run ( body,   # body is reference to the main Import class
                                 body.file_stdout1.write ( "Error calling cfft: " + rc.msg + "\n" )
                                 body.file_stderr.write ( "Error calling cfft: " + rc.msg + "\n" )
 
-                            structure = body.registerStructure1 ( None,None,mtzout,mapout,None,
-                                                                  None,blockname,refiner="" )
+                            structure = body.registerStructure1 (  ###
+                                                    None,None,None,mtzout,mapout,None,
+                                                    None,blockname,refiner="" )
                             if structure:
                                 structure.addPhasesSubtype ()
                                 structure.addDataAssociation( last_imported.dataId )

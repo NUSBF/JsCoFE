@@ -1,11 +1,9 @@
 ##!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    25.07.23   <--  Date of Last Modification.
+#    13.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -372,21 +370,15 @@ class ShelxEMR(basic.TaskDriver):
                 # copy pdb
                 pdbout = self.getXYZOFName()
                 os.rename ( self.shelxe_wrk_pdb(),pdbout )
-                # structure = self.registerStructure1 (
-                #                 pdbout,None,mtzout,
-                #                 None,None,None,self.outputFName,leadKey=2,
-                #                 map_labels="FWT,PHWT",
-                #                 refiner="" )
-                                #fnames[0],None,None,self.outputFName,leadKey=2 )
-                structure = self.registerStructure ( 
-                            pdbout,None,mtzout,
+                structure = self.registerStructure ( ###
+                            None,pdbout,None,mtzout,
                             None,None,None,leadKey=2,
                             copy_files=True,map_labels="FWT,PHWT",
                             refiner="" )
 
             elif istruct.hasXYZSubtype():
                 structure = self.registerStructure1 (
-                                istruct.getXYZFilePath(self.inputDir()),
+                                None,istruct.getXYZFilePath(self.inputDir()),
                                 None,mtzout,None,None,None,
                                 #None,mtzout,fnames[0],None,None,
                                 self.outputFName,leadKey=2,
@@ -412,9 +404,8 @@ class ShelxEMR(basic.TaskDriver):
 
             substructure = None
             if istruct.hasSubSubtype():
-                substructure = self.registerStructure1 (
-                                None,istruct.getSubFilePath(self.inputDir()),
-                                #mtzout,fnames[0],None,None,
+                substructure = self.registerStructure1 ( ###
+                                None,None,istruct.getSubFilePath(self.inputDir()),
                                 mtzout,None,None,None,
                                 self.outputFName,leadKey=2,
                                 map_labels="FWT,PHWT",
