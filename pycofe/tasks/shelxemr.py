@@ -378,12 +378,16 @@ class ShelxEMR(basic.TaskDriver):
 
             elif istruct.hasXYZSubtype():
                 structure = self.registerStructure1 (
-                                None,istruct.getPDBFilePath(self.inputDir()),
-                                None,mtzout,None,None,None,
-                                #None,mtzout,fnames[0],None,None,
-                                self.outputFName,leadKey=2,
-                                map_labels="FWT,PHWT",
-                                refiner=istruct.refiner )
+                                self.outputFName,
+                                None,
+                                istruct.getPDBFilePath(self.inputDir()),
+                                None,
+                                mtzout,
+                                None,
+                                leadKey    = 2,
+                                map_labels = "FWT,PHWT",
+                                refiner    = istruct.refiner 
+                            )
 
             if structure:
                 structure.copy_refkeys_parameters ( istruct )
@@ -405,11 +409,16 @@ class ShelxEMR(basic.TaskDriver):
             substructure = None
             if istruct.hasSubSubtype():
                 substructure = self.registerStructure1 ( ###
-                                None,None,istruct.getSubFilePath(self.inputDir()),
-                                mtzout,None,None,None,
-                                self.outputFName,leadKey=2,
-                                map_labels="FWT,PHWT",
-                                refiner=istruct.refiner )
+                                    self.outputFName,
+                                    None,
+                                    None,
+                                    istruct.getSubFilePath(self.inputDir()),
+                                    mtzout,
+                                    None,
+                                    leadKey    = 2,
+                                    map_labels = "FWT,PHWT",
+                                    refiner    = istruct.refiner
+                                )
                 if substructure:
                     substructure.copy_refkeys_parameters ( istruct )
                     substructure.copyAssociations ( istruct )

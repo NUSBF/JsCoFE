@@ -209,10 +209,16 @@ class Migrate(import_task.Import):
         nstruct    = 0
         if len(self.map)>0:
             for i in range(len(self.map)):
-                s = self.registerStructure1 ( None,xyzPath,subPath, ###
-                                    self.map[i].getMTZFilePath(self.outputDir()),
-                                    None,None,libPath,self.outputFName,
-                                    leadKey=leadKey,refiner="" )
+                s = self.registerStructure1 ( 
+                        self.outputFName,
+                        None,
+                        xyzPath,
+                        subPath, ###
+                        self.map[i].getMTZFilePath(self.outputDir()),
+                        libPath,
+                        leadKey = leadKey,
+                        refiner = "" 
+                    )
                 if s:
                     s.copyAssociations ( self.map[i] )
                     s.addSubtypes      ( self.map[i].subtype )
@@ -223,9 +229,16 @@ class Migrate(import_task.Import):
                     nstruct += 1
                 structures.append ( s )   # indentation is correct
         else:
-            s = self.registerStructure1 ( None,xyzPath,subPath,None,  ###
-                                          None,None,libPath,self.outputFName,
-                                          leadKey=leadKey,refiner="" )
+            s = self.registerStructure1 ( 
+                    self.outputFName,
+                    None,
+                    xyzPath,
+                    subPath,
+                    None,  ###
+                    libPath,
+                    leadKey = leadKey,
+                    refiner = "" 
+                )
             if s:
                 #s.setXYZSubtype   ()
                 structures.append ( s )

@@ -450,13 +450,15 @@ class Crank2(basic.TaskDriver):
             # register output data
             if not structure:
                 self.structure = self.registerStructure1 (  ###
-                                            None,xyzout,subout,self.hklout_fpath,
-                                            None,None,
-                                            # self.hklout_fpath + ".map",
-                                            # self.hklout_fpath + "_diff.map",
-                                            None,
-                                            self.outputFName,leadKey=1,
-                                            refiner="refmac" )
+                                        self.outputFName,
+                                        None,
+                                        xyzout,
+                                        subout,
+                                        self.hklout_fpath,
+                                        None,
+                                        leadKey = 1,
+                                        refiner = "refmac" 
+                                    )
 
             if self.structure:
 

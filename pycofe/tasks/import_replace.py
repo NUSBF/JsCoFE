@@ -190,9 +190,16 @@ class ImportReplace(migrate.Migrate):
                 elif isub:
                     refiner = isub.refiner
 
-                sxyz = self.registerStructure1 ( None,xyz_path,None,mtz_path,  ###
-                                                 None,None,lib_path,self.outputFName,
-                                                 leadKey=leadKey,refiner=refiner )
+                sxyz = self.registerStructure1 ( 
+                            self.outputFName,
+                            None,
+                            xyz_path,
+                            None,
+                            mtz_path,  ###
+                            lib_path,
+                            leadKey = leadKey,
+                            refiner = refiner 
+                        )
                 if sxyz:
                     if mtzPath:
                         sxyz.copyAssociations ( self.map[0] )
@@ -261,9 +268,16 @@ class ImportReplace(migrate.Migrate):
                     if not mtz_path:
                         mtz_path = isub.getMTZFilePath ( self.inputDir() )
                     refiner = isub.refiner
-                sub = self.registerStructure1 ( None,None,sub_path,mtz_path,  ###
-                                                None,None,None,self.outputFName,
-                                                leadKey=2,refiner=refiner )
+                sub = self.registerStructure1 ( 
+                            self.outputFName,
+                            None,
+                            None,
+                            sub_path,
+                            mtz_path,  ###
+                            None,
+                            leadKey = 2,
+                            refiner = refiner 
+                        )
                 if sub:
                     if mtzPath:
                         sub.copyAssociations ( self.map[0] )

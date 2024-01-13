@@ -139,17 +139,18 @@ class EditRevisionStruct(basic.TaskDriver):
         if struct0:
             refiner = struct0.refiner
         structure = self.registerStructure1 (  ###
-                        None,
-                        xyz_fpath ,
-                        sub_fpath ,
-                        mtz_fpath ,
-                        map_fpath ,
-                        dmap_fpath,
-                        lib_fpath ,
                         self.outputFName,
-                        leadKey=1 if phases is struct0 else 2,
-                        copy_files=False,
-                        refiner=refiner )
+                        None,
+                        xyz_fpath,
+                        sub_fpath,
+                        mtz_fpath,
+                        lib_fpath,
+                        mapPath    = map_fpath ,
+                        dmapPath   = dmap_fpath,
+                        leadKey    = 1 if phases is struct0 else 2,
+                        copy_files = False,
+                        refiner    = refiner 
+                    )
         if structure:
             if lig_codes:
                 structure.setLigands  ( lig_codes )

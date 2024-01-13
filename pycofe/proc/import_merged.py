@@ -515,10 +515,16 @@ def run ( body,   # body is reference to the main Import class
                             leadKey = 2
                             if ds.FwPhi and (("FWT","PHWT") in ds.FwPhi):
                                 leadKey = 1
-                            structure = body.registerStructure1 ( None,None,None,  ###
-                                        p_mtzout,None,None,None,
-                                        os.path.splitext(f_orig)[0] + "-maps",
-                                        leadKey=leadKey,refiner="" )
+                            structure = body.registerStructure1 ( 
+                                            os.path.splitext(f_orig)[0] + "-maps",
+                                            None,
+                                            None,
+                                            None,  ###
+                                            p_mtzout,
+                                            None,
+                                            leadKey = leadKey,
+                                            refiner = "" 
+                                        )
                             if structure:
                                 structure.addPhasesSubtype ()
                                 structure.addDataAssociation ( last_imported.dataId )
@@ -621,8 +627,15 @@ def run ( body,   # body is reference to the main Import class
                                 body.file_stderr.write ( "Error calling cfft: " + rc.msg + "\n" )
 
                             structure = body.registerStructure1 (  ###
-                                                    None,None,None,mtzout,mapout,None,
-                                                    None,blockname,refiner="" )
+                                                blockname,
+                                                None,
+                                                None,
+                                                None,
+                                                mtzout,
+                                                None,
+                                                mapPath = mapout,
+                                                refiner = "" 
+                                            )
                             if structure:
                                 structure.addPhasesSubtype ()
                                 structure.addDataAssociation( last_imported.dataId )
