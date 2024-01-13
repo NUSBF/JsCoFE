@@ -16,7 +16,7 @@
 
 #  python native imports
 import os
-import sys
+# import sys
 
 #  application imports
 from   pycofe.dtypes import dtype_template, dtype_xyz

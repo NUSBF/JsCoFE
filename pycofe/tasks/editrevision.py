@@ -236,18 +236,18 @@ class EditRevision(asudef.ASUDef):
                     if struct0:
                         refiner = struct0.refiner
                     structure = self.registerStructure1 ( ###
-                                    None,
-                                    xyz_fpath ,
-                                    sub_fpath ,
-                                    mtz_fpath ,
-                                    map_fpath ,
-                                    dmap_fpath,
-                                    lib_fpath ,
                                     self.outputFName,
-                                    leadKey=lead_key,
-                                    #leadKey=2 if "phases" in change_list else 1,
-                                    copy_files=False,
-                                    refiner=refiner )
+                                    None,
+                                    xyz_fpath,
+                                    sub_fpath,
+                                    mtz_fpath,
+                                    lib_fpath,
+                                    mapPath    = map_fpath ,
+                                    dmapPath   = dmap_fpath,
+                                    leadKey    = lead_key,
+                                    copy_files = False,
+                                    refiner    = refiner 
+                                )
 
                     if structure:
                         if lig_codes:

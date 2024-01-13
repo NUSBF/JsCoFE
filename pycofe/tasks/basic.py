@@ -1837,8 +1837,8 @@ class TaskDriver(object):
 
 
     def registerStructure ( self,mmcifPath,pdbPath,subPath,mtzPath,
-                            mapPath=None,dmapPath=None,libPath=None,leadKey=1,
-                            copy_files=False,map_labels=None,refiner="" ):
+                                 mapPath=None,dmapPath=None,libPath=None,leadKey=1,
+                                 copy_files=False,map_labels=None,refiner="" ):
         self.dataSerialNo += 1
 
         #self.file_stderr.write ( "  xyzPath=" + str(xyzPath) + "\n" )
@@ -1878,8 +1878,8 @@ class TaskDriver(object):
         return False
 
 
-    def registerStructure1 ( self,mmcifPath,pdbPath,subPath,mtzPath,mapPath,
-                                  dmapPath,libPath,regName,
+    def registerStructure1 ( self,regName,mmcifPath,pdbPath,subPath,mtzPath,
+                                  libPath,mapPath=None,dmapPath=None,
                                   leadKey=1,copy_files=False,
                                   map_labels=None,refiner="" ):
         self.dataSerialNo += 1
@@ -1893,12 +1893,13 @@ class TaskDriver(object):
             self.file_stderr.write ( "  NONE STRUCTURE\n" )
             self.file_stderr.flush()
         else:
-            self._move_file_to_output_dir ( xyzPath ,structure.getPDBFileName (),copy_files )
-            self._move_file_to_output_dir ( subPath ,structure.getSubFileName (),copy_files )
-            self._move_file_to_output_dir ( mtzPath ,structure.getMTZFileName (),copy_files )
-            self._move_file_to_output_dir ( mapPath ,structure.getMapFileName (),copy_files )
-            self._move_file_to_output_dir ( dmapPath,structure.getDMapFileName(),copy_files )
-            self._move_file_to_output_dir ( libPath ,structure.getLibFileName (),copy_files )
+            self._move_file_to_output_dir ( mmcifPath,structure.getMMCIFFileName(),copy_files )
+            self._move_file_to_output_dir ( pdbPath  ,structure.getPDBFileName  (),copy_files )
+            self._move_file_to_output_dir ( subPath  ,structure.getSubFileName  (),copy_files )
+            self._move_file_to_output_dir ( mtzPath  ,structure.getMTZFileName  (),copy_files )
+            self._move_file_to_output_dir ( mapPath  ,structure.getMapFileName  (),copy_files )
+            self._move_file_to_output_dir ( dmapPath ,structure.getDMapFileName (),copy_files )
+            self._move_file_to_output_dir ( libPath  ,structure.getLibFileName  (),copy_files )
             structure.putXYZMeta ( self.outputDir(),self.file_stdout1,
                                    self.file_stderr,None )
         return structure

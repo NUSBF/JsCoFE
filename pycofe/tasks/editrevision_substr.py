@@ -116,17 +116,18 @@ class EditRevisionSubstr(basic.TaskDriver):
         elif sub:
             refiner = sub.refiner
         substructure = self.registerStructure1 ( ###
-                        None,
-                        xyz_fpath ,
-                        sub_fpath ,
-                        mtz_fpath ,
-                        map_fpath ,
-                        dmap_fpath,
-                        lib_fpath ,
-                        self.outputFName,
-                        leadKey=2,
-                        copy_files=False,
-                        refiner=refiner )
+                            self.outputFName,
+                            None,
+                            xyz_fpath ,
+                            sub_fpath ,
+                            mtz_fpath ,
+                            lib_fpath ,
+                            mapPath    = map_fpath ,
+                            dmapPath   = dmap_fpath,
+                            leadKey    = 2,
+                            copy_files = False,
+                            refiner    = refiner 
+                        )
         if substructure:
             if phases:
                 substructure.addSubtypes ( phases.getSubtypes() )

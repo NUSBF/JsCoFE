@@ -405,15 +405,16 @@ class CCP4Build(basic.TaskDriver):
                     rev   = None
                     if build_no[i]>=0:
                         structure = self.registerStructure1 (  ###
+                                        self.outputFName,
                                         None,
                                         os.path.join(self.outputDir(),fname + ".pdb"),
                                         None,
                                         os.path.join(self.outputDir(),fname + ".mtz"),
-                                        None, #os.path.join(self.outputDir(),fname + ".map"),
-                                        None, #os.path.join(self.outputDir(),fname + ".diff.map"),
                                         None,
-                                        self.outputFName,leadKey=istruct.leadKey,
-                                        copy_files=False,refiner="refmac" )
+                                        leadKey    = istruct.leadKey,
+                                        copy_files = False,
+                                        refiner    = "refmac" 
+                                    )
 
                         if structure:
 
