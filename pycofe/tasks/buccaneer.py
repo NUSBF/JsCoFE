@@ -302,10 +302,13 @@ class Buccaneer(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             structure = self.registerStructure (
-                                    None,self.buccaneer_xyz(),None,self.buccaneer_mtz(),
-                                    None,None,None,
-                                    #fnames[0],fnames[1],None,  -- not needed for new UglyMol
-                                    leadKey=1,refiner="refmac" )
+                            None,
+                            self.buccaneer_xyz(),
+                            None,
+                            self.buccaneer_mtz(),
+                            leadKey = 1,
+                            refiner = "refmac" 
+                        )
             if structure:
                 structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations ( istruct )

@@ -52,11 +52,17 @@ class Refmac(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def formStructure ( self,xyzout,subfile,mtzout,libin,hkl,istruct,maplabels,copyfiles ):
-        structure = self.registerStructure ( None,xyzout,subfile,mtzout,
-                                             None,None,libin,leadKey=1,
-                                             map_labels=maplabels,
-                                             copy_files=copyfiles,
-                                             refiner="refmac" )
+        structure = self.registerStructure ( 
+                        None,
+                        xyzout,
+                        subfile,
+                        mtzout,                     
+                        libPath    = libin,
+                        leadKey    = 1,
+                        map_labels = maplabels,
+                        copy_files = copyfiles,
+                        refiner    = "refmac" 
+                    )
         if structure:
             structure.copy_refkeys_parameters ( istruct )
             structure.copyAssociations   ( istruct )

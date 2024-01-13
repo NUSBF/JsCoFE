@@ -615,18 +615,15 @@ class Arcimboldo(basic.TaskDriver):
                 shutil.copy2(pdb_out, arcimboldo_xyz)
 
             structure = self.registerStructure (
-                None,
-                arcimboldo_xyz,
-                None,
-                arcimboldo_mtz,
-                None,
-                None,
-                None,
-                leadKey=1,
-                map_labels="FWT,PHWT",
-                copy_files=True,
-                refiner="",
-            )
+                            None,
+                            arcimboldo_xyz,
+                            None,
+                            arcimboldo_mtz,
+                            leadKey    = 1,
+                            map_labels = "FWT,PHWT",
+                            copy_files = True,
+                            refiner    = "",
+                        )
             if structure:
                 structure.copyAssociations(self.hkl)
                 # structure.copyLabels       ( istruct )

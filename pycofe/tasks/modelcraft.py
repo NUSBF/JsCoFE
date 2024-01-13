@@ -323,9 +323,13 @@ class ModelCraft(basic.TaskDriver):
                             self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
 
                 structure = self.registerStructure (
-                                        None,pdbout,None,mtzout,
-                                        None,None,None,
-                                        leadKey=1,refiner="refmac" )
+                                    None,
+                                    pdbout,
+                                    None,
+                                    mtzout,
+                                    leadKey = 1,
+                                    refiner = "refmac" 
+                                )
                 if structure:
                     structure.copy_refkeys_parameters ( istruct )
                     structure.copyAssociations ( istruct )

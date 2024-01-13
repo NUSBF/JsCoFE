@@ -1525,12 +1525,28 @@ class TaskDriver(object):
 
             if structureType==1:
                 structure = self.registerStructure (
-                                None,None,fnames[0],fnames[1],fnames[2],fnames[3],libPath,
-                                leadKey=leadKey,refiner="refmac" )
+                                None,
+                                None,
+                                fnames[0],
+                                fnames[1],
+                                libPath  = libPath,
+                                mapPath  = fnames[2],
+                                dmapPath = fnames[3],
+                                leadKey  = leadKey,
+                                refiner  = "refmac" 
+                            )
             else:
                 structure = self.registerStructure (
-                                None,fnames[0],None,fnames[1],fnames[2],fnames[3],libPath,
-                                leadKey=leadKey,refiner="refmac" )
+                                None,
+                                fnames[0],
+                                None,
+                                fnames[1],
+                                libPath  = libPath,
+                                mapPath  = fnames[2],
+                                dmapPath = fnames[3],
+                                leadKey  = leadKey,
+                                refiner  = "refmac" 
+                            )
             if structure:
                 structure.addDataAssociation ( hkl.dataId )
                 structure.setRefmacLabels    ( hkl )
@@ -1593,8 +1609,12 @@ class TaskDriver(object):
         fnames = self.calcAnomEDMap ( xyzPath,hkl,anom_form,name_pattern )
 
         anom_structure = self.registerStructure (
-                            None,fnames[0],fnames[1],None,None,None,
-                            refiner="refmac" )
+                            None,
+                            None,
+                            fnames[0],
+                            fnames[1],
+                            refiner="refmac" 
+                        )
         if anom_structure:
             anom_structure.addDataAssociation ( hkl.dataId )
             anom_structure.setRefmacLabels    ( hkl )
@@ -1837,7 +1857,7 @@ class TaskDriver(object):
 
 
     def registerStructure ( self,mmcifPath,pdbPath,subPath,mtzPath,
-                                 mapPath=None,dmapPath=None,libPath=None,leadKey=1,
+                                 libPath=None,mapPath=None,dmapPath=None,leadKey=1,
                                  copy_files=False,map_labels=None,refiner="" ):
         self.dataSerialNo += 1
 

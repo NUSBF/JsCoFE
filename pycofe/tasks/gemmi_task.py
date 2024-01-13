@@ -153,14 +153,18 @@ class Gemmi(basic.TaskDriver):
                     st0 = struct0.Substructure
                     xyzfname = None
                     subfname = outfname
-                xyz = self.registerStructure ( None,xyzfname,subfname,
-                                     st0.getMTZFilePath(self.inputDir()),
-                                     st0.getMapFilePath(self.inputDir()),
-                                     st0.getDMapFilePath(self.inputDir()),
-                                     libPath=st0.getLibFilePath(self.inputDir()),
-                                     leadKey=st0.leadKey,copy_files=True,
-                                     map_labels=st0.mapLabels,
-                                     refiner=st0.refiner )
+                xyz = self.registerStructure ( 
+                            None,
+                            xyzfname,
+                            subfname,
+                            st0.getMTZFilePath(self.inputDir()),
+                            libPath    = st0.getLibFilePath(self.inputDir()),
+                            mapPath    = st0.getMapFilePath(self.inputDir()),
+                            dmapPath   = st0.getDMapFilePath(self.inputDir()),
+                            leadKey    = st0.leadKey,copy_files=True,
+                            map_labels = st0.mapLabels,
+                            refiner    = st0.refiner 
+                        )
                 if xyz:
                     xyz.copy_refkeys_parameters ( st0 )
                     xyz.copyAssociations   ( st0 )
@@ -188,14 +192,18 @@ class Gemmi(basic.TaskDriver):
                 if struct0.hasSubtype(dtype_template.subtypeXYZ()):
                     xyzfname = outfname
                     subfname = None
-                xyz = self.registerStructure ( None,xyzfname,subfname,
-                                     struct0.getMTZFilePath(self.inputDir()),
-                                     struct0.getMapFilePath(self.inputDir()),
-                                     struct0.getDMapFilePath(self.inputDir()),
-                                     libPath=struct0.getLibFilePath(self.inputDir()),
-                                     leadKey=struct0.leadKey,copy_files=True,
-                                     map_labels=struct0.mapLabels,
-                                     refiner=struct0.refiner )
+                xyz = self.registerStructure ( 
+                            None,
+                            xyzfname,
+                            subfname,
+                            struct0.getMTZFilePath(self.inputDir()),
+                            libPath    = struct0.getLibFilePath(self.inputDir()),
+                            mapPth     = struct0.getMapFilePath(self.inputDir()),
+                            dmapPath   = struct0.getDMapFilePath(self.inputDir()),
+                            leadKey    = struct0.leadKey,copy_files=True,
+                            map_labels = struct0.mapLabels,
+                            refiner    = struct0.refiner 
+                        )
                 if xyz:
                     xyz.copy_refkeys_parameters ( struct0 )
                     xyz.copyAssociations   ( struct0 )

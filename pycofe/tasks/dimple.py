@@ -191,10 +191,15 @@ class Dimple(basic.TaskDriver):
             # Register output data. This moves needful files into output directory
             # and puts the corresponding metadata into output databox
 
-            structure = self.registerStructure ( None,self.getXYZOFName(),None,
-                                                 self.getMTZOFName(),None,
-                                                 None,libin, leadKey=1,
-                                                 refiner="refmac" )
+            structure = self.registerStructure ( 
+                                None,
+                                self.getXYZOFName(),
+                                None,
+                                self.getMTZOFName(),
+                                libPath = libin,
+                                leadKey = 1,
+                                refiner = "refmac" 
+                            )
 
             if structure:
                 structure.addDataAssociation ( hkl.dataId )

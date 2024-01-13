@@ -182,10 +182,14 @@ class SliceNDice(basic.TaskDriver):
 
                 shutil.copyfile ( refmac_pdb,self.getXYZOFName() )
                 shutil.copyfile ( refmac_mtz,self.getMTZOFName() )
-                structure = self.registerStructure ( None,self.getXYZOFName(),None,
-                                                     self.getMTZOFName(),None,
-                                                     None,None, leadKey=1,
-                                                     refiner="refmac" )
+                structure = self.registerStructure ( 
+                                None,
+                                self.getXYZOFName(),
+                                None,
+                                self.getMTZOFName(),
+                                leadKey = 1,
+                                refiner = "refmac" 
+                            )
                 if structure:
                     structure.addDataAssociation ( sol_hkl.dataId )
                     structure.setRefmacLabels    ( sol_hkl    )

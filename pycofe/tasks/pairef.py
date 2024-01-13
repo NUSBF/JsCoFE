@@ -439,12 +439,11 @@ class PaiRef(basic.TaskDriver):
                 pdbout,
                 istruct.getSubFilePath(self.inputDir()),
                 mtzout,
-                None,None,
-                libin,
-                leadKey=1,
-                map_labels="FWT,PHWT,DELFWT,PHDELWT",
-                copy_files=False,
-                refiner="refmac"
+                libPath    = libin,
+                leadKey    = 1,
+                map_labels = "FWT,PHWT,DELFWT,PHDELWT",
+                copy_files = False,
+                refiner    = "refmac"
             )
 
             if structure:

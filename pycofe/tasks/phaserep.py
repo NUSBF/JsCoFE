@@ -125,9 +125,15 @@ class PhaserEP(basic.TaskDriver):
                 else:
                     self.outputFName += "-inverted_hand"
                 structure = self.registerStructure (
-                                None,None,pdbfile,mtzfile,None,None,None,
-                                leadKey=2,copy_files=True,map_labels="FWT,PHWT",
-                                refiner="" )
+                                None,
+                                None,
+                                pdbfile,
+                                mtzfile,
+                                leadKey    = 2,
+                                copy_files = True,
+                                map_labels = "FWT,PHWT",
+                                refiner    = "" 
+                            )
 
                 if structure:
                     if seq:
@@ -148,10 +154,15 @@ class PhaserEP(basic.TaskDriver):
                         #fnames = self.calcCCP4Maps (
                         #        llgmapsfile,namepattern+".llgmap_"+stype,"phaser-ep:"+stype )
                         anom_struct = self.registerStructure (
-                                None,None,pdbfile,llgmapsfile,None,None,None,
-                                leadKey=2,copy_files=True,
-                                map_labels="FWT,PHWT,FLLG_"+stype+",PHLLG_"+stype,
-                                refiner="" )
+                                            None,
+                                            None,
+                                            pdbfile,
+                                            llgmapsfile,
+                                            leadKey    = 2,
+                                            copy_files = True,
+                                            map_labels = "FWT,PHWT,FLLG_"+stype+",PHLLG_"+stype,
+                                            refiner    = "" 
+                                        )
                         if anom_struct:
                             self.putStructureWidget ( "structure_btn_"+stype,
                                                       "Substructure and electron density",

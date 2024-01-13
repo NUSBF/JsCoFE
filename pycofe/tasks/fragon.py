@@ -336,8 +336,13 @@ class Fragon(basic.TaskDriver):
                     self.runApp ( "cad",cmd,logType="Service" )
 
                     structure = self.registerStructure (
-                        None,fragon_xyz,None,tmp_mtz,None,None,None,
-                        leadKey=2,refiner="refmac" ) # ,map_labels=cols[0] + ",acorn.PHI" )
+                                        None,
+                                        fragon_xyz,
+                                        None,
+                                        tmp_mtz,
+                                        leadKey = 2,
+                                        refiner = "refmac" 
+                                    ) # ,map_labels=cols[0] + ",acorn.PHI" )
 
                     if structure:
                         # structure.copy_refkeys_parameters ( istruct )

@@ -341,10 +341,17 @@ class Buster(basic.TaskDriver):
             self.putTitle ( "Output Structure" +\
                         self.hotHelpLink ( "Structure","jscofe_qna.structure") )
 
-            structure = self.registerStructure ( None,xyzout,None,mtzout,
-                                None,None,libin,leadKey=1,
-                                map_labels="2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT",
-                                copy_files=True,refiner="buster" )
+            structure = self.registerStructure ( 
+                            None,
+                            xyzout,
+                            None,
+                            mtzout,
+                            libPath    = libin,
+                            leadKey    = 1,
+                            map_labels = "2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT",
+                            copy_files = True,
+                            refiner    = "buster" 
+                        )
 
             if structure:
                 structure.copy_refkeys_parameters ( istruct )
@@ -428,11 +435,17 @@ class Buster(basic.TaskDriver):
                             self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
 
                             self.putTitle ( "Structure, substructure and anomolous maps")
-                            struct_ano = self.registerStructure ( None,xyz_merged,None,anomtz,
-                                        None,None,libin,leadKey=1,
-                                        map_labels="FAN,PHAN",
-                                        copy_files=True,
-                                        refiner="buster" )
+                            struct_ano = self.registerStructure ( 
+                                                None,
+                                                xyz_merged,
+                                                None,
+                                                anomtz,
+                                                libPath    = libin,
+                                                leadKey    = 1,
+                                                map_labels = "FAN,PHAN",
+                                                copy_files = True,
+                                                refiner    = "buster" 
+                                            )
                         except:
                             pass
 
@@ -452,12 +465,15 @@ class Buster(basic.TaskDriver):
                                         "Structure, substructure and anomalous maps",struct_ano )
 
                             substructure = self.registerStructure (
-                                            None,None,subfile,
-                                            structure.getMTZFilePath(self.outputDir()),
-                                            None,None,None,
-                                            leadKey=2,copy_files=False,
-                                            map_labels="2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT",
-                                            refiner="buster" )
+                                                None,
+                                                None,
+                                                subfile,
+                                                structure.getMTZFilePath(self.outputDir()),
+                                                leadKey    = 2,
+                                                copy_files = False,
+                                                map_labels = "2FOFCWT,PH2FOFCWT,FOFCWT,PHFOFCWT",
+                                                refiner    = "buster" 
+                                            )
 
                             if substructure:
                                 substructure.copyAssociations   ( istruct )

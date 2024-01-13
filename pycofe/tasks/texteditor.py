@@ -222,14 +222,19 @@ class TextEditor(basic.TaskDriver):
                     subout = ufname
                     summary_line = "substructure coordinates edited"
                     title  = "Output Substructure"
-                oxyz = self.registerStructure ( None,xyzout,subout,
-                                        ixyz.getMTZFilePath(self.inputDir()),
-                                        ixyz.getMapFilePath(self.inputDir()),
-                                        ixyz.getDMapFilePath(self.inputDir()),
-                                        libPath=ixyz.getLibFilePath(self.inputDir()),
-                                        leadKey=ixyz.leadKey,copy_files=False,
-                                        map_labels=ixyz.mapLabels,
-                                        refiner=ixyz.refiner )
+                oxyz = self.registerStructure ( 
+                            None,
+                            xyzout,
+                            subout,
+                            ixyz.getMTZFilePath(self.inputDir()),
+                            libPath    = ixyz.getLibFilePath(self.inputDir()),
+                            mapPath    = ixyz.getMapFilePath(self.inputDir()),
+                            dmapPath   = ixyz.getDMapFilePath(self.inputDir()),
+                            leadKey    = ixyz.leadKey,
+                            copy_files = False,
+                            map_labels = ixyz.mapLabels,
+                            refiner    = ixyz.refiner 
+                        )
                 if oxyz:
                     oxyz.copy_refkeys_parameters ( ixyz )
                     oxyz.copyAssociations   ( ixyz )

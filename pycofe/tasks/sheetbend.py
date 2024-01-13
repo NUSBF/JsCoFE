@@ -93,15 +93,15 @@ class Sheetbend(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             structure = self.registerStructure (
-                None,xyzout,
-                istruct.getSubFilePath(self.inputDir()),
-                istruct.getMTZFilePath(self.inputDir()),
-                None,None,
-                istruct.getLibFilePath(self.inputDir()),
-                leadKey=istruct.leadKey,
-                map_labels=istruct.mapLabels,
-                refiner=istruct.refiner
-            )
+                            None,
+                            xyzout,
+                            istruct.getSubFilePath(self.inputDir()),
+                            istruct.getMTZFilePath(self.inputDir()),
+                            libPath    = istruct.getLibFilePath(self.inputDir()),
+                            leadKey    = istruct.leadKey,
+                            map_labels = istruct.mapLabels,
+                            refiner    = istruct.refiner
+                        )
             if structure:
 
                 #mmcifout = self.getMMCIFOFName()
