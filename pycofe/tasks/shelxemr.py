@@ -383,7 +383,6 @@ class ShelxEMR(basic.TaskDriver):
                                 istruct.getPDBFilePath(self.inputDir()),
                                 None,
                                 mtzout,
-                                None,
                                 leadKey    = 2,
                                 map_labels = "FWT,PHWT",
                                 refiner    = istruct.refiner 
@@ -414,7 +413,6 @@ class ShelxEMR(basic.TaskDriver):
                                     None,
                                     istruct.getSubFilePath(self.inputDir()),
                                     mtzout,
-                                    None,
                                     leadKey    = 2,
                                     map_labels = "FWT,PHWT",
                                     refiner    = istruct.refiner

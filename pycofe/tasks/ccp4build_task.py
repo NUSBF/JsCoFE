@@ -410,7 +410,6 @@ class CCP4Build(basic.TaskDriver):
                                         os.path.join(self.outputDir(),fname + ".pdb"),
                                         None,
                                         os.path.join(self.outputDir(),fname + ".mtz"),
-                                        None,
                                         leadKey    = istruct.leadKey,
                                         copy_files = False,
                                         refiner    = "refmac" 

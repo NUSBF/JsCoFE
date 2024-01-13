@@ -215,7 +215,7 @@ class Migrate(import_task.Import):
                         xyzPath,
                         subPath, ###
                         self.map[i].getMTZFilePath(self.outputDir()),
-                        libPath,
+                        libPath = libPath,
                         leadKey = leadKey,
                         refiner = "" 
                     )
@@ -235,7 +235,7 @@ class Migrate(import_task.Import):
                     xyzPath,
                     subPath,
                     None,  ###
-                    libPath,
+                    libPath = libPath,
                     leadKey = leadKey,
                     refiner = "" 
                 )

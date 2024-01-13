@@ -1879,7 +1879,7 @@ class TaskDriver(object):
 
 
     def registerStructure1 ( self,regName,mmcifPath,pdbPath,subPath,mtzPath,
-                                  libPath,mapPath=None,dmapPath=None,
+                                  libPath=None,mapPath=None,dmapPath=None,
                                   leadKey=1,copy_files=False,
                                   map_labels=None,refiner="" ):
         self.dataSerialNo += 1

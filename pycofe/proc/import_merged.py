@@ -521,7 +521,6 @@ def run ( body,   # body is reference to the main Import class
                                             None,
                                             None,  ###
                                             p_mtzout,
-                                            None,
                                             leadKey = leadKey,
                                             refiner = "" 
                                         )
@@ -632,7 +631,6 @@ def run ( body,   # body is reference to the main Import class
                                                 None,
                                                 None,
                                                 mtzout,
-                                                None,
                                                 mapPath = mapout,
                                                 refiner = "" 
                                             )

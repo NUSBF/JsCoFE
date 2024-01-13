@@ -196,7 +196,7 @@ class ImportReplace(migrate.Migrate):
                             xyz_path,
                             None,
                             mtz_path,  ###
-                            lib_path,
+                            libPath = lib_path,
                             leadKey = leadKey,
                             refiner = refiner 
                         )
@@ -274,7 +274,6 @@ class ImportReplace(migrate.Migrate):
                             None,
                             sub_path,
                             mtz_path,  ###
-                            None,
                             leadKey = 2,
                             refiner = refiner 
                         )
