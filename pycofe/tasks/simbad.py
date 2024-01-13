@@ -313,9 +313,14 @@ class Simbad(asudef.ASUDef):
 
                 # register structure data
                 structure = self.registerStructure (
-                                None,pdbfile,None,mtzfile,
-                                None,None,None,leadKey=1,copy_files=True,
-                                refiner="refmac" )
+                                None,
+                                pdbfile,
+                                None,
+                                mtzfile,
+                                leadKey    = 1,
+                                copy_files = True,
+                                refiner    = "refmac" 
+                            )
 
                 if structure:
                     structure.addDataAssociation ( sol_hkl.dataId )

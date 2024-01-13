@@ -96,8 +96,13 @@ class Zanuda(basic.TaskDriver):
                     self.message.append ( "<u>SG confirmed as " + solSpg  + "</u>" )
 
             structure = self.registerStructure (
-                                None,subgroup["pdbout"],None,subgroup["mtzout"],
-                                None,None,None,leadKey=1,refiner="refmac" )
+                            None,
+                            subgroup["pdbout"],
+                            None,
+                            subgroup["mtzout"],
+                            leadKey = 1,
+                            refiner = "refmac" 
+                        )
             if structure:
                 structure.setRefmacLabels ( hkl0     )
                 structure.copySubtype     ( self.xyz )

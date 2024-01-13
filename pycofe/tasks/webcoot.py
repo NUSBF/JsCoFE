@@ -157,15 +157,19 @@ class WebCoot(basic.TaskDriver):
                     self.hotHelpLink ( "Structure","jscofe_qna.structure") +\
                     " #" + str(outputSerialNo) + " \"" + molName + "\"</h3>" )
 
-            ostruct = self.registerStructure ( None,fout,
-                                    istruct.getSubFilePath(self.inputDir()),
-                                    istruct.getMTZFilePath(self.inputDir()),
-                                    istruct.getMapFilePath(self.inputDir()),
-                                    istruct.getDMapFilePath(self.inputDir()),
-                                    libPath=libPath,
-                                    leadKey=istruct.leadKey,copy_files=False,
-                                    map_labels=istruct.mapLabels,
-                                    refiner=istruct.refiner )
+            ostruct = self.registerStructure ( 
+                            None,
+                            fout,
+                            istruct.getSubFilePath(self.inputDir()),
+                            istruct.getMTZFilePath(self.inputDir()),
+                            libPath    = libPath,
+                            mapPath    = istruct.getMapFilePath(self.inputDir()),
+                            dmapPath   = istruct.getDMapFilePath(self.inputDir()),
+                            leadKey    = istruct.leadKey,
+                            copy_files = False,
+                            map_labels = istruct.mapLabels,
+                            refiner    = istruct.refiner 
+                        )
             if ostruct:
                 ostruct.copy_refkeys_parameters  ( istruct )
                 ostruct.store_refkeys_parameters ( self.task._type,self.task.id,refkeys )

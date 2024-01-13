@@ -399,12 +399,17 @@ class FitWaters(basic.TaskDriver):
             os.rename ( self.xyzout,pdbout )
             mtzout = self.outputFName + ".mtz"
             os.rename ( self.mtzout,mtzout )
-            structure = self.registerStructure ( None,pdbout,None,mtzout,
-                            istruct.getMapFilePath (self.inputDir()),
-                            istruct.getDMapFilePath(self.inputDir()),
-                            libin,
-                            leadKey=istruct.leadKey,
-                            refiner=istruct.refiner )
+            structure = self.registerStructure (
+                            None,
+                            pdbout,
+                            None,
+                            mtzout,
+                            libPath  = libin,
+                            mapPath  = istruct.getMapFilePath (self.inputDir()),
+                            dmapPath = istruct.getDMapFilePath(self.inputDir()),
+                            leadKey  = istruct.leadKey,
+                            refiner  = istruct.refiner 
+                        )
             if structure:
                 structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations     ( istruct    )

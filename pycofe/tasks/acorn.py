@@ -311,7 +311,7 @@ class Acorn(basic.TaskDriver):
                 #     shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),acorn_sub )
 
                 structure = self.registerStructure (
-                        None,acorn_xyz,acorn_sub,acorn_map,None,None,None,
+                        None,acorn_xyz,acorn_sub,acorn_map,
                         leadKey=2,copy_files=True,
                         map_labels="acorn.EO.FWT,acorn.PHI,acorn.EC.FWT,acorn.PHI",
                         refiner=istruct.refiner )
@@ -337,7 +337,7 @@ class Acorn(basic.TaskDriver):
             self.runApp ( "sftools",[],logType="Service" )
 
             structure = self.registerStructure (
-                    None,acorn_xyz,acorn_sub,output_file,None,None,None,
+                    None,acorn_xyz,acorn_sub,output_file,
                     leadKey=2,map_labels=cols[0] + ",acorn.PHI",
                     refiner=istruct.refiner )
 

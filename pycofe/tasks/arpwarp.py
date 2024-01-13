@@ -327,10 +327,13 @@ class ArpWarp(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             structure = self.registerStructure (
-                                    None,pdbout,None,mtzout,
-                                    None,None,None,
-                                    #fnames[0],fnames[1],None,  -- not needed for new UglyMol
-                                    leadKey=1,refiner="refmac" )
+                            None,
+                            pdbout,
+                            None,
+                            mtzout,
+                            leadKey = 1,
+                            refiner = "refmac" 
+                        )
             if structure:
                 structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations ( istruct )

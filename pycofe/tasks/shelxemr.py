@@ -370,11 +370,16 @@ class ShelxEMR(basic.TaskDriver):
                 # copy pdb
                 pdbout = self.getXYZOFName()
                 os.rename ( self.shelxe_wrk_pdb(),pdbout )
-                structure = self.registerStructure ( ###
-                            None,pdbout,None,mtzout,
-                            None,None,None,leadKey=2,
-                            copy_files=True,map_labels="FWT,PHWT",
-                            refiner="" )
+                structure = self.registerStructure (
+                                None,
+                                pdbout,
+                                None,
+                                mtzout,
+                                leadKey    = 2,
+                                copy_files = True,
+                                map_labels = "FWT,PHWT",
+                                refiner    = "" 
+                            )
 
             elif istruct.hasXYZSubtype():
                 structure = self.registerStructure1 (

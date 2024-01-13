@@ -270,10 +270,13 @@ class Nautilus(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             structure = self.registerStructure (
-                                    None,self.nautilus_xyz(),None,self.nautilus_mtz(),
-                                    None,None,None,
-                                    #fnames[0],fnames[1],None,  -- not needed for new UglyMol
-                                    leadKey=1,refiner="refmac" )
+                                None,
+                                self.nautilus_xyz(),
+                                None,
+                                self.nautilus_mtz(),
+                                leadKey = 1,
+                                refiner = "refmac" 
+                            )
             if structure:
                 structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations ( istruct )

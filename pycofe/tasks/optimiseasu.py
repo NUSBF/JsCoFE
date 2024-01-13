@@ -149,15 +149,18 @@ class OptimiseASU(basic.TaskDriver):
 
                     self.putTitle   ( "Results" )
 
-                    oxyz = self.registerStructure ( None,xyzout,
-                                            istruct.getSubFilePath(self.inputDir()),
-                                            istruct.getMTZFilePath(self.inputDir()),
-                                            istruct.getMapFilePath(self.inputDir()),
-                                            istruct.getDMapFilePath(self.inputDir()),
-                                            libPath=istruct.getLibFilePath(self.inputDir()),
-                                            leadKey=istruct.leadKey,copy_files=False,
-                                            map_labels=istruct.mapLabels,
-                                            refiner=istruct.refiner )
+                    oxyz = self.registerStructure ( 
+                                None,
+                                xyzout,
+                                istruct.getSubFilePath(self.inputDir()),
+                                istruct.getMTZFilePath(self.inputDir()),
+                                libPath    = istruct.getLibFilePath(self.inputDir()),
+                                mapPath    = istruct.getMapFilePath(self.inputDir()),
+                                dmapPath   = istruct.getDMapFilePath(self.inputDir()),
+                                leadKey    = istruct.leadKey,copy_files=False,
+                                map_labels = istruct.mapLabels,
+                                refiner    = istruct.refiner 
+                            )
                     if oxyz:
                         oxyz.copy_refkeys_parameters ( istruct )
                         oxyz.copyAssociations   ( istruct )

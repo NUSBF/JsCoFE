@@ -215,9 +215,15 @@ class Deposition(basic.TaskDriver):
                 shutil.copyfile ( libin,libout )
 
             # create output structure and visualisation widget
-            structure = self.registerStructure ( None,xyzout,None,mtzout,None,None,libout,
-                                                 leadKey=istruct.leadKey,
-                                                 refiner="refmac" )
+            structure = self.registerStructure ( 
+                                None,
+                                xyzout,
+                                None,
+                                mtzout,
+                                libPath = libout,
+                                leadKey = istruct.leadKey,
+                                refiner = "refmac" 
+                            )
             if structure:
                 structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations ( istruct )

@@ -160,11 +160,17 @@ class FitLigand(basic.TaskDriver):
             #shutil.copyfile ( pdbin,"pdbin.xxx" )
             #shutil.copyfile ( ligands[0],"ligandin.yyy" )
             nligs  = coor.mergeLigands ( pdbin,ligands,"X",pdbout )
-            structure = self.registerStructure ( None,pdbout,None,mtzin,
-                                istruct.getMapFilePath (self.inputDir()),
-                                istruct.getDMapFilePath(self.inputDir()),
-                                libadd,leadKey=istruct.leadKey,
-                                refiner=istruct.refiner )
+            structure = self.registerStructure ( 
+                                None,
+                                pdbout,
+                                None,
+                                mtzin,
+                                libPath  = libadd,
+                                mapPath  = istruct.getMapFilePath (self.inputDir()),
+                                dmapPath = istruct.getDMapFilePath(self.inputDir()),
+                                leadKey  = istruct.leadKey,
+                                refiner  = istruct.refiner 
+                            )
             if structure:
                 structure.copy_refkeys_parameters ( istruct )
                 structure.copyAssociations ( istruct )

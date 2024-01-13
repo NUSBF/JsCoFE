@@ -286,9 +286,14 @@ class Parrot(basic.TaskDriver):
             #                      fnames[1] )
 
             structure = self.registerStructure (
-                    None,parrot_xyz,parrot_sub,output_file,None,None,None,leadKey=2,
-                    map_labels="parrot.F_phi.F,parrot.F_phi.phi",
-                    refiner=istruct.refiner )
+                            None,
+                            parrot_xyz,
+                            parrot_sub,
+                            output_file,
+                            leadKey    = 2,
+                            map_labels = "parrot.F_phi.F,parrot.F_phi.phi",
+                            refiner    = istruct.refiner 
+                        )
 
             if structure:
                 structure.copy_refkeys_parameters ( istruct )

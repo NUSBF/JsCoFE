@@ -419,10 +419,15 @@ class Coot(coot_ce.CootCE):
                 library = self.registerLibrary ( libPath,copy_files=False )
             if library:
                 libPath = library.getLibFilePath(self.outputDir())
-            struct = self.registerStructure ( None,coot_xyz,None,coot_mtz,
-                                              None,None,libPath=libPath,
-                                              leadKey=lead_key,
-                                              refiner=istruct.refiner )
+            struct = self.registerStructure ( 
+                            None,
+                            coot_xyz,
+                            None,
+                            coot_mtz,
+                            libPath = libPath,
+                            leadKey = lead_key,
+                            refiner = istruct.refiner 
+                        )
             if struct and library:
                 assert libPath == struct.getLibFilePath(self.outputDir())
 

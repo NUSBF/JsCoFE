@@ -157,12 +157,17 @@ class AWNuce(basic.TaskDriver):
                 optimize_xyz.optimizeXYZ ( st )
                 st.write_pdb ( pdbout )
 
-                structure = self.registerStructure ( None,pdbout,None,mtzin,
-                                istruct.getMapFilePath (self.inputDir()),
-                                istruct.getDMapFilePath(self.inputDir()),
-                                istruct.getLibFilePath (self.inputDir()),
-                                leadKey=istruct.leadKey,
-                                refiner=istruct.refiner )
+                structure = self.registerStructure ( 
+                                None,
+                                pdbout,
+                                None,
+                                mtzin,
+                                libPath  = istruct.getLibFilePath (self.inputDir()),
+                                mapPath  = istruct.getMapFilePath (self.inputDir()),
+                                dmapPath = istruct.getDMapFilePath(self.inputDir()),
+                                leadKey  = istruct.leadKey,
+                                refiner  = istruct.refiner 
+                            )
                 if structure:
                     structure.copy_refkeys_parameters ( istruct )
                     structure.copyAssociations ( istruct )

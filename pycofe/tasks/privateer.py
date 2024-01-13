@@ -204,13 +204,16 @@ class Privateer(basic.TaskDriver):
                         self.hotHelpLink ( "Structure","jscofe_qna.structure") )
 
             structure = self.registerStructure (
-                                    None,xyzin,
-                                    istruct.getSubFilePath(self.inputDir()),
-                                    mtzout,None,None,libpath,
-                                    leadKey=istruct.leadKey,
-                                    map_labels="FWT,PHWT,DELFWT,PHDELWT",
-                                    copy_files=True,
-                                    refiner=istruct.refiner )
+                              None,
+                              xyzin,
+                              istruct.getSubFilePath(self.inputDir()),
+                              mtzout,
+                              libPath    = libpath,
+                              leadKey    = istruct.leadKey,
+                              map_labels = "FWT,PHWT,DELFWT,PHDELWT",
+                              copy_files = True,
+                              refiner    = istruct.refiner 
+                          )
 
             if structure:
                 structure.copy_refkeys_parameters ( istruct )
