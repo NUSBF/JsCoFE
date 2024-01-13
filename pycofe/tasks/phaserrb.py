@@ -87,7 +87,7 @@ class PhaserRB(basic.TaskDriver):
                 "\" NUMBER " + str(seq[i].ncopies) + "\n"
             )
 
-        xyzin = xyz.getXYZFilePath ( self.inputDir() )
+        xyzin = xyz.getPDBFilePath ( self.inputDir() )
 
         solu  = []
         st    = gemmi.read_structure ( xyzin )

@@ -88,8 +88,8 @@ class ASUMod(asudef.ASUDef):
 
                 istruct   = self.makeClass ( self.input_data.data.istruct[0] )
                 structure = self.finaliseStructure (
-                            istruct.getXYZFilePath(self.inputDir()),
-                            os.path.splitext(istruct.getXYZFileName())[0],hkl,
+                            istruct.getPDBFilePath(self.inputDir()),
+                            os.path.splitext(istruct.getPDBFileName())[0],hkl,
                             None,[],0,  # "0" means "XYZ"
                             leadKey=istruct.leadKey
                             # ,openState="closed"

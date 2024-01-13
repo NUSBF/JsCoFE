@@ -46,7 +46,7 @@ def run ( body, panelId, ensemble ):  # body is reference to the main Import cla
     if ensemble.nModels > 1:
         # make command-line parameters for Gesamt
 
-        ensFileName = ensemble.getXYZFilePath ( body.outputDir() )
+        ensFileName = ensemble.getPDBFilePath ( body.outputDir() )
         cmd = []
         for model in ensemble.xyzmeta["xyz"]:
             cmd += [ ensFileName, "-s", "/" + str(model["model"]) ]

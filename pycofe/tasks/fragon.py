@@ -197,7 +197,7 @@ class Fragon(basic.TaskDriver):
 
         if fragment:
             # custom fragment is given
-            cmd += [ "--fragment",fragment.getXYZFilePath(self.inputDir()) ]
+            cmd += [ "--fragment",fragment.getPDBFilePath(self.inputDir()) ]
         else:
             # use predefined fragments
             fragments_type = self.getParameter ( self.task.parameters.FRAGMENTS_SEL )

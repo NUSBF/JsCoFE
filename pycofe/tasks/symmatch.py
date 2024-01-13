@@ -56,11 +56,11 @@ class SymMatch(basic.TaskDriver):
         if self.getParameter(self.task.parameters.sec1.contains.ORIGINS_CBX)=="True":
             cmd_params += [ "-origin-hand" ]
 
-        ref_file_path = rstruct.getXYZFilePath ( self.inputDir() )
+        ref_file_path = rstruct.getPDBFilePath ( self.inputDir() )
         if not ref_file_path and rstruct._type=="DataStructure":
             ref_file_path = rstruct.getSubFilePath ( self.inputDir() )
 
-        inp_file_path = istruct.getXYZFilePath ( self.inputDir() )
+        inp_file_path = istruct.getPDBFilePath ( self.inputDir() )
         structureType = 0
         if not inp_file_path:
             inp_file_path = istruct.getSubFilePath ( self.inputDir() )

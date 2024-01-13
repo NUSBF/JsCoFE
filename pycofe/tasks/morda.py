@@ -133,7 +133,7 @@ class Morda(basic.TaskDriver):
 
         if hasattr(self.input_data.data,"model"):
             model_cls = self.makeClass ( self.input_data.data.model[0] )
-            cmd = cmd + [ "-p",model_cls.getXYZFilePath(self.inputDir()) ]
+            cmd = cmd + [ "-p",model_cls.getPDBFilePath(self.inputDir()) ]
 
         elif self.task.parameters.sec1.contains.NMODELS.value:
             cmd = cmd + [ "-n",str(self.task.parameters.sec1.contains.NMODELS.value) ]

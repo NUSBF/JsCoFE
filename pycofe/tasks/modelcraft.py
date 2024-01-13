@@ -188,9 +188,9 @@ class ModelCraft(basic.TaskDriver):
                     "--phases", ",".join(labin_ph)
                 ]
             else:
-                if istruct.getXYZFilePath(self.inputDir()) != None:
+                if istruct.getPDBFilePath(self.inputDir()) != None:
                     cmd += [
-                        "--model", istruct.getXYZFilePath(self.inputDir()),
+                        "--model", istruct.getPDBFilePath(self.inputDir()),
                         "--phases", ",".join(labin_ph),
                         "--unbiased"
                     ]
@@ -201,11 +201,11 @@ class ModelCraft(basic.TaskDriver):
                     ]
 
         else:  #  molecular replacement
-            cmd += [ "--model", istruct.getXYZFilePath(self.inputDir()) ]
+            cmd += [ "--model", istruct.getPDBFilePath(self.inputDir()) ]
 
         # else:  #  molecular replacement
-        #     if istruct.getXYZFilePath(self.inputDir()) != None:
-        #         cmd += [ "--model", istruct.getXYZFilePath(self.inputDir()) ]
+        #     if istruct.getPDBFilePath(self.inputDir()) != None:
+        #         cmd += [ "--model", istruct.getPDBFilePath(self.inputDir()) ]
         #     else: 
 
         #         labin_ph = [istruct.PHI,istruct.FOM]

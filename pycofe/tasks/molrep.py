@@ -77,7 +77,7 @@ class Molrep(basic.TaskDriver):
 
         self.open_stdin()
         self.write_stdin (
-            "file_m "  + model.getXYZFilePath(self.inputDir()) + "\n"
+            "file_m "  + model.getPDBFilePath(self.inputDir()) + "\n"
         )
 
         #if seq:
@@ -88,11 +88,11 @@ class Molrep(basic.TaskDriver):
         model_2 = None
         #if revision.hasSubtype(dtype_template.subtypeXYZ()):  # optional data parameter
         #    xstruct = self.makeClass ( revision.Structure )
-        #    model_2 = xstruct.getXYZFilePath(self.inputDir())
+        #    model_2 = xstruct.getPDBFilePath(self.inputDir())
 
         if hasattr(self.input_data.data,"xmodel"):
             xmodel  = self.makeClass ( self.input_data.data.xmodel[0] )
-            model_2 = xmodel.getXYZFilePath(self.inputDir())
+            model_2 = xmodel.getPDBFilePath(self.inputDir())
 
         if hasattr(self.input_data.data, "phases"):
             phases = self.makeClass ( self.input_data.data.phases[0] )

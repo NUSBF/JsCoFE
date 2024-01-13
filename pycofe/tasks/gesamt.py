@@ -82,7 +82,7 @@ class Gesamt(basic.TaskDriver):
         cmd = []
         for i in range(nXYZ):
             xyz[i] = self.makeClass ( xyz[i] )
-            cmd += [ xyz[i].getXYZFilePath(self.inputDir()),
+            cmd += [ xyz[i].getPDBFilePath(self.inputDir()),
                     "-s",xyz[i].chainSel]
 
         if nXYZ<2:

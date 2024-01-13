@@ -69,12 +69,12 @@ class Gemmi(basic.TaskDriver):
             if st._type=="DataRevision":
                 if st.Structure:
                     st.Structure = self.makeClass ( st.Structure )
-                    xyzpath = st.Structure.getXYZFilePath ( self.inputDir() )
+                    xyzpath = st.Structure.getPDBFilePath ( self.inputDir() )
                 elif st.Substructure:
                     st.Substructure = self.makeClass ( st.Substructure )
                     xyzpath = st.Substructure.getSubFilePath ( self.inputDir() )
             else:
-                xyzpath = st.getXYZFilePath ( self.inputDir() )
+                xyzpath = st.getPDBFilePath ( self.inputDir() )
                 if not xyzpath and st._type=="DataStructure":
                     xyzpath = st.getSubFilePath ( self.inputDir() )
             if xyzpath:

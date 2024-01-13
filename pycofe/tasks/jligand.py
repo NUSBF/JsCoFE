@@ -64,7 +64,7 @@ class JLigand(basic.TaskDriver):
             if revision.Structure:
                 istruct = self.makeClass ( revision.Structure )
                 libin = istruct.getLibFilePath ( self.inputDir() )
-                pdbfl = istruct.getXYZFilePath ( self.inputDir() )
+                pdbfl = istruct.getPDBFilePath ( self.inputDir() )
                 if not (libin and os.path.isfile(libin)):
                     libin = None
                 if not (pdbfl and os.path.isfile(pdbfl)):

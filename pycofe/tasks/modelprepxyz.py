@@ -181,7 +181,7 @@ class ModelPrepXYZ(basic.TaskDriver):
         return
 
     # def add_seqid_remark ( self,model,seqid_lst ):
-    #     ens_path = model.getXYZFilePath ( self.outputDir() )
+    #     ens_path = model.getPDBFilePath ( self.outputDir() )
     #     file = open ( ens_path,"r" )
     #     fcnt = file.read()
     #     file.close  ()
@@ -216,7 +216,7 @@ class ModelPrepXYZ(basic.TaskDriver):
         if seq:
             fpath_seq = seq.getSeqFilePath ( self.inputDir() )
         fpath_in  = self.fetch_chain ( chainId, # this is correct
-                                       xyz.getXYZFilePath(self.inputDir()) )
+                                       xyz.getPDBFilePath(self.inputDir()) )
 
         if hasattr(xyz,"fpath_algn"):
             fpath_algn = xyz.fpath_algn
@@ -230,7 +230,7 @@ class ModelPrepXYZ(basic.TaskDriver):
         else:
             sid = "100.0"
 
-        fpath_out = xyz.getXYZFileName()
+        fpath_out = xyz.getPDBFileName()
         if chainId!="(all)":  # this is correct
             fname, fext = os.path.splitext(fpath_out)
             if not fname.endswith("_"+chainSel):

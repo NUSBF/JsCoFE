@@ -311,7 +311,7 @@ class CombStructure(basic.TaskDriver):
         sec1    = self.task.parameters.sec1.contains
         mtzxyz  = [
             istruct.getMTZFilePath ( self.inputDir() ),
-            istruct.getXYZFilePath ( self.inputDir() )
+            istruct.getPDBFilePath ( self.inputDir() )
         ]
         labin_fc = [istruct.FWT,istruct.PHWT]
 

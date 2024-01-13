@@ -125,7 +125,7 @@ class EditRevision(asudef.ASUDef):
         lig_codes  = None
 
         if xyz:
-            xyz_fpath = xyz.getXYZFilePath ( self.inputDir() )
+            xyz_fpath = xyz.getPDBFilePath ( self.inputDir() )
             if xyz._type==dtype_structure.dtype():
                 sub_fpath = xyz.getSubFilePath ( self.inputDir() )
                 lib_fpath = xyz.getLibFilePath ( self.inputDir() )
@@ -229,7 +229,7 @@ class EditRevision(asudef.ASUDef):
 
                     lead_key = revision.leadKey
                     # lead_key = 1   #  XYZ lead (MR phases)
-                    if ("phases" in change_list) or (phases and not struct0.getXYZFileName()):
+                    if ("phases" in change_list) or (phases and not struct0.getPDBFileName()):
                         lead_key = 2  #  Phase lead (EP phases)
 
                     refiner = ""

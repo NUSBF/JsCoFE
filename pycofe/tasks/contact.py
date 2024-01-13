@@ -46,7 +46,7 @@ class Contact(basic.TaskDriver):
 
         # --------------------------------------------------------------------
 
-        xyzin = ixyz.getXYZFilePath ( self.inputDir() )
+        xyzin = ixyz.getPDBFilePath ( self.inputDir() )
 
         keywords = self.getParameter(self.task.parameters.CONTACT_INPUT).strip()
         if keywords=="":

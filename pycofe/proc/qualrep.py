@@ -50,7 +50,7 @@ def put_bfactors_section ( body,structure ):
         pyrvapi.rvapi_add_panel  ( reportPanelId,sec_id,0,0,1,1 )
         body.setBaverLogParser ( reportPanelId,False,graphTables=False,makePanel=False )
         body.runApp ( "baverage",[
-                        "XYZIN" ,structure.getXYZFilePath ( body.outputDir() ),
+                        "XYZIN" ,structure.getPDBFilePath ( body.outputDir() ),
                         "RMSTAB","_rmstab.tab",
                         "XYZOUT","_baverage.pdb"
                     ],logType="Main" )
@@ -147,7 +147,7 @@ def put_edstats_section ( body,revision ):
         pyrvapi.rvapi_add_panel  ( reportPanelId,sec_id,0,0,1,1 )
         body.setEdstatsLogParser ( reportPanelId,False,graphTables=False,makePanel=False )
         body.runApp ( "edstats",[
-                "XYZIN" ,struct.getXYZFilePath ( body.outputDir() ),
+                "XYZIN" ,struct.getPDBFilePath ( body.outputDir() ),
                 "MAPIN1",fo_map,
                 "MAPIN2",df_map,
                 "XYZOUT",xyzout
@@ -181,7 +181,7 @@ def put_ramaplot_section ( body,structure ):
     rama_outpath = os.path.join(body.reportDir(),rama_outf)
     cmd = [
         pyrama_path,
-        structure.getXYZFilePath(body.outputDir()),
+        structure.getPDBFilePath(body.outputDir()),
         "Ramachandran Plot",
         rama_outpath
     ]
@@ -222,7 +222,7 @@ def put_molprobity_section ( body,revision ):
     body.putSection ( sec_id,"Molprobity Analysis",openState_bool=False )
     body.putGrid1   ( grid_id,sec_id,False,0 )
 
-    xyzpath = revision.Structure.getXYZFilePath ( body.outputDir() )
+    xyzpath = revision.Structure.getPDBFilePath ( body.outputDir() )
 
     body.flush()
 

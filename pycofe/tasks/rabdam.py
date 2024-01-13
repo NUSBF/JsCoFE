@@ -50,11 +50,11 @@ class Rabdam(basic.TaskDriver):
             istruct = self.makeClass ( self.input_data.data.istruct[0] )
             xyzin   = istruct.getMMCIFFilePath ( self.inputDir() )
             if not xyzin:
-                xyzin = istruct.getXYZFilePath ( self.inputDir() )
+                xyzin = istruct.getPDBFilePath ( self.inputDir() )
         else:
             xyzin = ixyz.getMMCIFFilePath ( self.inputDir() )
             if not xyzin:
-                xyzin = ixyz.getXYZFilePath ( self.inputDir() )
+                xyzin = ixyz.getPDBFilePath ( self.inputDir() )
 
         self.runApp ( "rabdam",[
             "-f",os.path.abspath ( xyzin )

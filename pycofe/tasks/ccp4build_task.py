@@ -132,9 +132,9 @@ class CCP4Build(basic.TaskDriver):
                 self.write_stdin ([
                     "xyzpath_ha   " + istruct.getSubFilePath(self.inputDir())
                 ])
-            elif istruct.getXYZFileName():
+            elif istruct.getPDBFileName():
                 self.write_stdin ([
-                    "xyzpath_mr   " + istruct.getXYZFilePath(self.inputDir())
+                    "xyzpath_mr   " + istruct.getPDBFilePath(self.inputDir())
                 ])
 
             """
@@ -186,7 +186,7 @@ class CCP4Build(basic.TaskDriver):
                 "seqpath      " + self.ccp4build_seq()
             ])
 
-            xyzpath_mr = istruct.getXYZFilePath(self.inputDir())
+            xyzpath_mr = istruct.getPDBFilePath(self.inputDir())
             if xyzpath_mr:
                 self.write_stdin ([
                     "xyzpath_mr   " + xyzpath_mr

@@ -36,10 +36,10 @@ class HelloWorld(basic.TaskDriver):
                     "\n=========  Data Object (metadata) #" + str(i) + "\n" +\
                     xyz[i].to_JSON() + "\n" )
                 xyzi     = self.makeClass ( xyz[i] )
-                filepath = xyzi.getXYZFilePath ( self.inputDir() )
+                filepath = xyzi.getPDBFilePath ( self.inputDir() )
                 filei    = open ( filepath,'r' )
                 self.file_stdout.write (
-                    "\n=========  Data Content (file " + xyzi.getXYZFileName() +\
+                    "\n=========  Data Content (file " + xyzi.getPDBFileName() +\
                     ") #" + str(i) + "\n\n" + filei.read() + "\n" )
                 filei.close()
 

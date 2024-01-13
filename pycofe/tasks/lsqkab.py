@@ -101,10 +101,10 @@ class LsqKab(basic.TaskDriver):
         ])
         self.close_stdin()
 
-        fixed_path = fixed_xyz.getXYZFilePath ( self.inputDir() )
+        fixed_path = fixed_xyz.getPDBFilePath ( self.inputDir() )
         cmd = [
             "xyzinf", fixed_path,
-            "xyzinm", moving_xyz.getXYZFilePath(self.inputDir()),
+            "xyzinm", moving_xyz.getPDBFilePath(self.inputDir()),
             "xyzout", self.lsqkab_xyz()
         ]
 

@@ -116,7 +116,7 @@ class ModelPrepMC(modelprepxyz.ModelPrepXYZ):
         model = None
         if st0:
             sidm = str(round(sidm/nRes,1))
-            model_path = xyz.getXYZFileName()
+            model_path = xyz.getPDBFileName()
             st0.write_pdb ( model_path )
             model = self.registerModel ( stypes,model_path,checkout=True )
             if model:

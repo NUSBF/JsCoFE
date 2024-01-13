@@ -175,7 +175,7 @@ class Acorn(basic.TaskDriver):
         else:
             posi = "POSI 1"
             if istruct.initPhaseSel=="xyz":
-                cmd += ["XYZIN",istruct.getXYZFilePath(self.inputDir())]
+                cmd += ["XYZIN",istruct.getPDBFilePath(self.inputDir())]
             else:
                 cmd += ["XYZIN",istruct.getSubFilePath(self.inputDir())]
 
@@ -270,9 +270,9 @@ class Acorn(basic.TaskDriver):
 
             acorn_xyz = None
             acorn_sub = None
-            if istruct.getXYZFileName():
+            if istruct.getPDBFileName():
                 acorn_xyz = self.getXYZOFName()
-                shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),acorn_xyz )
+                shutil.copyfile ( istruct.getPDBFilePath(self.inputDir()),acorn_xyz )
             if istruct.getSubFileName():
                 acorn_sub = self.getOFName ( ".ha.pdb" )
                 shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),acorn_sub )
@@ -303,9 +303,9 @@ class Acorn(basic.TaskDriver):
 
                 # acorn_xyz = None
                 # acorn_sub = None
-                # if istruct.getXYZFileName():
+                # if istruct.getPDBFileName():
                 #     acorn_xyz = self.getXYZOFName()
-                #     shutil.copyfile ( istruct.getXYZFilePath(self.inputDir()),acorn_xyz )
+                #     shutil.copyfile ( istruct.getPDBFilePath(self.inputDir()),acorn_xyz )
                 # if istruct.getSubFileName():
                 #     acorn_sub = self.getOFName ( ".ha.pdb" )
                 #     shutil.copyfile ( istruct.getSubFilePath(self.inputDir()),acorn_sub )

@@ -154,7 +154,7 @@ class Coot(coot_ce.CootCE):
         args = []
         pdbpath = istruct.getMMCIFFilePath ( self.inputDir() )
         if not pdbpath:
-            pdbpath = istruct.getXYZFilePath ( self.inputDir() )    
+            pdbpath = istruct.getPDBFilePath ( self.inputDir() )    
         if not pdbpath:
             pdbpath = istruct.getSubFilePath ( self.inputDir() )
         if pdbpath:
@@ -164,7 +164,7 @@ class Coot(coot_ce.CootCE):
             args += ["--auto",mtzpath]
 
         if istruct2:
-            pdbpath = istruct2.getXYZFilePath ( self.inputDir() )
+            pdbpath = istruct2.getPDBFilePath ( self.inputDir() )
             if not pdbpath:
                 pdbpath = istruct2.getSubFilePath ( self.inputDir() )
             if pdbpath and pdbpath not in args:
@@ -174,7 +174,7 @@ class Coot(coot_ce.CootCE):
                 args += ["--auto",mtzpath]
 
         for s in data_list:
-            pdbpath = s.getXYZFilePath ( self.inputDir() )
+            pdbpath = s.getPDBFilePath ( self.inputDir() )
             if pdbpath and pdbpath not in args:
                 args += ["--pdb",pdbpath]
             if s._type=="DataStructure":
@@ -187,8 +187,8 @@ class Coot(coot_ce.CootCE):
 
         """
         for s in data_list:
-            if s.getXYZFileName():
-                pdbpath = s.getXYZFilePath(self.inputDir())
+            if s.getPDBFileName():
+                pdbpath = s.getPDBFilePath(self.inputDir())
                 if pdbpath not in args:
                     args += ["--pdb",pdbpath]
             if s._type=="DataStructure":
@@ -367,7 +367,7 @@ class Coot(coot_ce.CootCE):
 
             f = istruct.getMMCIFFileName()
             if not f:
-                f = istruct.getXYZFileName()
+                f = istruct.getPDBFileName()
             if not f:
                 f = istruct.getSubFileName()
             fnprefix = f[:f.find("_")]

@@ -136,7 +136,7 @@ class DType(dtype_template.DType):
 
     def checkBFactors ( self,dirPath ):
         self.BF_correction = "none"        # "none", "af2", "rosetta"
-        fpath = self.getXYZFilePath ( dirPath )
+        fpath = self.getPDBFilePath ( dirPath )
         if fpath:
             st = gemmi.read_structure ( fpath )
             st.setup_entities()
@@ -180,12 +180,12 @@ class DType(dtype_template.DType):
 
 
     def convertToPDB ( self,dirPath ):
-        fpath = self.getXYZFilePath ( dirPath )
+        fpath = self.getPDBFilePath ( dirPath )
         if not fpath.lower().endswith(".pdb"):
             st = gemmi.read_structure ( fpath )
             fp,fe = os.path.splitext ( fpath )
             st.write_pdb ( fp+".pdb" )
-            fp,fe = os.path.splitext ( self.getXYZFileName() )
+            fp,fe = os.path.splitext ( self.getPDBFileName() )
             self.setFile ( fp + ".pdb",dtype_template.file_key["xyz"] )
         return
 
@@ -194,7 +194,7 @@ class DType(dtype_template.DType):
         # BF_correction = "alphafold" or "rosetta"
         if (self.BF_correction=="none" or self.BF_correction.endswith("-suggested")) and \
            (BF_correction!=self.BF_correction):
-            fpath = self.getXYZFilePath ( dirPath )
+            fpath = self.getPDBFilePath ( dirPath )
             if fpath and fpath.lower().endswith(".pdb"):
                 st = gemmi.read_structure ( fpath )
                 st.setup_entities()
@@ -216,7 +216,7 @@ class DType(dtype_template.DType):
     #   Old (automatic) version 11.10.2023
     # def fixBFactors ( self,dirPath ):
     #     self.BF_correction = "none"        # "none", "af2", "rosetta"
-    #     fpath = self.getXYZFilePath ( dirPath )
+    #     fpath = self.getPDBFilePath ( dirPath )
     #     if fpath and fpath.lower().endswith(".pdb"):
     #         st = gemmi.read_structure ( fpath )
     #         st.setup_entities()
@@ -279,10 +279,10 @@ class DType(dtype_template.DType):
         self.setFile ( fname,dtype_template.file_key["xyz"] )
         return
 
-    def getXYZFileName ( self ):
+    def getPDBFileName ( self ):
         return self.getFileName ( dtype_template.file_key["xyz"] )
 
-    def getXYZFilePath ( self,dirPath ):
+    def getPDBFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
 
     def putXYZMeta ( self,fdir,file_stdout,file_stderr,log_parser=None ):

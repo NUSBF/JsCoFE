@@ -85,7 +85,7 @@ class EditRevisionStruct(basic.TaskDriver):
         replaced   = []
         deleted    = []
         if xyz:
-            xyz_fpath = xyz.getXYZFilePath ( self.inputDir() )
+            xyz_fpath = xyz.getPDBFilePath ( self.inputDir() )
             if xyz._type==dtype_structure.dtype():
                 lib_fpath = xyz.getLibFilePath ( self.inputDir() )
             if not struct0 or xyz.dataId!=struct0.dataId:

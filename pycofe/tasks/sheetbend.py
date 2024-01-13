@@ -58,7 +58,7 @@ class Sheetbend(basic.TaskDriver):
         self.open_stdin  ()
         self.write_stdin ([
             "mtzin  " + hkl.getHKLFilePath(self.inputDir()),
-            "pdbin  " + istruct.getXYZFilePath(self.inputDir()),
+            "pdbin  " + istruct.getPDBFilePath(self.inputDir()),
             "pdbout " + xyzout,
             "colin-fo   /*/*/[" + istruct.FP + "," + istruct.SigFP + "]",
             "colin-free /*/*/[" + istruct.FreeR_flag + "]",

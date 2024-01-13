@@ -298,7 +298,7 @@ class PhaserEP(basic.TaskDriver):
                 self.MRSAD = True
                 self.write_stdin (
                     "\nPARTIAL PDB \"" +\
-                        self.xmodel.getXYZFilePath(self.inputDir()) +\
+                        self.xmodel.getPDBFilePath(self.inputDir()) +\
                         "\" RMS " + str(self.xmodel.rmsd)
                 )
 

@@ -119,7 +119,7 @@ class PDBVal(basic.TaskDriver):
             self.close_stdin()
 
             # make command-line parameters for refmac
-            xyzin  = istruct.getXYZFilePath ( self.inputDir() )
+            xyzin  = istruct.getPDBFilePath ( self.inputDir() )
             xyzout = self.getXYZOFName()   # refmac output cif (refmac wants ".pdb" anyway)
             mtzout = self.getMTZOFName()   # refmac output mtz (used only for map visualisation)
             cmd = [ "hklin" ,hkl.getFilePath(self.inputDir(),dtype_template.file_key["mtz"]),
@@ -340,7 +340,7 @@ class PDBVal(basic.TaskDriver):
         try:
             doc = gemmi.cif.read ( deposition_cif )
             st  = gemmi.make_structure_from_block ( doc[0] )
-            xyzout_pdb = istruct.getXYZFilePath ( self.inputDir() )
+            xyzout_pdb = istruct.getPDBFilePath ( self.inputDir() )
             with open(xyzout_pdb,"r") as f:
                 lines = f.readlines()
                 for i in range(len(lines)):

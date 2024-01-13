@@ -55,7 +55,7 @@ class OptimiseASU(basic.TaskDriver):
         else:
             istruct = idata
 
-        xyzin = istruct.getXYZFilePath ( self.inputDir() )
+        xyzin = istruct.getPDBFilePath ( self.inputDir() )
 
         # --------------------------------------------------------------------
 

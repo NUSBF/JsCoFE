@@ -191,7 +191,7 @@ class ArpWarp(basic.TaskDriver):
             if istruct.hasSubSubtype():
                 cmdopt += [ "modelin",istruct.getSubFilePath(self.inputDir()) ]
             else:
-                cmdopt += [ "modelin",istruct.getXYZFilePath(self.inputDir()) ]
+                cmdopt += [ "modelin",istruct.getPDBFilePath(self.inputDir()) ]
             cmdopt += [ "freebuild",self.getCheckbox(sec1.AWA_FREEBUILD_CBX),
                         "flatten"  ,self.getCheckbox(sec1.AWA_FLATTEN_CBX) ]
 

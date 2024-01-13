@@ -68,7 +68,7 @@ class Ensembler(basic.TaskDriver):
         fmodels = []
         for i in range(len(models)):
             models[i] = self.makeClass ( models[i] )
-            fmodels.append ( models[i].getXYZFilePath(self.inputDir()) )
+            fmodels.append ( models[i].getPDBFilePath(self.inputDir()) )
 
         trim_levels = self.getParameter ( sec1.TRIM_LEVELS )
         if not trim_levels:
@@ -133,7 +133,7 @@ class Ensembler(basic.TaskDriver):
                                              "Coordinates",ensemble )
                     have_results = True
 
-                    ens_path = ensemble.getXYZFilePath ( self.outputDir() )
+                    ens_path = ensemble.getPDBFilePath ( self.outputDir() )
                     file = open ( ens_path,"r" )
                     fcnt = file.read()
                     file.close  ()

@@ -310,7 +310,7 @@ def run ( body,pdb_list,
                 if len(xyz)>0:
                     body.putMessage ( "<h3>" + ucode + " Structure</h3>" )
                     structure = body.finaliseStructure (
-                                    xyz[0].getXYZFilePath(body.outputDir()),
+                                    xyz[0].getPDBFilePath(body.outputDir()),
                                     lcode,hkl[0],None,[],0, # "0" means "XYZ"
                                     leadKey=1, # openState="closed",
                                     title=None,inpDir=body.outputDir() )

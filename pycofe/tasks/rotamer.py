@@ -53,7 +53,7 @@ class Rotamer (basic.TaskDriver):
         delt = self.getParameter ( sec1.DELT)
 
         cmd = [
-            "XYZIN", ixyz.getXYZFilePath(self.inputDir())
+            "XYZIN", ixyz.getPDBFilePath(self.inputDir())
         ]
         self.open_stdin()
         self.write_stdin ( ["DELT " + delt] )

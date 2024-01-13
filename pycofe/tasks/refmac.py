@@ -144,13 +144,13 @@ class Refmac(basic.TaskDriver):
             for i in range(len(hmodel) ):
                 if hmodel[i].hasSubtype ( dtype_template.subtypeProtein() ):
                     use_protein = True
-                    homolog_protein_fpaths.append ( hmodel[i].getXYZFilePath(self.inputDir() ) )
+                    homolog_protein_fpaths.append ( hmodel[i].getPDBFilePath(self.inputDir() ) )
                 if hmodel[i].hasSubtype ( dtype_template.subtypeDNA() ) or hmodel[i].hasSubtype ( dtype_template.subtypeRNA() ):
                     use_dnarna = True
-                    homolog_dnarna_fpaths.append ( hmodel[i].getXYZFilePath(self.inputDir() ) )
+                    homolog_dnarna_fpaths.append ( hmodel[i].getPDBFilePath(self.inputDir() ) )
 
             if use_protein:
-                prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_protein", "-p1", istruct.getXYZFilePath(self.inputDir() ), "-p2" ] + homolog_protein_fpaths
+                prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_protein", "-p1", istruct.getPDBFilePath(self.inputDir() ), "-p2" ] + homolog_protein_fpaths
                 if sec3.ALL_BEST.value == 'all':
                     prosmart_cmd += ['-restrain_all']
                 else:
@@ -172,18 +172,18 @@ class Refmac(basic.TaskDriver):
 
                 self.putMessage('Running ProSMART to generate external restraints for protein macromolecules')
                 self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
-                external_restraint_files.append(os.path.join('ProSMART_Output_protein',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
+                external_restraint_files.append(os.path.join('ProSMART_Output_protein',os.path.splitext(istruct.getPDBFileName() )[0]+'.txt') )
 
             if use_dnarna:
-                prosmart_cmd = [ "-quick", "-dna_rna", "-o", "ProSMART_Output_dnarna", "-p1" ,istruct.getXYZFilePath(self.inputDir() ), "-p2" ] + homolog_dnarna_fpaths
+                prosmart_cmd = [ "-quick", "-dna_rna", "-o", "ProSMART_Output_dnarna", "-p1" ,istruct.getPDBFilePath(self.inputDir() ), "-p2" ] + homolog_dnarna_fpaths
                 self.putMessage('Running ProSMART to generate external restraints for nucleic acid macromolecules')
                 self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
-                external_restraint_files.append(os.path.join('ProSMART_Output_dnarna',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
+                external_restraint_files.append(os.path.join('ProSMART_Output_dnarna',os.path.splitext(istruct.getPDBFileName() )[0]+'.txt') )
 
         if str(sec3.HBOND_RESTR.value) == 'yes':
-            prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_hbond", "-p1", istruct.getXYZFilePath(self.inputDir() )]
+            prosmart_cmd = [ "-quick", "-o", "ProSMART_Output_hbond", "-p1", istruct.getPDBFilePath(self.inputDir() )]
             self.runApp ( "prosmart",prosmart_cmd,logType="Main" )
-            external_restraint_files.append(os.path.join('ProSMART_Output_hbond',os.path.splitext(istruct.getXYZFileName() )[0]+'.txt') )
+            external_restraint_files.append(os.path.join('ProSMART_Output_hbond',os.path.splitext(istruct.getPDBFileName() )[0]+'.txt') )
 
 
         # Input
@@ -373,9 +373,9 @@ class Refmac(basic.TaskDriver):
         xyzin  = istruct.getMMCIFFilePath ( self.inputDir() )
         if not xyzin:
             self.stderrln ( " ***** mmCIF is not found" )
-            xyzin  = istruct.getXYZFilePath ( self.inputDir() )
+            xyzin  = istruct.getPDBFilePath ( self.inputDir() )
 
-        # xyzin  = istruct.getXYZFilePath ( self.inputDir() )
+        # xyzin  = istruct.getPDBFilePath ( self.inputDir() )
 
         xyzout = self.getXYZOFName()
         xmlOutRefmac = self.getOFName (".xml")
@@ -509,7 +509,7 @@ class Refmac(basic.TaskDriver):
                 try:
                     cvl = covlinks.CovLinks(
                         structure.getLibFilePath(self.outputDir()),
-                        structure.getXYZFilePath(self.outputDir()))
+                        structure.getPDBFilePath(self.outputDir()))
                     cvl.prep_lists()
                     link_counts = dict(cvl.counts(self.file_stdout))
                     structure.ligands     = link_counts['comps_usr']

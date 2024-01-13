@@ -45,10 +45,10 @@ class Xyz2Revision(dimple.Dimple,asudef.ASUDef):
         xyz  = self.makeClass ( self.input_data.data.xyz[0] )
         sec1 = self.task.parameters.sec1.contains
 
-        self.outputFName = xyz.lessDataId ( os.path.splitext(xyz.getXYZFileName())[0] )
+        self.outputFName = xyz.lessDataId ( os.path.splitext(xyz.getPDBFileName())[0] )
         if self.getParameter(sec1.USEDIMPLE_CBX)=="False":
             structure = self.finaliseStructure (
-                                xyz.getXYZFilePath(self.inputDir()),
+                                xyz.getPDBFilePath(self.inputDir()),
                                 self.outputFName,hkl,None,
                                 [],0,leadKey=1 ) # ,openState="closed" ) # "0" means "XYZ"
 
@@ -61,7 +61,7 @@ class Xyz2Revision(dimple.Dimple,asudef.ASUDef):
             self.putMessage ( "<h3>Conversion failed, no output</h3>" )
         else:
             asudef.revisionFromStructure ( self,hkl,structure,
-                                           os.path.splitext(xyz.getXYZFileName())[0] )
+                                           os.path.splitext(xyz.getPDBFileName())[0] )
             have_results = True
 
         # close execution logs and quit

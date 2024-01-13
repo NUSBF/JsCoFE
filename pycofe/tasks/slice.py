@@ -58,7 +58,7 @@ class Slice(basic.TaskDriver):
         self.fixBFactors ( [xyz] )
 
         cmd = [
-            "-xyzin"     ,xyz.getXYZFilePath(self.inputDir()),
+            "-xyzin"     ,xyz.getPDBFilePath(self.inputDir()),
             "-min_splits",nsplits,
             "-max_splits",nsplits,
             "-xyz_source","alphafold_bfactor"

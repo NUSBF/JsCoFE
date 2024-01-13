@@ -130,8 +130,8 @@ class CootCE(basic.TaskDriver):
         ixyz = self.input_data.data.ixyz
         for i in range(len(ixyz)):
             ixyz[i] = self.makeClass ( ixyz[i] )
-            if ixyz[i].getXYZFileName():
-                pdbpath = ixyz[i].getXYZFilePath(self.inputDir())
+            if ixyz[i].getPDBFileName():
+                pdbpath = ixyz[i].getPDBFilePath(self.inputDir())
                 if pdbpath not in args:
                     args += ["--pdb",pdbpath]
 
@@ -184,7 +184,7 @@ class CootCE(basic.TaskDriver):
 
             self.putTitle ( "Output coordinate data" )
 
-            f = ixyz[0].getXYZFileName()
+            f = ixyz[0].getPDBFileName()
             if not f:
                 f = istruct.getSubFileName()
             fnprefix = f[:f.find("_")]
