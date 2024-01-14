@@ -285,8 +285,17 @@ class DType(dtype_template.DType):
     def getPDBFileName ( self ):
         return self.getFileName ( dtype_template.file_key["xyz"] )
 
+    def getMMCIFFileName ( self ):
+        return self.getFileName ( dtype_template.file_key["mmcif"] )
+
+    def getXYZFileName ( self ):
+        mmcif_name = self.getFileName ( dtype_template.file_key["mmcif"] )
+        if mmcif_name:
+            return mmcif_name
+        return self.getFileName ( dtype_template.file_key["xyz"] )
+
     def getXYZFilePath ( self,dirPath ):
-        if self.getFileName(dtype_template.file_key["xyz"]):
+        if self.getFileName(dtype_template.file_key["mmcif"]):
             return self.getFilePath ( dirPath,dtype_template.file_key["mmcif"] )
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
 
