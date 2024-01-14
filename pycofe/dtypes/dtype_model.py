@@ -1,17 +1,15 @@
 ##!/usr/bin/python
 
-# python-3 ready
-
 #
 # ============================================================================
 #
-#    05.10.22   <--  Date of Last Modification.
+#    15.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  MR MODEL DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2020-2024
 #
 # ============================================================================
 #
@@ -63,9 +61,13 @@ class DType(dtype_xyz.DType):
         self.addSubtypes ( sequence.subtype )
         return
 
-    def setXYZFile ( self,fname ):
-        self.setFile ( fname,dtype_template.file_key["xyz"] )
-        return
+    # def setXYZFile ( self,fname ):
+    #     if fname:
+    #         if fname.upper().endswith(".PDB"):
+    #             self.setFile ( fname,dtype_template.file_key["xyz"] )
+    #         else:
+    #             self.setFile ( fname,dtype_template.file_key["mmcif"] )
+    #     return
 
     def setSeqFile ( self,fname ):
         self.setFile ( fname,dtype_template.file_key["seq"] )

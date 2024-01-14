@@ -188,7 +188,7 @@ function ProjectPage ( sceneId )  {
   const toolbutton_size = '38px';
   this.toolbar_div = new Widget('div');
   this.toolbar_div.element.setAttribute ( 'class','toolbox-content' );
-  var toolbar = new Grid('');
+  let toolbar = new Grid('');
   this.toolbar_div.setWidth_px ( parseInt(toolbutton_size)+16 );
   this.toolbar_div.addWidget ( toolbar );
   this.grid.setWidget ( this.toolbar_div, 1,0,1,1 );
@@ -204,7 +204,7 @@ function ProjectPage ( sceneId )  {
   // make the toolbar
   const horz_line = '<div style="border-top: 1.5px dotted grey;width:' + toolbutton_size + 
                     ';margin-top:6px;"></div>'
-  var   cnt = 0;
+  let   cnt = 0;
   this.add_btn     = toolbar.setButton ( '',image_path('add'),cnt++,0,1,1 );
   // temporary switch off
   this.moveup_btn  = toolbar.setButton ( '',image_path('moveup')   ,cnt++,0,1,1 );
@@ -235,22 +235,24 @@ function ProjectPage ( sceneId )  {
   //}
   // *******************************
 
-  this.add_btn.setSize(toolbutton_size,toolbutton_size).setTooltip('Add job'   ).setDisabled(true);
+  this.add_btn.setSize(toolbutton_size,toolbutton_size).setTooltip('Add job').setDisabled(true);
   this.dock   .setDisabled ( true );
   if (this.moveup_btn)
-    this.moveup_btn.setSize(toolbutton_size,toolbutton_size).setTooltip(
-                   'Move job one position up the tree branch').setDisabled(true);
-  this.del_btn    .setSize(toolbutton_size,toolbutton_size).setTooltip('Delete job').setDisabled(true);
-  this.stack_btn  .setSize(toolbutton_size,toolbutton_size).setTooltip(
-                                             'Stack/Unstack jobs').setDisabled(true);
+    this.moveup_btn.setSize(toolbutton_size,toolbutton_size)
+                   .setTooltip('Move job one position up the tree branch')
+                   .setDisabled(true);
+  this.del_btn    .setSize(toolbutton_size,toolbutton_size)
+                  .setTooltip('Delete job').setDisabled(true);
+  this.stack_btn  .setSize(toolbutton_size,toolbutton_size)
+                  .setTooltip('Stack/Unstack jobs').setDisabled(true);
   this.open_btn   .setSize(toolbutton_size,toolbutton_size).setTooltip('Open job'  ).setDisabled(true);
   this.stop_btn   .setSize(toolbutton_size,toolbutton_size).setTooltip('Stop job'  ).setDisabled(true);
   this.clone_btn  .setSize(toolbutton_size,toolbutton_size).setTooltip('Clone job' ).setDisabled(true);
   this.add_rem_btn.setSize(toolbutton_size,toolbutton_size).setTooltip('Add remark').setDisabled(true);
-  this.thlight_btn.setSize(toolbutton_size,toolbutton_size).setTooltip('Toggle branch highlight' )
-                                                                  .setDisabled(true);
-  this.selmode_btn.setSize(toolbutton_size,toolbutton_size).setTooltip('Single/multiple selection mode')
-                                                                  .setDisabled(true);
+  this.thlight_btn.setSize(toolbutton_size,toolbutton_size)
+                  .setTooltip('Toggle branch highlight').setDisabled(true);
+  this.selmode_btn.setSize(toolbutton_size,toolbutton_size)
+                  .setTooltip('Single/multiple selection mode').setDisabled(true);
   this.refresh_btn.setSize(toolbutton_size,toolbutton_size).setTooltip('Refresh and push stalled jobs');
   this.help_btn   .setSize(toolbutton_size,toolbutton_size).setTooltip('Documentation');
   this.roadmap_btn.setSize(toolbutton_size,toolbutton_size).setTooltip(appName() + ' roadmap');

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    15.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -476,7 +476,7 @@ class DType(dtype_xyz.DType):
         return
 
     def putXYZMeta ( self,fdir,file_stdout,file_stderr,log_parser=None ):
-        fpath = self.getPDBFilePath ( fdir )
+        fpath = self.getXYZFilePath ( fdir )
         if not fpath:
             fpath = self.getSubFilePath ( fdir )
         if fpath:
@@ -518,7 +518,10 @@ class DType(dtype_xyz.DType):
     def setXYZFile ( self,fname ):
         if fname:
             self.addSubtype ( dtype_template.subtypeXYZ() )
-            self.setFile    ( fname,dtype_template.file_key["xyz"] )
+            if fname.upper().endswith(".PDB"):
+                self.setFile ( fname,dtype_template.file_key["xyz"] )
+            else:
+                self.setFile ( fname,dtype_template.file_key["mmcif"] )
         return
 
     def setSubFile ( self,fname ):
@@ -590,6 +593,11 @@ class DType(dtype_xyz.DType):
 
     def getMolProbityFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["molp"] )
+
+    def getXYZFilePath ( self,dirPath ):
+        if self.getFileName(dtype_template.file_key["mmcif"]):
+            return self.getFilePath ( dirPath,dtype_template.file_key["mmcif"] )
+        return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
 
     def getPDBFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )

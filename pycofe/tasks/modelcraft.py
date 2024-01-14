@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    15.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -181,31 +181,31 @@ class ModelCraft(basic.TaskDriver):
         # make command-line parameters
         cmd = [ "xray","--contents",self.contents_json(),"--data",input_mtz ]
 
+        xyz_model_path = istruct.getXYZFilePath ( self.inputDir() )
         if istruct.leadKey==2:  #  experimental phases
             if revision.Substructure and revision.Options.useSubstruct:
                 cmd += [
                     "--model" , isubstruct.getSubFilePath(self.inputDir()),
                     "--phases", ",".join(labin_ph)
                 ]
-            else:
-                if istruct.getPDBFilePath(self.inputDir()) != None:
-                    cmd += [
-                        "--model", istruct.getPDBFilePath(self.inputDir()),
-                        "--phases", ",".join(labin_ph),
-                        "--unbiased"
-                    ]
-                else: 
-                    cmd += [
-                        "--phases", ",".join(labin_ph),
-                        "--unbiased"
-                    ]
+            elif xyz_model_path:
+                cmd += [
+                    "--model" , xyz_model_path,
+                    "--phases", ",".join(labin_ph),
+                    "--unbiased"
+                ]
+            else: 
+                cmd += [
+                    "--phases", ",".join(labin_ph),
+                    "--unbiased"
+                ]
 
         else:  #  molecular replacement
-            cmd += [ "--model", istruct.getPDBFilePath(self.inputDir()) ]
+            cmd += [ "--model",xyz_model_path ]
 
         # else:  #  molecular replacement
-        #     if istruct.getPDBFilePath(self.inputDir()) != None:
-        #         cmd += [ "--model", istruct.getPDBFilePath(self.inputDir()) ]
+        #     if istruct.getXYZFilePath(self.inputDir()) != None:
+        #         cmd += [ "--model", istruct.getXYZFilePath(self.inputDir()) ]
         #     else: 
 
         #         labin_ph = [istruct.PHI,istruct.FOM]
@@ -313,17 +313,18 @@ class ModelCraft(basic.TaskDriver):
 
                 self.rvrow = verdict_rvrow + 5
 
-                pdbout = os.path.join ( self.modelcraft_tmp(),self.modelcraft_pdb() )
-                st = gemmi.read_structure ( cifout )
-                st.setup_entities()
-                st.shorten_chain_names()
-                st.write_pdb ( pdbout )
+                pdbout = None
+                # pdbout = os.path.join ( self.modelcraft_tmp(),self.modelcraft_pdb() )
+                # st = gemmi.read_structure ( cifout )
+                # st.setup_entities()
+                # st.shorten_chain_names()
+                # st.write_pdb ( pdbout )
 
                 self.putTitle ( "Built Structure" +\
                             self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
 
                 structure = self.registerStructure (
-                                    None,
+                                    cifout,
                                     pdbout,
                                     None,
                                     mtzout,
@@ -346,9 +347,9 @@ class ModelCraft(basic.TaskDriver):
                     structure.SigFP      = labin_fo[1]
                     structure.FreeR_flag = labin_fo[2]
 
-                    mmcifout = self.getMMCIFOFName()
-                    os.rename ( cifout,mmcifout )
-                    structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
+                    # mmcifout = self.getMMCIFOFName()
+                    # os.rename ( cifout,mmcifout )
+                    # structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
 
                     self.putStructureWidget    ( "structure_btn",
                                                  "Structure and electron density",
@@ -408,8 +409,8 @@ class ModelCraft(basic.TaskDriver):
                         auto.makeNextTask ( self,{
                             "revision"     : revision,
                             "summary_line" : "Compl={0:.1f}%".format(Compl) +\
-                                            ", R=" + Rwork +\
-                                            " R<sub>free</sub>="  + Rfree,
+                                             ", R=" + Rwork +\
+                                             " R<sub>free</sub>="  + Rfree,
                             "Rfactor"      : Rwork,
                             "Rfree"        : Rfree
                         }, log=self.file_stderr)

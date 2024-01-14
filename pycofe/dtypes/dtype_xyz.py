@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    11.10.23   <--  Date of Last Modification.
+#    15.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ (COORDINATES) DATA TYPE
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -274,21 +274,36 @@ class DType(dtype_template.DType):
     #                 self.BF_correction = "rosetta"
     #     return
 
-
     def setXYZFile ( self,fname ):
-        self.setFile ( fname,dtype_template.file_key["xyz"] )
+        if fname:
+            if fname.upper().endswith(".PDB"):
+                self.setFile ( fname,dtype_template.file_key["xyz"] )
+            else:
+                self.setFile ( fname,dtype_template.file_key["mmcif"] )
         return
 
     def getPDBFileName ( self ):
         return self.getFileName ( dtype_template.file_key["xyz"] )
 
+    def getXYZFilePath ( self,dirPath ):
+        if self.getFileName(dtype_template.file_key["xyz"]):
+            return self.getFilePath ( dirPath,dtype_template.file_key["mmcif"] )
+        return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
+
     def getPDBFilePath ( self,dirPath ):
         return self.getFilePath ( dirPath,dtype_template.file_key["xyz"] )
 
+    def getMMCIFFilePath ( self,dirPath ):
+        return self.getFilePath ( dirPath,dtype_template.file_key["mmcif"] )
+
     def putXYZMeta ( self,fdir,file_stdout,file_stderr,log_parser=None ):
-        setXYZMeta ( self,xyzmeta.getXYZMeta (
-                            os.path.join(fdir,self.files[dtype_template.file_key["xyz"]]),
-                            file_stdout,file_stderr,log_parser ) )
+        # setXYZMeta ( self,xyzmeta.getXYZMeta (
+        #                     os.path.join(fdir,self.files[dtype_template.file_key["xyz"]]),
+        #                     file_stdout,file_stderr,log_parser ) )
+        if fpath:
+            self.setXYZMeta ( self,xyzmeta.getXYZMeta (
+                                   self.getXYZFilePath(fdir),
+                                   file_stdout,file_stderr,log_parser ) )
         return
 
 
