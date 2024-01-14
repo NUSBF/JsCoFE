@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    15.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -56,10 +56,10 @@ from pycofe.parsers import refmac_parser, edstats_parser, baver_parser
 
 # pycofe imports
 from pycofe.dtypes import dtype_template, dtype_xyz,   dtype_structure, databox
-from pycofe.dtypes import dtype_ensemble, dtype_hkl,   dtype_ligand
+from pycofe.dtypes import dtype_ensemble, dtype_ligand
 from pycofe.dtypes import dtype_sequence, dtype_model, dtype_library
 from pycofe.proc   import edmap,  import_filetype, import_merged, mergeone
-from pycofe.varut  import signal, jsonut, command, zutils
+from pycofe.varut  import signal, jsonut, command, zutils, mmcif_utils
 from pycofe.etc    import citations
 
 
@@ -833,7 +833,7 @@ class TaskDriver(object):
                     self.file_stdin.write ( item.keyword + " " + item.translate[1] + "\n" )
                 else:
                     self.file_stdin.write ( item.keyword + " " + item.translate[0] + "\n" )
-        return
+        return item.value
 
     def putKWParameter ( self,item ):
         if getattr(item,"visible",True):
@@ -1861,15 +1861,15 @@ class TaskDriver(object):
                                  copy_files=False,map_labels=None,refiner="" ):
         self.dataSerialNo += 1
 
-        #self.file_stderr.write ( "  xyzPath=" + str(xyzPath) + "\n" )
-        #self.file_stderr.write ( "  cwd=" + os.getcwd() + "\n" )
-        #if os.path.isfile(xyzPath):
-        #    self.file_stderr.write ( "  exists\n" )
-        #else:
-        #    self.file_stderr.write ( "  does not exists\n" )
+        mmcif_path = mmcifPath
+        pdb_path   = pdbPath
+        if mmcifPath and (not pdbPath):
+            pdb_path   = mmcif_utils.convert_to_pdb ( mmcifPath )
+        elif pdbPath and (not mmcifPath):
+            mmcif_path = mmcif_utils.convert_to_mmcif ( pdbPath )
 
         structure = dtype_structure.register (
-                                    mmcifPath,pdbPath,subPath,mtzPath,mapPath,
+                                    mmcif_path,pdb_path,subPath,mtzPath,mapPath,
                                     dmapPath,libPath,
                                     self.dataSerialNo ,self.job_id,leadKey,
                                     self.outputDataBox,self.outputDir(),
@@ -1903,8 +1903,16 @@ class TaskDriver(object):
                                   leadKey=1,copy_files=False,
                                   map_labels=None,refiner="" ):
         self.dataSerialNo += 1
+
+        mmcif_path = mmcifPath
+        pdb_path   = pdbPath
+        if mmcifPath and (not pdbPath):
+            pdb_path   = mmcif_utils.convert_to_pdb ( mmcifPath )
+        elif pdbPath and (not mmcifPath):
+            mmcif_path = mmcif_utils.convert_to_mmcif ( pdbPath )
+
         structure = dtype_structure.register1 (
-                                mmcifPath,pdbPath,subPath,mtzPath,mapPath,
+                                mmcif_path,pdb_path,subPath,mtzPath,mapPath,
                                 dmapPath,libPath,
                                 regName,self.dataSerialNo,self.job_id,leadKey,
                                 self.outputDataBox,map_labels=map_labels,
@@ -1913,13 +1921,13 @@ class TaskDriver(object):
             self.file_stderr.write ( "  NONE STRUCTURE\n" )
             self.file_stderr.flush()
         else:
-            self._move_file_to_output_dir ( mmcifPath,structure.getMMCIFFileName(),copy_files )
-            self._move_file_to_output_dir ( pdbPath  ,structure.getPDBFileName  (),copy_files )
-            self._move_file_to_output_dir ( subPath  ,structure.getSubFileName  (),copy_files )
-            self._move_file_to_output_dir ( mtzPath  ,structure.getMTZFileName  (),copy_files )
-            self._move_file_to_output_dir ( mapPath  ,structure.getMapFileName  (),copy_files )
-            self._move_file_to_output_dir ( dmapPath ,structure.getDMapFileName (),copy_files )
-            self._move_file_to_output_dir ( libPath  ,structure.getLibFileName  (),copy_files )
+            self._move_file_to_output_dir ( mmcif_path,structure.getMMCIFFileName(),copy_files )
+            self._move_file_to_output_dir ( pdb_path  ,structure.getPDBFileName  (),copy_files )
+            self._move_file_to_output_dir ( subPath   ,structure.getSubFileName  (),copy_files )
+            self._move_file_to_output_dir ( mtzPath   ,structure.getMTZFileName  (),copy_files )
+            self._move_file_to_output_dir ( mapPath   ,structure.getMapFileName  (),copy_files )
+            self._move_file_to_output_dir ( dmapPath  ,structure.getDMapFileName (),copy_files )
+            self._move_file_to_output_dir ( libPath   ,structure.getLibFileName  (),copy_files )
             structure.putXYZMeta ( self.outputDir(),self.file_stdout1,
                                    self.file_stderr,None )
         return structure
@@ -1982,12 +1990,13 @@ class TaskDriver(object):
                                   structure.dname +
                                   "<font size='+2'><sub>&nbsp;</sub></font>",row )
         wId     = self.getWidgetId ( widgetId )
-        type    = [[dtype_template.file_key["xyz" ],"xyz"],
-                   [dtype_template.file_key["sub" ],"xyz"],
-                   [dtype_template.file_key["mtz" ],"hkl:map"],
-                   [dtype_template.file_key["map" ],"hkl:ccp4_map"],
-                   [dtype_template.file_key["dmap"],"hkl:ccp4_dmap"],
-                   [dtype_template.file_key["lib" ],"LIB"]]
+        type    = [[dtype_template.file_key["mmcif"],"mmcif"        ],
+                   [dtype_template.file_key["xyz"  ],"xyz"          ],
+                   [dtype_template.file_key["sub"  ],"xyz"          ],
+                   [dtype_template.file_key["mtz"  ],"hkl:map"      ],
+                   [dtype_template.file_key["map"  ],"hkl:ccp4_map" ],
+                   [dtype_template.file_key["dmap" ],"hkl:ccp4_dmap"],
+                   [dtype_template.file_key["lib"  ],"LIB"          ]]
         created = False
         for i in range(len(type)):
             fname = structure.getFileName ( type[i][0] )

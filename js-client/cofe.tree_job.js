@@ -325,7 +325,7 @@ JobTree.prototype.readProjectData = function ( page_title,
                 (tree.task_map[key].state==job_code.ending)  ||
                 (tree.task_map[key].state==job_code.exiting))  {
               tree.run_map [dataId] = key;
-              if (tree.task_map[key].autoRunId)
+              if (tree.task_map[key].autoRunId)  // workflow working
                 tree.projectData.desc.autorun = true;
               tree.setNodeName ( key,false );
               tree.node_map[key].setCustomIconVisible ( true );
@@ -723,7 +723,7 @@ JobTree.prototype.startTaskLoop = function()  {
   if ((!this.checkTimeout) &&   // otherwise the loop is running already or forbidden
       this.projectData     &&   // works in case of shared projects
       ((Object.keys(this.run_map).length>0) ||  // there are jobs to check on
-       (this.isShared())  // or project is shared
+       (this.isShared())        // or project is shared
       )
     )  {
     this.checkTimeout = 1;

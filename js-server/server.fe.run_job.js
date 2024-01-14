@@ -1827,6 +1827,8 @@ function cloudRun ( server_request,server_response )  {
                     pData.desc.jobCount = mjd[2];
                     task.submitter      = loginData.login;
                     task.start_time     = Date.now();
+                    if (!task.autoRunId)
+                      task.autoRunId = 'cloudrun';
                     task.state          = task_t.job_code.running;
                     task.job_dialog_data.panel = 'output';
                     prj.writeProjectData ( loginData,pData,true );  // fix job count promptly

@@ -273,16 +273,24 @@ class PhaserMR(basic.TaskDriver):
         #                            self.getKWParameter("RANGE",sec0.RF_RANGE) )
         #     self.write_stdin ( "\n" )
 
-        if sec0.RF_TARGET_SEL.value != "FAST":
+        # if sec0.RF_TARGET_SEL.value != "FAST":
+        #     self.writeKWParameter ( sec0.RF_TARGET_SEL )
+        #     self.write_stdin ( "ROTATE VOLUME " + sec0.RF_ANGLE_SEL.value )
+        #     if sec0.RF_ANGLE_SEL.value=="AROUND":
+        #         self.write_stdin ( self.getKWParameter("EULER",sec0.RF_ALPHA) +\
+        #                            self.getKWParameter(""     ,sec0.RF_BETA)  +\
+        #                            self.getKWParameter(""     ,sec0.RF_GAMMA) +\
+        #                            self.getKWParameter("RANGE",sec0.RF_RANGE) )
+        #     self.write_stdin ( "\n" )
+
+        if self.getParameter(sec0.RF_TARGET_SEL)=="BRUTE":
             self.writeKWParameter ( sec0.RF_TARGET_SEL )
-            self.write_stdin ( "ROTATE VOLUME " + sec0.RF_ANGLE_SEL.value )
-            if sec0.RF_ANGLE_SEL.value=="AROUND":
+            if str(self.writeKWParameter(sec0.RF_ANGLE_SEL))=="AROUND":
                 self.write_stdin ( self.getKWParameter("EULER",sec0.RF_ALPHA) +\
                                    self.getKWParameter(""     ,sec0.RF_BETA)  +\
                                    self.getKWParameter(""     ,sec0.RF_GAMMA) +\
-                                   self.getKWParameter("RANGE",sec0.RF_RANGE) )
-            self.write_stdin ( "\n" )
-
+                                   self.getKWParameter("RANGE",sec0.RF_RANGE) +\
+                                   "\n" )
 
         if phases:
             # self.write_stdin ( "HKLOUT OFF\n" )  # bypassing a bug in phaser 2.8.2(ccp4)
@@ -315,51 +323,60 @@ class PhaserMR(basic.TaskDriver):
         #         self.write_stdin ( "\n" )
 
 
-        self.writeKWParameter ( sec1.TNCS_SEL            )
-        self.writeKWParameter ( sec1.TNCS_NA             )
+        if str(self.writeKWParameter(sec1.TNCS_SEL))=="ON":
+            self.writeKWParameter ( sec1.TNCS_NA )
 
-        self.writeKWParameter ( sec1.PACK_SEL            )
-        self.writeKWParameter ( sec1.PACK_CUTOFF         )
+        if str(self.writeKWParameter(sec1.PACK_SEL))=="PERCENT":
+            self.writeKWParameter ( sec1.PACK_CUTOFF         )
 
-        self.writeKWParameter ( sec1.RS_PEAKS_SEL        )
-        self.writeKWParameter ( sec1.RS_PEAKS_P_CUTOFF   )
-        self.writeKWParameter ( sec1.RS_PEAKS_S_CUTOFF   )
-        self.writeKWParameter ( sec1.RS_PEAKS_N_CUTOFF   )
+        peaks_sel = str ( self.writeKWParameter(sec1.RS_PEAKS_SEL) )
+        # we cannot rely on the "visibility" attribute here because of
+        # workflows, which run non-graphically
+        if peaks_sel=="PERCENT":
+            self.writeKWParameter ( sec1.RS_PEAKS_P_CUTOFF )
+        elif peaks_sel=="SIGMA":
+            self.writeKWParameter ( sec1.RS_PEAKS_S_CUTOFF )
+        elif peaks_sel=="NUMBER":
+            self.writeKWParameter ( sec1.RS_PEAKS_N_CUTOFF )
         if sec0.RF_TARGET_SEL.value == "FAST":
             self.writeKWParameter ( sec0.RF_CLUSTER_SEL )
         else:
             self.write_stdin ( "PEAKS ROT CLUSTER OFF\n" )
 
-        self.writeKWParameter ( sec1.TS_PEAKS_SEL        )
-        self.writeKWParameter ( sec1.TS_PEAKS_P_CUTOFF   )
-        self.writeKWParameter ( sec1.TS_PEAKS_S_CUTOFF   )
-        self.writeKWParameter ( sec1.TS_PEAKS_N_CUTOFF   )
+        peaks_sel = str ( self.writeKWParameter(sec1.TS_PEAKS_SEL) )
+        if peaks_sel=="PERCENT":
+            self.writeKWParameter ( sec1.TS_PEAKS_P_CUTOFF )
+        elif peaks_sel=="SIGMA":
+            self.writeKWParameter ( sec1.TS_PEAKS_S_CUTOFF )
+        elif peaks_sel=="NUMBER":
+            self.writeKWParameter ( sec1.TS_PEAKS_N_CUTOFF )
 
-        self.writeKWParameter ( sec1.DR_SEARCH_DOWN      )
+        if str(self.getParameter(sec1.DR_SEARCH_SEL))=="ON":
+            self.writeKWParameter ( sec1.DR_SEARCH_DOWN )
 
-        self.writeKWParameter ( sec1.PURGE_ROT_SEL       )
-        self.writeKWParameter ( sec1.PURGE_ROT_CUTOFF    )
-        self.writeKWParameter ( sec1.PURGE_ROT_NUMBER    )
+        if str(self.writeKWParameter(sec1.PURGE_ROT_SEL))=="ON":
+            self.writeKWParameter ( sec1.PURGE_ROT_CUTOFF )
+            self.writeKWParameter ( sec1.PURGE_ROT_NUMBER )
 
-        self.writeKWParameter ( sec1.PURGE_TRA_SEL       )
-        self.writeKWParameter ( sec1.PURGE_TRA_CUTOFF    )
-        self.writeKWParameter ( sec1.PURGE_TRA_NUMBER    )
+        if str(self.writeKWParameter(sec1.PURGE_TRA_SEL))=="ON":
+            self.writeKWParameter ( sec1.PURGE_TRA_CUTOFF )
+            self.writeKWParameter ( sec1.PURGE_TRA_NUMBER )
 
-        self.writeKWParameter ( sec1.PURGE_RNP_SEL       )
-        self.writeKWParameter ( sec1.PURGE_RNP_CUTOFF    )
-        self.writeKWParameter ( sec1.PURGE_RNP_NUMBER    )
+        if str(self.writeKWParameter(sec1.PURGE_RNP_SEL))=="ON":
+            self.writeKWParameter ( sec1.PURGE_RNP_CUTOFF )
+            self.writeKWParameter ( sec1.PURGE_RNP_NUMBER )
 
-        self.writeKWParameter ( sec2.TOPFILES            )
+        self.writeKWParameter ( sec2.TOPFILES )
 
-        self.writeKWParameter ( sec3.SEARCH_METHOD_SEL   )
-        self.writeKWParameter ( sec3.PERMUTE_SEL         )
+        if str(self.writeKWParameter(sec3.SEARCH_METHOD_SEL))=="FULL":
+            self.writeKWParameter ( sec3.PERMUTE_SEL )
 
         self.writeKWParameter ( sec3.SEARCH_PRUNE_SEL    )
 
-        self.writeKWParameter ( sec3.TRA_PACKING_SEL     )
-        self.writeKWParameter ( sec3.TRA_PACKING_OVERLAP )
+        if str(self.writeKWParameter(sec3.TRA_PACKING_SEL))=="ON":
+            self.writeKWParameter ( sec3.TRA_PACKING_OVERLAP )
 
-        self.writeKWParameter ( sec3.FORMFACTORS_SEL     )
+        self.writeKWParameter ( sec3.FORMFACTORS_SEL )
 
         self.close_stdin()
 

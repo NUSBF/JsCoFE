@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    15.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -51,10 +51,10 @@ class Refmac(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
 
-    def formStructure ( self,xyzout,subfile,mtzout,libin,hkl,istruct,maplabels,copyfiles ):
+    def formStructure ( self,mmcifout,pdbout,subfile,mtzout,libin,hkl,istruct,maplabels,copyfiles ):
         structure = self.registerStructure ( 
-                        None,
-                        xyzout,
+                        mmcifout,
+                        pdbout,
                         subfile,
                         mtzout,                     
                         libPath    = libin,
@@ -75,19 +75,19 @@ class Refmac(basic.TaskDriver):
                 structure.DELFAN  = "DELFAN"
                 structure.PHDELAN = "PHDELAN"
             if not subfile:
-                mmcifout = self.getMMCIFOFName()
-                if os.path.isfile(mmcifout):
-                    structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
+                # mmcifout = self.getMMCIFOFName()
+                # if os.path.isfile(mmcifout):
+                #     structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
                 structure.copySubtype  ( istruct )
                 structure.copyLigands  ( istruct )
             structure.addPhasesSubtype ()
         return structure
 
 
-    def merge_sites ( self,xyzpath,hapath,hatype,outpath ):
+    def merge_sites ( self,mmcifpath,pdbpath,hapath,hatype,outpath ):
         ha_type   = hatype.upper()
         is_substr = False
-        st_xyz    = gemmi.read_structure ( xyzpath )
+        st_xyz    = gemmi.read_structure ( mmcifpath )
         st_xyz.setup_entities()
         if os.path.exists(hapath):
             st_ha = gemmi.read_structure ( hapath  )
@@ -103,7 +103,9 @@ class Refmac(basic.TaskDriver):
                             atom.name    = ha_type
                             atom.element = gemmi.Element ( ha_type )
                     st_xyz[0].add_chain ( chain )
-        st_xyz.write_pdb ( outpath )
+        if pdbpath:
+            st_xyz.write_pdb ( outpath + ".pdb" )
+        st_xyz.make_mmcif_document().write_file ( outpath + ".mmcif" )
         return is_substr
 
     # ------------------------------------------------------------------------
@@ -376,12 +378,12 @@ class Refmac(basic.TaskDriver):
 
         # make command-line parameters for bare morda run on a SHELL-type node
 
-        xyzin  = istruct.getMMCIFFilePath ( self.inputDir() )
-        if not xyzin:
-            self.stderrln ( " ***** mmCIF is not found" )
-            xyzin  = istruct.getPDBFilePath ( self.inputDir() )
+        # xyzin  = istruct.getMMCIFFilePath ( self.inputDir() )
+        # if not xyzin:
+        #     self.stderrln ( " ***** mmCIF is not found" )
+        #     xyzin  = istruct.getPDBFilePath ( self.inputDir() )
 
-        # xyzin  = istruct.getPDBFilePath ( self.inputDir() )
+        xyzin  = istruct.getXYZFilePath ( self.inputDir() )
 
         xyzout = self.getXYZOFName()
         xmlOutRefmac = self.getOFName (".xml")
@@ -429,8 +431,10 @@ class Refmac(basic.TaskDriver):
             # to output directory by the registration procedure)
 
             substructure = None
+            mmcifout     = self.getMMCIFOFName()
 
-            structure = self.formStructure ( xyzout,None,self.getMTZOFName(),
+            structure = self.formStructure ( mmcifout,xyzout,
+                                             None,self.getMTZOFName(),
                                              libin,hkl,istruct,
                                              "FWT,PHWT,DELFWT,PHDELWT",True )
             if structure:
@@ -476,14 +480,21 @@ class Refmac(basic.TaskDriver):
                             if os.path.exists(fname):
                                 os.remove ( fname )
 
-                        xyz_merged = self.getOFName ( "_ha.pdb" )
-                        is_substr  = self.merge_sites ( xyzout,subfile,hatype,xyz_merged )
+                        out_merged = self.getOFName ( "_ha" )
+                        is_substr  = self.merge_sites ( 
+                                            mmcifout,xyzout,subfile,
+                                            hatype,out_merged 
+                                        )
 
                         self.putTitle ( "Structure with heavy-atom substructure and anomolous maps" )
-                        struct_ano = self.formStructure ( xyz_merged,None,self.getMTZOFName(),
-                                                          libin,hkl,istruct,
-                                                          "FAN,PHAN,DELFAN,PHDELAN",
-                                                          False )
+                        struct_ano = self.formStructure ( 
+                                            out_merged + ".mmcif",
+                                            out_merged + ".pdb",
+                                            None,self.getMTZOFName(),
+                                            libin,hkl,istruct,
+                                            "FAN,PHAN,DELFAN,PHDELAN",
+                                            False 
+                                        )
                         if struct_ano:
                             structure.setAnomMapLabels ( "FAN","PHAN",
                                                          DELFAN="DELFAN",PHDELAN="PHDELAN" )
@@ -491,9 +502,10 @@ class Refmac(basic.TaskDriver):
                             nlst[0] += " (anom maps)"
                             struct_ano.dname = " /".join(nlst)
                             self.putStructureWidget ( self.getWidgetId("struct_ano_btn"),
-                                        "Structure, substructure and anomalous maps",struct_ano )
+                                        "Structure, substructure and anomalous maps",
+                                        struct_ano )
                             if is_substr:
-                                substructure = self.formStructure ( None,subfile,
+                                substructure = self.formStructure ( None,None,subfile,
                                         structure.getMTZFilePath(self.outputDir()),
                                         libin,hkl,istruct,"FAN,PHAN,DELFAN,PHDELAN",
                                         False )

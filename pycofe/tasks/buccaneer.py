@@ -161,12 +161,12 @@ class Buccaneer(basic.TaskDriver):
         smodel = None
         if hasattr(idata,"xmodel"):
             xmodel = self.makeClass(idata.xmodel[0])
-            self.addCmdLine ( "pdbin",xmodel.getPDBFilePath(self.inputDir()) )
+            self.addCmdLine ( "pdbin",xmodel.getXYZFilePath(self.inputDir()) )
 
         if hasattr(idata,"smodel"):
             smodel = self.makeClass(idata.smodel[0])
             self.addCmdLine ( "pdbin-sequence-prior",
-                              smodel.getPDBFilePath(self.inputDir()) )
+                              smodel.getXYZFilePath(self.inputDir()) )
 
         self.addCmdLine ( "pdbout",self.buccaneer_xyz()  )
 
@@ -207,7 +207,7 @@ class Buccaneer(basic.TaskDriver):
         self.write_stdin ( self.putKWParameter ( sec3.USEPHI_CBX ) )
 
         if isCoor:
-            self.addCmdLine ( "pdbin-mr",ixyz.getPDBFilePath(self.inputDir()) )
+            self.addCmdLine ( "pdbin-mr",ixyz.getXYZFilePath(self.inputDir()) )
             if istruct.useModelSel!="N":
                 self.addCmdLine ( "buccaneer-keyword",ixyz.useModelSel )
             #self.write_stdin ( self.putKWParameter ( sec1.USEMR_SEL ) )
