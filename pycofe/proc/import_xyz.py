@@ -3,13 +3,13 @@
 #
 # ============================================================================
 #
-#    25.12.23   <--  Date of Last Modification.
+#    14.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  XYZ DATA IMPORT FUNCTION
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -23,6 +23,7 @@ import pyrvapi
 #  application imports
 from   pycofe.dtypes  import dtype_xyz
 from   pycofe.proc    import import_filetype, xyzmeta
+from   pycofe.varut   import mmcif_utils
 
 
 # ============================================================================
@@ -67,7 +68,6 @@ def run ( body ):  # body is reference to the main Import class
     body.file_stdout.write ( "%"*80 + "\n" )
 
     xyzSecId = body.getWidgetId ( "_xyz_sec_" )
-    #xyzSecId = "xyz_sec_" + str(body.widget_no)
     #body.widget_no += 1
 
     pyrvapi.rvapi_add_section ( xyzSecId,"XYZ Coordinates",body.report_page_id(),
@@ -89,7 +89,6 @@ def run ( body ):  # body is reference to the main Import class
 
             subSecId = xyzSecId
             if len(files_xyz)>1:
-                #subSecId = xyzSecId + str(k)
                 subSecId = body.getWidgetId ( "xyz_file_" )
                 pyrvapi.rvapi_add_section ( subSecId,"Import "+f,xyzSecId,
                                             k,0,1,1,False )
@@ -104,6 +103,14 @@ def run ( body ):  # body is reference to the main Import class
             xyz.makeUniqueFNames ( body.outputDir() )
             # xyz.fixBFactors ( body.outputDir() )
             xyz.checkBFactors ( body.outputDir() )
+
+            xyzpath = xyz.getXYZFilePath ( body.outputDir() )
+            if xyzpath.upper().endswith(".PDB"):
+                xyzpath = mmcif_utils.convert_to_mmcif ( xyzpath )
+            else:
+                xyzpath = mmcif_utils.convert_to_pdb ( xyzpath )
+            if xyzpath:
+                xyz.setXYZFile ( os.path.basename(xyzpath) )
 
             body.outputDataBox.add_data ( xyz )
             xyz_imported.append ( xyz )
