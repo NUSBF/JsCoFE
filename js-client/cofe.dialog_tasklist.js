@@ -1011,6 +1011,7 @@ TaskListDialog.prototype.makeFullList = function ( grid )  {
       // new TaskWFlowAFMR    (),
       // new TaskRabdam       (),
       // new TaskPDBVal       (),
+      new TaskFetchData    (),
       new TaskFragon       (),
       new TaskMergeData    (),
       new TaskHelloWorld   ()

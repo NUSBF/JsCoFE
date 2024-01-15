@@ -37,7 +37,6 @@ function TaskCrosSec()  {
   this.name    = 'x-ray cross sections';
   this.oname   = '*';
   this.title   = 'X-ray cross sections and anomalous scattering factors';
-  //this.helpURL = './html/jscofe_task_crossec.html';
 
   this.parameters = { // input parameters
 
@@ -341,12 +340,13 @@ TaskCrosSec.prototype.icon           = function()  { return 'task_crossec';     
 TaskCrosSec.prototype.clipboard_name = function()  { return '"Cross-Sections"'; }
 
 TaskCrosSec.prototype.desc_title     = function()  {
-  // this appears under task title in the task list
-    return 'interpolates X-ray cross sections and compute anomalous scattering factors';
-  };
+// this appears under task title in the task list
+  return 'interpolates X-ray cross sections and compute anomalous scattering factors';
+};
+
 
 TaskCrosSec.prototype.currentVersion = function()  {
-  var version = 1;
+let version = 1;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -361,16 +361,16 @@ TaskCrosSec.prototype.inputChanged = function ( inpParamRef,emitterId,emitterVal
 
   if (emitterId=='ATOM')  {
 
-    var aname = checkElementSymbol ( emitterValue );
+    let aname = checkElementSymbol ( emitterValue );
     if (!aname)
       aname = emitterValue;
 
     this.title = makeSuffix ( this.title,aname );
     this.name  = makeSuffix ( this.name ,aname );
 
-    var inputPanel = inpParamRef.grid.parent.parent;
+    let inputPanel = inpParamRef.grid.parent.parent;
     inputPanel.header.title.setText ( '<b>' + this.title + '</b>' );
-    var name = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
+    let name = this.name.replace ( /<(?:.|\n)*?>/gm,'' );
     inputPanel.header.uname_inp.setStyle ( 'text','',name );
     inputPanel.job_dialog.changeTitle ( name );
     this.updateInputPanel ( inputPanel );
@@ -383,19 +383,21 @@ TaskCrosSec.prototype.inputChanged = function ( inpParamRef,emitterId,emitterVal
 
 }
 
+
 TaskCrosSec.prototype.updateInputPanel = function ( inputPanel )  {
   if (this.state==job_code.new)  {
-    var event = new CustomEvent ( cofe_signals.jobDlgSignal,{
+    let event = new CustomEvent ( cofe_signals.jobDlgSignal,{
        'detail' : job_dialog_reason.rename_node
     });
     inputPanel.element.dispatchEvent(event);
   }
 }
 
+
 TaskCrosSec.prototype.collectInput = function ( inputPanel )  {
 
-  var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
-  var sc = checkElementSymbol ( this.parameters.ATOM.value );
+  let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+  let sc = checkElementSymbol ( this.parameters.ATOM.value );
   if (!sc)  {
     input_msg += '|<b>Invalid atom type ' + this.parameters.ATOM.value + '</b>';
   } else
@@ -405,10 +407,11 @@ TaskCrosSec.prototype.collectInput = function ( inputPanel )  {
 
 }
 
+
 TaskCrosSec.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['crossec','x-ray', 'cross', 'section', 'anomalous', 'scattering', 'factors'] );
-  }
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['crossec','x-ray', 'cross', 'section', 'anomalous', 'scattering', 'factors'] );
+}
 
 
 if (__template)  {
