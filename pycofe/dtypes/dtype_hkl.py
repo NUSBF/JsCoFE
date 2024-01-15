@@ -335,9 +335,11 @@ class DType(dtype_template.DType):
             self.dataStats['TotalReflections'] = int(xmlRoot.find('ReflectionData').find('NumberObservations').text.strip())
             self.dataStats['UniqueReflections'] = int(xmlRoot.find('ReflectionData').find('NumberReflections').text.strip())
 
+            self.dataStats['WilsonB'] = 999.99
             for item in xmlRoot.findall('DataStatistics'):
-                if item.find('WilsonB') is not None:
-                    self.dataStats['WilsonB'] = float(item.find('WilsonB').text.strip())
+                text_w = item.findtext('WilsonB', '').strip()
+                if text_w not in ['', 'nan']:
+                    self.dataStats['WilsonB'] = float(text_w)
                     break
 
         except Exception as inst:
