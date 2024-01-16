@@ -343,7 +343,7 @@ class dataLink {
           const e = catalog[user][source][id];
           if (! e.in_use && e.status === status.completed) {
             entries.push( {
-              date: e.last_access,
+              date: e.updated,
               user: user,
               source: source,
               id: id,

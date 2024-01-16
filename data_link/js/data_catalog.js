@@ -9,7 +9,7 @@ const log = require('./log.js');
 class dataEntry {
 
   constructor(fields = {}) {
-    this.last_access = new Date().toISOString();
+    this.updated = new Date().toISOString();
     this.size = 0;
     this.source_size = 0;
     this.in_use = false;
@@ -148,7 +148,7 @@ class dataCatalog {
 
     Object.assign(entry, fields);
 
-    entry.last_access = new Date().toISOString();
+    entry.updated = new Date().toISOString();
     return this.saveUserCatalog(user);
   }
 
