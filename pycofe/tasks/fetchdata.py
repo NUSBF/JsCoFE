@@ -48,6 +48,13 @@ class FetchData(basic.TaskDriver):
 
         self.putMessage ( "<b>PDB code:</b>&nbsp" + pdb_code );
 
+        #   make a URL query using pdb_code
+
+        #  data do not exist: issue a message and quit
+
+        #  daya esists: poll service periodically and display some progress
+        #  indicator. When finished, wrap up and quit
+
         have_results = False
 
         # this will go in the project tree line
