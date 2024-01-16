@@ -29,14 +29,11 @@ def addSlice(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
 
-    if d.cloud == "http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Model Preparation')
-        time.sleep(1)
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Split MR model with')
-        time.sleep(1)
-    else:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Split MR model with')
-
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Model Preparation')
+    time.sleep(1)
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Split MR model with')
+    time.sleep(1)
+   
     
     time.sleep(6)
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
