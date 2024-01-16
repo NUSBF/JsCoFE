@@ -28,9 +28,9 @@ class irrmc extends dataSource {
 
   async getCatalog() {
     let entries = {};
-    let pages, page = 1;
+    let pages = 1, page = 1;
     log.debug(`${this.name} - Scraping entries...`);
-    while (true) {
+    while (page <= pages) {
       let url = URL_CAT + '?show=' + PAGE_SIZE + '&page=' + page;
 
       let pdbid = [];
@@ -93,13 +93,12 @@ class irrmc extends dataSource {
         entries[id] = e;
       });
 
-      if (page == pages) {
-        break;
+      if (page < pages) {
+        // 2 second delay before next request
+        await tools.sleep(2000);
       }
 
       page ++;
-      // 2 second delay before next request
-      await tools.sleep(2000);
     }
     this.saveCatalog(entries);
   }
