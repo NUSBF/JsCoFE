@@ -98,17 +98,13 @@ def startSimbad(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
-    if d.cloud=="http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
-        time.sleep(1)
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
-        time.sleep(1)
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Lattice and Contaminants Search with Simbad')
-        time.sleep(1)
-    else:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
-        time.sleep(1)
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Lattice and Contaminants Search with Simbad')
+
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
+    time.sleep(1)
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+    time.sleep(1)
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Lattice and Contaminants Search with Simbad')
+    time.sleep(1)
     time.sleep(1)
 
     # There are several forms - active and inactive. We need one displayed.
