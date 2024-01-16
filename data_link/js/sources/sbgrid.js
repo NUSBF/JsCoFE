@@ -22,9 +22,9 @@ class sbgrid extends dataSource {
 
   async getCatalog() {
     let catalog = {};
-    let pages, page = 1;
+    let pages = 1, page = 1;
     log.debug(`${this.name} - Scraping catalog...`);
-    while (true) {
+    while (page <= pages) {
       let url = URL_CAT + '?page=' + page;
 
       let pdbid = [];
@@ -81,13 +81,12 @@ class sbgrid extends dataSource {
         catalog[proj] = e;
       });
 
-      if (page == pages) {
-        break;
+      if (page < pages) {
+        // 2 second delay before next request
+        await tools.sleep(2000);
       }
 
       page ++;
-      // 2 second delay before next request
-      await tools.sleep(2000);
     }
     await this.rsyncGetCatalog(URL_RSYNC, catalog)
     this.saveCatalog(catalog);
