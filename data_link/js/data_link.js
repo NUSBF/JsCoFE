@@ -59,7 +59,7 @@ class dataLink {
       let ids = tools.getSubDirs(path.join(data_dir, source));
       for (let j in ids) {
         const fields = {
-          source_size: this.source[source].getEntrySize(id),
+          size_s: this.source[source].getEntrySize(id),
           status: status.completed
         };
         if (this.source[source] && this.catalog.addEntry(user, source, ids[j], fields)) {
@@ -240,9 +240,13 @@ class dataLink {
     // prune old data if required
     this.dataPrune(config.get('storage.data_free_gb', 100));
 
+    let s_entry = this.source[source].getEntry(id);
+
     // add a catalog entry for the user setting the status to in_progress
     const fields = {
-      source_size: this.source[source].getEntrySize(id),
+      pdb: s_entry.pdb,
+      desc: s_entry.desc,
+      size_s: this.source[source].getEntrySize(id),
       status: status.inProgress
     }
     if (this.catalog.addEntry(user, source, id, fields)) {

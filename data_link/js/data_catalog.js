@@ -11,7 +11,7 @@ class dataEntry {
   constructor(fields = {}) {
     this.updated = new Date().toISOString();
     this.size = 0;
-    this.source_size = 0;
+    this.size_s = 0;
     this.in_use = false;
     this.status = status.inProgress;
 
