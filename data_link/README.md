@@ -443,7 +443,7 @@ Retrieves the details of data acquired for a user. The following fields are retu
 * `in_use`: Whether the data is in_use by a user. By default `in_use` is set to *false*, and can be changed via a PATCH API call to the same API endpoint. A data entry with `in_use` set to *true* cannot be deleted.
 * `updated`: The date and time the data entry was last changed. This is in ISO 8601 format.
 * `size`: The size of the data on disk. This is updated periodically during data retrieval.
-* `source_size`: The size of the original source data. This may be different from the `size` even for completed data, if the source data is compressed/archived.
+* `size_s`: The size of the original source data. This may be different from the `size` even for completed data, if the source data is compressed/archived.
 * `status`: The status of the data being acquired. It can be one of three values:
   * `in_progress`: The data is currently being acquired.
   * `completed`: The data acquire has been completed.
@@ -458,7 +458,7 @@ eg. `GET /api/data/jools.wills/pdbj/5aui`
   in_use: true
   updated: "2023-12-14T13:49:52.507Z"
   size: 450796173
-  source_size: 450796173
+  size_s: 450796173
   status: "completed"
 }
 ```
@@ -490,14 +490,14 @@ eg. `GET /api/data/jools.wills/pdbj`
     in_use: true
     updated: "2023-12-14T13:49:52.507Z"
     size: 450796173
-    source_size: 450796173
+    size_s: 450796173
     status: "completed"
   }
   93: {
     in_use: false
     updated: "2023-12-14T10:23:17.771Z"
     size: 675426804
-    source_size: 675426804
+    size_s: 675426804
     status: "completed"
   }
 }
@@ -520,14 +520,14 @@ eg. `GET /api/data/jools.wills`
       in_use: true
       updated: "2023-12-14T13:49:52.507Z"
       size: 450796173
-      source_size: 450796173
+      size_s: 450796173
       status: "completed"
     }
     93: {
       in_use: false
       updated: "2023-12-14T10:23:17.771Z"
       size: 675426804
-      source_size: 675426804
+      size_s: 675426804
       status: "completed"
     }
   }
@@ -536,7 +536,7 @@ eg. `GET /api/data/jools.wills`
       in_use: false
       updated: "2023-12-14T14:23:36.951Z"
       size: 0
-      source_size: 1925243880
+      size_s: 1925243880
       status: "in_progress"
     }
   }
@@ -561,7 +561,7 @@ eg. `GET /api/data`
         in_use: true
         updated: "2023-12-14T13:49:52.507Z"
         size: 450796173
-        source_size: 450796173
+        size_s: 450796173
         status: "completed"
       }
     }
@@ -570,7 +570,7 @@ eg. `GET /api/data`
         in_use: false
         updated: "2023-12-14T14:27:01.424Z"
         size: 1925243880
-        source_size: 1925243880
+        size_s: 1925243880
         status: "completed"
       }
     }
@@ -581,7 +581,7 @@ eg. `GET /api/data`
         in_use: false
         updated: "2023-12-14T09:29:05.023Z"
         size: 6442580763
-        source_size: 6442580763
+        size_s: 6442580763
         status: "completed"
       }
     }

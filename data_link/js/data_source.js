@@ -107,6 +107,10 @@ class dataSource {
     return true;
   }
 
+  getEntry(id) {
+    return this.catalog[id];
+  }
+
   getEntrySize(id) {
     if (this.catalog && this.catalog[id] && this.catalog[id].size) {
       return this.catalog[id].size;
@@ -147,7 +151,7 @@ class dataSource {
     // get content-size from http headers
     let headers = await tools.httpGetHeaders(url);
     if (headers['content-length']) {
-      entry.source_size = parseInt(headers['content-length'], 10);
+      entry.size_s = parseInt(headers['content-length'], 10);
     }
 
     let dest_dir = tools.getDataDest(user, this.name, id);
@@ -159,8 +163,8 @@ class dataSource {
     try {
       if (fs.existsSync(dest_file)) {
         file_size = fs.statSync(dest_file).size;
-        if (file_size < entry.source_size && headers['accept-ranges'] === 'bytes') {
-          options.headers = { 'range': `bytes=${file_size}-${entry.source_size}`}
+        if (file_size < entry.size_s && headers['accept-ranges'] === 'bytes') {
+          options.headers = { 'range': `bytes=${file_size}-${entry.size_s}`}
         }
       }
     } catch (err) {
@@ -168,7 +172,7 @@ class dataSource {
       return;
     }
 
-    if (file_size < entry.source_size) {
+    if (file_size < entry.size_s) {
       try {
         await tools.httpRequest(url, options, dest_file, (controller) => {
         this.addJob(user, id, controller);
