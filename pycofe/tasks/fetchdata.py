@@ -28,6 +28,8 @@
 # import sys
 import os
 
+import time
+
 #  application imports
 from  pycofe.tasks  import basic
 # from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble
@@ -54,6 +56,31 @@ class FetchData(basic.TaskDriver):
 
         #  daya esists: poll service periodically and display some progress
         #  indicator. When finished, wrap up and quit
+
+        # wait indicator:
+
+        row0   = self.rvrow
+        gridId = self.putWaitMessageLF ( "fetch is starting" )
+
+        time.sleep ( 10 )
+
+        self.rvrow = row0
+        gridId = self.putWaitMessageLF ( "fetch in progress" )
+        self.putMessage1 ( gridId,"&nbsp;&nbsp;0%",0,2 )
+        self.flush()
+        time.sleep ( 5 )
+        self.putMessage1 ( gridId,"&nbsp;&nbsp;40%",0,2 )
+        self.flush()
+        time.sleep ( 5 )
+        self.putMessage1 ( gridId,"&nbsp;&nbsp;80%",0,2 )
+        self.flush()
+        time.sleep ( 5 )
+        self.putMessage1 ( gridId,"&nbsp;&nbsp;100%",0,2 )
+        self.flush()
+        time.sleep ( 5 )
+
+        self.rvrow = row0
+        self.putMessage ( "<b>Fetch finsihed. Status: OK</b>" )
 
         have_results = False
 
