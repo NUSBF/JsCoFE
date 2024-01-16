@@ -338,7 +338,7 @@ function TaskPhaserMR()  {
                     range    : ['ON|on',
                                 'OFF|off'
                                ],
-                    value    : 'ON',
+                    value    : 'OFF',
                     position : [0,0,1,1]
                   },
               TNCS_LABEL : {

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    15.01.24   <--  Date of Last Modification.
+ *    16.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -655,8 +655,8 @@ let r = 0;  // grid row
 
   grid.setLabel ( '&nbsp;<br><hr/>After data upload and starting, the project ' +
                   'tree unfolds automatically. More jobs from Task List can be ' +
-                  'added to the project tree at any time, using the green plus ' +
-                  'button.',r++,0,1,5 )
+                  'added to the project tree at any time then, using the green ' +
+                  'plus button.',r++,0,1,5 )
       .setFontSize('90%').setFontItalic(true);
 
 
