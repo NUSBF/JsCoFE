@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.01.24   <--  Date of Last Modification.
+#    17.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -309,10 +309,11 @@ class DType(dtype_template.DType):
         # setXYZMeta ( self,xyzmeta.getXYZMeta (
         #                     os.path.join(fdir,self.files[dtype_template.file_key["xyz"]]),
         #                     file_stdout,file_stderr,log_parser ) )
-        if fpath:
-            self.setXYZMeta ( self,xyzmeta.getXYZMeta (
-                                   self.getXYZFilePath(fdir),
-                                   file_stdout,file_stderr,log_parser ) )
+        # fpath = self.getXYZFilePath(fdir)
+        # if fpath:
+        setXYZMeta ( self,xyzmeta.getXYZMeta (
+                                self.getXYZFilePath(fdir),
+                                file_stdout,file_stderr,log_parser ) )
         return
 
 
