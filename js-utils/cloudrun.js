@@ -3,7 +3,7 @@
  *
  *  =================================================================
  *
- *    27.12.23   <--  Date of Last Modification.
+ *    17.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -14,7 +14,7 @@
  *  **** Content :  Initiation of Cloud projects from command line
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2024
  *
  *  =================================================================
  *
@@ -50,6 +50,7 @@
  *   PROJECT     project_id                  # mandatory
  *   LOAD_PROJECT [yes|no]                   # optional, default "no"
  *   TITLE       Optional Project Title      # used only if project is created
+ *   FOLDER      Optional Project Folder     # used only if project is created
  *   TASK        [import|auto-af2|auto-mr|auto-ep|hop-on|auto-ref|dimple]
  *                                           # if TASK is not given, 'import' is assumed
  *   HA_TYPE     Se                          # used only for auto-ep
@@ -89,8 +90,8 @@ const task_wflowaep  = require('../js-common/tasks/common.tasks.wflowaep'   );
 const task_wflowdpl  = require('../js-common/tasks/common.tasks.wflowdplmr' );
 const task_hopon     = require('../js-common/tasks/common.tasks.migrate'    );
 
-// var conf   = require('../js-server/server.configuration');
-// var cmd    = require('../js-common/common.commands');
+// let conf   = require('../js-server/server.configuration');
+// let cmd    = require('../js-common/common.commands');
 
 
 // ==========================================================================
@@ -130,7 +131,8 @@ function printInstructions()  {
     '',
     '    node js-utils/cloudrun.js -t task',
     '',
-    'where "task" is one of import, auto-af2, auto-mr, auto-ep, hop-on, or dimple.',
+    'where "task" is one of import, auto-af2, auto-mr, auto-ep, hop-on, auto-ref,',
+    'or dimple.',
     '',
     '    node js-utils/cloudrun.js -h',
     '',
@@ -157,20 +159,21 @@ function printTemplate ( task )  {
     '#  Edit instructions below this line as necessary:',
     '# _____________________________________________________________________________',
     '#',
-    'URL         https://ccp4cloud.server       # mandatory',
+    'URL         https://ccp4cloud.server    # mandatory',
     '#',
     '# User authentication: either in-line specification',
     '#',
-    'USER        user_login                     # mandatory',
-    'CLOUDRUN_ID aaaa-bbbb-cccc-dddd            # mandatory, found in "My Account"',
+    'USER        user_login                  # mandatory',
+    'CLOUDRUN_ID aaaa-bbbb-cccc-dddd         # mandatory, found in "My Account"',
     '#',
     '# or reading user_login and aaaa-bbbb-cccc-dddd (in that order)',
     '# from a file:',
     '#',
-    '# AUTH_FILE   /path/to/auth.dat            # mandatory',
+    '# AUTH_FILE   /path/to/auth.dat         # mandatory',
     '#',
-    'PROJECT     project_id                     # mandatory',
-    'TITLE       Optional Project Title         # used only if project is created',
+    'PROJECT     project_id                  # mandatory',
+    'TITLE       Optional Project Title      # used only if project is created',
+    'FOLDER      Optional Project Folder     # used only if project is created',
     'TASK        ' + task_name,
     'TASK_NAME   Optional Task Name          # if not given, default name is used',
     '#'
@@ -181,13 +184,13 @@ function printTemplate ( task )  {
     default :
         msg = [
           'Task code "' + task + '" cannot be used in cloudrun. Acceptable tasks include:',
-          '   "' + cloudrun_code.import   + '"   : generic data import',
-          '   "' + cloudrun_code.auto_af2 + '" : auto-AF2 workflow (uses AlphaFold-2 for model generation)',
+          '   "' + cloudrun_code.import   + '"  : generic data import',
+          '   "' + cloudrun_code.auto_af2 + '"  : auto-AF2 workflow (uses AlphaFold-2 for model generation)',
           '   "' + cloudrun_code.auto_mr  + '"  : auto-MR workflow (uses PDB and AFDB as source of models)',
           '   "' + cloudrun_code.auto_ep  + '"  : auto-EP workflow',
-          '   "' + cloudrun_code.hop_on   + '"   : project initiation from phased structure',
-          '   "' + cloudrun_code.auto_ref + '" : auto_REL workflow (from phased structure)',
-          '   "' + cloudrun_code.dimple   + '"   : fast phasing with 100% homolog for ligand blob identification'
+          '   "' + cloudrun_code.hop_on   + '"  : project initiation from phased structure',
+          '   "' + cloudrun_code.auto_ref + '"  : auto_REL workflow (from phased structure)',
+          '   "' + cloudrun_code.dimple   + '"  : fast phasing with 100% homolog for ligand blob identification'
         ];
         console.log (
           msg.join('\n')
@@ -393,18 +396,18 @@ function sendData ( filePath,metaData )  {
 
 /* ===  alternative data transmission code
 
-var axios    = require('axios')
-var FormData = require('form-data')
+let axios    = require('axios')
+let FormData = require('form-data')
 
 function sendData ( filePath,metaData )  {
 
-  var formData = new FormData();
+  let formData = new FormData();
   for (key in metaData)
     formData.append ( key,metaData[key] );
 
   formData.append ( 'file',fs.createReadStream(filePath) );
 
-  var formHeaders = formData.getHeaders();
+  let formHeaders = formData.getHeaders();
 
   axios.post ( meta.url + '/' + cmd.fe_command.cloudRun, formData, {
     headers: {
@@ -413,7 +416,7 @@ function sendData ( filePath,metaData )  {
     rejectUnauthorized : false
   }).then ( response => {
     try {
-      var resp = JSON.parse ( response.data );
+      let resp = JSON.parse ( response.data );
       if (resp.status==cmd.fe_retcode.ok)  {
         console.log ( ' ... server replied: ' + resp.message + '\n' );
         console.log ( 'Note: list of projects and/or project will not update automatically\n' +
@@ -441,7 +444,7 @@ function sendData ( filePath,metaData )  {
 // --------------------------------------------------------------------------
 // Parse command file
 
-var input = '';
+let input = '';
 
 if (process.argv.length==4)  {
 
@@ -461,24 +464,25 @@ if (!input)  {
   process.exit(1);
 }
 
-var meta = {
+let meta = {
   url          : '',
   user         : '',
   cloudrun_id  : '',
   project      : '',
   load_project : 'no',
   title        : '*',
+  folder       : '',
   task         : 'import',
   task_name    : '*'
 };
 
-var options = {
+let options = {
   ha_type     : '',
   smiles      : '',
   lig_code    : ''
 };
 
-var files = {
+let files = {
   file        : [],
   hkl         : [],
   phases      : [],
@@ -489,7 +493,7 @@ var files = {
   ligand      : []
 };
 
-var annotation = {
+let annotation = {
   rename     : {},
   annotation : []
 //  scalepack  : []
@@ -517,10 +521,10 @@ var annotation = {
 //   }
 // }
 
-var commands  = input.trim().split('\n');
-var ok        = true;
-var fnames    = [];
-var auth_file = '';
+let commands  = input.trim().split('\n');
+let ok        = true;
+let fnames    = [];
+let auth_file = '';
 console.log ( ' ========== COMMANDS:' );
 for (let i=0;i<commands.length;i++)  {
   console.log ( ' \$ ' + commands[i] );
@@ -853,7 +857,7 @@ utils.writeObject ( path.join(dirPath,task_t.jobDataFName),task );
 // --------------------------------------------------------------------------
 // Make archive for upload
 
-var archivePath = path.resolve ( send_dir.jobballName );
+let archivePath = path.resolve ( send_dir.jobballName );
 utils.removeFile ( archivePath );  // just in case
 
 zl.archiveFolder ( dirPath,archivePath,{ followSymlinks : true } )

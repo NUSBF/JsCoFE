@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    15.10.23   <--  Date of Last Modification.
+ *    17.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -17,7 +17,7 @@
  *                  ProjectShare
  *                  DockData
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -37,19 +37,19 @@ function __isArchive()  {
 
 // ===========================================================================
 
-var start_mode = {
+const start_mode = {
   auto     : 'auto',
   standard : 'standard',
   expert   : 'expert',    // legacy
   migrate  : 'migrate'
 };
 
-var tasklist_mode = {
+const tasklist_mode = {
   basic  : 'basic',
   full   : 'full'
 };
 
-var folder_type = {
+const folder_type = {
   user          : 'user',
   common        : 'common',
   shared        : 'shared',
@@ -62,7 +62,7 @@ var folder_type = {
   tutorials     : 'tutorials'
 };
 
-var folder_path = {
+const folder_path = {
   shared        : 'Projects shared by me',
   joined        : 'Projects joined by me',
   all_projects  : 'All projects',
@@ -71,7 +71,7 @@ var folder_path = {
   tutorials     : 'Tutorials'
 };
 
-var folder_name = {
+const folder_name = {
   shared        : 'Projects shared by me',
   joined        : 'Projects joined by me',
   all_projects  : 'All projects',
@@ -80,7 +80,7 @@ var folder_name = {
   tutorials     : 'Tutorials'
 };
 
-var share_permissions = {
+const share_permissions = {
   view_only : 'view',
   run_own   : 'run_own',
   full      : 'full'
@@ -178,8 +178,8 @@ function isProjectAccessible ( login,projectDesc )  {
   if (projectDesc.owner.login=='localuser') return true;
   if (projectDesc.archive && projectDesc.archive.in_archive) return true;
   return (login in projectDesc.share);
-  // var found = false;
-  // for (var i=0;(i<projectDesc.owner.share.length) && (!found);i++)
+  // let found = false;
+  // for (let i=0;(i<projectDesc.owner.share.length) && (!found);i++)
   //   found = (projectDesc.owner.share[i].login==login);
   // return found;
 }
@@ -195,7 +195,7 @@ function isProjectShared ( login,projectDesc )  {
 }
 
 function getProjectAuthor ( projectDesc )  {
-var author = projectDesc.owner.login;
+let author = projectDesc.owner.login;
   if (('author' in projectDesc.owner) && projectDesc.owner.author)
     author = projectDesc.owner.author;
   return author;
@@ -251,8 +251,8 @@ function getProjectPermissions ( loginName,projectDesc )  {
 }
 
 function compareProjectLabels ( login,projectDesc1,projectDesc2 )  {
-var labels1 = {};
-var labels2 = {};
+let labels1 = {};
+let labels2 = {};
 
   if (projectDesc1.owner.login==login)
     labels1 = projectDesc1.owner.labels;
@@ -264,19 +264,12 @@ var labels2 = {};
   else if (login in projectDesc2.share)
     labels2 = projectDesc2.share[login].labels;
 
-  var list1 = Object.keys(labels1);
-  var same  = (list1.length==Object.keys(labels2).length);
+  let list1 = Object.keys(labels1);
+  let same  = (list1.length==Object.keys(labels2).length);
   if (same)  {
-    for (var i=0;(i<list1.length) && same;i++)
+    for (let i=0;(i<list1.length) && same;i++)
       same = (list1[i] in labels2);
   }
-
-  // console.log ( ' *** ' + projectDesc1.name + " " +
-  // JSON.stringify(labels1) + '  ' +
-  // projectDesc2.name + ' ' +
-  // JSON.stringify(labels2) + '   ' + same
-  // );
-
 
   return same;
 
@@ -294,7 +287,7 @@ function ProjectList ( loginName )  {
 }
 
 ProjectList.prototype.seedFolders = function ( loginName )  {
-  var f0name = loginName + '\'s Projects';
+let f0name = loginName + '\'s Projects';
   this.folders = [  // project folders tree basic elements
     { name      : f0name,
       path      : f0name,
@@ -347,7 +340,7 @@ ProjectList.prototype.seedFolders = function ( loginName )  {
 }
 
 ProjectList.prototype.getRootFolderName = function ( folderNo,loginName )  {
-var fdname = '???';
+let fdname = '???';
   if (folderNo<this.folders.length)  {
     fdname = this.folders[folderNo].name;
     switch (this.folders[folderNo].type)  {
@@ -364,8 +357,8 @@ var fdname = '???';
 }
 
 function folderPathTitle ( folder,loginName,maxLength )  {
-var title  = folder.path;
-var f0name = loginName + '\'s ';
+let title  = folder.path;
+let f0name = loginName + '\'s ';
   if (title.startsWith(f0name))
     title = title.replace(f0name,'My ');
   else
@@ -386,16 +379,16 @@ var f0name = loginName + '\'s ';
 ProjectList.prototype._add_folder_path = function (
                                    flist,level,folders,nprojects,list_bool )  {
   if (level<flist.length)  {
-    var k = -1;
-    for (var i=0;(i<folders.length) && (k<0);i++)
+    let k = -1;
+    for (let i=0;(i<folders.length) && (k<0);i++)
       if (flist[level]==folders[i].name)
         k = i;
     if (k<0)  {
       k = folders.length;
-      var fpath = flist[0];
-      for (var i=1;i<=level;i++)
+      let fpath = flist[0];
+      for (let i=1;i<=level;i++)
         fpath += '/' + flist[i];
-      var ftype = folder_type.common;
+      let ftype = folder_type.common;
       if (list_bool)
         ftype = folder_type.custom_list;
       else if (level==0)  {
@@ -403,7 +396,7 @@ ProjectList.prototype._add_folder_path = function (
         if ((fpath!=folder_path.tutorials) && (fpath!=folder_type.custom_list))
           ftype = folder_type.user;
       }
-      var folder = {
+      let folder = {
          name      : flist[level],
          path      : fpath,
          type      : ftype,
@@ -425,7 +418,7 @@ ProjectList.prototype.addFolderPath = function ( folderPath,nprojects,list_bool 
 }
 
 ProjectList.prototype._reset_folders = function ( folders )  {
-  for (var i=0;i<folders.length;i++)  {
+  for (let i=0;i<folders.length;i++)  {
     folders[i].nprojects = 0;
     folders[i].nprjtree  = 0;
     this._reset_folders ( folders[i].folders );
@@ -433,17 +426,17 @@ ProjectList.prototype._reset_folders = function ( folders )  {
 }
 
 ProjectList.prototype._get_folder_list = function ( ftype )  {
-var flist = [];
-var i0    = 4;
+let flist = [];
+let i0    = 4;
   if (__isArchive())
     i0 = 6;
-  for (var i=i0;i<this.folders.length;i++)
+  for (let i=i0;i<this.folders.length;i++)
     if (this.folders[i].type==ftype)
       flist.push ( this.folders[i] );
-  for (var i=0;i<flist.length;i++)
-    for (var j=i+1;j<flist.length;j++)
+  for (let i=0;i<flist.length;i++)
+    for (let j=i+1;j<flist.length;j++)
       if (flist[j].name<flist[i].name)  {
-        var fi   = flist[i];
+        let fi   = flist[i];
         flist[i] = flist[j];
         flist[j] = fi;
       }
@@ -451,7 +444,7 @@ var i0    = 4;
 }
 
 ProjectList.prototype._set_folder_paths = function ( folder )  {
-  for (var i=0;i<folder.folders.length;i++)  {
+  for (let i=0;i<folder.folders.length;i++)  {
     folder.folders[i].path = folder.path + '/' + folder.folders[i].name;
     this._set_folder_paths ( folder.folders[i] );
   }
@@ -459,37 +452,37 @@ ProjectList.prototype._set_folder_paths = function ( folder )  {
 
 
 ProjectList.prototype.setFolderPaths = function()  {
-  for (var i=0;i<this.folders.length;i++)
+  for (let i=0;i<this.folders.length;i++)
     this._set_folder_paths ( this.folders[i] );
 }
 
 
 ProjectList.prototype.sortFolders = function()  {
-var l1 = this._get_folder_list ( folder_type.custom_list );
-var l2 = this._get_folder_list ( folder_type.tutorials   );
-var l3 = this._get_folder_list ( folder_type.user        );
-var i  = 4;
+let l1 = this._get_folder_list ( folder_type.custom_list );
+let l2 = this._get_folder_list ( folder_type.tutorials   );
+let l3 = this._get_folder_list ( folder_type.user        );
+let i  = 4;
   if (__isArchive())
     i = 6;
-  for (var j=0;j<l1.length;j++)
+  for (let j=0;j<l1.length;j++)
     this.folders[i++] = l1[j];
-  for (var j=0;j<l2.length;j++)
+  for (let j=0;j<l2.length;j++)
     this.folders[i++] = l2[j];
-  for (var j=0;j<l3.length;j++)
+  for (let j=0;j<l3.length;j++)
     this.folders[i++] = l3[j];
 }
 
 
 function _print_folder ( folder )  {
   console.log ( ' - ' + folder.path + '(' + folder.nprjtree + ')' );
-  for (var i=0;i<folder.folders.length;i++)
+  for (let i=0;i<folder.folders.length;i++)
     _print_folder ( folder.folders[i] );
 }
 
 function printFolders ( projectList )  {
   console.log ( ' ======================================================== ' )
   console.log ( ' Project Folders' );
-  for (var i=0;i<projectList.folders.length;i++)  {
+  for (let i=0;i<projectList.folders.length;i++)  {
     console.log ( '\n Folder #' + i );
     _print_folder ( projectList.folders[i] );
   }
@@ -499,7 +492,7 @@ function printFolders ( projectList )  {
 
 
 ProjectList.prototype.resetFolders = function ( login )  {
-var i0 = 4;
+let i0 = 4;
   if (__isArchive())
     i0 = 6;
 
@@ -523,11 +516,11 @@ var i0 = 4;
     this.seedFolders ( login );
 
   // leave six predefined leading folders
-  var folders  = this.folders;
+  let folders  = this.folders;
   this.folders = this.folders.slice(0,i0);
 
   // complement with all custom lists
-  for (var i=i0;i<folders.length;i++)
+  for (let i=i0;i<folders.length;i++)
     if (folders[i].type==folder_type.custom_list)
       this.folders.push ( folders[i] );
 
@@ -536,34 +529,34 @@ var i0 = 4;
 
   // reconstruct other folders from project descriptions
 
-  var folderPaths = {};
-  var listPaths   = {};
-  var nshared     = 0;
-  var njoined     = 0;
-  var nall        = 0;  // counts all that is not archived
-  var narchived   = 0;
-  var nfetched    = 0;
+  let folderPaths = {};
+  let listPaths   = {};
+  let nshared     = 0;
+  let njoined     = 0;
+  let nall        = 0;  // counts all that is not archived
+  let narchived   = 0;
+  let nfetched    = 0;
 
-  for (var i=0;i<this.projects.length;i++)  {
-    var pDesc = this.projects[i];
+  for (let i=0;i<this.projects.length;i++)  {
+    let pDesc = this.projects[i];
     if (pDesc.archive && pDesc.archive.in_archive)  {
       if (login==pDesc.owner.login)  narchived++;
                                else  nfetched++;
     } else  {
       nall++;
-      var folder_path = pDesc.folderPath;
+      let folder_path = pDesc.folderPath;
       if (folder_path in folderPaths)
             folderPaths[folder_path]++;  // folder population
       else  folderPaths[folder_path] = 1;
       // special cases
       if (isProjectJoined(login,pDesc))  njoined++;
       if (isProjectShared(login,pDesc))  nshared++;
-      var labels = {};
+      let labels = {};
       if (pDesc.owner.login==login)
         labels = pDesc.owner.labels;
       else if (login in pDesc.share)
         labels = pDesc.share[login].labels;
-      for (var label in labels)
+      for (let label in labels)
         if (label in listPaths)  listPaths[label]++;
                            else  listPaths[label] = 1;
     }
@@ -581,10 +574,10 @@ var i0 = 4;
     this.folders[5].nprjtree  = nfetched;   // "cloud archive"
   }
 
-  for (var fpath in folderPaths)
+  for (let fpath in folderPaths)
     this.addFolderPath ( fpath,folderPaths[fpath],false );
 
-  for (var fpath in listPaths)
+  for (let fpath in listPaths)
     this.addFolderPath ( fpath,listPaths[fpath],true );
 
   // set folder paths; this should not be required, only to repair after
@@ -627,7 +620,7 @@ ProjectList.prototype.setCurrentFolder = function ( folder )  {
 
 
 ProjectList.prototype._rename_folders = function ( folders,oldpath,newpath )  {
-  for (var i=0;i<folders.length;i++)  {
+  for (let i=0;i<folders.length;i++)  {
     if (folders[i].path.startsWith(oldpath))
       folders[i].path = folders[i].path.replace ( oldpath,newpath );
     this._rename_folders ( folders[i].folders,oldpath,newpath );
@@ -639,15 +632,15 @@ ProjectList.prototype.renameFolders = function ( oldpath,newpath )  {
 }
 
 ProjectList.prototype.renameProjectPaths = function ( loginName,oldpath,newpath )  {
-  for (var i=0;i<this.projects.length;i++)
+  for (let i=0;i<this.projects.length;i++)
     if (this.projects[i].folderPath.startsWith(oldpath))
       this.projects[i].folderPath = 
         this.projects[i].folderPath.replace ( oldpath,newpath );
 }
 
 function _find_project_folder ( folders,fpath )  {
-var folder = null;
-  for (var i=0;(i<folders.length) && (!folder);i++)  {
+let folder = null;
+  for (let i=0;(i<folders.length) && (!folder);i++)  {
     if (folders[i].path==fpath)
           folder = folders[i];
     else  folder = _find_project_folder ( folders[i].folders,fpath );
@@ -660,8 +653,8 @@ function findProjectFolder ( projectList,fpath )  {
 }
 
 // ProjectList.prototype._find_folder = function ( folders,fpath )  {
-// var folder = null;
-//   for (var i=0;(i<folders.length) && (!folder);i++)  {
+// let folder = null;
+//   for (let i=0;(i<folders.length) && (!folder);i++)  {
 //     if (folders[i].path==fpath)
 //           folder = folders[i];
 //     else  folder = this._find_folder ( folders[i].folders,fpath );
@@ -675,23 +668,23 @@ ProjectList.prototype.findFolder = function ( fpath )  {
 }
 
 ProjectList.prototype.isProject = function ( name_str )  {
-  var is_project = false;
-  for (var i=0;(i<this.projects.length) && (!is_project);i++)
+  let is_project = false;
+  for (let i=0;(i<this.projects.length) && (!is_project);i++)
     is_project = (this.projects[i].name == name_str);
   return is_project;
 }
 
 ProjectList.prototype.getProjectNo = function ( name_str )  {
-  var projectNo = -1;
-  for (var i=0;(i<this.projects.length) && (projectNo<0);i++)
+  let projectNo = -1;
+  for (let i=0;(i<this.projects.length) && (projectNo<0);i++)
     if (this.projects[i].name == name_str)
       projectNo = i;
   return projectNo;
 }
 
 ProjectList.prototype.getProject = function ( name_str )  {
-  var project = null;
-  for (var i=0;(i<this.projects.length) && (!project);i++)
+  let project = null;
+  for (let i=0;(i<this.projects.length) && (!project);i++)
     if (this.projects[i].name == name_str)
       project = this.projects[i];
   return project;
@@ -701,7 +694,7 @@ ProjectList.prototype.getProject = function ( name_str )  {
 ProjectList.prototype.addProject = function ( name_str,title_str,
                                               startmode,time_str )  {
   if (!this.isProject(name_str))  {
-    var pDesc = new ProjectDesc();
+    let pDesc = new ProjectDesc();
     pDesc.init ( name_str,title_str,startmode,time_str );
     pDesc.folderPath = this.currentFolder.path;
     if ([folder_path.all_projects,folder_path.shared,folder_path.joined]
@@ -718,7 +711,7 @@ ProjectList.prototype.addProject = function ( name_str,title_str,
 
 
 ProjectList.prototype.renameProject = function ( name_str,title_str,time_str )  {
-  var pDesc = this.getProject ( name_str );
+  let pDesc = this.getProject ( name_str );
   if (pDesc)  {
     pDesc.title        = title_str;
     pDesc.dateLastUsed = time_str;
@@ -728,9 +721,9 @@ ProjectList.prototype.renameProject = function ( name_str,title_str,time_str )  
 }
 
 ProjectList.prototype.deleteProject = function ( name_str )  {
-var new_projects = [];
+let new_projects = [];
   this.current = name_str;
-  for (var i=0;i<this.projects.length;i++)  {
+  for (let i=0;i<this.projects.length;i++)  {
     if (!this.current)
       this.current = this.projects[i].name;
     if (this.projects[i].name!=name_str)
@@ -744,12 +737,12 @@ var new_projects = [];
 }
 
 ProjectList.prototype.removeProjectLabels = function ( loginName,label )  {
-  for (var i=0;i<this.projects.length;i++)
+  for (let i=0;i<this.projects.length;i++)
     removeProjectLabel ( loginName,this.projects[i],label );
 }
 
 ProjectList.prototype.renameProjectLabels = function ( loginName,oldlabel,newlabel )  {
-  for (var i=0;i<this.projects.length;i++)
+  for (let i=0;i<this.projects.length;i++)
     renameProjectLabel ( loginName,this.projects[i],oldlabel,newlabel );
 }
 
@@ -770,29 +763,29 @@ function ProjectData()  {
   function __find_project_node ( node,dataId )  {
     if (node.dataId==dataId)
       return node;
-    var nd = null;
-    for (var i=0;(i<node.children.length) && (!nd);i++)
+    let nd = null;
+    for (let i=0;(i<node.children.length) && (!nd);i++)
       nd = __find_project_node ( node.children[i],dataId );
     return nd;
   }
 
   function getProjectNode ( projectData,dataId )  {
-    var node = null;
-    for (var i=0;(i<projectData.tree.length) && (!node);i++)
+    let node = null;
+    for (let i=0;(i<projectData.tree.length) && (!node);i++)
       node = __find_project_node ( projectData.tree[i],dataId );
     return node;
   }
 
   function __delete_project_node ( nodes,dataId )  {
-    var nodes1 = [];
-    for (var i=0;i<nodes.length;i++)
+    let nodes1 = [];
+    for (let i=0;i<nodes.length;i++)
       if (nodes[i].dataId!=dataId)  {
         nodes[i].children = __delete_project_node ( nodes[i].children,dataId );
         nodes1.push ( nodes[i] );
       } else
-        for (var j=0;j<nodes[i].children.length;j++)
+        for (let j=0;j<nodes[i].children.length;j++)
           nodes1.push ( nodes[i].children[j] );
-    // for (var i=0;i<nodes.length;i++)
+    // for (let i=0;i<nodes.length;i++)
     //   if (nodes[i].dataId!=dataId)  {
     //     nodes[i].children = __delete_project_node ( nodes[i].children,dataId );
     //     nodes1.push ( nodes[i] );
@@ -808,8 +801,8 @@ function ProjectData()  {
   function __find_project_node_branch ( node,dataId )  {
     if (node.dataId==dataId)
       return [node];
-    var nd = [];
-    for (var i=0;(i<node.children.length) && (nd.length<=0);i++)
+    let nd = [];
+    for (let i=0;(i<node.children.length) && (nd.length<=0);i++)
       nd = __find_project_node_branch ( node.children[i],dataId );
     if (nd.length>0)
       nd.push ( node );
@@ -817,9 +810,9 @@ function ProjectData()  {
   }
 
   function getProjectNodeBranch ( projectData,dataId )  {
-    var node_lst = [];
+    let node_lst = [];
     try {
-      for (var i=0;(i<projectData.tree.length) && (node_lst.length<=0);i++)
+      for (let i=0;(i<projectData.tree.length) && (node_lst.length<=0);i++)
         node_lst = __find_project_node_branch ( projectData.tree[i],dataId );
     } catch(err){
       console.log ( ' +++++ exception in common.data_project.js:getProjectNodeBranch()' );
@@ -831,13 +824,13 @@ function ProjectData()  {
 
 function __print_project_tree ( node,indent )  {
   console.log ( indent + '[' + node.dataId + '] ' + node.text );
-  for (var i=0;i<node.children.length;i++)
+  for (let i=0;i<node.children.length;i++)
     __print_project_tree ( node.children[i],'--' + indent );
 }
 
 function printProjectTree ( legend,projectData )  {
   console.log ( ' \n' + legend + '\njobCount=' + projectData.desc.jobCount );
-  for (var i=0;i<projectData.tree.length;i++)
+  for (let i=0;i<projectData.tree.length;i++)
     __print_project_tree ( projectData.tree[i],'--' );
   console.log ( ' ' );
 }
@@ -851,17 +844,17 @@ function ProjectShare()  {
 }
 
 ProjectShare.prototype.removeShare = function ( pDesc )  {
-  var share = this.shared_projects;
+  let share = this.shared_projects;
   this.shared_projects = [];
-  for (var i=0;i<share.length;i++)
+  for (let i=0;i<share.length;i++)
     if ((pDesc.name!=share[i].name) || (pDesc.owner.login!=share[i].owner.login))
       this.shared_projects.push ( share[i] );
   return (share.length-this.shared_projects.length);
 }
 
 ProjectShare.prototype.addShare = function ( pDesc )  {
-  var found = false;
-  for (var i=0;(i<this.shared_projects.length) && (!found);i++)
+  let found = false;
+  for (let i=0;(i<this.shared_projects.length) && (!found);i++)
     found = (pDesc.name==this.shared_projects[i].name) &&
             (pDesc.owner.login==this.shared_projects[i].owner.login);
   if (!found)
