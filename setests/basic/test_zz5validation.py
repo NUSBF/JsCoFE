@@ -152,21 +152,12 @@ def addSliceNDice(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'All tasks')
     time.sleep(1)
 
-    if d.cloud=="http://ccp4serv6.rc-harwell.ac.uk/jscofe-dev/":
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
-        time.sleep(1)
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
-        time.sleep(1)
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR with model splitting using')
-        time.sleep(1)
-    else:
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
-        time.sleep(1)
-        sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR with model splitting using')
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement')
     time.sleep(1)
-
-    
-    time.sleep(6)
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Automated Molecular Replacement')
+    time.sleep(1)
+    sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR with model splitting using')
+    time.sleep(1)
 
     tasksInputs = driver.find_elements_by_xpath("//input[contains(@title, 'Maximum number of splits to try.')]")
 
