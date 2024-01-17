@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    21.12.23   <--  Date of Last Modification.
+ *    17.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Front End Server -- Job Run Module
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -1756,7 +1756,12 @@ function cloudRun ( server_request,server_response )  {
               if (!pData)  {
                 let pDesc = new pd.ProjectDesc();
                 pDesc.init ( meta.project,meta.title,pd.start_mode.standard,
-                            com_utils.getDateString() );
+                             com_utils.getDateString() );
+                if (('folder' in meta) && meta.folder)  {
+                  if (meta.folder.startsWith('/'))
+                        pDesc.folderPath = meta.folder.slice(1);
+                  else  pDesc.folderPath = 'My Projects/' + meta.folder;
+                }
                 response = prj.makeNewProject ( loginData,pDesc );
                 if (response.status==cmd.fe_retcode.ok)  {
                   pData = prj.readProjectData ( loginData,meta.project );
