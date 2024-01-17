@@ -323,6 +323,7 @@ def startPhaser(driver):
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Solvers')
     time.sleep(1)
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Phaser')
+    time.sleep(1)
     
 
     # 2 molecules in the ASU
@@ -339,7 +340,7 @@ def startPhaser(driver):
             buttonRun.click()
             break
 
-    time.sleep(10)
+    time.sleep(3)
 
     # pressing Close button
     closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
@@ -364,6 +365,7 @@ def startPhaser1(driver):
             sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'MR Solvers')
             time.sleep(1)
             sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Molecular Replacement with Phaser')
+            time.sleep(1)
             
 
             # There are several forms - active and inactive. We need one displayed.
@@ -373,7 +375,7 @@ def startPhaser1(driver):
                     buttonRun.click()
                     break
 
-            time.sleep(10)
+            time.sleep(3)
 
             # pressing Close button
             closeButton = driver.find_element(By.XPATH, "//button[contains(@style, 'images_png/close.png')]")
