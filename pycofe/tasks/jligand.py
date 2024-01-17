@@ -1,9 +1,11 @@
 #!/usr/bin/python
 
+# python-3 ready
+
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    25.07.23   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -20,7 +22,7 @@
 #      jobDir/report  : directory receiving HTML report
 #    expire      is timeout for removing coot backup directories
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
 #
 # ============================================================================
 #
@@ -64,7 +66,7 @@ class JLigand(basic.TaskDriver):
             if revision.Structure:
                 istruct = self.makeClass ( revision.Structure )
                 libin = istruct.getLibFilePath ( self.inputDir() )
-                pdbfl = istruct.getPDBFilePath ( self.inputDir() )
+                pdbfl = istruct.getXYZFilePath ( self.inputDir() )
                 if not (libin and os.path.isfile(libin)):
                     libin = None
                 if not (pdbfl and os.path.isfile(pdbfl)):
@@ -173,7 +175,7 @@ class JLigand(basic.TaskDriver):
                 self.stdout ( "No valid output" )
                 istruct = None
 
-            elif len(comp_id)==1 and len(link_id)==0:
+            elif len(comp_id)==1 and len(link_id)==0 and not istruct:
                 pdbout = os.path.splitext(cifout)[0] + ".pdb"
                 code = comp_id[0]
                 args = ["convert", "--from=mmcif", cifout, pdbout]
@@ -254,15 +256,13 @@ class JLigand(basic.TaskDriver):
                     if os.path.isfile(pdbfl_2):
                         pdbfl = pdbfl_2
 
-                struct = self.registerStructure ( 
-                                None,
-                                pdbfl,
-                                istruct.getSubFilePath(self.inputDir()),
-                                istruct.getMTZFilePath(self.inputDir()),
-                                libPath = cifreg,
-                                leadKey = istruct.leadKey,
-                                refiner = istruct.refiner 
-                            )
+                struct = self.registerStructure ( pdbfl,
+                            istruct.getSubFilePath(self.inputDir()),
+                            istruct.getMTZFilePath(self.inputDir()),
+                            None,None,
+                            libPath=cifreg,
+                            leadKey=istruct.leadKey,
+                            refiner=istruct.refiner )
 
                 if struct:
                     assert cifreg == struct.getLibFilePath(self.outputDir())
@@ -320,6 +320,18 @@ class JLigand(basic.TaskDriver):
                         self.rvrow += 1
 
             if struct:
+                self.putMessage1(
+                    self.report_page_id(),
+                    '''<i><b>N.B.</b></i>This library is a part of the revision corresponding to
+                    the current job. The revision will be selected automatically in the subsequent
+                    Coot job, while this library will not be exposed explicitly in any of the input
+                    menus. After <i><b>Coot</b></i> starts, ligands will be available through
+                    <i><b>File &gt; Get Monomer</b></i>. To apply links: <i><b>Refmac</b></i> with
+                    <i><b>Restraints &gt; Covalent/metal link identification = Yes</b></i>. To see
+                    the library contents in subsequent jobs: button <i><b>Inspect</b></i> > tab
+                    <i><b>Structure</b></i>.''',
+                    self.rvrow)
+                self.rvrow += 1
                 # update structure revision
                 revision.setStructureData ( struct )
                 self.registerRevision ( revision )
