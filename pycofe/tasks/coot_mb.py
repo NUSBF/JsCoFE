@@ -37,6 +37,8 @@ from . import coot_ce
 from   pycofe.varut   import  signal
 from   pycofe.proc    import  covlinks #, mergeone
 try:
+    if sys.platform.startswith("win"):
+        os.environ['PATH'] += ';' + os.path.join(os.environ["CCP4"], "bin")
     from pycofe.varut import messagebox
 except:
     messagebox = None
