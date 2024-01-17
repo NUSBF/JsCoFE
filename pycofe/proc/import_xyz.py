@@ -108,7 +108,7 @@ def run ( body ):  # body is reference to the main Import class
             if xyzpath.upper().endswith(".PDB"):
                 xyzpath = mmcif_utils.convert_to_mmcif ( xyzpath )
             else:
-                xyzpath = mmcif_utils.convert_to_pdb ( xyzpath )
+                xyzpath, pdb_nogood = mmcif_utils.convert_to_pdb ( xyzpath )
             if xyzpath:
                 xyz.setXYZFile ( os.path.basename(xyzpath) )
 

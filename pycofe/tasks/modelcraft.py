@@ -313,12 +313,13 @@ class ModelCraft(basic.TaskDriver):
 
                 self.rvrow = verdict_rvrow + 5
 
-                pdbout = None
-                # pdbout = os.path.join ( self.modelcraft_tmp(),self.modelcraft_pdb() )
-                # st = gemmi.read_structure ( cifout )
-                # st.setup_entities()
-                # st.shorten_chain_names()
-                # st.write_pdb ( pdbout )
+                # pdbout = None
+                pdbout = os.path.join ( self.modelcraft_tmp(),self.modelcraft_pdb() )
+                st = gemmi.read_structure ( cifout )
+                st.setup_entities()
+                st.shorten_chain_names()
+                st.write_pdb ( pdbout )
+                st.make_mmcif_document().write_file ( cifout )
 
                 self.putTitle ( "Built Structure" +\
                             self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
@@ -369,15 +370,16 @@ class ModelCraft(basic.TaskDriver):
                     }
 
                     rvrow0 = self.rvrow
-                    try:
-                        qrmeta = qualrep.quality_report ( self,revision )
-                        metrics["clashscore"] = qrmeta["clashscore"]
-                        if "EDCC" in qrmeta:
-                            metrics["EDCC"] = qrmeta["EDCC"]
-                        self.stderrln ( str(qrmeta) )
-                    except:
-                        self.stderr ( " *** molprobity failure" )
-                        self.rvrow = rvrow0
+                    if pdbout:
+                        try:
+                            qrmeta = qualrep.quality_report ( self,revision )
+                            metrics["clashscore"] = qrmeta["clashscore"]
+                            if "EDCC" in qrmeta:
+                                metrics["EDCC"] = qrmeta["EDCC"]
+                            self.stderrln ( str(qrmeta) )
+                        except:
+                            self.stderr ( " *** molprobity failure" )
+                            self.rvrow = rvrow0
 
                     rvrow0     = self.rvrow
                     self.rvrow = verdict_rvrow

@@ -1864,7 +1864,10 @@ class TaskDriver(object):
         mmcif_path = mmcifPath
         pdb_path   = pdbPath
         if mmcifPath and (not pdbPath):
-            pdb_path   = mmcif_utils.convert_to_pdb ( mmcifPath )
+            pdb_path, pdb_nogood = mmcif_utils.convert_to_pdb ( mmcifPath )
+            if pdb_nogood:
+                self.stderrln ( "\n *** mmCIF cannot be converted to PDB:\n" +\
+                                "     " + pdb_nogood + "\n" )
         elif pdbPath and (not mmcifPath):
             mmcif_path = mmcif_utils.convert_to_mmcif ( pdbPath )
 
