@@ -58,11 +58,7 @@ class dataLink {
       }
       let ids = tools.getSubDirs(path.join(data_dir, source));
       for (let j in ids) {
-        const fields = {
-          size_s: this.source[source].getEntrySize(id),
-          status: status.completed
-        };
-        if (this.source[source] && this.catalog.addEntry(user, source, ids[j], fields)) {
+        if (this.addEntryFromSource(user, source, ids[j], status.completed)) {
           log.info(`Added ${user}/${source}/${ids[j]} to the catalog`);
         } else {
           log.error(`rebuildLocalCatalog - Unable to rebuild catalog for ${user}/${source}/${ids[j]}`);
@@ -120,6 +116,22 @@ class dataLink {
       catalogs[source.name] = source.catalog;
     }
     return catalogs;
+  }
+
+  addEntryFromSource(user, source, id, status) {
+    const e = this.source[source].getEntry(id);
+    // add a catalog entry for the user setting the status to in_progress
+    const fields = {
+      pdb: e.pdb,
+      desc: e.desc,
+      doi: e.doi,
+      size_s: e.size,
+      status: status
+    }
+    if (! this.catalog.addEntry(user, source, id, fields)) {
+      return false;
+    }
+    return true;
   }
 
   async searchSourceCatalog(pdb) {
@@ -240,17 +252,8 @@ class dataLink {
     // prune old data if required
     this.dataPrune(config.get('storage.data_free_gb', 100));
 
-    let s_entry = this.source[source].getEntry(id);
-
-    // add a catalog entry for the user setting the status to in_progress
-    const fields = {
-      pdb: s_entry.pdb,
-      desc: s_entry.desc,
-      size_s: this.source[source].getEntrySize(id),
-      status: status.inProgress
-    }
-    if (this.catalog.addEntry(user, source, id, fields)) {
-      log.info(`${source} - Acquiring ${user}/${source}/${id} - size ${this.source[source].getEntrySize(id)}`);
+    if (this.addEntryFromSource(user, source, id, status.inProgress)) {
+      log.info(`${source} - Acquiring ${user}/${source}/${id}`);
       // acquire the data from the data source
       if (this.source[source].acquire(user, id, this.catalog, force)) {
         this.dataSizeProgress(user, source, id);
