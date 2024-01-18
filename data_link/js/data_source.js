@@ -23,17 +23,17 @@ class dataSource {
     this.jobs = {};
   }
 
-  addCatalog(files) {
-    this.catalog = files;
-    this.catalog_size = Object.keys(files).length;
+  addCatalog(catalog) {
+    this.catalog = catalog;
+    this.catalog_size = Object.keys(catalog).length;
     this.status = status.completed;
     log.info(`${this.name} - Added catalog ${this.catalog_file}: ${this.catalog_size} entries`);
   }
 
-  saveCatalog(files) {
+  saveCatalog(catalog) {
     log.info(`${this.name} - Saving catalog to ${this.catalog_file}`);
-    this.addCatalog(files);
-    let json = JSON.stringify(files);
+    this.addCatalog(catalog);
+    let json = JSON.stringify(catalog);
     try {
       fs.mkdirSync(CATALOG_DIR, { recursive: true });
     } catch (err) {
@@ -55,8 +55,8 @@ class dataSource {
           log.error(`${this.name} - Unable to load ${this.catalog_file} - ${err.message}`);
         } else {
           try {
-            const obj = JSON.parse(data);
-            this.addCatalog(obj);
+            const catalog = JSON.parse(data);
+            this.addCatalog(catalog);
           } catch (err) {
             log.error(`${this.name} - Unable to parse ${this.catalog_file} - ${err.message}`);
           }
@@ -140,11 +140,6 @@ class dataSource {
     this.deleteJob(user, id);
   }
 
-  catalogError(error) {
-    log.error(`${this.name} - Unable to retrieve catalog: ${error}`);
-    return false;
-  }
-
   async httpGetData(url, user, id, catalog) {
     let entry = catalog.getEntry(user, this.name, id);
 
@@ -184,15 +179,16 @@ class dataSource {
     }
 
     // unpack the archive
-    tools.unpack(dest_file, dest_dir,
-      (controller) => {
+    try {
+      await tools.unpack(dest_file, dest_dir, (controller) => {
         this.addJob(user, id, controller);
-      }
-    ).then(() => {
-      this.dataComplete(user, id, catalog);
-    }).catch(err => {
+      });
+    } catch (err) {
       this.dataError(user, id, catalog, err);
-    });
+      return;
+    }
+
+    this.dataComplete(user, id, catalog);
 
   }
 
@@ -203,43 +199,44 @@ class dataSource {
 
     let out = '';
 
-    await tools.doRsync(
-      ['-rz', url],
-      (stdout) => {
-        out += stdout.toString();
-      },
-      (stderr) => {
-        log.error(stderr.toString());
-      }
-    ).then(() => {
-      let lines = out.split("\n");
-      this.rsyncParseLines(catalog, lines);
-    }).catch(err => {
+    try {
+      await tools.doRsync(['-rz', url],
+        (stdout) => {
+          out += stdout.toString();
+        },
+        (stderr) => {
+          log.error(stderr.toString());
+        });
+    } catch (err) {
       log.error(`rsyncGetCatalog - Error: ${err.message}`);
-    });
+      return;
+    }
+
+    let lines = out.split("\n");
+    this.rsyncParseLines(catalog, lines);
   }
 
-  rsyncGetData(url, user, id, catalog) {
+  async rsyncGetData(url, user, id, catalog) {
     let dest = tools.getDataDest(user, this.name);
 
     // rsync -rzv --include 'ID/***' --exclude '*' data.pdbjbk1.pdbj.org::rsync/xrda/
-    tools.doRsync(
-      ['-rzq', '--include', id + '/***', '--exclude', '*', url, dest],
-      (stdout) => {
-        out += stdout.toString();
-      },
-      (stderr) => {
-        log.error(stderr.toString());
-      },
-      (controller) => {
-        this.addJob(user, id, controller);
-      }
-    ).then(() => {
-      this.dataComplete(user, id, catalog);
-    }).catch(err => {
+    try {
+      await tools.doRsync(['-rzq', '--include', id + '/***', '--exclude', '*', url, dest],
+        (stdout) => {
+          out += stdout.toString();
+        },
+        (stderr) => {
+          log.error(stderr.toString());
+        },
+        (controller) => {
+          this.addJob(user, id, controller);
+        });
+    } catch (err) {
       this.dataError(user, id, catalog, err);
-    });
+      return;
+    }
 
+    this.dataComplete(user, id, catalog);
   }
 
   // parse rsync listing
