@@ -21,19 +21,20 @@ import gemmi
 
 def can_convert_to_pdb ( mmcif_file_path ):
 #  Returns True if mmCIF file is convertable to PDB
-    if not os.path.isfile ( mmcif_file_path ):
-        return False
-    # cif_block = gemmi.cif.read(mmcif_file_path)[0]
-    # st        = gemmi.make_structure_from_block ( cif_block )
-    st = gemmi.read_structure ( mmcif_file_path )
-    for model in st:
-        for chain in model:
-            if len(chain.name)>1 or len(chain)>9999:
+    if os.path.isfile ( mmcif_file_path ):
+        st = gemmi.read_structure ( mmcif_file_path )
+        for model in st:
+            if len(model)>62:
                 return False
-            for res in chain:
-                if len(res.name)>3:
+            for chain in model:
+                if len(chain.name)>1 or len(chain)>9999:
                     return False
-    return True
+                for res in chain:
+                    if len(res.name)>3:
+                        return False
+        return True
+    return False
+
 
 
 def convert_to_pdb ( mmcif_file_path ):
