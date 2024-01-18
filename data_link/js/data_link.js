@@ -123,7 +123,7 @@ class dataLink {
     // add a catalog entry for the user setting the status to in_progress
     const fields = {
       pdb: e.pdb,
-      desc: e.desc,
+      name: e.name,
       doi: e.doi,
       size_s: e.size,
       status: status
@@ -144,7 +144,7 @@ class dataLink {
     for (const [, source] of Object.entries(this.source)) {
       for (const [id, e] of Object.entries(source.catalog)) {
         if (e.pdb == pdb ) {
-          results.push({ source: source.name, id: id, doi: e.doi, desc: e.desc });
+          results.push({ source: source.name, id: id, doi: e.doi, name: e.name });
         }
       }
     }

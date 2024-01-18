@@ -28,7 +28,7 @@ const URL_RSYNC = 'data.pdbjbk1.pdbj.org::rsync/xrda/';
 const res = {
   id:    0,
   pdb:   1,
-  desc:  2,
+  name:  2,
   auth:  3,
   doi:   4
 }
@@ -54,7 +54,7 @@ class pdbj extends dataSource {
       e.path = id.toString();
       e.pdb = r[res.pdb];
       e.doi = r[res.doi];
-      e.desc = r[res.desc];
+      e.name = r[res.name];
       e.auth = r[res.auth];
 
       catalog[id] = e;

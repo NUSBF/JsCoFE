@@ -44,8 +44,8 @@ class sbgrid extends dataSource {
       group.each((i, elem) => {
         let found, proj, pdb, doi;
 
-        // get entry description
-        let desc = dom(elem).find('h3').text();
+        // get entry name/description
+        let name = dom(elem).find('h3').text();
 
         // find the links
         let links = dom(elem).find('a');
@@ -75,7 +75,7 @@ class sbgrid extends dataSource {
         const e = {};
         e.path = proj;
         e.pdb = pdb;
-        e.desc = desc;
+        e.name = name;
         e.doi = doi;
 
         catalog[proj] = e;
