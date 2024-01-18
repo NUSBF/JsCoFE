@@ -50,8 +50,8 @@ class irrmc extends dataSource {
       group.each((i, elem) => {
         let found, id, pdb, path, doi;
 
-        // get entry description
-        let desc = dom(elem).find('.panel-heading small').text();
+        // get entry name/description
+        let name = dom(elem).find('.panel-heading small').text();
 
         // find the links
         let links = dom(elem).find('.panel-body .col-md-4 a');
@@ -87,7 +87,7 @@ class irrmc extends dataSource {
         const e = {};
         e.pdb = pdb;
         e.path = path;
-        e.desc = desc;
+        e.name = name;
         e.doi = doi;
 
         entries[id] = e;
