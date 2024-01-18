@@ -111,13 +111,6 @@ class dataSource {
     return this.catalog[id];
   }
 
-  getEntrySize(id) {
-    if (this.catalog && this.catalog[id] && this.catalog[id].size) {
-      return this.catalog[id].size;
-    }
-    return 0;
-  }
-
   dataComplete(user, id, catalog) {
     let fields = {
       'status': status.completed,
