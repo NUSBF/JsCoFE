@@ -128,6 +128,8 @@ TaskLorestr.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
+TaskLorestr.prototype.cleanJobDir = function ( jobDir )  {}
+
 TaskLorestr.prototype.desc_title = function()  {
 // this appears under task title in the task list
   return 'performs low resolution (lower than around 3 Å) refinement';

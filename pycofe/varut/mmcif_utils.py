@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.01.24   <--  Date of Last Modification.
+#    18.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,20 +19,25 @@ import gemmi
 
 # ============================================================================
 
+
+def can_make_pdb ( st ):
+#  Returns True if structure in st can be expressed in PDB format
+    for model in st:
+        if len(model)>62:
+            return False
+        for chain in model:
+            if len(chain.name)>1 or len(chain)>9999:
+                return False
+            for res in chain:
+                if len(res.name)>3:
+                    return False
+    return True
+
+
 def can_convert_to_pdb ( mmcif_file_path ):
 #  Returns True if mmCIF file is convertable to PDB
     if os.path.isfile ( mmcif_file_path ):
-        st = gemmi.read_structure ( mmcif_file_path )
-        for model in st:
-            if len(model)>62:
-                return False
-            for chain in model:
-                if len(chain.name)>1 or len(chain)>9999:
-                    return False
-                for res in chain:
-                    if len(res.name)>3:
-                        return False
-        return True
+        return can_make_pdb ( gemmi.read_structure(mmcif_file_path) )
     return False
 
 
@@ -44,10 +49,11 @@ def convert_to_pdb ( mmcif_file_path ):
     pdb_file_path = None
     pdb_nogood    = None
     if os.path.isfile(mmcif_file_path):
-        # cif_block = gemmi.cif.read(mmcif_file_path)[0]
-        # st        = gemmi.make_structure_from_block ( cif_block )
         st = gemmi.read_structure ( mmcif_file_path )
         for model in st:
+            if len(model)>62:
+                pdb_nogood = "more than 62 models found"
+                break
             for chain in model:
                 if len(chain.name)>1:
                     pdb_nogood = "multiple character chain IDs found"

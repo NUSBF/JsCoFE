@@ -212,7 +212,7 @@ def calculate ( meta ) :
                       "During subsequent REFMAC refinement you can try to switch on option for " +\
                       "generation of hydrogen atoms during refinement. Also, you can try to increase weight for VDW " +\
                       "repulsion by putting following command into 'Additional keywords' of the " +\
-                      "'Advaced' parameters section: <i>vdwrestraints 2.0</i>. Value for restraints weight " +\
+                      "'Advanced' parameters section: <i>vdwrestraints 2.0</i>. Value for restraints weight " +\
                       "is subject to optimisation.<p>"
 
     if molprob < 25.0:

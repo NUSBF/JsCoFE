@@ -114,8 +114,6 @@ const instancedMeshToMeshData = (instanceMesh: libcootApi.InstancedMeshT, perm: 
                     0.0, 0.0, 1.0, 0.0,
                     0.0, 0.0, 0.0, 1.0,
                 ])
-
-                inst_data.delete()
             }
         }
         As.delete()
@@ -164,8 +162,6 @@ const instancedMeshToMeshData = (instanceMesh: libcootApi.InstancedMeshT, perm: 
                 thisInstance_orientations.push(instDataOrientation[3][1])
                 thisInstance_orientations.push(instDataOrientation[3][2])
                 thisInstance_orientations.push(instDataOrientation[3][3])
-
-                inst_data.delete()
             }
         }
         Bs.delete()
@@ -230,38 +226,47 @@ const instancedMeshToMeshData = (instanceMesh: libcootApi.InstancedMeshT, perm: 
 }
 
 const simpleMeshToMeshData = (simpleMesh: libcootApi.SimpleMeshT, perm: boolean = false): libcootApi.SimpleMeshJS => {
+
+    const print_timing = true;
+    const ts = performance.now()
+
     const vertices = simpleMesh.vertices;
     const triangles = simpleMesh.triangles;
-    let totIdxs: number[] = [];
-    let totPos: number[] = [];
-    let totNorm: number[] = [];
-    let totCol: number[] = [];
-
+    
+    const verticesSize = vertices.size();
     const trianglesSize = triangles.size()
-    for (let i = 0; i < trianglesSize; i++) {
-        const triangle = triangles.get(i)
-        const idxs = triangle.point_id;
-        if (perm)
-            totIdxs.push(...[idxs[0], idxs[2], idxs[1]]);
-        else
-            totIdxs.push(...idxs);
-    }
-    triangles.delete()
 
-    const verticesSize = vertices.size()
-    for (let i = 0; i < verticesSize; i++) {
-        const vert = vertices.get(i);
-        const vertPos = vert.pos
-        const vertNormal = vert.normal
-        const vertColor = vert.color
-        totPos.push(...vertPos);
-        if (perm)
-            totNorm.push(...[-vertNormal[0], -vertNormal[1], -vertNormal[2]]);
-        else
-            totNorm.push(...vertNormal);
-        totCol.push(...vertColor);
+    let totIdxs_C = new Uint32Array(trianglesSize*3)
+    let totPos_C  = new Float32Array(verticesSize*3)
+    let totNorm_C = new Float32Array(verticesSize*3)
+    let totCol_C  = new Float32Array(verticesSize*4)
+
+    cootModule.getPositionsFromSimpleMesh2(simpleMesh,totPos_C)
+    cootModule.getColoursFromSimpleMesh2(simpleMesh,totCol_C)
+
+    if (perm){
+        cootModule.getReversedNormalsFromSimpleMesh2(simpleMesh,totNorm_C)
+        cootModule.getPermutedTriangleIndicesFromSimpleMesh2(simpleMesh,totIdxs_C)
+    } else {
+        cootModule.getNormalsFromSimpleMesh2(simpleMesh,totNorm_C)
+        cootModule.getTriangleIndicesFromSimpleMesh2(simpleMesh,totIdxs_C)
     }
-    vertices.delete()
+
+    const tm = performance.now()
+    if(print_timing) console.log("DEBUG: SIMPLE MESH TO MESH DATA C++",tm-ts)
+
+    let totPos =  totPos_C
+    let totCol =  totCol_C
+    let totNorm =  totNorm_C
+    let totIdxs =  totIdxs_C
+
+    if(print_timing) {
+        const te = performance.now()
+        console.log("DEBUG: SIMPLE MESH TO MESH DATA",te-ts)
+    }
+
+    vertices.delete();
+    triangles.delete();
 
     return {
         prim_types: [["TRIANGLES"]],
@@ -373,6 +378,19 @@ const mapMoleculeCentreInfoToJSObject = (mapMoleculeCentreInfo: libcootApi.MapMo
     return returnResult;
 }
 
+const fitLigandInfoArrayToJSArray = (fitLigandInfoVec: emscriptem.vector<libcootApi.fitLigandInfo>): libcootApi.fitLigandInfo[] => {
+    const result: libcootApi.fitLigandInfo[] = []
+
+    const fitLigandInfoVecSize = fitLigandInfoVec.size()
+    for (let i = 0; i < fitLigandInfoVecSize; i++) {
+        const fitLigandInfo = fitLigandInfoVec.get(i)
+        result.push({ ...fitLigandInfo })
+    }
+
+    fitLigandInfoVec.delete()
+    return result
+}
+
 const intArrayToJSArray = (intArray: emscriptem.vector<number>) => {
     let returnResult: number[] = []
     const intArraySize = intArray.size()
@@ -399,7 +417,6 @@ const symmetryToJSData = (symmetryDataPair: libcootApi.PairType<libcootApi.Symme
     let result: { x: number; y: number; z: number; asString: string; isym: number; us: number; ws: number; vs: number; matrix: number[][]; }[]= []
     const symmetryData = symmetryDataPair.first
     const symmetryMatrices = symmetryDataPair.second
-    const cell = symmetryData.cell
     const symm_trans = symmetryData.symm_trans
     const symmetrySize = symm_trans.size()
 
@@ -423,7 +440,6 @@ const symmetryToJSData = (symmetryDataPair: libcootApi.PairType<libcootApi.Symme
         symTransT.delete()
     }
 
-    cell.delete()
     symm_trans.delete()
     symmetryMatrices.delete()
     return result
@@ -486,7 +502,7 @@ const atomSpecToJSArray = (atomSpecs: emscriptem.vector<libcootApi.AtomSpecT>): 
 }
 
 const residueSpecToJSArray = (residueSpecs: emscriptem.vector<libcootApi.ResidueSpecT>): libcootApi.ResidueSpecJS[] => {
-    let returnResult: { resNum: number; insCode: string; modelNumber: number; chainId: string; }[] = []
+    let returnResult: { resNum: number; insCode: string; modelNumber: number; chainId: string; intUserData: number; }[] = []
     const residuesSize = residueSpecs.size()
     for (let ic = 0; ic < residuesSize; ic++) {
         const residue = residueSpecs.get(ic)
@@ -494,11 +510,23 @@ const residueSpecToJSArray = (residueSpecs: emscriptem.vector<libcootApi.Residue
             resNum: residue.res_no,
             insCode: residue.ins_code,
             modelNumber: residue.model_number,
-            chainId: residue.chain_id
+            chainId: residue.chain_id,
+            intUserData: residue.int_user_data
         })
     }
     residueSpecs.delete()
     return returnResult
+}
+
+const stringPairVectorToJSArray = (stringPairsVector: emscriptem.vector<libcootApi.PairType<string, string>>) => {
+    let result: { first: string; second: string }[] = []
+    const stringPairsVectorSize = stringPairsVector.size()
+    for (let ic = 0; ic < stringPairsVectorSize; ic++) {
+        const data = stringPairsVector.get(ic)
+        result.push({first: data.first, second: data.second})
+    }
+    stringPairsVector.delete()
+    return result
 }
 
 const validationDataToJSArray = (validationData: libcootApi.ValidationInformationT, chainID: string | null = null): libcootApi.ValidationInformationJS[] => {
@@ -589,6 +617,7 @@ const vectorHBondToJSArray = (HBondData: emscriptem.vector<libcootApi.MoorhenHBo
 
 const interestingPlaceDataToJSArray = (interestingPlaceData: emscriptem.vector<libcootApi.InterestingPlaceT>): libcootApi.InterestingPlaceDataJS[] => {
     let returnResult: { 
+        intUserData: number;
         modelNumber: number;
         chainId: string;
         insCode: string;
@@ -607,6 +636,7 @@ const interestingPlaceDataToJSArray = (interestingPlaceData: emscriptem.vector<l
         const residue = interestingPlaceData.get(ir)
         const residueSpec = residue.residue_spec
         returnResult.push({
+            intUserData: residueSpec.int_user_data,
             modelNumber: residueSpec.model_number,
             chainId: residueSpec.chain_id,
             insCode: residueSpec.ins_code,
@@ -690,30 +720,59 @@ const ramachandranDataToJSArray = (ramachandraData: emscriptem.vector<libcootApi
     return returnResult
 }
 
+const vectorPairClipperCoordFloatToJSArray = (vectorData: emscriptem.vector<{first: libcootApi.CootCartesian; second: number}>): libcootApi.DiffDiffMapPeaksJS => {
+    let result: {value: number; coord: { x: number; y: number; z: number }}[] = []
+    const vectorSize = vectorData.size()
+    for(let i = 0; i < vectorSize; i++) {
+        const pair = vectorData.get(i)
+        const value = pair.second
+        const clipperCoord = pair.first
+        const coord = {
+            x: clipperCoord.x(),
+            y: clipperCoord.y(),
+            z: clipperCoord.z(),
+        }
+        clipperCoord.delete()
+        result.push({value, coord})
+    }
+    vectorData.delete()
+    return result
+}
+
 const simpleMeshToLineMeshData = (simpleMesh: libcootApi.SimpleMeshT, normalLighting: boolean): libcootApi.SimpleMeshJS => {
+
+    const print_timing = false;
+    const ts = performance.now()
+
     const vertices = simpleMesh.vertices;
     const triangles = simpleMesh.triangles;
-    let totIdxs: number[] = [];
-    let totPos: number[] = [];
-    let totNorm: number[] = [];
-    let totCol: number[] = [];
-
     const trianglesSize = triangles.size()
-    for (let i = 0; i < trianglesSize; i++) {
-        const triangle = triangles.get(i)
-        const idxs = triangle.point_id;
-        totIdxs.push(...[idxs[0], idxs[1], idxs[0], idxs[2], idxs[1], idxs[2]]);
-    }
-    triangles.delete()
-
     const verticesSize = vertices.size()
-    for (let i = 0; i < verticesSize; i++) {
-        const vert = vertices.get(i);
-        totPos.push(...vert.pos);
-        totNorm.push(...vert.normal);
-        totCol.push(...vert.color);
+
+    let totIdxs_C = new Uint32Array(trianglesSize*6)
+    let totPos_C  = new Float32Array(verticesSize*3)
+    let totNorm_C = new Float32Array(verticesSize*3)
+    let totCol_C  = new Float32Array(verticesSize*4)
+    cootModule.getLineIndicesFromSimpleMesh2(simpleMesh,totIdxs_C)
+    cootModule.getPositionsFromSimpleMesh2(simpleMesh,totPos_C)
+    cootModule.getNormalsFromSimpleMesh2(simpleMesh,totNorm_C)
+    cootModule.getColoursFromSimpleMesh2(simpleMesh,totCol_C)
+
+    const tm = performance.now()
+    if(print_timing) console.log("DEBUG: SIMPLE MESH TO LINE MESH DATA C++",tm-ts)
+
+    let totIdxs = totIdxs_C
+    let totPos  = totPos_C
+    let totNorm = totNorm_C
+    let totCol  = totCol_C
+
+    if(print_timing) {
+        const te = performance.now()
+        console.log("SIMPLE MESH TO LINE MESH DATA",te-ts)
     }
-    vertices.delete()
+
+    vertices.delete();
+    triangles.delete();
 
     if (normalLighting)
         return { prim_types: [["NORMALLINES"]], useIndices: [[true]], idx_tri: [[totIdxs]], vert_tri: [[totPos]], additional_norm_tri: [[totNorm]], norm_tri: [[totNorm]], col_tri: [[totCol]] };
@@ -866,6 +925,9 @@ const doCootCommand = (messageData: {
 
         let returnResult;
         switch (returnType) {
+            case 'fit_ligand_info_array':
+                returnResult = fitLigandInfoArrayToJSArray(cootResult)
+                break;
             case 'string_array_array':
                 returnResult = stringArrayArrayToJSArray(cootResult)
                 break;
@@ -944,13 +1006,20 @@ const doCootCommand = (messageData: {
             case 'status_instanced_mesh_pair':
                 returnResult = { status: cootResult.first, mesh: instancedMeshToMeshData(cootResult.second, false, false, 5) }
                 break;
+            case 'string_string_pair_vector':
+                returnResult = stringPairVectorToJSArray(cootResult)
+                break
             case 'void':
                 returnResult = null
+                break
+            case 'vector_pair_clipper_coord_float':
+                returnResult = vectorPairClipperCoordFloatToJSArray(cootResult)
                 break
             case 'status':
             default:
                 returnResult = cootResult
                 break;
+            //cootResult.delete()
         }
 
         return {
@@ -986,7 +1055,9 @@ onmessage = function (e) {
                 molecules_container.set_show_timings(false)
                 molecules_container.fill_rotamer_probability_tables()
                 molecules_container.set_map_sampling_rate(1.7)
-                cootModule.FS.mkdir("COOT_BACKUP");
+                molecules_container.set_map_is_contoured_with_thread_pool(true)
+                molecules_container.set_max_number_of_threads(3)
+                cootModule.FS.mkdir("COOT_BACKUP")
             })
             .catch((e) => {
                 console.log(e)
