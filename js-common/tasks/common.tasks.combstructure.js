@@ -302,7 +302,7 @@ TaskCombStructure.prototype.currentVersion = function()  {
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
 }
 
-//TaskCombStructure.prototype.cleanJobDir = function ( jobDir )  {}
+// TaskCombStructure.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskCombStructure.prototype.checkKeywords = function ( keywords )  {
   // keywords supposed to be in low register

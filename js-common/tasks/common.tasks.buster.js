@@ -232,8 +232,7 @@ TaskBuster.prototype.constructor = TaskBuster;
 TaskBuster.prototype.icon           = function()  { return 'task_buster'; }
 TaskBuster.prototype.clipboard_name = function()  { return '"Buster"';    }
 
-TaskBuster.prototype.cleanJobDir    = function ( jobDir )  {}
-
+// TaskBuster.prototype.cleanJobDir    = function ( jobDir )  {}
 
 TaskBuster.prototype.desc_title = function()  {
 // this appears under task title in the task list

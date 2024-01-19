@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    18.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -51,8 +51,9 @@ class Lorestr(basic.TaskDriver):
 
         # Just in case (of repeated run) remove the output xyz file. When lorestr
         # succeeds, this file is created.
-        if os.path.isfile(self.getXYZOFName()):
-            os.remove(self.getXYZOFName())
+        pdbout = self.getXYZOFName()
+        if os.path.isfile(pdbout):
+            os.remove(pdbout)
 
         # Prepare lorestr input
         # fetch input data
@@ -66,17 +67,17 @@ class Lorestr(basic.TaskDriver):
         # Prepare report parser
         #self.setGenericLogParser ( self.lorestr_report(),False )
 
-        cmd = [ "-p1",istruct.getPDBFilePath(self.inputDir()),
+        cmd = [ "-xyzin",istruct.getXYZFilePath(self.inputDir()),
                 "-f" ,hkl.getHKLFilePath(self.inputDir()) ]
 
         if len(rstruct)>0:
             cmd += ["-p2"]
             for s in rstruct:
                 cs = self.makeClass ( s )
-                cmd += [cs.getPDBFilePath(self.inputDir())]
+                cmd += [cs.getXYZFilePath(self.inputDir())]
 
         cmd += [ "-save_space",
-                 "-xyzout",self.getXYZOFName(),
+                 "-xyzout",pdbout,
                  "-hklout",self.getMTZOFName(),
                  "-labin" ,"FP="     + hkl.dataset.Fmean.value +
                            " SIGFP=" + hkl.dataset.Fmean.sigma +
@@ -131,7 +132,7 @@ class Lorestr(basic.TaskDriver):
 
         # check solution and register data
         have_results = False
-        if os.path.isfile(self.getXYZOFName()):
+        if os.path.isfile(pdbout):
 
             verdict_row = self.rvrow
             self.rvrow += 4
@@ -147,7 +148,7 @@ class Lorestr(basic.TaskDriver):
 
             structure = self.registerStructure ( 
                                 None,
-                                self.getXYZOFName(),
+                                pdbout,
                                 None,
                                 self.getMTZOFName(),
                                 libPath = libin,
@@ -204,12 +205,12 @@ class Lorestr(basic.TaskDriver):
             self.putTitle ( "No Output Generated" )
 
 
-        try:
-            shutil.rmtree ( "lorestr_Output" )
-        except:
-            # self.stderrln ( "\n ***** could not delete residual directory at " +\
-            #                 search_dir + "\n" )
-            pass
+        # try:
+        #     shutil.rmtree ( "lorestr_Output" )
+        # except:
+        #     # self.stderrln ( "\n ***** could not delete residual directory at " +\
+        #     #                 search_dir + "\n" )
+        #     pass
 
 
         # close execution logs and quit

@@ -34,7 +34,7 @@ import gemmi
 #  application imports
 from . import basic
 from   pycofe.dtypes   import dtype_template
-# from   varut           import signal, rvapi_utils
+from   varut           import mmcif_utils
 from   pycofe.proc     import qualrep
 from   pycofe.verdicts import verdict_modelcraft
 from   pycofe.auto     import auto, auto_workflow
@@ -313,13 +313,15 @@ class ModelCraft(basic.TaskDriver):
 
                 self.rvrow = verdict_rvrow + 5
 
-                # pdbout = None
                 pdbout = os.path.join ( self.modelcraft_tmp(),self.modelcraft_pdb() )
                 st = gemmi.read_structure ( cifout )
-                st.setup_entities()
-                st.shorten_chain_names()
-                st.write_pdb ( pdbout )
-                st.make_mmcif_document().write_file ( cifout )
+                if mmcif_utils.can_make_pdb(st):
+                    st.setup_entities()
+                    st.shorten_chain_names()
+                    st.write_pdb ( pdbout )
+                    st.make_mmcif_document().write_file ( cifout )
+                else:
+                    pdbout = None
 
                 self.putTitle ( "Built Structure" +\
                             self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
