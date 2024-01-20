@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    20.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -85,7 +85,7 @@ class TextEditor(basic.TaskDriver):
         elif object._type==dtype_xyz.dtype():
             self.putMessage ( "<b>Edited data:</b> atomic coordinates (XYZ)" )
             self.putTitle   ( "Edited coordinates" )
-            oxyz = self.registerXYZ ( ufname,checkout=True )
+            oxyz = self.registerXYZ ( None,ufname,checkout=True )
             if oxyz:
                 oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                 self.putMessage (

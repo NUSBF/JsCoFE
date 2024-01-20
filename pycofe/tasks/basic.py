@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.01.24   <--  Date of Last Modification.
+#    20.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -2079,17 +2079,35 @@ class TaskDriver(object):
 
     # ============================================================================
 
-    def registerXYZ ( self,xyzPath,checkout=True ):
+    def registerXYZ ( self,mmcifPath,pdbPath,checkout=True ):
+        
+        mmcif_path = mmcifPath
+        pdb_path   = pdbPath
+        if mmcifPath and (not pdbPath):
+            pdb_path, pdb_nogood = mmcif_utils.convert_to_pdb ( mmcifPath )
+            if pdb_nogood:
+                self.stderrln ( "\n *** mmCIF cannot be converted to PDB:\n" +\
+                                "     " + pdb_nogood + "\n" )
+        elif pdbPath and (not mmcifPath):
+            mmcif_path = mmcif_utils.convert_to_mmcif ( pdbPath )
+
         self.dataSerialNo += 1
-        if checkout:
-            xyz = dtype_xyz.register ( xyzPath,self.dataSerialNo,self.job_id,
-                                       self.outputDataBox,self.outputDir() )
-        else:
-            xyz = dtype_xyz.register ( xyzPath,self.dataSerialNo,self.job_id,
-                                       None,self.outputDir() )
+
+        xyz = dtype_xyz.register ( mmcif_path,pdb_path,self.dataSerialNo,
+                                   self.job_id,
+                                   self.outputDataBox if checkout else None,
+                                   self.outputDir() )
+        # if checkout:
+        #     xyz = dtype_xyz.register ( mmcifPath,xyzPath,self.dataSerialNo,
+        #                                self.job_id,self.outputDataBox,
+        #                                self.outputDir() )
+        # else:
+        #     xyz = dtype_xyz.register ( mmcifPath,xyzPath,self.dataSerialNo,
+        #                                self.job_id,None,self.outputDir() )
         if not xyz:
             self.file_stderr.write ( "  NONE XYZ DATA\n" )
             self.file_stderr.flush()
+
         return xyz
 
     """

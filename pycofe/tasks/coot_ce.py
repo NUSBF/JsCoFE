@@ -1,11 +1,9 @@
 #!/usr/bin/python
 
-# not python-3 ready
-
 #
 # ============================================================================
 #
-#    24.07.22   <--  Date of Last Modification.
+#    20.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -21,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2018-2024
 #
 # ============================================================================
 #
@@ -197,8 +195,7 @@ class CootCE(basic.TaskDriver):
                 # register output data from temporary location (files will be moved
                 # to output directory by the registration procedure)
 
-                #xyz = self.registerXYZ ( coot_xyz )
-                xyz = self.registerXYZ ( fname )
+                xyz = self.registerXYZ ( None,fname )
                 if xyz:
                     xyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                     self.putMessage (

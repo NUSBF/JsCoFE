@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    20.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2019-2024
 #
 # ============================================================================
 #
@@ -181,7 +181,7 @@ class LsqKab(basic.TaskDriver):
 
             self.putMessage ( "<h3>" + str(title_cnt) + ". Moved structure</h3>" )
             title_cnt += 1
-            xyz = self.registerXYZ ( self.lsqkab_xyz() )
+            xyz = self.registerXYZ ( None,self.lsqkab_xyz() )
             if xyz:
                 xyz.putXYZMeta    ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                 self.putMessage   ( "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +\
