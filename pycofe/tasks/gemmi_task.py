@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    20.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -262,7 +262,7 @@ class Gemmi(basic.TaskDriver):
                                 "Model Data was not formed" )
 
             elif struct0._type=="DataXYZ":
-                oxyz = self.registerXYZ ( outfname,checkout=True )
+                oxyz = self.registerXYZ ( None,outfname,checkout=True )
                 if oxyz:
                     oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                     self.putMessage (

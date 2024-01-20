@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.01.24   <--  Date of Last Modification.
+#    20.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -68,7 +68,7 @@ class XyzUtils(basic.TaskDriver):
 
         if istruct._type==dtype_xyz.dtype():
             self.putTitle ( "Modified coordinate data" )
-            oxyz = self.registerXYZ ( xyzout,checkout=True )
+            oxyz = self.registerXYZ ( None,xyzout,checkout=True )
             if oxyz:
                 oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                 self.putMessage (
@@ -308,7 +308,7 @@ class XyzUtils(basic.TaskDriver):
                         else:
                             xyzout = self.getOFName ( "." + chain.name + ".pdb" )
                         st1.write_pdb ( xyzout )
-                        oxyz = self.registerXYZ ( xyzout,checkout=True )
+                        oxyz = self.registerXYZ ( None,xyzout,checkout=True )
                         if oxyz:
                             oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                             self.putMessage (

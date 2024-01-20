@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    09.11.23   <--  Date of Last Modification.
+#    20.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2023
+#  Copyright (C) Maria Fando, Eugene Krissinel, Andrey Lebedev 2022-2024
 #
 # ============================================================================
 #
@@ -341,8 +341,7 @@ class StructurePrediction(basic.TaskDriver):
 
                     os.rename ( fpaths[i],outFName )
 
-                    # model = self.registerModel ( seq,outFName,checkout=True )
-                    xyz = self.registerXYZ ( outFName )
+                    xyz = self.registerXYZ ( None,outFName )
 
                     if xyz:
 

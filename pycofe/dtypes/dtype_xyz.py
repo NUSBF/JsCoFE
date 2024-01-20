@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    17.01.24   <--  Date of Last Modification.
+#    20.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -394,17 +394,25 @@ def setXYZMeta ( data_class,xyz_meta ):
     return
 
 
-def register ( xyzFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
-    if os.path.isfile(xyzFilePath):
+def register ( mmcifFilePath,xyzFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
+    filePath = xyzFilePath if xyzFilePath else mmcifFilePath
+    if filePath and os.path.isfile(filePath):
         xyz   = DType   ( job_id )
-        fname = os.path.basename(xyzFilePath)
+        fname = os.path.basename(filePath)
         xyz.setXYZFile ( fname )
         xyz.makeDName  ( dataSerialNo )
-        newFileName = xyz.dataId + "_" + fname
-        xyz.setXYZFile ( newFileName )
+        if xyzFilePath:
+            newPDBFileName = xyz.dataId + "_" + os.path.basename(xyzFilePath)
+            xyz.setXYZFile ( newPDBFileName )
+            os.rename ( xyzFilePath, os.path.join(outputDir,newPDBFileName) )
+        if mmcifFilePath:
+            newMMCIFFileName = xyz.dataId + "_" + os.path.basename(mmcifFilePath)
+            xyz.setXYZFile ( newMMCIFFileName )
+            os.rename ( mmcifFilePath, os.path.join(outputDir,newMMCIFFileName) )
+        # newFileName = xyz.dataId + "_" + fname
+        # xyz.setXYZFile ( newFileName )
         if outDataBox:
             outDataBox.add_data ( xyz )
-        os.rename ( xyzFilePath, os.path.join(outputDir,newFileName) )
         return xyz
     else:
         return None

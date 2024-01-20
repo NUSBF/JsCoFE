@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    20.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -419,7 +419,7 @@ class Simbad(asudef.ASUDef):
                     self.putMessage ( "Structure Data cannot be formed (probably a bug)" )
 
             else:  # only PDB file delivered
-                oxyz = self.registerXYZ ( pdbfile,checkout=True )
+                oxyz = self.registerXYZ ( None,pdbfile,checkout=True )
                 if oxyz:
                     oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                     self.putMessage (
