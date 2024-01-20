@@ -394,21 +394,23 @@ def setXYZMeta ( data_class,xyz_meta ):
     return
 
 
-def register ( mmcifFilePath,xyzFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
-    filePath = xyzFilePath if xyzFilePath else mmcifFilePath
+def register ( mmcifFilePath,pdbFilePath,dataSerialNo,job_id,outDataBox,outputDir ):
+    filePath = pdbFilePath if pdbFilePath else mmcifFilePath
     if filePath and os.path.isfile(filePath):
         xyz   = DType   ( job_id )
         fname = os.path.basename(filePath)
         xyz.setXYZFile ( fname )
         xyz.makeDName  ( dataSerialNo )
-        if xyzFilePath:
-            newPDBFileName = xyz.dataId + "_" + os.path.basename(xyzFilePath)
+        if pdbFilePath:
+            newPDBFileName = xyz.dataId + "_" + os.path.basename(pdbFilePath)
             xyz.setXYZFile ( newPDBFileName )
-            os.rename ( xyzFilePath, os.path.join(outputDir,newPDBFileName) )
+            os.rename ( pdbFilePath, os.path.join(outputDir,newPDBFileName) )
         if mmcifFilePath:
             newMMCIFFileName = xyz.dataId + "_" + os.path.basename(mmcifFilePath)
             xyz.setXYZFile ( newMMCIFFileName )
             os.rename ( mmcifFilePath, os.path.join(outputDir,newMMCIFFileName) )
+            if not pdbFilePath:
+                xyz.addSubtype ( dtype_template.subtypeMMCIFOnly() )
         # newFileName = xyz.dataId + "_" + fname
         # xyz.setXYZFile ( newFileName )
         if outDataBox:

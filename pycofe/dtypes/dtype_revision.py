@@ -225,6 +225,7 @@ class DType(dtype_template.DType):
             n = max(1,n)
         return n
 
+
     def getResComposition ( self ):
 
         composition = {
@@ -258,6 +259,7 @@ class DType(dtype_template.DType):
             
         return composition
 
+
     def setStructureData ( self,structure ):
         if structure:
             if structure.hasSubSubtype():
@@ -279,6 +281,7 @@ class DType(dtype_template.DType):
                 delattr ( self,"phaser_meta" )
             self.leadKey = structure.leadKey
         return
+
 
     def removeStructure ( self ):
         if self.Structure:

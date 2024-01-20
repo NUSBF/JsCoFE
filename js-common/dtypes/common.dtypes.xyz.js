@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.01.24   <--  Date of Last Modification.
+ *    20.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -27,6 +27,11 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
   __template = require ( './common.dtypes.template' );
 
 // ===========================================================================
+
+
+var xyz_subtype = {
+  MMCIF_ONLY  : 'mmcif_only'
+}
 
 // Data classes MUST BE named as 'DataSomething' AND put in file named
 // ./js-common/dtypes/common.dtypes.something.js . This convention is used
@@ -578,14 +583,16 @@ if (!__template)  {
       case 'dna'     : return 'DNA chain(s)';
       case 'na'      : return 'DNA/RNA chain(s)';
       case 'lig'     : return 'Ligand chain(s)';
+      case xyz_subtype.MMCIF_ONLY :
+                       return 'mmCIF only';
       default : ;
     }
     return DataTemplate.prototype.subtypeDescription.call ( this,subtype );
   }
 
-
 } else  {
   //  for server side
-  module.exports.DataXYZ = DataXYZ;
+  module.exports.DataXYZ     = DataXYZ;
+  module.exports.xyz_subtype = xyz_subtype;
 
 }
