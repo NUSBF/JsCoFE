@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.01.24   <--  Date of Last Modification.
+#    20.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -690,6 +690,8 @@ def register ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,mapFilePath,
         structure.add_file ( libFilePath  ,outputDir,dtype_template.file_key["lib"  ],copy_files )
         if mmcifFilePath or pdbFilePath:
             structure.addSubtype ( dtype_template.subtypeXYZ() )
+        if mmcifFilePath and not pdbFilePath:
+            structure.addSubtype ( dtype_template.subtypeMMCIFOnly() )
         if subFilePath:
             structure.addSubtype ( dtype_template.subtypeSubstructure() )
         if outDataBox:
@@ -734,6 +736,8 @@ def register1 ( mmcifFilePath,pdbFilePath,subFilePath,mtzFilePath,mapFilePath,
         structure.setFile ( basename(libFilePath  ),dtype_template.file_key["lib"  ] )
         if mmcifFilePath or pdbFilePath:
             structure.addSubtype ( dtype_template.subtypeXYZ() )
+        if mmcifFilePath and not pdbFilePath:
+            structure.addSubtype ( dtype_template.subtypeMMCIFOnly() )
         if subFilePath:
             structure.addSubtype ( dtype_template.subtypeSubstructure() )
         if outDataBox:

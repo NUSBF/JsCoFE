@@ -42,6 +42,9 @@ def subtypeProtein     (): return "protein"
 def subtypeDNA         (): return "dna"
 def subtypeRNA         (): return "rna"
 
+def subtypeMMCIFOnly   (): return "mmcif_only"
+
+
 # ============================================================================
 
 file_key = {

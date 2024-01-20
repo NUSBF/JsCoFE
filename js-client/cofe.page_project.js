@@ -44,13 +44,13 @@ function ProjectPage ( sceneId )  {
   this.jobTree        = null;    // == this.job_tree, for internal references
   this.can_reload     = false;   // tree reload semaphore
   this.pending_act    = '';      // action pending because of reload
-  // var replayJobTree  = null;  // == this.replay_job_tree, for internal references
+  // let replayJobTree  = null;  // == this.replay_job_tree, for internal references
   this.tree_div       = null;
 
   this.add_btn        = null;
   this.add_rem_btn    = null;
   this.thlight_btn    = null;
-  //var this.insert_btn    = null;
+  //let this.insert_btn    = null;
   this.moveup_btn     = null;
   this.del_btn        = null;
   this.stack_btn      = null;
@@ -63,14 +63,14 @@ function ProjectPage ( sceneId )  {
   this.selmode_btn    = null;
 
   // ***** development code, dormant
-  //var split_btn      = null;
-  //var replay_btn     = null;
-  //var replay_mode    = false;
+  //let split_btn      = null;
+  //let replay_btn     = null;
+  //let replay_mode    = false;
   // *******************************
 
   let self            = this;  // for referencing class's properties
 
-  // var setButtonState_timer = null;
+  // let setButtonState_timer = null;
 
   // -------------------------------------------------------------------------
 
@@ -117,7 +117,7 @@ function ProjectPage ( sceneId )  {
       });
     });
 
-    var accLbl = 'My Account';
+    let accLbl = 'My Account';
     if (__local_user)
       accLbl = 'Settings';
     self.addMenuItem ( accLbl,'settings',function(){
@@ -257,7 +257,7 @@ function ProjectPage ( sceneId )  {
   this.help_btn   .setSize(toolbutton_size,toolbutton_size).setTooltip('Documentation');
   this.roadmap_btn.setSize(toolbutton_size,toolbutton_size).setTooltip(appName() + ' roadmap');
 
-  for (var i=0;i<cnt;i++)
+  for (let i=0;i<cnt;i++)
     toolbar.setCellSize ( '','12px',i,0 );
 
   // ***** development code, dormant
@@ -317,8 +317,8 @@ function ProjectPage ( sceneId )  {
   //    }
   //    setButtonState();
   //    self.onResize ( window.innerWidth,window.innerHeight );
-  //    var icon = image_path('split_page');
-  //    var ttip = 'Show replay project';
+  //    let icon = image_path('split_page');
+  //    let ttip = 'Show replay project';
   //    if (replay_mode)  {
   //      icon = image_path('single_page');
   //      ttip = 'Hide replay project';
@@ -455,7 +455,7 @@ ProjectPage.prototype.setDisabled = function ( disabled_bool )  {
     this.add_btn     .setDisabled ( disabled_bool );
     this.add_rem_btn .setDisabled ( disabled_bool );
     this.thlight_btn .setDisabled ( disabled_bool );
-    //var this.insert_btn    = null;
+    //let this.insert_btn    = null;
     if (this.moveup_btn)
       this.moveup_btn.setDisabled ( disabled_bool );
     this.del_btn    .setDisabled ( disabled_bool );
@@ -498,7 +498,7 @@ ProjectPage.prototype.end_action = function()  {
 ProjectPage.prototype.addJob = function()  {
   // this.addJobRepeat();
   this.selectRemark();
-  var self = this;
+  let self = this;
   if (this.start_action('add_job'))
     self.jobTree.addJob ( false,false,self,function(key){
       // self.del_btn.setDisabled ( false );
@@ -509,7 +509,7 @@ ProjectPage.prototype.addJob = function()  {
 
 ProjectPage.prototype.addJobRepeat = function()  {
   this.selectRemark();
-  var self = this;
+  let self = this;
   if (this.start_action('add_job_repeat'))
     // (function(self){
       self.jobTree.addJob ( false,true,self,function(key){
@@ -522,7 +522,7 @@ ProjectPage.prototype.addJobRepeat = function()  {
 
 ProjectPage.prototype.insertJob = function()  {
   this.selectRemark();
-  var self = this;
+  let self = this;
   if (this.start_action('insert_job'))
     // (function(self){
       self.jobTree.addJob ( true,false,self,function(key){
@@ -538,7 +538,7 @@ ProjectPage.prototype.insertJob = function()  {
 
 ProjectPage.prototype.addRemark = function()  {
   if (this.start_action('add_remark'))  {
-    var self = this;
+    let self = this;
     // (function(self){
       self.can_reload = true;
       self.jobTree.addTask ( new TaskRemark(),true,false,self,function(key){
@@ -570,7 +570,7 @@ ProjectPage.prototype.addRevisionRemark = function ( callback_func )  {
 
 ProjectPage.prototype.cloneJob = function() {
   if (this.start_action('clone_job'))  {
-    var self = this;
+    let self = this;
     // (function(self){
       self.jobTree.cloneJob ( 'clone',self,function(){
         self._set_del_button_state();
@@ -585,7 +585,7 @@ ProjectPage.prototype.copyJobToClipboard = function()  {
 }
 
 ProjectPage.prototype.pasteJobFromClipboard = function() {
-  var self = this;
+  let self = this;
   this.jobTree.pasteJobFromClipboard ( function(task){
     self.addTaskToSelected ( task,image_path(task.icon()),task.title );
   });
@@ -627,7 +627,7 @@ ProjectPage.prototype.pasteJobFromClipboard = function() {
 
 ProjectPage.prototype.deleteJob = function() {
   if (this.start_action('delete_job'))  {
-    var self = this;
+    let self = this;
     // (function(self){
       self.jobTree.deleteJob ( false,function(was_deleted_bool){
         self.end_action();
@@ -640,7 +640,7 @@ ProjectPage.prototype.deleteJob = function() {
 
 ProjectPage.prototype.moveJobUp = function()  {
   if (this.start_action('move_job_up'))  {
-    var self = this;
+    let self = this;
     // (function(self){
       self.jobTree.moveJobUp ( function(){
         self.end_action();
@@ -657,9 +657,9 @@ ProjectPage.prototype.toggleBranchHighlight = function()  {
 
 ProjectPage.prototype.stackJobs = function() {
   if (this.start_action('stack_jobs'))  {
-    var adata = this.jobTree.selectStackJobs();
-    var save  = false;
-    var self  = this;
+    let adata = this.jobTree.selectStackJobs();
+    let save  = false;
+    let self  = this;
     if (adata[0]==1)  {
       if (adata[1].length<=0)  {
         this.jobTree.makeStack1 ( adata[2],'',image_path('job_stack') );
@@ -668,20 +668,20 @@ ProjectPage.prototype.stackJobs = function() {
         this.jobTree.makeStack1 ( adata[1],'',image_path('job_stack') );
         save = true;
       } else  {
-        var qdlg = new Dialog('Stacking direction');
-        var grid = new Grid('');
+        let qdlg = new Dialog('Stacking direction');
+        let grid = new Grid('');
         qdlg.addWidget ( grid );
         grid.setLabel ( '<h2>Stacking direction</h2>' +
                         'You can choose to stack suitable jobs which are<br>' +
                         '(the selected job is included):<br>&nbsp;',0,0,1,3 );
-        var above_cbx = grid.setCheckbox ( 'above the currently selected job',false,1,1,1,1 );
-        var below_cbx = grid.setCheckbox ( 'below the currently selected job',true, 2,1,1,1 );
+        let above_cbx = grid.setCheckbox ( 'above the currently selected job',false,1,1,1,1 );
+        let below_cbx = grid.setCheckbox ( 'below the currently selected job',true, 2,1,1,1 );
         grid.setLabel ( '&nbsp;<br>Make your choice and click <b><i>Stack</i></b> ' +
                         'button.',3,0,1,3 );
         // (function(self){
           qdlg._options.buttons = {
             "Stack"   : function() {
-                          var nodelist = [];
+                          let nodelist = [];
                           if (above_cbx.getValue())
                             nodelist = adata[1];
                           if (below_cbx.getValue())  {
@@ -752,7 +752,7 @@ ProjectPage.prototype.stackJobs = function() {
 
 ProjectPage.prototype.setButtonState = function() {
   if (this.start_action('set_button_state'))  {
-    var self = this;
+    let self = this;
     // (function(self){
       self._set_button_state();
       self.end_action();
@@ -827,16 +827,16 @@ ProjectPage.prototype.sendJobResults = function() {
 /*
 
 
-  var self = this;
+  let self = this;
 
-  var data  = {
+  let data  = {
     meta : crTask
   };
   // data.meta = this.task;
   // data.ancestors = [];
   // if (this.tree.projectData)  data.is_shared = this.tree.isShared();
   //                       else  data.is_shared = false;
-  // for (var i=1;i<this.ancestors.length;i++)
+  // for (let i=1;i<this.ancestors.length;i++)
   //   data.ancestors.push ( this.ancestors[i]._type );
   // if (!this.task.job_dialog_data.viewed)  {
   //   this.onDlgSignal_func ( this,job_dialog_reason.reset_node,null );
@@ -879,7 +879,7 @@ ProjectPage.prototype._set_del_button_state = function() {
     dsel = (node.parentId!=null) && (this.jobTree.permissions!=share_permissions.view_only);
     let task = null;
     if (dsel && this.jobTree.projectData.desc.archive)  {
-      // var task = this.jobTree.getTaskByNodeId ( node.id );
+      // let task = this.jobTree.getTaskByNodeId ( node.id );
       task = this.jobTree.getSelectedTask();
       if (task)
         dsel = !('archive_version' in task);
@@ -895,12 +895,12 @@ ProjectPage.prototype._set_del_button_state = function() {
 }
 
 ProjectPage.prototype._set_button_state = function() {
-var dsel = false;
-var task = this.jobTree.getSelectedTask();
-var node = this.jobTree.getSelectedNode();
-var not_view_only = (!this.jobTree.view_only);
-var child_tasks = this.jobTree.getChildTasks ( node );
-var has_remark  = false;
+let dsel          = false;
+let task          = this.jobTree.getSelectedTask();
+let node          = this.jobTree.getSelectedNode();
+let not_view_only = (!this.jobTree.view_only);
+let child_tasks   = this.jobTree.getChildTasks ( node );
+let has_remark    = false;
 
   if (child_tasks.length==1)
     has_remark = (child_tasks[0].state==job_code.remark);
@@ -911,14 +911,14 @@ var has_remark  = false;
   this.stack_btn.setEnabled ( (this.jobTree.selectStackJobs()[0]>0)  );
 
   if (task)  {
-    var is_remark   = task.isRemark();
-    var add_enabled = is_remark;
+    let is_remark   = task.isRemark();
+    let add_enabled = is_remark;
     if (is_remark)  {
-      var tparent = this.jobTree.getNonRemarkParent ( task );
+      let tparent = this.jobTree.getNonRemarkParent ( task );
       if (tparent)
         add_enabled = (tparent.state==job_code.finished);
     }
-    var can_add = (!__dormant) && not_view_only &&
+    let can_add = (!__dormant) && not_view_only &&
                   ((task.state==job_code.finished) || (is_remark && add_enabled));
     this.add_btn  .setEnabled ( can_add );
 
@@ -973,7 +973,7 @@ var has_remark  = false;
 
 ProjectPage.prototype.share_project = function()  {
   if (this.jobTree)  {
-    var self = this;
+    let self = this;
     // (function(self){
       shareProject ( self.jobTree.projectData.desc,function(desc){
         if (desc)  {
@@ -994,16 +994,16 @@ ProjectPage.prototype.share_project = function()  {
 
 ProjectPage.prototype.onTreeContextMenu = function() {
   // The default set of all items
-  var items  = {};
-  var node   = this.jobTree.getSelectedNode();
+  let items  = {};
+  let node   = this.jobTree.getSelectedNode();
 
   __close_all_menus();
 
-  var self = this;
+  let self = this;
 
   // (function(self){
 
-    var crTask = self.jobTree.task_map[node.id];
+    let crTask = self.jobTree.task_map[node.id];
 
     if (!$(self.add_btn.element).button('option','disabled'))  {
       items.addJobItem = { // The "Add job" menu item
@@ -1121,7 +1121,7 @@ ProjectPage.prototype.onTreeContextMenu = function() {
       action: function(){ self.toggleBranchHighlight(); }
     };
 
-    var adata = self.jobTree.selectStackJobs();
+    let adata = self.jobTree.selectStackJobs();
     if (adata[0]==1)  {
       items.addStackItem = {
         label : "Stack jobs",
@@ -1253,10 +1253,10 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
     this.can_reload = false;  // block concurrent reloads
     this.jobTree.stopTaskLoop();
     this.jobTree.checkTimeout = -1;  // prevents task loop from starting again
-    var dlg_task_parameters = this.jobTree.getJobDialogTaskParameters();
-    var scrollPos = this.jobTree.parent.getScrollPosition();
-    var jobTree1  = this.makeJobTree();
-    var timestamp = this.jobTree.projectData.desc.timestamp;
+    let dlg_task_parameters = this.jobTree.getJobDialogTaskParameters();
+    let scrollPos = this.jobTree.parent.getScrollPosition();
+    let jobTree1  = this.makeJobTree();
+    let timestamp = this.jobTree.projectData.desc.timestamp;
     if (blink)  {
       this.jobTree.closeAllJobDialogs();
       this.jobTree.hide();
@@ -1269,8 +1269,8 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
 
     // (function(self,job_tree_1){
 
-      var self = this;
-      var job_tree_1 = jobTree1;
+      let self = this;
+      let job_tree_1 = jobTree1;
 
       job_tree_1.multiple = self.jobTree.multiple;  // needed for tree creation
       job_tree_1.readProjectData ( 'Project',false,timestamp,
@@ -1282,8 +1282,8 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
           if (job_tree_1.projectData)  {
             job_tree_1.multiple = self.jobTree.multiple;
             if (self.onTreeLoaded(true,job_tree_1))  {
-              var selTasks = self.jobTree.getSelectedTasks();
-              var dlg_map  = self.jobTree.dlg_map;
+              let selTasks = self.jobTree.getSelectedTasks();
+              let dlg_map  = self.jobTree.dlg_map;
               self.jobTree.delete();
               self.setJobTree ( job_tree_1 );  // -> self.jobTree
               self.jobTree.selectTasks ( selTasks );
@@ -1297,7 +1297,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
               if (rdata)  {
                 self.updateUserRationDisplay ( rdata );
                 if ('completed_map' in rdata)
-                  for (var key in rdata.completed_map)  {
+                  for (let key in rdata.completed_map)  {
                     self.jobTree.startChainTask ( rdata.completed_map[key],null );
                     update_project_metrics ( rdata.completed_map[key],
                                              self.jobTree.projectData.desc.metrics );
@@ -1341,7 +1341,7 @@ ProjectPage.prototype.reloadTree = function ( blink,force,rdata )  {
 
 ProjectPage.prototype.wakeZombieJobs = function ( callback_func )  {
   if (this.jobTree.projectData)  {
-    var request_data = {};
+    let request_data = {};
     request_data.project = this.jobTree.projectData.desc.name;
     serverRequest ( fe_reqtype.wakeZombieJobs,request_data,'Project Page',
       function(data){},
@@ -1364,12 +1364,12 @@ ProjectPage.prototype.wakeZombieJobs = function ( callback_func )  {
 
 ProjectPage.prototype.makeJobTree = function()  {
 // set the job tree
-  var jobTree = new JobTree ();
+  let jobTree = new JobTree ();
   jobTree.element.style.paddingTop    = '0px';
   jobTree.element.style.paddingBottom = '25px';
   jobTree.element.style.paddingRight  = '40px';
   // this.job_tree = jobTree;  // for external references
-  var self = this;
+  let self = this;
   // (function(self){
     jobTree.addSignalHandler ( cofe_signals.rationUpdated,function(data){
       //alert ( 'ration updated ' + JSON.stringify(data));
@@ -1384,7 +1384,7 @@ ProjectPage.prototype.makeJobTree = function()  {
 // ***** development code, dormant
 // ProjectPage.prototype.makeReplayJobTree = function()  {
 // // set the job tree
-//   var jobTree = new JobTree();
+//   let jobTree = new JobTree();
 //   jobTree.setReplayMode();
 //   jobTree.element.style.paddingTop    = '0px';
 //   jobTree.element.style.paddingBottom = '25px';
@@ -1404,10 +1404,10 @@ ProjectPage.prototype.makeJobTree = function()  {
 
 
 ProjectPage.prototype.selectRemark = function()  {
-  var node        = this.jobTree.getSelectedNode();
-  var child_nodes = this.jobTree.getChildNodes ( node );
+  let node        = this.jobTree.getSelectedNode();
+  let child_nodes = this.jobTree.getChildNodes ( node );
   if (child_nodes.length==1)  {
-    var task = this.jobTree.getTaskByNodeId ( child_nodes[0].id );
+    let task = this.jobTree.getTaskByNodeId ( child_nodes[0].id );
     if (task)  {
       if (task.state==job_code.remark)  {
         if (this.jobTree.calcSelectedNodeIds().length<=1)
@@ -1437,7 +1437,7 @@ ProjectPage.prototype.addTaskToSelected = function ( task,icon_uri,title )  {
     this.selectRemark();
     if (this.start_action('add_job'))  {
       this.can_reload = true;
-      var self = this;
+      let self = this;
       this.jobTree.addTask ( task,false,false,this,
         function(key,avail_key,dataSummary){
           // if (key!=1)  // task was added or failed
@@ -1529,7 +1529,7 @@ ProjectPage.prototype.onResize = function ( width,height )  {
   // ***** development code, dormant
   //if (this.replay_div)  {
   //  if (this.replay_div.isVisible())  {
-  //    var hw = (round(width/2,0)-75) + 'px';
+  //    let hw = (round(width/2,0)-75) + 'px';
   //    this.tree_div  .element.style.width = hw;
   //    this.replay_div.element.style.width = hw;
   //  } else
@@ -1556,7 +1556,7 @@ ProjectPage.prototype.reloadProject = function()  {
 }
 
 ProjectPage.prototype.cloneJobWithSuggestedParameters = function ( jobId ) {
-  var self = this;
+  let self = this;
   this.jobTree.cloneJob ( 'copy_suggested',self,function(){
     // self.del_btn.setDisabled ( false );
     self._set_del_button_state();
@@ -1580,7 +1580,7 @@ ProjectPage.prototype.runHotButtonJob = function ( jobId,task )  {
 
 
 function rvapi_canRunJob()  {
-var canrun = false;
+let canrun = false;
   if (!__current_page)  {
     new MessageBox ( 'Page not found','Project Page not found. This is a bug, ' +
                      'please contact ' + appName() + ' developer.', 'msg_error' );
