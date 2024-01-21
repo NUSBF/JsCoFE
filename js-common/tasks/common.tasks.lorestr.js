@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.09.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  RefMac Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -40,14 +40,15 @@ function TaskLorestr()  {
   //this.helpURL = './html/jscofe_task_lorestr.html';
 
   this.input_dtypes = [{      // input data types
-      data_type : {'DataRevision':['xyz']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':['xyz','~mmcif_only']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       version   : 0,          // minimum data version allowed
       min       : 1,          // minimum acceptable number of data instances
       max       : 1           // maximum acceptable number of data instances
     },{
-      data_type : {'DataXYZ':[],'DataStructure':[]}, // data type(s) and subtype(s)
+      data_type : {'DataXYZ'      :['~mmcif_only'],
+                   'DataStructure':['~mmcif_only']}, // data type(s) and subtype(s)
       desc      : 'reference structure',
       label     : 'Reference structure',    // label for input dialog
       inputId   : 'rstruct',  // input Id for referencing input fields

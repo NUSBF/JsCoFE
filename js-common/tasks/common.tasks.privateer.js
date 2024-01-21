@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Privateer Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2024
  *
  *  =================================================================
  *
@@ -40,7 +40,7 @@ function TaskPrivateer()  {
 
   this.input_dtypes = [{      // input data types
       // data_type : {'DataRevision':['xyz','ligands']}, // data type(s) and subtype(s)
-      data_type : {'DataRevision':['xyz']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':['xyz','~mmcif_only']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       version   : 0,          // minimum data version allowed

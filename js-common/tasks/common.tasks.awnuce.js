@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Arp/wArp NUCE Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2022-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2022-2024
  *
  *  =================================================================
  *
@@ -39,7 +39,7 @@ function TaskAWNuce()  {
   this.title   = 'NUCE: Trace Nucleic Acid Chains with Arp/wArp';
 
   this.input_dtypes = [{  // input data types
-      data_type : {'DataRevision':[['rna','dna'],'!phases']}, // data type(s) and subtype(s)
+      data_type : {'DataRevision':[['rna','dna'],'!phases','~mmcif_only']}, // data type(s) and subtype(s)
       label     : 'Structure revision',     // label for input dialog
       inputId   : 'revision', // input Id for referencing input fields
       version   : 4,          // minimum data version allowed

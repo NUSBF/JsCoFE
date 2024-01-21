@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SymMatch Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2024
  *
  *  =================================================================
  *
@@ -40,7 +40,7 @@ function TaskSymMatch()  {
   //this.helpURL = './html/jscofe_task_symmatch.html';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision' :['xyz','substructure']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision' :['xyz','substructure','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision', // label for input dialog
       inputId     : 'revision',           // input Id for referencing input fields
       tooltip     : 'Structure that will be matched to reference structure.',
@@ -48,8 +48,8 @@ function TaskSymMatch()  {
       min         : 1,                // minimum acceptable number of data instances
       max         : 1                 // maximum acceptable number of data instances
     },{
-      data_type   : {'DataStructure':['xyz','substructure'],
-                     'DataXYZ'      :[]
+      data_type   : {'DataStructure':['xyz','substructure','~mmcif_only'],
+                     'DataXYZ'      :['~mmcif_only']
                     }, // data type(s) and subtype(s)
       label       : 'Reference structure', // label for input dialog
       tooltip     : 'Structure that will be used as a reference to match the ' +

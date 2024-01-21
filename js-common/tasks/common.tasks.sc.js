@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  XYZ Utilities Task Class
  *       ~~~~~~~~~
  *
- *  (C) M. Fando, E. Krissinel, A. Lebedev 2023
+ *  (C) M. Fando, E. Krissinel, A. Lebedev 2023-2024
  *
  *  =================================================================
  *
@@ -43,10 +43,10 @@ function TaskSC() { // must start with Task...
 	
   // define fields important for jsCoFE framework
   this.input_dtypes = [{      // input data types
-    data_type   : {'DataStructure':['protein'],
-                   'DataEnsemble' :['protein'],
-                   'DataModel'    :['protein'],
-                   'DataXYZ'      :['protein']
+    data_type   : {'DataStructure':['protein','~mmcif_only'],
+                   'DataEnsemble' :['protein','~mmcif_only'],
+                   'DataModel'    :['protein','~mmcif_only'],
+                   'DataXYZ'      :['protein','~mmcif_only']
                   },  // data type(s) and subtype(s)
     label       : 'Structure',    // label for input dialog
     inputId     : 'xyz',          // input Id for referencing input fields

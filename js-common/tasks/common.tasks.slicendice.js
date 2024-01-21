@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    11.12.23    <--  Date of Last Modification.
+ *    21.01.24    <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  MrBUMP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2022-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2022-2024
  *
  *  =================================================================
  *
@@ -39,7 +39,7 @@ function TaskSliceNDice()  {
   this.title   = "MR with model splitting using Slice'N'Dice";
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':['!protein','!asu','!hkl']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!asu','!hkl','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
@@ -47,9 +47,9 @@ function TaskSliceNDice()  {
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
-      data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz','!protein'],
-                     'DataModel'    :['protein'],
-                     'DataXYZ'      :['protein']},  // data type(s) and subtype(s)
+      data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz','!protein','~mmcif_only'],
+                     'DataModel'    :['protein','~mmcif_only'],
+                     'DataXYZ'      :['protein','~mmcif_only']},  // data type(s) and subtype(s)
       label       : 'Template structure', // label for input dialog
       tooltip     : 'Specify template structure to be split into domains.',
       inputId     : 'xyz',       // input Id for referencing input fields

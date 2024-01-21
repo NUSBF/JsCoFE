@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-RB Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2023-2024
  *
  *  =================================================================
  *
@@ -39,7 +39,7 @@ function TaskPhaserRB()  {
   this.title   = 'Rigid-Body Refinement with Phaser';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':['!hkl','!asu','!xyz']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!hkl','!asu','!xyz','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision',   // input Id for referencing input fields
       // customInput : 'phaser-mr1', // lay custom fields below the dropdown

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.12.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Single Model MR Workflow Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2023
+ *  (C) E. Krissinel, O. Kovalevskiy, A. Lebedev, M. Fando 2021-2024
  *
  *  =================================================================
  *
@@ -90,7 +90,7 @@ function TaskWFlowSMR()  {
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
-      data_type   : {'DataXYZ':['protein','dna','rna'] },  // data type(s) and subtype(s)
+      data_type   : {'DataXYZ':['protein','dna','rna','~mmcif_only'] },  // data type(s) and subtype(s)
       label       : 'Template structure',    // label for input dialog
       inputId     : 'xyz',    // input Id for referencing input fields
       //customInput : 'chain-sel', // lay custom fields next to the selection

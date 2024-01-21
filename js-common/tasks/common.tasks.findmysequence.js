@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  FindMySequence Task Class
  *       ~~~~~~~~~
  *
- *  (C) G. Chojnowski, E. Krissinel, A. Lebedev 2022-2023
+ *  (C) G. Chojnowski, E. Krissinel, A. Lebedev 2022-2024
  *
  *  =================================================================
  *
@@ -39,7 +39,7 @@ function TaskFindMySequence()  {
   this.title = 'FindMySequence';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!protein','!phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!phases','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       version     : 0,          // minimum data version allowed

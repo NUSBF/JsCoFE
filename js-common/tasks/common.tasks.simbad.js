@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  SIMBAD Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, Oleg Kovalevskyi, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, Oleg Kovalevskyi, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -42,8 +42,8 @@ function TaskSimbad()  {
   this.input_dtypes = [{    // input data types
      data_type   : {'DataRevision'  : ['!asu','~xyz'],
                     'DataHKL'       : [],
-                    'DataStructure' : [],
-                    'DataXYZ'       : []
+                    'DataStructure' : ['~mmcif_only'],
+                    'DataXYZ'       : ['~mmcif_only']
                    },  // data type(s) and subtype(s)
      label       : 'ASU, reflection data or<br>symmetry reference', // label for input dialog
      inputId     : 'idata',   // input Id for referencing input fields

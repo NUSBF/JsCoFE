@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.01.24   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -196,14 +196,14 @@ if (!__template)  {
   }
 
   DataRevision.prototype.makeDataSummaryPage = function ( task ) {
-    var dsp  = new Grid ( '' );
+    let dsp  = new Grid ( '' );
     dsp.tabs = new Tabs ();
 
-    var tab1 = dsp.tabs.addTab ( 'General',true  );
+    let tab1 = dsp.tabs.addTab ( 'General',true  );
     tab1.grid.setLabel  ( '<h3>Structure Revision R' + this.dataId + '</h3>',0,0,1,1 );
-    var dataSummaryPage = new DataSummaryPage(this);
-    var phases_source = 'unknown (possible bug)';
-    var phases_type   = 'Not phased';
+    let dataSummaryPage = new DataSummaryPage(this);
+    let phases_source = 'unknown (possible bug)';
+    let phases_type   = 'Not phased';
     if (this.Options.leading_structure=='structure')  {
       phases_source = 'Structure';
       phases_type   = this.Structure.phaseType();
@@ -221,20 +221,20 @@ if (!__template)  {
     tab1.grid.setWidget ( dataSummaryPage, 1,0,1,1 );
 
     if (this.HKL)  {
-      var tab2 = dsp.tabs.addTab ( 'HKL',false );
+      let tab2 = dsp.tabs.addTab ( 'HKL',false );
       tab2.grid.setWidget ( this.HKL.makeDataSummaryPage(task), 0,0,1,1 );
     }
 
-    var tab3 = dsp.tabs.addTab ( 'ASU',false );
+    let tab3 = dsp.tabs.addTab ( 'ASU',false );
     tab3.grid.setWidget ( this.makeASUSummaryPage(task), 0,0,1,1 );
 
     if (this.Structure)  {
-      var tab4 = dsp.tabs.addTab ( 'Structure',false );
+      let tab4 = dsp.tabs.addTab ( 'Structure',false );
       tab4.grid.setWidget ( this.Structure.makeDataSummaryPage(task), 0,0,1,1 );
     }
 
     if (this.Substructure)  {
-      var tab5 = dsp.tabs.addTab ( 'Substructure',false );
+      let tab5 = dsp.tabs.addTab ( 'Substructure',false );
       tab5.grid.setWidget ( this.Substructure.makeDataSummaryPage(task), 0,0,1,1 );
     }
 
@@ -245,8 +245,8 @@ if (!__template)  {
   }
 
   DataRevision.prototype.inspectData = function ( task ) {
-    var dsp = this.makeDataSummaryPage ( task );
-    var dlg = new DataInspectDialog ( dsp,this.dname,'800px','700px' );
+    let dsp = this.makeDataSummaryPage ( task );
+    let dlg = new DataInspectDialog ( dsp,this.dname,'800px','700px' );
 
     function dsp_resize()  {
       dsp.setHeight_px ( $(dlg.element).dialog( "option", "height" )-128 );
@@ -265,8 +265,8 @@ if (!__template)  {
 
 
   DataRevision.prototype._layCDI_Crank2 = function ( dropdown,mode )  {
-  var customGrid = dropdown.customGrid;
-  var row        = customGrid.getNRows();
+  let customGrid = dropdown.customGrid;
+  let row        = customGrid.getNRows();
 
     customGrid.phasing_sel = null;
     if ((mode=='crank2') && (this.Structure || this.Substructure))  {
@@ -325,8 +325,8 @@ if (!__template)  {
     customGrid.setVerticalAlignment ( row,3,'middle' );
 
     function showNDis()  {
-      var ha_type = customGrid.ha_type.getValue().trim();
-      var showdis = (ha_type.toLowerCase()=='s');
+      let ha_type = customGrid.ha_type.getValue().trim();
+      let showdis = (ha_type.toLowerCase()=='s');
       customGrid.ndis_lbl.setVisible ( showdis );
       customGrid.ndisulph.setVisible ( showdis );
       customGrid.ha_lbl  .setVisible ( (ha_type.length<=0) );
@@ -353,8 +353,8 @@ if (!__template)  {
   }
 
   DataRevision.prototype._layMROptions = function ( dropdown,row,sep_bool )  {
-  var struct_sel_list = null;
-  var customGrid = dropdown.customGrid;
+  let struct_sel_list = null;
+  let customGrid = dropdown.customGrid;
 
     if (this.Options.leading_structure=='structure')  {
 
@@ -386,7 +386,7 @@ if (!__template)  {
       customGrid.setVerticalAlignment ( row,0,'middle' );
       customGrid.structure_sel = new Dropdown();
       customGrid.setWidget ( customGrid.structure_sel,row,1,1,4 );
-      for (var i=0;i<struct_sel_list.length;i++)
+      for (let i=0;i<struct_sel_list.length;i++)
         customGrid.structure_sel.addItem (
                             struct_sel_list[i][0],'',struct_sel_list[i][1],
                             this.Options.structure_sel==struct_sel_list[i][1] );
@@ -402,19 +402,19 @@ if (!__template)  {
 
   DataRevision.prototype._layCDI_Molrep = function ( dropdown )  {
   // must be kept here to support correct appearance of Input Panels in old jobs
-  var customGrid = dropdown.customGrid;
-  var row        = customGrid.getNRows();
+  let customGrid = dropdown.customGrid;
+  let row        = customGrid.getNRows();
     this._layMROptions ( dropdown,row,true );
   }
 
 
   DataRevision.prototype._layMROptions1 = function ( dropdown,row0 )  {
-  var customGrid = dropdown.customGrid;
-  var row        = row0;
-  var xyz        = this.Structure    && this.Structure.hasXYZ();
-  var sphases    = this.Structure    && this.Structure.hasPhases();
-  var subsphases = this.Substructure && this.Substructure.hasPhases();
-  var subslead   = (this.Options.leading_structure=='substructure');
+  let customGrid = dropdown.customGrid;
+  let row        = row0;
+  let xyz        = this.Structure    && this.Structure.hasXYZ();
+  let sphases    = this.Structure    && this.Structure.hasPhases();
+  let subsphases = this.Substructure && this.Substructure.hasPhases();
+  let subslead   = (this.Options.leading_structure=='substructure');
 
     if (xyz)
       customGrid.setLabel ( 'Currently fitted model will not be changed',row++,0,1,4 )
@@ -424,7 +424,7 @@ if (!__template)  {
                 .setFontItalic(true).setNoWrap();
       this.Options.mr_type = 'subsph';
     } else  {
-      var mrt_lst = [ ['reflection data' ,'refl'] ];
+      let mrt_lst = [ ['reflection data' ,'refl'] ];
       if (sphases)  
         mrt_lst.push ( ['structure phases','sph'] );
       if (subsphases)  
@@ -435,7 +435,7 @@ if (!__template)  {
         customGrid.setVerticalAlignment ( row,0,'middle' );
         customGrid.mr_type_sel = new Dropdown();
         customGrid.setWidget ( customGrid.mr_type_sel,row,1,1,4 );
-        for (var i=0;i<mrt_lst.length;i++)
+        for (let i=0;i<mrt_lst.length;i++)
           customGrid.mr_type_sel.addItem ( mrt_lst[i][0],'',mrt_lst[i][1],
                                       this.Options.mr_type==mrt_lst[i][1] );
         customGrid.mr_type_sel.make();
@@ -450,7 +450,7 @@ if (!__template)  {
 
 
   DataRevision.prototype._layCDI_JLigand = function ( dropdown )  {
-  var customGrid = dropdown.customGrid;
+  let customGrid = dropdown.customGrid;
     if (this.Structure && this.Structure.hasXYZ()) {
       customGrid.setLabel ( 'Matching LINKR records will be added automatically',0,0,1,1 )
         .setFontItalic(true).setNoWrap();
@@ -459,14 +459,14 @@ if (!__template)  {
 
 
   DataRevision.prototype._layCDI_Molrep1 = function ( dropdown )  {
-  var customGrid = dropdown.customGrid;
-  var row0       = customGrid.getNRows();
-  // var xyz        = this.Structure    && this.Structure.hasXYZ();
-  var sphases    = this.Structure    && this.Structure.hasPhases();
-  var subsphases = this.Substructure && this.Substructure.hasPhases();
+  let customGrid = dropdown.customGrid;
+  let row0       = customGrid.getNRows();
+  // let xyz        = this.Structure    && this.Structure.hasXYZ();
+  let sphases    = this.Structure    && this.Structure.hasPhases();
+  let subsphases = this.Substructure && this.Substructure.hasPhases();
 
     this._layMROptions1 ( dropdown,row0 );
-    var row = customGrid.getNRows();
+    let row = customGrid.getNRows();
 
 //{refl|sph|subsph}
 
@@ -485,7 +485,7 @@ if (!__template)  {
       customGrid.ds_protocol_sel.make();
       customGrid.setCellSize ( '5%' ,'',row,0 );
       customGrid.setCellSize ( '95%','',row,1 );
-      var crtype = null;
+      let crtype = null;
       if ('mr_type_sel' in customGrid)  {
         customGrid.ds_row = row;
         customGrid.mr_type_sel.addOnChangeListener ( function(text,value){
@@ -511,7 +511,7 @@ if (!__template)  {
 
   DataRevision.prototype._layCDI_AsuMod = function ( dropdown )  {
     if (this.HKL.hasAnomalousSignal())  {
-      var customGrid = dropdown.customGrid;
+      let customGrid = dropdown.customGrid;
       customGrid.setLabel ( 'main anomalous scatterer:',0,0,1,1 ).setFontItalic(true).setNoWrap();
       customGrid.ha_type = customGrid.setInputText ( this.ASU.ha_type,0,1,1,1 )
                 .setStyle    ( 'text','','','Specify atom type of anomolous ' +
@@ -682,11 +682,11 @@ if (!__template)  {
 
 
   DataRevision.prototype._layCDI_Parrot = function ( dropdown )  {
-  var customGrid = dropdown.customGrid;
-  var row        = customGrid.getNRows();
+  let customGrid = dropdown.customGrid;
+  let row        = customGrid.getNRows();
 
     if (this.Structure && this.Substructure)  {
-      var text = 'Will use phases from ';
+      let text = 'Will use phases from ';
       if (this.Options.leading_structure=='substructure')
             text += 'heavy-atom substructure (' + this.ASU.ha_type + ')';
       else  text += 'macromolecular model';
@@ -713,11 +713,11 @@ if (!__template)  {
   }
 
   DataRevision.prototype._layCDI_Structure = function ( dropdown,key )  {
-  var customGrid = dropdown.customGrid;
-  var row        = customGrid.getNRows();
+  let customGrid = dropdown.customGrid;
+  let row        = customGrid.getNRows();
 
     if (this.Structure && this.Substructure)  {
-      var text = 'Will use phases from ';
+      let text = 'Will use phases from ';
       if (this.Options.leading_structure=='substructure')
             text += 'heavy-atom substructure (' + this.ASU.ha_type + ')';
       else  text += 'macromolecular model';
@@ -743,12 +743,12 @@ if (!__template)  {
 
 
   DataRevision.prototype._layCDI_CootMB = function ( dropdown )  {
-  var customGrid = dropdown.customGrid;
-  var row        = customGrid.getNRows();
+  let customGrid = dropdown.customGrid;
+  let row        = customGrid.getNRows();
     if (this.Structure && this.Substructure)  {
       if (!('load_all' in this.Options))
         this.Options.load_all = false;
-      var label = 'Load HA substructure';
+      let label = 'Load HA substructure';
       if (this.Options.leading_structure=='substructure')
         label = 'Load structure';
       customGrid.load_all_cbx = customGrid.setCheckbox ( label,
@@ -759,8 +759,8 @@ if (!__template)  {
 
 
   DataRevision.prototype._layCDI_ModelCraft = function ( dropdown )  {
-  var customGrid = dropdown.customGrid;
-  var row        = customGrid.getNRows();
+  let customGrid = dropdown.customGrid;
+  let row        = customGrid.getNRows();
     if (!('useSubstruct' in this.Options))
       this.Options.useSubstruct = false;
     if (!('build_sel' in this.Options))
@@ -792,10 +792,10 @@ if (!__template)  {
 
 
   DataRevision.prototype._layCDI_TextEditor = function ( dropdown )  {
-    var flist = [];
+    let flist = [];
 
-    for (var i=0;i<this.ASU.seq.length;i++)  {
-      var files = this.ASU.seq[i].files;
+    for (let i=0;i<this.ASU.seq.length;i++)  {
+      let files = this.ASU.seq[i].files;
       if (file_key.seq in files)
         flist.push ([ 'sequence',files[file_key.seq] ]);
     }
@@ -815,8 +815,8 @@ if (!__template)  {
     }
 
     if (flist.length>0)  {
-      var customGrid = dropdown.customGrid;
-      var row        = customGrid.getNRows();
+      let customGrid = dropdown.customGrid;
+      let row        = customGrid.getNRows();
       customGrid.setLabel ( 'Select file:',row,0,1,1 ).setFontItalic(true).setNoWrap();
       customGrid.setVerticalAlignment ( row,0,'middle' );
       customGrid.textedit_sel = new Dropdown();
@@ -842,8 +842,8 @@ if (!__template)  {
     // }
 
     // if (this.Structure || this.Substructure)  {
-    //   var customGrid = dropdown.customGrid;
-    //   var row        = customGrid.getNRows();
+    //   let customGrid = dropdown.customGrid;
+    //   let row        = customGrid.getNRows();
 
     //   customGrid.setLabel ( 'Select file:',row,0,1,1 ).setFontItalic(true).setNoWrap();
     //   customGrid.setVerticalAlignment ( row,0,'middle' );
@@ -958,8 +958,8 @@ if (!__template)  {
   }
 
   DataRevision.prototype._collectCDI_Crank2 = function ( dropdown )  {
-    var customGrid = dropdown.customGrid;
-    var msg = '';
+    let customGrid = dropdown.customGrid;
+    let msg = '';
     if ('removeNonAnom' in customGrid)
       this.Structure.removeNonAnom = customGrid.removeNonAnom.getValue();
     if (customGrid.phasing_sel)
@@ -970,10 +970,10 @@ if (!__template)  {
         msg += '|<b><i>Main anomalous scatterer must be given</i></b>';
       if (customGrid.hasOwnProperty('ndisulph') &&
           (this.ASU.ha_type.toLowerCase()=='s'))  {
-        var ndisulph = customGrid.ndisulph.getValue();
+        let ndisulph = customGrid.ndisulph.getValue();
         if (ndisulph.trim().length>0)  {
           if (isInteger(ndisulph))  {
-            var ndisulph = parseInt(ndisulph);
+            let ndisulph = parseInt(ndisulph);
             if (ndisulph>=0)
               this.ASU.ndisulph = ndisulph;
             else
@@ -1120,7 +1120,7 @@ if (!__template)  {
 
       case 'texteditor' :
           if ('textedit_sel' in dropdown.customGrid)  {
-            var value = dropdown.customGrid.textedit_sel.getText().split(':');
+            let value = dropdown.customGrid.textedit_sel.getText().split(':');
             this.Options.texteditor = {
               fname : value[0].trim(),
               stype : value[1].trim().split(' ')[0].trim()
@@ -1140,7 +1140,7 @@ if (!__template)  {
   // dataDialogHint() may return a hint for TaskDataDialog, which is shown
   // when there is no sufficient data in project to run the task.
   DataRevision.prototype.dataDialogHints = function ( subtype_list,n_allowed ) {
-  var hints = '';
+  let hints = '';
     if (n_allowed>0)  {
       hints = 'A suitabe <i>"Structure Revision"</i> is missing ';
       if ((subtype_list.indexOf('xyz')>=0) || (subtype_list.indexOf('phases')>=0))
@@ -1150,6 +1150,11 @@ if (!__template)  {
       else
         hints += '-- run the <i>"Asymmetric Unit Content"</i> task to ' +
                  'create a new revision.';
+      if (subtype_list.indexOf('~mmcif_only')>=0)
+        hints += ' If structure is phased, check that atom coordinates do not ' +
+                 'contain items incompatible with PDB format such as long ' +
+                 'ligand names; if such items are present then the task cannot '+
+                 'be used, look for workaround.';
       if (subtype_list.indexOf('anomalous')>=0)
         hints += ' Make sure to use revision with reflection dataset having ' +
                  'anomalous signal.';

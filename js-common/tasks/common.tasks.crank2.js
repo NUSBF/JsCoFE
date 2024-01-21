@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.11.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Crank-2 Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -40,7 +40,7 @@ function TaskCrank2()  {
   //this.helpURL = './html/jscofe_task_crank2.html';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!protein','!anomalous','!asu']},
+      data_type   : {'DataRevision':['!protein','!anomalous','!asu','~mmcif_only']},
       //data_type   : {'DataRevision':['!protein','!asu','~substructure','!anomalous']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    18.01.24   <--  Date of Last Modification.
+#    21.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -85,3 +85,21 @@ def convert_to_mmcif ( pdb_file_path ):
         st = gemmi.read_structure ( pdb_file_path )
         st.make_mmcif_document().write_file ( mmcif_file_path )
     return mmcif_file_path
+
+
+def clean_mmcif ( mmcif_infile_path,mmcif_outfile_path ):
+#  Removes artefacts such as atoms with empty names and empty chains.
+#  Should be used if mmcif was produced by MMDB
+    if os.path.isfile(mmcif_infile_path):
+        st = gemmi.read_structure ( mmcif_infile_path )
+        for model in st:
+            for chain in model:
+                for res in chain:
+                    k = len(res)
+                    for i in range(len(res)):
+                        k -= 1
+                        if not res[k].name:
+                            del res[k]
+        st.remove_empty_chains()
+        st.make_mmcif_document().write_file ( mmcif_outfile_path )
+    return

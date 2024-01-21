@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  GESAMT Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -42,10 +42,10 @@ function TaskGesamt()  {
   //this.helpURL = './html/jscofe_task_gesamt.html';
 
   this.input_dtypes = [{      // input data types
-     data_type   : {'DataStructure':['protein'],
-                    'DataEnsemble' :['protein'],
-                    'DataModel'    :['protein'],
-                    'DataXYZ'      :['protein']
+     data_type   : {'DataStructure':['protein','~mmcif_only'],
+                    'DataEnsemble' :['protein','~mmcif_only'],
+                    'DataModel'    :['protein','~mmcif_only'],
+                    'DataXYZ'      :['protein','~mmcif_only']
                    },  // data type(s) and subtype(s)
      label       : 'Structure',    // label for input dialog
      inputId     : 'xyz',          // input Id for referencing input fields

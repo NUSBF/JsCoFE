@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Buccaneer Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -78,7 +78,7 @@ function TaskBuccaneer()  {
   this.title   = 'Automatic Model Building with Buccaneer';
 
   this.input_dtypes = [{      // input data types
-      data_type   : {'DataRevision':['!protein','!seq','!phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!seq','!phases','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision',        // label for input dialog
       inputId     : 'revision',      // input Id for referencing input fields
       customInput : 'buccaneer-ws',  // lay custom fields below the dropdown
@@ -86,7 +86,7 @@ function TaskBuccaneer()  {
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
-      data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz']}, // data type(s) and subtype(s)
+      data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz','~mmcif_only']}, // data type(s) and subtype(s)
       desc        : 'fixed model',  // used in TaskDataDialog to discriminate between alike items
       label       : 'Fixed model',  // label for input dialog
       inputId     : 'xmodel',       // input Id for referencing input fields
@@ -95,7 +95,7 @@ function TaskBuccaneer()  {
       min         : 0,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
-      data_type   : {'DataStructure':['~substructure-am','!xyz']}, // data type(s) and subtype(s)
+      data_type   : {'DataStructure':['~substructure-am','!xyz','~mmcif_only']}, // data type(s) and subtype(s)
       desc        : 'model to aid sequencing',  // used in TaskDataDialog to discriminate between alike items
       label       : 'Model to aid<br>sequencing',  // label for input dialog
       inputId     : 'smodel',   // input Id for referencing input fields

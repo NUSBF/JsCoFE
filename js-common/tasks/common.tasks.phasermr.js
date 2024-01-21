@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-MR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -57,7 +57,8 @@ function TaskPhaserMR()  {
       max         : 1           // maximum acceptable number of data instances
     */
     },{
-      data_type   : {'DataEnsemble':[],'DataModel':[]}, // data type(s) and subtype(s)
+      data_type   : {'DataEnsemble':['~mmcif_only'],
+                     'DataModel'   :['~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Model ensemble', // label for input dialog
       inputId     : 'model',      // input Id for referencing input fields
       customInput : 'phaser-mr',  // lay custom fields below the dropdown (Ncopies, R.m.s.d.)

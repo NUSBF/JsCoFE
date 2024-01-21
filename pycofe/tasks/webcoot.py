@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.24   <--  Date of Last Modification.
+#    21.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -122,7 +122,7 @@ class WebCoot(basic.TaskDriver):
             ligand  = self.makeClass ( self.input_data.data.ligand[0] )
             ligCode = ligand.code
             ligPath = ligand.getLibFilePath ( self.inputDir() )
-            self.stderrln ( " >>>> ligand " + str(ligand.code) + " found" )
+            # self.stderrln ( " >>>> ligand " + str(ligand.code) + " found" )
 
         libPath, ligList = self.addLigandToLibrary (
                                     istruct.getLibFilePath(self.inputDir()),
@@ -148,24 +148,28 @@ class WebCoot(basic.TaskDriver):
             pass
 
         outputSerialNo = 0
-        for mmcif_file in mmcifout:
+        for mmcif_f in mmcifout:
 
             outputSerialNo += 1
 
-            molName = os.path.splitext ( os.path.basename(mmcif_file) )[0]
+            mmcif_fname = self.getMMCIFOFName (
+                                    -1 if len(mmcifout)<=1 else outputSerialNo )
+            mmcif_utils.clean_mmcif ( mmcif_f,mmcif_fname )
+
+            molName = os.path.splitext ( os.path.basename(mmcif_fname) )[0]
             self.putMessage ( "<h3>Output Structure" +\
                     self.hotHelpLink ( "Structure","jscofe_qna.structure") +\
                     " #" + str(outputSerialNo) + " \"" + molName + "\"</h3>" )
             
-            pdb_file = None
-            if mmcif_utils.can_convert_to_pdb(mmcif_file):
-                pdb_file = os.path.splitext(mmcif_file)[0] + ".pdb"
-                if not os.path.isfile(pdb_file):
-                    pdb_file = None
+            pdb_fname = None
+            if mmcif_utils.can_convert_to_pdb(mmcif_fname):
+                pdb_fname = os.path.splitext(mmcif_fname)[0] + ".pdb"
+                if not os.path.isfile(pdb_fname):
+                    pdb_fname = None
 
             ostruct = self.registerStructure ( 
-                            pdb_file,
-                            mmcif_file,
+                            mmcif_fname,
+                            pdb_fname,
                             istruct.getSubFilePath(self.inputDir()),
                             istruct.getMTZFilePath(self.inputDir()),
                             libPath    = libPath,
@@ -181,7 +185,7 @@ class WebCoot(basic.TaskDriver):
                 ostruct.store_refkeys_parameters ( self.task._type,self.task.id,refkeys )
                 ostruct.copyAssociations   ( istruct )
                 ostruct.addDataAssociation ( istruct.dataId )  # ???
-                ostruct.copySubtype        ( istruct )
+                ostruct.mergeSubtypes      ( istruct )
                 ostruct.copyLigands        ( istruct )
                 ostruct.copyLabels         ( istruct )
                 # if not xyzout:

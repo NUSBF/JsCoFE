@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ACORN Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2018-2024
  *
  *  =================================================================
  *
@@ -40,7 +40,7 @@ function TaskAcorn()  {
   //this.helpURL = './html/jscofe_task_acorn.html';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!protein','!asu','!phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!protein','!asu','!phases','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'acorn',    // lay custom fields below the dropdown

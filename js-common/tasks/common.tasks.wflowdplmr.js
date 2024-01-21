@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    17.12.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Dimple MR Workflow Task Class
  *       ~~~~~~~~~
  *
- *  (C) M. Fando, E. Krissinel, A. Lebedev,  2023
+ *  (C) M. Fando, E. Krissinel, A. Lebedev, 2023-2024
  *
  *  =================================================================
  *
@@ -94,7 +94,7 @@ function TaskWFlowDPLMR()  {
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
-      data_type   : {'DataXYZ':['protein','dna','rna'] },  // data type(s) and subtype(s)
+      data_type   : {'DataXYZ':['protein','dna','rna','~mmcif_only'] },  // data type(s) and subtype(s)
       label       : 'Template structure',    // label for input dialog
       inputId     : 'xyz',    // input Id for referencing input fields
       tooltip     : 'Template structure to be molecular replaced in reflection data',

@@ -36,7 +36,7 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
   this.grid = new Grid('');
   this.addWidget ( this.grid );
 
-  var drow = 0;
+  let drow = 0;
 
   if (avail_key[0]!='ok')  {
 
@@ -56,7 +56,7 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
     //   this.grid.setLabel ( avail_key[2],drow++,0, 1,2 );
 
     /*
-    var msg = '';
+    let msg = '';
     switch (avail_key)  {
       case 'client' :
             msg = '<h3>CCP4 Cloud Client is required</h3>';
@@ -120,8 +120,8 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
       this.grid.setLabel ( msg,drow++,0, 1,2 );
     */
 
-    var dataCount = 0;
-    for (var key in dataSummary)
+    let dataCount = 0;
+    for (let key in dataSummary)
       if (key!='status')
         dataCount++;
 
@@ -131,25 +131,25 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
                            appName() + '.',drow++,0, 1,2 );
     } else  {
 
-      var dataSummary_lbl = this.grid.setLabel ( '',drow++,0, 1,2 ).setWidth('650px');
+      let dataSummary_lbl = this.grid.setLabel ( '',drow++,0, 1,2 ).setWidth('650px');
 
-      var table = this.grid.setTable ( drow++,0, 1,2 );
+      let table = this.grid.setTable ( drow++,0, 1,2 );
       table.setHeaderText ( 'Input Data', 0,0, 1,1 );
       table.setHeaderText ( 'Status'    , 0,1, 1,1 );
       table.setHeaderText ( 'Required'  , 0,2, 1,1 );
       table.setHeaderText ( 'Available' , 0,3, 1,1 );
-      for (var c=0;c<4;c++)
+      for (let c=0;c<4;c++)
         table.setNoWrap ( 0,c );
 
-      var row   = 1;
-      var hints = [];
-      var dataStatus    = true;
-      var n_disallowed  = 0;
-      var n_unavailable = 0;
-      for (var key in dataSummary)
+      let row   = 1;
+      let hints = [];
+      let dataStatus    = true;
+      let n_disallowed  = 0;
+      let n_unavailable = 0;
+      for (let key in dataSummary)
         if (key!='status')  {
           table.setLabel ( this.getDataDescription(dataSummary[key]),row,0, 1,1 );
-          var icon_uri;
+          let icon_uri;
           switch (dataSummary[key].status)  {
             default :
             case 0  : icon_uri   = image_path('data_absent');
@@ -178,8 +178,8 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
           row++;
         }
 
-      var font_family = '"Trebuchet MS", Arial, Helvetica, sans-serif';
-      for (var i=0;i<row;i++)  {
+      let font_family = '"Trebuchet MS", Arial, Helvetica, sans-serif';
+      for (let i=0;i<row;i++)  {
         table.setNoWrap              ( i,0 );
         table.setHorizontalAlignment ( i,0,'left'   ).setFontFamily(i,0,font_family);
         table.setHorizontalAlignment ( i,1,'center' );
@@ -192,8 +192,8 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
       }
 
       if (!dataStatus)  {
-        var summary_info = '';
-        var advise_info  = '';
+        let summary_info = '';
+        let advise_info  = '';
         if  ((n_disallowed>0) && (n_unavailable<=0))  {
           summary_info = '<h2>Project workflow restrictions</h2>' +
                          'This task cannot be run at this point of the project, ' +
@@ -239,7 +239,7 @@ function TaskDataDialog ( dataSummary,task,avail_key )  {
         this.grid.setLabel ( '<b><i>Hint:</i></b>', drow,0, 1,1 );
         this.grid.setLabel ( hints[0], drow,1, 1,1 ).setWidth_px ( 600 );
       } else  {
-        for (var i=0;i<hints.length;i++)  {
+        for (let i=0;i<hints.length;i++)  {
           this.grid.setLabel ( '<b><i>Hint&nbsp;'+(i+1)+':</i></b>', drow,0, 1,1 );
           this.grid.setLabel ( hints[i], drow++,1, 1,1 ).setWidth_px ( 600 );
         }
@@ -271,16 +271,16 @@ TaskDataDialog.prototype.getDataDescription = function ( dataSpec )  {
   function _make_list ( items )  {
     if (items.length<=0)  return '';
     if (items.length==1)  return ' ' + items[0];
-    var s = '<ul style="margin:0;">';
-    for (var k=0;k<items.length;k++)
+    let s = '<ul style="margin:0;">';
+    for (let k=0;k<items.length;k++)
       s += '<li>' + items[k] + '</li>';
     return s+'</ul>';
   }
 
-  var html = '';
-  for (var dtype in dataSpec.dtypes)  {
+  let html = '';
+  for (let dtype in dataSpec.dtypes)  {
 
-    var dobj = getObjectInstance ( '{ "_type" : "' + dtype + '" }' );
+    let dobj = getObjectInstance ( '{ "_type" : "' + dtype + '" }' );
 
     if (html.length>0)  {
       if (!endsWith(html,'</ul>'))
@@ -290,19 +290,19 @@ TaskDataDialog.prototype.getDataDescription = function ( dataSpec )  {
     html += '<b>' + dobj.title() + '</b>';
     if (dataSpec.desc)
       html += ' (' + dataSpec.desc + ')';
-    var items_of = [];  // one of
-    var items_cp = [];  // compulsory
-    var subtypes = dataSpec.dtypes[dtype];
+    let items_of = [];  // one of
+    let items_cp = [];  // compulsory
+    let subtypes = dataSpec.dtypes[dtype];
     if (subtypes.length>1)  {
-      for (var i=0;i<subtypes.length;i++)  {
-        var stype = dobj.getSubtypeDescription ( subtypes[i] );
+      for (let i=0;i<subtypes.length;i++)  {
+        let stype = dobj.getSubtypeDescription ( subtypes[i] );
         if (stype)  {
           if (stype[0]==0)  items_of.push ( stype.substring(1) );
                       else  items_cp.push ( stype );
         }
       }
     } else if (subtypes.length==1)  {
-      var stype = dobj.getSubtypeDescription ( subtypes[0] );
+      let stype = dobj.getSubtypeDescription ( subtypes[0] );
       if (stype)  {
         if (stype[0]==0)  items_of.push ( stype.substring(1) );
                     else  items_cp.push ( stype );
@@ -310,8 +310,8 @@ TaskDataDialog.prototype.getDataDescription = function ( dataSpec )  {
     }// else
     //  html += ' (any)';
 
-    var bridge_word = dobj.ddesc_bridge_word();
-    var n = items_cp.length + items_of.length;
+    let bridge_word = dobj.ddesc_bridge_word();
+    let n = items_cp.length + items_of.length;
     if (n==1)  {
       html += bridge_word;
       if (items_cp.length==1)  html += items_cp[0];
@@ -321,7 +321,7 @@ TaskDataDialog.prototype.getDataDescription = function ( dataSpec )  {
       if (items_cp.length==0)
         html += 'at least one of' + _make_list(items_of);
       else  {
-        for (var i=0;i<items_of.length;i++)
+        for (let i=0;i<items_of.length;i++)
           items_cp.push ( 'optional ' + items_of[i] );
         html += _make_list(items_cp);
       }
