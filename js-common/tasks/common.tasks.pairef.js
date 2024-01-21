@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  PaiRef task class
  *       ~~~~~~~~~
  *
- *  (C) M. Fando, E. Krissinel, A. Lebedev, M. Fando  2023
+ *  (C) M. Fando, E. Krissinel, A. Lebedev, M. Fando  2023-2024
  *
  *  =================================================================
  *
@@ -49,7 +49,7 @@ function TaskPaiRef()  {   // must start with Task...
 
 
   this.input_dtypes = [{  // input data types
-    data_type : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
+    data_type : {'DataRevision':['!xyz','~mmcif_only']}, // data type(s) and subtype(s)
     label     : 'Structure revision',     // label for input dialog
     inputId   : 'revision', // input Id for referencing input fields
     version   : 4,          // minimum data version allowed

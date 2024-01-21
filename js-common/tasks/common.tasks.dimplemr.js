@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    26.11.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  DimpleMR Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2023-2024
  *
  *  =================================================================
  *
@@ -49,9 +49,9 @@ function TaskDimpleMR()  {
       min         : 1,               // minimum acceptable number of data instances
       max         : 1                // maximum acceptable number of data instances
     }, {
-      data_type   : { 'DataXYZ'       : [],
-                      'DataModel'     : [],
-                      'DataStructure' : ['~substructure','~substructure-am','!xyz'],
+      data_type   : { 'DataXYZ'       : ['~mmcif_only'],
+                      'DataModel'     : ['~mmcif_only'],
+                      'DataStructure' : ['~substructure','~substructure-am','!xyz','~mmcif_only'],
                      },  // data type(s) and subtype(s)
       label       : 'Template structure',   // label for input dialog
       tooltip     : '100% or very close to 100% structure homolog to be fit in ' +

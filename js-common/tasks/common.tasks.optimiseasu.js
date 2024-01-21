@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Optimise ASU Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2023-2024
  *
  *  =================================================================
  *
@@ -39,8 +39,8 @@ function TaskOptimiseASU()  {
   this.title   = 'Optimise Asymmetric Unit';
 
   this.input_dtypes = [{  // input data types
-      data_type : { 'DataRevision' : ['!xyz'],  // data type(s) and subtype(s)
-                    'DataXYZ'      : []
+      data_type : { 'DataRevision' : ['!xyz','~mmcif_only'],  // data type(s) and subtype(s)
+                    'DataXYZ'      : ['~mmcif_only']
                   },
       label     : 'ASU coordinates', // label for input dialog
       cast      : 'asu',

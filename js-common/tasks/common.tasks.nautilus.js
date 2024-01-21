@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    18.10.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Nautilus Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -41,7 +41,7 @@ function TaskNautilus()  {
   // this.helpURL = './html/jscofe_task_nautilus.html';
 
   this.input_dtypes = [{      // input data types
-      data_type   : {'DataRevision':[['rna','dna'],'!asu','!phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':[['rna','dna'],'!asu','!phases','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision',        // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'nautilus', // lay custom fields below the dropdown

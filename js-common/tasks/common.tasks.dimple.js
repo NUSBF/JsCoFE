@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    05.11.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Dimple Refinement Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -40,7 +40,7 @@ function TaskDimple()  {
   //this.helpURL = './html/jscofe_task_dimple.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':['!hkl','!xyz']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!hkl','!xyz','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       version     : 0,          // minimum data version allowed

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.01.24   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -192,6 +192,9 @@ if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')  {
       case 'seq'          : return 'macromolecular sequence(s)';
       case 'substructure' : return 'heavy atom substructure';
       case 'phases'       : return 'phases';
+      case 'mmcif_only'   : return 'items incompatible with PDB format, such ' + 
+                                   'as<br>long ligand names, multi-character ' +
+                                   'chain IDs and<br>more than 62 chains';
       default : ;
     }
     return '';

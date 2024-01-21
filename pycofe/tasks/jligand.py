@@ -256,7 +256,7 @@ class JLigand(basic.TaskDriver):
                     if os.path.isfile(pdbfl_2):
                         pdbfl = pdbfl_2
 
-                struct = self.registerStructure ( pdbfl,
+                struct = self.registerStructure ( None,pdbfl,
                             istruct.getSubFilePath(self.inputDir()),
                             istruct.getMTZFilePath(self.inputDir()),
                             None,None,

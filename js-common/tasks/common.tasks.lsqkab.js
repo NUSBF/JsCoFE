@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  LSQKAB Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -43,13 +43,15 @@ function TaskLsqKab()  {
   this.maxFitParamRows = 10;
 
   this.input_dtypes = [{  // input data types
-      data_type : {'DataStructure':[],'DataXYZ':[] }, // data type(s) and subtype(s)
+      data_type : {'DataStructure':['~mmcif_only'],
+                   'DataXYZ'      :['~mmcif_only'] }, // data type(s) and subtype(s)
       label     : 'Moving structure', // label for input dialog
       inputId   : 'moving_xyz',        // input Id for referencing input fields
       min       : 1,           // minimum acceptable number of data instances
       max       : 1            // maximum acceptable number of data instances
    },{
-      data_type : {'DataStructure':[],'DataXYZ':[] }, // data type(s) and subtype(s)
+      data_type : {'DataStructure':['~mmcif_only'],
+                   'DataXYZ'      :['~mmcif_only'] }, // data type(s) and subtype(s)
       label     : 'Fixed structure',  // label for input dialog
       inputId   : 'fixed_xyz',        // input Id for referencing input fields
       min       : 1,           // minimum acceptable number of data instances

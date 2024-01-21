@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.11.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MoRDa Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -47,9 +47,9 @@ function TaskMorda()  {
       min         : 1,          // minimum acceptable number of data instances
       max         : 1           // maximum acceptable number of data instances
     },{
-      data_type   : {'DataXYZ'      : ['!protein'],
-                     'DataModel'    : ['!protein'],
-                     'DataEnsemble' : ['!protein']
+      data_type   : {'DataXYZ'      : ['!protein','~mmcif_only'],
+                     'DataModel'    : ['!protein','~mmcif_only'],
+                     'DataEnsemble' : ['!protein','~mmcif_only']
                     },  // data type(s) and subtype(s)
       label       : 'Model(s)',     // label for input dialog
       inputId     : 'model',    // input Id for referencing input fields

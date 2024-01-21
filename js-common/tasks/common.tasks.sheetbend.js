@@ -1,10 +1,8 @@
 
-// NOT INCLUDED IN TASK LIST
-
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -15,7 +13,7 @@
  *  **** Content :  Sheetbend Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2020-2023
+ *  (C) E. Krissinel, A. Lebedev 2020-2024
  *
  *  =================================================================
  *
@@ -42,7 +40,7 @@ function TaskSheetbend()  {
 
   this.input_dtypes = [  // input data types
     {
-      data_type   : {'DataRevision':['!xyz','!phases']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!xyz','!phases','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision',        // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       //customInput : 'parrot',   // lay custom fields below the dropdown

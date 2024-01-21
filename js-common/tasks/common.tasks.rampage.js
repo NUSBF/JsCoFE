@@ -1,7 +1,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -12,7 +12,7 @@
  *  **** Content :  RAMPAGE Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev  2022-2023
+ *  (C) E. Krissinel, A. Lebedev  2022-2024
  *
  *  =================================================================
  *
@@ -39,10 +39,10 @@ function TaskRampage()  {
   this.title   = 'Rampage';
 
   this.input_dtypes = [{      // input data types
-    data_type   : { 'DataRevision' : ['xyz'],
-                    'DataEnsemble' : [],
-                    'DataModel'    : [],
-                    'DataXYZ'      : []
+    data_type   : { 'DataRevision' : ['xyz','~mmcif_only'],
+                    'DataEnsemble' : ['~mmcif_only'],
+                    'DataModel'    : ['~mmcif_only'],
+                    'DataXYZ'      : ['~mmcif_only']
                   },  // data type(s) and subtype(s)
     label       : 'Structure', // label for input dialog
     inputId     : 'ixyz'   ,   // input Id for referencing input fields

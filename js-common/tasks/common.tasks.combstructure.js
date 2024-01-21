@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CombStructure Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2024
  *
  *  =================================================================
  *
@@ -40,7 +40,7 @@ function TaskCombStructure()  {
   //this.helpURL = './html/jscofe_task_combstructure.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':['!xyz','!phases','!protein']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!xyz','!phases','!protein','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       //customInput : 'refmac',   // lay custom fields below the dropdown

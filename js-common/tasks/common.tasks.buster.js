@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Buster Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2020-2024
  *
  *  =================================================================
  *
@@ -40,7 +40,7 @@ function TaskBuster()  {
   //this.helpURL = './html/jscofe_task_buster.html';
 
   this.input_dtypes = [{    // input data types
-      data_type   : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)
+      data_type   : {'DataRevision':['!xyz','~mmcif_only']}, // data type(s) and subtype(s)
       label       : 'Structure revision',     // label for input dialog
       inputId     : 'revision', // input Id for referencing input fields
       customInput : 'buster',   // lay custom fields below the dropdown

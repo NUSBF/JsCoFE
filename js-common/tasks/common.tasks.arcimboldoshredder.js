@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    12.10.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ArcimboldoShredder Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2024
  *
  *  =================================================================
  *
@@ -46,7 +46,7 @@ function TaskArcimboldoShredder()  {
       min         : 1,           // minimum acceptable number of data instances
       max         : 1            // maximum acceptable number of data instances
     },{      // input data types
-      data_type   : {'DataXYZ':['protein']},  // data type(s) and subtype(s)
+      data_type   : {'DataXYZ':['protein','~mmcif_only']},  // data type(s) and subtype(s)
       label       : 'Homology model', // label for input dialog
       inputId     : 'xyz',       // input Id for referencing input fields
       customInput : 'BF_correction', // lay custom fields next to the selection

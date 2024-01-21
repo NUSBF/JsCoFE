@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  MultiChain Model Preparation from Coordinates Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2021-2024
  *
  *  =================================================================
  *
@@ -40,8 +40,8 @@ function TaskModelPrepMC()  {
   this.title   = 'Prepare Multi-Chain MR Model';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz'],
-                     'DataXYZ':[]},  // data type(s) and subtype(s)
+      data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz','~mmcif_only'],
+                     'DataXYZ'      :['~mmcif_only']},  // data type(s) and subtype(s)
       label       : 'Template structure',   // label for input dialog
       tooltip     : 'Template multi-chain structure.',
       inputId     : 'xyz',           // input Id for referencing input fields

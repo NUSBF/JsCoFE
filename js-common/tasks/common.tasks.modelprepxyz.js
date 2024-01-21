@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.01.24   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -41,8 +41,8 @@ function TaskModelPrepXYZ()  {
   //this.helpURL = './html/jscofe_task_modelprepxyz.html';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz'],
-                     'DataXYZ':[]},  // data type(s) and subtype(s)
+      data_type   : {'DataStructure':['~substructure','~substructure-am','!xyz','~mmcif_only'],
+                     'DataXYZ'      :['~mmcif_only']},  // data type(s) and subtype(s)
       label       : 'Coordinates',   // label for input dialog
       tooltip     : 'Specify coordinate data set(s) to be prepared as ' +
                     'model(s) for Molecular Replacement. The model(s) ' +

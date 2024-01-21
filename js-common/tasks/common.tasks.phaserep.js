@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    21.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Phaser-EP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -39,7 +39,8 @@ function TaskPhaserEP()  {
   this.title   = 'Experimental Phasing with Phaser-EP';
 
   this.input_dtypes = [{  // input data types
-      data_type   : {'DataRevision':['!anomalous','!asu',['xyz','substructure']]},
+      data_type   : {'DataRevision':['!anomalous','!asu','~mmcif_only',
+                                     ['xyz','substructure']]},
                                               // data type(s) and subtype(s)
                                               // '!' means "mandatory"
                                               // [] means one or both mandatory
