@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    20.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -33,13 +33,13 @@ import json
 
 #  application imports
 from   pycofe.tasks   import basic
-# from   pycofe.varut   import  signal
+from   pycofe.varut   import mmcif_utils
 # try:
 #     from pycofe.varut import messagebox
 # except:
 #     messagebox = None
 
-from   pycofe.proc    import  covlinks
+# from   pycofe.proc    import  covlinks
 
 # ============================================================================
 # Make WebCoot driver
@@ -130,10 +130,10 @@ class WebCoot(basic.TaskDriver):
 
         # Check for PDB files left by Coot and make the corresponding output revisions
 
-        pdbout     = [f for f in os.listdir('./') if f.lower().endswith(".pdb")]
+        mmcifout   = [f for f in os.listdir('./') if f.lower().endswith(".mmcif")]
         hasResults = False
 
-        if len(pdbout)<=0:
+        if len(mmcifout)<=0:
             self.putTitle   ( "No Output Structure Produced" )
             self.putMessage ( "<i style=\"color:maroon\">" +\
                               "Have you saved your results in CCP4 Cloud?</i>" )
@@ -148,18 +148,24 @@ class WebCoot(basic.TaskDriver):
             pass
 
         outputSerialNo = 0
-        for fout in pdbout:
+        for mmcif_file in mmcifout:
 
             outputSerialNo += 1
 
-            molName = os.path.splitext ( os.path.basename(fout) )[0]
+            molName = os.path.splitext ( os.path.basename(mmcif_file) )[0]
             self.putMessage ( "<h3>Output Structure" +\
                     self.hotHelpLink ( "Structure","jscofe_qna.structure") +\
                     " #" + str(outputSerialNo) + " \"" + molName + "\"</h3>" )
+            
+            pdb_file = None
+            if mmcif_utils.can_convert_to_pdb(mmcif_file):
+                pdb_file = os.path.splitext(mmcif_file)[0] + ".pdb"
+                if not os.path.isfile(pdb_file):
+                    pdb_file = None
 
             ostruct = self.registerStructure ( 
-                            None,
-                            fout,
+                            pdb_file,
+                            mmcif_file,
                             istruct.getSubFilePath(self.inputDir()),
                             istruct.getMTZFilePath(self.inputDir()),
                             libPath    = libPath,
@@ -175,11 +181,6 @@ class WebCoot(basic.TaskDriver):
                 ostruct.store_refkeys_parameters ( self.task._type,self.task.id,refkeys )
                 ostruct.copyAssociations   ( istruct )
                 ostruct.addDataAssociation ( istruct.dataId )  # ???
-
-                mmcifout = os.path.splitext(fout)[0] + ".mmcif"
-                if os.path.isfile(mmcifout):
-                    ostruct.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
-
                 ostruct.copySubtype        ( istruct )
                 ostruct.copyLigands        ( istruct )
                 ostruct.copyLabels         ( istruct )
