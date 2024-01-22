@@ -52,13 +52,13 @@ class ModelCraft(basic.TaskDriver):
     def file_stdin_path (self):  return "modelcraft.script"
 
     # make task-specific definitions
-    def modelcraft_seq  (self):  return "modelcraft.seq"
-    def modelcraft_pdb  (self):  return "modelcraft.pdb"
-    def modelcraft_cif  (self):  return "modelcraft.cif"
-    def modelcraft_mtz  (self):  return "modelcraft.mtz"
-    def contents_json   (self):  return "contents.json"
-    def modelcraft_json (self):  return "modelcraft.json"
-    def modelcraft_tmp  (self):  return "modelcraft_pipeline"
+    def modelcraft_seq   (self):  return "modelcraft.seq"
+    def modelcraft_pdb   (self):  return "modelcraft.pdb"
+    def modelcraft_mmcif (self):  return "modelcraft.cif"
+    def modelcraft_mtz   (self):  return "modelcraft.mtz"
+    def contents_json    (self):  return "contents.json"
+    def modelcraft_json  (self):  return "modelcraft.json"
+    def modelcraft_tmp   (self):  return "modelcraft_pipeline"
 
     # ------------------------------------------------------------------------
 
@@ -72,8 +72,8 @@ class ModelCraft(basic.TaskDriver):
 
         # Just in case (of repeated run) remove the output xyz file. When modelcraft
         # succeeds, this file is created.
-        if os.path.isfile(self.modelcraft_cif()):
-            os.remove(self.modelcraft_cif())
+        if os.path.isfile(self.modelcraft_mmcif()):
+            os.remove(self.modelcraft_mmcif())
 
         # if not os.path.exists(self.modelcraft_tmp()):
         #     os.makedirs(self.modelcraft_tmp())
@@ -283,17 +283,17 @@ class ModelCraft(basic.TaskDriver):
 
         # check solution and register data
         else:
-            cifout  = os.path.join ( self.modelcraft_tmp(),self.modelcraft_cif () )
-            mtzout  = os.path.join ( self.modelcraft_tmp(),self.modelcraft_mtz () )
-            jsonout = os.path.join ( self.modelcraft_tmp(),self.modelcraft_json() )
+            mmcifout = os.path.join ( self.modelcraft_tmp(),self.modelcraft_mmcif() )
+            mtzout   = os.path.join ( self.modelcraft_tmp(),self.modelcraft_mtz  () )
+            jsonout  = os.path.join ( self.modelcraft_tmp(),self.modelcraft_json () )
 
-            asuNres = revision.ASU.nRes
-            final   = None
-            Compl   = 0.0
-            Nres    = "??"
-            Nwat    = "??"
-            Rwork   = "??"
-            Rfree   = "??"
+            asuNres  = revision.ASU.nRes
+            final    = None
+            Compl    = 0.0
+            Nres     = "??"
+            Nwat     = "??"
+            Rwork    = "??"
+            Rfree    = "??"
             verdict_rvrow = self.rvrow
             if os.path.isfile(jsonout):
                 with open(jsonout) as json_file:
@@ -309,17 +309,19 @@ class ModelCraft(basic.TaskDriver):
                                           data["termination_reason"] + "</i></h3>" )
                         verdict_rvrow = self.rvrow
 
-            if os.path.isfile(cifout) and os.path.isfile(mtzout) and final:
+            if os.path.isfile(mmcifout) and os.path.isfile(mtzout) and final:
 
                 self.rvrow = verdict_rvrow + 5
 
                 pdbout = os.path.join ( self.modelcraft_tmp(),self.modelcraft_pdb() )
-                st = gemmi.read_structure ( cifout )
-                if mmcif_utils.can_make_pdb(st):
-                    st.setup_entities()
-                    st.shorten_chain_names()
-                    st.write_pdb ( pdbout )
-                    st.make_mmcif_document().write_file ( cifout )
+                st = gemmi.read_structure ( mmcifout )
+                if mmcif_utils.translate_to_pdb(st,pdbout):
+                    st.make_mmcif_document().write_file ( mmcifout )
+                    # self.stderrln ( " >>>>>>> p1" )
+                    # st.setup_entities()
+                    # st.shorten_chain_names()
+                    # st.write_pdb ( pdbout )
+                    # st.make_mmcif_document().write_file ( mmcifout )
                 else:
                     pdbout = None
 
@@ -327,7 +329,7 @@ class ModelCraft(basic.TaskDriver):
                             self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
 
                 structure = self.registerStructure (
-                                    cifout,
+                                    mmcifout,
                                     pdbout,
                                     None,
                                     mtzout,
@@ -350,9 +352,9 @@ class ModelCraft(basic.TaskDriver):
                     structure.SigFP      = labin_fo[1]
                     structure.FreeR_flag = labin_fo[2]
 
-                    # mmcifout = self.getMMCIFOFName()
-                    # os.rename ( cifout,mmcifout )
-                    # structure.add_file ( mmcifout,self.outputDir(),"mmcif",copy_bool=False )
+                    # mmmmcifout = self.getMMCIFOFName()
+                    # os.rename ( mmcifout,mmmmcifout )
+                    # structure.add_file ( mmmmcifout,self.outputDir(),"mmcif",copy_bool=False )
 
                     self.putStructureWidget    ( "structure_btn",
                                                  "Structure and electron density",

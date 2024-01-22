@@ -40,10 +40,10 @@ function TaskXyzUtils()  {
   //this.helpURL = './html/jscofe_task_xyzutils.html';
 
   this.input_dtypes = [{      // input data types
-    data_type   : { 'DataRevision' : ['xyz'],
-                    'DataEnsemble' : [],
-                    'DataModel'    : [],
-                    'DataXYZ'      : []
+    data_type   : { 'DataRevision' : ['xyz','~mmcif_only'],
+                    'DataEnsemble' : ['~mmcif_only'],
+                    'DataModel'    : ['~mmcif_only'],
+                    'DataXYZ'      : ['~mmcif_only']
                   },  // data type(s) and subtype(s)
     label       : 'Structure', // label for input dialog
     inputId     : 'istruct',   // input Id for referencing input fields
