@@ -217,3 +217,64 @@ def makeRTFTable ( tableDict ):
     rtfTable += r'}'+ os.linesep
 
     return rtfTable
+
+
+def put_progress_bar ( body,holderId,row,col,rowSpan,colSpan):
+    gridId = body.getWidgetId ( "progress_bar" )
+    pyrvapi.rvapi_set_progress_bar ( gridId )
+
+    return
+
+
+# def putProgressBar ( self,message_str,message2="" ):
+#     gridId = "pbgrid_" + str(self.widget_no)
+#     pbarId = "pbar_" + str(self.widget_no)
+#     pyrvapi.rvapi_set_text ( "&nbsp;",self.report_page_id(),self.rvrow,0,1,1 )
+#     pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),self.rvrow,0,1,1 )
+#     pyrvapi.rvapi_set_text ( "<i>" + message_str + "</i>" ,gridId,0,0,1,1 )
+#     pyrvapi.rvapi_add_progress_bar   ( pbarId,gridId,0,1,1,1 )
+#     pyrvapi.rvapi_set_progress_value ( pbarId,2,100 );  #  2: set range
+#     pyrvapi.rvapi_set_progress_value ( pbarId,3,0   );  #  3: set value
+#     pyrvapi.rvapi_set_progress_value ( pbarId,1,0   );  #  0/1: hide/show
+#     if message2:
+#         pyrvapi.rvapi_set_text ( message2,gridId,0,2,1,1 )
+#     pyrvapi.rvapi_flush ()
+#     return gridId
+
+
+
+# """
+
+#     def putWaitMessageLF ( self,message_str,message2="" ):
+#         gridId = "wait_message_" + str(self.widget_no)
+#         pyrvapi.rvapi_set_text ( "&nbsp;",self.report_page_id(),self.rvrow,0,1,1 )
+#         pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),self.rvrow,0,1,1 )
+#         # pyrvapi.rvapi_set_text ( "<font style='font-size:120%;'>" + message_str +
+#         #                          "</font>",gridId,0,0,1,1 )
+#         pyrvapi.rvapi_set_text ( "<i>" + message_str + "</i>" ,gridId,0,0,1,1 )
+#         pyrvapi.rvapi_set_text ( "<div class='activity_bar'/>",gridId,0,1,1,1 )
+#         if message2:
+#             pyrvapi.rvapi_set_text ( message2,gridId,0,2,1,1 )
+#         self.widget_no += 1
+#         pyrvapi.rvapi_flush ()
+#         return gridId
+
+
+
+
+#           void rvapi_add_progress_bar ( const char * pbarId,
+#                                 const char * holderId,
+#                                 const int    row,
+#                                 const int    col,
+#                                 const int    rowSpan,
+#                                 const int    colSpan
+#                               );
+
+#   void rvapi_set_progress_value ( const char * pbarId,
+#                                   const int key,  // 0: hide; 1: show;
+#                                                   // 2: set range;
+#                                                   // 3: set value
+#                                   const int value // either range or value
+#                                 );
+
+# """
