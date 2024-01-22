@@ -159,10 +159,13 @@ class ModelCraft(basic.TaskDriver):
             "ligands" : [],
             "buffers" : []
         }
+        mres = 0
         for s in seq:
             s1 = self.makeClass ( s )
+            seqstr = s1.getSequence(self.inputDir())
+            mres += s1.ncopies* len(seqstr)
             item = {
-                "sequence"      : s1.getSequence(self.inputDir()),
+                "sequence"      : seqstr,
                 "stoichiometry" : s1.ncopies
             }
             if s1.isProtein() and build_sel in ["all","protein"]:
@@ -258,16 +261,16 @@ class ModelCraft(basic.TaskDriver):
 
         self.flush()
 
-        # prepare report parser
-        # self.setGenericLogParser ( "modelcraft_report",True )
+        job_params = dict(
+            max_init_residues = int(mres/10 + 1)* 10,
+            max_init_r_factor = 0.4,
+            max_cycles = self.getParameter(sec1.NCYCLES_MAX)
+        )
+        self.setModelCraftLogParser ( "report",job_params )
 
-        # start modelcraft
-        # if sys.platform.startswith("win"):
-        #     rc = self.runApp ( "modelcraft.bat",cmd,logType="Main",quitOnError=False )
-        # else:
         rc = self.runApp ( "modelcraft",cmd,logType="Main",quitOnError=False )
 
-        # self.unsetLogParser()
+        self.unsetLogParser()
 
         self.addCitations ([
             'modelcraft','refmacat','cbuccaneer','cparrot','coot'

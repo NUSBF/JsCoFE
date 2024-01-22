@@ -53,6 +53,7 @@ import datetime
 import pyrvapi
 import pyrvapi_ext.parsers
 from pycofe.parsers import refmac_parser, edstats_parser, baver_parser
+from pycofe.parsers import modelcraft_parser
 
 # pycofe imports
 from pycofe.dtypes import dtype_template, dtype_xyz,   dtype_structure, databox
@@ -981,6 +982,23 @@ class TaskDriver(object):
         self.flush()
         #pyrvapi.rvapi_flush()
         return
+
+
+    def setModelCraftLogParser ( self,panel_id,job_params,
+                             graphTables=False,makePanel=True ):
+        #return
+        if makePanel:
+            self.putPanel ( panel_id )
+        self.log_parser = modelcraft_parser.modelcraft_parser (
+                                         panel_id,
+                                         job_params=job_params,
+                                         summary=self.generic_parser_summary,
+                                         graph_tables=graphTables,
+                                         hide_refs=True )
+        self.flush()
+        #pyrvapi.rvapi_flush()
+        return
+
 
     def setRefmacLogParser ( self,panel_id,split_sections_bool,
                              graphTables=False,makePanel=True ):
