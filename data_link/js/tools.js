@@ -8,8 +8,8 @@ const process = require('child_process');
 const config = require('./config.js');
 const log = require('./log.js');
 
-const USER_DIR = config.get('storage.user_dir', 'users');
-const DATA_DIR = config.get('storage.data_dir', 'data');
+const USER_DIR = config.get('storage.user_dir');
+const DATA_DIR = config.get('storage.data_dir');
 
 const status = {
   completed: 'completed',
@@ -102,7 +102,8 @@ class tools {
   }
 
   static validAdminKey(key) {
-    if (key === config.get('server.admin_key')) {
+    const admin_key = config.get('server.admin_key');
+    if (admin_key && key === admin_key) {
       return true;
     }
     return false;

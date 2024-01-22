@@ -2,6 +2,35 @@ const fs = require('fs');
 const path = require('path');
 const log = require('./log.js');
 
+const def_config = {
+  "server": {
+    "host": "localhost",
+    "port": 8900
+  },
+  "storage": {
+    "data_dir": "data",
+    "user_dir": "users",
+    "catalog_dir": "catalogs",
+    "data_free_gb": 100
+  },
+  "data_sources": {
+    "pdbj": {
+      "enabled": true,
+      "rsync_size": true
+    },
+    "sbgrid": {
+      "enabled": true,
+      "rsync_size": true
+    },
+    "irrmc": {
+      "enabled": true
+    }
+  },
+  "other": {
+    "rcsb_results": false
+  }
+}
+
 class config {
 
   constructor() {
@@ -31,10 +60,10 @@ class config {
     }
   }
 
-  get(config_path, def) {
+  get(config_path) {
     let config = this.getRecurse(config_path, this.config);
     if (config === undefined) {
-      config = def;
+      config = this.getRecurse(config_path, def_config);
     }
     return config;
   }

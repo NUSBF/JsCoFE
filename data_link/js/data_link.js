@@ -22,7 +22,7 @@ class dataLink {
   constructor() {
     this.source = {};
     for (let name of DATA_SOURCES) {
-      if (config.get('data_sources.' + name + '.enabled', true)) {
+      if (config.get('data_sources.' + name + '.enabled')) {
         let source = new (require(path.join(SOURCES_DIR, name)));
         this.source[source.name] = source;
       }
@@ -150,7 +150,7 @@ class dataLink {
     }
     let obj = {}, pdb_info;
     obj.results = results;
-    if (config.get('other.rcsb_results', true)) {
+    if (config.get('other.rcsb_results')) {
       pdb_info = await rcsb.getEntry(pdb);
       obj.pdb = pdb_info;
     }
@@ -250,7 +250,7 @@ class dataLink {
     }
 
     // prune old data if required
-    this.dataPrune(config.get('storage.data_free_gb', 100));
+    this.dataPrune(config.get('storage.data_free_gb'));
 
     if (this.addEntryFromSource(user, source, id, status.inProgress)) {
       log.info(`${source} - Acquiring ${user}/${source}/${id}`);
