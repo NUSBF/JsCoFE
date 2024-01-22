@@ -142,9 +142,11 @@ class dataLink {
 
     let results = [];
     for (const [, source] of Object.entries(this.source)) {
-      for (const [id, e] of Object.entries(source.catalog)) {
-        if (e.pdb == pdb ) {
-          results.push({ source: source.name, id: id, doi: e.doi, name: e.name });
+      if (source.catalog) {
+        for (const [id, e] of Object.entries(source.catalog)) {
+          if (e.pdb == pdb ) {
+            results.push({ source: source.name, id: id, doi: e.doi, name: e.name });
+          }
         }
       }
     }
