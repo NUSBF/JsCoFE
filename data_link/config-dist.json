@@ -31,6 +31,6 @@
   // other configuration settings
   "other": {
     // return pdb entry results from rcsb
-    "rcsb_results": true
+    "rcsb_results": false
   }
 }
