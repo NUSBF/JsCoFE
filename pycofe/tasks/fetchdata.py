@@ -44,6 +44,32 @@ from  pycofe.tasks  import basic
 class FetchData(basic.TaskDriver):
 
     # ------------------------------------------------------------------------
+    
+    def putProgressBar ( self,label,range,eta=None,holderId=None,row=-1,value=0 ):
+        gridId = self.getWidgetId ( "pbgrid" )
+        pbarId = self.getWidgetId ( "pbar"   )
+        pyrvapi.rvapi_add_grid ( gridId,False,
+                                holderId if holderId else self.report_page_id(),
+                                row if row>=0 else self.rvrow,0,1,1 )
+        vshift = "<span style=\"font-size:120%\"><sup>&nbsp;</sup></span>"
+        pyrvapi.rvapi_set_text ( label + vshift,gridId,0,0,1,1 )
+        pyrvapi.rvapi_add_progress_bar   ( pbarId,gridId,0,1,1,1 )
+        pyrvapi.rvapi_set_progress_value ( pbarId,2,range )  #  2: set range
+        pyrvapi.rvapi_set_progress_value ( pbarId,3,value )  #  3: set value
+        pyrvapi.rvapi_set_progress_value ( pbarId,1,0     )  #  0/1: hide/show
+        if eta:
+            pyrvapi.rvapi_set_text ( vshift + eta, gridId,0,2,1,1 )
+        pyrvapi.rvapi_flush()
+        return { "gridId" : gridId, "pbarId" : pbarId }  # pbarMeta
+
+    def setProgressBar ( self,pbarMeta,value,eta=None ):
+        pyrvapi.rvapi_set_progress_value ( pbarMeta["pbarId"],3,value ); # 3: set value
+        if eta:
+            vshift = "<span style=\"font-size:120%\"><sup>&nbsp;</sup></span>"
+            pyrvapi.rvapi_set_text ( vshift + eta, pbarMeta["gridId"],0,2,1,1 )
+        pyrvapi.rvapi_flush()
+        return
+
 
     def run(self):
 
@@ -87,41 +113,20 @@ class FetchData(basic.TaskDriver):
 
 
         self.putMessage ( "&nbsp;" )
-        row0   = self.rvrow
+        row0 = self.rvrow
 
-        gridId = "pbgrid_" + str(self.widget_no)
-        pbarId = "pbar_"   + str(self.widget_no)
-        # pyrvapi.rvapi_set_text ( "&nbsp;",self.report_page_id(),self.rvrow,0,1,1 )
-        pyrvapi.rvapi_add_grid ( gridId,False,self.report_page_id(),self.rvrow,0,1,1 )
-        pyrvapi.rvapi_set_text ( "<i>Fetch progress:</i><sup>&nbsp;</sup>" ,gridId,0,0,1,1 )
-        pyrvapi.rvapi_add_progress_bar   ( pbarId,gridId,0,1,1,1 )
-        pyrvapi.rvapi_set_progress_value ( pbarId,2,100 )  #  2: set range
-        pyrvapi.rvapi_set_progress_value ( pbarId,3,0   )  #  3: set value
-        pyrvapi.rvapi_set_progress_value ( pbarId,1,0   )  #  0/1: hide/show
-        pyrvapi.rvapi_set_text  ( "ETA:</i><sup>&nbsp;</sup>",gridId,0,2,1,1 )
-        pyrvapi.rvapi_flush ()
+        pbarMeta = self.putProgressBar ( "fetch is starting",100 )
 
         time.sleep ( 5 )
-
-        pyrvapi.rvapi_set_progress_value ( pbarId,3,20 );  #  3: set value
-        pyrvapi.rvapi_set_text ( "ETA</i><sup>&nbsp;</sup>80",gridId,0,2,1,1 )
-        self.flush()
+        self.setProgressBar ( pbarMeta,20,eta="ETA: 80" )
         time.sleep ( 5 )
-        pyrvapi.rvapi_set_progress_value ( pbarId,3,40 );  #  3: set value
-        pyrvapi.rvapi_set_text ( "ETA:</i><sup>&nbsp;</sup>60",gridId,0,2,1,1 )
-        self.flush()
+        self.setProgressBar ( pbarMeta,40,eta="ETA: 60" )
         time.sleep ( 5 )
-        pyrvapi.rvapi_set_progress_value ( pbarId,3,60 );  #  3: set value
-        pyrvapi.rvapi_set_text ( "ETA:</i><sup>&nbsp;</sup>40",gridId,0,2,1,1 )
-        self.flush()
+        self.setProgressBar ( pbarMeta,60,eta="ETA: 40" )
         time.sleep ( 5 )
-        pyrvapi.rvapi_set_progress_value ( pbarId,3,80 );  #  3: set value
-        pyrvapi.rvapi_set_text ( "ETA:</i><sup>&nbsp;</sup>20",gridId,0,2,1,1 )
-        self.flush()
+        self.setProgressBar ( pbarMeta,80,eta="ETA: 20" )
         time.sleep ( 5 )
-        pyrvapi.rvapi_set_progress_value ( pbarId,3,100 );  #  3: set value
-        pyrvapi.rvapi_set_text ( "ETA:</i><sup>&nbsp;</sup>0",gridId,0,2,1,1 )
-        self.flush()
+        self.setProgressBar ( pbarMeta,100,eta="ETA: 0" )
         time.sleep ( 5 )
 
         self.rvrow = row0
