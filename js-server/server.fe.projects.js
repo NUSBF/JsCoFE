@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    14.12.23   <--  Date of Last Modification.
+ *    23.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -32,7 +32,7 @@
  *     function getOutputFilePath       ( jobDir,fileName )
  *     function getJobDataPath          ( loginData,projectName,jobId )
  * 
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -118,7 +118,7 @@ function getUserKnowledgePath ( loginData )  {
 function getProjectDirPath ( loginData,projectName )  {
 // path to directory containing project 'projectName' of user with
 // given login data
-  var n = projectName.lastIndexOf(':'+replayDir);
+  let n = projectName.lastIndexOf(':'+replayDir);
   if (n>0)
     return path.join ( conf.getFEConfig().getVolumeDir(loginData),
                        loginData.login + userProjectsExt,
@@ -225,11 +225,11 @@ function writeProjectData ( loginData,projectData,putTimeStamp )  {
 }
 
 function checkProjectDescData ( projectDesc,loginData )  {
-var update = false;
+let update = false;
 
   if ((!('owner' in projectDesc)) || (!projectDesc.owner.login))  {
     // backward compatibility on 11.01.2020
-    var uData = user.readUserData ( loginData );
+    let uData = user.readUserData ( loginData );
     projectDesc.owner = {
       login  : loginData.login,
       name   : uData.name,
@@ -248,14 +248,14 @@ var update = false;
       (Object.prototype.toString.call(projectDesc.share)!=='[object Object]')) {
     projectDesc.share = {};
     if ('share' in projectDesc.owner)  {
-      var lst = [];
+      let lst = [];
       if (projectDesc.owner.share.constructor.name=='Array')  {
-        for (var i=0;i<projectDesc.owner.share.length;i++)
+        for (let i=0;i<projectDesc.owner.share.length;i++)
           lst.push ( projectDesc.owner.share[i].login );
       } else  {
         lst = projectDesc.owner.share.split(',');
       }
-      for (var i=0;i<lst.length;i++)
+      for (let i=0;i<lst.length;i++)
         if (lst[i])
           projectDesc.share[lst[i]] = {
             labels      : {},   // not used at time of writing, safe to be empty
@@ -272,7 +272,7 @@ var update = false;
       }
   }
   
-  for (var login in projectDesc.share)
+  for (let login in projectDesc.share)
     if (projectDesc.share[login].labels.constructor===Array)  {
       projectDesc.share[login].labels = {};
       update = true;
@@ -304,7 +304,7 @@ var update = false;
     update = true;
   }
   
-  var f0name = pd.getProjectAuthor ( projectDesc );
+  let f0name = pd.getProjectAuthor ( projectDesc );
   
   if (f0name==pd.folder_type.tutorials)
         f0name += pd.folder_path.tutorials;
@@ -325,7 +325,7 @@ var update = false;
     update = true;
   }
   
-  var flist = projectDesc.folderPath.split('/');
+  let flist = projectDesc.folderPath.split('/');
   
   if (flist.length<=0)  {
     flist.push ( f0name );
@@ -359,7 +359,7 @@ var update = false;
 
 
 function checkProjectData ( projectData,loginData )  {
-var update = false;
+let update = false;
 
   if ('jobCount' in projectData)  {
     projectData.desc.jobCount = projectData.jobCount;
@@ -395,8 +395,8 @@ var update = false;
 
 
 function readProjectData ( loginData,projectName )  {
-  var projectDataPath = getProjectDataPath ( loginData,projectName );
-  var projectData     = utils.readObject ( projectDataPath );
+  let projectDataPath = getProjectDataPath ( loginData,projectName );
+  let projectData     = utils.readObject ( projectDataPath );
   if (projectData)  {
     if (checkProjectData(projectData,loginData))
       writeProjectData ( loginData,projectData,true );
@@ -407,15 +407,15 @@ function readProjectData ( loginData,projectName )  {
 
 
 function readProjectDesc ( loginData,projectName )  {
-  var projectDescPath = getProjectDescPath ( loginData,projectName );
-  var projectDesc     = utils.readObject ( projectDescPath );
+  let projectDescPath = getProjectDescPath ( loginData,projectName );
+  let projectDesc     = utils.readObject ( projectDescPath );
   if (!projectDesc)  {
-    var projectData = readProjectData ( loginData,projectName );
+    let projectData = readProjectData ( loginData,projectName );
     if (projectData)  {
       projectDesc = projectData.desc;
       utils.writeObject ( projectDescPath,projectDesc );
     } else  {
-      var projectDir = getProjectDirPath ( loginData,projectName );
+      let projectDir = getProjectDirPath ( loginData,projectName );
       if (utils.isSymbolicLink(projectDir))  {
         // dead link after deleting shared project by owner
         utils.removeFile ( projectDir );  // no use anyway
@@ -427,27 +427,27 @@ function readProjectDesc ( loginData,projectName )  {
 
 
 function writeProjectList ( loginData,projectList )  {
-  var userProjectsListPath = getUserProjectListPath ( loginData );
+  let userProjectsListPath = getUserProjectListPath ( loginData );
   return utils.writeObject ( userProjectsListPath,projectList );
 }
 
 
 function readProjectList ( loginData )  {
-  var userProjectsListPath = getUserProjectListPath ( loginData );
-  var pList = utils.readClass ( userProjectsListPath );
+  let userProjectsListPath = getUserProjectListPath ( loginData );
+  let pList = utils.readClass ( userProjectsListPath );
   if (pList)  {
     // read all project descriptions anew
     // think how to make this more smart in future
     pList.projects = [];
     if (!('startmode' in pList))
       pList.startmode = pd.start_mode.auto;
-    var dirlist = fs.readdirSync ( getUserProjectsDirPath(loginData) );
-    for (var i=0;i<dirlist.length;i++)
+    let dirlist = fs.readdirSync ( getUserProjectsDirPath(loginData) );
+    for (let i=0;i<dirlist.length;i++)
       if (dirlist[i].endsWith(projectExt))  {
-        var pname = path.parse(dirlist[i]).name;
-        var pdesc = readProjectDesc ( loginData,pname );
+        let pname = path.parse(dirlist[i]).name;
+        let pdesc = readProjectDesc ( loginData,pname );
         if (pdesc && checkProjectDescData(pdesc,loginData))  {
-          var pData = readProjectData ( loginData,pdesc.name );
+          let pData = readProjectData ( loginData,pdesc.name );
           if (pData)  {
             writeProjectData ( loginData,pData,true );
             pdesc = pData.desc;
@@ -465,7 +465,7 @@ function readProjectList ( loginData )  {
 
     // if ((typeof pList.currentFolder==='string') ||
     //     (pList.currentFolder instanceof String))
-    // var currentFolder = null;
+    // let currentFolder = null;
     // if ('currentFolder' in pList)
     //   currentFolder = pList.currentFolder;
     // pList.seedFolders  ( loginData.login );  // to be commented
@@ -505,12 +505,12 @@ function readDockData ( loginData )  {
 // ===========================================================================
 
 function makeNewUserProjectsDir ( loginData )  {
-var response = null;  // must become a cmd.Response object to return
+let response = null;  // must become a cmd.Response object to return
 
   log.standard ( 1,'make new user projects directory, login ' + loginData.login );
 
   // Get users' projects directory name
-  var userProjectsDirPath = getUserProjectsDirPath ( loginData );
+  let userProjectsDirPath = getUserProjectsDirPath ( loginData );
 
   if (utils.fileExists(userProjectsDirPath))  {
     // just a message, do not change anything in the existing projects directory
@@ -582,7 +582,7 @@ function _make_unique_list ( line )  {
 }
 
 function readProjectShare ( loginData )  {
-var pShare = utils.readClass ( getUserProjectSharePath ( loginData ) );
+let pShare = utils.readClass ( getUserProjectSharePath ( loginData ) );
   if (!pShare)
     pShare = new pd.ProjectShare();
   return pShare;
@@ -600,13 +600,13 @@ function getSharedPrjList ( loginData )  {
 // ===========================================================================
 
 function getUserKnowledgeData ( loginData )  {
-var response  = null;  // must become a cmd.Response object to return
-var knowledge = {};
+let response  = null;  // must become a cmd.Response object to return
+let knowledge = {};
 
   log.detailed ( 4,'get knowledge data, login ' + loginData.login );
 
   // Get users' projects list file name
-  var userKnowledgePath = getUserKnowledgePath ( loginData );
+  let userKnowledgePath = getUserKnowledgePath ( loginData );
 
   if (utils.fileExists(userKnowledgePath))
     knowledge = utils.readObject ( userKnowledgePath );
@@ -621,7 +621,7 @@ var knowledge = {};
 // ===========================================================================
 
 function makeNewProject ( loginData,projectDesc )  {
-var response = null;  // must become a cmd.Response object to return
+let response = null;  // must become a cmd.Response object to return
 
 //  console.log ( JSON.stringify(projectDesc) );
 
@@ -629,7 +629,7 @@ var response = null;  // must become a cmd.Response object to return
                    ', login ' + loginData.login );
 
   // Get users' projects directory name
-  var projectDirPath = getProjectDirPath ( loginData,projectDesc.name );
+  let projectDirPath = getProjectDirPath ( loginData,projectDesc.name );
 
   if (utils.fileExists(projectDirPath))  {
     // just issue a message, do not change anything in the existing
@@ -641,11 +641,11 @@ var response = null;  // must become a cmd.Response object to return
 
   } else if (utils.mkDir(projectDirPath)) {
 
-    var projectData  = new pd.ProjectData();
+    let projectData  = new pd.ProjectData();
     projectData.desc = projectDesc;
     if (writeProjectData(loginData,projectData,true))  {
       if (utils.mkDir(path.join(projectDirPath,replayDir))) {
-        var pname = projectData.desc.name;
+        let pname = projectData.desc.name;
         projectData.desc.name = projectData.desc.name + ':' + replayDir;
         if (writeProjectData(loginData,projectData,true))
           response = new cmd.Response ( cmd.fe_retcode.ok,'','' );
@@ -712,11 +712,11 @@ let unshared = [];
 
 
 function deleteProject ( loginData,projectName )  {
-var response       = null;  // must become a cmd.Response object to return
-var rdata          = {};    // response data
-var erc            = '';
-var projectDirPath = getProjectDirPath ( loginData,projectName );
-var pData          = readProjectData ( loginData,projectName );
+let response       = null;  // must become a cmd.Response object to return
+let rdata          = {};    // response data
+let erc            = '';
+let projectDirPath = getProjectDirPath ( loginData,projectName );
+let pData          = readProjectData ( loginData,projectName );
 
   // function _delete_project()  {
 
@@ -748,10 +748,10 @@ var pData          = readProjectData ( loginData,projectName );
 
     // remove it from all shares
     unshare_project ( pData.desc.share );
-    // for (var shareLogin in pData.desc.share)  {
-    //   var uLoginData = user.getUserLoginData ( shareLogin );
+    // for (let shareLogin in pData.desc.share)  {
+    //   let uLoginData = user.getUserLoginData ( shareLogin );
     //   if (uLoginData)  {
-    //     var pShare = readProjectShare ( uLoginData );
+    //     let pShare = readProjectShare ( uLoginData );
     //     pShare.removeShare ( pData.desc );
     //     writeProjectShare  ( uLoginData,pShare );
     //   }
@@ -797,28 +797,28 @@ var pData          = readProjectData ( loginData,projectName );
 // ===========================================================================
 
 function saveProjectList ( loginData,newProjectList )  {
-var response = null;  // must become a cmd.Response object to return
+let response = null;  // must become a cmd.Response object to return
 
   log.detailed ( 8,'save project list, login ' + loginData.login );
 
   // Get users' projects list file name
-  //var userProjectsListPath = getUserProjectListPath ( loginData );
+  //let userProjectsListPath = getUserProjectListPath ( loginData );
 
 //  if (utils.fileExists(userProjectsListPath))  {
-//    var pList = utils.readObject ( userProjectsListPath );
+//    let pList = utils.readObject ( userProjectsListPath );
 
-  var pList = readProjectList ( loginData );
+  let pList = readProjectList ( loginData );
   if (pList)  {
 
     // create new projects
-    for (var i=0;i<newProjectList.projects.length;i++)  {
-      var k = -1;
-      var pName = newProjectList.projects[i].name;
-      for (var j=0;(j<pList.projects.length) && (k<0);j++)
+    for (let i=0;i<newProjectList.projects.length;i++)  {
+      let k = -1;
+      let pName = newProjectList.projects[i].name;
+      for (let j=0;(j<pList.projects.length) && (k<0);j++)
         if (pName==pList.projects[j].name)
           k = j;
       if ((k<0) && (newProjectList.projects[i].owner.login==''))  {
-        var rsp = makeNewProject ( loginData,newProjectList.projects[i] );
+        let rsp = makeNewProject ( loginData,newProjectList.projects[i] );
         if (rsp.status!=cmd.fe_retcode.ok)
           response = rsp;
       } else if ((k>=0) &&
@@ -829,17 +829,17 @@ var response = null;  // must become a cmd.Response object to return
             )
            ))  {
         // project folder changed, update project metafile
-        var pData  = readProjectData ( loginData,pName );
+        let pData  = readProjectData ( loginData,pName );
         pData.desc = newProjectList.projects[i];
         writeProjectData ( loginData,pData,true );
       }
     }
 
     if (!response)  {
-      //var userProjectsListPath = getUserProjectListPath ( loginData );
+      //let userProjectsListPath = getUserProjectListPath ( loginData );
       //if (utils.writeObject ( userProjectsListPath,newProjectList ))  {
       if (writeProjectList(loginData,newProjectList))  {
-        // var rdata = {};
+        // let rdata = {};
         // if (disk_space_change!=0.0)  {
         //   // save on reading files if ration does not change; see related
         //   // comments above
@@ -864,7 +864,7 @@ var response = null;  // must become a cmd.Response object to return
 // ===========================================================================
 
 function saveDockData ( loginData,newDockData )  {
-var response = null;  // must become a cmd.Response object to return
+let response = null;  // must become a cmd.Response object to return
 
   log.detailed ( 81,'save dock data, login ' + loginData.login );
 
@@ -902,8 +902,8 @@ function prepareProjectExport ( loginData,projectList )  {
   log.standard ( 9,'export project "' + projectList.current +
                    '", login ' + loginData.login );
 
-  var projectDirPath = getProjectDirPath ( loginData,projectList.current );
-  var exportFilePath = path.join ( projectDirPath,
+  let projectDirPath = getProjectDirPath ( loginData,projectList.current );
+  let exportFilePath = path.join ( projectDirPath,
                                    projectList.current + cmd.projectFileExt );
   utils.removeFile ( exportFilePath );  // just in case
 
@@ -913,10 +913,10 @@ function prepareProjectExport ( loginData,projectList )  {
 
   // remove all customisation from the project: shares, labels and folder paths
 
-  var projectData = readProjectData ( loginData,projectList.current );
-  // var folderPath = projectData.desc.folderPath;
-  // var labels     = projectData.desc.owner.labels;
-  var share = projectData.desc.share;
+  let projectData = readProjectData ( loginData,projectList.current );
+  // let folderPath = projectData.desc.folderPath;
+  // let labels     = projectData.desc.owner.labels;
+  let share = projectData.desc.share;
   projectData.desc.share = {};
   if (!writeProjectData(loginData,projectData,false))  {
     log.error ( 10,'errors before packing at ' + projectDirPath + ' for export' );
@@ -952,10 +952,10 @@ function prepareProjectExport ( loginData,projectList )  {
 }
 
 function checkProjectExport ( loginData,projectList )  {
-  var projectDirPath = getProjectDirPath ( loginData,projectList.current );
-  var exportFilePath = path.join ( projectDirPath,
+  let projectDirPath = getProjectDirPath ( loginData,projectList.current );
+  let exportFilePath = path.join ( projectDirPath,
                                    projectList.current + cmd.projectFileExt );
-  var rdata = {};
+  let rdata = {};
   if (utils.fileExists(exportFilePath))
         rdata.size = utils.fileSize(exportFilePath);
   else  rdata.size = -1;
@@ -963,10 +963,10 @@ function checkProjectExport ( loginData,projectList )  {
 }
 
 function finishProjectExport ( loginData,projectList )  {
-  var projectDirPath = getProjectDirPath ( loginData,projectList.current );
-  var exportFilePath = path.join ( projectDirPath,
+  let projectDirPath = getProjectDirPath ( loginData,projectList.current );
+  let exportFilePath = path.join ( projectDirPath,
                                    projectList.current + cmd.projectFileExt );
-  //var tarballPath2   = path.join ( projectDirPath,'__' + projectList.current+'.tar.gz' );
+  //let tarballPath2   = path.join ( projectDirPath,'__' + projectList.current+'.tar.gz' );
   utils.removeFile ( exportFilePath );
   //utils.removeFile ( tarballPath2 );
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
@@ -976,9 +976,9 @@ function finishProjectExport ( loginData,projectList )  {
 // ===========================================================================
 
 function getJobExportNames ( loginData,task )  {
-  var exportName     = task.project + '-job_' + task.id + '.zip';
-  var jobDirPath     = getJobDirPath ( loginData,task.project,task.id );
-  var exportFilePath = path.join     ( jobDirPath,exportName );
+  let exportName     = task.project + '-job_' + task.id + '.zip';
+  let jobDirPath     = getJobDirPath ( loginData,task.project,task.id );
+  let exportFilePath = path.join     ( jobDirPath,exportName );
   return [ exportName,jobDirPath,exportFilePath ];
 }
 
@@ -987,14 +987,14 @@ function prepareJobExport ( loginData,task )  {
   log.standard ( 19,'export job "' + task.project + '-job_' + task.id +
                     '", login ' + loginData.login );
 
-  var exp_names      = getJobExportNames ( loginData,task );
-  // var exportName  = exp_names[0];
-  var jobDirPath     = exp_names[1];
-  var exportFilePath = exp_names[2];
+  let exp_names      = getJobExportNames ( loginData,task );
+  // let exportName  = exp_names[0];
+  let jobDirPath     = exp_names[1];
+  let exportFilePath = exp_names[2];
   utils.removeFile ( exportFilePath );  // just in case
 
   send_dir.packDir ( jobDirPath,'*',null,function(code,jobballSize){
-    var jobballPath = send_dir.getJobballPath ( jobDirPath );
+    let jobballPath = send_dir.getJobballPath ( jobDirPath );
     if (code)  {
       log.error ( 20,'errors at packing ' + jobDirPath + ' for export' );
       utils.removeFile ( jobballPath );  // export will never get ready!
@@ -1010,8 +1010,8 @@ function prepareJobExport ( loginData,task )  {
 
 
 function checkJobExport ( loginData,task )  {
-  var exportFilePath = getJobExportNames(loginData,task)[2];
-  var rdata = {};
+  let exportFilePath = getJobExportNames(loginData,task)[2];
+  let rdata = {};
   if (utils.fileExists(exportFilePath))
         rdata.size = utils.fileSize(exportFilePath);
   else  rdata.size = -1;
@@ -1019,7 +1019,7 @@ function checkJobExport ( loginData,task )  {
 }
 
 function finishJobExport ( loginData,task )  {
-  var exportFilePath = getJobExportNames(loginData,task)[2];
+  let exportFilePath = getJobExportNames(loginData,task)[2];
   utils.removeFile ( exportFilePath );
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
 }
@@ -1029,15 +1029,15 @@ function finishJobExport ( loginData,task )  {
 // Failed Job Export
 
 function getFailedJobExportNames ( fjdata )  {
-  //var path_list   = fjdata.path.split('/');
+  //let path_list   = fjdata.path.split('/');
   if ('path' in fjdata)  {
-    var path_list   = fjdata.path.split('\\').pop().split('/');
-    var exportName  = path_list[path_list.length-1] + '.zip';
-    var jobDirPath  = conf.getFEConfig().getJobsSafePath();
-    for (var i=1;i<path_list.length;i++)
+    let path_list   = fjdata.path.split('\\').pop().split('/');
+    let exportName  = path_list[path_list.length-1] + '.zip';
+    let jobDirPath  = conf.getFEConfig().getJobsSafePath();
+    for (let i=1;i<path_list.length;i++)
       jobDirPath  = path.join ( jobDirPath,path_list[i] );
-    var exportFilePath = path.join ( conf.getFEConfig().getJobsSafePath(),exportName );
-    var url            = cmd.__special_fjsafe_tag + '/' + exportName;
+    let exportFilePath = path.join ( conf.getFEConfig().getJobsSafePath(),exportName );
+    let url            = cmd.__special_fjsafe_tag + '/' + exportName;
     return [ exportName,jobDirPath,exportFilePath,url ];
   } else
     return [ '','','','' ];
@@ -1049,10 +1049,10 @@ function prepareFailedJobExport ( loginData,fjdata )  {
 
     log.standard ( 19,'export failed job "' + fjdata.path + '", login ' + loginData.login );
 
-    var exp_names   = getFailedJobExportNames ( fjdata );
-    // var exportName  = exp_names[0];
-    var jobDirPath  = exp_names[1];
-    var exportFilePath = exp_names[2];
+    let exp_names   = getFailedJobExportNames ( fjdata );
+    // let exportName  = exp_names[0];
+    let jobDirPath  = exp_names[1];
+    let exportFilePath = exp_names[2];
     utils.removeFile ( exportFilePath );  // just in case
 
     send_dir.packDir ( jobDirPath,'*',exportFilePath,function(code,jobballSize){
@@ -1070,8 +1070,8 @@ function prepareFailedJobExport ( loginData,fjdata )  {
 }
 
 function checkFailedJobExport ( loginData,fjdata )  {
-  var exportFilePath = getFailedJobExportNames(fjdata)[2];
-  var rdata = {};
+  let exportFilePath = getFailedJobExportNames(fjdata)[2];
+  let rdata = {};
   if (exportFilePath && utils.fileExists(exportFilePath))
         rdata.size = utils.fileSize(exportFilePath);
   else  rdata.size = -1;
@@ -1079,7 +1079,7 @@ function checkFailedJobExport ( loginData,fjdata )  {
 }
 
 function finishFailedJobExport ( loginData,fjdata )  {
-  var exportFilePath = getFailedJobExportNames(fjdata)[2];
+  let exportFilePath = getFailedJobExportNames(fjdata)[2];
   if (exportFilePath)
     utils.removeFile ( exportFilePath );
   return new cmd.Response ( cmd.fe_retcode.ok,'','' );
@@ -1090,7 +1090,7 @@ function finishFailedJobExport ( loginData,fjdata )  {
 
 function getProjectData ( loginData,data )  {
 
-  var response = getProjectList ( loginData );
+  let response = getProjectList ( loginData );
   if (response.status!=cmd.fe_retcode.ok)
     return response;
 
@@ -1098,21 +1098,21 @@ function getProjectData ( loginData,data )  {
                     '), login ' + loginData.login );
 
   // Get users' projects list file name
-  var projectList    = response.data;
-  var projectName    = projectList.current;  // projectID or archiveID
-  var archive_folder = (projectList.currentFolder.type==pd.folder_type.archived) ||
+  let projectList    = response.data;
+  let projectName    = projectList.current;  // projectID or archiveID
+  let archive_folder = (projectList.currentFolder.type==pd.folder_type.archived) ||
                        (projectList.currentFolder.type==pd.folder_type.cloud_archive);
 
   // check that current project exists
-  var pdesc = null;
+  let pdesc = null;
   if (archive_folder)  {
-    for (var i=0;(i<projectList.projects.length) && (!pdesc);i++)
+    for (let i=0;(i<projectList.projects.length) && (!pdesc);i++)
       if (projectList.projects[i].archive && 
           (projectList.projects[i].archive.id==projectName))
         pdesc = projectList.projects[i];
   }
   if (!pdesc)  {
-    for (var i=0;(i<projectList.projects.length) && (!pdesc);i++)
+    for (let i=0;(i<projectList.projects.length) && (!pdesc);i++)
       if (projectList.projects[i].name==projectName)
         pdesc = projectList.projects[i];
     if (!pdesc)
@@ -1125,22 +1125,22 @@ function getProjectData ( loginData,data )  {
   if (data.mode=='replay')
     projectName += ':' + replayDir;
 
-  var pData = readProjectData ( loginData,projectName );
+  let pData = readProjectData ( loginData,projectName );
   if (pData)  {
     if (!pd.isProjectAccessible(loginData.login,pData.desc))
       return new cmd.Response ( cmd.fe_retcode.projectAccess,
                                 '[00035] Project access denied.',
                                 { access_denied : true } );
-    var d = {};
+    let d = {};
     d.meta      = pData;
     d.tasks_add = [];
     d.tasks_del = [];
-    var projectDirPath = getProjectDirPath ( loginData,projectName );
+    let projectDirPath = getProjectDirPath ( loginData,projectName );
     response = new cmd.Response ( cmd.fe_retcode.ok,'',d );
     fs.readdirSync(projectDirPath).sort().forEach(function(file,index){
       if (file.startsWith(jobDirPrefix)) {
-        var jobPath = path.join ( projectDirPath,file,task_t.jobDataFName );
-        var task    = utils.readObject ( jobPath );
+        let jobPath = path.join ( projectDirPath,file,task_t.jobDataFName );
+        let task    = utils.readObject ( jobPath );
         if (task)  {
           d.tasks_add.push ( task );
         } else  {
@@ -1150,7 +1150,7 @@ function getProjectData ( loginData,data )  {
       }
     });
   } else  {
-    var projectDataPath = getProjectDataPath ( loginData,projectName );
+    let projectDataPath = getProjectDataPath ( loginData,projectName );
     if (utils.fileExists(projectDataPath))  {
       response = new cmd.Response ( cmd.fe_retcode.readError,
                                  '[00022] Project metadata cannot be read.','' );
@@ -1171,7 +1171,7 @@ function checkTimestamps ( loginData,projectDesc )  {
 // 'projectDesc' comes from the client. Client does not change timestamps,
 // therefore, timestamp on server side may be either equal or ahead of
 // timestamp in 'projectDesc'.
-  var rdata    = {};  // response data object
+  let rdata    = {};  // response data object
 //  rdata.pdesc  = projectDesc;
   rdata.reload = 0;  // project reload codes for client:
                      //  0: no reload is needed
@@ -1199,7 +1199,7 @@ function checkTimestamps ( loginData,projectDesc )  {
 // // 'projectData' comes from the client. Client does not change timestamps,
 // // therefore, timestamp on server side may be either equal or ahead of
 // // timestamp in 'projectData.desc'.
-//   var checkData   = {};
+//   let checkData   = {};
 //   checkData.pdata = projectData;  // synced Project Data
 //   checkData.rdata = {};           // response data object
 //   checkData.rdata.reload = 0;  // project reload codes for client:
@@ -1207,9 +1207,9 @@ function checkTimestamps ( loginData,projectDesc )  {
 //                      //  1: reload is needed but current operation may continue
 //                      //  2: reload is mandatory, current operation must terminate
 //   checkData.rdata.pdesc = null;
-//   var pdesc = projectData.desc;
+//   let pdesc = projectData.desc;
 //   if ((pdesc.owner.share.length>0) || pdesc.autorun)  {  // the project is shared
-//     var pData = readProjectData ( loginData,pdesc.name );
+//     let pData = readProjectData ( loginData,pdesc.name );
 //     if (pData)  {
 //       checkData.rdata.pdesc = pData.desc;
 //       if (pData.desc.timestamp>pdesc.timestamp)  {
@@ -1227,12 +1227,12 @@ function checkTimestamps ( loginData,projectDesc )  {
 
 
 // function advanceJobCounter ( loginData,data )  {
-//   //var response    = null;
-//   var projectDesc = data.meta;
-//   var rdata       = checkTimestamps ( loginData,projectDesc );
+//   //let response    = null;
+//   let projectDesc = data.meta;
+//   let rdata       = checkTimestamps ( loginData,projectDesc );
 //   rdata.project_missing = false;
 //   if (!rdata.reload)  {
-//     var projectData = readProjectData ( loginData,projectDesc.name );
+//     let projectData = readProjectData ( loginData,projectDesc.name );
 //     if (projectData)  {
 //       projectData.desc.jobCount++;
 //       writeProjectData ( loginData,projectData,false );  // do not change the timestamp
@@ -1244,8 +1244,8 @@ function checkTimestamps ( loginData,projectDesc )  {
 // }
 
 // function getTreeNodeByTaskId ( projectTree,taskId )  {
-//   var node = null;
-//   for (var i=0;(i<projectTree.length) && (!node);i++)
+//   let node = null;
+//   for (let i=0;(i<projectTree.length) && (!node);i++)
 //     if (projectTree[i].dataId==taskId)
 //       node = projectTree[i];
 //     else if (projectTree[i].children.length>0)
@@ -1254,7 +1254,7 @@ function checkTimestamps ( loginData,projectDesc )  {
 // }
 
 function makeNodeName ( task,title )  {
-var text = '[';
+let text = '[';
   if (task.autoRunId)
     text = '<b>' + task.autoRunId + ':</b>[';
   text += com_utils.padDigits(task.id,4) + '] ' + title;
@@ -1263,9 +1263,9 @@ var text = '[';
 
 
 function make_job_directory ( loginData,projectName,id0 )  {
-var id    = id0-1;
-var rc    = 1;
-var dpath = null;
+let id    = id0-1;
+let rc    = 1;
+let dpath = null;
   while (rc>0)  {
     id++;
     dpath = getJobDirPath ( loginData,projectName,id );
@@ -1276,21 +1276,21 @@ var dpath = null;
 
 
 function saveProjectData ( loginData,data )  {
-var response    = null;
-var projectData = data.meta;          // client project data
-var projectDesc = projectData.desc;
-var projectName = projectDesc.name;
+let response    = null;
+let projectData = data.meta;          // client project data
+let projectDesc = projectData.desc;
+let projectName = projectDesc.name;
 
-  var rdata    = {}; // response data object
+  let rdata    = {}; // response data object
   rdata.reload = 0;  // project reload codes for client:
                      //  0: no reload is needed
                      //  1: reload is needed but current operation may continue
                      //  2: reload is mandatory, current operation must terminate
   rdata.pdesc  = null;
   rdata.jobIds = [];
-  var jobDirs  = [];
+  let jobDirs  = [];
 
-  for (var i=0;i<data.tasks_add.length;i++)  {
+  for (let i=0;i<data.tasks_add.length;i++)  {
     rdata.jobIds.push ( data.tasks_add[i].id );  // this will be returned to
                                                  // client modified or not
     jobDirs.push ( [ null,null ] );  //  [dirpath,jobId]
@@ -1305,18 +1305,18 @@ var projectName = projectDesc.name;
 // console.log ( ' >>>>> timestamps='+rdata.pdesc.timestamp+':'+projectDesc.timestamp );
     }
 
-    var pData = readProjectData ( loginData,projectName );  // server project data
+    let pData = readProjectData ( loginData,projectName );  // server project data
 
 // console.log ( ' >>>>>>> nadd=' + data.tasks_add.length );
 
     if (data.tasks_add.length>0)  {
       // there are new tasks -- check that trees are compatible
   
-      for (var i=0;(i<data.tasks_add.length) && (rdata.reload<=1);i++)  {
+      for (let i=0;(i<data.tasks_add.length) && (rdata.reload<=1);i++)  {
         // simply check that all needful jobs are retained in the actual project
         // check that all harvested tasks are there in pData
-        var hids = data.tasks_add[i].harvestedTaskIds;
-        for (var j=0;(j<hids.length) && (rdata.reload==1);j++)
+        let hids = data.tasks_add[i].harvestedTaskIds;
+        for (let j=0;(j<hids.length) && (rdata.reload==1);j++)
           if (!pd.getProjectNode(pData,hids[j]))  {
             rdata.reload = 2;
           }
@@ -1330,7 +1330,7 @@ var projectName = projectDesc.name;
           // already there in the project. Simply try to create job directory and
           // see if it already exists.
           
-          var mjd = make_job_directory ( loginData,projectName,data.tasks_add[i].id );
+          let mjd = make_job_directory ( loginData,projectName,data.tasks_add[i].id );
           
           if (mjd[0]<0)  {
           
@@ -1351,7 +1351,7 @@ var projectName = projectDesc.name;
             
             if (mjd[2]!=data.tasks_add[i].id)  {
               // there was a clash, job id was changed, update metadata and tree node
-              var node = pd.getProjectNode ( projectData,data.tasks_add[i].id );
+              let node = pd.getProjectNode ( projectData,data.tasks_add[i].id );
               if (node)  { // must be always so, but put "if" for server stability
                 pData.desc.jobCount  = Math.max ( pData.desc.jobCount,mjd[2] );
                 rdata.jobIds[i]      = mjd[2];
@@ -1377,28 +1377,28 @@ var projectName = projectDesc.name;
             // if found than projects can be merged without general reload of
             // the client.
             // Find the whole branch in the submitted project
-            var node_lst = pd.getProjectNodeBranch ( projectData,data.tasks_add[i].id );
+            let node_lst = pd.getProjectNodeBranch ( projectData,data.tasks_add[i].id );
 
             // and find parent task id (skip remarks and folders)
-            var pDataId = '';
-            for (var j=1;(j<node_lst.length) && (!pDataId);j++)
+            let pDataId = '';
+            for (let j=1;(j<node_lst.length) && (!pDataId);j++)
               pDataId = node_lst[j].dataId;  // empty for remarks
 
 // console.log ( ' >>>>>>> pDataId=' + pDataId );
 
             if (pDataId)  {
               // find parent node for to-be-added job in server-side copy of project
-              var pnode = pd.getProjectNode ( pData,pDataId );
+              let pnode = pd.getProjectNode ( pData,pDataId );
               if (pnode)  {  // node found, copy the to-be-added node over.
                 // Before copying, remove branches, coming with the added node,
                 // from the destination (works if node was inserted rather than added)
-                var childIds = [];
-                for (var j=0;j<node_lst[0].children.length;j++)
+                let childIds = [];
+                for (let j=0;j<node_lst[0].children.length;j++)
                   childIds.push ( node_lst[0].children[j].dataId );
                 if (childIds.length>0)  {
-                  var pchildren  = pnode.children;
+                  let pchildren  = pnode.children;
                   pnode.children = [];
-                  for (var j=0;j<pchildren.length;j++)
+                  for (let j=0;j<pchildren.length;j++)
                     if (childIds.indexOf(pchildren[j].dataId)<0)
                       pnode.children.push ( pchildren[j] );
                 }
@@ -1426,7 +1426,7 @@ var projectName = projectDesc.name;
     }
 
     if (rdata.reload>1)  {  // no way, client must update the project
-      for (var i=0;i<jobDirs.length;i++)
+      for (let i=0;i<jobDirs.length;i++)
         if (jobDirs[i][0])
           utils.removePath ( jobDirs[i][0] );
       if (response)
@@ -1470,13 +1470,13 @@ var projectName = projectDesc.name;
   }
 
   // Get users' projects list file name
-  var projectDataPath = getProjectDataPath ( loginData,projectName );
+  let projectDataPath = getProjectDataPath ( loginData,projectName );
 
   if (utils.fileExists(projectDataPath))  {
 
-    var disk_space_change = 0.0;
+    let disk_space_change = 0.0;
     if ('disk_space' in projectDesc)  {  // backward compatibility on 05.06.2018
-      for (var i=0;i<data.tasks_del.length;i++)
+      for (let i=0;i<data.tasks_del.length;i++)
         disk_space_change -= data.tasks_del[i][1]
       projectDesc.disk_space += disk_space_change;
       projectDesc.disk_space  = Math.max ( 0,projectDesc.disk_space );
@@ -1488,14 +1488,14 @@ var projectName = projectDesc.name;
     if (disk_space_change!=0.0)  {
       // disk space change is booked to project owner inside this function
       //ration.changeProjectDiskSpace ( loginData,projectName,disk_space_change,false );
-      var ownerLoginData = loginData;
+      let ownerLoginData = loginData;
       if (loginData.login!=projectDesc.owner.login)
         ownerLoginData = user.getUserLoginData ( projectDesc.owner.login );
       ration.updateProjectStats ( ownerLoginData,projectName,
                                   0.0,disk_space_change,0,true );
     }
 
-    for (var i=0;i<data.tasks_add.length;i++)
+    for (let i=0;i<data.tasks_add.length;i++)
       projectDesc.jobCount = Math.max ( projectDesc.jobCount,data.tasks_add[i].id );
 
     if (data.tasks_del.length>0)  // save on reading files ration does not change
@@ -1504,10 +1504,10 @@ var projectName = projectDesc.name;
 
     // this loop is here in order to minimise time for writing project tree in file
     if (rdata.reload>0) // in case reload==1, project tree contains non-deleted nodes
-      for (var i=0;i<data.tasks_del.length;i++)
+      for (let i=0;i<data.tasks_del.length;i++)
         pd.deleteProjectNode ( projectData,data.tasks_del[i][0] );
 
-    var update_time_stamp = data.update || (rdata.reload>0) ||
+    let update_time_stamp = data.update || (rdata.reload>0) ||
                                            (data.tasks_del.length>0) ||
                                            (data.tasks_add.length>0);
 
@@ -1516,7 +1516,7 @@ var projectName = projectDesc.name;
       rdata.pdesc = projectData.desc;
 
       // remove job directories from the 'delete' list
-      for (var i=0;i<data.tasks_del.length;i++)  {
+      for (let i=0;i<data.tasks_del.length;i++)  {
         rj.killJob ( loginData,projectName,data.tasks_del[i][0] );
         utils.removePath ( getJobDirPath(loginData,projectName,data.tasks_del[i][0]) );
       }
@@ -1524,11 +1524,11 @@ var projectName = projectDesc.name;
       response = new cmd.Response ( cmd.fe_retcode.ok,'',rdata );
 
       // add job directories from the 'add' list
-      for (var i=0;i<data.tasks_add.length;i++)
+      for (let i=0;i<data.tasks_add.length;i++)
         if (jobDirs[i][0])  {
 
-          var jobDirPath  = jobDirs[i][0];
-          var jobDataPath = getJobDataPath ( loginData,projectName,data.tasks_add[i].id );
+          let jobDirPath  = jobDirs[i][0];
+          let jobDataPath = getJobDataPath ( loginData,projectName,data.tasks_add[i].id );
 
           if (!utils.writeObject(jobDataPath,data.tasks_add[i])) {
             log.error ( 32,'cannot write job meta at ' + jobDataPath );
@@ -1537,8 +1537,8 @@ var projectName = projectDesc.name;
           }
 
           if (('cloned_id' in data.tasks_add[i]) && data.tasks_add[i].cloned_id)  {
-            var taski      = class_map.makeClass ( data.tasks_add[i] );
-            var cloneItems = taski.cloneItems();
+            let taski      = class_map.makeClass ( data.tasks_add[i] );
+            let cloneItems = taski.cloneItems();
             cloneItems.push ( 'auto.context' );
             cloneItems.push ( 'auto.meta'    );
             if (cloneItems.length>0)  {
@@ -1546,15 +1546,15 @@ var projectName = projectDesc.name;
               // making sure that copy completes before response is sent back
               // to client. This is a potential trouble, however, we assume
               // no massive copying here, so that it should work.
-              var jobDirPath0 = getJobDirPath ( loginData,projectName,taski.cloned_id );
-              for (var j=0;j<cloneItems.length;j++)  {
-                var item_src  = path.join ( jobDirPath0,cloneItems[j] );
+              let jobDirPath0 = getJobDirPath ( loginData,projectName,taski.cloned_id );
+              for (let j=0;j<cloneItems.length;j++)  {
+                let item_src  = path.join ( jobDirPath0,cloneItems[j] );
                 if (utils.fileExists(item_src))  {
-                  var item_dest = path.join ( jobDirPath ,cloneItems[j] );
+                  let item_dest = path.join ( jobDirPath ,cloneItems[j] );
                   if (cloneItems[j]=='auto.context')  {
-                    var context = utils.readObject ( item_src );
+                    let context = utils.readObject ( item_src );
                     if (context)  {
-                      for (var key in context.job_register)
+                      for (let key in context.job_register)
                         if (context.job_register[key]==data.tasks_add[i].cloned_id)
                           context.job_register[key] = taski.id;
                       utils.writeObject ( item_dest,context );
@@ -1615,13 +1615,13 @@ var projectName = projectDesc.name;
 
 function shareProjectConfirm ( loginData,data )  {
 // will only return user names for confirmation in project share dialog on client
-var pDesc     = data.desc;
-var share     = pDesc.share;  // requested share state
-var share0    = data.share0;  // old share state
-var unshared  = [];
-var unknown   = [];
-var newShared = [];
-var oldShared = [];
+let pDesc     = data.desc;
+let share     = pDesc.share;  // requested share state
+let share0    = data.share0;  // old share state
+let unshared  = [];
+let unknown   = [];
+let newShared = [];
+let oldShared = [];
 
   for (let shareLogin in share)
     if (shareLogin)  {
@@ -1644,7 +1644,7 @@ var oldShared = [];
       }  // do not put into unknown as it is going to be unshared anyway
     }
 
-  var rcdata = {
+  let rcdata = {
     unshared  : unshared,
     unknown   : unknown,
     newShared : newShared,
@@ -1674,16 +1674,16 @@ var oldShared = [];
 }
 
 function shareProject ( loginData,data )  {  // data must contain new title
-var pDesc     = data.desc;
-var share     = pDesc.share;  // requested share state
-var share0    = data.share0;  // old share state
-var shared    = {};  // index of new shared logins
-var unshared  = [];  // return list of unshared logins
-var unknown   = [];
-var newShared = [];
-var oldShared = [];
-var n_email   = 0;
-var t_email   = 1000; //msec
+let pDesc     = data.desc;
+let share     = pDesc.share;  // requested share state
+let share0    = data.share0;  // old share state
+let shared    = {};  // index of new shared logins
+let unshared  = [];  // return list of unshared logins
+let unknown   = [];
+let newShared = [];
+let oldShared = [];
+let n_email   = 0;
+let t_email   = 1000; //msec
 
   if (loginData.login!=pDesc.owner.login)
     return new cmd.Response ( cmd.fe_retcode.ok,'',{
@@ -1692,7 +1692,7 @@ var t_email   = 1000; //msec
       unknown  : unknown
     });
 
-  var pData = readProjectData ( loginData,pDesc.name );
+  let pData = readProjectData ( loginData,pDesc.name );
   if (pData)  {
 
     let userData0  = user.readUserData ( loginData );
@@ -1881,11 +1881,11 @@ let rcode = 'ok';
 }
 
 function renameProject ( loginData,data )  {  // data must contain new title
-var response = null;
-var pData    = readProjectData ( loginData,data.name );
+let response = null;
+let pData    = readProjectData ( loginData,data.name );
 
   if (pData)  {
-    var rdata = { 'code' : 'ok' };
+    let rdata = { 'code' : 'ok' };
     pData.desc.title = data.title;
     if (('new_name' in data) && (data.new_name!=pData.desc.name))  {
       // project ID to be changed: serious
@@ -1894,8 +1894,8 @@ var pData    = readProjectData ( loginData,data.name );
         rdata.code = 'Not possible to change ID of a shared project';
       } else  {
         // Get users' projects directory name
-        var projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
-        var newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
+        let projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
+        let newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
         if (utils.fileExists(newPrjDirPath))  {
           rdata.code = 'Project with requested ID (' + data.new_name +
                        ') already exists (check all folders)';
@@ -1940,11 +1940,11 @@ var pData    = readProjectData ( loginData,data.name );
 
 /*
 function renameProject ( loginData,data )  {  // data must contain new title
-var response = null;
-var pData    = readProjectData ( loginData,data.name );
+let response = null;
+let pData    = readProjectData ( loginData,data.name );
 
   if (pData)  {
-    var rdata = { 'code' : 'ok' };
+    let rdata = { 'code' : 'ok' };
     pData.desc.title = data.title;
     if (('new_name' in data) && (data.new_name!=pData.desc.name))  {
       // project ID to be changed: serious
@@ -1953,18 +1953,18 @@ var pData    = readProjectData ( loginData,data.name );
         rdata.code = 'Not possible to change ID of a shared project';
       } else  {
         // Get users' projects directory name
-        var projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
-        var newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
+        let projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
+        let newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
         if (utils.fileExists(newPrjDirPath))  {
           rdata.code = 'Project with requested ID (' + data.new_name +
                        ') already exists (check all folders)';
         } else  {
-          var jmeta = [];
+          let jmeta = [];
           if (utils.dirExists(projectDirPath))  {
-            var files = fs.readdirSync ( projectDirPath );
-            for (var i=0;(i<files.length) && (rdata.code=='ok');i++)  {
-              var jmpath = path.join ( projectDirPath,files[i],task_t.jobDataFName );
-              var jm     = utils.readObject ( jmpath );
+            let files = fs.readdirSync ( projectDirPath );
+            for (let i=0;(i<files.length) && (rdata.code=='ok');i++)  {
+              let jmpath = path.join ( projectDirPath,files[i],task_t.jobDataFName );
+              let jm     = utils.readObject ( jmpath );
               if (jm)  {
                 if ((jm.state==task_t.job_code.running) ||
                     (jm.state==task_t.job_code.exiting))
@@ -1977,7 +1977,7 @@ var pData    = readProjectData ( loginData,data.name );
             rdata.code = 'Project directory does not exist -- possible data corruption.';
           if (rdata.code=='ok')  {
             // change code id in all files and rename project directory
-            for (var i=0;i<jmeta.length;i++)  {
+            for (let i=0;i<jmeta.length;i++)  {
               jmeta[i][1].project = data.new_name;
               utils.writeObject ( jmeta[i][0],jmeta[i][1] );
             }
@@ -2022,24 +2022,24 @@ var pData    = readProjectData ( loginData,data.name );
 // ===========================================================================
 
 function cloneProject ( loginData,data )  {
-var response = null;
-var pData    = readProjectData ( loginData,data.name );
+let response = null;
+let pData    = readProjectData ( loginData,data.name );
 
   if (pData)  {
 
-    var rdata = { 'code' : 'ok' };
-    var projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
-    var newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
+    let rdata = { 'code' : 'ok' };
+    let projectDirPath = getProjectDirPath ( loginData,pData.desc.name );
+    let newPrjDirPath  = getProjectDirPath ( loginData,data.new_name );
     if (utils.fileExists(newPrjDirPath))  {
       rdata.code = 'Project with requested ID (' + data.new_name +
                    ') already exists (check all folders)';
     } else  {
-      var jmeta = [];
+      let jmeta = [];
       if (utils.dirExists(projectDirPath))  {
-        var files = fs.readdirSync ( projectDirPath );
-        for (var i=0;(i<files.length) && (rdata.code=='ok');i++)
+        let files = fs.readdirSync ( projectDirPath );
+        for (let i=0;(i<files.length) && (rdata.code=='ok');i++)
           if (files[i].startsWith(jobDirPrefix))  {
-            var jm = utils.readObject ( path.join(projectDirPath,files[i],task_t.jobDataFName) );
+            let jm = utils.readObject ( path.join(projectDirPath,files[i],task_t.jobDataFName) );
             if (jm)  {
               if ((jm.state==task_t.job_code.running) ||
                   (jm.state==task_t.job_code.exiting))
@@ -2060,26 +2060,26 @@ var pData    = readProjectData ( loginData,data.name );
             utils.removePath ( newPrjDirPath );
           } else  {
             // change code id in all files and rename project directory
-            for (var i=0;i<jmeta.length;i++)  {
+            for (let i=0;i<jmeta.length;i++)  {
               jmeta[i][1].project = data.new_name;
               utils.writeObject ( jmeta[i][0],jmeta[i][1] );
             }
             pData = readProjectData ( loginData,data.name );
-            var pDesc = pData.desc;
+            let pDesc = pData.desc;
             pDesc.name  = data.new_name;
             pDesc.title = data.new_title;
             pDesc.share = {};  // no initial sharing on the cloned project
             if ((!('author' in pDesc.owner)) || 
                 (pDesc.owner.author==ud.__local_user_id))
               pDesc.owner.author = pDesc.owner.login;
-            var rootFPath = loginData.login + '\'s Projects';
+            let rootFPath = loginData.login + '\'s Projects';
             if (!pDesc.folderPath.startsWith(rootFPath))
               pDesc.folderPath = rootFPath;
             pDesc.owner.login = loginData.login;
             if (pDesc.archive && pDesc.archive.in_archive) 
               pDesc.archive.in_archive = false;
             writeProjectData ( loginData,pData,true );
-            var pList = readProjectList ( loginData );
+            let pList = readProjectList ( loginData );
             if (pList)  {
               pList.resetFolders ( loginData.login );
               pList.current = data.new_name;
@@ -2104,10 +2104,10 @@ var pData    = readProjectData ( loginData,data.name );
 
 
 function checkCloneProject ( loginData,projectName )  {
-var rdata = {};
-var newPrjDirPath = getProjectDirPath ( loginData,projectName );
+let rdata = {};
+let newPrjDirPath = getProjectDirPath ( loginData,projectName );
   if (utils.dirExists(newPrjDirPath))  {
-    var pData = readProjectData ( loginData,projectName );
+    let pData = readProjectData ( loginData,projectName );
     if (pData && (pData.desc.name==projectName))  {
       rdata.code   ='done';
       rdata.ration = ration.calculateUserDiskSpace(loginData).clearJobs();
@@ -2129,8 +2129,8 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
 //                  = 2 : rename project if duplicate name
 
   // read project meta to make sure it was a project tarball
-  var prj_meta_path = '';
-  var prj_desc_path = '';
+  let prj_meta_path = '';
+  let prj_desc_path = '';
   if (prjDir)  {
     prj_meta_path = path.join ( prjDir ,projectDataFName );
     prj_desc_path = path.join ( prjDir ,projectDescFName );
@@ -2138,15 +2138,15 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
     prj_meta_path = path.join ( tempdir,projectDataFName );
     prj_desc_path = path.join ( tempdir,projectDescFName );
   }
-  var prj_meta = utils.readObject ( prj_meta_path );
+  let prj_meta = utils.readObject ( prj_meta_path );
 
   // Get users' projects list here for finding the current folder
-  var pList = readProjectList ( loginData );
+  let pList = readProjectList ( loginData );
   if (!pList)
     pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
 
   // validate metadata and read project name
-  var projectDesc = new pd.ProjectDesc();
+  let projectDesc = new pd.ProjectDesc();
   try {
     if (prj_meta._type=='ProjectData')  {
 
@@ -2199,7 +2199,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
     prj_meta = null;
   }
 
-  var signal_path = path.join ( tempdir,'signal' );
+  let signal_path = path.join ( tempdir,'signal' );
 
   if (!prj_meta)  {
 
@@ -2208,7 +2208,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
 
   } else  {
 
-    var projectDir = getProjectDirPath ( loginData,projectDesc.name );
+    let projectDir = getProjectDirPath ( loginData,projectDesc.name );
 
     if (utils.isSymbolicLink(projectDir))  {
       // check that the link is not dead (owner deleted project)
@@ -2223,7 +2223,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
       if (duplicate_key==1)  {
 
         // re-read project list because a new project was added
-        var pList = readProjectList ( loginData );
+        let pList = readProjectList ( loginData );
         if (!pList)
           pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
         pList.current = projectDesc.name;        // make it current
@@ -2295,15 +2295,15 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
                 jmetas[i].meta.state  = task_t.job_code.stopped;
                 jmetas[i].meta.scores = {
                   [jmetas[i].meta._type.slice(4).toLowerCase()] : {
-                    "summary_line": "abandoned (project exported before finished)"
+                    'summary_line' : 'abandoned (project exported before task finished)'
                   }
                 };
                 utils.writeObject ( jmetas[i].path,jmetas[i].meta );
                 utils.writeJobReportMessage ( 
                   path.dirname(jmetas[i].path),
-                  '<h2>Task abandoned</h2>The task was abandoned because the project '  +
+                  '<h2>Task abandoned</h2>The task was abandoned because the project ' +
                   'was exported before it finished. For task results, look ' +
-                  'into original project. Alternatively, clone this task and run '  +
+                  'into original project. Alternatively, clone this task and run ' +
                   'again.', 
                   false 
                 );
@@ -2323,7 +2323,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
         // make the corresponding entry in project list
 
         // re-read project list because a new project was added
-        var pList = readProjectList ( loginData );
+        let pList = readProjectList ( loginData );
         if (!pList)
           pList = new pd.ProjectList(loginData.login);  // *** should throw error instead
 
@@ -2363,7 +2363,7 @@ function _import_project ( loginData,tempdir,prjDir,chown_key,duplicate_key )  {
 
 
 function getProjectTmpDir ( loginData,make_clean )  {
-  var tempdir = conf.getFETmpDir1(loginData);
+  let tempdir = conf.getFETmpDir1(loginData);
 
   if (make_clean)  {
     if (!utils.fileExists(tempdir))  {
@@ -2394,13 +2394,13 @@ function importProject ( loginData,upload_meta )  {
   // directory name is derived from user login in order to check on
   // import outcome in subsequent 'checkPrjImport' requests
 
-  var tempdir = getProjectTmpDir ( loginData,true );
+  let tempdir = getProjectTmpDir ( loginData,true );
   if (tempdir)  {
 
-    var errs = '';
+    let errs = '';
 
     // we run this loop although expect only one file on upload
-    for (var key in upload_meta.files)  {
+    for (let key in upload_meta.files)  {
 
       // rename file with '__' prefix in order to use the standard
       // unpack directory function
@@ -2423,7 +2423,7 @@ function importProject ( loginData,upload_meta )  {
 
     }
 
-    var fdata = {};
+    let fdata = {};
     fdata.files = [];
 
     if (errs=='')
@@ -2440,31 +2440,31 @@ function importProject ( loginData,upload_meta )  {
 
 
 function startDemoImport ( loginData,meta )  {
-var rc        = cmd.fe_retcode.ok;
-var rc_msg    = 'success';
-var rdata     = { 'status' : 'ok' };
-var tempdir   = getProjectTmpDir ( loginData,true );
-// var duplicate = false;
-var duplicate = 0;
+let rc        = cmd.fe_retcode.ok;
+let rc_msg    = 'success';
+let rdata     = { 'status' : 'ok' };
+let tempdir   = getProjectTmpDir ( loginData,true );
+// let duplicate = false;
+let duplicate = 0;
 
   if (tempdir)  {
 
-    var cloudMounts = fcl.getUserCloudMounts ( loginData );
-    var demoProjectPath = null;
+    let cloudMounts = fcl.getUserCloudMounts ( loginData );
+    let demoProjectPath = null;
 
     if ('cloudpath' in meta)  {
-      var lst = meta.cloudpath.split('/');
-      for (var j=0;(j<cloudMounts.length) && (!demoProjectPath);j++)
+      let lst = meta.cloudpath.split('/');
+      for (let j=0;(j<cloudMounts.length) && (!demoProjectPath);j++)
         if (cloudMounts[j][0]==lst[0])
           demoProjectPath = path.join ( cloudMounts[j][1],lst.slice(1).join('/'),
                                         meta.demoprj.name );
     } else if ('cloudmount' in meta)  {
-      var basepath = null;
-      for (var j=0;(j<cloudMounts.length) && (!basepath);j++)
+      let basepath = null;
+      for (let j=0;(j<cloudMounts.length) && (!basepath);j++)
         if (cloudMounts[j][0]==meta.cloudmount)
           basepath = cloudMounts[j][1];
       if (basepath)  {
-        var flist = utils.searchTree ( basepath,meta.demoprj.name,1 );
+        let flist = utils.searchTree ( basepath,meta.demoprj.name,1 );
         if (flist.length>0)
           demoProjectPath = flist[0];
       }
@@ -2503,21 +2503,21 @@ var duplicate = 0;
 
 
 function startSharedImport ( loginData,meta )  {
-  var rc      = cmd.fe_retcode.ok;
-  var rc_msg  = 'success';
-  var tempdir = getProjectTmpDir ( loginData,true );
+  let rc      = cmd.fe_retcode.ok;
+  let rc_msg  = 'success';
+  let tempdir = getProjectTmpDir ( loginData,true );
 
-  var import_as_link = true;  // development switch
+  let import_as_link = true;  // development switch
 
   if (tempdir)  {
 
-//    var project_keeper = meta.owner.login;
+//    let project_keeper = meta.owner.login;
 //    if (('keeper' in meta.owner) && meta.owner.keeper)
 //      project_keeper = meta.owner.keeper;
-//    var uLoginData = user.getUserLoginData ( project_keeper );
-    var uLoginData = user.getUserLoginData ( meta.owner.login );
+//    let uLoginData = user.getUserLoginData ( project_keeper );
+    let uLoginData = user.getUserLoginData ( meta.owner.login );
     if (uLoginData)  {
-      var sProjectDirPath = getProjectDirPath ( uLoginData,meta.name );
+      let sProjectDirPath = getProjectDirPath ( uLoginData,meta.name );
       if (utils.fileExists(sProjectDirPath))  {
         if (import_as_link)  {
           // _import_project ( loginData,tempdir,sProjectDirPath,'',false );
@@ -2555,11 +2555,11 @@ function startSharedImport ( loginData,meta )  {
 
 
 function checkProjectImport ( loginData,data )  {
-  var signal_path = path.join ( getProjectTmpDir(loginData,false),'signal' );
-  var rdata  = {};
-  var signal = utils.readString ( signal_path );
+  let signal_path = path.join ( getProjectTmpDir(loginData,false),'signal' );
+  let rdata  = {};
+  let signal = utils.readString ( signal_path );
   if (signal)  {
-    var msg = signal.split('\n');
+    let msg = signal.split('\n');
     rdata.signal = msg[0];
     rdata.name   = msg[1];
   } else  {
@@ -2571,7 +2571,7 @@ function checkProjectImport ( loginData,data )  {
 
 
 function finishProjectImport ( loginData,data )  {
-  var tempdir = getProjectTmpDir(loginData,false);
+  let tempdir = getProjectTmpDir(loginData,false);
   utils.removePath ( tempdir );
   return new cmd.Response ( cmd.fe_retcode.ok,'success','' );
 }
@@ -2580,17 +2580,17 @@ function finishProjectImport ( loginData,data )  {
 // ===========================================================================
 
 function saveJobData ( loginData,data )  {
-var response    = null;
-var projectName = data.meta.project;
-var jobId       = data.meta.id;
+let response    = null;
+let projectName = data.meta.project;
+let jobId       = data.meta.id;
 
   if (data.update_tree)  {
-    var pData = readProjectData ( loginData,projectName );
+    let pData = readProjectData ( loginData,projectName );
     if (pData)
       writeProjectData ( loginData,pData,true );
   }
 
-  var jobDataPath = getJobDataPath ( loginData,projectName,jobId );
+  let jobDataPath = getJobDataPath ( loginData,projectName,jobId );
 
   if (utils.fileExists(jobDataPath) && utils.writeObject(jobDataPath,data.meta))  {
     response = new cmd.Response ( cmd.fe_retcode.ok,'',{ 'project_missing':false } );
@@ -2620,19 +2620,19 @@ function saveJobFile ( loginData,data )  {
 //     data  : file_content
 //   }
 //
-var response    = null;
-var projectName = data.meta.project;
-var jobId       = data.meta.id;
+let response    = null;
+let projectName = data.meta.project;
+let jobId       = data.meta.id;
 
-  var jobDirPath = getJobDirPath ( loginData,projectName,jobId );
+  let jobDirPath = getJobDirPath ( loginData,projectName,jobId );
 
   if (utils.fileExists(jobDirPath))  {
-    var fpath = path.join ( jobDirPath,data.fpath );
+    let fpath = path.join ( jobDirPath,data.fpath );
     if (utils.writeString(fpath,data.data))  {
       response = new cmd.Response ( cmd.fe_retcode.ok,'',
                                     { 'project_missing':false } );
     } else  {
-      var fdir = path.dirname ( fpath );
+      let fdir = path.dirname ( fpath );
       if (fdir!=jobDirPath)  {
         utils.mkPath ( fdir );
         if (utils.writeString(fpath,data.data))
@@ -2672,17 +2672,17 @@ function saveJobFiles ( loginData,data )  {
 //     ]
 //   }
 //
-var response    = null;
-var projectName = data.meta.project;
-var jobId       = data.meta.id;
+let response    = null;
+let projectName = data.meta.project;
+let jobId       = data.meta.id;
 
-  var jobDirPath = getJobDirPath ( loginData,projectName,jobId );
+  let jobDirPath = getJobDirPath ( loginData,projectName,jobId );
 
   if (utils.fileExists(jobDirPath))  {
     for (let i=0;(i<data.files.length) && (!response);i++)  {
-      var fpath = path.join ( jobDirPath,data.files[i].fpath );
+      let fpath = path.join ( jobDirPath,data.files[i].fpath );
       if (!utils.writeString(fpath,data.files[i].data))  {
-        var fdir = path.dirname ( fpath );
+        let fdir = path.dirname ( fpath );
         if (fdir!=jobDirPath)  {
           utils.mkPath ( fdir );
           if (!utils.writeString(fpath,data.files[i].data))
@@ -2717,16 +2717,16 @@ var jobId       = data.meta.id;
 // ===========================================================================
 
 function getJobFile ( loginData,data )  {
-var response    = null;
-var projectName = data.meta.project;
-var jobId       = data.meta.id;
-var pfile       = data.meta.file.split('/');
+let response    = null;
+let projectName = data.meta.project;
+let jobId       = data.meta.id;
+let pfile       = data.meta.file.split('/');
 
-  var fpath = getJobDirPath ( loginData,projectName,jobId );
-  for (var i=0;i<pfile.length;i++)
+  let fpath = getJobDirPath ( loginData,projectName,jobId );
+  for (let i=0;i<pfile.length;i++)
     fpath = path.join ( fpath,pfile[i] );
 
-  var data = utils.readString ( fpath );
+  let data = utils.readString ( fpath );
   if (data)  {
     response = new cmd.Response ( cmd.fe_retcode.ok,'',data );
   } else  {
