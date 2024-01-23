@@ -219,7 +219,7 @@ class tools {
   }
 
   static unpack(file, dest, spawnFunc = null) {
-    log.info(`${this.name} - Unpacking ${file} to ${dest}`);
+    log.info(`unpack - Unpacking ${file} to ${dest}`);
 
     let ext = path.extname(file);
     let cmd, args;
@@ -234,7 +234,7 @@ class tools {
           args = [ '-x', '-C', dest, '-f', file, '--strip-components', 1];
           break;
         default:
-          reject(`Unsupported archive format ${ext}`);
+          reject(`unpack - Unsupported archive format ${ext}`);
           return;
       }
 
