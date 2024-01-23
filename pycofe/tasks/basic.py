@@ -985,12 +985,13 @@ class TaskDriver(object):
 
 
     def setModelCraftLogParser ( self,panel_id,job_params,
+                             split_sections_bool=False,
                              graphTables=False,makePanel=True ):
         #return
         if makePanel:
             self.putPanel ( panel_id )
         self.log_parser = modelcraft_parser.modelcraft_parser (
-                                         panel_id,
+                                         panel_id,split_sections_bool,
                                          job_params=job_params,
                                          summary=self.generic_parser_summary,
                                          graph_tables=graphTables,
