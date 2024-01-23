@@ -30,7 +30,14 @@ class server {
   }
 
   middleware(req, res, next) {
-    next();
+    try {
+      decodeURIComponent(req.path)
+      next();
+    }
+    catch(err) {
+      log.error(`Failed to decode parameter: ${req.url}`);
+      this.jsonResponse(res, tools.errorMsg(`Invalid request - ${req.url}`, 400));
+    }
   }
 
   checkCloudRunId(req, res, next) {
