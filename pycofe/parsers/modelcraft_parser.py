@@ -23,6 +23,7 @@ class modelcraft_parser(object):
   def __init__(
     self,
     rvapi_grid,
+    show_progs = True,
     job_params = None,
     summary = None,
     pause = 0,
@@ -74,19 +75,23 @@ class modelcraft_parser(object):
     mres = int(job_params.get('max_init_residues', '-1'))
     maxr = float(job_params.get('max_init_r_factor', '-1'))
 
-    section = API.pyrvapi_section(rvapi_grid, 'Results', 0, 0, 1, 1)
+    if show_progs:
+      section = API.pyrvapi_section(rvapi_grid, 'Results', 0, 0, 1, 1)
+      self.table = API.pyrvapi_table(section, 0, 0, 1, 1, 'Best model', 0)
+      self.table.row_title(0, 'Cycle', 'The cycle with lowest R-free')
+      self.table.row_title(1, 'Residues', 'No of residues built')
+      self.table.row_title(2, 'Waters', 'No of waters added')
+      self.table.row_title(3, 'R-work', 'Crystallographic R-factor')
+      self.table.row_title(4, 'R-free', 'Free R-factor')
+      self.table.body_cell(0, 0, 'N/A')
+      self.table.body_cell(1, 0, 'N/A')
+      self.table.body_cell(2, 0, 'N/A')
+      self.table.body_cell(3, 0, 'N/A')
+      self.table.body_cell(4, 0, 'N/A')
 
-    self.table = API.pyrvapi_table(section, 0, 0, 1, 1, 'Best model', 0)
-    self.table.row_title(0, 'Cycle', 'The cycle with lowest R-free')
-    self.table.row_title(1, 'Residues', 'No of residues built')
-    self.table.row_title(2, 'Waters', 'No of waters added')
-    self.table.row_title(3, 'R-work', 'Crystallographic R-factor')
-    self.table.row_title(4, 'R-free', 'Free R-factor')
-    self.table.body_cell(0, 0, 'N/A')
-    self.table.body_cell(1, 0, 'N/A')
-    self.table.body_cell(2, 0, 'N/A')
-    self.table.body_cell(3, 0, 'N/A')
-    self.table.body_cell(4, 0, 'N/A')
+    else:
+      section = rvapi_grid
+      self.table = None
 
     gwd = API.loggraph(section, 1, 0, 1, 1)
     gdt = API.graph_data(gwd, 'Building results vs. cycle')
@@ -125,11 +130,12 @@ class modelcraft_parser(object):
     self.current = dict(Cycle = -1)
 
   def show1(self, groups):
-    self.table.body_cell(0, 0, self.accepted.get('Cycle', 'N/A'))
-    self.table.body_cell(1, 0, self.accepted.get(self.NResKey, 'N/A'))
-    self.table.body_cell(2, 0, self.accepted.get(self.NWatKey, 'N/A'))
-    self.table.body_cell(3, 0, self.accepted.get(self.RworkKey, 'N/A'))
-    self.table.body_cell(4, 0, self.accepted.get(self.RfreeKey, 'N/A'))
+    if self.table:
+      self.table.body_cell(0, 0, self.accepted.get('Cycle', 'N/A'))
+      self.table.body_cell(1, 0, self.accepted.get(self.NResKey, 'N/A'))
+      self.table.body_cell(2, 0, self.accepted.get(self.NWatKey, 'N/A'))
+      self.table.body_cell(3, 0, self.accepted.get(self.RworkKey, 'N/A'))
+      self.table.body_cell(4, 0, self.accepted.get(self.RfreeKey, 'N/A'))
 
     x = self.current.get('Cycle')
     if x is not None:
