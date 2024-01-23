@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    15.01.24   <--  Date of Last Modification.
+#    23.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -161,10 +161,10 @@ class ModelCraft(basic.TaskDriver):
         }
         mres = 0
         for s in seq:
-            s1 = self.makeClass ( s )
+            s1     = self.makeClass ( s )
             seqstr = s1.getSequence(self.inputDir())
-            mres += s1.ncopies* len(seqstr)
-            item = {
+            mres  += s1.ncopies* len(seqstr)
+            item   = {
                 "sequence"      : seqstr,
                 "stoichiometry" : s1.ncopies
             }
@@ -345,6 +345,7 @@ class ModelCraft(basic.TaskDriver):
                     structure.addSubtypes      ( istruct.subtype )
                     structure.removeSubtype    ( dtype_template.subtypeSubstructure() )
                     structure.setXYZSubtype    ()
+                    structure.addPhasesSubtype ()
                     structure.copyLabels       ( istruct )
                     structure.setRefmacLabels  ( None    )
                     structure.copyLigands      ( istruct )
