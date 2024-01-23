@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.12.23   <--  Date of Last Modification.
+#    23.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,7 +19,7 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2023
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
@@ -472,7 +472,7 @@ def makeRevision ( base,hkl,seq,target_sol,composition,altEstimateKey,altNRes,
 
         if revision:
             base.generic_parser_summary["z02"] = {
-                "Ncopies"        : ncopies1,
+                "Ncopies"        : max(1,nc0)*ncopies1,
                 "SolventPercent" : int(10*sol1)/10.0
             }
 
