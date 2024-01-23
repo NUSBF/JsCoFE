@@ -227,6 +227,7 @@ class tools {
     return new Promise((resolve, reject) => {
       switch(ext) {
         case '.tar':
+        case '.tz':
         case '.gz':
         case '.bz2':
         case '.xz':
