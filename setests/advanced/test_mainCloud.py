@@ -105,7 +105,7 @@ def startSimbad(driver):
     time.sleep(1)
     sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'Lattice and Contaminants Search with Simbad')
     time.sleep(1)
-    time.sleep(1)
+ 
 
     # There are several forms - active and inactive. We need one displayed.
     buttonsRun = driver.find_elements_by_xpath("//button[contains(@style, 'images_png/runjob.png')]" )
