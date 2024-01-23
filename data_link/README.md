@@ -54,9 +54,9 @@ The Data Link service requires a configuration file config.js to be present in t
 Configuration Values:
  * `server`: **Server related configuration**
    * `host`: The hostname of the interface the service will bind to. Default is `localhost`
-   * `port`: The port the web service will listen on. Default is 8900
+   * `port`: The port the web service will listen on. Default is 8100
    * `admin_key`: The default `admin_key` used to authenticate requests that require it.
- * `Storage`: **Storage related configuration**
+ * `storage`: **Storage related configuration**
   * `data_dir`: Location to store x-ray difraction images. Default is `data`.
   * `user_dir`: Location of the CCP4 Cloud user configuration directory. This is used to authenticate with user's `cloudrun_id`.
   * `catalog_dir`: Location to store data source catalogs. Default is `catalogs`.
@@ -66,7 +66,7 @@ Configuration Values:
     * `enabled`: set to false to disable (defaults to true)
     * `rsync_size`: For data sources that have an rsync service, this can be used to extract the data sizes from the rsync repository for use in the data source catalog.
 * `other`: **Other configuration options**
-  * `rcsb_results`: Whether to return PDB information from rcsb from the search API endpoint. Defaults to true.
+  * `rcsb_results`: Whether to return PDB information from rcsb from the search API endpoint. Defaults to false.
 
 ### Example configuration file
 
@@ -75,8 +75,8 @@ Configuration Values:
   // server & port configuration
   "server": {
     "host": "localhost",
-    "port": 8900,
-    "admin_key": ""
+    "port": 8100,
+    "admin_key": "PASSWORD"
   },
   // locations for storage
   "storage": {
@@ -104,7 +104,7 @@ Configuration Values:
   // other configuration settings
   "other": {
     // return pdb entry results from rcsb
-    "rcsb_results": true
+    "rcsb_results": false
   }
 }
 ```
@@ -115,7 +115,7 @@ Configuration Values:
 
 ## API Authentication
 
-Authentication for the API is handled via HTTP headers. Some API endpoints require the admin_key (configured in config.json), to be passed in the HTTP header. Requests that handle data for a user, require the cloudrun_id to be provided. All API called can be done with the admin_key set.
+Authentication for the API is handled via HTTP headers. Some API endpoints require the admin_key (configured in config.json), to be passed in the HTTP header. Requests that handle data for a user, require the cloudrun_id to be provided. The admin_key allows all API calls to be made.
 
 Example headers:
 
@@ -205,7 +205,7 @@ The following fields are used by the data source catalog:
 
  * `auth`: Author of the diffraction images (not always present)
  * `date`: Date of the images in  ISO 8601 format (not always present)
- * `desc`: Description of the diffraction data.
+ * `name`: Name/Description of the diffraction data.
  * `doi`: Unique Digital Object Identifier (DOI) https://www.doi.org/ (not always present)
  * `path`: Path of the data used by the data source when acquiring images.
  * `pdb`:PDB identifier for the data.
@@ -217,7 +217,7 @@ The following fields are used by the data source catalog:
   "5yu7": {
     "auth": "Yamazawa, R., Jiko, C., Lee, S.J., Yamashita, E.",
     "date": "2021-07-09T07:13:49.000Z",
-    "desc": "CRYSTAL STRUCTURE OF EXPORTIN-5",
+    "name": "CRYSTAL STRUCTURE OF EXPORTIN-5",
     "doi": "10.1016/j.str.2018.06.014",
     "path": "5yu7",
     "pdb": "5yu7",
@@ -226,7 +226,7 @@ The following fields are used by the data source catalog:
   "6isv": {
     "auth": "Koesoema, A.A., Sugiyama, Y., Senda, M., Senda, T., Matsuda, T.",
     "date": "2021-03-23T03:53:35.000Z",
-    "desc": "Structure of acetophenone reductase from Geotrichum candidum NBRC 4597 in complex with NAD",
+    "name": "Structure of acetophenone reductase from Geotrichum candidum NBRC 4597 in complex with NAD",
     "doi": "10.1007/s00253-019-10093-w",
     "path": "6isv",
     "pdb": "6isv",
@@ -245,7 +245,7 @@ Get a catalog of all available data from all data sources. This returns a catalo
 {
   "irrmc": {
     "011884_4weq": {
-      "desc": "X-ray diffraction data for the Crystal structure of NADP-dependent dehydrogenase from Sinorhizobium meliloti in complex with NADP and sulfate",
+      "name": "X-ray diffraction data for the Crystal structure of NADP-dependent dehydrogenase from Sinorhizobium meliloti in complex with NADP and sulfate",
       "doi": "10.18430/M3D011",
       "path": "nysgrc/011884_4weq.tar.bz2",
       "pdb": "4weq"
@@ -253,7 +253,7 @@ Get a catalog of all available data from all data sources. This returns a catalo
   "sbgrid": {
     "1": {
       "date": 1428695734000,
-      "desc": "X-Ray Diffraction data from Lin28A/let-7g microRNA complex, source of 3TS2 structure",
+      "name": "X-Ray Diffraction data from Lin28A/let-7g microRNA complex, source of 3TS2 structure",
       "doi": "10.15785/SBGRID/1",
       "path": "1",
       "pdb": "3ts2",
@@ -331,6 +331,8 @@ eg. for `GET /api/search/7p5l`
 *Requires user's cloudrun_id or admin_key for authentication*
 
 Acquires data for a user from a data source. It returns a message reporting the status of the request. To get the status and progress of the data retrieval a GET request can be made against the same API Endpoint.
+
+The data is downloaded to the configured data folder, stored in username/source/id. Once the data has been acquired, it will be unpacked (if possible).
 
 eg. for `PUT /api/data/jools.wills/pdbj/5aui`
 
