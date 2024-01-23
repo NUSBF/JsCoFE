@@ -5,7 +5,7 @@ const log = require('./log.js');
 const def_config = {
   "server": {
     "host": "localhost",
-    "port": 8900
+    "port": 8100
   },
   "storage": {
     "data_dir": "data",
