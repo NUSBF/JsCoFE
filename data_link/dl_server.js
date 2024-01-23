@@ -115,7 +115,7 @@ class server {
     this.jsonResponse(res, this.datalink.dataUpdate(req.params.user, req.params.source, req.params.id, req.body));
   }
 
-  start(port = 8900, host = '') {
+  start(port = config.get('server.port'), host = config.get('server.host')) {
 
     // set up express router
     const router = express.Router();
@@ -178,8 +178,5 @@ class server {
 
 }
 
-const PORT = config.get('server.port');
-const HOST = config.get('server.host');
-
 server = new server();
-server.start(PORT, HOST);
+server.start();
