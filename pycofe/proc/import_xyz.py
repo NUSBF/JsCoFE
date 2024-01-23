@@ -79,6 +79,7 @@ def run ( body ):  # body is reference to the main Import class
         #coor.stripLigWat ( fpath,fpath )  #  strip ligands and waters
 
         xyzMeta = xyzmeta.getXYZMeta ( fpath,body.file_stdout,body.file_stderr )
+        # body.stderrln ( " >>>>> " + str(xyzMeta) )
 
         if len(xyzMeta["xyz"])<=0:
 
@@ -107,6 +108,8 @@ def run ( body ):  # body is reference to the main Import class
             xyzpath = xyz.getXYZFilePath ( body.outputDir() )
             if xyzpath.upper().endswith(".PDB"):
                 xyzpath = mmcif_utils.convert_to_mmcif ( xyzpath )
+                # xyzMeta1 = xyzmeta.getXYZMeta ( xyzpath,body.file_stdout,body.file_stderr )
+                # body.stderrln ( " >>>>>1 " + str(xyzMeta1) )
             else:
                 xyzpath, pdb_nogood = mmcif_utils.convert_to_pdb ( xyzpath )
             if xyzpath:
