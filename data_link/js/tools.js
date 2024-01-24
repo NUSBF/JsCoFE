@@ -219,25 +219,48 @@ class tools {
   }
 
   static unpack(file, dest, spawnFunc = null) {
-    log.info(`unpack - Unpacking ${file} to ${dest}`);
-
-    let ext = path.extname(file);
     let cmd, args;
 
+    let is_tar = false;
     return new Promise((resolve, reject) => {
-      switch(ext) {
-        case '.tar':
-        case '.tz':
-        case '.gz':
-        case '.bz2':
-        case '.xz':
-          cmd = 'tar';
-          args = [ '-x', '-C', dest, '-f', file, '--strip-components', 1];
-          break;
-        default:
-          reject(`unpack - Unsupported archive format ${ext}`);
-          return;
+      // check for double extensions for tar archives
+      if (file.endsWith('.tar.gz') || file.endsWith('.tar.bz2') || file.endsWith('.tar.xz')) {
+        is_tar = true;
+      } else {
+        let ext = path.extname(file);
+        switch(ext) {
+          // check for other possible tar archive naming
+          case '.tar':
+          case '.tz':
+          case '.tgz':
+            is_tar = true;
+            break;
+          // single file compression methods
+          case '.gz':
+            cmd = 'gzip';
+            args = [ '-fd', file];
+            break;
+          case '.bz2':
+            cmd = 'bzip2';
+            args = [ '-fd', file];
+            break;
+          case '.xz':
+            cmd = 'xz';
+            args = [ '-fd', file];
+            break;
+          default:
+            reject(`unpack - Unsupported archive format ${ext}`);
+            return;
+        }
       }
+
+      // is a tar archive
+      if (is_tar) {
+        cmd = 'tar';
+        args = [ '-x', '-C', dest, '-f', file, '--strip-components', 1];
+      }
+
+      log.info(`unpack - Unpacking ${file} to ${dest}`);
 
       // add an abortController signal so we can abort the process
       const controller = new AbortController();
@@ -245,7 +268,7 @@ class tools {
       let sp = process.spawn(cmd, args, { 'signal': controller.signal } );
 
       sp.on('spawn', () => {
-        log.debug(`unpack - PID: ${sp.pid} = ${args.join(' ')}`);
+        log.debug(`unpack - PID: ${sp.pid} = ${cmd} ${args.join(' ')}`);
 
         // if we have a callback function, pass the abortController to it
         if (spawnFunc) {
