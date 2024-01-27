@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.24   <--  Date of Last Modification.
+#    27.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -62,13 +62,13 @@ class XyzUtils(basic.TaskDriver):
         return type
 
 
-    def makeXYZOutput ( self,istruct,ixyz,xyzout ):
+    def makeXYZOutput ( self,istruct,ixyz,pdbout ):
 
         results = False
 
         if istruct._type==dtype_xyz.dtype():
             self.putTitle ( "Modified coordinate data" )
-            oxyz = self.registerXYZ ( None,xyzout,checkout=True )
+            oxyz = self.registerXYZ ( None,pdbout,checkout=True )
             if oxyz:
                 oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                 self.putMessage (
@@ -87,7 +87,7 @@ class XyzUtils(basic.TaskDriver):
             seq  = None
             if ixyz.sequence:
                 seq = self.makeClass ( ixyz.sequence )
-            oxyz = self.registerModel ( seq,xyzout,checkout=True )
+            oxyz = self.registerModel ( seq,pdbout,checkout=True )
             if oxyz:
                 self.putModelWidget ( self.getWidgetId("model_btn"),"Coordinates",oxyz )
                 results = True
@@ -101,7 +101,7 @@ class XyzUtils(basic.TaskDriver):
             seq  = None
             if ixyz.sequence:
                 seq = self.makeClass ( ixyz.sequence )
-            oxyz = self.registerEnsemble ( seq,xyzout,checkout=True )
+            oxyz = self.registerEnsemble ( seq,pdbout,checkout=True )
             if oxyz:
                 self.putEnsembleWidget ( self.getWidgetId("ensemble_btn"),"Coordinates",oxyz )
                 results = True
@@ -114,7 +114,7 @@ class XyzUtils(basic.TaskDriver):
             self.putTitle ( "Modified Structure" )
             oxyz = self.registerStructure ( 
                         None,
-                        xyzout,
+                        pdbout,
                         ixyz.getSubFilePath(self.inputDir()),
                         ixyz.getMTZFilePath(self.inputDir()),
                         libPath    = ixyz.getLibFilePath(self.inputDir()),
@@ -132,7 +132,7 @@ class XyzUtils(basic.TaskDriver):
                 oxyz.copySubtype        ( ixyz )
                 oxyz.copyLigands        ( ixyz )
                 oxyz.copyLabels         ( ixyz )
-                if not xyzout:
+                if not pdbout:
                     oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
                 #self.putMessage (
                 #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
@@ -182,8 +182,8 @@ class XyzUtils(basic.TaskDriver):
 
         log = []
 
-        xyzout = ixyz.lessDataId ( ixyz.getPDBFileName() )
-        self.outputFName = os.path.splitext(xyzout)[0]
+        pdbout = ixyz.lessDataId ( ixyz.getPDBFileName() )
+        self.outputFName = os.path.splitext(pdbout)[0]
 
         action_sel = self.getParameter ( sec1.ACTION_SEL )
 
@@ -198,7 +198,7 @@ class XyzUtils(basic.TaskDriver):
 
             # Run PDBSET
             self.runApp (
-                "pdbset",["XYZIN",xyzpath,"XYZOUT",xyzout],
+                "pdbset",["XYZIN",xyzpath,"XYZOUT",pdbout],
                 logType="Main"
             )
 
@@ -304,11 +304,11 @@ class XyzUtils(basic.TaskDriver):
                         md1.add_chain ( chain )
                         st1.add_model ( md1   )
                         if len(st)>1:
-                            xyzout = self.getOFName ( "." + model.name + "." + chain.name + ".pdb" )
+                            pdbout = self.getOFName ( "." + model.name + "." + chain.name + ".pdb" )
                         else:
-                            xyzout = self.getOFName ( "." + chain.name + ".pdb" )
-                        st1.write_pdb ( xyzout )
-                        oxyz = self.registerXYZ ( None,xyzout,checkout=True )
+                            pdbout = self.getOFName ( "." + chain.name + ".pdb" )
+                        st1.write_pdb ( pdbout )
+                        oxyz = self.registerXYZ ( None,pdbout,checkout=True )
                         if oxyz:
                             oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                             self.putMessage (
@@ -393,7 +393,7 @@ class XyzUtils(basic.TaskDriver):
 
             if len(log)>0:
 
-                st.write_pdb ( xyzout )
+                st.write_pdb ( pdbout )
 
                 self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
                                   "</i> transformed:</b><ul><li>" +\
@@ -408,10 +408,10 @@ class XyzUtils(basic.TaskDriver):
                 else:
 
                     if istruct._type==dtype_revision.dtype() and nchains<=0:
-                        xyzout = None
+                        pdbout = None
                         log    = ["all coordinates removed"]
 
-                    have_results = self.makeXYZOutput ( istruct,ixyz,xyzout )
+                    have_results = self.makeXYZOutput ( istruct,ixyz,pdbout )
 
             else:
                 self.putMessage ( "&nbsp;<br><b>Data object <i>" + ixyz.dname +\
@@ -421,7 +421,7 @@ class XyzUtils(basic.TaskDriver):
             self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
                               "</i> transformed with PDBSET</b><p>PDBSET script:<pre>" +\
                               self.getParameter(sec1.PDBSET_INPUT) + "</pre>" )
-            have_results = self.makeXYZOutput ( istruct,ixyz,xyzout )
+            have_results = self.makeXYZOutput ( istruct,ixyz,pdbout )
 
         # this will go in the project tree line
         if len(log)>0:
