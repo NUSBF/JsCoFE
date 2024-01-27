@@ -36,6 +36,7 @@ from  pycofe.dtypes import dtype_template,dtype_xyz,dtype_ensemble,dtype_model
 from  pycofe.dtypes import dtype_sequence, dtype_revision
 from  pycofe.proc   import import_sequence,import_filetype
 from  pycofe.auto   import auto, auto_workflow
+from  pycofe.varut  import mmcif_utils
 
 
 # ============================================================================
@@ -62,13 +63,13 @@ class XyzUtils(basic.TaskDriver):
         return type
 
 
-    def makeXYZOutput ( self,istruct,ixyz,pdbout ):
+    def makeXYZOutput ( self,istruct,ixyz,mmcifout,pdbout ):
 
         results = False
 
         if istruct._type==dtype_xyz.dtype():
             self.putTitle ( "Modified coordinate data" )
-            oxyz = self.registerXYZ ( None,pdbout,checkout=True )
+            oxyz = self.registerXYZ ( mmcifout,None,checkout=True )
             if oxyz:
                 oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                 self.putMessage (
@@ -113,8 +114,8 @@ class XyzUtils(basic.TaskDriver):
         elif istruct._type==dtype_revision.dtype():
             self.putTitle ( "Modified Structure" )
             oxyz = self.registerStructure ( 
+                        mmcifout,
                         None,
-                        pdbout,
                         ixyz.getSubFilePath(self.inputDir()),
                         ixyz.getMTZFilePath(self.inputDir()),
                         libPath    = ixyz.getLibFilePath(self.inputDir()),
@@ -132,7 +133,7 @@ class XyzUtils(basic.TaskDriver):
                 oxyz.copySubtype        ( ixyz )
                 oxyz.copyLigands        ( ixyz )
                 oxyz.copyLabels         ( ixyz )
-                if not pdbout:
+                if not pdbout and (not mmcifout):
                     oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
                 #self.putMessage (
                 #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
@@ -173,17 +174,30 @@ class XyzUtils(basic.TaskDriver):
         # fetch input data
         istruct = self.makeClass ( self.input_data.data.istruct[0] )
         ixyz    = self.makeClass ( self.input_data.data.ixyz[0] )
-        xyzpath = ixyz.getPDBFilePath ( self.inputDir() )
+        mmcifin = ixyz.getMMCIFFilePath ( self.inputDir() )
+        pdbin   = ixyz.getPDBFilePath   ( self.inputDir() )
         sec1    = self.task.parameters.sec1.contains
 
         #self.stdoutln ( ixyz.to_JSON() )
+        
+        if not mmcifin and pdbin:
+            mmcifin = mmcif_utils.convert_to_mmcif ( pdbin )
+        elif not pdbin and mmcifin:
+            pdbin, pdb_nogood = mmcif_utils.convert_to_pdb ( mmcifin )
+            if not pdbin:
+                self.stdoutln ( " +++++ XYZ file cannot be converted to PDB format.\n" +\
+                                "       Reason: " + pdb_nogood )
+                self.putMessage ( "<b><i>FYI: XYZ input cannot be converted to PDB format.<b>" +\
+                                  "Reason: " + pdb_nogood + "</i></b>" )
 
         # --------------------------------------------------------------------
 
         log = []
 
-        pdbout = ixyz.lessDataId ( ixyz.getPDBFileName() )
-        self.outputFName = os.path.splitext(pdbout)[0]
+        mmcifout = ixyz.lessDataId ( ixyz.getMMCIFFileName() )
+        self.outputFName = os.path.splitext(mmcifout)[0]
+
+        pdbout = ixyz.lessDataId ( ixyz.getPDBFileName() )  # may be None
 
         action_sel = self.getParameter ( sec1.ACTION_SEL )
 
@@ -198,7 +212,8 @@ class XyzUtils(basic.TaskDriver):
 
             # Run PDBSET
             self.runApp (
-                "pdbset",["XYZIN",xyzpath,"XYZOUT",pdbout],
+                # "pdbset",["XYZIN",pdbin,"XYZOUT",pdbout],
+                "pdbset",["XYZIN",mmcifin,"XYZOUT",mmcifout],
                 logType="Main"
             )
 
@@ -212,7 +227,7 @@ class XyzUtils(basic.TaskDriver):
                 log.append ( "B-factors recalculated assuming " +\
                              bfactor_sel.capitalize() + " model" )
 
-            st = gemmi.read_structure ( xyzpath )
+            st = gemmi.read_structure ( mmcifin )
             st.setup_entities()
 
             sollig_sel = self.getParameter ( sec1.SOLLIG_SEL )
@@ -303,12 +318,18 @@ class XyzUtils(basic.TaskDriver):
                         md1 = gemmi.Model ( "1" )
                         md1.add_chain ( chain )
                         st1.add_model ( md1   )
+                        # if len(st)>1:
+                        #     pdbout = self.getOFName ( "." + model.name + "." + chain.name + ".pdb" )
+                        # else:
+                        #     pdbout = self.getOFName ( "." + chain.name + ".pdb" )
+                        # st1.write_pdb ( pdbout )
+                        # oxyz = self.registerXYZ ( None,pdbout,checkout=True )
                         if len(st)>1:
-                            pdbout = self.getOFName ( "." + model.name + "." + chain.name + ".pdb" )
+                            mmcifout = self.getOFName ( "." + model.name + "." + chain.name + ".mmcif" )
                         else:
-                            pdbout = self.getOFName ( "." + chain.name + ".pdb" )
-                        st1.write_pdb ( pdbout )
-                        oxyz = self.registerXYZ ( None,pdbout,checkout=True )
+                            mmcifout = self.getOFName ( "." + chain.name + ".mmcif" )
+                        st1.make_mmcif_document().write_file ( mmcifout )
+                        oxyz = self.registerXYZ ( mmcifout,None,checkout=True )
                         if oxyz:
                             oxyz.putXYZMeta  ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                             self.putMessage (
@@ -393,7 +414,8 @@ class XyzUtils(basic.TaskDriver):
 
             if len(log)>0:
 
-                st.write_pdb ( pdbout )
+                # st.write_pdb ( pdbout )
+                st.make_mmcif_document().write_file ( mmcifout )
 
                 self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
                                   "</i> transformed:</b><ul><li>" +\
@@ -411,7 +433,7 @@ class XyzUtils(basic.TaskDriver):
                         pdbout = None
                         log    = ["all coordinates removed"]
 
-                    have_results = self.makeXYZOutput ( istruct,ixyz,pdbout )
+                    have_results = self.makeXYZOutput ( istruct,ixyz,mmcifout,pdbout )
 
             else:
                 self.putMessage ( "&nbsp;<br><b>Data object <i>" + ixyz.dname +\
@@ -421,7 +443,7 @@ class XyzUtils(basic.TaskDriver):
             self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
                               "</i> transformed with PDBSET</b><p>PDBSET script:<pre>" +\
                               self.getParameter(sec1.PDBSET_INPUT) + "</pre>" )
-            have_results = self.makeXYZOutput ( istruct,ixyz,pdbout )
+            have_results = self.makeXYZOutput ( istruct,ixyz,mmcifout,pdbout )
 
         # this will go in the project tree line
         if len(log)>0:
