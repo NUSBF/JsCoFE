@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    02.11.19   <--  Date of Last Modification.
+ *    29.06.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  GUI Widgets Style Sheets
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2019
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  =================================================================
  *
@@ -118,6 +118,8 @@ body {
     vertical-align : middle;
 }
 */
+
+.ui-selectmenu-menu .ui-menu {max-height: 300px;}
 
 .ui-dialog .ui-dialog-titlebar {
   height: 16px; /* height of title bar */
