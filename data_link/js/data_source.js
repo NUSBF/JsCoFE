@@ -173,7 +173,8 @@ class dataSource {
 
     // unpack the archive
     try {
-      await tools.unpack(dest_file, dest_dir, (controller) => {
+      log.info(`${this.name}/httpGetData - Unpacking ${dest_file} to ${dest_dir}`);
+      await tools.unpack(dest_file, dest_dir, null, null, (controller) => {
         this.addJob(user, id, controller);
       });
     } catch (err) {
@@ -181,8 +182,31 @@ class dataSource {
       return;
     }
 
-    this.dataComplete(user, id, catalog);
+    // go through the contents of the archive and unpack any additional files
+    // this is required as some data source images are gzipped/bzipped individually
+    let ret = await tools.fileCallback(dest_dir, async (file) => {
+      const {cmd, args} = tools.getUnpackCmd(file, dest_dir);
+      if (cmd) {
+        try {
+          log.info(`${this.name}/httpGetData - Unpacking ${file}`);
+          await tools.unpack(file, dest_dir, cmd, args, (controller) => {
+            this.addJob(user, id, controller);
+          });
+        } catch (err) {
+          log.error(`${this.name}/httpGetData - ${err}`);
+          // if an abort signal was received return false, so we can stop the file traversal in fileCallback
+          if (err.code == 'ABORT_ERR') {
+            this.dataError(user, id, catalog, `${this.name}/httpGetData - The operation was aborted`);
+            return false;
+          }
+        }
+      }
+      return true;
+    });
 
+    if (ret) {
+      this.dataComplete(user, id, catalog);
+    }
   }
 
   async rsyncGetCatalog(url, catalog) {
