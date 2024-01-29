@@ -25,6 +25,7 @@ class irrmc extends dataSource {
 
   description = 'Integrated Resource for Reproducibility in Macromolecular Crystallography';
   url = 'https://proteindiffraction.org'
+  type = 'http'
 
   async getCatalog() {
     let entries = {};

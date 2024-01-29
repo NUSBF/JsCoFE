@@ -181,7 +181,7 @@ class tools {
     });
   }
 
-  static httpRequest(url, options = {}, dest = null, callbackFunc = null) {
+  static httpRequest(url, options = {}, dest = null, signalCallback = null, writeCallback = null) {
     if (! options.method) {
       options.method = 'GET';
     }
@@ -199,8 +199,8 @@ class tools {
         }
 
         // if we have a callback function, pass the abortController to it
-        if (callbackFunc) {
-          callbackFunc(controller);
+        if (signalCallback) {
+          signalCallback(controller);
         }
 
         if (dest) {
@@ -210,7 +210,14 @@ class tools {
             flags = 'a';
           }
           const file = fs.createWriteStream(dest, { 'flags': flags });
-          res.pipe(file);
+
+          res.on('data', (data) => {
+            file.write(data);
+            if (writeCallback) {
+              writeCallback(data);
+            }
+          });
+
           res.on('close', () => {
             file.close();
             resolve();

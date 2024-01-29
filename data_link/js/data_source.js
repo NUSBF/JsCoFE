@@ -151,6 +151,7 @@ class dataSource {
     try {
       if (fs.existsSync(dest_file)) {
         file_size = fs.statSync(dest_file).size;
+        entry.size = file_size;
         if (file_size < entry.size_s && headers['accept-ranges'] === 'bytes') {
           options.headers = { 'range': `bytes=${file_size}-${entry.size_s}`}
         }
@@ -162,9 +163,13 @@ class dataSource {
 
     if (file_size < entry.size_s) {
       try {
-        await tools.httpRequest(url, options, dest_file, (controller) => {
-        this.addJob(user, id, controller);
-      });
+        await tools.httpRequest(url, options, dest_file,
+        (controller) => {
+          this.addJob(user, id, controller);
+        },
+        (data) => {
+          entry.size += data.length;
+        });
       } catch (err) {
         this.dataError(user, id, catalog, `${this.name}/httpGetData - ${err}`);
         return;
