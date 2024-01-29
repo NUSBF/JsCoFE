@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.01.24   <--  Date of Last Modification.
+#    29.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -101,7 +101,8 @@ def clean_mmcif ( mmcif_infile_path,mmcif_outfile_path ):
                             del res[k]
         st.remove_empty_chains()
         st.make_mmcif_document().write_file ( mmcif_outfile_path )
-    return
+        return True
+    return False
 
 
 
