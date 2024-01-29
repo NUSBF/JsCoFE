@@ -20,6 +20,7 @@ class sbgrid extends dataSource {
 
   description = 'The SBGrid Data Bank';
   url = 'https://data.sbgrid.org'
+  type = 'rsync'
 
   async getCatalog() {
     let catalog = {};
