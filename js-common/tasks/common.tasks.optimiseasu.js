@@ -1,8 +1,11 @@
 
 /*
+ *
+ *  mmCIF ready
+ * 
  *  =================================================================
  *
- *    21.01.24   <--  Date of Last Modification.
+ *    29.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -39,8 +42,8 @@ function TaskOptimiseASU()  {
   this.title   = 'Optimise Asymmetric Unit';
 
   this.input_dtypes = [{  // input data types
-      data_type : { 'DataRevision' : ['!xyz','~mmcif_only'],  // data type(s) and subtype(s)
-                    'DataXYZ'      : ['~mmcif_only']
+      data_type : { 'DataRevision' : ['!xyz'],  // data type(s) and subtype(s)
+                    'DataXYZ'      : []
                   },
       label     : 'ASU coordinates', // label for input dialog
       cast      : 'asu',

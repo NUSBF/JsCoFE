@@ -1,20 +1,20 @@
 ##!/usr/bin/python
 
+#
+# mmCif ready
+#
 # ============================================================================
 #
-#    02.02.23   <--  Date of Last Modification.
+#    29.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
 #  OPTIMIZES CHAIN ARRANGEMENT IN ASU
 #
-#  Copyright (C) Eugene Krissinel 2022-2023
+#  Copyright (C) Eugene Krissinel 2022-2024
 #
 # ============================================================================
 #
-
-#  python native imports
-import math
 
 import gemmi
 
@@ -132,7 +132,7 @@ def optimizeXYZ ( gemmi_st ):
             opmin.tran = tran
 
             for atom in res:
-                fxyz  = opmin.apply_to_xyz ( gemmi_st.cell.fractionalize(atom.pos).tolist() )
+                fxyz     = opmin.apply_to_xyz ( gemmi_st.cell.fractionalize(atom.pos).tolist() )
                 atom.pos = gemmi_st.cell.orthogonalize ( gemmi.Fractional(fxyz[0],fxyz[1],fxyz[2]) )
 
         log.append({
