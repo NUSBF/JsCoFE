@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    23.01.24   <--  Date of Last Modification.
+ *    28.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -2726,12 +2726,12 @@ let pfile       = data.meta.file.split('/');
   for (let i=0;i<pfile.length;i++)
     fpath = path.join ( fpath,pfile[i] );
 
-  let data = utils.readString ( fpath );
+  let jdata = utils.readString ( fpath );
   if (data)  {
-    response = new cmd.Response ( cmd.fe_retcode.ok,'',data );
+    response = new cmd.Response ( cmd.fe_retcode.ok,'',jdata );
   } else  {
     response = new cmd.Response ( cmd.fe_retcode.writeError,
-                               '[00033] Requested file not found.','' );
+                                  '[00033] Requested file not found.','' );
   }
 
   return response;

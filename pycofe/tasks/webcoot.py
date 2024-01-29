@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    21.01.24   <--  Date of Last Modification.
+#    29.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -111,7 +111,7 @@ class WebCoot(basic.TaskDriver):
     def run(self):
 
         # revision  = self.makeClass ( self.input_data.data.revision[0] )
-        istruct   = self.makeClass ( self.input_data.data.istruct [0] )
+        istruct   = self.makeClass ( self.input_data.data.istruct[0] )
         # mtzfile   = istruct.getMTZFilePath ( self.inputDir() )
         # lead_key  = istruct.leadKey
 
@@ -154,58 +154,62 @@ class WebCoot(basic.TaskDriver):
 
             mmcif_fname = self.getMMCIFOFName (
                                     -1 if len(mmcifout)<=1 else outputSerialNo )
-            mmcif_utils.clean_mmcif ( mmcif_f,mmcif_fname )
+            if mmcif_utils.clean_mmcif(mmcif_f,mmcif_fname):
 
-            molName = os.path.splitext ( os.path.basename(mmcif_fname) )[0]
-            self.putMessage ( "<h3>Output Structure" +\
-                    self.hotHelpLink ( "Structure","jscofe_qna.structure") +\
-                    " #" + str(outputSerialNo) + " \"" + molName + "\"</h3>" )
-            
-            pdb_fname = None
-            if mmcif_utils.can_convert_to_pdb(mmcif_fname):
-                pdb_fname = os.path.splitext(mmcif_fname)[0] + ".pdb"
-                if not os.path.isfile(pdb_fname):
-                    pdb_fname = None
+                molName = os.path.splitext ( os.path.basename(mmcif_fname) )[0]
+                self.putMessage ( "<h3>Output Structure" +\
+                        self.hotHelpLink ( "Structure","jscofe_qna.structure") +\
+                        " #" + str(outputSerialNo) + " \"" + molName + "\"</h3>" )
+                
+                pdb_fname = None
+                if mmcif_utils.can_convert_to_pdb(mmcif_fname):
+                    pdb_fname = os.path.splitext(mmcif_fname)[0] + ".pdb"
+                    if not os.path.isfile(pdb_fname):
+                        pdb_fname = None
 
-            ostruct = self.registerStructure ( 
-                            mmcif_fname,
-                            pdb_fname,
-                            istruct.getSubFilePath(self.inputDir()),
-                            istruct.getMTZFilePath(self.inputDir()),
-                            libPath    = libPath,
-                            mapPath    = istruct.getMapFilePath(self.inputDir()),
-                            dmapPath   = istruct.getDMapFilePath(self.inputDir()),
-                            leadKey    = istruct.leadKey,
-                            copy_files = False,
-                            map_labels = istruct.mapLabels,
-                            refiner    = istruct.refiner 
-                        )
-            if ostruct:
-                ostruct.copy_refkeys_parameters  ( istruct )
-                ostruct.store_refkeys_parameters ( self.task._type,self.task.id,refkeys )
-                ostruct.copyAssociations   ( istruct )
-                ostruct.addDataAssociation ( istruct.dataId )  # ???
-                ostruct.mergeSubtypes      ( istruct )
-                ostruct.copyLigands        ( istruct )
-                ostruct.copyLabels         ( istruct )
-                # if not xyzout:
-                #     oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
-                #self.putMessage (
-                #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
-                #    oxyz.dname )
-                self.putStructureWidget ( self.getWidgetId("structure_btn"),
-                                            "Structure and electron density",
-                                            ostruct )
-                # update structure revision
-                revision = self.makeClass ( self.input_data.data.revision[0] )
-                revision.setStructureData ( ostruct  )
+                ostruct = self.registerStructure ( 
+                                mmcif_fname,
+                                pdb_fname,
+                                istruct.getSubFilePath(self.inputDir()),
+                                istruct.getMTZFilePath(self.inputDir()),
+                                libPath    = libPath,
+                                mapPath    = istruct.getMapFilePath(self.inputDir()),
+                                dmapPath   = istruct.getDMapFilePath(self.inputDir()),
+                                leadKey    = istruct.leadKey,
+                                copy_files = False,
+                                map_labels = istruct.mapLabels,
+                                refiner    = istruct.refiner 
+                            )
+                if ostruct:
+                    ostruct.copy_refkeys_parameters  ( istruct )
+                    ostruct.store_refkeys_parameters ( self.task._type,self.task.id,refkeys )
+                    ostruct.copyAssociations   ( istruct )
+                    ostruct.addDataAssociation ( istruct.dataId )  # ???
+                    ostruct.mergeSubtypes      ( istruct )
+                    ostruct.copyLigands        ( istruct )
+                    ostruct.copyLabels         ( istruct )
+                    # if not xyzout:
+                    #     oxyz.removeSubtype ( dtype_template.subtypeXYZ() )
+                    #self.putMessage (
+                    #    "<b>Assigned name&nbsp;&nbsp;&nbsp;:</b>&nbsp;&nbsp;&nbsp;" +
+                    #    oxyz.dname )
+                    self.putStructureWidget ( self.getWidgetId("structure_btn"),
+                                                "Structure and electron density",
+                                                ostruct )
+                    # update structure revision
+                    revision = self.makeClass ( self.input_data.data.revision[0] )
+                    revision.setStructureData ( ostruct  )
 
-                self.putMessage ( "<h3>Structure Revision" +\
-                    self.hotHelpLink ( "Structure Revision",
-                                    "jscofe_qna.structure_revision") + "</h3>" )
-                self.registerRevision ( revision,serialNo=outputSerialNo,
-                                        title="" )
-                hasResults = True
+                    self.putMessage ( "<h3>Structure Revision" +\
+                        self.hotHelpLink ( "Structure Revision",
+                                        "jscofe_qna.structure_revision") + "</h3>" )
+                    self.registerRevision ( revision,serialNo=outputSerialNo,
+                                            title="" )
+                    hasResults = True
+                else:
+                    self.stderrln ( "\n ***** output structure was not formed" )
+            else:
+                self.stderrln ( "\n ***** " + mmcif_f + " output file not found" )
 
         summaryLine = "no models saved"
         if hasResults:
@@ -214,6 +218,10 @@ class WebCoot(basic.TaskDriver):
                 summaryLine += " model saved"
             else:
                 summaryLine += " models saved"
+        else:
+            self.stderrln ( "\n ***** " + str(len(mmcifout)) + " output .mmcf files found, but" +\
+                            "none is found suitable" )
+
         self.generic_parser_summary["web_coot"] = {
             "summary_line" : summaryLine
         }

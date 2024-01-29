@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    02.01.24   <--  Date of Last Modification.
+ *    28.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -319,7 +319,7 @@ let wscript   = ['@' + wrun_name.toUpperCase()];
           obj[item].visible &&
           obj[item].default_value!=obj[item].value)  {
         let value = obj[item].value;
-        if (obj[item].type in ['string','string_','combobox'])
+        if (['string','string_','combobox'].indexOf(obj[item].type)>=0)
           value = '"' + value + '"';
         else if (obj[item].type=='checkbox')  {
           if (value)  value = 1;
