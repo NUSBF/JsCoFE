@@ -53,6 +53,22 @@ class tools {
     return size;
 }
 
+  static async fileCallback(dir, callback) {
+    const files = fs.readdirSync(dir, { withFileTypes: true });
+    for (const file of files) {
+      if (file.isDirectory()) {
+        if (! await this.fileCallback(`${dir}/${file.name}`, callback)) {
+          return false;
+        }
+      } else {
+        if (! await callback(`${dir}/${file.name}`)) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   static getDataDest(user, source = '', id = '') {
     return path.join(this.getDataDir(), user, source, id);
   }
@@ -218,49 +234,55 @@ class tools {
     });
   }
 
-  static unpack(file, dest, spawnFunc = null) {
-    let cmd, args;
-
+  static getUnpackCmd(file, dest) {
     let is_tar = false;
+    let cmd, args;
+    // check for double extensions for tar archives
+    if (file.endsWith('.tar.gz') || file.endsWith('.tar.bz2') || file.endsWith('.tar.xz')) {
+      is_tar = true;
+    } else {
+      let ext = path.extname(file);
+      switch(ext) {
+        // check for other possible tar archive naming
+        case '.tar':
+        case '.tz':
+        case '.tgz':
+          is_tar = true;
+          break;
+        // single file compression methods
+        case '.gz':
+          cmd = 'gzip';
+          args = [ '-fd', file];
+          break;
+        case '.bz2':
+          cmd = 'bzip2';
+          args = [ '-fd', file];
+          break;
+        case '.xz':
+          cmd = 'xz';
+          args = [ '-fd', file];
+          break;
+      }
+    }
+
+    // is a tar archive
+    if (is_tar) {
+      cmd = 'tar';
+      args = [ '-x', '-C', dest, '-f', file, '--strip-components', 1];
+    }
+
+    return {cmd, args}
+  }
+
+  static unpack(file, dest, cmd = null, args = null, spawnFunc = null) {
+    if (! cmd) {
+      var {cmd, args, is_archive} = tools.getUnpackCmd(file, dest);
+    }
     return new Promise((resolve, reject) => {
-      // check for double extensions for tar archives
-      if (file.endsWith('.tar.gz') || file.endsWith('.tar.bz2') || file.endsWith('.tar.xz')) {
-        is_tar = true;
-      } else {
-        let ext = path.extname(file);
-        switch(ext) {
-          // check for other possible tar archive naming
-          case '.tar':
-          case '.tz':
-          case '.tgz':
-            is_tar = true;
-            break;
-          // single file compression methods
-          case '.gz':
-            cmd = 'gzip';
-            args = [ '-fd', file];
-            break;
-          case '.bz2':
-            cmd = 'bzip2';
-            args = [ '-fd', file];
-            break;
-          case '.xz':
-            cmd = 'xz';
-            args = [ '-fd', file];
-            break;
-          default:
-            reject(`unpack - Unsupported archive format ${ext}`);
-            return;
-        }
+      if (! cmd) {
+        reject(`unpack - Unsupported archive format ${file}`);
+        return;
       }
-
-      // is a tar archive
-      if (is_tar) {
-        cmd = 'tar';
-        args = [ '-x', '-C', dest, '-f', file, '--strip-components', 1];
-      }
-
-      log.info(`unpack - Unpacking ${file} to ${dest}`);
 
       // add an abortController signal so we can abort the process
       const controller = new AbortController();
@@ -289,7 +311,7 @@ class tools {
             reject(`unpack - ${err.message}`);
           }
         } else {
-          reject(`unpack - ${args.join(' ')} exited with code ${code}`);
+          reject(`unpack - ${cmd} ${args.join(' ')} exited with code ${code}`);
         }
       });
 
