@@ -1,9 +1,11 @@
 ##!/usr/bin/python
 
 #
+# mmCIF ready
+#
 # ============================================================================
 #
-#    20.01.24   <--  Date of Last Modification.
+#    29.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -55,13 +57,13 @@ class OptimiseASU(basic.TaskDriver):
         else:
             istruct = idata
 
-        xyzin = istruct.getPDBFilePath ( self.inputDir() )
+        xyzin = istruct.getXYZFilePath ( self.inputDir() )
 
         # --------------------------------------------------------------------
 
-        xyzout = self.getXYZOFName()
+        mmcifout = self.getMMCIFOFName()
 
-        st  = gemmi.read_structure  ( xyzin )
+        st  = gemmi.read_structure ( xyzin )
         st.setup_entities()
         log = optimize_xyz.optimizeXYZ ( st )
 
@@ -70,7 +72,7 @@ class OptimiseASU(basic.TaskDriver):
 
         if len(log)>0:
 
-            st.write_pdb ( xyzout )
+            st.make_mmcif_document().write_file ( mmcifout )
 
             tdict = {
                 "title" : "Chain move summary",
@@ -130,7 +132,7 @@ class OptimiseASU(basic.TaskDriver):
                 if idata._type==dtype_xyz.dtype():
 
                     self.putTitle   ( "Results" )
-                    oxyz = self.registerXYZ ( None,xyzout,checkout=True )
+                    oxyz = self.registerXYZ ( mmcifout,None,checkout=True )
                     if oxyz:
                         oxyz.putXYZMeta ( self.outputDir(),self.file_stdout,self.file_stderr,None )
                         self.putMessage (
@@ -150,8 +152,8 @@ class OptimiseASU(basic.TaskDriver):
                     self.putTitle   ( "Results" )
 
                     oxyz = self.registerStructure ( 
+                                mmcifout,
                                 None,
-                                xyzout,
                                 istruct.getSubFilePath(self.inputDir()),
                                 istruct.getMTZFilePath(self.inputDir()),
                                 libPath    = istruct.getLibFilePath(self.inputDir()),
