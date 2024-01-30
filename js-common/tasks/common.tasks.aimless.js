@@ -1234,16 +1234,16 @@ if (!__template)  {
 
   TaskAimless.prototype.collectInput = function ( inputPanel )  {
 
-    var input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    let input_msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
     function addMessage ( label,message )  {
       input_msg += '|<b><i>' + label + '</i>:</b> ' + message;
     }
 
-    var unmerged = this.input_data.getData ( 'unmerged' );
+    let unmerged = this.input_data.getData ( 'unmerged' );
 
-    for (var i=0;i<unmerged.length;i++)  {
-      for (var j=i+1;j<unmerged.length;j++)
+    for (let i=0;i<unmerged.length;i++)  {
+      for (let j=i+1;j<unmerged.length;j++)
         if (unmerged[i].dataId==unmerged[j].dataId)
           addMessage ( 'Reflection data','dataset ' + unmerged[i].dname +
                        ' is used in more than one input positions, which is not ' +

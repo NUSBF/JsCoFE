@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    20.01.24   <--  Date of Last Modification.
+#    29.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -24,6 +24,7 @@ import gemmi
 #  application imports
 from  pycofe.dtypes  import dtype_template
 from  pycofe.proc    import xyzmeta
+from  pycofe.varut   import mmcif_utils
 
 # ============================================================================
 
@@ -194,7 +195,7 @@ class DType(dtype_template.DType):
         # BF_correction = "alphafold" or "rosetta"
         if (self.BF_correction=="none" or self.BF_correction.endswith("-suggested")) and \
            (BF_correction!=self.BF_correction):
-            fpath = self.getPDBFilePath ( dirPath )
+            fpath = self.getXYZFilePath ( dirPath )
             if fpath and fpath.lower().endswith(".pdb"):
                 st = gemmi.read_structure ( fpath )
                 st.setup_entities()
@@ -208,7 +209,12 @@ class DType(dtype_template.DType):
                                     # see Baek et al. (2021) Science 373:871–876
                                     rmsd_est = 1.5 * math.exp ( 4.0*(0.7-lddt) )
                                 atom.b_iso = min ( 999.99, 26.318945069571623*rmsd_est**2 )
-                st.write_pdb ( fpath )
+                mmcifout = os.path.splitext(fpath)[0] + ".mmcif"
+                st.make_mmcif_document().write_file ( mmcifout )
+                pdbout, pdb_nogood = mmcif_utils.convert_to_pdb ( mmcifout,gemmi_st=st )
+                self.setXYZFile ( mmcifout )
+                if pdbout:
+                    self.setXYZFile ( pdbout )
                 self.BF_correction = BF_correction
         return
 

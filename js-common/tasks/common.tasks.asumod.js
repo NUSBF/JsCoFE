@@ -38,7 +38,6 @@ function TaskASUMod()  {
   this.name      = 'asymmetric unit correction';
   this.setOName ( 'asucorr' );  // default output file name template
   this.title     = 'Asymmetric Unit Correction';
-  //this.helpURL   = './html/jscofe_task_asumod.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes.unshift({   // input data types
@@ -95,7 +94,7 @@ TaskASUMod.prototype.icon           = function()  { return 'task_asumod';       
 TaskASUMod.prototype.clipboard_name = function()  { return '"ASU Modification"'; }
 
 TaskASUMod.prototype.currentVersion = function()  {
-  var version = 1;
+let version = 1;
   if (__template)
         return  version + __template.TaskASUDef.prototype.currentVersion.call ( this );
   else  return  version + TaskASUDef.prototype.currentVersion.call ( this );
@@ -107,10 +106,10 @@ if (!__template)  {
 
   TaskASUMod.prototype.collectInput = function ( inputPanel )  {
 
-    var input_msg = TaskASUDef.prototype.collectInput.call ( this,inputPanel );
+    let input_msg = TaskASUDef.prototype.collectInput.call ( this,inputPanel );
 
-    var hkl = this.input_data.getData ( 'hkl' );
-    var seq = this.input_data.getData ( 'seq' );
+    let hkl = this.input_data.getData ( 'hkl' );
+    let seq = this.input_data.getData ( 'seq' );
 
     if ((hkl.length<=0) && (seq.length<=0) &&
         (this.parameters.sec1.contains.ESTIMATE_SEL.value=='KE'))
@@ -131,7 +130,7 @@ if (!__template)  {
     // job's 'input' directory
 
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       this.input_data.data['hkl0'] = [revision.HKL];
       this.input_data.data['seq0'] = revision.ASU.seq;
       if (revision.Structure)
