@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.10.22   <--  Date of Last Modification.
+#    30.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,14 +19,13 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
 
 #  python native imports
 import os
-import sys
 import json
 
 #  ccp4-python imports
@@ -34,7 +33,7 @@ import pyrvapi
 
 #  application imports
 from . import basic
-from   pycofe.varut  import jsonut
+from   pycofe.varut  import jsonut, mmcif_utils
 from   pycofe.dtypes import dtype_template
 
 
@@ -82,7 +81,7 @@ class Gesamt(basic.TaskDriver):
         cmd = []
         for i in range(nXYZ):
             xyz[i] = self.makeClass ( xyz[i] )
-            cmd += [ xyz[i].getPDBFilePath(self.inputDir()),
+            cmd += [ xyz[i].getXYZFilePath(self.inputDir()),
                     "-s",xyz[i].chainSel]
 
         if nXYZ<2:
@@ -309,7 +308,6 @@ class Gesamt(basic.TaskDriver):
                     "summary_line" : "no structure hits found"
                 }
 
-
         else: # pairwise or multiple alignment
 
             outFiles = []
@@ -325,7 +323,7 @@ class Gesamt(basic.TaskDriver):
                 if nXYZ==2:
                     self.generic_parser_summary["gesamt"]["summary_line"] += \
                                     ", seqId=" + str(int(meta["seqid"]*100)) + "%"
-                    outFiles = sorted([f for f in os.listdir(".") if f.endswith(".pdb")])
+                    outFiles = sorted([f for f in os.listdir(".") if f.upper().endswith(".PDB") or f.upper().endswith(".MMCIF")])
                     outFiles.insert ( 0,outFiles.pop() )
                 elif nXYZ>2:
                     outFiles = [self.gesamt_xyz()]
@@ -337,6 +335,10 @@ class Gesamt(basic.TaskDriver):
             if len(outFiles)>0 and os.path.isfile(outFiles[0]):
 
                 self.putTitle ( "Gesamt Output" )
+
+                for i in range(len(outFiles)):
+                    if not outFiles[i].upper().endswith(".PDB"):
+                        outFiles[i] = mmcif_utils.convert_to_pdb ( outFiles[i] )
 
                 # register output data from temporary location (files will be moved
                 # to output directory by the registration procedure)
@@ -365,7 +367,6 @@ class Gesamt(basic.TaskDriver):
                 self.generic_parser_summary["gesamt"] = {
                     "summary_line" : "structures are dissimilar"
                 }
-
 
         # close execution logs and quit
         self.success ( have_results )

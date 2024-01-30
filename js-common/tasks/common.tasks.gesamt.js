@@ -194,8 +194,10 @@ TaskGesamt.prototype.desc_title     = function()  {
   return 'automatic, pairwise/multiple, structure alignment/superposition and PDB searches';
 }
 
+// TaskGesamt.prototype.cleanJobDir = function ( jobDir )  {}
+
 TaskGesamt.prototype.currentVersion = function()  {
-  var version = 0;
+let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -237,7 +239,7 @@ if (!__template)  {
 
   TaskGesamt.prototype.updateInputPanel = function ( inputPanel )  {
     if (this.state==job_code.new)  {
-      var event = new CustomEvent ( cofe_signals.jobDlgSignal,{
+      let event = new CustomEvent ( cofe_signals.jobDlgSignal,{
          'detail' : job_dialog_reason.rename_node
       });
       inputPanel.element.dispatchEvent(event);
