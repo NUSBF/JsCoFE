@@ -1,0 +1,36 @@
+{
+  // server & port configuration
+  "server": {
+    "host": "localhost",
+    "port": 8100,
+    "admin_key": ""
+  },
+  // locations for storage
+  "storage": {
+    "data_dir": "data",
+    "user_dir": "users",
+    "catalog_dir": "catalogs",
+    // amount of disk space to try keep free - older data not in use will be pruned
+    "data_free_gb": 100
+  },
+  // data source configuration
+  "data_sources": {
+    "pdbj": {
+      "enabled": true,
+      // get the data size via rsync
+      "rsync_size": true
+    },
+    "sbgrid": {
+      "enabled": true,
+      "rsync_size": true
+    },
+    "irrmc": {
+      "enabled": true
+    }
+  },
+  // other configuration settings
+  "other": {
+    // return pdb entry results from rcsb
+    "rcsb_results": false
+  }
+}
