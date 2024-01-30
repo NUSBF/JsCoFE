@@ -133,6 +133,7 @@ The API returns the following HTTP response status codes:
 * `404 Not Found` - The server can not find the requested resource.
 * `405 Method Not Allowed` - The request HTTP method is known by the server but has been disabled and cannot be used for that resource.
 * `500 Internal Server Error` - The server encountered an unexpected condition that prevented it from fulfilling the request.
+* `503 Service Unavailable` - The server is not ready to handle the request.
 
 ## API End Points
 
@@ -364,6 +365,28 @@ If the data already exists for the user, the API will return
 {
   msg: "pdbj: jools.wills/pdbj/5aui already exists"
   success: true
+}
+```
+
+If the `id` cannot be found in the data source catalog, the API will return
+
+`HTTP/1.1 404 Not Found`
+
+```
+{
+  error: true
+  msg: "pdbj - 12345 not found in catalog"
+}
+```
+
+If the data source requested doesn't currently have a catalog (eg. on first run), the API will return
+
+`HTTP/1.1 503 Service Unavailable`
+
+```json
+{
+  error: true
+  msg: "sbgrid - data source catalog not ready"
 }
 ```
 
