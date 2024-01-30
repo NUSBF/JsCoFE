@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    30.11.23   <--  Date of Last Modification.
+ *    30.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Web-Coot Model Building Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2023
+ *  (C) E. Krissinel, A. Lebedev 2023-2024
  *
  *  =================================================================
  *
@@ -122,7 +122,7 @@ TaskWebCoot.prototype.cloneItems = function() { return ['backups']; }
 //TaskWebCoot.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskWebCoot.prototype.currentVersion = function()  {
-  var version = 0;
+let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -136,11 +136,11 @@ TaskWebCoot.prototype.currentVersion = function()  {
 // }
 
 TaskWebCoot.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,[
-      'webcoot','moorhen','coot','model','building','manual-mb','mb','coordinate','editor'
-    ]);
-  }
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,[
+    'webcoot','moorhen','coot','model','building','manual-mb','mb','coordinate','editor'
+  ]);
+}
 
 if (!__template)  {
   //  for client side
@@ -160,10 +160,10 @@ if (!__template)  {
       return;
     }
 
-    var title = '[' + padDigits(this.id,4) + '] ';
+    let title = '[' + padDigits(this.id,4) + '] ';
     if (this.uname.length>0)  title += this.uname;
                         else  title += this.name;
-    var wab = new WebAppBox ( title );
+    let wab = new WebAppBox ( title );
     wab.setOnCloseFunction ( function(){
       callback_func ( getCommunicationFrameData(wab.fid,'was_output'),'Moorhen' ); 
     });
@@ -176,15 +176,14 @@ if (!__template)  {
     wab.launch();
     // setCommunicationFrameData ( wab.fid,'was_output',false );
 
-    var istruct    = this.input_data.data['revision'][0].Structure;
-    var isubstruct = this.input_data.data['revision'][0].Substructure;
+    let istruct    = this.input_data.data['revision'][0].Structure;
+    let isubstruct = this.input_data.data['revision'][0].Substructure;
 
-    var viewSettings = null;
+    let viewSettings = null;
 
-    var inputFiles = [];
+    let inputFiles = [];
     
     if ('ligand' in this.input_data.data)  {
-
       let ligands = this.input_data.data['ligand'];
       for (let i=0;i<ligands.length;i++)
         if (file_key.lib in ligands[i].files)  {
@@ -202,24 +201,24 @@ if (!__template)  {
       if (refkeys)
         viewSettings = refkeys.keywords;
       if (file_key.lib in istruct.files)  {
-        var libURL = this.getURL ( 'input/' + istruct.files[file_key.lib] );
+        let libURL = this.getURL ( 'input/' + istruct.files[file_key.lib] );
         inputFiles.push ({
           type : 'ligand',
           args : [ libURL,[] ]
         });
       }
-      if (file_key.xyz in istruct.files)  {
-        let pdbURL = 'input/';
+      if ((file_key.xyz in istruct.files) || (file_key.mmcif in istruct.files))  {
+        let xyzURL = 'input/';
         if (file_key.mmcif in istruct.files)
-              pdbURL = this.getURL ( pdbURL + istruct.files[file_key.mmcif] );
-        else  pdbURL = this.getURL ( pdbURL + istruct.files[file_key.xyz]   );
+              xyzURL = this.getURL ( xyzURL + istruct.files[file_key.mmcif] );
+        else  xyzURL = this.getURL ( xyzURL + istruct.files[file_key.xyz]   );
         inputFiles.push ({
           type : 'pdb',
-          args : [ pdbURL,'molecule' ]
+          args : [ xyzURL,'molecule' ]
         });
       }
       if (file_key.mtz in istruct.files)  {
-        var mtzURL = this.getURL ( 'input/' + istruct.files[file_key.mtz] );
+        let mtzURL = this.getURL ( 'input/' + istruct.files[file_key.mtz] );
         if (istruct.FWT)
           inputFiles.push ({
             type : 'mtz',
@@ -283,7 +282,7 @@ if (!__template)  {
           viewSettings = refkeys.keywords;
       }
       if (file_key.mtz in isubstruct.files)  {
-        var mtzURL = this.getURL ( 'input/' + isubstruct.files[file_key.mtz] );
+        let mtzURL = this.getURL ( 'input/' + isubstruct.files[file_key.mtz] );
         if (isubstruct.FAN)
           inputFiles.push ({
             type : 'mtz',
@@ -320,7 +319,7 @@ if (!__template)  {
         }
     }
 
-    var params = {
+    let params = {
       mode         : mode,
       inputFiles   : inputFiles,
       interval     : update_interval,
@@ -367,7 +366,7 @@ if (!__template)  {
   const conf  = require('../../js-server/server.configuration');
   const prj   = require('../../js-server/server.fe.projects');
   const utils = require('../../js-server/server.utils');
-  // var dtemp = require('../../js-common/dtypes/common.dtypes.template');
+  // let dtemp = require('../../js-common/dtypes/common.dtypes.template');
 
   TaskWebCoot.prototype.makeInputData = function ( loginData,jobDir )  {
 
@@ -395,7 +394,7 @@ if (!__template)  {
     if (istruct && ('coot_meta' in istruct) && istruct.coot_meta)  {
       let coot_meta = istruct.coot_meta;
       let srcJobDir = prj.getSiblingJobDirPath ( jobDir,coot_meta.jobId );
-      for (var i=0;i<coot_meta.files.length;i++)
+      for (let i=0;i<coot_meta.files.length;i++)
         utils.copyFile ( path.join(srcJobDir,coot_meta.files[i]),
                          path.join(jobDir,coot_meta.files[i]) );
     }
@@ -407,11 +406,11 @@ if (!__template)  {
     if (!utils.fileExists(backupsListFPath))
       utils.writeString ( backupsListFPath,'[]' );
 
-    // var cfg = conf.getFEProxyConfig();
+    // let cfg = conf.getFEProxyConfig();
     // if (!cfg)
     //   cfg = conf.conf.getFEConfig();
 
-    // var html = utils.readString ( path.join(process.cwd(),'js-lib','webCoot','webcoot.html') );
+    // let html = utils.readString ( path.join(process.cwd(),'js-lib','webCoot','webcoot.html') );
 
     // html = html.replace ( '[[baseurl]]',cfg.externalURL + '/js-lib/webCoot/webcoot.html' );
 
@@ -423,7 +422,7 @@ if (!__template)  {
     //   });
     // }
 
-    // var inputFiles = [
+    // let inputFiles = [
     //   '[',
     //     '{type: "pdb", args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule"]},',
     //     '{type: "mtz", args: ["./baby-gru/tutorials/moorhen-tutorial-map-number-1.mtz", "map",',
@@ -435,17 +434,17 @@ if (!__template)  {
     //   ']'
     // ];
 
-    // var inputFiles = [];
+    // let inputFiles = [];
     // if (istruct)  {
     //   if (dtemp.file_key.xyz in istruct.files)  {
-    //     var pdbURL = this.getURL ( 'input/' + istruct.files[dtemp.file_key.xyz] );
+    //     let pdbURL = this.getURL ( 'input/' + istruct.files[dtemp.file_key.xyz] );
     //     inputFiles.push ({
     //       type : 'pdb',
     //       args : [ pdbURL,'molecule' ]
     //     });
     //   }
     //   if (dtemp.file_key.mtz in istruct.files)  {
-    //     var mtzURL = this.URL ( 'input/' + istruct.files[dtemp.file_key.mtz] );
+    //     let mtzURL = this.URL ( 'input/' + istruct.files[dtemp.file_key.mtz] );
     //     if (istruct.FWT)
     //       inputFiles.push ({
     //         type : 'mtz',
@@ -464,7 +463,7 @@ if (!__template)  {
     // }
 
 
-    // var inputFiles = [
+    // let inputFiles = [
     //   { type: "pdb", 
     //     args: ["./baby-gru/tutorials/moorhen-tutorial-structure-number-1.pdb", "molecule" ]
     //   },
