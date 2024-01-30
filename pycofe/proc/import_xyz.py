@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    14.01.24   <--  Date of Last Modification.
+#    30.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -153,11 +153,12 @@ def run ( body ):  # body is reference to the main Import class
 
             body.putTableLine ( xyzTableId,"Contents","File contents",contents,jrow+3 )
 
-            pyrvapi.rvapi_add_data ( xyzTableId + "_structure_btn",
-                                     xyz.dname  + "&nbsp;&nbsp;&nbsp;&nbsp;",
-                                     # always relative to job_dir from job_dir/html
-                                     "/".join(["..",body.outputDir(),xyz.getPDBFileName()]),
-                                     "xyz",subSecId,1,0,1,1,-1 )
+            if xyz.getPDBFileName():
+                pyrvapi.rvapi_add_data ( xyzTableId + "_structure_btn",
+                                        xyz.dname  + "&nbsp;&nbsp;&nbsp;&nbsp;",
+                                        # always relative to job_dir from job_dir/html
+                                        "/".join(["..",body.outputDir(),xyz.getPDBFileName()]),
+                                        "xyz",subSecId,1,0,1,1,-1 )
 
             note = ""
             if xyz.BF_correction=="alphafold-suggested":
