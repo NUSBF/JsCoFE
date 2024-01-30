@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    27.01.24   <--  Date of Last Modification.
+#    30.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -216,6 +216,82 @@ class XyzUtils(basic.TaskDriver):
                 "pdbset",["XYZIN",mmcifin,"XYZOUT",mmcifout],
                 logType="Main"
             )
+
+        elif action_sel=="R":
+
+            commands = self.getParameter(sec1.RENAME_INPUT).splitlines()
+            chains   = {}
+            check    = {}
+            summary  = []
+            opkey    = 0
+            errors   = False
+            for c in commands:
+                summary.append ( c )
+                words = c.split("#")[0].split()
+                if len(words)==3 and words[0].upper()=="CHAIN":
+                    if opkey==1:
+                        summary.append ( " >>> a mix of CHAIN and PDB keys not allowed" )
+                        errors = True
+                    elif words[1] in chains:
+                        summary.append ( " >>> repeat use of chain name " + words[1] )
+                        errors = True
+                    elif words[2] in check:
+                        summary.append ( " >>> repeat use of chain name " + words[2] )
+                        errors = True
+                    else:
+                        chains[words[1]] = [words[2],False]
+                        check[words[2]]  = 1
+                        opkey = -1
+                elif len(words)==1 and words[0].upper()=="PDB":
+                    if opkey==-1:
+                        summary.append ( " >>> a mix of CHAIN and PDB keys not allowed" )
+                        errors = True
+                    else:
+                        opkey = 1
+                elif len(words)>0:
+                    summary.append ( " >>> statement not understood" )
+                    errors = True
+
+            if errors:
+                self.putMessage ( "<b>Input summary:</b><br><pre>" +\
+                                  "\n".join(summary) + "</pre>" )
+                self.putMessage ( "<p><b>Input errors, stop.</b>" )
+
+            elif opkey==0:
+                self.putMessage ( "<b>Input summary:</b><br><pre>" +\
+                                  "\n".join(summary) + "</pre>" )
+                self.putMessage ( "<p><b>No instructions given, stop.</b>" )
+                errors = True
+            
+            else:
+            
+                st = gemmi.read_structure ( mmcifin )
+                st.setup_entities()
+
+                if opkey==1:
+                    log.append ( "truncate chain names" )
+                    if not mmcif_utils.translate_to_pdb(st):
+                        self.putMessage ( "<b>XYZ data cannot be made PDB-compatible</b>" )
+                        errors = True
+                else:
+                    log.append ( "rename chains" )
+                    for model in st:
+                        for chain in model:
+                            if chain.name in chains:
+                                chains[chain.name][1] = True
+                                chain.name = chains[chain.name][0]
+                    summary = []
+                    for name in chains:
+                        if not chains[name][1]:
+                            summary.append ( name )
+                    if len(summary)>0:
+                        self.putMessage ( "<b>Chains " + ",".join(summary) +\
+                                          " not found, stop</b>")
+                        errors = True
+
+            if not errors:
+                st.setup_entities()
+                st.make_mmcif_document().write_file ( mmcifout )
 
         else:
             # make model transformations
@@ -444,6 +520,12 @@ class XyzUtils(basic.TaskDriver):
                               "</i> transformed with PDBSET</b><p>PDBSET script:<pre>" +\
                               self.getParameter(sec1.PDBSET_INPUT) + "</pre>" )
             have_results = self.makeXYZOutput ( istruct,ixyz,mmcifout,pdbout )
+        elif action_sel=="R":
+            if os.path.isfile(mmcifout):
+                self.putMessage ( "<b>Data object <i>" + ixyz.dname +\
+                                "</i> transformed as:<pre>" +\
+                                self.getParameter(sec1.RENAME_INPUT) + "</pre>" )
+                have_results = self.makeXYZOutput ( istruct,ixyz,mmcifout,pdbout )
 
         # this will go in the project tree line
         if len(log)>0:

@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    23.01.24   <--  Date of Last Modification.
+#    30.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -229,6 +229,7 @@ class ModelCraft(basic.TaskDriver):
         if self.getParameter(sec1.MODE_SEL)=='basic':
             cmd += [ "--basic" ]
 
+        rvrow0 = self.rvrow
         gridId = self.putWaitMessageLF ( "Building in progress ...",
                                          message2="&nbsp;&nbsp;&nbsp;" )
         
@@ -257,7 +258,7 @@ class ModelCraft(basic.TaskDriver):
             gridId,0,3
         )
         # self.rvrow -= 1
-        # self.rvrow += 1
+        self.rvrow += 1
 
         self.flush()
 
@@ -275,6 +276,9 @@ class ModelCraft(basic.TaskDriver):
         self.addCitations ([
             'modelcraft','refmacat','cbuccaneer','cparrot','coot'
         ])
+
+        # remove progress spinner
+        self.putMessage1 ( self.report_page_id()," ",rvrow0 )
 
         have_results = False
 
@@ -329,7 +333,7 @@ class ModelCraft(basic.TaskDriver):
                     pdbout = None
 
                 self.putTitle ( "Built Structure" +\
-                            self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
+                                self.hotHelpLink ( "Structure","jscofe_qna.structure" ) )
 
                 structure = self.registerStructure (
                                     mmcifout,

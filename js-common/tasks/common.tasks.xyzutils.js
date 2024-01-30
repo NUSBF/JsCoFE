@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    01.01.24   <--  Date of Last Modification.
+ *    29.01.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,17 +33,16 @@ function TaskXyzUtils()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type   = 'TaskXyzUtils';
-  this.name    = 'xyz utils';
-  this.oname   = '*'; // asterisk means do not use (XYZ name will be used)
-  this.title   = 'Coordinate Utilities';
-  //this.helpURL = './html/jscofe_task_xyzutils.html';
+  this._type  = 'TaskXyzUtils';
+  this.name   = 'xyz utils';
+  this.oname  = '*'; // asterisk means do not use (XYZ name will be used)
+  this.title  = 'Coordinate Utilities';
 
   this.input_dtypes = [{      // input data types
-    data_type   : { 'DataRevision' : ['xyz','~mmcif_only'],
+    data_type   : { 'DataRevision' : ['xyz'],
                     'DataEnsemble' : ['~mmcif_only'],
                     'DataModel'    : ['~mmcif_only'],
-                    'DataXYZ'      : ['~mmcif_only']
+                    'DataXYZ'      : []
                   },  // data type(s) and subtype(s)
     label       : 'Structure', // label for input dialog
     inputId     : 'istruct',   // input Id for referencing input fields
@@ -65,7 +64,8 @@ function TaskXyzUtils()  {
                                     'S|Split structure in chains',
                                     'E|Extract sequences',
                                     'P|Run PDBSET',
-                                    'B|Recalculate B-factors'
+                                    'B|Recalculate B-factors',
+                                    'R|Rename chains'
                                    ],
                         value    : 'T',
                         iwidth   : 260,
@@ -152,6 +152,31 @@ function TaskXyzUtils()  {
                         iwidth   : 260,
                         position : [0,4,1,1],
                         showon   : {ACTION_SEL:['B']}
+                      },
+                RENAME_LBL : {
+                        type     : 'label',
+                        keyword  : 'none',
+                        lwidth   : 800,
+                        label    : '<div style="font-size:14px;">' +
+                                    'Set renaming instructions in the input field below.' +
+                                    '<sub>&nbsp;</sub></div>',
+                        position : [5,0,1,5],
+                        showon   : {ACTION_SEL:['R']}
+                      },
+                RENAME_INPUT : {
+                        type     : 'aceditor_',  // can be also 'textarea'
+                        keyword  : 'none',       // optional
+                        tooltip  : '',           // mandatory
+                        iwidth   : 800,          // optional
+                        iheight  : 320,          // optional
+                        placeholder : '# Rename chains like:\n' + 
+                                      'CHAIN A A1 # rename A into A1\n' +
+                                      'CHAIN B A2 # etc etc\n' +
+                                      '# or\n' +
+                                      '# PDB  # make chain names PDB-compliant\n',
+                        value    : '',           // mandatory
+                        position : [6,0,1,5],    // mandatory
+                        showon   : {ACTION_SEL:['R']}
                       },
 
 
@@ -258,7 +283,7 @@ TaskXyzUtils.prototype.icon           = function()  { return 'task_xyzutils'; }
 TaskXyzUtils.prototype.clipboard_name = function()  { return '"XYZ Utils"';   }
 
 TaskXyzUtils.prototype.currentVersion = function()  {
-  var version = 1;
+let version = 2;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -288,16 +313,19 @@ if (!__template)  {
 
   TaskXyzUtils.prototype.collectInput = function ( inputPanel )  {
 
-    var msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
+    let msg = TaskTemplate.prototype.collectInput.call ( this,inputPanel );
 
     if ((this.parameters.sec1.contains.SOLLIG_SEL.value=='U') &&
         (this.parameters.sec1.contains.CHAINS_SEL.value=='U') &&
         (this.parameters.sec1.contains.ACTION_SEL.value=='T'))
       msg += '|<b><i>at least one transformation must be specified</i></b>';
-    else if ((this.parameters.sec1.contains.ACTION_SEL.value=='P') &&
-             (!this.parameters.sec1.contains.PDBSET_INPUT.value.trim()))
-      msg += '|<b><i>no PDBSET instructions -- nothing to do</i></b>';
-
+    else if (this.parameters.sec1.contains.ACTION_SEL.value=='P')  {
+        if (!this.parameters.sec1.contains.PDBSET_INPUT.value.trim())
+          msg += '|<b><i>no PDBSET instructions -- nothing to do</i></b>';
+        let xyz = this.input_data.getData ( 'istruct' );
+        if (xyz[0].subtype.indexOf('mmcif_only')>=0)
+          msg += '|<b><i>PDBSET can work only with PDB-compatible data</i></b>';
+    }
     return msg;
 
   }
@@ -335,9 +363,9 @@ if (!__template)  {
 
   TaskXyzUtils.prototype.makeInputData = function ( loginData,jobDir )  {
 
-    var ixyz = [];
-    var istruct = this.input_data.data['istruct'];
-    for (var i=0;i<istruct.length;i++)
+    let ixyz = [];
+    let istruct = this.input_data.data['istruct'];
+    for (let i=0;i<istruct.length;i++)
       if (istruct[i]._type=='DataRevision')
             ixyz.push ( istruct[i].Structure );
       else  ixyz.push ( istruct[i] );
