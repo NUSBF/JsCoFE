@@ -201,6 +201,12 @@ class dataLink {
     if (result !== true) {
       return result;
     }
+
+    // check if the source catalog is ready
+    if (! this.source[source].catalog) {
+      return tools.errorMsg(`${source} - data source catalog not ready`, 503);
+    }
+
     // check if the source catalog entry exists
     if (! this.source[source].catalog[id]) {
       return tools.errorMsg(`${source} - ${id} not found in catalog`, 404);
@@ -258,10 +264,6 @@ class dataLink {
       log.info(`${source} - Acquiring ${user}/${source}/${id}`);
       // acquire the data from the data source
       if (this.source[source].acquire(user, id, this.catalog, force)) {
-        // get the on disk size for rsync transfer progress
-        if (this.source[source].type == 'rsync') {
-          this.dataSizeProgress(user, source, id);
-        }
         return tools.successMsg(`${source}: Acquiring ${user}/${source}/${id}`);
       }
     }

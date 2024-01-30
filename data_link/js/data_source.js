@@ -222,12 +222,12 @@ class dataSource {
     let out = '';
 
     try {
-      await tools.doRsync(['-rz', url],
+      await tools.doRsync(['-rz', '--no-motd', url],
         (stdout) => {
           out += stdout.toString();
         },
         (stderr) => {
-          log.error(stderr.toString());
+          log.error(`rsyncGetCatalog - Error: ${stderr.toString()}`);
         });
     } catch (err) {
       log.error(`rsyncGetCatalog - Error: ${err.message}`);
@@ -240,12 +240,16 @@ class dataSource {
 
   async rsyncGetData(url, user, id, catalog) {
     let dest = tools.getDataDest(user, this.name);
+    let entry = catalog.getEntry(user, this.name, id);
 
     // rsync -rzv --include 'ID/***' --exclude '*' data.pdbjbk1.pdbj.org::rsync/xrda/
     try {
-      await tools.doRsync(['-rzq', '--include', id + '/***', '--exclude', '*', url, dest],
+      await tools.doRsync(['-rz', '--no-motd', '--info=progress2', '--partial', '--include', id + '/***', '--exclude', '*', url, dest],
         (stdout) => {
-          out += stdout.toString();
+          // extract transferred amount
+          let fields = stdout.toString().split(/\s+/)
+          let size = parseInt(fields[1].replaceAll(',', ''), 10);
+          entry.size = parseInt(size, 10);
         },
         (stderr) => {
           log.error(stderr.toString());
