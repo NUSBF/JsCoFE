@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    06.12.22   <--  Date of Last Modification.
+#    31.01.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -19,15 +19,13 @@
 #                       all successful imports
 #      jobDir/report  : directory receiving HTML report
 #
-#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2022
+#  Copyright (C) Eugene Krissinel, Andrey Lebedev 2017-2024
 #
 # ============================================================================
 #
 
 #  python native imports
 import os
-import sys
-import uuid
 import shutil
 
 #  application imports
@@ -63,7 +61,7 @@ class PISA(basic.TaskDriver):
         xyz  = self.makeClass ( self.input_data.data.xyz[0] )
         sec1 = self.task.parameters.sec1.contains
 
-        xyzPath   = xyz.getPDBFilePath ( self.inputDir() )
+        xyzPath   = xyz.getXYZFilePath ( self.inputDir() )
         reportDir = os.path.join ( os.getcwd(),self.reportDir() )
         shutil.copy ( xyzPath,reportDir )
 
