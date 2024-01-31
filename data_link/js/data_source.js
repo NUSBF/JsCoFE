@@ -7,8 +7,6 @@ const { tools, status } = require('./tools.js');
 const config = require('./config.js');
 const log = require('./log.js');
 
-const CATALOG_DIR = config.get('storage.catalog_dir');
-
 class dataSource {
 
   name = this.constructor.name;
@@ -16,7 +14,7 @@ class dataSource {
   url = '';
 
   constructor() {
-    this.catalog_file = path.join(CATALOG_DIR, this.name + '.json');
+    this.catalog_file = path.join(tools.getCatalogDir(), this.name + '.json');
     this.catalog = null;
     this.catalog_size = 0;
     this.status = null;
@@ -35,9 +33,9 @@ class dataSource {
     this.addCatalog(catalog);
     let json = JSON.stringify(catalog);
     try {
-      fs.mkdirSync(CATALOG_DIR, { recursive: true });
+      fs.mkdirSync(tools.getCatalogDir(), { recursive: true });
     } catch (err) {
-      log.info(`${this.name} - Unable to create ${CATALOG_DIR} - ${err}`);
+      log.info(`${this.name} - Unable to create ${tools.getCatalogDir()} - ${err}`);
     }
     let file = fs.writeFile(this.catalog_file, json, (err) => {
       if (err) {
