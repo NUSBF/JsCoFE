@@ -40,7 +40,7 @@ class dataLink {
     const catalog = this.catalog.getCatalog();
     for (const user of users) {
       catalog[user] = {};
-      if (! this.catalog.loadUserCatalog(user, tools.getUserCatalogFile(user))) {
+      if (! this.catalog.loadUserCatalog(user)) {
         this.rebuildLocalCatalog(user);
       }
     }
