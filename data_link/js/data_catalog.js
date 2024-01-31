@@ -31,8 +31,9 @@ class dataCatalog {
     return this.catalog;
   }
 
-  loadUserCatalog(user, file) {
+  loadUserCatalog(user) {
     const catalog = this.getCatalog();
+    const file = tools.getUserCatalogFile(user);
     try {
       let json = fs.readFileSync(file);
       catalog[user] = JSON.parse(json);
@@ -46,10 +47,15 @@ class dataCatalog {
   saveUserCatalog(user) {
     const catalog = this.getCatalog()[user];
     let json = JSON.stringify(catalog);
-    let user_data_dir = tools.getDataDest(user);
     try {
+      const user_data_dir = tools.getDataDest(user);
       if (! fs.existsSync(user_data_dir)) {
         fs.mkdirSync(user_data_dir, { recursive: true });
+      }
+      const user_catalog_file = tools.getUserCatalogFile(user);
+      const user_catalog_dir = path.dirname(user_catalog_file);
+      if (! fs.existsSync(user_catalog_dir)) {
+        fs.mkdirSync(user_catalog_dir, { recursive: true });
       }
       fs.writeFileSync(tools.getUserCatalogFile(user), json);
     } catch (err) {
