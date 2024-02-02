@@ -31,7 +31,7 @@ class dataLink {
     this.loadAllUserCatalogs();
 
     this.loadSourceCatalogs();
-    this.dataResume();
+    this.resumeData();
   }
 
   loadAllUserCatalogs() {
@@ -169,18 +169,18 @@ class dataLink {
       return tools.successMsg(`${name} - Catalog update already in progress`);
     }
 
-    if (this.source[name].updateCatalog()) {
-      return tools.successMsg(`${name} - Updating catalog`);
-    }
+    log.info(`${this.name} - Fetching Catalog`);
+    this.source[name].status = status.inProgress;
+    this.source[name].fetchCatalog();
 
-    return tools.errorMsg(`${name}: Error updating catalog`, 500);
+    return tools.successMsg(`${name} - Updating catalog`);
   }
 
   updateAllSourceCatalogs() {
     let sources = [];
     for (const [name, source] of Object.entries(this.source)) {
       if (source.status !== status.inProgress) {
-        if (source.updateCatalog()) {
+        if (source.fetchCatalog()) {
           sources.push(name);
         }
       }
@@ -214,7 +214,7 @@ class dataLink {
     return true;
   }
 
-  async dataResume () {
+  async resumeData () {
     const catalog = this.catalog.getCatalog();
     for (const user in catalog) {
       for (const source in catalog[user]) {
@@ -226,17 +226,17 @@ class dataLink {
         while (! this.source[source].catalog) {
           await new Promise(r => setTimeout(r, 2000));
         }
-        // check if any entries are in progress, and reacquire/continue
+        // check if any entries are in progress, and refetch/continue
         for (const [id, entry] of Object.entries(catalog[user][source])) {
           if (entry.status === status.inProgress) {
-            this.dataAcquire(user, source, id, true);
+            this.fetchData(user, source, id, true);
           }
         }
       }
     }
   }
 
-  dataAcquire(user, source, id, force = false) {
+  fetchData(user, source, id, force = false) {
     id = id.toLowerCase();
     let result = this.hasSourceEntry(source, id);
     if (result !== true) {
@@ -247,31 +247,32 @@ class dataLink {
       let st = this.catalog.getStatus(user, source, id);
       // check if in progress
       if (st === status.inProgress) {
-        return tools.successMsg(`${source} - Data acquire for ${user}/${source}/${id} already in progress`);
+        return tools.successMsg(`${source} - Data fetch for ${user}/${source}/${id} already in progress`);
       }
 
-      // check if already acquired
+      // check if already fetched
       if (st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
         log.info(`${source} - ${user}/${source}/${id} already exists`);
-        return tools.successMsg(`${source}: ${user}/${source}/${id} already exists`);
+        return tools.successMsg(`${source} - ${user}/${source}/${id} already exists`);
       }
     }
 
     // prune old data if required
-    this.dataPrune(config.get('storage.data_free_gb'));
+    this.pruneData(config.get('storage.data_free_gb'));
 
-    if (this.addEntryFromSource(user, source, id, status.inProgress)) {
-      log.info(`${source} - Acquiring ${user}/${source}/${id}`);
-      // acquire the data from the data source
-      if (this.source[source].acquire(user, id, this.catalog, force)) {
-        return tools.successMsg(`${source}: Acquiring ${user}/${source}/${id}`);
-      }
+    if (! this.addEntryFromSource(user, source, id, status.inProgress)) {
+      return tools.errorMsg(`${source}: Error fetching ${user}/${source}/${id}`, 500);
     }
 
-    return tools.errorMsg(`${source}: Error acquiring ${user}/${source}/${id}`, 500);
+    log.info(`${source} - Fetching ${user}/${source}/${id}`);
+
+    // fetch the data from the data source
+    this.source[source].fetchData(user, id, this.catalog, force)
+
+    return tools.successMsg(`${source}: Fetching ${user}/${source}/${id}`);
   }
 
-  dataStatus(user, source, id) {
+  getDataStatus(user, source, id) {
     let catalog = this.catalog.getCatalog();
 
     // Check if user, source and id are set and valid and return correct part of local data catalog
@@ -300,14 +301,14 @@ class dataLink {
     return catalog;
   }
 
-  dataRemove(user, source, id) {
+  removeData(user, source, id) {
     if (! this.catalog.hasEntry(user, source, id)) {
       return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
     }
 
     let st = this.catalog.getStatus(user, source, id);
     if (st === status.inProgress) {
-      log.info(`dataRemove - Aborting ${user}/${source}/${id}`);
+      log.info(`removeData - Aborting ${user}/${source}/${id}`);
       let job = this.source[source].getJob(user, id);
       if (job) {
         this.catalog.updateEntry(user, source, id, { status: status.failed });
@@ -322,7 +323,8 @@ class dataLink {
     return tools.errorMsg(`${source}: Unable to remove ${id} for ${user}`, 405);
   }
 
-  async dataSizeProgress(user, source, id) {
+  // unused
+  async updateDataProgress(user, source, id) {
     const catalog = this.catalog;
     while (catalog.hasEntry(user, source, id) && catalog.getStatus(user, source, id) === status.inProgress) {
       this.catalog.updateEntry(user, source, id, {
@@ -332,7 +334,7 @@ class dataLink {
     }
   }
 
-  async dataPrune(min_free_gb) {
+  async pruneData(min_free_gb) {
     const GB = 1000000000;
     const MB = 1000000;
     const min_free = min_free_gb * GB;
@@ -375,7 +377,7 @@ class dataLink {
     let size = 0;
     for (const e of entries) {
       if (this.catalog.removeEntry(e.user, e.source, e.id)) {
-        log.info(`dataPrune - removed ${e.user}/${e.source}/${e.id} - size ${e.size}`);
+        log.info(`pruneData - removed ${e.user}/${e.source}/${e.id} - size ${e.size}`);
         size += e.size;
         if (size >= size_to_free) {
           break;
@@ -385,11 +387,11 @@ class dataLink {
     const size_mb = Math.ceil(size / MB);
     const size_to_free_mb = Math.ceil(size_to_free / MB);
     if (size > 0) {
-      log.info(`dataPrune - Removed ${size_mb} MB of required ${size_to_free_mb} MB`);
+      log.info(`pruneData - Removed ${size_mb} MB of required ${size_to_free_mb} MB`);
     }
   }
 
-  dataUpdate(user, source, id, obj) {
+  updateData(user, source, id, obj) {
     if (! this.catalog.hasEntry(user, source, id)) {
       return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
     }

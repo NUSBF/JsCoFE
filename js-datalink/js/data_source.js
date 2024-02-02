@@ -47,29 +47,24 @@ class dataSource {
   }
 
   loadCatalog() {
-    if (fs.existsSync(this.catalog_file)) {
-      fs.readFile(this.catalog_file, (err, data) => {
-        if (err) {
-          log.error(`${this.name} - Unable to load ${this.catalog_file} - ${err.message}`);
-        } else {
-          try {
-            const catalog = JSON.parse(data);
-            this.addCatalog(catalog);
-          } catch (err) {
-            log.error(`${this.name} - Unable to parse ${this.catalog_file} - ${err.message}`);
-          }
-        }
-      });
-    } else {
-      this.updateCatalog();
+    if (! fs.existsSync(this.catalog_file)) {
+      log.info(`${this.name} - Fetching Catalog`);
+      this.fetchCatalog();
+      return;
     }
-  }
 
-  updateCatalog() {
-    log.info(`${this.name} - Updating Catalog`);
-    this.status = status.inProgress;
-    this.getCatalog();
-    return true;
+    fs.readFile(this.catalog_file, (err, data) => {
+      if (err) {
+        log.error(`${this.name} - Unable to load ${this.catalog_file} - ${err.message}`);
+      } else {
+        try {
+          const catalog = JSON.parse(data);
+          this.addCatalog(catalog);
+        } catch (err) {
+          log.error(`${this.name} - Unable to parse ${this.catalog_file} - ${err.message}`);
+        }
+      }
+    });
   }
 
   getJobId(user, id) {
@@ -93,23 +88,11 @@ class dataSource {
     }
   }
 
-  acquire(user, id, catalog) {
-    try {
-      fs.mkdirSync(tools.getDataDest(user, this.name, id), { recursive: true });
-      this.getData(user, id, catalog);
-    } catch (err) {
-      log.error(`${this.name} - ${err.message}`);
-      return false;
-    }
-
-    return true;
-  }
-
   getEntry(id) {
     return this.catalog[id];
   }
 
-  dataComplete(user, id, catalog) {
+  setDataComplete(user, id, catalog) {
     let fields = {
       'status': status.completed,
       'size': catalog.getStorageSize(user, this.name, id)
@@ -119,19 +102,19 @@ class dataSource {
     }
 
     this.deleteJob(user, id);
-    log.info(`${this.name} - Acquired ${user}/${this.name}/${id} - size ${fields.size}`);
+    log.info(`${this.name} - Fetched ${user}/${this.name}/${id} - size ${fields.size}`);
   }
 
-  dataError(user, id, catalog, error) {
-    log.error(`dataError - Failed to acquire ${user}/${this.name}/${id} - ${error}`);
-    // check if we have an entry (eg. in case the acquire was aborted due to a catalog deletion)
+  setDataError(user, id, catalog, error) {
+    // check if we have an entry (eg. in case the fetch was aborted due to a catalog deletion)
     if (catalog.hasEntry(user, this.name, id)) {
       catalog.updateEntry(user, this.name, id, { status: status.failed });
     }
     this.deleteJob(user, id);
+    log.error(`${this.name} - Failed to fetch ${user}/${this.name}/${id} - ${error}`);
   }
 
-  async httpGetData(url, user, id, catalog) {
+  async fetchDataHttp(url, user, id, catalog) {
     let entry = catalog.getEntry(user, this.name, id);
 
     // get content-size from http headers
@@ -155,7 +138,7 @@ class dataSource {
         }
       }
     } catch (err) {
-      this.dataError(user, id, catalog, `${this.name}/httpGetData - ${err.message}`);
+      this.setDataError(user, id, catalog, `${this.name}/fetchDataHttp - ${err.message}`);
       return;
     }
 
@@ -169,19 +152,19 @@ class dataSource {
           entry.size += data.length;
         });
       } catch (err) {
-        this.dataError(user, id, catalog, `${this.name}/httpGetData - ${err}`);
+        this.setDataError(user, id, catalog, `${this.name}/fetchDataHttp - ${err}`);
         return;
       };
     }
 
     // unpack the archive
     try {
-      log.info(`${this.name}/httpGetData - Unpacking ${dest_file} to ${dest_dir}`);
+      log.info(`${this.name}/fetchDataHttp - Unpacking ${dest_file} to ${dest_dir}`);
       await tools.unpack(dest_file, dest_dir, null, null, (controller) => {
         this.addJob(user, id, controller);
       });
     } catch (err) {
-      this.dataError(user, id, catalog, err);
+      this.setDataError(user, id, catalog, err);
       return;
     }
 
@@ -191,15 +174,15 @@ class dataSource {
       const {cmd, args} = tools.getUnpackCmd(file, dest_dir);
       if (cmd) {
         try {
-          log.info(`${this.name}/httpGetData - Unpacking ${file}`);
+          log.info(`${this.name}/fetchDataHttp - Unpacking ${file}`);
           await tools.unpack(file, dest_dir, cmd, args, (controller) => {
             this.addJob(user, id, controller);
           });
         } catch (err) {
-          log.error(`${this.name}/httpGetData - ${err}`);
+          log.error(`${this.name}/fetchDataHttp - ${err}`);
           // if an abort signal was received return false, so we can stop the file traversal in fileCallback
           if (err.code == 'ABORT_ERR') {
-            this.dataError(user, id, catalog, `${this.name}/httpGetData - The operation was aborted`);
+            this.setDataError(user, id, catalog, `${this.name}/fetchDataHttp - The operation was aborted`);
             return false;
           }
         }
@@ -208,11 +191,11 @@ class dataSource {
     });
 
     if (ret) {
-      this.dataComplete(user, id, catalog);
+      this.setDataComplete(user, id, catalog);
     }
   }
 
-  async rsyncGetCatalog(url, catalog) {
+  async fetchCatalogRsync(url, catalog) {
     if (! config.get('data_sources.' + this.name + '.rsync_size')) {
       return;
     }
@@ -225,10 +208,10 @@ class dataSource {
           out += stdout.toString();
         },
         (stderr) => {
-          log.error(`rsyncGetCatalog - Error: ${stderr.toString()}`);
+          log.error(`${this.name}/fetchCatalogRsync - Error: ${stderr.toString()}`);
         });
     } catch (err) {
-      log.error(`rsyncGetCatalog - Error: ${err.message}`);
+      log.error(`${this.name}/fetchCatalogRsync - Error: ${err.message}`);
       return;
     }
 
@@ -236,7 +219,7 @@ class dataSource {
     this.rsyncParseLines(catalog, lines);
   }
 
-  async rsyncGetData(url, user, id, catalog) {
+  async fetchDataRsync(url, user, id, catalog) {
     let dest = tools.getDataDest(user, this.name);
     let entry = catalog.getEntry(user, this.name, id);
 
@@ -256,11 +239,11 @@ class dataSource {
           this.addJob(user, id, controller);
         });
     } catch (err) {
-      this.dataError(user, id, catalog, err);
+      this.setDataError(user, id, catalog, err);
       return;
     }
 
-    this.dataComplete(user, id, catalog);
+    this.setDataComplete(user, id, catalog);
   }
 
   // parse rsync listing

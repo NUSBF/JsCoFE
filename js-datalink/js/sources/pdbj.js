@@ -39,7 +39,7 @@ class pdbj extends dataSource {
   url = 'https://xrda.pdbjbk1.pdbj.org/';
   type = 'rsync'
 
-  async getCatalog() {
+  async fetchCatalog() {
     let catalog = {};
     let json = await tools.httpRequest(URL_JSON);
     let obj = JSON.parse(json);
@@ -60,12 +60,12 @@ class pdbj extends dataSource {
 
       catalog[id] = e;
     }
-    await this.rsyncGetCatalog(URL_RSYNC, catalog)
+    await this.fetchCatalogRsync(URL_RSYNC, catalog)
     this.saveCatalog(catalog);
   }
 
-  getData(user, id, catalog) {
-    this.rsyncGetData(URL_RSYNC, user, id, catalog);
+  fetchData(user, id, catalog) {
+    this.fetchDataRsync(URL_RSYNC, user, id, catalog);
   }
 
 }
