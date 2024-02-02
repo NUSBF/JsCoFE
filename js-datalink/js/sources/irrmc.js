@@ -106,7 +106,7 @@ class irrmc extends dataSource {
 
   async getData(user, id, catalog) {
     let url = path.join(URL_DATA, this.catalog[id].path);
-    this.httpGetData(url, user, id, catalog);
+    this.fetchDataHttp(url, user, id, catalog);
   }
 
 }

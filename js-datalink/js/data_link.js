@@ -31,7 +31,7 @@ class dataLink {
     this.loadAllUserCatalogs();
 
     this.loadSourceCatalogs();
-    this.dataResume();
+    this.resumeData();
   }
 
   loadAllUserCatalogs() {
@@ -214,7 +214,7 @@ class dataLink {
     return true;
   }
 
-  async dataResume () {
+  async resumeData () {
     const catalog = this.catalog.getCatalog();
     for (const user in catalog) {
       for (const source in catalog[user]) {
@@ -229,14 +229,14 @@ class dataLink {
         // check if any entries are in progress, and refetch/continue
         for (const [id, entry] of Object.entries(catalog[user][source])) {
           if (entry.status === status.inProgress) {
-            this.dataFetch(user, source, id, true);
+            this.fetchData(user, source, id, true);
           }
         }
       }
     }
   }
 
-  dataFetch(user, source, id, force = false) {
+  fetchData(user, source, id, force = false) {
     id = id.toLowerCase();
     let result = this.hasSourceEntry(source, id);
     if (result !== true) {
@@ -258,12 +258,12 @@ class dataLink {
     }
 
     // prune old data if required
-    this.dataPrune(config.get('storage.data_free_gb'));
+    this.pruneData(config.get('storage.data_free_gb'));
 
     if (this.addEntryFromSource(user, source, id, status.inProgress)) {
       log.info(`${source} - Fetching ${user}/${source}/${id}`);
       // fetch the data from the data source
-      if (this.source[source].fetch(user, id, this.catalog, force)) {
+      if (this.source[source].fetchData(user, id, this.catalog, force)) {
         return tools.successMsg(`${source}: Fetching ${user}/${source}/${id}`);
       }
     }
@@ -271,7 +271,7 @@ class dataLink {
     return tools.errorMsg(`${source}: Error fetching ${user}/${source}/${id}`, 500);
   }
 
-  dataStatus(user, source, id) {
+  getDataStatus(user, source, id) {
     let catalog = this.catalog.getCatalog();
 
     // Check if user, source and id are set and valid and return correct part of local data catalog
@@ -300,14 +300,14 @@ class dataLink {
     return catalog;
   }
 
-  dataRemove(user, source, id) {
+  removeData(user, source, id) {
     if (! this.catalog.hasEntry(user, source, id)) {
       return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
     }
 
     let st = this.catalog.getStatus(user, source, id);
     if (st === status.inProgress) {
-      log.info(`dataRemove - Aborting ${user}/${source}/${id}`);
+      log.info(`removeData - Aborting ${user}/${source}/${id}`);
       let job = this.source[source].getJob(user, id);
       if (job) {
         this.catalog.updateEntry(user, source, id, { status: status.failed });
@@ -322,7 +322,8 @@ class dataLink {
     return tools.errorMsg(`${source}: Unable to remove ${id} for ${user}`, 405);
   }
 
-  async dataSizeProgress(user, source, id) {
+  // unused
+  async updateDataProgress(user, source, id) {
     const catalog = this.catalog;
     while (catalog.hasEntry(user, source, id) && catalog.getStatus(user, source, id) === status.inProgress) {
       this.catalog.updateEntry(user, source, id, {
@@ -332,7 +333,7 @@ class dataLink {
     }
   }
 
-  async dataPrune(min_free_gb) {
+  async pruneData(min_free_gb) {
     const GB = 1000000000;
     const MB = 1000000;
     const min_free = min_free_gb * GB;
@@ -375,7 +376,7 @@ class dataLink {
     let size = 0;
     for (const e of entries) {
       if (this.catalog.removeEntry(e.user, e.source, e.id)) {
-        log.info(`dataPrune - removed ${e.user}/${e.source}/${e.id} - size ${e.size}`);
+        log.info(`pruneData - removed ${e.user}/${e.source}/${e.id} - size ${e.size}`);
         size += e.size;
         if (size >= size_to_free) {
           break;
@@ -385,11 +386,11 @@ class dataLink {
     const size_mb = Math.ceil(size / MB);
     const size_to_free_mb = Math.ceil(size_to_free / MB);
     if (size > 0) {
-      log.info(`dataPrune - Removed ${size_mb} MB of required ${size_to_free_mb} MB`);
+      log.info(`pruneData - Removed ${size_mb} MB of required ${size_to_free_mb} MB`);
     }
   }
 
-  dataUpdate(user, source, id, obj) {
+  updateData(user, source, id, obj) {
     if (! this.catalog.hasEntry(user, source, id)) {
       return tools.errorMsg(`${user}/${source}/${id} not found`, 404);
     }

@@ -95,24 +95,24 @@ class server {
     this.jsonResponse(res, this.datalink.catalog);
   }
 
-  dataFetch(req, res) {
+  fetchData(req, res) {
     let force = false;
     if (req.query.force == 1) {
       force = true;
     }
-    this.jsonResponse(res, this.datalink.dataFetch(req.params.user, req.params.source, req.params.id, force));
+    this.jsonResponse(res, this.datalink.fetchData(req.params.user, req.params.source, req.params.id, force));
   }
 
-  dataStatus(req, res) {
-    this.jsonResponse(res, this.datalink.dataStatus(req.params.user, req.params.source, req.params.id));
+  getDataStatus(req, res) {
+    this.jsonResponse(res, this.datalink.getDataStatus(req.params.user, req.params.source, req.params.id));
   }
 
-  dataRemove(req, res) {
-    this.jsonResponse(res, this.datalink.dataRemove(req.params.user, req.params.source, req.params.id));
+  removeData(req, res) {
+    this.jsonResponse(res, this.datalink.removeData(req.params.user, req.params.source, req.params.id));
   }
 
-  dataUpdate(req, res) {
-    this.jsonResponse(res, this.datalink.dataUpdate(req.params.user, req.params.source, req.params.id, req.body));
+  updateData(req, res) {
+    this.jsonResponse(res, this.datalink.updateData(req.params.user, req.params.source, req.params.id, req.body));
   }
 
   start(port = config.get('server.port'), host = config.get('server.host')) {
@@ -135,23 +135,23 @@ class server {
     // get data status for all users
     router.get(['/data'],
       (req, res, next) => this.checkAdminKey(req, res, next),
-      (req, res) => this.dataStatus(req, res) );
+      (req, res) => this.getDataStatus(req, res) );
     // get data status for user, user and source, and specific data entry
     router.get(['/data/:user', '/data/:user/:source', '/data/:user/:source/:id' ],
       (req, res, next) => this.checkCloudRunId(req, res, next),
-      (req, res) => this.dataStatus(req, res) );
+      (req, res) => this.getDataStatus(req, res) );
     // fetch data for user
     router.put('/data/:user/:source/:id',
       (req, res, next) => this.checkCloudRunId(req, res, next),
-      (req, res) => this.dataFetch(req, res) );
+      (req, res) => this.fetchData(req, res) );
     // delete data for user
     router.delete('/data/:user/:source/:id',
       (req, res, next) => this.checkCloudRunId(req, res, next),
-      (req, res) => this.dataRemove(req, res) );
+      (req, res) => this.removeData(req, res) );
     // update data for user
     router.patch(['/data/:user/:source/:id'],
       (req, res, next) => this.checkCloudRunId(req, res, next),
-      (req, res) => this.dataUpdate(req, res) );
+      (req, res) => this.updateData(req, res) );
 
     const app = express();
     app.use(API_PREFIX, router);

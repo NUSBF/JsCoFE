@@ -60,12 +60,12 @@ class pdbj extends dataSource {
 
       catalog[id] = e;
     }
-    await this.rsyncGetCatalog(URL_RSYNC, catalog)
+    await this.fetchCatalogRsync(URL_RSYNC, catalog)
     this.saveCatalog(catalog);
   }
 
   getData(user, id, catalog) {
-    this.rsyncGetData(URL_RSYNC, user, id, catalog);
+    this.fetchDataRsync(URL_RSYNC, user, id, catalog);
   }
 
 }
