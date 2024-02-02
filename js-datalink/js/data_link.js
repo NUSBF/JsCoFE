@@ -226,17 +226,17 @@ class dataLink {
         while (! this.source[source].catalog) {
           await new Promise(r => setTimeout(r, 2000));
         }
-        // check if any entries are in progress, and reacquire/continue
+        // check if any entries are in progress, and refetch/continue
         for (const [id, entry] of Object.entries(catalog[user][source])) {
           if (entry.status === status.inProgress) {
-            this.dataAcquire(user, source, id, true);
+            this.dataFetch(user, source, id, true);
           }
         }
       }
     }
   }
 
-  dataAcquire(user, source, id, force = false) {
+  dataFetch(user, source, id, force = false) {
     id = id.toLowerCase();
     let result = this.hasSourceEntry(source, id);
     if (result !== true) {
@@ -247,10 +247,10 @@ class dataLink {
       let st = this.catalog.getStatus(user, source, id);
       // check if in progress
       if (st === status.inProgress) {
-        return tools.successMsg(`${source} - Data acquire for ${user}/${source}/${id} already in progress`);
+        return tools.successMsg(`${source} - Data fetch for ${user}/${source}/${id} already in progress`);
       }
 
-      // check if already acquired
+      // check if already fetched
       if (st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
         log.info(`${source} - ${user}/${source}/${id} already exists`);
         return tools.successMsg(`${source}: ${user}/${source}/${id} already exists`);
@@ -261,14 +261,14 @@ class dataLink {
     this.dataPrune(config.get('storage.data_free_gb'));
 
     if (this.addEntryFromSource(user, source, id, status.inProgress)) {
-      log.info(`${source} - Acquiring ${user}/${source}/${id}`);
-      // acquire the data from the data source
-      if (this.source[source].acquire(user, id, this.catalog, force)) {
-        return tools.successMsg(`${source}: Acquiring ${user}/${source}/${id}`);
+      log.info(`${source} - Fetching ${user}/${source}/${id}`);
+      // fetch the data from the data source
+      if (this.source[source].fetch(user, id, this.catalog, force)) {
+        return tools.successMsg(`${source}: Fetching ${user}/${source}/${id}`);
       }
     }
 
-    return tools.errorMsg(`${source}: Error acquiring ${user}/${source}/${id}`, 500);
+    return tools.errorMsg(`${source}: Error fetching ${user}/${source}/${id}`, 500);
   }
 
   dataStatus(user, source, id) {

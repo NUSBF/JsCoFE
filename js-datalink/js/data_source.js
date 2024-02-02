@@ -93,7 +93,7 @@ class dataSource {
     }
   }
 
-  acquire(user, id, catalog) {
+  fetch(user, id, catalog) {
     try {
       fs.mkdirSync(tools.getDataDest(user, this.name, id), { recursive: true });
       this.getData(user, id, catalog);
@@ -119,12 +119,12 @@ class dataSource {
     }
 
     this.deleteJob(user, id);
-    log.info(`${this.name} - Acquired ${user}/${this.name}/${id} - size ${fields.size}`);
+    log.info(`${this.name} - Fetched ${user}/${this.name}/${id} - size ${fields.size}`);
   }
 
   dataError(user, id, catalog, error) {
-    log.error(`dataError - Failed to acquire ${user}/${this.name}/${id} - ${error}`);
-    // check if we have an entry (eg. in case the acquire was aborted due to a catalog deletion)
+    log.error(`dataError - Failed to fetch ${user}/${this.name}/${id} - ${error}`);
+    // check if we have an entry (eg. in case the fetch was aborted due to a catalog deletion)
     if (catalog.hasEntry(user, this.name, id)) {
       catalog.updateEntry(user, this.name, id, { status: status.failed });
     }

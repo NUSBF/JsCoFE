@@ -95,12 +95,12 @@ class server {
     this.jsonResponse(res, this.datalink.catalog);
   }
 
-  dataAcquire(req, res) {
+  dataFetch(req, res) {
     let force = false;
     if (req.query.force == 1) {
       force = true;
     }
-    this.jsonResponse(res, this.datalink.dataAcquire(req.params.user, req.params.source, req.params.id, force));
+    this.jsonResponse(res, this.datalink.dataFetch(req.params.user, req.params.source, req.params.id, force));
   }
 
   dataStatus(req, res) {
@@ -140,10 +140,10 @@ class server {
     router.get(['/data/:user', '/data/:user/:source', '/data/:user/:source/:id' ],
       (req, res, next) => this.checkCloudRunId(req, res, next),
       (req, res) => this.dataStatus(req, res) );
-    // acquire data for user
+    // fetch data for user
     router.put('/data/:user/:source/:id',
       (req, res, next) => this.checkCloudRunId(req, res, next),
-      (req, res) => this.dataAcquire(req, res) );
+      (req, res) => this.dataFetch(req, res) );
     // delete data for user
     router.delete('/data/:user/:source/:id',
       (req, res, next) => this.checkCloudRunId(req, res, next),
