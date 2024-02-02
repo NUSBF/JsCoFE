@@ -169,18 +169,18 @@ class dataLink {
       return tools.successMsg(`${name} - Catalog update already in progress`);
     }
 
-    if (this.source[name].updateCatalog()) {
-      return tools.successMsg(`${name} - Updating catalog`);
-    }
+    log.info(`${this.name} - Fetching Catalog`);
+    this.source[name].status = status.inProgress;
+    this.source[name].fetchCatalog();
 
-    return tools.errorMsg(`${name}: Error updating catalog`, 500);
+    return tools.successMsg(`${name} - Updating catalog`);
   }
 
   updateAllSourceCatalogs() {
     let sources = [];
     for (const [name, source] of Object.entries(this.source)) {
       if (source.status !== status.inProgress) {
-        if (source.updateCatalog()) {
+        if (source.fetchCatalog()) {
           sources.push(name);
         }
       }
@@ -253,22 +253,23 @@ class dataLink {
       // check if already fetched
       if (st === status.completed && fs.existsSync(tools.getDataDest(user, source, id))) {
         log.info(`${source} - ${user}/${source}/${id} already exists`);
-        return tools.successMsg(`${source}: ${user}/${source}/${id} already exists`);
+        return tools.successMsg(`${source} - ${user}/${source}/${id} already exists`);
       }
     }
 
     // prune old data if required
     this.pruneData(config.get('storage.data_free_gb'));
 
-    if (this.addEntryFromSource(user, source, id, status.inProgress)) {
-      log.info(`${source} - Fetching ${user}/${source}/${id}`);
-      // fetch the data from the data source
-      if (this.source[source].fetchData(user, id, this.catalog, force)) {
-        return tools.successMsg(`${source}: Fetching ${user}/${source}/${id}`);
-      }
+    if (! this.addEntryFromSource(user, source, id, status.inProgress)) {
+      return tools.errorMsg(`${source}: Error fetching ${user}/${source}/${id}`, 500);
     }
 
-    return tools.errorMsg(`${source}: Error fetching ${user}/${source}/${id}`, 500);
+    log.info(`${source} - Fetching ${user}/${source}/${id}`);
+
+    // fetch the data from the data source
+    this.source[source].fetchData(user, id, this.catalog, force)
+
+    return tools.successMsg(`${source}: Fetching ${user}/${source}/${id}`);
   }
 
   getDataStatus(user, source, id) {

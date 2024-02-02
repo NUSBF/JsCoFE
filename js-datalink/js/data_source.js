@@ -47,29 +47,24 @@ class dataSource {
   }
 
   loadCatalog() {
-    if (fs.existsSync(this.catalog_file)) {
-      fs.readFile(this.catalog_file, (err, data) => {
-        if (err) {
-          log.error(`${this.name} - Unable to load ${this.catalog_file} - ${err.message}`);
-        } else {
-          try {
-            const catalog = JSON.parse(data);
-            this.addCatalog(catalog);
-          } catch (err) {
-            log.error(`${this.name} - Unable to parse ${this.catalog_file} - ${err.message}`);
-          }
-        }
-      });
-    } else {
-      this.updateCatalog();
+    if (! fs.existsSync(this.catalog_file)) {
+      log.info(`${this.name} - Fetching Catalog`);
+      this.fetchCatalog();
+      return;
     }
-  }
 
-  updateCatalog() {
-    log.info(`${this.name} - Updating Catalog`);
-    this.status = status.inProgress;
-    this.getCatalog();
-    return true;
+    fs.readFile(this.catalog_file, (err, data) => {
+      if (err) {
+        log.error(`${this.name} - Unable to load ${this.catalog_file} - ${err.message}`);
+      } else {
+        try {
+          const catalog = JSON.parse(data);
+          this.addCatalog(catalog);
+        } catch (err) {
+          log.error(`${this.name} - Unable to parse ${this.catalog_file} - ${err.message}`);
+        }
+      }
+    });
   }
 
   getJobId(user, id) {
@@ -93,18 +88,6 @@ class dataSource {
     }
   }
 
-  fetchData(user, id, catalog) {
-    try {
-      fs.mkdirSync(tools.getDataDest(user, this.name, id), { recursive: true });
-      this.getData(user, id, catalog);
-    } catch (err) {
-      log.error(`${this.name} - ${err.message}`);
-      return false;
-    }
-
-    return true;
-  }
-
   getEntry(id) {
     return this.catalog[id];
   }
@@ -123,12 +106,12 @@ class dataSource {
   }
 
   setDataError(user, id, catalog, error) {
-    log.error(`setDataError - Failed to fetch ${user}/${this.name}/${id} - ${error}`);
     // check if we have an entry (eg. in case the fetch was aborted due to a catalog deletion)
     if (catalog.hasEntry(user, this.name, id)) {
       catalog.updateEntry(user, this.name, id, { status: status.failed });
     }
     this.deleteJob(user, id);
+    log.error(`${this.name} - Failed to fetch ${user}/${this.name}/${id} - ${error}`);
   }
 
   async fetchDataHttp(url, user, id, catalog) {
@@ -225,10 +208,10 @@ class dataSource {
           out += stdout.toString();
         },
         (stderr) => {
-          log.error(`fetchCatalogRsync - Error: ${stderr.toString()}`);
+          log.error(`${this.name}/fetchCatalogRsync - Error: ${stderr.toString()}`);
         });
     } catch (err) {
-      log.error(`fetchCatalogRsync - Error: ${err.message}`);
+      log.error(`${this.name}/fetchCatalogRsync - Error: ${err.message}`);
       return;
     }
 

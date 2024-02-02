@@ -22,7 +22,7 @@ class sbgrid extends dataSource {
   url = 'https://data.sbgrid.org'
   type = 'rsync'
 
-  async getCatalog() {
+  async fetchCatalog() {
     let catalog = {};
     let pages = 1, page = 1;
     log.debug(`${this.name} - Scraping catalog...`);
@@ -94,7 +94,7 @@ class sbgrid extends dataSource {
     this.saveCatalog(catalog);
   }
 
-  getData(user, id, catalog) {
+  fetchData(user, id, catalog) {
     this.fetchDataRsync(URL_RSYNC, user, id, catalog);
   }
 

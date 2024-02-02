@@ -121,6 +121,13 @@ class dataCatalog {
   }
 
   addEntry(user, source, id, fields) {
+    // create directory for the data
+    try {
+      fs.mkdirSync(tools.getDataDest(user, source, id), { recursive: true });
+    } catch (err) {
+      return false;
+    }
+
     const catalog = this.getCatalog();
     // if there is no catalog for the user, create one
     if (! catalog[user]) {

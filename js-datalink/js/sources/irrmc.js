@@ -27,7 +27,7 @@ class irrmc extends dataSource {
   url = 'https://proteindiffraction.org'
   type = 'http'
 
-  async getCatalog() {
+  async fetchCatalog() {
     let entries = {};
     let pages = 1, page = 1;
     log.debug(`${this.name} - Scraping entries...`);
@@ -104,7 +104,7 @@ class irrmc extends dataSource {
     this.saveCatalog(entries);
   }
 
-  async getData(user, id, catalog) {
+  async fetchData(user, id, catalog) {
     let url = path.join(URL_DATA, this.catalog[id].path);
     this.fetchDataHttp(url, user, id, catalog);
   }
