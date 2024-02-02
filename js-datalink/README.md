@@ -30,7 +30,7 @@ Data needs to be stored in a dedicated file system, that can be accessed by both
 
 CCP4 Cloud communicates with the Data Link service via a REST based API. The API returns JSON formatted data.
 
-The Data Link service requires access to the CCP4 Cloud Front End user directory. It uses this to authenticate when acquiring data or managing existing data for users. The Data Link service checks if a user exists, and makes sure a valid Cloud Run ID is provided in the API request.
+The Data Link service requires access to the CCP4 Cloud Front End user directory. It uses this to authenticate when fetching data or managing existing data for users. The Data Link service checks if a user exists, and makes sure a valid Cloud Run ID is provided in the API request.
 
 The data is stored in the following structure:
 
@@ -109,7 +109,7 @@ Configuration Values:
 }
 ```
 
-## Acquiring Data
+## Fetching Data
 
 
 
@@ -208,7 +208,7 @@ The following fields are used by the data source catalog:
  * `date`: Date of the images in  ISO 8601 format (not always present)
  * `name`: Name/Description of the diffraction data.
  * `doi`: Unique Digital Object Identifier (DOI) https://www.doi.org/ (not always present)
- * `path`: Path of the data used by the data source when acquiring images.
+ * `path`: Path of the data used by the data source when fetching images.
  * `pdb`:PDB identifier for the data.
  * `size`: Size of the data in bytes.
 
@@ -331,9 +331,9 @@ eg. for `GET /api/search/7p5l`
 
 *Requires user's cloudrun_id or admin_key for authentication*
 
-Acquires data for a user from a data source. It returns a message reporting the status of the request. To get the status and progress of the data retrieval a GET request can be made against the same API Endpoint.
+Fetches data for a user from a data source. It returns a message reporting the status of the request. To get the status and progress of the data retrieval a GET request can be made against the same API Endpoint.
 
-The data is downloaded to the configured data folder, stored in username/source/id. Once the data has been acquired, it will be unpacked (if possible).
+The data is downloaded to the configured data folder, stored in username/source/id. Once the data has been fetched, it will be unpacked (if possible).
 
 eg. for `PUT /api/data/jools.wills/pdbj/5aui`
 
@@ -341,18 +341,18 @@ eg. for `PUT /api/data/jools.wills/pdbj/5aui`
 
 ```json
 {
-  msg: "pdbj: Acquiring jools.wills/pdbj/5aui"
+  msg: "pdbj: Fetching jools.wills/pdbj/5aui"
   success: true
 }
 ```
 
-If this is called again while the data acquire is in progress, it will report
+If this is called again while the data fetch is in progress, it will report
 
 `HTTP/1.1 200 OK`
 
 ```json
 {
-  msg: "pdbj - Data acquire for jools.wills/pdbj/5aui already in progress"
+  msg: "pdbj - Data fetch for jools.wills/pdbj/5aui already in progress"
   success: true
 }
 ```
@@ -463,16 +463,16 @@ or
 
 *Requires user's cloudrun_id or admin_key for authentication*
 
-Retrieves the details of data acquired for a user. The following fields are returned:
+Retrieves the details of data fetched for a user. The following fields are returned:
 
 * `in_use`: Whether the data is in_use by a user. By default `in_use` is set to *false*, and can be changed via a PATCH API call to the same API endpoint. A data entry with `in_use` set to *true* cannot be deleted.
 * `updated`: The date and time the data entry was last changed. This is in ISO 8601 format.
 * `size`: The size of the data on disk. This is updated periodically during data retrieval.
 * `size_s`: The size of the original source data. This may be different from the `size` even for completed data, if the source data is compressed/archived.
-* `status`: The status of the data being acquired. It can be one of three values:
-  * `in_progress`: The data is currently being acquired.
-  * `completed`: The data acquire has been completed.
-  * `failed`: The data acquire failed (eg - if there were problems retrieving the data from the data source).
+* `status`: The status of the data being fetched. It can be one of three values:
+  * `in_progress`: The data is currently being fetched.
+  * `completed`: The data fetch has been completed.
+  * `failed`: The data fetch failed (eg - if there were problems retrieving the data from the data source).
 
 eg. `GET /api/data/jools.wills/pdbj/5aui`
 
