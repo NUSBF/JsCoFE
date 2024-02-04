@@ -81,14 +81,20 @@ class XDSGUI(basic.TaskDriver):
         self.rvrow -= 1
         self.flush()
 
+        xds_abs = os.path.join ( os.path.abspath(os.getcwd()),self.xds_dir() )
+        for suffix in "", "-LCK":
+            xds_dot = os.path.join ( xds_abs,".xds-gui"+suffix )
+            if os.path.exists(xds_dot):
+                os.unlink(xds_dot)
+
         environ = os.environ.copy()
-        environ["HOME"] = os.path.join ( os.path.abspath(os.getcwd()),self.xds_dir() )
+        environ["HOME"] = xds_abs
         environ["PATH"] = os.environ["XDSGUI_home"] + ":" +\
                           os.environ["XDS_home"] + ":" +\
                           os.environ["PATH"]
 
-        rc = self.runApp ( "xdsgui",[],logType="Main",quitOnError=False,
-                                       env=environ,work_dir=self.xds_dir() )
+        rc = self.runApp ( "xdsgui",[xds_abs],logType="Main",quitOnError=False,
+                                       env=environ,work_dir=xds_abs )
 
         self.addCitation ( "xds" )
 
