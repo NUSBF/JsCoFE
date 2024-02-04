@@ -65,7 +65,7 @@ class SliceNDice(basic.TaskDriver):
         sec1        = self.task.parameters.sec1.contains
         min_nsplits = self.getParameter ( sec1.MIN_NSPLITS )
         max_nsplits = self.getParameter ( sec1.MAX_NSPLITS )
-        no_mols    =  self.getParameter ( sec1.NO_MOLS)
+        no_mols     =  self.getParameter ( sec1.NO_MOLS)
         plddt_threshold = self.getParameter ( sec1.PLDDT_THRESHOLD)
        
 

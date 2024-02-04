@@ -198,8 +198,8 @@ function ProjectPage ( sceneId )  {
   // note that actual panel size is set in function resizeTreePanel() below
   this.grid.setCellSize ( '40px',''    ,1,0,1,1 );
   this.grid.setVerticalAlignment ( 1,1,'top' );
-  this.grid.setCellSize ( '','100%' ,1,1,1,1 );
-  this.grid.setCellSize ( '40px',''    ,1,2,1,1 );
+  this.grid.setCellSize ( '100%','100%' ,1,1,1,1 );
+  this.grid.setCellSize ( '6px','' ,1,2,1,1 );
 
   // make the toolbar
   const horz_line = '<div style="border-top: 1.5px dotted grey;width:' + toolbutton_size + 
@@ -1367,7 +1367,7 @@ ProjectPage.prototype.makeJobTree = function()  {
   let jobTree = new JobTree ();
   jobTree.element.style.paddingTop    = '0px';
   jobTree.element.style.paddingBottom = '25px';
-  jobTree.element.style.paddingRight  = '40px';
+  jobTree.element.style.paddingRight  = '6px';
   // this.job_tree = jobTree;  // for external references
   let self = this;
   // (function(self){
@@ -1388,7 +1388,7 @@ ProjectPage.prototype.makeJobTree = function()  {
 //   jobTree.setReplayMode();
 //   jobTree.element.style.paddingTop    = '0px';
 //   jobTree.element.style.paddingBottom = '25px';
-//   jobTree.element.style.paddingRight  = '40px';
+//   jobTree.element.style.paddingRight  = '6px';
 //   // ***** development code, dormant
 //   //this.replay_job_tree = null;  // for internal and external references,
 //                                   // lock before tree is loaded
@@ -1522,8 +1522,8 @@ ProjectPage.prototype.trimPageTitle = function()  {
 }
 
 ProjectPage.prototype.onResize = function ( width,height )  {
-  let h = (height - 108) + 'px';
-  let w = (width  - 110) + 'px';
+  let h = (height - 88) + 'px';    // THESE NUMBERS DEFINE WIDTH AND HEIGHT
+  let w = (width  - 74) + 'px';    // OF THE JOB TREE 
   this.toolbar_div.element.style.height = h;
   this.tree_div.element.style.height    = h;
   // ***** development code, dormant

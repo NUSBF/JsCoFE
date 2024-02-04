@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    08.01.24   <--  Date of Last Modification.
+ *    04.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -43,29 +43,24 @@ function BasePage ( sceneId,gridStyle,pageType )  {
 
   // set background image
   if (getClientCode()==client_code.ccp4)  {
-    let css = {
-        // "background-image"    : "url('" + image_path(background_image) + "')",
-        // "background-color"    : "alicablue",
-        "background-color"    : "rgb(243, 250, 255)",
-        // "background-color"    : "rgb(231, 250, 255)",   // cloud
-        // "background-repeat"   : "no-repeat",
+
+    // if (pageType!='LoginPage')
+    //   replaceStylesheets ( 'css/cofe.theme.','css/cofe.theme.dark.css' )
+
+    $('#'+sceneId).addClass('main-scene');
+
+    if (pageType=='LoginPage')  {
+      let css = {
+        "background-image"    : "url('" + image_path('background_remote') + "')",
+        "background-repeat"   : "no-repeat",
         "background-size"     : "cover",
         "background-position" : "center center"
-    };
-    let background_image = 'background_remote';
-    if (__local_setup)
-      background_image = 'background_local';
-    css['background-image'] = "url('" + image_path(background_image) + "')"
-    $('#'+sceneId).css ( css );
-    // $('#'+sceneId).css({
-    //     // "background-image"    : "url('" + image_path(background_image) + "')",
-    //     // "background-color"    : "alicablue",
-    //     "background-color"    : "rgb(243, 250, 255)",
-    //     // "background-color"    : "rgb(231, 250, 255)",   // cloud
-    //     // "background-repeat"   : "no-repeat",
-    //     "background-size"     : "cover",
-    //     "background-position" : "center center"
-    // });
+      };
+      if (__local_setup)
+        css['background-image'] = "url('" + image_path('background_local') + "')"
+      $('#'+sceneId).css ( css );
+    }
+
   } else
     $('#'+sceneId).css({
         "background-image"    : "url('" + image_path('ccpem_background') + "')",
@@ -110,7 +105,7 @@ BasePage.prototype.putWatermark = function ( text,options )  {
 
   this.watermark = new Label(text);
 
-  var css = {
+  let css = {
     //'width'            : '300px',
     //'height'           : '100px',
     'position'         : 'absolute',
@@ -131,7 +126,7 @@ BasePage.prototype.putWatermark = function ( text,options )  {
     'z-index'          : '-1'
   };
 
-  for (var key in options)
+  for (let key in options)
     css[key] = options[key];
 
   $(this.watermark.element).css(css);
@@ -142,7 +137,7 @@ BasePage.prototype.putWatermark = function ( text,options )  {
 
 
 BasePage.prototype.makeSetupNamePanel = function()  {
-  var setupPanel = new Grid ( '' );
+  let setupPanel = new Grid ( '' );
 
   function _make_panel ( name,icon )  {
     setupPanel.setImage ( icon,'30px','30px', 0,1,1,1 );
@@ -180,10 +175,10 @@ BasePage.prototype.makeSetupNamePanel = function()  {
 }
 
 
-//var __ccp4online_logo = new ImageButton ( image_path('logo-ccp4_online'),'','28px' );
-//var __stfc_logo       = new ImageButton ( image_path('logo-stfc')       ,'','28px' );
-//var __bbsrc_logo      = new ImageButton ( image_path('logo-bbsrc')      ,'','28px' );
-//var __ukri_logo       = new ImageButton ( image_path('logo-ukri')       ,'','28px' );
+//let __ccp4online_logo = new ImageButton ( image_path('logo-ccp4_online'),'','28px' );
+//let __stfc_logo       = new ImageButton ( image_path('logo-stfc')       ,'','28px' );
+//let __bbsrc_logo      = new ImageButton ( image_path('logo-bbsrc')      ,'','28px' );
+//let __ukri_logo       = new ImageButton ( image_path('logo-ukri')       ,'','28px' );
 
 BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
 
@@ -192,7 +187,7 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   if (__setup_desc.partners.length<=0)  return;
 
   if (!__setup_desc.partners[0].hasOwnProperty('icon'))
-    for (var i=0;i<__setup_desc.partners.length;i++)  {
+    for (let i=0;i<__setup_desc.partners.length;i++)  {
       __setup_desc.partners[i].icon = new ImageButton (
                                       __setup_desc.partners[i].logo,'','28px' );
       (function(partner){
@@ -203,54 +198,41 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
       }(__setup_desc.partners[i]))
     }
 
-  var logoPanel = this.grid.setGrid ( '',row,col,1,colSpan );
-  var c = 0;
-  logoPanel.setLabel ( '&nbsp;Powered by CCP4 v.' + __ccp4_version,0,c,1,1 )
-                     .setFontSize ( '75%' ).setNoWrap()
-                     .setVerticalAlignment('middle');
-  logoPanel.setCellSize ( '50%','', 0,c++ );
-  var spacer = Math.max ( 20,40-5*(__setup_desc.partners.length-2) ) + 'px';
-  for (var i=0;i<__setup_desc.partners.length;i++)  {
-    logoPanel.setWidget ( __setup_desc.partners[i].icon, 0,c++,1,1 );
+
+  let logoPanel = this.grid.setPanel ( row,col,1,colSpan );
+  let logoGrid  = new Grid ( '' );
+  logoPanel.addWidget ( logoGrid );
+  // let logoGrid = this.grid.setGrid ( '',row,col,1,colSpan );
+  let c = 0;
+  logoGrid.setLabel ( '&nbsp;Powered by CCP4 v.' + __ccp4_version,0,c,1,1 )
+           .setFontSize ( '75%' ).setNoWrap()
+           .setVerticalAlignment('middle');
+  logoGrid.setCellSize ( '50%','', 0,c++ );
+  let spacer = Math.max ( 20,40-5*(__setup_desc.partners.length-2) ) + 'px';
+  for (let i=0;i<__setup_desc.partners.length;i++)  {
+    logoGrid.setWidget ( __setup_desc.partners[i].icon, 0,c++,1,1 );
     if (i<__setup_desc.partners.length-1)
-      logoPanel.setLabel  ( '',0,c++,1,1 ).setWidth ( spacer );
+      logoGrid.setLabel  ( '',0,c++,1,1 ).setWidth ( spacer );
   }
-  /*
-  if (getClientCode()==client_code.ccp4)  {
-    logoPanel.setWidget ( __ccp4online_logo, 0,c++,1,1 );
-    logoPanel.setLabel  ( '',0,c++,1,1 ).setWidth ( '40px' );
-    //logoPanel.setWidget ( __stfc_logo, 0,c++,1,1 );
-    //logoPanel.setLabel  ( '',0,c++,1,1 ).setWidth ( '30px' );
-    //logoPanel.setWidget ( __bbsrc_logo, 0,c++,1,1 );
-    logoPanel.setWidget ( __ukri_logo, 0,c++,1,1 );
-  } else {
-    logoPanel.setImage ( image_path('logo-ccpem'),'','28px',0,c++,1,1 );
-    logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '40px' );
-    logoPanel.setImage ( image_path('logo-ccp4_online'),'','28px',0,c++,1,1 );
-    logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '40px' );
-    logoPanel.setImage ( image_path('logo-stfc'),'','28px'  ,0,c++,1,1 );
-    logoPanel.setLabel ( '',0,c++,1,1 ).setWidth ( '30px' );
-    logoPanel.setImage ( image_path('logo-mrc'),'','28px'  ,0,c++,1,1 );
-  }
-  */
-  logoPanel.setLabel ( appName() + ' v.' + appVersion() + '&nbsp;&nbsp;&nbsp;&nbsp;',0,c,1,1 )
-                     .setFontSize ( '75%' ).setNoWrap()
-                     .setVerticalAlignment('middle');
-  logoPanel.setVerticalAlignment   ( 0,0,'middle'  );
-  logoPanel.setCellSize            ( '50%','', 0,c );
-  logoPanel.setHorizontalAlignment ( 0,c,'right'   );
-  logoPanel.setVerticalAlignment   ( 0,c,'middle'  );
+  logoGrid.setLabel ( appName() + ' v.' + appVersion() + '&nbsp;&nbsp;&nbsp;&nbsp;',0,c,1,1 )
+           .setFontSize ( '75%' ).setNoWrap()
+           .setVerticalAlignment('middle');
+  logoGrid.setVerticalAlignment   ( 0,0,'middle'  );
+  logoGrid.setCellSize            ( '50%','', 0,c );
+  logoGrid.setHorizontalAlignment ( 0,c,'right'   );
+  logoGrid.setVerticalAlignment   ( 0,c,'middle'  );
   this.grid.setVerticalAlignment   ( row,col,'middle'   );
   this.grid.setCellSize            ( '','30px', row,col );
-  $(logoPanel.element).css ({
-    'position'         : 'absolute',
-    'left'             : '0px',
-    'bottom'           : '0px',
-    'padding'          : 0,
-    'margin'           : 0,
-    'border'           : '1px solid lightgray',
-    'background-color' : 'rgba(240,250,255,0.67)'
-  });
+  $(logoPanel.element).addClass ( 'logo-panel' );
+  // $(logoGrid.element).css ({
+  //   'position'         : 'absolute',
+  //   'left'             : '0px',
+  //   'bottom'           : '0px',
+  //   'padding'          : 0,
+  //   'margin'           : 0,
+  //   'border'           : '1px solid lightgray',
+  //   'background-color' : 'rgba(240,250,255,0.67)'
+  // });
 }
 
 
@@ -274,7 +256,7 @@ BasePage.prototype.getUserRation = function()  {
 }
 
 BasePage.prototype._setConnectionIcons = function ( colNo )  {
-  var container = new Widget('div');
+  let container = new Widget('div');
   __delays_ind  = new ProgressBar ( 0 );
   container.addWidget ( __delays_ind );
   this.headerPanel.setWidget ( container,0,colNo,1,1 );
@@ -303,9 +285,9 @@ BasePage.prototype._setConnectionIcons = function ( colNo )  {
 
 
 BasePage.prototype._setModeIcon = function ( colNo )  {
-  var icon_path;
-  var tooltip  = '<i>' + appName();
-  var ul_style = '<ul style="font-size:80%;margin:2px;padding-left:24px;">';
+  let icon_path;
+  let tooltip  = '<i>' + appName();
+  let ul_style = '<ul style="font-size:80%;margin:2px;padding-left:24px;">';
   if (__local_setup)  {
     icon_path = image_path ( 'setup_local'  );
     tooltip  += ' is in <b>local</b> mode:</i>' + ul_style +
@@ -330,8 +312,8 @@ BasePage.prototype._setModeIcon = function ( colNo )  {
                   .setFontSize    ( '90%' )
                   .setVerticalAlignment ( 'middle' );
 
-  var setup_name = 'Unnamed CCP4 Cloud Setup';
-  var setup_icon = 'images_png/setup_unknown.png';
+  let setup_name = 'Unnamed CCP4 Cloud Setup';
+  let setup_icon = 'images_png/setup_unknown.png';
   if (__setup_desc)  {
     setup_name = 'CCP4 Cloud Setup "' + __setup_desc.name + '" at<br><i>' +
                  __fe_url + '</i>';
@@ -376,8 +358,8 @@ BasePage.prototype.makeHeader0 = function ( colSpan )  {
     this.toolPanel = new Grid('');
     this.headerPanel.setWidget ( this.toolPanel,0,19,1,1 );
     this.headerPanel.setLabel  ( '&nbsp;',0,20,1,1 ).setWidth('40px');
-    //var user_lbl = new Label ( '<i>' + __login_user.getValue() + '</i>' );
-    var user_lbl = new Label ( '<i>' + __login_user + '</i>' );
+    //let user_lbl = new Label ( '<i>' + __login_user.getValue() + '</i>' );
+    let user_lbl = new Label ( '<i>' + __login_user + '</i>' );
     this.headerPanel.setWidget      ( user_lbl,0,21,1,1 );
     user_lbl.setHorizontalAlignment ( 'right' );
     user_lbl.setNoWrap();
@@ -480,7 +462,7 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
   function getPercentLine ( used,ration )  {
     if (ration<=0.0)
       return '';
-    var pp = round ( (100.0*used)/ration,0 );
+    let pp = round ( (100.0*used)/ration,0 );
     if (pp<90)       pp += '%';
     else if (pp<99)  pp  = '<font class="ration-warning">'  + pp + '%</font>';
                else  pp  = '<font class="ration-critical">' + pp + '%</font>';
@@ -499,10 +481,10 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
     // if ((this.ration.storage>0.0) && this.rationPanel.disk_usage)  {
     if (this.rationPanel.disk_usage)  {
 
-      var storage_pp   = getPercentLine ( this.ration.storage_used,this.ration.storage );
-      var cpu_day_pp   = getPercentLine ( this.ration.cpu_day_used,this.ration.cpu_day );
-      var cpu_month_pp = getPercentLine ( this.ration.cpu_month_used,this.ration.cpu_month );
-      var stats = '<table class="table-rations">' +
+      let storage_pp   = getPercentLine ( this.ration.storage_used,this.ration.storage );
+      let cpu_day_pp   = getPercentLine ( this.ration.cpu_day_used,this.ration.cpu_day );
+      let cpu_month_pp = getPercentLine ( this.ration.cpu_month_used,this.ration.cpu_month );
+      let stats = '<table class="table-rations">' +
         '<tr><th>Resource</th><th>Used&nbsp;</th><th>Quota&nbsp;</th><th>%%</th></tr>' +
         '<tr><td colspan="4"><hr/></td></tr>' +
         '<tr><td>Storage&nbsp;(MBytes)&nbsp;</td><td>&nbsp;' + round(this.ration.storage_used,1) +
@@ -516,7 +498,7 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
                 '&nbsp;</td><td>&nbsp;' + cpu_month_pp + '</td></tr>';
 
       if ((this.ration.cloudrun_day>0) && (this.ration.cloudrun_day_used>0))  {
-        var cloudrun_day_pp = getPercentLine ( this.ration.cloudrun_day_used,
+        let cloudrun_day_pp = getPercentLine ( this.ration.cloudrun_day_used,
                                                this.ration.cloudrun_day );
         stats +=
           '<tr><td>CloudRun 24h (jobs)</td><td>&nbsp;' + this.ration.cloudrun_day_used +
@@ -525,7 +507,7 @@ BasePage.prototype.displayUserRation = function ( pdesc )  {
       }
 
       if ((this.ration.archive_year>0) && (this.ration.archives.length>0))  {
-        var archive_year_pp = getPercentLine ( this.ration.archives.length,
+        let archive_year_pp = getPercentLine ( this.ration.archives.length,
                                                this.ration.archive_year );
         stats +=
           '<tr><td>Archive 1yr (projects)</td><td>&nbsp;' + this.ration.archives.length +

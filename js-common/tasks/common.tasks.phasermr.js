@@ -387,14 +387,14 @@ function TaskPhaserMR()  {
                     label    : 'Cutoff (%)',
                     //lwidth   : 60,
                     iwidth   : 50,
-                    default  : '7',    // to be displayed in grey
+                    default  : '10',    // to be displayed in grey
                     tooltip  : 'Default value is 7%; increase for low-homology searches',
                     range    : [1,99],    // may be absent (no limits) or must
                                           // be one of the following:
                                           //   ['*',max]  : limited from top
                                           //   [min,'*']  : limited from bottom
                                           //   [min,max]  : limited from top and bottom
-                    value    : '7',       // value to be paired with the keyword
+                    value    : '10',      // value to be paired with the keyword
                     position : [1,3,1,1], // [row,col,rowSpan,colSpan]
                     showon   : {PACK_SEL:['PERCENT']}
                   },
