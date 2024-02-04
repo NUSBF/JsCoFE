@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    29.12.23   <--  Date of Last Modification.
+ *    04.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Common GUI widgets
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ========================================================================
  *
@@ -557,6 +557,7 @@ function Grid(style) {
   Widget.call(this, 'table');
   if (style != 'None')
     this.element.setAttribute('class', 'grid-layout' + style);
+    // $(this.element).addClass ( 'grid-layout' + style );
 }
 
 Grid.prototype = Object.create(Widget.prototype);
@@ -566,7 +567,7 @@ Grid.prototype.clear = function () {
   this.element.innerHTML = ' ';  // Safari 14 fix
 }
 
-Grid.prototype.setStyle = function (style) {
+Grid.prototype.setStyle = function (style ) {
   if (style != 'None')
     this.element.setAttribute('class', 'grid-layout' + style);
 }
@@ -845,22 +846,22 @@ Grid.prototype.addCheckbox = function (label_txt, checked_bool, row, col, rowSpa
 }
 
 Grid.prototype.setIFrame = function (url, row, col, rowSpan, colSpan) {
-  var iframe = new IFrame(url);
+  let iframe = new IFrame(url);
   this.setWidget(iframe, row, col, rowSpan, colSpan);
   return iframe;
 }
 
 Grid.prototype.addIFrame = function (url, row, col, rowSpan, colSpan) {
-  var iframe = new IFrame(url);
+  let iframe = new IFrame(url);
   this.addWidget(iframe, row, col, rowSpan, colSpan);
   return iframe;
 }
 
 Grid.prototype.setCellSize = function (width, height, row, col) {
   // Sets specified widths to cell in row,col
-  var cell = this.getCell(row, col);
-  if (width.length > 0) cell.style.width = width;
-  if (height.length > 0) cell.style.height = height;
+  let cell = this.getCell(row, col);
+  if (width.length >0)  cell.style.width = width;
+  if (height.length>0)  cell.style.height = height;
   /*
   if (width .length>0)
     $(cell).css ({"width":width});
@@ -876,20 +877,20 @@ Grid.prototype.getCellSize = function (row, col) {
 }
 
 Grid.prototype.setFontFamily = function (row, col, family) {
-  var cell = this.getCell(row, col);
+  let cell = this.getCell(row, col);
   $(cell).css({ "font-family": family });
   return this;
 }
 
 
 Grid.prototype.setNoWrap = function (row, col) {
-  var cell = this.getCell(row, col);
+  let cell = this.getCell(row, col);
   cell.setAttribute('style', 'white-space: nowrap');
   return this;
 }
 
 Grid.prototype.setHorizontalAlignment = function (row, col, alignment) {
-  var cell = this.getCell(row, col);
+  let cell = this.getCell(row, col);
   $(cell).css({ "text-align": alignment });
   return this;
 }

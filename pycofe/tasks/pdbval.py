@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    02.02.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -60,19 +60,29 @@ class PDBVal(basic.TaskDriver):
     # ------------------------------------------------------------------------
 
     def remove_hydr_zero_occ ( self,mmcif_in,mmcif_out ):
-        doc = gemmi.cif.read ( mmcif_in )
-        ids = set()
+        doc   = gemmi.cif.read ( mmcif_in )
+        ids   = set()
         table = doc[0].find('_atom_site.', ['type_symbol', 'occupancy', 'id'])
+        ndel  = 0
         for i in range(len(table)-1, -1, -1):
-            if table[i][0] == 'H' and float(table[i][1]) == 0:
+            if table[i][0] == 'H' and float(table[i][1]) <= 0.0001:
                 ids.add(table[i][2])
                 table.remove_row(i)
+                ndel += 1
         if ids:
             table = doc[0].find(['_atom_site_anisotrop.id'])
             for i in range(len(table)-1, -1, -1):
                 if table[i][0] in ids:
                     table.remove_row(i)
         doc.write_file ( mmcif_out )
+        if ndel>0:
+            self.putMessage ( str(ndel) +\
+                " hydrogens with zero occupancy have been removed from the " +\
+                "structure.<br>&nbsp;" )
+        else:
+            self.putMessage ( 
+                "No hydrogens with zero occupancy were found to delete." +\
+                "<br>&nbsp;" )
         return
     
 
@@ -181,6 +191,8 @@ class PDBVal(basic.TaskDriver):
             xyzout_cif_1 = self.getOFName ( "_0hydr.mmcif" )
             self.remove_hydr_zero_occ ( xyzout_cif,xyzout_cif_1 )
             xyzout_cif = xyzout_cif_1
+            self.success ( True, hidden_results=True )
+            return
 
         # 2. Prepare CIF with structure factors
 

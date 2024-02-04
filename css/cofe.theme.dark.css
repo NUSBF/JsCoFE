@@ -1,0 +1,44 @@
+
+/*
+ *  =================================================================
+ *
+ *    04.02.24   <--  Date of Last Modification.
+ *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ *  -----------------------------------------------------------------
+ *
+ *  **** Module  :  css/cofe.theme.aliceblue.css
+ *       ~~~~~~~~~
+ *  **** Project :  jsCoFE - javascript-based Cloud Front End
+ *       ~~~~~~~~~
+ *  **** Content :  Common Style Sheets
+ *       ~~~~~~~~~
+ *
+ *  (C) E. Krissinel, N. Fando  2024
+ *
+ *  =================================================================
+ *
+ */
+
+.main-scene  {
+  background-color : black;
+  border-style     : none;
+  margin           : 0px 0px 0px 0px;
+  padding          : 0px 0px 0px 0px;
+  /* background-image  : url("../images_png/background_remote.png"); */
+  /* background-color    : "alicablue"; */
+  /*  // "background-color"    : "rgb(231, 250, 255)";  */
+  /* background-repeat : no-repeat; */
+  /* background-size   : cover;     */
+  /* background-position : center center; */
+}
+
+.logo-panel  {
+  position         : absolute;
+  left             : 0px;
+  bottom           : 0px;
+  padding          : 0px;
+  margin           : 0px;
+  border           : 1px solid lightgray;
+/*  background-color : rgba(240,250,255,0.67); */
+/*  background-color  : rgb(243, 250, 255); */
+}

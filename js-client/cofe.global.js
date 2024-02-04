@@ -316,6 +316,16 @@ function getFEURL()  {
   return window.location.protocol + '//' + window.location.host + window.location.pathname;
 }
 
+function replaceStylesheets ( href_pattern,href )  {
+  // var queryString = '?reload=' + new Date().getTime();
+  let href_p = window.location.href + href_pattern;
+  let href_n = window.location.href + href;
+  $('link[rel="stylesheet"]').each(function () {
+    if (this.href.startsWith(href_p) && (this.href!=href_n))
+      this.href = href_n;
+  });
+}
+
 // ===========================================================================
 // help support
 
