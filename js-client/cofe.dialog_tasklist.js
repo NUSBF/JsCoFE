@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    16.01.24   <--  Date of Last Modification.
+ *    05.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -873,6 +873,7 @@ let section = grid.setSection ( title,false, row,0,1,3 );
 let r       = 0;
 
   this.task_cnt = 0;
+  section.tasks = {};
 
   for (let n=0;n<task_list.length;n++)
     if (task_list[n])  {
@@ -892,6 +893,7 @@ let r       = 0;
             this.task_cnt++;
           if (addToAtoZ)
             this.listAtoZ.push ( task_list[n] );
+          section.tasks[task_list[n]._type] = 1;
         }
       }
     }
@@ -922,24 +924,28 @@ let r       = 0;
 
 TaskListDialog.prototype.saveDialogState = function()  {
 
-  // let viewportTop    = $(this.element).scrollTop();
-  // let viewportBottom = viewportTop + $(this.element).height();
+  /*  ====  version with automatic closure of sections that do not
+            contain the selected job
+  if (!this.selected_task)  {
+    // leave all opened sections unfolded
+    for (let secId in __task_dialog_state.sections)
+      __task_dialog_state.sections[secId].openState = 
+                          __task_dialog_state.sections[secId].section.isOpen();
+  } else  {
+    // leave unfolded only section from which the task was selected
+    let stask = this.selected_task._type;
+    for (let secId in __task_dialog_state.sections)  {
+      let section = __task_dialog_state.sections[secId].section;
+      __task_dialog_state.sections[secId].openState = 
+                          section.isOpen() && (stask in section.tasks);
+    }
+  }
+  =====  */
 
   for (let secId in __task_dialog_state.sections)
-    __task_dialog_state.sections[secId].openState = 
-                        __task_dialog_state.sections[secId].section.isOpen();
+  __task_dialog_state.sections[secId].openState = 
+                            __task_dialog_state.sections[secId].section.isOpen();
 
-  // for (let secId in __task_dialog_state.sections)  {
-  //   let is_open = __task_dialog_state.sections[secId].section.isOpen();
-  //   if (is_open)  {
-  //     let elementTop = $(__task_dialog_state.sections[secId].section.element).offset().top;
-  //     let elementBottom = elementTop + $(__task_dialog_state.sections[secId].section.grid.element).outerHeight();
-  //     is_open = (elementTop >= viewportTop) ||
-  //               (elementBottom > viewportTop);
-  //     console.log ( ' >>>> ' + viewportTop + ':' + viewportBottom + ' / ' + elementTop + ':' + elementBottom )
-  //   }
-  //   __task_dialog_state.sections[secId].openState = is_open;
-  // }
 
   if (this.tabs_full)
     __task_dialog_state.tabs.full.active_tab = this.tabs_full.getActiveTab().name;
