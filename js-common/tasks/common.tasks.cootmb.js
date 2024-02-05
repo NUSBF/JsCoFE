@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    05.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Coot Model Building Task Class (for local server)
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -104,7 +104,7 @@ TaskCootMB.prototype.lowestClientVersion = function() { return '1.6.001 [01.01.2
 //TaskCootMB.prototype.cleanJobDir = function ( jobDir )  {}
 
 TaskCootMB.prototype.currentVersion = function()  {
-  var version = 0;
+let version = 0;
   if (__template)
         return  version + __template.TaskTemplate.prototype.currentVersion.call ( this );
   else  return  version + TaskTemplate.prototype.currentVersion.call ( this );
@@ -118,9 +118,10 @@ function CootMBHotButton()  {
 }
 
 TaskCootMB.prototype.checkKeywords = function ( keywords )  {
-  // keywords supposed to be in low register
-    return this.__check_keywords ( keywords,['coot','model', 'building', 'manual-mb', 'mb', 'coordinate', 'editor'] );
-  }
+// keywords supposed to be in low register
+  return this.__check_keywords ( keywords,['coot','model', 'building', 'manual-mb', 'mb', 
+                                           'coordinate', 'editor'] );
+}
 
 if (!__template)  {
   //  for client side
@@ -144,10 +145,10 @@ if (!__template)  {
     // put structure data in input databox for copying their files in
     // job's 'input' directory
 
-    var istruct  = null;
-    var istruct2 = null;
+    let istruct  = null;
+    let istruct2 = null;
     if ('revision' in this.input_data.data)  {
-      var revision = this.input_data.data['revision'][0];
+      let revision = this.input_data.data['revision'][0];
       if (revision.Options.leading_structure=='substructure')  {
         istruct  = revision.Substructure;
         istruct2 = revision.Structure;
@@ -163,14 +164,14 @@ if (!__template)  {
     __template.TaskTemplate.prototype.makeInputData.call ( this,loginData,jobDir );
 
     if (istruct && ('coot_meta' in istruct) && istruct.coot_meta)  {
-      var coot_meta = istruct.coot_meta;
-      var srcJobDir = prj.getSiblingJobDirPath ( jobDir,coot_meta.jobId );
+      let coot_meta = istruct.coot_meta;
+      let srcJobDir = prj.getSiblingJobDirPath ( jobDir,coot_meta.jobId );
       /*
       for (var fname of coot_meta.files)
         utils.copyFile ( path.join(srcJobDir,fname),
                          path.join(jobDir,fname) );
       */
-      for (var i=0;i<coot_meta.files.length;i++)
+      for (let i=0;i<coot_meta.files.length;i++)
         utils.copyFile ( path.join(srcJobDir,coot_meta.files[i]),
                          path.join(jobDir,coot_meta.files[i]) );
       //  This is commented out because Coot creates platform-incompatible file
