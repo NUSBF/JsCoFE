@@ -338,7 +338,7 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
   }
   let lbl = grid.setLabel   ( title,row,3,1,1 );
   grid.setNoWrap            ( row,3 );
-  grid.setVerticalAlignment ( row,3,'middle' );
+  grid.setVerticalAlignment ( row,3,'middle'  );
   grid.setCellSize          ( 'auto','',row,0 );
   grid.setCellSize          ( 'auto','',row,1 );
   grid.setCellSize          ( 'auto','',row,2 );
@@ -349,12 +349,12 @@ TaskListDialog.prototype.setTask = function ( task_obj,grid,row,setall,idlen )  
 
   switch (btn.dataSummary.status)  {
     default :
-    case 0 : $(btn.element).css({'border':'2px solid #FF1C00'});        // maroon
-             btn.setIndicator ( image_path('nogo'),1 );  // top-right corner indicator
-             lbl.setFontColor('#888888').setFontItalic(true);
+    case 0  : $(btn.element).css({'border':'2px solid #FF1C00'});        // maroon
+              btn.setIndicator ( image_path('nogo'),1 );  // top-right corner indicator
+              lbl.setFontColor('#888888').setFontItalic(true);
           break;
-    case 1 : $(btn.element).css({'border':'2px solid #FFBF00'}); break; // amber
-    case 2 : $(btn.element).css({'border':'2px solid #03C03C'}); break; // green
+    case 1  : $(btn.element).css({'border':'2px solid #FFBF00'}); break; // amber
+    case 2  : $(btn.element).css({'border':'2px solid #03C03C'}); break; // green
   }
 
   (function(dlg,ibtn){
@@ -922,9 +922,24 @@ let r       = 0;
 
 TaskListDialog.prototype.saveDialogState = function()  {
 
+  // let viewportTop    = $(this.element).scrollTop();
+  // let viewportBottom = viewportTop + $(this.element).height();
+
   for (let secId in __task_dialog_state.sections)
     __task_dialog_state.sections[secId].openState = 
                         __task_dialog_state.sections[secId].section.isOpen();
+
+  // for (let secId in __task_dialog_state.sections)  {
+  //   let is_open = __task_dialog_state.sections[secId].section.isOpen();
+  //   if (is_open)  {
+  //     let elementTop = $(__task_dialog_state.sections[secId].section.element).offset().top;
+  //     let elementBottom = elementTop + $(__task_dialog_state.sections[secId].section.grid.element).outerHeight();
+  //     is_open = (elementTop >= viewportTop) ||
+  //               (elementBottom > viewportTop);
+  //     console.log ( ' >>>> ' + viewportTop + ':' + viewportBottom + ' / ' + elementTop + ':' + elementBottom )
+  //   }
+  //   __task_dialog_state.sections[secId].openState = is_open;
+  // }
 
   if (this.tabs_full)
     __task_dialog_state.tabs.full.active_tab = this.tabs_full.getActiveTab().name;

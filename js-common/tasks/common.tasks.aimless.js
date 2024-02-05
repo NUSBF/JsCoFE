@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.12.23   <--  Date of Last Modification.
+ *    05.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Aimless Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2016-2024
  *
  *  =================================================================
  *
@@ -1212,7 +1212,9 @@ let version = 0;
 
 TaskAimless.prototype.checkKeywords = function ( keywords )  {
 // keywords supposed to be in low register
-  return this.__check_keywords ( keywords,['aimless','image', 'processing', 'data', 'reduction'] );
+  return this.__check_keywords ( keywords,['aimless','image', 'processing', 'data', 
+                                           'reduction', 'merge', 'merging', 'scale', 
+                                           'scaling'] );
 }
 
 TaskAimless.prototype.getWorkflowScript = function ( serialNo )  {
