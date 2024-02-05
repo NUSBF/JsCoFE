@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    07.12.23   <--  Date of Last Modification.
+ *    05.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -------------------------------------------------------------------------
  *
@@ -124,7 +124,7 @@ function TaskRefmac()  {
                    label    : 'Generate H-atoms for refinement',
                    tooltip  : 'Select how to represent hydrogen atoms in refinement',
                    range    : ['NO|No','YES|Yes if in input file','ALL|Yes'],
-                   value    : 'ALL',
+                   value    : 'NO',
                    showon   : {'EXPERIMENT':['xray','electron']},
                    position : [3,0,1,3]
                 }
