@@ -3,7 +3,7 @@
 #
 # ============================================================================
 #
-#    13.01.24   <--  Date of Last Modification.
+#    05.03.24   <--  Date of Last Modification.
 #                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------
 #
@@ -183,7 +183,8 @@ class Buster(basic.TaskDriver):
             if gelly:
                 gelly_fname = "_buster.gelly"
                 with open(gelly_fname,"w") as f:
-                    f.write ( gelly )
+                    f.write ( gelly +'\n' )
+                
                 cmd += ["-Gelly",gelly_fname]
 
         """
