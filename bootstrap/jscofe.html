@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    15.01.24   <..  Date of Last Modification.
+ *    06.02.24   <..  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  =================================================================
  *
@@ -307,6 +307,8 @@
     document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
     //$(window).on ( 'load', function(){
     $(document).ready ( function(){
+      // setDarkMode ( isDarkMode() );
+      bindToBrowserColorMode();
       //console.log ( '   ready=' + document.readyState );
       /*
       alert ( window.location.search );

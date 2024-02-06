@@ -235,7 +235,7 @@ function toggleDarkMode() {
 }
 */
 
-function toggleDarkMode() {
+function setDarkMode ( darkMode )  {
   
   // dark mode specs
   let invert     = 0.87;  // 0 - 1
@@ -246,7 +246,7 @@ function toggleDarkMode() {
   let brightness = 1.0;   // > 0
   let grayscale  = 0.0;   // 0 -1
 
-  if (__dark_mode)  {
+  if (!darkMode)  {
     // revert to normal mode
     invert     = 0.0;   // 0 - 1
     sepia      = 0.0;   // 0 - 1
@@ -267,10 +267,47 @@ function toggleDarkMode() {
                ') grayscale('   + grayscale  + ')'
   });
 
-  __dark_mode = !__dark_mode;
+  __dark_mode = darkMode;
 
 }
 
+function toggleDarkMode() {
+  setDarkMode ( !__dark_mode );
+}
+
+function isDarkMode()  { 
+  return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+function bindToBrowserColorMode()  {
+  if (window.matchMedia)  {
+    let query = window.matchMedia ( '(prefers-color-scheme: dark)' );
+    setDarkMode ( query.matches );
+    query.addEventListener ( 'change',function(event){
+      setDarkMode ( event.matches );
+    });
+  }
+}
+
+/*
+const runColorMode = (fn) => {
+  if (!window.matchMedia)
+    return;
+  const query = window.matchMedia ( '(prefers-color-scheme: dark)' );
+  fn ( query.matches );
+  query.addEventListener ( 'change', (event) => fn(event.matches) );
+}
+
+runColorMode ( (isDarkMode) => {
+  if (isDarkMode) {
+    // console.log ( ' dark-mode' )
+    setDarkMode ( false );
+  } else {
+    // console.log ( ' light-mode')
+    toggleDarkMode ( true );
+  }
+})
+*/
 
 /*
 document.addEventListener("fullscreenchange", function () {
