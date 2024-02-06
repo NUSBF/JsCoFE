@@ -50,7 +50,6 @@ var __current_folder  = {
 var __local_setup     = false;
 var __is_archive      = false;
 var __offline_message = 'off';  // true for showing "working offline" once at the beginning
-var __dark_mode       = false;  // true for dark mode
 var __cloud_storage   = false;  // true if user has cloud storage allocated
 var __demo_projects   = false;  // true if demo projects are configured
 var __url_parameters  = null;   // decoded ?p1=v1&p2=v2 from url at session begining
@@ -63,6 +62,29 @@ var __user_authorisation = null;  // user authorisation data
 var __environ_server  = [];     // list of key environmental variables on NCs
 var __environ_client  = [];     // list of key environmental variables on Client
 var __my_workflows    = [];     // user defined workflows
+
+var __color_mode = {
+  active_mode : 'light',  // 'dark' for dark mode
+  normal_mode :  {
+    invert     : 0.0,   // 0 - 1
+    sepia      : 0.0,   // 0 - 1
+    hue        : 0,     // integer deg
+    saturate   : 1.0,   // >0
+    contrast   : 1.0,   // >0
+    brightness : 1.0,   // > 0
+    grayscale  : 0.0    // 0 -1
+  },
+  dark_mode :  {
+    invert     : 0.87,   // 0 - 1
+    sepia      : 0.0,   // 0 - 1
+    hue        : 0,     // integer deg
+    saturate   : 1.0,   // >0
+    contrast   : 1.0,   // >0
+    brightness : 1.0,   // > 0
+    grayscale  : 0.0    // 0 -1
+  }
+};
+
 
 var __clipboard       = { task: null };     // clipboard for copy-pasting jobs
 
@@ -237,42 +259,27 @@ function toggleDarkMode() {
 
 function setDarkMode ( darkMode )  {
   
-  // dark mode specs
-  let invert     = 0.87;  // 0 - 1
-  let sepia      = 0.0;   // 0 - 1
-  let hue        = 0;     // integer deg
-  let saturate   = 1.0;   // >0
-  let contrast   = 1.0;   // >0
-  let brightness = 1.0;   // > 0
-  let grayscale  = 0.0;   // 0 -1
-
-  if (!darkMode)  {
-    // revert to normal mode
-    invert     = 0.0;   // 0 - 1
-    sepia      = 0.0;   // 0 - 1
-    hue        = 0;     // integer deg
-    saturate   = 1.0;   // >0
-    contrast   = 1.0;   // >0
-    brightness = 1.0;   // > 0
-    grayscale  = 0.0;   // 0 -1
-  }
+  let color_mode = __color_mode.normal_mode;
+  if (darkMode)  {
+    color_mode = __color_mode.dark_mode;
+    __color_mode.active_mode = 'dark';
+  } else
+    __color_mode.active_mode = 'light';
 
   $(document.body).css({
-    'filter' : 'invert('        + invert     + 
-               ') sepia('       + sepia      + 
-               ') hue-rotate('  + hue        + 
-               'deg) saturate(' + saturate   + 
-               ') contrast('    + contrast   + 
-               ') brightness('  + brightness + 
-               ') grayscale('   + grayscale  + ')'
+    'filter' : 'invert('        + color_mode.invert     + 
+               ') sepia('       + color_mode.sepia      + 
+               ') hue-rotate('  + color_mode.hue        + 
+               'deg) saturate(' + color_mode.saturate   + 
+               ') contrast('    + color_mode.contrast   + 
+               ') brightness('  + color_mode.brightness + 
+               ') grayscale('   + color_mode.grayscale  + ')'
   });
-
-  __dark_mode = darkMode;
 
 }
 
 function toggleDarkMode() {
-  setDarkMode ( !__dark_mode );
+  setDarkMode ( __color_mode.active_mode=='light' );
 }
 
 function isDarkMode()  { 
