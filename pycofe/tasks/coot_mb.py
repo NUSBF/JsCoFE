@@ -296,9 +296,10 @@ class Coot(coot_ce.CootCE):
         ligand_coot = None
 
         for f in files:
-            if f.startswith("acedrg-LIG"):
+            fu = f.upper()
+            if fu.startswith("ACEDRG-LIG"):
 
-                if f.endswith(".cif"):
+                if fu.endswith(".CIF"):
 
                     exclude_list = []
                     '''
@@ -348,7 +349,7 @@ class Coot(coot_ce.CootCE):
                             libPath = "ligands.lib"
                         ligand_coot = self.finaliseLigand ( "LIG","acedrg-LIG.pdb",f )
 
-            elif f.lower().endswith(".pdb") or f.lower().endswith(".cif"):
+            elif fu.endswith(".PDB") or fu.endswith(".CIF"):
                 mt = os.path.getmtime(f)
                 if mt > mtime:
                     mtime = mt
@@ -385,8 +386,9 @@ class Coot(coot_ce.CootCE):
             if fext.upper()!=".PDB":
                 coot_mmcif = self.getOFName ( ".mmcif" )
                 shutil.copy2 ( fname,coot_mmcif )
-                cif_block  = gemmi.cif.read(fname)[0]
-                st         = gemmi.make_structure_from_block(cif_block)
+                st = gemmi.read_structure ( fname )
+                # cif_block  = gemmi.cif.read(fname)[0]
+                # st         = gemmi.make_structure_from_block(cif_block)
                 st.write_pdb ( coot_xyz )
                 # shutil.copy2 ( fname,os.path.join(self.outputDir(),coot_mmcif) )
             else:        
@@ -448,8 +450,6 @@ class Coot(coot_ce.CootCE):
                 # struct.add_file ( "mol0.mmcif",self.outputDir(),"mmcif",copy_bool=False )
                 if coot_mmcif:
                     struct.add_file ( coot_mmcif,self.outputDir(),"mmcif",copy_bool=False )
-
-
 
                 # add link formulas and counts to struct metadata
                 if link_counts:
