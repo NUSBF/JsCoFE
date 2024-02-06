@@ -2,7 +2,7 @@
 /*
  *  ========================================================================
  *
- *    04.02.24   <--  Date of Last Modification.
+ *    05.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------------
  *
@@ -1737,7 +1737,7 @@ function Section(title_str, open_bool) {
 Section.prototype = Object.create(Widget.prototype);
 Section.prototype.constructor = Section;
 
-Section.prototype.isOpen = function () {
+Section.prototype.isOpen = function() {
   try {
     let active = $(this.element).accordion("option", "active");
     if (active === 0) return true;
@@ -1745,24 +1745,38 @@ Section.prototype.isOpen = function () {
   return false;
 }
 
-Section.prototype.open = function () {
+Section.prototype.open = function() {
   try {
     $(this.element).accordion("option", "active", 0);
   } catch (e) { }
 }
 
-Section.prototype.close = function () {
+Section.prototype.close = function() {
   try {
     $(this.element).accordion("option", "active", false);
   } catch (e) { }
 }
 
-Section.prototype.setOpenState = function (open_bool) {
-  if (open_bool) this.open();
-  else this.close();
+Section.prototype.setOpenState = function ( open_bool )  {
+  if (open_bool)  this.open();
+            else  this.close();
 }
 
-Section.prototype.setTitle = function (title_str) {
+Section.prototype.setActivateListener = function ( open_func,close_func )  {
+  $(this.element).on( "accordionactivate",function(event,ui){
+    if (ui.newHeader.length)  open_func ();
+                        else  close_func();
+  });
+}
+
+Section.prototype.setBeforeActivateListener = function ( open_func,close_func )  {
+  $(this.element).on( "accordionbeforeactivate",function(event,ui){
+    if (ui.newHeader.length)  open_func ();
+                        else  close_func();
+  });
+}
+
+Section.prototype.setTitle = function ( title_str ) {
   this.title = title_str;
   $('#' + this.titleId).html(title_str);
 }

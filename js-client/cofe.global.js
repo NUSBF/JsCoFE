@@ -2,7 +2,7 @@
 /*
  *  ==========================================================================
  *
- *    30.10.23   <--  Date of Last Modification.
+ *    06.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  --------------------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Global variables
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2016-2023
+ *  (C) E. Krissinel, A. Lebedev 2016-2024
  *
  *  ==========================================================================
  *
@@ -50,6 +50,7 @@ var __current_folder  = {
 var __local_setup     = false;
 var __is_archive      = false;
 var __offline_message = 'off';  // true for showing "working offline" once at the beginning
+var __dark_mode       = false;  // true for dark mode
 var __cloud_storage   = false;  // true if user has cloud storage allocated
 var __demo_projects   = false;  // true if demo projects are configured
 var __url_parameters  = null;   // decoded ?p1=v1&p2=v2 from url at session begining
@@ -211,12 +212,63 @@ function quitFullScreen() {
 
 
 function toggleFullScreen() {
-var ifs = isFullScreen();
+let ifs = isFullScreen();
   if (ifs==-1)  {
     alert ( 'Full Screen Mode is not supported' );
     return;
   } else if (ifs)  quitFullScreen();
              else  setFullScreen ();
+}
+
+/*
+function toggleDarkMode() {
+  if (__dark_mode)
+    $(document.body).css({
+      'filter':'invert(0%) sepia(0%) hue-rotate(0deg) saturate(1) contrast(1) brightness(1) grayscale(0%)'
+    });
+  // else  $(document.body).css({'filter':'invert(87%) sepia(80%) hue-rotate(90deg) saturate(1)'});
+  else  
+    $(document.body).css({
+      'filter':'invert(87%) sepia(0%) hue-rotate(0deg) saturate(1) contrast(1) brightness(1) grayscale(0%)'
+    });
+  __dark_mode = !__dark_mode;
+}
+*/
+
+function toggleDarkMode() {
+  
+  // dark mode specs
+  let invert     = 0.87;  // 0 - 1
+  let sepia      = 0.0;   // 0 - 1
+  let hue        = 0;     // integer deg
+  let saturate   = 1.0;   // >0
+  let contrast   = 1.0;   // >0
+  let brightness = 1.0;   // > 0
+  let grayscale  = 0.0;   // 0 -1
+
+  if (__dark_mode)  {
+    // revert to normal mode
+    invert     = 0.0;   // 0 - 1
+    sepia      = 0.0;   // 0 - 1
+    hue        = 0;     // integer deg
+    saturate   = 1.0;   // >0
+    contrast   = 1.0;   // >0
+    brightness = 1.0;   // > 0
+    grayscale  = 0.0;   // 0 -1
+  }
+
+  $(document.body).css({
+    'filter' : 'invert('        + invert     + 
+               ') sepia('       + sepia      + 
+               ') hue-rotate('  + hue        + 
+               'deg) saturate(' + saturate   + 
+               ') contrast('    + contrast   + 
+               ') brightness('  + brightness + 
+               ') grayscale('   + grayscale  + ')'
+  });
+
+  __dark_mode = !__dark_mode;
+
 }
 
 

@@ -419,6 +419,8 @@ BasePage.prototype.addFullscreenToMenu = function()  {
     this.headerPanel.menu.addSeparator();
   this.headerPanel.menu.addItem('Toggle fullscreen',image_path('fullscreen'))
                        .addOnClickListener ( toggleFullScreen );
+  this.headerPanel.menu.addItem('Toggle dark mode',image_path('darkmode'))
+                       .addOnClickListener ( toggleDarkMode );
   return this;
 }
 
