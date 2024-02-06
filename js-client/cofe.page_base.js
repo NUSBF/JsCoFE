@@ -421,6 +421,8 @@ BasePage.prototype.addFullscreenToMenu = function()  {
                        .addOnClickListener ( toggleFullScreen );
   this.headerPanel.menu.addItem('Toggle dark mode',image_path('darkmode'))
                        .addOnClickListener ( toggleDarkMode );
+  this.headerPanel.menu.addItem('Tune dark mode',image_path('tuneup'))
+                       .addOnClickListener ( function(){ new DarkModeDialog(); } );
   return this;
 }
 
