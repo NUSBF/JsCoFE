@@ -873,7 +873,11 @@ let section = grid.setSection ( title,false, row,0,1,3 );
 let r       = 0;
 
   this.task_cnt = 0;
-  section.tasks = {};
+
+//  section.tasks = {};  <-- for section optimisation
+  if (!('sections' in grid))
+    grid.sections = [];
+  grid.sections.push ( section );
 
   for (let n=0;n<task_list.length;n++)
     if (task_list[n])  {
@@ -893,7 +897,7 @@ let r       = 0;
             this.task_cnt++;
           if (addToAtoZ)
             this.listAtoZ.push ( task_list[n] );
-          section.tasks[task_list[n]._type] = 1;
+//          section.tasks[task_list[n]._type] = 1;  <-- for section optimisation
         }
       }
     }
@@ -916,6 +920,13 @@ let r       = 0;
       };
     }
   }
+
+  section.setBeforeActivateListener ( function(){
+    // on section open
+    for (let i=0;i<grid.sections.length;i++)
+      if (grid.sections[i].id!=section.id)
+        grid.sections[i].close();
+  },function(){});
 
   return section;
 
