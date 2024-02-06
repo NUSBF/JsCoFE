@@ -46,7 +46,7 @@ function extendToolbar ( dialog,options={} )  {
 
   if (!__any_mobile_device)  {
 
-    var opt = {
+    let opt = {
       "closable"         : true,
       "maximizable"      : true,
       "minimizable"      : true,
@@ -125,7 +125,7 @@ function MessageBox ( title,message,icon_name='' )  {
   document.body.appendChild ( this.element );
 
   if (icon_name)  {
-    var grid = new Grid ( '' );
+    let grid = new Grid ( '' );
     this.addWidget   ( grid );
     grid.setLabel    ( ' ',0,0,1,1 );
     grid.setCellSize ( '','6px', 0,0 );
@@ -166,7 +166,7 @@ function MessageBoxW ( title,message,width_ratio,icon_name='' )  {
   document.body.appendChild ( this.element );
 
   if (icon_name)  {
-    var grid = new Grid ( '' );
+    let grid = new Grid ( '' );
     this.addWidget   ( grid );
     grid.setLabel    ( ' ',0,0,1,1 );
     grid.setCellSize ( '','6px', 0,0 );
@@ -177,7 +177,7 @@ function MessageBoxW ( title,message,width_ratio,icon_name='' )  {
   } else
     this.element.innerHTML = message;
 
-  var w = Math.round(width_ratio*$(window).width()) + 'px';
+  let w = Math.round(width_ratio*$(window).width()) + 'px';
 
   $(this.element).dialog({
     resizable : false,
@@ -205,7 +205,7 @@ function MessageBoxF ( title,message,btn_name,onClick_func,uncloseable_bool,
   Dialog.call ( this,title );
 
   if (icon_name)  {
-    var grid = new Grid ( '' );
+    let grid = new Grid ( '' );
     this.addWidget   ( grid );
     grid.setLabel    ( ' ',0,0,1,1 );
     grid.setCellSize ( '','6px', 0,0 );
@@ -267,7 +267,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 //        this.element.setAttribute ( 'title','Online Help -- ' + title );
   else  this.element.setAttribute ( 'title','Online Help' );
   this.display = new IFrame ( '' );  // always initially empty
-  var loading_msg = '<!DOCTYPE html>\n<html><body><h2>Loading ...</h2></body></html>';
+  let loading_msg = '<!DOCTYPE html>\n<html><body><h2>Loading ...</h2></body></html>';
   this.display.setText ( loading_msg );
 
   $(this.display.element).css({'overflow':'hidden'});
@@ -281,8 +281,8 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
   document.body.appendChild ( this.element );
 //  document.body.style.fontSize = '16px';
 
-  var w0 = 1000;
-  var h0 = Math.min ( $(window).height()-180,600 );
+  let w0 = 1000;
+  let h0 = Math.min ( $(window).height()-180,600 );
   if (params)  {
     if ('width'  in params)  w0 = params.width;
     if ('height' in params)  h0 = params.height;
@@ -301,7 +301,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
     this.display.setSize_px ( w-16,h-4 );
   }
 
-  var tstamp = Date.now();
+  let tstamp = Date.now();
   this.options = {
     width   : w0,
     height  : h0,
@@ -364,7 +364,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
     ]);
   }
 
-  var body = this.display.element.contentWindow.document.querySelector('body');
+  let body = this.display.element.contentWindow.document.querySelector('body');
   body.style.fontSize = '16px';
 
   if (!__any_mobile_device)  {
@@ -372,7 +372,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
     this.options.height = h0 + 116;
   }
 
-  var dlg = this;
+  let dlg = this;
 
   // (function(dlg){
 
@@ -427,7 +427,7 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
       };
 
       dlg.options.buttons[3].click = function() {
-        var url = helpURL;
+        let url = helpURL;
         try {
           url = dlg.display.getDocument().location.href;
         } catch(e) {}
@@ -448,11 +448,11 @@ function HelpBox ( title,helpURL,onDoNotShowAgain_func,params=null )  {
 
   // }(this))
 
-    var resize_func = function()  {
+    let resize_func = function()  {
       dlg.resizeDisplay ( dlg.width_px(),dlg.height_px() );
     }
 
-    var dialog = $(this.element).dialog ( this.options );
+    let dialog = $(this.element).dialog ( this.options );
     if (__any_mobile_device)
           dialog.siblings('.ui-dialog-titlebar').remove();
     else  extendToolbar ( this,{
@@ -574,7 +574,7 @@ WaitDialog.prototype.constructor = WaitDialog;
 // -------------------------------------------------------------------------
 // QuestionBox class
 
-function QuestionBox ( title,message,buttons,icon_name='',autoLaunch=true )  {
+function QuestionBox ( title,message,buttons,icon_name='',autoLaunch=true,modal=true )  {
 // buttons = [{
 //   name    : button_name,
 //   onclick : button_function(){}
@@ -601,14 +601,14 @@ function QuestionBox ( title,message,buttons,icon_name='',autoLaunch=true )  {
   } else if (message)
     this.element.innerHTML = message;
 
-  var self = this;
+  let self = this;
   this.initiated = false;
 
   this.options = {
     resizable     : false,
     height        : 'auto',
     width         : 'auto',
-    modal         : true,
+    modal         : modal,
     closeOnEscape : false,
     open          : function(event, ui) {
                       self.initiated = true;
@@ -618,7 +618,7 @@ function QuestionBox ( title,message,buttons,icon_name='',autoLaunch=true )  {
     buttons       : {}
   };
 
-  for (var i=0;i<buttons.length;i++)
+  for (let i=0;i<buttons.length;i++)
     (function(self,btn){
       self.options.buttons[btn.name] = function() {
         $(this).dialog ( 'close' );
@@ -714,10 +714,10 @@ function _calc_viewer_size ( widthF,heightF )  {
   //var w  = jq(window.parent).width () - 40;
   //var h  = jq(window.parent).height() - 64;
 
-  var w0 = window.parent.innerWidth;
-  var h0 = window.parent.innerHeight;
-  var w = w0 - 40;
-  var h = h0 - 56;
+  let w0 = window.parent.innerWidth;
+  let h0 = window.parent.innerHeight;
+  let w = w0 - 40;
+  let h = h0 - 56;
 
   if (!window.parent.__any_mobile_device) {
     h -= 8;
@@ -764,7 +764,7 @@ function WebAppBox ( title )  {
   this.addWidget ( this.iframe );
   this.fid = setCommunicatingIFrame ( this,this.iframe );
 
-  var size;
+  let size;
   if (window.parent.__any_mobile_device)
        size = _calc_viewer_size ( 1.0, 1.0 );
   else if (window.parent.__user_settings && window.parent.__user_settings.viewers_size)
@@ -779,7 +779,7 @@ function WebAppBox ( title )  {
 
   //dialog.style.fontSize = '16px';
 
-  var self = this;
+  let self = this;
 
   this.options = {
     resizable     : true,
@@ -856,11 +856,11 @@ WebAppBox.prototype.launch = function() {
 
   $(this.element).dialog ( this.options );
 
-  var self = this;
+  let self = this;
 
-  var resize_func = function()  {
-    var w = $(self.element).width ();
-    var h = $(self.element).height();
+  let resize_func = function()  {
+    let w = $(self.element).width ();
+    let h = $(self.element).height();
     self.iframe.setSize_px ( w,h );
   }
 

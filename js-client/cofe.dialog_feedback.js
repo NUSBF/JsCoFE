@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    22.01.20   <--  Date of Last Modification.
+ *    06.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Feedback Agreement Dialog
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2020
+ *  (C) E. Krissinel, A. Lebedev 2019-2024
  *
  *  =================================================================
  *
@@ -34,7 +34,7 @@ function FeedbackDialog ( current_agreement,onclose_fnc )  {
   this.element.setAttribute ( 'title','Feedback Agreement' );
   document.body.appendChild ( this.element );
 
-  var grid = new Grid('');
+  let grid = new Grid('');
   this.addWidget ( grid );
   grid.setLabel ( '<h3>Feedback Agreement</h3>',0,0,1,3 );
 
@@ -56,9 +56,9 @@ function FeedbackDialog ( current_agreement,onclose_fnc )  {
                        '?Subject=Feedback%20enquiry">' + __maintainerEmail +
                   '</a>.<br>&nbsp;',1,0,1,3 );
 
-  var agree1_btn  = new RadioButton ( 'Agreement (1)',false );
-  var agree2_btn  = new RadioButton ( 'Agreement (2)',false );
-  var decline_btn = new RadioButton ( 'Decline'      ,false );
+  let agree1_btn  = new RadioButton ( 'Agreement (1)',false );
+  let agree2_btn  = new RadioButton ( 'Agreement (2)',false );
+  let decline_btn = new RadioButton ( 'Decline'      ,false );
 
   grid.setWidget ( agree1_btn ,2,0,1,1 );
   grid.setWidget ( agree2_btn ,3,0,1,1 );
@@ -102,7 +102,7 @@ function FeedbackDialog ( current_agreement,onclose_fnc )  {
 
   grid.setCellSize ( '100%','',2,2 );
 
-  var w = 3*$(window).width()/5 + 'px';
+  let w = 3*$(window).width()/5 + 'px';
 
   $(this.element).dialog({
     resizable : false,

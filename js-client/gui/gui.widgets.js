@@ -845,16 +845,25 @@ Grid.prototype.addCheckbox = function (label_txt, checked_bool, row, col, rowSpa
   return checkbox;
 }
 
-Grid.prototype.setIFrame = function (url, row, col, rowSpan, colSpan) {
+Grid.prototype.setIFrame = function ( url, row, col, rowSpan, colSpan ) {
   let iframe = new IFrame(url);
   this.setWidget(iframe, row, col, rowSpan, colSpan);
   return iframe;
 }
 
-Grid.prototype.addIFrame = function (url, row, col, rowSpan, colSpan) {
+Grid.prototype.addIFrame = function ( url, row, col, rowSpan, colSpan ) {
   let iframe = new IFrame(url);
   this.addWidget(iframe, row, col, rowSpan, colSpan);
   return iframe;
+}
+
+Grid.prototype.setSlider = function ( range,value, width_px,height_px, row, col, rowSpan, colSpan ) {
+  let slider = new Slider(range);
+  this.setWidget ( slider, row, col, rowSpan, colSpan );
+  slider.setWidth_px  ( width_px  );
+  slider.setHeight_px ( height_px );
+  slider.setValue     ( value     );
+  return slider;
 }
 
 Grid.prototype.setCellSize = function (width, height, row, col) {
@@ -1984,13 +1993,13 @@ Slider.prototype = Object.create(Widget.prototype);
 Slider.prototype.constructor = Slider;
 
 
-Slider.prototype.setListener = function (socket_function) {
+Slider.prototype.setListener = function ( socket_function ) {
   $(this.element).on("slide", function (event, ui) {
     socket_function(ui.value);
   });
 }
 
-Slider.prototype.setValue = function (value) {
+Slider.prototype.setValue = function ( value ) {
   $(this.element).slider('value', value);
 }
 
