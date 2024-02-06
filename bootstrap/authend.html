@@ -5,7 +5,7 @@
  *
  *  =================================================================
  *
- *    10.11.22   <..  Date of Last Modification.
+ *    06.02.24   <..  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  =================================================================
  *
@@ -16,7 +16,7 @@
  *  **** Content :  HTML Bootstrap
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2019-2022
+ *  (C) E. Krissinel, A. Lebedev 2019-2024
  *
  *  =================================================================
  *
@@ -79,13 +79,15 @@
                                              // unclear why
     document.body.style.overflow = 'hidden'; // this is because of buggy Chrome
 
-    var __setup_desc = {
+    bindToBrowserColorMode();
+
+    let __setup_desc = {
       'name'     : '$setup_name',
       'icon'     : '$setup_icon',
       'partners' : []
     }
-    var software_key = '$software_key';
-    var auth_result  = '$auth_result';
+    let software_key = '$software_key';
+    let auth_result  = '$auth_result';
 
     //$(window).on ( 'load', function(){
     $(document).ready ( function(){
