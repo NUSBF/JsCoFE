@@ -31,7 +31,6 @@ class dataLink {
     this.loadAllUserCatalogs();
 
     this.loadSourceCatalogs();
-    this.resumeData();
   }
 
   loadAllUserCatalogs() {
@@ -214,6 +213,12 @@ class dataLink {
     return true;
   }
 
+  async waitForCatalog(source) {
+    while (! this.source[source].catalog) {
+      await new Promise(r => setTimeout(r, 1000));
+    }
+  }
+
   async resumeData () {
     const catalog = this.catalog.getCatalog();
     for (const user in catalog) {
@@ -222,10 +227,7 @@ class dataLink {
         if (! this.source[source]) {
           continue;
         }
-        // wait for the data source catalog to become available
-        while (! this.source[source].catalog) {
-          await new Promise(r => setTimeout(r, 2000));
-        }
+        await this.waitForCatalog(source);
         // check if any entries are in progress, and refetch/continue
         for (const [id, entry] of Object.entries(catalog[user][source])) {
           if (entry.status === status.inProgress) {
