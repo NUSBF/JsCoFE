@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    29.01.24   <--  Date of Last Modification.
+ *    07.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -33,10 +33,11 @@ function TaskXyzUtils()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type  = 'TaskXyzUtils';
-  this.name   = 'xyz utils';
-  this.oname  = '*'; // asterisk means do not use (XYZ name will be used)
-  this.title  = 'Coordinate Utilities';
+  this._type     = 'TaskXyzUtils';
+  this.name      = 'xyz utils';
+  this.oname     = '*'; // asterisk means do not use (XYZ name will be used)
+  this.title     = 'Coordinate Utilities';
+  this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{      // input data types
     data_type   : { 'DataRevision' : ['xyz'],

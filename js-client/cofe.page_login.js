@@ -46,32 +46,32 @@ function LoginPage ( sceneId )  {
   // adjust scene grid attributes such that login panel is centered
 
   // make login panel
-  var panel = new Grid('');
+  let panel = new Grid('');
   panel.setWidth ( '300pt' );
 
-  this.grid.setCellSize          ( '45%','',0,0,1,1 );
-  this.grid.setCellSize          ( '','15px',0,0,1,3 );
-  this.grid.setWidget            ( panel,1,1,1,1 );
-  this.grid.setVerticalAlignment ( 1,1,'middle' );
-  this.grid.setCellSize          ( '10%','',1,1,1,1 );
-  this.grid.setCellSize          ( '45%','',1,2,1,1 );
+  this.grid.setCellSize            ( '45%','',0,0,1,1 );
+  this.grid.setCellSize            ( '','15px',0,0,1,3 );
+  this.grid.setWidget              ( panel,1,1,1,1 );
+  this.grid.setVerticalAlignment   ( 1,1,'middle' );
+  this.grid.setCellSize            ( '10%','',1,1,1,1 );
+  this.grid.setCellSize            ( '45%','',1,2,1,1 );
 
-  var tip_lbl = this.grid.setLabel ( '&nbsp;',2,0,1,3 );
+  let tip_lbl = this.grid.setLabel ( '&nbsp;',2,0,1,3 );
   this.grid.setHorizontalAlignment ( 2,0,'center' );
   this.grid.setVerticalAlignment   ( 2,0,'top' );
-  this.grid.setCellSize          ( '','12px',2,0,1,3 );
-  this.grid.setCellSize          ( '','3px',3,0,1,3 );
+  this.grid.setCellSize            ( '','12px',2,0,1,3 );
+  this.grid.setCellSize            ( '','3px',3,0,1,3 );
 
-  this.makeLogoPanel             ( 4,0,3 );
+  this.makeLogoPanel               ( 4,0,3 );
 
   if (!__mobile_device)
     window.setTimeout ( function(){
       if (__tips && __tips.use_tips && (__tips.tips.length>0))  {
-        var tipNo = 0;
+        let tipNo = 0;
         if ('tipNo' in __tips)  tipNo = __tips.tipNo;
                           else  tipNo = round(Date.now()/5000,0);
         tipNo = tipNo % __tips.tips.length;
-        var tipLink = '<a href="javascript:' +
+        let tipLink = '<a href="javascript:' +
                           'launchHelpBox(\'' + __tips.tips[tipNo].title + '\',' +
                                         '\'' + __tips.tips[tipNo].doc   + '/'   +
                                                __tips.tips[tipNo].link  + '\',' +
@@ -86,11 +86,11 @@ function LoginPage ( sceneId )  {
       }
     },1000);
 
-  var login_lbl   = new Label     ( 'Login name:' );
-  var pwd_lbl     = new Label     ( 'Password:'   );
-  var login_inp   = new InputText ( '' );
-  var pwd_inp     = new InputText ( '' );
-  var vis_btn     = new ImageButton ( image_path('pwd_hidden'),'32px','14px' );
+  let login_lbl   = new Label     ( 'Login name:' );
+  let pwd_lbl     = new Label     ( 'Password:'   );
+  let login_inp   = new InputText ( '' );
+  let pwd_inp     = new InputText ( '' );
+  let vis_btn     = new ImageButton ( image_path('pwd_hidden'),'32px','14px' );
   login_lbl.setNoWrap();
   login_lbl.setFontSize         ( '125%' );
   pwd_lbl  .setFontSize         ( '125%' );
@@ -111,7 +111,7 @@ function LoginPage ( sceneId )  {
   login_inp.setWidth            ( '95%'  );
   pwd_inp  .setWidth            ( '95%'  );
 
-  var row = 0;
+  let row = 0;
   panel.setLabel ( appName() + ' Login', row,0,1,3 )
        .setFont  ( 'times','40px',true,true )
        .setNoWrap();
@@ -132,9 +132,9 @@ function LoginPage ( sceneId )  {
   panel.setWidget               ( new HLine('3pt'), row++,0,1,3 );
   //panel.setCellSize             ( '','1pt',row++,0 );
 
-  var login_btn = new Button    ( 'Login',image_path('login') );
-  var pwd_btn   = new Button    ( 'Forgotten password',image_path('reminder') );
-  var reg_btn   = new Button    ( 'Registration',image_path('new_file') );
+  let login_btn = new Button    ( 'Login',image_path('login') );
+  let pwd_btn   = new Button    ( 'Forgotten password',image_path('reminder') );
+  let reg_btn   = new Button    ( 'Registration',image_path('new_file') );
 
   login_btn.setWidth            ( '100%' );
   pwd_btn  .setWidth            ( '100%' );
@@ -225,7 +225,7 @@ function LoginPage ( sceneId )  {
       setFullScreen();
 
     // Validate the input
-    var msg = '';
+    let msg = '';
 
     if (login_inp.getValue().length<=0)
       msg += '<b>Login name</b> must be provided.<p>';
@@ -244,7 +244,7 @@ function LoginPage ( sceneId )  {
 
     } else  {
 
-      var page_switch = 0;
+      let page_switch = 0;
       if (__url_parameters)  {
         if ('id' in __url_parameters)  page_switch = 102;
                                  else  page_switch = 101;

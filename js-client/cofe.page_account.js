@@ -59,34 +59,34 @@ function AccountPage ( sceneId )  {
 //  this.grid.setCellSize          ( '','80pt',2,1,1,3 );
   this.makeLogoPanel             ( 2,0,3 );
 
-//  var response = {};  // will keep user data
-  var userData = {};  // will keep user data
+//  let response = {};  // will keep user data
+  let userData = {};  // will keep user data
 
   // make account panel
-  var panel = new Grid('');
+  let panel = new Grid('');
   //panel.setWidth      ( '600pt' );
   this.grid.setWidget ( panel,1,1,1,1 );
 
-  var full_list = (!__local_user);
+  let full_list = (!__local_user);
 
-  var accLbl = 'My Account';
+  let accLbl = 'My Account';
   if (__local_user)
     accLbl = 'Settings';
 
-  var title_lbl = new Label(accLbl).setNoWrap().setFont('times','300%',true,true);
+  let title_lbl = new Label(accLbl).setNoWrap().setFont('times','300%',true,true);
 
-  var user_lbl     = null;
-  var email_lbl    = null;
-  var login_lbl    = null;
-  var pwd_lbl      = null;
-  var pwd1_lbl     = null;
-  var licence_lbl  = null;
-  var feedback_lbl = null;
-  var user_inp     = null;
-  var email_inp    = null;
-  var login_inp    = null;
-  var pwd_inp      = null;
-  var pwd1_inp     = null;
+  let user_lbl     = null;
+  let email_lbl    = null;
+  let login_lbl    = null;
+  let pwd_lbl      = null;
+  let pwd1_lbl     = null;
+  let licence_lbl  = null;
+  let feedback_lbl = null;
+  let user_inp     = null;
+  let email_inp    = null;
+  let login_inp    = null;
+  let pwd_inp      = null;
+  let pwd1_inp     = null;
 
   if (full_list)  {
     user_lbl     = new Label     ( 'User name:'  ).setNoWrap();
@@ -102,14 +102,14 @@ function AccountPage ( sceneId )  {
     pwd_inp      = new InputText ( '' );
     pwd1_inp     = new InputText ( '' );
   }
-  var cloudrun_lbl = new Label     ( 'CloudRun Id:'       ).setNoWrap();
-  var authoris_lbl = null;
-  // var authorisation_dic = {};
+  let cloudrun_lbl = new Label     ( 'CloudRun Id:'       ).setNoWrap();
+  let authoris_lbl = null;
+  // let authorisation_dic = {};
   if (__auth_software)  {
     authoris_lbl = new Label ( 'Software authorisations:' ).setNoWrap();
     authoris_lbl.setFontSize( '112%' );
   }
-  var cloudrun_inp = new InputText ( '' );
+  let cloudrun_inp = new InputText ( '' );
 
   //user_inp    .setStyle   ( 'text',"^[A-Za-z\\-\\.\\s]+$",'John Smith',
   //user_inp    .setStyle   ( 'text',"^[\w'\-,.][^0-9_!¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$",
@@ -155,13 +155,13 @@ function AccountPage ( sceneId )  {
   cloudrun_lbl.setFontSize( '112%' );
   cloudrun_inp.setFontSize( '94%'  ).setReadOnly(true).setWidth('110pt').setHeight('26px');
 
-  var row = 0;
+  let row = 0;
   panel.setWidget              ( title_lbl   ,row,0,1,4   );
   panel.setHorizontalAlignment ( row++ ,0    ,'center'    );
   panel.setWidget              ( this.makeSetupNamePanel(), row++,0,1,4 );
   panel.setCellSize            ( '','20pt'   ,row++,0     );
 
-  var cloudrun_pnl = new Grid('-compact');
+  let cloudrun_pnl = new Grid('-compact');
   cloudrun_pnl.setWidget ( cloudrun_inp,0,0,1,1 );
 
   if (full_list)  {
@@ -176,7 +176,7 @@ function AccountPage ( sceneId )  {
     panel.setWidget ( feedback_lbl,row+7,0,1,2 );
     if (__auth_software)
       panel.setWidget ( authoris_lbl,row+8,0,1,2 );
-    for (var i=0;i<5;i++)
+    for (let i=0;i<5;i++)
       panel.setCellSize  ( '96pt','',row+i,0   );
     panel.setWidget ( user_inp    ,row  ,1,1,3 );
     panel.setWidget ( email_inp   ,row+1,1,1,3 );
@@ -184,14 +184,14 @@ function AccountPage ( sceneId )  {
     panel.setWidget ( pwd_inp     ,row+3,1,1,3 );
     panel.setWidget ( pwd1_inp    ,row+4,1,1,3 );
     panel.setWidget ( cloudrun_pnl,row+5,1,1,3 );
-  /* == for (var i=0;i<7;i++)  { */
+  /* == for (let i=0;i<7;i++)  { */
     if (__auth_software)  {
-      for (var i=0;i<9;i++)  {
+      for (let i=0;i<9;i++)  {
         panel.setVerticalAlignment ( row+i,0,'middle' );
         panel.setVerticalAlignment ( row+i,1,'middle' );
       }
     } else  {
-      for (var i=0;i<7;i++)  {
+      for (let i=0;i<7;i++)  {
         panel.setVerticalAlignment ( row+i,0,'middle' );
         panel.setVerticalAlignment ( row+i,1,'middle' );
       }
@@ -214,7 +214,7 @@ function AccountPage ( sceneId )  {
   }
 
   // make settings panel
-  var spanel = new Grid('');
+  let spanel = new Grid('');
   spanel.setWidth ( '260pt' );
   panel.setLabel  ( '&nbsp;',row,2,1,1 ).setWidth ( '80px' );
   panel.setWidget ( spanel ,row,3,15,3 );
@@ -223,13 +223,13 @@ function AccountPage ( sceneId )  {
        .setFont   ( 'times','150%',true,true );
   //spanel.setCellSize ( '','10pt',1,0   );
 
-  var prfrow = 0;
+  let prfrow = 0;
 
   spanel.setLabel ( '<hr/>',prfrow++,0,1,2 );
   spanel.setLabel ( 'On login, go to: ',prfrow,0,1,1 );
   spanel.setVerticalAlignment ( prfrow,0,'middle' );
   spanel.setCellSize  ( '120px','',prfrow,0   );
-  var onlogin_sel = new Dropdown();
+  let onlogin_sel = new Dropdown();
   onlogin_sel.addItem ( '"All Projects" list','',on_login.all_projects,
                         __user_settings.onlogin ==on_login.all_projects );
   onlogin_sel.addItem ( '"My Projects" folder'  ,'',on_login.my_projects,
@@ -243,7 +243,7 @@ function AccountPage ( sceneId )  {
   spanel.setWidget ( onlogin_sel, prfrow++,1,1,1 );
   onlogin_sel.make();
 
-  var dgrid = spanel.setGrid ( '-compact', prfrow++,0,1,2 );
+  let dgrid = spanel.setGrid ( '-compact', prfrow++,0,1,2 );
   dgrid.setLabel ( '&nbsp;',0,0,1,3 ).setFontSize('50%');
   dgrid.setLabel ( 'Initial size (% of browser window):',1,0,1,3 ).setNoWrap();
   dgrid.setLabel ( 'width' ,2,1,1,1 ).setFontItalic(true);
@@ -252,9 +252,9 @@ function AccountPage ( sceneId )  {
        .setFontItalic(true);
   dgrid.setLabel ( '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Viewers:',4,0,1,1 )
        .setFontItalic(true);
-  var expl = ' (in percents of browser window width or height, whichever ' +
+  let expl = ' (in percents of browser window width or height, whichever ' +
              'is less; set negative in order to use full window size)';
-  var defsize = [
+  let defsize = [
     [
      'job dialogs width',
       dgrid.setInputText ( 100*__user_settings.jobdlg_size[0],3,1,1,1 )
@@ -320,7 +320,7 @@ function AccountPage ( sceneId )  {
   jngrid.setLabel ( '&nbsp;&nbsp; ',0,0,1,1 ).setWidth_px ( 45 );
   jngrid.setLabel ( 'for jobs taking longer than',0,1,1,1 )
          .setFontSize ( '90%' ).setFontItalic(true);
-  var jntime = jngrid.setInputText ( __user_settings.notifications.end_of_job.lapse,0,2,1,1 )
+  let jntime = jngrid.setInputText ( __user_settings.notifications.end_of_job.lapse,0,2,1,1 )
             .setStyle ( 'text','real','','Execution time threshold' )
             .setWidth_px(40);
   jngrid.setLabel ( 'hours',0,3,1,1 )
@@ -337,7 +337,7 @@ function AccountPage ( sceneId )  {
         .setFontSize ( '90%' ).setFontItalic(true);
 
 
-  var cloudrun_btn = new Button  ( 'renew',image_path('regenerate') );
+  let cloudrun_btn = new Button  ( 'renew',image_path('regenerate') );
   cloudrun_btn.setTooltip ( 'Generate new CloudRun Id (do this periodically for ' +
                             'security reasons)' );
   cloudrun_pnl.setWidget ( cloudrun_btn,0,1,1,1 );
@@ -354,7 +354,7 @@ function AccountPage ( sceneId )  {
 
   if (full_list)  {
     row += 6;
-    var licence_btn = new Button  ( 'choose',image_path('licence') );
+    let licence_btn = new Button  ( 'choose',image_path('licence') );
     licence_btn.setWidth          ( '100%' );
     licence_btn.setTooltip        ( 'Type of licence must be chosen' );
     panel.setWidget               ( licence_btn,row,1,1,2 );
@@ -367,7 +367,7 @@ function AccountPage ( sceneId )  {
     });
 
     row++;
-    var feedback_btn = new Button ( 'choose',image_path('feedback') );
+    let feedback_btn = new Button ( 'choose',image_path('feedback') );
     feedback_btn.setWidth         ( '100%' );
     feedback_btn.setTooltip       ( 'Terms of feedback agremment must be chosen' );
     panel.setWidget               ( feedback_btn,row,1,1,2 );
@@ -380,7 +380,7 @@ function AccountPage ( sceneId )  {
     });
   }
 
-  var authoris_btn = null;
+  let authoris_btn = null;
   if (__auth_software)  {
     row++;
     authoris_btn = new Button ( 'manage',image_path('authorisation') );
@@ -393,7 +393,7 @@ function AccountPage ( sceneId )  {
       new AuthorisationDialog ( function(dlg){
         userData.authorisation = dlg.auth_dic;
         // eleminate circular dependency in userData
-        // for (var key in userData.authorisation)
+        // for (let key in userData.authorisation)
         //   userData.authorisation[key].auth_lbl = null;
       });
     });
@@ -406,12 +406,12 @@ function AccountPage ( sceneId )  {
   panel.setHLine     ( 2, row++,0, 1,4 );
   panel.setCellSize  ( '','12pt',row++,0 );
 
-  var update_btn = panel.setButton ( 'Save changes',image_path('disk'),
+  let update_btn = panel.setButton ( 'Save changes',image_path('disk'),
                                      row++,0,1,4 )
                         .setWidth  ( '100%' )
                         .setDisabled ( true ); // disable button until user data arrives from server
 
-  var delete_btn = null;
+  let delete_btn = null;
   if (full_list)
     delete_btn = panel.setButton ( 'Delete my account',image_path('remove'),
                                      row++,0,1,4 )
@@ -426,7 +426,7 @@ function AccountPage ( sceneId )  {
 
     // Validate the input
 
-    var msg = '';
+    let msg = '';
 
     if (full_list)  {
 
@@ -449,8 +449,8 @@ function AccountPage ( sceneId )  {
 
     }
 
-    for (var i=0;i<defsize.length;i++)  {
-      var text = defsize[i][1].getValue().trim();
+    for (let i=0;i<defsize.length;i++)  {
+      let text = defsize[i][1].getValue().trim();
       if (text.length<=0)
         msg += '<b>Value for ' + defsize[i][0] + '</b> must be given.<p>';
       else if (!isFloat(text))
@@ -517,9 +517,9 @@ function AccountPage ( sceneId )  {
 
     delete_btn.addOnClickListener ( function(){
 
-      var inputBox  = new InputBox  ( 'Delete My Account' );
-      // var ibx_grid  = new Grid      ( '' );
-      var pswd_inp  = new InputText ( '' );
+      let inputBox  = new InputBox  ( 'Delete My Account' );
+      // let ibx_grid  = new Grid      ( '' );
+      let pswd_inp  = new InputText ( '' );
       pswd_inp.setStyle    ( 'password','','Your password','' );
       pswd_inp.setFontSize ( '112%' ).setFontItalic(true).setWidth_px(200);
       inputBox.setText ( '','msg_confirm' );
@@ -588,7 +588,7 @@ function AccountPage ( sceneId )  {
     
     userData = data;
     
-    var msg  = checkUserData ( userData );
+    let msg  = checkUserData ( userData );
     if ((msg.length>0) && (!__local_user))
       window.setTimeout ( function(){
         new MessageBox ( 'Update Account Data',

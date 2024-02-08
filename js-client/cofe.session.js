@@ -36,19 +36,19 @@ function startSession ( sceneId,dev_switch )  {
   // Example of URL with specification of archive project:
   // https://cloud.ccp4.ac.uk/archive/access.html?id=CCP4-XXX.YYYY
   //
-  var url_search = window.location.search;
+  let url_search = window.location.search;
   if (url_search)  {
-    var url_plist    = decodeURI(url_search).split('?').pop().split('&');
+    let url_plist    = decodeURI(url_search).split('?').pop().split('&');
     __url_parameters = {};
-    for (var i=0;i<url_plist.length;i++)  {
-      var p = url_plist[i].split('=');
+    for (let i=0;i<url_plist.length;i++)  {
+      let p = url_plist[i].split('=');
       __url_parameters[p[0]] = p[1];
     }
     // alert ( JSON.stringify(__url_parameters) );
     if ((window.location.href.indexOf('localhost')<0) ||
         (window.location.href.indexOf('127.0.0.1')<0))  {
-      var lpath = window.location.pathname.slice(1).split('/');  // skip first slash
-      var wpath = '/';
+      let lpath = window.location.pathname.slice(1).split('/');  // skip first slash
+      let wpath = '/';
       if ((lpath.length>0) && lpath[0])
         wpath = '/' + lpath[0] + '/';
       window.history.replaceState ( {},document.title,wpath );
@@ -162,7 +162,7 @@ function checkAnnouncement()  {
 
 function login ( user_login_name,user_password,sceneId,page_switch )  {
 
-  var ud   = new UserData();
+  let ud   = new UserData();
   ud.login = user_login_name;
   ud.pwd   = user_password;
 
@@ -171,7 +171,7 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
     switch (response.status)  {
 
       case fe_retcode.ok:
-              var userData         = response.data.userData;
+              let userData         = response.data.userData;
               __login_token        = response.message;
               if (user_login_name=='**' + __local_user_id + '**')
                     __login_id     = __local_user_id;
@@ -184,7 +184,10 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
               __environ_server     = response.data.environ_server;
               __my_workflows       = response.data.my_workflows;
               __login_user         = userData.name;
+              let color_modes = __user_settings.color_modes;
               __user_settings      = userData.settings;
+              if (!('color_modes' in __user_settings))
+                __user_settings.color_modes = color_modes;
               __user_role          = userData.role;
               __user_licence       = userData.licence;
               __dormant            = userData.dormant;
@@ -251,8 +254,8 @@ function login ( user_login_name,user_password,sceneId,page_switch )  {
                           else if (__user_settings.onlogin==on_login.last_project)  {
                             serverRequest ( fe_reqtype.getProjectList,0,'Project List',function(data){
                               __current_folder = data.currentFolder;
-                              var n = -1;
-                              for (var i=0;(i<data.projects.length) && (n<0);i++)
+                              let n = -1;
+                              for (let i=0;(i<data.projects.length) && (n<0);i++)
                                 if (data.projects[i].name==data.current)
                                   n = i;
                               if (n>=0)  makeProjectPage     ( sceneId );
@@ -441,7 +444,7 @@ function checkSession0 ( sceneId )  {
         } else  {
           offlineGreeting ( function(){
             if (__current_page && ($.type(rdata.data) === "string"))  {
-              var signal = rdata.data.split(':');
+              let signal = rdata.data.split(':');
               if (signal.length==2)  {
                 switch (__current_page._type)  {
                   case 'ProjectListPage' : if (signal[0]=='cloudrun_reload_project_list')

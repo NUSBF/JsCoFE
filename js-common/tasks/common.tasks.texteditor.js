@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    07.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  Text Editor Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev 2022-2023
+ *  (C) E. Krissinel, A. Lebedev 2022-2024
  *
  *  =================================================================
  *
@@ -33,12 +33,13 @@ function TaskTextEditor()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type  = 'TaskTextEditor';
-  this.name   = 'text editor';
-  this.oname  = 'text_editor';   // asterisk here means do not use
-  this.title  = 'Text editor';
+  this._type     = 'TaskTextEditor';
+  this.name      = 'text editor';
+  this.oname     = 'text_editor';   // asterisk here means do not use
+  this.title     = 'Text editor';
+  this.fasttrack = true;  // enforces immediate execution
 
-  this.upload = null;
+  this.upload    = null;
 
   this.input_dtypes = [{  // input data types
     data_type   : { 'DataRevision' : [],    // data type(s) and subtype(s)

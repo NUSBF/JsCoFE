@@ -1047,7 +1047,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
         //  window.open ( dlg.outputPanel.getURL(),'_blank',
         //                'location=no,menubar=no,titlebar=no,toolbar=no' );
         if (dlg.outputPanel)  {
-          var iframe =
+          let iframe =
             '<!DOCTYPE html>\n<html><head>' +
             '<style>body, html {' +
                    'width: 100%; height: 100%; margin: 0; padding: 0}' +
@@ -1061,7 +1061,7 @@ JobDialog.prototype.makeLayout = function ( onRun_func )  {
             '<iframe src="' + dlg.outputPanel.getURL() +
                 '" style="height:calc(100% - 4px);width:calc(100% - 4px)">' +
             '</iframe></body></html>';
-          var win = window.open ( "",'' );
+          let win = window.open ( "",'' );
 //                            "toolbar=no,menubar=no,resizable=yes,location=no" );
           win.document.write ( iframe );
         }

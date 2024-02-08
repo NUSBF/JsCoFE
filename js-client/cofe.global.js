@@ -32,7 +32,29 @@ var __maintainerEmail = 'ccp4@ccp4.ac.uk';
 var __login_token     = '';
 var __login_id        = '';
 var __login_user      = '';
-var __user_settings   = {};
+var __user_settings   = {
+  color_modes : {
+    preferred_mode : 'system',  // 'light', 'dark', 'system' 
+    normal_mode :  {
+      invert     : 0.0,   // 0 - 1
+      sepia      : 0.0,   // 0 - 1
+      hue        : 0,     // integer deg +/- 180
+      saturate   : 1.0,   // >0
+      contrast   : 1.0,   // >0
+      brightness : 1.0,   // > 0
+      grayscale  : 0.0    // 0 -1
+    },
+    dark_mode :  {
+      invert     : 0.87,  // 0 - 1
+      sepia      : 0.0,   // 0 - 1
+      hue        : 0,     // integer deg +/-180
+      saturate   : 1.0,   // >0
+      contrast   : 1.0,   // >0
+      brightness : 1.0,   // > 0
+      grayscale  : 0.0    // 0 -1
+    }
+  }
+};
 var __user_role       = role_code.user;
 var __user_licence    = '';
 var __dormant         = 0;
@@ -62,29 +84,6 @@ var __user_authorisation = null;  // user authorisation data
 var __environ_server  = [];     // list of key environmental variables on NCs
 var __environ_client  = [];     // list of key environmental variables on Client
 var __my_workflows    = [];     // user defined workflows
-
-var __color_mode = {
-  active_mode : 'light',  // 'dark' for dark mode
-  normal_mode :  {
-    invert     : 0.0,   // 0 - 1
-    sepia      : 0.0,   // 0 - 1
-    hue        : 0,     // integer deg
-    saturate   : 1.0,   // >0
-    contrast   : 1.0,   // >0
-    brightness : 1.0,   // > 0
-    grayscale  : 0.0    // 0 -1
-  },
-  dark_mode :  {
-    invert     : 0.87,   // 0 - 1
-    sepia      : 0.0,   // 0 - 1
-    hue        : 0,     // integer deg
-    saturate   : 1.0,   // >0
-    contrast   : 1.0,   // >0
-    brightness : 1.0,   // > 0
-    grayscale  : 0.0    // 0 -1
-  }
-};
-
 
 var __clipboard       = { task: null };     // clipboard for copy-pasting jobs
 
@@ -257,14 +256,16 @@ function toggleDarkMode() {
 }
 */
 
+var __active_color_mode = 'light';
+
 function setDarkMode ( darkMode )  {
   
-  let color_mode = __color_mode.normal_mode;
+  let color_mode = __user_settings.color_modes.normal_mode;
   if (darkMode)  {
-    color_mode = __color_mode.dark_mode;
-    __color_mode.active_mode = 'dark';
+    color_mode = __user_settings.color_modes.dark_mode;
+    __active_color_mode = 'dark';
   } else
-    __color_mode.active_mode = 'light';
+    __active_color_mode = 'light';
 
   $(document.body).css({
     'filter' : 'invert('        + color_mode.invert     + 
@@ -279,7 +280,7 @@ function setDarkMode ( darkMode )  {
 }
 
 function toggleDarkMode() {
-  setDarkMode ( __color_mode.active_mode=='light' );
+  setDarkMode ( __active_color_mode=='light' );
 }
 
 function isDarkMode()  { 

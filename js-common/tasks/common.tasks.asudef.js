@@ -37,7 +37,6 @@ function TaskASUDef()  {
   this.name      = 'define asymmetric unit contents';
   this.oname     = '';  //'*';   // asterisk here means do not use
   this.title     = 'Asymmetric Unit Contents';
-  //this.helpURL   = './html/jscofe_task_asudef.html';
   this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{   // input data types

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    07.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  ImportSeqCP Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M, Fando 2020-2023
+ *  (C) E. Krissinel, A. Lebedev, M, Fando 2020-2024
  *
  *  =================================================================
  *
@@ -33,10 +33,11 @@ function TaskImportSeqCP()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type = 'TaskImportSeqCP';
-  this.name  = 'import sequence';
-  this.oname = 'sequence';
-  this.title = 'Import Sequence(s) by Copy-Paste';
+  this._type     = 'TaskImportSeqCP';
+  this.name      = 'import sequence';
+  this.oname     = 'sequence';
+  this.title     = 'Import Sequence(s) by Copy-Paste';
+  this.fasttrack = true;  // enforces immediate execution
 
   this.parameters = { // input parameters
 

@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    07.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  CrosSec Task Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2019-2024
  *
  *  =================================================================
  *
@@ -33,10 +33,11 @@ function TaskCrosSec()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type   = 'TaskCrosSec';
-  this.name    = 'x-ray cross sections';
-  this.oname   = '*';
-  this.title   = 'X-ray cross sections and anomalous scattering factors';
+  this._type     = 'TaskCrosSec';
+  this.name      = 'x-ray cross sections';
+  this.oname     = '*';
+  this.title     = 'X-ray cross sections and anomalous scattering factors';
+  this.fasttrack = true;  // enforces immediate execution
 
   this.parameters = { // input parameters
 
