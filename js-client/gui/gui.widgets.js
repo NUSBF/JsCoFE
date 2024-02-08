@@ -678,7 +678,7 @@ Grid.prototype.addWidget = function (widget, row, col, rowSpan, colSpan) {
 }
 
 Grid.prototype.insertWidget = function (widget, row, col, rowSpan, colSpan) {
-  var cell = this.insertCell(row, col);
+  let cell = this.insertCell(row, col);
   cell.rowSpan = rowSpan;
   cell.colSpan = colSpan;
   if (widget) {
@@ -689,7 +689,7 @@ Grid.prototype.insertWidget = function (widget, row, col, rowSpan, colSpan) {
 }
 
 Grid.prototype.setSpan = function (row, col, rowSpan, colSpan) {
-  var cell = this.getCell(row, col);
+  let cell = this.getCell(row, col);
   cell.rowSpan = rowSpan;
   cell.colSpan = colSpan;
   return cell;
@@ -697,15 +697,15 @@ Grid.prototype.setSpan = function (row, col, rowSpan, colSpan) {
 
 
 Grid.prototype.setPanel = function (row, col, rowSpan, colSpan) {
-  var panel = new Widget('div');
-  this.setWidget(panel, row, col, rowSpan, colSpan);
+  let panel = new Widget('div');
+  this.setWidget ( panel, row, col, rowSpan, colSpan );
   return panel;
 }
 
 
 Grid.prototype.setFieldset = function (title, row, col, rowSpan, colSpan) {
-  var fieldset = new Fieldset(title);
-  this.setWidget(fieldset, row, col, rowSpan, colSpan);
+  let fieldset = new Fieldset(title);
+  this.setWidget ( fieldset, row, col, rowSpan, colSpan );
   return fieldset;
 }
 

@@ -31,13 +31,13 @@ function DarkModeDialog()  {
 
   let darkMode    = isDarkMode();
 
-  let invert0     = __color_mode.dark_mode.invert;
-  let sepia0      = __color_mode.dark_mode.sepia;
-  let hue0        = __color_mode.dark_mode.hue;
-  let saturate0   = __color_mode.dark_mode.saturate;
-  let contrast0   = __color_mode.dark_mode.contrast;
-  let brightness0 = __color_mode.dark_mode.brightness;
-  let grayscale0  = __color_mode.dark_mode.grayscale;
+  let invert0     = __user_settings.color_modes.dark_mode.invert;
+  let sepia0      = __user_settings.color_modes.dark_mode.sepia;
+  let hue0        = __user_settings.color_modes.dark_mode.hue;
+  let saturate0   = __user_settings.color_modes.dark_mode.saturate;
+  let contrast0   = __user_settings.color_modes.dark_mode.contrast;
+  let brightness0 = __user_settings.color_modes.dark_mode.brightness;
+  let grayscale0  = __user_settings.color_modes.dark_mode.grayscale;
 
   QuestionBox.call ( this,'Dark Mode Tune-up',
                      '<h3>Dark  Mode parameters</h3>',
@@ -47,13 +47,13 @@ function DarkModeDialog()  {
                       },{
                         name    : 'Reset mode',
                         onclick : function(){
-                          __color_mode.dark_mode.invert     = invert0;
-                          __color_mode.dark_mode.sepia      = sepia0;
-                          __color_mode.dark_mode.hue        = hue0;
-                          __color_mode.dark_mode.saturate   = saturate0;
-                          __color_mode.dark_mode.contrast   = contrast0;
-                          __color_mode.dark_mode.brightness = brightness0;
-                          __color_mode.dark_mode.grayscale  = grayscale0;
+                          __user_settings.color_modes.dark_mode.invert     = invert0;
+                          __user_settings.color_modes.dark_mode.sepia      = sepia0;
+                          __user_settings.color_modes.dark_mode.hue        = hue0;
+                          __user_settings.color_modes.dark_mode.saturate   = saturate0;
+                          __user_settings.color_modes.dark_mode.contrast   = contrast0;
+                          __user_settings.color_modes.dark_mode.brightness = brightness0;
+                          __user_settings.color_modes.dark_mode.grayscale  = grayscale0;
                           setDarkMode ( darkMode );               
                         }
                       }
@@ -64,13 +64,13 @@ function DarkModeDialog()  {
   let r = 0;
 
   function collectData()  {
-    __color_mode.dark_mode.invert     = grid.invert.value;
-    __color_mode.dark_mode.sepia      = grid.sepia.value;
-    __color_mode.dark_mode.hue        = grid.hue.value;
-    __color_mode.dark_mode.saturate   = grid.saturate.value;
-    __color_mode.dark_mode.contrast   = grid.contrast.value;
-    __color_mode.dark_mode.brightness = grid.brightness.value;
-    __color_mode.dark_mode.grayscale  = grid.grayscale.value;
+    __user_settings.color_modes.dark_mode.invert     = grid.invert.value;
+    __user_settings.color_modes.dark_mode.sepia      = grid.sepia.value;
+    __user_settings.color_modes.dark_mode.hue        = grid.hue.value;
+    __user_settings.color_modes.dark_mode.saturate   = grid.saturate.value;
+    __user_settings.color_modes.dark_mode.contrast   = grid.contrast.value;
+    __user_settings.color_modes.dark_mode.brightness = grid.brightness.value;
+    __user_settings.color_modes.dark_mode.grayscale  = grid.grayscale.value;
     setDarkMode ( true );
   }
 

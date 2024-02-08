@@ -2,7 +2,7 @@
 /*
  *  =================================================================
  *
- *    09.07.23   <--  Date of Last Modification.
+ *    07.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -13,7 +13,7 @@
  *  **** Content :  PDB Files for deposition Class
  *       ~~~~~~~~~
  *
- *  (C) E. Krissinel, A. Lebedev, M. Fando 2023
+ *  (C) E. Krissinel, A. Lebedev, M. Fando 2023-2024
  *
  *  =================================================================
  *
@@ -33,10 +33,11 @@ function TaskPDBDepFiles()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type   = 'TaskPDBDepFiles';
-  this.name    = 'PDB deposition files';
+  this._type     = 'TaskPDBDepFiles';
+  this.name      = 'PDB deposition files';
   this.setOName ( '*' );  // default output file name template
-  this.title   = 'PDB Deposition Files';
+  this.title     = 'PDB Deposition Files';
+  this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{  // input data types
       data_type : {'DataRevision':['!xyz']}, // data type(s) and subtype(s)

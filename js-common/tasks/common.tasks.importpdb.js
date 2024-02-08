@@ -38,7 +38,6 @@ function TaskImportPDB()  {
   this.name      = 'import from PDB/AFDB';
   this.oname     = '*';   // asterisk here means do not use
   this.title     = 'Import from PDB/AFDB';
-  //this.helpURL   = './html/jscofe_task_importpdb.html';
   this.fasttrack = true;  // enforces immediate execution
 
   // declare void input data for passing pre-existing revisions through the task

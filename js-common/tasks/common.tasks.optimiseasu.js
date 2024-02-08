@@ -5,7 +5,7 @@
  * 
  *  =================================================================
  *
- *    29.01.24   <--  Date of Last Modification.
+ *    07.02.24   <--  Date of Last Modification.
  *                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *  -----------------------------------------------------------------
  *
@@ -36,10 +36,11 @@ function TaskOptimiseASU()  {
   if (__template)  __template.TaskTemplate.call ( this );
              else  TaskTemplate.call ( this );
 
-  this._type   = 'TaskOptimiseASU';
-  this.name    = 'optimise ASU';
+  this._type     = 'TaskOptimiseASU';
+  this.name      = 'optimise ASU';
   this.setOName ( 'optimiseasu' );  // default output file name template
-  this.title   = 'Optimise Asymmetric Unit';
+  this.title     = 'Optimise Asymmetric Unit';
+  this.fasttrack = true;  // enforces immediate execution
 
   this.input_dtypes = [{  // input data types
       data_type : { 'DataRevision' : ['!xyz'],  // data type(s) and subtype(s)
