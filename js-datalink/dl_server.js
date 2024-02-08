@@ -16,6 +16,7 @@ class server {
 
   constructor() {
     this.datalink = new datalink();
+    this.datalink.resumeData();
   }
 
   jsonResponse(res, data) {
