@@ -239,6 +239,10 @@ class dataLink {
   }
 
   fetchData(user, source, id, force = false) {
+    if (! tools.validUserName(user)) {
+      return tools.errorMsg(`Invalid user name`, 400);
+    }
+
     id = id.toLowerCase();
     let result = this.hasSourceEntry(source, id);
     if (result !== true) {
