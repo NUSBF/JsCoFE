@@ -134,6 +134,7 @@ class dataLink {
   }
 
   async searchSourceCatalog(pdb) {
+    pdb = pdb.toLowerCase();
     // check if id matches pdb indentifier format (4 alphanumberic characters)
     if (! pdb.match(/^[a-z0-9]{4}$/)) {
       return tools.errorMsg(`Invalid PDB identifier`, 400);
