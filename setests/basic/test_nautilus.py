@@ -274,10 +274,10 @@ def startNautilus(driver):
 
 
     try:
-        sf.clickByXpath(driver, "//span[starts-with(text(), '%s')]" % 'consider fixed')
-        time.sleep(1)
-
+        
         sf.clickByXpath(driver, "//*[starts-with(text(), '%s')]" % 'ignore')
+        time.sleep(1)
+        sf.clickByXpath(driver, "//span[starts-with(text(), '%s')]" % 'consider fixed')
         time.sleep(1)
 
     except:

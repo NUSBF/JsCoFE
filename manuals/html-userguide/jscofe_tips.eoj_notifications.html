@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="lang:clipboard.copy" content="Copy to clipboard">
@@ -51,8 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <link rel="stylesheet" type="text/css" href="_static/contentui.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/contentui.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -424,22 +425,22 @@
         <div class="md-content">
           <article class="md-content__inner md-typeset" role="main">
             
-  <section id="end-of-job-notifications">
-<h1 id="jscofe-tips-eoj-notifications--page-root"><span class="section-number">1.5.8. </span>End of Job Notifications<a class="headerlink" href="#jscofe-tips-eoj-notifications--page-root" title="Permalink to this heading">¶</a></h1>
+  
+<h1 id="jscofe-tips-eoj-notifications--page-root"><span class="section-number">1.5.8. </span>End of Job Notifications<a class="headerlink" href="#jscofe-tips-eoj-notifications--page-root" title="Permalink to this headline">¶</a></h1>
 <p>When a job takes long time to run, periodic checks on job status may be impractical. Alternatively, CCP4 Cloud can inform users of long-running job completion by e-mail.</p>
 <p>The corresponding configuration is found in <em>My Account</em> page:</p>
 <a class="reference internal image-reference" href="_images/eoj_notifications.png"><img alt="_images/eoj_notifications.png" class="align-center" src="_images/eoj_notifications.png" style="width: 370.0px; height: 437.0px;"/></a>
 <p>There, the checkbox switches end-of-job notifications on/off. The notifications will be send only for jobs that run longer than the specified number of hours. By default, notifications are active and CCP4 Cloud sends them for jobs that finish on or after 24 hours since starting.</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The job duration threshold corresponds to the wall-clock time, rather than CPU time.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">The job duration threshold corresponds to the wall-clock time, rather than CPU time.</p>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Changing notification settings does not have impact on jobs that are already running.</p>
+<p class="first admonition-title">Note</p>
+<p class="last">Changing notification settings does not have impact on jobs that are already running.</p>
 </div>
 <p><a class="reference internal" href="jscofe_tips.html"><span class="doc">All CCP4 Cloud tips</span></a></p>
-</section>
+
 
 
           </article>
@@ -484,7 +485,7 @@
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 7.0.0.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
