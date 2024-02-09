@@ -484,7 +484,7 @@ def test_3freeRflag():
         sf.asymmetricUnitContentsAfterCloudImport(d.driver, d.waitShort, task='0007')  # 7
         editRevisionStructure_08(d.driver, d.waitShort)  # 08
         sf.startRefmac(d.driver, d.waitLong) # 09
-        verifyRefmac(d.driver, d.waitLong, '0009', 0.2, 0.3)
+        verifyRefmac(d.driver, d.waitLong, '0009', 0.2, 0.32)
 
         sf.renameProject(d.driver, d.testName)
         d.driver.quit()

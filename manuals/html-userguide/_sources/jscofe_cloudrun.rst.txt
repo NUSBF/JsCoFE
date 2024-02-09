@@ -68,6 +68,7 @@ Example: ::
   #
   PROJECT     project_id                  # mandatory
   TITLE       Optional Project Title      # used only if project is created
+  FOLDER      Optional Project Folder     # used only if project is created
   TASK        auto-af2                    # mandatory
   TASK_NAME   Optional Task Name          # if not given, default name is used
   #
@@ -151,6 +152,23 @@ Command file keywords
     Project title, which is used for creating new project, for example: ::
     
         TITLE   Auto-MR Project started with CloudRun utility
+
+**FOLDER**
+    *(optional, used only for new projects)* 
+    
+    Project folder in which the new project should be placed, for example: ::
+    
+        FOLDER   CloudRun projects
+
+    Folder names or paths can have spaces. Embedded project structure can be
+    created using slash-separated paths, for example: ::
+
+        FOLDER   CloudRun projects/Project 1
+
+    If folder path starts with slash, then it is placed as a sibling to
+    *"My Projects"* folder, otherwise it will be created with *"My Projects"*
+    as a root node. If ``FOLDER`` keyword is absent, the new project will be 
+    created in *"My Projects"*.
 
 .. _cloudrun_TASK:
 
