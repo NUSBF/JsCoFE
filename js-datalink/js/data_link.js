@@ -408,9 +408,18 @@ class dataLink {
     }
 
     let valid = {};
-    for (const [key, value] of Object.entries(obj)) {
+    for (let [key, value] of Object.entries(obj)) {
       switch(key) {
         case 'in_use':
+          if (typeof value === 'string') {
+            value = value.toLowerCase();
+            if (value === 'true' || value === '1') {
+              value = true;
+            }
+            if (value === 'false' || value === '0') {
+              value = false;
+            }
+          }
           if (typeof value !== 'boolean') {
             return tools.errorMsg(`${key} should be set to true or false`, 400);
           }
