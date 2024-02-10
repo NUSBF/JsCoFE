@@ -42,30 +42,30 @@ function ProjectListPage ( sceneId )  {
     return;
   }
 
-  var projectList    = new ProjectList(__login_id);  // project list data
+  let projectList    = new ProjectList(__login_id);  // project list data
   this.tablesort_tbl = null;                         // project list table
-  var folder_btn     = null;
-  var open_btn       = null;
-  var add_btn        = null;
-  var rename_btn     = null;
-  var clone_btn      = null;
-  var move_btn       = null;
-  var del_btn        = null;
-  var export_btn     = null;
-  var import_btn     = null;
-  var demoprj_btn    = null;
-  var join_btn       = null;
-  var help_btn       = null;
-  var panel          = null;
+  let folder_btn     = null;
+  let open_btn       = null;
+  let add_btn        = null;
+  let rename_btn     = null;
+  let clone_btn      = null;
+  let move_btn       = null;
+  let del_btn        = null;
+  let export_btn     = null;
+  let import_btn     = null;
+  let demoprj_btn    = null;
+  let join_btn       = null;
+  let help_btn       = null;
+  let panel          = null;
   this.welcome_lbl   = null;
-  var nCols          = 0;                  // column span of project table
-  var table_row      = 0;                  // project list position in panel
-  var self           = this;               // for reference to Base class
-  var pageTitle_lbl  = null;
+  let nCols          = 0;                  // column span of project table
+  let table_row      = 0;                  // project list position in panel
+  let self           = this;               // for reference to Base class
+  let pageTitle_lbl  = null;
 
-  var owners_folder  = __login_id + '\'s Projects';
+  let owners_folder  = __login_id + '\'s Projects';
 
-  var tightScreen = (Math.max(window.screen.width,window.screen.height)<720*4/3);
+  let tightScreen = (Math.max(window.screen.width,window.screen.height)<720*4/3);
 
   function currentProjectName()  {
     if (__current_folder.nprojects>0)
@@ -74,10 +74,10 @@ function ProjectListPage ( sceneId )  {
   }
 
   function getCurrentProjectDesc()  {
-    var pdesc = null;
+    let pdesc = null;
     if (__current_folder.nprojects>0)  {
-      var pname = currentProjectName();
-      for (var i=0;(i<projectList.projects.length) && (!pdesc);i++)
+      let pname = currentProjectName();
+      for (let i=0;(i<projectList.projects.length) && (!pdesc);i++)
         if (projectList.projects[i].name==pname)
           pdesc = projectList.projects[i];
     }
@@ -85,10 +85,10 @@ function ProjectListPage ( sceneId )  {
   }
 
   function getCurrentProjectNo()  {
-    var pno = -1;
+    let pno = -1;
     if (__current_folder.nprojects>0)  {
-      var pname = currentProjectName();
-      for (var i=0;(i<projectList.projects.length) && (pno<0);i++)
+      let pname = currentProjectName();
+      for (let i=0;(i<projectList.projects.length) && (pno<0);i++)
         if (projectList.projects[i].name==pname)
           pno = i;
     }
@@ -96,14 +96,14 @@ function ProjectListPage ( sceneId )  {
   }
 
   function isCurrentProjectShared()  {
-    var pdesc = getCurrentProjectDesc();
+    let pdesc = getCurrentProjectDesc();
     if (pdesc)
       return (Object.keys(pdesc.share).length>0);
     return false;
   }
 
   function isCurrentProjectAuthored ( check_author )  {
-    var pdesc = getCurrentProjectDesc();
+    let pdesc = getCurrentProjectDesc();
     if (pdesc)  {
       if (check_author)
             return (getProjectAuthor(pdesc)==__login_id);
@@ -132,7 +132,7 @@ function ProjectListPage ( sceneId )  {
       pageTitle_lbl.setCursor('pointer');
     }
     if (folder_btn)  {
-      var icon = 'folder_projects';
+      let icon = 'folder_projects';
       switch (folder.type)  {
         case folder_type.custom_list   : icon = 'folder_list_custom';    break;
         case folder_type.list          :
@@ -180,7 +180,7 @@ function ProjectListPage ( sceneId )  {
   }
 
   // function to open selected Project
-  var openProject = function() {
+  let openProject = function() {
     saveProjectList ( function(data){ makeProjectPage(sceneId); },null );
   }
 
@@ -188,7 +188,7 @@ function ProjectListPage ( sceneId )  {
     saveProjectList ( function(data){ makeProjectPage(sceneId); },prjName );
   }
 
-  var _add_project = function() {
+  let _add_project = function() {
     new AddProjectDialog ( projectList,function(pspecs){
       if (pspecs)  {
         if (projectList.addProject(pspecs.id,pspecs.title,
@@ -216,8 +216,8 @@ function ProjectListPage ( sceneId )  {
     });
   }
 
-  var archiveProject = function()  {
-    var pDesc = getCurrentProjectDesc();
+  let archiveProject = function()  {
+    let pDesc = getCurrentProjectDesc();
     if (!pDesc)  {
       new MessageBox ( 'Current project not identified',
           '<h2>Current project is not identified</h2>' +
@@ -229,7 +229,7 @@ function ProjectListPage ( sceneId )  {
     new ProjectArchiveDialog ( pDesc,function(){} );
   }
 
-  var addProject = function()  {
+  let addProject = function()  {
     if (__current_folder.type==folder_type.cloud_archive)  {
       new AccessArchiveDialog ( function(done){
         if (done)
@@ -260,7 +260,7 @@ function ProjectListPage ( sceneId )  {
   }
 
   // function to rename selected Project
-  var renameProject = function() {
+  let renameProject = function() {
 
     if ((__current_folder.type==folder_type.archived) ||
         (__current_folder.type==folder_type.cloud_archive))  {
@@ -275,7 +275,7 @@ function ProjectListPage ( sceneId )  {
       panel.click();  // get rid of context menu
 
       if (isCurrentProjectShared())  {
-        var msg = '<div style="width:450px"><h2>Rename Project</h2>';
+        let msg = '<div style="width:450px"><h2>Rename Project</h2>';
         if (isCurrentProjectAuthored(true))
               msg += 'You cannot rename this project because you shared it with other ' +
                      'users.<p>Shared projects cannot be renamed until they are unshared.';
@@ -285,7 +285,7 @@ function ProjectListPage ( sceneId )  {
         return;
       }
 
-      var pDesc = getCurrentProjectDesc();
+      let pDesc = getCurrentProjectDesc();
       if (!pDesc)  {
         new MessageBox ( 'Current project not identified',
             '<h2>Current project is not identified</h2>' +
@@ -304,18 +304,18 @@ function ProjectListPage ( sceneId )  {
         return;
       }
 
-      var prjName   = pDesc.name;
-      var inputBox  = new InputBox ( 'Rename Project' );
+      let prjName   = pDesc.name;
+      let inputBox  = new InputBox ( 'Rename Project' );
       inputBox.setText ( '','renameprj' );
-      var ibx_grid = inputBox.grid;
+      let ibx_grid = inputBox.grid;
       ibx_grid.setLabel    ( '<h2>Rename Project "' + prjName + '"</h2>',0,2,2,3 );
       ibx_grid.setLabel    ( 'New ID:',2,3,1,1 );
-      var name_inp  = ibx_grid.setInputText ( prjName,2,4,1,1 )
+      let name_inp  = ibx_grid.setInputText ( prjName,2,4,1,1 )
             .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
             .setFontItalic ( true )
             .setWidth      ( '240px' );
       ibx_grid.setLabel    ( 'New Name:&nbsp;',3,3,1,1 );
-      var title_inp = ibx_grid.setInputText
+      let title_inp = ibx_grid.setInputText
                           ( self.tablesort_tbl.selectedRow.child[1].text,3,4,1,1 )
             .setStyle      ( 'text','','Put a descriptive title here','' )
             .setFontItalic ( true )
@@ -351,7 +351,7 @@ function ProjectListPage ( sceneId )  {
         }
         pDesc = projectList.renameProject ( prjName,title_inp.getValue(),getDateString() );
         if (pDesc)  {
-          var new_name = name_inp.getValue();
+          let new_name = name_inp.getValue();
           if ((new_name!=pDesc.name) && projectList.getProject(new_name))  {
             new MessageBox ( 'Duplicate Project ID',
                     '<div style="width:400px;"><h2>Duplicate Project ID</h2>' +
@@ -392,7 +392,7 @@ function ProjectListPage ( sceneId )  {
 
   }
 
-  var deleteProject = function()  {
+  let deleteProject = function()  {
 
     panel.click();  // get rid of context menu
     
@@ -440,7 +440,7 @@ function ProjectListPage ( sceneId )  {
 
   }
 
-  var exportProject = function() {
+  let exportProject = function() {
     panel.click();  // get rid of context menu
     if (self.tablesort_tbl.selectedRow)  {
       projectList.current = currentProjectName();
@@ -453,9 +453,9 @@ function ProjectListPage ( sceneId )  {
                        'msg_error' );
   }
 
-  // var sharePrj = function()  {
+  // let sharePrj = function()  {
   //   panel.click();  // get rid of context menu
-  //   var pno = getCurrentProjectNo();
+  //   let pno = getCurrentProjectNo();
   //   if (pno>=0)  {
   //     shareProject ( projectList.projects[pno],function(desc){
   //       if (desc)  {
@@ -472,9 +472,9 @@ function ProjectListPage ( sceneId )  {
   //                      'msg_error' );
   // }
 
-  var prjWorkTeam = function()  {
+  let prjWorkTeam = function()  {
     panel.click();  // get rid of context menu
-    var pno = getCurrentProjectNo();
+    let pno = getCurrentProjectNo();
     if (pno>=0)  {
       new WorkTeamDialog ( projectList.projects[pno] );
       // ,function(desc){
@@ -492,10 +492,10 @@ function ProjectListPage ( sceneId )  {
                        'msg_error' );
   }
 
-  var cloneProject = function()  {
+  let cloneProject = function()  {
     panel.click();  // get rid of context menu
 
-    var pDesc = getCurrentProjectDesc();
+    let pDesc = getCurrentProjectDesc();
     if (!pDesc)  {
       new MessageBox ( 'Current project not identified',
           '<h2>Current project is not identified</h2>' +
@@ -522,27 +522,27 @@ function ProjectListPage ( sceneId )  {
       return false;
     }
 
-    var prjName  = pDesc.name;
-    var inputBox = new InputBox ( 'Clone Project' );
+    let prjName  = pDesc.name;
+    let inputBox = new InputBox ( 'Clone Project' );
     inputBox.setText ( '','cloneprj' );
-    var ibx_grid = inputBox.grid;
+    let ibx_grid = inputBox.grid;
     ibx_grid.setLabel ( '<h2>Clone Project "' + prjName + '"</h2>',0,2,2,3 );
     ibx_grid.setLabel ( 'Cloned Project ID:',2,3,1,1 );
-    var name_sugg  = prjName + '-clone';
-    var title_sugg = self.tablesort_tbl.selectedRow.child[1].text.trim();
+    let name_sugg  = prjName + '-clone';
+    let title_sugg = self.tablesort_tbl.selectedRow.child[1].text.trim();
     if (pDesc.archive)  {
       name_sugg  = prjName + '-rev' + pDesc.archive.version;
       title_sugg = title_sugg.split(': Revision #')[0] + ': Revision #' +
                    pDesc.archive.version;
     } else
       title_sugg += ' (cloned)';
-    var name_inp  = ibx_grid.setInputText ( name_sugg,2,4,1,1 )
+    let name_inp  = ibx_grid.setInputText ( name_sugg,2,4,1,1 )
           .setStyle      ( 'text',"^[A-Za-z0-9\\-\\._]+$",'e.g., project-1','' )
           .setFontItalic ( true )
           .setWidth      ( '240px' )
           .setReadOnly   ( (pDesc.archive!=null) );
     ibx_grid.setLabel    ( 'Cloned Project Name:&nbsp;',3,3,1,1 );
-    var title_inp = ibx_grid.setInputText ( title_sugg,3,4,1,1 )
+    let title_inp = ibx_grid.setInputText ( title_sugg,3,4,1,1 )
           .setStyle      ( 'text','','Put a descriptive title here','' )
           .setFontItalic ( true )
           .setWidth      ( '520px' )
@@ -567,7 +567,7 @@ function ProjectListPage ( sceneId )  {
                  'msg_excl_yellow' );
         return false;
       }
-      var new_name = name_inp.getValue();
+      let new_name = name_inp.getValue();
       if (projectList.getProject(new_name))  {
         new MessageBox ( 'Duplicate Project ID',
                  '<div style="width:400px;"><h2>Duplicate Project ID</h2>' +
@@ -581,10 +581,10 @@ function ProjectListPage ( sceneId )  {
       new WaitDialog ( 'Clone Project','',
         function(dlg,close_func){
 
-          var grid = new Grid('');
+          let grid = new Grid('');
           dlg.addWidget ( grid );
           grid.setLabel ( '<h3>Cloning project in progress, please wait ...</h3>',0,0,1,3 );
-          var progressBar = new ProgressBar ( 0 );
+          let progressBar = new ProgressBar ( 0 );
           grid.setWidget ( progressBar, 1,0,1,3 );
           grid.setLabel ( '<i style="font-size:85%;">this may take long time; ' +
                           'the dialog will close automatically</i>',2,0,1,3 );
@@ -629,7 +629,7 @@ function ProjectListPage ( sceneId )  {
 
   }
 
-  var repairProject = function()  {
+  let repairProject = function()  {
     panel.click();  // get rid of context menu
     new QuestionBox (
         'Repair Project',
@@ -647,10 +647,10 @@ function ProjectListPage ( sceneId )  {
 
   }
 
-  var delistProject = function()  {
+  let delistProject = function()  {
     panel.click();  // get rid of context menu
 
-    var pDesc = getCurrentProjectDesc();
+    let pDesc = getCurrentProjectDesc();
     if (!pDesc)  {
       new MessageBox ( 'Current project not identified',
           '<h2>Current project is not identified</h2>' +
@@ -660,7 +660,7 @@ function ProjectListPage ( sceneId )  {
       return false;
     }
 
-    var inputBox = new InputBox ( 'Delist project' );
+    let inputBox = new InputBox ( 'Delist project' );
     
     if (__current_folder.type==folder_type.cloud_archive)  {
 
@@ -733,10 +733,10 @@ function ProjectListPage ( sceneId )  {
     if (__current_folder.nprojects>=0)  // works first time after login
           __current_folder = projectList.currentFolder;
     else  projectList.currentFolder = __current_folder;
-    // var owners_folder = __login_id + '\'s Projects';
+    // let owners_folder = __login_id + '\'s Projects';
 
-    var nrows = 0;
-    for (var i=0;i<projectList.projects.length;i++)
+    let nrows = 0;
+    for (let i=0;i<projectList.projects.length;i++)
       if (listProject(projectList.projects[i]))
         nrows++;
 
@@ -762,11 +762,11 @@ function ProjectListPage ( sceneId )  {
 
     setPageTitle ( __current_folder );
 
-    var archive_folder = (__current_folder.type==folder_type.archived) ||
+    let archive_folder = (__current_folder.type==folder_type.archived) ||
                          (__current_folder.type==folder_type.cloud_archive);
 
     self.tablesort_tbl = new TableSort();
-    var tbs_headers = [];
+    let tbs_headers = [];
     if (archive_folder)
       tbs_headers = ['Archive ID'];
     self.tablesort_tbl.setHeaders ( tbs_headers.concat([
@@ -780,29 +780,29 @@ function ProjectListPage ( sceneId )  {
 
     panel.setWidget ( self.tablesort_tbl,table_row,0,1,nCols );
 
-    var message = 'folder';
+    let message = 'folder';
     if (isCurrentFolderList())
       message = 'list';
 
-    var message = '<div style="width:100%;color:darkgrey">&nbsp;<p>&nbsp;<p><h3>' +
-                  'There are no projects in ' + message + ' "' +
-                  folderPathTitle(__current_folder,__login_id,1000) + '".' +
-                  '<p>Use "Add" button to create a new Project' +
-                  ';<br>"Import" button for importing a project exported from ' +
-                    appName() +
-                  ';<br>"Join" button for joining project shared with you by ' +
-                  'another user;<br>or "Tutorials" button for loading ' +
-                  'tutorial/demo projects;<br>or click on page title or folder ' +
-                  'icon in it to change the folder.</h3></div>';
+    message = '<div style="width:100%;color:darkgrey">&nbsp;<p>&nbsp;<p><h3>' +
+              'There are no projects in ' + message + ' "' +
+              folderPathTitle(__current_folder,__login_id,1000) + '".' +
+              '<p>Use "Add" button to create a new Project' +
+              ';<br>"Import" button for importing a project exported from ' +
+                appName() +
+              ';<br>"Join" button for joining project shared with you by ' +
+              'another user;<br>or "Tutorials" button for loading ' +
+              'tutorial/demo projects;<br>or click on page title or folder ' +
+              'icon in it to change the folder.</h3></div>';
     self.welcome_lbl = panel.setLabel ( message, //.fontcolor('darkgrey'),
                                    table_row+1,0,1,nCols )
                        .setFontItalic ( true )
                        .setNoWrap();
     panel.setHorizontalAlignment ( table_row+1,0,"center" );
 
-    var addLbl   = 'Add';
-    var addIcon  = 'add';
-    var addWidth = '60pt';
+    let addLbl   = 'Add';
+    let addIcon  = 'add';
+    let addWidth = '60pt';
     if (__current_folder.type==folder_type.cloud_archive)  {
       addLbl   = 'Access';
       addIcon  = 'folder_cloud_archive';
@@ -814,8 +814,8 @@ function ProjectListPage ( sceneId )  {
     }
     add_btn.setButton ( addLbl,image_path(addIcon) ).setWidth(addWidth);
 
-    var moveLbl  = '';
-    var moveIcon = 'folder_projects';
+    let moveLbl  = '';
+    let moveIcon = 'folder_projects';
     if ([folder_type.custom_list,folder_type.shared,folder_type.joined,
           folder_type.all_projects].includes(__current_folder.type))  {
       if (!tightScreen)
@@ -833,7 +833,7 @@ function ProjectListPage ( sceneId )  {
 
       __current_project = null;
 
-      var trow = self.tablesort_tbl.addRow();
+      let trow = self.tablesort_tbl.addRow();
       if (archive_folder)
         trow.addCell ( '' );
       trow.addCell ( '' );
@@ -856,26 +856,26 @@ function ProjectListPage ( sceneId )  {
 
     } else  {
 
-      var selectedRow = null;
+      let selectedRow = null;
       nrows = 0;
       // alert ( __current_folder );
-      for (var i=0;i<projectList.projects.length;i++)
+      for (let i=0;i<projectList.projects.length;i++)
         if (listProject(projectList.projects[i]))  {
 
-          var trow = self.tablesort_tbl.addRow();
+          let trow = self.tablesort_tbl.addRow();
 
           //contextMenu.setWidth ( '10px' );
           // contextMenu.setHeight_px ( 400 );
           // contextMenu.setZIndex ( 101 );
 
-          var pDesc = projectList.projects[i];
-          var pName = pDesc.name;
+          let pDesc = projectList.projects[i];
+          let pName = pDesc.name;
           if (archive_folder)
             pName = pDesc.archive.project_name;
           // when list of projects is served from FE, shared record is removed
           // in case of owner's login
-          var joined = ['','',''];
-          var shared_project = false;
+          let joined = ['','',''];
+          let shared_project = false;
           if ('owner' in pDesc)  {
             // if (pDesc.owner.share.length>0)  {
             if (Object.keys(pDesc.share).length>0)  {
@@ -890,10 +890,10 @@ function ProjectListPage ( sceneId )  {
               pName  = '<b>(<i>' + pDesc.owner.author + '</i>):</b>' + pName;
           }
 
-          var contextMenu;
+          let contextMenu;
           (function(shared_prj){
 
-            var del_label = '';
+            let del_label = '';
             if (!tightScreen)  {
               del_label = 'Delete';
               if (shared_prj)
@@ -905,11 +905,11 @@ function ProjectListPage ( sceneId )  {
             });
 
             /*
-            var can_move = ((__current_folder.type==folder_type.user) &&
+            let can_move = ((__current_folder.type==folder_type.user) &&
                              __current_folder.path.startsWith(owners_folder)) ||
                            (__current_folder.type==folder_type.tutorials);
 
-            var can_move = ((__current_folder.type==folder_type.user) &&
+            let can_move = ((__current_folder.type==folder_type.user) &&
                             //  __current_folder.path.startsWith(owners_folder)) ||
                              pDesc.folderPath.startsWith(owners_folder)) ||
                            (__current_folder.type==folder_type.tutorials);
@@ -951,7 +951,7 @@ function ProjectListPage ( sceneId )  {
           trow.addCell ( pDesc.title ).insertWidget ( contextMenu,0 );
           if (('metrics' in pDesc) && ('R_free' in pDesc.metrics)
                                    && (pDesc.metrics.R_free<'1.0'))  {
-            var info = '<table class="table-rations">' +
+            let info = '<table class="table-rations">' +
                        '<tr><td colspan="2"><b><i>Best scores (job ' +
                        padDigits(pDesc.metrics.jobId,4) + ')</i></b></td></tr>' +
                        '<tr><td colspan="2"><hr/></td></tr>';
@@ -1034,7 +1034,7 @@ function ProjectListPage ( sceneId )  {
     }
 
     self.tablesort_tbl.setHeaderNoWrap   ( -1      );
-    var colNo = 0;
+    let colNo = 0;
     if (archive_folder)
       self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
     self.tablesort_tbl.setHeaderColWidth ( colNo++,'5%'  );
@@ -1074,7 +1074,7 @@ function ProjectListPage ( sceneId )  {
 
   function browseFolders ( funcKey )  {
     // console.log ( projectList.folders );
-    var title = 'Select project folder';
+    let title = 'Select project folder';
     if (funcKey!='select')  {
       if (isCurrentProjectShared())  {
         new MessageBox ( 'Cannot move a shared project',
@@ -1087,8 +1087,8 @@ function ProjectListPage ( sceneId )  {
       }
       title = 'Move project to folder';
     }
-    var pDesc = getCurrentProjectDesc();
-    var folderBrowser = new FoldersBrowser ( title,projectList,__current_folder,pDesc,funcKey,
+    let pDesc = getCurrentProjectDesc();
+    let folderBrowser = new FoldersBrowser ( title,projectList,__current_folder,pDesc,funcKey,
 
       function ( key,data ){
       
@@ -1137,7 +1137,7 @@ function ProjectListPage ( sceneId )  {
                       break;
 
           case 'rename' : if (data.folder_path==__current_folder.path)  {
-                            var renFolder = projectList.findFolder ( data.rename_path );
+                            let renFolder = projectList.findFolder ( data.rename_path );
                             setPageTitle ( renFolder );
                             if (!projectList.setCurrentFolder(renFolder))
                               new MessageBox (
@@ -1209,7 +1209,7 @@ function ProjectListPage ( sceneId )  {
   });
   // this.addMenuSeparator();
 
-  var accLbl = 'My Account';
+  let accLbl = 'My Account';
   if (__local_user)
     accLbl = 'Settings';
   this.addMenuItem ( accLbl,'settings',function(){
@@ -1236,11 +1236,11 @@ function ProjectListPage ( sceneId )  {
     saveProjectList ( function(data){ logout(sceneId,0); },null );
   });
 
-  // var btn_width    = '30pt';
-  var btn_width    = [];
-  var btn_height   = '26pt';
-  var left_margin  = '18pt';
-  var right_margin = '28pt';
+  // let btn_width    = '30pt';
+  let btn_width    = [];
+  let btn_height   = '26pt';
+  let left_margin  = '18pt';
+  let right_margin = '28pt';
 
   //alert ( window.screen.width + '  ' + window.devicePixelRatio );
 
@@ -1268,8 +1268,8 @@ function ProjectListPage ( sceneId )  {
     help_btn    = new Button ( '',image_path('help') ); //.setTooltip('Documentation' );
 
 
-    // for (var i=0;i<9;i++)
-    for (var i=0;i<11;i++)
+    // for (let i=0;i<9;i++)
+    for (let i=0;i<11;i++)
       btn_width.push ( '30pt' );
 
   } else  {
@@ -1344,7 +1344,7 @@ function ProjectListPage ( sceneId )  {
 
   this.makeLogoPanel ( 2,0,3 );
 
-  var row = 0;
+  let row = 0;
   panel.setHorizontalAlignment ( row,0,'center'    );
   panel.setCellSize            ( '','10pt'  ,row++,0    );
   nCols = 0;
@@ -1361,7 +1361,7 @@ function ProjectListPage ( sceneId )  {
   panel.setWidget              ( demoprj_btn,row,nCols++,1,1 );
   panel.setWidget              ( help_btn   ,row,nCols++,1,1  );
 
-  for (var i=0;i<nCols-1;i++)
+  for (let i=0;i<nCols-1;i++)
     panel.setCellSize ( btn_width[i],'',row,i );
   panel.setCellSize            ( 'auto','',row++,nCols-1 );
 
@@ -1446,7 +1446,7 @@ ProjectListPage.prototype = Object.create ( BasePage.prototype );
 ProjectListPage.prototype.constructor = ProjectListPage;
 
 ProjectListPage.prototype.onResize = function ( width,height )  {
-//  var h = (height - 164) + 'px';
+//  let h = (height - 164) + 'px';
 //  this.tablesort_tbl.table_div.element.style.height = h;
   if (this.tablesort_tbl)  {
     this.tablesort_tbl.fixHeader();
