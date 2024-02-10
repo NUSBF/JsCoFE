@@ -185,8 +185,6 @@ BasePage.prototype.makeSetupNamePanel = function()  {
 
 BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
 
-  let self = this;
-  window.setTimeout ( function(){
   if (!__setup_desc)  return;
   if (!('partners' in __setup_desc))    return;
   if (__setup_desc.partners.length<=0)  return;
@@ -242,7 +240,6 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   //   'border'           : '1px solid lightgray',
   //   'background-color' : 'rgba(240,250,255,0.67)'
   // });
-},100);
 }
 
 
