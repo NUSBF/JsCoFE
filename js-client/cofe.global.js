@@ -45,9 +45,16 @@ var __user_settings   = {
       grayscale  : 0.0    // 0 -1
     },
     dark_mode :  {
-      invert     : 0.87,  // 0 - 1
+      // invert     : 0.95,  // 0 - 1
+      // sepia      : 0.1,   // 0 - 1
+      // hue        : 0,     // integer deg +/-180
+      // saturate   : 1.0,   // >0
+      // contrast   : 1.0,   // >0
+      // brightness : 1.0,   // > 0
+      // grayscale  : 0.0    // 0 -1
+      invert     : 0.0,   // 0 - 1
       sepia      : 0.0,   // 0 - 1
-      hue        : 0,     // integer deg +/-180
+      hue        : 0,     // integer deg +/- 180
       saturate   : 1.0,   // >0
       contrast   : 1.0,   // >0
       brightness : 1.0,   // > 0

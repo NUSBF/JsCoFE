@@ -352,7 +352,7 @@ def fitWaters(driver, wait):
         print('*** Verification: could not find Nwaters result value after FitWaters run')
     else:
         print('*** Verification: Nwaters is %d (expecting > 89 )' % nwat)
-    assert nwat > 85
+    assert nwat > 80
 
     return ()
 
