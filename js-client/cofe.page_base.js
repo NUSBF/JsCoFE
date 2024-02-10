@@ -81,6 +81,9 @@ function BasePage ( sceneId,gridStyle,pageType )  {
   // make master grid
   this.grid = new Grid ( gridStyle );
   $(this.grid.element).appendTo(this.element);
+  // console.log ( ' >>>> p1 ' + window.innerHeight );
+  // console.log ( ' >>>> p1 ' + this.grid.height_px() );
+  // this.grid.setHeight ( 'v100%' );
 
   this.getUserRation();
 
@@ -182,6 +185,8 @@ BasePage.prototype.makeSetupNamePanel = function()  {
 
 BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
 
+  let self = this;
+  window.setTimeout ( function(){
   if (!__setup_desc)  return;
   if (!('partners' in __setup_desc))    return;
   if (__setup_desc.partners.length<=0)  return;
@@ -237,6 +242,7 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   //   'border'           : '1px solid lightgray',
   //   'background-color' : 'rgba(240,250,255,0.67)'
   // });
+},100);
 }
 
 
