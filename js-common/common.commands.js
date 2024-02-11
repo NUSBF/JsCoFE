@@ -25,7 +25,7 @@
 
 function appName()  { return 'CCP4 Cloud'   }  // application name for reporting
 
-const jsCoFE_version = '1.7.019 [09.02.2024]';   // for the main server
+const jsCoFE_version = '1.7.020 [11.02.2024]';   // for the main server
 // const jsCoFE_version = '1.7.019 [29.01.2024]';   // for update
 
 function appVersion()  {
