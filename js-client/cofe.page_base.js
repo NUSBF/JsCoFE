@@ -201,10 +201,10 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
       }(__setup_desc.partners[i]))
     }
 
-  let logoPanel = this.grid.setPanel ( row,col,1,colSpan );
+  // let logoPanel = this.grid.setPanel ( row,col,1,colSpan );
 
-  // let logoPanel = new Widget('div');
-  // $(logoPanel.element).appendTo(this.element);
+  let logoPanel = new Widget('div');
+  $(logoPanel.element).appendTo('body');
   let logoGrid  = new Grid ( '' );
   logoPanel.addWidget ( logoGrid );
   // let logoGrid = this.grid.setGrid ( '',row,col,1,colSpan );
@@ -226,8 +226,8 @@ BasePage.prototype.makeLogoPanel = function ( row,col,colSpan )  {
   logoGrid.setCellSize            ( '50%','', 0,c );
   logoGrid.setHorizontalAlignment ( 0,c,'right'   );
   logoGrid.setVerticalAlignment   ( 0,c,'middle'  );
-  this.grid.setVerticalAlignment   ( row,col,'middle'   );
-  this.grid.setCellSize            ( '','30px', row,col );
+  this.grid.setVerticalAlignment  ( row,col,'middle'   );
+  this.grid.setCellSize           ( '','30px', row,col );
   // logoGrid.setHeight_px ( 16 );
   $(logoPanel.element).addClass ( 'logo-panel' );
   // $(logoPanel.element).css ({
